@@ -1,0 +1,54 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div>
+    <div *ngIf="editMode; else showName">
+        <form #renameComponentForm="ngForm">
+            <input type="text"
+                   class="input-sm"
+                   id="renamePropertyInput"
+                   name="propertyInput"
+                   #renameName="ngModel"
+                   [(ngModel)]="propertyValue"
+                   required>
+            <button class="btn btn-primary btn-xs" (click)="onSaveClicked()" type="button"
+                    [disabled]="!(renameComponentForm?.form.valid || propertyValue?.length > 0)">
+                Save
+            </button>
+            <button class="btn btn-danger btn-xs" (click)="onCancel()">Cancel</button>
+        </form>
+    </div>
+    <ng-template #showName>
+        <span (click)="onClickEdit()">{{propertyValue}}</span>
+        <i *ngIf="!disableEditing" class="fa fa-pencil-square-o" (click)="onClickEdit()"></i>
+        <span *ngIf="propertyName === 'localName' &&  sharedData.currentVersion?.toString().length > 0">
+            Version: {{ sharedData.currentVersion.toReadableString() }}
+        </span>
+    </ng-template>
+
+</div>
+
+<winery-modal bsModal #confirmRenameModal="bs-modal" [modalRef]="confirmRenameModal">
+    <winery-modal-header [title]="'Update ' + propertyName">
+    </winery-modal-header>
+    <winery-modal-body>
+        <p>
+            Which version(s) do you want to rename?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer [showDefaultButtons]="false">
+        <button type="button" class="btn btn-primary" (click)="renameAllVersions()">All versions</button>
+        <button type="button" class="btn btn-primary" (click)="renameThisVersionOnly()">This version only</button>
+        <button type="button" class="btn btn-default" (click)="onCancel()">Cancel</button>
+    </winery-modal-footer>
+</winery-modal>

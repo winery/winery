@@ -1,0 +1,208 @@
+# Copyright (c) 2017 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Eclipse Public License 2.0 which is available at
+# http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+# which is available at https://www.apache.org/licenses/LICENSE-2.0.
+#
+# SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+
+
+##########################################################################
+# TOSCA Namespacing keyword specifies the TOSCA Namespace Alias value which 
+# all TOSCA Service Templates MUST always have.
+##########################################################################
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+capability_types:
+
+  ##########################################################################
+  # This is the default (root) TOSCA Capability Type definition that all other 
+  # TOSCA Capability Types derive from. 
+  ##########################################################################
+
+  tosca.capabilities.Root:
+    description: The TOSCA root Capability Type all other TOSCA base Capability Types derive from
+
+  ##########################################################################
+  # The Node capability indicates the base capabilities of a TOSCA Node Type.
+  ##########################################################################
+  tosca.capabilities.Node:
+    derived_from: tosca.capabilities.Root
+
+
+  ##########################################################################
+  # The Container capability, when included on a Node Type or Template 
+  # definition, indicates that the node can act as a container for (or a host for) 
+  # one or more other declared Node Types.
+  ##########################################################################
+  tosca.capabilities.Container:
+    derived_from: tosca.capabilities.Root
+    roperties:
+      num_cpus:
+        type: integer
+        required: false
+        constraints:
+          - greater_or_equal: 1
+      cpu_frequency:
+        type: scalar-unit.frequency
+        required: false
+        constraints:
+          - greater_or_equal: 0.1 GHz
+      disk_size:
+        type: scalar-unit.size
+        required: false
+        constraints:
+          - greater_or_equal: 0 MB
+      mem_size:
+        type: scalar-unit.size
+        required: false
+        constraints:
+          - greater_or_equal: 0 MB
+  
+  
+  ##########################################################################
+  # This is the default TOSCA type that should be used or extended to define
+  # a network endpoint capability. This includes the information to express 
+  # a basic endpoint with a single port or a complex endpoint with multiple 
+  # ports.  By default the Endpoint is assumed to represent an address on a 
+  # private network unless otherwise specified.
+  ##########################################################################  
+  tosca.capabilities.Endpoint:
+    derived_from: tosca.capabilities.Root
+    properties:
+      protocol:
+        type: string
+        default: tcp
+      port:
+        type: PortDef
+        required: false
+      secure:
+        type: boolean
+        default: false
+      url_path:
+        type: string
+        required: false
+      port_name:
+        type: string
+        required: false
+      network_name:
+        type: string
+        required: false
+        default: PRIVATE
+      initiator:
+        type: string
+        default: source
+        constraints:
+          - valid_values: [ source, target, peer ]
+      ports:
+        type: map
+        required: false
+        constraints:
+          - min_length: 1
+        entry_schema:
+          type: PortSpec
+    attributes:
+      ip_address:
+        type: string
+    
+  
+  ##########################################################################
+  # This capability represents a public endpoint which is accessible to the 
+  # general internet (and its public IP address ranges). 
+  ##########################################################################
+  tosca.capabilities.Endpoint.Public:
+    derived_from: tosca.capabilities.Endpoint
+    properties:
+      # Change the default network_name to use the first public network found
+      network_name:
+        type: string
+        default: PUBLIC
+        constraints:
+          - equal: PUBLIC
+      floating:
+        description: >
+          indicates that the public address should be allocated from a pool of floating IPs that are associated with the network.
+        type: boolean
+        default: false
+        status: experimental
+      dns_name:
+        description: The optional name to register with DNS
+        type: string
+        required: false   
+        status: experimental
+  
+  ##########################################################################
+  # This is the default TOSCA type that should be used or extended to define 
+  # a specialized administrator endpoint capability.
+  ##########################################################################
+  tosca.capabilities.Endpoint.Admin:
+    derived_from: tosca.capabilities.Endpoint
+    # Change Endpoint secure indicator to true from its default of false
+    properties:
+      secure:
+        type: boolean
+        default: true
+        constraints:
+          - equal: true
+
+  ##########################################################################
+  # This is the default TOSCA type that should be used or extended to define 
+  # a specialized database endpoint capability.
+  ##########################################################################
+  tosca.capabilities.Endpoint.Database:
+    derived_from: tosca.capabilities.Endpoint 
+
+  ##########################################################################
+  # This is the default TOSCA type that should be used or extended to define 
+  # an attachment capability of a (logical) infrastructure device node 
+  # (e.g., BlockStorage node).
+  ##########################################################################
+  tosca.capabilities.Attachment:
+    derived_from: tosca.capabilities.Root
+
+  ##########################################################################
+  # This is the default TOSCA type that should be used to express an Operating 
+  # System capability for a node. 
+  ##########################################################################
+  tosca.capabilities.OperatingSystem:
+    derived_from: tosca.capabilities.Root
+    properties:
+      architecture:
+        type: string
+        required: false
+      type:
+        type: string
+        required: false
+      distribution:
+        type: string
+        required: false
+      version:
+        type: version
+        required: false  
+
+  ##########################################################################
+  # This is the default TOSCA type that should be used to express a scalability 
+  # capability for a node.  
+  ##########################################################################
+  tosca.capabilities.Scalable:
+    derived_from: tosca.capabilities.Root
+    properties:
+      min_instances:
+        type: integer
+        default: 1
+      max_instances:
+        type: integer
+        default: 1
+      default_instances:
+        type: integer          
+
+  ##########################################################################
+  # A node type that includes the Bindable capability indicates that it can 
+  # be bound to a logical network association via a network port.
+  ##########################################################################
+  tosca.capabilities.network.Bindable:
+    derived_from: tosca.capabilities.Node        

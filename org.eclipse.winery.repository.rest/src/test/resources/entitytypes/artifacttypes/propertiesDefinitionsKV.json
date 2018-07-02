@@ -1,0 +1,18 @@
+{
+    "propertiesDefinition": {
+        "element": null,
+        "type": null
+    },
+    "winerysPropertiesDefinition": {
+        "namespace": "http://winery.opentosca.org/test/artifacttypes/fruits/propertiesdefinition/winery",
+        "elementName": "properties",
+        "propertyDefinitionKVList": [
+            {
+                "key": "contextPath",
+                "type": "xsd:string"
+            }
+        ],
+        "isDerivedFromXSD": null
+    },
+    "selectedValue": "Custom"
+}

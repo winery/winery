@@ -1,0 +1,37 @@
+/*******************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ *******************************************************************************/
+
+body, html {
+    height: 100%;
+}
+
+.canvas svg path {
+    fill: #000;
+    stroke: #000;
+    stroke-width: 1;
+}
+
+.canvas svg > * {
+    fill: none;
+    stroke: #000;
+    stroke-linejoin: miter;
+    stroke-location: inside;
+    stroke-width: 1px;
+}
+
+.canvas .guide {
+    background-color: rgba(0, 255, 255, 0);
+    position: absolute;
+    z-index: 1
+}

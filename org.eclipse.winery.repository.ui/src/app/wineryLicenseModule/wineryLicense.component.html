@@ -1,0 +1,59 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div *ngIf="!licenseAvailable">
+    <div class="flash">
+        This {{ toscaType | toscaTypeToReadableName }} has no license.
+        <button class="btn btn-sm btn-primary flash-action" [disabled]="!sharedData?.currentVersion?.editable"
+                (click)="licenseAvailable=true;isEditable=true;">
+            Add a LICENSE
+        </button>
+    </div>
+</div>
+
+<div *ngIf="!isEditable && licenseAvailable">
+    <div class="right" style="width: 100%; margin-bottom: 11px; ">
+        <button class="btn fa fa-pencil" aria-hidden="true" name="edit" style="float: right;"
+                [disabled]="!sharedData?.currentVersion?.editable"
+                (click)="isEditable = true;"></button>
+    </div>
+    <textarea readonly tabIndex="-1" style="width: 95%;height: 500px; resize: none;">{{licenseText}}</textarea>
+</div>
+
+<div *ngIf="isEditable">
+    <div class="btn-group" dropdown style="margin-bottom: 2px;">
+        <button type="button" class="btn btn-default">Choose a license: <span class="license-label">{{licenseType
+            }}</span></button>
+        <button type="button" dropdownToggle class="btn btn-default dropdown-toggle dropdown-toggle-split">
+            <span class="caret"></span>
+            <span class="sr-only">Split button!</span>
+        </button>
+        <ul *dropdownMenu class="dropdown-menu" role="menu">
+            <li *ngFor="let item of options" role="presentation">
+                <button role="menuitem" class=" btn btn-link dropdown-item" (click)="dropdownAction(item)">{{ item }}
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <div class="right">
+        <button class="btn fa fa-floppy-o" aria-hidden="true" name="save" (click)="saveLicenseFile()"> Save</button>
+        <button class="btn fa fa-ban" name="cancel" aria-hidden="true" (click)="cancelEdit()"> Cancel</button>
+    </div>
+    <textarea style="width: 95%; height: 500px; resize: none; font-family: monospace"
+              [(ngModel)]="licenseText"></textarea>
+
+</div>
+
+
+

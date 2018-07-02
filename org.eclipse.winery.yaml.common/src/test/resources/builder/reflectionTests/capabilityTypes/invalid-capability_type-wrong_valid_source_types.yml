@@ -1,0 +1,21 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+metadata:
+  description: Invalid 'valid_source_types' field capability types definition.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
+  exception: UndefinedType
+  tosca.version: 1.1
+  reference: 3.6.7.1          
+
+capability_types:
+  test.capabilities.ct1:
+    derived_from: tosca.capabilities.Endpoint
+    version: 1.0.0
+    description: Capability type description
+    properties:
+      prop1:
+        type: string        
+    attributes:
+      attr1:
+        type: integer        
+    valid_source_types: [nt1]

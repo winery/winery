@@ -1,0 +1,10 @@
+<Definitions xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"
+             id="winery-defs-for_wfp-european" targetNamespace="http://winery.opentosca.org/test/policytypes/fruits">
+    <Import importType="http://docs.oasis-open.org/tosca/ns/2011/12"
+            location="http://localhost:9080/winery/policytypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fpolicytypes%252Ffruits/organic/?definitions"
+            namespace="http://winery.opentosca.org/test/policytypes/fruits"/>
+    <PolicyType abstract="no" final="yes" name="european"
+                targetNamespace="http://winery.opentosca.org/test/policytypes/fruits">
+        <DerivedFrom xmlns:wfp="http://winery.opentosca.org/test/policytypes/fruits" typeRef="wfp:organic"/>
+    </PolicyType>
+</Definitions>

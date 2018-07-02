@@ -1,190 +1,250 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *     Oliver Kopp - initial API and implementation
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.filebased;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
-import org.eclipse.jgit.api.AddCommand;
-import org.eclipse.jgit.api.CleanCommand;
-import org.eclipse.jgit.api.CommitCommand;
-import org.eclipse.jgit.api.FetchCommand;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.PushCommand;
-import org.eclipse.jgit.api.ResetCommand;
+import com.google.common.collect.Iterables;
+import com.google.common.eventbus.EventBus;
+import org.apache.tika.mime.MediaType;
+import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
-import org.eclipse.jgit.api.errors.CheckoutConflictException;
-import org.eclipse.jgit.api.errors.ConcurrentRefUpdateException;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.NoHeadException;
-import org.eclipse.jgit.api.errors.NoMessageException;
-import org.eclipse.jgit.api.errors.UnmergedPathsException;
-import org.eclipse.jgit.api.errors.WrongRepositoryStateException;
+import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.eclipse.jgit.transport.CredentialsProvider;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
-import org.eclipse.winery.repository.Prefs;
+import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.configuration.GitBasedRepositoryConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 /**
- * Used for testing only.
- * 
  * Allows to reset repository to a certain commit id
  */
 public class GitBasedRepository extends FilebasedRepository {
-	
-	private static final Logger logger = LoggerFactory.getLogger(GitBasedRepository.class);
-	
-	private final Repository gitRepo;
-	private final Git git;
-	private final CredentialsProvider cp;
-	
-	public static final String PREFERENCE_GIT_USERNAME = "git.username";
-	public static final String PREFERENCE_GIT_PASSWORD = "git.password";
-	
-	
-	/**
-	 * @param repositoryLocation the location of the repository
-	 * @throws IOException thrown if repository does not exist
-	 */
-	public GitBasedRepository(String repositoryLocation) throws IOException {
-		super(repositoryLocation);
-		FileRepositoryBuilder builder = new FileRepositoryBuilder();
-		this.gitRepo = builder.setWorkTree(this.repositoryRoot.toFile()).setMustExist(true).build();
-		this.git = new Git(this.gitRepo);
-		
-		this.cp = this.initializeCredentialsProvider();
-	}
-	
-	/**
-	 * Reads the properties stored in ".winery" in the repository
-	 */
-	private Properties dotWineryProperties() {
-		Properties p = new Properties();
-		File f = new File(this.repositoryRoot.toFile(), ".winery");
-		InputStream is;
-		try {
-			is = new FileInputStream(f);
-		} catch (FileNotFoundException e1) {
-			// .winery does not exist in the file-based repository
-			return p;
-		}
-		if (is != null) {
-			try {
-				p.load(is);
-			} catch (IOException e) {
-				GitBasedRepository.logger.debug(e.getMessage(), e);
-			}
-		}
-		return p;
-	}
-	
-	/**
-	 * Uses git.username und git.password from .winery and winery.properties
-	 * 
-	 * Considering .winery is useful if the same war file is used on a dev
-	 * server and a stable server. The WAR file cannot contain the credentials
-	 * if committing is only allowed on only one of these servers
-	 */
-	private CredentialsProvider initializeCredentialsProvider() {
-		CredentialsProvider cp;
-		
-		Properties wp = this.dotWineryProperties();
-		
-		String gitUserName = wp.getProperty(GitBasedRepository.PREFERENCE_GIT_USERNAME);
-		if (gitUserName == null) {
-			gitUserName = Prefs.INSTANCE.getProperties().getProperty(GitBasedRepository.PREFERENCE_GIT_USERNAME);
-		}
-		
-		String gitPassword = wp.getProperty(GitBasedRepository.PREFERENCE_GIT_PASSWORD);
-		if (gitPassword == null) {
-			gitPassword = Prefs.INSTANCE.getProperties().getProperty(GitBasedRepository.PREFERENCE_GIT_PASSWORD);
-		}
-		
-		if (gitUserName == null) {
-			cp = null;
-		} else if (gitPassword == null) {
-			cp = null;
-		} else {
-			cp = new UsernamePasswordCredentialsProvider(gitUserName, gitPassword);
-		}
-		return cp;
-	}
-	
-	public void addCommitPush() throws NoHeadException, NoMessageException, UnmergedPathsException, ConcurrentRefUpdateException, WrongRepositoryStateException, GitAPIException {
-		AddCommand add = this.git.add();
-		add.addFilepattern(".");
-		add.call();
-		
-		CommitCommand commit = this.git.commit();
-		commit.setMessage("Commit through Winery");
-		commit.call();
-		
-		PushCommand push = this.git.push();
-		if (this.cp != null) {
-			push.setCredentialsProvider(this.cp);
-		}
-		push.call();
-	}
-	
-	private void clean() throws NoWorkTreeException, GitAPIException {
-		GitBasedRepository.logger.trace("git clean");
-		// remove untracked files
-		CleanCommand clean = this.git.clean();
-		clean.setCleanDirectories(true);
-		clean.call();
-	}
-	
-	public void cleanAndResetHard() throws NoWorkTreeException, GitAPIException {
-		// enable updating by resetting the content of the repository
-		this.clean();
-		
-		// fetch the newest thing from upstream
-		GitBasedRepository.logger.trace("git fetch");
-		FetchCommand fetch = this.git.fetch();
-		if (this.cp != null) {
-			fetch.setCredentialsProvider(this.cp);
-		}
-		fetch.call();
-		
-		// after fetching, reset to the latest version
-		GitBasedRepository.logger.trace("git reset --hard");
-		ResetCommand reset = this.git.reset();
-		reset.setMode(ResetType.HARD);
-		reset.call();
-	}
-	
-	public void setRevisionTo(String ref) throws CheckoutConflictException, GitAPIException {
-		this.clean();
-		
-		// reset repository to the desired reference
-		ResetCommand reset = this.git.reset();
-		reset.setMode(ResetType.HARD);
-		reset.setRef(ref);
-		reset.call();
-	}
-	
-	/**
-	 * Returns true if authentification information (for instance, to push to
-	 * upstream) is available
-	 */
-	public boolean authenticationInfoAvailable() {
-		return this.cp != null;
-	}
+
+    /**
+     * Used for synchronizing the method {@link GitBasedRepository#addCommit(RepositoryFileReference)}
+     */
+    private static final Object COMMIT_LOCK = new Object();
+    private static final Logger LOGGER = LoggerFactory.getLogger(GitBasedRepository.class);
+
+    private final Git git;
+    private final EventBus eventBus;
+    private final GitBasedRepositoryConfiguration gitBasedRepositoryConfiguration;
+
+    /**
+     * @param gitBasedRepositoryConfiguration the configuration of the repository
+     * @throws IOException         thrown if repository does not exist
+     * @throws GitAPIException     thrown if there was an error while checking the status of the repository
+     * @throws NoWorkTreeException thrown if the directory is not a git work tree
+     */
+    public GitBasedRepository(GitBasedRepositoryConfiguration gitBasedRepositoryConfiguration) throws IOException, NoWorkTreeException, GitAPIException {
+        super(Objects.requireNonNull(gitBasedRepositoryConfiguration));
+        this.gitBasedRepositoryConfiguration = gitBasedRepositoryConfiguration;
+        FileRepositoryBuilder builder = new FileRepositoryBuilder();
+        Repository gitRepo = builder.setWorkTree(this.repositoryRoot.toFile()).setMustExist(false).build();
+
+        if (!Files.exists(this.repositoryRoot.resolve(".git"))) {
+            gitRepo.create();
+        }
+
+        // explicitly enable longpaths to ensure proper handling of long pathss
+        gitRepo.getConfig().setBoolean("core", null, "longpaths", true);
+        gitRepo.getConfig().save();
+
+        this.eventBus = new EventBus();
+        this.git = new Git(gitRepo);
+
+        if (gitBasedRepositoryConfiguration.isAutoCommit() && !this.git.status().call().isClean()) {
+            this.addCommit("Files changed externally.");
+        }
+    }
+
+    /**
+     * This method registers an Object on the repositories {@link EventBus}
+     *
+     * @param eventListener an objects that contains methods annotated with the @{@link com.google.common.eventbus.Subscribe}
+     */
+    public void registerForEvents(Object eventListener) {
+        this.eventBus.register(eventListener);
+    }
+
+    /**
+     * This method unregisters an Object on the repositories {@link EventBus}
+     *
+     * @param eventListener an objects that contains methods annotated with the @{@link com.google.common.eventbus.Subscribe}
+     */
+    public void unregisterForEvents(Object eventListener) {
+        this.eventBus.register(eventListener);
+    }
+
+    /**
+     * This method is synchronized with an extra static object (meaning all instances are locked). The same lock object
+     * is also used in {@link #addCommit(RepositoryFileReference)}. This is to ensure that every commit only has one
+     * change.
+     *
+     * @param message The message that is used in the commit.
+     * @throws GitAPIException thrown when anything with adding or committing goes wrong.
+     */
+    public void addCommit(String message) throws GitAPIException {
+        addCommit(new String[]{"."}, message);
+    }
+
+    public void addCommit(String[] patterns, String message) throws GitAPIException {
+        if (!message.isEmpty()) {
+            synchronized (COMMIT_LOCK) {
+                AddCommand add = this.git.add();
+                Status status = this.git.status().call();
+
+                for (String pattern : patterns) {
+                    add.addFilepattern(pattern);
+                }
+
+                if (!status.getMissing().isEmpty() || !status.getRemoved().isEmpty()) {
+                    RmCommand remove = this.git.rm();
+                    for (String file : Iterables.concat(status.getMissing(), status.getRemoved())) {
+                        remove.addFilepattern(file);
+                    }
+                    remove.call();
+                }
+
+                add.call();
+
+                CommitCommand commit = this.git.commit();
+                commit.setMessage(message);
+                commit.call();
+            }
+        }
+        postEventMap();
+    }
+
+    public void postEventMap() throws GitAPIException {
+        Map<DiffEntry, String> diffMap = new HashMap<>();
+        try (OutputStream stream = new ByteArrayOutputStream()) {
+            List<DiffEntry> list = this.git.diff().setOutputStream(stream).call();
+            BufferedReader reader = new BufferedReader(new StringReader(stream.toString()));
+            String line = reader.readLine();
+            for (DiffEntry entry : list) {
+                line = reader.readLine();
+                StringWriter diff = new StringWriter();
+                while (line != null && !line.startsWith("diff")) {
+                    diff.append(line);
+                    diff.write('\n');
+                    line = reader.readLine();
+                }
+                diffMap.put(entry, diff.toString());
+            }
+        } catch (IOException exc) {
+            LOGGER.trace("Reading of git information failed!", exc);
+        }
+        this.eventBus.post(diffMap);
+    }
+
+    /**
+     * This method is synchronized with an extra static object (meaning all instances are locked). The same lock object
+     * is also used in {@link #addCommit(String)}. This is to ensure that every commit only has one change.
+     *
+     * @param ref RepositoryFileReference to the file that was changed.
+     * @throws GitAPIException thrown when anything with adding or committing goes wrong.
+     */
+    public void addCommit(RepositoryFileReference ref) throws GitAPIException {
+        synchronized (COMMIT_LOCK) {
+            String message;
+            if (ref == null) {
+                message = "Files changed externally.";
+            } else {
+                message = ref.toString() + " was updated";
+            }
+            addCommit(message);
+        }
+    }
+
+    private void clean() throws NoWorkTreeException, GitAPIException {
+        // remove untracked files
+        CleanCommand clean = this.git.clean();
+        clean.setCleanDirectories(true);
+        clean.call();
+    }
+
+    public void cleanAndResetHard() throws NoWorkTreeException, GitAPIException {
+        // enable updating by resetting the content of the repository
+        this.clean();
+
+        // reset to the latest version
+        ResetCommand reset = this.git.reset();
+        reset.setMode(ResetType.HARD);
+        reset.call();
+    }
+
+    public void setRevisionTo(String ref) throws GitAPIException {
+        this.clean();
+
+        // reset repository to the desired reference
+        ResetCommand reset = this.git.reset();
+        reset.setMode(ResetType.HARD);
+        reset.setRef(ref);
+        reset.call();
+    }
+
+    @Override
+    public void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException {
+        super.putContentToFile(ref, inputStream, mediaType);
+        try {
+            if (gitBasedRepositoryConfiguration.isAutoCommit()) {
+                this.addCommit(ref);
+            } else {
+                postEventMap();
+            }
+        } catch (GitAPIException e) {
+            LOGGER.trace(e.getMessage(), e);
+        }
+    }
+
+    public boolean hasChangesInFile(RepositoryFileReference ref) {
+        try {
+            if (!this.git.status().call().isClean()) {
+                List<DiffEntry> diffEntries = this.git.diff().call();
+                List<DiffEntry> entries = diffEntries.stream()
+                    // we use String::startsWith() and RepositoryFileReference::getParent()
+                    // because the component is considered changed, if any file of this component is changed.
+                    // -> check if any file in the folder is changed
+                    .filter(item -> item.getNewPath().startsWith(BackendUtils.getPathInsideRepo(ref.getParent())))
+                    .collect(Collectors.toList());
+                return entries.size() > 0;
+            }
+        } catch (GitAPIException e) {
+            LOGGER.trace(e.getMessage(), e);
+        }
+
+        return false;
+    }
+
+    public Status getStatus() {
+        try {
+            return this.git.status().call();
+        } catch (GitAPIException e) {
+            LOGGER.trace(e.getMessage(), e);
+            return null;
+        }
+    }
 }

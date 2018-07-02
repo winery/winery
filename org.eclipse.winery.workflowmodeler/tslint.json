@@ -1,0 +1,25 @@
+{
+    "extends": "../tslint.json",
+    "rules": {
+        "arrow-parens": [
+            true,
+            "ban-single-arg-parens"
+        ],
+        "import-blacklist": [
+            true,
+            "b4t"
+        ],
+        "directive-selector": [
+            true,
+            "attribute",
+            "b4t",
+            "camelCase"
+        ],
+        "component-selector": [
+            true,
+            "element",
+            "b4t",
+            "kebab-case"
+        ]
+    }
+}

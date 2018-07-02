@@ -1,0 +1,45 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div *ngIf="!readmeAvailable">
+    <div class="flash">
+        Help people interested in this {{ toscaType | toscaTypeToReadableName }} understand this {{ toscaType |
+        toscaTypeToReadableName }} by adding a README.
+        <button class="btn btn-sm btn-primary flash-action" [disabled]="!sharedData?.currentVersion?.editable"
+                (click)="readmeAvailable=true;isEditable=true;">
+            Add a README
+        </button>
+    </div>
+</div>
+
+<div *ngIf="!isEditable && readmeAvailable">
+    <div class="right" style="width: 100%; margin-bottom: 2px;">
+        <button class="btn fa fa-pencil" aria-hidden="true" name="edit" style="float: right;"
+                [disabled]="!sharedData?.currentVersion?.editable"
+                (click)="isEditable = true;"></button>
+    </div>
+    <textarea readonly tabIndex="-1" style="width: 95%;height: 500px; resize: none;">{{readmeContent}}</textarea>
+</div>
+
+<div *ngIf="isEditable">
+    <div class="right" style="margin-bottom: 2px;">
+        <button class="btn fa fa-floppy-o" aria-hidden="true" name="save" (click)="saveReadmeFile()"> Save</button>
+        <button class="btn fa fa-ban" name="cancel" aria-hidden="true" (click)="cancelEdit()"> Cancel</button>
+    </div>
+
+    <textarea style="width: 95%; height: 500px; resize: none; font-family: monospace"
+              [(ngModel)]="readmeContent"></textarea>
+</div>
+
+
+

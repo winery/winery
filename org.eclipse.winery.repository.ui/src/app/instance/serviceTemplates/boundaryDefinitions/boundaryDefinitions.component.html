@@ -1,0 +1,27 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<ul class="nav nav-tabs">
+    <li class="nav-item" role="presentation" [routerLink]="['./properties']" [routerLinkActive]="'active'"><a
+        class="nav-link">Properties</a></li>
+    <li class="nav-item" [routerLink]="['./propertymappings']" [routerLinkActive]="'active'"><a class="nav-link">Property
+        Mapping</a></li>
+    <li class="nav-item" [routerLink]="['./propertyconstraints']" [routerLinkActive]="'active'"><a>Property
+        Constraints</a></li>
+    <li class="nav-item" [routerLink]="['./requirements']" [routerLinkActive]="'active'"><a>Requirements</a></li>
+    <li class="nav-item" [routerLink]="['./capabilities']" [routerLinkActive]="'active'"><a>Capabilities</a></li>
+    <li class="nav-item" [routerLink]="['./policies']" [routerLinkActive]="'active'"><a>Policies</a></li>
+    <li class="nav-item" [routerLink]="['./interfaces']" [routerLinkActive]="'active'"><a>Interfaces</a></li>
+    <li class="nav-item" [routerLink]="['./xml']" [routerLinkActive]="'active'"><a>XML</a></li>
+</ul>
+<router-outlet></router-outlet>

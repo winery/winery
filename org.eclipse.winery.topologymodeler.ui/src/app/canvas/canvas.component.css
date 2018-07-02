@@ -1,0 +1,70 @@
+/********************************************************************************
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ ********************************************************************************/
+@import url('https://fonts.googleapis.com/css?family=Roboto:900');
+
+.selection {
+    position: absolute !important;
+    border: 1px dashed #8B9;
+    background-color: #BEC;
+    opacity: 0.2;
+    z-index: 3;
+    display: none;
+    cursor: default !important;
+}
+
+.crosshair {
+    cursor: crosshair;
+}
+
+.selection-active {
+    display: block !important;
+}
+
+.selection > span {
+    background-color: rgba(239, 28, 190, 0.2);
+    border: 1px dashed #b20e8c;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+.watermark {
+    opacity: 0.5;
+    color: BLACK;
+    position: absolute;
+    bottom: 2em;
+    right: 2em;
+}
+
+#grid {
+    position: absolute;
+    z-index: 2;
+}
+
+.labelStyle path {
+    font: 11px Roboto, sans-serif;
+    color: #212121;
+    fill: #efefef;
+    borderStyle: #fafafa;
+    borderWidth: 1;
+    padding: 3px;
+}
+
+.ng-valid[required]:not(.duplicateId), .ng-valid.required:not(.duplicateId) {
+    border-left: 5px solid #42A948; /* green */
+}
+
+.ng-invalid:not(form), .duplicateId, .idExists {
+    border-left: 5px solid #a94442; /* red */
+}

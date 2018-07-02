@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Definitions xmlns="http://docs.oasis-open.org/tosca/ns/2011/12" id="winery-defs-for_artifacttemplates-MyTinyTest"
+             targetNamespace="http://opentosca.org/artifacttemplates">
+    <Import importType="http://docs.oasis-open.org/tosca/ns/2011/12"
+            location="http://localhost:9080/winery/artifacttypes/http%253A%252F%252Fopentosca.org%252Fartifacttypes/MiniArtifactType/?definitions"
+            namespace="http://opentosca.org/artifacttypes"/>
+    <ArtifactTemplate xmlns:otatyIgeneral="http://opentosca.org/artifacttypes" id="MyTinyTest" name="MyTinyTest"
+                      type="otatyIgeneral:MiniArtifactType" xmlns="http://docs.oasis-open.org/tosca/ns/2011/12">
+        <ArtifactReferences>
+            <ArtifactReference
+                reference="artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/files/blub.zip"/>
+        </ArtifactReferences>
+    </ArtifactTemplate>
+</Definitions>

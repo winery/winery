@@ -1,0 +1,45 @@
+{
+    "documentation": [
+    ],
+    "any": [
+    ],
+    "otherAttributes": {
+    },
+    "id": "winery-defs-for_artifacttemplates-MyTinyTest",
+    "serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+            },
+            "id": "MyTinyTest",
+            "type": "{http://opentosca.org/artifacttypes}MiniArtifactType",
+            "artifactReferences": {
+                "artifactReference": [
+                    {
+                        "includeOrExclude": [
+                        ],
+                        "reference": "artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/files/blub.zip"
+                    }
+                ]
+            },
+            "name": "MyTinyTest"
+        }
+    ],
+    "targetNamespace": "http://opentosca.org/artifacttemplates",
+    "import": [
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+            },
+            "namespace": "http://opentosca.org/artifacttypes",
+            "location": "otatyIgeneral__MiniArtifactType.tosca",
+            "importType": "http://docs.oasis-open.org/tosca/ns/2011/12"
+        }
+    ]
+}

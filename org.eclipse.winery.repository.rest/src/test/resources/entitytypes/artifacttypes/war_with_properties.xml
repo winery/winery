@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Definitions xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"
+             xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" id="winery-defs-for_wfa-WAR"
+             targetNamespace="http://winery.opentosca.org/test/artifacttypes/fruits">
+    <ArtifactType name="WAR" targetNamespace="http://winery.opentosca.org/test/artifacttypes/fruits">
+        <winery:PropertiesDefinition elementname="CloudProviderProperties" namespace="http://opentosca.org/nodetypes"
+                                     winery:derivedFromXSD="true">
+            <winery:properties>
+                <winery:key>APIEndpoint</winery:key>
+                <winery:type>xsd:string</winery:type>
+            </winery:properties>
+            <winery:properties>
+                <winery:key>APILoginName</winery:key>
+                <winery:type>xsd:string</winery:type>
+            </winery:properties>
+            <winery:properties>
+                <winery:key>APILoginPassword</winery:key>
+                <winery:type>xsd:string</winery:type>
+            </winery:properties>
+        </winery:PropertiesDefinition>
+        <PropertiesDefinition xmlns:nodetypes1="http://opentosca.org/nodetypes"
+                              element="nodetypes1:CloudProviderProperties"/>
+    </ArtifactType>
+</Definitions>

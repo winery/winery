@@ -1,6 +1,6 @@
 {
-  "name": "Winery topology modeler",
-  "version": "0.1.37-SNAPSHOT",
+  "name": "winery-topologymodeler",
+  "version": "2.0.0-SNAPSHOT",
   "author": "Oliver Kopp <kopp.dev@gmail.com>",
   "contributors": [
     {
@@ -11,12 +11,18 @@
     },
     {
       "name": "Yves Schubert"
+    },
+    {
+      "name": "Niko Stadelmaier"
+    },
+    {
+      "name": "Philipp Meyer"
     }
   ],
   "licenses": [
     {
       "type": "EPL",
-      "url": "http://www.eclipse.org/legal/epl-v10.html"
+      "url": "http://www.eclipse.org/legal/epl-v20.html"
     },
     {
       "type": "Apache 2.0",
@@ -27,14 +33,14 @@
     "blueimp-file-upload": "9.5.3",
     "blueimp-tmpl": "2.5.3",
     "bootstrap": "3.1.1",
-    "bootstrap-spinedit": "https://github.com/scyv/bootstrap-spinedit.git#1.0.0",
+    "bootstrap-touchspin": "3.1.2",
     "jquery": "2.0.3",
     "jquery-typing": "https://github.com/tnajdek/jquery-typing.git#0.3.2-2",
     "jsPlumb": "1.5.4",
     "KeyboardJS": "https://github.com/RobertWHurst/KeyboardJS.git#v0.4.2",
     "pnotify": "1.3.1",
     "requirejs": "2.1.5",
-    "select2": "https://github.com/ivaynberg/select2/archive/3.4.5.zip",
+    "bootstrap3-typeahead": "git://github.com/bassjobsen/Bootstrap-3-Typeahead.git#4.0.2",
     "x-editable": "1.5.1",
     "XMLWriter": "1.0.2"
   },

@@ -1,0 +1,48 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<div class="wm-properties-wrapper" *ngIf="show">
+    <div class="form-group row">
+        <div *ngIf="!titleEditing" class="view col-md-10" (dblclick)="titleEditing = !titleEditing">
+            <h4>{{node.name}}</h4>
+        </div>
+        <div class="col-md-10" *ngIf="titleEditing">
+            <input class="form-control" (blur)="nodeNameChanged()" type="text" [(ngModel)]="node.name"/>
+        </div>
+
+        <div class="col-md-2">
+            <button (click)="deleteNode()" type="button" class="btn btn-danger">
+                <i class="fa fa-trash" style="margin-right: 5px;"></i>
+            </button>
+        </div>
+
+    </div>
+    <hr>
+
+    <div class="form-group row">
+        <label class="col-md-2 form-control-label text-md-right" for="nodeType">Type</label>
+        <div class="col-md-10">
+            <select class="form-control" id="nodeType" [(ngModel)]="node.type">
+                <option *ngFor="let t of nodeTypes" value="{{t}}">{{t}}</option>
+            </select>
+        </div>
+    </div>
+
+    <hr>
+    <b4t-node-template *ngIf="node.type == 'ToscaNodeManagementTask'" [node]="node"></b4t-node-template>
+    <b4t-parameter *ngFor="let param of node.input" [param]="param"></b4t-parameter>
+    <hr>
+    <b4t-parameter *ngFor="let param of node.output" [param]="param"></b4t-parameter>
+
+</div>

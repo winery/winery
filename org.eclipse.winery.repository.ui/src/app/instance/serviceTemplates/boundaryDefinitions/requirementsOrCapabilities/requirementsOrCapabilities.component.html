@@ -1,0 +1,111 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<div [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <winery-table
+        [title]="title"
+        [columns]="columns"
+        [disableButtons]="!sharedData.currentVersion?.editable"
+        [data]="requirementsOrCapabilitiesList"
+        (cellSelected)="onCellSelected($event)"
+        (addBtnClicked)="onAddClick()"
+        (removeBtnClicked)="onRemoveClick($event)"
+        [enableEditButton]="true"
+        (editBtnClicked)="onEditClick($event)">
+    </winery-table>
+</div>
+
+<winery-modal bsModal #addReqOrCapModal="bs-modal" [modalRef]="addReqOrCapModal">
+    <winery-modal-header [title]="addOrChange + singleItem">
+    </winery-modal-header>
+    <winery-modal-body>
+        <form #addReqOrCapForm="ngForm" id="addReqOrCapForm">
+            <div class="form-group">
+                <label class="control-label" for="name">Name</label>
+
+                <input #reqOrCapName="ngModel"
+                       id="name"
+                       name="name"
+                       class="form-control"
+                       type="text"
+                       required
+                       [value]="currentSelected?.name"
+                       [(ngModel)]="reqOrCapToBeAdded.name"
+                />
+
+                <div *ngIf="reqOrCapName.errors && (reqOrCapName.dirty || reqOrCapName.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!reqOrCapName.errors.required">
+                        Name is required
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="requirement">Requirement</label>
+                <div class="row">
+                    <div class="col-xs-10">
+                        <input #reqOrCapRef="ngModel"
+                               id="requirement"
+                               name="requirement"
+                               class="form-control"
+                               type="text"
+                               required
+                               [value]="currentSelected?.ref"
+                               [(ngModel)]="reqOrCapToBeAdded.ref"
+                        />
+                    </div>
+                    <div class="col-xs-2">
+                        <button disabled type="button" class="btn btn-default btn-sm">Browse</button>
+                    </div>
+                </div>
+                <div *ngIf="reqOrCapRef.errors && (reqOrCapRef.dirty || reqOrCapRef.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!reqOrCapRef.errors.required">
+                        Requirement is required
+                    </div>
+                </div>
+            </div>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer [showDefaultButtons]="false">
+        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancelBtnClicked()">Cancel</button>
+        <button *ngIf="!edit" type="button" [disabled]="!addReqOrCapForm?.form.valid"
+                class="btn btn-primary"
+                (click)="addConfirmed()">Add
+        </button>
+        <button *ngIf="edit" type="button" class="btn btn-danger"
+                (click)="onDeleteClick()">Delete
+        </button>
+        <button *ngIf="edit" type="button" [disabled]="!addReqOrCapForm?.form.valid"
+                class="btn btn-primary"
+                (click)="updateConfirmed()">Update
+        </button>
+    </winery-modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+    <winery-modal-header [title]="'Delete ' + singleItem"></winery-modal-header>
+    <winery-modal-body>
+        <p *ngIf="currentSelected != null" id="diagyesnomsg">
+            Do you want to delete the {{singleItem}} <span style="font-weight:bold;">{{ currentSelected.id }}</span>?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="removeConfirmed();"
+                         [closeButtonLabel]="'No'"
+                         [okButtonLabel]="'Yes'">
+    </winery-modal-footer>
+</winery-modal>

@@ -1,0 +1,94 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <div class="right">
+        <button class="btn btn-primary" name="save"
+                [disabled]="!sharedData?.currentVersion?.editable"
+                (click)="saveToServer()">
+            Save
+        </button>
+    </div>
+    Valid Source
+    <div class="radioWrapper">
+        <div class="left">
+            <form>
+                <fieldset>
+                    <input id="everythingSrcSelectable" type="radio" name="kind"
+                           (click)="onValidSourceSelected(selectedEnum.EVERYTHING)"
+                           [checked]="validEndingsData.validSource.validEndingsSelectionType === selectedEnum.EVERYTHING">
+                    <label for="everythingSrcSelectable" class="cursorpointer"
+                           name="everythingSrcSelectable">everything</label>
+                    <input id="validSrcNT" type="radio" name="kind"
+                           (click)="onValidSourceSelected(selectedEnum.NODETYPE)"
+                           [checked]="validEndingsData.validSource.validEndingsSelectionType === selectedEnum.NODETYPE">
+                    <label for="validSrcNT" class="cursorpointer" name="validSrcNT">Node Types</label>
+                    <input id="validSrcRT" type="radio" name="kind"
+                           (click)="onValidSourceSelected(selectedEnum.REQTYPE)"
+                           [checked]="validEndingsData.validSource.validEndingsSelectionType === selectedEnum.REQTYPE">
+                    <label for="validSrcRT" class="cursorpointer" name="validSrcRT">Requirement Type</label>
+                </fieldset>
+            </form>
+            <div [class.hidden]="!loading">
+                <winery-loader></winery-loader>
+            </div>
+            <div *ngIf="validEndingsData.validSource.validEndingsSelectionType === selectedEnum.NODETYPE"
+                 [class.hidden]="loadingSrc">
+                <ng-select [items]="selectSources"
+                           [active]="[validEndingsData.validSource.validDataSet]"
+                           (selected)="onSelectedSrcValueChanged($event)">
+                </ng-select>
+            </div>
+            <div *ngIf="validEndingsData.validSource.validEndingsSelectionType === selectedEnum.REQTYPE">
+                Not yet implemented!
+            </div>
+        </div>
+    </div>
+    <br>
+    Valid Target
+    <div class="radioWrapper">
+        <div class="left">
+            <form>
+                <fieldset>
+                    <input id="everythingTrgSelectable" type="radio" name="kind"
+                           (click)="onValidTargetSelected(selectedEnum.EVERYTHING)"
+                           [checked]="validEndingsData.validTarget.validEndingsSelectionType === selectedEnum.EVERYTHING">
+                    <label for="everythingTrgSelectable" class="cursorpointer"
+                           name="everythingTrgSelectable">everything</label>
+                    <input id="validTrgNT" type="radio" name="kind"
+                           (click)="onValidTargetSelected(selectedEnum.NODETYPE)"
+                           [checked]="validEndingsData.validTarget.validEndingsSelectionType === selectedEnum.NODETYPE">
+                    <label for="validTrgNT" class="cursorpointer" name="validTrgNT">Node Types</label>
+                    <input id="validTrgCT" type="radio" name="kind"
+                           (click)="onValidTargetSelected(selectedEnum.CAPTYPE)"
+                           [checked]="validEndingsData.validTarget.validEndingsSelectionType === selectedEnum.CAPTYPE">
+                    <label for="validTrgCT" class="cursorpointer" name="validTrgRT">Capability Type</label>
+                </fieldset>
+            </form>
+            <div [class.hidden]="!loading">
+                <winery-loader></winery-loader>
+            </div>
+            <div *ngIf="validEndingsData.validTarget.validEndingsSelectionType === selectedEnum.NODETYPE"
+                 [class.hidden]="loadingTrg">
+                <ng-select id="targetSelect" [items]="selectTargets" (selected)="onSelectedTrgValueChanged($event)"
+                           [active]="[validEndingsData.validTarget.validDataSet]"></ng-select>
+            </div>
+            <div *ngIf="validEndingsData.validTarget.validEndingsSelectionType === selectedEnum.CAPTYPE">
+                Not implemented yet!
+            </div>
+        </div>
+    </div>
+</div>

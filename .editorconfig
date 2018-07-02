@@ -1,0 +1,27 @@
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = false
+end_of_line = lf
+
+[*.md]
+indent_size = 2
+
+[*.sh]
+indent_size = 2
+
+[*.yaml]
+indent_size = 2
+
+[*.yml]
+indent_size = 2
+
+[bower.json]
+indent_size = 2
+
+[TOSCA-v1.0.xsd]
+indent_size = 1

@@ -1,0 +1,339 @@
+<?xml version="1.0"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<definitions name="TrustedCloudApplication2_buildPlan"
+			 targetNamespace="ba.example" xmlns:tns="ba.example"
+			 xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+			 xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+			 xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop"
+			 xmlns:ns0="http://siserver.org/wsdl" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		TYPE DEFINITION - List of services participating in this BPEL process The
+		default output of the BPEL designer uses strings as input and output to the
+		BPEL Process. But you can define or import any XML Schema type and us them
+		as part of the message types. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<plnk:partnerLinkType name="InvokePortTypePLT1">
+		<plnk:role name="Requester" portType="ns0:CallbackPortType"/>
+		<plnk:role name="Requestee" portType="ns0:InvokePortType"/>
+	</plnk:partnerLinkType>
+	<plnk:partnerLinkType name="InvokePortTypePLT7">
+		<plnk:role name="Requester" portType="ns0:CallbackPortType"/>
+		<plnk:role name="Requestee" portType="ns0:InvokePortType"/>
+	</plnk:partnerLinkType>
+	<plnk:partnerLinkType name="InvokePortTypePLT27">
+		<plnk:role name="Requester" portType="ns0:CallbackPortType"/>
+		<plnk:role name="Requestee" portType="ns0:InvokePortType"/>
+	</plnk:partnerLinkType>
+	<plnk:partnerLinkType name="InvokePortTypePLT33">
+		<plnk:role name="Requester" portType="ns0:CallbackPortType"/>
+		<plnk:role name="Requestee" portType="ns0:InvokePortType"/>
+	</plnk:partnerLinkType>
+	<plnk:partnerLinkType name="InvokePortTypePLT46">
+		<plnk:role name="Requester" portType="ns0:CallbackPortType"/>
+		<plnk:role name="Requestee" portType="ns0:InvokePortType"/>
+	</plnk:partnerLinkType>
+	<plnk:partnerLinkType name="InvokePortTypePLT52">
+		<plnk:role name="Requester" portType="ns0:CallbackPortType"/>
+		<plnk:role name="Requestee" portType="ns0:InvokePortType"/>
+	</plnk:partnerLinkType>
+	<plnk:partnerLinkType name="InvokePortTypePLT60">
+		<plnk:role name="Requester" portType="ns0:CallbackPortType"/>
+		<plnk:role name="Requestee" portType="ns0:InvokePortType"/>
+	</plnk:partnerLinkType>
+	<plnk:partnerLinkType name="InvokePortTypePLT68">
+		<plnk:role name="Requester" portType="ns0:CallbackPortType"/>
+		<plnk:role name="Requestee" portType="ns0:InvokePortType"/>
+	</plnk:partnerLinkType>
+	<plnk:partnerLinkType name="InvokePortTypePLT81">
+		<plnk:role name="Requester" portType="ns0:CallbackPortType"/>
+		<plnk:role name="Requestee" portType="ns0:InvokePortType"/>
+	</plnk:partnerLinkType>
+	<plnk:partnerLinkType name="InvokePortTypePLT87">
+		<plnk:role name="Requester" portType="ns0:CallbackPortType"/>
+		<plnk:role name="Requestee" portType="ns0:InvokePortType"/>
+	</plnk:partnerLinkType>
+	<plnk:partnerLinkType name="InvokePortTypePLT100">
+		<plnk:role name="Requester" portType="ns0:CallbackPortType"/>
+		<plnk:role name="Requestee" portType="ns0:InvokePortType"/>
+	</plnk:partnerLinkType>
+	<plnk:partnerLinkType name="InvokePortTypePLT106">
+		<plnk:role name="Requester" portType="ns0:CallbackPortType"/>
+		<plnk:role name="Requestee" portType="ns0:InvokePortType"/>
+	</plnk:partnerLinkType>
+	<plnk:partnerLinkType name="InvokePortTypePLT114">
+		<plnk:role name="Requester" portType="ns0:CallbackPortType"/>
+		<plnk:role name="Requestee" portType="ns0:InvokePortType"/>
+	</plnk:partnerLinkType>
+
+	<vprop:property name="InvokePortTypeProperty5" type="xsd:string"/>
+	<vprop:property name="InvokePortTypeProperty11" type="xsd:string"/>
+	<vprop:property name="InvokePortTypeProperty31" type="xsd:string"/>
+	<vprop:property name="InvokePortTypeProperty37" type="xsd:string"/>
+	<vprop:property name="InvokePortTypeProperty50" type="xsd:string"/>
+	<vprop:property name="InvokePortTypeProperty56" type="xsd:string"/>
+	<vprop:property name="InvokePortTypeProperty64" type="xsd:string"/>
+	<vprop:property name="InvokePortTypeProperty72" type="xsd:string"/>
+	<vprop:property name="InvokePortTypeProperty85" type="xsd:string"/>
+	<vprop:property name="InvokePortTypeProperty91" type="xsd:string"/>
+	<vprop:property name="InvokePortTypeProperty104" type="xsd:string"/>
+	<vprop:property name="InvokePortTypeProperty110" type="xsd:string"/>
+	<vprop:property name="InvokePortTypeProperty118" type="xsd:string"/>
+	<vprop:propertyAlias messageType="ns0:invokeOperationAsyncMessage"
+						 part="invokeOperationAsync" propertyName="tns:InvokePortTypeProperty5">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeResponse"
+						 part="invokeResponse" propertyName="tns:InvokePortTypeProperty5">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeOperationAsyncMessage"
+						 part="invokeOperationAsync" propertyName="tns:InvokePortTypeProperty11">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeResponse"
+						 part="invokeResponse" propertyName="tns:InvokePortTypeProperty11">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeOperationAsyncMessage"
+						 part="invokeOperationAsync" propertyName="tns:InvokePortTypeProperty31">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeResponse"
+						 part="invokeResponse" propertyName="tns:InvokePortTypeProperty31">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeOperationAsyncMessage"
+						 part="invokeOperationAsync" propertyName="tns:InvokePortTypeProperty37">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeResponse"
+						 part="invokeResponse" propertyName="tns:InvokePortTypeProperty37">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeOperationAsyncMessage"
+						 part="invokeOperationAsync" propertyName="tns:InvokePortTypeProperty50">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeResponse"
+						 part="invokeResponse" propertyName="tns:InvokePortTypeProperty50">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeOperationAsyncMessage"
+						 part="invokeOperationAsync" propertyName="tns:InvokePortTypeProperty56">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeResponse"
+						 part="invokeResponse" propertyName="tns:InvokePortTypeProperty56">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeOperationAsyncMessage"
+						 part="invokeOperationAsync" propertyName="tns:InvokePortTypeProperty64">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeResponse"
+						 part="invokeResponse" propertyName="tns:InvokePortTypeProperty64">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeOperationAsyncMessage"
+						 part="invokeOperationAsync" propertyName="tns:InvokePortTypeProperty72">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeResponse"
+						 part="invokeResponse" propertyName="tns:InvokePortTypeProperty72">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeOperationAsyncMessage"
+						 part="invokeOperationAsync" propertyName="tns:InvokePortTypeProperty85">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeResponse"
+						 part="invokeResponse" propertyName="tns:InvokePortTypeProperty85">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeOperationAsyncMessage"
+						 part="invokeOperationAsync" propertyName="tns:InvokePortTypeProperty91">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeResponse"
+						 part="invokeResponse" propertyName="tns:InvokePortTypeProperty91">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeOperationAsyncMessage"
+						 part="invokeOperationAsync" propertyName="tns:InvokePortTypeProperty104">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeResponse"
+						 part="invokeResponse" propertyName="tns:InvokePortTypeProperty104">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeOperationAsyncMessage"
+						 part="invokeOperationAsync" propertyName="tns:InvokePortTypeProperty110">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeResponse"
+						 part="invokeResponse" propertyName="tns:InvokePortTypeProperty110">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeOperationAsyncMessage"
+						 part="invokeOperationAsync" propertyName="tns:InvokePortTypeProperty118">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="ns0:invokeResponse"
+						 part="invokeResponse" propertyName="tns:InvokePortTypeProperty118">
+		<vprop:query>
+			<![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+	</vprop:propertyAlias>
+
+	<import namespace="http://siserver.org/wsdl" location="invoker.wsdl"/>
+	<types>
+		<schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+				targetNamespace="ba.example" xmlns="http://www.w3.org/2001/XMLSchema">
+
+			<element name="TrustedCloudApplication2_buildPlanRequest">
+				<complexType>
+					<sequence>
+						<element name="sshKey" type="string"/>
+						<element name="planCallbackAddress_invoker" type="string"/>
+						<element name="csarEntrypoint" type="string"/>
+						<element name="accessKey" type="string"/>
+						<element name="secretKey" type="string"/>
+						<element name="instanceDataAPIUrl" type="string"/>
+						<element name="CorrelationID" type="string"/>
+					</sequence>
+				</complexType>
+			</element>
+
+			<element name="TrustedCloudApplication2_buildPlanResponse">
+				<complexType>
+					<sequence>
+						<element name="CorrelationID" type="string"/>
+					</sequence>
+				</complexType>
+			</element>
+
+		</schema>
+	</types>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		MESSAGE TYPE DEFINITION - Definition of the message types used as part of
+		the port type defintions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<message name="TrustedCloudApplication2_buildPlanRequestMessage">
+		<part name="payload" element="tns:TrustedCloudApplication2_buildPlanRequest"/>
+	</message>
+
+	<message name="TrustedCloudApplication2_buildPlanResponseMessage">
+		<part name="payload" element="tns:TrustedCloudApplication2_buildPlanResponse"/>
+	</message>
+
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		PORT TYPE DEFINITION - A port type groups a set of operations into a logical
+		service unit. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- portType implemented by the bamoodlebuildplan BPEL process -->
+	<portType name="TrustedCloudApplication2_buildPlan">
+		<operation name="initiate">
+			<input message="tns:TrustedCloudApplication2_buildPlanRequestMessage"/>
+		</operation>
+	</portType>
+
+	<!-- portType implemented by the requester of bamoodlebuildplan BPEL process
+		for asynchronous callback purposes -->
+	<portType name="TrustedCloudApplication2_buildPlanCallback">
+		<operation name="onResult">
+			<input message="tns:TrustedCloudApplication2_buildPlanResponseMessage"/>
+		</operation>
+	</portType>
+
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		PARTNER LINK TYPE DEFINITION the bamoodlebuildplan partnerLinkType binds
+		the provider and requester portType into an asynchronous conversation. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<plnk:partnerLinkType name="TrustedCloudApplication2_buildPlan">
+		<plnk:role name="TrustedCloudApplication2_buildPlanProvider"
+				   portType="tns:TrustedCloudApplication2_buildPlan"/>
+		<plnk:role name="TrustedCloudApplication2_buildPlanRequester"
+				   portType="tns:TrustedCloudApplication2_buildPlanCallback"/>
+	</plnk:partnerLinkType>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		BINDING DEFINITION - Defines the message format and protocol details for
+		a web service. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<binding name="TrustedCloudApplication2_buildPlanBinding" type="tns:TrustedCloudApplication2_buildPlan">
+		<soap:binding style="document"
+					  transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="initiate">
+			<soap:operation soapAction="ba.example/initiate"/>
+			<input>
+				<soap:body use="literal"/>
+			</input>
+		</operation>
+	</binding>
+
+	<binding name="TrustedCloudApplication2_buildPlanCallbackBinding"
+			 type="tns:TrustedCloudApplication2_buildPlanCallback">
+		<soap:binding style="document"
+					  transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="onResult">
+			<soap:operation soapAction="ba.example/onResult"/>
+			<input>
+				<soap:body use="literal"/>
+			</input>
+		</operation>
+	</binding>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		SERVICE DEFINITION - A service groups a set of ports into a service unit.
+		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<service name="TrustedCloudApplication2_buildPlanService">
+		<port name="TrustedCloudApplication2_buildPlanPort" binding="tns:TrustedCloudApplication2_buildPlanBinding">
+			<soap:address
+					location="http://localhost:8080/TrustedCloudApplication2_buildPlan"/>
+		</port>
+	</service>
+
+	<service name="TrustedCloudApplication2_buildPlanServiceCallback">
+		<port name="TrustedCloudApplication2_buildPlanPortCallbackPort"
+			  binding="tns:TrustedCloudApplication2_buildPlanCallbackBinding">
+			<soap:address
+					location="http://localhost:8080/TrustedCloudApplication2_buildPlanCallback"/>
+		</port>
+	</service>
+</definitions>

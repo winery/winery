@@ -1,141 +1,107 @@
-(This is based on the [Jetty Contributing Patches] documentation)
+# Contributing to Eclipse Winery
 
-# Contributing Patches
-This file describes how to contribute a patch to the Winery project.
-You should first familiarize yourself with the Eclipse wiki page on [contributing via Git].
+<!-- toc -->
 
-## Sign a CLA
+- [Contributing Issues](#contributing-issues)
+- [Contributing Patches](#contributing-patches)
+  * [Sign a Eclipse Contributor Agreement (ECA)](#sign-a-eclipse-contributor-agreement-eca)
+    + [Signing an ECA](#signing-an-eca)
+  * [Configuring Git](#configuring-git)
+  * [Configuring GitHub](#configuring-github)
+  * [Making the Commit](#making-the-commit)
+  * [Contributing via GitHub PullRequests](#contributing-via-github-pullrequests)
+  * [Background Information](#background-information)
+
+<!-- tocstop -->
+
+## Contributing Issues
+
+Please check <https://github.com/eclipse/winery/issues> and <https://github.com/opentosca/winery/issues/> whether the issue is already open.
+If not, just open an issue at <https://github.com/eclipse/winery/issues>.
+In case you are affiliated with the OpenTOSCA ecosystem (e.g., a student of the Universtiy of Stuttgart), we ask you to open an issue at <https://github.com/opentosca/winery/issues/>.
+
+## Contributing Patches
+
+We love seeing people contribute patches to the Winery project and the process is relatively simple.
+In general, we follow [GitHub's fork & pull request model](https://help.github.com/articles/fork-a-repo/).
+Since we are an Eclipse project, we have requirements on commits.
+These requirements are modest but very important to the Eclipse Foundation and the intellectual property of the open source project.
+The following is the general process by which we operate:
+
+* You must have a signed Eclipse Contributor Agreement.
+* This agreement must be under the **same email address** as the Git pull request originates from.
+* The commit must be signed.
+
+* When the pull request is made, a git-hook will validate the email address.
+  * If the result is a green checkbox then the [Winery committers](http://projects.eclipse.org/projects/soa.winery/who) can review the pull request.
+  * If the result is a red X then there is absolutely nothing the Winery committers can do to accept the commit at this point.
+
+* This may not be the final form a commit will take, there may be some back and forth and you may be asked to re-issue a pull request.
+
+Not everything is specifically relevant since we are at GitHub but the crux of things are detailed there.
+The CLA is critically important to the process.
+
+### Sign a Eclipse Contributor Agreement (ECA)
+
 The Eclipse Foundation has a strong Intellectual Property policy which tracks contributions in detail to ensure that:
 
 * Did the contributor author 100% of the content?
 * Does the contributor have the rights to contribute this content to Eclipse?
-* Is the contribution under the project's license(s) (e.g. [EPL])
+* Is the contribution under the project's license(s) (i.e., [EPL] and [ASL] in the case of Winery)
 
-Thus a contributor needs to e-sign a [Contributor License Agreement] (for more explanation see the Eclipse [CLA FAQ]) regardless of how their contribution patch is provided.
+Thus a contributor needs to e-sign a [Contributor Agreement] regardless of how their contribution patch is provided.
+For more explanation see the [Eclipse ECA FAQ].
+You can familiarize yourself with the Eclipse wiki page on [contributing via Git].
+In order to have a pull request accepted by any Eclipse project you must complete this agreement.
 
-### Signing an Eclipse CLA
-Log into the [Eclipse projects forge] (you will need to create an account with the Eclipse Foundation if you have not already done so); click on "Contributor License Agreement"; and Complete the form. Be sure to use the same email address when you create any Git commit records.
+#### Signing an ECA
 
-## Use Bugzilla
-Once a CLA has been signed, then patches should always be contributed with an associated [project bugzilla].
-The CLA symbol next to the contributors name in the bugzilla should be green to indicate the CLA is on record.
-This will allow the authors contribution to both be tracked and acknowledged.
+Log into the [Eclipse projects forge] and complete the form.
+Be sure to use the same email address when you create any Git commit records.
+You will need to create an account with the Eclipse Foundation if you have not already done so); click on "Eclipse Contributor Agreement".
 
-## Git Diff
-The simplest way to contribute a patch is to make a modification to a cloned copy of Winery and then generate a diff between the two versions.
-We don't really like this approach, but it is difficult to ignore how easy it is for the contributer.
-Just remember, you still need to create a CLA as mentioned above.
+### Configuring Git
 
-From the top level of the cloned project:
+GitHub has copious amounts of quality documentation on how to interact with the system and you will minimally need to configure the `user.email` property.
+Check out the [guide on GitHub](https://help.github.com/articles/setting-your-email-in-git) for more information.
 
-    $ git diff > ######.patch
+Please follow <http://eclipse.github.io/winery/> to setup a git hook, which ensures that each commit contains a `Signed-off-by:` line.
 
-The hash marks should be the bugzilla issue that you will be attaching the issue to.
-All patches coming into Winery must come in through bugzilla for IP tracking purposes.
-Depending on the size of the patch the patch itself may be flagged as `+iplog` where it is subject to lawyer review and inclusion with our iplog from here to eternity.
-We are sorry we are unable to apply patches that we receive via email.
-So if you have the bugzilla issue created already just attach the issue.
-If there is no bugzilla issue yet, create one, make sure the patch is named appropriately and attach it.
+### Configuring GitHub
 
-When the developer reviews the patch and goes to apply it they will use:
+Please ensure that the email address you use at Eclipse is the same as the "Public email" configured at https://github.com/settings/profile.
 
-    $ git apply < ######.patch
+### Making the Commit
 
-If you want to be a nice person, test your patch on a clean clone to ensure that it applies cleanly. Nothing frustrates a developer quite like a patch that doesn't apply.
+When making the commit for the pull request it is vital that you "sign-off" on the commit using `git commit -s` option.
+Without this sign-off, your patch cannot be applied to the Winery repository because it will be rejected.
 
-## RECOMMENDED - Git Format Patch
-Another approach if you want your name in shiny lights in our commit logs is to use the format patch option.
-With this approach you commit into your cloned copy of Winery and use the git format patch option to generate what looks like an email message containing all of the commit information.
-This applies as a commit directly when we apply it so it should be obvious that as with the normal diff we must accept these sorts of patches only via bugzilla.
-Make sure your commit is using the email that you registered in your CLA or no amount of pushing the in world from us will get past the eclipse git commit hooks.
-When you do your commit to your local repo it is also vital that you "sign-off" on the commit using `git commit -s`.
-Without the sign-off, your patch cannot be applied to the jetty repo because it will be rejected by the eclipse git commit hooks.
+You can check out [the guide at GitHub](https://help.github.com/articles/signing-tags-using-gpg) for more information.
 
-From the top level of the cloned project:
+One way to think of this is that when you sign the CLA you are indicating that you are free to contribute to eclipse, but that does not mean everything you ever do can be contributed.
+Using the commit signing mechanism indicates that your commit is under the auspices of your agreement.
 
-Make your changes and commit them locally using `git commit -s`:
-      
-    $ git commit -s
+In the case of multiple authors, plese add `Also-by: Some Bodyelse <somebodyelse@nowhere.com>` for each additional author.
+For more information, see <https://www.eclipse.org/projects/handbook/#resources-commit>.
 
-Then use `git log` to identify the commit(s) you want to include in your patch:
+### Contributing via GitHub PullRequests
 
-    commit 70e29326fe904675f772b88a67128c0b3529565e
-    Author: John Doe <john.doe@who.com>
-    Date: Tue Aug 2 14:36:50 2011 +0200 353563:
-    HttpDestinationQueueTest too slow
+Pull requests are very much a GitHub process so best [explained by GitHub](https://help.github.com/articles/creating-a-pull-request-from-a-fork/).
+See also <https://help.github.com/articles/configuring-a-remote-for-a-fork/>.
 
-Use `git format-patch` to create the patch:
+A step-by-step guide is available at <http://eclipse.github.io/winery/dev/ToolChain>.
 
-    $ git format-patch -M -B 70e29326fe904675f772b88a67128c0b3529565e
+### Background Information
 
-This will create a single patch file for each commit since the specified commit.
-The names will start with `0001-[commitmessage].patch`.
-See http://www.kernel.org/pub/software/scm/git/docs/git-format-patch.html for details.
+See the [Eclipse Legal Process Poster](http://eclipse.org/legal/EclipseLegalProcessPoster.pdf) and
+[Project Code Contributions](https://www.eclipse.org/projects/handbook/#ip-project-code) in the [Eclipse Project Handbook](https://www.eclipse.org/projects/handbook/).
 
-When a developer goes to apply this sort of patch then we must assume responsibility for applying it to our codebase from the IP perspective.
-So we must be comfortable with the providence of the patch and that it is clear of potential issues.
-This is not like a diff where you get to edit it and clean up issues before it gets applied.
-The commit is recorded locally and the developer will then have a chance to make additional commits to address any lingering issues.
-It is critically important that developers applying these sorts of patches are fully aware of what is being committed and what they are accepting.
+This is howto is based on the [Jetty Contributing Patches] documentation.
 
-To apply the patch the developer will use a command like:
-
-    $ git am 0001-353563-HttpDestinationQueueTest-too-slow.patch
-
-Providing it applies cleanly there will now be a commit in their local copy and they can either make additional commits or push it out.
-
-### Note
-It is intended that developers are also able to counter-sign the patch by using the `-s` option with the `git am` command.
-However as the git hook that processes the commit currently has a bug it is recommended that developers do NOT use the `-s` option.
-See https://bugs.eclipse.org/bugs/show_bug.cgi?id=415307
-
-## Git Amend
-If a committer is having trouble applying the patch cleanly with git am, they can use `git commit --amend` to modify the author and signoff the commit. For example:
-
-    $ git checkout -b patch
-    $ git apply john-doe.patch
-    $ git commit -a -m "<Original commit message from John Doe>"
-
-At this point the patch is committed with the committer's name on a local branch
-
-    $ git commit --amend --author "John Doe <john.doe@who.com>" --signoff
-
-Now the patch has the right author and it has been signed off
-
-    $ git checkout master
-    $ git merge patch
-
-Now the local branch has been merged into master with the right author
-
-    $ git branch -d patch
-    $ git push
-
-## Contributing via Gerrit
-Winery currently has no Gerrit infrastructure in place.
-In case, we will receive a lot of patches, we will enable [the Eclipse Gerrit workflow](https://wiki.eclipse.org/Gerrit).
-
-## Contributing via Github PullRequests
-The Winery eclipse git repository is mirrored to github at http://github.com/winery/winery.
-Github has a suite of collaboration tools for submitting and reviewing contributions, but unfortunately the Eclipse Foundations IP policy prevents direct merging of github pull requests.
-However, if a contributor makes a pull request and references that in a bugzilla with a signed CLA, then a Winery committer should be able to fetch, merge and commit the pull requests without the need to create a separate patch.
-
-## Github pull requests for Committers
-A committer can prepare their repository for accepting Github pull requests as follows:
-
-    $ git remote add github https://github.com/winery/winery.git
-    $ git config --add remote.github.fetch "+refs/pull/*/head:refs/remotes/origin/pr/*"
-
-A committer can then fetch the latest pull request and check them out as follows (for pull request #123):
-
-    $ git fetch github
-    $ git checkout pr/123
-
-The committer can then use normal git commands to merge the contribution back to the master branch. The commits may need to be signed off so they can be pushed using the git amend technique above.
-
- [CLA FAQ]: https://www.eclipse.org/legal/clafaq.php
- [Contributor License Agreement]: https://www.eclipse.org/legal/CLA.php
+ [Eclipse ECA FAQ]: http://www.eclipse.org/legal/ecafaq.php
+ [Contributor Agreement]: http://www.eclipse.org/legal/ECA.php
  [contributing via Git]: http://wiki.eclipse.org/Development_Resources/Contributing_via_Git
  [Eclipse projects forge]: https://projects.eclipse.org/user/login/sso
- [EPL]: https://www.eclipse.org/legal/epl-v10.html
+ [ASL]: http://www.apache.org/licenses/LICENSE-2.0
+ [EPL]: https://www.eclipse.org/legal/epl-v20.html
  [Jetty Contributing Patches]: https://www.eclipse.org/jetty/documentation/current/contributing-patches.html
- [project bugzilla]: https://bugs.eclipse.org/bugs/describecomponents.cgi?product=Winery

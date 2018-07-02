@@ -1,0 +1,59 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div class="right">
+    <a href="{{filesPath}}">
+        <button class="btn btn-primary" name="zip">ZIP</button>
+    </a>
+</div>
+
+<div>
+    <winery-uploader (onSuccess)="loadFiles()" [uploadUrl]="uploadUrl" [allowMultipleFiles]="true" [isEditable]="sharedData?.currentVersion?.editable">
+    </winery-uploader>
+</div>
+<br>
+<div>
+    <h5>Contained Files</h5>
+    <table role="presentation">
+        <tbody class="files">
+        <tr *ngFor="let file of filesList">
+            <td>
+                <span class="preview"><a href="{{baseUrl + file.url}}" download="{{file.name}}"
+                                         title="{{file.name}}"><img src="{{file.thumbnailUrl}}"></a></span>
+            </td>
+            <td>
+                <p class="name"><a href="{{baseUrl + file.url}}" download="{{file.name}}" title="{{file.name}}">{{file.name}}</a>
+                </p>
+            </td>
+            <td>
+                <span class="size">{{file.size / 1024 | number: '1.2-2'}} KB</span>
+            </td>
+            <td>
+                <button class="btn btn-sm btn-danger" (click)="deleteFile(file)">Delete</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<winery-modal bsModal #removeElementModal="bs-modal" [modalRef]="removeElementModal">
+    <winery-modal-header [title]="'Delete File'"></winery-modal-header>
+    <winery-modal-body>
+        <p>
+            Are you sure you want to remove <span style="font-weight:bold;">{{ fileToRemove?.name }}</span>?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Delete'"
+                         (onOk)="onRemoveElement()">
+    </winery-modal-footer>
+</winery-modal>

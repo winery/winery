@@ -1,0 +1,14 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+metadata:
+  description: This test contains an invalid property definition for data types.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
+  tosca.version: 1.1
+  reference: 3.5.8.2
+  exception: InvalidDefinition
+
+data_types:  
+  test.datatypes.dt1:
+    properties:
+      prop1:
+        description: Testing Entity type properties

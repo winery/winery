@@ -1,0 +1,99 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+metadata:
+  description: This test contains a valid node_template.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
+  tosca.version: 1.1
+  reference: 3.7.3
+  exception: None
+  keyname: topology_template.node_templates.ndt1
+  assert-typeof: |
+    properties.ndt1.prp1 = TPropertyAssignment 
+    attributes.ndt1.attr1 = TAttributeAssignment
+    requirements.0.rqr1 = TRequirementAssignment
+    capabilities.cbt1 = TCapabilityAssignment
+    interfaces.intf1 = TInterfaceDefinition
+    artifacts.artf1 = TArtifactDefinition
+  assert: |
+    type = ntp1
+    description = Node template description
+    metadata.md1 = Metadata value
+    properties.ndt1.prp1 = Property value
+    attributes.ndt1.attr1 = Attribute value
+    requirements.0.rqr1.node = ndt1
+    capabilities.cbt1.properties.prt1 = Property assignment value
+    capabilities.cbt1.attributes.atr1 = Attribute assignment value
+    interfaces.intf1.inputs.ift1.ipt1 = interface value
+    interfaces.intf1.operations.op1.description = Interface operation description
+    artifacts.artf1.type = test.artifacttypes.at1
+    artifacts.artf1.files = [artifacts/example.py]
+    copy = ndt1    
+
+capability_types:
+  cbt1:
+    derived_from: tosca.capabilities.Node
+    properties: 
+      cbt1.prt1:
+        type: string
+    attributes:
+      cbt1.attr1:
+        type: string
+    
+interface_types:
+  ift1:
+    derived_from: tosca.interfaces.Root
+    inputs: 
+      ift1.ipt1:
+        type: string
+    op1: 
+      description: Interface operation description
+    
+node_types:
+  ntp1:
+    derived_from: tosca.nodes.Root
+    version: 1.0.0
+    metadata:
+      md1: Metadata value
+    description: Node type description
+    attributes: 
+      ntp1.attr1:
+        type: string
+    properties:
+      ntp1.prt1:
+        type: string
+    capabilities:
+      ntp1.cbt1: cbt1
+        
+
+topology_template:
+  node_templates:
+    ndt1:
+      type: ntp1
+      description: Node template description
+      metadata: 
+        md1: Metadata value
+      properties:
+        ndt1.prp1: Property value
+      attributes:
+        ndt1.attr1: Attribute value
+      requirements:
+        - rqr1:
+            node: ndt1
+      capabilities: 
+        cbt1:
+          properties: 
+            prt1: Property assignment value
+          attributes:
+            atr1: Attribute assignment value
+      interfaces:
+        intf1:
+          inputs:
+            ift1.ipt1: interface value
+          op1: 
+            description: Interface operation description
+      artifacts:
+        artf1:
+          type: test.artifacttypes.at1
+          file: artifacts/example.py
+      copy: ndt1     
+    

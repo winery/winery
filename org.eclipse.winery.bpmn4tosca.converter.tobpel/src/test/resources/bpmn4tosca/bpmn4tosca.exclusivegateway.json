@@ -1,0 +1,193 @@
+[
+  {
+	"connections": [],
+	"type": "",
+	"id": "element4",
+	"conditions": []
+  },
+  {
+	"name": "StartEvent",
+	"position": {
+	  "left": 112,
+	  "top": 114
+	},
+	"type": "StartEvent",
+	"connections": [
+	  "element14"
+	],
+	"conditions": [
+	  {
+		"id": "element14",
+		"default": false,
+		"condition": ""
+	  }
+	],
+	"id": "element6"
+  },
+  {
+	"name": "EndEvent",
+	"position": {
+	  "left": 735.5,
+	  "top": 248.5
+	},
+	"type": "EndEvent",
+	"connections": [],
+	"conditions": [],
+	"id": "element10"
+  },
+  {
+	"name": "ia1",
+	"position": {
+	  "left": 207,
+	  "top": 108.5
+	},
+	"type": "ToscaNodeManagementTask",
+	"node_template": "tosca.nodes.nfv.VNFC.VNF1.AAA",
+	"connections": [
+	  "element18"
+	],
+	"conditions": [
+	  {
+		"id": "element18",
+		"default": false,
+		"condition": ""
+	  }
+	],
+	"id": "element14",
+	"node_operation": "portDelete",
+	"interface": "channel",
+	"input": {
+	  "remoteIP": {
+		"type": "string",
+		"value": "11"
+	  },
+	  "networkId": {
+		"type": "string",
+		"value": "111"
+	  },
+	  "deviceId": {
+		"type": "string",
+		"value": "11111111"
+	  }
+	},
+	"output": {}
+  },
+  {
+	"name": "ExclusiveGateway",
+	"position": {
+	  "left": 346.5,
+	  "top": 114
+	},
+	"type": "ExclusiveGateway",
+	"connections": [
+	  "element22",
+	  "element26"
+	],
+	"conditions": [
+	  {
+		"id": "element22",
+		"default": true,
+		"condition": ""
+	  },
+	  {
+		"id": "element26",
+		"default": false,
+		"condition": "aaaaaaa"
+	  }
+	],
+	"id": "element18"
+  },
+  {
+	"name": "bia1",
+	"position": {
+	  "left": 522,
+	  "top": 108.5
+	},
+	"type": "ToscaNodeManagementTask",
+	"node_template": "tosca.nodes.nfv.VNFC.VNF1.AAA",
+	"connections": [
+	  "element30"
+	],
+	"conditions": [
+	  {
+		"id": "element30",
+		"default": false,
+		"condition": ""
+	  }
+	],
+	"id": "element22",
+	"node_operation": "portCreate",
+	"interface": "channel",
+	"input": {
+	  "remoteIP": {
+		"type": "string",
+		"value": "111"
+	  },
+	  "networkId": {
+		"type": "string",
+		"value": "111"
+	  },
+	  "deviceId": {
+		"type": "string",
+		"value": "111"
+	  }
+	},
+	"output": {}
+  },
+  {
+	"name": "bia2",
+	"position": {
+	  "left": 332.5,
+	  "top": 243
+	},
+	"type": "ToscaNodeManagementTask",
+	"node_template": "tosca.nodes.nfv.VNFC.VNF1.AAA",
+	"connections": [
+	  "element30"
+	],
+	"conditions": [
+	  {
+		"id": "element30",
+		"default": false,
+		"condition": ""
+	  }
+	],
+	"id": "element26",
+	"node_operation": "portCreate",
+	"interface": "channel",
+	"input": {
+	  "remoteIP": {
+		"type": "string",
+		"value": "1"
+	  },
+	  "networkId": {
+		"type": "string",
+		"value": "11"
+	  },
+	  "deviceId": {
+		"type": "string",
+		"value": "111"
+	  }
+	},
+	"output": {}
+  },
+  {
+	"name": "ExclusiveGatewayEnd",
+	"position": {
+	  "left": 536,
+	  "top": 248.5
+	},
+	"type": "ExclusiveGatewayEnd",
+	"connections": [
+	  "element10"
+	],
+	"conditions": [
+	  {
+		"id": "element10",
+		"default": false,
+		"condition": ""
+	  }
+	],
+	"id": "element30"
+  }
+]

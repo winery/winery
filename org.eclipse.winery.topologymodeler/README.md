@@ -21,24 +21,25 @@ This code is in a prototypcial status. These are the main issues:
 
 ### Trouble shooting
 When the topology modeler does not fully load (i.e., a white background is still there), look at the TOMCAT log file (of the repository).
-You'll see something like `TOSCA component id class org.eclipse.winery.common.ids.definitions.NodeTypeId / {http://www.example.org/tosca/nodetypes}VirtualMachine not found`.
+You'll see something like `Definitions Child id class org.eclipse.winery.common.ids.definitions.NodeTypeId / {http://www.example.org/tosca/nodetypes}VirtualMachine not found`.
 This is in indicator that you manually edited a `.definitions` file and did not change the location in the repository.
 The directory structure and the namespace and id/name settings in the `.definitions` file have to be in sync.
 As quick solution, you can open the type, switch to the XML tab and press "Save".
 Then, the namespace and id/name setting in the `.definitions` is changed according to the storage.
 
 ## License
-Copyright (c) 2012-2014 University of Stuttgart.
+Copyright (c) 2012-2014 Contributors to the Eclipse Foundation
 
-All rights reserved. This program and the accompanying materials
-are made available under the terms of the [Eclipse Public License v1.0]
-and the [Apache License v2.0] which both accompany this distribution,
-and are available at http://www.eclipse.org/legal/epl-v10.html
-and http://www.apache.org/licenses/LICENSE-2.0
+See the NOTICE file(s) distributed with this work for additional
+information regarding copyright ownership.
 
-Contributors:
-* Oliver Kopp - initial API and implementation
+This program and the accompanying materials are made available under the
+terms of the Eclipse Public License 2.0 which is available at
+http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+which is available at https://www.apache.org/licenses/LICENSE-2.0.
+
+SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
 
  [AngularJS]: http://angularjs.org/
  [Apache License v2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
- [Eclipse Public License v1.0]: http://www.eclipse.org/legal/epl-v10.html
+ [Eclipse Public License v2.0]: http://www.eclipse.org/legal/epl-v20.html

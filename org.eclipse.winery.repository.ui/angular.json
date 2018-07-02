@@ -1,0 +1,89 @@
+{
+    "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+    "version": 1,
+    "newProjectRoot": "projects",
+    "projects": {
+        "org.eclipse.winery.repository.ui": {
+            "root": "",
+            "sourceRoot": "src",
+            "projectType": "application",
+            "prefix": "winery",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:browser",
+                    "options": {
+                        "outputPath": "dist",
+                        "index": "src/index.html",
+                        "main": "src/main.ts",
+                        "tsConfig": "tsconfig.json",
+                        "polyfills": "src/polyfills.ts",
+                        "assets": [
+                            "src/assets",
+                            "src/favicon-winery.ico"
+                        ],
+                        "styles": [
+                            "src/css/bootstrap.min.css",
+                            "src/css/wineryCommon.css",
+                            "src/css/wineryRepository.css",
+                            "node_modules/ngx-toastr/toastr.css",
+                            "node_modules/font-awesome/css/font-awesome.css",
+                            "src/assets/built-codeEdit15_1/code_edit/built-codeEdit.css"
+                        ],
+                        "scripts": [
+                            "src/assets/built-codeEdit15_1/code_edit/built-codeEdit.min.js"
+                        ]
+                    },
+                    "configurations": {
+                        "production": {
+                            "optimization": true,
+                            "outputHashing": "all",
+                            "sourceMap": false,
+                            "extractCss": true,
+                            "namedChunks": false,
+                            "aot": true,
+                            "extractLicenses": true,
+                            "vendorChunk": false,
+                            "buildOptimizer": true,
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.prod.ts"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "options": {
+                        "browserTarget": "org.eclipse.winery.repository.ui:build"
+                    },
+                    "configurations": {
+                        "production": {
+                            "browserTarget": "org.eclipse.winery.repository.ui:build:production"
+                        }
+                    }
+                },
+                "extract-i18n": {
+                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "options": {
+                        "browserTarget": "org.eclipse.winery.repository.ui:build"
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-devkit/build-angular:tslint",
+                    "options": {
+                        "tsConfig": [
+                            "tsconfig.json"
+                        ],
+                        "exclude": [
+                            "**/node_modules/**"
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "defaultProject": "org.eclipse.winery.repository.ui",
+    "schematics": {}
+}

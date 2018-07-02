@@ -1,0 +1,46 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<div (dblclick)="showProperties()" class="node" id="{{node.id}}" [style.top]="node.position.top + 'px'"
+     [style.left]="node.position.left + 'px'">
+    <div [class]="node.type">
+        <div [style.visibility]="node.type=='ToscaNodeManagementTask' ? 'visible' : 'hidden'" class="name">
+            {{node.name}}
+        </div>
+    </div>
+    <div class="anchor anchors anchor-left">
+        <span class="left">
+            <i class="left-arrow1"></i>
+            <i class="left-arrow2"></i>
+        </span>
+    </div>
+    <div class="anchor anchors anchor-right">
+        <span class="right">
+            <i class="right-arrow1"></i>
+            <i class="right-arrow2"></i>
+        </span>
+    </div>
+    <div class="anchor anchors anchor-top">
+        <span class="top">
+            <i class="top-arrow1"></i>
+            <i class="top-arrow2"></i>
+        </span>
+    </div>
+    <div class="anchor anchors anchor-bottom">
+        <span class="bottom">
+            <i class="bottom-arrow1"></i>
+            <i class="bottom-arrow2"></i>
+        </span>
+    </div>
+</div>

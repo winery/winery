@@ -1,0 +1,370 @@
+This content is produced and maintained by the Eclipse Winery project.
+
+* Project home: https://eclipse.org/winery
+
+Eclipse Winery, and Winery are trademarks of the Eclipse Foundation.
+Eclipse, and the Eclipse Logo are registered trademarks of the Eclipse Foundation.
+
+== Declared Project Licenses
+
+This program and the accompanying materials are made available under the terms
+of the Eclipse Public License 2.0 which is available at
+http://www.eclipse.org/legal/epl-2.0, or the Apache License, Version 2.0 which
+is available at https://www.apache.org/licenses/LICENSE-2.0.
+EPL-2.0 OR Apache-2.0
+
+== Source Code
+
+The project maintains the following source code repository:
+
+* https://github.com/eclipse/winery
+
+== Copyright Holders
+
+Copyright (c) 2012-2018 University of Stuttgart
+Copyright (c) 2012-2013 C. Timurhan Sungur
+Copyright (c) 2012-2018 Oliver Kopp
+Copyright (c) 2012-2017 Uwe Breitenbücher
+Copyright (c) 2013 Rene Trefft
+Copyright (c) 2013-2015 Tobias Binz
+Copyright (c) 2013 Tobias Unger
+Copyright (c) 2013 Yves Schubert
+Copyright (c) 2014 Alexander Stifel
+Copyright (c) 2014 Nico Rusam
+Copyright (c) 2014-2015 Tobias Binz
+Copyright (c) 2014-2017 Pascal Hirmer
+Copyright (c) 2015-2017 Sebastian Wagner
+Copyright (c) 2016 Andrew Grimberg
+Copyright (c) 2016-2017 Armin Hueneburg
+Copyright (c) 2016-2017 Lukas Balzer
+Copyright (c) 2016-2018 Lukas Harzenetter
+Copyright (c) 2016-2017 Nicole Keppler
+Copyright (c) 2016-2017 Niko Stadelmaier
+Copyright (c) 2016-2017 Philipp Meyer
+Copyright (c) 2017 Ana Cristina Franco da Silva
+Copyright (c) 2017 Christoph Kleine
+Copyright (c) 2017 Clemens Lieb
+Copyright (c) 2017 Heiko Nickerl
+Copyright (c) 2017 Huabing Zhao
+Copyright (c) 2017 Huixin Liu
+Copyright (c) 2017-2018 Karoline Saatkamp
+Copyright (c) 2017 Marvin Wohlfarth
+Copyright (c) 2017 Michael Wurster
+Copyright (c) 2017 Latife Sen
+Copyright (c) 2017 Ruzica Jozin
+Copyright (c) 2017-2018 Josip Ledic
+Copyright (c) 2017 Yannic Sowoidnich
+Copyright (c) 2017-2018 Thommy Zelenik
+Copyright (c) 2017 Tino Stadelmaier
+Copyright (c) 2017 ZTE Coperation
+
+
+== Third-party Content
+
+Apache Commons Codec Version: 1.3 
+* License: Apache License 2.0
+
+Apache Commons Compress Version: 1.6 
+* License: Apache License 2.0
+
+Apache Commons Configuration Version: 1.2 
+* License: Apache License 2.0
+
+Apache Commons Configuration Version: 1.9 
+* License: Apache License 2.0
+
+Apache Commons Lang Version: 2.6 
+* License: Apache License 2.0
+
+Apache Commons Lang Version: 3.1.0 
+* License: Apache License 2.0
+
+Apache Commons IO Version: 2.1 
+* License: Apache License 2.0
+
+Apache Commons IO Version: 2.4 
+* License: Apache License 2.0
+
+Apache httpclient Version: 3.1 
+* License: Apache License 2.0
+
+Apache Tika Core Version: 1.3 *subset excluding test folder* 
+* License: Apache License 2.0
+
+blueimp canvas to blob Version: 2.1.0
+* License: MIT License
+* Project: https://github.com/blueimp/JavaScript-Canvas-to-Blob
+* Source: https://github.com/blueimp/JavaScript-Canvas-to-Blob/archive/2.1.0.zip
+
+blueimp file upload Version: 9.5.3
+* License: MIT License
+* Project: https://github.com/blueimp/jQuery-File-Upload
+* Source: https://github.com/blueimp/jQuery-File-Upload/archive/9.5.3.zip
+
+blueimp load image  Version: 1.11.0
+* License: MIT License
+* Project: https://github.com/blueimp/JavaScript-Load-Image
+* Source: https://github.com/blueimp/JavaScript-Load-Image/archive/1.11.0.zip
+
+blueimp tmpl  Version: 2.5.3
+* License: MIT License
+* Project: https://github.com/blueimp/JavaScript-Templates
+* Source: https://github.com/blueimp/JavaScript-Templates/archive/2.5.3.zip
+
+Bootstrap Switch Version: 1.9.0
+* License: Apache License, 2.0
+* Project: http://www.bootstrap-switch.org/
+* Source: https://github.com/nostalgiaz/bootstrap-switch/archive/v1.9.0.zip
+
+bootstrap-touchspin Version: 3.1.2
+* License: Apache License, 2.0
+* Project: https://github.com/istvan-ujjmeszaros/bootstrap-touchspin
+* Source: https://github.com/istvan-ujjmeszaros/bootstrap-touchspin
+
+bootstrap 3 typeahead version 4.0.2
+* License: Apache License, 2.0
+* Project: https://github.com/bassjobsen/Bootstrap-3-Typeahead
+* Source: https://github.com/bassjobsen/Bootstrap-3-Typeahead
+
+bootstrap3-wysihtml5-bower Version: 0.2.8
+* License: MIT License
+* Project: https://github.com/Waxolunist/bootstrap3-wysihtml5-bower
+* Source: https://github.com/Waxolunist/bootstrap3-wysihtml5-bower/archive/v0.2.8.zip
+
+Datatables Version: 1.9.4 
+* License: New BSD license, MIT
+
+Google Guava Version: 15.0.0 
+* License: Apache License 2.0
+
+Git Logomark Version: n/a 
+* License: Creative Commons Attribution 3.0 Unported
+
+Handlebars Version: 1.3.0
+* License: MIT License
+* Project: http://handlebarsjs.com/
+* Source: https://github.com/wycats/handlebars.js/archive/v1.3.0.zip
+
+httpclient Version: 4.0b1 
+* License: Apache License, 2.0
+
+Jackson  2.2.2 
+* License: Apache License 2.0
+
+Jackson-Annotations Version: 2.2.2
+* License: Apache License, 2.0
+* Project: https://github.com/FasterXML/jackson-annotations
+* Source: https://github.com/FasterXML/jackson-annotations/archive/jackson-annotations-2.2.2.zip
+
+jackson-core Version 2.8.6 
+* License: Apache-2.0 
+
+jackson-databind Version: 2.8.6 
+* License: Apache-2.0 
+
+jackson-annotations Version: 2.8.0 
+* License: Apache-2.0 
+
+jackson-jaxrs-json-provider Version:2.7.7 
+* License: Apache-2.0 
+
+jackson-jaxrs-base Version:2.7.7 
+* License: Apache-2.0 
+
+Jackson: JAX-RS providers Version: 2.2.2
+* License: Apache License, 2.0
+* Project: https://github.com/FasterXML/jackson-jaxrs-providers
+* Source: https://github.com/FasterXML/jackson-jaxrs-providers/archive/jackson-jaxrs-providers-2.2.2.zip
+
+jackson-module-jaxb-annotations Version: 2.7.7 
+* License: Apache-2.0 
+
+Jackson Module: JAXB Annotations Version: 2.3.0
+* License: Apache License, 2.0
+* Project: https://github.com/FasterXML/jackson-module-jaxb-annotations
+* Source: https://github.com/FasterXML/jackson-module-jaxb-annotations/archive/jackson-module-jaxb-annotations-2.3.0.zip
+
+Jackson Module: JSON Schema Version: 2.3.0
+* License: Apache License, 2.0
+* Project: https://github.com/FasterXML/jackson-module-jsonSchema
+* Source: https://github.com/FasterXML/jackson-module-jsonSchema/archive/jackson-module-jsonSchema-2.3.0.zip
+
+javax.servlet.jsp.jstl implementation Version: 1.2 
+* License: Common Development and Distribution License, Apache 2.0 License
+
+jaxb-impl-2.2.5 Version: jar 
+* License: Common Development and Distribution License
+
+JavaEWAH Version: 0.5.6 
+* License: Apache License 2.0
+
+javax.servlet.jsp.jstl api Version: 1.2 
+* License: Common Development and Distribution License, Apache License 2.0
+
+Java Util Parser Manifest Version: 2.0.5
+* License: Apache License, 2.0
+* Project: http://ebr.springsource.com/repository/app/bundle/version/detail?name=com.springsource.util.parser.manifest&version=2.0.5.RELEASE
+* Source: http://ebr.springsource.com/repository/app/bundle/version/download?name=com.springsource.util.parser.manifest&version=2.0.5.RELEASE&type=source
+
+JAX-RS  API Version: 1.1.1 
+* License: Common Development and Distribution License, + 1 file partial ASL 2.0	
+
+Jersey Contribs: Jersey-Multipart Version: 1.17
+* License: Common Development and Distribution License
+* Project: https://jersey.java.net/
+* Source: https://svn.java.net/svn/jersey~svn/tags/jersey-1.17/jersey/contribs/jersey-multipart
+
+Jersey JAX-RS all-in-one bundle Version: 1.17 
+* License: CDDL, Apache 2.0
+
+jersey-servlet Version: 1.11 
+* License: Common Development and Distribution License
+
+jersey-servlet Version: 1.19.3
+* License: CDDL-1.1 OR GPL-2.0
+* Project: https://jersey.github.io/
+* Source: https://maven.java.net/content/repositories/releases/com/sun/jersey/jersey-servlet/1.19.3/jersey-servlet-1.19.3-sources.jar
+
+jQuery Version: 2.0.3
+* License: MIT License
+* Project: http://jquery.com/
+* Source: https://github.com/jquery/jquery/tree/2.0.3
+
+jquery typing Version: 0.3.2-2
+* License: MIT License
+* Project: http://tnajdek.github.io/jquery-typing/
+* Source: https://github.com/tnajdek/jquery-typing/archive/v0.3.2-2.zip
+
+jquery-ui.html  Version: 9.0.1
+* License: MIT License
+* Project: https://github.com/blueimp/jQuery-File-Upload/
+* Source: https://raw.github.com/blueimp/jQuery-File-Upload/9.5.4/jquery-ui.html
+
+jQuery UI Version: 1.10.2 
+* License: MIT License, BSD License
+
+jsBezier Version: 0.6
+* License: MIT License
+* Project: https://github.com/jsplumb/jsBezier
+* Source: https://github.com/jsplumb/jsBezier/tree/master/js/0.6
+
+jsPlumb Version: 1.5.4
+* License: MIT License
+* Project: http://jsplumb.org/
+* Source: https://github.com/sporritt/jsPlumb/tree/1.5.5
+
+jsPlumbGeom  Version: 0.1
+* License: MIT License
+* Project: https://github.com/jsplumb/biltong/
+* Source: https://github.com/jsplumb/biltong/archive/0.1.zip
+
+JSch version 0.1.46 
+* License: New BSD License
+
+KeyboardJS Version: 0.4.2
+* License: BSD License
+* Project: http://robertwhurst.github.io/KeyboardJS/
+* Source: https://github.com/RobertWHurst/KeyboardJS/tree/v0.4.2
+
+Logback Classic Version: 1.1.1
+* License: Eclipse Public License
+* Project: http://logback.qos.ch/
+* Source: http://logback.qos.ch/dist/logback-1.1.1.zip
+
+Logback Core Version: 1.1.1
+* License: Eclipse Public License
+* Project: http://logback.qos.ch/
+* Source: http://logback.qos.ch/dist/logback-1.1.1.zip
+
+OASIS TOSCA.xsd Version: v1.0
+* License: OASIS IPR License (RF on Limited Terms)
+* Project: https://www.oasis-open.org/committees/tosca/
+* Source: http://docs.oasis-open.org/tosca/TOSCA/v1.0/os/schemas/
+
+org.jvnet.mimepull Version: 1.9.4
+* License: Common Development and Distribution License
+* Project: https://mimepull.java.net/
+* Source: https://maven.java.net/content/repositories/releases/org/jvnet/mimepull/mimepull/1.9.4/mimepull-1.9.4-sources.jar
+
+pnotify Version: 1.3.1
+* License: Mozilla Public License 1.1 (MPL)
+* Project: http://sciactive.com/pnotify/
+* Source: https://github.com/sciactive/pnotify/tree/1.3.1
+
+Raphael Version: 2.0.1 
+* License: MIT
+
+requirejs Version: 2.1.5 
+* License: Dual: New BSD or MIT License, New BSD (domready.js) only
+
+RestDoc Java Server  Version: 1.7.1
+* License: Apache License, 2.0
+* Project: https://github.com/hoegertn/restdoc-java-server/tree/jaxrs11
+* Source: https://github.com/hoegertn/restdoc-java-server/archive/jaxrs11-v1.7.1.zip
+
+RestDoc Java Specification  Version: 1.3.0
+* License: Apache License, 2.0
+* Project: https://github.com/RestDoc/restdoc-api
+* Source: https://github.com/RestDoc/restdoc-api/archive/v1.3.0.zip
+
+RestDoc Jersey Server Version: 1.0.1
+* License: Apache License, 2.0
+* Project: https://github.com/koppor/restdoc-server-jersey/tree/v1.0.1
+* Source: https://github.com/koppor/restdoc-server-jersey/archive/v1.0.1.zip
+
+SLF4J API Version: 1.7.6
+* License: MIT License
+* Project: http://www.slf4j.org/
+* Source: http://www.slf4j.org/dist/slf4j-1.7.6.zip
+
+SLF4J EXT Version: 1.7.2 
+* License: MIT License
+
+SLF4J jcl-over-slf4j Version: 1.7.6
+* License: Apache License 2.0
+* Project: http://www.slf4j.org/legacy.html
+* Source: http://www.slf4j.org/dist/slf4j-1.7.6.zip
+
+Twitter Bootstrap Version: 3.1.1
+* License: MIT License
+* Project: http://getbootstrap.com/getting-started/
+* Source: https://github.com/twbs/bootstrap/archive/v3.1.1.zip
+
+wysihtml5 Version: 0.3.0
+* License: MIT License
+* Project: https://github.com/xing/wysihtml
+* Source: https://github.com/xing/wysihtml5/archive/0.3.0.zip
+
+X-editable  Version: 1.5.1
+* License: MIT License
+* Project: http://vitalets.github.io/x-editable/index.html
+* Source: https://github.com/vitalets/x-editable/tree/1.5.1
+
+Xerces 2.9.1 Version: 2.9.1 
+* License: Apache License 2.0
+
+xml-apis.jar Version: 1.3.04 
+* License: Apache License, 2.0, Public Domain, W3C
+
+XMLTree Version: 3.1.2
+* License: MIT License
+* Project: https://github.com/koppor/xmltree/
+* Source: https://github.com/koppor/xmltree/archive/v3.1.2.zip
+
+XMLWriter Version: 1.0.2
+* License: New BSD license
+* Project: https://github.com/flesler/XMLWriter
+* Source: https://github.com/flesler/XMLWriter/archive/v1.0.2.zip
+
+xz for Java Version: 1.3 
+* License: Public Domain
+
+
+== Cryptography
+
+Content may contain encryption software. The country in which you are currently
+may have restrictions on the import, possession, and use, and/or re-export to
+another country, of encryption software. BEFORE using any encryption software,
+please check the country's laws, regulations and policies concerning the import,
+possession, or use, and re-export of encryption software, to see if this is
+permitted.

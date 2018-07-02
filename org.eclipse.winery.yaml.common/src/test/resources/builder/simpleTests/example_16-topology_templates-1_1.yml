@@ -1,0 +1,21 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+topology_template:
+  description: Template of a database including its host stack.
+  
+  inputs:
+    db_user:
+      type: string
+    db_password: 
+      type: string
+  
+  substitution_mappings:
+    node_type: tosca.nodes.Database
+    capabilities: 
+      database_endpoint: [ database, database_endpoint ]
+      
+  node_templates:
+    database:
+      type: tosca.nodes.Database
+      properties:
+        user: { get_input: db_user }

@@ -1,0 +1,40 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div class="form-group">
+    <label for="numberInput">{{label}}</label>
+    <div class="row">
+        <div class="col-lg-10">
+            <div class="input-sm">
+                <input type="text" id="numberInput"
+                       required
+                       [(ngModel)]="value" name="name"
+                       style="height: 50px;"
+                       #name="ngModel"
+                       pattern="(\d*|∞)"
+                       ng-minlength=" 40px"
+                >
+                <button class="btn btn-default" type="button" *ngIf="withInfinity" (click)="addInfinite()"
+                        style=" height: 50px;">∞
+                </button>
+                <span style="display: inline-block; width: 40px; vertical-align: top;">
+                    <button class="btn btn-default glyphicon glyphicon-chevron-up" type="button" style=" height: 25px;"
+                            (click)="increment()"></button>
+                    <button class="btn btn-default glyphicon glyphicon-chevron-down" type="button"
+                            style=" height: 25px;" (click)="decrement()"></button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<div [hidden]="name.valid || name.pristine" class="alert alert-danger"> Number is required</div>

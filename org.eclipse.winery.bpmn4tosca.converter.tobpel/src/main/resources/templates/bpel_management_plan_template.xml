@@ -1,0 +1,212 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2015-2017 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+#set( $bpelvar = "$bpelvar" )
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<process xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="ManagementPlan"
+	xmlns:tns="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/"
+	targetNamespace="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/"
+	xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+	xmlns:bpel4RestLight="http://iaas.uni-stuttgart.de/bpel/extensions/bpel4restlight"
+	xmlns:si="http://siserver.org/wsdl"
+	xmlns:sischema="http://siserver.org/schema"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:ode="http://www.apache.org/ode/type/extension">
+
+<import namespace="http://siserver.org/wsdl" location="invoker.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"></import>
+	<import importType="http://schemas.xmlsoap.org/wsdl/" location="management_plan.wsdl"
+		namespace="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/" /> <!-- Todo place_holder wsdl and namespace -->
+
+	<extensions>
+		<extension mustUnderstand="yes"
+			namespace="http://iaas.uni-stuttgart.de/bpel/extensions/bpel4restlight" />
+	</extensions>
+
+	<partnerLinks>
+		<partnerLink name="clientPL" initializePartnerRole="yes"
+			partnerLinkType="tns:ManagementPlanPLT" myRole="ManagementPlanProvider"
+			partnerRole="ManagementPlanClient" />
+
+		<partnerLink name="serviceInvokerPL"
+			initializePartnerRole="yes" partnerLinkType="tns:OpenTOSCAServiceInvokerPLT"
+			myRole="ServiceInvokerClient"  partnerRole="ServiceInvoker"  />
+	</partnerLinks>
+
+	<variables>
+		<variable name="input" messageType="tns:planInputMessage" />
+		<variable name="output" messageType="tns:planOutputMessage" />
+		<variable name="instanceDataAPIUrl" type="xsd:string" />
+
+		<!-- The values for these variables must be provided in the instantiating
+			input message -->
+		<variable name="containerAPIServiceInstanceURL" type="xsd:string" />
+		<variable name="csarId" type="xsd:string" />
+		<!-- TODO: Should be derived from serviceTemplateIdNamespaceURI and serviceTemplateIdLocalPart
+			(or vice versa) -->
+		<variable name="serviceTemplateId" type="xsd:string" />
+		<variable name="serviceTemplateIdNamespaceURI" type="xsd:string" />
+		<variable name="serviceTemplateIdLocalPart" type="xsd:string" />
+		<variable name="serviceInstanceId" type="xsd:string" />
+		<variable name="correlationId" type="xsd:string" />
+		<variable name="planCallbackUrl" type="xsd:string" />
+
+		<!-- Holds response of service instance creation performed by activity createServiceInstance  -->
+		<variable name="serviceInstanceCreationResponse" type="xsd:string" />
+
+		<!-- Variable to store service instance -->
+		<variable name="serviceInstanceData" type="xsd:anyType" />
+
+
+
+		<!-- Variable to store service invoker requests and responses -->
+		<variable name="siAsynchInput" messageType="si:invokeOperationAsyncMessage" />
+		<variable name="siResponse" messageType="si:invokeResponse" />
+
+		<!--  Variables for debugging purposes -->
+		<variable name="dbg_mangementOperationRequest" messageType="si:invokeOperationAsyncMessage" />
+
+	</variables>
+
+	<correlationSets>
+		<correlationSet name="ServiceInvokerCS"
+			properties="tns:ServiceInvokerRequestProperty" />
+	</correlationSets>
+
+
+
+	<sequence>
+		<receive createInstance="yes" name="initiate" operation="initiatePlan"
+			partnerLink="clientPL" portType="tns:ManagementPlanPT" variable="input" />
+
+		<!-- Get values for variables 'instanceDataAPIUrl', 'csarId', 'serviceTemplateId',
+			'serviceInstanceId' from input message These values are required to read/write
+			properties of the service instance the plan is working on -->
+		<assign name="initFromInputMsg" validate="no">
+			<copy>
+				<from variable="input" part="payload">
+					<query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[//*[local-name()='containerAPIServiceInstanceURL']/text()]]></query>
+				</from>
+				<to variable="containerAPIServiceInstanceURL" />
+			</copy>
+			<copy>
+				<from variable="input" part="payload">
+					<query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[//*[local-name()='csarId']/text()]]></query>
+				</from>
+				<to variable="csarId" />
+			</copy>
+			<copy>
+				<from variable="input" part="payload">
+					<query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[//*[local-name()='serviceTemplateId']/text()]]></query>
+				</from>
+				<to variable="serviceTemplateId" />
+			</copy>
+			<copy>
+				<from variable="input" part="payload">
+					<query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[//*[local-name()='serviceTemplateIdNamespaceURI']/text()]]></query>
+				</from>
+				<to variable="serviceTemplateIdNamespaceURI" />
+			</copy>
+			<copy>
+				<from variable="input" part="payload">
+					<query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[//*[local-name()='serviceTemplateIdLocalPart']/text()]]></query>
+				</from>
+				<to variable="serviceTemplateIdLocalPart" />
+			</copy>
+			<!-- <copy> <from variable="input" part="payload"> <query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[//*[local-name()='serviceInstanceId']/text()]]></query>
+				</from> <to variable="serviceInstanceId" /> </copy> -->
+			<copy>
+				<from variable="input" part="payload">
+					<query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[//*[local-name()='planCallbackUrl']/text()]]></query>
+				</from>
+				<to variable="planCallbackUrl" />
+			</copy>
+			<!-- Copy input parameters defined in start event -->
+
+		</assign>
+
+
+		<!-- If no serviceInstanceId was passed with the plan input message it
+			is assumed that this is a build plan Hence, a service instance has to be
+			created before excuting management operations -->
+		<if>
+			<condition expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
+				boolean($input.payload/*[local-name()='serviceInstanceId']/text()[1])
+			</condition>
+			<assign>
+				<copy>
+					<from variable="input" part="payload">
+						<query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[//*[local-name()='serviceInstanceId']/text()]]></query>
+					</from>
+					<to variable="serviceInstanceId" />
+				</copy>
+			</assign>
+			<else>
+				<sequence>
+					<extensionActivity>
+						<bpel4RestLight:POST accept="application/xml"
+							name="createServiceInstance" response="serviceInstanceCreationResponse"
+							uri="${bpelvar}[containerAPIServiceInstanceURL]/serviceInstances?csarID=${bpelvar}[csarId]&amp;serviceTemplateID=${bpelvar}[serviceTemplateId]" />
+					</extensionActivity>
+					<assign>
+						<copy>
+							<from variable="serviceInstanceCreationResponse">
+								<query xmlns:pp="http://opentosca.org/api/pp" xmlns:xlink="http://www.w3.org/1999/xlink"
+									queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
+								<![CDATA[string(//pp:link/@xlink:href)]]>
+								</query>
+							</from>
+							<to variable="serviceInstanceId" />
+						</copy>
+					</assign>
+				</sequence>
+			</else>
+		</if>
+		<extensionActivity>
+			<bpel4RestLight:GET name="getServiceInstanceData"
+				accept="application/xml" response="serviceInstanceData"
+				uri="${bpelvar}[containerAPIServiceInstanceURL]/serviceInstances?csarID=${bpelvar}[csarId]&amp;serviceTemplateID=${bpelvar}[serviceTemplateId]" />
+		</extensionActivity>
+
+		<!-- Perform management operations -->
+		#foreach( $mngmtTask in $mngmtTaskList)
+			#parse(
+				"/src/main/resources/templates/bpel_management_node_scope_template.xml"
+			)
+		#end
+
+		<!-- Send response of plan execution to client -->
+		<assign name="createOutputMsg" validate="no">
+			<copy>
+				<from variable="correlationId" />
+				<to variable="output" part="payload">
+					<query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[//*[local-name()='correlationId']/text()]]></query>
+				</to>
+			</copy>
+			<copy>
+				<from variable="serviceInstanceId" />
+				<to variable="output" part="payload">
+					<query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[//*[local-name()='serviceInstanceId']/text()]]></query>
+				</to>
+			</copy>
+			<copy>
+				<from header="ReplyTo" variable="input">
+					<query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()='Address']/text()]]></query>
+				</from>
+				<to endpointReference="partnerRole" partnerLink="clientPL" />
+			</copy>
+		</assign>
+		<invoke name="callbackClient" inputVariable="output" operation="onResult"
+			partnerLink="clientPL" portType="tns:ManagementPlanClientCallbackPT" />
+	</sequence>
+</process>

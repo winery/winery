@@ -1,0 +1,8 @@
+<selfservice:Application
+    xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice"
+>
+    <selfservice:displayName>baobab_serviceTemplate</selfservice:displayName>
+    <selfservice:description>baobab_serviceTemplate for testing purpose</selfservice:description>
+    <selfservice:iconUrl>icon.jpg</selfservice:iconUrl>
+    <selfservice:imageUrl>image.jpg</selfservice:imageUrl>
+</selfservice:Application>

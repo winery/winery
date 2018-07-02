@@ -1,0 +1,101 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <winery-table [title]="title"
+                  [columns]="columns"
+                  [data]="types"
+                  (addBtnClicked)="onAddClick()"
+                  (removeBtnClicked)="onRemoveClick($event)">
+    </winery-table>
+
+    <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+        <winery-modal-header>
+            <h4 class="modal-title">Delete Property</h4>
+        </winery-modal-header>
+        <winery-modal-body>
+            <p *ngIf="elementToRemove != null" id="diagyesnomsg">
+                Do you want to delete the Element <span
+                style="font-weight:bold;">{{ elementToRemove?.shortName }}</span>?
+            </p>
+        </winery-modal-body>
+        <winery-modal-footer (onOk)="deleteType();"
+                             [closeButtonLabel]="'No'"
+                             [okButtonLabel]="'Yes'">
+        </winery-modal-footer>
+    </winery-modal>
+
+    <winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
+        <winery-modal-header>
+            <h4 class="modal-title">Add Property</h4>
+        </winery-modal-header>
+        <winery-modal-body>
+            <form #addTypeForm="ngForm" id="addTypeForm">
+                <div class="form-group">
+                    <label class="control-label" for="shortName">Shortname</label>
+                    <input #shortName="ngModel"
+                           id="shortName"
+                           class="form-control"
+                           type="text"
+                           name="shortName"
+                           autocomplete=off
+                           required
+                           [(ngModel)]="newTypeWithShortName.shortName"
+                           [wineryDuplicateValidator]="validatorObjectShortName"/>
+
+                    <div *ngIf="shortName.errors && (shortName.dirty || shortName.touched)"
+                         class="alert alert-danger">
+                        <div [hidden]="!shortName.errors.wineryDuplicateValidator">
+                            No duplicates allowed!
+                        </div>
+                        <div [hidden]="!shortName.errors.required">
+                            Shortname is required
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="type">Type</label>
+                    <input #type="ngModel"
+                           id="type"
+                           class="form-control"
+                           type="text"
+                           name="type"
+                           autocomplete=off
+                           required
+                           [(ngModel)]="newTypeWithShortName.type"
+                           [wineryDuplicateValidator]="validatorObjectType"/>
+
+                    <div *ngIf="type.errors && (type.dirty || type.touched)"
+                         class="alert alert-danger">
+                        <div [hidden]="!type.errors.wineryDuplicateValidator">
+                            No duplicates allowed!
+                        </div>
+                        <div [hidden]="!type.errors.required">
+                            Type is required
+                        </div>
+                    </div>
+                </div>
+
+
+            </form>
+        </winery-modal-body>
+        <winery-modal-footer (onOk)="addType(shortName.value, type.value); addTypeForm.reset();"
+                             [closeButtonLabel]="'Cancel'"
+                             [okButtonLabel]="'Add'"
+                             [disableOkButton]="!addTypeForm?.form.valid">
+        </winery-modal-footer>
+    </winery-modal>
+</div>

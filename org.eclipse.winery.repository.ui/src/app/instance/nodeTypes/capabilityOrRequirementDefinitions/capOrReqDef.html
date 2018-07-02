@@ -1,0 +1,158 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div class="localLoader" [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+
+<div *ngIf="!loading">
+    <!--need data for table component-->
+    <winery-table id="cap-or-reqdef-table"
+                  [data]="tableData"
+                  [columns]="columns"
+                  [disableButtons]="!sharedData?.currentVersion?.editable"
+                  (cellSelected)="onCellSelected($event)"
+                  [itemsPerPage]="10"
+                  (removeBtnClicked)="onRemoveClick($event)"
+                  (addBtnClicked)="onAddClick();">
+    </winery-table>
+</div>
+
+<!-- add capability or requirement definition modal-->
+<winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
+    <winery-modal-header [title]="addCapOrRegModalTitle">
+    </winery-modal-header>
+    <winery-modal-body>
+        <form #addCapabilityForm="ngForm" id="addCapabilityForm">
+            <div class="form-group">
+                <label class="control-label" for="key">Name</label>
+                <input #capName="ngModel"
+                       id="key"
+                       class="form-control"
+                       type="text"
+                       name="key"
+                       required
+                       [(ngModel)]="capOrReqDefToBeAdded.name">
+
+                <div *ngIf="capName.errors && (capName.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!capName.errors.wineryDuplicateValidator">
+                        No duplicates allowed!
+                    </div>
+                    <div [hidden]="!capName.errors.required">
+                        Name is required
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <winery-qname-selector
+                    [width]="'none'"
+                    [title]="'Types'"
+                    [displayList]="capabilityTypesList"
+                    [toscaType]=""
+                    [selectedValue]="capOrReqDefToBeAdded.type"
+                    [showOpenButton]="false"
+                    (selectedValueChanged)="onSelectedValueChanged($event.value)"
+                ></winery-qname-selector>
+            </div>
+
+            <div>
+                <winery-spinner-with-infinity #lowerBoundSpinner [label]="'Lower Bound'"></winery-spinner-with-infinity>
+                <br>
+                <winery-spinner-with-infinity #upperBoundSpinner [label]="'Upper Bound'"
+                                              [withInfinity]="true"></winery-spinner-with-infinity>
+            </div>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer [showDefaultButtons]="false">
+        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="addModal.hide()">Cancel</button>
+        <button type="button" [disabled]="!addCapabilityForm?.form.valid || noneSelected" class="btn btn-primary"
+                (click)="addCapability();">Add
+        </button>
+    </winery-modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+    <winery-modal-header [title]="'Delete Property'"></winery-modal-header>
+    <winery-modal-body>
+        <p *ngIf="elementToRemove != null" id="diagyesnomsg">
+            Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.name }}</span>?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="removeConfirmed();"
+                         [closeButtonLabel]="'No'"
+                         [okButtonLabel]="'Yes'">
+    </winery-modal-footer>
+</winery-modal>
+
+<!-- show constraint list modal -->
+<winery-modal bsModal #editConModal="bs-modal" [modalRef]="editConModal">
+    <winery-modal-header [title]="'Constraints'"></winery-modal-header>
+    <winery-modal-body>
+        <winery-loader *ngIf="loadingConstraints"></winery-loader>
+        <div id="noconstraintsexisting" *ngIf="noConstraintsExistingFlag && !loadingConstraints;  else elseBlock">No
+            constraints defined
+        </div>
+        <ng-template #elseBlock>
+            <ol id="constraintlist" *ngIf="!loadingConstraints">
+                <li *ngFor="let constraint of constraintList ;" style="margin-bottom: 5px;">
+                    <span (click)="openEditConstraintModal(constraint)"> constraint</span>
+                    <button class="btn btn-danger btn-xs" style="margin-left:10px;"
+                            (click)="deleteSelectedConstraint(constraint)">Delete
+                    </button>
+                </li>
+            </ol>
+        </ng-template>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="openEditConstraintModal()"
+                         [closeButtonLabel]="'Close'"
+                         [okButtonLabel]="'Add new'">
+    </winery-modal-footer>
+</winery-modal>
+
+<!--add/edit constraint modal-->
+<winery-modal bsModal #editNewConModal="bs-modal" [modalRef]="editNewConModal">
+    <winery-modal-header [title]="'Edit Constraint'"></winery-modal-header>
+    <winery-modal-body>
+        <div id="editConstraintContainer">
+            <label>Type</label>
+            <div id="constraintTypeSelect">
+                <ng-select [items]="constraintTypeItems"
+                           [active]="[activeTypeElement]"
+                           (selected)="constraintTypeSelected($event)"
+                           placeholder="">
+                </ng-select>
+            </div>
+            <button type="button" class="btn btn-info btn-xs" (click)="refreshConstraintTypeSelector()">Refresh</button>
+            <a class="btn btn-info btn-xs" [routerLink]="['/admin/constrainttypes']">Manage</a>
+        </div>
+        <winery-editor #editor [height]="editorHeight" [ngModel]="constraintDataModel"></winery-editor>
+    </winery-modal-body>
+    <winery-modal-footer [showDefaultButtons]="false">
+        <button type="button" class="btn btn-default" data-dismiss="modal"
+                (click)="editNewConModal.hide(); editConModal.show()">Cancel
+        </button>
+
+        <button type="button" class="btn btn-primary" *ngIf="createNewConstraintFlag;  else elseEditConstraint"
+                [disabled]="!sharedData?.currentVersion?.editable"
+                (click)="createSelectedConstraint()">
+            Create
+        </button>
+        <ng-template #elseEditConstraint>
+            <button type="button" class="btn btn-primary" (click)="updateSelectedConstraint()"
+                    [disabled]="!sharedData?.currentVersion?.editable">Update
+            </button>
+        </ng-template>
+    </winery-modal-footer>
+</winery-modal>

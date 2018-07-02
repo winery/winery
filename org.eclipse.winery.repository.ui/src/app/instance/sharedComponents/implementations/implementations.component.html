@@ -1,0 +1,46 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<p>This page shows {{ implementationOrTemplate | toscaTypeToReadableName }}s available for this type. Go to
+    <a [routerLink]="['/' + implementationOrTemplate]">{{ implementationOrTemplate | toscaTypeToReadableName }}s</a>
+    to get an overview on all {{ implementationOrTemplate | toscaTypeToReadableName }}s stored in this repository. </p>
+<div class="localLoader" [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <winery-table
+        [data]="implementationData"
+        [columns]="columns"
+        (cellSelected)="onCellSelected($event)"
+        [itemsPerPage]="10"
+        (removeBtnClicked)="onRemoveClick($event)"
+        (addBtnClicked)="onAddClick();">
+    </winery-table>
+</div>
+
+<winery-add-component #addComponent [toscaType]="implementationOrTemplate">
+</winery-add-component>
+
+<winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+    <winery-modal-header [title]="'Delete ' + (implementationOrTemplate | toscaTypeToReadableName)">
+    </winery-modal-header>
+    <winery-modal-body>
+        <p *ngIf="elementToRemove != null" id="diagyesnomsg">
+            Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.localname }}</span>?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="removeConfirmed();"
+                         [closeButtonLabel]="'Cancel'"
+                         [okButtonLabel]="'Delete'">
+    </winery-modal-footer>
+</winery-modal>

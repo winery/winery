@@ -5,8 +5,17 @@
 bin/
 build/
 release.properties
+**/*.bak
 **/*.iml
 **/hs_err_pid*.log
 **/pom.xml.*
 **/rebel.xml
 target/
+collected-*/
+node_modules/
+winery-debug.log
+**/gen/**
+
+## Eclipse
+**/.classpath
+**/.settings

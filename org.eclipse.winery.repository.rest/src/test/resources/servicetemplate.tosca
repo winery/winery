@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<tosca:Definitions xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12"
+                   xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12"
+                   id="winery-defs-for_ns26-TrustedCloudPresentation" targetNamespace="http://www.opentosca.org">
+    <tosca:NodeType name="ApacheWebserver" targetNamespace="http://www.opentosca.org/types/nodetypes"
+                    winery:bordercolor="#3625c9">
+        <tosca:Interfaces>
+            <tosca:Interface name="ApplicationManagement">
+                <tosca:Operation name="DeployApplication">
+                    <tosca:InputParameters>
+                        <tosca:InputParameter name="DeploymentArtifactRef" type="string" required="no"/>
+                    </tosca:InputParameters>
+                    <tosca:OutputParameters>
+                        <tosca:OutputParameter name="ApplicationURL" type="string" required="no"/>
+                        <tosca:OutputParameter name="ApplicationID" type="string" required="no"/>
+                    </tosca:OutputParameters>
+                </tosca:Operation>
+                <tosca:Operation name="UndeployApplication">
+                    <tosca:InputParameters>
+                        <tosca:InputParameter name="ApplicationID" type="string" required="no"/>
+                    </tosca:InputParameters>
+                </tosca:Operation>
+            </tosca:Interface>
+        </tosca:Interfaces>
+    </tosca:NodeType>
+    <tosca:ServiceTemplate id="TrustedCloudPresentation" name="TrustedCloudPresentation"
+                           targetNamespace="http://www.opentosca.org">
+        <tosca:TopologyTemplate>
+            <tosca:NodeTemplate xmlns:ns16="http://www.opentosca.org/types/nodetypes" name="ApacheWebserver"
+                                id="ApacheWebserver" type="ns16:ApacheWebserver" winery:x="296" winery:y="391">
+            </tosca:NodeTemplate>
+        </tosca:TopologyTemplate>
+    </tosca:ServiceTemplate>
+    <!-- The artifact type is NOT imported in the Service Template. Some parsers might reject this TOSCA file -->
+    <tosca:ArtifactTemplate targetNamespace="http://www.example.com/ArtifactTemplates"
+                            xmlns:ns8="http://example.com/ArtifactTypes" name="ArtifactTemplate" id="ArtifactTemplate"
+                            type="ns8:AT1">
+        <tosca:ArtifactReferences>
+            <tosca:ArtifactReference
+                reference="http://www.example.com/artifacttemplates/http%253A%252F%252Fwww.example.com%252FArtifactTemplates/ArtifactTemplate/files/test.pdf"/>
+        </tosca:ArtifactReferences>
+    </tosca:ArtifactTemplate>
+</tosca:Definitions>

@@ -1,0 +1,77 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading" class="form-group">
+    <label for="namespace">Namespace</label>
+    <input #namespaceInput
+           id="namespace"
+           class="form-control"
+           name="namespace"
+           autocomplete=off
+           [typeahead]="allNamespaces"
+           typeaheadOptionField="namespace"
+           [typeaheadOptionsLimit]="typeAheadListLimit"
+           [(ngModel)]="namespaceValue"
+           #namespace="ngModel"
+           [required]="isRequired"
+           pattern="^\S*$">
+    <div *ngIf="namespace.errors && (namespace.dirty || namespace.touched)"
+         class="alert alert-danger">
+        <div [hidden]="!namespace.errors.required">
+            Namespace is required!
+        </div>
+        <div [hidden]="!namespace.errors.pattern">
+            Namespace must not contain spaces!
+        </div>
+    </div>
+    <div *ngIf="useStartNamespace" style="margin-top: 20px">
+        <div>
+            <label for="initNamespace" class="control-label">Template:</label>
+            <button type="button" class="btn btn-default btn-xs collapsebtn"
+                    (click)="isCollapsed = !isCollapsed" style="float: right;">
+                <span class="collapsespan" aria-hidden="true" [class.collapsed]="isCollapsed"></span>
+            </button>
+        </div>
+        <div (collapsed)="collapsed($event)"
+             (expanded)="expanded($event)"
+             [collapse]="isCollapsed">
+            <div>
+                <label for="initNamespace" class="control-label">Start of namespace URI - used for automatic
+                    namespace URI generation</label>
+            </div>
+            <div style="display: flex;">
+                <input #initNamespace
+                       type="text"
+                       class="form-control"
+                       id="initNamespace"
+                       name="initNamespace"
+                       #namespaceStart="ngModel"
+                       [(ngModel)]="initNamespaceString">
+                <button style="margin-left: 10px; width: 15%;" class="bnt btn-primary" (click)="applyNamespace()">Apply
+                </button>
+            </div>
+        </div>
+        <div *ngIf="namespaceStart.errors && (namespaceStart.dirty || namespaceStart.touched)"
+             class="alert alert-danger">
+            <div [hidden]="!namespaceStart.errors.required">
+                Namespace is required!
+            </div>
+            <div [hidden]="!namespaceStart.errors.pattern">
+                Namespace must not contain spaces!
+            </div>
+        </div>
+    </div>
+</div>

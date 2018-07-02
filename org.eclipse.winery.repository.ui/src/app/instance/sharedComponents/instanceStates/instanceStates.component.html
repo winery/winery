@@ -1,0 +1,73 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div class="localLoader" [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <winery-table
+        [data]="instanceStates"
+        [columns]="columns"
+        (cellSelected)="onCellSelected($event)"
+        [itemsPerPage]="10"
+        [disableButtons]="!sharedData?.currentVersion?.editable"
+        (removeBtnClicked)="onRemoveClick($event)"
+        (addBtnClicked)="onAddClick();">
+    </winery-table>
+</div>
+
+<winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
+    <winery-modal-header [title]="'Add State'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <form #addForm="ngForm" id="addPropertyForm">
+            <div class="form-group">
+                <label class="control-label" for="state">State</label>
+                <input #propName="ngModel"
+                       id="state"
+                       name="state"
+                       class="form-control"
+                       type="text"
+                       required
+                       [(ngModel)]="newStateData.state"
+                />
+                <div *ngIf="propName.errors && (propName.dirty || propName.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!propName.errors.required">
+                        Name is required
+                    </div>
+                </div>
+            </div>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="addProperty()"
+                         [closeButtonLabel]="'Cancel'"
+                         [okButtonLabel]="'Add'"
+                         [disableOkButton]="!addForm?.form.valid">
+    </winery-modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+    <winery-modal-header [title]="'Delete State'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <p *ngIf="elementToRemove != null" id="diagyesnomsg">
+            Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.state }}</span>?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="removeConfirmed();"
+                         [closeButtonLabel]="'Cancel'"
+                         [okButtonLabel]="'Delete'">
+    </winery-modal-footer>
+</winery-modal>
+

@@ -1,78 +1,175 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-/*******************************************************************************
- * Copyright (c) 2013 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
- * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *    Tobias Unger - initial API and implementation and/or initial documentation
- *    Oliver Kopp - refinements
- *    Tobias Binz - Adds support for building fatJars (including all dependencies) and profile for fatJars
- *******************************************************************************/
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.eclipse.winery</groupId>
-	<artifactId>winery</artifactId>
-	<version>0.1.37-SNAPSHOT</version>
-	<packaging>pom</packaging>
-	<name>Winery</name>
-	<description>Winery is a Web-based environment to graphically model TOSCA topologies and plans managing these topologies.</description>
-	<url>http://www.eclipse.org/winery</url>
-	<organization>
-		<name>Eclipse.org - Winery Project</name>
-		<url>http://www.eclipse.org/winery</url>
-	</organization>
-	<issueManagement>
-		<system>bugzilla</system>
-		<url>https://bugs.eclipse.org/bugs/enter_bug.cgi?product=Winery</url>
-	</issueManagement>
-	<inceptionYear>2012</inceptionYear>
-	<mailingLists>
-		<mailingList>
-			<name>Winery Developer List</name>
-			<post>winery-dev@eclipse.org</post>
-			<archive>http://dev.eclipse.org/mhonarc/lists/winery-dev</archive>
-		</mailingList>
-	</mailingLists>
-	<licenses>
-		<license>
-			<name>Eclipse Public License v1.0</name>
-			<url>http://www.eclipse.org/legal/epl-v10.html</url>
-			<distribution>repo</distribution>
-			<comments>Standard Eclipse Licence</comments>
-		</license>
-		<license>
-			<name>Apache License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-	<scm>
-		<developerConnection>scm:git:http://git.eclipse.org/gitroot/winery/org.eclipse.winery.winery.git/</developerConnection>
-		<tag>HEAD</tag>
-	</scm>
-    <prerequisites>
-        <maven>3.0.3</maven>
-    </prerequisites>
-	<modules>
-		<module>org.eclipse.winery.generators.ia</module>
-		<module>org.eclipse.winery.common</module>
-		<module>org.eclipse.winery.repository</module>
-		<module>org.eclipse.winery.repository.client</module>
-		<module>org.eclipse.winery.topologymodeler</module>
-	</modules>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>versions-maven-plugin</artifactId>
-				<version>2.1</version>
-			</plugin>
-		</plugins>
-	</build>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.eclipse.winery</groupId>
+    <artifactId>winery</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>Winery</name>
+    <description>Winery is a Web-based environment to graphically model TOSCA topologies and plans managing these
+        topologies.
+    </description>
+    <url>https://eclipse.github.io/winery</url>
+    <organization>
+        <name>Eclipse.org - Winery Project</name>
+        <url>https://www.eclipse.org/winery</url>
+    </organization>
+    <inceptionYear>2012</inceptionYear>
+    <mailingLists>
+        <mailingList>
+            <name>Winery Developer List</name>
+            <post>winery-dev@eclipse.org</post>
+            <archive>http://dev.eclipse.org/mhonarc/lists/winery-dev</archive>
+        </mailingList>
+    </mailingLists>
+    <licenses>
+        <license>
+            <name>Eclipse Public License v2.0</name>
+            <url>http://www.eclipse.org/legal/epl-v20.html</url>
+            <distribution>repo</distribution>
+            <comments>Standard Eclipse Licence</comments>
+        </license>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <developerConnection>scm:git:https://github.com/eclipse/winery.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+    <distributionManagement>
+        <repository>
+            <id>internal.repo</id>
+            <name>Temporary Staging Repository</name>
+            <url>file://${project.basedir}/target/mvn-repo</url>
+        </repository>
+    </distributionManagement>
+    <properties>
+        <github.global.server>github</github.global.server>
+        <main.basedir>${project.basedir}</main.basedir>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- versions of all used libraries -->
+        <ch.qos.logback.logback-classic.version>1.2.3</ch.qos.logback.logback-classic.version>
+        <com.fasterxml.jackson.core.jackson-annotations>2.8.0</com.fasterxml.jackson.core.jackson-annotations>
+        <io.github.adr.e-adr.version>1.0.0</io.github.adr.e-adr.version>
+        <org.eclipse.jdt.annotation>2.1.0</org.eclipse.jdt.annotation>
+        <org.mockito.moickito-core.version>2.19.0</org.mockito.moickito-core.version>
+
+        <!-- grouped libraries -->
+        <org.slf4j>1.7.25</org.slf4j>
+        <junit.jupiter.version>5.2.0</junit.jupiter.version>
+        <junit.platform.version>1.2.0</junit.platform.version>
+    </properties>
+    <modules>
+        <module>org.eclipse.winery.model.bpmn4tosca</module>
+        <module>org.eclipse.winery.model.csar.toscametafile</module>
+        <module>org.eclipse.winery.model.selfservice</module>
+        <module>org.eclipse.winery.model.tosca</module>
+        <module>org.eclipse.winery.model.tosca.yaml</module>
+        <module>org.eclipse.winery.common</module>
+        <module>org.eclipse.winery.yaml.common</module>
+        <module>org.eclipse.winery.yaml.converter</module>
+        <module>org.eclipse.winery.cli</module>
+        <module>org.eclipse.winery.bpmn4tosca.converter.tobpel</module>
+        <module>org.eclipse.winery.repository</module>
+        <module>org.eclipse.winery.repository.client</module>
+        <module>org.eclipse.winery.repository.configuration</module>
+        <module>org.eclipse.winery.repository.rest</module>
+        <module>org.eclipse.winery.repository.ui</module>
+        <module>org.eclipse.winery.topologymodeler.ui</module>
+        <module>org.eclipse.winery.topologymodeler</module>
+        <module>org.eclipse.winery.compliance</module>
+        <module>org.eclipse.winery.workflowmodeler</module>
+        <module>org.eclipse.winery.generators.ia</module>
+        <module>org.eclipse.winery.highlevelrestapi</module>
+    </modules>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.zeroturnaround</groupId>
+                <artifactId>jrebel-maven-plugin</artifactId>
+                <version>1.1.6</version>
+                <executions>
+                    <execution>
+                        <id>generate-rebel-xml</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.9</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <!--
+                        TODO: Also include all other Angular executions here.
+                        However, this is not yet possible because of the "old" topology modeler.
+                    -->
+                    <groupId>com.github.eirslett</groupId>
+                    <artifactId>frontend-maven-plugin</artifactId>
+                    <version>1.6</version>
+                    <executions>
+                        <execution>
+                            <phase>generate-resources</phase>
+                            <id>install node and npm</id>
+                            <goals>
+                                <goal>install-node-and-npm</goal>
+                            </goals>
+                            <configuration>
+                                <nodeVersion>v8.11.1</nodeVersion> <!-- LTS as of 2018-03-30 - see https://nodejs.org/en/blog/release/v8.11.1/ -->
+                                <npmVersion>5.6.0</npmVersion> <!-- defined as latest LTS version -->
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>

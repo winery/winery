@@ -1,82 +1,140 @@
-<!--
-/*******************************************************************************
- * Copyright (c) 2013 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
- * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *    Oliver Kopp - initial API and implementation and/or initial documentation
- *******************************************************************************/
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.eclipse.winery</groupId>
-	<artifactId>org.eclipse.winery.model.csar.toscametafile</artifactId>
-	<version>0.0.4-SNAPSHOT</version>
-	<packaging>jar</packaging>
-	<name>Model for TOSCA metafile</name>
-	<description>This project offers a data model and parsing facility for TOSCA meta files.</description>
-	<url>http://www.eclipse.org/winery</url>
-	<organization>
-		<name>Eclipse.org - Winery Project</name>
-		<url>http://www.eclipse.org/winery</url>
-	</organization>
-	<issueManagement>
-		<system>bugzilla</system>
-		<url>https://bugs.eclipse.org/bugs</url>
-	</issueManagement>
-	<inceptionYear>2012</inceptionYear>
-	<mailingLists>
-		<mailingList>
-			<name>Winery Developer List</name>
-			<post>winery-dev@eclipse.org</post>
-			<archive>http://dev.eclipse.org/mhonarc/lists/winery-dev</archive>
-		</mailingList>
-	</mailingLists>
-	<licenses>
-		<license>
-			<name>Eclipse Public License v1.0</name>
-			<url>http://www.eclipse.org/legal/epl-v10.html</url>
-			<distribution>repo</distribution>
-			<comments>Standard Eclipse Licence</comments>
-		</license>
-		<license>
-			<name>Apache License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.3.1</version>
-			</plugin>
-		</plugins>
-	</build>
-	<repositories>
-		<repository>
-			<id>springsource</id>
-			<url>http://repository.springsource.com/maven/bundles/release/</url>
-		</repository>
-	 </repositories>
-	 <dependencies>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.springsource.util</groupId>
-			<artifactId>com.springsource.util.parser.manifest</artifactId>
-			<version>2.0.5.RELEASE</version>
-		</dependency>
-	</dependencies>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.eclipse.winery</groupId>
+        <artifactId>winery</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>org.eclipse.winery.model.csar.toscametafile</artifactId>
+    <packaging>jar</packaging>
+    <description>This project offers a data model and parsing facility for TOSCA meta files.</description>
+    <url>http://www.eclipse.org/winery</url>
+    <organization>
+        <name>Eclipse.org - Winery Project</name>
+        <url>http://www.eclipse.org/winery</url>
+    </organization>
+    <inceptionYear>2012</inceptionYear>
+    <mailingLists>
+        <mailingList>
+            <name>Winery Developer List</name>
+            <post>winery-dev@eclipse.org</post>
+            <archive>http://dev.eclipse.org/mhonarc/lists/winery-dev</archive>
+        </mailingList>
+    </mailingLists>
+    <licenses>
+        <license>
+            <name>Eclipse Public License v2.0</name>
+            <url>http://www.eclipse.org/legal/epl-v20.html</url>
+            <distribution>repo</distribution>
+            <comments>Standard Eclipse Licence</comments>
+        </license>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <distributionManagement>
+        <repository>
+            <id>internal.repo</id>
+            <name>Temporary Staging Repository</name>
+            <url>file://${main.basedir}/target/mvn-repo</url>
+        </repository>
+    </distributionManagement>
+    <properties>
+        <main.basedir>${project.parent.basedir}</main.basedir>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.1</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.1</version>
+                <configuration>
+                    <altDeploymentRepository>internal.repo::default::file://${main.basedir}/target/mvn-repo
+                    </altDeploymentRepository>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <repositories>
+        <repository>
+            <id>springsource</id>
+            <url>http://repository.springsource.com/maven/bundles/release/</url>
+        </repository>
+    </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${org.slf4j}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.virgo.util</groupId>
+            <artifactId>org.eclipse.virgo.util.parser.manifest</artifactId>
+            <version>3.5.0.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${ch.qos.logback.logback-classic.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${org.slf4j}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

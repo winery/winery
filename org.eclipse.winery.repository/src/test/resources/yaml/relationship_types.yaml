@@ -1,0 +1,88 @@
+# Copyright (c) 2017 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Eclipse Public License 2.0 which is available at
+# http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+# which is available at https://www.apache.org/licenses/LICENSE-2.0.
+#
+# SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+
+
+##########################################################################
+# TOSCA Namespacing keyword specifies the TOSCA Namespace Alias value which 
+# all TOSCA Service Templates MUST always have.
+##########################################################################
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+relationship_types:
+
+  ##########################################################################
+  # This is the default (root) TOSCA Relationship Type definition that all 
+  # other TOSCA Relationship Types derive from. 
+  ##########################################################################
+  tosca.relationships.Root:
+    description: The TOSCA root Relationship Type all other TOSCA base Relationship Types derive from
+    attributes:
+      tosca_id:
+        type: string
+      tosca_name:
+        type: string
+    interfaces:
+      Configure:
+        type: tosca.interfaces.relationship.Configure
+
+  ##########################################################################
+  # This type represents a general dependency relationship between two nodes.
+  ##########################################################################
+  tosca.relationships.DependsOn:
+    derived_from: tosca.relationships.Root
+    valid_target_types: [ tosca.capabilities.Node ]
+
+
+  ##########################################################################
+  # This type represents a hosting relationship between two nodes.
+  ##########################################################################
+  tosca.relationships.HostedOn:
+    derived_from: tosca.relationships.Root
+    valid_target_types: [ tosca.capabilities.Container ]
+  
+  
+  ##########################################################################
+  # This type represents a network connection relationship between two nodes.
+  ##########################################################################  
+  tosca.relationships.ConnectsTo:
+    derived_from: tosca.relationships.Root
+    valid_target_types: [ tosca.capabilities.Endpoint ]
+    properties:
+      credential:
+        type: tosca.datatypes.Credential
+        required: false
+    
+  
+  ##########################################################################
+  # This type represents an attachment relationship between two nodes.  For 
+  # example, an AttachesTo relationship type would be used for attaching a 
+  # storage node to a Compute node. 
+  ##########################################################################
+  tosca.relationships.AttachesTo:
+    derived_from: tosca.relationships.Root
+    valid_target_types: [ tosca.capabilities.Attachment ]
+    properties:
+      location:
+        type: string
+        constraints:
+          - min_length: 1
+      device:
+        type: string
+        required: false
+  
+  ##########################################################################
+  # This type represents an intentional network routing between two Endpoints 
+  # in different networks.
+  ##########################################################################
+  tosca.relationships.RoutesTo:
+    derived_from: tosca.relationships.ConnectsTo
+    valid_target_types: [ tosca.capabilities.Endpoint ]

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		   xmlns:ns="http://siserver.org/schema" attributeFormDefault="qualified"
+		   elementFormDefault="qualified" targetNamespace="http://siserver.org/schema">
+	<xs:complexType name="ParamsMapItemType">
+		<xs:sequence>
+			<xs:element name="key" type="xs:string"/>
+			<xs:element name="value" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ParamsMap">
+		<xs:sequence>
+			<xs:element maxOccurs="unbounded" name="Param"
+						type="ns:ParamsMapItemType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Doc">
+		<xs:sequence>
+			<xs:any minOccurs="0" maxOccurs="1" processContents="skip"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="invokeOperation" type="ns:invokeOperationAsync"/>
+	<xs:element name="invokeOperationAsync" type="ns:invokeOperationAsync"/>
+	<xs:complexType name="invokeOperationAsync">
+		<xs:sequence>
+			<xs:element minOccurs="1" maxOccurs="1" name="CsarID"
+						type="xs:string"/>
+			<xs:element minOccurs="0" maxOccurs="1" name="ServiceInstanceID"
+						type="xs:string"/>
+			<xs:element minOccurs="0" maxOccurs="1" name="NodeInstanceID"
+						type="xs:string"/>
+			<xs:element minOccurs="1" maxOccurs="1"
+						name="ServiceTemplateIDNamespaceURI" type="xs:string"/>
+			<xs:element minOccurs="1" maxOccurs="1"
+						name="ServiceTemplateIDLocalPart" type="xs:string"/>
+			<xs:choice>
+				<xs:element minOccurs="1" maxOccurs="1" name="NodeTemplateID"
+							type="xs:string"/>
+				<xs:element minOccurs="1" maxOccurs="1"
+							name="RelationshipTemplateID" type="xs:string"/>
+			</xs:choice>
+			<xs:element minOccurs="0" maxOccurs="1" name="InterfaceName"
+						type="xs:string"/>
+			<xs:element minOccurs="1" maxOccurs="1" name="OperationName"
+						type="xs:string"/>
+			<xs:element minOccurs="1" maxOccurs="1" name="ReplyTo"
+						type="xs:string"/>
+			<xs:element minOccurs="1" maxOccurs="1" name="MessageID"
+						type="xs:string"/>
+			<xs:choice>
+				<xs:element minOccurs="0" name="Params" type="ns:ParamsMap"/>
+				<xs:element minOccurs="0" name="Doc" type="ns:Doc"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="invokeOperationSync" type="ns:invokeOperationSync"/>
+	<xs:complexType name="invokeOperationSync">
+		<xs:sequence>
+			<xs:element minOccurs="1" maxOccurs="1" name="CsarID"
+						type="xs:string"/>
+			<xs:element minOccurs="0" maxOccurs="1" name="ServiceInstanceID"
+						type="xs:string"/>
+			<xs:element minOccurs="0" maxOccurs="1" name="NodeInstanceID"
+						type="xs:string"/>
+			<xs:element minOccurs="1" maxOccurs="1"
+						name="ServiceTemplateIDNamespaceURI" type="xs:string"/>
+			<xs:element minOccurs="1" maxOccurs="1"
+						name="ServiceTemplateIDLocalPart" type="xs:string"/>
+			<xs:choice>
+				<xs:element minOccurs="1" maxOccurs="1" name="NodeTemplateID"
+							type="xs:string"/>
+				<xs:element minOccurs="1" maxOccurs="1"
+							name="RelationshipTemplateID" type="xs:string"/>
+			</xs:choice>
+			<xs:element minOccurs="0" maxOccurs="1" name="InterfaceName"
+						type="xs:string"/>
+			<xs:element minOccurs="1" maxOccurs="1" name="OperationName"
+						type="xs:string"/>
+			<xs:choice>
+				<xs:element minOccurs="0" name="Params" type="ns:ParamsMap"/>
+				<xs:element minOccurs="0" name="Doc" type="ns:Doc"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="invokePlan" type="ns:invokePlan"/>
+	<xs:complexType name="invokePlan">
+		<xs:sequence>
+			<xs:element minOccurs="1" maxOccurs="1" name="CsarID"
+						type="xs:string"/>
+			<xs:element minOccurs="0" maxOccurs="1" name="ServiceInstanceID"
+						type="xs:string"/>
+			<xs:element minOccurs="1" maxOccurs="1" name="PlanIDNamespaceURI"
+						type="xs:string"/>
+			<xs:element minOccurs="1" maxOccurs="1" name="PlanIDLocalPart"
+						type="xs:string"/>
+			<xs:element minOccurs="1" maxOccurs="1" name="OperationName"
+						type="xs:string"/>
+			<xs:element minOccurs="1" maxOccurs="1" name="ReplyTo"
+						type="xs:string"/>
+			<xs:element minOccurs="1" maxOccurs="1" name="MessageID"
+						type="xs:string"/>
+			<xs:choice>
+				<xs:element minOccurs="0" name="Params" type="ns:ParamsMap"/>
+				<xs:element minOccurs="0" name="Doc" type="ns:Doc"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="invokeResponse" type="ns:invokeResponse"/>
+	<xs:complexType name="invokeResponse">
+		<xs:sequence>
+			<xs:element minOccurs="0" maxOccurs="1" name="MessageID"
+						type="xs:string"/>
+			<xs:choice>
+				<xs:element minOccurs="0" name="Params" type="ns:ParamsMap"/>
+				<xs:element minOccurs="0" name="Doc" type="ns:Doc"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

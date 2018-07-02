@@ -1,0 +1,24 @@
+{
+    "files": [
+        {
+            "name": "SubDirDemo.java",
+            "size": 0,
+            "url": "http://localhost:8080/winery/artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/files/SubDirDemo.java",
+            "deleteUrl": "http://localhost:8080/winery/artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/files/SubDirDemo.java",
+            "thumbnailUrl": "http://localhost:8080/winery/images/mime-types/java.png",
+            "deleteType": "DELETE"
+        },
+        {
+            "name": "blub.zip",
+            "size": 166908,
+            "url": "http://localhost:8080/winery/artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/files/blub.zip",
+            "deleteUrl": "http://localhost:8080/winery/artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/files/blub.zip",
+            "thumbnailUrl": "http://localhost:8080/winery/images/mime-types/zip.png",
+            "deleteType": "DELETE"
+        }
+    ],
+    "paths": [
+        "subDir",
+        ""
+    ]
+}

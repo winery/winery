@@ -1,0 +1,15 @@
+# Tip for finding duplicates: scan the output of:
+#   git log --format='%aE - %aN' | sort --unique --ignore-case
+#
+# For explanation on this file format: man git-shortlog
+Huabing Zhao <zhao.huabing@zte.com.cn> <zhao.huabing@zte.com.cn>
+Kálmán Képes <kalman.kepes@iaas.uni-stuttgart.de> <nyuuyn@users.noreply.github.com>
+吕波 <lv.bo163@zte.com.cn> <lv.bo163@zte.com.cn>
+Niko Stadelmaier <nstadelmaier.dev@gmail.com> <nstadelmaier.dev@gmail.com>
+Karoline Saatkamp <karoline.saatkamp@iaas.uni-stuttgart.de> <karoline.saatkamp@gmail.com>
+Christoph Kleine <kleinech.github@gmail.com>
+Michael Falkenthal <michael.falkenthal@googlemail.com>
+Michael Wurster <miwurster@googlemail.com>
+Latife Sen <latifesen91@gmail.com>
+Ana Cristina Franco da Silva <anacristina.francodasilva@gmail.com>
+Pascal Hirmer <Pascal.Hirmer@ipvs.uni-stuttgart.de> <pascalhirmer@googlemail.com>
