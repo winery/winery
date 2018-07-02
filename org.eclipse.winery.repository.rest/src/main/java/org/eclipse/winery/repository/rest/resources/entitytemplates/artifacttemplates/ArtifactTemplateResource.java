@@ -13,7 +13,16 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates;
 
-import io.swagger.annotations.ApiParam;
+import java.io.IOException;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.tosca.HasType;
@@ -29,14 +38,7 @@ import org.eclipse.winery.repository.rest.resources._support.IHasName;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.IEntityTemplateResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.PropertiesResource;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import java.io.IOException;
+import io.swagger.annotations.ApiParam;
 
 /**
  * Models an Artifact Template with its artifact references
@@ -86,7 +88,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
     }
 
     public void synchronizeReferences() throws IOException {
-        BackendUtils.synchronizeReferences((ArtifactTemplateId) this.id);
+        BackendUtils.synchronizeReferences(RepositoryFactory.getRepository(), (ArtifactTemplateId) this.id);
     }
 
     @Path("files/")

@@ -1113,11 +1113,11 @@ public class BackendUtils {
         }
     }
 
-    public static void synchronizeReferences(ArtifactTemplateId id) throws IOException {
-        TArtifactTemplate template = RepositoryFactory.getRepository().getElement(id);
+    public static void synchronizeReferences(IGenericRepository repository, ArtifactTemplateId id) throws IOException {
+        TArtifactTemplate template = repository.getElement(id);
 
         DirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(id);
-        SortedSet<RepositoryFileReference> files = RepositoryFactory.getRepository().getContainedFiles(fileDir);
+        SortedSet<RepositoryFileReference> files = repository.getContainedFiles(fileDir);
         if (files.isEmpty()) {
             // clear artifact references
             removeFileBasedReferences(template);
