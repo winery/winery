@@ -659,8 +659,8 @@ public class BackendUtils {
      * @param id      the id of the definition child to persist
      * @param element the element of the definition child
      */
-    public static void persist(DefinitionsChildId id, TExtensibleElements element) throws IOException {
-        RepositoryFactory.getRepository().setElement(id, element);
+    public static void persist(IGenericRepository repository, DefinitionsChildId id, TExtensibleElements element) throws IOException {
+        repository.setElement(id, element);
     }
 
     /**
@@ -1097,8 +1097,12 @@ public class BackendUtils {
      * Removes only the relative URIs and URIs that are throwing exceptions
      */
     private static void removeFileBasedReferences(TArtifactTemplate template) {
-        Iterator<TArtifactReference> fileReferenceIterator = template.getArtifactReferences().getArtifactReference().iterator();
+        if (template.getArtifactReferences() == null) {
+            // nothing there, so nothing to remove
+            return;
+        }
 
+        Iterator<TArtifactReference> fileReferenceIterator = template.getArtifactReferences().getArtifactReference().iterator();
         while (fileReferenceIterator.hasNext()) {
             TArtifactReference artifactRef = fileReferenceIterator.next();
             try {
@@ -1113,17 +1117,31 @@ public class BackendUtils {
         }
     }
 
-    public static void synchronizeReferences(IGenericRepository repository, ArtifactTemplateId id) throws IOException {
+    /**
+     * Synchronizes the list of files of the given artifact template with the list of files contained in the given repository. The repository is upddated after synchronization.
+     *
+     * This was intended if a user manually added files in the "files" directory and expected winery to correctly export a CSAR
+     *
+     * @param repository The repository to search for the files
+     * @param id         the id of the artifact template
+     * @return The synchronized artifact template. Used for testing only, because mockito cannot mock static methods (https://github.com/mockito/mockito/issues/1013).
+     */
+    public static TArtifactTemplate synchronizeReferences(IGenericRepository repository, ArtifactTemplateId id) throws IOException {
         TArtifactTemplate template = repository.getElement(id);
+
+        // this straight-forwardly populates the list of contained files
+
+        removeFileBasedReferences(template);
+        // only absolute URLs are remaining
 
         DirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(id);
         SortedSet<RepositoryFileReference> files = repository.getContainedFiles(fileDir);
-        if (files.isEmpty()) {
-            // clear artifact references
-            removeFileBasedReferences(template);
-        } else {
-            TArtifactTemplate.ArtifactReferences artifactReferences = new TArtifactTemplate.ArtifactReferences();
-            template.setArtifactReferences(artifactReferences);
+        if (!files.isEmpty()) {
+            TArtifactTemplate.ArtifactReferences artifactReferences = template.getArtifactReferences();
+            if (artifactReferences == null) {
+                artifactReferences = new TArtifactTemplate.ArtifactReferences();
+                template.setArtifactReferences(artifactReferences);
+            }
             List<TArtifactReference> artRefList = artifactReferences.getArtifactReference();
             for (RepositoryFileReference ref: files) {
                 // determine path
@@ -1139,7 +1157,8 @@ public class BackendUtils {
             }
         }
 
-        BackendUtils.persist(id, template);
+        BackendUtils.persist(repository, id, template);
+        return template;
     }
 
     /**

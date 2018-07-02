@@ -99,17 +99,13 @@ public class TOSCAGraphIsomorphismTest {
 	}
 
 	@Test
-	public void testTComplianceRulePersistence() {
+	public void testTComplianceRulePersistence() throws Exception {
 		TComplianceRule rule = new TComplianceRule();
 		rule.setName("test");
 		rule.setTargetNamespace(TEST_TARGET_NAMESPACE);
 
 		ComplianceRuleId id = new ComplianceRuleId(new QName(TEST_TARGET_NAMESPACE, "test"));
-		try {
-			BackendUtils.persist(id, rule);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+        BackendUtils.persist(repository, id, rule);
 		assertEquals("test", repository.getElement(id).getIdFromIdOrNameField());
 	}
 
