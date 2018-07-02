@@ -39,11 +39,11 @@ export class WineryComponent implements OnInit {
 
     nodeTemplates: Array<TNodeTemplate> = [];
     relationshipTemplates: Array<TRelationshipTemplate> = [];
-    artifactTypes: Array<any> = [];
-    policyTypes: Array<any> = [];
+    artifactTypes: Array<EntityType> = [];
+    policyTypes: Array<EntityType> = [];
     policyTemplates: Array<any> = [];
-    capabilityTypes: Array<any> = [];
-    requirementTypes: Array<any> = [];
+    capabilityTypes: Array<EntityType> = [];
+    requirementTypes: Array<EntityType> = [];
     groupedNodeTypes: Array<any> = [];
     relationshipTypes: Array<EntityType> = [];
     entityTypes: any = {};

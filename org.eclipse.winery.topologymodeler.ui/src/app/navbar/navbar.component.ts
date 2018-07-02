@@ -186,17 +186,13 @@ export class NavbarComponent implements OnDestroy {
      */
     saveTopologyTemplateToRepository() {
         // Initialization
-        let topologySkeleton = {
+        const topologySkeleton = {
             documentation: [],
             any: [],
             otherAttributes: {},
             relationshipTemplates: [],
             nodeTemplates: []
         };
-        // subsciption first
-        this.backendService.serviceTemplate$.subscribe(data => {
-            topologySkeleton = data;
-        });
         // Prepare for saving by updating the existing topology with the current topology state inside the Redux store
         topologySkeleton.nodeTemplates = this.unformattedTopologyTemplate.nodeTemplates;
         topologySkeleton.relationshipTemplates = this.unformattedTopologyTemplate.relationshipTemplates;
