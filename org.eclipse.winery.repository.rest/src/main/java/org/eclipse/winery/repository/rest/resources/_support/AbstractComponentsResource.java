@@ -13,9 +13,25 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support;
 
-import com.sun.jersey.api.NotFoundException;
-import io.swagger.annotations.ApiParam;
-import org.apache.commons.lang3.StringUtils;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.SortedSet;
+import java.util.stream.Collectors;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response.Status;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
@@ -29,17 +45,12 @@ import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.datatypes.ComponentId;
 import org.eclipse.winery.repository.rest.datatypes.LocalNameForAngular;
 import org.eclipse.winery.repository.rest.datatypes.NamespaceAndDefinedLocalNamesForAngular;
+
+import com.sun.jersey.api.NotFoundException;
+import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response.Status;
-import javax.xml.namespace.QName;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Resource handling of a set of components. Each component has to provide a class to handle the set. This is required
@@ -61,7 +72,6 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 
     /**
      * Creates a new component instance in the given namespace
-     * <p>
      *
      * @param namespace plain namespace
      * @param name      the name; used as id
@@ -71,7 +81,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
         if (StringUtils.isEmpty(namespace) || StringUtils.isEmpty(name)) {
             res = new ResourceResult(Status.BAD_REQUEST);
         } else {
-            String id = RestUtils.createXMLidAsString(name);
+            String id = RestUtils.createXmlIdAsString(name);
             DefinitionsChildId tcId;
             try {
                 tcId = this.getDefinitionsChildId(namespace, id, false);
@@ -86,8 +96,6 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 
     /**
      * Creates a DefinitionsChildId for the given namespace / id combination
-     * <p>
-     * Uses reflection to create a new instance
      */
     protected DefinitionsChildId getDefinitionsChildId(String namespace, String id, boolean URLencoded) {
         Class<? extends DefinitionsChildId> idClass = RestUtils.getComponentIdClassForComponentContainer(this.getClass());
