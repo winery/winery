@@ -64,7 +64,7 @@
             </param-value>
         </init-param>
 
-        <!-- this ensures that / are always at the end of URLs -- deprecated - we should change our URL scheme not to end with / -->
+        <!-- this ensures that / are always at the end of URLs - deprecated - we should change our URL scheme not to end with / -->
         <init-param>
             <param-name>com.sun.jersey.config.feature.CanonicalizeURIPath</param-name>
             <param-value>true</param-value>
