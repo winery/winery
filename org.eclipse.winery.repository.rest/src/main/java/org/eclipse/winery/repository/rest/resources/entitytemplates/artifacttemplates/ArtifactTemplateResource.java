@@ -143,7 +143,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
         }
     }
 
-    @Path("propertyconstraints/")
+    @Path("propertyconstraints")
     public PropertyConstraintsResource getPropertyConstraints() {
         TEntityTemplate.PropertyConstraints constraints = this.getTArtifactTemplate().getPropertyConstraints();
         if (constraints == null) {

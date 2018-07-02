@@ -79,7 +79,7 @@ export class InstanceService {
                 subMenu = ['README', 'LICENSE', 'Language', 'Applies To', 'Properties Definition', 'Inheritance', 'Templates', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.PolicyTemplate:
-                subMenu = ['README', 'LICENSE', 'Properties',  'Property Constraints', 'Documentation', 'XML'];
+                subMenu = ['README', 'LICENSE', 'Properties', 'Property Constraints', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.Imports:
                 subMenu = ['All Declared Elements Local Names', 'All Defined Types Local Names'];

@@ -46,7 +46,7 @@ public class TEntityTemplateResource<E extends TEntityTemplate> extends EntityWi
     }
 
     @GET
-    @Path("/propertyconstraints")
+    @Path("propertyconstraints")
     public PropertyConstraintsResource getPropertyConstraints() {
         TEntityTemplate.PropertyConstraints constraints = this.o.getPropertyConstraints();
         if (constraints == null) {

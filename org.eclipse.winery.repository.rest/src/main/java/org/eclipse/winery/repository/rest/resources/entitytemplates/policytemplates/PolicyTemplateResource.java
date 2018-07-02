@@ -74,7 +74,7 @@ public final class PolicyTemplateResource extends AbstractComponentInstanceResou
         return RestUtils.persist(this);
     }
 
-    @Path("propertyconstraints/")
+    @Path("propertyconstraints")
     public PropertyConstraintsResource getPropertyConstraints() {
         TEntityTemplate.PropertyConstraints constraints = this.getPolicyTemplate().getPropertyConstraints();
         if (constraints == null) {
