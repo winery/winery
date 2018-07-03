@@ -23,6 +23,7 @@ This part is currently in development and not part of the opensourced code of Wi
 The repository stores TOSCA models and allows managing their content. For instance, node types, policy types, and artifact templates are managed by the repository.
 The repository is also responsible for importing and  exporting CSARs, the exchange format of TOSCA files and related artifacts.
 
+- [FAQ](FAQ.md) - frequently asked questions
 - [Quickstart](quickstart.md)
 - [Modeling Guide](modeling-guide.md) - Guide how to use Winery
 
