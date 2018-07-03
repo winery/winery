@@ -11,6 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
+import { Entity, EntityType } from '../../models/ttopology-template';
 
 export class ModalVariantAndState {
     modalVariant: ModalVariant;
@@ -40,15 +41,15 @@ export class DeploymentArtifactOrPolicyModalData {
         // value of the type dropdown in the modal
         public modalType?: string,
         // all DA types
-        public artifactTypes?: string[],
+        public artifactTypes?: EntityType[],
         // all policyTypes
-        public policyTypes?: string[],
+        public policyTypes?: EntityType[],
         // the selected artifactTemplate or policyTemplate
         public modalTemplate?: any,
         // all artifactTemplates
-        public artifactTemplates?: string[],
+        public artifactTemplates?: Entity[],
         // all policyTemplates
-        public policyTemplates?: string[],
+        public policyTemplates?: Entity[],
         // name of the selected artifactTemplate or policyTemplate
         public modalTemplateName?: any,
         // ref of the selected artifactTemplate or policyTemplate

@@ -14,9 +14,7 @@
 
 import 'rxjs/add/operator/do';
 import { Component, OnInit } from '@angular/core';
-import {
-    EntityType, TNodeTemplate, TRelationshipTemplate, TTopologyTemplate, Visuals
-} from './models/ttopology-template';
+import { EntityType, TNodeTemplate, TRelationshipTemplate, TTopologyTemplate, Visuals } from './models/ttopology-template';
 import { ILoaded, LoadedService } from './services/loaded.service';
 import { AppReadyEventService } from './services/app-ready-event.service';
 import { BackendService } from './services/backend.service';
@@ -53,6 +51,8 @@ export class WineryComponent implements OnInit {
     topologyDifferences: [ToscaDiff, TTopologyTemplate];
 
     public loaded: ILoaded;
+    private loadedRelationshipVisuals = 0;
+    private requiredRelationshipVisuals: number;
 
     constructor(private loadedService: LoadedService,
                 private appReadyEvent: AppReadyEventService,
@@ -83,10 +83,11 @@ export class WineryComponent implements OnInit {
              * the backendService makes sure that both get requests finish before pushing data onto this Observable
              * by using Observable.forkJoin(1$, 2$);
              * */
-            const topologyTemplate = JSON[2][0];
-            this.entityTypes.nodeVisuals = JSON[2][1];
-            if (JSON.length === 4 && !isNullOrUndefined(JSON[2][2]) && !isNullOrUndefined(JSON[3])) {
-                this.topologyDifferences = [JSON[2], JSON[2][3]];
+            const topologyData = JSON[2];
+            const topologyTemplate = topologyData[0];
+            this.entityTypes.nodeVisuals = topologyData[1];
+            if (topologyData.length === 4 && !isNullOrUndefined(topologyData[2]) && !isNullOrUndefined(topologyData[3])) {
+                this.topologyDifferences = [topologyData[2], topologyData[3]];
             }
             // init the NodeTemplates and RelationshipTemplates to start their rendering
             this.initTopologyTemplate(topologyTemplate.nodeTemplates, topologyTemplate.relationshipTemplates);
@@ -112,8 +113,7 @@ export class WineryComponent implements OnInit {
             // NodeTypes
             this.initEntityType(JSON[9], 'unGroupedNodeTypes');
 
-            this.loaded = { loadedData: true, generatedReduxState: false };
-            this.appReadyEvent.trigger();
+            this.triggerLoaded('everything');
         });
     }
 
@@ -208,25 +208,24 @@ export class WineryComponent implements OnInit {
                 break;
             }
             case 'relationshipTypes': {
+                this.requiredRelationshipVisuals = entityTypeJSON.length;
                 entityTypeJSON.forEach(relationshipType => {
+                    const relType = new EntityType(
+                        relationshipType.id,
+                        relationshipType.qName,
+                        relationshipType.name,
+                        relationshipType.namespace);
+                    this.relationshipTypes.push(relType);
+
                     // get relationship type visualappearances
-                    let visualAppearance;
                     this.backendService
-                    // returns Observable
-                        .requestRelationshipTypeVisualappearance(
-                            relationshipType.namespace,
-                            relationshipType.id)
-                        .subscribe((JSON) => {
-                            visualAppearance = JSON;
-                            this.relationshipTypes
-                                .push(new EntityType(
-                                    relationshipType.id,
-                                    relationshipType.qName,
-                                    relationshipType.name,
-                                    relationshipType.namespace,
-                                    visualAppearance.color
-                                ));
-                        });
+                        .requestRelationshipTypeVisualappearance(relationshipType.namespace, relationshipType.id)
+                        .subscribe(
+                            (visualAppearance) => {
+                                relType.color = visualAppearance.color;
+                                this.triggerLoaded('relationshipVisuals');
+                            }
+                        );
                 });
                 this.entityTypes.relationshipTypes = this.relationshipTypes;
                 break;
@@ -246,12 +245,11 @@ export class WineryComponent implements OnInit {
         }
         // init relationship templates
         if (relationshipTemplateArray.length > 0) {
-            let relIdCount = 1;
             relationshipTemplateArray.forEach(relationship => {
+                const state = isNullOrUndefined(this.topologyDifferences) ? null : DifferenceStates.UNCHANGED;
                 this.relationshipTemplates.push(
-                    Utils.createTRelationshipTemplateFromObject(relationship, relIdCount)
+                    Utils.createTRelationshipTemplateFromObject(relationship, state)
                 );
-                relIdCount += 1;
             });
         }
     }
@@ -269,6 +267,17 @@ export class WineryComponent implements OnInit {
 
     onReduxReady() {
         this.loaded.generatedReduxState = true;
+    }
+
+    private triggerLoaded(what?: string) {
+        if (what === 'relationshipVisuals') {
+            this.loadedRelationshipVisuals++;
+        }
+        this.loaded = {
+            loadedData: this.loadedRelationshipVisuals === this.requiredRelationshipVisuals,
+            generatedReduxState: false
+        };
+        this.appReadyEvent.trigger();
     }
 }
 
