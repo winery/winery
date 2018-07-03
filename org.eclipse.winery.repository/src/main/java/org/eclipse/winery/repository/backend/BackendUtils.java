@@ -13,24 +13,74 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang3.time.DateUtils;
-import org.apache.tika.detect.Detector;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.mime.MediaType;
-import org.apache.tika.parser.AutoDetectParser;
-import org.apache.xerces.impl.dv.XSSimpleType;
-import org.apache.xerces.impl.xs.XSImplementationImpl;
-import org.apache.xerces.xs.*;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jgit.api.errors.GitAPIException;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.stream.Collectors;
+
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.admin.AdminId;
-import org.eclipse.winery.common.ids.definitions.*;
+import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.common.ids.definitions.EntityTypeId;
+import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
+import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
+import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
@@ -38,9 +88,39 @@ import org.eclipse.winery.common.ids.elements.ToscaElementId;
 import org.eclipse.winery.common.version.ToscaDiff;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
-import org.eclipse.winery.model.tosca.*;
+import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
+import org.eclipse.winery.model.tosca.HasName;
+import org.eclipse.winery.model.tosca.HasTargetNamespace;
+import org.eclipse.winery.model.tosca.TArtifactReference;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.model.tosca.TArtifactType;
+import org.eclipse.winery.model.tosca.TCapability;
+import org.eclipse.winery.model.tosca.TCapabilityType;
+import org.eclipse.winery.model.tosca.TDefinitions;
+import org.eclipse.winery.model.tosca.TDeploymentArtifact;
+import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition;
+import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
+import org.eclipse.winery.model.tosca.TImport;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
+import org.eclipse.winery.model.tosca.TPlan;
+import org.eclipse.winery.model.tosca.TPlans;
+import org.eclipse.winery.model.tosca.TPolicyTemplate;
+import org.eclipse.winery.model.tosca.TPolicyType;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
+import org.eclipse.winery.model.tosca.TRequirement;
+import org.eclipse.winery.model.tosca.TRequirementType;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
@@ -58,6 +138,27 @@ import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.export.ToscaExportUtil;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.tika.detect.Detector;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.mime.MediaType;
+import org.apache.tika.parser.AutoDetectParser;
+import org.apache.xerces.impl.dv.XSSimpleType;
+import org.apache.xerces.impl.xs.XSImplementationImpl;
+import org.apache.xerces.xs.XSComplexTypeDefinition;
+import org.apache.xerces.xs.XSElementDeclaration;
+import org.apache.xerces.xs.XSImplementation;
+import org.apache.xerces.xs.XSLoader;
+import org.apache.xerces.xs.XSModel;
+import org.apache.xerces.xs.XSModelGroup;
+import org.apache.xerces.xs.XSObjectList;
+import org.apache.xerces.xs.XSParticle;
+import org.apache.xerces.xs.XSTerm;
+import org.apache.xerces.xs.XSTypeDefinition;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.w3c.dom.Document;
@@ -66,25 +167,6 @@ import org.w3c.dom.ls.LSInput;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.text.ParseException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
 
@@ -309,7 +391,7 @@ public class BackendUtils {
         if (topologyTemplate == null) {
             return Collections.emptyList();
         }
-        for (TEntityTemplate t : topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
+        for (TEntityTemplate t: topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
             if (t instanceof TNodeTemplate) {
                 l.add((TNodeTemplate) t);
             }
@@ -327,7 +409,7 @@ public class BackendUtils {
             return Collections.emptyList();
         }
         Collection<QName> res = new ArrayList<>();
-        for (TDeploymentArtifact da : deploymentArtifacts) {
+        for (TDeploymentArtifact da: deploymentArtifacts) {
             QName artifactRef = da.getArtifactRef();
             if (artifactRef != null) {
                 res.add(artifactRef);
@@ -345,7 +427,7 @@ public class BackendUtils {
             return Collections.emptyList();
         }
         Collection<QName> res = new ArrayList<>();
-        for (ImplementationArtifact ia : implementationArtifacts) {
+        for (ImplementationArtifact ia: implementationArtifacts) {
             QName artifactRef = ia.getArtifactRef();
             if (artifactRef != null) {
                 res.add(artifactRef);
@@ -364,7 +446,7 @@ public class BackendUtils {
         // DAs may be assigned via node type implementations
         QName nodeTypeQName = nodeTemplate.getType();
         Collection<NodeTypeImplementationId> allNodeTypeImplementations = RepositoryFactory.getRepository().getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
-        for (NodeTypeImplementationId nodeTypeImplementationId : allNodeTypeImplementations) {
+        for (NodeTypeImplementationId nodeTypeImplementationId: allNodeTypeImplementations) {
             TDeploymentArtifacts deploymentArtifacts = RepositoryFactory.getRepository().getElement(nodeTypeImplementationId).getDeploymentArtifacts();
             allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(deploymentArtifacts);
             l.addAll(allReferencedArtifactTemplates);
@@ -379,7 +461,7 @@ public class BackendUtils {
         // IAs may be assigned via node type implementations
         QName nodeTypeQName = nodeTemplate.getType();
         Collection<NodeTypeImplementationId> allNodeTypeImplementations = RepositoryFactory.getRepository().getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
-        for (NodeTypeImplementationId nodeTypeImplementationId : allNodeTypeImplementations) {
+        for (NodeTypeImplementationId nodeTypeImplementationId: allNodeTypeImplementations) {
             TImplementationArtifacts implementationArtifacts = RepositoryFactory.getRepository().getElement(nodeTypeImplementationId).getImplementationArtifacts();
             Collection<QName> allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(implementationArtifacts);
             l.addAll(allReferencedArtifactTemplates);
@@ -560,7 +642,7 @@ public class BackendUtils {
         document.appendChild(wrapperElement);
 
         // we produce the serialization in the same order the XSD would be generated (because of the usage of xsd:sequence)
-        for (PropertyDefinitionKV propertyDefinitionKV : winerysPropertiesDefinition.getPropertyDefinitionKVList()) {
+        for (PropertyDefinitionKV propertyDefinitionKV: winerysPropertiesDefinition.getPropertyDefinitionKVList()) {
             // we always write the element tag as the XSD forces that
             final Element valueElement = document.createElementNS(namespace, propertyDefinitionKV.getKey());
             wrapperElement.appendChild(valueElement);
@@ -577,8 +659,8 @@ public class BackendUtils {
      * @param id      the id of the definition child to persist
      * @param element the element of the definition child
      */
-    public static void persist(DefinitionsChildId id, TExtensibleElements element) throws IOException {
-        RepositoryFactory.getRepository().setElement(id, element);
+    public static void persist(IGenericRepository repository, DefinitionsChildId id, TExtensibleElements element) throws IOException {
+        repository.setElement(id, element);
     }
 
     /**
@@ -857,7 +939,7 @@ public class BackendUtils {
      */
     public static Collection<QName> convertDefinitionsChildIdCollectionToQNameCollection(Collection<? extends DefinitionsChildId> col) {
         Collection<QName> res = new ArrayList<>();
-        for (DefinitionsChildId id : col) {
+        for (DefinitionsChildId id: col) {
             res.add(id.getQName());
         }
         return res;
@@ -960,7 +1042,7 @@ public class BackendUtils {
         try (InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
             Unmarshaller u = JAXBSupport.createUnmarshaller();
             Definitions defs = ((Definitions) u.unmarshal(is));
-            for (TExtensibleElements elem : defs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation()) {
+            for (TExtensibleElements elem: defs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation()) {
                 if (elem instanceof TArtifactTemplate) {
                     return (TArtifactTemplate) elem;
                 }
@@ -1011,19 +1093,57 @@ public class BackendUtils {
         return loc;
     }
 
-    public static void synchronizeReferences(ArtifactTemplateId id) throws IOException {
-        TArtifactTemplate template = RepositoryFactory.getRepository().getElement(id);
+    /**
+     * Removes only the relative URIs and URIs that are throwing exceptions
+     */
+    private static void removeFileBasedReferences(TArtifactTemplate template) {
+        if (template.getArtifactReferences() == null) {
+            // nothing there, so nothing to remove
+            return;
+        }
+
+        Iterator<TArtifactReference> fileReferenceIterator = template.getArtifactReferences().getArtifactReference().iterator();
+        while (fileReferenceIterator.hasNext()) {
+            TArtifactReference artifactRef = fileReferenceIterator.next();
+            try {
+                if (!(new URI(artifactRef.getReference()).isAbsolute())) {
+                    //remove if it is not absolute
+                    fileReferenceIterator.remove();
+                }
+            } catch (URISyntaxException e) {
+                // we remove these too as they are throwing exceptions
+                fileReferenceIterator.remove();
+            }
+        }
+    }
+
+    /**
+     * Synchronizes the list of files of the given artifact template with the list of files contained in the given repository. The repository is upddated after synchronization.
+     *
+     * This was intended if a user manually added files in the "files" directory and expected winery to correctly export a CSAR
+     *
+     * @param repository The repository to search for the files
+     * @param id         the id of the artifact template
+     * @return The synchronized artifact template. Used for testing only, because mockito cannot mock static methods (https://github.com/mockito/mockito/issues/1013).
+     */
+    public static TArtifactTemplate synchronizeReferences(IGenericRepository repository, ArtifactTemplateId id) throws IOException {
+        TArtifactTemplate template = repository.getElement(id);
+
+        // this straight-forwardly populates the list of contained files
+
+        removeFileBasedReferences(template);
+        // only absolute URLs are remaining
 
         DirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(id);
-        SortedSet<RepositoryFileReference> files = RepositoryFactory.getRepository().getContainedFiles(fileDir);
-        if (files.isEmpty()) {
-            // clear artifact references
-            template.setArtifactReferences(null);
-        } else {
-            TArtifactTemplate.ArtifactReferences artifactReferences = new TArtifactTemplate.ArtifactReferences();
-            template.setArtifactReferences(artifactReferences);
+        SortedSet<RepositoryFileReference> files = repository.getContainedFiles(fileDir);
+        if (!files.isEmpty()) {
+            TArtifactTemplate.ArtifactReferences artifactReferences = template.getArtifactReferences();
+            if (artifactReferences == null) {
+                artifactReferences = new TArtifactTemplate.ArtifactReferences();
+                template.setArtifactReferences(artifactReferences);
+            }
             List<TArtifactReference> artRefList = artifactReferences.getArtifactReference();
-            for (RepositoryFileReference ref : files) {
+            for (RepositoryFileReference ref: files) {
                 // determine path
                 // path relative from the root of the CSAR is ok (COS01, line 2663)
                 // double encoded - see ADR-0003
@@ -1037,7 +1157,8 @@ public class BackendUtils {
             }
         }
 
-        BackendUtils.persist(id, template);
+        BackendUtils.persist(repository, id, template);
+        return template;
     }
 
     /**
@@ -1105,7 +1226,7 @@ public class BackendUtils {
 
         // add all plans locally stored, but not contained in the XML, as plan element to the plans of the service template.
         List<TPlan> thePlans = plans.getPlan();
-        for (PlanId planId : plansToAdd) {
+        for (PlanId planId: plansToAdd) {
             SortedSet<RepositoryFileReference> files = repository.getContainedFiles(planId);
             if (files.size() != 1) {
                 throw new IllegalStateException("Currently, only one file per plan is supported.");

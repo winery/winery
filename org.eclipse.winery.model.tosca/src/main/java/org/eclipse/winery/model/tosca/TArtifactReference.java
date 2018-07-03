@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,49 +14,20 @@
 
 package org.eclipse.winery.model.tosca;
 
-import org.eclipse.jdt.annotation.NonNull;
-
-import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
-/**
- * <p>Java class for tArtifactReference complex type.
- * <p>
- * <p>The following schema fragment specifies the expected content contained within this class.
- * <p>
- * <pre>
- * &lt;complexType name="tArtifactReference">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;choice maxOccurs="unbounded" minOccurs="0">
- *         &lt;element name="Include">
- *           &lt;complexType>
- *             &lt;complexContent>
- *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *                 &lt;attribute name="pattern" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *               &lt;/restriction>
- *             &lt;/complexContent>
- *           &lt;/complexType>
- *         &lt;/element>
- *         &lt;element name="Exclude">
- *           &lt;complexType>
- *             &lt;complexContent>
- *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *                 &lt;attribute name="pattern" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *               &lt;/restriction>
- *             &lt;/complexContent>
- *           &lt;/complexType>
- *         &lt;/element>
- *       &lt;/choice>
- *       &lt;attribute name="reference" use="required" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- */
+import org.eclipse.jdt.annotation.NonNull;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tArtifactReference", propOrder = {
     "includeOrExclude"
@@ -68,6 +39,7 @@ public class TArtifactReference {
         @XmlElement(name = "Include", type = TArtifactReference.Include.class)
     })
     protected List<Object> includeOrExclude;
+
     @XmlAttribute(name = "reference", required = true)
     @XmlSchemaType(name = "anyURI")
     protected String reference;
@@ -93,6 +65,14 @@ public class TArtifactReference {
     @Override
     public int hashCode() {
         return Objects.hash(includeOrExclude, reference);
+    }
+
+    @Override
+    public String toString() {
+        return "TArtifactReference{" +
+            "includeOrExclude=" + includeOrExclude +
+            ", reference='" + reference + '\'' +
+            '}';
     }
 
     /**
@@ -124,41 +104,16 @@ public class TArtifactReference {
         return this.includeOrExclude;
     }
 
-    /**
-     * Gets the value of the reference property.
-     *
-     * @return possible object is {@link String }
-     */
     @NonNull
     public String getReference() {
         return reference;
     }
 
-    /**
-     * Sets the value of the reference property.
-     *
-     * @param value allowed object is {@link String }
-     */
     public void setReference(String value) {
         this.reference = value;
     }
 
 
-    /**
-     * <p>Java class for anonymous complex type.
-     * <p>
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     * <p>
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;attribute name="pattern" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
     public static class Exclude {
@@ -166,42 +121,17 @@ public class TArtifactReference {
         @XmlAttribute(name = "pattern", required = true)
         protected String pattern;
 
-        /**
-         * Gets the value of the pattern property.
-         *
-         * @return possible object is {@link String }
-         */
         @NonNull
         public String getPattern() {
             return pattern;
         }
 
-        /**
-         * Sets the value of the pattern property.
-         *
-         * @param value allowed object is {@link String }
-         */
         public void setPattern(String value) {
             this.pattern = value;
         }
     }
 
 
-    /**
-     * <p>Java class for anonymous complex type.
-     * <p>
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     * <p>
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;attribute name="pattern" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
     public static class Include {
@@ -209,21 +139,11 @@ public class TArtifactReference {
         @XmlAttribute(name = "pattern", required = true)
         protected String pattern;
 
-        /**
-         * Gets the value of the pattern property.
-         *
-         * @return possible object is {@link String }
-         */
         @NonNull
         public String getPattern() {
             return pattern;
         }
 
-        /**
-         * Sets the value of the pattern property.
-         *
-         * @param value allowed object is {@link String }
-         */
         public void setPattern(String value) {
             this.pattern = value;
         }
