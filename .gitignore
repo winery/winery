@@ -15,6 +15,7 @@ collected-*/
 node_modules/
 winery-debug.log
 **/gen/**
+org.eclipse.winery.repository.ui/src/assets/build-code**
 
 ## Eclipse
 **/.classpath
