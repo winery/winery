@@ -14,11 +14,25 @@
 
 package org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
-import org.eclipse.winery.model.tosca.TBoundaryDefinitions.*;
+import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Capabilities;
+import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Interfaces;
+import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Policies;
+import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties.PropertyMappings;
+import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Requirements;
 import org.eclipse.winery.model.tosca.TCapabilityRef;
 import org.eclipse.winery.model.tosca.TRequirementRef;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
@@ -28,14 +42,10 @@ import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydef
 import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.policies.PoliciesResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.reqscaps.CapabilitiesResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.reqscaps.RequirementsResource;
-import org.w3c.dom.Document;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import java.util.List;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.w3c.dom.Document;
 
 public class BoundaryDefinitionsResource {
 
@@ -142,7 +152,7 @@ public class BoundaryDefinitionsResource {
         return new PropertyMappingsResource(propertyMappings, this.serviceTemplateResource);
     }
 
-    @Path("propertyconstraints/")
+    @Path("propertyconstraints")
     public PropertyConstraintsResource getPropertyConstraints() {
         TBoundaryDefinitions.PropertyConstraints constraints = this.boundaryDefinitions.getPropertyConstraints();
         if (constraints == null) {

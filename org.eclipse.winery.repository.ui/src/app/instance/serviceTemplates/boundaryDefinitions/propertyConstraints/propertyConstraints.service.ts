@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -35,7 +35,6 @@ export class PropertyConstraintsService {
 
     postConstraint(data: PropertyConstraintApiData): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-        data.fragments = null;
         return this.http
             .post(
                 this.path,

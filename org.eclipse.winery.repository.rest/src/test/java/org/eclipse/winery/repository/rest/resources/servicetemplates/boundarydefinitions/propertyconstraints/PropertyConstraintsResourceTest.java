@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,9 +21,9 @@ public class PropertyConstraintsResourceTest extends AbstractResourceTest {
     @Test
     public void addPropertyMapping() throws Exception {
         this.setRevisionTo("86d472dca0340c02f67321f77a71d88f1eef93ce");
-        this.assertNoContentPost("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/boundarydefinitions/propertyconstraints/",
+        this.assertNoContentPost("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/boundarydefinitions/propertyconstraints",
             "entitytypes/servicetemplates/boundarydefinitions/propertyConstraints/initial_property_constraint.json");
-        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/boundarydefinitions/propertyconstraints/",
+        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/boundarydefinitions/propertyconstraints",
             "entitytypes/servicetemplates/boundarydefinitions/propertyConstraints/initial_property_constraint_get.json");
     }
 }

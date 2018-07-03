@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -17,12 +17,13 @@ package org.eclipse.winery.repository.rest.resources.apiData.boundarydefinitions
 import org.eclipse.winery.model.tosca.TPropertyConstraint;
 
 public class PropertyConstraintsApiData {
-    String property;
-    Object fragments;
-    String constraintType;
 
+    private String property;
+    private Object fragments;
+    private String constraintType;
 
     public PropertyConstraintsApiData() {
+        // required for JAX-B / Jackson to work
     }
 
     public PropertyConstraintsApiData(TPropertyConstraint propertyConstraint) {
@@ -54,5 +55,4 @@ public class PropertyConstraintsApiData {
     public void setFragments(Object fragments) {
         this.fragments = fragments;
     }
-
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -20,6 +20,7 @@ import { WineryValidatorObject } from '../../../../wineryValidators/wineryDuplic
 import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
 import { ModalDirective } from 'ngx-bootstrap';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { WineryEditorComponent } from '../../../../wineryEditorModule/wineryEditor.component';
 
 @Component({
     selector: 'winery-instance-boundary-properties',
@@ -42,6 +43,7 @@ export class PropertyConstraintsComponent implements OnInit {
     ];
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
     @ViewChild('addModal') addModal: ModalDirective;
+    @ViewChild('propertyConstraintEditor') propertyConstraintEditor: WineryEditorComponent;
     validatorObject: WineryValidatorObject;
 
     constructor(private service: PropertyConstraintsService,
@@ -68,6 +70,8 @@ export class PropertyConstraintsComponent implements OnInit {
 
     addNewConstraint() {
         this.addLoad();
+        this.newConstraint.fragments = this.propertyConstraintEditor.getData();
+        console.log(this.newConstraint);
         this.service.postConstraint(this.newConstraint).subscribe(
             data => this.handlePostResponse(data),
             error => this.handleError(error)
@@ -129,10 +133,6 @@ export class PropertyConstraintsComponent implements OnInit {
 
     private handleData(data: PropertyConstraintApiData[]) {
         this.propertyConstraints = data;
-        for (let i = 0; i < data.length; i++) {
-            this.propertyConstraints[i].fragments = '[Not implemented yet]';
-        }
-
         this.decreaseLoad();
     }
 
