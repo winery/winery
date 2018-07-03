@@ -39,12 +39,8 @@ import org.eclipse.winery.repository.rest.resources.apiData.boundarydefinitions.
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class PropertyConstraintsResource {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PropertyConstraintsResource.class);
 
     private final TBoundaryDefinitions.PropertyConstraints propertyConstraints;
     private final TEntityTemplate.PropertyConstraints entityPropertyConstraints;
@@ -114,11 +110,11 @@ public class PropertyConstraintsResource {
     public List<PropertyConstraintsApiData> onGet() {
         List<PropertyConstraintsApiData> apiDatas = new ArrayList<>();
         if (isEntitytemplate) {
-            for (TPropertyConstraint propertyConstraint : this.entityPropertyConstraints.getPropertyConstraint()) {
+            for (TPropertyConstraint propertyConstraint: this.entityPropertyConstraints.getPropertyConstraint()) {
                 apiDatas.add(new PropertyConstraintsApiData(propertyConstraint));
             }
         } else {
-            for (TPropertyConstraint propertyConstraint : this.propertyConstraints.getPropertyConstraint()) {
+            for (TPropertyConstraint propertyConstraint: this.propertyConstraints.getPropertyConstraint()) {
                 apiDatas.add(new PropertyConstraintsApiData(propertyConstraint));
             }
         }
