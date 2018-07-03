@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -16,15 +16,21 @@ package org.eclipse.winery.repository.backend;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.tosca.TArtifactReference;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateSourceDirectoryId;
 
 import org.junit.jupiter.api.Test;
@@ -32,6 +38,8 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.xmlunit.matchers.CompareMatcher;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class BackendUtilsTest {
 
@@ -128,4 +136,111 @@ public class BackendUtilsTest {
         assertEquals("file.txt", repositoryFileReference.getFileName());
     }
 
+    public TArtifactTemplate createArtifactTemplateWithSingleReferenceToAnUrl() {
+        // create artifact template with a single contained reference (an absolute URL)
+        TArtifactTemplate artifactTemplate = new TArtifactTemplate();
+        TArtifactTemplate.ArtifactReferences artifactReferences = new TArtifactTemplate.ArtifactReferences();
+        artifactTemplate.setArtifactReferences(artifactReferences);
+        List<TArtifactReference> artRefList = artifactReferences.getArtifactReference();
+        TArtifactReference artRef = new TArtifactReference();
+        artRef.setReference("http://www.example.org/absolute-url");
+        artRefList.add(artRef);
+
+        return artifactTemplate;
+    }
+
+    public TArtifactTemplate createArtifactTemplateWithReferenceToAnUrlAndANonExistentFile() {
+        // create artifact template with a single contained reference (an absolute URL)
+        TArtifactTemplate artifactTemplate = new TArtifactTemplate();
+        TArtifactTemplate.ArtifactReferences artifactReferences = new TArtifactTemplate.ArtifactReferences();
+        artifactTemplate.setArtifactReferences(artifactReferences);
+        List<TArtifactReference> artRefList = artifactReferences.getArtifactReference();
+
+        TArtifactReference artRef = new TArtifactReference();
+        artRef.setReference("http://www.example.org/absolute-url");
+        artRefList.add(artRef);
+
+        artRef = new TArtifactReference();
+        artRef.setReference("does-not-exist.txt");
+        artRefList.add(artRef);
+
+        return artifactTemplate;
+    }
+
+    public TArtifactTemplate createArtifactTemplateWithReferenceToAnUrlAndExistentFile() {
+        // create artifact template with a single contained reference (an absolute URL)
+        TArtifactTemplate artifactTemplate = new TArtifactTemplate();
+        TArtifactTemplate.ArtifactReferences artifactReferences = new TArtifactTemplate.ArtifactReferences();
+        artifactTemplate.setArtifactReferences(artifactReferences);
+        List<TArtifactReference> artRefList = artifactReferences.getArtifactReference();
+
+        TArtifactReference artRef = new TArtifactReference();
+        artRef.setReference("http://www.example.org/absolute-url");
+        artRefList.add(artRef);
+
+        artRef = new TArtifactReference();
+        artRef.setReference("artifacttemplates/http%253A%252F%252Fexample.org/test-artifact-template/exists.txt");
+        artRefList.add(artRef);
+
+        return artifactTemplate;
+    }
+
+    @Test
+    public void synchronizeReferencesDoesNotRemoveUrls() throws Exception {
+        ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId("http://example.org", "test-artifact-template", false);
+
+        // alternative test implementation: Use git-based repository
+        // this test at hand is closer to the implementation, but easier to write
+
+        IGenericRepository repository = mock(IGenericRepository.class);
+        ArtifactTemplateFilesDirectoryId artifactTemplateFilesDirectoryId = new ArtifactTemplateFilesDirectoryId(artifactTemplateId);
+        when(repository.getContainedFiles(artifactTemplateFilesDirectoryId)).thenReturn(Collections.emptySortedSet());
+
+        TArtifactTemplate artifactTemplate = createArtifactTemplateWithSingleReferenceToAnUrl();
+        when(repository.getElement(artifactTemplateId)).thenReturn(artifactTemplate);
+        TArtifactTemplate synchronizhedArtifactTemplate = BackendUtils.synchronizeReferences(repository, artifactTemplateId);
+
+        assertEquals(createArtifactTemplateWithSingleReferenceToAnUrl(), synchronizhedArtifactTemplate);
+    }
+
+    @Test
+    public void synchronizeReferencesRemovesNonExistantFileAndDoesNotRemoveUrls() throws Exception {
+        ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId("http://example.org", "test-artifact-template", false);
+
+        // alternative test implementation: Use git-based repository
+        // this test at hand is closer to the implementation, but easier to write
+
+        IGenericRepository repository = mock(IGenericRepository.class);
+        ArtifactTemplateFilesDirectoryId artifactTemplateFilesDirectoryId = new ArtifactTemplateFilesDirectoryId(artifactTemplateId);
+        when(repository.getContainedFiles(artifactTemplateFilesDirectoryId)).thenReturn(Collections.emptySortedSet());
+
+        TArtifactTemplate artifactTemplate = createArtifactTemplateWithReferenceToAnUrlAndANonExistentFile();
+        when(repository.getElement(artifactTemplateId)).thenReturn(artifactTemplate);
+        TArtifactTemplate synchronizhedArtifactTemplate = BackendUtils.synchronizeReferences(repository, artifactTemplateId);
+
+        assertEquals(createArtifactTemplateWithSingleReferenceToAnUrl(), synchronizhedArtifactTemplate);
+    }
+
+    @Test
+    public void synchronizeReferencesDoesNontRemoveExistantFileAndDoesNotRemoveUrls() throws Exception {
+        ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId("http://example.org", "test-artifact-template", false);
+
+        // alternative test implementation: Use git-based repository
+        // this test at hand is closer to the implementation, but easier to write
+
+        IGenericRepository repository = mock(IGenericRepository.class);
+        ArtifactTemplateFilesDirectoryId artifactTemplateFilesDirectoryId = new ArtifactTemplateFilesDirectoryId(artifactTemplateId);
+
+        SortedSet<RepositoryFileReference> containedReferences = new TreeSet<>();
+        RepositoryFileReference repositoryFileReference = new RepositoryFileReference(artifactTemplateId, "exists.txt");
+        containedReferences.add(repositoryFileReference);
+
+        when(repository.getContainedFiles(artifactTemplateFilesDirectoryId)).thenReturn(containedReferences);
+
+        TArtifactTemplate artifactTemplate = createArtifactTemplateWithReferenceToAnUrlAndExistentFile();
+        when(repository.getElement(artifactTemplateId)).thenReturn(artifactTemplate);
+        TArtifactTemplate synchronizhedArtifactTemplate = BackendUtils.synchronizeReferences(repository, artifactTemplateId);
+
+        assertEquals(createArtifactTemplateWithReferenceToAnUrlAndExistentFile(), synchronizhedArtifactTemplate);
+    }
 }

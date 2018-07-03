@@ -147,7 +147,7 @@ public class RestUtils {
      * http://www.w3.org/TR/xml/#NT-Name
      */
     public static XmlId createXMLid(String name) {
-        return new XmlId(RestUtils.createXMLidAsString(name), false);
+        return new XmlId(RestUtils.createXmlIdAsString(name), false);
     }
 
     /**
@@ -159,7 +159,7 @@ public class RestUtils {
      * TODO: this method seems to be equal to {@link Util#makeNCName(java.lang.String)}. The methods should be merged
      * into one.
      */
-    public static String createXMLidAsString(String name) {
+    public static String createXmlIdAsString(String name) {
         String id = name;
         if (!id.substring(0, 1).matches(RestUtils.REGEX_NCNAMESTARTCHAR)) {
             id = "-".concat(id);

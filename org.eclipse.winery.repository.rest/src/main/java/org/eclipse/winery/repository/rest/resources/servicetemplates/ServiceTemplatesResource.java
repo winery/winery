@@ -13,10 +13,28 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates;
 
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataBodyPart;
-import com.sun.jersey.multipart.FormDataParam;
-import io.swagger.annotations.Api;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.JAXBException;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TTag;
@@ -27,30 +45,21 @@ import org.eclipse.winery.repository.rest.resources._support.AbstractComponentIn
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithoutTypeReferenceResource;
 import org.eclipse.winery.repository.rest.resources._support.CreateFromArtifactApiData;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import javax.xml.bind.JAXBException;
-import javax.xml.namespace.QName;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataBodyPart;
+import com.sun.jersey.multipart.FormDataParam;
+import io.swagger.annotations.Api;
 
 @Api(tags = "Service Templates")
 public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeReferenceResource<ServiceTemplateResource> {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ServiceTemplatesResource.class);
-	@GET
-	@Path("createfromartifact")
-	@Produces(MediaType.APPLICATION_JSON)
-	public CreateFromArtifactApiData getCreateFromArtifactData() {
-		Set<QName> artifactTypes = new HashSet<QName>();
-		Set<QName> infrastructureNodeTypes = new HashSet<QName>();
-		Collection<AbstractComponentInstanceResource> templates = this.getAll();
+
+    @GET
+    @Path("createfromartifact")
+    @Produces(MediaType.APPLICATION_JSON)
+    public CreateFromArtifactApiData getCreateFromArtifactData() {
+        Set<QName> artifactTypes = new HashSet<QName>();
+        Set<QName> infrastructureNodeTypes = new HashSet<QName>();
+        Collection<AbstractComponentInstanceResource> templates = this.getAll();
 
         for (AbstractComponentInstanceResource resource : templates) {
             if (resource instanceof ServiceTemplateResource) {

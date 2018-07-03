@@ -111,6 +111,6 @@ public abstract class TestWithGitBackedRepository {
         instanceState.setState("mySuperExtraStateWhichNobodyWouldHaveGuessed");
         states.getInstanceState().add(instanceState);
         element.setInstanceStates(states);
-        BackendUtils.persist(id, element);
+        BackendUtils.persist(repo, id, element);
     }
 }

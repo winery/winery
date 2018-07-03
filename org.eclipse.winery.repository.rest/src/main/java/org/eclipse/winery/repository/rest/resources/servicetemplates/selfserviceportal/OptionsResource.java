@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,19 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates.selfserviceportal;
 
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataBodyPart;
-import com.sun.jersey.multipart.FormDataParam;
-import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.model.selfservice.ApplicationOption;
-import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
-import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
-import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.InputStream;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -34,8 +23,21 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import java.io.InputStream;
-import java.util.List;
+
+import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.model.selfservice.ApplicationOption;
+import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
+import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
+import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
+
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataBodyPart;
+import com.sun.jersey.multipart.FormDataParam;
+import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OptionsResource extends EntityWithIdCollectionResource<OptionResource, ApplicationOption> {
 
@@ -84,7 +86,7 @@ public class OptionsResource extends EntityWithIdCollectionResource<OptionResour
         }
         ApplicationOption option = new ApplicationOption();
 
-        String id = RestUtils.createXMLidAsString(name);
+        String id = RestUtils.createXmlIdAsString(name);
 
         String fileNamePrefix = OptionResource.getFileNamePrefix(id);
         String iconFileName = fileNamePrefix + OptionResource.ICON_JPG;
