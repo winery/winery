@@ -44,7 +44,7 @@ export class InstanceService {
 
         switch (this.toscaComponent.toscaType) {
             case ToscaTypes.NodeType:
-                subMenu = ['README', 'LICENSE', 'Visual Appearance', 'Instance States', 'Interfaces', 'Implementations',
+                subMenu = ['README', 'LICENSE', 'Visual Appearance', 'Instance States', 'Interfaces', 'Implementations', 'Tags',
                     'Requirement Definitions', 'Capability Definitions', 'Properties Definition',
                     'Inheritance', 'Documentation', 'XML'];
                 break;
