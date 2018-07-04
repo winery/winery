@@ -119,8 +119,6 @@
                                     ],
                                     "otherAttributes": {
                                     },
-                                    "properties": {
-                                    },
                                     "type": "{http://plain.winery.opentosca.org/capabilitytypes}CapabilityTypeWithXmlElementProperty",
                                     "name": "CapabilityDefinition-CapabilityTypeWithXmlElementProperty"
                                 }
