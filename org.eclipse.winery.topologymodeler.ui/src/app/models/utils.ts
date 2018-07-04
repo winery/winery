@@ -70,12 +70,12 @@ export class Utils {
         );
     }
 
-    static createTRelationshipTemplateFromObject(relationship: TRelationshipTemplate, relIdCount: number, state?: DifferenceStates) {
+    static createTRelationshipTemplateFromObject(relationship: TRelationshipTemplate, state?: DifferenceStates) {
         return new TRelationshipTemplate(
             relationship.sourceElement,
             relationship.targetElement,
             relationship.name,
-            'con_' + relIdCount.toString(),
+            relationship.id,
             relationship.type,
             relationship.documentation,
             relationship.any,

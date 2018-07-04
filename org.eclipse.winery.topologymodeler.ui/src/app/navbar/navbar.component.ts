@@ -186,24 +186,24 @@ export class NavbarComponent implements OnDestroy {
      */
     saveTopologyTemplateToRepository() {
         // Initialization
-        let topologySkeleton = {
+        const topologySkeleton = {
             documentation: [],
             any: [],
             otherAttributes: {},
             relationshipTemplates: [],
             nodeTemplates: []
         };
-        // subsciption first
-        this.backendService.serviceTemplate$.subscribe(data => {
-            topologySkeleton = data;
-        });
         // Prepare for saving by updating the existing topology with the current topology state inside the Redux store
         topologySkeleton.nodeTemplates = this.unformattedTopologyTemplate.nodeTemplates;
         topologySkeleton.relationshipTemplates = this.unformattedTopologyTemplate.relationshipTemplates;
+        topologySkeleton.relationshipTemplates.map(relationship => {
+            delete relationship.state;
+        });
         // remove the 'Color' field from all nodeTemplates as the REST Api does not recognize it.
         topologySkeleton.nodeTemplates.map(nodeTemplate => {
             delete nodeTemplate.color;
             delete nodeTemplate.imageUrl;
+            delete nodeTemplate.state;
         });
         const topologyToBeSaved = topologySkeleton;
         console.log(topologyToBeSaved);

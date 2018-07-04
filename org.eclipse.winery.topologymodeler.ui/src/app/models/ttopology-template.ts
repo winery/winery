@@ -118,16 +118,25 @@ export class TNodeTemplate extends AbstractTTemplate {
     }
 }
 
-/**
- * This is the datamodel for the Entity Types
- */
-export class EntityType {
+export class Entity {
     constructor(public id: string,
                 public qName: string,
                 public name: string,
-                public namespace: string,
+                public namespace: string) {
+    }
+}
+
+/**
+ * This is the datamodel for the Entity Types
+ */
+export class EntityType extends Entity {
+    constructor(id: string,
+                qName: string,
+                name: string,
+                namespace: string,
                 public color?: string,
                 public full?: any) {
+        super(id, qName, name, namespace);
     }
 }
 
