@@ -4,7 +4,14 @@ language: java
 jdk:
   - oraclejdk8
 
-#We build at Ubuntu 14.04 (Trusty Thar) as we want to use a more recent Ubuntu version
+env:
+  - TERM=dumb
+
+# We build at Ubuntu 14.04 (Trusty Thar) as we want to use a more recent Ubuntu version
+# These settings are required, because
+#   - we enabled travis building around 2015
+#   - travis ensures backward compatibility
+#   - new projects have different default settings than old projects
 sudo: required
 dist: trusty
 
