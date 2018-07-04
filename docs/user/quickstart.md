@@ -1,13 +1,22 @@
 # Quickstart
 
+These steps ensure that
+
+- You have a set of TOSCA definitions
+- Winery sees that TOSCA definitions when you start it.
+
 ## Windows
+
+Winery has built-in "magic" to check for existance of `C:\winery-repository`.
+If that directory exists, this is used as repository location.
+If that directory does not exists, it uses the home directory, which is `%HOME%` defaulting to `C:\Users\USERNAME\winery-repository`.
 
 1. Ensure that git and [git-lfs](https://git-lfs.github.com/) are installed.
     1. Installation using [chocolatey](https://chocolatey.org/): `choco install git git-lfs`
     1. Manual installation:
         - Download git installer form <https://git-scm.com/downloads> and execute it.
         - Download git-lfs installer from <https://git-lfs.github.com/> and execute it.
-1. Make repository available
+1. Make repository available.
     1. `mkdir c:\winery-repository`
     2. `cd c:\winery-repository`
     2. `git config --global core.longpaths true` to enable long paths. Works perfectly on Windows.
@@ -20,6 +29,8 @@
        If you do `git checkout master`, you are seeing the [OpenTOSCA TOSCA Definitions repository](https://github.com/OpenTOSCA/tosca-definitions/).
 
 ## Mac OS X
+
+Winery stores its repository at `~/winery-repository`.
 
 This howto is currently incomplete.
 
