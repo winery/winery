@@ -55,12 +55,12 @@ If this goes wrong at the first run, execute `mvn package -DskipTests` a second 
     1. Go to "Compiler"
     1. Click on "Configure annotations..."
     1. At "Nullable annotations", click on the plus
-    1. Search for `org.eclipse.jdt.annotation.NonNull`  
-       ![](graphics/config-nonnull-annotation.png)
+    1. Search for `org.eclipse.jdt.annotation.Nullable`  
+       ![](graphics/config-nullable-annotation.png)
     1. Double click it
     1. At "NotNull annotations", click on the plus.
-    1. Search for `org.eclipse.jdt.annotation.Null`  
-       ![](graphics/config-nullable-annotation.png)
+    1. Search for `org.eclipse.jdt.annotation.NonNull`  
+       ![](graphics/config-nonnull-annotation.png)
     1. Double click it
     1. Click OK
     1. Click OK
