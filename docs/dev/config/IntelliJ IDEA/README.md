@@ -47,7 +47,7 @@ If this goes wrong at the first run, execute `mvn package -DskipTests` a second 
        - Increase `Separator before/after Length` to `81`
        - ![GitAutoCheck](graphics/CopyrightFormat.png)
     8. Press "OK"
-5. Configure Non-Null annotations properly 
+5. Configure Non-Null annotations properly  
    This is required for the [IntelliJ code inspections](https://www.jetbrains.com/help/idea/running-inspections.html) to run properly.
     1. Open the Settings (by pressing <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>S</kbd>)
     1. Search for "null"
@@ -96,6 +96,24 @@ If this goes wrong at the first run, execute `mvn package -DskipTests` a second 
     1. Choose `package.json` of "org.eclipse.winery.workflowmodeler"
     1. Use `ng` as script
     1. Use `serve` as arguments
+6. Setup XSD validation for TOSCA files
+    1. Open the Settings (by pressing <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>S</kbd>)
+    1. Go to "Languages & Frameworks"
+    1. Select "Schemas and DTDs"
+    1. Click on the plus on the right at "External Schemas and DTDs"
+    1. Enter `http://docs.oasis-open.org/tosca/ns/2011/12` as URI
+    1. In "Project Schemas" search for `TOSCA-v1.0.xsd`.
+       It should be located at "org.eclipse.winery.common".  
+       In the case of opening `C:\winery-repository` in IntelliJ, you have to select enter `C:\git-repositories\winery\org.eclipse.winery.common\src\main\resources\TOSCA-v1.0.xsd` in the Field "File"
+    1. Click "OK".
+    1. Go to "Editor"
+    1. Select "File Types"
+    1. At "Recognized File Types", scroll down to XML
+    1. Select "XML"
+    1. At "Registered Patterns", click on the Plus
+    1. Enter `*.tosca` in the popup.
+    1. Click "OK"
+    1. Click "OK"
 6. Optional: In case you do not want to have the live-update of Angular, you build the wars of the UI and then deploy as follows:
     - External artifact `.../org.eclipse.winery.repository.ui/target/winery-ui.war` to `/`
     - External artifact `.../org.eclipse.winery.workflowmodeler/target/winery-workflowmodeler.war` to `/winery-workflowmodeler`
@@ -112,6 +130,21 @@ If this goes wrong at the first run, execute `mvn package -DskipTests` a second 
   - Select "Repository UI". Click on "Play"
   - Select "Topolgoy Modeler". Click on "Play".
   - Open "http://localhost:4200" in your browser.
+10. Demonstration: Open winery-repository (AKA tosca-definitions) in IntelliJ  
+    This ensures that you can work with the TOSCA files using the IDE.
+    1. Go to File -> Open...
+    1. Enter `C:\winery-repository`
+    1. Click "OK"
+    1. At the dialog "Open Project" choose "New Window"
+    1. Expand `winery-repository` (on the left side)
+    1. Expand `nodetypes`
+    1. Exapnd `http%3A%2F%2Fplain.winery.opentosca.org%2Fnodetypes`
+    1. Expand `NodeTypeWithTwoKVProperties`
+    1. Double click `NodeType.tosca`
+    1. Go to line 14
+    1. Type in `<`
+    1. See that `<tosca:CapabilityDefinitions` and other `tosca` elements are proposed
+    1. No further action required. You can close the window.
 
 ## Further Remarks
 
