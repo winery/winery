@@ -78,9 +78,9 @@
             <param-value>true</param-value>
         </init-param>
 
-        <!-- performance boost at startup -->
+        <!-- performance boost at startup by disabling WADL generation -->
         <init-param>
-            <param-name>jersey.config.server.wadl.disableWadl</param-name>
+            <param-name>com.sun.jersey.config.feature.DisableWADL</param-name>
             <param-value>true</param-value>
         </init-param>
 
