@@ -11,55 +11,33 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {AfterContentInit, AfterViewInit, Component, ContentChild, HostBinding, Input} from '@angular/core';
-import {isNullOrUndefined} from 'util';
-import {WineryModalFooterComponent} from './winery.modal.footer.component';
-import {WineryModalHeaderComponent} from './winery.modal.header.component';
-import {ModalDirective} from 'ngx-bootstrap';
-import {WineryModalSize} from './wineryModalSize';
+import { AfterContentInit, AfterViewInit, Component, ContentChild, HostBinding, Input } from '@angular/core';
+import { deprecate, isNullOrUndefined } from 'util';
+import { WineryModalFooterComponent } from './winery.modal.footer.component';
+import { WineryModalHeaderComponent } from './winery.modal.header.component';
+import { ModalDirective } from 'ngx-bootstrap';
+import { WineryModalSize } from './wineryModalSize';
 
 /**
- * This component provides a generic modal component for any kind of pop-ups.
- * To use it, the {@link WineryModalModule} must be imported in the corresponding module.
- *
- * In order to use this component, see the following example, note that the <code>modalRef</code> must be set.
- * For further information, see the sub-components {@link WineryModalHeaderComponent}, {@link WineryModalBodyComponent},
- * and {@link WineryModalFooterComponent}.
- *
- * <label>Inputs</label>
- * <ul>
- *     <li><code>modalRef</code> The modalRef must be set, otherwise the component will not work!
- *     </li>
- *     <li><code>size</code>
- *     </li>
- *     <li><code>keyboard</code>
- *     </li>
- *     <li><code>backdrop</code>
- *     </li>
- * </ul>
- *
- * @example <caption>Short Example</caption>
- * ```html
- * <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
- *     <winery-modal-header [title]="'Delete Property'">
- *     </winery-modal-header>
+ * @deprecated
+ * This component should not be used anymore
+ * Please use <ng-template> and the BsModalService to show a modal (e.g. plan.component.ts).
+ * @example
+ * <ng-template #removeElementModal>
+ *     <winery-modal-header [modalRef]="removeElementModalRef" [title]="modalTitle"></winery-modal-header>
  *     <winery-modal-body>
- *         <p *ngIf="elementToRemove != null">
- *         Do you want to delete the Element
- *             <span style="font-weight:bold;">{{ elementToRemove.key }}</span>?
- *         </p>
+ *         <p>Test</p>
  *     </winery-modal-body>
- *     <winery-modal-footer (onOk)="removeConfirmed();"
- *                          [closeButtonLabel]="'Cancel'"
- *                          [okButtonLabel]="'Delete'">
- *     </winery-modal-footer>
- * </winery-modal>
- * ```
+ *     <winery-modal-footer [modalRef]="removeElementModalRef"
+ *              [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Delete'"
+ *              (onOk)="onRemoveElement()"></winery-modal-footer>
+ *</ng-template>
  */
 @Component({
     selector: 'winery-modal',
     templateUrl: 'winery.modal.component.html',
 })
+
 export class WineryModalComponent implements AfterViewInit, AfterContentInit {
 
     @Input() modalRef: ModalDirective;

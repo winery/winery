@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,14 +11,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {CommonModule} from '@angular/common';
-import {NgModule} from '@angular/core';
-import {BrowserModule} from '@angular/platform-browser';
-import {ModalModule} from 'ngx-bootstrap';
-import {WineryModalBodyComponent} from './winery.modal.body.component';
-import {WineryModalComponent} from './winery.modal.component';
-import {WineryModalFooterComponent} from './winery.modal.footer.component';
-import {WineryModalHeaderComponent} from './winery.modal.header.component';
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { ModalModule } from 'ngx-bootstrap';
+import { WineryModalBodyComponent } from './winery.modal.body.component';
+import { WineryModalComponent } from './winery.modal.component';
+import { WineryModalFooterComponent } from './winery.modal.footer.component';
+import { WineryModalHeaderComponent } from './winery.modal.header.component';
 
 /**
  * This module must be imported in order to use the {@link WineryModalComponent}. Documentation on how to use
