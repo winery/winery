@@ -17,19 +17,21 @@ For the general setup, please go to [ToolChain-initialization](ToolChain-initial
 
 ## Steps for working on a topic
 
-  1. Create a new branch for each topic (fix a bug, add functionality) and name it accordingly.
-     - Thesis: `thesis/SHORT-THESIS-TITLE`. Replace `SHORT-THESIS-TITLE` with something meaningful
-     - EnPro: prefix `fix`, `feature`, `wip` (see below) with `enpro/`
-     - StuPro: prefix `fix`, `feature`, `wip` (see below) with `stupro/`
-     - Bugfix: `fix/issue-NNN` or `fix/SHORT-TITLE` if fixing an issue with a number or give it a title
-     - Feature: `feature/issue-NNN` or `feature/SHORT-TITLE`
-     - WIP: `wip/SHORT-TITLE` for work in progress without issue and you know won't be finished soon
-  2. Sync with latest changes on origin (especially master branch): `git fetch origin`.
+Main idea: Separate  branch for each topic (fix a bug, add functionality) and accordingly named.
+See <https://guides.github.com/introduction/flow/index.html> for more information.
+
+  1. Sync with latest changes on upstream (especially master branch): `git fetch upstream --prune`.
   3. Create branch based on `upstream/master` and make it known publicly:
      - `git checkout upstream/master`
-     - `git checkout -b [name]`
+     - `git checkout -b [name]`  
+        Branch naming patterns:
+          - Bugfix: `fix/SHORT-TITLE`, e.g., `fix/deletion-of-namespaces`
+          - Feature: `feature/SHORT-TITLE`, e.g., `feature/drag-and-drop-for-bpmn4tosca`
+          - Thesis: `thesis/SHORT-THESIS-TITLE`. Replace `SHORT-THESIS-TITLE` with something meaningful, e.g., `thesis/versioning`
+          - EnPro: prefix `fix` or `feature` (see above) with `enpro/`, e.g., `enpro/fix/policy-rendering`
+          - StuPro: prefix `fix` or `feature` (see below) with `stupro/`, e.g., `stupro/feature/github-oauth`
      - `git push --set-upstream origin [name]`
-  4. Do you your fist commit. Don't forget to sign the commit (<kbd>Ctrl</kbd>+<kbd>S</kbd> in Git Gui).
+  4. Do you your fist commit. Don't forget to sign-off the commit (<kbd>Ctrl</kbd>+<kbd>S</kbd> in Git Gui).
   6. Push the changes to origin: `git push`.
   7. Create [WIP] Pull Request.
      - Go to <https://github.com/opentosca/winery> 🡒 Pull Request
