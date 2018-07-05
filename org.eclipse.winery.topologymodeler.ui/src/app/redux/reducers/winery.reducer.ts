@@ -33,7 +33,7 @@ export interface WineryState {
 }
 
 export const INITIAL_WINERY_STATE: WineryState = {
-    currentPaletteOpenedState: false,
+    currentPaletteOpenedState: true,
     hideNavBarAndPaletteState: false,
     sidebarContents: {
         sidebarVisible: false,
