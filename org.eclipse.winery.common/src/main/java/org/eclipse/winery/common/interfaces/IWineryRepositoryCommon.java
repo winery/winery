@@ -71,6 +71,9 @@ public interface IWineryRepositoryCommon {
      * with an empty element is generated
      *
      * @param id the DefinitionsChildId to load
+     * @return the definitions belonging to the id
+     *
+     * @throws IllegalStateException if repository cannot provide the content (e.g., due to file reading errors)
      */
     Definitions getDefinitions(DefinitionsChildId id);
 
@@ -163,6 +166,7 @@ public interface IWineryRepositoryCommon {
      *
      * @param template the template to determine the type for
      * @throws NullPointerException if template.getType() returns null
+     * @throws IllegalStateException if repository cannot provide the content (e.g., due to file reading errors)
      */
     // we suppress "unchecked" as we use Class.forName
     @SuppressWarnings("unchecked")
