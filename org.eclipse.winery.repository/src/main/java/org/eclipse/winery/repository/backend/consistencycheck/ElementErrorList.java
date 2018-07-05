@@ -52,4 +52,13 @@ public class ElementErrorList {
     public String getToscaType() {
         return toscaType;
     }
+
+    @Override
+    public String toString() {
+        return "ElementErrorList{" +
+            "toscaType='" + toscaType + '\'' +
+            ", errors=" + errors +
+            ", warnings=" + warnings +
+            '}';
+    }
 }

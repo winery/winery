@@ -79,14 +79,16 @@ public class ConsistencyChecker {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsistencyChecker.class);
     private static final String ARTEFACT_BE = "artefact";
 
-    public static ConsistencyErrorLogger checkCorruption(ConsistencyCheckerConfiguration configuration) {
+    public static @NonNull
+    ConsistencyErrorLogger checkCorruption(@NonNull ConsistencyCheckerConfiguration configuration) {
         ConsistencyCheckerProgressListener listener = new ConsistencyCheckerProgressListener() {
         };
         return checkCorruption(configuration, listener);
     }
 
-    public static ConsistencyErrorLogger checkCorruption(ConsistencyCheckerConfiguration configuration,
-                                                         ConsistencyCheckerProgressListener progressListener) {
+    public static @NonNull
+    ConsistencyErrorLogger checkCorruption(@NonNull ConsistencyCheckerConfiguration configuration,
+                                           @NonNull ConsistencyCheckerProgressListener progressListener) {
         Set<DefinitionsChildId> allDefinitionsChildIds = configuration.getRepository().getAllDefinitionsChildIds();
         if (configuration.isServiceTemplatesOnly()) {
             allDefinitionsChildIds = allDefinitionsChildIds.stream().filter(id -> id instanceof ServiceTemplateId).collect(Collectors.toSet());
@@ -136,13 +138,28 @@ public class ConsistencyChecker {
     }
 
     private static void checkServiceTemplate(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, ServiceTemplateId id) {
-        final TServiceTemplate serviceTemplate = configuration.getRepository().getElement(id);
+        TServiceTemplate serviceTemplate;
+        try {
+            serviceTemplate = configuration.getRepository().getElement(id);
+        } catch (IllegalStateException e) {
+            LOGGER.debug("Illegal State Exception during reading of id {}", id.toReadableString(), e);
+            printAndAddError(errorLogger, configuration.getVerbosity(), id, "Reading error " + e.getMessage());
+            return;
+        }
         if (serviceTemplate.getTopologyTemplate() == null) {
             return;
         }
         @NonNull final List<TNodeTemplate> nodeTemplates = serviceTemplate.getTopologyTemplate().getNodeTemplates();
         for (TNodeTemplate nodeTemplate : nodeTemplates) {
-            final TNodeType nodeType = configuration.getRepository().getElement(new NodeTypeId(nodeTemplate.getType()));
+            NodeTypeId nodeTypeId = new NodeTypeId(nodeTemplate.getType());
+            TNodeType nodeType;
+            try {
+                nodeType = configuration.getRepository().getElement(nodeTypeId);
+            } catch (IllegalStateException e) {
+                LOGGER.debug("Illegal State Exception during reading of id {}", nodeTypeId.toReadableString(), e);
+                printAndAddError(errorLogger, configuration.getVerbosity(), nodeTypeId, "Reading error " + e.getMessage());
+                return;
+            }
             final WinerysPropertiesDefinition winerysPropertiesDefinition = nodeType.getWinerysPropertiesDefinition();
             if (winerysPropertiesDefinition != null) {
                 PropertyDefinitionKVList list = winerysPropertiesDefinition.getPropertyDefinitionKVList();
@@ -167,7 +184,14 @@ public class ConsistencyChecker {
 
     private static void checkReferencedQNames(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id) {
         if (id instanceof EntityTypeId) {
-            final TEntityType entityType = (TEntityType) configuration.getRepository().getDefinitions(id).getElement();
+            TEntityType entityType;
+            try {
+                entityType = (TEntityType) configuration.getRepository().getDefinitions(id).getElement();
+            } catch (IllegalStateException e) {
+                LOGGER.debug("Illegal State Exception during reading of id {}", id.toReadableString(), e);
+                printAndAddError(errorLogger, configuration.getVerbosity(), id, "Reading error " + e.getMessage());
+                return;
+            }
             final TEntityType.PropertiesDefinition propertiesDefinition = entityType.getPropertiesDefinition();
             if (propertiesDefinition != null) {
                 @Nullable final QName element = propertiesDefinition.getElement();
@@ -221,12 +245,28 @@ public class ConsistencyChecker {
 
     private static void checkPropertiesValidation(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id) {
         if (id instanceof EntityTemplateId) {
-            TEntityTemplate entityTemplate = (TEntityTemplate) configuration.getRepository().getDefinitions(id).getElement();
+            TEntityTemplate entityTemplate;
+            try {
+                // TEntityTemplate is abstract. IRepository does not offer getElement for abstract ids
+                // Therefore, we have to use the detour through getDefinitions
+                entityTemplate = (TEntityTemplate) configuration.getRepository().getDefinitions((EntityTemplateId) id).getElement();
+            } catch (IllegalStateException e) {
+                LOGGER.debug("Illegal State Exception during reading of id {}", id.toReadableString(), e);
+                printAndAddError(errorLogger, configuration.getVerbosity(), id, "Reading error " + e.getMessage());
+                return;
+            }
             if (Objects.isNull(entityTemplate.getType())) {
                 // no printing necessary; type consistency is checked at other places
                 return;
             }
-            final TEntityType entityType = configuration.getRepository().getTypeForTemplate(entityTemplate);
+            TEntityType entityType;
+            try {
+                entityType = configuration.getRepository().getTypeForTemplate(entityTemplate);
+            } catch (IllegalStateException e) {
+                LOGGER.debug("Illegal State Exception during getting type for template {}", entityTemplate.getId(), e);
+                printAndAddError(errorLogger, configuration.getVerbosity(), id, "Reading error " + e.getMessage());
+                return;
+            }
             final WinerysPropertiesDefinition winerysPropertiesDefinition = entityType.getWinerysPropertiesDefinition();
             final TEntityType.PropertiesDefinition propertiesDefinition = entityType.getPropertiesDefinition();
             if ((winerysPropertiesDefinition != null) || (propertiesDefinition != null)) {
@@ -342,22 +382,30 @@ public class ConsistencyChecker {
             } catch (ArchiveException e) {
                 LOGGER.debug("Error during checking ZIP", e);
                 printAndAddError(errorLogger, verbosity, id, "Invalid zip file: " + e.getMessage());
+                return;
             } catch (JAXBException e) {
                 LOGGER.debug("Error during checking ZIP", e);
                 printAndAddError(errorLogger, verbosity, id, "Some XML could not be parsed: " + e.getMessage() + " " + e.toString());
+                return;
             } catch (IOException e) {
                 LOGGER.debug("Error during checking ZIP", e);
                 printAndAddError(errorLogger, verbosity, id, "I/O error: " + e.getMessage());
+                return;
             } catch (RepositoryCorruptException e) {
                 LOGGER.debug("Repository is corrupt", e);
                 printAndAddError(errorLogger, verbosity, id, "Corrupt: " + e.getMessage());
+                return;
+            } catch (Exception e) {
+                printAndAddError(errorLogger, verbosity, id, e.getMessage());
+                return;
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             final String error = "Could not write to temp CSAR file";
             LOGGER.debug(error, e);
             printAndAddError(errorLogger, verbosity, id, error);
             return;
         }
+
         try (InputStream inputStream = Files.newInputStream(tempCsar);
              ZipInputStream zis = new ZipInputStream(inputStream)) {
             ZipEntry entry;
@@ -366,7 +414,7 @@ public class ConsistencyChecker {
                     printAndAddError(errorLogger, verbosity, id, "Empty filename in zip file");
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             final String error = "Could not read from temp CSAR file";
             LOGGER.debug(error, e);
             printAndAddError(errorLogger, verbosity, id, error);
