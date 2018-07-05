@@ -21,6 +21,7 @@ If that directory does not exists, it uses the home directory, which is `%HOME%`
     2. `cd c:\winery-repository`
     2. `git config --global core.longpaths true` to enable long paths. Works perfectly on Windows.
     3. `git clone https://github.com/winery/test-repository.git .` to clone the [test repository](https://github.com/winery/test-repository).
+    3. Execute `git lfs install`
     4. Uni Stuttgart developers:
         1. `git remote add tosca-definitions-internal https://github.com/OpenTOSCA/tosca-definitions-internal/` to make the [tosca-definitions-internal](https://github.com/OpenTOSCA/tosca-definitions-internal/) known.
         1. `git fetch tosca-definitions-internal` - to fetch the tosca-definitions repository
