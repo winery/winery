@@ -13,23 +13,39 @@
  ********************************************************************************/
 package org.eclipse.winery.cli;
 
-import me.tongfei.progressbar.ProgressBar;
-import me.tongfei.progressbar.ProgressBarStyle;
-import org.apache.commons.cli.*;
-import org.eclipse.winery.repository.backend.IRepository;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.consistencycheck.*;
-import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
-
-import javax.xml.namespace.QName;
 import java.nio.file.Paths;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyChecker;
+import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerConfiguration;
+import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerProgressListener;
+import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerVerbosity;
+import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyErrorLogger;
+import org.eclipse.winery.repository.backend.consistencycheck.ElementErrorList;
+import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
+import org.eclipse.winery.repository.rest.server.WineryUsingHttpServer;
+
+import me.tongfei.progressbar.ProgressBar;
+import me.tongfei.progressbar.ProgressBarStyle;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.eclipse.jetty.server.Server;
+
 public class WineryCli {
 
     public static void main(String[] args) throws ParseException {
+        Option startServerOption = new Option("s", "server", false, "start a HTTP REST API server on port 8080. Has to be terminated by Ctrl+C.");
         Option repositoryPathOption = new Option("p", "path", true, "use given path as repository path");
         Option serviceTemplatesOnlyOption = new Option("so", "servicetemplatesonly", false, "checks service templates instead of the whole repository");
         Option checkDocumentationOption = new Option("cd", "checkdocumentation", false, "check existence of README.md and LICENSE. Default: No check");
@@ -37,6 +53,7 @@ public class WineryCli {
         Option helpOption = new Option("h", "help", false, "prints this help");
 
         Options options = new Options();
+        options.addOption(startServerOption);
         options.addOption(repositoryPathOption);
         options.addOption(serviceTemplatesOnlyOption);
         options.addOption(checkDocumentationOption);
@@ -57,8 +74,32 @@ public class WineryCli {
         } else {
             repository = RepositoryFactory.getRepository();
         }
-        System.out.println("Using repository path " + ((FilebasedRepository) repository).getRepositoryRoot() + "...");
+        if (repository instanceof FilebasedRepository) {
+            System.out.println("Using repository path " + ((FilebasedRepository) repository).getRepositoryRoot() + "...");
+        } else {
+            System.out.println("Using non-filebased repository");
+        }
 
+        if (line.hasOption("s")) {
+            startServer();
+        } else {
+            doConsistencyCheck(line, repository);
+        }
+    }
+
+    private static void startServer() {
+        Server server = WineryUsingHttpServer.createHttpServer();
+        try {
+            server.start();
+            System.out.println("Winery HTTP-based REST API available at http://localhost:8080/winery\n");
+            server.join();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    private static void doConsistencyCheck(CommandLine line, IRepository repository) {
         EnumSet<ConsistencyCheckerVerbosity> verbosity;
         if (line.hasOption("v")) {
             verbosity = EnumSet.of(
