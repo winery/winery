@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,23 +13,25 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.io.IOUtils;
-import org.apache.tika.mime.MediaType;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
+
+import javax.xml.bind.Unmarshaller;
+
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.JAXBSupport;
+
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.io.IOUtils;
+import org.apache.tika.mime.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.xml.bind.Unmarshaller;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
 
 /**
  * Provides basic implementations for {@link IRepository}
@@ -119,7 +121,7 @@ public abstract class AbstractRepository implements IRepository {
             Unmarshaller u = JAXBSupport.createUnmarshaller();
             return (Definitions) u.unmarshal(is);
         } catch (Exception e) {
-            LOGGER.error("Could not read content from file " + ref, e);
+            LOGGER.error("Could not read content from file {}", ref, e);
             throw new IllegalStateException(e);
         }
     }
