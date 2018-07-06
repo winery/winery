@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,27 +13,70 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.importing;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.tika.mime.MediaType;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.XmlId;
-import org.eclipse.winery.common.ids.definitions.*;
+import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.common.ids.definitions.EntityTypeId;
+import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFile;
 import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileParser;
-import org.eclipse.winery.model.tosca.*;
+import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactReference.Exclude;
 import org.eclipse.winery.model.tosca.TArtifactReference.Include;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactTemplate.ArtifactReferences;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDefinitions.Types;
+import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition;
+import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TImport;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlan.PlanModelReference;
+import org.eclipse.winery.model.tosca.TPlans;
+import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
@@ -51,28 +94,14 @@ import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.export.CsarExporter;
+
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.tika.mime.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
-
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
 import static java.nio.file.FileVisitResult.SKIP_SUBTREE;
@@ -435,6 +464,9 @@ public class CsarImporter {
                 entryServiceTemplate = Optional.of((ServiceTemplateId) wid);
             }
 
+            // import license and readme files
+            importLicenseAndReadme(defsPath.getParent().getParent(), wid, tmf, errors);
+
             // node types and relationship types are subclasses of TEntityType
             // Therefore, we check the entity type separately here
             if (ci instanceof TEntityType) {
@@ -688,6 +720,21 @@ public class CsarImporter {
         if (Files.exists(file)) {
             RepositoryFileReference ref = new RepositoryFileReference(visId, fileName);
             importFile(file, ref, tmf, rootPath, errors);
+        }
+    }
+
+    private void importLicenseAndReadme(Path rootPath, DefinitionsChildId wid, TOSCAMetaFile tmf, final List<String> errors) {
+        String pathInsideRepo = Util.getPathInsideRepo(wid);
+        Path defPath = rootPath.resolve(pathInsideRepo);
+        Path readmeFile = defPath.resolve(Constants.README_FILE_NAME);
+        Path licenseFile = defPath.resolve(Constants.LICENSE_FILE_NAME);
+        if (Files.exists(readmeFile)) {
+            RepositoryFileReference ref = new RepositoryFileReference(wid, Constants.README_FILE_NAME);
+            importFile(readmeFile, ref, tmf, rootPath, errors);
+        }
+        if (Files.exists(licenseFile)) {
+            RepositoryFileReference ref = new RepositoryFileReference(wid, Constants.LICENSE_FILE_NAME);
+            importFile(licenseFile, ref, tmf, rootPath, errors);
         }
     }
 
