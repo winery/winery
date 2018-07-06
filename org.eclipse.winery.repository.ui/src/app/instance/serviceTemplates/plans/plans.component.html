@@ -98,9 +98,8 @@
     </winery-modal-footer>
 </winery-modal>
 
-
-<winery-modal bsModal #ioModal="bs-modal" [modalRef]="ioModal">
-    <winery-modal-header [title]="'Edit Parameters'">
+<ng-template #ioModal>
+    <winery-modal-header [modalRef]="ioModalRef" [title]="'Edit Parameters'">
     </winery-modal-header>
     <winery-modal-body>
         <winery-io-parameter [inputParameters]="newPlan.inputParameters.inputParameter"
@@ -108,11 +107,12 @@
         </winery-io-parameter>
     </winery-modal-body>
     <winery-modal-footer
+        [modalRef]="ioModalRef"
         (onOk)="editPlan()"
         [closeButtonLabel]="'Cancel'"
         [okButtonLabel]="'Save'">
     </winery-modal-footer>
-</winery-modal>
+</ng-template>
 
 <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
     <winery-modal-header [title]="'Delete Property'">

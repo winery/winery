@@ -24,6 +24,7 @@ import { InputParameters, OutputParameters } from '../../../wineryInterfaces/par
 import { backendBaseURL, workflowModelerURL } from '../../../configuration';
 import { InstanceService } from '../../instance.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 
 const bpmn4tosca = 'http://www.opentosca.org/bpmn4tosca';
 
@@ -67,6 +68,8 @@ export class PlansComponent implements OnInit {
     fileToUpload: any;
     uploaderUrl: string;
 
+    ioModalRef: BsModalRef;
+
     @ViewChild('addPlanModal') addPlanModal: any;
     @ViewChild('uploader') uploader: WineryUploaderComponent;
 
@@ -75,7 +78,8 @@ export class PlansComponent implements OnInit {
 
     constructor(private notify: WineryNotificationService,
                 public sharedData: InstanceService,
-                private service: PlansService) {
+                private service: PlansService,
+                private modalService: BsModalService) {
     }
 
     ngOnInit() {
@@ -116,7 +120,7 @@ export class PlansComponent implements OnInit {
         if (isNullOrUndefined(this.newPlan.outputParameters)) {
             this.newPlan.outputParameters = new OutputParameters();
         }
-        this.ioModal.show();
+        this.ioModalRef = this.modalService.show(this.ioModal);
     }
 
     onCellSelected(plan: WineryRowData) {

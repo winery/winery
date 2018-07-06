@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -32,8 +32,8 @@
     </winery-table>
 </div>
 
-<winery-modal bsModal #addIntParametersModal="bs-modal" [modalRef]="addIntParametersModal">
-    <winery-modal-header [title]="modalTitle"></winery-modal-header>
+<ng-template #addIntParametersModal>
+    <winery-modal-header [modalRef]="addIntParametersModalRef" [title]="modalTitle"></winery-modal-header>
     <winery-modal-body>
         <form #parameterForm="ngForm">
             <div class="form-group">
@@ -81,6 +81,7 @@
         </form>
     </winery-modal-body>
     <winery-modal-footer
+        [modalRef]="addIntParametersModalRef"
         (onOk)="modalTitle === 'Input Parameter'
                                 ? onAddInputParam(paramName.value, paramType.value, required.checked)
                                 : onAddOutputParam(paramName.value, paramType.value, required.checked);"
@@ -88,15 +89,16 @@
         [okButtonLabel]="'Add'"
         [disableOkButton]="!parameterForm?.form.valid">
     </winery-modal-footer>
-</winery-modal>
+</ng-template>
 
-<winery-modal bsModal #removeElementModal="bs-modal" [modalRef]="removeElementModal">
-    <winery-modal-header [title]="modalTitle"></winery-modal-header>
+<ng-template #removeElementModal>
+    <winery-modal-header [modalRef]="removeElementModalRef" [title]="modalTitle"></winery-modal-header>
     <winery-modal-body>
         <p>
             Are you sure you want to remove <span style="font-weight:bold;">{{ elementToRemove }}</span>?
         </p>
     </winery-modal-body>
-    <winery-modal-footer [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Delete'"
+    <winery-modal-footer [modalRef]="removeElementModalRef"
+                         [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Delete'"
                          (onOk)="onRemoveElement()"></winery-modal-footer>
-</winery-modal>
+</ng-template>
