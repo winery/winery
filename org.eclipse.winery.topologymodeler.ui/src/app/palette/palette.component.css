@@ -112,3 +112,8 @@ li div {
     overflow-y: scroll;
     max-height: 50vh;
 }
+
+.nodeTypeIcon {
+    width: 16px;
+    height: auto;
+}
