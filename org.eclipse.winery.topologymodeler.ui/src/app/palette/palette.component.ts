@@ -24,6 +24,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { Utils } from '../models/utils';
 import { EntityTypesModel } from '../models/entityTypesModel';
 import { NodeVisualsModel } from '../models/nodeVisualsModel';
+import { GroupedNodeTypeModel } from '../models/groupedNodeTypeModel';
+import { backendBaseURL, hostURL } from '../models/configuration';
 
 /**
  * This is the left sidebar, where nodes can be created from.
@@ -290,6 +292,15 @@ export class PaletteComponent implements OnInit, OnDestroy {
      */
     ngOnDestroy() {
         this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    }
+
+    getImageUrl(child: GroupedNodeTypeModel): string {
+        const visuals = Utils.getNodeVisualsForNodeTemplate(child.id,
+            this.entityTypes.nodeVisuals);
+
+        if (visuals.imageUrl) {
+            return hostURL + visuals.imageUrl;
+        }
     }
 }
 
