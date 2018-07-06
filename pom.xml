@@ -103,6 +103,7 @@
         <module>org.eclipse.winery.compliance</module>
         <module>org.eclipse.winery.generators.ia</module>
         <module>org.eclipse.winery.highlevelrestapi</module>
+        <module>org.eclipse.winery.tools.copybaragenerator</module>
     </modules>
     <build>
         <plugins>
