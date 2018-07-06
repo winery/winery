@@ -105,10 +105,12 @@ public class WineryUsingHttpServer {
         cors.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, "GET,PUT,POST,DELETE,HEAD,OPTIONS");
         cors.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, "X-Requested-With,Content-Type,Accept,Origin");
 
+        // this mirrors org.eclipse.winery.repository.rest\src\main\webapp\WEB-INF\web.xml
         ServletHolder h = context.addServlet(com.sun.jersey.spi.container.servlet.ServletContainer.class, "/*");
         h.setInitParameter("com.sun.jersey.config.property.packages", "org.eclipse.winery.repository.rest.resources");
         h.setInitParameter("com.sun.jersey.config.feature.FilterForwardOn404", "false");
         h.setInitParameter("com.sun.jersey.config.feature.CanonicalizeURIPath", "true");
+        h.setInitParameter("com.sun.jersey.config.feature.DisableWADL", "true");
         h.setInitParameter("com.sun.jersey.config.feature.NormalizeURI", "true");
         h.setInitParameter("com.sun.jersey.config.feature.Redirect", "true");
         h.setInitParameter("com.sun.jersey.api.json.POJOMappingFeature", "true");
