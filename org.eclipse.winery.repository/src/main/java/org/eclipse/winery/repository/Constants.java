@@ -71,4 +71,7 @@ public class Constants {
 
     public static final String DIRNAME_SELF_SERVICE_METADATA = "SELFSERVICE-Metadata";
 
+    public static final String LICENSE_FILE_NAME = "LICENSE";
+    public static final String README_FILE_NAME = "README.md";
+
 }

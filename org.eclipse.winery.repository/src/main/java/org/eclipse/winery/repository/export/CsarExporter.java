@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -137,6 +137,9 @@ public class CsarExporter {
                 Collection<DefinitionsChildId> referencedIds;
                 referencedIds = exporter.exportTOSCA(repository, currentId, zos, refMap, conf);
                 zos.closeArchiveEntry();
+
+                // for each entryId add license and readme files (if they exist) to the refMap
+                addLicenseAndReadmeFiles(repository, currentId, refMap);
 
                 exportedState.flagAsExported(currentId);
                 exportedState.flagAsExportRequired(referencedIds);
@@ -403,9 +406,9 @@ public class CsarExporter {
      * Adds all self service meta data to the targetDir
      *
      * @param repository the repository to work from
-     * @param entryId the service template to export for
-     * @param targetDir the directory in the CSAR where to put the content to
-     * @param refMap    is used later to create the CSAR
+     * @param entryId    the service template to export for
+     * @param targetDir  the directory in the CSAR where to put the content to
+     * @param refMap     is used later to create the CSAR
      */
     private void addSelfServiceMetaData(IRepository repository, ServiceTemplateId entryId, String targetDir, Map<RepositoryFileReference, String> refMap) throws IOException {
         final SelfServiceMetaDataId selfServiceMetaDataId = new SelfServiceMetaDataId(entryId);
@@ -471,6 +474,17 @@ public class CsarExporter {
             refMap.put(ref, targetDir + fileName);
         } else {
             CsarExporter.LOGGER.error("Data corrupt: pointing to non-existent file " + ref);
+        }
+    }
+
+    private void addLicenseAndReadmeFiles(IRepository repository, DefinitionsChildId entryId, Map<RepositoryFileReference, String> refMap) {
+        final RepositoryFileReference licenseRef = new RepositoryFileReference(entryId, Constants.LICENSE_FILE_NAME);
+        if (repository.exists(licenseRef)) {
+            refMap.put(licenseRef, BackendUtils.getPathInsideRepo(licenseRef));
+        }
+        final RepositoryFileReference readmeRef = new RepositoryFileReference(entryId, Constants.README_FILE_NAME);
+        if (repository.exists(readmeRef)) {
+            refMap.put(readmeRef, BackendUtils.getPathInsideRepo(readmeRef));
         }
     }
 
