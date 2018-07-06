@@ -25,7 +25,7 @@ import { Utils } from '../models/utils';
 import { EntityTypesModel } from '../models/entityTypesModel';
 import { NodeVisualsModel } from '../models/nodeVisualsModel';
 import { GroupedNodeTypeModel } from '../models/groupedNodeTypeModel';
-import { backendBaseURL, hostURL } from '../models/configuration';
+import { hostURL } from '../models/configuration';
 
 /**
  * This is the left sidebar, where nodes can be created from.
