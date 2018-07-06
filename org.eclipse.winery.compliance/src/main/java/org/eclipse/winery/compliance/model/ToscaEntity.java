@@ -13,11 +13,33 @@
  ********************************************************************************/
 package org.eclipse.winery.compliance.model;
 
-import org.jgrapht.EdgeFactory;
+import java.util.ArrayList;
+import java.util.List;
 
-public class TOSCAEdgeFactory implements EdgeFactory<TOSCANode, TOSCAEdge> {
+import org.eclipse.winery.model.tosca.TEntityType;
 
-	public TOSCAEdge createEdge(TOSCANode sourceVertex, TOSCANode targetVertex) {
-		return new TOSCAEdge(sourceVertex, targetVertex);
+public abstract class ToscaEntity {
+
+	private final List<TEntityType> types = new ArrayList<>();
+	private String id;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public List<TEntityType> getTypes() {
+		return types;
+	}
+
+	public TEntityType getActualType() {
+		return types.stream().findFirst().orElse(null);
+	}
+
+	public boolean addTEntityType(TEntityType type) {
+		return this.types.add(type);
 	}
 }

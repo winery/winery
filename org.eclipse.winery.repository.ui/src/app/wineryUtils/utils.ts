@@ -119,7 +119,7 @@ export class Utils {
                 type = 'XSD Import';
                 break;
             case ToscaTypes.ComplianceRule:
-                type = 'Constraint Rule';
+                type = 'Compliance Rule';
                 break;
             default:
                 type = 'Admin';

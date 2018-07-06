@@ -74,7 +74,7 @@ export class NavbarComponent implements OnDestroy {
             this.saveTopologyTemplateToRepository();
             return false; // Prevent bubbling
         }));
-        this.exportCsarUrl = this.backendService.topologyTemplateURL + '/?csar';
+        this.exportCsarUrl = this.backendService.serviceTemplateURL + '/?csar';
     }
 
     /**
@@ -214,7 +214,7 @@ export class NavbarComponent implements OnDestroy {
                     + res.statusText + ' ' + res.status + '</p>')
                     : this.alert.info('<p>Something went wrong! <br>' + 'Response Status: '
                     + res.statusText + ' ' + res.status + '</p>');
-            });
+            }, err => this.alert.error(err.error));
     }
 
     /**

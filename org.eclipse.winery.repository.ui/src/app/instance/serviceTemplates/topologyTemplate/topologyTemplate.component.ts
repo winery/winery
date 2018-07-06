@@ -13,11 +13,10 @@
  *******************************************************************************/
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { InstanceService } from '../../instance.service';
-import { backendBaseURL, oldTopologyModelerURL, topologyModelerURL } from '../../../configuration';
+import { backendBaseURL, topologyModelerURL } from '../../../configuration';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { WineryVersion } from '../../../wineryInterfaces/wineryVersion';
 import { ModalDirective } from 'ngx-bootstrap';
-import { ToscaComponent } from '../../../wineryInterfaces/toscaComponent';
 import { ToscaTypes } from '../../../wineryInterfaces/enums';
 import { ActivatedRoute } from '@angular/router';
 
@@ -52,6 +51,7 @@ export class TopologyTemplateComponent implements OnInit {
             + '&ns=' + encodeURIComponent(this.sharedData.toscaComponent.namespace)
             + '&id=' + this.sharedData.toscaComponent.localName;
 
+        // for declarative compliance rules add additional information to identify the location of the topologytemplate
         if (this.sharedData.toscaComponent.toscaType === ToscaTypes.ComplianceRule) {
             const elementPath = this.activatedRoute.snapshot.url[0].path;
             editorConfig += '&parentPath=' + ToscaTypes.ComplianceRule.toLocaleString()
@@ -59,7 +59,7 @@ export class TopologyTemplateComponent implements OnInit {
         }
 
         this.editorUrl = topologyModelerURL + editorConfig;
-        this.oldEditorUrl = oldTopologyModelerURL + editorConfig;
+
     }
 
     versionSelected(version: WineryVersion) {

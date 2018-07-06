@@ -23,11 +23,11 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.common.ids.definitions.EntityTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.compliance.model.TOSCAEdge;
-import org.eclipse.winery.compliance.model.TOSCAEdgeFactory;
-import org.eclipse.winery.compliance.model.TOSCAEntity;
-import org.eclipse.winery.compliance.model.TOSCAGraph;
-import org.eclipse.winery.compliance.model.TOSCANode;
+import org.eclipse.winery.compliance.model.ToscaEdge;
+import org.eclipse.winery.compliance.model.ToscaEdgeFactory;
+import org.eclipse.winery.compliance.model.ToscaEntity;
+import org.eclipse.winery.compliance.model.ToscaGraph;
+import org.eclipse.winery.compliance.model.ToscaNode;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -38,37 +38,37 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-public class TOSCATransformer {
-	public static TOSCAGraph createTOSCAGraph(TTopologyTemplate topologyTemplate) {
-		TOSCAGraph graph = new TOSCAGraph(new TOSCAEdgeFactory());
+public class ToscaTransformer {
+	public static ToscaGraph createTOSCAGraph(TTopologyTemplate topologyTemplate) {
+		ToscaGraph graph = new ToscaGraph(new ToscaEdgeFactory());
 		@NonNull List<TRelationshipTemplate> relationshipTemplates = topologyTemplate.getRelationshipTemplates();
 		@NonNull List<TNodeTemplate> nodeTemplates = topologyTemplate.getNodeTemplates();
-		Map<TNodeTemplate, TOSCANode> nodes = new HashMap<>();
+		Map<TNodeTemplate, ToscaNode> nodes = new HashMap<>();
 		for (TNodeTemplate nodeTemplate : nodeTemplates) {
-			TOSCANode node = createAndInitializeTOSCANode(nodeTemplate);
+			ToscaNode node = createAndInitializeTOSCANode(nodeTemplate);
 			nodes.put(nodeTemplate, node);
 			graph.addVertex(node);
 		}
 		for (TRelationshipTemplate tRelationshipTemplate : relationshipTemplates) {
-			TOSCAEdge edge = graph.addEdge(nodes.get(tRelationshipTemplate.getSourceElement().getRef()), nodes.get(tRelationshipTemplate.getTargetElement().getRef()));
+			ToscaEdge edge = graph.addEdge(nodes.get(tRelationshipTemplate.getSourceElement().getRef()), nodes.get(tRelationshipTemplate.getTargetElement().getRef()));
 			initializeTOSCAEdge(tRelationshipTemplate, edge);
 		}
 		return graph;
 	}
 
-	protected static void initializeTOSCAEdge(TRelationshipTemplate tRelationshipTemplate, TOSCAEdge edge) {
+	protected static void initializeTOSCAEdge(TRelationshipTemplate tRelationshipTemplate, ToscaEdge edge) {
 		edge.setTemplate(tRelationshipTemplate);
 		addTEntityTypes(tRelationshipTemplate.getType(), edge, TRelationshipType.class);
 	}
 
-	protected static TOSCANode createAndInitializeTOSCANode(TNodeTemplate nodeTemplate) {
-		TOSCANode node = new TOSCANode();
+	protected static ToscaNode createAndInitializeTOSCANode(TNodeTemplate nodeTemplate) {
+		ToscaNode node = new ToscaNode();
 		node.setNodeTemplate(nodeTemplate);
 		addTEntityTypes(nodeTemplate.getType(), node, TNodeType.class);
 		return node;
 	}
 
-	public static void addTEntityTypes(QName nodeTypeQName, TOSCAEntity entity, Class<? extends TEntityType> tEntityTypeClass) {
+	public static void addTEntityTypes(QName nodeTypeQName, ToscaEntity entity, Class<? extends TEntityType> tEntityTypeClass) {
 		TEntityType entityType = getEntityType(nodeTypeQName, tEntityTypeClass);
 		entity.addTEntityType(entityType);
 
