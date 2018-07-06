@@ -45,8 +45,10 @@ export class SelfServiceDescriptionComponent implements OnInit {
     getSelfServiceData() {
         this.service.getSelfServiceData().subscribe(
             data => this.handleData(),
-            error => this.notify.error(error.toString())
-        );
+            error => {
+                this.notify.error(error.toString());
+                this.loading = false;
+            });
     }
 
     save() {
@@ -66,7 +68,6 @@ export class SelfServiceDescriptionComponent implements OnInit {
         this.data = this.service.selfServiceData;
         this.loading = false;
         // this.notify.success('');
-
     }
 
     handleSuccess(message: string) {
