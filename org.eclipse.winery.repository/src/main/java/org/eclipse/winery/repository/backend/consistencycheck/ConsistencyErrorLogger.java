@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,14 +13,17 @@
  ********************************************************************************/
 package org.eclipse.winery.repository.backend.consistencycheck;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 
-import javax.xml.namespace.QName;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import org.eclipse.jdt.annotation.NonNull;
 
 public class ConsistencyErrorLogger {
 
@@ -35,7 +38,7 @@ public class ConsistencyErrorLogger {
      *
      * @param message The message to log.
      */
-    public void error(String message) {
+    public void error(@NonNull String message) {
         ElementErrorList element = this.errorList.get(CONFIG_Q_NAME);
 
         if (Objects.isNull(element)) {
@@ -46,19 +49,19 @@ public class ConsistencyErrorLogger {
         element.addError(message);
     }
 
-    public void error(DefinitionsChildId id, String message) {
+    public void error(@NonNull DefinitionsChildId id, @NonNull String message) {
         this.getElementFromList(id).addError(message);
     }
 
-    public void warning(DefinitionsChildId id, String message) {
+    public void warning(@NonNull DefinitionsChildId id, @NonNull String message) {
         this.getElementFromList(id).addWarning(message);
     }
 
-    public Map<QName, ElementErrorList> getErrorList() {
+    public @NonNull Map<QName, ElementErrorList> getErrorList() {
         return errorList;
     }
 
-    private ElementErrorList getElementFromList(DefinitionsChildId id) {
+    private @NonNull ElementErrorList getElementFromList(@NonNull DefinitionsChildId id) {
         ElementErrorList element = this.errorList.get(id.getQName());
 
         if (Objects.isNull(element)) {

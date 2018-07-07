@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -17,48 +17,59 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 public class ElementErrorList {
 
-    private List<String> errors;
-    private List<String> warnings;
+    private List<String> errors = new ArrayList<>();
+    private List<String> warnings = new ArrayList<>();
     private String toscaType;
 
-    public ElementErrorList(String toscaType) {
+    public ElementErrorList(@NonNull String toscaType) {
         this.toscaType = toscaType;
     }
 
-    public void addError(String message) {
-        if (Objects.isNull(this.errors)) {
-            this.errors = new ArrayList<>();
-        }
+    public void addError(@NonNull String message) {
         this.errors.add(message);
     }
 
-    public void addWarning(String message) {
-        if (Objects.isNull(this.warnings)) {
-            this.warnings = new ArrayList<>();
-        }
+    public void addWarning(@NonNull String message) {
         this.warnings.add(message);
     }
 
-    public List<String> getErrors() {
+    public @NonNull List<String> getErrors() {
         return errors;
     }
 
-    public List<String> getWarnings() {
+    public @NonNull List<String> getWarnings() {
         return warnings;
     }
 
-    public String getToscaType() {
+    public @NonNull String getToscaType() {
         return toscaType;
     }
 
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return "ElementErrorList{" +
             "toscaType='" + toscaType + '\'' +
             ", errors=" + errors +
             ", warnings=" + warnings +
             '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ElementErrorList)) return false;
+        ElementErrorList that = (ElementErrorList) o;
+        return Objects.equals(errors, that.errors) &&
+            Objects.equals(warnings, that.warnings) &&
+            Objects.equals(toscaType, that.toscaType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(errors, warnings, toscaType);
     }
 }

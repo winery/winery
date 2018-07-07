@@ -352,7 +352,14 @@ public class ConsistencyChecker {
             printAndAddError(errorLogger, verbosity, id, "URI is relative");
         }
         if ((uriStr.startsWith("http://www.opentosca.org/") && (!uriStr.toLowerCase().equals(uriStr)))) {
-            printAndAddError(errorLogger, verbosity, id, "opentosca URI is not lowercase");
+            // URI is not lowercase
+            // There are some special URIs, which are OK
+            String[] splitUri = uriStr.split("/");
+            String lastElement = splitUri[splitUri.length - 1];
+            String uriStrWithoutLastElement = uriStr.substring(0, (uriStr.length() - lastElement.length()));
+            if (!(id.getXmlId().toString().startsWith(lastElement)) || (!uriStrWithoutLastElement.toLowerCase().equals(uriStrWithoutLastElement))) {
+                printAndAddError(errorLogger, verbosity, id, "opentosca URI is not lowercase");
+            }
         }
         if (uriStr.endsWith("/")) {
             printAndAddError(errorLogger, verbosity, id, "URI ends with a slash");
@@ -396,7 +403,8 @@ public class ConsistencyChecker {
                 printAndAddError(errorLogger, verbosity, id, "Corrupt: " + e.getMessage());
                 return;
             } catch (Exception e) {
-                printAndAddError(errorLogger, verbosity, id, e.getMessage());
+                LOGGER.debug("Inner error at writing to temporary CSAR file", e);
+                printAndAddError(errorLogger, verbosity, id, e.toString());
                 return;
             }
         } catch (Exception e) {
