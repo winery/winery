@@ -113,7 +113,6 @@ public class TArtifactReference {
         this.reference = value;
     }
 
-
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
     public static class Exclude {
@@ -130,7 +129,6 @@ public class TArtifactReference {
             this.pattern = value;
         }
     }
-
 
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
