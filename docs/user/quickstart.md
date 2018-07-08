@@ -17,7 +17,7 @@ If that directory does not exists, it uses the home directory, which is `%HOME%`
         - Download git installer form <https://git-scm.com/downloads> and execute it.
         - Download git-lfs installer from <https://git-lfs.github.com/> and execute it.
 1. Make repository available.
-    1. `mkdir c:\winery-repository`
+    1. `mkdir c:\winery-repository`. The name `winery-repository` is important, because of Winery's magic (see above)
     2. `cd c:\winery-repository`
     2. `git config --global core.longpaths true` to enable long paths. Works perfectly on Windows.
     3. `git clone https://github.com/winery/test-repository.git .` to clone the [test repository](https://github.com/winery/test-repository).
