@@ -816,6 +816,7 @@ public class RestUtils {
         // set filename
         ContentDisposition contentDisposition = ContentDisposition.type("attachment").fileName(ref.getFileName()).modificationDate(new Date(lastModified.toMillis())).build();
         res.header("Content-Disposition", contentDisposition);
+        res.header("Cache-Control", "max-age=0");
         return res;
     }
 

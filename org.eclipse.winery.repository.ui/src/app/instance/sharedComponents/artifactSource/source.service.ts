@@ -24,19 +24,19 @@ import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/comm
 export class SourceService {
 
     private readonly path: string;
-    private pathToFiles: string;
-    private parentPath: string;
+    private readonly pathToFiles: string;
+    private readonly parentPath: string;
 
     constructor(private http: HttpClient,
                 private route: Router,
                 private sharedData: InstanceService) {
-        this.parentPath = backendBaseURL + this.sharedData.path + '/';
+        this.parentPath = backendBaseURL + this.sharedData.path;
 
         if (this.sharedData.toscaComponent.toscaType === ToscaTypes.ServiceTemplate) {
-            this.path = this.pathToFiles = backendBaseURL + this.route.url + '/';
+            this.path = this.pathToFiles = backendBaseURL + this.route.url;
         } else {
-            this.path = this.parentPath + 'source/';
-            this.pathToFiles = this.parentPath + 'files/';
+            this.path = this.parentPath + '/source';
+            this.pathToFiles = this.parentPath + '/files';
         }
     }
 
@@ -53,7 +53,7 @@ export class SourceService {
 
         return this.http
             .get(
-                this.path + file.name + '?path=' + file.subDirectory,
+                this.path + '/' + file.name + '?path=' + file.subDirectory,
                 { headers: headers, responseType: 'text' }
             );
     }
@@ -77,7 +77,7 @@ export class SourceService {
     postToSources(data: SourceApiData): Observable<HttpResponse<string>> {
         return this.http
             .post(
-                this.path + data.getFileName(),
+                this.path + '/' + data.getFileName(),
                 data,
                 { observe: 'response', responseType: 'text' }
             );
@@ -86,7 +86,7 @@ export class SourceService {
     postToFiles(data: SourceApiData): Observable<HttpResponse<string>> {
         return this.http
             .post(
-                this.pathToFiles + data.getFileName(),
+                this.pathToFiles + '/' + data.getFileName(),
                 data,
                 { observe: 'response', responseType: 'text' }
             );

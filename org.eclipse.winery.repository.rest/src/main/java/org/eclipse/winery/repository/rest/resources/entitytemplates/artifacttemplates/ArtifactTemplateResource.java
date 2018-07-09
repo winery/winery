@@ -93,7 +93,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
         BackendUtils.synchronizeReferences(RepositoryFactory.getRepository(), (ArtifactTemplateId) this.id);
     }
 
-    @Path("files/")
+    @Path("files")
     public FilesResource getFilesResource() {
         return new FilesResource(this.filesDirectoryId);
     }
@@ -105,7 +105,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
         return RestUtils.getZippedContents(this.filesDirectoryId);
     }
 
-    @Path("source/")
+    @Path("source")
     public FilesResource getSrcResource() {
         return new FilesResource(this.sourceDirectoryId, getFilesResource());
     }
