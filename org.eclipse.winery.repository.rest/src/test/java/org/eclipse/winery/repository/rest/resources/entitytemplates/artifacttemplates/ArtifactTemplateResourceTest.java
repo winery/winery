@@ -43,27 +43,27 @@ public class ArtifactTemplateResourceTest extends AbstractResourceTest {
         // in case git-lsf is not available this test fails
         // NOT because the .iso file contained in source is not 2 bytes as expected,
         // BUT git-lfs is not available in the path
-        this.assertGet("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/source/", "entitytemplates/artifacttemplates/largeSource.json");
+        this.assertGet("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/source", "entitytemplates/artifacttemplates/largeSource.json");
     }
 
     @Test
     public void copySourcesToFilesWithoutSelection() throws Exception {
         this.setRevisionTo("62c0749a622b11474f865e3aa06ccff4c380efd8");
-        this.assertPost("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/source/", "entitytemplates/artifacttemplates/copySourcesToFiles_without_selection.json");
-        this.assertGet("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/files/", "entitytemplates/artifacttemplates/copySourcesToFiles_without_selection_response.json");
+        this.assertPost("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/source", "entitytemplates/artifacttemplates/copySourcesToFiles_without_selection.json");
+        this.assertGet("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/files", "entitytemplates/artifacttemplates/copySourcesToFiles_without_selection_response.json");
     }
 
     @Test
     public void copySourcesToFilesWithSelection() throws Exception {
         this.setRevisionTo("62c0749a622b11474f865e3aa06ccff4c380efd8");
-        this.assertPost("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/source/", "entitytemplates/artifacttemplates/copySourcesToFiles_with_selection.json");
-        this.assertGet("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/files/", "entitytemplates/artifacttemplates/copySourcesToFiles_with_selection_response.json");
+        this.assertPost("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/source", "entitytemplates/artifacttemplates/copySourcesToFiles_with_selection.json");
+        this.assertGet("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/files", "entitytemplates/artifacttemplates/copySourcesToFiles_with_selection_response.json");
     }
 
     @Test
     public void copyFilesToSource() throws Exception {
         this.setRevisionTo("62c0749a622b11474f865e3aa06ccff4c380efd8");
-        this.assertPostExpectBadRequestResponse("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/files/", "entitytemplates/artifacttemplates/copySourcesToFiles_with_selection.json");
+        this.assertPostExpectBadRequestResponse("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/files", "entitytemplates/artifacttemplates/copySourcesToFiles_with_selection.json");
     }
 
     @Test
@@ -87,7 +87,7 @@ public class ArtifactTemplateResourceTest extends AbstractResourceTest {
 
         // post an arbitrary file
         final Path path = MavenTestingUtils.getProjectFilePath("src/test/resources/entitytemplates/artifacttemplates/empty_text_file.txt");
-        this.assertPost("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/artifactTemplateContainsUpdatedFileReferenceInJson/files/", path);
+        this.assertPost("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/artifactTemplateContainsUpdatedFileReferenceInJson/files", path);
 
         this.assertGet("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/artifactTemplateContainsUpdatedFileReferenceInJson", "entitytemplates/artifacttemplates/artifactTemplateContainsUpdatedFileReferenceInJson-withFile.json");
     }
