@@ -20,6 +20,6 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 public class ServiceTemplateSelfServiceFilesDirectoryId extends DirectoryId {
 
     public ServiceTemplateSelfServiceFilesDirectoryId(ServiceTemplateId id) {
-        super(id, IdNames.SELF_SERVICE_PORTAL_FILES, true);
+        super(id, IdNames.SELF_SERVICE_PORTAL, true);
     }
 }

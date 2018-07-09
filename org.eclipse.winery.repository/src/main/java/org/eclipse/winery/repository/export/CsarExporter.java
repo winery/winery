@@ -501,7 +501,7 @@ public class CsarExporter {
         ServiceTemplateSelfServiceFilesDirectoryId selfServiceFilesDirectoryId = new ServiceTemplateSelfServiceFilesDirectoryId(serviceTemplateId);
         repository.getContainedFiles(selfServiceFilesDirectoryId)
             .forEach(repositoryFileReference -> {
-                String file = IdNames.SELF_SERVICE_PORTAL_FILES + "/" + BackendUtils.getFilenameAndSubDirectory(repositoryFileReference);
+                String file = IdNames.SELF_SERVICE_PORTAL + "/" + BackendUtils.getFilenameAndSubDirectory(repositoryFileReference);
                 refMap.put(repositoryFileReference, file);
             });
     }

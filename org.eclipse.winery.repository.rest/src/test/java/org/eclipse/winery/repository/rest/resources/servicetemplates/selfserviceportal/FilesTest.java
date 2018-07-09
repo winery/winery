@@ -30,14 +30,14 @@ public class FilesTest extends AbstractResourceTest {
 
     @Test
     public void getFileTest() throws Exception {
-        this.setRevisionTo("d2fe6f518d732d9f93bcd8e4053c089a4eab4c96");
+        this.setRevisionTo("origin/plain");
         this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithOneFileInSelfServicePortal/selfserviceportal/files",
             "servicetemplates/selfserviceportal/oneFileInList.json");
     }
 
     @Test
     public void deleteFileTest() throws Exception {
-        this.setRevisionTo("d2fe6f518d732d9f93bcd8e4053c089a4eab4c96");
-        this.assertDelete("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithOneFileInSelfServicePortal/selfserviceportal/files/myFirstFile.txt?path=");
+        this.setRevisionTo("origin/plain");
+        this.assertDelete("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithOneFileInSelfServicePortal/selfserviceportal/files/myFirstFile.txt?path=files");
     }
 }
