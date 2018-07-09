@@ -129,7 +129,7 @@ public class SelfServicePortalResource {
         return RestUtils.putContentToFile(ref, uploadedInputStream, body.getMediaType());
     }
 
-    @Path("files/")
+    @Path("files")
     public FilesResource files() {
         return new FilesResource(this.filesDirectoryId);
     }

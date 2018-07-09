@@ -56,9 +56,9 @@ const noop = () => {
 })
 export class WineryEditorComponent implements ControlValueAccessor, OnInit {
 
-    @Input() dataEditorLang = 'application/xml';
     @Input() height = 500;
 
+    dataEditorLang = 'application/xml';
     loading = true;
     editorViewer: any;
 
@@ -132,9 +132,15 @@ export class WineryEditorComponent implements ControlValueAccessor, OnInit {
         }
     }
 
-    setData(value: string) {
+    setData(value: string, language?: string) {
         if (!isNullOrUndefined(this.editorViewer)) {
-            this.editorViewer.setContents(this.innerValue, this.dataEditorLang);
+            this.value = value;
+
+            if (language) {
+                this.dataEditorLang = language;
+            }
+
+            this.editorViewer.setContents(this.value, this.dataEditorLang);
         }
     }
 

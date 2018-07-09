@@ -19,7 +19,8 @@
 </div>
 <div *ngIf="!loading">
     <div>
-        <winery-uploader (onSuccess)="loadFiles()" [uploadUrl]="uploadUrl" [allowMultipleFiles]="true" [isEditable]="sharedData?.currentVersion?.editable">
+        <winery-uploader (onSuccess)="loadFiles()" [uploadUrl]="uploadUrl" [allowMultipleFiles]="true"
+                         [isEditable]="sharedData?.currentVersion?.editable">
         </winery-uploader>
     </div>
     <br>
@@ -108,7 +109,7 @@
     </winery-modal-body>
     <winery-modal-footer [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Save'"
                          (onOk)="saveEditorContent()">
-        <button class="btn btn-default" name="undoChanges" (click)="undoFileChanges()">Undo Changes</button>
+        <button class="btn btn-default" name="undoChanges" (click)="undoFileChanges()">Revert Changes</button>
     </winery-modal-footer>
 </winery-modal>
 

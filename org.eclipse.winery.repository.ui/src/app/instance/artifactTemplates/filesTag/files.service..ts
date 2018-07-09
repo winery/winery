@@ -24,7 +24,7 @@ export class FilesService {
 
     constructor(private http: HttpClient,
                 private sharedData: InstanceService) {
-        this.path = backendBaseURL + this.sharedData.path + '/files/';
+        this.path = backendBaseURL + this.sharedData.path + '/files';
     }
 
     getFiles(): Observable<{ files: FilesApiData[], paths: string[] }> {
