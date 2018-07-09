@@ -24,7 +24,7 @@ import org.eclipse.winery.yaml.common.reader.yaml.Reader;
 import org.eclipse.winery.yaml.common.writer.WriterUtils;
 import org.eclipse.winery.yaml.converter.Converter;
 
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 
 public abstract class AbstractTestY2X {
 
@@ -40,7 +40,7 @@ public abstract class AbstractTestY2X {
         this.outPath = path.resolve("tmp");
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setRepository() {
         RepositoryFactory.getRepository(Utils.getTmpDir(Paths.get("AbstractTests")));
     }

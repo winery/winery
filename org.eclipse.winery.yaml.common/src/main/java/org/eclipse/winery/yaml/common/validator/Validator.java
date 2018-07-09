@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,18 +13,29 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.validator;
 
-import org.eclipse.winery.model.tosca.yaml.*;
+import java.nio.file.Path;
+import java.util.Map;
+import java.util.Objects;
+
+import org.eclipse.winery.model.tosca.yaml.TImportDefinition;
+import org.eclipse.winery.model.tosca.yaml.TInterfaceType;
+import org.eclipse.winery.model.tosca.yaml.TOperationDefinition;
+import org.eclipse.winery.model.tosca.yaml.TRepositoryDefinition;
+import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.model.tosca.yaml.support.Metadata;
 import org.eclipse.winery.model.tosca.yaml.tosca.datatypes.Credential;
 import org.eclipse.winery.yaml.common.Defaults;
-import org.eclipse.winery.yaml.common.exception.*;
+import org.eclipse.winery.yaml.common.exception.InvalidToscaSyntax;
+import org.eclipse.winery.yaml.common.exception.InvalidToscaVersion;
+import org.eclipse.winery.yaml.common.exception.MultiException;
+import org.eclipse.winery.yaml.common.exception.UndefinedFile;
+import org.eclipse.winery.yaml.common.exception.UndefinedRequiredKeyname;
+import org.eclipse.winery.yaml.common.exception.UndefinedToscaVersion;
 import org.eclipse.winery.yaml.common.validator.support.ExceptionVisitor;
 import org.eclipse.winery.yaml.common.validator.support.Parameter;
 import org.eclipse.winery.yaml.common.validator.support.Result;
 
-import java.nio.file.Path;
-import java.util.Map;
-import java.util.Objects;
+import org.eclipse.jdt.annotation.Nullable;
 
 public class Validator extends ExceptionVisitor<Result, Parameter> {
     private final Path path;
@@ -33,7 +44,7 @@ public class Validator extends ExceptionVisitor<Result, Parameter> {
         this.path = path;
     }
 
-    public void validate(TServiceTemplate serviceTemplate, String namespace) throws MultiException {
+    public void validate(@Nullable TServiceTemplate serviceTemplate, String namespace) throws MultiException {
         if (Objects.isNull(serviceTemplate)) return;
 
         TypeValidator typeValidator = new TypeValidator(path, namespace);

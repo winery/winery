@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,11 +13,12 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
-import org.apache.commons.configuration.Configuration;
+import java.util.Date;
+
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.GenericId;
 
-import java.util.Date;
+import org.apache.commons.configuration.Configuration;
 
 /**
  * Provides interface to the backend.
@@ -64,5 +65,4 @@ public interface IRepository extends IGenericRepository {
      * id. NULL if the associated TOSCA element does not exist.
      */
     Date getConfigurationLastUpdate(GenericId id);
-
 }
