@@ -13,6 +13,16 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.validator;
 
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
 import org.eclipse.winery.model.tosca.yaml.TImportDefinition;
 import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.yaml.common.Defaults;
@@ -24,15 +34,7 @@ import org.eclipse.winery.yaml.common.validator.support.ExceptionVisitor;
 import org.eclipse.winery.yaml.common.validator.support.Parameter;
 import org.eclipse.winery.yaml.common.validator.support.Result;
 
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import org.eclipse.jdt.annotation.Nullable;
 
 public class ImportVisitor extends ExceptionVisitor<Result, Parameter> {
     protected final Path path;
@@ -43,8 +45,11 @@ public class ImportVisitor extends ExceptionVisitor<Result, Parameter> {
         this.namespace = namespace;
     }
 
+    /**
+     * @return null
+     */
     @Override
-    public Result visit(TServiceTemplate node, Parameter parameter) {
+    public @Nullable Result visit(TServiceTemplate node, Parameter parameter) {
         Reader reader = Reader.getReader();
         if (!this.namespace.equals(Namespaces.TOSCA_NS)) {
             Set<String> typeDefinitions = new HashSet<>(Arrays.asList(

@@ -19,8 +19,9 @@ import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.yaml.converter.yaml.support.AbstractTestY2X;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class Datatypes extends AbstractTestY2X {
 
@@ -37,7 +38,7 @@ public class Datatypes extends AbstractTestY2X {
         Definitions definitions = convert(serviceTemplate, name, namespace);
         writeXml(definitions, name, namespace);
 
-        Assert.assertNotNull(definitions);
+        assertNotNull(definitions);
     }
 
     @Test
@@ -49,7 +50,7 @@ public class Datatypes extends AbstractTestY2X {
         Definitions definitions = convert(serviceTemplate, name, namespace);
         writeXml(definitions, name, namespace);
 
-        Assert.assertNotNull(definitions);
+        assertNotNull(definitions);
     }
 
     @Test
@@ -61,7 +62,7 @@ public class Datatypes extends AbstractTestY2X {
         Definitions definitions = convert(serviceTemplate, name, namespace);
         writeXml(definitions, name, namespace);
 
-        Assert.assertNotNull(definitions);
+        assertNotNull(definitions);
     }
 
     @Test
@@ -73,6 +74,6 @@ public class Datatypes extends AbstractTestY2X {
         Definitions definitions = convert(serviceTemplate, name, namespace);
         writeXml(definitions, name, namespace);
 
-        Assert.assertNotNull(definitions);
+        assertNotNull(definitions);
     }
 }
