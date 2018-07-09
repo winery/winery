@@ -13,9 +13,11 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.export;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,6 +29,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.common.HashingUtil;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
@@ -39,6 +42,7 @@ import org.eclipse.winery.common.ids.definitions.TopologyGraphElementEntityTypeI
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
+import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileAttributes;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition;
@@ -72,12 +76,17 @@ public class ToscaExportUtil {
     // collects the references to be put in the CSAR and the assigned path in
     // the CSAR MANIFEST
     // this allows to use other paths in the CSAR than on the local storage
-    private Map<RepositoryFileReference, String> referencesToPathInCSARMap = null;
+    private Map<RepositoryFileReference, CsarContentProperties> referencesToPathInCSARMap = null;
 
     /**
      * Currently a very simple approach to configure the export
      */
     private Map<String, Object> exportConfiguration;
+
+    public Collection<DefinitionsChildId> exportTOSCA(IRepository repository, DefinitionsChildId id, OutputStream bos,
+                                                      Map<String, Object> conf) throws RepositoryCorruptException, JAXBException, IOException {
+        return exportTOSCA(repository, id, new CsarContentProperties(id.getQName().toString()), bos, conf);
+    }
 
     public enum ExportProperties {
         INCLUDEXYCOORDINATES, REPOSITORY_URI
@@ -91,10 +100,11 @@ public class ToscaExportUtil {
      * @param exportConfiguration the configuration map for the export.
      * @return a collection of DefinitionsChildIds referenced by the given component
      */
-    public Collection<DefinitionsChildId> exportTOSCA(IRepository repository, DefinitionsChildId id, OutputStream out, Map<String, Object> exportConfiguration) throws IOException, JAXBException, RepositoryCorruptException {
+    public Collection<DefinitionsChildId> exportTOSCA(IRepository repository, DefinitionsChildId id, CsarContentProperties definitionsFileProperties,
+                                                      OutputStream out, Map<String, Object> exportConfiguration) throws IOException, JAXBException, RepositoryCorruptException {
         this.exportConfiguration = exportConfiguration;
         this.initializeExport();
-        return this.writeDefinitionsElement(repository, id, out);
+        return this.writeDefinitionsElement(repository, id, definitionsFileProperties, out);
     }
 
     private void initializeExport() {
@@ -128,9 +138,11 @@ public class ToscaExportUtil {
      * @param referencesToPathInCSARMap collects the references to export. It is updated during the export
      * @return a collection of DefinitionsChildIds referenced by the given component
      */
-    protected Collection<DefinitionsChildId> exportTOSCA(IRepository repository, DefinitionsChildId id, OutputStream out, Map<RepositoryFileReference, String> referencesToPathInCSARMap, Map<String, Object> exportConfiguration) throws IOException, JAXBException, RepositoryCorruptException {
+    protected Collection<DefinitionsChildId> exportTOSCA(IRepository repository, DefinitionsChildId id, CsarContentProperties definitionsFileProperties,
+                                                         OutputStream out, Map<RepositoryFileReference, CsarContentProperties> referencesToPathInCSARMap,
+                                                         Map<String, Object> exportConfiguration) throws IOException, JAXBException, RepositoryCorruptException {
         this.referencesToPathInCSARMap = referencesToPathInCSARMap;
-        return this.exportTOSCA(repository, id, out, exportConfiguration);
+        return this.exportTOSCA(repository, id, definitionsFileProperties, out, exportConfiguration);
     }
 
     /**
@@ -147,7 +159,8 @@ public class ToscaExportUtil {
      * @return a collection of DefinitionsChildIds referenced by the given component
      * @throws RepositoryCorruptException if tcId does not exist
      */
-    private Collection<DefinitionsChildId> writeDefinitionsElement(IRepository repository, DefinitionsChildId tcId, OutputStream out) throws JAXBException, RepositoryCorruptException, IOException {
+    private Collection<DefinitionsChildId> writeDefinitionsElement(IRepository repository, DefinitionsChildId tcId, CsarContentProperties definitionsFileProperties,
+                                                                   OutputStream out) throws JAXBException, RepositoryCorruptException, IOException {
         if (!repository.exists(tcId)) {
             String error = "Component instance " + tcId.toReadableString() + " does not exist.";
             ToscaExportUtil.LOGGER.error(error);
@@ -189,7 +202,7 @@ public class ToscaExportUtil {
                 String fileName = Util.getLastURIPart(loc);
                 fileName = Util.URLdecode(fileName);
                 RepositoryFileReference ref = new RepositoryFileReference(iid, fileName);
-                this.putRefAsReferencedItemInCsar(ref);
+                putRefAsReferencedItemInCsar(ref);
             }
         }
 
@@ -203,68 +216,86 @@ public class ToscaExportUtil {
         entryDefinitions.getImport().addAll(imports);
 
         if (entryDefinitions.getElement() instanceof TEntityType) {
-            TEntityType entityType = (TEntityType) entryDefinitions.getElement();
-
-            // we have an entity type with a possible properties definition
-            WinerysPropertiesDefinition wpd = entityType.getWinerysPropertiesDefinition();
-            if (wpd != null) {
-                if (wpd.getIsDerivedFromXSD() == null) {
-                    // Write WPD only to file if it exists and is NOT derived from an XSD (which may happen during import)
-
-                    String wrapperElementNamespace = wpd.getNamespace();
-                    String wrapperElementLocalName = wpd.getElementName();
-
-                    // BEGIN: add import and put into CSAR
-
-                    TImport imp = new TImport();
-                    entryDefinitions.getImport().add(imp);
-
-                    // fill known import values
-                    imp.setImportType(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-                    imp.setNamespace(wrapperElementNamespace);
-                    // add "winerysPropertiesDefinition" flag to import tag to support
-                    Map<QName, String> otherAttributes = imp.getOtherAttributes();
-                    otherAttributes.put(QNames.QNAME_WINERYS_PROPERTIES_DEFINITION_ATTRIBUTE, "true");
-
-                    // Determine location
-                    String loc = BackendUtils.getImportLocationForWinerysPropertiesDefinitionXSD((EntityTypeId) tcId, uri, wrapperElementLocalName);
-                    if (uri == null) {
-                        ToscaExportUtil.LOGGER.trace("CSAR Export mode. Putting XSD into CSAR");
-                        // CSAR Export mode
-                        // XSD has to be put into the CSAR
-                        Document document = ModelUtilities.getWinerysPropertiesDefinitionXsdAsDocument(wpd);
-
-                        // loc in import is URLencoded, loc on filesystem isn't
-                        String locInCSAR = Util.URLdecode(loc);
-                        // furthermore, the path has to start from the root of the CSAR; currently, it starts from Definitions/
-                        locInCSAR = locInCSAR.substring(3);
-                        ToscaExportUtil.LOGGER.trace("Location in CSAR: {}", locInCSAR);
-                        this.referencesToPathInCSARMap.put(new DummyRepositoryFileReferenceForGeneratedXSD(document), locInCSAR);
-                    }
-                    imp.setLocation(loc);
-
-                    // END: add import and put into CSAR
-
-                    // BEGIN: generate TOSCA conforming PropertiesDefinition
-
-                    PropertiesDefinition propertiesDefinition = new PropertiesDefinition();
-                    propertiesDefinition.setType(new QName(wrapperElementNamespace, wrapperElementLocalName));
-                    entityType.setPropertiesDefinition(propertiesDefinition);
-
-                    // END: generate TOSCA conforming PropertiesDefinition
-                } else {
-                    //noinspection StatementWithEmptyBody
-                    // otherwise WPD exists, but is derived from XSD
-                    // we DO NOT have to remove the winery properties definition from the output to allow "debugging" of the CSAR
-                }
-            }
+            exportEntityType(entryDefinitions, uri, tcId);
         }
 
         // END: Definitions modification
 
-        this.writeDefinitionsElement(entryDefinitions, out);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        this.writeDefinitionsElement(entryDefinitions, byteArrayOutputStream);
+
+        if (exportConfiguration.containsKey(CsarExportConfiguration.INCLUDE_HASHES.toString())) {
+            try {
+                String checksum = HashingUtil.getChecksum(byteArrayOutputStream.toByteArray(), TOSCAMetaFileAttributes.HASH);
+                definitionsFileProperties.setFileHash(checksum);
+            } catch (NoSuchAlgorithmException e) {
+                LOGGER.error("Could not create hash for {}", tcId.getQName());
+            }
+        }
+
+        out.write(byteArrayOutputStream.toByteArray());
 
         return referencedDefinitionsChildIds;
+    }
+
+    private void exportEntityType(Definitions entryDefinitions, URI uri, DefinitionsChildId tcId) {
+        TEntityType entityType = (TEntityType) entryDefinitions.getElement();
+
+        // we have an entity type with a possible properties definition
+        WinerysPropertiesDefinition wpd = entityType.getWinerysPropertiesDefinition();
+        if (wpd != null) {
+            if (wpd.getIsDerivedFromXSD() == null) {
+                // Write WPD only to file if it exists and is NOT derived from an XSD (which may happen during import)
+
+                String wrapperElementNamespace = wpd.getNamespace();
+                String wrapperElementLocalName = wpd.getElementName();
+
+                // BEGIN: add import and put into CSAR
+
+                TImport imp = new TImport();
+                entryDefinitions.getImport().add(imp);
+
+                // fill known import values
+                imp.setImportType(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                imp.setNamespace(wrapperElementNamespace);
+                // add "winerysPropertiesDefinition" flag to import tag to support
+                Map<QName, String> otherAttributes = imp.getOtherAttributes();
+                otherAttributes.put(QNames.QNAME_WINERYS_PROPERTIES_DEFINITION_ATTRIBUTE, "true");
+
+                // Determine location
+                String loc = BackendUtils.getImportLocationForWinerysPropertiesDefinitionXSD((EntityTypeId) tcId, uri, wrapperElementLocalName);
+                if (uri == null) {
+                    ToscaExportUtil.LOGGER.trace("CSAR Export mode. Putting XSD into CSAR");
+                    // CSAR Export mode
+                    // XSD has to be put into the CSAR
+                    Document document = ModelUtilities.getWinerysPropertiesDefinitionXsdAsDocument(wpd);
+
+                    // loc in import is URLencoded, loc on filesystem isn't
+                    String locInCSAR = Util.URLdecode(loc);
+                    // furthermore, the path has to start from the root of the CSAR; currently, it starts from Definitions/
+                    locInCSAR = locInCSAR.substring(3);
+                    ToscaExportUtil.LOGGER.trace("Location in CSAR: {}", locInCSAR);
+                    CsarContentProperties csarContentProperties = new CsarContentProperties(locInCSAR);
+                    this.referencesToPathInCSARMap.put(new DummyRepositoryFileReferenceForGeneratedXSD(document), csarContentProperties);
+                }
+                imp.setLocation(loc);
+
+                // END: add import and put into CSAR
+
+                // BEGIN: generate TOSCA conforming PropertiesDefinition
+
+                PropertiesDefinition propertiesDefinition = new PropertiesDefinition();
+                propertiesDefinition.setType(new QName(wrapperElementNamespace, wrapperElementLocalName));
+                entityType.setPropertiesDefinition(propertiesDefinition);
+
+                // END: generate TOSCA conforming PropertiesDefinition
+            } else {
+                //noinspection StatementWithEmptyBody
+                // otherwise WPD exists, but is derived from XSD
+                // we DO NOT have to remove the winery properties definition from the output to allow "debugging" of the CSAR
+            }
+        }
     }
 
     /**
@@ -334,7 +365,7 @@ public class ToscaExportUtil {
             SortedSet<RepositoryFileReference> containedFiles = repository.getContainedFiles(planId);
             // even if we currently support only one file in the directory, we just add everything
             for (RepositoryFileReference ref : containedFiles) {
-                this.putRefAsReferencedItemInCsar(ref);
+                putRefAsReferencedItemInCsar(ref);
             }
         }
     }
@@ -361,7 +392,7 @@ public class ToscaExportUtil {
             // The old implementation had absolutePath.toUri().toString();
             // there, but this does not work when using a cloud blob store.
 
-            this.putRefAsReferencedItemInCsar(ref);
+            putRefAsReferencedItemInCsar(ref);
         }
     }
 
@@ -372,11 +403,13 @@ public class ToscaExportUtil {
      */
     private void putRefAsReferencedItemInCsar(RepositoryFileReference ref) {
         // Determine path
-        String path = BackendUtils.getPathInsideRepo(ref);
+        String pathInsideRepo = BackendUtils.getPathInsideRepo(ref);
+        String hash = HashingUtil.getHashForFile(pathInsideRepo, TOSCAMetaFileAttributes.HASH);
+        CsarContentProperties fileProperties = new CsarContentProperties(pathInsideRepo, hash);
 
         // put mapping reference to path into global map
         // the path is the same as put in "synchronizeReferences"
-        this.referencesToPathInCSARMap.put(ref, path);
+        this.referencesToPathInCSARMap.put(ref, fileProperties);
     }
 
     private void addVisualAppearanceToCSAR(IRepository repository, TopologyGraphElementEntityTypeId id) {
@@ -386,12 +419,12 @@ public class ToscaExportUtil {
 
             RepositoryFileReference ref = new RepositoryFileReference(visId, Filename.FILENAME_BIG_ICON);
             if (repository.exists(ref)) {
-                this.referencesToPathInCSARMap.put(ref, BackendUtils.getPathInsideRepo(ref));
+                putRefAsReferencedItemInCsar(ref);
             }
 
             ref = new RepositoryFileReference(visId, Filename.FILENAME_SMALL_ICON);
             if (repository.exists(ref)) {
-                this.referencesToPathInCSARMap.put(ref, BackendUtils.getPathInsideRepo(ref));
+                putRefAsReferencedItemInCsar(ref);
             }
         }
     }

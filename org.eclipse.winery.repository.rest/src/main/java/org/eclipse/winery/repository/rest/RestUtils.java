@@ -76,6 +76,7 @@ import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.backend.xsd.NamespaceAndDefinedLocalNames;
 import org.eclipse.winery.repository.configuration.Environment;
+import org.eclipse.winery.repository.export.CsarExportOptions;
 import org.eclipse.winery.repository.export.CsarExporter;
 import org.eclipse.winery.repository.export.ToscaExportUtil;
 import org.eclipse.winery.repository.rest.datatypes.LocalNameForAngular;
@@ -204,26 +205,42 @@ public class RestUtils {
          * sb.append(resource.getNamespace().getEncoded()); sb.append(".xml");
          * sb.append("\""); return Response.ok().header("Content-Disposition",
          * sb
-         * .toString()).type(MediaType.APPLICATION_XML_TYPE).entity(so).build();
+         * .toString()).type(MediaType.APPLICATION_XML_TYPE).entity(so).buildProvenanceSmartContract();
          */
         return Response.ok().type(MediaType.APPLICATION_XML).entity(so).build();
     }
 
-    public static Response getCSARofSelectedResource(final AbstractComponentInstanceResource resource) {
+    /**
+     * @param options the set of options that are applicable for exporting a csar
+     */
+    public static Response getCSARofSelectedResource(final AbstractComponentInstanceResource resource, CsarExportOptions options) {
         final CsarExporter exporter = new CsarExporter();
+        Map<String, Object> exportConfiguration = new HashMap<>();
+
         StreamingOutput so = output -> {
             try {
-                exporter.writeCsar(RepositoryFactory.getRepository(), resource.getId(), output);
+                // check which options are chosen
+                if (options.isAddToProvenance()) {
+                    // We wait for the provenance layer to confirm the transaction
+                    String result = exporter.writeCsarAndSaveManifestInProvenanceLayer(RepositoryFactory.getRepository(), resource.getId(), output)
+                        .get();
+                    LOGGER.debug("Stored state in provenance layer in transaction " + result);
+                } else {
+                    exporter.writeCsar(RepositoryFactory.getRepository(), resource.getId(), output, exportConfiguration);
+                }
             } catch (Exception e) {
+                LOGGER.error("Error while exporting CSAR", e);
                 throw new WebApplicationException(e);
             }
         };
-        StringBuilder sb = new StringBuilder();
-        sb.append("attachment;filename=\"");
-        sb.append(resource.getXmlId().getEncoded());
-        sb.append(org.eclipse.winery.repository.Constants.SUFFIX_CSAR);
-        sb.append("\"");
-        return Response.ok().header("Content-Disposition", sb.toString()).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
+        String contentDisposition = String.format("attachment;filename=\"%s%s\"",
+            resource.getXmlId().getEncoded(),
+            Constants.SUFFIX_CSAR);
+        return Response.ok()
+            .header("Content-Disposition", contentDisposition)
+            .type(MimeTypes.MIMETYPE_ZIP)
+            .entity(so)
+            .build();
     }
 
     public static Response getYamlOfSelectedResource(DefinitionsChildId id) {

@@ -48,6 +48,10 @@ import io.github.adr.embedded.ADR;
 public class VersionUtils {
 
     private static final Pattern VERSION_PATTERN = Pattern.compile("_(([^_]*)-)?w([0-9]+)(-wip([0-9]+))?$");
+    private static final int COMPONENT_VERSION_GROUP = 2;
+    private static final int WINERY_VERSION_GROUP = 3;
+    private static final int WIP_VERSION_GROUP_EXISTS = 4;
+    private static final int WIP_VERSION_GROUP = 5;
 
     private static String REFERENCING_OBJECT = "referencingObject";
 
@@ -81,14 +85,30 @@ public class VersionUtils {
         Matcher m = VERSION_PATTERN.matcher(id);
 
         if (m.find()) {
-            String componentVersion = Objects.nonNull(m.group(2)) ? m.group(2) : "";
-            int wineryVersion = Objects.nonNull(m.group(3)) ? Integer.parseInt(m.group(3)) : 0;
-            int workInProgressVersion = Objects.nonNull(m.group(4)) ? Integer.parseInt(m.group(5)) : 0;
+            String componentVersion = Objects.nonNull(m.group(COMPONENT_VERSION_GROUP)) ? m.group(COMPONENT_VERSION_GROUP) : "";
+            int wineryVersion = Objects.nonNull(m.group(WINERY_VERSION_GROUP)) ? Integer.parseInt(m.group(WINERY_VERSION_GROUP)) : 0;
+            int workInProgressVersion = Objects.nonNull(m.group(WIP_VERSION_GROUP_EXISTS)) ? Integer.parseInt(m.group(WIP_VERSION_GROUP)) : 0;
 
             return new WineryVersion(componentVersion, wineryVersion, workInProgressVersion);
         }
 
         return new WineryVersion();
+    }
+
+    public static String getQNameWithComponentVersionOnly(DefinitionsChildId id) {
+        Matcher m = VERSION_PATTERN.matcher(id.getXmlId().getDecoded());
+        String componentVersion = "";
+
+        if (m.find()) {
+            componentVersion = Objects.nonNull(m.group(COMPONENT_VERSION_GROUP)) ? m.group(COMPONENT_VERSION_GROUP) : "";
+        }
+
+        String nameWithoutVersion = getNameWithoutVersion(id.getQName().toString());
+        if (componentVersion.length() > 0) {
+            nameWithoutVersion += WineryVersion.WINERY_VERSION_SEPARATOR + componentVersion;
+        }
+
+        return nameWithoutVersion;
     }
 
     public static DefinitionsChildId getDefinitionInTheGivenVersion(DefinitionsChildId childId, WineryVersion otherVersion) {

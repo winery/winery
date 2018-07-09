@@ -14,6 +14,7 @@
 package org.eclipse.winery.repository.importing;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -27,12 +28,15 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
@@ -57,6 +61,7 @@ import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
+import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFile;
 import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileParser;
 import org.eclipse.winery.model.tosca.Definitions;
@@ -80,6 +85,10 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.provenance.Provenance;
+import org.eclipse.winery.provenance.ProvenanceFactory;
+import org.eclipse.winery.provenance.exceptions.ProvenanceException;
+import org.eclipse.winery.provenance.model.ProvenanceVerification;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -132,15 +141,15 @@ public class CsarImporter {
     /**
      * Reads the CSAR from the given inputstream
      *
-     * @param in              the inputstream to read from
-     * @param overwrite       if true: contents of the repo are overwritten
-     * @param asyncWPDParsing true if WPD should be parsed asynchronously to speed up the import. Required, because
-     *                        JUnit terminates the used ExecutorService
+     * @param in      the inputstream to read from
+     * @param options the set of options applicable for importing the csar
      */
-    public ImportMetaInformation readCSAR(InputStream in, boolean overwrite, final boolean asyncWPDParsing) throws IOException {
+    public ImportMetaInformation readCSAR(InputStream in, CsarImportOptions options)
+        throws IOException, ProvenanceException, ExecutionException, InterruptedException {
         // we have to extract the file to a temporary directory as
         // the .definitions file does not necessarily have to be the first entry in the archive
         Path csarDir = Files.createTempDirectory("winery");
+        Map<String, File> fileMap = null;
 
         try (ZipInputStream zis = new ZipInputStream(in)) {
             ZipEntry entry;
@@ -149,10 +158,20 @@ public class CsarImporter {
                     Path targetPath = csarDir.resolve(entry.getName());
                     Files.createDirectories(targetPath.getParent());
                     Files.copy(zis, targetPath);
+                    if (options.isValidate()) {
+                        if (Objects.isNull(fileMap)) {
+                            fileMap = new HashMap<>();
+                        }
+                        fileMap.put(entry.getName(), targetPath.toFile());
+                    }
                 }
             }
-            return this.importFromDir(csarDir, overwrite, asyncWPDParsing);
-        } catch (Exception e) {
+
+            return this.importFromDir(csarDir, options, fileMap);
+        } catch (ProvenanceException e) {
+            LOGGER.debug("Error while checking the provenance of the CSAR");
+            throw e;
+        } catch (IOException e) {
             CsarImporter.LOGGER.debug("Could not import CSAR", e);
             throw e;
         } finally {
@@ -164,12 +183,12 @@ public class CsarImporter {
     /**
      * Import an extracted CSAR from a directory
      *
-     * @param path            the root path of an extracted CSAR file
-     * @param overwrite       if true: contents of the repo are overwritten
-     * @param asyncWPDParsing true if WPD should be parsed asynchronously to speed up the import. Required, because
-     *                        JUnit terminates the used ExecutorService
+     * @param path    the root path of an extracted CSAR file
+     * @param options the set of options applicable while importing a CSAR
+     * @param fileMap Contains all files which were extracted from the CSAR and have to be validated using the provenance layer
      */
-    public ImportMetaInformation importFromDir(final Path path, final boolean overwrite, final boolean asyncWPDParsing) throws IOException {
+    private ImportMetaInformation importFromDir(final Path path, CsarImportOptions options,
+                                                Map<String, File> fileMap) throws IOException, ProvenanceException, ExecutionException, InterruptedException {
         final ImportMetaInformation importMetaInformation = new ImportMetaInformation();
         Path toscaMetaPath = path.resolve("TOSCA-Metadata/TOSCA.meta");
         if (!Files.exists(toscaMetaPath)) {
@@ -179,14 +198,22 @@ public class CsarImporter {
         final TOSCAMetaFileParser tmfp = new TOSCAMetaFileParser();
         final TOSCAMetaFile tmf = tmfp.parse(toscaMetaPath);
 
-        // we do NOT do any sanity checks, of TOSAC.meta
-        // and just start parsing
-
+        // we do NOT do any sanity checks, of TOSCA.meta
+        // and just start parsing        
         if (tmf.getEntryDefinitions() != null) {
             // we obey the entry definitions and "just" import that
             // imported definitions are added recursively
             Path defsPath = path.resolve(tmf.getEntryDefinitions());
-            importMetaInformation.entryServiceTemplate = this.importDefinitions(tmf, defsPath, importMetaInformation.errors, overwrite, asyncWPDParsing);
+            importMetaInformation.entryServiceTemplate = null;
+            this.importDefinitions(tmf, defsPath, importMetaInformation.errors, options)
+                .ifPresent(serviceTemplateId1 -> importMetaInformation.entryServiceTemplate = serviceTemplateId1);
+
+            // we assume that the entry definition identifies the provenance element
+            if (Objects.nonNull(fileMap)) {
+                if (!(importMetaInformation.valid = this.isValid(importMetaInformation, fileMap))) {
+                    return importMetaInformation;
+                }
+            }
 
             this.importSelfServiceMetaData(tmf, path, defsPath, importMetaInformation.errors);
         } else {
@@ -214,7 +241,7 @@ public class CsarImporter {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                     try {
-                        CsarImporter.this.importDefinitions(tmf, file, importMetaInformation.errors, overwrite, asyncWPDParsing);
+                        CsarImporter.this.importDefinitions(tmf, file, importMetaInformation.errors, options);
                     } catch (IOException e) {
                         exceptions.add(e);
                         return FileVisitResult.TERMINATE;
@@ -233,6 +260,29 @@ public class CsarImporter {
         this.importNamespacePrefixes(path);
 
         return importMetaInformation;
+    }
+
+    private boolean isValid(ImportMetaInformation metaInformation, Map<String, File> fileMap)
+        throws ExecutionException, InterruptedException, ProvenanceException {
+        ServiceTemplateId entryServiceTemplate = metaInformation.entryServiceTemplate;
+        metaInformation.verificationMap = new HashMap<>();
+
+        if (Objects.nonNull(entryServiceTemplate)) {
+            Provenance provenance = ProvenanceFactory.getProvenance();
+            String provenanceIdentifier = VersionUtils.getQNameWithComponentVersionOnly(entryServiceTemplate);
+
+            metaInformation.verificationMap = provenance
+                .verify(provenanceIdentifier, "TOSCA-Metadata/TOSCA.meta", fileMap)
+                .exceptionally(e -> {
+                    LOGGER.debug("provenance.verify completed exceptionally", e);
+                    return null;
+                })
+                .get();
+
+            return metaInformation.verificationMap.values().stream().allMatch(v -> v == ProvenanceVerification.VERIFIED);
+        }
+
+        return false;
     }
 
     /**
@@ -369,11 +419,12 @@ public class CsarImporter {
     /**
      * Recursively imports the given definitions
      *
-     * @param tmf       the TOSCAMetaFile object holding the parsed content of a TOSCA meta file. If null, no files must
-     *                  be referenced from the given definitions
-     * @param overwrite true: existing contents are overwritten
+     * @param tmf     the TOSCAMetaFile object holding the parsed content of a TOSCA meta file. If null, no files must
+     *                be referenced from the given definitions
+     * @param options the set of options applicable while importing a CSAR
      */
-    public Optional<ServiceTemplateId> importDefinitions(TOSCAMetaFile tmf, Path defsPath, final List<String> errors, boolean overwrite, boolean asyncWPDParsing) throws IOException {
+    public Optional<ServiceTemplateId> importDefinitions(TOSCAMetaFile tmf, Path defsPath, final List<String> errors,
+                                                         CsarImportOptions options) throws IOException {
         if (defsPath == null) {
             throw new IllegalStateException("path to definitions must not be null");
         }
@@ -405,7 +456,7 @@ public class CsarImporter {
         }
 
         List<TImport> imports = defs.getImport();
-        this.importImports(defsPath.getParent(), tmf, imports, errors, overwrite, asyncWPDParsing);
+        this.importImports(defsPath.getParent(), tmf, imports, errors, options);
         // imports has been modified to contain necessary imports only
 
         // this method adds new imports to defs which may not be imported using "importImports".
@@ -430,7 +481,7 @@ public class CsarImporter {
             final DefinitionsChildId wid = BackendUtils.getDefinitionsChildId(widClass, namespace, id, false);
 
             if (RepositoryFactory.getRepository().exists(wid)) {
-                if (overwrite) {
+                if (options.isOverwrite()) {
                     RepositoryFactory.getRepository().forceDelete(wid);
                     String msg = String.format("Deleted %1$s %2$s to enable replacement", ci.getClass().getName(), wid.getQName().toString());
                     CsarImporter.LOGGER.debug(msg);
@@ -470,7 +521,7 @@ public class CsarImporter {
             // node types and relationship types are subclasses of TEntityType
             // Therefore, we check the entity type separately here
             if (ci instanceof TEntityType) {
-                if (asyncWPDParsing) {
+                if (options.isAsyncWPDParsing()) {
                     // Adjusting takes a long time
                     // Therefore, we first save the type as is and convert to Winery-Property-Definitions in the background
                     CsarImporter.storeDefinitions(wid, newDefs);
@@ -997,8 +1048,9 @@ public class CsarImporter {
      * @param basePath the base path where to resolve files from. This is the directory of the Definitions
      * @param imports  the list of imports to import. SIDE EFFECT: this list is modified. After this method has run, the
      *                 list contains the imports to be put into the wrapper element
+     * @param options  the set of options applicable while importing a CSAR
      */
-    private void importImports(Path basePath, TOSCAMetaFile tmf, List<TImport> imports, final List<String> errors, boolean overwrite, final boolean asyncWPDParsing) throws IOException {
+    private void importImports(Path basePath, TOSCAMetaFile tmf, List<TImport> imports, final List<String> errors, CsarImportOptions options) throws IOException {
         for (Iterator<TImport> iterator = imports.iterator(); iterator.hasNext(); ) {
             TImport imp = iterator.next();
             String importType = imp.getImportType();
@@ -1028,11 +1080,11 @@ public class CsarImporter {
                         defsPath = basePath.getParent().resolve(loc);
                         // the real existence check is done in importDefinitions
                     }
-                    this.importDefinitions(tmf, defsPath, errors, overwrite, asyncWPDParsing);
+                    this.importDefinitions(tmf, defsPath, errors, options);
                     // imports of definitions don't have to be kept as these are managed by Winery
                     iterator.remove();
                 } else {
-                    this.importOtherImport(basePath, imp, errors, importType, overwrite);
+                    this.importOtherImport(basePath, imp, errors, importType, options);
                 }
             }
         }
@@ -1043,8 +1095,9 @@ public class CsarImporter {
      * CSAR)
      *
      * @param rootPath the absolute path where to resolve files from
+     * @param options  the set of options applicable while importing a CSAR
      */
-    private void importOtherImport(Path rootPath, TImport imp, final List<String> errors, String type, boolean overwrite) {
+    private void importOtherImport(Path rootPath, TImport imp, final List<String> errors, String type, CsarImportOptions options) {
         assert (!type.equals(Namespaces.TOSCA_NAMESPACE));
         String loc = imp.getLocation();
 
@@ -1115,7 +1168,7 @@ public class CsarImporter {
         String newLoc = "../" + Util.getUrlPath(fileRef);
         imp.setLocation(newLoc);
 
-        if (!importDataExistsInRepo || overwrite) {
+        if (!importDataExistsInRepo || options.isOverwrite()) {
             // finally write the file to the storage
             try (InputStream is = Files.newInputStream(path);
                  BufferedInputStream bis = new BufferedInputStream(is)) {

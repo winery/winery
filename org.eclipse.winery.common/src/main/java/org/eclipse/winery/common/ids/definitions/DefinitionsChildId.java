@@ -60,7 +60,6 @@ public abstract class DefinitionsChildId extends GenericId {
 
     private final Namespace namespace;
 
-
     public DefinitionsChildId(Namespace namespace, XmlId xmlId) {
         super(xmlId);
         this.namespace = Objects.requireNonNull(namespace);

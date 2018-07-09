@@ -1,0 +1,12 @@
+TOSCA-Meta-Version: 1.0
+CSAR-Version: 1.0
+Created-By: Winery 2.0.0-SNAPSHOT
+Entry-Definitions: Definitions/servicetemplates1__MyTinyToDo_Bare_Docker.tosca
+
+Name: myTestFile.tosca
+Content-Type: application/vnd.oasis.tosca.definitions
+SHA-256: 97193968948686d6947d4d760d3fe724b9981980056b8902be92e91fbe9e3eed
+
+Name: myTestFile2.tosca
+Content-Type: application/vnd.oasis.tosca.definitions
+SHA-256: a99c9a8e954355e34f11282a6dec25cc5e0b3aec2fd25d33daf2ca06267b477e

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,8 +25,8 @@ public class TOSCAMetaFile implements Serializable {
 
     private static final long serialVersionUID = 5636441655503533546L;
 
-    Map<String, String> block0 = new HashMap<String, String>();
-    List<Map<String, String>> fileBlocks = new ArrayList<Map<String, String>>();
+    private Map<String, String> block0 = new HashMap<>();
+    private List<Map<String, String>> fileBlocks = new ArrayList<>();
 
     /**
      * Creates an empty TOSCA Meta file object
@@ -137,5 +137,4 @@ public class TOSCAMetaFile implements Serializable {
         // nothing found
         return null;
     }
-
 }

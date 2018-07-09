@@ -22,6 +22,7 @@ import org.eclipse.winery.common.version.WineryVersion;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class VersionUtilsTest {
 
@@ -107,7 +108,7 @@ public class VersionUtilsTest {
     @Test
     public void getVersionWithCurrentFlag() {
         String name = getComponentName("myComponent", "12.54.3", 1, 0);
-        assertEquals(true, VersionUtils.getVersionWithCurrentFlag(name, name).isCurrentVersion());
+        assertTrue(VersionUtils.getVersionWithCurrentFlag(name, name).isCurrentVersion());
     }
 
     @Test
@@ -130,6 +131,18 @@ public class VersionUtilsTest {
         DefinitionsChildId id = getDefinitionChildId("http://example.org/tosca/versions", name, "1.2.3", 1, 1);
 
         assertEquals(name, VersionUtils.getNameWithoutVersion(id));
+    }
+
+    @Test
+    public void getQNameWithComponentVersionOnly() {
+        String name = "myElementTest";
+        String namespace = "http://example.org/tosca/versions";
+        String componentVersion = "1.2.3";
+
+        DefinitionsChildId id = getDefinitionChildId(namespace, name, componentVersion, 1, 1);
+
+        assertEquals("{" + namespace + "}" + name + WineryVersion.WINERY_VERSION_SEPARATOR + componentVersion,
+            VersionUtils.getQNameWithComponentVersionOnly(id));
     }
 
     private DefinitionsChildId getDefinitionChildId(String namespace, String name, String componentVersion, int wineryVersion, int wipVersion) {

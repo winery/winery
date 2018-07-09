@@ -26,6 +26,8 @@ import { WineryAddComponent } from '../wineryAddComponentModule/addComponent.com
 import { isNullOrUndefined } from 'util';
 import { Utils } from '../wineryUtils/utils';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ImportMetaInformation } from '../wineryInterfaces/importMetaInformation';
+import { KeyValueItem } from '../wineryInterfaces/keyValueItem';
 
 const showAll = 'Show all Items';
 const showGrouped = 'Group by Namespace';
@@ -55,6 +57,10 @@ export class SectionComponent implements OnInit, OnDestroy {
     allElements: SectionData[];
     elementToRemove: SectionData;
     overwriteValue = false;
+    validateInput = false;
+
+    importMetadata: ImportMetaInformation;
+    provenanceHistory: any = {};
 
     importXsdSchemaType: string;
 
@@ -64,6 +70,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     @ViewChild('addCsarModal') addCsarModal: ModalDirective;
     @ViewChild('removeElementModal') removeElementModal: ModalDirective;
     @ViewChild('addYamlModal') addYamlModal: ModalDirective;
+    @ViewChild('validationModal') validationModal: ModalDirective;
     @ViewChild('fileUploader') fileUploader: WineryUploaderComponent;
 
     constructor(private route: ActivatedRoute,
@@ -128,14 +135,44 @@ export class SectionComponent implements OnInit, OnDestroy {
             );
     }
 
+    onUploadSuccess(response: string) {
+        const metadata = JSON.parse(response);
+        this.provenanceHistory = {};
+
+        if (this.validateInput) {
+            if (metadata.valid) {
+                this.notify.success('CSAR validation successful!', 'CSAR valid');
+            } else {
+                this.notify.error('CSAR validation failed! See modal for details.', 'CSAR invalid');
+            }
+
+            const keys = Object.keys(metadata.verificationMap);
+            const files: KeyValueItem[] = [];
+
+            for (const key of keys) {
+                files.push({ key: key, value: metadata.verificationMap[key] });
+            }
+
+            metadata.verificationMap = files;
+            this.importMetadata = metadata;
+
+            this.validationModal.show();
+        }
+    }
+
     onPageChange(page: number) {
         this.currentPage = page;
     }
 
-    overwriteValueChanged() {
+    importOptionsChanged() {
+        // validation currently only works, if the overwrite flag is set to true...
+        this.overwriteValue = this.overwriteValue || this.validateInput;
         this.fileUploader.getUploader().setOptions({
             url: this.fileUploadUrl,
-            additionalParameter: { 'overwrite': this.overwriteValue }
+            additionalParameter: {
+                overwrite: this.overwriteValue,
+                validate: this.validateInput
+            }
         });
     }
 
@@ -222,5 +259,32 @@ export class SectionComponent implements OnInit, OnDestroy {
     private handleError(error: HttpErrorResponse): void {
         this.loading = false;
         this.notify.error(error.message);
+    }
+
+    getVerificationClass(value: string): string {
+        switch (value) {
+            case 'VERIFIED':
+                return 'green';
+            default:
+                return 'red';
+        }
+    }
+
+    getProvenance(file: KeyValueItem) {
+        this.service.getProvenanceHistroy(this.importMetadata.entryServiceTemplate.qname, file.key)
+            .subscribe(
+                value => this.provenanceHistory[file.key] = value,
+                error => this.handleError(error)
+            );
+    }
+
+    getAuthorizedClass(authorized: boolean): string {
+        return this.getVerificationClass(authorized ? 'VERIFIED' : '');
+    }
+
+    onUploadError(response: string) {
+        if (this.validateInput) {
+            this.onUploadSuccess(response);
+        }
     }
 }

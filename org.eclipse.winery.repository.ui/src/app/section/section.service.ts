@@ -17,6 +17,7 @@ import { Observable } from 'rxjs';
 import { isNullOrUndefined } from 'util';
 import { backendBaseURL } from '../configuration';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { Provenance } from '../wineryInterfaces/provenance';
 
 @Injectable()
 export class SectionService {
@@ -58,5 +59,17 @@ export class SectionService {
 
     setPath(path: string) {
         this.path = '/' + path;
+    }
+
+    getProvenanceHistroy(provenanceId: string, fileId?: string): Observable<Provenance> {
+        let url = backendBaseURL + '/API/provenance/'
+            + encodeURIComponent(encodeURIComponent(provenanceId))
+            +  '/history';
+
+        if (!isNullOrUndefined(fileId)) {
+            url += '?fileId=' + fileId;
+        }
+
+        return this.http.get<Provenance>(url);
     }
 }

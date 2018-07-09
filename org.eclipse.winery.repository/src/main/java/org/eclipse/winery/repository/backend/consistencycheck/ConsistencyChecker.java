@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -383,9 +384,10 @@ public class ConsistencyChecker {
 
     private static void checkCsar(ConsistencyErrorLogger errorLogger, EnumSet<ConsistencyCheckerVerbosity> verbosity, DefinitionsChildId id, Path tempCsar) {
         CsarExporter exporter = new CsarExporter();
+        Map<String, Object> exportConfiguration = new HashMap<>();
         try (OutputStream outputStream = Files.newOutputStream(tempCsar, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
             try {
-                exporter.writeCsar(RepositoryFactory.getRepository(), id, outputStream);
+                exporter.writeCsar(RepositoryFactory.getRepository(), id, outputStream, exportConfiguration);
             } catch (ArchiveException e) {
                 LOGGER.debug("Error during checking ZIP", e);
                 printAndAddError(errorLogger, verbosity, id, "Invalid zip file: " + e.getMessage());

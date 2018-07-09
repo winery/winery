@@ -88,6 +88,7 @@
         <module>org.eclipse.winery.model.selfservice</module>
         <module>org.eclipse.winery.model.tosca</module>
         <module>org.eclipse.winery.model.tosca.yaml</module>
+        <module>org.eclipse.winery.provenance</module>
         <module>org.eclipse.winery.common</module>
         <module>org.eclipse.winery.yaml.common</module>
         <module>org.eclipse.winery.yaml.converter</module>
@@ -345,6 +346,15 @@
                         </execution>
                     </executions>
                 </plugin>
+
+                <!-- TODO The following plugin should be used when the web3j-maven-plugin library starts using a version of solc >= 0.4.21
+            and a version of web3j >= 3.4.0 (most likely, release 0.4.0)-->
+                
+                <!--<plugin>-->
+                    <!--<groupId>org.web3j</groupId>-->
+                    <!--<artifactId>web3j-maven-plugin</artifactId>-->
+                    <!--<version>0.3.0</version>-->
+                <!--</plugin>-->
             </plugins>
         </pluginManagement>
     </build>

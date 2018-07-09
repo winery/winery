@@ -15,6 +15,7 @@ import {Component} from '@angular/core';
 import {ConsistencyCheckConfiguration, ConsistencyCheckService, ConsistencyUpdate} from './consistencyCheck.service';
 import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
 import {isNullOrUndefined} from 'util';
+import { KeyValueItem } from '../../../wineryInterfaces/keyValueItem';
 
 @Component({
     selector: 'winery-consistency-check',
@@ -77,9 +78,4 @@ export class ConsistencyCheckComponent {
         }
         this.loading = false;
     }
-}
-
-export interface KeyValueItem {
-    key: string;
-    value: any;
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,19 +13,21 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.importing;
 
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.provenance.model.ProvenanceVerification;
 
 public class ImportMetaInformation {
 
     public final List<String> errors;
-    public Optional<ServiceTemplateId> entryServiceTemplate = Optional.empty();
+    public ServiceTemplateId entryServiceTemplate;
+    public Map<String, ProvenanceVerification> verificationMap;
+    public boolean valid;
 
     public ImportMetaInformation() {
         this.errors = new ArrayList<>();
     }
-
 }
