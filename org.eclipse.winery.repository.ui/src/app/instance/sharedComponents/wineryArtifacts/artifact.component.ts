@@ -60,7 +60,7 @@ export class WineryArtifactComponent implements OnInit {
     baseUrl = hostURL;
     fileToRemove: FilesApiData;
     noneSelected = true;
-    isDeploymentArtifact = false;
+    isImplementationArtifact = false;
 
     commonColumns: WineryTableColumn[] = [
         { title: 'Name', name: 'name' },
@@ -94,15 +94,14 @@ export class WineryArtifactComponent implements OnInit {
         this.getArtifactTypes();
         this.newArtifact.artifactType = '';
 
-        if (this.router.url.includes('deploymentartifacts')) {
-            this.isDeploymentArtifact = true;
+        if (this.router.url.includes('implementationartifacts')) {
+            this.isImplementationArtifact = true;
             this.columns.splice(1, 0, this.implementationArtifactColumns[0]);
             this.columns.splice(2, 0, this.implementationArtifactColumns[1]);
-        } else {
             this.getInterfacesOfAssociatedType();
         }
 
-        this.name = this.isDeploymentArtifact ? 'Deployment' : 'Implementation';
+        this.name = this.isImplementationArtifact ? 'Implementation' : 'Deployment';
     }
 
     onAddClick() {
@@ -113,8 +112,8 @@ export class WineryArtifactComponent implements OnInit {
         } else {
             this.artifact.namespace = this.sharedData.toscaComponent.namespace;
         }
-        const deployment = this.isDeploymentArtifact ? 'Deployment' : 'Implementation';
-        this.artifact.name = this.sharedData.toscaComponent.localName.replace('_', '-') + '-' + deployment + 'Artifact';
+        const implementation = this.isImplementationArtifact ? 'Implementation' : 'Deployment';
+        this.artifact.name = this.sharedData.toscaComponent.localName.replace('_', '-') + '-' + implementation + 'Artifact';
         this.artifact.toscaType = ToscaTypes.ArtifactTemplate;
         this.addArtifactModal.show();
     }
