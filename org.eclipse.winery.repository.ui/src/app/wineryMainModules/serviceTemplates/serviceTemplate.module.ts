@@ -27,7 +27,7 @@ import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
 import { InstanceModule } from '../../instance/instance.module';
 import { SelfServicePortalModule } from '../../instance/serviceTemplates/selfServicePortal/selfServicePortal.module';
 import { BoundaryDefinitionsModule } from '../../instance/serviceTemplates/boundaryDefinitions/boundaryDefinitions.module';
-import { TagModule } from '../../instance/serviceTemplates/tag/tag.module';
+import { TagModule } from '../../instance/sharedComponents/tag/tag.module';
 import { DocumentationModule } from '../../instance/sharedComponents/documentation/documentation.module';
 import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
 import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';

@@ -29,7 +29,7 @@ import { PropertiesDefinitionComponent } from '../../instance/sharedComponents/p
 import { CapOrReqDefComponent } from '../../instance/nodeTypes/capabilityOrRequirementDefinitions/capOrReqDef.component';
 import { WineryReadmeComponent } from '../../wineryReadmeModule/wineryReadme.component';
 import { WineryLicenseComponent } from '../../wineryLicenseModule/wineryLicense.component';
-import { TagComponent } from '../../instance/serviceTemplates/tag/tag.component';
+import { TagComponent } from '../../instance/sharedComponents/tag/tag.component';
 
 const toscaType = ToscaTypes.NodeType;
 

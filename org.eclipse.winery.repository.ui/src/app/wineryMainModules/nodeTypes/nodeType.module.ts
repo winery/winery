@@ -30,7 +30,7 @@ import { PropertiesDefinitionModule } from '../../instance/sharedComponents/prop
 import { InheritanceModule } from '../../instance/sharedComponents/inheritance/inheritance.module';
 import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
 import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';
-import { TagModule } from '../../instance/serviceTemplates/tag/tag.module';
+import { TagModule } from '../../instance/sharedComponents/tag/tag.module';
 
 @NgModule({
     imports: [

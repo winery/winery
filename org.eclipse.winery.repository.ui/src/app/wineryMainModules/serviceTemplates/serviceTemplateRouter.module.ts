@@ -24,7 +24,7 @@ import { TopologyTemplateComponent } from '../../instance/serviceTemplates/topol
 import { PlansComponent } from '../../instance/serviceTemplates/plans/plans.component';
 import { SelfServicePortalComponent } from '../../instance/serviceTemplates/selfServicePortal/selfServicePortal.component';
 import { selfServiceRoutes } from '../../instance/serviceTemplates/selfServicePortal/selfServicePortalRouter.module';
-import { TagComponent } from '../../instance/serviceTemplates/tag/tag.component';
+import { TagComponent } from '../../instance/sharedComponents/tag/tag.component';
 import { DocumentationComponent } from '../../instance/sharedComponents/documentation/documentation.component';
 import { ToscaTypes } from '../../wineryInterfaces/enums';
 import { WineryReadmeComponent } from '../../wineryReadmeModule/wineryReadme.component';

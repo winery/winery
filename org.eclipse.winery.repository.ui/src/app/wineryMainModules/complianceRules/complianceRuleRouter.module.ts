@@ -23,7 +23,7 @@ import { ToscaTypes } from '../../wineryInterfaces/enums';
 import { WineryReadmeComponent } from '../../wineryReadmeModule/wineryReadme.component';
 import { WineryLicenseComponent } from '../../wineryLicenseModule/wineryLicense.component';
 import { TopologyTemplateComponent } from '../../instance/serviceTemplates/topologyTemplate/topologyTemplate.component';
-import { TagComponent } from '../../instance/serviceTemplates/tag/tag.component';
+import { TagComponent } from '../../instance/sharedComponents/tag/tag.component';
 
 const toscaType = ToscaTypes.ComplianceRule;
 
