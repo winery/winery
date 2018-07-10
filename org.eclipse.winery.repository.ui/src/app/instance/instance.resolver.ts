@@ -14,7 +14,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { Utils } from '../wineryUtils/utils';
-import { ToscaComponent } from '../wineryInterfaces/toscaComponent';
+import { ToscaComponent } from '../model/toscaComponent';
 
 @Injectable()
 export class InstanceResolver implements Resolve<ToscaComponent> {

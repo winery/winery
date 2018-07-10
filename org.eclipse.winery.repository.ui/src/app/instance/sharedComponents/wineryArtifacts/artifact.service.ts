@@ -19,7 +19,7 @@ import { Observable } from 'rxjs';
 import { GenerateArtifactApiData } from '../interfaces/generateArtifactApiData';
 import { InterfacesApiData } from '../interfaces/interfacesApiData';
 import { NameAndQNameApiData } from '../../../wineryQNameSelector/wineryNameAndQNameApiData';
-import { ArtifactApiData } from '../../../wineryInterfaces/wineryComponent';
+import { ArtifactApiData } from '../../../model/wineryComponent';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()

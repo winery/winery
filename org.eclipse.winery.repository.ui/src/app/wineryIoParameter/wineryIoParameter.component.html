@@ -17,6 +17,7 @@
                   [data]="inputParameters"
                   [columns]="columns"
                   [disableFiltering]="true"
+                  [disableButtons]="!sharedData?.currentVersion?.editable"
                   (addBtnClicked)="addInputParam()"
                   (cellSelected)="onInputParameterSelected($event.row)"
                   (removeBtnClicked)="removeInputParameter()">
@@ -26,6 +27,7 @@
                   [data]="outputParameters"
                   [columns]="columns"
                   [disableFiltering]="true"
+                  [disableButtons]="!sharedData?.currentVersion?.editable"
                   (addBtnClicked)="addOutputParam()"
                   (cellSelected)="onOutputParameterSelected($event.row)"
                   (removeBtnClicked)="removeOutputParameter()">

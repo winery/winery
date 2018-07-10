@@ -15,9 +15,9 @@ import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angula
 import {Router} from '@angular/router';
 import {RemoveWhiteSpacesPipe} from '../../wineryPipes/removeWhiteSpaces.pipe';
 import {ModalDirective} from 'ngx-bootstrap';
-import {ToscaComponent} from '../../wineryInterfaces/toscaComponent';
-import {ToscaTypes} from '../../wineryInterfaces/enums';
-import {WineryVersion} from '../../wineryInterfaces/wineryVersion';
+import {ToscaComponent} from '../../model/toscaComponent';
+import {ToscaTypes} from '../../model/enums';
+import {WineryVersion} from '../../model/wineryVersion';
 import {InstanceService} from '../instance.service';
 
 @Component({

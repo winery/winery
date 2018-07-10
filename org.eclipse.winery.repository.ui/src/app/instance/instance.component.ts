@@ -21,11 +21,11 @@ import { backendBaseURL } from '../configuration';
 import { RemoveWhiteSpacesPipe } from '../wineryPipes/removeWhiteSpaces.pipe';
 import { ExistService } from '../wineryUtils/existService';
 import { isNullOrUndefined } from 'util';
-import { WineryInstance } from '../wineryInterfaces/wineryComponent';
-import { ToscaTypes } from '../wineryInterfaces/enums';
-import { ToscaComponent } from '../wineryInterfaces/toscaComponent';
+import { WineryInstance } from '../model/wineryComponent';
+import { ToscaTypes } from '../model/enums';
+import { ToscaComponent } from '../model/toscaComponent';
 import { Utils } from '../wineryUtils/utils';
-import { WineryVersion } from '../wineryInterfaces/wineryVersion';
+import { WineryVersion } from '../model/wineryVersion';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({

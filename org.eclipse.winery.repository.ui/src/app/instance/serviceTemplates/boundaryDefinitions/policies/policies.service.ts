@@ -15,7 +15,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { SelectItem } from 'ng2-select';
-import { WineryComponent } from '../../../../wineryInterfaces/wineryComponent';
+import { WineryComponent } from '../../../../model/wineryComponent';
 import { backendBaseURL } from '../../../../configuration';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 

@@ -16,8 +16,8 @@ import { ExistService } from '../wineryUtils/existService';
 import { isNullOrUndefined } from 'util';
 import { ModalDirective } from 'ngx-bootstrap';
 import { backendBaseURL } from '../configuration';
-import { ToscaTypes } from '../wineryInterfaces/enums';
-import { WineryVersion } from '../wineryInterfaces/wineryVersion';
+import { ToscaTypes } from '../model/enums';
+import { WineryVersion } from '../model/wineryVersion';
 
 /**
  * This component is for checking whether a given component already exists in the repository and displays it

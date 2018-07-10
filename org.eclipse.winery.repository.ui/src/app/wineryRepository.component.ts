@@ -16,7 +16,7 @@ import {WineryNotificationService} from './wineryNotificationModule/wineryNotifi
 import {WineryGitLogComponent} from './wineryGitLog/wineryGitLog.component';
 import {ExistService} from './wineryUtils/existService';
 import {backendBaseURL} from './configuration';
-import {BackendAvailabilityStates} from './wineryInterfaces/enums';
+import {BackendAvailabilityStates} from './model/enums';
 
 @Component({
     selector: 'winery-repository',

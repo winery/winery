@@ -21,14 +21,14 @@ import { InstanceService } from '../../instance.service';
 import { InterfacesApiData } from '../interfaces/interfacesApiData';
 import { GenerateArtifactApiData } from '../interfaces/generateArtifactApiData';
 import { ModalDirective } from 'ngx-bootstrap';
-import { ArtifactApiData } from '../../../wineryInterfaces/wineryComponent';
+import { ArtifactApiData } from '../../../model/wineryComponent';
 import { backendBaseURL, hostURL } from '../../../configuration';
 import { WineryArtifactFilesService } from './artifact.files.service.';
 import { Router } from '@angular/router';
 import { FilesApiData } from '../../artifactTemplates/filesTag/files.service.';
 import { GenerateData } from '../../../wineryComponentExists/wineryComponentExists.component';
-import { ToscaTypes } from '../../../wineryInterfaces/enums';
-import { WineryVersion } from '../../../wineryInterfaces/wineryVersion';
+import { ToscaTypes } from '../../../model/enums';
+import { WineryVersion } from '../../../model/wineryVersion';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({

@@ -15,7 +15,7 @@ import { Component, OnInit } from '@angular/core';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { ValidService } from './validSourcesAndTargets.service';
 import { ValidEndingsApiDataSet, ValidEndingsData, ValidEndingsSelectionEnum } from './validEndingsApiData';
-import { SelectData } from '../../../wineryInterfaces/selectData';
+import { SelectData } from '../../../model/selectData';
 import { isNullOrUndefined } from 'util';
 import { SelectItem } from 'ng2-select';
 import { InstanceService } from '../../instance.service';

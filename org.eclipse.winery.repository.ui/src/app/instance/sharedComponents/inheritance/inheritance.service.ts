@@ -16,7 +16,7 @@ import { Observable } from 'rxjs';
 import { backendBaseURL } from '../../../configuration';
 import { InstanceService } from '../../instance.service';
 import { InheritanceApiData } from './inheritanceApiData';
-import { SelectData } from '../../../wineryInterfaces/selectData';
+import { SelectData } from '../../../model/selectData';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()

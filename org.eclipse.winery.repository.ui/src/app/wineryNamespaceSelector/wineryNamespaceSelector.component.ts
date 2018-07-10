@@ -15,8 +15,8 @@ import {Component, ElementRef, forwardRef, Input, OnInit, ViewChild} from '@angu
 import {WineryNamespaceSelectorService} from './wineryNamespaceSelector.service';
 import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
-import {NamespaceWithPrefix} from '../wineryInterfaces/namespaceWithPrefix';
-import {StartNamespaces, ToscaTypes} from '../wineryInterfaces/enums';
+import {NamespaceWithPrefix} from '../model/namespaceWithPrefix';
+import {StartNamespaces, ToscaTypes} from '../model/enums';
 import {isNullOrUndefined} from 'util';
 import { HttpErrorResponse } from '@angular/common/http';
 

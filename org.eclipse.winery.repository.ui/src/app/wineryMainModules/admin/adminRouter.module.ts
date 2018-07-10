@@ -16,7 +16,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {SectionResolver} from '../../section/section.resolver';
 import {InstanceComponent} from '../../instance/instance.component';
 import {InstanceResolver} from '../../instance/instance.resolver';
-import {ToscaTypes} from '../../wineryInterfaces/enums';
+import {ToscaTypes} from '../../model/enums';
 import {RepositoryComponent} from '../../instance/admin/repository/repository.component';
 import {TypeWithShortNameComponent} from '../../instance/admin/typesWithShortName/typeWithShortName.component';
 import {NamespacesComponent} from '../../instance/admin/namespaces/namespaces.component';
