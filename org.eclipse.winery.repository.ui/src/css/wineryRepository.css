@@ -1190,3 +1190,7 @@ div.policiesContainer > div.content > div.policy > textarea.policy_xml {
     /* symbol for "collapsed" panels */
     content: "\e259"; /* menu-down glyphicon */
 }
+
+.active-row {
+    background-color: #ccc !important;
+}

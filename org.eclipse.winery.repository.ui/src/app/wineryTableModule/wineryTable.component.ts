@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, DoCheck, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import { Component, DoCheck, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import {isNullOrUndefined} from 'util';
 
 /**
@@ -113,6 +113,7 @@ import {isNullOrUndefined} from 'util';
 })
 export class WineryTableComponent implements OnInit, DoCheck {
 
+    @ViewChild('tableContainer') tableContainer: any;
     @Input() title: string;
     @Input() itemsPerPage = 10;
     @Input() maxSize = 5;
@@ -130,12 +131,12 @@ export class WineryTableComponent implements OnInit, DoCheck {
         /**
          * switch on the sorting plugin
          */
-        sorting: {columns: this.columns || true},
+        sorting: { columns: this.columns || true },
         /**
          * switch on the filtering plugin
          * {@link ColumnFilter}
          */
-        filtering: {filterString: ''},
+        filtering: { filterString: '' },
         /**
          * additional CSS classes that should be added to a table
          */
@@ -160,7 +161,7 @@ export class WineryTableComponent implements OnInit, DoCheck {
 
     // region #######Table events and functions######
 
-    public onChangeTable(config: any, page: any = {page: this.page, itemsPerPage: this.itemsPerPage}): any {
+    public onChangeTable(config: any, page: any = { page: this.page, itemsPerPage: this.itemsPerPage }): any {
         if (config.filtering) {
             Object.assign(this.config.filtering, config.filtering);
         }
@@ -251,6 +252,17 @@ export class WineryTableComponent implements OnInit, DoCheck {
     onCellClick(data: WineryRowData) {
         this.cellSelected.emit(data);
         this.currentSelected = data.row;
+        this.highlightSelectedRow(data.row);
+    }
+
+    private highlightSelectedRow(selectedRow: any): void {
+        const rowNumber: number = selectedRow ? this.rows.findIndex(row => row === selectedRow) : -1;
+        const tableRows = this.tableContainer.nativeElement.children[0].children[0].children[1].children;
+        if (rowNumber !== -1) {
+            for (let i = 0; i < tableRows.length; i++) {
+                tableRows[i].className = (i === rowNumber) ? 'active-row' : '';
+            }
+        }
     }
 
     onAddClick($event: Event) {
