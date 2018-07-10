@@ -44,7 +44,7 @@ public class Prefs implements ServletContextListener {
 
     /**
      * This constructor is called at handling at servlets, too. Therefore, the visibility stays public If testing is
-     * needed, an additional Boolean paramater has to be passed (see below)
+     * needed, an additional Boolean parameter has to be passed (see below)
      */
     public Prefs() {
         // globally use unix line endings - see http://stackoverflow.com/a/6128248/873282
@@ -88,9 +88,11 @@ public class Prefs implements ServletContextListener {
     }
 
     /**
-     * Initializes Winery using the given context
+     * When the servlet is initialized, this method is called.
      */
-    private void doInitialization(ServletContext ctx) {
+    @Override
+    public void contextInitialized(ServletContextEvent servletContextEvent) {
+        ServletContext ctx = servletContextEvent.getServletContext();
         Objects.requireNonNull(ctx);
         Environment.getUrlConfiguration().setRepositoryApiUrl(ctx.getContextPath());
 
@@ -143,12 +145,8 @@ public class Prefs implements ServletContextListener {
     }
 
     @Override
-    public void contextInitialized(ServletContextEvent servletContextEvent) {
-        this.doInitialization(servletContextEvent.getServletContext());
-    }
-
-    @Override
     public void contextDestroyed(ServletContextEvent arg0) {
         // nothing to do at tear down
     }
+
 }
