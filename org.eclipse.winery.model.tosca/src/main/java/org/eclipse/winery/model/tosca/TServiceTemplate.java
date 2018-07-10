@@ -15,6 +15,7 @@
 package org.eclipse.winery.model.tosca;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -22,8 +23,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
+
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -156,6 +160,39 @@ public class TServiceTemplate extends HasId implements HasName, HasTargetNamespa
 
     public void setSubstitutableNodeType(QName value) {
         this.substitutableNodeType = value;
+    }
+
+    @XmlTransient
+    public @Nullable String getAbstract() {
+        Map<QName, String> otherAttributes = this.getOtherAttributes();
+        return otherAttributes.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "abstract"));
+    }
+
+    public void setAbstract(String value) {
+        Map<QName, String> otherAttributes = this.getOtherAttributes();
+        otherAttributes.put(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "abstract"), value);
+    }
+
+    @XmlTransient
+    public @Nullable String getFinal() {
+        Map<QName, String> otherAttributes = this.getOtherAttributes();
+        return otherAttributes.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "final"));
+    }
+
+    public void setFinal(String value) {
+        Map<QName, String> otherAttributes = this.getOtherAttributes();
+        otherAttributes.put(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "final"), value);
+    }
+
+    @XmlTransient
+    public @Nullable String getDerivedFrom() {
+        Map<QName, String> otherAttributes = this.getOtherAttributes();
+        return otherAttributes.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "derivedFrom"));
+    }
+
+    public void setDerivedFrom(String value) {
+        Map<QName, String> otherAttributes = this.getOtherAttributes();
+        otherAttributes.put(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "derivedFrom"), value);
     }
 
     public static class Builder extends HasId.Builder<Builder> {

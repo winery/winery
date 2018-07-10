@@ -30,21 +30,22 @@ import { ToscaTypes } from '../../model/enums';
 import { WineryReadmeComponent } from '../../wineryReadmeModule/wineryReadme.component';
 import { WineryLicenseComponent } from '../../wineryLicenseModule/wineryLicense.component';
 import { ConstraintCheckingComponent } from '../../instance/serviceTemplates/constraintChecking/constraintChecking.component';
+import { InheritanceComponent } from '../../instance/sharedComponents/inheritance/inheritance.component';
 
 const toscaType = ToscaTypes.ServiceTemplate;
 
 const serviceTemplateRoutes: Routes = [
-    {path: toscaType, component: SectionComponent, resolve: {resolveData: SectionResolver}},
-    {path: toscaType + '/:namespace', component: SectionComponent, resolve: {resolveData: SectionResolver}},
+    { path: toscaType, component: SectionComponent, resolve: { resolveData: SectionResolver } },
+    { path: toscaType + '/:namespace', component: SectionComponent, resolve: { resolveData: SectionResolver } },
     {
         path: toscaType + '/:namespace/:localName',
         component: InstanceComponent,
-        resolve: {resolveData: InstanceResolver},
+        resolve: { resolveData: InstanceResolver },
         children: [
-            {path: 'readme', component: WineryReadmeComponent},
-            {path: 'license', component: WineryLicenseComponent},
-            {path: 'topologytemplate', component: TopologyTemplateComponent},
-            {path: 'plans', component: PlansComponent},
+            { path: 'readme', component: WineryReadmeComponent },
+            { path: 'license', component: WineryLicenseComponent },
+            { path: 'topologytemplate', component: TopologyTemplateComponent },
+            { path: 'plans', component: PlansComponent },
             {
                 path: 'selfserviceportal',
                 component: SelfServicePortalComponent,
@@ -52,6 +53,7 @@ const serviceTemplateRoutes: Routes = [
                 // 'app/instance/serviceTemplates/selfServicePortal/selfServicePortalRouter.module#SelfServiceRoutingModule'
                 children: selfServiceRoutes
             },
+            { path: 'inheritance', component: InheritanceComponent },
             {
                 path: 'boundarydefinitions',
                 component: BoundaryDefinitionsComponent,
@@ -59,11 +61,11 @@ const serviceTemplateRoutes: Routes = [
                 // 'app/instance/serviceTemplates/boundaryDefinitions/boundaryDefinitions.module#BoundaryDefinitionsModule'
                 children: boundaryDefinitionsRoutes
             },
-            {path: 'constraintchecking', component: ConstraintCheckingComponent},
-            {path: 'tags', component: TagComponent},
-            {path: 'documentation', component: DocumentationComponent},
-            {path: 'xml', component: EditXMLComponent},
-            {path: '', redirectTo: 'readme', pathMatch: 'full'}
+            { path: 'constraintchecking', component: ConstraintCheckingComponent },
+            { path: 'tags', component: TagComponent },
+            { path: 'documentation', component: DocumentationComponent },
+            { path: 'xml', component: EditXMLComponent },
+            { path: '', redirectTo: 'readme', pathMatch: 'full' }
         ]
     }
 ];

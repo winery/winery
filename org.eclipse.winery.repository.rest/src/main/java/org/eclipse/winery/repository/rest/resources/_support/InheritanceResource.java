@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,14 +13,20 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support;
 
-import org.eclipse.winery.repository.rest.resources.apiData.InheritanceResourceApiData;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.rest.resources.apiData.InheritanceResourceApiData;
+import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Class for managing inheritance properties: abstract, final, derivedFrom
@@ -35,10 +41,59 @@ import javax.ws.rs.core.Response;
  */
 public class InheritanceResource {
 
+    /**
+     * Private wrapper class for ServiceTemplates to emulate the derivedFrom,
+     * abstract and final attributes. For other TOSCA elements, inheritance is supported, but not for service templates.
+     *
+     * We put the code inside the InheritanceResource as this is a little helper class not be used anywhere else.
+     */
+    private static class ServiceTemplateResourceWrapper
+        extends AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal {
+        private ServiceTemplateResource res;
+
+        ServiceTemplateResourceWrapper(ServiceTemplateResource res) {
+            super(res.getId());
+            this.res = res;
+        }
+
+        @Override
+        protected TExtensibleElements createNewElement() {
+            throw new IllegalStateException("Method should never be called as the wrapper takes care at other places to return the correct service template");
+        }
+
+        @Override
+        public @Nullable String getDerivedFrom() {
+            return this.res.getServiceTemplate().getDerivedFrom();
+        }
+
+        @Override
+        public @Nullable String getTBoolean(@NonNull String key) {
+            if ("getAbstract".equals(key)) {
+                return this.res.getServiceTemplate().getAbstract();
+            } else if ("getFinal".equals(key)) {
+                return this.res.getServiceTemplate().getFinal();
+            } else {
+                return null;
+            }
+        }
+
+        @Override
+        public Response putInheritance(InheritanceResourceApiData json) {
+            this.res.getServiceTemplate().setAbstract(json.isAbstract);
+            this.res.getServiceTemplate().setDerivedFrom(json.derivedFrom);
+            this.res.getServiceTemplate().setFinal(json.isFinal);
+            return RestUtils.persist(res);
+        }
+    }
+
     private AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal managedResource;
 
     public InheritanceResource(AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal res) {
         this.managedResource = res;
+    }
+
+    public InheritanceResource(ServiceTemplateResource res) {
+        this.managedResource = new ServiceTemplateResourceWrapper(res);
     }
 
     public String getDerivedFrom() {

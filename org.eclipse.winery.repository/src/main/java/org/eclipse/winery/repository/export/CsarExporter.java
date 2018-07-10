@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Transformer;
@@ -128,6 +129,11 @@ public class CsarExporter {
 
             ExportedState exportedState = new ExportedState();
 
+            if (entryId instanceof ServiceTemplateId) {
+                Set<ServiceTemplateId> derivedServiceTemplates = repository.getDerivedServiceTemplates((ServiceTemplateId) entryId);
+                derivedServiceTemplates.stream().forEach(exportedState::flagAsExportRequired);
+            }
+
             DefinitionsChildId currentId = entryId;
             do {
                 String defName = CsarExporter.getDefinitionsPathInsideCSAR(repository, currentId);
@@ -142,7 +148,7 @@ public class CsarExporter {
                 addLicenseAndReadmeFiles(repository, currentId, refMap);
 
                 exportedState.flagAsExported(currentId);
-                exportedState.flagAsExportRequired(referencedIds);
+                referencedIds.stream().forEach(exportedState::flagAsExportRequired);
 
                 currentId = exportedState.pop();
             } while (currentId != null);

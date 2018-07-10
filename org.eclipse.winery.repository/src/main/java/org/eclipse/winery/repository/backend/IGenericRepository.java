@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -89,6 +90,7 @@ import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 
 import org.apache.tika.mime.MediaType;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * Enables access to the winery repository via Ids defined in package {@link org.eclipse.winery.common.ids}
@@ -732,7 +734,7 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
 
         return ids;
     }
-    
+
     /**
      * Determines all referencedDefinitionsChildIds
      *
@@ -1054,5 +1056,28 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
         }
 
         return count;
+    }
+
+    /**
+     * Searches the repository (recursively) for service templates inheriting from the given service template
+     */
+    default @NonNull Set<ServiceTemplateId> getDerivedServiceTemplates(@NonNull ServiceTemplateId entryId) {
+        Set<ServiceTemplateId> derivedServiceTemplates = new HashSet<>();
+        TServiceTemplate entryServTemplate = this.getElement(entryId);
+        if ("yes".equals(entryServTemplate.getAbstract())) {
+            Set<ServiceTemplateId> servTempIds = this.getAllDefinitionsChildIds(ServiceTemplateId.class);
+            for (ServiceTemplateId servId : servTempIds) {
+                TServiceTemplate servTemplate = this.getElement(servId);
+                if (servTemplate.getDerivedFrom() != null
+                    && QName.valueOf(servTemplate.getDerivedFrom()).equals(entryId.getQName())) {
+                    if ("yes".equals(servTemplate.getAbstract())) {
+                        derivedServiceTemplates.addAll(this.getDerivedServiceTemplates(servId));
+                    } else {
+                        derivedServiceTemplates.add(servId);
+                    }
+                }
+            }
+        }
+        return derivedServiceTemplates;
     }
 }

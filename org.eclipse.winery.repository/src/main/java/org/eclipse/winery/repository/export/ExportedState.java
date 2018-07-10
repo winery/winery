@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,12 +13,12 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.export;
 
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Queue;
+
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 
 /**
  * Holds the state of ids regarding the export.
@@ -33,7 +33,6 @@ public class ExportedState {
 
     private final Collection<DefinitionsChildId> exported = new HashSet<>();
     private final Queue<DefinitionsChildId> exportRequired = new ArrayDeque<>();
-
 
     /**
      * @return the first definition child id to be exported, null if no more
@@ -54,16 +53,8 @@ public class ExportedState {
      * @param id the id to flag
      */
     public void flagAsExportRequired(DefinitionsChildId id) {
-        if (!this.exported.contains(id)) {
+        if ((!this.exported.contains(id)) && (!this.exportRequired.contains(id))) {
             this.exportRequired.add(id);
-        }
-    }
-
-    public void flagAsExportRequired(Collection<DefinitionsChildId> ids) {
-        for (DefinitionsChildId id : ids) {
-            if ((!this.exported.contains(id)) && (!this.exportRequired.contains(id))) {
-                this.exportRequired.add(id);
-            }
         }
     }
 }
