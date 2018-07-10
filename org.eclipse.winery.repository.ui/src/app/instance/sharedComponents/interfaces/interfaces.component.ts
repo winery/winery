@@ -21,14 +21,14 @@ import { InstanceService } from '../../instance.service';
 import { GenerateArtifactApiData } from './generateArtifactApiData';
 import { InterfacesService } from './interfaces.service';
 import { InterfaceOperationApiData, InterfacesApiData } from './interfacesApiData';
-import { InputParameters, InterfaceParameter, OutputParameters } from '../../../wineryInterfaces/parameters';
+import { InputParameters, InterfaceParameter, OutputParameters } from '../../../model/parameters';
 import { ModalDirective } from 'ngx-bootstrap';
 import { NgForm } from '@angular/forms';
 import { GenerateData } from '../../../wineryComponentExists/wineryComponentExists.component';
-import { ToscaTypes } from '../../../wineryInterfaces/enums';
+import { ToscaTypes } from '../../../model/enums';
 import { Utils } from '../../../wineryUtils/utils';
 import { SelectableListComponent } from './selectableList/selectableList.component';
-import { WineryVersion } from '../../../wineryInterfaces/wineryVersion';
+import { WineryVersion } from '../../../model/wineryVersion';
 import { HttpResponse } from '@angular/common/http';
 
 @Component({
@@ -270,6 +270,10 @@ export class InterfacesComponent implements OnInit {
     }
 
     containsDefaultLifecycle(): boolean {
+        if (!this.sharedData.currentVersion.editable) {
+            return true;
+        }
+
         if (isNullOrUndefined(this.interfacesData)) {
             return false;
         }

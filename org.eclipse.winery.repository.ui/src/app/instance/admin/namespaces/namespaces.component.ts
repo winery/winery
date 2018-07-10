@@ -17,7 +17,7 @@ import {NamespacesService} from './namespaces.service';
 import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
 import {WineryValidatorObject} from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import {isNullOrUndefined} from 'util';
-import {NamespaceWithPrefix} from '../../../wineryInterfaces/namespaceWithPrefix';
+import {NamespaceWithPrefix} from '../../../model/namespaceWithPrefix';
 import {Response} from '@angular/http';
 import {ModalDirective} from 'ngx-bootstrap';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';

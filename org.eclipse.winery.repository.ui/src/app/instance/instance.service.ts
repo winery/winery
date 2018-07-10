@@ -15,10 +15,10 @@ import { Injectable } from '@angular/core';
 import { Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../configuration';
-import { WineryInstance, WineryTopologyTemplate } from '../wineryInterfaces/wineryComponent';
-import { ToscaComponent } from '../wineryInterfaces/toscaComponent';
-import { ToscaTypes } from '../wineryInterfaces/enums';
-import { WineryVersion } from '../wineryInterfaces/wineryVersion';
+import { WineryInstance, WineryTopologyTemplate } from '../model/wineryComponent';
+import { ToscaComponent } from '../model/toscaComponent';
+import { ToscaTypes } from '../model/enums';
+import { WineryVersion } from '../model/wineryVersion';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
 @Injectable()

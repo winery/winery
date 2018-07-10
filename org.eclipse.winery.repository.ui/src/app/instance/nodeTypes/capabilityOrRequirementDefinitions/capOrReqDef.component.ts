@@ -25,7 +25,7 @@ import {NameAndQNameApiData, NameAndQNameApiDataList} from '../../../wineryQName
 import {Router} from '@angular/router';
 import {WineryTableColumn} from '../../../wineryTableModule/wineryTable.component';
 import {TypeWithShortName} from '../../admin/typesWithShortName/typeWithShortName.service';
-import {SelectData} from '../../../wineryInterfaces/selectData';
+import {SelectData} from '../../../model/selectData';
 import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
 import {ModalDirective} from 'ngx-bootstrap';
 import {SpinnerWithInfinityComponent} from '../../../winerySpinnerWithInfinityModule/winerySpinnerWithInfinity.component';

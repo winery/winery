@@ -20,7 +20,7 @@
     <div class="colorPickerArea" *ngIf="!loading && nodeTypeData != null">
         <div class="floatContent">
             <b>Bordercolor:</b><br>
-            <input class="colorInput" name="eventColor" type="color" [(ngModel)]="borderColorLocal">
+            <input class="colorInput" name="eventColor" type="color" [(ngModel)]="borderColorLocal" [disabled]="!sharedData?.currentVersion?.editable">
             <br/>click on the area above to change border color<br/>
         </div>
     </div>

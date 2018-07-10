@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../../../configuration';
 import { PropertiesDefinitionsResourceApiData } from './propertiesDefinitionsResourceApiData';
-import { SelectData } from '../../../wineryInterfaces/selectData';
+import { SelectData } from '../../../model/selectData';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()

@@ -13,7 +13,7 @@
  *******************************************************************************/
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {ToscaTypes} from '../../wineryInterfaces/enums';
+import {ToscaTypes} from '../../model/enums';
 import {SectionComponent} from '../../section/section.component';
 import {SectionResolver} from '../../section/section.resolver';
 import {InstanceResolver} from '../../instance/instance.resolver';

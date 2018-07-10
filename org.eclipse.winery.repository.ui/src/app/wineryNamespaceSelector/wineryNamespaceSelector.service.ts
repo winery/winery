@@ -14,7 +14,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../configuration';
-import { NamespaceWithPrefix } from '../wineryInterfaces/namespaceWithPrefix';
+import { NamespaceWithPrefix } from '../model/namespaceWithPrefix';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable()

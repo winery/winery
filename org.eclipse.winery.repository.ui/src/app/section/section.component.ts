@@ -14,13 +14,13 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { SectionResolverData } from '../wineryInterfaces/resolverData';
+import { SectionResolverData } from '../model/resolverData';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
 import { SectionService } from './section.service';
 import { SectionData } from './sectionData';
 import { backendBaseURL } from '../configuration';
 import { ModalDirective } from 'ngx-bootstrap';
-import { ToscaTypes } from '../wineryInterfaces/enums';
+import { ToscaTypes } from '../model/enums';
 import { WineryUploaderComponent } from '../wineryUploader/wineryUploader.component';
 import { WineryAddComponent } from '../wineryAddComponentModule/addComponent.component';
 import { isNullOrUndefined } from 'util';

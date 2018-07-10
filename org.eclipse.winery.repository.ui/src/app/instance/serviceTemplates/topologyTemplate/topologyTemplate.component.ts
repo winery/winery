@@ -15,10 +15,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { InstanceService } from '../../instance.service';
 import { backendBaseURL, oldTopologyModelerURL, topologyModelerURL } from '../../../configuration';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { WineryVersion } from '../../../wineryInterfaces/wineryVersion';
+import { WineryVersion } from '../../../model/wineryVersion';
 import { ModalDirective } from 'ngx-bootstrap';
-import { ToscaComponent } from '../../../wineryInterfaces/toscaComponent';
-import { ToscaTypes } from '../../../wineryInterfaces/enums';
+import { ToscaComponent } from '../../../model/toscaComponent';
+import { ToscaTypes } from '../../../model/enums';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({

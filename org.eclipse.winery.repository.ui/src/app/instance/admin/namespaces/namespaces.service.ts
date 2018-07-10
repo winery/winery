@@ -16,7 +16,7 @@ import { WineryNamespaceSelectorService } from '../../../wineryNamespaceSelector
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../../../configuration';
 import { Router } from '@angular/router';
-import { NamespaceWithPrefix } from '../../../wineryInterfaces/namespaceWithPrefix';
+import { NamespaceWithPrefix } from '../../../model/namespaceWithPrefix';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()

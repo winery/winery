@@ -13,9 +13,9 @@
  *******************************************************************************/
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot} from '@angular/router';
-import {SectionResolverData} from '../wineryInterfaces/resolverData';
+import {SectionResolverData} from '../model/resolverData';
 import {Utils} from '../wineryUtils/utils';
-import {ToscaTypes} from '../wineryInterfaces/enums';
+import {ToscaTypes} from '../model/enums';
 
 @Injectable()
 export class SectionResolver implements Resolve<SectionResolverData> {

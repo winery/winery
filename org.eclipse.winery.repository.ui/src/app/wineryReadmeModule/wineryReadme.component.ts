@@ -15,7 +15,7 @@ import {Component, OnInit} from '@angular/core';
 import {ReadmeService} from './wineryReadme.service';
 import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
 import {InstanceService} from '../instance/instance.service';
-import {ToscaTypes} from '../wineryInterfaces/enums';
+import {ToscaTypes} from '../model/enums';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 
 @Component({

@@ -13,9 +13,9 @@
  ********************************************************************************/
 import { ChangeDetectorRef, Component, Input, ViewChild } from '@angular/core';
 import { SectionService } from '../section/section.service';
-import { SelectData } from '../wineryInterfaces/selectData';
+import { SelectData } from '../model/selectData';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
-import { ToscaTypes } from '../wineryInterfaces/enums';
+import { ToscaTypes } from '../model/enums';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { Utils } from '../wineryUtils/utils';
@@ -24,7 +24,7 @@ import { SectionData } from '../section/sectionData';
 import { ModalDirective, TooltipConfig } from 'ngx-bootstrap';
 import { WineryNamespaceSelectorComponent } from '../wineryNamespaceSelector/wineryNamespaceSelector.component';
 import { InheritanceService } from '../instance/sharedComponents/inheritance/inheritance.service';
-import { WineryVersion } from '../wineryInterfaces/wineryVersion';
+import { WineryVersion } from '../model/wineryVersion';
 import { AddComponentValidation } from './addComponentValidation';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { ExistService } from '../wineryUtils/existService';

@@ -96,7 +96,7 @@ export class WineryUploaderComponent implements OnInit, OnChanges {
     }
 
     dropFile(event?: any) {
-        if (!isNullOrUndefined(this.isEditable)) {
+        if (this.isEditable) {
             if (!isNullOrUndefined(event) && isNullOrUndefined(this.service.uploader.queue[0])) {
                 this.fileOver = event;
             } else {

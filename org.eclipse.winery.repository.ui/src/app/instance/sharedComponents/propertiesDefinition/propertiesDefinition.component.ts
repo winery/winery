@@ -18,7 +18,7 @@ import {
     PropertiesDefinition, PropertiesDefinitionEnum, PropertiesDefinitionKVElement, PropertiesDefinitionsResourceApiData,
     WinerysPropertiesDefinition
 } from './propertiesDefinitionsResourceApiData';
-import { SelectData } from '../../../wineryInterfaces/selectData';
+import { SelectData } from '../../../model/selectData';
 import { isNullOrUndefined } from 'util';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';

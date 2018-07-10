@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 import {Pipe, PipeTransform} from '@angular/core';
-import {WineryVersion} from '../wineryInterfaces/wineryVersion';
+import {WineryVersion} from '../model/wineryVersion';
 
 @Pipe({
     name: 'sliceVersion'
