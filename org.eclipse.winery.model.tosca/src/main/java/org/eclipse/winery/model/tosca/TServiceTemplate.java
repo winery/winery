@@ -25,6 +25,9 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.tosca.utils.RemoveEmptyLists;
+import org.eclipse.winery.model.tosca.visitor.Visitor;
+
 import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -119,6 +122,10 @@ public class TServiceTemplate extends HasId implements HasName, HasTargetNamespa
     }
 
     public void setTopologyTemplate(@Nullable TTopologyTemplate value) {
+        if (value != null) {
+            RemoveEmptyLists removeEmptyLists = new RemoveEmptyLists();
+            removeEmptyLists.removeEmptyLists(value);
+        }
         this.topologyTemplate = value;
     }
 
@@ -127,7 +134,7 @@ public class TServiceTemplate extends HasId implements HasName, HasTargetNamespa
         return plans;
     }
 
-    public void setPlans(TPlans value) {
+    public void setPlans(@Nullable TPlans value) {
         this.plans = value;
     }
 
@@ -136,7 +143,7 @@ public class TServiceTemplate extends HasId implements HasName, HasTargetNamespa
         return name;
     }
 
-    public void setName(String value) {
+    public void setName(@Nullable String value) {
         this.name = value;
     }
 
@@ -145,7 +152,7 @@ public class TServiceTemplate extends HasId implements HasName, HasTargetNamespa
         return targetNamespace;
     }
 
-    public void setTargetNamespace(String value) {
+    public void setTargetNamespace(@Nullable String value) {
         this.targetNamespace = value;
     }
 
@@ -154,8 +161,12 @@ public class TServiceTemplate extends HasId implements HasName, HasTargetNamespa
         return substitutableNodeType;
     }
 
-    public void setSubstitutableNodeType(QName value) {
+    public void setSubstitutableNodeType(@Nullable QName value) {
         this.substitutableNodeType = value;
+    }
+
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
 
     public static class Builder extends HasId.Builder<Builder> {

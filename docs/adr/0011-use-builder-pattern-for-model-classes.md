@@ -21,7 +21,7 @@ Model classes should be instantiable simple without using large constructors.
 Generic Builders are used to enable safe method chaining for Builders with extend other Builders.
 Another discussion is made at [stackoverflow].
 
-The method `self()` is necessary because all setter methods should return the Builder used for instantiation and not the builder that is extended. `self()` can not be replace by `this` because the expected type is `<T>` and casting to `<T>` results in warnings.
+The method `self()` is necessary because all setter methods should return the Builder used for instantiation and not the builder that is extended. `self()` cannot be replace by `this` because the expected type is `<T>` and casting to `<T>` results in warnings.
 
 Builders which are not abstract and are extended by other builders are generic and implement the `self()` method by casting `this` to `<T>`. To reduce warnings this casting is only used in this case.
 
@@ -56,9 +56,7 @@ public static class Builder extends TEntityType.Builder<Builder> {
 }
 ```
 
-
-
-[Builders]:(https://en.wikipedia.org/wiki/Builder_pattern)
+[Builders]: https://en.wikipedia.org/wiki/Builder_pattern
 [stackoverflow]: https://stackoverflow.com/a/5818701/8235252
 
 ## License

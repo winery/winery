@@ -198,11 +198,12 @@ public class TopologyTemplateResource {
     }
 
     @PUT
-    @ApiOperation(value = "Replaces the topology by the information given in the XML")
+    @ApiOperation(value = "Replaces the topology by the information given in the JSON")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response setModelJson(TTopologyTemplate topologyTemplate) throws Exception {
         ModelUtilities.patchAnyAttributes(topologyTemplate.getNodeTemplates());
         ModelUtilities.patchAnyAttributes(topologyTemplate.getRelationshipTemplates());
+        // the following method includes patching of the topology template (removing empty lists, ..)
         this.serviceTemplateRes.getServiceTemplate().setTopologyTemplate(topologyTemplate);
         return RestUtils.persist(this.serviceTemplateRes);
     }

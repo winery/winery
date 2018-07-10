@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,39 +14,29 @@
 
 package org.eclipse.winery.model.tosca;
 
-import org.eclipse.jdt.annotation.NonNull;
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
-import java.util.Objects;
 
+import org.eclipse.winery.model.tosca.visitor.Visitor;
 
-/**
- * <p>Java class for tParameter complex type.
- * <p>
- * <p>The following schema fragment specifies the expected content contained within this class.
- * <p>
- * <pre>
- * &lt;complexType name="tParameter">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="type" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="required" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tBoolean" default="yes" />
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- */
+import org.eclipse.jdt.annotation.NonNull;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tParameter")
 public class TParameter {
+
     @XmlAttribute(name = "name", required = true)
+    @NonNull
     protected String name;
+
     @XmlAttribute(name = "type", required = true)
+    @NonNull
     protected String type;
+
     @XmlAttribute(name = "required")
     protected TBoolean required;
 
@@ -74,48 +64,28 @@ public class TParameter {
         return Objects.hash(name, type, required);
     }
 
-    /**
-     * Gets the value of the name property.
-     *
-     * @return possible object is {@link String }
-     */
     @NonNull
     public String getName() {
         return name;
     }
 
-    /**
-     * Sets the value of the name property.
-     *
-     * @param value allowed object is {@link String }
-     */
-    public void setName(String value) {
+    public void setName(@NonNull String value) {
+        Objects.requireNonNull(value);
         this.name = value;
     }
 
-    /**
-     * Gets the value of the type property.
-     *
-     * @return possible object is {@link String }
-     */
     @NonNull
     public String getType() {
         return type;
     }
 
-    /**
-     * Sets the value of the type property.
-     *
-     * @param value allowed object is {@link String }
-     */
-    public void setType(String value) {
+    public void setType(@NonNull String value) {
+        Objects.requireNonNull(value);
         this.type = value;
     }
 
     /**
-     * Gets the value of the required property.
-     *
-     * @return possible object is {@link TBoolean }
+     * @return In case the internal model stores <code>null</code>, the default value <code>TBoolean.YES</code> is returned
      */
     @NonNull
     public TBoolean getRequired() {
@@ -126,13 +96,13 @@ public class TParameter {
         }
     }
 
-    /**
-     * Sets the value of the required property.
-     *
-     * @param value allowed object is {@link TBoolean }
-     */
     public void setRequired(TBoolean value) {
+        Objects.requireNonNull(value);
         this.required = value;
+    }
+
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
 
     public static class Builder {

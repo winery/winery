@@ -21,7 +21,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -48,7 +47,6 @@ import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.EntityTemplateId;
-import org.eclipse.winery.common.ids.definitions.EntityTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
@@ -66,9 +64,8 @@ import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.export.CsarExporter;
 
 import org.apache.commons.compress.archivers.ArchiveException;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jgit.annotations.NonNull;
-import org.eclipse.jgit.annotations.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -78,17 +75,27 @@ public class ConsistencyChecker {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsistencyChecker.class);
     private static final String ARTEFACT_BE = "artefact";
+    private final ConsistencyCheckerConfiguration configuration;
+    private final ConsistencyCheckerProgressListener progressListener;
 
-    public static @NonNull
-    ConsistencyErrorLogger checkCorruption(@NonNull ConsistencyCheckerConfiguration configuration) {
-        ConsistencyCheckerProgressListener listener = new ConsistencyCheckerProgressListener() {
-        };
-        return checkCorruption(configuration, listener);
+    // Updated throughout the check
+    private final ConsistencyErrorCollector errorCollector = new ConsistencyErrorCollector();
+
+    public ConsistencyChecker(@NonNull ConsistencyCheckerConfiguration configuration) {
+        this(configuration, new ConsistencyCheckerProgressListener() {
+        });
     }
 
-    public static @NonNull
-    ConsistencyErrorLogger checkCorruption(@NonNull ConsistencyCheckerConfiguration configuration,
-                                           @NonNull ConsistencyCheckerProgressListener progressListener) {
+    public ConsistencyChecker(@NonNull ConsistencyCheckerConfiguration configuration,
+                              @NonNull ConsistencyCheckerProgressListener consistencyCheckerProgressListener) {
+        this.configuration = configuration;
+        this.progressListener = consistencyCheckerProgressListener;
+    }
+
+    /**
+     * This method may be called only once during the lifecycle of this object
+     */
+    public void checkCorruption() {
         Set<DefinitionsChildId> allDefinitionsChildIds = configuration.getRepository().getAllDefinitionsChildIds();
         if (configuration.isServiceTemplatesOnly()) {
             allDefinitionsChildIds = allDefinitionsChildIds.stream().filter(id -> id instanceof ServiceTemplateId).collect(Collectors.toSet());
@@ -97,36 +104,34 @@ public class ConsistencyChecker {
             System.out.format("Number of TOSCA definitions to check: %d\n", allDefinitionsChildIds.size());
         }
 
-        ConsistencyErrorLogger errorLogger = checkAllDefinitions(allDefinitionsChildIds, configuration, progressListener);
+        checkAllDefinitions(allDefinitionsChildIds);
 
         // some console output cleanup
         if (configuration.getVerbosity().contains(ConsistencyCheckerVerbosity.OUTPUT_ERRORS)
             && !configuration.getVerbosity().contains(ConsistencyCheckerVerbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
             System.out.println();
         }
-
-        return errorLogger;
     }
 
     /**
      * Checks whether a README.md and a LICENSE file exists for the given definitions child id.
      */
-    private static void checkDocumentation(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id) {
-        checkFileExistence(errorLogger, configuration, id, "README.md");
-        checkFileExistence(errorLogger, configuration, id, "LICENSE");
+    private void checkDocumentation(DefinitionsChildId id) {
+        checkFileExistence(id, "README.md");
+        checkFileExistence(id, "LICENSE");
     }
 
     /**
      * Checks whether the given filename exists within the given defintions child id
      */
-    private static void checkFileExistence(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id, String filename) {
+    private void checkFileExistence(DefinitionsChildId id, String filename) {
         RepositoryFileReference repositoryFileReference = new RepositoryFileReference(id, filename);
         if (!configuration.getRepository().exists(repositoryFileReference)) {
-            printAndAddWarning(errorLogger, configuration.getVerbosity(), id, filename + " does not exist.");
+            printAndAddWarning(id, filename + " does not exist.");
         }
     }
 
-    private static void checkPlainConformance(ConsistencyErrorLogger errorLogger, EnumSet<ConsistencyCheckerVerbosity> verbosity, DefinitionsChildId id, Path tempCsar) {
+    private void checkPlainConformance(DefinitionsChildId id, Path tempCsar) {
         // TODO implement according to https://winery.github.io/test-repository/plain
         /*if (id.getNamespace().getDecoded().startsWith("http://plain.winery.opentosca.org/")) {
             if (id instanceof EntityTypeId) {
@@ -137,13 +142,13 @@ public class ConsistencyChecker {
         }*/
     }
 
-    private static void checkServiceTemplate(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, ServiceTemplateId id) {
+    private void checkServiceTemplate(ServiceTemplateId id) {
         TServiceTemplate serviceTemplate;
         try {
             serviceTemplate = configuration.getRepository().getElement(id);
         } catch (IllegalStateException e) {
             LOGGER.debug("Illegal State Exception during reading of id {}", id.toReadableString(), e);
-            printAndAddError(errorLogger, configuration.getVerbosity(), id, "Reading error " + e.getMessage());
+            printAndAddError(id, "Reading error " + e.getMessage());
             return;
         }
         if (serviceTemplate.getTopologyTemplate() == null) {
@@ -157,7 +162,7 @@ public class ConsistencyChecker {
                 nodeType = configuration.getRepository().getElement(nodeTypeId);
             } catch (IllegalStateException e) {
                 LOGGER.debug("Illegal State Exception during reading of id {}", nodeTypeId.toReadableString(), e);
-                printAndAddError(errorLogger, configuration.getVerbosity(), nodeTypeId, "Reading error " + e.getMessage());
+                printAndAddError(nodeTypeId, "Reading error " + e.getMessage());
                 return;
             }
             final WinerysPropertiesDefinition winerysPropertiesDefinition = nodeType.getWinerysPropertiesDefinition();
@@ -168,13 +173,13 @@ public class ConsistencyChecker {
                     for (PropertyDefinitionKV propdef : list) {
                         String key = propdef.getKey();
                         if (key == null) {
-                            printAndAddError(errorLogger, configuration.getVerbosity(), id, "key is null");
+                            printAndAddError(id, "key is null");
                             continue;
                         }
                         // assign value, but change "null" to "" if no property is defined
                         final Map<String, String> propertiesKV = ModelUtilities.getPropertiesKV(nodeTemplate);
                         if (propertiesKV == null) {
-                            printAndAddError(errorLogger, configuration.getVerbosity(), id, "propertiesKV of node template " + nodeTemplate.getId() + " is null");
+                            printAndAddError(id, "propertiesKV of node template " + nodeTemplate.getId() + " is null");
                         }
                     }
                 }
@@ -182,30 +187,23 @@ public class ConsistencyChecker {
         }
     }
 
-    private static void checkReferencedQNames(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id) {
-        if (id instanceof EntityTypeId) {
-            TEntityType entityType;
-            try {
-                entityType = (TEntityType) configuration.getRepository().getDefinitions(id).getElement();
-            } catch (IllegalStateException e) {
-                LOGGER.debug("Illegal State Exception during reading of id {}", id.toReadableString(), e);
-                printAndAddError(errorLogger, configuration.getVerbosity(), id, "Reading error " + e.getMessage());
-                return;
-            }
-            final TEntityType.PropertiesDefinition propertiesDefinition = entityType.getPropertiesDefinition();
-            if (propertiesDefinition != null) {
-                @Nullable final QName element = propertiesDefinition.getElement();
-                if (element != null && StringUtils.isEmpty(element.getNamespaceURI())) {
-                    printAndAddError(errorLogger, configuration.getVerbosity(), id, "Referenced element is not a full QName");
-                }
-            }
+    /**
+     * Checks all references QNames whether they are valid
+     */
+    private void checkReferencedQNames(DefinitionsChildId id) {
+        final QNameValidator qNameValidator = new QNameValidator(error -> printAndAddError(id, error));
+        try {
+            configuration.getRepository().getDefinitions(id).getElement().accept(qNameValidator);
+        } catch (IllegalStateException e) {
+            LOGGER.debug("Illegal State Exception during reading of id {}", id.toReadableString(), e);
+            printAndAddError(id, "Reading error " + e.getMessage());
         }
     }
 
-    private static void checkXmlSchemaValidation(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id) {
+    private void checkXmlSchemaValidation(DefinitionsChildId id) {
         RepositoryFileReference refOfDefinitions = BackendUtils.getRefOfDefinitions(id);
         if (!configuration.getRepository().exists(refOfDefinitions)) {
-            printAndAddError(errorLogger, configuration.getVerbosity(), id, "Id exists, but corresponding XML file does not.");
+            printAndAddError(id, "Id exists, but corresponding XML file does not.");
             return;
         }
         try (InputStream inputStream = configuration.getRepository().newInputStream(refOfDefinitions)) {
@@ -215,20 +213,20 @@ public class ConsistencyChecker {
             documentBuilder.parse(inputStream);
             String errors = errorStringBuilder.toString();
             if (!errors.isEmpty()) {
-                printAndAddError(errorLogger, configuration.getVerbosity(), id, errors);
+                printAndAddError(id, errors);
             }
         } catch (IOException e) {
             LOGGER.debug("I/O error", e);
-            printAndAddError(errorLogger, configuration.getVerbosity(), id, "I/O error during XML validation " + e.getMessage());
+            printAndAddError(id, "I/O error during XML validation " + e.getMessage());
         } catch (SAXException e) {
             LOGGER.debug("SAX exception", e);
-            printAndAddError(errorLogger, configuration.getVerbosity(), id, "SAX error during XML validation: " + e.getMessage());
+            printAndAddError(id, "SAX error during XML validation: " + e.getMessage());
         }
     }
 
-    private static void validate(ConsistencyErrorLogger errorLogger, RepositoryFileReference xmlSchemaFileReference, @Nullable Object any, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id) {
+    private void validate(RepositoryFileReference xmlSchemaFileReference, @Nullable Object any, DefinitionsChildId id) {
         if (!(any instanceof Element)) {
-            printAndAddError(errorLogger, configuration.getVerbosity(), id, "any is not instance of Document, but " + any.getClass());
+            printAndAddError(id, "any is not instance of Document, but " + any.getClass());
             return;
         }
         Element element = (Element) any;
@@ -239,11 +237,11 @@ public class ConsistencyChecker {
             Validator validator = schema.newValidator();
             validator.validate(new DOMSource(element));
         } catch (Exception e) {
-            printAndAddError(errorLogger, configuration.getVerbosity(), id, "error during validating XML schema " + e.getMessage());
+            printAndAddError(id, "error during validating XML schema " + e.getMessage());
         }
     }
 
-    private static void checkPropertiesValidation(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id) {
+    private void checkPropertiesValidation(DefinitionsChildId id) {
         if (id instanceof EntityTemplateId) {
             TEntityTemplate entityTemplate;
             try {
@@ -252,7 +250,7 @@ public class ConsistencyChecker {
                 entityTemplate = (TEntityTemplate) configuration.getRepository().getDefinitions((EntityTemplateId) id).getElement();
             } catch (IllegalStateException e) {
                 LOGGER.debug("Illegal State Exception during reading of id {}", id.toReadableString(), e);
-                printAndAddError(errorLogger, configuration.getVerbosity(), id, "Reading error " + e.getMessage());
+                printAndAddError(id, "Reading error " + e.getMessage());
                 return;
             }
             if (Objects.isNull(entityTemplate.getType())) {
@@ -264,7 +262,7 @@ public class ConsistencyChecker {
                 entityType = configuration.getRepository().getTypeForTemplate(entityTemplate);
             } catch (IllegalStateException e) {
                 LOGGER.debug("Illegal State Exception during getting type for template {}", entityTemplate.getId(), e);
-                printAndAddError(errorLogger, configuration.getVerbosity(), id, "Reading error " + e.getMessage());
+                printAndAddError(id, "Reading error " + e.getMessage());
                 return;
             }
             final WinerysPropertiesDefinition winerysPropertiesDefinition = entityType.getWinerysPropertiesDefinition();
@@ -272,19 +270,19 @@ public class ConsistencyChecker {
             if ((winerysPropertiesDefinition != null) || (propertiesDefinition != null)) {
                 final TEntityTemplate.Properties properties = entityTemplate.getProperties();
                 if (properties == null) {
-                    printAndAddError(errorLogger, configuration.getVerbosity(), id, "Properties required, but no properties defined");
+                    printAndAddError(id, "Properties required, but no properties defined");
                     return;
                 }
                 if (winerysPropertiesDefinition != null) {
                     Map<String, String> kvProperties = entityTemplate.getProperties().getKVProperties();
                     if (kvProperties.isEmpty()) {
-                        printAndAddError(errorLogger, configuration.getVerbosity(), id, "Properties required, but no properties set (any case)");
+                        printAndAddError(id, "Properties required, but no properties set (any case)");
                         return;
                     }
                     for (PropertyDefinitionKV propertyDefinitionKV : winerysPropertiesDefinition.getPropertyDefinitionKVList().getPropertyDefinitionKVs()) {
                         String key = propertyDefinitionKV.getKey();
                         if (kvProperties.get(key) == null) {
-                            printAndAddError(errorLogger, configuration.getVerbosity(), id, "Property " + key + " required, but not set.");
+                            printAndAddError(id, "Property " + key + " required, but not set.");
                         } else {
                             // removePermanentPrefix the key from the map to enable checking below whether a property is defined which not requried by the property definition 
                             kvProperties.remove(key);
@@ -293,12 +291,12 @@ public class ConsistencyChecker {
                     // All winery-property-definition-keys have been removed from kvProperties.
                     // If any key is left, this is a key not defined at the schema
                     for (Object o : kvProperties.keySet()) {
-                        printAndAddError(errorLogger, configuration.getVerbosity(), id, "Property " + o + " set, but not defined at schema.");
+                        printAndAddError(id, "Property " + o + " set, but not defined at schema.");
                     }
                 } else if (propertiesDefinition != null) {
                     @Nullable final Object any = properties.getAny();
                     if (any == null) {
-                        printAndAddError(errorLogger, configuration.getVerbosity(), id, "Properties required, but no properties defined (any case)");
+                        printAndAddError(id, "Properties required, but no properties defined (any case)");
                         return;
                     }
 
@@ -307,49 +305,47 @@ public class ConsistencyChecker {
                         final Map<String, RepositoryFileReference> mapFromLocalNameToXSD = configuration.getRepository().getXsdImportManager().getMapFromLocalNameToXSD(new Namespace(element.getNamespaceURI(), false), false);
                         final RepositoryFileReference repositoryFileReference = mapFromLocalNameToXSD.get(element.getLocalPart());
                         if (repositoryFileReference == null) {
-                            printAndAddError(errorLogger, configuration.getVerbosity(), id, "No Xml Schema definition found for " + element);
+                            printAndAddError(id, "No Xml Schema definition found for " + element);
                             return;
                         }
-                        validate(errorLogger, repositoryFileReference, any, configuration, id);
+                        validate(repositoryFileReference, any, id);
                     }
                 }
             }
         }
     }
 
-    private static void checkId(ConsistencyErrorLogger errorLogger, EnumSet<ConsistencyCheckerVerbosity> verbosity, DefinitionsChildId id) {
-        checkNamespaceUri(errorLogger, verbosity, id);
-        checkNcname(errorLogger, verbosity, id, id.getXmlId().getDecoded());
+    private void checkId(DefinitionsChildId id) {
+        checkNamespaceUri(id);
+        checkNcname(id, id.getXmlId().getDecoded());
     }
 
-    private static void checkNcname(ConsistencyErrorLogger errorLogger, EnumSet<ConsistencyCheckerVerbosity> verbosity, DefinitionsChildId id, String ncname) {
+    private void checkNcname(DefinitionsChildId id, String ncname) {
         if (!ncname.trim().equals(ncname)) {
-            printAndAddError(errorLogger, verbosity, id, "local name starts or ends with white spaces");
+            printAndAddError(id, "local name starts or ends with white spaces");
         }
         if (ncname.toLowerCase().contains(ARTEFACT_BE)) {
-            printAndAddError(errorLogger, verbosity, id, "artifact is spelled with i in American English, not artefact as in British English");
+            printAndAddError(id, "artifact is spelled with i in American English, not artefact as in British English");
         }
     }
 
-    public static void checkNamespaceUri(ConsistencyErrorLogger errorLogger, EnumSet<ConsistencyCheckerVerbosity> verbosity, DefinitionsChildId id) {
-        Objects.requireNonNull(errorLogger);
-        Objects.requireNonNull(verbosity);
+    void checkNamespaceUri(@NonNull DefinitionsChildId id) {
         Objects.requireNonNull(id);
 
         String uriStr = id.getNamespace().getDecoded();
         if (!uriStr.trim().equals(uriStr)) {
-            printAndAddError(errorLogger, verbosity, id, "Namespace starts or ends with white spaces");
+            printAndAddError(id, "Namespace starts or ends with white spaces");
         }
         URI uri;
         try {
             uri = new URI(uriStr);
         } catch (URISyntaxException e) {
             LOGGER.debug("Invalid URI", e);
-            printAndAddError(errorLogger, verbosity, id, "Invalid URI: " + e.getMessage());
+            printAndAddError(id, "Invalid URI: " + e.getMessage());
             return;
         }
         if (!uri.isAbsolute()) {
-            printAndAddError(errorLogger, verbosity, id, "URI is relative");
+            printAndAddError(id, "URI is relative");
         }
         if ((uriStr.startsWith("http://www.opentosca.org/") && (!uriStr.toLowerCase().equals(uriStr)))) {
             // URI is not lowercase
@@ -358,14 +354,14 @@ public class ConsistencyChecker {
             String lastElement = splitUri[splitUri.length - 1];
             String uriStrWithoutLastElement = uriStr.substring(0, (uriStr.length() - lastElement.length()));
             if (!(id.getXmlId().toString().startsWith(lastElement)) || (!uriStrWithoutLastElement.toLowerCase().equals(uriStrWithoutLastElement))) {
-                printAndAddError(errorLogger, verbosity, id, "opentosca URI is not lowercase");
+                printAndAddError(id, "opentosca URI is not lowercase");
             }
         }
         if (uriStr.endsWith("/")) {
-            printAndAddError(errorLogger, verbosity, id, "URI ends with a slash");
+            printAndAddError(id, "URI ends with a slash");
         }
         if (uriStr.contains(ARTEFACT_BE)) {
-            printAndAddError(errorLogger, verbosity, id, "artifact is spelled with i in American English, not artefact as in British English");
+            printAndAddError(id, "artifact is spelled with i in American English, not artefact as in British English");
         }
         boolean namespaceUriContainsDifferentType = DefinitionsChildId.ALL_TOSCA_COMPONENT_ID_CLASSES.stream()
             .filter(definitionsChildIdClass -> !definitionsChildIdClass.isAssignableFrom(id.getClass()))
@@ -377,40 +373,40 @@ public class ConsistencyChecker {
             })
             .anyMatch(definitionsChildName -> uriStr.contains(definitionsChildName));
         if (namespaceUriContainsDifferentType) {
-            printAndAddError(errorLogger, verbosity, id, "Namespace URI contains tosca definitions name from other type. E.g., Namespace is ...servicetemplates..., but the type is an artifact template");
+            printAndAddError(id, "Namespace URI contains tosca definitions name from other type. E.g., Namespace is ...servicetemplates..., but the type is an artifact template");
         }
     }
 
-    private static void checkCsar(ConsistencyErrorLogger errorLogger, EnumSet<ConsistencyCheckerVerbosity> verbosity, DefinitionsChildId id, Path tempCsar) {
+    private void checkCsar(DefinitionsChildId id, Path tempCsar) {
         CsarExporter exporter = new CsarExporter();
         try (OutputStream outputStream = Files.newOutputStream(tempCsar, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
             try {
                 exporter.writeCsar(RepositoryFactory.getRepository(), id, outputStream);
             } catch (ArchiveException e) {
                 LOGGER.debug("Error during checking ZIP", e);
-                printAndAddError(errorLogger, verbosity, id, "Invalid zip file: " + e.getMessage());
+                printAndAddError(id, "Invalid zip file: " + e.getMessage());
                 return;
             } catch (JAXBException e) {
                 LOGGER.debug("Error during checking ZIP", e);
-                printAndAddError(errorLogger, verbosity, id, "Some XML could not be parsed: " + e.getMessage() + " " + e.toString());
+                printAndAddError(id, "Some XML could not be parsed: " + e.getMessage() + " " + e.toString());
                 return;
             } catch (IOException e) {
                 LOGGER.debug("Error during checking ZIP", e);
-                printAndAddError(errorLogger, verbosity, id, "I/O error: " + e.getMessage());
+                printAndAddError(id, "I/O error: " + e.getMessage());
                 return;
             } catch (RepositoryCorruptException e) {
                 LOGGER.debug("Repository is corrupt", e);
-                printAndAddError(errorLogger, verbosity, id, "Corrupt: " + e.getMessage());
+                printAndAddError(id, "Corrupt: " + e.getMessage());
                 return;
             } catch (Exception e) {
                 LOGGER.debug("Inner error at writing to temporary CSAR file", e);
-                printAndAddError(errorLogger, verbosity, id, e.toString());
+                printAndAddError(id, e.toString());
                 return;
             }
         } catch (Exception e) {
             final String error = "Could not write to temp CSAR file";
             LOGGER.debug(error, e);
-            printAndAddError(errorLogger, verbosity, id, error);
+            printAndAddError(id, error);
             return;
         }
 
@@ -419,27 +415,26 @@ public class ConsistencyChecker {
             ZipEntry entry;
             while ((entry = zis.getNextEntry()) != null) {
                 if (entry.getName() == null) {
-                    printAndAddError(errorLogger, verbosity, id, "Empty filename in zip file");
+                    printAndAddError(id, "Empty filename in zip file");
                 }
             }
         } catch (Exception e) {
             final String error = "Could not read from temp CSAR file";
             LOGGER.debug(error, e);
-            printAndAddError(errorLogger, verbosity, id, error);
+            printAndAddError(id, error);
             return;
         }
     }
 
-    private static ConsistencyErrorLogger checkAllDefinitions(Set<DefinitionsChildId> allDefinitionsChildIds, ConsistencyCheckerConfiguration configuration, ConsistencyCheckerProgressListener progressListener) {
-        final ConsistencyErrorLogger errorLogger = new ConsistencyErrorLogger();
+    private void checkAllDefinitions(Set<DefinitionsChildId> allDefinitionsChildIds) {
         final Path tempCsar;
 
         try {
             tempCsar = Files.createTempFile("Export", ".csar");
         } catch (IOException e) {
             LOGGER.debug("Could not create temp CSAR file", e);
-            errorLogger.error("Could not create temp CSAR file");
-            return errorLogger;
+            errorCollector.error("Could not create temp CSAR file");
+            return;
         }
 
         float elementsChecked = 0;
@@ -451,39 +446,41 @@ public class ConsistencyChecker {
                 progressListener.updateProgress(progress);
             }
 
-            checkId(errorLogger, configuration.getVerbosity(), id);
-            checkXmlSchemaValidation(errorLogger, configuration, id);
-            checkReferencedQNames(errorLogger, configuration, id);
-            checkPropertiesValidation(errorLogger, configuration, id);
+            checkId(id);
+            checkXmlSchemaValidation(id);
+            checkReferencedQNames(id);
+            checkPropertiesValidation(id);
             if (id instanceof ServiceTemplateId) {
-                checkServiceTemplate(errorLogger, configuration, (ServiceTemplateId) id);
+                checkServiceTemplate((ServiceTemplateId) id);
             }
             if (configuration.isCheckDocumentation()) {
-                checkDocumentation(errorLogger, configuration, id);
+                checkDocumentation(id);
             }
-            checkPlainConformance(errorLogger, configuration.getVerbosity(), id, tempCsar);
-            checkCsar(errorLogger, configuration.getVerbosity(), id, tempCsar);
+            checkPlainConformance(id, tempCsar);
+            checkCsar(id, tempCsar);
         }
-
-        return errorLogger;
     }
 
-    private static void printAndAddError(ConsistencyErrorLogger errorLogger, EnumSet<ConsistencyCheckerVerbosity> verbosity, DefinitionsChildId id, String error) {
-        printError(verbosity, error);
-        errorLogger.error(id, error);
+    private void printAndAddError(DefinitionsChildId id, String error) {
+        printError(error);
+        errorCollector.error(id, error);
     }
 
-    private static void printAndAddWarning(ConsistencyErrorLogger errorLogger, EnumSet<ConsistencyCheckerVerbosity> verbosity, DefinitionsChildId id, String error) {
-        printError(verbosity, error);
-        errorLogger.warning(id, error);
+    private void printAndAddWarning(DefinitionsChildId id, String error) {
+        printError(error);
+        errorCollector.warning(id, error);
     }
 
-    private static void printError(EnumSet<ConsistencyCheckerVerbosity> verbosity, String error) {
-        if (verbosity.contains(ConsistencyCheckerVerbosity.OUTPUT_ERRORS)) {
-            if (!verbosity.contains(ConsistencyCheckerVerbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
+    private void printError(String error) {
+        if (configuration.getVerbosity().contains(ConsistencyCheckerVerbosity.OUTPUT_ERRORS)) {
+            if (!configuration.getVerbosity().contains(ConsistencyCheckerVerbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
                 System.out.println();
             }
             System.out.println(error);
         }
+    }
+
+    public ConsistencyErrorCollector getErrorCollector() {
+        return this.errorCollector;
     }
 }

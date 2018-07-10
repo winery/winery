@@ -33,6 +33,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.winery.model.tosca.constants.Namespaces;
+import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -136,6 +137,8 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         return this.getType();
     }
 
+    public abstract void accept(Visitor visitor);
+
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
         "any"
@@ -190,6 +193,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
          * @return null if not k/v, a map of k/v properties otherwise
          */
         @ADR(12)
+        @Nullable
         public LinkedHashMap<String, String> getKVProperties() {
             // we use the internal variable "any", because getAny() returns null, if we have KVProperties
             if (any == null) {
@@ -329,6 +333,10 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         public int hashCode() {
             return Objects.hash(any);
         }
+
+        public void accept(Visitor visitor) {
+            visitor.visit(this);
+        }
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -374,6 +382,10 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         @Override
         public int hashCode() {
             return Objects.hash(propertyConstraint);
+        }
+
+        public void accept(Visitor visitor) {
+            visitor.visit(this);
         }
     }
 

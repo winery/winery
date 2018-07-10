@@ -1,0 +1,9 @@
+<TopologyTemplate xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"
+                  xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice"
+                  xmlns:testwineryopentoscaorg="http://test.winery.opentosca.org"
+                  xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12">
+    <NodeTemplate xmlns:ponyuniverse="http://winery.opentosca.org/test/ponyuniverse" id="shetland_pony" maxInstances="1"
+                  minInstances="1" name="shetland_pony" type="ponyuniverse:shetland_pony" winery:location="undefined"
+                  winery:x="677" winery:y="161">
+    </NodeTemplate>
+</TopologyTemplate>
