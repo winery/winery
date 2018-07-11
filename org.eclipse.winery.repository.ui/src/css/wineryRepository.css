@@ -359,6 +359,7 @@ div.managementButtons {
 
 div.mainContentContainer.artifactTemplate div.top {
     background: url('../assets/img/containers/admin/FrameTop.jpg');
+    background-repeat: no-repeat;
 }
 
 div.mainContentContainer.artifactTemplate div.middle {
@@ -513,7 +514,7 @@ div.entityContainer > div {
 }
 
 div.entityContainer > div.left {
-    width: 117px;
+    width: 116px;
 }
 
 div.entityContainer > div.center {
@@ -521,7 +522,7 @@ div.entityContainer > div.center {
 }
 
 div.entityContainer > div.right {
-    width: 33px;
+    width: 32px;
 }
 
 div.entityContainer > div.center > div.informationContainer {
