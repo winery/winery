@@ -104,7 +104,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
         return new PlansResource(plans.getPlan(), this);
     }
 
-    @Path("selfserviceportal/")
+    @Path("SELFSERVICE-Metadata/")
     public SelfServicePortalResource getSelfServicePortalResource() {
         return new SelfServicePortalResource(this);
     }

@@ -34,7 +34,7 @@ export class EditXMLService {
         const headers = new HttpHeaders({ 'Accept': 'application/xml' });
 
         let getPath = this.path;
-        if (!getPath.endsWith('properties') && !getPath.endsWith(('selfserviceportal/'))) {
+        if (!getPath.endsWith('properties') && !getPath.endsWith(('SELFSERVICE-Metadata/'))) {
             getPath += 'xml/';
         }
 

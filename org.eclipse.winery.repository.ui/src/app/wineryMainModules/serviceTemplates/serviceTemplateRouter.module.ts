@@ -46,7 +46,7 @@ const serviceTemplateRoutes: Routes = [
             {path: 'topologytemplate', component: TopologyTemplateComponent},
             {path: 'plans', component: PlansComponent},
             {
-                path: 'selfserviceportal',
+                path: 'SELFSERVICE-Metadata',
                 component: SelfServicePortalComponent,
                 // loadChildren:
                 // 'app/instance/serviceTemplates/selfServicePortal/selfServicePortalRouter.module#SelfServiceRoutingModule'

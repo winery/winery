@@ -22,22 +22,22 @@ public class FilesTest extends AbstractResourceTest {
     @Test
     public void addFileTest() throws Exception {
         this.setRevisionTo("770b3b6b86620fac4c8ff1947e84e872e9dcd970");
-        this.assertNoContentPost("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithFourPolicies/selfserviceportal/files/text.txt",
-            "servicetemplates/selfserviceportal/addFirstFile.json");
-        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithFourPolicies/selfserviceportal/files",
-            "servicetemplates/selfserviceportal/firstFileInList.json");
+        this.assertNoContentPost("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithFourPolicies/SELFSERVICE-Metadata/files/text.txt",
+            "servicetemplates/SELFSERVICE-Metadata/addFirstFile.json");
+        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithFourPolicies/SELFSERVICE-Metadata/files",
+            "servicetemplates/SELFSERVICE-Metadata/firstFileInList.json");
     }
 
     @Test
     public void getFileTest() throws Exception {
         this.setRevisionTo("origin/plain");
-        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithOneFileInSelfServicePortal/selfserviceportal/files",
-            "servicetemplates/selfserviceportal/oneFileInList.json");
+        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithOneFileInSelfServicePortal/SELFSERVICE-Metadata/files",
+            "servicetemplates/SELFSERVICE-Metadata/oneFileInList.json");
     }
 
     @Test
     public void deleteFileTest() throws Exception {
         this.setRevisionTo("origin/plain");
-        this.assertDelete("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithOneFileInSelfServicePortal/selfserviceportal/files/myFirstFile.txt?path=files");
+        this.assertDelete("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithOneFileInSelfServicePortal/SELFSERVICE-Metadata/files/myFirstFile.txt?path=files");
     }
 }
