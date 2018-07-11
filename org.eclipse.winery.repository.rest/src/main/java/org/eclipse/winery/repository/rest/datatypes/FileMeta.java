@@ -73,7 +73,11 @@ public class FileMeta {
         String path = "";
         while (parent instanceof DirectoryId) {
             // prepend current path element
-            path = parent.getXmlId().getDecoded() + "/" + path;
+            if (path.isEmpty()) {
+                path = parent.getXmlId().getDecoded();
+            } else {
+                path = parent.getXmlId().getDecoded() + "/" + path;
+            }
             parent = parent.getParent();
         }
         this.url = RestUtils.getAbsoluteURL(parent) + "/" + ref.getFileName();
