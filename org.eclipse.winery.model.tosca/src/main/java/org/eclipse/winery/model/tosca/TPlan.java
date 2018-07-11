@@ -172,87 +172,42 @@ public class TPlan extends TExtensibleElements {
         return planModel;
     }
 
-    /**
-     * Sets the value of the planModel property.
-     *
-     * @param value allowed object is {@link TPlan.PlanModel }
-     */
     public void setPlanModel(TPlan.PlanModel value) {
         this.planModel = value;
     }
 
-    /**
-     * Gets the value of the planModelReference property.
-     *
-     * @return possible object is {@link TPlan.PlanModelReference }
-     */
     public TPlan.@Nullable PlanModelReference getPlanModelReference() {
         return planModelReference;
     }
 
-    /**
-     * Sets the value of the planModelReference property.
-     *
-     * @param value allowed object is {@link TPlan.PlanModelReference }
-     */
     public void setPlanModelReference(TPlan.PlanModelReference value) {
         this.planModelReference = value;
     }
 
-    /**
-     * Gets the value of the id property.
-     *
-     * @return possible object is {@link String }
-     */
     @NonNull
     public String getId() {
         return id;
     }
 
-    /**
-     * Sets the value of the id property.
-     *
-     * @param value allowed object is {@link String }
-     */
-    public void setId(String value) {
+    public void setId(@NonNull String value) {
         this.id = value;
     }
 
-    /**
-     * Gets the value of the name property.
-     *
-     * @return possible object is {@link String }
-     */
     @Nullable
     public String getName() {
         return name;
     }
 
-    /**
-     * Sets the value of the name property.
-     *
-     * @param value allowed object is {@link String }
-     */
     public void setName(String value) {
         this.name = value;
     }
 
-    /**
-     * Gets the value of the planType property.
-     *
-     * @return possible object is {@link String }
-     */
     @NonNull
     public String getPlanType() {
         return planType;
     }
 
-    /**
-     * Sets the value of the planType property.
-     *
-     * @param value allowed object is {@link String }
-     */
-    public void setPlanType(String value) {
+    public void setPlanType(@NonNull String value) {
         this.planType = value;
     }
 
