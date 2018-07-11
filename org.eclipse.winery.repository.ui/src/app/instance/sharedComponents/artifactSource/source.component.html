@@ -12,12 +12,12 @@
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<div class="right">
-    <a href="{{srcPath}}">
-        <button class="btn btn-primary" name="zip">ZIP</button>
-    </a>
-</div>
-<div *ngIf="!loading">
+<div [hidden]="loading">
+    <div class="right">
+        <a href="{{srcPath}}">
+            <button class="btn btn-primary" name="zip">ZIP</button>
+        </a>
+    </div>
     <div>
         <winery-uploader (onSuccess)="loadFiles()" [uploadUrl]="uploadUrl" [allowMultipleFiles]="true"
                          [isEditable]="sharedData?.currentVersion?.editable">
@@ -54,7 +54,6 @@
         </button>
     </div>
     <div id="fileGridBody">
-        <winery-loader *ngIf="loadingFileContent"></winery-loader>
         <div>
             <div id="leftEditContent">
                 <div *ngFor="let path of paths" class="fileList">
@@ -76,15 +75,18 @@
                 </div>
             </div>
         </div>
-        <div id="rightEditHeader">
-            <span *ngIf="fileContent != null && (fileContent !== editor?.getData())">*</span>
-            {{selectedFile?.name}}
-        </div>
-        <div id="rightEditContent">
-            <winery-editor #artifactsEditor></winery-editor>
+        <div [hidden]="!selectedFile">
+            <div id="rightEditHeader">
+                <span *ngIf="fileContent != null && (fileContent !== editor?.getData())">*</span>
+                {{selectedFile?.name}}
+            </div>
+            <div id="rightEditContent">
+                <winery-editor #artifactsEditor></winery-editor>
+            </div>
         </div>
     </div>
 </div>
+<winery-loader *ngIf="loading"></winery-loader>
 
 
 <winery-modal bsModal #removeElementModal="bs-modal" [modalRef]="removeElementModal">

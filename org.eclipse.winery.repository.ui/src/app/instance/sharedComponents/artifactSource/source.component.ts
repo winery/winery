@@ -57,7 +57,6 @@ export class SourceComponent implements OnInit {
     newFileName: string;
     newFileDir: string;
     selectedFile: FilesApiData = null;
-    loadingFileContent: boolean;
 
     constructor(private service: SourceService,
                 private notify: WineryNotificationService,
@@ -94,7 +93,7 @@ export class SourceComponent implements OnInit {
 
     editFile(file: FilesApiData) {
         if (this.selectedFile == null || (file.name !== this.selectedFile.name && this.checkFileChanges())) {
-            this.loadingFileContent = true;
+            this.loading = true;
             this.service.getFile(file)
                 .subscribe(
                     data => this.handleEditorChange(file, data),
@@ -207,11 +206,10 @@ export class SourceComponent implements OnInit {
     private handleCreate() {
         this.notify.success('Successfully Created ' + this.newFileName);
         this.loadFiles();
-        this.loading = false;
     }
 
     private handleEditorChange(file: FilesApiData, content: string) {
-        this.loadingFileContent = false;
+        this.loading = false;
         this.fileContent = content ? content : '';
         this.selectedFile = file;
         this.editor.setData(content);
@@ -265,7 +263,6 @@ export class SourceComponent implements OnInit {
 
     private handleError(error: HttpErrorResponse) {
         this.loading = false;
-        this.loadingFileContent = false;
         this.notify.error(error.message);
     }
 

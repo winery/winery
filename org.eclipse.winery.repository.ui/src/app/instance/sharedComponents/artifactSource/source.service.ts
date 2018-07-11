@@ -18,7 +18,7 @@ import { backendBaseURL, hostURL } from '../../../configuration';
 import { SourceApiData } from './sourceApiData';
 import { ToscaTypes } from '../../../model/enums';
 import { Router } from '@angular/router';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class SourceService {
@@ -61,7 +61,7 @@ export class SourceService {
     deleteFile(fileToRemove: FilesApiData): Observable<HttpResponse<string>> {
         return this.http
             .delete(
-                hostURL + fileToRemove.deleteUrl + '?path=' + fileToRemove.subDirectory,
+                hostURL + fileToRemove.deleteUrl,
                 { observe: 'response', responseType: 'text' }
             );
     }

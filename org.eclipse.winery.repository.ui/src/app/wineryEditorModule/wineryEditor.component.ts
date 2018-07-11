@@ -74,7 +74,6 @@ export class WineryEditorComponent implements ControlValueAccessor, OnInit {
     }
 
     ngOnInit() {
-
         const codeEdit = this.editorBuilder.createEditor('embeddedEditor');
 
         codeEdit.then((editorViewer: any) => {
