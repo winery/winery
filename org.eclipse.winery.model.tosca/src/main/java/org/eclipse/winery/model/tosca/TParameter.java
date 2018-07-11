@@ -96,7 +96,7 @@ public class TParameter {
         }
     }
 
-    public void setRequired(TBoolean value) {
+    public void setRequired(@NonNull TBoolean value) {
         Objects.requireNonNull(value);
         this.required = value;
     }

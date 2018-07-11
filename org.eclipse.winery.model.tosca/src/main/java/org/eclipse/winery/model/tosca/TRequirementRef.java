@@ -73,5 +73,6 @@ public class TRequirementRef {
     }
 
     public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
 }

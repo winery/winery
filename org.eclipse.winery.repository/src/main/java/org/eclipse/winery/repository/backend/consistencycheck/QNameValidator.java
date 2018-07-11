@@ -42,6 +42,7 @@ public class QNameValidator extends Visitor {
     public void visit(TEntityType.PropertiesDefinition propertiesDefinition) {
         final QName element = propertiesDefinition.getElement();
         validateQName(element);
+        super.visit(propertiesDefinition);
     }
 
     @Override
@@ -51,6 +52,7 @@ public class QNameValidator extends Visitor {
             errorLogger.log("type is null");
         }
         validateQName(type);
+        super.visit(entityTemplate);
     }
 
     @Override
@@ -60,6 +62,7 @@ public class QNameValidator extends Visitor {
             errorLogger.log("type is null");
         }
         validateQName(type);
+        super.visit(artifact);
     }
 
     @Override
@@ -69,6 +72,7 @@ public class QNameValidator extends Visitor {
             errorLogger.log("type is null");
         }
         validateQName(type);
+        super.visit(artifact);
     }
 
     public interface ErrorLogger {

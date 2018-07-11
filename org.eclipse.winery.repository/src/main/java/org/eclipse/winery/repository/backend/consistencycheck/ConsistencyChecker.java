@@ -329,7 +329,7 @@ public class ConsistencyChecker {
         }
     }
 
-    void checkNamespaceUri(@NonNull DefinitionsChildId id) {
+    public void checkNamespaceUri(@NonNull DefinitionsChildId id) {
         Objects.requireNonNull(id);
 
         String uriStr = id.getNamespace().getDecoded();
