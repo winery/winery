@@ -59,10 +59,15 @@ public class CopybaraGenerator {
                     // We read 80 bytes, because the string "Apache License" could be centered
                     byte[] firstBytes = new byte[80];
                     int readBytes = inputStream.read(firstBytes);
-                    String firstBytesAsString = new String(firstBytes, 0, readBytes);
-                    // trim -> remove whitespaces before
-                    // We might have read more than one line (because of 80 bytes maximum), therefore, we just check whether the string begins with "Apache License"
-                    return (firstBytesAsString.trim().startsWith(licenceString));
+                    if (readBytes <= 0) {
+                        LOGGER.debug("LICENSE file is empty for {}", id.toReadableString());
+                        return false;
+                    } else {
+                        String firstBytesAsString = new String(firstBytes, 0, readBytes);
+                        // trim -> remove whitespaces before
+                        // We might have read more than one line (because of 80 bytes maximum), therefore, we just check whether the string begins with "Apache License"
+                        return (firstBytesAsString.trim().startsWith(licenceString));
+                    }
                 } catch (IOException e) {
                     LOGGER.error("Could not create input stream for {}", repositoryFileReference.toString(), e);
                     return false;
