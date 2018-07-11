@@ -49,12 +49,16 @@ import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * Visitor with a default visit order to go from top of a definitions to the bottom. No follow up across TDefinitions.
  * In other words: The nesting is followed.
  *
  * In general, for all elements in the hierarchy, a visit method is implemented. This visit method visits all children (in the TOSCA graph meta model).
  * In case an element in the hierarchy has no children in the TOSCA graph meta model and no children in the inheritance hierarchy, it is omitted.
+ *
+ * This class intentionally defines all default methods not as abstract to keep the children simple and to avoid unnecessary lines of code.
  *
  * TODO: Implement it for all DefinitionsChildren (NodeType, NodeTypeImplementation, ...)
  */
@@ -197,7 +201,7 @@ public abstract class Visitor {
         // meta model does not offer more children
     }
 
-    private void visitKvProperties(LinkedHashMap<String, String> kvProperties) {
+    public void visitKvProperties(LinkedHashMap<String, String> kvProperties) {
         // this is a leaf, so no action to take
     }
 
@@ -250,40 +254,64 @@ public abstract class Visitor {
         // this is a leaf, so no action to take
     }
 
-    public void visit(TBoundaryDefinitions boundaryDefinitions) {
-        final TBoundaryDefinitions.Properties properties = boundaryDefinitions.getProperties();
-        if (properties != null) {
-            properties.accept(this);
-        }
-        final TBoundaryDefinitions.PropertyConstraints propertyConstraints = boundaryDefinitions.getPropertyConstraints();
-        if (propertyConstraints != null) {
-            for (TPropertyConstraint propertyConstraint : propertyConstraints.getPropertyConstraint()) {
-                propertyConstraint.accept(this);
+    public void visit(@NonNull TBoundaryDefinitions boundaryDefinitions) {
+        this.acceptBoundaryDefinitionsProperties(boundaryDefinitions);
+        this.acceptBoundaryDefinitionsPropertyConstraints(boundaryDefinitions);
+        this.acceptBoundaryDefinitionsPolicies(boundaryDefinitions);
+        this.acceptBoundaryDefinitionsRequirements(boundaryDefinitions);
+        this.acceptBoundaryDefinitionsCapabilities(boundaryDefinitions);
+        this.acceptBoundaryDefinitionsInterfaces(boundaryDefinitions);
+    }
+
+    private void acceptBoundaryDefinitionsInterfaces(@NonNull TBoundaryDefinitions boundaryDefinitions) {
+        final TBoundaryDefinitions.Interfaces interfaces = boundaryDefinitions.getInterfaces();
+        if (interfaces != null) {
+            for (TExportedInterface exportedInterface : interfaces.getInterface()) {
+                exportedInterface.accept(this);
             }
         }
-        final TBoundaryDefinitions.Policies policies = boundaryDefinitions.getPolicies();
-        if (policies != null) {
-            for (TPolicy policy : policies.getPolicy()) {
-                policy.accept(this);
-            }
-        }
-        final TBoundaryDefinitions.Requirements requirements = boundaryDefinitions.getRequirements();
-        if (requirements != null) {
-            for (TRequirementRef requirementRef : requirements.getRequirement()) {
-                requirementRef.accept(this);
-            }
-        }
+    }
+
+    private void acceptBoundaryDefinitionsCapabilities(@NonNull TBoundaryDefinitions boundaryDefinitions) {
         final TBoundaryDefinitions.Capabilities capabilities = boundaryDefinitions.getCapabilities();
         if (capabilities != null) {
             for (TCapabilityRef capabilityRef : capabilities.getCapability()) {
                 capabilityRef.accept(this);
             }
         }
-        final TBoundaryDefinitions.Interfaces interfaces = boundaryDefinitions.getInterfaces();
-        if (interfaces != null) {
-            for (TExportedInterface exportedInterface : interfaces.getInterface()) {
-                exportedInterface.accept(this);
+    }
+
+    private void acceptBoundaryDefinitionsRequirements(@NonNull TBoundaryDefinitions boundaryDefinitions) {
+        final TBoundaryDefinitions.Requirements requirements = boundaryDefinitions.getRequirements();
+        if (requirements != null) {
+            for (TRequirementRef requirementRef : requirements.getRequirement()) {
+                requirementRef.accept(this);
             }
+        }
+    }
+
+    private void acceptBoundaryDefinitionsPolicies(@NonNull TBoundaryDefinitions boundaryDefinitions) {
+        final TBoundaryDefinitions.Policies policies = boundaryDefinitions.getPolicies();
+        if (policies != null) {
+            for (TPolicy policy : policies.getPolicy()) {
+                policy.accept(this);
+            }
+        }
+    }
+
+    private void acceptBoundaryDefinitionsPropertyConstraints(@NonNull TBoundaryDefinitions boundaryDefinitions) {
+        final TBoundaryDefinitions.PropertyConstraints propertyConstraints = boundaryDefinitions.getPropertyConstraints();
+        if (propertyConstraints != null) {
+            for (TPropertyConstraint propertyConstraint : propertyConstraints.getPropertyConstraint()) {
+                propertyConstraint.accept(this);
+            }
+        }
+    }
+
+    private void acceptBoundaryDefinitionsProperties(@NonNull TBoundaryDefinitions boundaryDefinitions) {
+        final TBoundaryDefinitions.Properties properties = boundaryDefinitions.getProperties();
+        if (properties != null) {
+            properties.accept(this);
         }
     }
 
@@ -301,6 +329,10 @@ public abstract class Visitor {
     }
 
     public void visit(TCapabilityRef capabilityRef) {
+        // this is a leaf, so no action to take
+    }
+
+    public void visit(TRequirementRef requirementRef) {
         // this is a leaf, so no action to take
     }
 

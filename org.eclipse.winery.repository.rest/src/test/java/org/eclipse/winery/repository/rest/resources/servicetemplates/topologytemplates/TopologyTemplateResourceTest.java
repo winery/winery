@@ -23,6 +23,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class TopologyTemplateResourceTest extends AbstractResourceTest {
+
     private static final String FOLDERPATH = "http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/";
     private static final String ENTITY_TYPE = "topologytemplates/";
     private static final String INSTANCE_XML_PATH = "servicetemplates/" + ENTITY_TYPE + "fruits-at-3fe0df76e98d46ead68295920e5d1cf1354bdea1.xml";
@@ -117,7 +118,6 @@ public class TopologyTemplateResourceTest extends AbstractResourceTest {
         this.assertPut("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants/topologytemplate/", "servicetemplates/topologytemplates/plain-TopologyTemplateMinimalExampleWithAllPropertyVariants.json");
         this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants/topologytemplate/", "servicetemplates/topologytemplates/plain-TopologyTemplateMinimalExampleWithAllPropertyVariants.json");
     }
-
 
     @Test
     public void jsonWithEmptyPoliciesElementProducesValidJson() throws Exception {

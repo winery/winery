@@ -27,7 +27,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tConstraint", propOrder = {
     "any"
