@@ -41,7 +41,7 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
 
     @BeforeEach
     public void initializeConsistencyChecker() {
-        ConsistencyCheckerConfiguration consistencyCheckerConfiguration = new ConsistencyCheckerConfiguration(false, true, EnumSet.of(ConsistencyCheckerVerbosity.NONE), null);
+        ConsistencyCheckerConfiguration consistencyCheckerConfiguration = new ConsistencyCheckerConfiguration(false, true, EnumSet.of(ConsistencyCheckerVerbosity.NONE));
         consistencyChecker = new ConsistencyChecker(consistencyCheckerConfiguration);
     }
 
@@ -97,7 +97,7 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
         this.setRevisionTo(revision);
         EnumSet<ConsistencyCheckerVerbosity> verbosity = EnumSet.noneOf(ConsistencyCheckerVerbosity.class);
         ConsistencyCheckerConfiguration configuration = new ConsistencyCheckerConfiguration
-            (false, false, verbosity, repository);
+            (false, false, verbosity, repository, true);
         final ConsistencyChecker consistencyChecker = new ConsistencyChecker(configuration);
         consistencyChecker.checkCorruption();
         return  consistencyChecker.getErrorCollector();
