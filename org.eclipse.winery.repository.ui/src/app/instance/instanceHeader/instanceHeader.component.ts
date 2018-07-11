@@ -13,7 +13,7 @@
  *******************************************************************************/
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
-import {RemoveWhiteSpacesPipe} from '../../wineryPipes/removeWhiteSpaces.pipe';
+import {MakeRouterLinkFromItem} from '../../wineryPipes/makeRouterLinkFromItem.pipe';
 import {ModalDirective} from 'ngx-bootstrap';
 import {ToscaComponent} from '../../wineryInterfaces/toscaComponent';
 import {ToscaTypes} from '../../wineryInterfaces/enums';
@@ -27,8 +27,8 @@ import {InstanceService} from '../instance.service';
         './instanceHeader.component.css'
     ],
     providers: [
-        RemoveWhiteSpacesPipe
-    ],
+        MakeRouterLinkFromItem
+    ]
 })
 
 export class InstanceHeaderComponent implements OnInit {

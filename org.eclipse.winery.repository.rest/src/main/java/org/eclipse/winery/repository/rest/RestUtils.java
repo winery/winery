@@ -327,6 +327,7 @@ public class RestUtils {
      * @return the absolute path for the given id
      */
     public static String getAbsoluteURL(RepositoryFileReference ref) {
+        // Code quality: Think of using https://docs.oracle.com/javaee/7/api/javax/ws/rs/core/Link.Builder.html.
         return Environment.getUrlConfiguration().getRepositoryApiUrl() + "/" + Util.getUrlPath(ref);
     }
 

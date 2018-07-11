@@ -18,12 +18,14 @@ import {RemoveWhiteSpacesPipe} from './removeWhiteSpaces.pipe';
 import {ToscaTypeToCamelCase} from './toscaTypeToCamelCase.pipe';
 import {ToscaTypeToReadableNamePipe} from './toscaTypeToReadableName.pipe';
 import {SliceVersionPipe} from './sliceVersion.pipe';
+import { MakeRouterLinkFromItem } from './makeRouterLinkFromItem.pipe';
 
 @NgModule({
     imports: [],
     exports: [
         ToscaTypeToCamelCase,
         ToscaTypeToReadableNamePipe,
+        MakeRouterLinkFromItem,
         RemoveWhiteSpacesPipe,
         UrlDecodePipe,
         UrlEncodePipe,
@@ -32,10 +34,11 @@ import {SliceVersionPipe} from './sliceVersion.pipe';
     declarations: [
         ToscaTypeToCamelCase,
         ToscaTypeToReadableNamePipe,
+        MakeRouterLinkFromItem,
         RemoveWhiteSpacesPipe,
         UrlDecodePipe,
         UrlEncodePipe,
-        SliceVersionPipe,
+        SliceVersionPipe
     ],
     providers: [],
 })

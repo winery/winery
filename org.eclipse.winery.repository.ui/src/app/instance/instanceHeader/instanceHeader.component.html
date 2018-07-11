@@ -51,7 +51,7 @@
     <div class="subMenu">
         <a *ngFor="let item of subMenu"
            class="styledTabMenuButton styledTabMenuButton2ndlevel"
-           [routerLink]="['./' + item | lowercase | removeWhiteSpaces ]"
+           [routerLink]="['./' + item | makeRouterLinkFromItem ]"
            [routerLinkActive]="'selected'"
            (click)="selectedTab = item">
             <div class="left"></div>

@@ -13,17 +13,21 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.datatypes;
 
-import org.apache.commons.io.FilenameUtils;
+import java.io.IOException;
+
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.configuration.Environment;
+import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
+
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.xml.bind.annotation.XmlRootElement;
-import java.io.IOException;
 
 /**
  * based on
@@ -60,7 +64,24 @@ public class FileMeta {
             FileMeta.LOGGER.error(e.getMessage(), e);
             this.size = 0;
         }
-        this.url = RestUtils.getAbsoluteURL(ref);
+
+        // FIXME: This should be the right URL. However, it was decided somewhere that the sub path should be given via ?path
+        // this.url = RestUtils.getAbsoluteURL(ref);
+
+        // Now, collect the path by hand
+        GenericId parent = ref.getParent();
+        String path = "";
+        while (parent instanceof DirectoryId) {
+            // prepend current path element
+            path = parent.getXmlId().getDecoded() + "/" + path;
+            parent = parent.getParent();
+        }
+        this.url = RestUtils.getAbsoluteURL(parent) + "/" + ref.getFileName();
+        if (!path.isEmpty()) {
+            path = path.substring(path.length() - 1);
+            this.url = this.url + "?path=" + path;
+        }
+
         this.deleteUrl = this.url;
         this.thumbnailUrl = Environment.getUrlConfiguration().getRepositoryApiUrl() + Constants.PATH_MIMETYPEIMAGES + FilenameUtils.getExtension(this.name) + Constants.SUFFIX_MIMETYPEIMAGES;
     }
@@ -106,5 +127,4 @@ public class FileMeta {
     public String getThumbnailUrl() {
         return this.thumbnailUrl;
     }
-
 }
