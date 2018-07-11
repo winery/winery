@@ -14,16 +14,23 @@
 
 package org.eclipse.winery.model.tosca;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
+import java.util.List;
+import java.util.Objects;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
-import java.util.List;
-import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 @XmlTransient
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -204,7 +211,8 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
         }
 
         public Builder(String name, QName implementedType) {
-            this(new TExtensibleElements(), name, implementedType);
+            this.name = name;
+            this.implementedType = implementedType;
         }
 
         public T setTargetNamespace(String targetNamespace) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,32 +14,18 @@
 
 package org.eclipse.winery.model.tosca;
 
-import org.eclipse.jdt.annotation.Nullable;
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
-import java.util.Objects;
 
+import org.eclipse.winery.model.tosca.visitor.Visitor;
 
-/**
- * <p>Java class for tRequirementType complex type.
- * <p>
- * <p>The following schema fragment specifies the expected content contained within this class.
- * <p>
- * <pre>
- * &lt;complexType name="tRequirementType">
- *   &lt;complexContent>
- *     &lt;extension base="{http://docs.oasis-open.org/tosca/ns/2011/12}tEntityType">
- *       &lt;attribute name="requiredCapabilityType" type="{http://www.w3.org/2001/XMLSchema}QName" />
- *       &lt;anyAttribute processContents='lax' namespace='##other'/>
- *     &lt;/extension>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- */
+import org.eclipse.jdt.annotation.Nullable;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tRequirementType")
 public class TRequirementType extends TEntityType {
@@ -68,22 +54,17 @@ public class TRequirementType extends TEntityType {
         return Objects.hash(super.hashCode(), requiredCapabilityType);
     }
 
-    /**
-     * Gets the value of the requiredCapabilityType property.
-     *
-     * @return possible object is {@link QName }
-     */
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
+
     @Nullable
     public QName getRequiredCapabilityType() {
         return requiredCapabilityType;
     }
 
-    /**
-     * Sets the value of the requiredCapabilityType property.
-     *
-     * @param value allowed object is {@link QName }
-     */
-    public void setRequiredCapabilityType(QName value) {
+    public void setRequiredCapabilityType(@Nullable QName value) {
         this.requiredCapabilityType = value;
     }
 

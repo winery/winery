@@ -25,7 +25,7 @@ import org.eclipse.winery.model.tosca.constants.Namespaces;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-public class ConsistencyErrorLogger {
+public class ConsistencyErrorCollector {
 
     private static final String CONFIGURATION_ERROR = "Configuration Error";
 

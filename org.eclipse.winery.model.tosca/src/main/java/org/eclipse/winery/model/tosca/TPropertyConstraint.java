@@ -14,14 +14,16 @@
 
 package org.eclipse.winery.model.tosca;
 
-import org.eclipse.jdt.annotation.NonNull;
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
-import java.util.Objects;
 
+import org.eclipse.winery.model.tosca.visitor.Visitor;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * <p>Java class for tPropertyConstraint complex type.
@@ -77,5 +79,9 @@ public class TPropertyConstraint
      */
     public void setProperty(String value) {
         this.property = value;
+    }
+
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
 }

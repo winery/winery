@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,17 +13,23 @@
  ********************************************************************************/
 package org.eclipse.winery.repository.rest.websockets;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
+
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyChecker;
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerConfiguration;
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerProgressListener;
-import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyErrorLogger;
+import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyErrorCollector;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.websocket.*;
-import javax.websocket.server.ServerEndpoint;
-import java.io.IOException;
 
 @ServerEndpoint("/checkconsistency")
 public class ConsistencyCheckWebSocket implements ConsistencyCheckerProgressListener {
@@ -55,7 +61,9 @@ public class ConsistencyCheckWebSocket implements ConsistencyCheckerProgressList
 
         ConsistencyCheckerConfiguration config = mapper.readValue(message, ConsistencyCheckerConfiguration.class);
 
-        ConsistencyErrorLogger errorList = ConsistencyChecker.checkCorruption(config, this);
+        final ConsistencyChecker consistencyChecker = new ConsistencyChecker(config, this);
+        consistencyChecker.checkCorruption();
+        ConsistencyErrorCollector errorList = consistencyChecker.getErrorCollector();
 
         // Transform object to JSON and send it.
         this.session.getBasicRemote().sendText(mapper.writeValueAsString(errorList));

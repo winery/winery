@@ -130,8 +130,10 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         // the data file might not exist
         this.ref = BackendUtils.getRefOfDefinitions(id);
         if (RepositoryFactory.getRepository().exists(this.ref)) {
+            LOGGER.debug("data file exists");
             this.load();
         } else {
+            LOGGER.debug("Data file does not exist. Creating a new one.");
             this.createNew();
         }
     }

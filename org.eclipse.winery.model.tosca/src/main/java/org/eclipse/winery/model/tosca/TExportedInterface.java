@@ -21,26 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.eclipse.winery.model.tosca.visitor.Visitor;
 
-/**
- * <p>Java class for tExportedInterface complex type.
- * <p>
- * <p>The following schema fragment specifies the expected content contained within this class.
- * <p>
- * <pre>
- * &lt;complexType name="tExportedInterface">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="Operation" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tExportedOperation"
- * maxOccurs="unbounded"/>
- *       &lt;/sequence>
- *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tExportedInterface", propOrder = {
     "operation"
@@ -49,8 +31,10 @@ public class TExportedInterface implements HasName {
 
     @XmlElement(name = "Operation", required = true)
     protected List<TExportedOperation> operation;
+
     @XmlAttribute(name = "name", required = true)
     @XmlSchemaType(name = "anyURI")
+    @NonNull
     protected String name;
 
     @Override
@@ -67,26 +51,6 @@ public class TExportedInterface implements HasName {
         return Objects.hash(operation, name);
     }
 
-    /**
-     * Gets the value of the operation property.
-     * <p>
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the operation property.
-     * <p>
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getOperation().add(newItem);
-     * </pre>
-     * <p>
-     * <p>
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link TExportedOperation }
-     */
     @NonNull
     public List<TExportedOperation> getOperation() {
         if (operation == null) {
@@ -95,24 +59,19 @@ public class TExportedInterface implements HasName {
         return this.operation;
     }
 
-    /**
-     * Gets the value of the name property.
-     *
-     * @return possible object is {@link String }
-     */
     @NonNull
     @Override
     public String getName() {
         return name;
     }
 
-    /**
-     * Sets the value of the name property.
-     *
-     * @param value allowed object is {@link String }
-     */
     @Override
-    public void setName(String value) {
+    public void setName(@NonNull String value) {
+        Objects.requireNonNull(value);
         this.name = value;
+    }
+
+    public void accept(Visitor visitor) {
+        visitor.accept(this);
     }
 }

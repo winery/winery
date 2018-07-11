@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,32 +14,19 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.util.Objects;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
+
+import org.eclipse.winery.model.tosca.visitor.Visitor;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import javax.xml.bind.annotation.*;
-import java.util.Objects;
-
-
-/**
- * <p>Java class for tImport complex type.
- * <p>
- * <p>The following schema fragment specifies the expected content contained within this class.
- * <p>
- * <pre>
- * &lt;complexType name="tImport">
- *   &lt;complexContent>
- *     &lt;extension base="{http://docs.oasis-open.org/tosca/ns/2011/12}tExtensibleElements">
- *       &lt;attribute name="namespace" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
- *       &lt;attribute name="location" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
- *       &lt;attribute name="importType" use="required" type="{http://docs.oasis-open.org/tosca/ns/2011/12}importedURI"
- * />
- *       &lt;anyAttribute processContents='lax' namespace='##other'/>
- *     &lt;/extension>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tImport")
 public class TImport extends TExtensibleElements {
@@ -79,60 +66,36 @@ public class TImport extends TExtensibleElements {
         return Objects.hash(super.hashCode(), namespace, location, importType);
     }
 
-    /**
-     * Gets the value of the namespace property.
-     *
-     * @return possible object is {@link String }
-     */
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
+
     @Nullable
     public String getNamespace() {
         return namespace;
     }
 
-    /**
-     * Sets the value of the namespace property.
-     *
-     * @param value allowed object is {@link String }
-     */
-    public void setNamespace(String value) {
+    public void setNamespace(@Nullable String value) {
         this.namespace = value;
     }
 
-    /**
-     * Gets the value of the location property.
-     *
-     * @return possible object is {@link String }
-     */
     @Nullable
     public String getLocation() {
         return location;
     }
 
-    /**
-     * Sets the value of the location property.
-     *
-     * @param value allowed object is {@link String }
-     */
-    public void setLocation(String value) {
+    public void setLocation(@Nullable String value) {
         this.location = value;
     }
 
-    /**
-     * Gets the value of the importType property.
-     *
-     * @return possible object is {@link String }
-     */
     @NonNull
     public String getImportType() {
         return importType;
     }
 
-    /**
-     * Sets the value of the importType property.
-     *
-     * @param value allowed object is {@link String }
-     */
-    public void setImportType(String value) {
+    public void setImportType(@NonNull String value) {
+        Objects.requireNonNull(value);
         this.importType = value;
     }
 

@@ -26,7 +26,7 @@ import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyChecker
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerConfiguration;
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerProgressListener;
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerVerbosity;
-import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyErrorLogger;
+import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyErrorCollector;
 import org.eclipse.winery.repository.backend.consistencycheck.ElementErrorList;
 import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
 import org.eclipse.winery.repository.rest.server.WineryUsingHttpServer;
@@ -117,7 +117,7 @@ public class WineryCli {
 
         ProgressBar progressBar = new ProgressBar("Check", 100, ProgressBarStyle.ASCII);
         progressBar.start();
-        ConsistencyErrorLogger errors = ConsistencyChecker.checkCorruption(configuration, new ConsistencyCheckerProgressListener() {
+        final ConsistencyChecker consistencyChecker = new ConsistencyChecker(configuration, new ConsistencyCheckerProgressListener() {
             @Override
             public void updateProgress(float progress) {
                 progressBar.stepTo((long) (progress * 100));
@@ -129,6 +129,8 @@ public class WineryCli {
                 progressBar.stepTo((long) (progress * 100));
             }
         });
+        consistencyChecker.checkCorruption();
+        ConsistencyErrorCollector errors = consistencyChecker.getErrorCollector();
         progressBar.stop();
 
         System.out.println();

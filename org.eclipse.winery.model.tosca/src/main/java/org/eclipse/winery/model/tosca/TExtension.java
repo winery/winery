@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,30 +14,19 @@
 
 package org.eclipse.winery.model.tosca;
 
-import org.eclipse.jdt.annotation.NonNull;
-
-import javax.xml.bind.annotation.*;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
-/**
- * <p>Java class for tExtension complex type.
- * <p>
- * <p>The following schema fragment specifies the expected content contained within this class.
- * <p>
- * <pre>
- * &lt;complexType name="tExtension">
- *   &lt;complexContent>
- *     &lt;extension base="{http://docs.oasis-open.org/tosca/ns/2011/12}tExtensibleElements">
- *       &lt;attribute name="namespace" use="required" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
- *       &lt;attribute name="mustUnderstand" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tBoolean" default="yes"
- * />
- *       &lt;anyAttribute processContents='lax' namespace='##other'/>
- *     &lt;/extension>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- */
+import org.eclipse.winery.model.tosca.visitor.Visitor;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tExtension")
 public class TExtension extends TExtensibleElements {
@@ -69,30 +58,16 @@ public class TExtension extends TExtensibleElements {
         return Objects.hash(super.hashCode(), namespace, mustUnderstand);
     }
 
-    /**
-     * Gets the value of the namespace property.
-     *
-     * @return possible object is {@link String }
-     */
     @NonNull
     public String getNamespace() {
         return namespace;
     }
 
-    /**
-     * Sets the value of the namespace property.
-     *
-     * @param value allowed object is {@link String }
-     */
-    public void setNamespace(String value) {
+    public void setNamespace(@NonNull String value) {
+        Objects.requireNonNull(value);
         this.namespace = value;
     }
 
-    /**
-     * Gets the value of the mustUnderstand property.
-     *
-     * @return possible object is {@link TBoolean }
-     */
     @NonNull
     public TBoolean getMustUnderstand() {
         if (mustUnderstand == null) {
@@ -102,13 +77,13 @@ public class TExtension extends TExtensibleElements {
         }
     }
 
-    /**
-     * Sets the value of the mustUnderstand property.
-     *
-     * @param value allowed object is {@link TBoolean }
-     */
-    public void setMustUnderstand(TBoolean value) {
+    public void setMustUnderstand(@Nullable TBoolean value) {
         this.mustUnderstand = value;
+    }
+
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
 
     public static class Builder extends TExtensibleElements.Builder<Builder> {

@@ -24,6 +24,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 import java.util.Objects;
 
+import org.eclipse.winery.model.tosca.visitor.Visitor;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tRequirement")
 @JsonTypeInfo(
@@ -81,6 +83,10 @@ public class TRequirement extends RelationshipSourceOrTarget {
     @NonNull
     public String getFakeJacksonType() {
         return "requirement";
+    }
+
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
 
     public static class Builder extends RelationshipSourceOrTarget.Builder<Builder> {
