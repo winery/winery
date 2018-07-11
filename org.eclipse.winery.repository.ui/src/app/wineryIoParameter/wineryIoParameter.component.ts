@@ -13,12 +13,13 @@
  *******************************************************************************/
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { WineryTableColumn } from '../wineryTableModule/wineryTable.component';
-import { InterfaceParameter } from '../wineryInterfaces/parameters';
+import { InterfaceParameter } from '../model/parameters';
 import { WineryValidatorObject } from '../wineryValidators/wineryDuplicateValidator.directive';
-import { YesNoEnum } from '../wineryInterfaces/enums';
+import { YesNoEnum } from '../model/enums';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
 import { NgForm } from '@angular/forms';
 import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
+import { InstanceService } from '../instance/instance.service';
 
 /**
  * This component provides two tables for adding and removing input and output parameters as they are used for example
@@ -29,7 +30,7 @@ import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
  * <label>Inputs</label>
  * <ul>
  *     <li><code>inputParameters</code> the array for the input parameters. It must be of type {@link
- *     InterfaceParameter}.
+    *     InterfaceParameter}.
  *     </li>
  *     <li><code>outputParameters</code> the array for the output parameters. It must be of type
  *     {@link InterfaceParameter}.
@@ -91,7 +92,7 @@ export class WineryIoParameterComponent {
     addIntParametersModalRef: BsModalRef;
     removeElementModalRef: BsModalRef;
 
-    constructor(private notify: WineryNotificationService,
+    constructor(public sharedData: InstanceService, private notify: WineryNotificationService,
                 private modalService: BsModalService) {
 
     }

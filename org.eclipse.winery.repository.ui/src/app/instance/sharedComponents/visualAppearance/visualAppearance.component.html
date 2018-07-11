@@ -15,14 +15,13 @@
     <winery-loader></winery-loader>
 </div>
 <div class="content" *ngIf="!loading">
-    <button (click)="saveToServer()" [disabled]="!sharedData?.currentVersion?.editable" class="btn btn-primary btn-sm save">Save</button>
-    <br/>
     <div class="colorPickerArea" *ngIf="!loading && nodeTypeData != null">
         <div class="floatContent">
             <b>Bordercolor:</b><br>
-            <input class="colorInput" name="eventColor" type="color" [(ngModel)]="borderColorLocal">
+            <input class="colorInput" name="eventColor" type="color" [(ngModel)]="borderColorLocal" [disabled]="!sharedData?.currentVersion?.editable">
             <br/>click on the area above to change border color<br/>
         </div>
+        <button (click)="saveToServer()" [disabled]="!sharedData?.currentVersion?.editable" class="btn btn-primary btn-sm">Save</button>
     </div>
     <div class="colorPickerArea" *ngIf="!loading && relationshipData != null">
         <div class="floatContent">

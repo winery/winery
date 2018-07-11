@@ -16,7 +16,7 @@ import { InstanceService } from '../../instance.service';
 import { Observable } from 'rxjs';
 import { backendBaseURL, hostURL } from '../../../configuration';
 import { SourceApiData } from './sourceApiData';
-import { ToscaTypes } from '../../../wineryInterfaces/enums';
+import { ToscaTypes } from '../../../model/enums';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 

@@ -26,7 +26,7 @@ import { SelfServicePortalComponent } from '../../instance/serviceTemplates/self
 import { selfServiceRoutes } from '../../instance/serviceTemplates/selfServicePortal/selfServicePortalRouter.module';
 import { TagComponent } from '../../instance/sharedComponents/tag/tag.component';
 import { DocumentationComponent } from '../../instance/sharedComponents/documentation/documentation.component';
-import { ToscaTypes } from '../../wineryInterfaces/enums';
+import { ToscaTypes } from '../../model/enums';
 import { WineryReadmeComponent } from '../../wineryReadmeModule/wineryReadme.component';
 import { WineryLicenseComponent } from '../../wineryLicenseModule/wineryLicense.component';
 import { ConstraintCheckingComponent } from '../../instance/serviceTemplates/constraintChecking/constraintChecking.component';

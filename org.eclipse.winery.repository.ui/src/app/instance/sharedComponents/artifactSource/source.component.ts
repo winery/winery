@@ -19,7 +19,7 @@ import { SourceApiData } from './sourceApiData';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import { hostURL } from '../../../configuration';
 import { InstanceService } from '../../instance.service';
-import { ToscaTypes } from '../../../wineryInterfaces/enums';
+import { ToscaTypes } from '../../../model/enums';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({

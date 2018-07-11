@@ -17,7 +17,7 @@ import { RequiredCapabilityTypeApiData } from './requiredCapabilityTypeApiData';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { InstanceService } from '../../instance.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ToscaTypes } from '../../../wineryInterfaces/enums';
+import { ToscaTypes } from '../../../model/enums';
 
 @Component({
     templateUrl: 'requiredCapabilityType.component.html',

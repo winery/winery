@@ -15,7 +15,7 @@ import {Component, OnInit} from '@angular/core';
 import {WineryLicenseService} from './wineryLicense.service';
 import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
 import {InstanceService} from '../instance/instance.service';
-import {ToscaTypes} from '../wineryInterfaces/enums';
+import {ToscaTypes} from '../model/enums';
 import {LicenseEnum, WineryLicense} from './wineryLicense.enum';
 import { HttpErrorResponse } from '@angular/common/http';
 

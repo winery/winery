@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Utils } from '../wineryUtils/utils';
-import { WineryVersion } from '../wineryInterfaces/wineryVersion';
+import { WineryVersion } from '../model/wineryVersion';
 
 /**
  * Type definition for data returned by the section service.

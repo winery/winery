@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 import {Component, Input, OnInit} from '@angular/core';
-import {QNameWithTypeApiData} from '../../wineryInterfaces/qNameWithTypeApiData';
+import {QNameWithTypeApiData} from '../../model/qNameWithTypeApiData';
 import {isNullOrUndefined} from 'util';
 
 @Component({

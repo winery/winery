@@ -14,7 +14,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { SectionData } from '../sectionData';
-import { ToscaTypes } from '../../wineryInterfaces/enums';
+import { ToscaTypes } from '../../model/enums';
 import { backendBaseURL } from '../../configuration';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 

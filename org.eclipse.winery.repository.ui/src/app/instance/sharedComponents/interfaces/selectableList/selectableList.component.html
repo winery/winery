@@ -17,10 +17,11 @@
         <button class="rightbutton btn btn-danger btn-xs"
                 id="removeIfBtn"
                 (click)="onRemove($event);"
-                [disabled]="rows.length === 0">
+                [disabled]="(rows.length === 0) || !sharedData?.currentVersion?.editable">
             Remove
         </button>
         <button class="rightbutton btn btn-primary btn-xs" id="addIfBtn"
+                [disabled]="!sharedData.currentVersion.editable"
                 (click)="onAdd($event);">
             Add
         </button>

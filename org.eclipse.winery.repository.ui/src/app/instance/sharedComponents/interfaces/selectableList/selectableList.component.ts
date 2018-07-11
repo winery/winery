@@ -15,6 +15,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {isNullOrUndefined} from 'util';
 import {InterfacesApiData} from '../interfacesApiData';
+import { InstanceService } from '../../../instance.service';
 
 @Component({
     selector: 'winery-selectable-list',
@@ -33,7 +34,7 @@ export class SelectableListComponent implements OnInit {
     @Output() selectionChanged = new EventEmitter<any>();
     currentSelected: any;
 
-    constructor() {
+    constructor(public sharedData: InstanceService) {
     }
 
     ngOnInit() {

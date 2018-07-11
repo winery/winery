@@ -26,14 +26,14 @@
     </div>
     <div class="form-group">
         <label class="control-label">Abstract</label>
-        <select [(ngModel)]="inheritanceApiData.isAbstract" class="form-control" style="width: 100px">
+        <select [(ngModel)]="inheritanceApiData.isAbstract" [disabled]="!sharedData?.currentVersion?.editable" class="form-control" style="width: 100px">
             <option [selected]="inheritanceApiData.isAbstract === 'yes'">yes</option>
             <option [selected]="inheritanceApiData.isAbstract === 'no'">no</option>
         </select>
     </div>
     <div class="form-group">
         <label class="control-label">Final</label>
-        <select [(ngModel)]="inheritanceApiData.isFinal" class="form-control" style="width: 100px">
+        <select [(ngModel)]="inheritanceApiData.isFinal" [disabled]="!sharedData?.currentVersion?.editable" class="form-control" style="width: 100px">
             <option [selected]="inheritanceApiData.isFinal === 'yes'">yes</option>
             <option [selected]="inheritanceApiData.isFinal === 'no'">no</option>
         </select>
@@ -41,6 +41,7 @@
 
     <p>Derived from</p>
     <ng-select #derivedFromSelector
+               [disabled]="!sharedData?.currentVersion?.editable"
                [items]="availableSuperClasses"
                (selected)="onSelectedValueChanged($event)"
                [active]="initialActiveItem">

@@ -19,7 +19,7 @@ import {InstanceComponent} from '../../instance/instance.component';
 import {InstanceResolver} from '../../instance/instance.resolver';
 import {EditXMLComponent} from '../../instance/sharedComponents/editXML/editXML.component';
 import {DocumentationComponent} from '../../instance/sharedComponents/documentation/documentation.component';
-import {ToscaTypes} from '../../wineryInterfaces/enums';
+import {ToscaTypes} from '../../model/enums';
 import {VisualAppearanceComponent} from '../../instance/sharedComponents/visualAppearance/visualAppearance.component';
 import {InstanceStatesComponent} from '../../instance/sharedComponents/instanceStates/instanceStates.component';
 import {InterfacesComponent} from '../../instance/sharedComponents/interfaces/interfaces.component';

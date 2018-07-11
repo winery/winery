@@ -26,7 +26,7 @@ export class PropertyConstraintsService {
 
     constructor(private http: HttpClient,
                 private route: Router) {
-        this.path = backendBaseURL + this.route.url + '/';
+        this.path = backendBaseURL + this.route.url;
     }
 
     getConstraints(): Observable<PropertyConstraintApiData[]> {
@@ -46,7 +46,7 @@ export class PropertyConstraintsService {
     deleteConstraints(data: PropertyConstraintApiData): Observable<HttpResponse<string>> {
         return this.http
             .delete(
-                this.path + encodeURIComponent(encodeURIComponent(data.property)),
+                this.path + '/' + encodeURIComponent(encodeURIComponent(data.property)),
                 { observe: 'response', responseType: 'text' }
             );
     }

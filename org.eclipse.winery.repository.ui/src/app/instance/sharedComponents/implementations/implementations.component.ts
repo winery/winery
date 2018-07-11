@@ -20,7 +20,7 @@ import { ImplementationService } from './implementations.service';
 import { ModalDirective } from 'ngx-bootstrap';
 import { Utils } from '../../../wineryUtils/utils';
 import { WineryRowData, WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
-import { ToscaTypes } from '../../../wineryInterfaces/enums';
+import { ToscaTypes } from '../../../model/enums';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { WineryAddComponent } from '../../../wineryAddComponentModule/addComponent.component';
 

@@ -30,6 +30,7 @@ import { WineryEditorComponent } from '../../../../wineryEditorModule/wineryEdit
     ]
 })
 export class PropertyConstraintsComponent implements OnInit {
+
     loading = true;
     loadCount = 0;
     propertyConstraints: PropertyConstraintApiData[] = [];

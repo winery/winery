@@ -128,7 +128,7 @@
     <winery-modal-footer
         [closeButtonLabel]="'Cancel'"
         [okButtonLabel]="'Generate'"
-        [disableOkButton]="!((implementation.createComponent || artifactTemplate.createComponent) && sharedData?.currentVersion?.editable)"
+        [disableOkButton]="!(implementation.createComponent || artifactTemplate.createComponent)"
         (onOk)="generateImplementationArtifact()">
     </winery-modal-footer>
 </winery-modal>

@@ -18,18 +18,22 @@
     <div class="radioWrapper">
         <div class="left">
             <input id="nopropdef" type="radio" name="kind" (click)="onNoneSelected()"
+                   [disabled]="!sharedData?.currentVersion?.editable"
                    [checked]="resourceApiData.selectedValue === propertiesEnum.None">
             <label for="nopropdef" class="cursorpointer" name="nopropdef">(none)</label>
             <br>
             <input id="xsdelementradio" type="radio" name="kind" (click)="onXmlElementSelected()"
+                   [disabled]="!sharedData?.currentVersion?.editable"
                    [checked]="resourceApiData.selectedValue === propertiesEnum.Element">
             <label for="xsdelementradio" class="cursorpointer">XML element</label>
             <br>
             <input id="xsdtyperadio" type="radio" name="kind" (click)="onXmlTypeSelected()"
+                   [disabled]="!sharedData?.currentVersion?.editable"
                    [checked]="resourceApiData.selectedValue === propertiesEnum.Type">
             <label for="xsdtyperadio" class="cursorpointer">XML type</label>
             <br>
             <input id="customkv" type="radio" name="kind" (click)="onCustomKeyValuePairSelected()"
+                   [disabled]="!sharedData?.currentVersion?.editable"
                    [checked]="resourceApiData.selectedValue === propertiesEnum.Custom">
             <label for="customkv" class="cursorpointer">Custom key/value pairs</label>
         </div>

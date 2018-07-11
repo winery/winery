@@ -16,7 +16,7 @@ import {InterfaceOperationApiData, InterfacesApiData} from '../interfacesApiData
 import { CurrentSelectedEnum, NodeOperation, PlanOperation, RelationshipOperation } from './operations';
 import {InstanceService} from '../../../instance.service';
 import {isNullOrUndefined} from 'util';
-import {WineryTemplate} from '../../../../wineryInterfaces/wineryComponent';
+import {WineryTemplate} from '../../../../model/wineryComponent';
 import {InterfacesService} from '../interfaces.service';
 import {WineryNotificationService} from '../../../../wineryNotificationModule/wineryNotification.service';
 import {SelectItem} from 'ng2-select';

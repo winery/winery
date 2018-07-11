@@ -15,9 +15,9 @@
 import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { PropertyRenameService } from './propertyRename.service';
-import { ToscaComponent } from '../../../wineryInterfaces/toscaComponent';
+import { ToscaComponent } from '../../../model/toscaComponent';
 import { NgForm } from '@angular/forms';
-import { ToscaTypes } from '../../../wineryInterfaces/enums';
+import { ToscaTypes } from '../../../model/enums';
 import { ModalDirective } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { InstanceService } from '../../instance.service';

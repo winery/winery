@@ -18,7 +18,7 @@ import { ExistService } from '../../wineryUtils/existService';
 import { ModalDirective } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { EntityService } from './entity.service';
-import { ToscaTypes } from '../../wineryInterfaces/enums';
+import { ToscaTypes } from '../../model/enums';
 import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
 
 @Component({

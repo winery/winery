@@ -19,12 +19,12 @@ import { WineryNotificationService } from '../../../../wineryNotificationModule/
 import { ModalDirective } from 'ngx-bootstrap';
 import { NgForm } from '@angular/forms';
 import { InstanceService } from '../../../instance.service';
-import { WineryTemplate, WineryTopologyTemplate } from '../../../../wineryInterfaces/wineryComponent';
-import { ServiceTemplateTemplateTypes, ToscaTypes } from '../../../../wineryInterfaces/enums';
+import { WineryTemplate, WineryTopologyTemplate } from '../../../../model/wineryComponent';
+import { ServiceTemplateTemplateTypes, ToscaTypes } from '../../../../model/enums';
 import { Utils } from '../../../../wineryUtils/utils';
 import { SelectItem } from 'ng2-select';
 import { PropertiesDefinitionsResourceApiData } from '../../../sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
-import { SelectData } from '../../../../wineryInterfaces/selectData';
+import { SelectData } from '../../../../model/selectData';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({

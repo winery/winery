@@ -17,8 +17,8 @@ import { WineryNotificationService } from '../../../wineryNotificationModule/win
 import { InstanceService } from '../../instance.service';
 import { InheritanceService } from './inheritance.service';
 import { InheritanceApiData } from './inheritanceApiData';
-import { ToscaTypes } from '../../../wineryInterfaces/enums';
-import { SelectData } from '../../../wineryInterfaces/selectData';
+import { ToscaTypes } from '../../../model/enums';
+import { SelectData } from '../../../model/selectData';
 import { SelectItem } from 'ng2-select';
 import { Router } from '@angular/router';
 import { ModalDirective } from 'ngx-bootstrap';

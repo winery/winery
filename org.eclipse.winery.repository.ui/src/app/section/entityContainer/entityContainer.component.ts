@@ -14,7 +14,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {backendBaseURL} from '../../configuration';
 import {SectionData} from '../sectionData';
-import {ToscaTypes} from '../../wineryInterfaces/enums';
+import {ToscaTypes} from '../../model/enums';
 import {Router} from '@angular/router';
 import {ExistService} from '../../wineryUtils/existService';
 import {isNullOrUndefined} from 'util';

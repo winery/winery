@@ -13,10 +13,10 @@
  ********************************************************************************/
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { QNameWithTypeApiData } from '../wineryInterfaces/qNameWithTypeApiData';
+import { QNameWithTypeApiData } from '../model/qNameWithTypeApiData';
 import { backendBaseURL } from '../configuration';
 import { InstanceService } from '../instance/instance.service';
-import { WineryVersion } from '../wineryInterfaces/wineryVersion';
+import { WineryVersion } from '../model/wineryVersion';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()
