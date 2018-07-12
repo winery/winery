@@ -15,11 +15,14 @@
 package org.eclipse.winery.repository.splitting;
 
 import org.eclipse.jdt.annotation.NonNull;
+
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.tosca.*;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -27,9 +30,11 @@ import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.driverspecificationandinjection.DASpecification;
 import org.eclipse.winery.repository.driverspecificationandinjection.DriverInjection;
+
 import org.slf4j.LoggerFactory;
 
 import javax.xml.namespace.QName;
+
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -63,11 +68,8 @@ public class Splitting {
         TServiceTemplate serviceTemplate = repository.getElement(id);
 
         // create wrapper service template
-        ServiceTemplateId splitServiceTemplateId =
-            new ServiceTemplateId(
-                id.getNamespace().getDecoded(),
-                id.getXmlId().getDecoded() + "-split",
-                false);
+        ServiceTemplateId splitServiceTemplateId = getNewServiceTemplateId(id, "split");
+
         repository.forceDelete(splitServiceTemplateId);
         repository.flagAsExisting(splitServiceTemplateId);
         TServiceTemplate splitServiceTemplate = new TServiceTemplate();
@@ -82,9 +84,8 @@ public class Splitting {
         LOGGER.debug("Persisted.");
 
         // create wrapper service template
-        ServiceTemplateId matchedServiceTemplateId =
-            new ServiceTemplateId(id.getNamespace().getDecoded(),
-                id.getXmlId().getDecoded() + "-split-matched", false);
+        ServiceTemplateId matchedServiceTemplateId = getNewServiceTemplateId(id, "split-matched");
+
         repository.forceDelete(matchedServiceTemplateId);
         repository.flagAsExisting(matchedServiceTemplateId);
         TServiceTemplate matchedServiceTemplate = new TServiceTemplate();
@@ -158,9 +159,7 @@ public class Splitting {
         //End additional functionality Driver Injection
 
         // create wrapper service template
-        ServiceTemplateId matchedServiceTemplateId =
-            new ServiceTemplateId(id.getNamespace().getDecoded(),
-                id.getXmlId().getDecoded() + "-matched", false);
+        ServiceTemplateId matchedServiceTemplateId = getNewServiceTemplateId(id, "matched");
         RepositoryFactory.getRepository().forceDelete(matchedServiceTemplateId);
         RepositoryFactory.getRepository().flagAsExisting(matchedServiceTemplateId);
         repository.flagAsExisting(matchedServiceTemplateId);
@@ -1075,7 +1074,6 @@ public class Splitting {
             .collect(Collectors.toList());
     }
 
-
     /**
      * Find all node templates which predecessors has no further predecessors
      *
@@ -1139,7 +1137,6 @@ public class Splitting {
         }
         return predecessorNodeTemplates;
     }
-
 
     /**
      * Compute transitive closure of a given topology template based on the hostedOn relationships
@@ -1313,5 +1310,23 @@ public class Splitting {
         matchingRelationshipTemplate.setSourceElement(sourceElement);
         matchingRelationshipTemplate.setTargetElement(targetElement);
         topologyTemplate.getNodeTemplateOrRelationshipTemplate().add(matchingRelationshipTemplate);
+    }
+
+    private ServiceTemplateId getNewServiceTemplateId(ServiceTemplateId oldId, String appendixName) {
+        WineryVersion version = VersionUtils.getVersion(oldId);
+        String componentVersion = version.getComponentVersion();
+        if (Objects.nonNull(componentVersion) && !componentVersion.isEmpty()) {
+            version.setComponentVersion(componentVersion + "-" + appendixName);
+        } else {
+            version.setComponentVersion(appendixName);
+        }
+
+        String newDefinitionId = VersionUtils.getNameWithoutVersion(oldId) + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
+
+        // create wrapper service template
+        return new ServiceTemplateId(
+            oldId.getNamespace().getDecoded(),
+            newDefinitionId,
+            false);
     }
 }
