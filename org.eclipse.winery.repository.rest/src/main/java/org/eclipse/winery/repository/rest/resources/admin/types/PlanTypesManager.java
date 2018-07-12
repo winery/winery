@@ -25,6 +25,7 @@ public class PlanTypesManager extends AbstractTypesManager {
         // add data without rendering in the plan types file
         this.addData(org.eclipse.winery.repository.Constants.TOSCA_PLANTYPE_BUILD_PLAN, "Build Plan");
         this.addData(org.eclipse.winery.repository.Constants.TOSCA_PLANTYPE_TERMINATION_PLAN, "Termination Plan");
+        this.addData(org.eclipse.winery.repository.Constants.TOSCA_PLANTYPE_MANAGEMENT_PLAN, "Management Plan");
     }
 
 }
