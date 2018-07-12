@@ -77,11 +77,6 @@ public class WineryCli {
         } else {
             repository = RepositoryFactory.getRepository();
         }
-        if (repository instanceof FilebasedRepository) {
-            System.out.println("Using repository path " + ((FilebasedRepository) repository).getRepositoryRoot() + "...");
-        } else {
-            System.out.println("Using non-filebased repository");
-        }
 
         if (line.hasOption("cb")) {
             CopybaraGenerator copybaraGenerator = new CopybaraGenerator();
@@ -93,7 +88,16 @@ public class WineryCli {
                 Path file = Paths.get(outfile);
                 copybaraGenerator.generateCopybaraConfigFile(file);
             }
-        } else if (line.hasOption("s")) {
+            return;
+        }
+
+        if (repository instanceof FilebasedRepository) {
+            System.out.println("Using repository path " + ((FilebasedRepository) repository).getRepositoryRoot() + "...");
+        } else {
+            System.out.println("Using non-filebased repository");
+        }
+
+        if (line.hasOption("s")) {
             startServer();
         } else {
             doConsistencyCheck(line, repository);
