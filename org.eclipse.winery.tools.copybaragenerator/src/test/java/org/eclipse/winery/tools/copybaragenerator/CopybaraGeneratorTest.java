@@ -28,7 +28,7 @@ class CopybaraGeneratorTest extends TestWithGitBackedRepository {
         this.setRevisionTo("4b218e6");
         CopybaraGenerator copybaraGenerator = new CopybaraGenerator();
         String config = copybaraGenerator.generateCopybaraConfigFile();
-        assertEquals("urlOrigin = \"git@github.com:OpenTOSCA/tosca-definitions-internal.git\"\n" +
+        assertEquals("urlOrigin = \"https://github.com/OpenTOSCA/tosca-definitions-internal.git\"\n" +
             "urlDestination = \"file:///tmp/copybara/tosca-definitions-public\"\n" +
             "core.workflow(\n" +
             "    name = \"default\",\n" +

@@ -80,7 +80,7 @@ public class CopybaraGenerator {
 
     public String generateCopybaraConfigFile() {
         StringJoiner copybaraConfig = new StringJoiner("\n");
-        copybaraConfig.add("urlOrigin = \"git@github.com:OpenTOSCA/tosca-definitions-internal.git\"");
+        copybaraConfig.add("urlOrigin = \"https://github.com/OpenTOSCA/tosca-definitions-internal.git\"");
         copybaraConfig.add("urlDestination = \"file:///tmp/copybara/tosca-definitions-public\"");
         copybaraConfig.add("core.workflow(");
         copybaraConfig.add("    name = \"default\",");
