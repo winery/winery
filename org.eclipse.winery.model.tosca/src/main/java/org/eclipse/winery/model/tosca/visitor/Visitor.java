@@ -60,6 +60,9 @@ import org.eclipse.jdt.annotation.NonNull;
  *
  * This class intentionally defines all default methods not as abstract to keep the children simple and to avoid unnecessary lines of code.
  *
+ * For more information on options on implementing visitors see
+ * <a href="https://dspace.library.uu.nl/handle/1874/2558">Bravenboer, M., & Visser, E. (2001). Guiding visitors: Separating navigation from computation.</a>
+ *
  * TODO: Implement it for all DefinitionsChildren (NodeType, NodeTypeImplementation, ...)
  */
 public abstract class Visitor {
