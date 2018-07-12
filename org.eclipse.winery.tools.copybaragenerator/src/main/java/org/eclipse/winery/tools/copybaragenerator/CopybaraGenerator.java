@@ -74,7 +74,7 @@ public class CopybaraGenerator {
                 }
             })
             .map(id -> BackendUtils.getPathInsideRepo(id))
-            .collect(Collectors.joining("**\",\n        \"", "origin_files = glob([\"", "**\"]),"));
+            .collect(Collectors.joining("**\",\n        \"", "origin_files = glob([\"README.md\", \"LICENSE\", \"", "**\"]),"));
     }
 
     public String generateCopybaraConfigFile() {
