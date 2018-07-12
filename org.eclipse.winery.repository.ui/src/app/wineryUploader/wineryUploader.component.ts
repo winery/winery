@@ -16,7 +16,6 @@ import {isNullOrUndefined} from 'util';
 import {WineryUploaderService} from './wineryUploader.service';
 import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
 import {FileUploader} from 'ng2-file-upload';
-import {InstanceService} from '../instance/instance.service';
 
 /**
  * This component provides a modal popup with a <code>title</code> and optional progress bar <code>showProgress</code>
@@ -115,6 +114,11 @@ export class WineryUploaderComponent implements OnInit, OnChanges {
             this.service.uploadUrl = uploadTo;
 
         }
+
+        this.service.uploader.onBeforeUploadItem = (item) => {
+            item.withCredentials = false;
+        };
+        
         this.service.uploader.onCompleteItem = (item: any, response: string, status: number, headers: any) => {
             this.loading = false;
 
