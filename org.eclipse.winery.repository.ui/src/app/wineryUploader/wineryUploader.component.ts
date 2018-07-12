@@ -11,11 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
-import {isNullOrUndefined} from 'util';
-import {WineryUploaderService} from './wineryUploader.service';
-import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
-import {FileUploader} from 'ng2-file-upload';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { isNullOrUndefined } from 'util';
+import { WineryUploaderService } from './wineryUploader.service';
+import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
+import { FileUploader } from 'ng2-file-upload';
 
 /**
  * This component provides a modal popup with a <code>title</code> and optional progress bar <code>showProgress</code>
@@ -118,7 +118,7 @@ export class WineryUploaderComponent implements OnInit, OnChanges {
         this.service.uploader.onBeforeUploadItem = (item) => {
             item.withCredentials = false;
         };
-        
+
         this.service.uploader.onCompleteItem = (item: any, response: string, status: number, headers: any) => {
             this.loading = false;
 
@@ -139,7 +139,7 @@ export class WineryUploaderComponent implements OnInit, OnChanges {
                 this.onError.emit(new Error('Error while uploading file ' + item.file.name));
             }
 
-            return {item, response, status, headers};
+            return { item, response, status, headers };
         };
 
         this.service.uploader.onCompleteAll = () => {
