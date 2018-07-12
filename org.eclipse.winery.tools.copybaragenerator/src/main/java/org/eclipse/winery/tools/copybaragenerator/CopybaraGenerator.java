@@ -16,6 +16,7 @@ package org.eclipse.winery.tools.copybaragenerator;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.SortedSet;
@@ -101,7 +102,7 @@ public class CopybaraGenerator {
 
     public void generateCopybaraConfigFile(Path targetFile) throws IOException {
         String copyBaraConfig = generateCopybaraConfigFile();
-        Files.write(targetFile, copyBaraConfig.getBytes());
+        Files.write(targetFile, copyBaraConfig.getBytes(StandardCharsets.UTF_8));
     }
 
 }
