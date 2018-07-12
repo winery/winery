@@ -58,6 +58,10 @@ export class TopologyTemplateComponent implements OnInit {
                 + '&elementPath=' + elementPath;
         }
 
+        if (!this.sharedData.currentVersion.editable) {
+            editorConfig += '&isReadonly=true';
+        }
+
         this.editorUrl = topologyModelerURL + editorConfig;
         this.oldEditorUrl = oldTopologyModelerURL + editorConfig;
     }

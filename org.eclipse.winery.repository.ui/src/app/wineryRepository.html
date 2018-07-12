@@ -12,7 +12,8 @@
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<div id="mainContainer" class="notoverflown" (click)="onClick()">
+<!--<div id="mainContainer" class="notoverflown" (click)="onClick()">-->
+<div id="mainContainer" class="notoverflown">
     <winery-header></winery-header>
     <div *ngIf="backendState === backendAvailabilityStates.Available" id="mainContent">
         <router-outlet *ngIf="!loading"></router-outlet>
@@ -23,4 +24,4 @@
         <button class="btn btn-primary" (click)="refresh();">Retry</button>
     </div>
 </div>
-
+<!--<winery-gitlog *ngIf="backendState" #gitLog></winery-gitlog>-->
