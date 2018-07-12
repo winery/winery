@@ -21,6 +21,8 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -76,7 +78,8 @@ public class ConsistencyChecker {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsistencyChecker.class);
     private static final String ARTEFACT_BE = "artefact";
     private final ConsistencyCheckerConfiguration configuration;
-    private final ConsistencyCheckerProgressListener progressListener;
+    private ConsistencyCheckerProgressListener progressListener;
+    private final List<DefinitionsChildId> allDefinitionsChildIds;
 
     // Updated throughout the check
     private final ConsistencyErrorCollector errorCollector = new ConsistencyErrorCollector();
@@ -88,23 +91,45 @@ public class ConsistencyChecker {
 
     public ConsistencyChecker(@NonNull ConsistencyCheckerConfiguration configuration,
                               @NonNull ConsistencyCheckerProgressListener consistencyCheckerProgressListener) {
-        this.configuration = configuration;
+        this.configuration = Objects.requireNonNull(configuration);
+        this.progressListener = Objects.requireNonNull(consistencyCheckerProgressListener);
+        if (configuration.getRepository() == null) {
+            LOGGER.trace("Running in testing mode");
+            this.allDefinitionsChildIds = Collections.emptyList();
+        } else {
+            LOGGER.trace("Running in normal mode");
+            Set<DefinitionsChildId> allDefinitionsChildIds = configuration.getRepository().getAllDefinitionsChildIds();
+            if (configuration.isServiceTemplatesOnly()) {
+                allDefinitionsChildIds = allDefinitionsChildIds.stream().filter(id -> id instanceof ServiceTemplateId).collect(Collectors.toSet());
+            }
+            if (configuration.isTestMode()) {
+                // we need a predictable ordering
+                // in the current implementation, the set is sorted --> just convert it to a list
+                this.allDefinitionsChildIds = allDefinitionsChildIds.stream().collect(Collectors.toList());
+            } else {
+                // Random sorting of definitions ids to have the progressbar running at the same speed (and not being VERY slow at the end)
+                this.allDefinitionsChildIds = allDefinitionsChildIds.stream().sorted(Comparator.comparingInt(DefinitionsChildId::hashCode)).collect(Collectors.toList());
+            }
+        }
+    }
+
+    public void setConsistencyCheckerProgressListener(ConsistencyCheckerProgressListener consistencyCheckerProgressListener) {
         this.progressListener = consistencyCheckerProgressListener;
+    }
+
+    public int numberOfDefinitionsToCheck() {
+        return allDefinitionsChildIds.size();
     }
 
     /**
      * This method may be called only once during the lifecycle of this object
      */
     public void checkCorruption() {
-        Set<DefinitionsChildId> allDefinitionsChildIds = configuration.getRepository().getAllDefinitionsChildIds();
-        if (configuration.isServiceTemplatesOnly()) {
-            allDefinitionsChildIds = allDefinitionsChildIds.stream().filter(id -> id instanceof ServiceTemplateId).collect(Collectors.toSet());
-        }
         if (configuration.getVerbosity().contains(ConsistencyCheckerVerbosity.OUTPUT_NUMBER_OF_TOSCA_COMPONENTS)) {
-            System.out.format("Number of TOSCA definitions to check: %d\n", allDefinitionsChildIds.size());
+            System.out.format("Number of TOSCA definitions to check: %d\n", numberOfDefinitionsToCheck());
         }
 
-        checkAllDefinitions(allDefinitionsChildIds);
+        checkAllDefinitions();
 
         // some console output cleanup
         if (configuration.getVerbosity().contains(ConsistencyCheckerVerbosity.OUTPUT_ERRORS)
@@ -117,17 +142,29 @@ public class ConsistencyChecker {
      * Checks whether a README.md and a LICENSE file exists for the given definitions child id.
      */
     private void checkDocumentation(DefinitionsChildId id) {
-        checkFileExistence(id, "README.md");
-        checkFileExistence(id, "LICENSE");
+        checkFileExistenceAndSize(id, "README.md");
+        checkFileExistenceAndSize(id, "LICENSE");
     }
 
     /**
-     * Checks whether the given filename exists within the given defintions child id
+     * Checks whether the given filename exists within the given defintions child id and if the size is above a threshold (currently 100 bytes)
      */
-    private void checkFileExistence(DefinitionsChildId id, String filename) {
+    private void checkFileExistenceAndSize(DefinitionsChildId id, String filename) {
         RepositoryFileReference repositoryFileReference = new RepositoryFileReference(id, filename);
         if (!configuration.getRepository().exists(repositoryFileReference)) {
             printAndAddWarning(id, filename + " does not exist.");
+            return;
+        }
+        long size;
+        try {
+            size = configuration.getRepository().getSize(repositoryFileReference);
+        } catch (IOException e) {
+            LOGGER.debug("Could not determine size for {}", id.toReadableString(), e);
+            printAndAddError(id, "Could not determine size, because " + e.toString());
+            return;
+        }
+        if (size < 100) {
+            printAndAddWarning(id, filename + " has size of less then 100 bytes.");
         }
     }
 
@@ -426,7 +463,7 @@ public class ConsistencyChecker {
         }
     }
 
-    private void checkAllDefinitions(Set<DefinitionsChildId> allDefinitionsChildIds) {
+    private void checkAllDefinitions() {
         final Path tempCsar;
 
         try {
@@ -438,8 +475,9 @@ public class ConsistencyChecker {
         }
 
         float elementsChecked = 0;
+        int size = allDefinitionsChildIds.size();
         for (DefinitionsChildId id : allDefinitionsChildIds) {
-            float progress = ++elementsChecked / allDefinitionsChildIds.size();
+            float progress = ++elementsChecked / size;
             if (configuration.getVerbosity().contains(ConsistencyCheckerVerbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
                 progressListener.updateProgress(progress, id.toReadableString());
             } else {

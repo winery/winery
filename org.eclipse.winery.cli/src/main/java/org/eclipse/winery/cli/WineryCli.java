@@ -115,23 +115,25 @@ public class WineryCli {
         boolean checkDocumentation = line.hasOption("cd");
         ConsistencyCheckerConfiguration configuration = new ConsistencyCheckerConfiguration(serviceTemplatesOnly, checkDocumentation, verbosity, repository);
 
-        ProgressBar progressBar = new ProgressBar("Check", 100, ProgressBarStyle.ASCII);
-        progressBar.start();
-        final ConsistencyChecker consistencyChecker = new ConsistencyChecker(configuration, new ConsistencyCheckerProgressListener() {
+        final ConsistencyChecker consistencyChecker = new ConsistencyChecker(configuration);
+        int numberOfDefinitionsToCheck = consistencyChecker.numberOfDefinitionsToCheck();
+        ProgressBar progressBar = new ProgressBar("Check", numberOfDefinitionsToCheck, ProgressBarStyle.ASCII);
+        consistencyChecker.setConsistencyCheckerProgressListener(new ConsistencyCheckerProgressListener() {
             @Override
             public void updateProgress(float progress) {
-                progressBar.stepTo((long) (progress * 100));
+                progressBar.stepTo((long) (progress * numberOfDefinitionsToCheck));
             }
 
             @Override
             public void updateProgress(float progress, String checkingDefinition) {
                 progressBar.setExtraMessage("Now checking " + checkingDefinition);
-                progressBar.stepTo((long) (progress * 100));
+                progressBar.stepTo((long) (progress * numberOfDefinitionsToCheck));
             }
         });
+        progressBar.start();
         consistencyChecker.checkCorruption();
-        ConsistencyErrorCollector errors = consistencyChecker.getErrorCollector();
         progressBar.stop();
+        ConsistencyErrorCollector errors = consistencyChecker.getErrorCollector();
 
         System.out.println();
         if (errors.getErrorList().isEmpty()) {
