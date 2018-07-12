@@ -28,7 +28,7 @@ class CopybaraGeneratorTest extends TestWithGitBackedRepository {
         this.setRevisionTo("4b218e6");
         CopybaraGenerator copybaraGenerator = new CopybaraGenerator();
         String config = copybaraGenerator.generateCopybaraConfigFile();
-        assertEquals("urlOrigin = \"git@github.com:OpenTOSCA/tosca-definitions-internal.git\"\n" +
+        assertEquals("urlOrigin = \"https://github.com/OpenTOSCA/tosca-definitions-internal.git\"\n" +
             "urlDestination = \"file:///tmp/copybara/tosca-definitions-public\"\n" +
             "core.workflow(\n" +
             "    name = \"default\",\n" +
@@ -42,7 +42,7 @@ class CopybaraGeneratorTest extends TestWithGitBackedRepository {
             "        push = \"master\",\n" +
             "    ),\n" +
             "    authoring = authoring.pass_thru(\"OpenTOSCA Bot <opentosca@iaas.uni-stuttgart.de>\"),\n" +
-            "    origin_files = glob([\"artifacttemplates/http%3A%2F%2Fplain.winery.opentosca.org%2Fartifacttemplates/ArtifactTemplateWithFilesAndSources-ArtifactTypeWithoutProperties/**\",\n" +
+            "    origin_files = glob([\"README.md\", \"LICENSE\", \"artifacttemplates/http%3A%2F%2Fplain.winery.opentosca.org%2Fartifacttemplates/ArtifactTemplateWithFilesAndSources-ArtifactTypeWithoutProperties/**\",\n" +
             "        \"artifacttemplates/http%3A%2F%2Fplain.winery.opentosca.org%2Fartifacttemplates/ArtifactTemplateWithoutAnyFiles-ArtifactTypeWithoutProperties/**\"]),\n" +
             "    destination_files = glob([\"**\"], exclude = [\"README_INTERNAL.md\"]),\n" +
             ")", config);
@@ -54,7 +54,7 @@ class CopybaraGeneratorTest extends TestWithGitBackedRepository {
         this.setRevisionTo("4b218e6");
         CopybaraGenerator copybaraGenerator = new CopybaraGenerator();
         String config = copybaraGenerator.generateOriginFilesConfig();
-        assertEquals("origin_files = glob([\"artifacttemplates/http%3A%2F%2Fplain.winery.opentosca.org%2Fartifacttemplates/ArtifactTemplateWithFilesAndSources-ArtifactTypeWithoutProperties/**\",\n" +
+        assertEquals("origin_files = glob([\"README.md\", \"LICENSE\", \"artifacttemplates/http%3A%2F%2Fplain.winery.opentosca.org%2Fartifacttemplates/ArtifactTemplateWithFilesAndSources-ArtifactTypeWithoutProperties/**\",\n" +
             "        \"artifacttemplates/http%3A%2F%2Fplain.winery.opentosca.org%2Fartifacttemplates/ArtifactTemplateWithoutAnyFiles-ArtifactTypeWithoutProperties/**\"]),", config);
     }
 }

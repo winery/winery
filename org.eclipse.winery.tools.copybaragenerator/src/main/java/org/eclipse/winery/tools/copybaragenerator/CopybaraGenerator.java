@@ -16,6 +16,7 @@ package org.eclipse.winery.tools.copybaragenerator;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.SortedSet;
@@ -74,12 +75,12 @@ public class CopybaraGenerator {
                 }
             })
             .map(id -> BackendUtils.getPathInsideRepo(id))
-            .collect(Collectors.joining("**\",\n        \"", "origin_files = glob([\"", "**\"]),"));
+            .collect(Collectors.joining("**\",\n        \"", "origin_files = glob([\"README.md\", \"LICENSE\", \"", "**\"]),"));
     }
 
     public String generateCopybaraConfigFile() {
         StringJoiner copybaraConfig = new StringJoiner("\n");
-        copybaraConfig.add("urlOrigin = \"git@github.com:OpenTOSCA/tosca-definitions-internal.git\"");
+        copybaraConfig.add("urlOrigin = \"https://github.com/OpenTOSCA/tosca-definitions-internal.git\"");
         copybaraConfig.add("urlDestination = \"file:///tmp/copybara/tosca-definitions-public\"");
         copybaraConfig.add("core.workflow(");
         copybaraConfig.add("    name = \"default\",");
@@ -101,7 +102,7 @@ public class CopybaraGenerator {
 
     public void generateCopybaraConfigFile(Path targetFile) throws IOException {
         String copyBaraConfig = generateCopybaraConfigFile();
-        Files.write(targetFile, copyBaraConfig.getBytes());
+        Files.write(targetFile, copyBaraConfig.getBytes(StandardCharsets.UTF_8));
     }
 
 }

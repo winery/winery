@@ -51,7 +51,8 @@ public class WineryCli {
         Option serviceTemplatesOnlyOption = new Option("so", "servicetemplatesonly", false, "checks service templates instead of the whole repository");
         Option checkDocumentationOption = new Option("cd", "checkdocumentation", false, "check existence of README.md and LICENSE. Default: No check");
         Option verboseOption = new Option("v", "verbose", false, "be verbose: Output the checked elements");
-        Option generateCopybaraConfigOption = new Option("cb", "generatecopybaraconfig", false, "Generates a configuration for Copybara.");
+        Option generateCopybaraConfigOption = new Option("cb", "generatecopybaraconfig", true, "Generates a configuration for Copybara.");
+        generateCopybaraConfigOption.setOptionalArg(true);
         Option helpOption = new Option("h", "help", false, "prints this help");
 
         Options options = new Options();
@@ -77,11 +78,6 @@ public class WineryCli {
         } else {
             repository = RepositoryFactory.getRepository();
         }
-        if (repository instanceof FilebasedRepository) {
-            System.out.println("Using repository path " + ((FilebasedRepository) repository).getRepositoryRoot() + "...");
-        } else {
-            System.out.println("Using non-filebased repository");
-        }
 
         if (line.hasOption("cb")) {
             CopybaraGenerator copybaraGenerator = new CopybaraGenerator();
@@ -93,7 +89,16 @@ public class WineryCli {
                 Path file = Paths.get(outfile);
                 copybaraGenerator.generateCopybaraConfigFile(file);
             }
-        } else if (line.hasOption("s")) {
+            return;
+        }
+
+        if (repository instanceof FilebasedRepository) {
+            System.out.println("Using repository path " + ((FilebasedRepository) repository).getRepositoryRoot() + "...");
+        } else {
+            System.out.println("Using non-filebased repository");
+        }
+
+        if (line.hasOption("s")) {
             startServer();
         } else {
             doConsistencyCheck(line, repository);
