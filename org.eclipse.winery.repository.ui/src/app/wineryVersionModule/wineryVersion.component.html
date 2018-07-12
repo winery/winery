@@ -56,7 +56,7 @@
                         What kind of version do you want to add?
                     </h4>
                     <div class="form-group">
-                        <input id="componentVersion" type="radio" name="versionToUpdate"
+                        <input id="componentVersion" type="radio" name="versionType" [checked]="currentSelected === versionTypes.ComponentVersion"
                                (click)="componentVersionSelected()">
                         <label for="componentVersion" (click)="componentVersionSelected()">Component version</label>
                         <span class="versionExample">
@@ -66,7 +66,8 @@
                             </code>
                         </span>
                         <br>
-                        <input id="wineryVersion" type="radio" name="versionType" (click)="wineryVersionSelected()">
+                        <input id="wineryVersion" type="radio" name="versionType" [checked]="currentSelected === versionTypes.WineryVersion"
+                               (click)="wineryVersionSelected()">
                         <label for="wineryVersion" (click)="wineryVersionSelected()">Winery version</label>
                         <span class="versionExample">
                             creates
@@ -75,7 +76,8 @@
                             </code>
                         </span>
                         <br>
-                        <input id="wipVersion" type="radio" name="versionType" (click)="wipVersionSelected()">
+                        <input id="wipVersion" type="radio" name="versionType" [checked]="currentSelected === versionTypes.WipVersion"
+                               (click)="wipVersionSelected()">
                         <label for="wipVersion" (click)="wipVersionSelected()">WIP version</label>
                         <span class="versionExample">
                             creates
