@@ -7,7 +7,7 @@ For more information on TOSCA see [our TOSCA information page](../tosca/).
 
 - [overview](overview.md) - overview on Winery
 - [FAQ](FAQ.md) - frequently asked questions
-- [Quickstart](quickstart.md)
+- [Quickstart](quickstart.md) - shows how to model a node type and a topology in Winery
 - [Modeling Guide](modeling-guide.md) - Guide how to use Winery
 
 ## Features
