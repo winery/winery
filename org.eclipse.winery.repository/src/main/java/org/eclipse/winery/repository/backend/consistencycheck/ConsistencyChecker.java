@@ -289,6 +289,10 @@ public class ConsistencyChecker {
                 LOGGER.debug("Illegal State Exception during reading of id {}", id.toReadableString(), e);
                 printAndAddError(id, "Reading error " + e.getMessage());
                 return;
+            } catch (ClassCastException e) {
+                LOGGER.error("Something wrong in the consistency between Ids and the TOSCA data model. See http://eclipse.github.io/winery/dev/id-system.html for more information on the ID system.");
+                printAndAddError(id, "Critical error at analysis: " + e.getMessage());
+                return;
             }
             if (Objects.isNull(entityTemplate.getType())) {
                 // no printing necessary; type consistency is checked at other places
@@ -400,6 +404,10 @@ public class ConsistencyChecker {
         if (uriStr.contains(ARTEFACT_BE)) {
             printAndAddError(id, "artifact is spelled with i in American English, not artefact as in British English");
         }
+        // We could just check OpenTOSCA namespace rule examples. However, this would be too strict
+        // Here, the idea is to check whether a string of another (!) id class appers in the namespace
+        // If this is the case, the namespace is not consistent
+        // For instance, a node type residing in the namespace: http://servicetemplates.example.org should not exist.
         boolean namespaceUriContainsDifferentType = DefinitionsChildId.ALL_TOSCA_COMPONENT_ID_CLASSES.stream()
             .filter(definitionsChildIdClass -> !definitionsChildIdClass.isAssignableFrom(id.getClass()))
             // we have the issue that nodetypeimplementation also contains nodetype
@@ -410,7 +418,12 @@ public class ConsistencyChecker {
             })
             .anyMatch(definitionsChildName -> uriStr.contains(definitionsChildName));
         if (namespaceUriContainsDifferentType) {
-            printAndAddError(id, "Namespace URI contains tosca definitions name from other type. E.g., Namespace is ...servicetemplates..., but the type is an artifact template");
+            if ((id instanceof ServiceTemplateId) && (id.getNamespace().getDecoded().contains("compliance"))) {
+                // special case, becaue TComplianceRule models a service template, but Compliance Rules are treated as Service Template during modeling
+                // example: class org.eclipse.winery.common.ids.definitions.ServiceTemplateId / {http://www.compliance.opentosca.org/compliancerules}Satisfied_Compliance_Rule_Example_w1
+            } else {
+                printAndAddError(id, "Namespace URI contains tosca definitions name from other type. E.g., Namespace is ...servicetemplates..., but the type is an artifact template");
+            }
         }
     }
 
