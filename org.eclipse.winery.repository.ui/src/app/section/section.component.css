@@ -74,3 +74,21 @@ pagination-controls {
     padding-top: 0.5rem;
     grid-column: 3 / span 1;
 }
+
+.red {
+    color: red;
+}
+
+.green {
+    color: darkgreen;
+}
+
+.scroll {
+    overflow: scroll;
+    width: 550px;
+    max-height: 600px;
+}
+
+.noWrap {
+    white-space: nowrap;
+}

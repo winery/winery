@@ -218,13 +218,13 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
         allDefinitionsChildIds = repository.getAllDefinitionsChildIds(idClass);
 
         if (Objects.nonNull(grouped)) {
-            return getGroupedListOfIds(allDefinitionsChildIds, full);
+            return getGroupedListOfIds(allDefinitionsChildIds, full, includeVersions);
         } else {
             return getListOfIds(allDefinitionsChildIds, supportsNameAttribute, full, includeVersions);
         }
     }
 
-    private List<NamespaceAndDefinedLocalNamesForAngular> getGroupedListOfIds(SortedSet<? extends DefinitionsChildId> allDefinitionsChildIds, String full) {
+    private List<NamespaceAndDefinedLocalNamesForAngular> getGroupedListOfIds(SortedSet<? extends DefinitionsChildId> allDefinitionsChildIds, String full, String includeVersions) {
         Map<Namespace, ? extends List<? extends DefinitionsChildId>> groupedIds = allDefinitionsChildIds.stream().collect(Collectors.groupingBy(DefinitionsChildId::getNamespace));
         return groupedIds.keySet().stream()
             .sorted()
@@ -235,12 +235,18 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
                         if (Objects.nonNull(full)) {
                             fullDefinition = getFullComponentData(definition);
                         }
-                        return new LocalNameForAngular(
-                            definition.getQName().toString(),
-                            definition.getXmlId().toString(),
-                            fullDefinition
-                        );
+
+                        String qName = definition.getQName().toString();
+                        String id = definition.getXmlId().toString();
+
+                        if ("componentVersionOnly".equals(includeVersions)) {
+                            qName = VersionUtils.getQNameWithComponentVersionOnly(definition);
+                            id = qName.split("}")[1];
+                        }
+
+                        return new LocalNameForAngular(qName, id, fullDefinition);
                     })
+                    .distinct()
                     .collect(Collectors.toList());
 
                 return new NamespaceAndDefinedLocalNamesForAngular(namespace, names);

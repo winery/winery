@@ -127,7 +127,7 @@ export class WineryUploaderComponent implements OnInit, OnChanges {
                 if (!isNullOrUndefined(this.modalRef)) {
                     this.modalRef.hide();
                 }
-                this.onSuccess.emit();
+                this.onSuccess.emit(response);
             } else {
                 if (response) {
                     this.error = true;
@@ -136,7 +136,7 @@ export class WineryUploaderComponent implements OnInit, OnChanges {
                 } else {
                     this.notify.error('Error while uploading file ' + item.file.name);
                 }
-                this.onError.emit(new Error('Error while uploading file ' + item.file.name));
+                this.onError.emit(response);
             }
 
             return { item, response, status, headers };

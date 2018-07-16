@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,6 +12,8 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.model.csar.toscametafile;
+
+import org.eclipse.winery.provenance.model.ProvenanceManifestFields;
 
 /**
  * Predefined attribute names and values of a TOSCA meta file
@@ -27,9 +29,9 @@ public class TOSCAMetaFileAttributes {
     final public static String ENTRY_DEFINITIONS = "Entry-Definitions";
     final public static String TOPOLOGY = "Topology";
     final public static String DESCRIPTION = "Description";
+    final public static String HASH = ProvenanceManifestFields.HASH;
+    final public static String NAME = ProvenanceManifestFields.NAME;
 
     // of blocks > 0 (file blocks)
-    final public static String NAME = "Name";
     final public static String CONTENT_TYPE = "Content-Type";
-
 }

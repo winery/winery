@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2015-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,26 +13,30 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.API;
 
-import io.swagger.annotations.Api;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.rest.datatypes.select2.Select2DataWithOptGroups;
-import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.provenance.exceptions.ProvenanceException;
+import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.rest.datatypes.select2.Select2DataWithOptGroups;
+import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
+
+import io.swagger.annotations.Api;
+import org.apache.commons.lang3.StringUtils;
 
 @Api(tags = "API")
 public class APIResource {
@@ -106,5 +110,10 @@ public class APIResource {
             res.add(qName.getNamespaceURI(), qName.toString(), qName.getLocalPart());
         }
         return Response.ok().entity(res.asSortedSet()).build();
+    }
+
+    @Path("provenance/{provenanceId}")
+    public ProvenanceResource getProvenance(@PathParam("provenanceId") String provenanceId) throws ProvenanceException {
+        return new ProvenanceResource(provenanceId);
     }
 }

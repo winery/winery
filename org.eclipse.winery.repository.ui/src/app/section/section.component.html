@@ -78,11 +78,16 @@
     <winery-modal-body>
         <winery-uploader [modalRef]="addCsarModal" [uploadUrl]="fileUploadUrl" #fileUploader
                          [isEditable]="true"
-                         (onSuccess)="getSectionsData()"></winery-uploader>
+                         (onError)="onUploadError($event)"
+                         (onSuccess)="onUploadSuccess($event)"></winery-uploader>
         <div class="checkbox">
             <label>
-                <input [(ngModel)]="overwriteValue" (change)="overwriteValueChanged()" type="checkbox" value="">
+                <input [(ngModel)]="overwriteValue" (change)="importOptionsChanged()" type="checkbox" value="">
                 Overwrite existing content
+            </label>
+            <label>
+                <input [(ngModel)]="validateInput" (change)="importOptionsChanged()" type="checkbox" value="">
+                Validate content (only available if the Ethereum blockchian is configured)
             </label>
         </div>
     </winery-modal-body>
@@ -100,5 +105,31 @@
     </winery-modal-body>
     <winery-modal-footer [showDefaultButtons]="false">
         <button type="button" class="btn btn-default" (click)="addYamlModal.hide()">Cancel</button>
+    </winery-modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #validationModal="bs-modal" [modalRef]="validationModal">
+    <winery-modal-header [title]="'Validation result'"></winery-modal-header>
+    <winery-modal-body>
+        <div *ngIf="importMetadata"class="scroll">
+            <ul>
+                <li *ngFor="let file of importMetadata.verificationMap" class="noWrap">
+                    <span [class]="getVerificationClass(file.value)">{{ file.value }}</span>
+                    <a class="pointer" (click)="getProvenance(file)">{{ file.key }}</a>
+                    <ul *ngIf="provenanceHistory[file.key]">
+                        <li *ngFor="let item of provenanceHistory[file.key]">
+                            Author: <b>{{ item.name }}</b> ({{ item.stateSetterAddress }})<br>
+                            is authorized: <span [class]="getAuthorizedClass(item.authorized)">{{ item.authorized }}</span><br>
+                            Transaction: {{ item.transactionHash }}<br>
+                            <span *ngIf="item.fileHash">File hash: {{ item.fileHash }}<br></span>
+                            Timestamp: {{ item.unixTimestamp * 1000 | date:'yyyy-MM-dd HH:mm:ss' }}<br>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </winery-modal-body>
+    <winery-modal-footer [showDefaultButtons]="false">
+        <button type="button" class="btn btn-default" (click)="validationModal.hide()">Close</button>
     </winery-modal-footer>
 </winery-modal>

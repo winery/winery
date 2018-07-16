@@ -1163,7 +1163,7 @@ public class BackendUtils {
 
     /**
      * Synchronizes the known plans with the data in the XML. When there is a stored file, but no known entry in the
-     * XML, we guess "BPEL" as language and "build plan" as type.
+     * XML, we guess "BPEL" as language and "buildProvenanceSmartContract plan" as type.
      */
     public static void synchronizeReferences(ServiceTemplateId id) throws IOException {
         final IRepository repository = RepositoryFactory.getRepository();

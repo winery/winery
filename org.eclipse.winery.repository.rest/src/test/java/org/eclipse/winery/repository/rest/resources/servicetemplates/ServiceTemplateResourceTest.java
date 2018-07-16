@@ -15,6 +15,7 @@ package org.eclipse.winery.repository.rest.resources.servicetemplates;
 
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -124,5 +125,11 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
         this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithTwoNodeTemplates_w1-wip2/" +
                 "?compareTo=ServiceTemplateWithTwoNodeTemplates_w1-wip1",
             "servicetemplates/difference.json");
+    }
+
+    @Test
+    public void getListWithComponentVersionsOnly() throws Exception {
+        this.setRevisionTo("20f6d0afd4395ab83f059cb5fabbb08218c9fcbd");
+        this.assertGet("servicetemplates?grouped=angularSelect&includeVersions=componentVersionOnly", "servicetemplates/listWithComponentVersionsOnly.json");
     }
 }

@@ -11,10 +11,10 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {isNullOrUndefined} from 'util';
-import {ToscaTypes} from './enums';
-import {backendBaseURL} from '../configuration';
-import {Utils} from '../wineryUtils/utils';
+import { isNullOrUndefined } from 'util';
+import { ToscaTypes } from './enums';
+import { backendBaseURL } from '../configuration';
+import { Utils } from '../wineryUtils/utils';
 
 export class ToscaComponent {
 
@@ -24,6 +24,7 @@ export class ToscaComponent {
     readonly xmlPath: string;
     readonly yamlPath: string;
     readonly xmlCsarPath: string;
+    readonly provenanceCsarPath: string;
     readonly yamlCsarPath: string;
 
     constructor(public readonly toscaType: ToscaTypes,
@@ -35,10 +36,11 @@ export class ToscaComponent {
             this.path += '/' + encodeURIComponent(encodeURIComponent(this.namespace));
             if (!isNullOrUndefined(this.localName)) {
                 this.path += '/' + this.localName;
-                this.backendPath =  backendBaseURL + this.path;
+                this.backendPath = backendBaseURL + this.path;
                 this.xmlPath = this.backendPath + '/?xml';
                 this.yamlPath = this.backendPath + '/?yaml';
                 this.xmlCsarPath = this.backendPath + '/?csar';
+                this.provenanceCsarPath = this.xmlCsarPath + '&addToProvenance';
                 this.yamlCsarPath = this.backendPath + '/?yaml&csar';
             }
         }

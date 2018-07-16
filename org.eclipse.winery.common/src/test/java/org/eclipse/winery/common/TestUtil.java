@@ -47,4 +47,11 @@ public class TestUtil {
     public void testNCNameFromNCName() {
         Assert.assertEquals("NCName", Util.makeNCName("NCName"));
     }
+
+    @Test
+    public void testGetChecksum() throws Exception {
+        String text = "my super content of any file which will be hashed using a SHA-256 hash.";
+        Assert.assertEquals("c0af55785d21197a9fe4c5e9435fa77bb763f386810909e97f646eba7c827df7",
+            HashingUtil.getChecksum(text.getBytes(), "SHA-256"));
+    }
 }
