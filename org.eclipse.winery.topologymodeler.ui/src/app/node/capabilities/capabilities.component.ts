@@ -29,8 +29,10 @@ import { CapabilityModel } from '../../models/capabilityModel';
  * This Handles Information about the node capabilities
  */
 export class CapabilitiesComponent implements OnInit, OnChanges, OnDestroy {
+
     @Output() toggleModalHandler: EventEmitter<any>;
     @Input() currentNodeData: any;
+
     capabilities: any[] = [];
     capabilitiesExist: boolean;
     entityTypes: EntityTypesModel;
@@ -73,17 +75,24 @@ export class CapabilitiesComponent implements OnInit, OnChanges, OnDestroy {
     public toggleModal($event) {
         this.currentCapability = null;
         const currentCapId = $event.srcElement.textContent;
-        this.capabilities.some(cap => {
-            if (cap.id === currentCapId) {
-                this.currentCapability = cap;
-                return true;
-            }
-        });
+
+        if (this.capabilities) {
+            this.capabilities.some(cap => {
+                if (cap.id === currentCapId) {
+                    this.currentCapability = cap;
+                    return true;
+                }
+            });
+        } else {
+            this.capabilities = [];
+        }
+
         if ($event.srcElement.innerText === 'Add new') {
             this.currentNodeData.currentCapability = null;
         } else {
             this.currentNodeData.currentCapability = this.currentCapability;
         }
+
         this.toggleModalHandler.emit(this.currentNodeData);
     }
 

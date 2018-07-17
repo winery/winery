@@ -35,7 +35,7 @@
         You may <span style="font-weight:bold;">drop the file<span *ngIf="allowMultipleFiles">s</span></span> here.
     </div>
     <p *ngIf="uploadImmediately">The file<span *ngIf="allowMultipleFiles; else singleFileVerb">s are </span>
-        <ng-template #singleFileVerb> is</ng-template>
+        <ng-template #singleFileVerb> is </ng-template>
         <span style="font-weight:bold;">immediately</span> uploaded without any confirmation.
     </p>
 </ng-template>

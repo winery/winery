@@ -65,6 +65,7 @@ import org.eclipse.winery.repository.GitInfo;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IGenericRepository;
 import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.SelfServiceMetaDataUtils;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.configuration.Environment;
@@ -101,6 +102,7 @@ import static org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileAttribute
 public class CsarExporter {
 
     public static final String PATH_TO_NAMESPACES_PROPERTIES = "winery/Namespaces.properties";
+    public static final String PATH_TO_NAMESPACES_JSON = "winery/Namespaces.json";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CsarExporter.class);
 
@@ -432,11 +434,15 @@ public class CsarExporter {
      * the NamespacesResource
      */
     private void addNamespacePrefixes(IRepository repository, Map<RepositoryFileReference, CsarContentProperties> refMap) throws IOException {
+        // ensure that the namespaces are saved as json
+        NamespaceManager namespaceManager = repository.getNamespaceManager();
         SortedSet<RepositoryFileReference> references = repository.getContainedFiles(new NamespacesId());
 
         references.forEach(repositoryFileReference -> {
-            CsarContentProperties csarContentProperties = new CsarContentProperties(CsarExporter.PATH_TO_NAMESPACES_PROPERTIES);
-            refMap.put(repositoryFileReference, csarContentProperties);
+            if (repositoryFileReference.getFileName().toLowerCase().endsWith(Constants.SUFFIX_JSON)) {
+                CsarContentProperties csarContentProperties = new CsarContentProperties(CsarExporter.PATH_TO_NAMESPACES_JSON);
+                refMap.put(repositoryFileReference, csarContentProperties);
+            }
         });
     }
 

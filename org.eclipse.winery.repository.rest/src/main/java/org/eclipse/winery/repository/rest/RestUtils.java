@@ -71,6 +71,7 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
@@ -604,6 +605,8 @@ public class RestUtils {
 
     public static Response.ResponseBuilder persistWithResponseBuilder(IPersistable res) {
         try {
+            NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
+            namespaceManager.addPermanentNamespace(res.getDefinitions().getTargetNamespace());
             BackendUtils.persist(res.getDefinitions(), res.getRepositoryFileReference(), MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
         } catch (IOException e) {
             LOGGER.debug("Could not persist resource", e);

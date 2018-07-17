@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,14 +14,17 @@
 
 package org.eclipse.winery.repository.rest.resources.apiData;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.VisualAppearanceResource;
 
-import javax.xml.namespace.QName;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class NodeTypesVisualsApiData {
@@ -29,19 +32,25 @@ public class NodeTypesVisualsApiData {
     public String iconUrl;
     public String imageUrl;
     public String color;
+    public boolean pattern;
     public QName nodeTypeId;
 
     public NodeTypesVisualsApiData(VisualAppearanceResource visuals) {
+        IRepository repository = RepositoryFactory.getRepository();
+        NodeTypeId parent = (NodeTypeId) visuals.getId().getParent();
+        TNodeType element = repository.getElement(parent);
+
         this.color = visuals.getBorderColor();
-        this.nodeTypeId = ((NodeTypeId) visuals.getId().getParent()).getQName();
+        this.nodeTypeId = parent.getQName();
+        this.pattern = repository.getNamespaceManager().isPatternNamespace(parent.getNamespace().getDecoded());
 
         RepositoryFileReference iconRef = new RepositoryFileReference(visuals.getId(), Filename.FILENAME_SMALL_ICON);
-        if (RepositoryFactory.getRepository().exists(iconRef)) {
+        if (repository.exists(iconRef)) {
             iconUrl = visuals.getAbsoluteURL() + "16x16";
         }
 
         RepositoryFileReference imageRef = new RepositoryFileReference(visuals.getId(), Filename.FILENAME_BIG_ICON);
-        if (RepositoryFactory.getRepository().exists(imageRef)) {
+        if (repository.exists(imageRef)) {
             imageUrl = visuals.getAbsoluteURL() + "50x50";
         }
     }

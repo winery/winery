@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,8 +12,13 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-export interface NamespaceWithPrefix {
-    prefix: string;
-    namespace: string;
+export class NamespaceProperties {
+    constructor(public namespace: string,
+                public prefix: string,
+                public readableName: string,
+                public upstreamRepository: string,
+                public patternCollection: boolean) {
+
+    }
 }
 

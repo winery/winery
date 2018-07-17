@@ -12,44 +12,39 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
-/*div.container {
-    width: 220px;
-    font-size: small;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-    transition: box-shadow 0.3s cubic-bezier(.25, .8, .25, 1);
-    cursor: pointer;
-    z-index: 501;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-
-    -ms-user-select: none;
-    user-select: none;
-    background-color: rgb(230, 225, 220) !important;
-    border: 1px solid;
-}*/
-
-div.container {
+div.node {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
     z-index: 2;
-    width: 225px;
     font-size: small;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     background: #ffffff;
     cursor: move;
     border: 2px solid black;
-    border-radius: 1em;
     background-image: linear-gradient(to bottom, #FFFFFF 0%, #EBF2F7 100%);
 }
 
-/*div.container:hover {
-    box-shadow: 0 7px 14px rgba(0, 0, 0, 0.25), 0 5px 5px rgba(0, 0, 0, 0.22);
-}*/
+div.nodeTemplate {
+    width: 225px;
+    border-radius: 1em;
+}
 
-div.container:hover {
+div.node:hover {
     box-shadow: 0 7px 14px rgba(0, 0, 0, 0.25), 0 5px 5px rgba(0, 0, 0, 0.22);
+}
+
+div.pattern {
+    border-top-right-radius: 50%;
+    border-bottom-right-radius: 50%;
+    width: 80px;
+    height: 80px;
+}
+
+.patternImage {
+    margin-top: 10px;
+    margin-left: 3px;
 }
 
 img {
@@ -89,21 +84,9 @@ p {
     line-height: 22%
 }
 
-/*div.selected {
-    background: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.30), rgba(255, 255, 255, 0.30) 10px, rgba(255, 255, 255, 0.7) 10px, rgba(255, 255, 255, 0.7) 20px);
-    height: 52px;
-    margin: -1px;
-}
-
-div.unselected {
-    background: linear-gradient(70deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.3) 23%, rgba(222, 222, 222, 0.7) 83%, rgba(222, 222, 222, 0.8) 100%);
-    height: 52px;
-    margin: -1px;
-}*/
 div.selected {
     background: rgb(216, 238, 255);
     background-image: linear-gradient(to bottom, #FFFFFF 0%, #FFD391 100%);
-    border-radius: 12px;
     margin: 0;
 }
 
@@ -118,7 +101,7 @@ div.unselected {
     flex-wrap: wrap;
 }
 
-.container rounded {
+.node rounded {
     pointer-events: auto;
     cursor: pointer;
 }
@@ -169,4 +152,3 @@ button.btn.btn-sm.btn-outline-secondary:hover, button.btn.btn-sm.btn-outline-sec
     border: 1px solid;
     width: 100%;
 }
-

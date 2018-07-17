@@ -17,7 +17,7 @@ import { Visuals } from './ttopology-template';
 /**
  * Internal representation of entity Types
  */
-export interface EntityTypesModel {
+export class EntityTypesModel {
     artifactTemplates: any;
     artifactTypes: any;
     capabilityTypes: any;

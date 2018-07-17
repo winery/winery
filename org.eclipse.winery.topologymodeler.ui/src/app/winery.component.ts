@@ -24,6 +24,7 @@ import { IWineryState } from './redux/store/winery.store';
 import { DifferenceStates, ToscaDiff } from './models/ToscaDiff';
 import { isNullOrUndefined } from 'util';
 import { Utils } from './models/utils';
+import { EntityTypesModel } from './models/entityTypesModel';
 
 /**
  * This is the root component of the topology modeler.
@@ -44,7 +45,7 @@ export class WineryComponent implements OnInit {
     requirementTypes: Array<EntityType> = [];
     groupedNodeTypes: Array<any> = [];
     relationshipTypes: Array<EntityType> = [];
-    entityTypes: any = {};
+    entityTypes: EntityTypesModel;
     hideNavBarState: boolean;
     subscriptions: Array<Subscription> = [];
 
@@ -69,6 +70,7 @@ export class WineryComponent implements OnInit {
      * inside the Redux store of this application.
      */
     ngOnInit() {
+        this.entityTypes = new EntityTypesModel();
         this.backendService.allEntities$.subscribe(JSON => {
             // Grouped NodeTypes
             this.initEntityType(JSON[0], 'groupedNodeTypes');

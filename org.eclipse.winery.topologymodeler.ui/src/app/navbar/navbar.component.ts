@@ -201,8 +201,7 @@ export class NavbarComponent implements OnDestroy {
         });
         // remove the 'Color' field from all nodeTemplates as the REST Api does not recognize it.
         topologySkeleton.nodeTemplates.map(nodeTemplate => {
-            delete nodeTemplate.color;
-            delete nodeTemplate.imageUrl;
+            delete nodeTemplate.visuals;
             delete nodeTemplate.state;
         });
         const topologyToBeSaved = topologySkeleton;
