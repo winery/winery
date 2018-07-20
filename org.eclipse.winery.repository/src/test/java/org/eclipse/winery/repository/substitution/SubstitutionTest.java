@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.repository.substitution;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import java.util.stream.Stream;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.TBoolean;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -92,7 +94,6 @@ class SubstitutionTest {
             mother,
             new TNodeType.Builder(MOTHER)
                 .setDerivedFrom(grandFather)
-                .setAbstract(TBoolean.YES)
                 .build()
         );
         nodeTypes.put(
@@ -109,6 +110,7 @@ class SubstitutionTest {
         );
     }
 
+    // region ########## collectTypeHierarchy ##########
     @Test
     void retrieveTypeHierarchy() {
         Optional<List<Subtypes<TNodeType>>> tNodeTypeSubtypes = substitution.collectTypeHierarchy(nodeTypes, grandFather);
@@ -154,4 +156,29 @@ class SubstitutionTest {
             Arguments.of(grandChild, "expected empty hierarchy for the grandchild")
         );
     }
+    // endregion
+
+    // region ########## collectSubstitutableTemplates ##########
+
+    @Test
+    void getSubstitutableTemplateMap() {
+        List<TNodeTemplate> templates = Arrays.asList(
+            new TNodeTemplate.Builder("id0", stranger).build(),
+            new TNodeTemplate.Builder("id1", parent).build(),
+            new TNodeTemplate.Builder("id2", grandFather).build(),
+            new TNodeTemplate.Builder("id3", aunt).build()
+        );
+
+        Map<TNodeTemplate, List<Subtypes<TNodeType>>> substitutableTemplates = substitution.collectSubstitutableTemplates(templates, nodeTypes);
+
+        assertEquals(2, substitutableTemplates.size());
+        assertTrue(substitutableTemplates.entrySet()
+            .removeIf(entry -> grandFather.equals(entry.getKey().getTypeAsQName()))
+        );
+        assertTrue(substitutableTemplates.entrySet()
+            .removeIf(entry -> parent.equals(entry.getKey().getType()))
+        );
+    }
+
+    // endregion
 }

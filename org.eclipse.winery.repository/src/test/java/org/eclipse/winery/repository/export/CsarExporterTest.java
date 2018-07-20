@@ -141,7 +141,8 @@ public class CsarExporterTest extends TestWithGitBackedRepository {
         exportConfiguration.put(INCLUDE_HASHES.toString(), true);
 
         try (InputStream inputStream = this.createOutputAndInputStream(
-            "origin/plain",
+            // quick fix - should work if eclipse/winery#305 is merged
+            "7c8d8c7057403a07fde90dec1f44f0190ae65ae2",
             new ServiceTemplateId("http://plain.winery.opentosca.org/servicetemplates", "ServiceTemplateWithAllReqCapVariants", false),
             exportConfiguration);
              ZipInputStream zis = new ZipInputStream(inputStream)) {

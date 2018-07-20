@@ -24,10 +24,14 @@ import java.util.Optional;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.HasInheritance;
+import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -52,13 +56,42 @@ public class Substitution {
                 nodeTypes.put(id.getQName(), repo.getElement(id));
             });
 
-        Map<TNodeTemplate, List<Subtypes<TNodeType>>> substitutableNodeTemplates = new HashMap<>();
-        topology.getNodeTemplates()
-            .forEach(tNodeTemplate -> {
-                QName nodeTemplateType = tNodeTemplate.getType();
-                collectTypeHierarchy(nodeTypes, nodeTemplateType)
-                    .ifPresent(tNodeTypeSubtypes -> substitutableNodeTemplates.put(tNodeTemplate, tNodeTypeSubtypes));
+        Map<QName, TRelationshipType> relationshipTypes = new HashMap<>();
+        repo.getAllDefinitionsChildIds(RelationshipTypeId.class)
+            .forEach(id -> {
+                relationshipTypes.put(id.getQName(), repo.getElement(id));
             });
+
+        // 1. Step: retrieve all Node Templates which must be substituted
+        Map<TNodeTemplate, List<Subtypes<TNodeType>>> substitutableNodeTemplates = this.collectSubstitutableTemplates(topology.getNodeTemplates(), nodeTypes);
+
+        // 2. Step: retrieve all Relationship Templates which must be substituted
+        Map<TRelationshipTemplate, List<Subtypes<TRelationshipType>>> substitutableRelationshipTemplates =
+            this.collectSubstitutableTemplates(topology.getRelationshipTemplates(), relationshipTypes);
+    }
+
+    /**
+     * This method collects all templates of the given <code>templates</code> which must be substituted. Additionally, all children
+     * of the template's type are included as a list of trees.
+     *
+     * @param templates the list of TOSCA templates which have to examied whether they must be substituted
+     * @param types     the map of all types of the same kind (e.g. Node Templates and Node Types) identified by their corresponding <code>DefinitionsChildId</code>
+     * @param <R>       the class of the templates
+     * @param <T>       the class of the types
+     * @return a map containing a mapping between susbstitutable templates and their available sub types which can be used during the substitution
+     */
+    <R extends HasType, T extends HasInheritance> Map<R, List<Subtypes<T>>> collectSubstitutableTemplates(List<R> templates, Map<QName, T> types) {
+        Map<R, List<Subtypes<T>>> substitutableTypes = new HashMap<>();
+
+        templates.forEach(tNodeTemplate -> {
+            QName nodeTemplateType = tNodeTemplate.getTypeAsQName();
+            collectTypeHierarchy(types, nodeTemplateType)
+                .ifPresent(tNodeTypeSubtypes ->
+                    substitutableTypes.put(tNodeTemplate, tNodeTypeSubtypes)
+                );
+        });
+
+        return substitutableTypes;
     }
 
     /**
