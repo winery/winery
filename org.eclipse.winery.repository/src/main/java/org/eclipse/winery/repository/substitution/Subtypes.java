@@ -14,7 +14,9 @@
 
 package org.eclipse.winery.repository.substitution;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.winery.model.tosca.HasInheritance;
 
@@ -37,5 +39,19 @@ public class Subtypes<T extends HasInheritance> {
 
     public List<Subtypes<T>> getChildren() {
         return this.children;
+    }
+
+    public List<T> asList() {
+        ArrayList<T> list = new ArrayList<>();
+
+        if (Objects.nonNull(this.element)) {
+            list.add(this.element);
+        }
+
+        if (Objects.nonNull(this.children)) {
+            this.children.forEach(subtype -> list.addAll(subtype.asList()));
+        }
+
+        return list;
     }
 }

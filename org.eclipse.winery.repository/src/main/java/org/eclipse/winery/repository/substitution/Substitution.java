@@ -63,11 +63,19 @@ public class Substitution {
             });
 
         // 1. Step: retrieve all Node Templates which must be substituted
-        Map<TNodeTemplate, List<Subtypes<TNodeType>>> substitutableNodeTemplates = this.collectSubstitutableTemplates(topology.getNodeTemplates(), nodeTypes);
+        Map<TNodeTemplate, List<Subtypes<TNodeType>>> substitutableNodeTemplates =
+            this.collectSubstitutableTemplates(topology.getNodeTemplates(), nodeTypes);
 
         // 2. Step: retrieve all Relationship Templates which must be substituted
         Map<TRelationshipTemplate, List<Subtypes<TRelationshipType>>> substitutableRelationshipTemplates =
             this.collectSubstitutableTemplates(topology.getRelationshipTemplates(), relationshipTypes);
+
+        // 3. Step: select concrete type to be substituted
+        SubstitutionStrategy<TNodeTemplate, TNodeType> nodeTypeStrategy = new NamespaceSubstitutionStrategy<>();
+
+        // 4. Step: update the type reference --> everything is inherited --> there is no need to change anything else
+
+        // 
     }
 
     /**
@@ -78,9 +86,9 @@ public class Substitution {
      * @param types     the map of all types of the same kind (e.g. Node Templates and Node Types) identified by their corresponding <code>DefinitionsChildId</code>
      * @param <R>       the class of the templates
      * @param <T>       the class of the types
-     * @return a map containing a mapping between susbstitutable templates and their available sub types which can be used during the substitution
+     * @return a map containing a mapping between substitutable templates and their available sub types which can be used during the substitution
      */
-    <R extends HasType, T extends HasInheritance> Map<R, List<Subtypes<T>>> collectSubstitutableTemplates(List<R> templates, Map<QName, T> types) {
+    public <R extends HasType, T extends HasInheritance> Map<R, List<Subtypes<T>>> collectSubstitutableTemplates(List<R> templates, Map<QName, T> types) {
         Map<R, List<Subtypes<T>>> substitutableTypes = new HashMap<>();
 
         templates.forEach(tNodeTemplate -> {
