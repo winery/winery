@@ -37,6 +37,7 @@ import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
@@ -52,27 +53,26 @@ public class Substitution {
 
     }
 
-    public void replaceSubstitutableNodeTemplates(ServiceTemplateId serviceTemplateId) {
+    public ServiceTemplateId replaceSubstitutableNodeTemplates(final ServiceTemplateId serviceTemplateId) {
         IRepository repo = RepositoryFactory.getRepository();
+        ServiceTemplateId substitutedServiceTemplateId = serviceTemplateId;
         TServiceTemplate serviceTemplate;
 
         // 0. Create a new version of the Service Template
         try {
-            ServiceTemplateId substitutedServiceTemplateId = new ServiceTemplateId(
+            substitutedServiceTemplateId = new ServiceTemplateId(
                 serviceTemplateId.getNamespace().getDecoded(),
                 VersionUtils.getNewId(serviceTemplateId, versionAppendix),
                 false
             );
             repo.duplicate(serviceTemplateId, substitutedServiceTemplateId);
-
-            // 0.1 load the new version
-            serviceTemplate = repo.getElement(substitutedServiceTemplateId);
         } catch (IOException e) {
             LOGGER.debug("Could not create new Service Template version during substitution", e);
             LOGGER.debug("Reusing existing element");
-            serviceTemplate = repo.getElement(serviceTemplateId);
         }
 
+        // 0.1 load the new version
+        serviceTemplate = repo.getElement(substitutedServiceTemplateId);
         // 0.2 Loading the topology
         TTopologyTemplate topology = Objects.requireNonNull(serviceTemplate.getTopologyTemplate());
 
@@ -119,8 +119,14 @@ public class Substitution {
                 }
             });
 
-        // TODO: write test method
         // TODO: check if the type can be substituted with a Service Template and implement this replacement
+        try {
+            BackendUtils.persist(repo, substitutedServiceTemplateId, serviceTemplate);
+        } catch (IOException e) {
+            LOGGER.debug("Could not persist Service Template", e);
+        }
+
+        return substitutedServiceTemplateId;
     }
 
     /**
