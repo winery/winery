@@ -37,9 +37,4 @@ class JsonBasedNamespaceManagerTest {
         assertEquals("winery", prefix);
         assertFalse(f.exists());
     }
-
-    @Test
-    void g() {
-        
-    }
 }

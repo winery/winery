@@ -76,11 +76,7 @@ public class JsonBasedNamespaceManager extends AbstractNamespaceManager {
 
     @Override
     public String getPrefix(String namespace) {
-        if (namespace == null) {
-            namespace = "";
-        }
-
-        return getNamespaceProperties(namespace).getPrefix();
+        return getNamespaceProperties(Objects.isNull(namespace) ? "" : namespace).getPrefix();
     }
 
     @NonNull

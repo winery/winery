@@ -18,7 +18,6 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.Filename;
@@ -38,7 +37,6 @@ public class NodeTypesVisualsApiData {
     public NodeTypesVisualsApiData(VisualAppearanceResource visuals) {
         IRepository repository = RepositoryFactory.getRepository();
         NodeTypeId parent = (NodeTypeId) visuals.getId().getParent();
-        TNodeType element = repository.getElement(parent);
 
         this.color = visuals.getBorderColor();
         this.nodeTypeId = parent.getQName();

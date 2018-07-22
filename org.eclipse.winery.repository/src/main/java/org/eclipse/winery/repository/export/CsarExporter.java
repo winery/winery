@@ -65,7 +65,6 @@ import org.eclipse.winery.repository.GitInfo;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IGenericRepository;
 import org.eclipse.winery.repository.backend.IRepository;
-import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.SelfServiceMetaDataUtils;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.configuration.Environment;
@@ -435,7 +434,6 @@ public class CsarExporter {
      */
     private void addNamespacePrefixes(IRepository repository, Map<RepositoryFileReference, CsarContentProperties> refMap) throws IOException {
         // ensure that the namespaces are saved as json
-        NamespaceManager namespaceManager = repository.getNamespaceManager();
         SortedSet<RepositoryFileReference> references = repository.getContainedFiles(new NamespacesId());
 
         references.forEach(repositoryFileReference -> {
