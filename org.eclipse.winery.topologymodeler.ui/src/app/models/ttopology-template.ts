@@ -39,8 +39,7 @@ export class TNodeTemplate extends AbstractTTemplate {
                 public name: string,
                 public minInstances: number,
                 public maxInstances: number,
-                public color: string,
-                public imageUrl: string,
+                public visuals: Visuals,
                 documentation?: any,
                 any?: any,
                 otherAttributes?: any,
@@ -63,8 +62,8 @@ export class TNodeTemplate extends AbstractTTemplate {
      * @return nodeTemplate: a new node template with the updated value
      */
     generateNewNodeTemplateWithUpdatedAttribute(updatedAttribute: string, updatedValue: any): TNodeTemplate {
-        const nodeTemplate = new TNodeTemplate(this.properties, this.id, this.type, this.name, this.minInstances, this.maxInstances, this.color,
-            this.imageUrl, this.documentation, this.any, this.otherAttributes, this.x, this.y, this.capabilities,
+        const nodeTemplate = new TNodeTemplate(this.properties, this.id, this.type, this.name, this.minInstances, this.maxInstances,
+            this.visuals, this.documentation, this.any, this.otherAttributes, this.x, this.y, this.capabilities,
             this.requirements, this.deploymentArtifacts, this.policies);
         if (updatedAttribute === 'coordinates') {
             nodeTemplate.x = updatedValue.x;
@@ -114,7 +113,7 @@ export class TNodeTemplate extends AbstractTTemplate {
 
     public set state(value: DifferenceStates) {
         this._state = value;
-        this.color = VersionUtils.getElementColorByDiffState(value);
+        this.visuals.color = VersionUtils.getElementColorByDiffState(value);
     }
 }
 
@@ -144,14 +143,7 @@ export class EntityType extends Entity {
  * This is the datamodel for relationship templates
  */
 export class TRelationshipTemplate extends AbstractTTemplate {
-    /*
-     get targetElement(): string {
-     return this.targetElement;
-     }
-     get sourceElement(): string {
-     return this.sourceElement;
-     }
-     */
+
     constructor(public sourceElement: { ref: string },
                 public targetElement: { ref: string },
                 public name?: string,
@@ -189,41 +181,7 @@ export class Visuals {
     constructor(public color: string,
                 public nodeTypeId: string,
                 public localName?: string,
-                public imageUrl?: string) {
+                public imageUrl?: string,
+                public pattern?: string) {
     }
-
-    /*
-     get color(): string {
-     return this._color;
-     }
-
-     set color(value: string) {
-     this._color = value;
-     }
-
-     get nodeTypeId(): string {
-     return this._nodeTypeId;
-     }
-
-     set nodeTypeId(value: string) {
-     this._nodeTypeId = value;
-     }
-
-     get localName(): string {
-     this._localName = this._nodeTypeId.split('}')[1];
-     return this._localName;
-     }
-
-     set localName(value: string) {
-     this._localName = value;
-     }
-
-     get imageUrl(): string {
-     return this._imageUrl;
-     }
-
-     set imageUrl(value: string) {
-     this._imageUrl = value;
-     }
-     */
 }

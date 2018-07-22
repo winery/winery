@@ -382,6 +382,17 @@ public class BackendUtils {
         return new RepositoryFileReference(id, name);
     }
 
+    public static RepositoryFileReference getRefOfJsonConfiguration(GenericId id) {
+        String name = "";
+
+        if (id instanceof AdminId) {
+            name = BackendUtils.getTypeForAdminId(((AdminId) id).getClass());
+            name += Constants.SUFFIX_JSON;
+        }
+
+        return new RepositoryFileReference(id, name);
+    }
+
     /**
      * Returns a list of the topology template nested in the given service template
      */
@@ -391,7 +402,7 @@ public class BackendUtils {
         if (topologyTemplate == null) {
             return Collections.emptyList();
         }
-        for (TEntityTemplate t: topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
+        for (TEntityTemplate t : topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
             if (t instanceof TNodeTemplate) {
                 l.add((TNodeTemplate) t);
             }
@@ -409,7 +420,7 @@ public class BackendUtils {
             return Collections.emptyList();
         }
         Collection<QName> res = new ArrayList<>();
-        for (TDeploymentArtifact da: deploymentArtifacts) {
+        for (TDeploymentArtifact da : deploymentArtifacts) {
             QName artifactRef = da.getArtifactRef();
             if (artifactRef != null) {
                 res.add(artifactRef);
@@ -427,7 +438,7 @@ public class BackendUtils {
             return Collections.emptyList();
         }
         Collection<QName> res = new ArrayList<>();
-        for (ImplementationArtifact ia: implementationArtifacts) {
+        for (ImplementationArtifact ia : implementationArtifacts) {
             QName artifactRef = ia.getArtifactRef();
             if (artifactRef != null) {
                 res.add(artifactRef);
@@ -446,7 +457,7 @@ public class BackendUtils {
         // DAs may be assigned via node type implementations
         QName nodeTypeQName = nodeTemplate.getType();
         Collection<NodeTypeImplementationId> allNodeTypeImplementations = RepositoryFactory.getRepository().getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
-        for (NodeTypeImplementationId nodeTypeImplementationId: allNodeTypeImplementations) {
+        for (NodeTypeImplementationId nodeTypeImplementationId : allNodeTypeImplementations) {
             TDeploymentArtifacts deploymentArtifacts = RepositoryFactory.getRepository().getElement(nodeTypeImplementationId).getDeploymentArtifacts();
             allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(deploymentArtifacts);
             l.addAll(allReferencedArtifactTemplates);
@@ -461,7 +472,7 @@ public class BackendUtils {
         // IAs may be assigned via node type implementations
         QName nodeTypeQName = nodeTemplate.getType();
         Collection<NodeTypeImplementationId> allNodeTypeImplementations = RepositoryFactory.getRepository().getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
-        for (NodeTypeImplementationId nodeTypeImplementationId: allNodeTypeImplementations) {
+        for (NodeTypeImplementationId nodeTypeImplementationId : allNodeTypeImplementations) {
             TImplementationArtifacts implementationArtifacts = RepositoryFactory.getRepository().getElement(nodeTypeImplementationId).getImplementationArtifacts();
             Collection<QName> allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(implementationArtifacts);
             l.addAll(allReferencedArtifactTemplates);
@@ -642,7 +653,7 @@ public class BackendUtils {
         document.appendChild(wrapperElement);
 
         // we produce the serialization in the same order the XSD would be generated (because of the usage of xsd:sequence)
-        for (PropertyDefinitionKV propertyDefinitionKV: winerysPropertiesDefinition.getPropertyDefinitionKVList()) {
+        for (PropertyDefinitionKV propertyDefinitionKV : winerysPropertiesDefinition.getPropertyDefinitionKVList()) {
             // we always write the element tag as the XSD forces that
             final Element valueElement = document.createElementNS(namespace, propertyDefinitionKV.getKey());
             wrapperElement.appendChild(valueElement);
@@ -671,6 +682,8 @@ public class BackendUtils {
      */
     public static void persist(DefinitionsChildId id, Definitions definitions) throws IOException {
         RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
+        NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
+        namespaceManager.addPermanentNamespace(id.getNamespace().getDecoded());
         BackendUtils.persist(definitions, ref, MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
     }
 
@@ -939,7 +952,7 @@ public class BackendUtils {
      */
     public static Collection<QName> convertDefinitionsChildIdCollectionToQNameCollection(Collection<? extends DefinitionsChildId> col) {
         Collection<QName> res = new ArrayList<>();
-        for (DefinitionsChildId id: col) {
+        for (DefinitionsChildId id : col) {
             res.add(id.getQName());
         }
         return res;
@@ -1042,7 +1055,7 @@ public class BackendUtils {
         try (InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
             Unmarshaller u = JAXBSupport.createUnmarshaller();
             Definitions defs = ((Definitions) u.unmarshal(is));
-            for (TExtensibleElements elem: defs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation()) {
+            for (TExtensibleElements elem : defs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation()) {
                 if (elem instanceof TArtifactTemplate) {
                     return (TArtifactTemplate) elem;
                 }
@@ -1143,7 +1156,7 @@ public class BackendUtils {
                 template.setArtifactReferences(artifactReferences);
             }
             List<TArtifactReference> artRefList = artifactReferences.getArtifactReference();
-            for (RepositoryFileReference ref: files) {
+            for (RepositoryFileReference ref : files) {
                 // determine path
                 // path relative from the root of the CSAR is ok (COS01, line 2663)
                 // double encoded - see ADR-0003
@@ -1226,7 +1239,7 @@ public class BackendUtils {
 
         // add all plans locally stored, but not contained in the XML, as plan element to the plans of the service template.
         List<TPlan> thePlans = plans.getPlan();
-        for (PlanId planId: plansToAdd) {
+        for (PlanId planId : plansToAdd) {
             SortedSet<RepositoryFileReference> files = repository.getContainedFiles(planId);
             if (files.size() != 1) {
                 throw new IllegalStateException("Currently, only one file per plan is supported.");

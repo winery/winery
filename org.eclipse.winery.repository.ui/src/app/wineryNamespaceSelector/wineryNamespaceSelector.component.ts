@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,7 +15,7 @@ import {Component, ElementRef, forwardRef, Input, OnInit, ViewChild} from '@angu
 import {WineryNamespaceSelectorService} from './wineryNamespaceSelector.service';
 import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
-import {NamespaceWithPrefix} from '../model/namespaceWithPrefix';
+import {NamespaceProperties} from '../model/namespaceProperties';
 import {StartNamespaces, ToscaTypes} from '../model/enums';
 import {isNullOrUndefined} from 'util';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -80,7 +80,7 @@ export class WineryNamespaceSelectorComponent implements OnInit, ControlValueAcc
 
     loading = true;
     isCollapsed = true;
-    allNamespaces: NamespaceWithPrefix[] = [];
+    allNamespaces: NamespaceProperties[] = [];
 
     @ViewChild('namespaceInput') namespaceInput: ElementRef;
     public initNamespaceString = '';

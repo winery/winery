@@ -96,7 +96,10 @@ import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.backend.filebased.ConfigurationBasedNamespaceManager;
 import org.eclipse.winery.repository.backend.filebased.FileUtils;
+import org.eclipse.winery.repository.backend.filebased.JsonBasedNamespaceManager;
+import org.eclipse.winery.repository.backend.filebased.NamespaceProperties;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
@@ -294,19 +297,28 @@ public class CsarImporter {
     private void importNamespacePrefixes(Path rootPath) {
         NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
         Path properties = rootPath.resolve(CsarExporter.PATH_TO_NAMESPACES_PROPERTIES);
-        if (Files.exists(properties)) {
-            PropertiesConfiguration pconf;
-            try {
-                pconf = new PropertiesConfiguration(properties.toFile());
-            } catch (ConfigurationException e) {
-                CsarImporter.LOGGER.debug(e.getMessage(), e);
-                return;
+        Path json = rootPath.resolve(CsarExporter.PATH_TO_NAMESPACES_JSON);
+
+        if (Files.exists(properties) || Files.exists(json)) {
+            NamespaceManager localNamespaceManager;
+
+            if (Files.exists(properties)) {
+                PropertiesConfiguration pconf;
+                try {
+                    pconf = new PropertiesConfiguration(properties.toFile());
+                    localNamespaceManager = new ConfigurationBasedNamespaceManager(pconf);
+                } catch (ConfigurationException e) {
+                    CsarImporter.LOGGER.debug(e.getMessage(), e);
+                    return;
+                }
+            } else {
+                localNamespaceManager = new JsonBasedNamespaceManager(json.toFile());
             }
-            Iterator<String> namespaces = pconf.getKeys();
-            while (namespaces.hasNext()) {
+
+            for (String s : localNamespaceManager.getAllNamespaces().keySet()) {
                 boolean addToStorage = false;
-                String namespace = namespaces.next();
-                if (namespaceManager.hasPermanentPrefix(namespace)) {
+                String namespace = s;
+                if (namespaceManager.hasPermanentProperties(namespace)) {
                     String storedPrefix = namespaceManager.getPrefix(namespace);
                     // QUICK HACK to check whether the prefix is a generated one
                     // We assume we know the internal generation routine
@@ -320,8 +332,8 @@ public class CsarImporter {
                     addToStorage = true;
                 }
                 if (addToStorage) {
-                    String prefix = pconf.getString(namespace);
-                    namespaceManager.setPermanentPrefix(namespace, prefix);
+                    String prefix = localNamespaceManager.getPrefix(namespace);
+                    namespaceManager.setNamespaceProperties(namespace, new NamespaceProperties(namespace, prefix));
                 }
             }
         }

@@ -13,10 +13,15 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
+import java.io.OutputStream;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.repository.backend.filebased.NamespaceProperties;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 public interface NamespaceManager {
 
@@ -38,25 +43,41 @@ public interface NamespaceManager {
      * Determines whether the storage has a namespace prefix stored permanently. This differs from just issuuing a
      * {@link #getPrefix(String)} request, which just determines something, but does not persist it between calls.
      */
-    boolean hasPermanentPrefix(String namespace);
+    boolean hasPermanentProperties(String namespace);
 
-    void removePermanentPrefix(String namespace);
+    void removeNamespaceProperties(String namespace);
 
     /**
      * Permanently stores a prefix. No action, if namespace or prefix are null or empty.
      */
-    void setPermanentPrefix(String namespace, String prefix);
+    void setNamespaceProperties(String namespace, NamespaceProperties properties);
 
-    Collection<String> getAllPermanentPrefixes();
+    Map<String, NamespaceProperties> getAllNamespaces();
 
-    Collection<String> getAllPermanentNamespaces();
+    @NonNull
+    public NamespaceProperties getNamespaceProperties(String namespace);
 
+    /**
+     * Add new properties for a namespace if it does not exist yet. Otherwise no action will be performed.
+     *
+     * @param namespace the namespace to be added
+     */
     default void addPermanentNamespace(String namespace) {
-        this.setPermanentPrefix(namespace, this.getPrefix(namespace));
+        if (!hasPermanentProperties(namespace)) {
+            this.setNamespaceProperties(namespace, this.getNamespaceProperties(namespace));
+        }
     }
+
+    void addAllPermanent(Collection<NamespaceProperties> properties);
+
+    void replaceAll(Map<String, NamespaceProperties> map);
 
     /**
      * Removes all namespace mappings
      */
     void clear();
+
+    void saveToOutputStream(OutputStream outputStream) throws Exception;
+
+    boolean isPatternNamespace(String namespace);
 }

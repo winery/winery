@@ -322,7 +322,7 @@ public class ConsistencyChecker {
                         if (kvProperties.get(key) == null) {
                             printAndAddError(id, "Property " + key + " required, but not set.");
                         } else {
-                            // removePermanentPrefix the key from the map to enable checking below whether a property is defined which not requried by the property definition 
+                            // removeNamespaceProperties the key from the map to enable checking below whether a property is defined which not requried by the property definition 
                             kvProperties.remove(key);
                         }
                     }
