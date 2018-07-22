@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class SubstitutionTest {
+class SubstitutionUtilsTest {
 
     private final static String GRANDFATHER = "grandfather";
     private final static String PARENT = "parent";
@@ -48,7 +48,6 @@ class SubstitutionTest {
     private final static String STRANGER = "stranger";
 
     private static Map<QName, TNodeType> nodeTypes;
-    private static Substitution substitution;
 
     private static QName grandFather = new QName("https://example.org/tosca/substiution", GRANDFATHER);
     private static QName parent = new QName("https://example.org/tosca/substiution", PARENT);
@@ -62,7 +61,6 @@ class SubstitutionTest {
     @BeforeEach
     void setUp() {
         nodeTypes = new HashMap<>();
-        substitution = new Substitution();
 
         nodeTypes.put(
             grandFather,
@@ -113,7 +111,7 @@ class SubstitutionTest {
     // region ########## collectTypeHierarchy ##########
     @Test
     void retrieveTypeHierarchy() {
-        Optional<List<Subtypes<TNodeType>>> tNodeTypeSubtypes = substitution.collectTypeHierarchy(nodeTypes, grandFather);
+        Optional<List<Subtypes<TNodeType>>> tNodeTypeSubtypes = SubstitutionUtils.collectTypeHierarchy(nodeTypes, grandFather);
 
         assertTrue(tNodeTypeSubtypes.isPresent());
 
@@ -127,7 +125,7 @@ class SubstitutionTest {
 
     @Test
     void retrieveTypeHierarchy2() {
-        Optional<List<Subtypes<TNodeType>>> tNodeTypeSubtypes = substitution.collectTypeHierarchy(nodeTypes, parent);
+        Optional<List<Subtypes<TNodeType>>> tNodeTypeSubtypes = SubstitutionUtils.collectTypeHierarchy(nodeTypes, parent);
 
         assertTrue(tNodeTypeSubtypes.isPresent());
 
@@ -146,7 +144,7 @@ class SubstitutionTest {
     @ParameterizedTest(name = "{index} => ''{1}''")
     @MethodSource("getEmptyTypeHierarchyArguments")
     void retrieveEmptyTypeHierarchy(QName qName, String description) {
-        assertEquals(Optional.empty(), substitution.collectTypeHierarchy(nodeTypes, null));
+        assertEquals(Optional.empty(), SubstitutionUtils.collectTypeHierarchy(nodeTypes, null));
     }
 
     private static Stream<Arguments> getEmptyTypeHierarchyArguments() {
@@ -169,7 +167,7 @@ class SubstitutionTest {
             new TNodeTemplate.Builder("id3", aunt).build()
         );
 
-        Map<TNodeTemplate, List<Subtypes<TNodeType>>> substitutableTemplates = substitution.collectSubstitutableTemplates(templates, nodeTypes);
+        Map<TNodeTemplate, List<Subtypes<TNodeType>>> substitutableTemplates = SubstitutionUtils.collectSubstitutableTemplates(templates, nodeTypes);
 
         assertEquals(2, substitutableTemplates.size());
         assertTrue(substitutableTemplates.entrySet()

@@ -15,12 +15,10 @@
 package org.eclipse.winery.repository.substitution;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.xml.namespace.QName;
 
@@ -28,9 +26,6 @@ import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.version.VersionUtils;
-import org.eclipse.winery.model.tosca.HasInheritance;
-import org.eclipse.winery.model.tosca.HasType;
-import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
@@ -49,79 +44,45 @@ public class Substitution {
     private static final Logger LOGGER = LoggerFactory.getLogger(Substitution.class);
     private static final String versionAppendix = "substituted";
 
-    public void createSubstitutableNodeType() {
+    private final IRepository repository;
 
+    private final Map<QName, TServiceTemplate> nodeTypeSubstitutableWithServiceTemplate = new HashMap<>();
+    private final Map<QName, TRelationshipType> relationshipTypes = new HashMap<>();
+    private final Map<QName, TNodeType> nodeTypes = new HashMap<>();
+
+    public Substitution() {
+        repository = RepositoryFactory.getRepository();
     }
 
-    public ServiceTemplateId replaceSubstitutableNodeTemplates(final ServiceTemplateId serviceTemplateId) {
-        IRepository repo = RepositoryFactory.getRepository();
-        ServiceTemplateId substitutedServiceTemplateId = serviceTemplateId;
-        TServiceTemplate serviceTemplate;
-
+    public ServiceTemplateId substituteTopology(final ServiceTemplateId serviceTemplateId) {
         // 0. Create a new version of the Service Template
-        try {
-            substitutedServiceTemplateId = new ServiceTemplateId(
-                serviceTemplateId.getNamespace().getDecoded(),
-                VersionUtils.getNewId(serviceTemplateId, versionAppendix),
-                false
-            );
-            repo.duplicate(serviceTemplateId, substitutedServiceTemplateId);
-        } catch (IOException e) {
-            LOGGER.debug("Could not create new Service Template version during substitution", e);
-            LOGGER.debug("Reusing existing element");
-        }
-
-        // 0.1 load the new version
-        serviceTemplate = repo.getElement(substitutedServiceTemplateId);
-        // 0.2 Loading the topology
+        ServiceTemplateId substitutedServiceTemplateId = getSubstitutionServiceTemplateId(serviceTemplateId);
+        TServiceTemplate serviceTemplate = repository.getElement(substitutedServiceTemplateId);
         TTopologyTemplate topology = Objects.requireNonNull(serviceTemplate.getTopologyTemplate());
 
-        /*List<TServiceTemplate> serviceTemplates = repo.getAllDefinitionsChildIds(ServiceTemplateId.class)
-            .stream()
-            .map(repo::getElement)
-            .filter(element -> Objects.nonNull(element.getSubstitutableNodeType()))
-            .collect(Collectors.toList());*/
-
-        Map<QName, TNodeType> nodeTypes = new HashMap<>();
-        repo.getAllDefinitionsChildIds(NodeTypeId.class)
-            .forEach(id -> {
-                nodeTypes.put(id.getQName(), repo.getElement(id));
-            });
-
-        Map<QName, TRelationshipType> relationshipTypes = new HashMap<>();
-        repo.getAllDefinitionsChildIds(RelationshipTypeId.class)
-            .forEach(id -> {
-                relationshipTypes.put(id.getQName(), repo.getElement(id));
-            });
+        loadAllRequiredDefinitionsForTopologySubstitution();
 
         // 1. Step: retrieve all Node Templates which must be substituted
         Map<TNodeTemplate, List<Subtypes<TNodeType>>> substitutableNodeTemplates =
-            this.collectSubstitutableTemplates(topology.getNodeTemplates(), nodeTypes);
+            SubstitutionUtils.collectSubstitutableTemplates(topology.getNodeTemplates(), this.nodeTypes);
 
         // 2. Step: retrieve all Relationship Templates which must be substituted
         Map<TRelationshipTemplate, List<Subtypes<TRelationshipType>>> substitutableRelationshipTemplates =
-            this.collectSubstitutableTemplates(topology.getRelationshipTemplates(), relationshipTypes);
+            SubstitutionUtils.collectSubstitutableTemplates(topology.getRelationshipTemplates(), this.relationshipTypes);
 
         // 3. Step: select concrete type to be substituted
-        Map<TNodeTemplate, TNodeType> nodeTemplateReplacementMap = new FindFirstSubstitutionStrategy<TNodeTemplate, TNodeType>()
-            .getReplacementMap(substitutableNodeTemplates);
-        Map<TRelationshipTemplate, TRelationshipType> relationshipTemplateReplacementMap = new FindFirstSubstitutionStrategy<TRelationshipTemplate, TRelationshipType>()
-            .getReplacementMap(substitutableRelationshipTemplates);
+        Map<TNodeTemplate, TNodeType> nodeTemplateReplacementMap =
+            new FindFirstSubstitutionStrategy<TNodeTemplate, TNodeType>()
+                .getReplacementMap(substitutableNodeTemplates);
+        Map<TRelationshipTemplate, TRelationshipType> relationshipTemplateReplacementMap =
+            new FindFirstSubstitutionStrategy<TRelationshipTemplate, TRelationshipType>()
+                .getReplacementMap(substitutableRelationshipTemplates);
 
-        // 4. Step: update the type references
-        // 4.1 in case of simple NodeTemplate substitution --> everything is inherited --> there is no need to change anything else
-        topology.getNodeTemplates()
-            .forEach(tNodeTemplate -> {
-                TNodeType replacementType = nodeTemplateReplacementMap.get(tNodeTemplate);
-                if (Objects.nonNull(replacementType)) {
-                    QName qName = new QName(replacementType.getTargetNamespace(), replacementType.getIdFromIdOrNameField());
-                    tNodeTemplate.setType(qName);
-                }
-            });
+        // 4. Step: update the topology
+        updateTopology(topology, nodeTemplateReplacementMap, relationshipTemplateReplacementMap);
 
-        // TODO: check if the type can be substituted with a Service Template and implement this replacement
         try {
-            BackendUtils.persist(repo, substitutedServiceTemplateId, serviceTemplate);
+            BackendUtils.persist(repository, substitutedServiceTemplateId, serviceTemplate);
         } catch (IOException e) {
             LOGGER.debug("Could not persist Service Template", e);
         }
@@ -129,54 +90,92 @@ public class Substitution {
         return substitutedServiceTemplateId;
     }
 
-    /**
-     * This method collects all templates of the given <code>templates</code> which must be substituted. Additionally, all children
-     * of the template's type are included as a list of trees.
-     *
-     * @param templates the list of TOSCA templates which have to examied whether they must be substituted
-     * @param types     the map of all types of the same kind (e.g. Node Templates and Node Types) identified by their corresponding <code>DefinitionsChildId</code>
-     * @param <R>       the class of the templates
-     * @param <T>       the class of the types
-     * @return a map containing a mapping between substitutable templates and their available sub types which can be used during the substitution
-     */
-    public <R extends HasType, T extends HasInheritance> Map<R, List<Subtypes<T>>> collectSubstitutableTemplates(List<R> templates, Map<QName, T> types) {
-        Map<R, List<Subtypes<T>>> substitutableTypes = new HashMap<>();
+    private void updateTopology(TTopologyTemplate topologyTemplate, Map<TNodeTemplate, TNodeType> nodeTemplateReplacementMap,
+                                Map<TRelationshipTemplate, TRelationshipType> relationshipTemplateReplacementMap) {
+        Map<TNodeTemplate, TServiceTemplate> nodeTemplateToBeSubstitutedWithTopology = new HashMap<>();
 
-        templates.forEach(tNodeTemplate -> {
-            QName nodeTemplateType = tNodeTemplate.getTypeAsQName();
-            collectTypeHierarchy(types, nodeTemplateType)
-                .ifPresent(tNodeTypeSubtypes ->
-                    substitutableTypes.put(tNodeTemplate, tNodeTypeSubtypes)
-                );
+        topologyTemplate.getNodeTemplates()
+            .forEach(tNodeTemplate -> {
+                TServiceTemplate serviceTemplate = this.nodeTypeSubstitutableWithServiceTemplate.get(tNodeTemplate.getType());
+                if (Objects.nonNull(serviceTemplate)) {
+                    // We need to replace the Node Template with the serviceTemplate but we cannot do that here
+                    // -> save it for later processing
+                    nodeTemplateToBeSubstitutedWithTopology.put(tNodeTemplate, serviceTemplate);
+                } else {
+                    // In case of simple NodeTemplate substitution
+                    // -> everything is inherited -> there is no need to change anything else
+                    TNodeType replacementType = nodeTemplateReplacementMap.get(tNodeTemplate);
+                    if (Objects.nonNull(replacementType)) {
+                        QName qName = new QName(replacementType.getTargetNamespace(), replacementType.getIdFromIdOrNameField());
+                        tNodeTemplate.setType(qName);
+                    }
+                }
+            });
+
+        topologyTemplate.getRelationshipTemplates()
+            .forEach(tRelationshipTemplate -> {
+                TRelationshipType tRelationshipType = relationshipTemplateReplacementMap.get(tRelationshipTemplate);
+                if (Objects.nonNull(tRelationshipType)) {
+                    QName qName = new QName(tRelationshipType.getTargetNamespace(), tRelationshipType.getIdFromIdOrNameField());
+                    tRelationshipTemplate.setType(qName);
+                }
+            });
+
+        replaceNodeTemplateWithServiceTemplate(topologyTemplate, nodeTemplateToBeSubstitutedWithTopology);
+    }
+
+    private void replaceNodeTemplateWithServiceTemplate(TTopologyTemplate topologyTemplate, Map<TNodeTemplate, TServiceTemplate> nodeTemplateToBeSubstitutedWithTopology) {
+        nodeTemplateToBeSubstitutedWithTopology.forEach((tNodeTemplate, tServiceTemplate) -> {
+            // 1. get all references of the Node Template
+            // 2. import the topology in the Service Template
+            // 3. update the references accordingly
         });
-
-        return substitutableTypes;
     }
 
     /**
-     * This method collects all elements of the given class <code>T</code> which are derived from the <code>nodeType</code>.
+     * Creates a new version of the given Service Template for the substitution.
+     * If no new version can be created, the given Service Template will be returned.
      *
-     * @param <T>    a TOSCA definitions type which has inheritance
-     * @param types  all available types of the specified class <code>T</code>
-     * @param parent the parent
-     * @return an <code>Optional</code> containing a tree of subtypes
+     * @param serviceTemplateId the Service Template containing abstract types to be substituted
+     * @return the new Id of the Service Template
      */
-    <T extends HasInheritance> Optional<List<Subtypes<T>>> collectTypeHierarchy(Map<QName, T> types, QName parent) {
-        T type = types.get(parent);
+    private ServiceTemplateId getSubstitutionServiceTemplateId(ServiceTemplateId serviceTemplateId) {
+        try {
+            ServiceTemplateId substitutedServiceTemplateId = new ServiceTemplateId(
+                serviceTemplateId.getNamespace().getDecoded(),
+                VersionUtils.getNewId(serviceTemplateId, versionAppendix),
+                false
+            );
 
-        if (Objects.nonNull(type) && type.getAbstract().equals(TBoolean.YES)) {
-            List<Subtypes<T>> subtypes = new ArrayList<>();
-            types.forEach((key, current) -> {
-                if (Objects.nonNull(current.getDerivedFrom()) && current.getDerivedFrom().getTypeAsQName().equals(parent)) {
-                    Subtypes<T> child = new Subtypes<>(current);
-                    subtypes.add(child);
-                    this.collectTypeHierarchy(types, key)
-                        .ifPresent(child::addChildren);
-                }
-            });
-            return Optional.of(subtypes);
+            repository.duplicate(serviceTemplateId, substitutedServiceTemplateId);
+            LOGGER.debug("Created new Service Template version {}", substitutedServiceTemplateId);
+
+            return substitutedServiceTemplateId;
+        } catch (IOException e) {
+            LOGGER.debug("Could not create new Service Template version during substitution", e);
+            LOGGER.debug("Reusing existing element");
         }
 
-        return Optional.empty();
+        return serviceTemplateId;
+    }
+
+    private void loadAllRequiredDefinitionsForTopologySubstitution() {
+        this.repository.getAllDefinitionsChildIds(ServiceTemplateId.class)
+            .stream()
+            .map(repository::getElement)
+            .filter(element -> Objects.nonNull(element.getSubstitutableNodeType()))
+            .forEach(tServiceTemplate ->
+                this.nodeTypeSubstitutableWithServiceTemplate.put(tServiceTemplate.getSubstitutableNodeType(), tServiceTemplate)
+            );
+
+        this.repository.getAllDefinitionsChildIds(NodeTypeId.class)
+            .forEach(id ->
+                this.nodeTypes.put(id.getQName(), this.repository.getElement(id))
+            );
+
+        this.repository.getAllDefinitionsChildIds(RelationshipTypeId.class)
+            .forEach(id ->
+                this.relationshipTypes.put(id.getQName(), this.repository.getElement(id))
+            );
     }
 }

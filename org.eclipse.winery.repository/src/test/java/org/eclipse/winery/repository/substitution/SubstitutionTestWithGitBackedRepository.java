@@ -38,7 +38,7 @@ class SubstitutionTestWithGitBackedRepository extends TestWithGitBackedRepositor
         ServiceTemplateId serviceTemplateId = new ServiceTemplateId("http://plain.winery.org/pattern-based/servicetemplates", 
             "ServiceTemplateContainingAbstractNodeTemplates_w1-wip1", false);
 
-        ServiceTemplateId newId = substitution.replaceSubstitutableNodeTemplates(serviceTemplateId);
+        ServiceTemplateId newId = substitution.substituteTopology(serviceTemplateId);
         TServiceTemplate element = RepositoryFactory.getRepository().getElement(newId);
         
         assertNotNull(element.getTopologyTemplate());
