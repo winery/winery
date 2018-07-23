@@ -15,6 +15,7 @@ For more information on TOSCA see [our TOSCA information page](../tosca/).
 - [Splitting](Splitting) - splitting functionality
 - [TopologyCompletion](TopologyCompletion) - topology completion with a [Tutorial](TopologyCompletionTutorial)
 - [XaaSPackager](XaaSPackager) - Enables reusing modeled topologies as templates for single applications
+- [Compliance Checking](ComplianceChecking.md) - Enables compliance checking of Topology Templates based on reusable Compliance Rules  
 
 ## Background Literature
 

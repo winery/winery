@@ -16,22 +16,22 @@ package org.eclipse.winery.compliance.matching;
 import java.util.Comparator;
 import java.util.Iterator;
 
-import org.eclipse.winery.compliance.model.TOSCAEdge;
-import org.eclipse.winery.compliance.model.TOSCAGraph;
-import org.eclipse.winery.compliance.model.TOSCANode;
+import org.eclipse.winery.compliance.model.ToscaEdge;
+import org.eclipse.winery.compliance.model.ToscaGraph;
+import org.eclipse.winery.compliance.model.ToscaNode;
 
 import org.jgrapht.GraphMapping;
 import org.jgrapht.alg.isomorphism.VF2SubgraphIsomorphismInspector;
 
-public class TOSCAIsomorphismMatcher {
+public class ToscaIsomorphismMatcher {
 
-	public Iterator<GraphMapping<TOSCANode, TOSCAEdge>> findMatches(TOSCAGraph queryGraph, TOSCAGraph toSearchIn, ITOSCAMatcher comp) {
+	public Iterator<GraphMapping<ToscaNode, ToscaEdge>> findMatches(ToscaGraph queryGraph, ToscaGraph toSearchIn, IToscaMatcher comp) {
 
 		// NEVER CHANGE THE ORDERING OF THE PARAMETERS. THE SWITCH (RIGHT, LEFT) IS DELIBERATE!
-		Comparator<TOSCANode> vertexComparator = (TOSCANode left, TOSCANode right) -> new TOSCAComparatorProxy(comp).compareTypeCompatible(right, left);
-		Comparator<TOSCAEdge> edgeComparator = (TOSCAEdge left, TOSCAEdge right) -> new TOSCAComparatorProxy(comp).compareTypeCompatible(right, left);
+		Comparator<ToscaNode> vertexComparator = (ToscaNode left, ToscaNode right) -> new ToscaComparatorProxy(comp).compareTypeCompatible(right, left);
+		Comparator<ToscaEdge> edgeComparator = (ToscaEdge left, ToscaEdge right) -> new ToscaComparatorProxy(comp).compareTypeCompatible(right, left);
 
-		VF2SubgraphIsomorphismInspector<TOSCANode, TOSCAEdge> inspector = new VF2SubgraphIsomorphismInspector<>(toSearchIn, queryGraph, vertexComparator, edgeComparator);
+		VF2SubgraphIsomorphismInspector<ToscaNode, ToscaEdge> inspector = new VF2SubgraphIsomorphismInspector<>(toSearchIn, queryGraph, vertexComparator, edgeComparator);
 		return inspector.getMappings();
 	}
 }

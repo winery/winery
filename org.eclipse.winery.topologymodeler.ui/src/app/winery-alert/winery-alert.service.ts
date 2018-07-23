@@ -64,6 +64,11 @@ export class WineryAlertService {
 
     }
 
+    error(message: string, title = 'Error') {
+        this.toastr.error(message, title);
+        this.alerts.push({ title: title, message: message, type: 'error', createdOn: this.getCurrentDate() });
+    }
+
     /**
      * returns the current date
      * @returns {string}

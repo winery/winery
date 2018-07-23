@@ -13,8 +13,12 @@
  ********************************************************************************/
 package org.eclipse.winery.compliance.checking;
 
+import java.io.StringWriter;
 import java.util.List;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -29,42 +33,55 @@ import static com.google.common.collect.Lists.newArrayList;
 @XmlType(name = "ComplianceRuleCheckingResult")
 public class ServiceTemplateCheckingResult {
 
-	@XmlElement(name = "satisfied")
-	public List<QName> satisfied;
+    @XmlElement(name = "satisfied")
+    public List<QName> satisfied;
 
-	@XmlElement(name = "unsatisfied")
-	public List<QName> unsatisfied;
+    @XmlElement(name = "unsatisfied")
+    public List<QName> unsatisfied;
 
-	@XmlElement(name = "exception")
-	public List<QName> exception;
+    @XmlElement(name = "exception")
+    public List<QName> exception;
 
-	public ServiceTemplateCheckingResult() {
-	}
+    public ServiceTemplateCheckingResult() {
+    }
 
-	public ServiceTemplateCheckingResult(List<QName> satisfied, List<QName> unsatisfied, List<QName> exception) {
-		this.satisfied = satisfied;
-		this.unsatisfied = unsatisfied;
-		this.exception = exception;
-	}
+    public ServiceTemplateCheckingResult(List<QName> satisfied, List<QName> unsatisfied, List<QName> exception) {
+        this.satisfied = satisfied;
+        this.unsatisfied = unsatisfied;
+        this.exception = exception;
+    }
 
-	public List<QName> getSatisfied() {
-		if (satisfied == null) {
-			satisfied = newArrayList();
-		}
-		return satisfied;
-	}
+    public List<QName> getSatisfied() {
+        if (satisfied == null) {
+            satisfied = newArrayList();
+        }
+        return satisfied;
+    }
 
-	public List<QName> getUnsatisfied() {
-		if (unsatisfied == null) {
-			unsatisfied = newArrayList();
-		}
-		return unsatisfied;
-	}
+    public List<QName> getUnsatisfied() {
+        if (unsatisfied == null) {
+            unsatisfied = newArrayList();
+        }
+        return unsatisfied;
+    }
 
-	public List<QName> getException() {
-		if (exception == null) {
-			exception = newArrayList();
-		}
-		return exception;
-	}
+    public List<QName> getException() {
+        if (exception == null) {
+            exception = newArrayList();
+        }
+        return exception;
+    }
+
+    public String toXMLString() throws JAXBException {
+        StringWriter w = new StringWriter();
+        JAXBContext jaxbContext = JAXBContext.newInstance(ServiceTemplateCheckingResult.class);
+        Marshaller m = jaxbContext.createMarshaller();
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        try {
+            m.marshal(this, w);
+        } catch (JAXBException e) {
+            throw new IllegalStateException(e);
+        }
+        return w.toString();
+    }
 }

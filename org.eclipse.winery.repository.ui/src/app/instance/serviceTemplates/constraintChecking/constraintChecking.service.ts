@@ -32,7 +32,7 @@ export class ConstraintCheckingService {
 
     getCheckingResult(): Observable<string> {
         const headers = new HttpHeaders({ 'Accept': 'application/xml' });
-        const requestUrl = backendBaseURL + this.path + '/';
+        const requestUrl = backendBaseURL + this.path;
 
         return this.http
             .post(
