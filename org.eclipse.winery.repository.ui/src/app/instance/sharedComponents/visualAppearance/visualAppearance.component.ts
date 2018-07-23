@@ -152,6 +152,7 @@ export class VisualAppearanceComponent implements OnInit {
 
     public set colorLocal(color: string) {
         this.relationshipData.color = color;
+        this.saveToServer();
     }
 
     public get borderColorLocal() {
@@ -160,6 +161,7 @@ export class VisualAppearanceComponent implements OnInit {
 
     public set borderColorLocal(color: string) {
         this.nodeTypeData.color = color;
+        this.saveToServer();
     }
 
     public get hoverColorLocal() {
@@ -168,6 +170,7 @@ export class VisualAppearanceComponent implements OnInit {
 
     public set hoverColorLocal(color: string) {
         this.relationshipData.hoverColor = color;
+        this.saveToServer();
     }
 
     private handleResponse(response: HttpResponse<string>) {
