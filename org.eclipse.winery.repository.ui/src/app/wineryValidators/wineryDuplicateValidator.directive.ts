@@ -18,6 +18,7 @@ import {isNullOrUndefined} from 'util';
 export class WineryValidatorObject {
 
     regEx?: RegExp;
+    private active = true;
 
     constructor(private list: Array<any>, private property?: string) {
     }
@@ -28,7 +29,7 @@ export class WineryValidatorObject {
 
     validate(compareObject: WineryValidatorObject): ValidatorFn {
         return (control: AbstractControl): { [key: string]: any } => {
-            if (isNullOrUndefined(compareObject) || isNullOrUndefined(compareObject.list)) {
+            if (isNullOrUndefined(compareObject) || isNullOrUndefined(compareObject.list) || !this.active) {
                 return null;
             }
             const name = control.value;
@@ -43,6 +44,14 @@ export class WineryValidatorObject {
             }
             return no ? {wineryDuplicateValidator: {name}} : null;
         };
+    }
+
+    set isActive(value: boolean) {
+        this.active = value;
+    }
+
+    get isActive(): boolean {
+        return this.active;
     }
 }
 

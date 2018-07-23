@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,16 +11,15 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {WineryNamespaceSelectorService} from '../../../wineryNamespaceSelector/wineryNamespaceSelector.service';
-import {NamespacesService} from './namespaces.service';
-import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
-import {WineryValidatorObject} from '../../../wineryValidators/wineryDuplicateValidator.directive';
-import {isNullOrUndefined} from 'util';
-import {NamespaceWithPrefix} from '../../../model/namespaceWithPrefix';
-import {Response} from '@angular/http';
-import {ModalDirective} from 'ngx-bootstrap';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { WineryNamespaceSelectorService } from '../../../wineryNamespaceSelector/wineryNamespaceSelector.service';
+import { NamespacesService } from './namespaces.service';
+import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
+import { isNullOrUndefined } from 'util';
+import { NamespaceProperties } from '../../../model/namespaceProperties';
+import { ModalDirective } from 'ngx-bootstrap';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'winery-instance-namespaces',
@@ -30,14 +29,19 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 export class NamespacesComponent implements OnInit {
 
     loading = true;
-    adminNamespaces: Array<NamespaceWithPrefix> = [];
-    newNamespace: NamespaceWithPrefix = {prefix: '', namespace: ''};
+    modalTitle: string;
+    addButtonTitle: string;
+    adminNamespaces: Array<NamespaceProperties> = [];
+    newNamespace: NamespaceProperties;
     validatorObjectPrefix: WineryValidatorObject;
     validatorObjectNamespace: WineryValidatorObject;
 
     columns = [
-        {title: 'Prefix', name: 'prefix'},
-        {title: 'Namespace', name: 'namespace'}
+        { title: 'Prefix', name: 'prefix' },
+        { title: 'Namespace', name: 'namespace' },
+        { title: 'Description', name: 'readableName' },
+        { title: 'Repository URL', name: 'upstreamRepository'},
+        { title: 'Pattern NS', name: 'patternCollection' }
     ];
     elementToRemove: any;
 
@@ -86,6 +90,25 @@ export class NamespacesComponent implements OnInit {
      * handler for clicks on the add button
      */
     onAddClick() {
+        this.newNamespace = new NamespaceProperties(null, null, '', '', false);
+        this.validatorObjectPrefix.isActive = true;
+        this.modalTitle = 'Add new Namespace';
+        this.addButtonTitle = 'Add';
+        this.addModal.show();
+    }
+
+    onEdit(data: NamespaceProperties) {
+        this.modalTitle = 'Edit Namespace';
+        this.addButtonTitle = 'Update';
+        // create a copy to enable "undo" by clicking cancel
+        this.newNamespace = new NamespaceProperties(
+            data.namespace,
+            data.prefix,
+            data.readableName,
+            data.upstreamRepository,
+            data.patternCollection
+        );
+        this.validatorObjectPrefix.isActive = false;
         this.addModal.show();
     }
 
@@ -107,7 +130,7 @@ export class NamespacesComponent implements OnInit {
      * Deletes a property from the table and model.
      * @param itemToDelete
      */
-    private deleteItemFromPropertyDefinitionKvList(itemToDelete: NamespaceWithPrefix): void {
+    private deleteItemFromPropertyDefinitionKvList(itemToDelete: NamespaceProperties): void {
         const list = this.adminNamespaces;
         for (let i = 0; i < list.length; i++) {
             if (list[i].namespace === itemToDelete.namespace) {

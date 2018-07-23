@@ -21,13 +21,6 @@
         "patternCollection": false
     },
     {
-        "namespace": "http://docs.oasis-open.org/tosca/ns/2011/12",
-        "prefix": "tosca",
-        "readableName": "",
-        "upstreamRepository": "",
-        "patternCollection": false
-    },
-    {
         "namespace": "http://docs.oasis-open.org/tosca/ns/2011/12/ToscaSpecificTypes",
         "prefix": "tst",
         "readableName": "",
@@ -58,27 +51,6 @@
     {
         "namespace": "http://winery.opentosca.org/test/relationshiptypes/fruits",
         "prefix": "wfr",
-        "readableName": "",
-        "upstreamRepository": "",
-        "patternCollection": false
-    },
-    {
-        "namespace": "http://www.opentosca.org/winery/extensions/tosca/2013/02/12",
-        "prefix": "winery",
-        "readableName": "",
-        "upstreamRepository": "",
-        "patternCollection": false
-    },
-    {
-        "namespace": "http://www.w3.org/XML/1998/namespace",
-        "prefix": "xmlns",
-        "readableName": "",
-        "upstreamRepository": "",
-        "patternCollection": false
-    },
-    {
-        "namespace": "http://www.w3.org/2001/XMLSchema",
-        "prefix": "xsd",
         "readableName": "",
         "upstreamRepository": "",
         "patternCollection": false

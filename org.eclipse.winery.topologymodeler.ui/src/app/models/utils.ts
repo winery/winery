@@ -15,7 +15,6 @@ import { TNodeTemplate, TRelationshipTemplate, Visuals } from './ttopology-templ
 import { QName } from './qname';
 import { isNullOrUndefined } from 'util';
 import { DifferenceStates, VersionUtils } from './ToscaDiff';
-import { NodeVisualsModel } from './nodeVisualsModel';
 
 export class Utils {
 
@@ -55,8 +54,7 @@ export class Utils {
             node.name,
             node.minInstances,
             node.maxInstances,
-            nodeVisualsObject.color,
-            nodeVisualsObject.imageUrl,
+            nodeVisualsObject,
             node.documentation ? node.documentation : [],
             node.any ? node.any : [],
             otherAttributes,
@@ -84,7 +82,7 @@ export class Utils {
         );
     }
 
-    static getNodeVisualsForNodeTemplate(nodeType: string, nodeVisuals: Visuals[], state?: DifferenceStates): NodeVisualsModel {
+    static getNodeVisualsForNodeTemplate(nodeType: string, nodeVisuals: Visuals[], state?: DifferenceStates): Visuals {
         let color, imageUrl: string;
         for (const visual of nodeVisuals) {
             const qName = new QName(visual.nodeTypeId);
@@ -95,11 +93,12 @@ export class Utils {
                 if (imageUrl) {
                     imageUrl = imageUrl.replace('appearance', 'visualappearance');
                 }
-                const nodeVisualsObject = {
-                  color: color,
-                  imageUrl: imageUrl,
+                return {
+                    color: color,
+                    nodeTypeId: nodeType,
+                    imageUrl: imageUrl,
+                    pattern: visual.pattern
                 };
-                return nodeVisualsObject;
             }
         }
     }

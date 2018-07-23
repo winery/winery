@@ -73,17 +73,24 @@ export class RequirementsComponent implements OnInit, OnChanges, OnDestroy {
     public toggleModal($event) {
         this.currentRequirement = null;
         const currentReqId = $event.srcElement.textContent;
-        this.requirements.some(req => {
-            if (req.id === currentReqId) {
-                this.currentRequirement = req;
-                return true;
-            }
-        });
+
+        if (this.requirements) {
+            this.requirements.some(req => {
+                if (req.id === currentReqId) {
+                    this.currentRequirement = req;
+                    return true;
+                }
+            });
+        } else {
+            this.requirements = [];
+        }
+
         if ($event.srcElement.innerText === 'Add new') {
             this.currentNodeData.currentRequirement = null;
         } else {
             this.currentNodeData.currentRequirement = this.currentRequirement;
         }
+
         this.toggleModalHandler.emit(this.currentNodeData);
     }
 

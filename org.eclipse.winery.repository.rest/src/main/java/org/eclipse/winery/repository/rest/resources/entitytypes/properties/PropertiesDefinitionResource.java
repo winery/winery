@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -138,7 +138,7 @@ public class PropertiesDefinitionResource {
             ModelUtilities.replaceWinerysPropertiesDefinition(et, data.winerysPropertiesDefinition);
             String namespace = data.winerysPropertiesDefinition.getNamespace();
             NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
-            if (!namespaceManager.hasPermanentPrefix(namespace)) {
+            if (!namespaceManager.hasPermanentProperties(namespace)) {
                 namespaceManager.addPermanentNamespace(namespace);
             }
             return RestUtils.persist(this.parentRes);
