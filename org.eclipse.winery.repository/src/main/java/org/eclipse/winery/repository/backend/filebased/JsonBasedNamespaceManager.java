@@ -93,7 +93,7 @@ public class JsonBasedNamespaceManager extends AbstractNamespaceManager {
     private void save() {
         try {
             if (!this.file.exists()) {
-                if (this.file.getParentFile().mkdirs() && this.file.createNewFile()) {
+                if (this.file.getParentFile().mkdirs() || this.file.createNewFile()) {
                     LOGGER.debug("Created new namespace file at {}", this.file);
                 } else {
                     LOGGER.error("Could not craete namespace file at {}", this.file);

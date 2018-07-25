@@ -200,8 +200,6 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
                 "  changed from \"ServiceTemplateWithTwoNodeTemplates_w1-wip3\" to \"ServiceTemplateWithTwoNodeTemplates_w1-wip4\"\n" +
                 "- name\n" +
                 "  changed from \"ServiceTemplateWithTwoNodeTemplates_w1-wip3\" to \"ServiceTemplateWithTwoNodeTemplates_w1-wip4\"\n" +
-                "- topologyTemplate/nodeTemplates/NodeTypeWithTwoKVProperties/otherAttributes/{x}\n" +
-                "  changed from \"399\" to \"400\"\n" +
                 "- topologyTemplate/nodeTemplates/NodeTypeWithTwoKVProperties/otherAttributes/{{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x}\n" +
                 "  changed from \"399\" to \"400\"\n" +
                 "- topologyTemplate/nodeTemplates/NodeTypeWithTwoKVProperties/x\n" +
