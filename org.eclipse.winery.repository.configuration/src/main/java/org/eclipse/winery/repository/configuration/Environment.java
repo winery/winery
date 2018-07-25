@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,6 +13,11 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.configuration;
 
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
+
 import org.apache.commons.configuration2.BaseConfiguration;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.ConfigurationUtils;
@@ -21,16 +26,12 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
-
 public class Environment {
 
     static final String KEY_URL_REPOSITORY_UI = "repositoryui";
     static final String KEY_URL_TOPOLOGY_MODELER = "topologymodeler";
     static final String KEY_URL_BPMN4TOSCA_MODELER = "bpmn4toscamodelerBaseURI";
+    static final String KEY_URL_CONTAINER_API = "containerapi";
 
     private static final String KEY_GITHUB_CLIENT_ID = "gitHubClientId";
     private static final String KEY_GITHUB_CLIENT_SECRET = "gitHubClientSecret";
