@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,19 +14,30 @@
 
 package org.eclipse.winery.topologymodeler.resources;
 
-import org.eclipse.winery.model.tosca.*;
-import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.JAXBHelper;
-import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.RESTHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.StringReader;
 
-import javax.ws.rs.*;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.StringReader;
+
+import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.JAXBHelper;
+import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.RESTHelper;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class contains resources used for the topology completion.
@@ -42,8 +53,7 @@ public class TopologyCompletionResource {
     private static final Logger LOGGER = LoggerFactory.getLogger(TopologyCompletionResource.class);
 
     /**
-     * Adds selected {@link TNodeTemplate}s and {@link TRelationshipTemplate}s
-     * to a topology.
+     * Adds selected {@link TNodeTemplate}s and {@link TRelationshipTemplate}s to a topology.
      *
      * @param topology                      the {@link TTopologyTemplate} as XML string
      * @param allChoices                    all possible choices as XML
@@ -116,7 +126,6 @@ public class TopologyCompletionResource {
             }
 
             return Response.ok().build();
-
         } catch (JAXBException e) {
             LOGGER.error("Could not save topology", e);
             return Response.serverError().build();

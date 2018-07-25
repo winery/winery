@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,16 +14,22 @@
 
 package org.eclipse.winery.topologymodeler.addons.topologycompleter.topologycompletion.completer;
 
-import org.eclipse.winery.model.tosca.*;
-import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.topologymodeler.addons.topologycompleter.analyzer.TOSCAAnalyzer;
-import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.NodeTemplateConnector;
-import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.Utils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TRequirement;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.topologymodeler.addons.topologycompleter.analyzer.TOSCAAnalyzer;
+import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.NodeTemplateConnector;
+import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.Utils;
 
 public class RequirementCompleter {
 

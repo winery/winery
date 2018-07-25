@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2015-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,9 +13,13 @@
  *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel.model;
 
-import org.eclipse.winery.bpmn2bpel.model.param.Parameter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import java.util.*;
+import org.eclipse.winery.bpmn2bpel.model.param.Parameter;
 
 public abstract class Task extends Node {
 

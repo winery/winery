@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,7 +14,17 @@
 
 package org.eclipse.winery.topologymodeler.addons.topologycompleter.topologycompletion;
 
-import org.eclipse.winery.model.tosca.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TRequirement;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.analyzer.DeferredAnalyzer;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.analyzer.PlaceHolderAnalyzer;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.analyzer.RequirementAnalyzer;
@@ -23,12 +33,6 @@ import org.eclipse.winery.topologymodeler.addons.topologycompleter.topologycompl
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.topologycompletion.completer.PlaceHolderCompleter;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.topologycompletion.completer.RequirementCompleter;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.topologycompletion.completer.StepByStepCompleter;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * This class manages the completion of a TOSCA {@link TTopologyTemplate}.
@@ -45,9 +49,9 @@ public class CompletionManager {
     /**
      * Map containing the topology solutions.
      * <p>
-     * The first parameter of the map is an index used to traverse the map easily. The second parameter of the solutions map
-     * is another map containing a possible topology solution and a boolean value that determines if the topology is complete.
-     * When all topologies of the solution map are complete, it will be returned to Winery.
+     * The first parameter of the map is an index used to traverse the map easily. The second parameter of the solutions
+     * map is another map containing a possible topology solution and a boolean value that determines if the topology is
+     * complete. When all topologies of the solution map are complete, it will be returned to Winery.
      */
     private final Map<Integer, Map<TTopologyTemplate, Boolean>> solutions;
 
@@ -57,12 +61,14 @@ public class CompletionManager {
     private final boolean stepByStep;
 
     /**
-     * Map containing {@link TNodeTemplate}s and {@link TRelationshipTemplate}s to be chosen by the user in the step-by-step approach.
+     * Map containing {@link TNodeTemplate}s and {@link TRelationshipTemplate}s to be chosen by the user in the
+     * step-by-step approach.
      */
     private Map<TNodeTemplate, Map<TNodeTemplate, List<TEntityTemplate>>> templateChoices;
 
     /**
-     * Whether a user interaction for choosing inserted {@link TNodeTemplate}s and {@link TRelationshipTemplate}s is necessary or not.
+     * Whether a user interaction for choosing inserted {@link TNodeTemplate}s and {@link TRelationshipTemplate}s is
+     * necessary or not.
      */
     private boolean nodeTemplateUserInteraction = false;
 
@@ -159,7 +165,6 @@ public class CompletionManager {
                 LOGGER.info("Returning topology for user interaction");
 
                 return solutionList;
-
             } else if (unfulfilledRequirements.isEmpty() && !placeHolders.isEmpty()) {
 
                 // complete a topology containing place holders step by step using the StepByStepCompleter class
@@ -238,7 +243,6 @@ public class CompletionManager {
                     manageCompletion(topologySolution);
                     index++;
                 }
-
             } else if (unfulfilledRequirements.isEmpty() && !placeHolders.isEmpty() || !unfulfilledRequirements.isEmpty() && !placeHolders.isEmpty()) {
 
                 LOGGER.info("The topology contains one or more PlaceHolders.");
@@ -341,12 +345,12 @@ public class CompletionManager {
     }
 
     /**
-     * Returns whether user interaction by choosing {@link TNodeTemplate}s and {@link TRelationshipTemplate}s is necessary or not
+     * Returns whether user interaction by choosing {@link TNodeTemplate}s and {@link TRelationshipTemplate}s is
+     * necessary or not
      *
      * @return the field nodeTemplateUserInteraction
      */
     public boolean getNodeTemplateUserInteraction() {
         return nodeTemplateUserInteraction;
     }
-
 }

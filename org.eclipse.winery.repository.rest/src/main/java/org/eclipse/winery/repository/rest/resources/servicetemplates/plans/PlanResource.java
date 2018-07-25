@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2015 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,6 +14,17 @@
 
 package org.eclipse.winery.repository.rest.resources.servicetemplates.plans;
 
+import java.io.IOException;
+import java.util.List;
+
+import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.elements.PlanId;
@@ -27,14 +38,9 @@ import org.eclipse.winery.repository.rest.resources._support.IHasName;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import java.io.IOException;
-import java.util.List;
 
 /**
  * Does <em>not</em> implement {@link org.eclipse.winery.repository.resources.IHasTypeReference}, because the type of a
@@ -43,7 +49,6 @@ import java.util.List;
 public class PlanResource extends EntityWithIdResource<TPlan> implements IHasName {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlanResource.class);
-
 
     public PlanResource(IIdDetermination<TPlan> idDetermination, TPlan o, int idx, List<TPlan> list, ServiceTemplateResource res) {
         super(idDetermination, o, idx, list, res);

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,14 +13,22 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.validator;
 
-import org.eclipse.winery.model.tosca.yaml.TArtifactDefinition;
-import org.eclipse.winery.yaml.common.exception.InvalidToscaSyntax;
-import org.eclipse.winery.yaml.common.reader.yaml.Builder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import java.util.*;
-import java.util.stream.Collectors;
+
+import org.eclipse.winery.model.tosca.yaml.TArtifactDefinition;
+import org.eclipse.winery.yaml.common.exception.InvalidToscaSyntax;
+import org.eclipse.winery.yaml.common.reader.yaml.Builder;
 
 public class FieldValidator {
     private Map<Class, Set<String>> declaredFields;

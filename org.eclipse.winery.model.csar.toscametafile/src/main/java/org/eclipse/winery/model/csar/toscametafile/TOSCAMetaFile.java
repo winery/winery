@@ -13,10 +13,14 @@
  *******************************************************************************/
 package org.eclipse.winery.model.csar.toscametafile;
 
-import org.eclipse.virgo.util.parser.manifest.ManifestContents;
-
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import org.eclipse.virgo.util.parser.manifest.ManifestContents;
 
 /**
  * Provides structured access to the content of a TOSCA meta file.
@@ -71,17 +75,16 @@ public class TOSCAMetaFile implements Serializable {
     }
 
     /**
-     * @return Value of attribute <code>Entry-Definitions</code> in block 0
-     * (contains relative path to the root TOSCA file in the CSAR). If
-     * attribute is not specified <code>null</code>.
+     * @return Value of attribute <code>Entry-Definitions</code> in block 0 (contains relative path to the root TOSCA
+     * file in the CSAR). If attribute is not specified <code>null</code>.
      */
     public String getEntryDefinitions() {
         return this.block0.get(TOSCAMetaFileAttributes.ENTRY_DEFINITIONS);
     }
 
     /**
-     * @return Value of attribute <code>Description</code> in block 0 (contains
-     * description of CSAR). If attribute is not specified
+     * @return Value of attribute <code>Description</code> in block 0 (contains description of CSAR). If attribute is
+     * not specified
      * <code>null</code>.
      */
     public String getDescription() {
@@ -89,9 +92,8 @@ public class TOSCAMetaFile implements Serializable {
     }
 
     /**
-     * @return Value of attribute <code>Topology</code> in block 0 (contains
-     * relative path to topology picture in the CSAR). If attribute is
-     * not specified <code>null</code>.
+     * @return Value of attribute <code>Topology</code> in block 0 (contains relative path to topology picture in the
+     * CSAR). If attribute is not specified <code>null</code>.
      */
     public String getTopology() {
         return this.block0.get(TOSCAMetaFileAttributes.TOPOLOGY);
@@ -105,8 +107,7 @@ public class TOSCAMetaFile implements Serializable {
     }
 
     /**
-     * @return File blocks (block 1 to last block; contains meta data of files
-     * in the CSAR). Every block is a element
+     * @return File blocks (block 1 to last block; contains meta data of files in the CSAR). Every block is a element
      * <code>Map&lt;String, String&gt;</code> in the returned
      * <code>List</code>.
      */
@@ -118,8 +119,7 @@ public class TOSCAMetaFile implements Serializable {
      * Returns the mime type for the given name
      *
      * @param name a reference to a file
-     * @return the mime type associated with the given name, null if no mime
-     * type was found
+     * @return the mime type associated with the given name, null if no mime type was found
      */
     public String getMimeType(String name) {
         Objects.requireNonNull(name);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,14 +14,21 @@
 
 package org.eclipse.winery.topologymodeler.addons.topologycompleter.analyzer;
 
-import org.eclipse.winery.model.tosca.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TRequirement;
+import org.eclipse.winery.model.tosca.TRequirementType;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
+
 /**
- * This class contains several methods to analyze the content of a TOSCA {@link TTopologyTemplate} and to fill a data model
- * with the analyzed information. This class serves the access to all types and templates of a topology.
+ * This class contains several methods to analyze the content of a TOSCA {@link TTopologyTemplate} and to fill a data
+ * model with the analyzed information. This class serves the access to all types and templates of a topology.
  */
 public class TOSCAAnalyzer {
 
@@ -35,8 +42,8 @@ public class TOSCAAnalyzer {
     List<TRequirementType> requirementTypes;
 
     /**
-     * This method analyzes the TOSCA {@link TTopologyTemplate} for {@link TNodeTemplate}s, {@link TRelationshipTemplate}s
-     * and existing {@link TRequirement}s and adds them to a list.
+     * This method analyzes the TOSCA {@link TTopologyTemplate} for {@link TNodeTemplate}s, {@link
+     * TRelationshipTemplate}s and existing {@link TRequirement}s and adds them to a list.
      *
      * @param topology the TOSCA {@link TTopologyTemplate}
      */

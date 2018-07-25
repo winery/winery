@@ -13,18 +13,24 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.imports.xsdimports;
 
-import io.swagger.annotations.ApiOperation;
+import java.util.List;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithoutTypeReferenceResource;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.util.List;
+import io.swagger.annotations.ApiOperation;
 
 /**
- * Manages all imports of type XML Schema Definition.
- * The actual implementation is done in the AbstractComponentsResource
+ * Manages all imports of type XML Schema Definition. The actual implementation is done in the
+ * AbstractComponentsResource
  * <p>
  * FIXME: This class should be generalized to handle ImportId
  */
@@ -47,5 +53,4 @@ public class XSDImportsResource extends AbstractComponentsWithoutTypeReferenceRe
     public XSDImportResource getComponentInstanceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
         return this.getComponentInstanceResource(namespace, id, true);
     }
-
 }

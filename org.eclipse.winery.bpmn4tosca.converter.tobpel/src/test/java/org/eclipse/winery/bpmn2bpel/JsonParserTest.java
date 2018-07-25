@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2015-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,13 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel;
 
-import org.eclipse.winery.bpmn2bpel.model.*;
-import org.eclipse.winery.bpmn2bpel.model.param.*;
-import org.eclipse.winery.bpmn2bpel.parser.Bpmn4JsonParser;
-import org.eclipse.winery.bpmn2bpel.parser.ParseException;
-import org.junit.Test;
-
-import javax.xml.namespace.QName;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -27,6 +20,28 @@ import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.bpmn2bpel.model.EndTask;
+import org.eclipse.winery.bpmn2bpel.model.Link;
+import org.eclipse.winery.bpmn2bpel.model.ManagementFlow;
+import org.eclipse.winery.bpmn2bpel.model.ManagementTask;
+import org.eclipse.winery.bpmn2bpel.model.Node;
+import org.eclipse.winery.bpmn2bpel.model.StartTask;
+import org.eclipse.winery.bpmn2bpel.model.Task;
+import org.eclipse.winery.bpmn2bpel.model.param.ConcatParameter;
+import org.eclipse.winery.bpmn2bpel.model.param.DeploymentArtefactParameter;
+import org.eclipse.winery.bpmn2bpel.model.param.ImplementationArtefactParameter;
+import org.eclipse.winery.bpmn2bpel.model.param.ParamType;
+import org.eclipse.winery.bpmn2bpel.model.param.Parameter;
+import org.eclipse.winery.bpmn2bpel.model.param.PlanParameter;
+import org.eclipse.winery.bpmn2bpel.model.param.StringParameter;
+import org.eclipse.winery.bpmn2bpel.model.param.TopologyParameter;
+import org.eclipse.winery.bpmn2bpel.parser.Bpmn4JsonParser;
+import org.eclipse.winery.bpmn2bpel.parser.ParseException;
+
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -44,12 +59,10 @@ public class JsonParserTest {
 
 		assertNodeSets(expectedFlow.vertexSet(), actualFlow.vertexSet());
 		assertLinkSets(expectedFlow.edgeSet(), actualFlow.edgeSet());
-
 	}
 
 	public static void assertNodeSets(Set<Node> expectedNodes, Set<Node> actualNodes) {
 		assertEquals(expectedNodes.size(), actualNodes.size());
-
 
 		for (Iterator<Node> iterator = expectedNodes.iterator(); iterator.hasNext(); ) {
 			Node expectedNode = (Node) iterator.next();
@@ -65,8 +78,6 @@ public class JsonParserTest {
 	public static void assertLinkSets(Set<Link> expectedLinks, Set<Link> actualLinks) {
 		//assertEquals(expectedNodes.size(), actualNodes.size());
 		assertEquals(expectedLinks.size(), actualLinks.size());
-
-
 	}
 
 	public static void assertLink(Link expectedLink, Link actualLink) {
@@ -86,7 +97,6 @@ public class JsonParserTest {
 		return null;
 	}
 
-
 	public static void assertNodes(Node expected, Node actual) {
 		//assertEquals(expected.getId(), actual.getId());
 		assertEquals("node: id ", expected.getId(), actual.getId());
@@ -95,7 +105,6 @@ public class JsonParserTest {
 		if (expected instanceof Task) {
 			assertTasks((Task) expected, (Task) actual);
 		}
-
 	}
 
 	public static void assertTasks(Task expected, Task actual) {
@@ -148,7 +157,6 @@ public class JsonParserTest {
 		assertEquals("Parameter: value", expected.getValue(), actual.getValue());
 	}
 
-
 	private static Parameter getParameterByName(String name, List<Parameter> parameters) {
 
 		Iterator<Parameter> iter = parameters.iterator();
@@ -161,7 +169,6 @@ public class JsonParserTest {
 		return null;
 	}
 
-
 	private static ManagementFlow createReferenceFlow() {
 		ManagementFlow flow = new ManagementFlow();
 
@@ -170,7 +177,6 @@ public class JsonParserTest {
 		startTask.setName("StartEvent");
 		startTask.addOutputParameter(createParameter("SSHUserInput", ParamType.TOPOLOGY, "StartEvent.SSHUserInput"));
 		flow.addVertex(startTask);
-
 
 		ManagementTask createEC2Task = new ManagementTask();
 		createEC2Task.setId("element10");
@@ -203,14 +209,11 @@ public class JsonParserTest {
 		endTask.addInputParameter(createParameter("AppURL", ParamType.CONCAT, "http://,UbuntuVM.IPAddress,:8080/,PHPApplication.ID"));
 		flow.addVertex(endTask);
 
-
 		flow.addEdge(startTask, createEC2Task);
 		flow.addEdge(createEC2Task, runUbuntuTask);
 		flow.addEdge(runUbuntuTask, endTask);
 
 		return flow;
-
-
 	}
 
 	private static Parameter createParameter(String name, ParamType type, String value) {
@@ -244,5 +247,4 @@ public class JsonParserTest {
 
 		return param;
 	}
-
 }

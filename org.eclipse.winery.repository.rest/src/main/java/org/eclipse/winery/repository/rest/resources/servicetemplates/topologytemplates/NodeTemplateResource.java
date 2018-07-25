@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2014 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,7 +13,17 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates;
 
-import io.swagger.annotations.ApiOperation;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
@@ -25,11 +35,7 @@ import org.eclipse.winery.repository.rest.resources.artifacts.DeploymentArtifact
 import org.eclipse.winery.repository.rest.resources.entitytemplates.TEntityTemplateResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
-import javax.xml.namespace.QName;
-import java.util.List;
-import java.util.Map;
+import io.swagger.annotations.ApiOperation;
 
 public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate> implements INodeTemplateResourceOrNodeTypeImplementationResource {
 

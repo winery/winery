@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2014-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2014-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,6 +13,17 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.reqscaps;
 
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityRef;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
@@ -21,12 +32,6 @@ import org.eclipse.winery.repository.rest.resources._support.collections.Collect
 import org.eclipse.winery.repository.rest.resources._support.collections.withoutid.EntityWithoutIdCollectionResource;
 import org.eclipse.winery.repository.rest.resources.apiData.RequirementsOrCapabilityApiData;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import java.util.List;
 
 /**
  * This class is an adaption from {@link org.eclipse.winery.repository.resources.servicetemplates.boundarydefinitions.reqscaps.RequirementsResource}

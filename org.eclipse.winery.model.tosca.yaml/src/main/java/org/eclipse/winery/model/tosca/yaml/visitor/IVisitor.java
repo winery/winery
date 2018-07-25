@@ -13,7 +13,45 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.yaml.visitor;
 
-import org.eclipse.winery.model.tosca.yaml.*;
+import org.eclipse.winery.model.tosca.yaml.TArtifactDefinition;
+import org.eclipse.winery.model.tosca.yaml.TArtifactType;
+import org.eclipse.winery.model.tosca.yaml.TAttributeAssignment;
+import org.eclipse.winery.model.tosca.yaml.TAttributeDefinition;
+import org.eclipse.winery.model.tosca.yaml.TCapabilityAssignment;
+import org.eclipse.winery.model.tosca.yaml.TCapabilityDefinition;
+import org.eclipse.winery.model.tosca.yaml.TCapabilityType;
+import org.eclipse.winery.model.tosca.yaml.TConstraintClause;
+import org.eclipse.winery.model.tosca.yaml.TDataType;
+import org.eclipse.winery.model.tosca.yaml.TEntityType;
+import org.eclipse.winery.model.tosca.yaml.TEntrySchema;
+import org.eclipse.winery.model.tosca.yaml.TGroupDefinition;
+import org.eclipse.winery.model.tosca.yaml.TGroupType;
+import org.eclipse.winery.model.tosca.yaml.TImplementation;
+import org.eclipse.winery.model.tosca.yaml.TImportDefinition;
+import org.eclipse.winery.model.tosca.yaml.TInterfaceAssignment;
+import org.eclipse.winery.model.tosca.yaml.TInterfaceDefinition;
+import org.eclipse.winery.model.tosca.yaml.TInterfaceType;
+import org.eclipse.winery.model.tosca.yaml.TNodeFilterDefinition;
+import org.eclipse.winery.model.tosca.yaml.TNodeTemplate;
+import org.eclipse.winery.model.tosca.yaml.TNodeType;
+import org.eclipse.winery.model.tosca.yaml.TOperationDefinition;
+import org.eclipse.winery.model.tosca.yaml.TParameterDefinition;
+import org.eclipse.winery.model.tosca.yaml.TPolicyDefinition;
+import org.eclipse.winery.model.tosca.yaml.TPolicyType;
+import org.eclipse.winery.model.tosca.yaml.TPropertyAssignment;
+import org.eclipse.winery.model.tosca.yaml.TPropertyDefinition;
+import org.eclipse.winery.model.tosca.yaml.TPropertyFilterDefinition;
+import org.eclipse.winery.model.tosca.yaml.TRelationshipAssignment;
+import org.eclipse.winery.model.tosca.yaml.TRelationshipDefinition;
+import org.eclipse.winery.model.tosca.yaml.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.yaml.TRelationshipType;
+import org.eclipse.winery.model.tosca.yaml.TRepositoryDefinition;
+import org.eclipse.winery.model.tosca.yaml.TRequirementAssignment;
+import org.eclipse.winery.model.tosca.yaml.TRequirementDefinition;
+import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
+import org.eclipse.winery.model.tosca.yaml.TSubstitutionMappings;
+import org.eclipse.winery.model.tosca.yaml.TTopologyTemplateDefinition;
+import org.eclipse.winery.model.tosca.yaml.TVersion;
 import org.eclipse.winery.model.tosca.yaml.support.Metadata;
 
 public interface IVisitor<R extends AbstractResult, P extends AbstractParameter> {

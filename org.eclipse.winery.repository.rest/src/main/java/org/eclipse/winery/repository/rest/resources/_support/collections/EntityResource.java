@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2015 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,14 +13,19 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support.collections;
 
-import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources._support.IPersistable;
+import java.util.List;
 
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import java.util.List;
+
+import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 
 /**
  * Class to hold a single entity residing in a list of entities
@@ -42,11 +47,9 @@ public abstract class EntityResource<EntityT> {
 
     protected IIdDetermination<EntityT> idDetermination;
 
-
     /**
-     * @param idDetermination the object offering determination of an id of
-     *                        EntityT. May be null. If null, then setIdDetermination(obj)
-     *                        has to be called to enable this class functioning properly
+     * @param idDetermination the object offering determination of an id of EntityT. May be null. If null, then
+     *                        setIdDetermination(obj) has to be called to enable this class functioning properly
      * @param o               the object this resource is representing
      * @param idx             the index of the object in the list
      * @param list            the list, where the object is stored in
@@ -61,8 +64,7 @@ public abstract class EntityResource<EntityT> {
     }
 
     /**
-     * Quick hack for AbstractReqOrCapDefResource which is itself an
-     * IIdDetermination
+     * Quick hack for AbstractReqOrCapDefResource which is itself an IIdDetermination
      */
     protected final void setIdDetermination(IIdDetermination<EntityT> idDetermination) {
         this.idDetermination = idDetermination;
@@ -87,12 +89,10 @@ public abstract class EntityResource<EntityT> {
     /**
      * Replaces the whole entity by the given entity
      * <p>
-     * As we use the hash code as index, the index changes when the resource is
-     * updated. This is not in line with REST. The alternative implementation is
-     * to use the index in the list as resource identification. That changes at
-     * each modification of the list itself (if elements are deleted / inserted
-     * before the current entry). When using the hash value, users may
-     * concurrently edit items and the list may also be updated
+     * As we use the hash code as index, the index changes when the resource is updated. This is not in line with REST.
+     * The alternative implementation is to use the index in the list as resource identification. That changes at each
+     * modification of the list itself (if elements are deleted / inserted before the current entry). When using the
+     * hash value, users may concurrently edit items and the list may also be updated
      *
      * @return the new id.
      */
@@ -114,5 +114,4 @@ public abstract class EntityResource<EntityT> {
         }
         return RestUtils.persist(this.res);
     }
-
 }

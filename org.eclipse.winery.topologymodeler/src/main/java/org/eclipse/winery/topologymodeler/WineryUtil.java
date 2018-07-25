@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,9 +13,13 @@
  *******************************************************************************/
 package org.eclipse.winery.topologymodeler;
 
-import org.eclipse.winery.common.interfaces.QNameWithName;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
-import java.util.*;
+import org.eclipse.winery.common.interfaces.QNameWithName;
 
 public class WineryUtil {
 
@@ -26,7 +30,6 @@ public class WineryUtil {
 
         String localName;
         String name;
-
 
         public LocalNameNamePair(String localName, String name) {
             this.localName = localName;
@@ -80,5 +83,4 @@ public class WineryUtil {
         }
         return res;
     }
-
 }

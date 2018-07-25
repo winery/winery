@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,6 +13,28 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.xsd;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.stream.Collectors;
+
+import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
+import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.ImportUtils;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.constants.MediaTypes;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.xerces.xs.XSConstants;
 import org.apache.xerces.xs.XSModel;
@@ -22,20 +44,8 @@ import org.eclipse.collections.api.multimap.MutableMultimap;
 import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.Multimaps;
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
-import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.ImportUtils;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class RepositoryBasedXsdImportManager implements XsdImportManager {
 
