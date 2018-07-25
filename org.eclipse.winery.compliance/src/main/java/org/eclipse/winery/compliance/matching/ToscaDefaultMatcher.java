@@ -11,35 +11,22 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-package org.eclipse.winery.compliance.model;
+package org.eclipse.winery.compliance.matching;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.eclipse.winery.compliance.model.ToscaEdge;
+import org.eclipse.winery.compliance.model.ToscaNode;
 
-import org.eclipse.winery.model.tosca.TEntityType;
+import org.apache.commons.lang3.StringUtils;
 
-public abstract class TOSCAEntity {
+public class ToscaDefaultMatcher implements IToscaMatcher {
 
-	private final List<TEntityType> types = new ArrayList<>();
-	private String id;
-
-	public String getId() {
-		return id;
+	@Override
+	public boolean isCompatible(ToscaNode left, ToscaNode right) {
+		return StringUtils.equals(left.getNodeTemplate().getName(), right.getNodeTemplate().getName());
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public List<TEntityType> getTypes() {
-		return types;
-	}
-
-	public TEntityType getActualType() {
-		return types.stream().findFirst().orElse(null);
-	}
-
-	public boolean addTEntityType(TEntityType type) {
-		return this.types.add(type);
+	@Override
+	public boolean isCompatible(ToscaEdge left, ToscaEdge right) {
+		return StringUtils.equals(left.getTemplate().getName(), right.getTemplate().getName());
 	}
 }

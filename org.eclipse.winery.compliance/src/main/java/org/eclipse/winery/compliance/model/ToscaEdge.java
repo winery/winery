@@ -19,13 +19,13 @@ import java.util.stream.Collectors;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 
-public class TOSCAEdge extends TOSCAEntity {
+public class ToscaEdge extends ToscaEntity {
 
-	private TOSCANode targetNode;
-	private TOSCANode sourceNode;
+	private ToscaNode targetNode;
+	private ToscaNode sourceNode;
 	private TRelationshipTemplate template;
 
-	public TOSCAEdge(TOSCANode sourceNode, TOSCANode targetNode) {
+	public ToscaEdge(ToscaNode sourceNode, ToscaNode targetNode) {
 		super();
 		this.targetNode = targetNode;
 		this.sourceNode = sourceNode;
@@ -35,19 +35,19 @@ public class TOSCAEdge extends TOSCAEntity {
 		return getTypes().stream().map(tEntityType -> (TRelationshipType) tEntityType).collect(Collectors.toList());
 	}
 
-	public TOSCANode getTargetNode() {
+	public ToscaNode getTargetNode() {
 		return targetNode;
 	}
 
-	public void setTargetNode(TOSCANode targetNode) {
+	public void setTargetNode(ToscaNode targetNode) {
 		this.targetNode = targetNode;
 	}
 
-	public TOSCANode getSourceNode() {
+	public ToscaNode getSourceNode() {
 		return sourceNode;
 	}
 
-	public void setSourceNode(TOSCANode sourceNode) {
+	public void setSourceNode(ToscaNode sourceNode) {
 		this.sourceNode = sourceNode;
 	}
 

@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
-public class TOSCAModelPropertiesBuilder {
+public class ToscaModelPropertiesBuilder {
 
 	java.util.Properties properties = new Properties();
 	@NonNull
@@ -36,12 +36,12 @@ public class TOSCAModelPropertiesBuilder {
 	@NonNull
 	public static String localName;
 
-	public TOSCAModelPropertiesBuilder(@NonNull String namespaceURI, @NonNull String localName) {
+	public ToscaModelPropertiesBuilder(@NonNull String namespaceURI, @NonNull String localName) {
 		this.namespaceURI = namespaceURI;
 		this.localName = localName;
 	}
 
-	public TOSCAModelPropertiesBuilder addProperty(@NonNull String key, @NonNull String value) {
+	public ToscaModelPropertiesBuilder addProperty(@NonNull String key, @NonNull String value) {
 		properties.put(key, value);
 		return this;
 	}

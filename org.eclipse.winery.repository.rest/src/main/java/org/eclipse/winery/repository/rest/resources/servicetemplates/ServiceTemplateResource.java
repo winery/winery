@@ -31,6 +31,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -69,7 +70,6 @@ import org.xml.sax.SAXException;
 public class ServiceTemplateResource extends AbstractComponentInstanceWithReferencesResource implements IHasName {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceTemplateResource.class);
-
 
     public ServiceTemplateResource(ServiceTemplateId id) {
         super(id);
@@ -169,7 +169,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 
     @GET
     @Path("injector/options")
-    @Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
+    @Produces( {MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
     public Response getInjectorOptions() {
         Splitting splitting = new Splitting();
         TTopologyTemplate topologyTemplate = this.getServiceTemplate().getTopologyTemplate();
@@ -214,8 +214,8 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 
     @POST
     @Path("injector/replace")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
+    @Consumes( {MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
+    @Produces( {MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
     public Response injectNodeTemplates(InjectorReplaceData injectorReplaceData, @Context UriInfo uriInfo) throws Exception, IOException, ParserConfigurationException, SAXException, SplittingException {
 
         if (injectorReplaceData.hostInjections != null) {
@@ -289,13 +289,13 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
         return Response.created(url).build();
     }
 
-    @Path("constraintchecking/")
+    @Path("constraintchecking")
     @Produces(MediaType.APPLICATION_XML)
     @POST
-    public Response complianceChecking(@Context UriInfo uriInfo) {
+    public Response complianceChecking(@Context UriInfo uriInfo) throws JAXBException {
         ServiceTemplateComplianceRuleRuleChecker checker = new ServiceTemplateComplianceRuleRuleChecker(this.getServiceTemplate());
         ServiceTemplateCheckingResult serviceTemplateCheckingResult = checker.checkComplianceRules();
-        return Response.ok().entity(serviceTemplateCheckingResult).build();
+        return Response.ok().entity(serviceTemplateCheckingResult.toXMLString()).build();
     }
 
     @Override

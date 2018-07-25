@@ -10,15 +10,15 @@
  * which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- ********************************************************************************/
-package org.eclipse.winery.compliance.matching;
+ *******************************************************************************/
 
-import org.eclipse.winery.compliance.model.TOSCAEdge;
-import org.eclipse.winery.compliance.model.TOSCANode;
-
-public interface ITOSCAMatcher {
-
-	boolean isCompatible(TOSCANode left, TOSCANode right);
-
-	boolean isCompatible(TOSCAEdge left, TOSCAEdge right);
+export class TopologyModelerConfiguration {
+    constructor(readonly id: string,
+                readonly ns: string,
+                readonly repositoryURL: string,
+                readonly uiURL: string,
+                readonly compareTo: string,
+                readonly parentPath = 'servicetemplates',
+                readonly elementPath = 'topologytemplate') {
+    }
 }
