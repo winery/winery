@@ -1,23 +1,21 @@
 <!--
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
- *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
- * which is available at https://www.apache.org/licenses/LICENSE-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
--->
-
+   * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+   *
+   * See the NOTICE file(s) distributed with this work for additional
+   * information regarding copyright ownership.
+   *
+   * This program and the accompanying materials are made available under the
+   * terms of the Eclipse Public License 2.0 which is available at
+   * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+   * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+   *
+   * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+   -->
 <div id="NTPropertiesView"
      class="sidebar-root"
      style="display: block;"
      [@sidebarAnimationStatus]="sidebarAnimationStatus"
      *ngIf="sidebarState.sidebarVisible">
-
     <div id="nodeTemplateInformationSection" style="margin: 8px">
         <button type="button" class="close" style="color: #000000" aria-label="Close" (click)="closeSidebar()">
             <span aria-hidden="true">&times;</span>
@@ -40,7 +38,7 @@
                 <a id="nodetemplateType"
                    target="_blank"
                    [routerLink]=""
-                   (click)="linkType()"
+                   (click)="linkType($event)"
                    class="form-control">
                     {{sidebarState.type}}
                 </a>
@@ -52,9 +50,9 @@
                         <div class="col-lg-12">
                             <div class="input-sm">
                                 <div class="input-group bootstrap-touchspin">
-                <span class="input-group-addon bootstrap-touchspin-prefix"
-                      style="display: none;">6
-                </span>
+                        <span class="input-group-addon bootstrap-touchspin-prefix"
+                              style="display: none;">6
+                        </span>
                                     <input id="maxInstances"
                                            (keyup)="nodeMaxInstancesKeyUp.next($event.target.value)"
                                            value="{{sidebarState.maxInstances}}"
@@ -69,24 +67,24 @@
                                     <span class="input-group-addon bootstrap-touchspin-postfix"
                                           style="display: none;"></span>
                                     <span class="input-group-btn-vertical">
-                  <button class="btn btn-default"
-                          type="button"
-                          style="box-shadow: none; border: 2px solid #dddddd; height: 38px"
-                          [style.background-color]="getInfinityButtonStyle()"
-                          (click)="maxInstancesChanged('inf');">
-                    <span class="h6" style="font-weight: bolder;">∞</span>
-                  </button>
-                  <button class="btn btn-default bootstrap-touchspin-up"
-                          type="button"
-                          (click)="maxInstancesChanged('inc');">
-                    <i class="fa fa-chevron-up"></i>
-                  </button>
-                  <button class="btn btn-default bootstrap-touchspin-down"
-                          type="button"
-                          (click)="maxInstancesChanged('dec');">
-                    <i class="fa fa-chevron-down"></i>
-                  </button>
-                </span>
+                        <button class="btn btn-default"
+                                type="button"
+                                style="box-shadow: none; border: 2px solid #dddddd; height: 38px"
+                                [style.background-color]="getInfinityButtonStyle()"
+                                (click)="maxInstancesChanged('inf');">
+                        <span class="h6" style="font-weight: bolder;">∞</span>
+                        </button>
+                        <button class="btn btn-default bootstrap-touchspin-up"
+                                type="button"
+                                (click)="maxInstancesChanged('inc');">
+                        <i class="fa fa-chevron-up"></i>
+                        </button>
+                        <button class="btn btn-default bootstrap-touchspin-down"
+                                type="button"
+                                (click)="maxInstancesChanged('dec');">
+                        <i class="fa fa-chevron-down"></i>
+                        </button>
+                        </span>
                                 </div>
                             </div>
                         </div>
@@ -96,9 +94,9 @@
                         <div class="col-lg-12">
                             <div class="input-sm">
                                 <div class="input-group bootstrap-touchspin">
-                <span class="input-group-addon bootstrap-touchspin-prefix"
-                      style="display: none;">
-                </span>
+                                    <span class="input-group-addon bootstrap-touchspin-prefix"
+                                          style="display: none;">
+                                    </span>
                                     <input id="minInstances"
                                            (keyup)="nodeMinInstancesKeyUp.next($event.target.value)"
                                            value="{{sidebarState.minInstances}}"
@@ -111,20 +109,30 @@
                                     <span class="input-group-addon bootstrap-touchspin-postfix"
                                           style="display: none;"></span>
                                     <span class="input-group-btn-vertical">
-                  <button class="btn btn-default bootstrap-touchspin-up"
-                          type="button"
-                          (click)="minInstancesChanged('inc');">
-                    <i class="fa fa-chevron-up"></i>
-                  </button>
-                  <button class="btn btn-default bootstrap-touchspin-down"
-                          type="button"
-                          (click)="minInstancesChanged('dec');">
-                    <i class="fa fa-chevron-down"></i>
-                  </button>
-                </span>
+                                        <button class="btn btn-default bootstrap-touchspin-up"
+                                                type="button"
+                                                (click)="minInstancesChanged('inc');">
+                                        <i class="fa fa-chevron-up"></i>
+                                        </button>
+                                        <button class="btn btn-default bootstrap-touchspin-down"
+                                                type="button"
+                                                (click)="minInstancesChanged('dec');">
+                                        <i class="fa fa-chevron-down"></i>
+                                        </button>
+                                    </span>
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="btn-group" style="width: 100%; margin-top: 1em;">
+                        <button (click)="deleteButtonSidebarClicked($event)" type="button" class="btn btn-danger"
+                                style="width: 100%">Delete
+                        </button>
                     </div>
                 </div>
             </div>

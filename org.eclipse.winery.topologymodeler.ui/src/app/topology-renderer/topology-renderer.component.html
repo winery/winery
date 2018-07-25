@@ -13,10 +13,14 @@
 -->
 <div *ngIf="loader?.generatedReduxState">
     <winery-navbar
+        [readonly]="readonly"
         [hideNavBarState]="hideNavBarState">
     </winery-navbar>
-    <winery-canvas [entityTypes]="this.entityTypes"
-                   [relationshipTypes]="relationshipTypes" [diffMode]="diffMode">
+    <winery-canvas [readonly]="readonly"
+                   [entityTypes]="entityTypes"
+                   [relationshipTypes]="relationshipTypes"
+                   [diffMode]="diffMode"
+                   [sidebarDeleteButtonClickEvent]="sidebarDeleteButtonClickEvent">
     </winery-canvas>
 
     <div *ngIf="diffMode" style="position: fixed; right: 0;" class="sidebar-root">

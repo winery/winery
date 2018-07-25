@@ -13,8 +13,6 @@
  ********************************************************************************/
 
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Rx';
-import { ActivatedRoute } from '@angular/router';
 import { backendBaseURL, hostURL } from '../models/configuration';
 import { Subject } from 'rxjs/Subject';
 import { isNullOrUndefined } from 'util';
@@ -23,6 +21,10 @@ import { QNameWithTypeApiData } from '../models/generateArtifactApiData';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { urlElement } from '../models/enums';
 import { ToscaDiff } from '../models/ToscaDiff';
+import { ToastrService } from 'ngx-toastr';
+import { Observable } from 'rxjs/Observable';
+import { forkJoin } from 'rxjs';
+import { map } from 'rxjs/internal/operators';
 import { TopologyModelerConfiguration } from '../models/topologyModelerConfiguration';
 
 /**
@@ -30,33 +32,40 @@ import { TopologyModelerConfiguration } from '../models/topologyModelerConfigura
  */
 @Injectable()
 export class BackendService {
+
     readonly headers = new HttpHeaders().set('Accept', 'application/json');
 
     configuration: TopologyModelerConfiguration;
     serviceTemplateURL: string;
+    serviceTemplateUiUrl: string;
+
+    endpointConfiguration = new Subject<any>();
+    endpointConfiguration$ = this.endpointConfiguration.asObservable();
 
     private allEntities = new Subject<any>();
     allEntities$ = this.allEntities.asObservable();
 
-    constructor(private http: HttpClient,
-                private activatedRoute: ActivatedRoute) {
-        this.activatedRoute.queryParams.subscribe((params: TopologyModelerConfiguration) => {
-            if (!(isNullOrUndefined(params.id) &&
-                isNullOrUndefined(params.ns) &&
-                isNullOrUndefined(params.repositoryURL) &&
-                isNullOrUndefined(params.uiURL))) {
+    constructor(private http: HttpClient) {
+        this.endpointConfiguration$.subscribe((params: TopologyModelerConfiguration) => {
+            if (!(isNullOrUndefined(params.id) && isNullOrUndefined(params.ns) &&
+                isNullOrUndefined(params.repositoryURL) && isNullOrUndefined(params.uiURL))) {
+
                 this.configuration = new TopologyModelerConfiguration(
                     params.id,
                     params.ns,
                     params.repositoryURL,
                     params.uiURL,
                     params.compareTo,
+                    params.compareTo ? true : params.isReadonly,
                     params.parentPath,
                     params.elementPath
                 );
-                this.serviceTemplateURL = this.configuration.repositoryURL + '/' + this.configuration.parentPath + '/'
+
+                const url = this.configuration.parentPath + '/'
                     + encodeURIComponent(encodeURIComponent(this.configuration.ns)) + '/'
                     + this.configuration.id;
+                this.serviceTemplateURL = this.configuration.repositoryURL + '/' + url;
+                this.serviceTemplateUiUrl = this.configuration.uiURL + url;
 
                 // All Entity types
                 this.requestAllEntitiesAtOnce().subscribe(data => {
@@ -69,13 +78,13 @@ export class BackendService {
 
     /**
      * Requests all entities together.
-     * We use Observable.forkJoin to await all responses from the backend.
+     * We use forkJoin() to await all responses from the backend.
      * This is required
      * @returns data  The JSON from the server
      */
-    private requestAllEntitiesAtOnce(): Observable<Object> {
+    private requestAllEntitiesAtOnce(): Observable<any> {
         if (this.configuration) {
-            return Observable.forkJoin(
+            return forkJoin(
                 this.requestGroupedNodeTypes(),
                 this.requestArtifactTemplates(),
                 this.requestTopologyTemplateAndVisuals(),
@@ -106,7 +115,7 @@ export class BackendService {
             // This is required because the information has to be returned together
 
             if (isNullOrUndefined(this.configuration.compareTo)) {
-                return Observable.forkJoin(
+                return forkJoin(
                     this.http.get<TTopologyTemplate>(currentUrl),
                     this.http.get<Visuals>(visualsUrl)
                 );
@@ -117,7 +126,7 @@ export class BackendService {
                 const templateUrl = url
                     + this.configuration.compareTo + '/topologytemplate';
 
-                return Observable.forkJoin(
+                return forkJoin(
                     this.http.get<TTopologyTemplate>(currentUrl),
                     this.http.get<Visuals>(visualsUrl),
                     this.http.get<ToscaDiff>(compareUrl),
@@ -136,13 +145,16 @@ export class BackendService {
             const url = this.configuration.repositoryURL + '/relationshiptypes/'
                 + encodeURIComponent(encodeURIComponent(namespace)) + '/'
                 + id + '/visualappearance/';
-            return this.http.get<EntityType>(url, { headers: this.headers })
-                .map(relationship => {
-                    if (!isNullOrUndefined(this.configuration.compareTo)) {
-                        relationship.color = 'grey';
-                    }
-                    return relationship;
-                });
+            return this.http
+                .get<EntityType>(url, { headers: this.headers })
+                .pipe(
+                    map(relationship => {
+                        if (!isNullOrUndefined(this.configuration.compareTo)) {
+                            relationship.color = 'grey';
+                        }
+                        return relationship;
+                    })
+                );
         }
     }
 
@@ -340,10 +352,4 @@ export class BackendService {
         const url = hostURL + urlElement.Winery + urlElement.ServiceTemplates;
         return this.http.get<EntityType[]>(url + '/', { headers: this.headers });
     }
-
-    /*  saveVisuals(data: any): Observable<Response> {
-     const headers = new Headers({ 'Content-Type': 'application/json' });
-     const options = new RequestOptions({ headers: headers });
-     return this.http.put(backendBaseURL + this.activatedRoute.url + '/', JSON.stringify(data), options);
-     }*/
 }

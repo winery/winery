@@ -52,7 +52,7 @@
         "@types/jasmine": "2.8.8",
         "@types/jasminewd2": "2.0.3",
         "@types/node": "10.3.2",
-        "codelyzer": "4.3.0",
+        "codelyzer": "4.4.2",
         "protractor": "5.3.2",
         "ts-node": "5.0.1",
         "tslint": "5.10.0",

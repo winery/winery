@@ -14,24 +14,26 @@
 
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { WineryAlertService } from '../winery-alert/winery-alert.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable()
 export class ErrorHandlerService {
 
-  constructor(private alert: WineryAlertService) { }
+    constructor(private alert: ToastrService) {
+    }
 
     /**
      * Error handler.
      * @param error    the error
      */
     handleError(error: HttpErrorResponse) {
+        const errorMessage = error.error.message ? error.error.message : '';
         if (error.error instanceof ErrorEvent) {
-            this.alert.info('<p>Something went wrong! <br>' + 'Response Status: '
-                + error.statusText + ' ' + error.status + '</p><br>' + error.error.message);
+            this.alert.error('Status: '
+                + error.statusText + ' ' + error.status + '<br/>' + errorMessage, 'Something went wrong!');
         } else {
-            this.alert.info('<p>Something went wrong! <br>' + 'Response Status: '
-                + error.statusText + ' ' + error.status + '</p><br>' + error.error);
+            this.alert.error('Status: '
+                + error.statusText + ' ' + error.status + '<br/>' + errorMessage, 'Something went wrong!');
         }
     }
 }

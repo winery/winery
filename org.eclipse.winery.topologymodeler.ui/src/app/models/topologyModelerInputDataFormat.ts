@@ -12,19 +12,13 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
-import { ModuleWithProviders, NgModule } from '@angular/core';
-import { WineryAlertService } from './winery-alert.service';
-import { DatePipe } from '@angular/common';
+import { TTopologyTemplate, Visuals } from './ttopology-template';
 
-@NgModule({
-    providers: [DatePipe],
-})
-export class WineryAlertModule {
-    static forRoot(): ModuleWithProviders {
-        return {
-            ngModule: WineryAlertModule,
-            providers: [WineryAlertService]
-        };
-    }
+export interface TopologyModelerInputDataFormat {
+    configuration: {
+        readonly: boolean,
+        endpointConfig?: any;
+    };
+    topologyTemplate: TTopologyTemplate;
+    visuals: Visuals;
 }
-

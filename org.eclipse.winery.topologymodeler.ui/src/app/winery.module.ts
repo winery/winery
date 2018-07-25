@@ -19,12 +19,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
-import { JsPlumbService } from './services/jsPlumbService';
+import { JsPlumbService } from './services/jsPlumb.service';
 import { WineryComponent } from './winery.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { WineryAlertModule } from './winery-alert/winery-alert.module';
-import { ToastModule, ToastOptions } from 'ng2-toastr/ng2-toastr';
-import { WineryCustomOption } from './winery-alert/winery-alert-options';
+import { ToastrModule } from 'ngx-toastr';
 import { PaletteComponent } from './palette/palette.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { TopologyRendererModule } from './topology-renderer/topology-renderer.module';
@@ -45,6 +43,7 @@ import { ImportTopologyService } from './services/import-topology.service';
 import { ReqCapService } from './services/req-cap.service';
 import { SplitMatchTopologyService } from './services/split-match-topology.service';
 import { ErrorHandlerService } from './services/error-handler.service';
+import { PopoverModule } from 'ngx-bootstrap/popover';
 
 @NgModule({
     declarations: [
@@ -53,25 +52,33 @@ import { ErrorHandlerService } from './services/error-handler.service';
         SidebarComponent,
         PrintViewComponent,
     ],
-    exports: [],
+    exports: [WineryComponent],
     imports: [
         BrowserModule,
         FormsModule,
         HttpClientModule,
-        RouterModule.forRoot([{ path: '**', redirectTo: '', pathMatch: 'full' }]),
+        RouterModule.forRoot([{path: '**', redirectTo: '', pathMatch: 'full'}]),
         BrowserAnimationsModule,
         NgReduxModule,
         BsDropdownModule.forRoot(),
-        WineryAlertModule.forRoot(),
-        ToastModule.forRoot(),
+        ToastrModule.forRoot({
+            timeOut: 3000,
+            preventDuplicates: true,
+            easing: 'ease-in-out',
+            enableHtml: true,
+            progressBar: true,
+            extendedTimeOut: 3000,
+            easeTime: 450
+        }),
         AccordionModule.forRoot(),
         TopologyRendererModule.forRoot(),
-        HotkeyModule.forRoot(),
+        HotkeyModule.forRoot({cheatSheetHotkey: 'mod+space'}),
         WineryModalModule,
-        TypeaheadModule.forRoot()
+        TypeaheadModule.forRoot(),
+        PopoverModule.forRoot()
     ],
     providers: [
-        { provide: ToastOptions, useClass: WineryCustomOption },
+        // { provide: ToastOptions, useClass: WineryCustomOption },
         JsPlumbService,
         WineryActions,
         TopologyRendererActions,

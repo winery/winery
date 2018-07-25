@@ -15,7 +15,9 @@
 import { combineReducers, Reducer } from 'redux';
 import { INITIAL_WINERY_STATE, WineryReducer, WineryState } from '../reducers/winery.reducer';
 import {
-    INITIAL_TOPOLOGY_RENDERER_STATE, TopologyRendererReducer, TopologyRendererState
+    INITIAL_TOPOLOGY_RENDERER_STATE,
+    TopologyRendererReducer,
+    TopologyRendererState
 } from '../reducers/topologyRenderer.reducer';
 
 /**

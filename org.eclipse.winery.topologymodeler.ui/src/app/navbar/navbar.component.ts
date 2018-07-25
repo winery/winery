@@ -14,13 +14,13 @@
 
 import { Component, ElementRef, Input, OnDestroy, ViewChild } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
-import { WineryAlertService } from '../winery-alert/winery-alert.service';
+import { ToastrService } from 'ngx-toastr';
 import { NgRedux } from '@angular-redux/store';
 import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
 import { ButtonsStateModel } from '../models/buttonsState.model';
 import { IWineryState } from '../redux/store/winery.store';
 import { BackendService } from '../services/backend.service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 
 /**
@@ -33,22 +33,19 @@ import { Hotkey, HotkeysService } from 'angular2-hotkeys';
     animations: [
         trigger('navbarInOut', [
             transition('void => *', [
-                style({ transform: 'translateY(-100%)' }),
+                style({transform: 'translateY(-100%)'}),
                 animate('200ms ease-out')
             ]),
             transition('* => void', [
-                animate('200ms ease-in', style({ transform: 'translateY(-100%)' }))
+                animate('200ms ease-in', style({transform: 'translateY(-100%)'}))
             ])
         ])
     ]
 })
 export class NavbarComponent implements OnDestroy {
 
-    /**
-     * Boolean variables that hold the state {pressed vs. !pressed} of the navbar buttons.
-     * @type {boolean}
-     */
-    @Input() hideNavBarState;
+    @Input() hideNavBarState: boolean;
+    @Input() readonly: boolean;
 
     @ViewChild('exportCsarButton')
     private exportCsarButtonRef: ElementRef;
@@ -60,7 +57,7 @@ export class NavbarComponent implements OnDestroy {
     splittingOngoing: boolean;
     matchingOngoing: boolean;
 
-    constructor(private alert: WineryAlertService,
+    constructor(private alert: ToastrService,
                 private ngRedux: NgRedux<IWineryState>,
                 private actions: TopologyRendererActions,
                 private backendService: BackendService,
@@ -69,11 +66,16 @@ export class NavbarComponent implements OnDestroy {
             .subscribe(newButtonsState => this.setButtonsState(newButtonsState)));
         this.subscriptions.push(ngRedux.select(currentState => currentState.wineryState.currentJsonTopology)
             .subscribe(topologyTemplate => this.unformattedTopologyTemplate = topologyTemplate));
-        this.hotkeysService.add(new Hotkey('ctrl+s', (event: KeyboardEvent): boolean => {
+        this.hotkeysService.add(new Hotkey('mod+s', (event: KeyboardEvent): boolean => {
             event.stopPropagation();
             this.saveTopologyTemplateToRepository();
             return false; // Prevent bubbling
-        }));
+        }, undefined, 'Save the Topology Template'));
+        this.hotkeysService.add(new Hotkey('mod+l', (event: KeyboardEvent): boolean => {
+            event.stopPropagation();
+            this.ngRedux.dispatch(this.actions.executeLayout());
+            return false; // Prevent bubbling
+        }, undefined, 'Apply the layout directive to the Node Templates'));
         this.exportCsarUrl = this.backendService.serviceTemplateURL + '/?csar';
     }
 
@@ -118,7 +120,7 @@ export class NavbarComponent implements OnDestroy {
      * This function is called whenever a navbar button is clicked.
      * It contains a separate case for each button.
      * It toggles the `pressed` state of a button and publishes the respective
-     * button {id and boolean} to the subscribers of the Observable inside
+     * button id and boolean to the subscribers of the Observable inside
      * SharedNodeNavbarService.
      * @param event -- The click event of a button.
      */
@@ -221,5 +223,9 @@ export class NavbarComponent implements OnDestroy {
      */
     ngOnDestroy() {
         this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    }
+
+    openManagementUi() {
+        window.open(this.backendService.serviceTemplateUiUrl, '_blank');
     }
 }

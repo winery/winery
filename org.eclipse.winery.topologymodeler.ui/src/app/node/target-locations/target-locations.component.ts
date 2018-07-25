@@ -12,9 +12,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
-import { Subject } from 'rxjs/Subject';
+import { Subject, Subscription } from 'rxjs';
 import { IWineryState } from '../../redux/store/winery.store';
 import { NgRedux } from '@angular-redux/store';
 import { WineryActions } from '../../redux/actions/winery.actions';
@@ -25,6 +25,7 @@ import { WineryActions } from '../../redux/actions/winery.actions';
     styleUrls: ['./target-locations.component.css']
 })
 export class TargetLocationsComponent implements OnInit, OnChanges {
+
     properties: Subject<string> = new Subject<string>();
     @Input() currentNodeData: any;
     @Output() sendTargetLocation: EventEmitter<any>;
@@ -67,9 +68,9 @@ export class TargetLocationsComponent implements OnInit, OnChanges {
         this.checkForTargetLocations();
 
         // set target location with a debounceTime of 300ms
-        this.subscriptionTargetLocation = this.properties
-            .debounceTime(300)
-            .distinctUntilChanged()
+        this.subscriptionTargetLocation = this.properties.pipe(
+            debounceTime(300),
+            distinctUntilChanged(), )
             .subscribe(value => {
                 this.$ngRedux.dispatch(this.actions.setTargetLocation({
                     nodeId: this.currentNodeData.currentNodeId,

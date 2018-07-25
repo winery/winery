@@ -14,14 +14,13 @@
 
 import { Action } from 'redux';
 import {
-    DecMaxInstances, DecMinInstances, DeleteDeploymentArtifactAction, DeleteNodeAction, DeletePolicyAction,
-    DeleteRelationshipAction, HideNavBarAndPaletteAction, IncMaxInstances, IncMinInstances, SaveNodeTemplateAction,
-    SaveRelationshipAction, SendCurrentNodeIdAction, SendPaletteOpenedAction, SetCababilityAction,
-    SetDeploymentArtifactAction, SetPolicyAction, SetPropertyAction, SetRequirementAction, SetTargetLocation,
-    SidebarMaxInstanceChanges, SidebarMinInstanceChanges, SidebarNodeNamechange, SidebarStateAction,
+    DecMaxInstances, DecMinInstances, DeleteDeploymentArtifactAction, DeleteNodeAction, DeletePolicyAction, DeleteRelationshipAction,
+    HideNavBarAndPaletteAction, IncMaxInstances, IncMinInstances, SaveNodeTemplateAction, SaveRelationshipAction, SendCurrentNodeIdAction,
+    SendPaletteOpenedAction, SetCababilityAction, SetDeploymentArtifactAction, SetPolicyAction, SetPropertyAction, SetRequirementAction,
+    SetTargetLocation, SidebarMaxInstanceChanges, SidebarMinInstanceChanges, SidebarNodeNamechange, SidebarStateAction,
     UpdateNodeCoordinatesAction, UpdateRelationshipNameAction, WineryActions
 } from '../actions/winery.actions';
-import { TNodeTemplate, TRelationshipTemplate, TTopologyTemplate } from 'app/models/ttopology-template';
+import { TNodeTemplate, TRelationshipTemplate, TTopologyTemplate } from '../../models/ttopology-template';
 import { TDeploymentArtifact } from '../../models/artifactsModalData';
 
 export interface WineryState {
@@ -59,18 +58,21 @@ export const WineryReducer =
         switch (action.type) {
             case WineryActions.SEND_PALETTE_OPENED:
                 const paletteOpened: boolean = (<SendPaletteOpenedAction>action).paletteOpened;
+
                 return <WineryState>{
                     ...lastState,
                     currentPaletteOpenedState: paletteOpened
                 };
             case WineryActions.HIDE_NAVBAR_AND_PALETTE:
                 const hideNavBarAndPalette: boolean = (<HideNavBarAndPaletteAction>action).hideNavBarAndPalette;
+
                 return <WineryState>{
                     ...lastState,
                     hideNavBarAndPaletteState: hideNavBarAndPalette
                 };
             case WineryActions.OPEN_SIDEBAR:
                 const newSidebarData: any = (<SidebarStateAction>action).sidebarContents;
+
                 return <WineryState>{
                     ...lastState,
                     sidebarContents: newSidebarData
@@ -80,15 +82,7 @@ export const WineryReducer =
                 const minInstances: any = (<SidebarMinInstanceChanges>action).minInstances.count;
                 const indexChangeMinInstances = lastState.currentJsonTopology.nodeTemplates.map(el => el.id).indexOf(sideBarNodeId);
                 const fool = true;
-                console.log({
-                    ...lastState,
-                    currentJsonTopology: {
-                        ...lastState.currentJsonTopology,
-                        nodeTemplates: lastState.currentJsonTopology.nodeTemplates.map(nodeTemplate => nodeTemplate.id === sideBarNodeId ?
-                            nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('minInstances', minInstances.toString()) : nodeTemplate
-                        )
-                    }
-                });
+
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
@@ -103,6 +97,7 @@ export const WineryReducer =
                 const maxInstances: any = (<SidebarMaxInstanceChanges>action).maxInstances.count;
                 const indexChangeMaxInstances = lastState.currentJsonTopology.nodeTemplates
                     .map(el => el.id).indexOf(sideBarNodeId2);
+
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
@@ -117,6 +112,7 @@ export const WineryReducer =
                 const id_incMinInstances: any = (<IncMinInstances>action).minInstances.id;
                 const indexIncMinInstances = lastState.currentJsonTopology.nodeTemplates
                     .map(el => el.id).indexOf(id_incMinInstances);
+
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
@@ -133,6 +129,7 @@ export const WineryReducer =
                 const id_decMinInstances: any = (<DecMinInstances>action).minInstances.id;
                 const indexDecMinInstances = lastState.currentJsonTopology.nodeTemplates
                     .map(el => el.id).indexOf(id_decMinInstances);
+
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
@@ -149,6 +146,7 @@ export const WineryReducer =
                 const id_incMaxInstances: any = (<IncMaxInstances>action).maxInstances.id;
                 const indexIncMaxInstances = lastState.currentJsonTopology.nodeTemplates
                     .map(el => el.id).indexOf(id_incMaxInstances);
+
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
@@ -165,6 +163,7 @@ export const WineryReducer =
                 const id_decMaxInstances: any = (<DecMaxInstances>action).maxInstances.id;
                 const indexDecMaxInstances = lastState.currentJsonTopology.nodeTemplates
                     .map(el => el.id).indexOf(id_decMaxInstances);
+
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
@@ -179,6 +178,7 @@ export const WineryReducer =
                 };
             case WineryActions.SET_REQUIREMENT:
                 const newRequirement: any = (<SetRequirementAction>action).nodeRequirement;
+
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
@@ -194,6 +194,7 @@ export const WineryReducer =
                 };
             case WineryActions.SET_PROPERTY:
                 const newProperty: any = (<SetPropertyAction>action).nodeProperty;
+
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
@@ -208,6 +209,7 @@ export const WineryReducer =
                 };
             case WineryActions.SET_CAPABILITY:
                 const newCapability: any = (<SetCababilityAction>action).nodeCapability;
+
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
@@ -228,10 +230,8 @@ export const WineryReducer =
                     .map(node => node.id).indexOf(newDepArt.nodeId);
                 const nodeDepArtTemplate = lastState.currentJsonTopology.nodeTemplates
                     .find(nodeTemplate => nodeTemplate.id === newDepArt.nodeId);
-                let depArtExist = false;
-                if (nodeDepArtTemplate.deploymentArtifacts) {
-                    depArtExist = true;
-                }
+                const depArtExist = nodeDepArtTemplate.deploymentArtifacts && nodeDepArtTemplate.deploymentArtifacts.deploymentArtifact;
+
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
@@ -259,6 +259,7 @@ export const WineryReducer =
                         return node.id;
                     })
                     .indexOf((<DeleteDeploymentArtifactAction>action).nodeDeploymentArtifact.nodeId);
+
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
@@ -284,10 +285,8 @@ export const WineryReducer =
                     .map(node => node.id).indexOf(newPolicy.nodeId);
                 const nodePolicyTemplate = lastState.currentJsonTopology.nodeTemplates
                     .find(nodeTemplate => nodeTemplate.id === newPolicy.nodeId);
-                let policyExist = false;
-                if (nodePolicyTemplate.policies) {
-                    policyExist = true;
-                }
+                const policyExist = nodePolicyTemplate.policies && nodePolicyTemplate.policies.policy;
+
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
@@ -310,6 +309,7 @@ export const WineryReducer =
                 };
             case WineryActions.SET_TARGET_LOCATION:
                 const newTargetLocation: any = (<SetTargetLocation>action).nodeTargetLocation;
+
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
@@ -328,6 +328,7 @@ export const WineryReducer =
                         return node.id;
                     })
                     .indexOf((<DeletePolicyAction>action).nodePolicy.nodeId);
+
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
@@ -349,6 +350,7 @@ export const WineryReducer =
                 const newNodeName: any = (<SidebarNodeNamechange>action).nodeNames;
                 const indexChangeNodeName = lastState.currentJsonTopology.nodeTemplates
                     .map(el => el.id).indexOf(newNodeName.id);
+
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
@@ -369,6 +371,7 @@ export const WineryReducer =
                 };
                 const indexUpdateNodeCoordinates = lastState.currentJsonTopology.nodeTemplates
                     .map(nodeTemplate => nodeTemplate.id).indexOf(nodeId);
+
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
@@ -382,6 +385,7 @@ export const WineryReducer =
                 };
             case WineryActions.SAVE_NODE_TEMPLATE :
                 const newNode: TNodeTemplate = (<SaveNodeTemplateAction>action).nodeTemplate;
+
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
@@ -391,6 +395,7 @@ export const WineryReducer =
                 };
             case WineryActions.SAVE_RELATIONSHIP :
                 const newRelationship: TRelationshipTemplate = (<SaveRelationshipAction>action).relationshipTemplate;
+
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
@@ -400,6 +405,7 @@ export const WineryReducer =
                 };
             case WineryActions.DELETE_NODE_TEMPLATE:
                 const deletedNodeId: string = (<DeleteNodeAction>action).nodeTemplateId;
+
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
@@ -412,6 +418,7 @@ export const WineryReducer =
                 };
             case WineryActions.DELETE_RELATIONSHIP_TEMPLATE:
                 const deletedRelNodeId: string = (<DeleteRelationshipAction>action).nodeTemplateId;
+
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
@@ -424,6 +431,7 @@ export const WineryReducer =
                 const relData: any = (<UpdateRelationshipNameAction>action).relData;
                 const indexRel = lastState.currentJsonTopology.relationshipTemplates
                     .map(rel => rel.id).indexOf(relData.id);
+
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
@@ -437,11 +445,12 @@ export const WineryReducer =
                 };
             case WineryActions.SEND_CURRENT_NODE_ID :
                 const currentNodeData: string = (<SendCurrentNodeIdAction>action).currentNodeData;
-                // console.log({...lastState, currentNodeId: currentNodeData});
+
                 return <WineryState>{
                     ...lastState,
                     currentNodeData: currentNodeData
                 };
+
             default:
                 return <WineryState> lastState;
         }

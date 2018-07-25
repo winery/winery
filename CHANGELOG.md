@@ -53,6 +53,7 @@ This is similar to [Angular's CHANGELOG.md](https://github.com/angular/angular/b
 - Add support of configuration of git autocommit: `repository.git.autocommit=true` in `winery.properties`
 - **BREAKING**: in the tosca model `SourceElement` and `TargetElement` are combined into `SourceOrTargetElement` due to serialization issues with JSON
 - Add support of pattern detection for TOSCA topologies in winery 
+- Added the possibility to bundle the Topology Modeler Angular app as NPM package. Read the module's [README.md](/org.eclipse.winery.topologymodeler.ui/README.md) for more info.
 
 ## [v1.0.0] - not yet released
 

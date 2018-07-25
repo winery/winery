@@ -14,10 +14,8 @@
 
 // Import the core angular services.
 import { Injectable } from '@angular/core';
+
 // Import the rxJs modules for their side-effects.
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/delay';
-import 'rxjs/add/operator/do';
 
 export interface ILoaded {
     loadedData: boolean;

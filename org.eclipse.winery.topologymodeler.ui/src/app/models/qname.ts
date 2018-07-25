@@ -69,8 +69,8 @@ export class QName {
 
     /**
      * Another setter for when the QName has to be constructed
-     * @param {string} localname
-     * @param {string} namespace
+     * @param localname
+     * @param namespace
      */
     setQNameWithLocalNameAndNamespace(localname: string, namespace: string) {
         this._qName = '{' + namespace + '}' + localname;
