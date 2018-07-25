@@ -43,11 +43,14 @@ public class OptionsResource extends EntityWithIdCollectionResource<OptionResour
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OptionsResource.class);
 
+    private SelfServiceMetaDataId selfServiceMetaId;
+
     /**
      * @param res is the parent of the SelfServicePortalResource, which is a parent of this resource
      */
-    public OptionsResource(List<ApplicationOption> list, ServiceTemplateResource res) {
+    public OptionsResource(List<ApplicationOption> list, ServiceTemplateResource res, SelfServiceMetaDataId selfServiceMetaId) {
         super(OptionResource.class, ApplicationOption.class, list, res);
+        this.selfServiceMetaId = selfServiceMetaId;
     }
 
     @Override
@@ -102,12 +105,10 @@ public class OptionsResource extends EntityWithIdCollectionResource<OptionResour
 
         // BEGIN: store icon and planInputMessage
 
-        SelfServiceMetaDataId ssmdId = ((SelfServicePortalResource) this.res).getId();
-
-        RepositoryFileReference iconRef = new RepositoryFileReference(ssmdId, iconFileName);
+        RepositoryFileReference iconRef = new RepositoryFileReference(this.selfServiceMetaId, iconFileName);
         RestUtils.putContentToFile(iconRef, uploadedInputStream, body.getMediaType());
 
-        RepositoryFileReference planInputMessageRef = new RepositoryFileReference(ssmdId, planInputMessageFileName);
+        RepositoryFileReference planInputMessageRef = new RepositoryFileReference(this.selfServiceMetaId, planInputMessageFileName);
         RestUtils.putContentToFile(planInputMessageRef, planInputMessage, MediaType.TEXT_XML_TYPE);
 
         // END: store icon and planInputMessage

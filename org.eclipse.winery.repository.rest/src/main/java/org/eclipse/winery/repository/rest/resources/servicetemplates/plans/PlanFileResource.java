@@ -76,10 +76,12 @@ public class PlanFileResource {
         RepositoryFileReference ref = new RepositoryFileReference(this.planId, fileName);
 
         RepositoryFileReference oldRef = this.getFileRef();
-        if (!ref.equals(oldRef)) {
+        // if oldRef exists -> check for equality and afterwards overwrite the old content
+        if (oldRef != null && !ref.equals(oldRef)) {
             // new filename sent
             RestUtils.delete(oldRef);
             PlansResource.setPlanModelReference(this.plan, this.planId, fileName);
+            RestUtils.persist(this.res);
         }
 
         return RestUtils.putContentToFile(ref, uploadedInputStream, org.apache.tika.mime.MediaType.parse(body.getMediaType().toString()));

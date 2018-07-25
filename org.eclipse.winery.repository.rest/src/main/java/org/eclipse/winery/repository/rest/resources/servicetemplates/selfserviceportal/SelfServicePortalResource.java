@@ -183,7 +183,7 @@ public class SelfServicePortalResource {
             options = new Options();
             this.application.setOptions(options);
         }
-        return new OptionsResource(options.getOption(), serviceTemplateResource);
+        return new OptionsResource(options.getOption(), serviceTemplateResource, this.id);
     }
 
     /**
