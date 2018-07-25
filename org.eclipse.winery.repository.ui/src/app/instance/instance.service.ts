@@ -12,7 +12,6 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 import { Injectable } from '@angular/core';
-import { Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../configuration';
 import { WineryInstance, WineryTopologyTemplate } from '../model/wineryComponent';

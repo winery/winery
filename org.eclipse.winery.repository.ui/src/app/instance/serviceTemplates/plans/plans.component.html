@@ -28,6 +28,12 @@
                   (editBtnClicked)="onEditPlan($event);"
                   (removeBtnClicked)="onRemovePlan($event);"
                   (ioBtnClicked)="onEditPlanIOParameters($event);">
+        <div class="button-group pull-right">
+            <button type="button" class="btn btn-primary"
+                    (click)="onGeneratePlans($event)">
+                Generate Plans
+            </button>
+        </div>
     </winery-table>
     <winery-table *ngIf="linkedPlans"
                   [title]="'Linked Plans'"
@@ -126,4 +132,13 @@
                          [closeButtonLabel]="'Cancel'"
                          [okButtonLabel]="'Delete'">
     </winery-modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #confirmPlanGeneration="bs-modal" [modalRef]="confirmPlanGeneration">
+    <winery-modal-header [title]="'Generate Plans'"></winery-modal-header>
+    <winery-modal-body>
+        <p>Do you want to generate plans for your Service Template?<br>Existing plans may get overridden.</p>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="generatePlans()" [closeButtonLabel]="'Cancel'"
+                         [okButtonLabel]="'Generate'"></winery-modal-footer>
 </winery-modal>
