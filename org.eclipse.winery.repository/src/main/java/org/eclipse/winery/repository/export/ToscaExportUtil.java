@@ -406,14 +406,15 @@ public class ToscaExportUtil {
     private void putRefAsReferencedItemInCsar(RepositoryFileReference ref) {
         // Determine path
         String pathInsideRepo = BackendUtils.getPathInsideRepo(ref);
+        String absolutePath = pathInsideRepo;
 
         IRepository repository = RepositoryFactory.getRepository();
         if (repository instanceof FilebasedRepository) {
             FilebasedRepository repo = (FilebasedRepository) repository;
-            pathInsideRepo = repo.ref2AbsolutePath(ref).toString();
+            absolutePath = repo.ref2AbsolutePath(ref).toString();
         }
 
-        String hash = HashingUtil.getHashForFile(pathInsideRepo, TOSCAMetaFileAttributes.HASH);
+        String hash = HashingUtil.getHashForFile(absolutePath, TOSCAMetaFileAttributes.HASH);
         CsarContentProperties fileProperties = new CsarContentProperties(pathInsideRepo, hash);
 
         // put mapping reference to path into global map

@@ -27,16 +27,16 @@ public class HashingUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HashingUtil.class);
     
-    public static String getHashForFile(String pathInsideRepo, String algorithm) {
+    public static String getHashForFile(String absolutePath, String algorithm) {
         try {
-            File file = new File(pathInsideRepo);
+            File file = new File(absolutePath);
             return getChecksum(file, algorithm);
         } catch (NoSuchAlgorithmException e) {
             HashingUtil.LOGGER.error("Could not instantiate hash algorithm.", e);
         } catch (IOException e) {
             HashingUtil.LOGGER.error("Could not get the specified file for hashing.", e);
         } catch (Exception e) {
-            HashingUtil.LOGGER.info("Could not create hash for file <" + pathInsideRepo + ">");
+            HashingUtil.LOGGER.info("Could not create hash for file <" + absolutePath + ">");
         }
 
         return null;
