@@ -17,7 +17,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.EnumSet;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.xml.namespace.QName;
 
@@ -30,7 +29,6 @@ import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyChecker
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyErrorCollector;
 import org.eclipse.winery.repository.backend.consistencycheck.ElementErrorList;
 import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
-import org.eclipse.winery.repository.rest.server.WineryUsingHttpServer;
 import org.eclipse.winery.tools.copybaragenerator.CopybaraGenerator;
 
 import me.tongfei.progressbar.ProgressBar;
@@ -41,12 +39,10 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.eclipse.jetty.server.Server;
 
 public class WineryCli {
 
     public static void main(String[] args) throws Exception {
-        Option startServerOption = new Option("s", "server", false, "start a HTTP REST API server on port 8080. Has to be terminated by Ctrl+C.");
         Option repositoryPathOption = new Option("p", "path", true, "use given path as repository path");
         Option serviceTemplatesOnlyOption = new Option("so", "servicetemplatesonly", false, "checks service templates instead of the whole repository");
         Option checkDocumentationOption = new Option("cd", "checkdocumentation", false, "check existence of README.md and LICENSE. Default: No check");
@@ -56,7 +52,6 @@ public class WineryCli {
         Option helpOption = new Option("h", "help", false, "prints this help");
 
         Options options = new Options();
-        options.addOption(startServerOption);
         options.addOption(repositoryPathOption);
         options.addOption(serviceTemplatesOnlyOption);
         options.addOption(checkDocumentationOption);
@@ -89,7 +84,7 @@ public class WineryCli {
                 Path file = Paths.get(outfile);
                 copybaraGenerator.generateCopybaraConfigFile(file);
             }
-            return;
+            System.exit(0);
         }
 
         if (repository instanceof FilebasedRepository) {
@@ -98,23 +93,7 @@ public class WineryCli {
             System.out.println("Using non-filebased repository");
         }
 
-        if (line.hasOption("s")) {
-            startServer();
-        } else {
-            doConsistencyCheck(line, repository);
-        }
-    }
-
-    private static void startServer() {
-        Server server = WineryUsingHttpServer.createHttpServer();
-        try {
-            server.start();
-            System.out.println("Winery HTTP-based REST API available at http://localhost:8080/winery\n");
-            server.join();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
+        doConsistencyCheck(line, repository);
     }
 
     private static void doConsistencyCheck(CommandLine line, IRepository repository) {
@@ -164,14 +143,14 @@ public class WineryCli {
 
                 ElementErrorList elementErrorList = qName.getValue();
 
-                if (Objects.nonNull(elementErrorList.getErrors())) {
+                if (!elementErrorList.getErrors().isEmpty()) {
                     System.out.println("\tErrors:");
                     for (String error : elementErrorList.getErrors()) {
                         System.out.println("\t\t" + error);
                     }
                 }
 
-                if (Objects.nonNull(elementErrorList.getWarnings())) {
+                if (!elementErrorList.getWarnings().isEmpty()) {
                     System.out.println("\n\tWarnings:");
                     for (String error : elementErrorList.getWarnings()) {
                         System.out.println("\t\t" + error);
