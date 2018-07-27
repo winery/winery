@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,7 +13,26 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.admin.types;
 
-import org.apache.commons.lang3.StringUtils;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
+
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.admin.TypesId;
 import org.eclipse.winery.repository.rest.datatypes.TypeWithShortName;
@@ -21,19 +40,12 @@ import org.eclipse.winery.repository.rest.datatypes.select2.Select2DataItem;
 import org.eclipse.winery.repository.rest.resources.admin.AbstractAdminResource;
 import org.eclipse.winery.repository.rest.resources.apiData.TypeWithShortNameApiData;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
-import java.util.*;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Handles longname/shortname by using properties
  * <p>
- * FIXME: This class does NOT support dynamic reloading of the underlying
- * Configuration instance
+ * FIXME: This class does NOT support dynamic reloading of the underlying Configuration instance
  */
 public abstract class AbstractTypesManager extends AbstractAdminResource {
 
@@ -42,7 +54,6 @@ public abstract class AbstractTypesManager extends AbstractAdminResource {
 
     // hashes from a long type string to the type object holding complete type data
     private final HashMap<String, TypeWithShortName> hashTypeStringToType;
-
 
     public AbstractTypesManager(TypesId id) {
         super(id);
@@ -67,8 +78,7 @@ public abstract class AbstractTypesManager extends AbstractAdminResource {
     /**
      * Adds data to the internal data structure WITHOUT persisting it
      * <p>
-     * More or less a quick hack to enable adding default types without
-     * persisting them in the storage
+     * More or less a quick hack to enable adding default types without persisting them in the storage
      *
      * @param t the type to add
      */
@@ -170,5 +180,4 @@ public abstract class AbstractTypesManager extends AbstractAdminResource {
         this.addTypeWithShortName(tws);
         return Response.noContent().build();
     }
-
 }

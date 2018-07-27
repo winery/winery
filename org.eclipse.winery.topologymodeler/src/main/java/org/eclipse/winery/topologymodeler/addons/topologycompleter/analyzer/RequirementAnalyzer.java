@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,17 +14,24 @@
 
 package org.eclipse.winery.topologymodeler.addons.topologycompleter.analyzer;
 
-import org.eclipse.winery.model.tosca.*;
-import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.Utils;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.winery.model.tosca.TCapability;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TRequirement;
+import org.eclipse.winery.model.tosca.TRequirementDefinition;
+import org.eclipse.winery.model.tosca.TRequirementType;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.Utils;
+
 /**
- * This class analyzes the occurrence of TOSCA {@link TRequirement}s in a {@link TTopologyTemplate} and checks whether they
- * are already fulfilled or not.
+ * This class analyzes the occurrence of TOSCA {@link TRequirement}s in a {@link TTopologyTemplate} and checks whether
+ * they are already fulfilled or not.
  */
 public class RequirementAnalyzer {
 

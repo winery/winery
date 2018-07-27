@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,14 +14,20 @@
 
 package org.eclipse.winery.topologymodeler.addons.topologycompleter.helper;
 
-import org.eclipse.winery.model.tosca.*;
-import org.eclipse.winery.topologymodeler.addons.topologycompleter.analyzer.TOSCAAnalyzer;
-import org.slf4j.LoggerFactory;
-
-import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.model.tosca.TCapabilityDefinition;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TRequirement;
+import org.eclipse.winery.model.tosca.TRequirementType;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.topologymodeler.addons.topologycompleter.analyzer.TOSCAAnalyzer;
+
+import org.slf4j.LoggerFactory;
 
 /**
  * Contains methods to match requirements and capabilities and find elements in the {@link TTopologyTemplate}

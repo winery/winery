@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2014 Contributors to the Eclipse Foundation
+ * Copyright (c) 2014-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,32 +13,41 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.interfaces;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import org.eclipse.winery.model.tosca.*;
+import java.io.StringWriter;
+import java.util.List;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.eclipse.winery.model.tosca.TExportedOperation;
 import org.eclipse.winery.model.tosca.TExportedOperation.NodeOperation;
 import org.eclipse.winery.model.tosca.TExportedOperation.Plan;
 import org.eclipse.winery.model.tosca.TExportedOperation.RelationshipOperation;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TPlan;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import java.io.StringWriter;
-import java.util.List;
 
 public class ExportedOperationResource extends EntityWithIdResource<TExportedOperation> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExportedOperationResource.class);
-
 
     public ExportedOperationResource(IIdDetermination<TExportedOperation> idDetermination, TExportedOperation o, int idx, List<TExportedOperation> list, IPersistable res) {
         super(idDetermination, o, idx, list, res);
@@ -69,8 +78,7 @@ public class ExportedOperationResource extends EntityWithIdResource<TExportedOpe
     }
 
     /**
-     * @return "NodeOperation" | "RelationshipOperation" | "Plan" | null. null
-     * is returned if no type is set
+     * @return "NodeOperation" | "RelationshipOperation" | "Plan" | null. null is returned if no type is set
      */
     @Path("type")
     @GET
@@ -235,5 +243,4 @@ public class ExportedOperationResource extends EntityWithIdResource<TExportedOpe
         }
         return RestUtils.persist(this.res);
     }
-
 }

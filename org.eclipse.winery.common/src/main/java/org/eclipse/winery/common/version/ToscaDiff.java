@@ -13,15 +13,22 @@
  ********************************************************************************/
 package org.eclipse.winery.common.version;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import de.danielbechler.diff.node.DiffNode;
-import de.danielbechler.diff.selector.ElementSelector;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
 
-import java.util.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import de.danielbechler.diff.node.DiffNode;
+import de.danielbechler.diff.selector.ElementSelector;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ToscaDiff {

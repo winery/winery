@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,7 +13,30 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.validator;
 
-import org.eclipse.winery.model.tosca.yaml.*;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.model.tosca.yaml.TArtifactType;
+import org.eclipse.winery.model.tosca.yaml.TAttributeDefinition;
+import org.eclipse.winery.model.tosca.yaml.TCapabilityType;
+import org.eclipse.winery.model.tosca.yaml.TDataType;
+import org.eclipse.winery.model.tosca.yaml.TEntityType;
+import org.eclipse.winery.model.tosca.yaml.TEntrySchema;
+import org.eclipse.winery.model.tosca.yaml.TGroupDefinition;
+import org.eclipse.winery.model.tosca.yaml.TGroupType;
+import org.eclipse.winery.model.tosca.yaml.TInterfaceType;
+import org.eclipse.winery.model.tosca.yaml.TNodeTemplate;
+import org.eclipse.winery.model.tosca.yaml.TNodeType;
+import org.eclipse.winery.model.tosca.yaml.TPolicyDefinition;
+import org.eclipse.winery.model.tosca.yaml.TPolicyType;
+import org.eclipse.winery.model.tosca.yaml.TPropertyDefinition;
+import org.eclipse.winery.model.tosca.yaml.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.yaml.TRelationshipType;
+import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.yaml.common.Defaults;
 import org.eclipse.winery.yaml.common.Namespaces;
 import org.eclipse.winery.yaml.common.exception.InvalidDefinition;
@@ -23,12 +46,6 @@ import org.eclipse.winery.yaml.common.exception.UndefinedType;
 import org.eclipse.winery.yaml.common.validator.support.ExceptionVisitor;
 import org.eclipse.winery.yaml.common.validator.support.Parameter;
 import org.eclipse.winery.yaml.common.validator.support.Result;
-
-import javax.xml.namespace.QName;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 public class TypeValidator extends ExceptionVisitor<Result, Parameter> {
     private TypeVisitor typeVisitor;

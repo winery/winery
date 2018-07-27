@@ -13,6 +13,17 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes;
 
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
@@ -30,14 +41,9 @@ import org.eclipse.winery.repository.rest.resources.apiData.ValidEndingsApiDataS
 import org.eclipse.winery.repository.rest.resources.entitytypes.InstanceStatesResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 import org.eclipse.winery.repository.rest.resources.interfaces.InterfacesResource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.xml.namespace.QName;
-import java.util.List;
 
 public class RelationshipTypeResource extends TopologyGraphElementEntityTypeResource {
 

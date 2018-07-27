@@ -20,7 +20,8 @@ import org.eclipse.winery.model.tosca.constants.Namespaces;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class JsonBasedNamespaceManagerTest {
 
@@ -33,7 +34,7 @@ class JsonBasedNamespaceManagerTest {
         JsonBasedNamespaceManager namespaceManager = new JsonBasedNamespaceManager(f);
 
         String prefix = namespaceManager.getPrefix(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE);
-        
+
         assertEquals("winery", prefix);
         assertFalse(f.exists());
     }

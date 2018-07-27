@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,8 +13,20 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support;
 
-import com.sun.jersey.multipart.FormDataBodyPart;
-import com.sun.jersey.multipart.FormDataParam;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.Map;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
@@ -24,13 +36,8 @@ import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.xml.namespace.QName;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.Map;
+import com.sun.jersey.multipart.FormDataBodyPart;
+import com.sun.jersey.multipart.FormDataParam;
 
 //import com.fasterxml.jackson.annotation.JsonIgnore; // currently not required
 
@@ -46,7 +53,6 @@ public abstract class GenericVisualAppearanceResource {
     protected final Map<QName, String> otherAttributes;
     protected final TopologyGraphElementEntityTypeResource res;
     protected final ToscaElementId id;
-
 
     /**
      * @param otherAttributes the other attributes of the node/relationship type
@@ -64,8 +70,7 @@ public abstract class GenericVisualAppearanceResource {
     }
 
     /**
-     * Used for GUI when accessing the resource as data E.g., for topology
-     * template
+     * Used for GUI when accessing the resource as data E.g., for topology template
      */
     public URI getAbsoluteURL() {
         String URI = Environment.getUrlConfiguration().getRepositoryApiUrl();
@@ -90,8 +95,7 @@ public abstract class GenericVisualAppearanceResource {
     }
 
     /**
-     * Arbitrary images are supported. There currently is no check for valid
-     * image media types
+     * Arbitrary images are supported. There currently is no check for valid image media types
      */
     protected Response putImage(String name, InputStream uploadedInputStream, MediaType mediaType) {
         RepositoryFileReference target = this.getRepoFileRef(name);

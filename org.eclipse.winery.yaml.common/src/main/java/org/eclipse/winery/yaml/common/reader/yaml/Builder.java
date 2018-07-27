@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,12 +13,73 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.reader.yaml;
 
-import org.eclipse.collections.api.tuple.Pair;
-import org.eclipse.collections.impl.tuple.Tuples;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.winery.model.tosca.yaml.*;
-import org.eclipse.winery.model.tosca.yaml.support.*;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TimeZone;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.model.tosca.yaml.TArtifactDefinition;
+import org.eclipse.winery.model.tosca.yaml.TArtifactType;
+import org.eclipse.winery.model.tosca.yaml.TAttributeAssignment;
+import org.eclipse.winery.model.tosca.yaml.TAttributeDefinition;
+import org.eclipse.winery.model.tosca.yaml.TCapabilityAssignment;
+import org.eclipse.winery.model.tosca.yaml.TCapabilityDefinition;
+import org.eclipse.winery.model.tosca.yaml.TCapabilityType;
+import org.eclipse.winery.model.tosca.yaml.TConstraintClause;
+import org.eclipse.winery.model.tosca.yaml.TDataType;
+import org.eclipse.winery.model.tosca.yaml.TEntityType;
+import org.eclipse.winery.model.tosca.yaml.TEntrySchema;
+import org.eclipse.winery.model.tosca.yaml.TGroupDefinition;
+import org.eclipse.winery.model.tosca.yaml.TGroupType;
+import org.eclipse.winery.model.tosca.yaml.TImplementation;
+import org.eclipse.winery.model.tosca.yaml.TImportDefinition;
+import org.eclipse.winery.model.tosca.yaml.TInterfaceAssignment;
+import org.eclipse.winery.model.tosca.yaml.TInterfaceDefinition;
+import org.eclipse.winery.model.tosca.yaml.TInterfaceType;
+import org.eclipse.winery.model.tosca.yaml.TNodeFilterDefinition;
+import org.eclipse.winery.model.tosca.yaml.TNodeTemplate;
+import org.eclipse.winery.model.tosca.yaml.TNodeType;
+import org.eclipse.winery.model.tosca.yaml.TOperationDefinition;
+import org.eclipse.winery.model.tosca.yaml.TParameterDefinition;
+import org.eclipse.winery.model.tosca.yaml.TPolicyDefinition;
+import org.eclipse.winery.model.tosca.yaml.TPolicyType;
+import org.eclipse.winery.model.tosca.yaml.TPropertyAssignment;
+import org.eclipse.winery.model.tosca.yaml.TPropertyAssignmentOrDefinition;
+import org.eclipse.winery.model.tosca.yaml.TPropertyDefinition;
+import org.eclipse.winery.model.tosca.yaml.TPropertyFilterDefinition;
+import org.eclipse.winery.model.tosca.yaml.TRelationshipAssignment;
+import org.eclipse.winery.model.tosca.yaml.TRelationshipDefinition;
+import org.eclipse.winery.model.tosca.yaml.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.yaml.TRelationshipType;
+import org.eclipse.winery.model.tosca.yaml.TRepositoryDefinition;
+import org.eclipse.winery.model.tosca.yaml.TRequirementAssignment;
+import org.eclipse.winery.model.tosca.yaml.TRequirementDefinition;
+import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
+import org.eclipse.winery.model.tosca.yaml.TStatusValue;
+import org.eclipse.winery.model.tosca.yaml.TSubstitutionMappings;
+import org.eclipse.winery.model.tosca.yaml.TTopologyTemplateDefinition;
+import org.eclipse.winery.model.tosca.yaml.TVersion;
+import org.eclipse.winery.model.tosca.yaml.support.Metadata;
+import org.eclipse.winery.model.tosca.yaml.support.TListString;
+import org.eclipse.winery.model.tosca.yaml.support.TMapImportDefinition;
+import org.eclipse.winery.model.tosca.yaml.support.TMapObject;
+import org.eclipse.winery.model.tosca.yaml.support.TMapPropertyFilterDefinition;
+import org.eclipse.winery.model.tosca.yaml.support.TMapRequirementAssignment;
+import org.eclipse.winery.model.tosca.yaml.support.TMapRequirementDefinition;
 import org.eclipse.winery.model.tosca.yaml.tosca.datatypes.Credential;
 import org.eclipse.winery.yaml.common.Defaults;
 import org.eclipse.winery.yaml.common.Namespaces;
@@ -26,16 +87,13 @@ import org.eclipse.winery.yaml.common.exception.InvalidToscaSyntax;
 import org.eclipse.winery.yaml.common.exception.MultiException;
 import org.eclipse.winery.yaml.common.exception.UndefinedPrefix;
 import org.eclipse.winery.yaml.common.validator.FieldValidator;
+
+import org.eclipse.collections.api.tuple.Pair;
+import org.eclipse.collections.impl.tuple.Tuples;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.xml.namespace.QName;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Builder {
     public static final Logger LOGGER = LoggerFactory.getLogger(Builder.class);

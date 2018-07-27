@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,18 +13,22 @@
  *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel.parser;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.eclipse.winery.bpmn2bpel.model.ManagementFlow;
 import org.eclipse.winery.bpmn2bpel.model.Node;
 import org.eclipse.winery.bpmn2bpel.model.OrGatewayMerge;
 import org.eclipse.winery.bpmn2bpel.model.OrGatewaySplit;
 
-import java.util.*;
-
 /**
  * This class will do two things.
  * <p>
- * First, it will finds all of the following nodes for each exclusive gateway, and construct a
- * branch for each following nodes.
+ * First, it will finds all of the following nodes for each exclusive gateway, and construct a branch for each following
+ * nodes.
  * <p>
  * second, it will convert the nodes to a management flow.
  */

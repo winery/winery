@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,7 +14,16 @@
 
 package org.eclipse.winery.topologymodeler.addons.topologycompleter.topologycompletion;
 
-import org.eclipse.winery.model.tosca.*;
+import java.util.List;
+import java.util.Map;
+
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TRequirementType;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.client.IWineryRepositoryClient;
 import org.eclipse.winery.repository.client.WineryRepositoryClientFactory;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.analyzer.DeferredAnalyzer;
@@ -24,15 +33,13 @@ import org.eclipse.winery.topologymodeler.addons.topologycompleter.analyzer.TOSC
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.Constants;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.JAXBHelper;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.RESTHelper;
+
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Map;
-
 /**
- * This class is the entry point of the TOSCA topology completion which is called by the Winery Topology Modeler.
- * It receives an incomplete {@link TTopologyTemplate} from Winery.
- * The completion of the incomplete {@link TTopologyTemplate} is managed by this class.
+ * This class is the entry point of the TOSCA topology completion which is called by the Winery Topology Modeler. It
+ * receives an incomplete {@link TTopologyTemplate} from Winery. The completion of the incomplete {@link
+ * TTopologyTemplate} is managed by this class.
  */
 public class CompletionInterface {
 
@@ -42,7 +49,8 @@ public class CompletionInterface {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CompletionInterface.class.getName());
 
     /**
-     * This global variable is returned to the Winery Topology Modelerer via getCurrentTopology() to display intermediate results when an user interaction is necessary.
+     * This global variable is returned to the Winery Topology Modelerer via getCurrentTopology() to display
+     * intermediate results when an user interaction is necessary.
      */
     private TTopologyTemplate currentTopology;
 
@@ -57,7 +65,8 @@ public class CompletionInterface {
     private List<TEntityTemplate> relationshipTemplateChoices;
 
     /**
-     * This Map contains {@link TNodeTemplate}s and {@link TRelationshipTemplate}s to be chosen by the user during the step-by-step approach.
+     * This Map contains {@link TNodeTemplate}s and {@link TRelationshipTemplate}s to be chosen by the user during the
+     * step-by-step approach.
      */
     private Map<TNodeTemplate, Map<TNodeTemplate, List<TEntityTemplate>>> nodeTemplateChoices;
 
@@ -67,19 +76,24 @@ public class CompletionInterface {
     private String errorMessage = "";
 
     /**
-     * This method receives an incomplete {@link TTopologyTemplate} and the repository content from Winery. After analyzing the {@link TTopologyTemplate}, the topology is completed. This method will
-     * return a message after the completion whether the completion was successful, has failed or the user has to interact.
+     * This method receives an incomplete {@link TTopologyTemplate} and the repository content from Winery. After
+     * analyzing the {@link TTopologyTemplate}, the topology is completed. This method will return a message after the
+     * completion whether the completion was successful, has failed or the user has to interact.
      *
      * @param topology            (XMLString) the {@link TTopologyTemplate} to be completed as XMLString
      * @param serviceTemplateName the name of the ServiceTemplate for REST calls
      * @param topologyTemplateURL the URL where the template is saved to
-     * @param overwriteTopology   determines in which way the {@link TTopologyTemplate} is saved. The current {@link TTopologyTemplate} can either be overwritten or a new topology can be created.
-     * @param topologyName        the name of the {@link TTopologyTemplate} when a new {@link TTopologyTemplate} shall be created
-     * @param topologyNamespace   the namespace of the {@link TTopologyTemplate} when a new {@link TTopologyTemplate} shall be created
+     * @param overwriteTopology   determines in which way the {@link TTopologyTemplate} is saved. The current {@link
+     *                            TTopologyTemplate} can either be overwritten or a new topology can be created.
+     * @param topologyName        the name of the {@link TTopologyTemplate} when a new {@link TTopologyTemplate} shall
+     *                            be created
+     * @param topologyNamespace   the namespace of the {@link TTopologyTemplate} when a new {@link TTopologyTemplate}
+     *                            shall be created
      * @param repositoryURL       the URL to the repository to receive and write TOSCA specific information
      * @param stepByStep          whether the topology completion is processed step-by-step or not
      * @param restarted           whether the topology completion is restarted or started for the first time
-     * @return a message to Winery that contains information whether the topology is complete, the user has to interact or an error occurred.
+     * @return a message to Winery that contains information whether the topology is complete, the user has to interact
+     * or an error occurred.
      */
     public String complete(String topology, String serviceTemplateName, String topologyTemplateURL, Boolean overwriteTopology,
                            String topologyName, String topologyNamespace, String repositoryURL, boolean stepByStep, boolean restarted) {
@@ -136,7 +150,6 @@ public class CompletionInterface {
                 relationshipTemplateChoices = completionManager.getChoices();
 
                 return Constants.CompletionMessages.USERINTERACTION.toString();
-
             } else if (completionManager.getNodeTemplateUserInteraction() && stepByStep) {
                 // the topology completion is processed Step-by-Step, the user has to choose Node and RelationshipTemplates to be inserted
                 currentTopology = completedTopology.get(0);
@@ -179,8 +192,8 @@ public class CompletionInterface {
     }
 
     /**
-     * This method checks if the topology is already complete. It will be called before executing the topology completion but
-     * only in case the topology completion isn't restarted after a user selection.
+     * This method checks if the topology is already complete. It will be called before executing the topology
+     * completion but only in case the topology completion isn't restarted after a user selection.
      *
      * @param toscaAnalyzer the topology to be checked
      * @return whether the topology is complete or not
@@ -205,7 +218,8 @@ public class CompletionInterface {
     }
 
     /**
-     * Returns the choices whenever there are several possible complete {@link TTopologyTemplate}s. They will be displayed in Winery and chosen by the user.
+     * Returns the choices whenever there are several possible complete {@link TTopologyTemplate}s. They will be
+     * displayed in Winery and chosen by the user.
      *
      * @return the possible {@link TTopologyTemplate} choices as a list.
      */
@@ -223,7 +237,8 @@ public class CompletionInterface {
     }
 
     /**
-     * Returns several {@link TNodeTemplate} and {@link TRelationshipTemplate} choices when the user selected the step-by-step approach.
+     * Returns several {@link TNodeTemplate} and {@link TRelationshipTemplate} choices when the user selected the
+     * step-by-step approach.
      *
      * @return the {@link TNodeTemplate} choices
      */

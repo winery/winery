@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2015-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,18 +13,23 @@
  *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel.planwriter;
 
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.winery.bpmn2bpel.model.Gateway;
+import org.eclipse.winery.bpmn2bpel.model.Link;
+import org.eclipse.winery.bpmn2bpel.model.ManagementFlow;
+import org.eclipse.winery.bpmn2bpel.model.ManagementTask;
+import org.eclipse.winery.bpmn2bpel.model.Node;
+
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
-import org.eclipse.winery.bpmn2bpel.model.*;
 import org.jgrapht.traverse.DepthFirstIterator;
 import org.jgrapht.traverse.GraphIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BpelPlanArtefactWriter {
 
@@ -70,7 +75,6 @@ public class BpelPlanArtefactWriter {
 		LOGGER.debug("Completed BPEL process template" + bpelProcessContent);
 
 		return bpelProcessContent;
-
 	}
 
 	public String completePlanWsdlTemplate() {
@@ -124,5 +128,4 @@ public class BpelPlanArtefactWriter {
 
 		return xsdWriter.toString();
 	}
-
 }
