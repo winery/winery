@@ -37,7 +37,7 @@ public class TCapabilityRef {
     @XmlAttribute(name = "ref", required = true)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    protected Object ref;
+    protected TCapability ref;
 
     @Override
     public boolean equals(Object o) {
@@ -63,11 +63,11 @@ public class TCapabilityRef {
     }
 
     @NonNull
-    public Object getRef() {
+    public TCapability getRef() {
         return ref;
     }
 
-    public void setRef(@NonNull Object value) {
+    public void setRef(@NonNull TCapability value) {
         Objects.requireNonNull(value);
         this.ref = value;
     }

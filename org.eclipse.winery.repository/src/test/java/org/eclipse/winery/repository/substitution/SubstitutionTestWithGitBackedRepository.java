@@ -22,40 +22,46 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SubstitutionTestWithGitBackedRepository extends TestWithGitBackedRepository {
+
+    private IRepository repo = RepositoryFactory.getRepository();
 
     @Test
     void substituteNodeTemplateTypes() throws Exception {
         this.setRevisionTo("16a4ec8a55c4a87d8a46088d283640adadd2f07c");
 
         Substitution substitution = new Substitution();
-        ServiceTemplateId serviceTemplateId = new ServiceTemplateId("http://plain.winery.org/pattern-based/servicetemplates", 
+        ServiceTemplateId serviceTemplateId = new ServiceTemplateId("http://plain.winery.org/pattern-based/servicetemplates",
             "ServiceTemplateContainingAbstractNodeTemplates_w1-wip1", false);
 
         ServiceTemplateId newId = substitution.substituteTopology(serviceTemplateId);
-        TServiceTemplate element = RepositoryFactory.getRepository().getElement(newId);
-        
+        TServiceTemplate element = repo.getElement(newId);
+
         assertNotNull(element.getTopologyTemplate());
-        
+
         List<TNodeTemplate> nodeTemplates = element.getTopologyTemplate().getNodeTemplates();
         assertEquals(5, nodeTemplates.size());
-        
+
         // ensure these types do not exist anymore
-        assertFalse(nodeTemplates.removeIf(tNodeTemplate -> 
-            new QName("http://plain.winery.opentosca.org/patterns", "Infrastructure-As-A-Service_w1")
-                .equals(tNodeTemplate.getType())
-            ||
-            new QName("http://plain.winery.opentosca.org/pattern-based/nodetypes", "AbstractNodeTypeWithProperties_1-w1-wip1")
-                .equals(tNodeTemplate.getType())
+        assertFalse(nodeTemplates.removeIf(tNodeTemplate ->
+                new QName("http://plain.winery.opentosca.org/patterns", "Infrastructure-As-A-Service_w1")
+                    .equals(tNodeTemplate.getType())
+                    ||
+                    new QName("http://plain.winery.opentosca.org/pattern-based/nodetypes", "AbstractNodeTypeWithProperties_1-w1-wip1")
+                        .equals(tNodeTemplate.getType())
             )
         );
-        
+
         assertTrue(nodeTemplates.removeIf(tNodeTemplate ->
                 new QName("http://plain.winery.org/pattern-based/nodetypes", "Infrastructure-As-A-Service-Implementation_1-w1-wip1")
                     .equals(tNodeTemplate.getType())
@@ -66,5 +72,23 @@ class SubstitutionTestWithGitBackedRepository extends TestWithGitBackedRepositor
                     .equals(tNodeTemplate.getType())
             )
         );
+    }
+
+    @Test
+    void substituteNodeTempalteWithServiceTemplate() throws Exception {
+        this.setRevisionTo("origin/plain");
+
+        Substitution substitution = new Substitution();
+        ServiceTemplateId serviceTemplateId = new ServiceTemplateId("http://plain.winery.org/pattern-based/servicetemplates",
+            "ServiceTemplateContainingAbstractNodeTemplates_w2-wip1", false);
+
+        ServiceTemplateId substitutedServiceTemplate = substitution.substituteTopology(serviceTemplateId);
+        TServiceTemplate element = repo.getElement(substitutedServiceTemplate);
+
+        assertNotNull(element.getTopologyTemplate());
+        assertNotNull(element.getTopologyTemplate().getNodeTemplates());
+        assertEquals(8, element.getTopologyTemplate().getNodeTemplates().size());
+        assertNotNull(element.getTopologyTemplate().getRelationshipTemplates());
+        assertEquals(7, element.getTopologyTemplate().getRelationshipTemplates().size());
     }
 }

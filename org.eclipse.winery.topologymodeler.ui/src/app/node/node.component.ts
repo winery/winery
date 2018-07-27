@@ -358,7 +358,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         } else {
             this.$ngRedux.dispatch(this.actions.openSidebar({
                 sidebarContents: {
-                    sidebarVisible: this.nodeClass === 'nodeTemplate',
+                    sidebarVisible: true,
                     nodeClicked: true,
                     id: this.nodeTemplate.id,
                     nameTextFieldValue: this.nodeTemplate.name,

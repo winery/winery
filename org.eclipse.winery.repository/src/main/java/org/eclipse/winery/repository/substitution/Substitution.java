@@ -15,6 +15,7 @@
 package org.eclipse.winery.repository.substitution;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,14 +23,19 @@ import java.util.Objects;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.model.tosca.TCapabilityRef;
+import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -49,6 +55,8 @@ public class Substitution {
     private final Map<QName, TServiceTemplate> nodeTypeSubstitutableWithServiceTemplate = new HashMap<>();
     private final Map<QName, TRelationshipType> relationshipTypes = new HashMap<>();
     private final Map<QName, TNodeType> nodeTypes = new HashMap<>();
+    private final Map<QName, TRequirementType> requirementTypes = new HashMap<>();
+    private final Map<QName, TCapabilityType> capabilityTypes = new HashMap<>();
 
     public Substitution() {
         repository = RepositoryFactory.getRepository();
@@ -125,10 +133,52 @@ public class Substitution {
     }
 
     private void replaceNodeTemplateWithServiceTemplate(TTopologyTemplate topologyTemplate, Map<TNodeTemplate, TServiceTemplate> nodeTemplateToBeSubstitutedWithTopology) {
-        nodeTemplateToBeSubstitutedWithTopology.forEach((tNodeTemplate, tServiceTemplate) -> {
-            // 1. get all references of the Node Template
-            // 2. import the topology in the Service Template
-            // 3. update the references accordingly
+        nodeTemplateToBeSubstitutedWithTopology.forEach((substitutableNodeTemplate, stSubstitutingTheNodeTemplate) -> {
+            if (Objects.nonNull(stSubstitutingTheNodeTemplate.getBoundaryDefinitions()) && Objects.nonNull(stSubstitutingTheNodeTemplate.getBoundaryDefinitions().getCapabilities())) {
+                TTopologyTemplate topologyToImport = stSubstitutingTheNodeTemplate.getTopologyTemplate();
+                List<TCapabilityRef> capabilities = stSubstitutingTheNodeTemplate.getBoundaryDefinitions().getCapabilities().getCapability();
+
+                // 1. get all references of the Node Template
+                // 1.1 Relationships
+                //  TODO 1.2 Boundary definitions
+                List<TRelationshipTemplate> ingoingRelations = new ArrayList<>();
+                List<TRelationshipTemplate> outgoingRelations = new ArrayList<>();
+
+                topologyTemplate.getRelationshipTemplates()
+                    .forEach(tRelationshipTemplate -> {
+                        if (substitutableNodeTemplate.getId().equals(tRelationshipTemplate.getSourceElement().getRef().getId())) {
+                            outgoingRelations.add(tRelationshipTemplate);
+                        }
+
+                        if (substitutableNodeTemplate.getId().equals(tRelationshipTemplate.getTargetElement().getRef().getId())) {
+                            ingoingRelations.add(tRelationshipTemplate);
+                        }
+                    });
+
+                // 2. import the topology in the Service Template
+                BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(topologyToImport, topologyTemplate);
+
+                // 3. update the references accordingly
+                ingoingRelations.forEach(ingoing -> {
+                    capabilities.forEach(tCapabilityRef -> {
+                        topologyToImport.getNodeTemplates().stream()
+                            .filter(tNodeTemplate -> {
+                                if (Objects.nonNull(tNodeTemplate.getCapabilities())) {
+                                    return tNodeTemplate.getCapabilities().getCapability()
+                                        .stream()
+                                        .anyMatch(tCapability -> tCapability.equals(tCapabilityRef.getRef()));
+                                }
+                                return false;
+                            })
+                            .findFirst()
+                            .ifPresent(tNodeTemplate -> {
+                                ingoing.getTargetElement().setRef(tNodeTemplate);
+                            });
+                    });
+                });
+
+                assert topologyTemplate.getNodeTemplateOrRelationshipTemplate().remove(substitutableNodeTemplate);
+            }
         });
     }
 
@@ -176,6 +226,16 @@ public class Substitution {
         this.repository.getAllDefinitionsChildIds(RelationshipTypeId.class)
             .forEach(id ->
                 this.relationshipTypes.put(id.getQName(), this.repository.getElement(id))
+            );
+
+        this.repository.getAllDefinitionsChildIds(RequirementTypeId.class)
+            .forEach(id ->
+                this.requirementTypes.put(id.getQName(), this.repository.getElement(id))
+            );
+
+        this.repository.getAllDefinitionsChildIds(CapabilityTypeId.class)
+            .forEach(id ->
+                this.capabilityTypes.put(id.getQName(), this.repository.getElement(id))
             );
     }
 }

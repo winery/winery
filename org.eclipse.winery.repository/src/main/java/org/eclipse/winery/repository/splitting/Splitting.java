@@ -225,7 +225,7 @@ public class Splitting {
         repository.setElement(composedServiceTemplateId, composedServiceTemplate);
         //add all node and relationship templates from the solution fragements to the composed topology template
         for (ServiceTemplateId id : serviceTemplateIds) {
-            BackendUtils.mergeServiceTemplateAinServiceTemplateB(id, composedServiceTemplateId);
+            BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(id, composedServiceTemplateId);
         }
         composedServiceTemplate = repository.getElement(composedServiceTemplateId);
         composedTopologyTemplate = composedServiceTemplate.getTopologyTemplate();

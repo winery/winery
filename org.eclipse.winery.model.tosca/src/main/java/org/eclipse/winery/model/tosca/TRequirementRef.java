@@ -37,7 +37,7 @@ public class TRequirementRef {
     @XmlAttribute(name = "ref", required = true)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    protected Object ref;
+    protected TRequirement ref;
 
     @Override
     public boolean equals(Object o) {
@@ -63,11 +63,11 @@ public class TRequirementRef {
     }
 
     @NonNull
-    public Object getRef() {
+    public TRequirement getRef() {
         return ref;
     }
 
-    public void setRef(@NonNull Object value) {
+    public void setRef(@NonNull TRequirement value) {
         Objects.requireNonNull(value);
         this.ref = value;
     }
