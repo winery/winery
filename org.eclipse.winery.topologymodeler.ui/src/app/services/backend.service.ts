@@ -22,7 +22,7 @@ import { EntityType, TTopologyTemplate, Visuals } from '../models/ttopology-temp
 import { QNameWithTypeApiData } from '../models/generateArtifactApiData';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { urlElement } from '../models/enums';
-import { ServiceTemplateId } from '../models/serviceTemplateId'
+import { ServiceTemplateId } from '../models/serviceTemplateId';
 import { ToscaDiff } from '../models/ToscaDiff';
 import { TopologyModelerConfiguration } from '../models/topologyModelerConfiguration';
 import { WineryAlertService } from '../winery-alert/winery-alert.service';
