@@ -197,10 +197,10 @@ public class VersionUtils {
 
     public static String getNewId(DefinitionsChildId oldId, String appendixName) {
         WineryVersion version = VersionUtils.getVersion(oldId);
-        String componentVersion = version.getComponentVersion();
+        String oldVersion = version.toString();
 
-        if (Objects.nonNull(componentVersion) && !componentVersion.isEmpty()) {
-            version.setComponentVersion(componentVersion + "-" + appendixName);
+        if (Objects.nonNull(oldVersion) && !oldVersion.isEmpty()) {
+            version.setComponentVersion(oldVersion + "-" + appendixName);
         } else {
             version.setComponentVersion(appendixName);
         }
