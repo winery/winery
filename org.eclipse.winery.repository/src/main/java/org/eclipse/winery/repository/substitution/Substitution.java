@@ -35,6 +35,7 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TRequirementRef;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
@@ -134,9 +135,8 @@ public class Substitution {
 
     private void replaceNodeTemplateWithServiceTemplate(TTopologyTemplate topologyTemplate, Map<TNodeTemplate, TServiceTemplate> nodeTemplateToBeSubstitutedWithTopology) {
         nodeTemplateToBeSubstitutedWithTopology.forEach((substitutableNodeTemplate, stSubstitutingTheNodeTemplate) -> {
-            if (Objects.nonNull(stSubstitutingTheNodeTemplate.getBoundaryDefinitions()) && Objects.nonNull(stSubstitutingTheNodeTemplate.getBoundaryDefinitions().getCapabilities())) {
+            if (Objects.nonNull(stSubstitutingTheNodeTemplate.getBoundaryDefinitions())) {
                 TTopologyTemplate topologyToImport = stSubstitutingTheNodeTemplate.getTopologyTemplate();
-                List<TCapabilityRef> capabilities = stSubstitutingTheNodeTemplate.getBoundaryDefinitions().getCapabilities().getCapability();
 
                 // 1. get all references of the Node Template
                 // 1.1 Relationships
@@ -159,23 +159,52 @@ public class Substitution {
                 BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(topologyToImport, topologyTemplate);
 
                 // 3. update the references accordingly
-                ingoingRelations.forEach(ingoing -> {
-                    capabilities.forEach(tCapabilityRef -> {
-                        topologyToImport.getNodeTemplates().stream()
-                            .filter(tNodeTemplate -> {
-                                if (Objects.nonNull(tNodeTemplate.getCapabilities())) {
-                                    return tNodeTemplate.getCapabilities().getCapability()
-                                        .stream()
-                                        .anyMatch(tCapability -> tCapability.equals(tCapabilityRef.getRef()));
-                                }
-                                return false;
-                            })
-                            .findFirst()
-                            .ifPresent(tNodeTemplate -> {
-                                ingoing.getTargetElement().setRef(tNodeTemplate);
+                if (ingoingRelations.size() > 0) {
+                    if (Objects.nonNull(stSubstitutingTheNodeTemplate.getBoundaryDefinitions().getCapabilities())) {
+                        List<TCapabilityRef> capabilities = stSubstitutingTheNodeTemplate.getBoundaryDefinitions().getCapabilities().getCapability();
+                        ingoingRelations.forEach(ingoing -> {
+                            capabilities.forEach(tCapabilityRef -> {
+                                topologyToImport.getNodeTemplates().stream()
+                                    .filter(tNodeTemplate ->
+                                        Objects.nonNull(tNodeTemplate.getCapabilities()) && tNodeTemplate.getCapabilities().getCapability()
+                                            .stream()
+                                            .anyMatch(tCapability -> tCapability.equals(tCapabilityRef.getRef()))
+                                    )
+                                    .findFirst()
+                                    .ifPresent(tNodeTemplate -> {
+                                        ingoing.getTargetElement().setRef(tNodeTemplate);
+                                    });
                             });
-                    });
-                });
+                        });
+                    } else {
+                        throw new UnsupportedOperationException("Mapping without Reqs/Caps is currently not supported");
+                    }
+                }
+
+                if (outgoingRelations.size() > 0) {
+                    if (Objects.nonNull(stSubstitutingTheNodeTemplate.getBoundaryDefinitions().getRequirements())) {
+                        List<TRequirementRef> requirements = stSubstitutingTheNodeTemplate.getBoundaryDefinitions().getRequirements().getRequirement();
+                        outgoingRelations.forEach(outgoing -> {
+                            requirements.forEach(requirementRef -> {
+                                topologyToImport.getNodeTemplates().stream()
+                                    .filter(tNodeTemplate ->
+                                        Objects.nonNull(tNodeTemplate.getRequirements()) &&
+                                            tNodeTemplate.getRequirements().getRequirement()
+                                                .stream()
+                                                .anyMatch(tRequirement -> tRequirement.equals(requirementRef.getRef()))
+                                    )
+                                    .findFirst()
+                                    .ifPresent(tNodeTemplate -> {
+                                        outgoing.getSourceElement().setRef(tNodeTemplate);
+                                    });
+                            });
+                        });
+                    } else {
+                        throw new UnsupportedOperationException("Mapping without Reqs/Caps is currently not supported");
+                    }
+                }
+
+                // TODO: property mappings
 
                 assert topologyTemplate.getNodeTemplateOrRelationshipTemplate().remove(substitutableNodeTemplate);
             }

@@ -75,7 +75,7 @@ class SubstitutionTestWithGitBackedRepository extends TestWithGitBackedRepositor
     }
 
     @Test
-    void substituteNodeTempalteWithServiceTemplate() throws Exception {
+    void substituteNodeTemplateWithServiceTemplate() throws Exception {
         this.setRevisionTo("origin/plain");
 
         Substitution substitution = new Substitution();
@@ -90,5 +90,27 @@ class SubstitutionTestWithGitBackedRepository extends TestWithGitBackedRepositor
         assertEquals(8, element.getTopologyTemplate().getNodeTemplates().size());
         assertNotNull(element.getTopologyTemplate().getRelationshipTemplates());
         assertEquals(7, element.getTopologyTemplate().getRelationshipTemplates().size());
+        assertEquals("NodeTypeWithThreeReqCapPairsCoveringAllReqCapVariants_w1-wip1",
+            element.getTopologyTemplate().getRelationshipTemplate("con_5").getTargetElement().getRef().getId());
+    }
+
+    @Test
+    void substituteNodeTemplateWithServiceTemplateAndOutgoingRelationship() throws Exception {
+        this.setRevisionTo("origin/plain");
+
+        Substitution substitution = new Substitution();
+        ServiceTemplateId serviceTemplateId = new ServiceTemplateId("http://plain.winery.org/pattern-based/servicetemplates",
+            "ServiceTemplateContainingAbstractNodeTemplates_w3-wip1", false);
+
+        ServiceTemplateId substitutedServiceTemplate = substitution.substituteTopology(serviceTemplateId);
+        TServiceTemplate element = repo.getElement(substitutedServiceTemplate);
+
+        assertNotNull(element.getTopologyTemplate());
+        assertNotNull(element.getTopologyTemplate().getNodeTemplates());
+        assertEquals(5, element.getTopologyTemplate().getNodeTemplates().size());
+        assertNotNull(element.getTopologyTemplate().getRelationshipTemplates());
+        assertEquals(4, element.getTopologyTemplate().getRelationshipTemplates().size());
+        assertEquals("NodeTypeWithThreeReqCapPairsCoveringAllReqCapVariants_w1-wip1",
+            element.getTopologyTemplate().getRelationshipTemplate("con_2").getSourceElement().getRef().getId());
     }
 }
