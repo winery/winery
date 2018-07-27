@@ -44,7 +44,7 @@ class SubstitutionTestWithGitBackedRepository extends TestWithGitBackedRepositor
         ServiceTemplateId serviceTemplateId = new ServiceTemplateId("http://plain.winery.org/pattern-based/servicetemplates",
             "ServiceTemplateContainingAbstractNodeTemplates_w1-wip1", false);
 
-        ServiceTemplateId newId = substitution.substituteTopology(serviceTemplateId);
+        ServiceTemplateId newId = substitution.substituteTopologyOfServiceTemplate(serviceTemplateId);
         TServiceTemplate element = repo.getElement(newId);
 
         assertNotNull(element.getTopologyTemplate());
@@ -82,7 +82,7 @@ class SubstitutionTestWithGitBackedRepository extends TestWithGitBackedRepositor
         ServiceTemplateId serviceTemplateId = new ServiceTemplateId("http://plain.winery.org/pattern-based/servicetemplates",
             "ServiceTemplateContainingAbstractNodeTemplates_w2-wip1", false);
 
-        ServiceTemplateId substitutedServiceTemplate = substitution.substituteTopology(serviceTemplateId);
+        ServiceTemplateId substitutedServiceTemplate = substitution.substituteTopologyOfServiceTemplate(serviceTemplateId);
         TServiceTemplate element = repo.getElement(substitutedServiceTemplate);
 
         assertNotNull(element.getTopologyTemplate());
@@ -102,7 +102,7 @@ class SubstitutionTestWithGitBackedRepository extends TestWithGitBackedRepositor
         ServiceTemplateId serviceTemplateId = new ServiceTemplateId("http://plain.winery.org/pattern-based/servicetemplates",
             "ServiceTemplateContainingAbstractNodeTemplates_w3-wip1", false);
 
-        ServiceTemplateId substitutedServiceTemplate = substitution.substituteTopology(serviceTemplateId);
+        ServiceTemplateId substitutedServiceTemplate = substitution.substituteTopologyOfServiceTemplate(serviceTemplateId);
         TServiceTemplate element = repo.getElement(substitutedServiceTemplate);
 
         assertNotNull(element.getTopologyTemplate());

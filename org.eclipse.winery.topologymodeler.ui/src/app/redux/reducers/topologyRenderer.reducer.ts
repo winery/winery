@@ -30,6 +30,7 @@ export interface TopologyRendererState {
         importTopologyButton?: boolean;
         splitTopologyButton?: boolean;
         matchTopologyButton?: boolean;
+        substituteTopologyButton?: boolean;
     };
 }
 
@@ -47,7 +48,8 @@ export const INITIAL_TOPOLOGY_RENDERER_STATE: TopologyRendererState = {
         alignVButton: false,
         importTopologyButton: false,
         splitTopologyButton: false,
-        matchTopologyButton: false
+        matchTopologyButton: false,
+        substituteTopologyButton: false
     }
 };
 /**
@@ -160,6 +162,14 @@ export const TopologyRendererReducer =
                     buttonsState: {
                         ...lastState.buttonsState,
                         matchTopologyButton: !lastState.buttonsState.matchTopologyButton
+                    }
+                };
+            case TopologyRendererActions.SUBSTITUTE_TOPOLOGY:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        substituteTopologyButton: !lastState.buttonsState.substituteTopologyButton
                     }
                 };
         }

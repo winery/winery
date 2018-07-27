@@ -20,6 +20,7 @@ import { Action } from 'redux';
  */
 @Injectable()
 export class TopologyRendererActions {
+
     static TOGGLE_POLICIES = 'TOGGLE_POLICIES';
     static TOGGLE_TARGET_LOCATIONS = 'TOGGLE_TARGET_LOCATIONS';
     static TOGGLE_PROPERTIES = 'TOGGLE_PROPERTIES';
@@ -33,6 +34,7 @@ export class TopologyRendererActions {
     static IMPORT_TOPOLOGY = 'IMPORT_TOPOLOGY';
     static SPLIT_TOPOLOGY = 'SPLIT_TOPOLOGY';
     static MATCH_TOPOLOGY = 'MATCH_TOPOLOGY';
+    static SUBSTITUTE_TOPOLOGY = 'SUBSTITUTE_TOPOLOGY';
 
     togglePolicies(): Action {
         return { type: TopologyRendererActions.TOGGLE_POLICIES };
@@ -84,5 +86,9 @@ export class TopologyRendererActions {
 
     matchTopology(): Action {
         return { type: TopologyRendererActions.MATCH_TOPOLOGY };
+    }
+
+    substituteTopology(): Action {
+        return { type: TopologyRendererActions.SUBSTITUTE_TOPOLOGY };
     }
 }

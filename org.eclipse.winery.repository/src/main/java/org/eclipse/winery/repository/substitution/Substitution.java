@@ -63,7 +63,7 @@ public class Substitution {
         repository = RepositoryFactory.getRepository();
     }
 
-    public ServiceTemplateId substituteTopology(final ServiceTemplateId serviceTemplateId) {
+    public ServiceTemplateId substituteTopologyOfServiceTemplate(final ServiceTemplateId serviceTemplateId) {
         // 0. Create a new version of the Service Template
         ServiceTemplateId substitutedServiceTemplateId = getSubstitutionServiceTemplateId(serviceTemplateId);
         TServiceTemplate serviceTemplate = repository.getElement(substitutedServiceTemplateId);
@@ -140,7 +140,7 @@ public class Substitution {
 
                 // 1. get all references of the Node Template
                 // 1.1 Relationships
-                //  TODO 1.2 Boundary definitions
+                // TODO 1.2 Boundary definitions
                 List<TRelationshipTemplate> ingoingRelations = new ArrayList<>();
                 List<TRelationshipTemplate> outgoingRelations = new ArrayList<>();
 
@@ -204,7 +204,7 @@ public class Substitution {
                     }
                 }
 
-                // TODO: property mappings
+                // TODO: propagate property mappings
 
                 assert topologyTemplate.getNodeTemplateOrRelationshipTemplate().remove(substitutableNodeTemplate);
             }

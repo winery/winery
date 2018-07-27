@@ -59,6 +59,7 @@ import org.eclipse.winery.repository.rest.resources.servicetemplates.selfservice
 import org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates.TopologyTemplateResource;
 import org.eclipse.winery.repository.splitting.Splitting;
 import org.eclipse.winery.repository.splitting.SplittingException;
+import org.eclipse.winery.repository.substitution.Substitution;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -296,6 +297,14 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
         ServiceTemplateComplianceRuleRuleChecker checker = new ServiceTemplateComplianceRuleRuleChecker(this.getServiceTemplate());
         ServiceTemplateCheckingResult serviceTemplateCheckingResult = checker.checkComplianceRules();
         return Response.ok().entity(serviceTemplateCheckingResult.toXMLString()).build();
+    }
+
+    @Path("substitute")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public ServiceTemplateId substitute() {
+        Substitution substitution = new Substitution();
+        return substitution.substituteTopologyOfServiceTemplate((ServiceTemplateId) this.id);
     }
 
     @Override
