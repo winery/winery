@@ -11,12 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnInit} from '@angular/core';
-import {WineryLicenseService} from './wineryLicense.service';
-import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
-import {InstanceService} from '../instance/instance.service';
-import {ToscaTypes} from '../model/enums';
-import {LicenseEnum, WineryLicense} from './wineryLicense.enum';
+import { Component, OnInit } from '@angular/core';
+import { WineryLicenseService } from './wineryLicense.service';
+import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
+import { InstanceService } from '../instance/instance.service';
+import { ToscaTypes } from '../model/enums';
+import { LicenseEnum, WineryLicense } from './wineryLicense';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -40,7 +40,7 @@ export class WineryLicenseComponent implements OnInit {
 
     constructor(private service: WineryLicenseService, private notify: WineryNotificationService, public sharedData: InstanceService) {
         this.toscaType = this.sharedData.toscaComponent.toscaType;
-        this.options = Object.keys(LicenseEnum).map(key => LicenseEnum[key]);
+        this.options = this.service.getLicenseNames();
     }
 
     ngOnInit() {
@@ -48,6 +48,12 @@ export class WineryLicenseComponent implements OnInit {
             data => {
                 this.licenseText = data;
                 this.intialLicenseText = data;
+                this.service.loadLicenses().subscribe(
+                    licenses => {
+                        // on success, loaded licenses are already assigned to WineryLicense objects
+                    },
+                    error => this.handleError(error)
+                );
             },
             error => this.handleMissingLicense()
         );
@@ -62,7 +68,7 @@ export class WineryLicenseComponent implements OnInit {
 
     dropdownAction(item: string) {
         this.licenseType = item;
-        this.licenseText = WineryLicense.getLicense(this.licenseType);
+        this.licenseText = this.service.getLicenseText(item);
     }
 
     cancelEdit() {
