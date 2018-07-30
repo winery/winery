@@ -86,7 +86,7 @@ public class ServiceTemplateComplianceRuleRuleChecker {
         List<ComplianceRuleId> complianceRules = Lists.newArrayList();
         Namespace namespace = new Namespace(serviceTemplate.getTargetNamespace(), false);
         Collection<Namespace> componentsNamespaces = RepositoryFactory.getRepository().getComponentsNamespaces(ComplianceRuleId.class);
-        List<Namespace> relevantNamespaces = componentsNamespaces.stream().filter(ns -> namespace.getDecoded().startsWith(ns.getDecoded())).collect(Collectors.toList());
+        List<Namespace> relevantNamespaces = componentsNamespaces.stream().filter(ns -> namespace.getDecoded().startsWith(ns.getDecoded().split("/compliancerules")[0])).collect(Collectors.toList());
 
         for (Namespace space : relevantNamespaces) {
             complianceRules.addAll((Collection<? extends ComplianceRuleId>) ((FilebasedRepository) RepositoryFactory.getRepository()).getAllIdsInNamespace(ComplianceRuleId.class, space));
