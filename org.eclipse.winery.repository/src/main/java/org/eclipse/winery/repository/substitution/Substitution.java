@@ -206,7 +206,7 @@ public class Substitution {
 
                 // TODO: propagate property mappings
 
-                assert topologyTemplate.getNodeTemplateOrRelationshipTemplate().remove(substitutableNodeTemplate);
+                topologyTemplate.getNodeTemplateOrRelationshipTemplate().remove(substitutableNodeTemplate);
             }
         });
     }
