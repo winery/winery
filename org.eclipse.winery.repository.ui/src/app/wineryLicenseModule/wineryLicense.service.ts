@@ -16,12 +16,14 @@ import { Observable } from 'rxjs';
 import { InstanceService } from '../instance/instance.service';
 import { backendBaseURL } from '../configuration';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { WineryLicenceFactory } from './wineryLicenceFactory';
 
 @Injectable()
 export class WineryLicenseService {
+    private _wineryLicenseFactory: WineryLicenceFactory;
 
-    constructor(private http: HttpClient,
-                private sharedData: InstanceService) {
+    constructor(private http: HttpClient, private sharedData: InstanceService) {
+        this._wineryLicenseFactory = new WineryLicenceFactory();
     }
 
     getData(): Observable<string> {
@@ -38,5 +40,23 @@ export class WineryLicenseService {
             licenseFile,
             { observe: 'response', responseType: 'text' }
         );
+    }
+
+    loadLicenses(): Observable<string[]> {
+        return this._wineryLicenseFactory.loadLicenseTexts(this.http);
+    }
+
+    getLicenseText(name: string): string {
+        const license = this._wineryLicenseFactory.getLicenseByName(name);
+
+        if(license !== null && license !== undefined) {
+            return license.licenceText;
+        } else {
+            return 'License not found!'
+        }
+    }
+
+    getLicenseNames(): string[] {
+        return this._wineryLicenseFactory.getLicenseNames();
     }
 }
