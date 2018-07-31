@@ -66,7 +66,6 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.export.CsarExporter;
 
-import org.apache.commons.compress.archivers.ArchiveException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
@@ -421,10 +420,6 @@ public class ConsistencyChecker {
         try (OutputStream outputStream = Files.newOutputStream(tempCsar, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
             try {
                 exporter.writeCsar(RepositoryFactory.getRepository(), id, outputStream, exportConfiguration);
-            } catch (ArchiveException e) {
-                LOGGER.debug("Error during checking ZIP", e);
-                printAndAddError(id, "Invalid zip file: " + e.getMessage());
-                return;
             } catch (JAXBException e) {
                 LOGGER.debug("Error during checking ZIP", e);
                 printAndAddError(id, "Some XML could not be parsed: " + e.getMessage() + " " + e.toString());
