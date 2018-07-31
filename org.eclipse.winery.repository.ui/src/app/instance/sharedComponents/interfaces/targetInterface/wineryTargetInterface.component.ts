@@ -157,12 +157,12 @@ export class WineryTargetInterfaceComponent implements OnInit, OnChanges {
         this.activeInterface = this.interfaces.find((element) => {
             return element.name === event.id;
         });
-        this.activeOperation = this.activeInterface.operations[0];
+        this.activeOperation = this.activeInterface.operation[0];
         this.setInterfaceAndOperation();
     }
 
     onOperationSelected(event: SelectItem) {
-        this.activeOperation = this.activeInterface.operations.find((element) => {
+        this.activeOperation = this.activeInterface.operation.find((element) => {
             return element.name === event.id;
         });
         this.setInterfaceAndOperation();
@@ -240,7 +240,7 @@ export class WineryTargetInterfaceComponent implements OnInit, OnChanges {
             this.activeInterface = nodeInterface ? nodeInterface : this.interfaces[0];
 
             if (!isNullOrUndefined(this.activeInterface)) {
-                this.activeOperation = this.activeInterface.operations.find((element, id, arr) => {
+                this.activeOperation = this.activeInterface.operation.find((element, id, arr) => {
                     return element.name === this.operation.nodeOperation.operationName;
                 });
             }
@@ -252,14 +252,14 @@ export class WineryTargetInterfaceComponent implements OnInit, OnChanges {
             this.activeInterface = relInterface ? relInterface : this.interfaces[0];
 
             if (!isNullOrUndefined(this.activeInterface)) {
-                this.activeOperation = this.activeInterface.operations.find((element, id, arr) => {
+                this.activeOperation = this.activeInterface.operation.find((element, id, arr) => {
                     return element.name === this.operation.relationshipOperation.operationName;
                 });
             }
         }
 
         if (!isNullOrUndefined(this.activeInterface) && isNullOrUndefined(this.activeOperation)) {
-            this.activeOperation = this.activeInterface.operations[0];
+            this.activeOperation = this.activeInterface.operation[0];
         }
 
         this.setInterfaceAndOperation();

@@ -26,7 +26,7 @@
             </div>
         </div>
         <textarea id="wineryGitLogDiffs" wrap="soft"
-                  *ngIf="selectedFile != null && isExpanded">{{selectedFile?.diffs}}</textarea>
+                  *ngIf="selectedFile != null && isExpanded">{{selectedFile?.diff}}</textarea>
         <div id="wineryGitLogGui" *ngIf="isExpanded">
             <table role="presentation">
                 <tbody class="files">
