@@ -108,7 +108,7 @@ export class InterfacesComponent implements OnInit {
             this.inputParameters = null;
         }
         this.selectedInterface = selectedInterface;
-        this.operations = selectedInterface.operation;
+        this.operations = selectedInterface.operations;
         this.selectedOperation = null;
     }
 
@@ -151,7 +151,7 @@ export class InterfacesComponent implements OnInit {
                 delete tmp.otherAttributes;
             }
 
-            this.selectedInterface.operation.push(tmp);
+            this.selectedInterface.operations.push(tmp);
             this.onOperationSelected(tmp);
         }
     }
@@ -260,11 +260,11 @@ export class InterfacesComponent implements OnInit {
     // region ########## Generate Lifecycle Interface ##########
     generateLifecycleInterface(): void {
         const lifecycle = new InterfacesApiData('http://opentosca.org/interfaces/lifecycle');
-        lifecycle.operation.push(new InterfaceOperationApiData('install'));
-        lifecycle.operation.push(new InterfaceOperationApiData('configure'));
-        lifecycle.operation.push(new InterfaceOperationApiData('start'));
-        lifecycle.operation.push(new InterfaceOperationApiData('stop'));
-        lifecycle.operation.push(new InterfaceOperationApiData('uninstall'));
+        lifecycle.operations.push(new InterfaceOperationApiData('install'));
+        lifecycle.operations.push(new InterfaceOperationApiData('configure'));
+        lifecycle.operations.push(new InterfaceOperationApiData('start'));
+        lifecycle.operations.push(new InterfaceOperationApiData('stop'));
+        lifecycle.operations.push(new InterfaceOperationApiData('uninstall'));
         this.interfacesData.push(lifecycle);
         this.interfaceComponent.selectItem(lifecycle);
     }

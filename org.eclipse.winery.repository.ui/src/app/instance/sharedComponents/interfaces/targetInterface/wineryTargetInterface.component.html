@@ -52,10 +52,10 @@
                                    (selected)="onInterfaceSelected($event)">
                         </ng-select>
                         <br>
-                        <div *ngIf="activeInterface.operation">
+                        <div *ngIf="activeInterface.operations">
                             <label for="operationOperation">Operation</label>
                             <ng-select id="operationOperation"
-                                       [items]="activeInterface.operation"
+                                       [items]="activeInterface.operations"
                                        [active]="[activeOperation]"
                                        [textField]="'name'"
                                        [idField]="'name'"
