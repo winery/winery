@@ -62,7 +62,7 @@ export class WineryRepositoryComponent implements OnInit {
     }
 
     onClick() {
-        // this.gitLog.hide();
+        this.gitLog.hide();
     }
 
     refresh() {

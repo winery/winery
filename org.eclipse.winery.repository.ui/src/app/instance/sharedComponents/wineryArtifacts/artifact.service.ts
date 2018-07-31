@@ -21,6 +21,11 @@ import { InterfacesApiData } from '../interfaces/interfacesApiData';
 import { NameAndQNameApiData } from '../../../wineryQNameSelector/wineryNameAndQNameApiData';
 import { ArtifactApiData } from '../../../model/wineryComponent';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { SelectData } from '../../../model/selectData';
+
+export class SelectableInterface extends SelectData {
+    operations: string[];
+}
 
 @Injectable()
 export class WineryArtifactService {
@@ -57,8 +62,8 @@ export class WineryArtifactService {
 
     }
 
-    getInterfacesOfAssociatedType(): Observable<InterfacesApiData[]> {
-        return this.http.get<InterfacesApiData[]>(backendBaseURL + this.route.url + '/interfaces/');
+    getInterfacesOfAssociatedType(): Observable<SelectableInterface[]> {
+        return this.http.get<SelectableInterface[]>(backendBaseURL + this.route.url + '/interfaces/');
     }
 
     getAllArtifactTypes(): Observable<NameAndQNameApiData[]> {
