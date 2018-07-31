@@ -30,6 +30,7 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,13 +41,13 @@ public class CopybaraGenerator {
     private final IRepository repository;
 
     public CopybaraGenerator() {
-         this.repository = RepositoryFactory.getRepository();
+        this.repository = RepositoryFactory.getRepository();
     }
-    
+
     public CopybaraGenerator(IRepository repository) {
         this.repository = repository;
     }
-    
+
     public String generateOriginFilesConfig() {
         SortedSet<DefinitionsChildId> allDefinitionsChildIds = repository.getAllDefinitionsChildIds();
         return allDefinitionsChildIds.stream()
@@ -56,19 +57,12 @@ public class CopybaraGenerator {
                     return false;
                 }
                 try (InputStream inputStream = repository.newInputStream(repositoryFileReference)) {
-                    String licenceString = "Apache License";
-                    // We read 80 bytes, because the string "Apache License" could be centered
-                    byte[] firstBytes = new byte[80];
-                    int readBytes = inputStream.read(firstBytes);
-                    if (readBytes <= 0) {
-                        LOGGER.debug("LICENSE file is empty for {}", id.toReadableString());
-                        return false;
-                    } else {
-                        String firstBytesAsString = new String(firstBytes, 0, readBytes);
-                        // trim -> remove whitespaces before
-                        // We might have read more than one line (because of 80 bytes maximum), therefore, we just check whether the string begins with "Apache License"
-                        return (firstBytesAsString.trim().startsWith(licenceString));
-                    }
+                    // we put the whole license file text into a string and check if it starts with "Apache License" after
+                    // trimming it
+                    final String licenceString = "Apache License";
+                    String fileAsString = IOUtils.toString(inputStream);
+
+                    return fileAsString.trim().startsWith(licenceString);
                 } catch (IOException e) {
                     LOGGER.error("Could not create input stream for {}", repositoryFileReference.toString(), e);
                     return false;
@@ -104,5 +98,4 @@ public class CopybaraGenerator {
         String copyBaraConfig = generateCopybaraConfigFile();
         Files.write(targetFile, copyBaraConfig.getBytes(StandardCharsets.UTF_8));
     }
-
 }

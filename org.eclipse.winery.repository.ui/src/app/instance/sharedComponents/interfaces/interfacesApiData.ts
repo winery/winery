@@ -16,7 +16,7 @@ import {WineryComponent} from '../../../model/wineryComponent';
 import {NodeOperation, PlanOperation, RelationshipOperation} from './targetInterface/operations';
 
 export class InterfacesApiData {
-    operation: InterfaceOperationApiData[] = [];
+    operations: InterfaceOperationApiData[] = [];
     name: string;
     id: string;
     text: string;

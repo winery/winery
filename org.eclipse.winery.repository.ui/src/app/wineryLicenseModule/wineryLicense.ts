@@ -11,26 +11,22 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {QNameWithTypeApiData} from '../model/qNameWithTypeApiData';
 
-export class GitData {
-    reset: boolean;
-    refresh: boolean;
-    commitMessage: boolean;
-    itemsToCommit: QNameWithTypeApiData[];
-}
+export class WineryLicense {
+    readonly LICENCE_NAME: string;
+    readonly LICENSE_FILE_URL: string;
+    private _licenceText: string;
 
-export class GitResponseData {
-    error: string;
-    success: string;
-    changes: GitChange[];
-    resetSuccess: boolean;
-    lfsAvailable: boolean;
-}
+    constructor(licenceName: string, licenceUrl: string) {
+        this.LICENCE_NAME = licenceName;
+        this.LICENSE_FILE_URL = licenceUrl;
+    }
 
-export class GitChange {
-    name: string;
-    type: string;
-    path: string;
-    diffs: string;
+    get licenceText(): string {
+        return this._licenceText;
+    }
+
+    set licenceText(value: string) {
+        this._licenceText = value;
+    }
 }
