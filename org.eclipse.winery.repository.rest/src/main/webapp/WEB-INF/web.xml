@@ -90,6 +90,12 @@
             <param-value>com.sun.jersey.api.container.filter.LoggingFilter</param-value>
         </init-param>
 
+        <!-- Disables the logging of the request body - could be enabled for debugging purposes -->
+        <init-param>
+            <param-name>com.sun.jersey.config.feature.logging.DisableEntitylogging</param-name>
+            <param-value>true</param-value>
+        </init-param>
+
         <!-- enables @Consumes(MediaType.APPLICATION_JSON) and @Produces(MediaType.APPLICATION_JSON), see https://jersey.java.net/nonav/documentation/1.7/json.html -->
         <init-param>
             <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
