@@ -11,13 +11,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-package org.eclipse.winery.compliance.model;
+package org.eclipse.winery.topologygraph.matching;
 
-import org.jgrapht.EdgeFactory;
+import org.eclipse.winery.topologygraph.matching.model.ToscaEdge;
+import org.eclipse.winery.topologygraph.matching.model.ToscaNode;
 
-public class ToscaEdgeFactory implements EdgeFactory<ToscaNode, ToscaEdge> {
+public interface IToscaMatcher {
 
-	public ToscaEdge createEdge(ToscaNode sourceVertex, ToscaNode targetVertex) {
-		return new ToscaEdge(sourceVertex, targetVertex);
-	}
+	boolean isCompatible(ToscaNode left, ToscaNode right);
+
+	boolean isCompatible(ToscaEdge left, ToscaEdge right);
 }

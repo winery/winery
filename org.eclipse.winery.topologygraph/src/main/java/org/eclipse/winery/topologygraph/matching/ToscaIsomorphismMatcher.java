@@ -11,14 +11,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-package org.eclipse.winery.compliance.matching;
+package org.eclipse.winery.topologygraph.matching;
 
 import java.util.Comparator;
 import java.util.Iterator;
 
-import org.eclipse.winery.compliance.model.ToscaEdge;
-import org.eclipse.winery.compliance.model.ToscaGraph;
-import org.eclipse.winery.compliance.model.ToscaNode;
+import org.eclipse.winery.topologygraph.matching.model.ToscaEdge;
+import org.eclipse.winery.topologygraph.matching.model.ToscaGraph;
+import org.eclipse.winery.topologygraph.matching.model.ToscaNode;
 
 import org.jgrapht.GraphMapping;
 import org.jgrapht.alg.isomorphism.VF2SubgraphIsomorphismInspector;

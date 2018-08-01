@@ -20,12 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.eclipse.winery.compliance.matching.ToscaComplianceRuleMatcher;
-import org.eclipse.winery.compliance.matching.ToscaIsomorphismMatcher;
-import org.eclipse.winery.compliance.model.ToscaEdge;
-import org.eclipse.winery.compliance.model.ToscaGraph;
-import org.eclipse.winery.compliance.model.ToscaNode;
-import org.eclipse.winery.compliance.transformation.ToscaTransformer;
+import org.eclipse.winery.topologygraph.matching.ToscaIsomorphismMatcher;
+import org.eclipse.winery.topologygraph.matching.model.ToscaEdge;
+import org.eclipse.winery.topologygraph.matching.model.ToscaGraph;
+import org.eclipse.winery.topologygraph.matching.model.ToscaNode;
+import org.eclipse.winery.topologygraph.matching.transformation.ToscaTransformer;
 import org.eclipse.winery.model.tosca.TComplianceRule;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 

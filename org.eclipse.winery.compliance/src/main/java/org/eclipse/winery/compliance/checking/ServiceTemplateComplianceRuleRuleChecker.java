@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.ComplianceRuleId;
-import org.eclipse.winery.compliance.model.ToscaNode;
+import org.eclipse.winery.topologygraph.matching.model.ToscaNode;
 import org.eclipse.winery.model.tosca.TComplianceRule;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.repository.backend.IRepository;

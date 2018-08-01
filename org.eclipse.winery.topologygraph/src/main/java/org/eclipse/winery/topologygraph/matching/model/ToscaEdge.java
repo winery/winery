@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-package org.eclipse.winery.compliance.model;
+package org.eclipse.winery.topologygraph.matching.model;
 
 import java.util.List;
 import java.util.stream.Collectors;
