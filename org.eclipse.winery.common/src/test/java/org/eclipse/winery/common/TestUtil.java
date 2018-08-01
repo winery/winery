@@ -13,45 +13,55 @@
  *******************************************************************************/
 package org.eclipse.winery.common;
 
-import org.junit.Assert;
+import java.io.File;
+
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class TestUtil {
 
     @Test
     public void testNamespaceToJavaPackageFullURL() {
-        Assert.assertEquals("org.example.www.tosca.nodetypes", Util.namespaceToJavaPackage("http://www.example.org/tosca/nodetypes"));
+        assertEquals("org.example.www.tosca.nodetypes", Util.namespaceToJavaPackage("http://www.example.org/tosca/nodetypes"));
     }
 
     @Test
     public void testNamespaceToJavaPackageURLWithHostOnly() {
-        Assert.assertEquals("org.example.www", Util.namespaceToJavaPackage("http://www.example.org/"));
+        assertEquals("org.example.www", Util.namespaceToJavaPackage("http://www.example.org/"));
     }
 
     @Test
     public void testNamespaceToJavaPackageURLWithHostOnlyAndNoFinalSlash() {
-        Assert.assertEquals("org.example.www", Util.namespaceToJavaPackage("http://www.example.org"));
+        assertEquals("org.example.www", Util.namespaceToJavaPackage("http://www.example.org"));
     }
 
     @Test
     public void testNamespaceToJavaPackageURLWithNoHost() {
-        Assert.assertEquals("plainNCname", Util.namespaceToJavaPackage("plainNCname"));
+        assertEquals("plainNCname", Util.namespaceToJavaPackage("plainNCname"));
     }
 
     @Test
     public void testNCNameFromURL() {
-        Assert.assertEquals("http___www.example.org", Util.makeNCName("http://www.example.org"));
+        assertEquals("http___www.example.org", Util.makeNCName("http://www.example.org"));
     }
 
     @Test
     public void testNCNameFromNCName() {
-        Assert.assertEquals("NCName", Util.makeNCName("NCName"));
+        assertEquals("NCName", Util.makeNCName("NCName"));
     }
 
     @Test
     public void testGetChecksum() throws Exception {
         String text = "my super content of any file which will be hashed using a SHA-256 hash.";
-        Assert.assertEquals("c0af55785d21197a9fe4c5e9435fa77bb763f386810909e97f646eba7c827df7",
+        assertEquals("c0af55785d21197a9fe4c5e9435fa77bb763f386810909e97f646eba7c827df7",
             HashingUtil.getChecksum(text.getBytes(), "SHA-256"));
+    }
+
+    @Test
+    public void testGetChecksumOfFile() throws Exception {
+        File file = new File(ClassLoader.getSystemClassLoader().getResource("org/eclipse/winery/common/invalid.xml").getFile());
+        assertEquals("4406bff97249955ef46ea3ae590f9813fd44dcd769b8204cbb702ee6767173b0",
+            HashingUtil.getChecksum(file, "SHA-256"));
     }
 }
