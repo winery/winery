@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-package org.eclipse.winery.compliance.transformation;
+package org.eclipse.winery.topologygraph.matching.transformation;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,11 +23,6 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.common.ids.definitions.EntityTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.compliance.model.ToscaEdge;
-import org.eclipse.winery.compliance.model.ToscaEdgeFactory;
-import org.eclipse.winery.compliance.model.ToscaEntity;
-import org.eclipse.winery.compliance.model.ToscaGraph;
-import org.eclipse.winery.compliance.model.ToscaNode;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -35,6 +30,11 @@ import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.topologygraph.matching.model.ToscaEdge;
+import org.eclipse.winery.topologygraph.matching.model.ToscaEdgeFactory;
+import org.eclipse.winery.topologygraph.matching.model.ToscaEntity;
+import org.eclipse.winery.topologygraph.matching.model.ToscaGraph;
+import org.eclipse.winery.topologygraph.matching.model.ToscaNode;
 
 import org.eclipse.jdt.annotation.NonNull;
 

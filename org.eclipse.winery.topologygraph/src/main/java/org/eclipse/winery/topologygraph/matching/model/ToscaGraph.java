@@ -11,22 +11,25 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-package org.eclipse.winery.compliance.matching;
-
-import org.eclipse.winery.compliance.model.ToscaEdge;
-import org.eclipse.winery.compliance.model.ToscaNode;
+package org.eclipse.winery.topologygraph.matching.model;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jgrapht.EdgeFactory;
+import org.jgrapht.graph.DefaultDirectedGraph;
 
-public class ToscaDefaultMatcher implements IToscaMatcher {
+public class ToscaGraph extends DefaultDirectedGraph<ToscaNode, ToscaEdge> {
 
-	@Override
-	public boolean isCompatible(ToscaNode left, ToscaNode right) {
-		return StringUtils.equals(left.getNodeTemplate().getName(), right.getNodeTemplate().getName());
+	private static final long serialVersionUID = 1L;
+
+	public ToscaGraph(EdgeFactory<ToscaNode, ToscaEdge> ef) {
+		super(ef);
 	}
 
-	@Override
-	public boolean isCompatible(ToscaEdge left, ToscaEdge right) {
-		return StringUtils.equals(left.getTemplate().getName(), right.getTemplate().getName());
+	public ToscaNode getNode(String id) {
+		return vertexSet().stream().filter(n -> StringUtils.equals(id, n.getId())).findFirst().orElse(null);
+	}
+
+	public ToscaNode getReferenceNode() {
+		return vertexSet().stream().findAny().orElse(null);
 	}
 }
