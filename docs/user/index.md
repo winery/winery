@@ -7,8 +7,8 @@ For more information on TOSCA see [our TOSCA information page](../tosca/).
 
 - [overview](overview.md) - overview on Winery
 - [FAQ](FAQ.md) - frequently asked questions
-- [Quickstart](quickstart.md) - shows how to model a node type and a topology in Winery
-- [Modeling Guide](modeling-guide.md) - Guide how to use Winery
+- [Quick Setup](quicksetup.md) - shows how to setup the winery repository for TOSCA definitions
+- [Quickstart](quickstart.md) - shows how to use Winery to model a node type and a topology
 
 ## Features
 
@@ -16,6 +16,7 @@ For more information on TOSCA see [our TOSCA information page](../tosca/).
 - [TopologyCompletion](TopologyCompletion) - topology completion with a [Tutorial](TopologyCompletionTutorial)
 - [XaaSPackager](XaaSPackager) - Enables reusing modeled topologies as templates for single applications
 - [Compliance Checking](ComplianceChecking.md) - Enables compliance checking of Topology Templates based on reusable Compliance Rules  
+- [Implementation Artifact Generation](generateIA.md) - Shows how to generate and update an implementation artifact of type .war
 
 ## Background Literature
 
