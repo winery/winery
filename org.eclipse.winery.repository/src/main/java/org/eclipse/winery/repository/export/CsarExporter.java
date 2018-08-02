@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.SortedSet;
 import java.util.concurrent.CompletableFuture;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Transformer;
@@ -73,11 +75,6 @@ import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataI
 import org.eclipse.winery.repository.datatypes.ids.elements.ServiceTemplateSelfServiceFilesDirectoryId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 
-import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.ArchiveException;
-import org.apache.commons.compress.archivers.ArchiveOutputStream;
-import org.apache.commons.compress.archivers.ArchiveStreamFactory;
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -126,7 +123,7 @@ public class CsarExporter {
     }
 
     public CompletableFuture<String> writeCsarAndSaveManifestInProvenanceLayer(IRepository repository, DefinitionsChildId entryId, OutputStream out)
-        throws IOException, JAXBException, RepositoryCorruptException, ArchiveException, ProvenanceException {
+        throws IOException, JAXBException, RepositoryCorruptException, ProvenanceException {
         Map<String, Object> exportConfiguration = new HashMap<>();
         exportConfiguration.put(CsarExportConfiguration.INCLUDE_HASHES.name(), true);
         exportConfiguration.put(CsarExportConfiguration.INCLUDE_PROVENANCE.name(), true);
@@ -145,13 +142,13 @@ public class CsarExporter {
      * @param out     the output stream to write to
      */
     public String writeCsar(IRepository repository, DefinitionsChildId entryId, OutputStream out, Map<String, Object> exportConfiguration)
-        throws ArchiveException, IOException, JAXBException, RepositoryCorruptException {
+        throws IOException, JAXBException, RepositoryCorruptException {
         CsarExporter.LOGGER.trace("Starting CSAR export with {}", entryId.toString());
 
         Map<RepositoryFileReference, CsarContentProperties> refMap = new HashMap<>();
         Collection<CsarContentProperties> definitionNames = new ArrayList<>();
 
-        try (final ArchiveOutputStream zos = new ArchiveStreamFactory().createArchiveOutputStream("zip", out)) {
+        try (final ZipOutputStream zos = new ZipOutputStream(out)) {
             ToscaExportUtil exporter = new ToscaExportUtil();
 
             ExportedState exportedState = new ExportedState();
@@ -162,10 +159,10 @@ public class CsarExporter {
                 CsarContentProperties definitionsFileProperties = new CsarContentProperties(definitionsPathInsideCSAR);
                 definitionNames.add(definitionsFileProperties);
 
-                zos.putArchiveEntry(new ZipArchiveEntry(definitionsPathInsideCSAR));
+                zos.putNextEntry(new ZipEntry(definitionsPathInsideCSAR));
                 Collection<DefinitionsChildId> referencedIds;
                 referencedIds = exporter.exportTOSCA(repository, currentId, definitionsFileProperties, zos, refMap, exportConfiguration);
-                zos.closeArchiveEntry();
+                zos.closeEntry();
 
                 // for each entryId add license and readme files (if they exist) to the refMap
                 addLicenseAndReadmeFiles(repository, currentId, refMap);
@@ -226,7 +223,7 @@ public class CsarExporter {
      * @param fileProperties Describing the path to the file inside the archive
      * @throws IOException thrown when the temporary directory can not be created
      */
-    private void addArtifactTemplateToZipFile(ArchiveOutputStream zos, IGenericRepository repository, RepositoryFileReference ref,
+    private void addArtifactTemplateToZipFile(ZipOutputStream zos, IGenericRepository repository, RepositoryFileReference ref,
                                               CsarContentProperties fileProperties, Map<String, Object> exportConfiguration) throws IOException {
         GitInfo gitInfo = BackendUtils.getGitInformation((DirectoryId) ref.getParent());
 
@@ -266,7 +263,7 @@ public class CsarExporter {
      * @param ref                   Reference to the file that should be added to the archive
      * @param csarContentProperties Describing the path inside the archive to the file
      */
-    private void addFileToZipArchive(ArchiveOutputStream zos, IGenericRepository repository, RepositoryFileReference ref,
+    private void addFileToZipArchive(ZipOutputStream zos, IGenericRepository repository, RepositoryFileReference ref,
                                      CsarContentProperties csarContentProperties, Map<String, Object> exportConfiguration) {
         if (exportConfiguration.containsKey(CsarExportConfiguration.INCLUDE_HASHES.toString())) {
             try (InputStream is = repository.newInputStream(ref)) {
@@ -277,10 +274,9 @@ public class CsarExporter {
             }
         }
         try (InputStream is = repository.newInputStream(ref)) {
-            ArchiveEntry archiveEntry = new ZipArchiveEntry(csarContentProperties.getPathInsideCsar());
-            zos.putArchiveEntry(archiveEntry);
+            zos.putNextEntry(new ZipEntry(csarContentProperties.getPathInsideCsar()));
             IOUtils.copy(is, zos);
-            zos.closeArchiveEntry();
+            zos.closeEntry();
         } catch (Exception e) {
             CsarExporter.LOGGER.error("Could not copy file content to ZIP outputstream", e);
         }
@@ -295,12 +291,12 @@ public class CsarExporter {
      * @param ref            The dummy document that should be exported as an archive
      * @param fileProperties The output path of the archive
      */
-    private void addDummyRepositoryFileReferenceForGeneratedXSD(ArchiveOutputStream zos, Transformer transformer,
+    private void addDummyRepositoryFileReferenceForGeneratedXSD(ZipOutputStream zos, Transformer transformer,
                                                                 DummyRepositoryFileReferenceForGeneratedXSD ref,
                                                                 CsarContentProperties fileProperties,
                                                                 Map<String, Object> exportConfiguration) throws IOException {
-        ArchiveEntry archiveEntry = new ZipArchiveEntry(fileProperties.getPathInsideCsar());
-        zos.putArchiveEntry(archiveEntry);
+        ZipEntry archiveEntry = new ZipEntry(fileProperties.getPathInsideCsar());
+        zos.putNextEntry(archiveEntry);
         CsarExporter.LOGGER.trace("Special treatment for generated XSDs");
 
         Document document = ref.getDocument();
@@ -318,7 +314,7 @@ public class CsarExporter {
             }
 
             zos.write(bytes);
-            zos.closeArchiveEntry();
+            zos.closeEntry();
         } catch (TransformerException e) {
             CsarExporter.LOGGER.debug("Could not serialize generated xsd", e);
         } catch (NoSuchAlgorithmException e) {
@@ -358,7 +354,7 @@ public class CsarExporter {
      * @param rootDir     The root of the working tree
      * @param archivePath The path inside the archive to the working tree
      */
-    private void addWorkingTreeToArchive(ArchiveOutputStream zos, TArtifactTemplate template, Path rootDir, String archivePath) {
+    private void addWorkingTreeToArchive(ZipOutputStream zos, TArtifactTemplate template, Path rootDir, String archivePath) {
         addWorkingTreeToArchive(rootDir.toFile(), zos, template, rootDir, archivePath);
     }
 
@@ -371,7 +367,7 @@ public class CsarExporter {
      * @param rootDir     The root of the working tree
      * @param archivePath The path inside the archive to the working tree
      */
-    private void addWorkingTreeToArchive(File file, ArchiveOutputStream zos, TArtifactTemplate template, Path rootDir, String archivePath) {
+    private void addWorkingTreeToArchive(File file, ZipOutputStream zos, TArtifactTemplate template, Path rootDir, String archivePath) {
         if (file.isDirectory()) {
             if (file.getName().equals(".git")) {
                 return;
@@ -415,10 +411,10 @@ public class CsarExporter {
 
             if ((!foundInclude || included) && !excluded) {
                 try (InputStream is = new FileInputStream(file)) {
-                    ArchiveEntry archiveEntry = new ZipArchiveEntry(archivePath + rootDir.relativize(Paths.get(file.getAbsolutePath())));
-                    zos.putArchiveEntry(archiveEntry);
+                    ZipEntry archiveEntry = new ZipEntry(archivePath + rootDir.relativize(Paths.get(file.getAbsolutePath())));
+                    zos.putNextEntry(archiveEntry);
                     IOUtils.copy(is, zos);
-                    zos.closeArchiveEntry();
+                    zos.closeEntry();
                 } catch (Exception e) {
                     CsarExporter.LOGGER.error("Could not copy file to ZIP outputstream", e);
                 }
@@ -554,10 +550,10 @@ public class CsarExporter {
     }
 
     private String addManifest(IRepository repository, DefinitionsChildId id, Collection<CsarContentProperties> definitionNames,
-                               Map<RepositoryFileReference, CsarContentProperties> refMap, ArchiveOutputStream out, Map<String, Object> exportConfiguration) throws IOException {
+                               Map<RepositoryFileReference, CsarContentProperties> refMap, ZipOutputStream out, Map<String, Object> exportConfiguration) throws IOException {
         String entryDefinitionsReference = CsarExporter.getDefinitionsPathInsideCSAR(repository, id);
 
-        out.putArchiveEntry(new ZipArchiveEntry("TOSCA-Metadata/TOSCA.meta"));
+        out.putNextEntry(new ZipEntry("TOSCA-Metadata/TOSCA.meta"));
         StringBuilder stringBuilder = new StringBuilder();
 
         // Setting Versions
@@ -615,7 +611,7 @@ public class CsarExporter {
         String manifestString = stringBuilder.toString();
         out.write(manifestString.getBytes());
 
-        out.closeArchiveEntry();
+        out.closeEntry();
 
         return manifestString;
     }

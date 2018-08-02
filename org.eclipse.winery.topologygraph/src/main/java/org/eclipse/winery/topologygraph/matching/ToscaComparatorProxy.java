@@ -11,36 +11,23 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-package org.eclipse.winery.compliance.model;
+package org.eclipse.winery.topologygraph.matching;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import org.eclipse.winery.topologygraph.model.ToscaEdge;
+import org.eclipse.winery.topologygraph.model.ToscaNode;
 
-import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TNodeType;
+public class ToscaComparatorProxy {
+    private final IToscaMatcher matcher;
 
-public class ToscaNode extends ToscaEntity {
+    public ToscaComparatorProxy(IToscaMatcher matcher) {
+        this.matcher = (matcher != null) ? matcher : new ToscaDefaultMatcher();
+    }
 
-	private TNodeTemplate nodeTemplate;
+    public int compareTypeCompatible(ToscaNode left, ToscaNode right) {
+        return matcher.isCompatible(left, right) ? 0 : -1;
+    }
 
-	public List<TNodeType> getNodeTypes() {
-		return getTypes().stream().map(TNodeType.class::cast).collect(Collectors.toList());
-	}
-
-	public TNodeTemplate getNodeTemplate() {
-		return nodeTemplate;
-	}
-
-	public void setNodeTemplate(TNodeTemplate nodeTemplate) {
-		this.nodeTemplate = nodeTemplate;
-		this.setId(nodeTemplate.getId());
-	}
+    public int compareTypeCompatible(ToscaEdge left, ToscaEdge right) {
+        return matcher.isCompatible(left, right) ? 0 : -1;
+    }
 }
-
-	
-
-	
-	
-
-
-	

@@ -10,17 +10,18 @@
  * which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- ********************************************************************************/
-package org.eclipse.winery.compliance.matching;
+ *******************************************************************************/
+package org.eclipse.winery.compliance.checking;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import org.eclipse.winery.compliance.model.ToscaEdge;
-import org.eclipse.winery.compliance.model.ToscaEntity;
-import org.eclipse.winery.compliance.model.ToscaNode;
+import org.eclipse.winery.topologygraph.matching.IToscaMatcher;
+import org.eclipse.winery.topologygraph.model.ToscaEdge;
+import org.eclipse.winery.topologygraph.model.ToscaEntity;
+import org.eclipse.winery.topologygraph.model.ToscaNode;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TPolicy;
 

@@ -30,6 +30,7 @@ import { Utils } from '../../../wineryUtils/utils';
 import { SelectableListComponent } from './selectableList/selectableList.component';
 import { WineryVersion } from '../../../model/wineryVersion';
 import { HttpResponse } from '@angular/common/http';
+import { LifecycleInterface } from './lifecycle';
 
 @Component({
     selector: 'winery-instance-interfaces',
@@ -259,30 +260,30 @@ export class InterfacesComponent implements OnInit {
 
     // region ########## Generate Lifecycle Interface ##########
     generateLifecycleInterface(): void {
-        const lifecycle = new InterfacesApiData('http://opentosca.org/interfaces/lifecycle');
-        lifecycle.operation.push(new InterfaceOperationApiData('install'));
-        lifecycle.operation.push(new InterfaceOperationApiData('configure'));
-        lifecycle.operation.push(new InterfaceOperationApiData('start'));
-        lifecycle.operation.push(new InterfaceOperationApiData('stop'));
-        lifecycle.operation.push(new InterfaceOperationApiData('uninstall'));
+        const lifecycle = new InterfacesApiData(LifecycleInterface.INTERFACE);
+        lifecycle.operation.push(new InterfaceOperationApiData(LifecycleInterface.INSTALL));
+        lifecycle.operation.push(new InterfaceOperationApiData(LifecycleInterface.CONFIGURE));
+        lifecycle.operation.push(new InterfaceOperationApiData(LifecycleInterface.START));
+        lifecycle.operation.push(new InterfaceOperationApiData(LifecycleInterface.STOP));
+        lifecycle.operation.push(new InterfaceOperationApiData(LifecycleInterface.UNINSTALL));
         this.interfacesData.push(lifecycle);
         this.interfaceComponent.selectItem(lifecycle);
     }
 
     containsDefaultLifecycle(): boolean {
-        if (!this.sharedData.currentVersion.editable) {
-            return true;
+        if (!this.sharedData.currentVersion.editable || this.sharedData.toscaComponent.toscaType === ToscaTypes.NodeType) {
+            if (isNullOrUndefined(this.interfacesData)) {
+                return false;
+            }
+
+            const lifecycleId = this.interfacesData.findIndex((value) => {
+                return value.name.endsWith(LifecycleInterface.INTERFACE);
+            });
+
+            return lifecycleId !== -1;
         }
 
-        if (isNullOrUndefined(this.interfacesData)) {
-            return false;
-        }
-
-        const lifecycleId = this.interfacesData.findIndex((value) => {
-            return value.name.endsWith('http://www.example.com/interfaces/lifecycle');
-        });
-
-        return lifecycleId !== -1;
+        return true;
     }
 
     // endregion

@@ -13,12 +13,11 @@
  *******************************************************************************/
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
-import { WineryArtifactService } from './artifact.service';
+import { SelectableInterface, WineryArtifactService } from './artifact.service';
 import { isNullOrUndefined } from 'util';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { NameAndQNameApiData, NameAndQNameApiDataList } from '../../../wineryQNameSelector/wineryNameAndQNameApiData';
 import { InstanceService } from '../../instance.service';
-import { InterfacesApiData } from '../interfaces/interfacesApiData';
 import { GenerateArtifactApiData } from '../interfaces/generateArtifactApiData';
 import { ModalDirective } from 'ngx-bootstrap';
 import { ArtifactApiData } from '../../../model/wineryComponent';
@@ -45,13 +44,13 @@ export class WineryArtifactComponent implements OnInit {
     loading = true;
     elementToRemove: ArtifactApiData;
     artifactsData: ArtifactApiData[];
-    interfacesList: InterfacesApiData[];
+    interfacesList: SelectableInterface[];
     newArtifact: GenerateArtifactApiData = new GenerateArtifactApiData();
     artifact: GenerateData = new GenerateData();
     artifactUrl: string;
     artifactTypesList: NameAndQNameApiDataList = { 'classes': null };
     artifactTemplatesList: NameAndQNameApiDataList = { 'classes': null };
-    selectedInterface: InterfacesApiData;
+    selectedInterface: SelectableInterface;
     selectedOperation: string;
     selectedRadioButton = 'createArtifactTemplate';
     selectedArtifactType: string;
@@ -164,7 +163,7 @@ export class WineryArtifactComponent implements OnInit {
             this.selectedOperation = '';
         }
         if (isNullOrUndefined(this.selectedInterface)) {
-            this.selectedInterface = new InterfacesApiData();
+            this.selectedInterface = new SelectableInterface();
             this.selectedInterface.text = '';
         }
 
@@ -295,7 +294,7 @@ export class WineryArtifactComponent implements OnInit {
         }
     }
 
-    private handleInterfaceData(data: InterfacesApiData[]) {
+    private handleInterfaceData(data: SelectableInterface[]) {
         this.interfacesList = data;
     }
 

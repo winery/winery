@@ -11,13 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-package org.eclipse.winery.compliance.model;
+package org.eclipse.winery.topologygraph.model;
 
 import org.jgrapht.EdgeFactory;
 
 public class ToscaEdgeFactory implements EdgeFactory<ToscaNode, ToscaEdge> {
 
-	public ToscaEdge createEdge(ToscaNode sourceVertex, ToscaNode targetVertex) {
-		return new ToscaEdge(sourceVertex, targetVertex);
-	}
+    public ToscaEdge createEdge(ToscaNode sourceVertex, ToscaNode targetVertex) {
+        return new ToscaEdge(sourceVertex, targetVertex);
+    }
 }

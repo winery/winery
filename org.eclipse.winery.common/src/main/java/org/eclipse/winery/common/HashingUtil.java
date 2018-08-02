@@ -14,19 +14,19 @@
 package org.eclipse.winery.common;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class HashingUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HashingUtil.class);
-    
+
     public static String getHashForFile(String absolutePath, String algorithm) {
         try {
             File file = new File(absolutePath);
@@ -49,6 +49,18 @@ public class HashingUtil {
     }
 
     public static String getChecksum(File file, String algorithm) throws IOException, NoSuchAlgorithmException {
-        return getChecksum(IOUtils.toByteArray(file.toURI()), algorithm);
+        FileInputStream fileInputStream = new FileInputStream(file);
+        MessageDigest digest = MessageDigest.getInstance(algorithm);
+
+        // buffer with a size of 1MB
+        byte[] buffer = new byte[1048576];
+        int bufferLength = 0;
+
+        while ((bufferLength = fileInputStream.read(buffer)) != -1) {
+            digest.update(buffer, 0, bufferLength);
+        }
+
+        return new BigInteger(1, digest.digest())
+            .toString(16);
     }
 }

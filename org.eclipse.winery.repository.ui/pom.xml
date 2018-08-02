@@ -63,6 +63,36 @@
                             <unpack>true</unpack>
                         </configuration>
                     </execution>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <id>download-apache-2.0-license</id>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>
+                                http://www.apache.org/licenses/LICENSE-2.0.txt
+                            </url>
+                            <outputFileName>Apache-2.0.txt</outputFileName>
+                            <outputDirectory>src/assets/licenses</outputDirectory>
+                            <unpack>false</unpack>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <id>download-epl-2.0-license</id>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>
+                                https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt
+                            </url>
+                            <outputFileName>EPL-2.0.txt</outputFileName>
+                            <outputDirectory>src/assets/licenses</outputDirectory>
+                            <unpack>false</unpack>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>

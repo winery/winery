@@ -1,4 +1,4 @@
-/********************************************************************************
+/*******************************************************************************
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -10,15 +10,13 @@
  * which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- ********************************************************************************/
-package org.eclipse.winery.compliance.matching;
+ *******************************************************************************/
 
-import org.eclipse.winery.compliance.model.ToscaEdge;
-import org.eclipse.winery.compliance.model.ToscaNode;
-
-public interface IToscaMatcher {
-
-	boolean isCompatible(ToscaNode left, ToscaNode right);
-
-	boolean isCompatible(ToscaEdge left, ToscaEdge right);
+export enum LifecycleInterface {
+    INTERFACE = 'http://opentosca.org/interfaces/lifecycle',
+    INSTALL = 'install',
+    CONFIGURE = 'configure',
+    START = 'start',
+    STOP = 'stop',
+    UNINSTALL = 'uninstall'
 }
