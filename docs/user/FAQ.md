@@ -2,12 +2,14 @@
 
 ## Q: What is TOSCA?
 
-A: Topology and Orchestration Specification for Cloud Applications (TOSCA) is an OASIS specification, which enables the modeling, provisioning and management of cloud applications. 
+A: The Topology and Orchestration Specification for Cloud Applications (TOSCA) is an OASIS standard to describe the deployment and management of applications in a portable manner. 
+Based on standard-compliant TOSCA runtimes, such as the OpenTOSCA ecosystem, the deployment and management can be automated. 
 For more details see our [Notes on TOSCA](https://eclipse.github.io/winery/tosca/).
 
 ## Q: What is a CSAR?
 
 A: Cloud Service Archive (CSAR) is a packaging format defined by the TOSCA specification, which enables to bundle modeled TOSCA components in a self-contained manner. 
+Besides the TOSCA elements, the executable artifacts are packed as well.
 In winery, you can model a service template and export it as a CSAR. 
 This CSAR can be loaded into the OpenTOSCA container in order to deploy your application. 
 
