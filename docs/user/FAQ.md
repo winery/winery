@@ -3,7 +3,7 @@
 ## Q: What is TOSCA?
 
 A: Topology and Orchestration Specification for Cloud Applications (TOSCA) is an OASIS specification, which enables the modeling, provisioning and management of cloud applications. 
-For more detail, please click [here](http://eclipse.github.io/winery/tosca/).
+For more details see our [Notes on TOSCA](https://eclipse.github.io/winery/tosca/).
 
 ## Q: What is a CSAR?
 
@@ -14,7 +14,7 @@ This CSAR can be loaded into the OpenTOSCA container in order to deploy your app
 ## Q: How can I start the OpenTOSCA ecosystem?
 
 A: You can start the ecosystem by simply using Docker Compose or by using installation scripts. 
-Please refer to the [OpenTOSCA Getting Started guide](http://www.opentosca.org/sites/use_opentosca.html) for more details.
+Please refer to the [OpenTOSCA Getting Started guide](https://www.opentosca.org/sites/use_opentosca.html) for more details.
 
 ## Q: Is there an open repository for TOSCA types?
 
@@ -23,11 +23,11 @@ To use this repository with a Winery docker container, please refer to the corre
 
 ## Q: Where can I find a quick start guide to model node types?
 
-A: You can find a Winery quick start guide about modeling node types [here](quickstart.md).  
+A: You can find a Winery quick start guide about modeling node types in our [Quickstart](quickstart.md).
 
 ## Q: How can I export my modeled application as a CSAR?
 
-A: Select the Tab *Services Templates*. 
+A: Select the tab *Services Templates*.
 From the listed service templates, select the one you want to export. 
 In the detailed view, press *Export* and then choose the option *CSAR (XML)*.
 
@@ -38,7 +38,7 @@ Once you are done, you can do a release of your node type. In this way, Winery w
 
 ## Q: How can I release a node type?
 
-A: Select the Tab *Node Types*. 
+A: Select the tab *Node Types*.
 From the listed node types, select the one you want to release. 
 In the detailed view, press *Versions* and then choose the option *Release management version*.
 
@@ -53,3 +53,17 @@ A: If you need support, contact us at *opentosca@iaas.uni-stuttgart.de*.
 ## Q: How can I contribute to Winery?
 
 A: Please see the [contributing guide](https://github.com/eclipse/winery/blob/master/CONTRIBUTING.md).
+
+## License
+
+Copyright (c) 2018 Contributors to the Eclipse Foundation
+
+See the NOTICE file(s) distributed with this work for additional
+information regarding copyright ownership.
+
+This program and the accompanying materials are made available under the
+terms of the Eclipse Public License 2.0 which is available at
+http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+which is available at https://www.apache.org/licenses/LICENSE-2.0.
+
+SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
