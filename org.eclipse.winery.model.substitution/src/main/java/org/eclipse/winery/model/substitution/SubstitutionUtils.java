@@ -26,12 +26,16 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.model.tosca.HasInheritance;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TBoolean;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.repository.backend.NamespaceManager;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 public class SubstitutionUtils {
 
     /**
-     * This method collects all templates of the given <code>templates</code> which must be substituted. Additionally, all children
-     * of the template's type are included as a list of trees.
+     * This method collects all templates of the given <code>templates</code> which are abstract and must be substituted.
+     * Additionally, all children of the template's type are included as a list of trees.
      *
      * @param templates the list of TOSCA templates which have to examied whether they must be substituted
      * @param types     the map of all types of the same kind (e.g. Node Templates and Node Types) identified by their corresponding <code>DefinitionsChildId</code>
@@ -54,11 +58,11 @@ public class SubstitutionUtils {
     }
 
     /**
-     * This method collects all elements of the given class <code>T</code> which are derived from the <code>nodeType</code>.
+     * This method collects all elements of the given class <code>T</code> which are derived from the <b>abstract</b> <code>parent</code>.
      *
      * @param <T>    a TOSCA definitions type which has inheritance
      * @param types  all available types of the specified class <code>T</code>
-     * @param parent the parent
+     * @param parent abstract the parent
      * @return an <code>Optional</code> containing a tree of subtypes
      */
     public static <T extends HasInheritance> Optional<List<Subtypes<T>>> collectTypeHierarchy(Map<QName, T> types, QName parent) {
@@ -78,5 +82,15 @@ public class SubstitutionUtils {
         }
 
         return Optional.empty();
+    }
+
+    public static boolean containsPatterns(List<TNodeTemplate> topologyNodes, Map<QName, TNodeType> nodeTypes) {
+        NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
+
+        return topologyNodes.stream()
+            .anyMatch(nodeTemplate -> {
+                TNodeType tNodeType = nodeTypes.get(nodeTemplate.getType());
+                return namespaceManager.isPatternNamespace(tNodeType.getTargetNamespace());
+            });
     }
 }

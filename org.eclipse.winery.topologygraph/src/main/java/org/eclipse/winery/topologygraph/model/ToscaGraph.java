@@ -32,4 +32,8 @@ public class ToscaGraph extends DefaultDirectedGraph<ToscaNode, ToscaEdge> {
     public ToscaNode getReferenceNode() {
         return vertexSet().stream().findAny().orElse(null);
     }
+
+    public ToscaEdge getReferenceEdge() {
+        return edgeSet().stream().findAny().orElse(null);
+    }
 }

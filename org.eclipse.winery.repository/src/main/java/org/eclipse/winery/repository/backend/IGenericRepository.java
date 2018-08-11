@@ -44,6 +44,7 @@ import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.HasInheritanceId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.common.ids.definitions.PatternRefinementModelId;
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
@@ -668,6 +669,11 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
         return ids;
     }
 
+    default Collection<DefinitionsChildId> getReferencedDefinitionsChildIds(PatternRefinementModelId id) {
+        // TODO
+        return new HashSet<>();
+    }
+
     default Collection<DefinitionsChildId> getReferencedDefinitionsChildIds(ComplianceRuleId id) {
         // We have to use a HashSet to ensure that no duplicate ids are added
         // E.g., there may be multiple relationship templates having the same type
@@ -768,6 +774,8 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
             referencedDefinitionsChildIds = new ArrayList();
         } else if (id instanceof ComplianceRuleId) {
             referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((ComplianceRuleId) id);
+        } else if (id instanceof PatternRefinementModelId) {
+            referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((PatternRefinementModelId) id);
         } else {
             throw new IllegalStateException("Unhandled id class " + id.getClass());
         }

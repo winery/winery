@@ -20,6 +20,9 @@ import org.eclipse.winery.model.tosca.TEntityType;
 
 public abstract class ToscaEntity {
 
+    /**
+     * List of all types of this TNodeTemplate. The first element must be the actual type.
+     */
     private final List<TEntityType> types = new ArrayList<>();
     private String id;
 

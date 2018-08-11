@@ -30,6 +30,7 @@ import org.eclipse.winery.common.ids.definitions.ComplianceRuleId;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.common.ids.definitions.PatternRefinementModelId;
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
@@ -45,6 +46,7 @@ import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
+import org.eclipse.winery.model.tosca.TPatternRefinementModel;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TPolicyType;
 import org.eclipse.winery.model.tosca.TRelationshipType;
@@ -124,6 +126,10 @@ public interface IWineryRepositoryCommon {
 
     default TComplianceRule getElement(ComplianceRuleId id) {
         return (TComplianceRule) this.getDefinitions(id).getElement();
+    }
+
+    default TPatternRefinementModel getElement(PatternRefinementModelId id) {
+        return (TPatternRefinementModel) this.getDefinitions(id).getElement();
     }
 
     /**
