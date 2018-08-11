@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.substitution;
+package org.eclipse.winery.model.substitution;
 
 import java.util.HashMap;
 import java.util.List;

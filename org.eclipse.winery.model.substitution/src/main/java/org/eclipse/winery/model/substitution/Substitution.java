@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.substitution;
+package org.eclipse.winery.model.substitution;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
@@ -41,6 +42,7 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import org.slf4j.Logger;
@@ -166,6 +168,7 @@ public class Substitution {
                             capabilities.forEach(tCapabilityRef -> {
                                 topologyToImport.getNodeTemplates().stream()
                                     .filter(tNodeTemplate ->
+                                        // find the node template which defines the capability in the boundaries
                                         Objects.nonNull(tNodeTemplate.getCapabilities()) && tNodeTemplate.getCapabilities().getCapability()
                                             .stream()
                                             .anyMatch(tCapability -> tCapability.equals(tCapabilityRef.getRef()))
@@ -239,9 +242,11 @@ public class Substitution {
     }
 
     private void loadAllRequiredDefinitionsForTopologySubstitution() {
-        this.repository.getAllDefinitionsChildIds(ServiceTemplateId.class)
+        List<TServiceTemplate> serviceTemplates = this.repository.getAllDefinitionsChildIds(ServiceTemplateId.class)
             .stream()
-            .map(repository::getElement)
+            .map(repository::getElement).collect(Collectors.toList());
+
+        serviceTemplates.stream()
             .filter(element -> Objects.nonNull(element.getSubstitutableNodeType()))
             .forEach(tServiceTemplate ->
                 this.nodeTypeSubstitutableWithServiceTemplate.put(tServiceTemplate.getSubstitutableNodeType(), tServiceTemplate)

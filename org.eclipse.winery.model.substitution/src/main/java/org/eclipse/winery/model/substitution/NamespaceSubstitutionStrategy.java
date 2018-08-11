@@ -12,20 +12,34 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.substitution;
+package org.eclipse.winery.model.substitution;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.winery.model.tosca.HasInheritance;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TBoolean;
+import org.eclipse.winery.model.tosca.TEntityType;
 
-public class FindFirstSubstitutionStrategy<R extends HasType, T extends HasInheritance> extends SubstitutionStrategy<R, T> {
+public class NamespaceSubstitutionStrategy<R extends HasType, T extends HasInheritance> extends SubstitutionStrategy<R, T> {
+
+    private String requiredNamespace;
+
+    public NamespaceSubstitutionStrategy(String requiredNamespace) {
+        this.requiredNamespace = Objects.requireNonNull(requiredNamespace);
+    }
 
     @Override
     protected T selectElement(List<T> subtypes) {
         return subtypes.stream()
-            .filter(o -> TBoolean.NO.equals(o.getAbstract()))
+            .filter(o -> {
+                if (TBoolean.NO.equals(o.getAbstract()) && o instanceof TEntityType) {
+                    TEntityType subtype = (TEntityType) o;
+                    return this.requiredNamespace.equals(subtype.getTargetNamespace());
+                }
+                return false;
+            })
             .findFirst()
             .orElse(null);
     }

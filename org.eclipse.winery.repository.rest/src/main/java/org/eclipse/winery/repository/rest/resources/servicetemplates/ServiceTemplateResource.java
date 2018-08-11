@@ -38,6 +38,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.compliance.checking.ServiceTemplateCheckingResult;
 import org.eclipse.winery.compliance.checking.ServiceTemplateComplianceRuleRuleChecker;
+import org.eclipse.winery.model.substitution.Substitution;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TPlans;
@@ -59,7 +60,6 @@ import org.eclipse.winery.repository.rest.resources.servicetemplates.selfservice
 import org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates.TopologyTemplateResource;
 import org.eclipse.winery.repository.splitting.Splitting;
 import org.eclipse.winery.repository.splitting.SplittingException;
-import org.eclipse.winery.repository.substitution.Substitution;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
