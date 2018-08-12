@@ -24,6 +24,8 @@
         </div>
         <div *ngIf="!data.id" class="badge numberOfComponentInstances">{{ data.count }}</div>
         <div *ngIf="data.id && showButtons" class="buttonContainer">
+            <a *ngIf="showTargetAllocationButton" class="targetAllocationButton" (click)="targetAllocation($event)"
+               tooltip="Allocate to cloud providers"></a>
             <a class="exportButton" (click)="exportComponent($event)"
                tooltip="Export CSAR. Hold CTRL to export XML."></a>
             <a class="editButton" (click)="editComponent($event)"
@@ -34,6 +36,8 @@
     <div class="right">
     </div>
 </div>
+
+<winery-target-allocation-component #targetAllocationModal></winery-target-allocation-component>
 
 <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
     <winery-modal-header [title]="'Delete ' + (toscaType | toscaTypeToReadableName)">
