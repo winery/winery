@@ -15,6 +15,7 @@
 package org.eclipse.winery.repository.rest.resources.patternrefinementmodels;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
@@ -48,7 +49,7 @@ public class PatternRefinementModelResource extends AbstractComponentInstanceRes
 
     @Path("detector")
     public TopologyTemplateResource getDetector() {
-        return new TopologyTemplateResource(this, this.getTPatternRefinementModel().getRefinementStructure(), DETECTOR);
+        return new TopologyTemplateResource(this, this.getTPatternRefinementModel().getDetector(), DETECTOR);
     }
 
     @Path("refinementstructure")
@@ -58,7 +59,14 @@ public class PatternRefinementModelResource extends AbstractComponentInstanceRes
 
     @Path("relationmappings")
     public RelationMappingsResource getRelationMappings() {
-        return new RelationMappingsResource(this, this.getTPatternRefinementModel().getRelationshipMappings());
+        TPatternRefinementModel.TRelationMappings relationMappings = this.getTPatternRefinementModel().getRelationMappings();
+
+        if (Objects.isNull(relationMappings)) {
+            relationMappings = new TPatternRefinementModel.TRelationMappings();
+            this.getTPatternRefinementModel().setRelationMappings(relationMappings);
+        }
+
+        return new RelationMappingsResource(this, relationMappings);
     }
 
     @Override

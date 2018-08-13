@@ -21,7 +21,7 @@ import { WineryReadmeComponent } from '../../wineryReadmeModule/wineryReadme.com
 import { WineryLicenseComponent } from '../../wineryLicenseModule/wineryLicense.component';
 import { EditXMLComponent } from '../../instance/sharedComponents/editXML/editXML.component';
 import { NgModule } from '@angular/core';
-import { RelationshipMappingsComponent } from '../../instance/patternRefinementModels/relationshipMappings/relationshipMappings.component';
+import { RelationMappingsComponent } from '../../instance/patternRefinementModels/relationshipMappings/relationMappings.component';
 import { TopologyTemplateComponent } from '../../instance/sharedComponents/topologyTemplate/topologyTemplate.component';
 
 const toscaType = ToscaTypes.PatternRefinementModel;
@@ -38,7 +38,7 @@ const patternRefinementRoutes: Routes = [
             { path: 'license', component: WineryLicenseComponent },
             { path: 'detector', component: TopologyTemplateComponent },
             { path: 'refinementstructure', component: TopologyTemplateComponent },
-            { path: 'relationshipmappings', component: RelationshipMappingsComponent },
+            { path: 'relationmappings', component: RelationMappingsComponent },
             { path: 'xml', component: EditXMLComponent },
             { path: '', redirectTo: 'readme', pathMatch: 'full' }
         ]

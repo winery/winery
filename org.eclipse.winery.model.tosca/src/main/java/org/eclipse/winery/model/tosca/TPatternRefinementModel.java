@@ -45,8 +45,8 @@ public class TPatternRefinementModel extends TExtensibleElements implements HasN
     @XmlElement(name = "RefinementStructure")
     private TTopologyTemplate refinementStructure;
 
-    @XmlElement(name = "RelationshipMappings")
-    private TRelationMappings relationshipMappings;
+    @XmlElement(name = "RelationMappings")
+    private TRelationMappings relationMappings;
 
     @Override
     public String getName() {
@@ -120,11 +120,11 @@ public class TPatternRefinementModel extends TExtensibleElements implements HasN
         }
     }
 
-    public TRelationMappings getRelationshipMappings() {
-        return relationshipMappings;
+    public TRelationMappings getRelationMappings() {
+        return relationMappings;
     }
 
-    public void setRelationshipMappings(TRelationMappings relationshipMappings) {
-        this.relationshipMappings = relationshipMappings;
+    public void setRelationMappings(TRelationMappings relationMappings) {
+        this.relationMappings = relationMappings;
     }
 }

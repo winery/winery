@@ -249,7 +249,7 @@ class PatternRefinementTest {
         TPatternRefinementModel.TRelationMappings relationMappings = new TPatternRefinementModel.TRelationMappings();
         relationMappings.getRelationMapping().add(rm1);
         relationMappings.getRelationMapping().add(rm2);
-        matchingPrm.setRelationshipMappings(relationMappings);
+        matchingPrm.setRelationMappings(relationMappings);
 
         candidate = new PatternRefinementCandidate(matchingPrm, mappings, detectorGraph);
         // endregion
@@ -260,7 +260,7 @@ class PatternRefinementTest {
 
         TPatternRefinementModel.TRelationMappings relationMappings1 = new TPatternRefinementModel.TRelationMappings();
         relationMappings1.getRelationMapping().add(rm2);
-        nonMatchingPrm.setRelationshipMappings(relationMappings1);
+        nonMatchingPrm.setRelationMappings(relationMappings1);
 
         invalidCandidate = new PatternRefinementCandidate(nonMatchingPrm, mappings, detectorGraph);
         // endregion

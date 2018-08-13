@@ -22,7 +22,7 @@ public class PatternRefinementModelResourceTest extends AbstractResourceTest {
 
     @Test
     public void getWholePRM() throws Exception {
-        this.setRevisionTo("3cf34e2b569b5e811ffb2920aa172ebebbafc670");
+        this.setRevisionTo("73634ff180798e5969a5e62f020d2481264ffedb");
         this.assertGet("patternrefinementmodels/http%253A%252F%252Fplain.winery.opentosca.org%252Ftest%252Fpatternrefinementmodels/pmr_1.0.0-w1-wip1/",
             "patternrefinementmodels/first_patternrefinementmodel.json");
     }

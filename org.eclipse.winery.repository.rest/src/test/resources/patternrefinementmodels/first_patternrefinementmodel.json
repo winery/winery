@@ -148,7 +148,7 @@
                     }
                 ]
             },
-            "relationshipMappings": {
+            "relationMappings": {
                 "relationMapping": [
                     {
                         "id": "mapping1",

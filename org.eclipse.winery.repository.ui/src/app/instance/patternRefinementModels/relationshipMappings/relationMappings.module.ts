@@ -14,18 +14,32 @@
 import { NgModule } from '@angular/core';
 import { WineryModalModule } from '../../../wineryModalModule/winery.modal.module';
 import { CommonModule } from '@angular/common';
-import { RelationshipMappingsComponent } from './relationshipMappings.component';
+import { RelationMappingsComponent } from './relationMappings.component';
+import { HttpClientModule } from '@angular/common/http';
+import { WineryNotificationModule } from '../../../wineryNotificationModule/wineryNotification.module';
+import { InstanceModule } from '../../instance.module';
+import { BrowserModule } from '@angular/platform-browser';
+import { WineryTableModule } from '../../../wineryTableModule/wineryTable.module';
+import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
+import { SelectModule } from 'ng2-select';
 
 @NgModule({
     imports: [
         CommonModule,
+        HttpClientModule,
+        BrowserModule,
+        SelectModule,
+        InstanceModule,
         WineryModalModule,
+        WineryNotificationModule,
+        WineryTableModule,
+        WineryLoaderModule,
     ],
     exports: [
-        RelationshipMappingsComponent
+        RelationMappingsComponent
     ],
     declarations: [
-        RelationshipMappingsComponent,
+        RelationMappingsComponent,
     ]
 })
 export class RelationMappingsModule {

@@ -11,10 +11,17 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component } from '@angular/core';
 
-@Component({
-    templateUrl: 'relationship-mappings.component.html'
-})
-export class RelationshipMappingsComponent {
+export enum RelationDirection {
+    INGOING = 'INGOING',
+    OUTGOING = 'OUTGOING'
+}
+
+export interface RelationMappings {
+    id: string;
+    detectorNode: string;
+    refinementNode: string;
+    relationType: string;
+    direction: RelationDirection;
+    validSourceOrTarget: string;
 }

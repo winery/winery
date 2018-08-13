@@ -95,7 +95,7 @@ public class PatternRefinement extends AbstractSubstitution {
                             TNodeTemplate matchingNode = mapping.getVertexCorrespondence(vertex, false).getNodeTemplate();
                             this.getExternalRelations(matchingNode, refinement, topology)
                                 .forEach(relationship -> {
-                                    refinement.getPatternRefinementModel().getRelationshipMappings().getRelationMapping()
+                                    refinement.getPatternRefinementModel().getRelationMappings().getRelationMapping()
                                         .stream()
                                         // use anyMatch to reduce runtime
                                         .anyMatch(relationMapping -> {
@@ -140,8 +140,8 @@ public class PatternRefinement extends AbstractSubstitution {
                         return this.getExternalRelations(matchingNode, candidate, topology)
                             .allMatch(relationship ->
                                 // do the actual applicable check: can the relationship be mapped?
-                                Objects.nonNull(candidate.getPatternRefinementModel().getRelationshipMappings()) &&
-                                    candidate.getPatternRefinementModel().getRelationshipMappings().getRelationMapping()
+                                Objects.nonNull(candidate.getPatternRefinementModel().getRelationMappings()) &&
+                                    candidate.getPatternRefinementModel().getRelationMappings().getRelationMapping()
                                         .stream()
                                         .anyMatch(relationMapping -> {
                                             // TODO: check if any supertype of the relationship matches

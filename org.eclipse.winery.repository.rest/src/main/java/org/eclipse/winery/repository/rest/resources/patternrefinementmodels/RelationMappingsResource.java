@@ -15,12 +15,13 @@
 package org.eclipse.winery.repository.rest.resources.patternrefinementmodels;
 
 import java.util.List;
-import java.util.Objects;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -36,9 +37,7 @@ public class RelationMappingsResource {
 
     public RelationMappingsResource(AbstractComponentInstanceResource res, TPatternRefinementModel.TRelationMappings relationMappings) {
         this.res = res;
-
-        TPatternRefinementModel.TRelationMappings relMaps = Objects.isNull(relationMappings) ? new TPatternRefinementModel.TRelationMappings() : relationMappings;
-        this.relationMappings = relMaps.getRelationMapping();
+        this.relationMappings = relationMappings.getRelationMapping();
     }
 
     @GET
@@ -59,10 +58,10 @@ public class RelationMappingsResource {
     }
 
     @DELETE
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<TRelationMapping> removePatternRefinement(TRelationMapping mapping) {
-        this.relationMappings.remove(mapping);
+    public List<TRelationMapping> removePatternRefinement(@PathParam("id") String id) {
+        this.relationMappings.removeIf(mapping -> mapping.getId().equals(id));
         RestUtils.persist(this.res);
         return this.relationMappings;
     }
