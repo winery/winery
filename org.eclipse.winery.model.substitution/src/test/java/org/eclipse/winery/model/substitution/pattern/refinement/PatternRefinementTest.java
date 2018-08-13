@@ -47,6 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class PatternRefinementTest {
 
     private static TTopologyTemplate topology;
+    private static TTopologyTemplate topology2;
     private static PatternRefinementCandidate candidate;
     private static PatternRefinementCandidate invalidCandidate;
 
@@ -86,6 +87,16 @@ class PatternRefinementTest {
         rt24.setSourceNodeTemplate(nt2);
         rt24.setTargetNodeTemplate(nt4);
 
+        /*
+        #######   (1)  #######   (1)  #######
+        # (1) # <----- # (2) # <----- # (3) #
+        #######        #######        #######
+                          | (2)
+                         \/
+                       #######
+                       # (4) #
+                       #######
+         */
         topology = new TTopologyTemplate();
         topology.addNodeTemplate(nt1);
         topology.addNodeTemplate(nt2);
@@ -94,6 +105,25 @@ class PatternRefinementTest {
         topology.addRelationshipTemplate(rt21);
         topology.addRelationshipTemplate(rt32);
         topology.addRelationshipTemplate(rt24);
+        // endregion
+
+        // region *** topology2 ***
+        /*
+        #######   (1)  #######
+        # (1) # <----- # (2) #
+        #######        #######
+                          | (2)
+                         \/
+                       #######
+                       # (4) #
+                       #######
+         */
+        topology2 = new TTopologyTemplate();
+        topology2.addNodeTemplate(nt1);
+        topology2.addNodeTemplate(nt2);
+        topology2.addNodeTemplate(nt4);
+        topology2.addRelationshipTemplate(rt21);
+        topology2.addRelationshipTemplate(rt24);
         // endregion
 
         // region *** matching PRM ***
@@ -112,6 +142,16 @@ class PatternRefinementTest {
         rt78.setSourceNodeTemplate(nt7);
         rt78.setTargetNodeTemplate(nt8);
 
+        /*
+        #######
+        # (2) #
+        #######
+           | (2)
+          \/
+        #######
+        # (4) #
+        #######
+         */
         TTopologyTemplate detector = new TTopologyTemplate();
         detector.addNodeTemplate(nt7);
         detector.addNodeTemplate(nt8);
@@ -153,6 +193,22 @@ class PatternRefinementTest {
         rt1213.setSourceNodeTemplate(nt12);
         rt1213.setTargetNodeTemplate(nt13);
 
+        /*
+        ########        ########
+        # (10) #        # (11) #
+        ########        ########
+            | (2)          | (2)
+            +-------|------+
+                   \/
+                 ########
+                 # (12) #
+                 ########
+                    | (2)
+                   \/
+                 ########
+                 # (13) #
+                 ########
+         */
         TTopologyTemplate refinementStructure = new TTopologyTemplate();
         refinementStructure.addNodeTemplate(nt10);
         refinementStructure.addNodeTemplate(nt11);
@@ -203,7 +259,7 @@ class PatternRefinementTest {
         nonMatchingPrm.setDetector(detector);
 
         TPatternRefinementModel.TRelationMappings relationMappings1 = new TPatternRefinementModel.TRelationMappings();
-        relationMappings1.getRelationMapping().add(rm1);
+        relationMappings1.getRelationMapping().add(rm2);
         nonMatchingPrm.setRelationshipMappings(relationMappings1);
 
         invalidCandidate = new PatternRefinementCandidate(nonMatchingPrm, mappings, detectorGraph);
@@ -222,16 +278,45 @@ class PatternRefinementTest {
         setUp();
         return Stream.of(
             Arguments.of(candidate, topology, true, "Expect applicable PRM"),
-            Arguments.of(invalidCandidate, topology, false, "Expect inapplicable PRM")
+            Arguments.of(invalidCandidate, topology, false, "Expect inapplicable PRM"),
+            Arguments.of(candidate, topology2, true, "Expect applicable PRM"),
+            Arguments.of(invalidCandidate, topology2, true, "Expect applicable PRM")
         );
     }
     // endregion
 
     // region ********** applyRefinement() **********
     @Test
-    void testApplyRefinement() {
+    void testApplyRefinementToTopology() {
         setUp();
 
+         /*
+        input:
+        #######   (1)  #######   (1)  #######
+        # (1) # <----- # (2) # <----- # (3) #
+        #######        #######        #######
+                          | (2)
+                         \/
+                       #######
+                       # (4) #
+                       #######
+
+        expected output:
+        #######   (1)  ########        ########   (1)  #######
+        # (1) # <----- # (10) #        # (11) # <----- # (3) #
+        #######        ########        ########        #######
+                           | (2)          | (2)
+                           +-------|------+
+                                  \/
+                               ########
+                               # (12) #
+                               ########
+                                   | (2)
+                                  \/
+                               ########
+                               # (13) #
+                               ########
+         */
         PatternRefinement patternRefinement = new PatternRefinement();
         patternRefinement.applyRefinement(candidate, topology);
 
@@ -258,6 +343,64 @@ class PatternRefinementTest {
         // changes
         assertEquals("10", topology.getRelationshipTemplate("21").getSourceElement().getRef().getId());
         assertEquals("11", topology.getRelationshipTemplate("32").getTargetElement().getRef().getId());
+        assertEquals(11, topology.getNodeTemplateOrRelationshipTemplate().size());
+    }
+
+    @Test
+    void testApplyRefinementToTopology2() {
+        setUp();
+
+         /*
+        input:
+        #######   (1)  #######
+        # (1) # <----- # (2) #
+        #######        #######
+                          | (2)
+                         \/
+                       #######
+                       # (4) #
+                       #######
+
+        expected output:
+        #######   (1)  ########        ########
+        # (1) # <----- # (10) #        # (11) #
+        #######        ########        ########
+                           | (2)          | (2)
+                           +-------|------+
+                                  \/
+                               ########
+                               # (12) #
+                               ########
+                                   | (2)
+                                  \/
+                               ########
+                               # (13) #
+                               ########
+         */
+        PatternRefinement patternRefinement = new PatternRefinement();
+        patternRefinement.applyRefinement(candidate, topology2);
+
+        // static elements
+        assertTrue(Objects.nonNull(topology2.getNodeTemplate("1")));
+        assertTrue(Objects.nonNull(topology2.getRelationshipTemplate("21")));
+
+        // added elements
+        assertTrue(Objects.nonNull(topology2.getNodeTemplate("10")));
+        assertTrue(Objects.nonNull(topology2.getNodeTemplate("11")));
+        assertTrue(Objects.nonNull(topology2.getNodeTemplate("12")));
+        assertTrue(Objects.nonNull(topology2.getNodeTemplate("13")));
+        assertTrue(Objects.nonNull(topology2.getRelationshipTemplate("1012")));
+        assertTrue(Objects.nonNull(topology2.getRelationshipTemplate("1112")));
+        assertTrue(Objects.nonNull(topology2.getRelationshipTemplate("1213")));
+
+        // deleted elements
+        assertTrue(Objects.isNull(topology2.getNodeTemplate("2")));
+        assertTrue(Objects.isNull(topology2.getNodeTemplate("4")));
+        assertTrue(Objects.isNull(topology2.getRelationshipTemplate("24")));
+
+        // changes
+        assertEquals("10", topology2.getRelationshipTemplate("21").getSourceElement().getRef().getId());
+        assertEquals(9, topology2.getNodeTemplateOrRelationshipTemplate().size());
     }
     // endregion
 }
