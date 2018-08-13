@@ -1413,7 +1413,9 @@ public class BackendUtils {
      * Merges two Topology Templates and returns the mapping between the topology elements from the original Topology Template and their
      * respective clones inside the merged topology.
      *
-     * @param topologyTemplateA the topology to
+     * @param topologyTemplateA the topology to merged into <code>topologyTemplateB</code>
+     * @param topologyTemplateB the target topology in which <dode>topologyTemplateA</dode> should be merged in
+     * @return A mapping between the ids in the <code>topologyTemplateA</code> and their corresponding ids in <code>topologyTemplateB</code>
      */
     public static Map<String, String> mergeTopologyTemplateAinTopologyTemplateB(TTopologyTemplate topologyTemplateA, TTopologyTemplate topologyTemplateB) {
         Objects.requireNonNull(topologyTemplateA);

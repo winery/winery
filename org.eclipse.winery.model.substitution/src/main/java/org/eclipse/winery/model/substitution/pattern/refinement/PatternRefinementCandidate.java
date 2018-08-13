@@ -15,12 +15,14 @@
 package org.eclipse.winery.model.substitution.pattern.refinement;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
 import org.eclipse.winery.topologygraph.model.ToscaEdge;
 import org.eclipse.winery.topologygraph.model.ToscaGraph;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.jgrapht.GraphMapping;
 
 public class PatternRefinementCandidate {
@@ -30,19 +32,22 @@ public class PatternRefinementCandidate {
     private final ToscaGraph detectorGraph;
 
     public PatternRefinementCandidate(TPatternRefinementModel patternRefinementModel, List<GraphMapping<ToscaNode, ToscaEdge>> graphMapping, ToscaGraph detectorGraph) {
-        this.patternRefinementModel = patternRefinementModel;
-        this.graphMapping = graphMapping;
-        this.detectorGraph = detectorGraph;
+        this.patternRefinementModel = Objects.requireNonNull(patternRefinementModel);
+        this.graphMapping = Objects.requireNonNull(graphMapping);
+        this.detectorGraph = Objects.requireNonNull(detectorGraph);
     }
 
+    @NonNull
     public TPatternRefinementModel getPatternRefinementModel() {
         return patternRefinementModel;
     }
 
+    @NonNull
     public List<GraphMapping<ToscaNode, ToscaEdge>> getGraphMapping() {
         return graphMapping;
     }
 
+    @NonNull
     public ToscaGraph getDetectorGraph() {
         return detectorGraph;
     }

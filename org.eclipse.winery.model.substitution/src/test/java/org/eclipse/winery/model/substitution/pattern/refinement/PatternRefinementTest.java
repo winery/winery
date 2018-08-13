@@ -16,6 +16,8 @@ package org.eclipse.winery.model.substitution.pattern.refinement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
@@ -35,111 +37,154 @@ import org.eclipse.winery.topologygraph.transformation.ToscaTransformer;
 import com.google.common.collect.Iterators;
 import org.jgrapht.GraphMapping;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PatternRefinementTest {
 
-    @Test
-    void testIsApplicable() {
+    private static TTopologyTemplate topology;
+    private static PatternRefinementCandidate candidate;
+    private static PatternRefinementCandidate invalidCandidate;
+
+    static void setUp() {
         // region *** topology ***
         TNodeTemplate nt1 = new TNodeTemplate();
         nt1.setType("{http://ex.org}nodeType_1");
         nt1.setId("1");
-        TRelationshipTemplate.SourceOrTargetElement sourceOrTargetElement1 = new TRelationshipTemplate.SourceOrTargetElement();
-        sourceOrTargetElement1.setRef(nt1);
 
         TNodeTemplate nt2 = new TNodeTemplate();
         nt2.setType("{http://ex.org}nodeType_2");
         nt2.setId("2");
-        TRelationshipTemplate.SourceOrTargetElement sourceOrTargetElement2 = new TRelationshipTemplate.SourceOrTargetElement();
-        sourceOrTargetElement2.setRef(nt2);
 
         TNodeTemplate nt3 = new TNodeTemplate();
         nt3.setType("{http://ex.org}nodeType_3");
         nt3.setId("3");
-        TRelationshipTemplate.SourceOrTargetElement sourceOrTargetElement3 = new TRelationshipTemplate.SourceOrTargetElement();
-        sourceOrTargetElement3.setRef(nt3);
 
         TNodeTemplate nt4 = new TNodeTemplate();
         nt4.setType("{http://ex.org}nodeType_4");
         nt4.setId("4");
-        TRelationshipTemplate.SourceOrTargetElement sourceOrTargetElement4 = new TRelationshipTemplate.SourceOrTargetElement();
-        sourceOrTargetElement4.setRef(nt4);
 
-        TRelationshipTemplate rst21 = new TRelationshipTemplate();
-        rst21.setType("{http://ex.org}relType_1");
-        rst21.setId("5");
-        rst21.setSourceElement(sourceOrTargetElement2);
-        rst21.setTargetElement(sourceOrTargetElement1);
+        TRelationshipTemplate rt21 = new TRelationshipTemplate();
+        rt21.setType("{http://ex.org}relType_1");
+        rt21.setId("21");
+        rt21.setSourceNodeTemplate(nt2);
+        rt21.setTargetNodeTemplate(nt1);
 
-        TRelationshipTemplate rst32 = new TRelationshipTemplate();
-        rst32.setType("{http://ex.org}relType_1");
-        rst32.setId("6");
-        rst32.setSourceElement(sourceOrTargetElement3);
-        rst32.setTargetElement(sourceOrTargetElement2);
+        TRelationshipTemplate rt32 = new TRelationshipTemplate();
+        rt32.setType("{http://ex.org}relType_1");
+        rt32.setId("32");
+        rt32.setSourceNodeTemplate(nt3);
+        rt32.setTargetNodeTemplate(nt2);
 
-        TRelationshipTemplate rst24 = new TRelationshipTemplate();
-        rst24.setType("{http://ex.org}relType_2");
-        rst24.setId("7");
-        rst24.setSourceElement(sourceOrTargetElement2);
-        rst24.setTargetElement(sourceOrTargetElement4);
+        TRelationshipTemplate rt24 = new TRelationshipTemplate();
+        rt24.setType("{http://ex.org}relType_2");
+        rt24.setId("24");
+        rt24.setSourceNodeTemplate(nt2);
+        rt24.setTargetNodeTemplate(nt4);
 
-        TTopologyTemplate topology = new TTopologyTemplate();
+        topology = new TTopologyTemplate();
         topology.addNodeTemplate(nt1);
         topology.addNodeTemplate(nt2);
         topology.addNodeTemplate(nt3);
         topology.addNodeTemplate(nt4);
-        topology.addRelationshipTemplate(rst21);
-        topology.addRelationshipTemplate(rst32);
-        topology.addRelationshipTemplate(rst24);
+        topology.addRelationshipTemplate(rt21);
+        topology.addRelationshipTemplate(rt32);
+        topology.addRelationshipTemplate(rt24);
         // endregion
 
+        // region *** matching PRM ***
         // region *** detector ***
-        TNodeTemplate dNt1 = new TNodeTemplate();
-        dNt1.setType("{http://ex.org}nodeType_2");
-        dNt1.setId("1231");
-        TRelationshipTemplate.SourceOrTargetElement sOt1 = new TRelationshipTemplate.SourceOrTargetElement();
-        sOt1.setRef(dNt1);
+        TNodeTemplate nt7 = new TNodeTemplate();
+        nt7.setType("{http://ex.org}nodeType_2");
+        nt7.setId("7");
 
-        TNodeTemplate dNt2 = new TNodeTemplate();
-        dNt2.setType("{http://ex.org}nodeType_4");
-        dNt2.setId("11");
-        TRelationshipTemplate.SourceOrTargetElement sOt2 = new TRelationshipTemplate.SourceOrTargetElement();
-        sOt2.setRef(dNt2);
+        TNodeTemplate nt8 = new TNodeTemplate();
+        nt8.setType("{http://ex.org}nodeType_4");
+        nt8.setId("8");
 
-        TRelationshipTemplate dRst12 = new TRelationshipTemplate();
-        dRst12.setType("{http://ex.org}relType_2");
-        dRst12.setId("465");
-        dRst12.setSourceElement(sOt1);
-        dRst12.setTargetElement(sOt2);
+        TRelationshipTemplate rt78 = new TRelationshipTemplate();
+        rt78.setType("{http://ex.org}relType_2");
+        rt78.setId("78");
+        rt78.setSourceNodeTemplate(nt7);
+        rt78.setTargetNodeTemplate(nt8);
 
         TTopologyTemplate detector = new TTopologyTemplate();
-        detector.addNodeTemplate(dNt1);
-        detector.addNodeTemplate(dNt2);
-        detector.addRelationshipTemplate(dRst12);
+        detector.addNodeTemplate(nt7);
+        detector.addNodeTemplate(nt8);
+        detector.addRelationshipTemplate(rt78);
         // endregion
 
-        // region *** relation Mapping ***
+        // region *** refinement structure
+        TNodeTemplate nt10 = new TNodeTemplate();
+        nt10.setType("{http://ex.org}nodeType_10");
+        nt10.setId("10");
+
+        TNodeTemplate nt11 = new TNodeTemplate();
+        nt11.setType("{http://ex.org}nodeType_11");
+        nt11.setId("11");
+
+        TNodeTemplate nt12 = new TNodeTemplate();
+        nt12.setType("{http://ex.org}nodeType_12");
+        nt12.setId("12");
+
+        TNodeTemplate nt13 = new TNodeTemplate();
+        nt13.setType("{http://ex.org}nodeType_13");
+        nt13.setId("13");
+
+        TRelationshipTemplate rt1012 = new TRelationshipTemplate();
+        rt1012.setType("{http://ex.org}relType_2");
+        rt1012.setId("1012");
+        rt1012.setSourceNodeTemplate(nt10);
+        rt1012.setTargetNodeTemplate(nt12);
+
+        TRelationshipTemplate rt1112 = new TRelationshipTemplate();
+        rt1112.setType("{http://ex.org}relType_2");
+        rt1112.setId("1112");
+        rt1112.setSourceNodeTemplate(nt11);
+        rt1112.setTargetNodeTemplate(nt12);
+
+        TRelationshipTemplate rt1213 = new TRelationshipTemplate();
+        rt1213.setType("{http://ex.org}relType_2");
+        rt1213.setId("1213");
+        rt1213.setSourceNodeTemplate(nt12);
+        rt1213.setTargetNodeTemplate(nt13);
+
+        TTopologyTemplate refinementStructure = new TTopologyTemplate();
+        refinementStructure.addNodeTemplate(nt10);
+        refinementStructure.addNodeTemplate(nt11);
+        refinementStructure.addNodeTemplate(nt12);
+        refinementStructure.addNodeTemplate(nt13);
+        refinementStructure.addRelationshipTemplate(rt1012);
+        refinementStructure.addRelationshipTemplate(rt1112);
+        refinementStructure.addRelationshipTemplate(rt1213);
+        // endregion
+
+        // region *** relation mapping ***
         TRelationMapping rm1 = new TRelationMapping();
-        rm1.setDetectorNode(dNt1);
+        rm1.setDetectorNode(nt7);
         rm1.setRelationType(QName.valueOf("{http://ex.org}relType_1"));
         rm1.setDirection(TRelationDirection.INGOING);
         rm1.setValidSourceOrTarget(QName.valueOf("{http://ex.org}nodeType_3"));
+        rm1.setRefinementNode(nt11);
 
         TRelationMapping rm2 = new TRelationMapping();
-        rm2.setDetectorNode(dNt1);
+        rm2.setDetectorNode(nt7);
         rm2.setRelationType(QName.valueOf("{http://ex.org}relType_1"));
         rm2.setDirection(TRelationDirection.OUTGOING);
         rm2.setValidSourceOrTarget(QName.valueOf("{http://ex.org}nodeType_1"));
+        rm2.setRefinementNode(nt10);
         // endregion
 
-        // region *** PRM ***
-        TPatternRefinementModel prm = new TPatternRefinementModel();
-        prm.setDetector(detector);
+        TPatternRefinementModel matchingPrm = new TPatternRefinementModel();
+        matchingPrm.setDetector(detector);
+        matchingPrm.setRefinementStructure(refinementStructure);
 
         ToscaGraph topologyGraph = ToscaTransformer.createTOSCAGraph(topology);
-        ToscaGraph detectorGraph = ToscaTransformer.createTOSCAGraph(prm.getDetector());
+        ToscaGraph detectorGraph = ToscaTransformer.createTOSCAGraph(matchingPrm.getDetector());
 
         ToscaIsomorphismMatcher matcher = new ToscaIsomorphismMatcher();
         List<GraphMapping<ToscaNode, ToscaEdge>> mappings = new ArrayList<>();
@@ -148,13 +193,71 @@ class PatternRefinementTest {
         TPatternRefinementModel.TRelationMappings relationMappings = new TPatternRefinementModel.TRelationMappings();
         relationMappings.getRelationMapping().add(rm1);
         relationMappings.getRelationMapping().add(rm2);
-        prm.setRelationshipMappings(relationMappings);
+        matchingPrm.setRelationshipMappings(relationMappings);
 
-        PatternRefinementCandidate candidate = new PatternRefinementCandidate(prm, mappings, detectorGraph);
+        candidate = new PatternRefinementCandidate(matchingPrm, mappings, detectorGraph);
         // endregion
 
-        PatternRefinement patternRefinement = new PatternRefinement();
+        // region *** non-matching PRM **
+        TPatternRefinementModel nonMatchingPrm = new TPatternRefinementModel();
+        nonMatchingPrm.setDetector(detector);
 
-        assertTrue(patternRefinement.isApplicable(candidate, topology));
+        TPatternRefinementModel.TRelationMappings relationMappings1 = new TPatternRefinementModel.TRelationMappings();
+        relationMappings1.getRelationMapping().add(rm1);
+        nonMatchingPrm.setRelationshipMappings(relationMappings1);
+
+        invalidCandidate = new PatternRefinementCandidate(nonMatchingPrm, mappings, detectorGraph);
+        // endregion
     }
+
+    // region ********** isApplicable() **********
+    @ParameterizedTest(name = "{index} => ''{3}''")
+    @MethodSource("getIsApplicableArguments")
+    void testIsApplicable(PatternRefinementCandidate refinementCandidate, TTopologyTemplate topologyTemplate, boolean expected, String description) {
+        PatternRefinement patternRefinement = new PatternRefinement();
+        assertEquals(expected, patternRefinement.isApplicable(refinementCandidate, topologyTemplate));
+    }
+
+    private static Stream<Arguments> getIsApplicableArguments() {
+        setUp();
+        return Stream.of(
+            Arguments.of(candidate, topology, true, "Expect applicable PRM"),
+            Arguments.of(invalidCandidate, topology, false, "Expect inapplicable PRM")
+        );
+    }
+    // endregion
+
+    // region ********** applyRefinement() **********
+    @Test
+    void testApplyRefinement() {
+        setUp();
+
+        PatternRefinement patternRefinement = new PatternRefinement();
+        patternRefinement.applyRefinement(candidate, topology);
+
+        // static elements
+        assertTrue(Objects.nonNull(topology.getNodeTemplate("1")));
+        assertTrue(Objects.nonNull(topology.getNodeTemplate("3")));
+        assertTrue(Objects.nonNull(topology.getRelationshipTemplate("21")));
+        assertTrue(Objects.nonNull(topology.getRelationshipTemplate("32")));
+
+        // added elements
+        assertTrue(Objects.nonNull(topology.getNodeTemplate("10")));
+        assertTrue(Objects.nonNull(topology.getNodeTemplate("11")));
+        assertTrue(Objects.nonNull(topology.getNodeTemplate("12")));
+        assertTrue(Objects.nonNull(topology.getNodeTemplate("13")));
+        assertTrue(Objects.nonNull(topology.getRelationshipTemplate("1012")));
+        assertTrue(Objects.nonNull(topology.getRelationshipTemplate("1112")));
+        assertTrue(Objects.nonNull(topology.getRelationshipTemplate("1213")));
+
+        // deleted elements
+        assertTrue(Objects.isNull(topology.getNodeTemplate("2")));
+        assertTrue(Objects.isNull(topology.getNodeTemplate("4")));
+        assertTrue(Objects.isNull(topology.getRelationshipTemplate("24")));
+
+        // changes
+        assertEquals("10", topology.getRelationshipTemplate("21").getSourceElement().getRef().getId());
+        assertEquals("11", topology.getRelationshipTemplate("32").getTargetElement().getRef().getId());
+    }
+    // endregion
 }
