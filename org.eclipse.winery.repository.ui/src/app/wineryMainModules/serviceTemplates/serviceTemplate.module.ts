@@ -15,7 +15,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ServiceTemplateRouterModule } from './serviceTemplateRouter.module';
-import { TopologyTemplateComponent } from '../../instance/serviceTemplates/topologyTemplate/topologyTemplate.component';
+import { TopologyTemplateComponent } from '../../instance/sharedComponents/topologyTemplate/topologyTemplate.component';
 import { PlansComponent } from '../../instance/serviceTemplates/plans/plans.component';
 import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
 import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
@@ -34,7 +34,7 @@ import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.mod
 import { WinerySourceModule } from '../../instance/sharedComponents/artifactSource/source.module';
 import { ConstraintCheckingComponent } from '../../instance/serviceTemplates/constraintChecking/constraintChecking.component';
 import { WineryEditorModule } from '../../wineryEditorModule/wineryEditor.module';
-import { TopologyTemplateModule } from '../../instance/serviceTemplates/topologyTemplate/topologyTemplate.module';
+import { TopologyTemplateModule } from '../../instance/sharedComponents/topologyTemplate/topologyTemplate.module';
 
 @NgModule({
     imports: [

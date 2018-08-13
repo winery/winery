@@ -44,6 +44,7 @@ import { ImportModule } from './wineryMainModules/imports/imports.module';
 import { WineryGitLogComponent } from './wineryGitLog/wineryGitLog.component';
 import { ComplianceRuleModule } from './wineryMainModules/complianceRules/complianceRule.module';
 import { HttpClientModule } from '@angular/common/http';
+import { PatternRefinementModelModule } from './wineryMainModules/patternRefinementModels/patternRefinementModel.module';
 
 @NgModule({
     imports: [
@@ -71,7 +72,7 @@ import { HttpClientModule } from '@angular/common/http';
         PolicyTemplateModule,
         ImportModule,
         ComplianceRuleModule,
-
+        PatternRefinementModelModule,
         WineryRepositoryRoutingModule,
     ],
     declarations: [

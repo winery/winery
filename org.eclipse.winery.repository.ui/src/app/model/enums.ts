@@ -36,8 +36,9 @@ export enum ToscaTypes {
     PolicyType = 'policytypes',
     PolicyTemplate = 'policytemplates',
     Imports = 'imports',
+    ComplianceRule = 'compliancerules',
+    PatternRefinementModel = 'patternrefinementmodels',
     Admin = 'admin',
-    ComplianceRule = 'compliancerules'
 }
 
 /**

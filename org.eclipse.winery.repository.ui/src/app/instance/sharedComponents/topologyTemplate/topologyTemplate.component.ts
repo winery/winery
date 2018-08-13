@@ -52,9 +52,9 @@ export class TopologyTemplateComponent implements OnInit {
             + '&id=' + this.sharedData.toscaComponent.localName;
 
         // for declarative compliance rules add additional information to identify the location of the topologytemplate
-        if (this.sharedData.toscaComponent.toscaType === ToscaTypes.ComplianceRule) {
+        if (this.sharedData.toscaComponent.toscaType !== ToscaTypes.ServiceTemplate) {
             const elementPath = this.activatedRoute.snapshot.url[0].path;
-            editorConfig += '&parentPath=' + ToscaTypes.ComplianceRule.toLocaleString()
+            editorConfig += '&parentPath=' + this.sharedData.toscaComponent.toscaType
                 + '&elementPath=' + elementPath;
         }
 

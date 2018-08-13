@@ -26,7 +26,7 @@ import { DocumentationModule } from '../../instance/sharedComponents/documentati
 import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
 import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';
 import { TagModule } from '../../instance/sharedComponents/tag/tag.module';
-import { TopologyTemplateModule } from '../../instance/serviceTemplates/topologyTemplate/topologyTemplate.module';
+import { TopologyTemplateModule } from '../../instance/sharedComponents/topologyTemplate/topologyTemplate.module';
 
 @NgModule({
     imports: [

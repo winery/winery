@@ -106,7 +106,7 @@ export class BackendService {
         if (this.configuration) {
             const url = this.configuration.repositoryURL + '/' + this.configuration.parentPath + '/'
                 + encodeURIComponent(encodeURIComponent(this.configuration.ns)) + '/';
-            const currentUrl = url + this.configuration.id + '/' + this.configuration.elementPath + '/';
+            const currentUrl = url + this.configuration.id + '/' + this.configuration.elementPath;
             const visualsUrl = backendBaseURL + '/nodetypes/allvisualappearancedata';
             // This is required because the information has to be returned together
 
