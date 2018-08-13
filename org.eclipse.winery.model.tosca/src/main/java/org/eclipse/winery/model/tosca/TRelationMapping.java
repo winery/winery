@@ -29,6 +29,9 @@ import org.eclipse.jdt.annotation.NonNull;
 @XmlType(name = "tRelationMapping")
 public class TRelationMapping {
 
+    @XmlAttribute(name = "id")
+    private String id;
+
     @JsonIdentityReference(alwaysAsId = true)
     @XmlAttribute(name = "detectorNode", required = true)
     @XmlIDREF
@@ -90,5 +93,19 @@ public class TRelationMapping {
 
     public void setValidSourceOrTarget(QName validSourceOrTarget) {
         this.validSourceOrTarget = validSourceOrTarget;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof TRelationMapping
+            && id.equals(((TRelationMapping) obj).id);
     }
 }

@@ -10,8 +10,9 @@
  * which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- ********************************************************************************/
-package org.eclipse.winery.repository.rest.resources.compliancerules;
+ *******************************************************************************/
+
+package org.eclipse.winery.repository.rest.resources.patternrefinementmodels;
 
 import java.io.IOException;
 
@@ -19,41 +20,50 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.model.tosca.TComplianceRule;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TPatternRefinementModel;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceContainingATopology;
 import org.eclipse.winery.repository.rest.resources._support.IHasName;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates.TopologyTemplateResource;
 
-public class ComplianceRuleResource extends AbstractComponentInstanceResourceContainingATopology implements IHasName {
+public class PatternRefinementModelResource extends AbstractComponentInstanceResourceContainingATopology implements IHasName {
 
-    private static final String IDENTIFIER = "identifier";
-    private static final String REQUIRED_STRUCTURE = "required-structure";
+    private static final String REFINEMENT_STRUCTURE = "refinement-structure";
+    private static final String DETECTOR = "detector";
 
-    /**
-     * Instantiates the resource. Assumes that the resource should exist (assured by the caller)
-     *
-     * The caller should <em>not</em> create the resource by other ways. E.g., by instantiating this resource and then
-     * adding data.
-     */
-    public ComplianceRuleResource(DefinitionsChildId id) {
+    public PatternRefinementModelResource(DefinitionsChildId id) {
         super(id);
     }
 
     @Override
     protected TExtensibleElements createNewElement() {
-        return new TComplianceRule();
+        return new TPatternRefinementModel();
     }
 
-    public TComplianceRule getCompliancerule() {
-        return (TComplianceRule) this.getElement();
+    public TPatternRefinementModel getTPatternRefinementModel() {
+        return (TPatternRefinementModel) this.getElement();
+    }
+
+    @Path("detector")
+    public TopologyTemplateResource getDetector() {
+        return new TopologyTemplateResource(this, this.getTPatternRefinementModel().getRefinementStructure(), DETECTOR);
+    }
+
+    @Path("refinementstructure")
+    public TopologyTemplateResource getRefinementStructure() {
+        return new TopologyTemplateResource(this, this.getTPatternRefinementModel().getRefinementStructure(), REFINEMENT_STRUCTURE);
+    }
+
+    @Path("relationmappings")
+    public RelationMappingsResource getRelationMappings() {
+        return new RelationMappingsResource(this, this.getTPatternRefinementModel().getRelationshipMappings());
     }
 
     @Override
     public String getName() {
-        String name = this.getCompliancerule().getName();
+        String name = this.getTPatternRefinementModel().getName();
         if (name == null) {
             // place default
             name = this.getId().getXmlId().getDecoded();
@@ -63,36 +73,26 @@ public class ComplianceRuleResource extends AbstractComponentInstanceResourceCon
 
     @Override
     public Response setName(String name) {
-        this.getCompliancerule().setName(name);
+        this.getTPatternRefinementModel().setName(name);
         return RestUtils.persist(this);
     }
 
-    @Path("identifier/")
-    public TopologyTemplateResource getIdentifier() {
-        return new TopologyTemplateResource(this, this.getCompliancerule().getIdentifier(), IDENTIFIER);
-    }
-
-    @Path("requiredstructure/")
-    public TopologyTemplateResource getRequiredStructure() {
-        return new TopologyTemplateResource(this, this.getCompliancerule().getRequiredStructure(), REQUIRED_STRUCTURE);
+    @Override
+    protected void synchronizeReferences() throws IOException {
+        // no synchronization needed
     }
 
     @Override
     public void setTopology(TTopologyTemplate topologyTemplate, String type) {
         switch (type) {
-            case IDENTIFIER:
-                this.getCompliancerule().setIdentifier(topologyTemplate);
+            case DETECTOR:
+                this.getTPatternRefinementModel().setDetector(topologyTemplate);
                 break;
-            case REQUIRED_STRUCTURE:
-                this.getCompliancerule().setRequiredStructure(topologyTemplate);
+            case REFINEMENT_STRUCTURE:
+                this.getTPatternRefinementModel().setRefinementStructure(topologyTemplate);
                 break;
             default:
                 break;
         }
-    }
-
-    @Override
-    protected void synchronizeReferences() throws IOException {
-        // no synchronizing needed
     }
 }

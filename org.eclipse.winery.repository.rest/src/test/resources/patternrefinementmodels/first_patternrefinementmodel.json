@@ -1,0 +1,168 @@
+{
+    "documentation": [
+    ],
+    "any": [
+    ],
+    "otherAttributes": {
+    },
+    "id": "winery-defs-for_patternrefinementmodels-pmr_1.0.0-w1-wip1",
+    "serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+            },
+            "name": "pmr_1.0.0-w1-wip1",
+            "targetNamespace": "http://plain.winery.opentosca.org/test/patternrefinementmodels",
+            "detector": {
+                "documentation": [
+                ],
+                "any": [
+                ],
+                "otherAttributes": {
+                },
+                "nodeTemplates": [
+                    {
+                        "id": "7",
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
+                        "type": "{http://ex.org}nodeType_2",
+                        "minInstances": 1,
+                        "maxInstances": "1"
+                    },
+                    {
+                        "id": "8",
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
+                        "type": "{http://ex.org}nodeType_4",
+                        "minInstances": 1,
+                        "maxInstances": "1"
+                    }
+                ],
+                "relationshipTemplates": [
+                    {
+                        "id": "78",
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
+                        "type": "{http://ex.org}relType_2",
+                        "sourceElement": {
+                            "ref": "7"
+                        },
+                        "targetElement": {
+                            "ref": "8"
+                        }
+                    }
+                ]
+            },
+            "refinementStructure": {
+                "documentation": [
+                ],
+                "any": [
+                ],
+                "otherAttributes": {
+                },
+                "nodeTemplates": [
+                    {
+                        "id": "10",
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
+                        "type": "{http://ex.org}nodeType_10",
+                        "minInstances": 1,
+                        "maxInstances": "1"
+                    },
+                    {
+                        "id": "11",
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
+                        "type": "{http://ex.org}nodeType_11",
+                        "minInstances": 1,
+                        "maxInstances": "1"
+                    },
+                    {
+                        "id": "12",
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
+                        "type": "{http://ex.org}nodeType_12",
+                        "minInstances": 1,
+                        "maxInstances": "1"
+                    }
+                ],
+                "relationshipTemplates": [
+                    {
+                        "id": "1012",
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
+                        "type": "{http://ex.org}relType_2",
+                        "sourceElement": {
+                            "ref": "10"
+                        },
+                        "targetElement": {
+                            "ref": "12"
+                        }
+                    },
+                    {
+                        "id": "1112",
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
+                        "type": "{http://ex.org}relType_2",
+                        "sourceElement": {
+                            "ref": "11"
+                        },
+                        "targetElement": {
+                            "ref": "12"
+                        }
+                    }
+                ]
+            },
+            "relationshipMappings": {
+                "relationMapping": [
+                    {
+                        "id": "mapping1",
+                        "detectorNode": "7",
+                        "refinementNode": "10",
+                        "relationType": "{http://ex.org/tosca}test-rel",
+                        "direction": "INGOING",
+                        "validSourceOrTarget": "{http://ex.org/tosca}node-type"
+                    }
+                ]
+            }
+        }
+    ],
+    "targetNamespace": "http://plain.winery.opentosca.org/test/patternrefinementmodels",
+    "import": [
+    ]
+}

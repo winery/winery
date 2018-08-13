@@ -51,7 +51,7 @@ class PatternRefinementTest {
     private static PatternRefinementCandidate candidate;
     private static PatternRefinementCandidate invalidCandidate;
 
-    static void setUp() {
+    private static void setUp() {
         // region *** topology ***
         TNodeTemplate nt1 = new TNodeTemplate();
         nt1.setType("{http://ex.org}nodeType_1");

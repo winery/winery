@@ -30,7 +30,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tPatternRefinementModel")
-public class TPatternRefinementModel extends HasId implements HasName, HasTargetNamespace {
+public class TPatternRefinementModel extends TExtensibleElements implements HasName, HasTargetNamespace {
 
     @XmlAttribute
     protected String name;
@@ -42,10 +42,10 @@ public class TPatternRefinementModel extends HasId implements HasName, HasTarget
     @XmlElement(name = "Detector")
     private TTopologyTemplate detector;
 
-    @XmlElement(name = "refinementStructure")
+    @XmlElement(name = "RefinementStructure")
     private TTopologyTemplate refinementStructure;
 
-    @XmlElement(name = "relationshipMappings")
+    @XmlElement(name = "RelationshipMappings")
     private TRelationMappings relationshipMappings;
 
     @Override

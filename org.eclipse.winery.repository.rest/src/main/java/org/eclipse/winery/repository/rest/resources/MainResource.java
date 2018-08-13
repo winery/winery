@@ -50,6 +50,7 @@ import org.eclipse.winery.repository.rest.resources.entitytypes.policytypes.Poli
 import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes.RelationshipTypesResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.requirementtypes.RequirementTypesResource;
 import org.eclipse.winery.repository.rest.resources.imports.ImportsResource;
+import org.eclipse.winery.repository.rest.resources.patternrefinementmodels.PatternRefinementModelsResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplatesResource;
 import org.eclipse.winery.repository.rest.resources.yaml.YAMLParserResource;
 
@@ -143,6 +144,11 @@ public class MainResource {
     @Path("compliancerules/")
     public ComplianceRulesResource compliancerules() {
         return new ComplianceRulesResource();
+    }
+
+    @Path("patternrefinementmodels/")
+    public PatternRefinementModelsResource patternRefinementModels() {
+        return new PatternRefinementModelsResource();
     }
 
     @Path("yaml/")

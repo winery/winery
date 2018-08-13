@@ -1,0 +1,48 @@
+{
+    "documentation": [
+    ],
+    "any": [
+    ],
+    "otherAttributes": {
+    },
+    "id": "winery-defs-for_patternrefinementmodels-pmr_1.0.0-w1-wip1",
+    "serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+            },
+            "name": "pmr_1.0.0-w1-wip1",
+            "targetNamespace": "http://plain.winery.opentosca.org/test/patternrefinementmodels",
+            "detector": {
+                "documentation": [
+                ],
+                "any": [
+                ],
+                "otherAttributes": {
+                },
+                "nodeTemplates": [
+                ],
+                "relationshipTemplates": [
+                ]
+            },
+            "refinementStructure": {
+                "documentation": [
+                ],
+                "any": [
+                ],
+                "otherAttributes": {
+                },
+                "nodeTemplates": [
+                ],
+                "relationshipTemplates": [
+                ]
+            }
+        }
+    ],
+    "targetNamespace": "http://plain.winery.opentosca.org/test/patternrefinementmodels",
+    "import": [
+    ]
+}
