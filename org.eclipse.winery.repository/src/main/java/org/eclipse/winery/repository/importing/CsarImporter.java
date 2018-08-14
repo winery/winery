@@ -14,6 +14,7 @@
 package org.eclipse.winery.repository.importing;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -107,8 +108,8 @@ import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataI
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.export.CsarExporter;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.mime.MediaType;
 import org.slf4j.Logger;
@@ -303,11 +304,11 @@ public class CsarImporter {
             NamespaceManager localNamespaceManager;
 
             if (Files.exists(properties)) {
-                PropertiesConfiguration pconf;
-                try {
-                    pconf = new PropertiesConfiguration(properties.toFile());
+                PropertiesConfiguration pconf = new PropertiesConfiguration();
+                try (final BufferedReader propertyReader = Files.newBufferedReader(properties)) {
+                    pconf.read(propertyReader);
                     localNamespaceManager = new ConfigurationBasedNamespaceManager(pconf);
-                } catch (ConfigurationException e) {
+                } catch (IOException | ConfigurationException e) {
                     CsarImporter.LOGGER.debug(e.getMessage(), e);
                     return;
                 }

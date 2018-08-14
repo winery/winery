@@ -17,7 +17,7 @@ import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.eclipse.winery.yaml.converter.Converter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +51,7 @@ public class YAMLParserResource {
         } catch (Exception e) {
 
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(
-                StringEscapeUtils.escapeHtml(e.getMessage().trim())
+                StringEscapeUtils.escapeHtml4(e.getMessage().trim())
             ).type("text/plain").build();
         }
         return Response.noContent().build();

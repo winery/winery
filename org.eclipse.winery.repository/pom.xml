@@ -119,9 +119,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>commons-configuration</groupId>
-            <artifactId>commons-configuration</artifactId>
-            <version>1.9</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-configuration2</artifactId>
+            <version>${org.apache.commons.configuration}</version>
             <scope>compile</scope>
             <exclusions>
                 <!-- provided by jcl-over-slf4j to enable logging via logback -->

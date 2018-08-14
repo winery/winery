@@ -14,10 +14,8 @@
 
 package org.eclipse.winery.repository.backend.filebased;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -166,14 +164,6 @@ public class JsonBasedNamespaceManager extends AbstractNamespaceManager {
     public void replaceAll(Map<String, NamespaceProperties> map) {
         this.namespaceProperties = map;
         this.save();
-    }
-
-    @Override
-    public void saveToOutputStream(OutputStream outputStream) throws IOException {
-        // This workaround is necessary to avoid an IOException since the OutputStream must not be closed by the ObjectMapper.
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        this.objectMapper.writeValue(stream, this.namespaceProperties);
-        outputStream.write(stream.toByteArray());
     }
 
     @Override

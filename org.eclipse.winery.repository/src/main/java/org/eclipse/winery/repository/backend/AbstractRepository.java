@@ -27,7 +27,7 @@ import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.JAXBSupport;
 
-import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.io.IOUtils;
 import org.apache.tika.mime.MediaType;
 import org.slf4j.Logger;
