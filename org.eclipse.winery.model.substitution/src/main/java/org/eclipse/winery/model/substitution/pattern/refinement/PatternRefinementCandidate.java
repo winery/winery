@@ -22,19 +22,25 @@ import org.eclipse.winery.topologygraph.model.ToscaEdge;
 import org.eclipse.winery.topologygraph.model.ToscaGraph;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.jdt.annotation.NonNull;
 import org.jgrapht.GraphMapping;
 
 public class PatternRefinementCandidate {
 
     private final TPatternRefinementModel patternRefinementModel;
+    @JsonIgnore
     private final List<GraphMapping<ToscaNode, ToscaEdge>> graphMapping;
+    @JsonIgnore
     private final ToscaGraph detectorGraph;
+    private final int id;
 
-    public PatternRefinementCandidate(TPatternRefinementModel patternRefinementModel, List<GraphMapping<ToscaNode, ToscaEdge>> graphMapping, ToscaGraph detectorGraph) {
+    public PatternRefinementCandidate(TPatternRefinementModel patternRefinementModel, List<GraphMapping<ToscaNode, ToscaEdge>> graphMapping,
+                                      ToscaGraph detectorGraph, int id) {
         this.patternRefinementModel = Objects.requireNonNull(patternRefinementModel);
         this.graphMapping = Objects.requireNonNull(graphMapping);
         this.detectorGraph = Objects.requireNonNull(detectorGraph);
+        this.id = id;
     }
 
     @NonNull
@@ -50,5 +56,10 @@ public class PatternRefinementCandidate {
     @NonNull
     public ToscaGraph getDetectorGraph() {
         return detectorGraph;
+    }
+
+    @NonNull
+    public int getId() {
+        return id;
     }
 }

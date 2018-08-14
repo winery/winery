@@ -66,7 +66,7 @@
     <winery-modal-footer [modalRef]="addModalRef"
                          [okButtonLabel]="'Add'"
                          [disableOkButton]="!mapping.direction || !mapping.detectorNode ||
-                                            !mapping.refinementNode || !mapping.relationType || !mapping.validSourceOrTarget"
+                                            !mapping.refinementNode || !mapping.relationType"
                          (onOk)="onAddRelationMapping()">
     </winery-modal-footer>
 </ng-template>

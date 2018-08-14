@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.winery.model.substitution.pattern.refinement;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -22,12 +23,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.eclipse.winery.common.ids.definitions.PatternRefinementModelId;
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.substitution.AbstractSubstitution;
 import org.eclipse.winery.model.substitution.SubstitutionUtils;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
 import org.eclipse.winery.model.tosca.TRelationDirection;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.topologygraph.matching.ToscaIsomorphismMatcher;
@@ -39,20 +42,46 @@ import org.eclipse.winery.topologygraph.transformation.ToscaTransformer;
 
 import com.google.common.collect.Iterators;
 import org.jgrapht.GraphMapping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PatternRefinement extends AbstractSubstitution {
 
-    private List<TPatternRefinementModel> patternRefinementModels;
+    private static final Logger LOGGER = LoggerFactory.getLogger(PatternRefinement.class);
 
-    public PatternRefinement() {
+    private List<TPatternRefinementModel> patternRefinementModels;
+    private PatternRefinementChooser refinementChooser;
+
+    public PatternRefinement(PatternRefinementChooser refinementChooser) {
+        this.refinementChooser = refinementChooser;
         this.patternRefinementModels = this.repository.getAllDefinitionsChildIds(PatternRefinementModelId.class)
             .stream()
             .map(repository::getElement)
             .collect(Collectors.toList());
+        super.versionAppendix = "refined";
+    }
+
+    public PatternRefinement() {
+        this(new DefaultPatternRefinementChooser());
+    }
+
+    public ServiceTemplateId refineServiceTemplate(ServiceTemplateId id) {
+        ServiceTemplateId templateId = this.getSubstitutionServiceTemplateId(id);
+        TServiceTemplate element = this.repository.getElement(templateId);
+
+        this.refineTopology(element.getTopologyTemplate());
+        try {
+            this.repository.setElement(templateId, element);
+        } catch (IOException e) {
+            LOGGER.error("Error while saving refined topology", e);
+        }
+
+        return templateId;
     }
 
     public void refineTopology(TTopologyTemplate topology) {
         ToscaIsomorphismMatcher isomorphismMatcher = new ToscaIsomorphismMatcher();
+        int id[] = new int[1];
 
         while (SubstitutionUtils.containsPatterns(topology.getNodeTemplates(), this.nodeTypes)) {
             ToscaGraph topologyGraph = ToscaTransformer.createTOSCAGraph(topology);
@@ -67,7 +96,7 @@ public class PatternRefinement extends AbstractSubstitution {
                         List<GraphMapping<ToscaNode, ToscaEdge>> graphMappings = new ArrayList<>();
                         Iterators.addAll(graphMappings, matches);
 
-                        PatternRefinementCandidate candidate = new PatternRefinementCandidate(prm, graphMappings, detectorGraph);
+                        PatternRefinementCandidate candidate = new PatternRefinementCandidate(prm, graphMappings, detectorGraph, id[0]++);
 
                         if (isApplicable(candidate, topology)) {
                             candidates.add(candidate);
@@ -75,14 +104,18 @@ public class PatternRefinement extends AbstractSubstitution {
                     }
                 });
 
-            PatternRefinementCandidate refinement = choosePatternRefinement(candidates);
+            if (candidates.size() == 0) {
+                break;
+            }
+
+            PatternRefinementCandidate refinement = this.refinementChooser.choosePatternRefinement(candidates);
+
+            if (Objects.isNull(refinement)) {
+                break;
+            }
 
             applyRefinement(refinement, topology);
         }
-    }
-
-    private PatternRefinementCandidate choosePatternRefinement(List<PatternRefinementCandidate> candidates) {
-        return candidates.get(0);
     }
 
     public void applyRefinement(PatternRefinementCandidate refinement, TTopologyTemplate topology) {
@@ -102,12 +135,15 @@ public class PatternRefinement extends AbstractSubstitution {
                                             // TODO: check if any supertype of the relationship matches
                                             if (relationship.getType().equals(relationMapping.getRelationType())) {
                                                 if (relationMapping.getDirection() == TRelationDirection.INGOING
-                                                    && relationship.getSourceElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget())) {
+                                                    && (Objects.isNull(relationMapping.getValidSourceOrTarget())
+                                                    || relationship.getSourceElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget()))
+                                                ) {
                                                     // change the source element to the new source defined in the relation mapping
                                                     String id = idMapping.get(relationMapping.getRefinementNode().getId());
                                                     relationship.setTargetNodeTemplate(topology.getNodeTemplate(id));
                                                     return true;
-                                                } else if (relationship.getTargetElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget())) {
+                                                } else if (Objects.isNull(relationMapping.getValidSourceOrTarget())
+                                                    || relationship.getTargetElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget())) {
                                                     String id = idMapping.get(relationMapping.getRefinementNode().getId());
                                                     relationship.setSourceNodeTemplate(topology.getNodeTemplate(id));
                                                     return true;
@@ -147,9 +183,11 @@ public class PatternRefinement extends AbstractSubstitution {
                                             // TODO: check if any supertype of the relationship matches
                                             if (relationship.getType().equals(relationMapping.getRelationType())) {
                                                 if (relationMapping.getDirection() == TRelationDirection.INGOING) {
-                                                    return relationship.getSourceElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget());
+                                                    return Objects.isNull(relationMapping.getValidSourceOrTarget())
+                                                        || relationship.getSourceElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget());
                                                 } else {
-                                                    return relationship.getTargetElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget());
+                                                    return Objects.isNull(relationMapping.getValidSourceOrTarget())
+                                                        || relationship.getTargetElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget());
                                                 }
                                             }
                                             return false;
@@ -170,10 +208,14 @@ public class PatternRefinement extends AbstractSubstitution {
                 // ignore all relationships which are part of the sub-graph
                 // \nexists sgm_y \in sgms : \pi_1(sgm_y) = r_j
                 return candidate.getGraphMapping().stream()
-                    .noneMatch(edgeMapping -> {
-                        ToscaEdge edgeCorrespondence = edgeMapping.getEdgeCorrespondence(candidate.getDetectorGraph().getReferenceEdge(), false);
-                        return edgeCorrespondence.getTemplate().equals(relationship);
-                    });
+                    .noneMatch(edgeMapping ->
+                        candidate.getDetectorGraph().edgeSet()
+                            .stream()
+                            .anyMatch(toscaEdge -> {
+                                ToscaEdge edgeCorrespondence = edgeMapping.getEdgeCorrespondence(candidate.getDetectorGraph().getReferenceEdge(), false);
+                                return edgeCorrespondence.getTemplate().equals(relationship);
+                            })
+                    );
             });
     }
 }

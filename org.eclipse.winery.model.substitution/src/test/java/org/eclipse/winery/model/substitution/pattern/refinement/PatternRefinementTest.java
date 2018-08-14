@@ -251,7 +251,7 @@ class PatternRefinementTest {
         relationMappings.getRelationMapping().add(rm2);
         matchingPrm.setRelationMappings(relationMappings);
 
-        candidate = new PatternRefinementCandidate(matchingPrm, mappings, detectorGraph);
+        candidate = new PatternRefinementCandidate(matchingPrm, mappings, detectorGraph, 1);
         // endregion
 
         // region *** non-matching PRM **
@@ -262,7 +262,7 @@ class PatternRefinementTest {
         relationMappings1.getRelationMapping().add(rm2);
         nonMatchingPrm.setRelationMappings(relationMappings1);
 
-        invalidCandidate = new PatternRefinementCandidate(nonMatchingPrm, mappings, detectorGraph);
+        invalidCandidate = new PatternRefinementCandidate(nonMatchingPrm, mappings, detectorGraph, 2);
         // endregion
     }
 
