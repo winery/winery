@@ -25,17 +25,20 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
 import org.eclipse.winery.model.tosca.TRelationMapping;
 import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
+import org.eclipse.winery.repository.rest.resources.apiData.RelationMappingApiData;
+
+import com.sun.jersey.api.NotFoundException;
 
 public class RelationMappingsResource {
 
-    private final AbstractComponentInstanceResource res;
+    private final PatternRefinementModelResource res;
     private List<TRelationMapping> relationMappings;
 
-    public RelationMappingsResource(AbstractComponentInstanceResource res, TPatternRefinementModel.TRelationMappings relationMappings) {
+    public RelationMappingsResource(PatternRefinementModelResource res, TPatternRefinementModel.TRelationMappings relationMappings) {
         this.res = res;
         this.relationMappings = relationMappings.getRelationMapping();
     }
@@ -49,12 +52,23 @@ public class RelationMappingsResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public List<TRelationMapping> addPatternRefinement(TRelationMapping mapping) {
-        // to update an element, just remove the old one from the list and add it again
-        this.relationMappings.remove(mapping);
-        this.relationMappings.add(mapping);
-        RestUtils.persist(this.res);
-        return this.relationMappings;
+    /*
+      We need to use another Class since the JSON representation cannot resolve the ids to the <code>detectorNode</code> and <code>refinementNode</code>.
+      Therefore, we do it manually.
+     */
+    public List<TRelationMapping> addRelationMappingFromApi(RelationMappingApiData mapping) {
+        TNodeTemplate detectorNode = this.res.getDetector().getComponentInstanceJSON().getNodeTemplates()
+            .stream()
+            .filter(nodeTemplate -> nodeTemplate.getId().equals(mapping.detectorNode))
+            .findFirst()
+            .orElseThrow(NotFoundException::new);
+        TNodeTemplate refinementNode = this.res.getRefinementStructure().getComponentInstanceJSON().getNodeTemplates()
+            .stream()
+            .filter(nodeTemplate -> nodeTemplate.getId().equals(mapping.refinementNode))
+            .findFirst()
+            .orElseThrow(NotFoundException::new);
+
+        return this.addRelationMapping(mapping.createTRelationMapping(detectorNode, refinementNode));
     }
 
     @DELETE
@@ -62,6 +76,14 @@ public class RelationMappingsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<TRelationMapping> removePatternRefinement(@PathParam("id") String id) {
         this.relationMappings.removeIf(mapping -> mapping.getId().equals(id));
+        RestUtils.persist(this.res);
+        return this.relationMappings;
+    }
+
+    public List<TRelationMapping> addRelationMapping(TRelationMapping mapping) {
+        // to update an element, just remove the old one from the list and add it again
+        this.relationMappings.remove(mapping);
+        this.relationMappings.add(mapping);
         RestUtils.persist(this.res);
         return this.relationMappings;
     }

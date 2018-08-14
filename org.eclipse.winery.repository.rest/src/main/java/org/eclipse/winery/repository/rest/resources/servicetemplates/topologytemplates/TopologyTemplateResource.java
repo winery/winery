@@ -113,8 +113,8 @@ public class TopologyTemplateResource {
         "@return The JSON representation of the topology template <em>without</em> associated artifacts and without the parent service template")
     @Produces(MediaType.APPLICATION_JSON)
     // @formatter:on
-    public Response getComponentInstanceJSON() {
-        return Response.ok(this.topologyTemplate).build();
+    public TTopologyTemplate getComponentInstanceJSON() {
+        return this.topologyTemplate;
     }
 
     /**
