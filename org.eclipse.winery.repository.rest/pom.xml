@@ -222,19 +222,6 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-ext</artifactId>
-            <version>${org.slf4j}</version>
-            <scope>compile</scope>
-            <!-- not approved by Eclipse legal -->
-            <exclusions>
-                <exclusion>
-                    <groupId>ch.qos.cal10n</groupId>
-                    <artifactId>cal10n-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-configuration2</artifactId>
             <version>${org.apache.commons.configuration}</version>
