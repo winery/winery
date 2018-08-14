@@ -52,7 +52,7 @@ export class RefinementWebSocketService {
     }
 
     startRefinement() {
-        this.socket = new WebSocket(webSocketURL + '/checkconsistency');
+        this.socket = new WebSocket(webSocketURL + '/refinetopology');
         this.listener = new BehaviorSubject<RefinementElement[]>(null);
 
         const start: RefinementWebSocketData = {

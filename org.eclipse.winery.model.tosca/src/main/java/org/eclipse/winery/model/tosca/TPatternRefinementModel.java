@@ -26,12 +26,10 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
 import org.eclipse.jdt.annotation.NonNull;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tPatternRefinementModel")
-@JsonFilter("cleanPRM")
 public class TPatternRefinementModel extends TExtensibleElements implements HasName, HasTargetNamespace {
 
     @XmlAttribute
