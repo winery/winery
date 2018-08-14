@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
-import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -76,8 +75,6 @@ public interface NamespaceManager {
      * Removes all namespace mappings
      */
     void clear();
-
-    void saveToOutputStream(OutputStream outputStream) throws Exception;
 
     boolean isPatternNamespace(String namespace);
 }
