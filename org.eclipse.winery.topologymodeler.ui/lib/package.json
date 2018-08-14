@@ -1,0 +1,50 @@
+{
+    "name": "@winery/topologymodeler",
+    "version": "0.7.0",
+    "license": "EPL-2.0 OR Apache-2.0",
+    "scripts": {
+        "ng": "ng",
+        "start": "ng serve",
+        "build": "ng build",
+        "test": "ng test",
+        "lint": "ng lint",
+        "e2e": "ng e2e",
+        "lib-readme": "copy ..\\src\\doc\\lib\\README.md dist",
+        "lib-readme-mac": "cp ../src/doc/lib/README.md dist",
+        "packagr-mac": "ng-packagr -p ng-package.json && npm run lib-readme-mac",
+        "packagr": "ng-packagr -p ng-package.json && npm run lib-readme"
+    },
+    "private": false,
+    "peerDependencies": {
+        "@angular-redux/store": "6.5.7",
+        "@angular/animations": "6.0.6",
+        "@angular/cdk": "6.2.1",
+        "@angular/common": "6.0.6",
+        "@angular/core": "6.0.6",
+        "@angular/forms": "6.0.6",
+        "@angular/http": "6.0.6",
+        "@angular/platform-browser": "6.0.6",
+        "@angular/platform-browser-dynamic": "6.0.6",
+        "@angular/router": "6.0.6",
+        "angular2-hotkeys": "2.0.4",
+        "bootstrap": "4.1.1",
+        "core-js": "2.5.6",
+        "css-element-queries": "0.4.0",
+        "element-resize-detector": "1.1.12",
+        "elkjs": "0.0.1",
+        "font-awesome": "4.7.0",
+        "jsplumb": "2.7.9",
+        "ngx-bootstrap": "2.0.4",
+        "ngx-toastr": "8.5.1",
+        "redux": "3.7.2",
+        "rxjs": "6.1.0",
+        "zone.js": "0.8.26",
+        "rxjs-compat": "6.0.0-rc.0"
+    },
+    "devDependencies": {
+        "ng-packagr": "3.0.2",
+        "@angular/compiler-cli": "6.0.4",
+        "@angular/compiler": "6.0.4",
+        "typescript": "2.7.2"
+    }
+}

@@ -12,13 +12,13 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+import { Subject, Subscription } from 'rxjs';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../../redux/store/winery.store';
 import { WineryActions } from '../../redux/actions/winery.actions';
-import { Subscription } from 'rxjs/Subscription';
-import { JsPlumbService } from '../../services/jsPlumbService';
+import { JsPlumbService } from '../../services/jsPlumb.service';
 import { PropertyDefinitionType } from '../../models/enums';
 
 @Component({
@@ -30,6 +30,7 @@ export class PropertiesContentComponent implements OnInit, OnChanges, OnDestroy 
 
     properties: Subject<string> = new Subject<string>();
     keyOfEditedKVProperty: Subject<string> = new Subject<string>();
+    @Input() readonly: boolean;
     @Input() currentNodeData: any;
     key: string;
     nodeProperties: any;
@@ -76,16 +77,16 @@ export class PropertiesContentComponent implements OnInit, OnChanges, OnDestroy 
         }
 
         // find out which row was edited by key
-        this.subscriptions.push(this.keyOfEditedKVProperty
-            .debounceTime(200)
-            .distinctUntilChanged()
+        this.subscriptions.push(this.keyOfEditedKVProperty.pipe(
+            debounceTime(200),
+            distinctUntilChanged(), )
             .subscribe(key => {
                 this.key = key;
             }));
         // set key value property with a debounceTime of 300ms
-        this.subscriptions.push(this.properties
-            .debounceTime(300)
-            .distinctUntilChanged()
+        this.subscriptions.push(this.properties.pipe(
+            debounceTime(300),
+            distinctUntilChanged(), )
             .subscribe(value => {
                 if (this.currentNodeData.propertyDefinitionType === PropertyDefinitionType.KV) {
                     this.nodeProperties[this.key] = value;

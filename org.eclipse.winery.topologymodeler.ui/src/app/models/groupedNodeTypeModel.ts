@@ -13,9 +13,13 @@
  *******************************************************************************/
 
 export interface GroupedNodeTypeModel {
-    children: Array<NodeTypeModel>; id: string; text: string;
+    children: Array<NodeTypeModel>;
+    id: string;
+    text: string;
 }
 
 export interface NodeTypeModel {
-    full: any; id: string; text: string;
+    full: any;
+    id: string;
+    text: string;
 }

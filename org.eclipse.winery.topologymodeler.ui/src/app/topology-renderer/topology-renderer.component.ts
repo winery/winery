@@ -13,7 +13,7 @@
  ********************************************************************************/
 
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewContainerRef } from '@angular/core';
-import { WineryAlertService } from '../winery-alert/winery-alert.service';
+import { ToastrService } from 'ngx-toastr';
 import { DifferenceStates, ToscaDiff } from '../models/ToscaDiff';
 import { TNodeTemplate, TRelationshipTemplate, TTopologyTemplate } from '../models/ttopology-template';
 import { isNullOrUndefined } from 'util';
@@ -21,7 +21,7 @@ import { NgRedux } from '@angular-redux/store';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { IWineryState } from '../redux/store/winery.store';
 import { ILoaded } from '../services/loaded.service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { Utils } from '../models/utils';
 
 /**
@@ -34,11 +34,13 @@ import { Utils } from '../models/utils';
 })
 export class TopologyRendererComponent implements OnInit, OnDestroy {
 
+    @Input() readonly: boolean;
     @Input() entityTypes: any;
     @Input() relationshipTypes: Array<any> = [];
     @Input() differencesData: [ToscaDiff, TTopologyTemplate];
     @Input() nodeTemplates: Array<TNodeTemplate>;
     @Input() relationshipTemplates: Array<TRelationshipTemplate>;
+    @Input() sidebarDeleteButtonClickEvent: any;
     @Output() generatedReduxState = new EventEmitter();
     hideNavBarState: boolean;
     subscriptions: Array<Subscription> = [];
@@ -52,14 +54,13 @@ export class TopologyRendererComponent implements OnInit, OnDestroy {
     constructor(private ngRedux: NgRedux<IWineryState>,
                 private actions: WineryActions,
                 vcr: ViewContainerRef,
-                private notify: WineryAlertService) {
+                private notify: ToastrService) {
         this.subscriptions.push(this.ngRedux.select(state => state.wineryState.hideNavBarAndPaletteState)
             .subscribe(hideNavBar => this.hideNavBarState = hideNavBar));
-        this.notify.init(vcr);
     }
 
     ngOnInit() {
-        this.loader = { loadedData: true, generatedReduxState: false };
+        this.loader = {loadedData: true, generatedReduxState: false};
         if (!isNullOrUndefined(this.differencesData)) {
             this.diffMode = true;
             this.topologyDiff = this.differencesData[0];
@@ -89,7 +90,7 @@ export class TopologyRendererComponent implements OnInit, OnDestroy {
         const changedNodes = this.topologyDiff.children.find(value => value.element === 'nodeTemplates');
         const changedRelationships = this.topologyDiff.children.find(value => value.element === 'relationshipTemplates');
 
-        if (!isNullOrUndefined(changedNodes)) {
+        if (changedNodes) {
             changedNodes.children.forEach((node: ToscaDiff) => {
                 let current = this.nodeTemplates.find(item => item.id === node.element);
 
@@ -103,7 +104,7 @@ export class TopologyRendererComponent implements OnInit, OnDestroy {
             });
         }
 
-        if (!isNullOrUndefined(changedRelationships)) {
+        if (changedRelationships) {
             changedRelationships.children.forEach((relationship: ToscaDiff) => {
                 let current;
 
@@ -113,7 +114,6 @@ export class TopologyRendererComponent implements OnInit, OnDestroy {
                 } else {
                     current = this.relationshipTemplates.find(item => item.id === relationship.element);
                 }
-
                 current.state = relationship.state;
             });
         }

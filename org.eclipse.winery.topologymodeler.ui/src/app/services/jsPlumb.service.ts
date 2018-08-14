@@ -14,34 +14,32 @@
 
 import { Injectable } from '@angular/core';
 import { isNullOrUndefined } from 'util';
-
-declare const jsPlumb: any;
+import { jsPlumb, jsPlumbInstance } from 'jsplumb';
 
 /**
  * Defines the JSPlumb instance which is used over the complete project.
  */
 @Injectable()
 export class JsPlumbService {
-    jsPlumbInstance: any;
+    jsPlumbInstance: jsPlumbInstance;
 
     getJsPlumbInstance(): any {
-        jsPlumb.ready(() => {
-        });
         if (isNullOrUndefined(this.jsPlumbInstance)) {
+
             this.jsPlumbInstance = jsPlumb.getInstance({
                 PaintStyle: {
                     strokeWidth: 1,
                     stroke: '#212121',
                 },
-                Connector: ['Flowchart'],
                 Endpoint: 'Blank',
-                connectorOverlays: [
-                    ['Arrow', { location: 1 }],
+                ConnectionOverlays: [
+                    ['Arrow', {location: 1}],
                 ],
                 ConnectionsDetachable: false,
                 Anchor: 'Continuous'
             });
         }
+        this.jsPlumbInstance.importDefaults({Connector: 'Flowchart'});
         return this.jsPlumbInstance;
     }
 }

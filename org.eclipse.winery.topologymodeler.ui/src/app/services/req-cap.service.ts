@@ -34,7 +34,7 @@ export class ReqCapService {
     /**
      * Requests all requirement definitions of a node type from the backend
      * @param   nodeType - the node type of the node template
-     * @returns {Observable<string>}
+     * @returns
      */
     requestRequirementDefinitionsOfNodeType(nodeType: string): Observable<any> {
         const qName = new QName(nodeType);
@@ -46,7 +46,7 @@ export class ReqCapService {
     /**
      * Requests all capability definitions of a node type from the backend
      * @param   nodeType - the node type of the node template
-     * @returns {Observable<string>}
+     * @returns
      */
     requestCapabilityDefinitionsOfNodeType(nodeType: string): Observable<any> {
         const qName = new QName(nodeType);

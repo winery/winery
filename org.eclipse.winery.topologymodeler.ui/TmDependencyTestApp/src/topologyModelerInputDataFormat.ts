@@ -12,17 +12,10 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
-import { ToastOptions } from 'ng2-toastr';
+import {TTopologyTemplate, Visuals} from "./ttopology-template";
 
-/**
- * this class can be used to override the default setting of ng2-toastr
- *
- * @Class
- */
-export class WineryCustomOption extends ToastOptions {
-    animate = 'fade'; // you can override any options available
-    newestOnTop = false;
-    showCloseButton = true;
-    positionClass = 'toast-top-right';
-    enableHTML = true;
+export interface TopologyModelerInputDataFormat {
+  configuration: any;
+  topologyTemplate: any;
+  visuals: any;
 }

@@ -18,7 +18,7 @@
     [toscaTypeData]="deploymentArtifacts">
 </winery-toscatype-table>
 
-<div class="button-wrapper">
+<div *ngIf="!readonly" class="button-wrapper">
     <div (click)="toggleModal($event);" class="btn btn-sm btn-modal" style="display: block;">
         Add new Deployment Artifact
     </div>

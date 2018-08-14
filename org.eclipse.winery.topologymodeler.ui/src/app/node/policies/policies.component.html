@@ -18,7 +18,7 @@
     [toscaTypeData]="policies">
 </winery-toscatype-table>
 
-<div (click)="toggleModal($event);" class="btn btn-sm btn-modal" style="display: block;">
+<div *ngIf="!readonly" (click)="toggleModal($event);" class="btn btn-sm btn-modal" style="display: block;">
     Add new Policy
 </div>
 

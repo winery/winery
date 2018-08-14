@@ -14,7 +14,6 @@
 
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { QName } from '../../models/qname';
-import { hostURL } from '../../models/configuration';
 import { EntitiesModalService, OpenModalEvent } from '../../canvas/entities-modal/entities-modal.service';
 import { ModalVariant } from '../../canvas/entities-modal/modal-model';
 import { definitionType, toscaEntity, urlElement } from '../../models/enums';

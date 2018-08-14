@@ -17,10 +17,10 @@ import { animate, keyframes, state, style, transition, trigger } from '@angular/
 import { WineryActions } from '../redux/actions/winery.actions';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
-import { TNodeTemplate, Visuals } from '../models/ttopology-template';
+import { EntityType, TNodeTemplate, Visuals } from '../models/ttopology-template';
 import { NewNodeIdTypeColorPropertiesModel } from '../models/newNodeIdTypeColorModel';
 import { isNullOrUndefined } from 'util';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { Utils } from '../models/utils';
 import { EntityTypesModel } from '../models/entityTypesModel';
 import { NodeVisualsModel } from '../models/nodeVisualsModel';
@@ -33,7 +33,7 @@ import { hostURL } from '../models/configuration';
 @Component({
     selector: 'winery-palette-component',
     templateUrl: './palette.component.html',
-    styleUrls: ['./palette.component.css'],
+    styleUrls: ['./palette.component.scss'],
     providers: [],
     animations: [
         trigger('paletteItemState', [
@@ -63,16 +63,16 @@ import { hostURL } from '../models/configuration';
                 height: '*',
                 transform: 'rotate(0deg) translateY(0px) translateX(0px)'
             })),
-            transition('left => top', animate('200ms ease-in')),
-            transition('top => left', animate('200ms ease-in', keyframes([
-                style({ opacity: '1', transform: 'rotate(0deg) translateY(0px) translateX(0px)' }),
-                style({ opacity: '0', transform: 'rotate(-45deg) translateY(-75px) translateX(-75px)' }),
-                style({ opacity: '1', transform: 'rotate(-90deg) translateY(-135px) translateX(-135px)' })
+            transition('left => top', animate('50ms ease-in')),
+            transition('top => left', animate('50ms ease-in', keyframes([
+                style({opacity: '1', transform: 'rotate(0deg) translateY(0px) translateX(0px)'}),
+                style({opacity: '0', transform: 'rotate(-45deg) translateY(-75px) translateX(-75px)'}),
+                style({opacity: '1', transform: 'rotate(-90deg) translateY(-135px) translateX(-135px)'})
             ])))
         ])
     ]
 })
-export class PaletteComponent implements OnInit, OnDestroy {
+export class PaletteComponent implements OnDestroy {
 
     @Input() entityTypes: EntityTypesModel;
 
@@ -108,13 +108,6 @@ export class PaletteComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Angular lifecycle event.
-     */
-    ngOnInit() {
-        // console.log(this.entityTypes);
-    }
-
-    /**
      * opens the palette if its closed and vice versa.
      */
     public toggleRootState(): void {
@@ -138,18 +131,19 @@ export class PaletteComponent implements OnInit, OnDestroy {
     /**
      * Generates and stores a new node in the store.
      * @param $event
+     * @param child
      */
-    generateNewNode($event): void {
+    generateNewNode($event: MouseEvent, child: any): void {
         const x = $event.pageX - this.newNodePositionOffsetX;
         const y = $event.pageY - this.newNodePositionOffsetY;
-        const name = $event.target.innerText;
-        const newIdTypeColorProperties = this.generateIdTypeAndProperties(name);
+
+        const newIdTypeColorProperties = this.generateIdTypeAndProperties(child.text);
         const nodeVisuals: Visuals = Utils.getNodeVisualsForNodeTemplate(newIdTypeColorProperties.type, this.entityTypes.nodeVisuals);
         const newNode: TNodeTemplate = new TNodeTemplate(
             newIdTypeColorProperties.properties,
             newIdTypeColorProperties.id,
             newIdTypeColorProperties.type,
-            name,
+            child.text,
             1,
             1,
             nodeVisuals,
@@ -235,19 +229,22 @@ export class PaletteComponent implements OnInit, OnDestroy {
      * @param name
      * @return result
      */
-    private getNewNodeDataFromNodeTypes(name: string): any {
+    public getNewNodeDataFromNodeTypes(name: string) {
         // case that the node name is not in the array which contains a local copy of all node templates visible in the
         // DOM, then search in ungroupedNodeTypes where all possible node information is available
-        for (const node of this.entityTypes.unGroupedNodeTypes) {
-            if (node.id === name) {
-                const result = {
-                    id: node.id,
-                    type: node.qName,
-                    properties: this.getDefaultPropertiesFromNodeTypes(name),
-                    color: node.color,
-                };
-                return result;
+        try {
+            for (const node of this.entityTypes.unGroupedNodeTypes) {
+                if (node.id === name) {
+                    const result = {
+                        id: node.id,
+                        type: node.qName,
+                        properties: this.getDefaultPropertiesFromNodeTypes(name),
+                        color: node.color,
+                    };
+                    return result;
+                }
             }
+        } catch (e) {
         }
     }
 

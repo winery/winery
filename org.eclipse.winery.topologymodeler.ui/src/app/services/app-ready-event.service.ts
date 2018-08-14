@@ -51,7 +51,7 @@ export class AppReadyEventService {
      * @param cancelable
      */
     private createEvent(eventType: string, bubbles: boolean, cancelable: boolean): Event {
-        const customEvent: any = new CustomEvent(eventType, { bubbles: bubbles, cancelable: cancelable });
+        const customEvent: any = new CustomEvent(eventType, {bubbles: bubbles, cancelable: cancelable});
         return customEvent;
     }
 }

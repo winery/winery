@@ -26,6 +26,7 @@ import { NgRedux } from '@angular-redux/store';
  */
 export class DeploymentArtifactsComponent implements OnInit {
     @Output() toggleModalHandler: EventEmitter<any>;
+    @Input() readonly: boolean;
     @Input() currentNodeData: any;
     @Input() deploymentArtifacts;
     latestNodeTemplate;

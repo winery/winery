@@ -11,7 +11,8 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
 -->
-<div *ngIf="!currentNodeData.propertyDefinitionType" style="display: flex; justify-content: center; align-items: center">
+<div *ngIf="!currentNodeData.propertyDefinitionType"
+     style="display: flex; justify-content: center; align-items: center">
     <i class="fa fa-3x fa-refresh fa-spin" style="max-width: 50%;"></i>
 </div>
 <table *ngIf="currentNodeData.propertyDefinitionType == 'KV'" class="table table-border--grey table-sm body-table">
@@ -22,7 +23,7 @@
         <th>
             Values
         </th>
-    <tr *ngFor="let key of nodeProperties | keysPipe; let i = index">
+    <tr *ngFor="let key of nodeProperties | keysPipe">
         <td class="">{{key.key}}</td>
         <td class="">
                 <textarea
@@ -30,6 +31,7 @@
                     rows="1"
                     placeholder="Edit your value here."
                     required
+                    [disabled]="readonly"
                     value="{{key.value}}"
                     (keyup)="properties.next($event.target.value)"
                     (keyup)="keyOfEditedKVProperty.next(key.key)">
@@ -44,9 +46,10 @@
         rows="6"
         placeholder="Edit your XML here."
         required
+        [disabled]="readonly"
         value="{{nodeProperties}}"
         (keyup)="properties.next($event.target.value)">
-            </textarea>
+    </textarea>
 </div>
 
 <div *ngIf="currentNodeData.propertyDefinitionType == 'NONE'" style="color: dimgray; text-align: center">

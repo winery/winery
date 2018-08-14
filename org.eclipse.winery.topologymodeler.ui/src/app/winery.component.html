@@ -11,27 +11,30 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
 -->
-
-<router-outlet></router-outlet>
+<hotkeys-cheatsheet></hotkeys-cheatsheet>
+<router-outlet *ngIf="!readonly"></router-outlet>
 
 <winery-topology-renderer *ngIf="loaded?.loadedData"
+                          [readonly]="backendService.configuration.isReadonly"
                           [entityTypes]="this.entityTypes"
                           [relationshipTypes]="relationshipTypes"
                           [differencesData]="topologyDifferences"
                           [nodeTemplates]="nodeTemplates"
                           [relationshipTemplates]="relationshipTemplates"
+                          [sidebarDeleteButtonClickEvent]="sidebarDeleteButtonClickEvent"
                           (generatedReduxState)="onReduxReady()">
 </winery-topology-renderer>
 
 <div *ngIf="loaded?.generatedReduxState">
     <div *ngIf="!hideNavBarState">
-        <winery-palette-component *ngIf="!topologyDifferences"
+        <winery-palette-component *ngIf="!topologyDifferences && !readonly"
                                   style="width:200px;float:left;margin-top:50px"
                                   [entityTypes]="this.entityTypes">
         </winery-palette-component>
     </div>
 
-    <winery-sidebar style="width : 300px; float:right; z-index: 400"></winery-sidebar>
+    <winery-sidebar (sidebarDeleteButtonClicked)="sidebarDeleteButtonClicked($event)"
+                    style="width : 300px; float:right; z-index: 400"></winery-sidebar>
 </div>
 <!--
 <app-sidebar style="width : 300px; float:right"></app-sidebar>

@@ -13,8 +13,6 @@
  ********************************************************************************/
 
 import { Component, Input, OnInit } from '@angular/core';
-import { isNullOrUndefined } from 'util';
-import { BackendService } from '../../services/backend.service';
 
 @Component({
     selector: 'winery-properties',
@@ -23,6 +21,7 @@ import { BackendService } from '../../services/backend.service';
 })
 export class PropertiesComponent implements OnInit {
     @Input() currentNodeData: any;
+    @Input() readonly: boolean;
 
     constructor() {
     }

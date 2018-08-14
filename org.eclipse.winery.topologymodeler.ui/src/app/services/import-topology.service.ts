@@ -14,13 +14,13 @@
 
 import { Injectable } from '@angular/core';
 import { BackendService } from './backend.service';
-import { WineryAlertService } from '../winery-alert/winery-alert.service';
 import { ErrorHandlerService } from './error-handler.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable()
 export class ImportTopologyService {
 
-    constructor(private alert: WineryAlertService) {
+    constructor(private alert: ToastrService) {
     }
 
     /**

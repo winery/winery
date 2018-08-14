@@ -15,27 +15,27 @@
 import { Injectable } from '@angular/core';
 import { backendBaseURL } from '../../models/configuration';
 import { Observable } from 'rxjs/Rx';
-import { Headers, Http, RequestOptions } from '@angular/http';
-import { Subject } from 'rxjs/Subject';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Subject } from 'rxjs';
 import { ModalVariant } from './modal-model';
 import { TopologyModelerConfiguration } from '../../models/topologyModelerConfiguration';
 
 @Injectable()
 export class EntitiesModalService {
-    readonly headers = new Headers({ 'Accept': 'application/json' });
-    readonly options = new RequestOptions({ headers: this.headers });
+
+    readonly headers = new HttpHeaders({'Accept': 'application/json'});
 
     openModalEvent = new Subject<OpenModalEvent>();
     openModalEvent$ = this.openModalEvent.asObservable();
 
     configuration: TopologyModelerConfiguration;
 
-    constructor(private http: Http) {
+    constructor(private http: HttpClient) {
     }
 
     /**
      * Requests all namespaces from the backend
-     * @returns {Observable<any>} json of namespaces
+     * @returns json of namespaces
      */
     requestNamespaces(all: boolean = false): Observable<any> {
         let URL: string;
@@ -44,8 +44,7 @@ export class EntitiesModalService {
         } else {
             URL = backendBaseURL + '/admin/namespaces/';
         }
-        return this.http.get(URL, this.options)
-            .map(res => res.json());
+        return this.http.get(URL, {headers: this.headers});
     }
 
 }
