@@ -64,10 +64,9 @@ and to release them after the development phase. Released elements can not be mo
 versions in the ecosystem. In addition, the differences between two versions can be calculated and visualized in the
 TOSCA Topology Model Editor.
 
-- *Accountability*: In collaborative development of application deployment models in business-critical scenarios accountability
-is of high importance. Thus, the Winery enables to store the TOSCA meta file in a blockchain to identify the author of each version
-of a CSAR and whether an artifact is changed and by whom. This facilitates to visualize the provenance of a specific
-resource.
+- *Accountability*: In collaborative development of application deployment models in business-critical scenarios 
+(such as data-analysis), accountability is of high importance. Thus, at CSAR export time, Winery enables to store the TOSCA meta file in a blockchain to identify the author of each exported version and whether a contained artifact is changed and by whom.
+                    Winery also stores these artifacts versions in a decentralized storage which facilitates comparing them and visualizing the provenance of a specific resource.
 
 - *Compliance Checking (Compliance Rule Editor, Compliance Checker & Compliance Rules Repository)*:
 The Topology Compliance Checking of Winery enables to describe restrictions, constraints, and 
