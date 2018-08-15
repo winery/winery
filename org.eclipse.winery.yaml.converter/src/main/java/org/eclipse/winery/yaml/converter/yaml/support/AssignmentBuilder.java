@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,17 +13,25 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.yaml.support;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.model.tosca.yaml.TPropertyAssignment;
 import org.eclipse.winery.yaml.common.Namespaces;
 import org.eclipse.winery.yaml.common.writer.xml.support.AnonymousPropertiesList;
 import org.eclipse.winery.yaml.common.writer.xml.support.PropertiesList;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import org.eclipse.collections.api.tuple.Pair;
+import org.eclipse.collections.impl.tuple.Tuples;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 public class AssignmentBuilder {
     private TypeConverter typeConverter;
@@ -38,25 +46,44 @@ public class AssignmentBuilder {
         this.typeConverter = new TypeConverter();
     }
 
-    public PropertiesList getAssignment(Map<String, TPropertyAssignment> assignmentMap, QName type) {
+    public PropertiesList getAssignment(Map<String, TPropertyAssignment> assignmentMap, QName type, Boolean simple) {
         Map<String, Object> assignments = assignmentMap.entrySet().stream()
             .filter(e -> e.getValue() != null)
             .collect(Collectors.toMap(
                 Map.Entry::getKey, e -> e.getValue().getValue())
             );
 
-        List<JAXBElement> elements = convertAssignment(assignments, propertyAssignmentBuildPlan.get(type));
+        List<JAXBElement> elements = convertAssignment(assignments, propertyAssignmentBuildPlan.get(type), simple);
         return new PropertiesList().setEntries(elements).setNamespace(type.getNamespaceURI());
     }
 
-    private List<JAXBElement> convertAssignment(Map<String, Object> yamlAssignment, Map<String, QName> buildPlan) {
+    private @NonNull List<JAXBElement> convertAssignment(@NonNull Map<String, Object> yamlAssignment, @Nullable Map<String, QName> buildPlan, Boolean simple) {
+        Map<String, QName> localBuildPlan = buildPlan;
+
+        if (Objects.isNull(localBuildPlan) && !simple) {
+            return Collections.emptyList();
+        } else if (Objects.isNull(localBuildPlan)) {
+            // Hack: no property definition available in type and
+            // mode simple is selected => map each entry to type "string"
+            localBuildPlan = yamlAssignment.entrySet().stream()
+                .map(entry -> Tuples.pair(entry.getKey(), new QName(Namespaces.YAML_NS, "string")))
+                .collect(Collectors.toMap(Pair::getOne, Pair::getTwo));
+        }
+
         List<JAXBElement> result = new ArrayList<>();
         for (Map.Entry<String, Object> entry : yamlAssignment.entrySet()) {
             if (entry.getValue() == null) {
                 continue;
             }
 
-            QName assignmentType = buildPlan.get(entry.getKey());
+            QName assignmentType = localBuildPlan.get(entry.getKey());
+
+            if (Objects.isNull(assignmentType) && simple) {
+                // Hack: mode simple but property definition in type available
+                // add type "string" for missing property assignments
+                assignmentType = new QName(Namespaces.YAML_NS, "string");
+            }
+
             // Add primitive yaml types as JAXBElements with their java class
             if (assignmentType.getNamespaceURI().equals(Namespaces.YAML_NS)) {
                 Class assignmentClass = typeConverter.convertToJavaType(assignmentType);
@@ -82,7 +109,7 @@ public class AssignmentBuilder {
             else if (entry.getValue() instanceof Map) {
                 @SuppressWarnings( {"unchecked"})
                 Map<String, Object> tmp = (Map<String, Object>) entry.getValue();
-                List<JAXBElement> elements = convertAssignment(tmp, this.propertyAssignmentBuildPlan.get(assignmentType));
+                List<JAXBElement> elements = convertAssignment(tmp, this.propertyAssignmentBuildPlan.get(assignmentType), simple);
                 AnonymousPropertiesList list = new AnonymousPropertiesList().setEntries(elements);
                 @SuppressWarnings("unchecked")
                 JAXBElement element = new JAXBElement(new QName(entry.getKey()), AnonymousPropertiesList.class, list);

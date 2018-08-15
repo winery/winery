@@ -13,17 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.writer.yaml;
 
-import org.eclipse.winery.model.tosca.yaml.*;
-import org.eclipse.winery.model.tosca.yaml.support.*;
-import org.eclipse.winery.model.tosca.yaml.tosca.datatypes.Credential;
-import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
-import org.eclipse.winery.model.tosca.yaml.visitor.AbstractVisitor;
-import org.eclipse.winery.model.tosca.yaml.visitor.VisitorNode;
-import org.eclipse.winery.yaml.common.Namespaces;
-import org.eclipse.winery.yaml.common.writer.yaml.support.Printer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,6 +22,62 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import org.eclipse.winery.model.tosca.yaml.TArtifactDefinition;
+import org.eclipse.winery.model.tosca.yaml.TArtifactType;
+import org.eclipse.winery.model.tosca.yaml.TAttributeAssignment;
+import org.eclipse.winery.model.tosca.yaml.TAttributeDefinition;
+import org.eclipse.winery.model.tosca.yaml.TCapabilityAssignment;
+import org.eclipse.winery.model.tosca.yaml.TCapabilityDefinition;
+import org.eclipse.winery.model.tosca.yaml.TCapabilityType;
+import org.eclipse.winery.model.tosca.yaml.TConstraintClause;
+import org.eclipse.winery.model.tosca.yaml.TDataType;
+import org.eclipse.winery.model.tosca.yaml.TEntityType;
+import org.eclipse.winery.model.tosca.yaml.TEntrySchema;
+import org.eclipse.winery.model.tosca.yaml.TGroupDefinition;
+import org.eclipse.winery.model.tosca.yaml.TGroupType;
+import org.eclipse.winery.model.tosca.yaml.TImplementation;
+import org.eclipse.winery.model.tosca.yaml.TImportDefinition;
+import org.eclipse.winery.model.tosca.yaml.TInterfaceAssignment;
+import org.eclipse.winery.model.tosca.yaml.TInterfaceDefinition;
+import org.eclipse.winery.model.tosca.yaml.TInterfaceType;
+import org.eclipse.winery.model.tosca.yaml.TNodeFilterDefinition;
+import org.eclipse.winery.model.tosca.yaml.TNodeTemplate;
+import org.eclipse.winery.model.tosca.yaml.TNodeType;
+import org.eclipse.winery.model.tosca.yaml.TOperationDefinition;
+import org.eclipse.winery.model.tosca.yaml.TParameterDefinition;
+import org.eclipse.winery.model.tosca.yaml.TPolicyDefinition;
+import org.eclipse.winery.model.tosca.yaml.TPolicyType;
+import org.eclipse.winery.model.tosca.yaml.TPropertyAssignment;
+import org.eclipse.winery.model.tosca.yaml.TPropertyDefinition;
+import org.eclipse.winery.model.tosca.yaml.TPropertyFilterDefinition;
+import org.eclipse.winery.model.tosca.yaml.TRelationshipAssignment;
+import org.eclipse.winery.model.tosca.yaml.TRelationshipDefinition;
+import org.eclipse.winery.model.tosca.yaml.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.yaml.TRelationshipType;
+import org.eclipse.winery.model.tosca.yaml.TRepositoryDefinition;
+import org.eclipse.winery.model.tosca.yaml.TRequirementAssignment;
+import org.eclipse.winery.model.tosca.yaml.TRequirementDefinition;
+import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
+import org.eclipse.winery.model.tosca.yaml.TSubstitutionMappings;
+import org.eclipse.winery.model.tosca.yaml.TTopologyTemplateDefinition;
+import org.eclipse.winery.model.tosca.yaml.TVersion;
+import org.eclipse.winery.model.tosca.yaml.support.Metadata;
+import org.eclipse.winery.model.tosca.yaml.support.TListString;
+import org.eclipse.winery.model.tosca.yaml.support.TMapImportDefinition;
+import org.eclipse.winery.model.tosca.yaml.support.TMapObject;
+import org.eclipse.winery.model.tosca.yaml.support.TMapPropertyFilterDefinition;
+import org.eclipse.winery.model.tosca.yaml.support.TMapRequirementAssignment;
+import org.eclipse.winery.model.tosca.yaml.support.TMapRequirementDefinition;
+import org.eclipse.winery.model.tosca.yaml.tosca.datatypes.Credential;
+import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
+import org.eclipse.winery.model.tosca.yaml.visitor.AbstractVisitor;
+import org.eclipse.winery.model.tosca.yaml.visitor.VisitorNode;
+import org.eclipse.winery.yaml.common.Namespaces;
+import org.eclipse.winery.yaml.common.writer.yaml.support.Printer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Writer extends AbstractVisitor<Printer, Writer.Parameter> {
 
@@ -294,7 +339,9 @@ public class Writer extends AbstractVisitor<Printer, Writer.Parameter> {
             .printKeyValue("description", node.getDescription())
             .printKeyValue("deploy_path", node.getDeployPath())
             .printKeyValue("file", node.getFile())
-            .printKeyValue("files", node.getFiles());
+            .printKeyValue("files", node.getFiles())
+            .print(printMap("properties", node.getProperties(), parameter))
+            .print(node.getMetadata().accept(this, parameter));
     }
 
     public Printer visit(TGroupType node, Parameter parameter) {

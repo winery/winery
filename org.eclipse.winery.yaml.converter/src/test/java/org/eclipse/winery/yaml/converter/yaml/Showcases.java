@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,6 +13,14 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.yaml;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.file.Paths;
+import java.util.LinkedHashMap;
+import java.util.Objects;
+import java.util.stream.Stream;
+
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
@@ -23,17 +31,12 @@ import org.eclipse.winery.yaml.common.exception.MultiException;
 import org.eclipse.winery.yaml.common.writer.WriterUtils;
 import org.eclipse.winery.yaml.converter.Converter;
 import org.eclipse.winery.yaml.converter.yaml.support.AbstractTestY2X;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.nio.file.Paths;
-import java.util.LinkedHashMap;
-import java.util.Objects;
-import java.util.stream.Stream;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Showcases extends AbstractTestY2X {
 
@@ -63,7 +66,7 @@ public class Showcases extends AbstractTestY2X {
         return exception;
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void nodeTypesTest() throws Exception {
         String path = "nodetypes";
@@ -71,10 +74,10 @@ public class Showcases extends AbstractTestY2X {
         Stream<String> files = Stream.of(
         );
 
-        Assert.assertTrue(convert(path, namespace, files).isEmpty());
+        assertTrue(convert(path, namespace, files).isEmpty());
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void serviceTemplateTest() throws Exception {
         String path = "servicetemplates";
@@ -82,7 +85,7 @@ public class Showcases extends AbstractTestY2X {
         Stream<String> files = Stream.of(
         );
 
-        Assert.assertTrue(convert(path, namespace, files).isEmpty());
+        assertTrue(convert(path, namespace, files).isEmpty());
     }
 
     @Test
@@ -98,6 +101,6 @@ public class Showcases extends AbstractTestY2X {
             )
         );
 
-        Assert.assertNotNull(serviceTemplate);
+        assertNotNull(serviceTemplate);
     }
 }

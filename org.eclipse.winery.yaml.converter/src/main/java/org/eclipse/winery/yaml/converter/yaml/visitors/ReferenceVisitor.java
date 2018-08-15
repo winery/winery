@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,6 +13,14 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.yaml.visitors;
 
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.model.tosca.yaml.TArtifactType;
 import org.eclipse.winery.model.tosca.yaml.TEntityType;
 import org.eclipse.winery.model.tosca.yaml.TImportDefinition;
@@ -20,17 +28,11 @@ import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.model.tosca.yaml.support.TMapImportDefinition;
 import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
 import org.eclipse.winery.model.tosca.yaml.visitor.AbstractResult;
+import org.eclipse.winery.yaml.common.Defaults;
 import org.eclipse.winery.yaml.common.Namespaces;
 import org.eclipse.winery.yaml.common.exception.MultiException;
 import org.eclipse.winery.yaml.common.reader.yaml.Reader;
 import org.eclipse.winery.yaml.common.validator.support.ExceptionVisitor;
-
-import javax.xml.namespace.QName;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ReferenceVisitor extends ExceptionVisitor<ReferenceVisitor.Result, ReferenceVisitor.Parameter> {
     private final TServiceTemplate serviceTemplate;
@@ -41,6 +43,7 @@ public class ReferenceVisitor extends ExceptionVisitor<ReferenceVisitor.Result, 
     private Map<TImportDefinition, ReferenceVisitor> visitors;
     private Map<TImportDefinition, TServiceTemplate> serviceTemplates;
 
+    // Used for artifact types
     public ReferenceVisitor(TServiceTemplate serviceTemplate, String namespace, Path path) {
         this.serviceTemplate = serviceTemplate;
         this.namespace = namespace;
@@ -52,6 +55,23 @@ public class ReferenceVisitor extends ExceptionVisitor<ReferenceVisitor.Result, 
 
     public Result getTypes(QName reference, String entityClassName) {
         return visit(serviceTemplate, new Parameter(reference, entityClassName));
+    }
+
+    @Override
+    public Result visit(TArtifactType node, Parameter parameter) {
+        return null;
+    }
+
+    @Override
+    public Result visit(TEntityType node, Parameter parameter) {
+        if (node.getDerivedFrom() != null
+            && !Defaults.TOSCA_NORMATIVE_NAMES.contains(node.getDerivedFrom().getLocalPart())
+            && !Defaults.TOSCA_NONNORMATIVE_NAMES.contains(node.getDerivedFrom().getLocalPart())) {
+            return serviceTemplate.accept(this, new Parameter(node.getDerivedFrom(), parameter.entityClass)).copy(node, node.getDerivedFrom());
+        } else if (node.getDerivedFrom() != null) {
+            return new Result(null).copy(node, node.getDerivedFrom());
+        }
+        return new Result(node);
     }
 
     @Override
@@ -74,14 +94,6 @@ public class ReferenceVisitor extends ExceptionVisitor<ReferenceVisitor.Result, 
     }
 
     @Override
-    public Result visit(TEntityType node, Parameter parameter) {
-        if (node.getDerivedFrom() != null) {
-            return serviceTemplate.accept(this, new Parameter(node.getDerivedFrom(), parameter.entityClass)).copy(node, node.getDerivedFrom());
-        }
-        return new Result(node);
-    }
-
-    @Override
     public Result visit(TServiceTemplate node, Parameter parameter) {
         Result result;
         if (parameter.reference.getNamespaceURI().equals(this.namespace)
@@ -99,11 +111,6 @@ public class ReferenceVisitor extends ExceptionVisitor<ReferenceVisitor.Result, 
             }
         }
 
-        return null;
-    }
-
-    @Override
-    public Result visit(TArtifactType node, Parameter parameter) {
         return null;
     }
 

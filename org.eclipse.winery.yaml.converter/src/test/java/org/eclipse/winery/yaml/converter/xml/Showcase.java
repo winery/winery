@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,21 +13,23 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.xml;
 
-import org.eclipse.winery.repository.backend.IRepository;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.importing.CsarImporter;
-import org.eclipse.winery.yaml.common.Utils;
-import org.eclipse.winery.yaml.converter.Converter;
-import org.eclipse.winery.yaml.converter.xml.support.AbstractTestX2Y;
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.importing.CsarImporter;
+import org.eclipse.winery.yaml.common.Utils;
+import org.eclipse.winery.yaml.converter.Converter;
+import org.eclipse.winery.yaml.converter.xml.support.AbstractTestX2Y;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Showcase extends AbstractTestX2Y {
     public Showcase() {
@@ -61,6 +63,6 @@ public class Showcase extends AbstractTestX2Y {
         // clean temporary repository
         Utils.deleteTmpDir(Paths.get("repository"));
 
-        Assert.assertTrue(zipFile.exists());
+        assertTrue(zipFile.exists());
     }
 }

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,21 +13,24 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.writer.xml;
 
-import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
-import org.eclipse.winery.model.tosca.TDefinitions;
-import org.eclipse.winery.yaml.common.writer.xml.support.AnonymousPropertiesList;
-import org.eclipse.winery.yaml.common.writer.xml.support.PropertiesList;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+
+import org.eclipse.winery.model.tosca.TDefinitions;
+import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
+import org.eclipse.winery.yaml.common.writer.xml.support.AnonymousPropertiesList;
+import org.eclipse.winery.yaml.common.writer.xml.support.PropertiesList;
+
+import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
+
 public class Writer {
     public void writeXML(TDefinitions definitions, Path filePath) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(TDefinitions.class, PropertiesList.class, AnonymousPropertiesList.class);
+        JAXBContext context = JAXBContext.newInstance(TDefinitions.class, PropertiesList.class, AnonymousPropertiesList.class, WinerysPropertiesDefinition.class);
 
         Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);

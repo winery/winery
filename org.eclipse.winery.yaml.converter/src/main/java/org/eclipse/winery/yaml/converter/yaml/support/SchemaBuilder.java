@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,19 +13,21 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.yaml.support;
 
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.winery.model.tosca.yaml.TPropertyDefinition;
-import org.eclipse.winery.yaml.common.Namespaces;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.eclipse.winery.model.tosca.yaml.TPropertyDefinition;
+import org.eclipse.winery.yaml.common.Namespaces;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class SchemaBuilder {
     private String namespace;
@@ -186,6 +188,7 @@ public class SchemaBuilder {
 
         Element sequence = document.createElement("sequence");
         sequence.setAttribute("xmlns:pfx0", namespace);
+        sequence.setAttribute("xmlns:xsd", "http://www.w3.org/2001/XMLSchema");
         complexType.appendChild(sequence);
 
         this.getElements().forEach(sequence::appendChild);

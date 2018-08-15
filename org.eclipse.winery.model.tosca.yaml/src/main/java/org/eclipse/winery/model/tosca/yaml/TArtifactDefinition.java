@@ -13,20 +13,28 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.yaml;
 
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.winery.model.tosca.yaml.support.Annotations;
-import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
-import org.eclipse.winery.model.tosca.yaml.visitor.AbstractResult;
-import org.eclipse.winery.model.tosca.yaml.visitor.IVisitor;
-import org.eclipse.winery.model.tosca.yaml.visitor.VisitorNode;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
-import java.util.*;
+
+import org.eclipse.winery.model.tosca.yaml.support.Annotations;
+import org.eclipse.winery.model.tosca.yaml.support.Metadata;
+import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
+import org.eclipse.winery.model.tosca.yaml.visitor.AbstractResult;
+import org.eclipse.winery.model.tosca.yaml.visitor.IVisitor;
+import org.eclipse.winery.model.tosca.yaml.visitor.VisitorNode;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tArtifactDefinition", namespace = " http://docs.oasis-open.org/tosca/ns/simple/yaml/1.0", propOrder = {
@@ -34,7 +42,9 @@ import java.util.*;
     "files",
     "repository",
     "description",
-    "deployPath"
+    "deployPath",
+    "properties",
+    "metadata"
 })
 public class TArtifactDefinition implements VisitorNode {
     @XmlAttribute(name = "type", required = true)
@@ -49,6 +59,8 @@ public class TArtifactDefinition implements VisitorNode {
     private List<String> files;
     @Annotations.StandardExtension
     private Map<String, TPropertyAssignment> properties;
+    @Annotations.StandardExtension
+    private Metadata metadata;
 
     public TArtifactDefinition() {
     }
@@ -60,6 +72,7 @@ public class TArtifactDefinition implements VisitorNode {
         this.setDescription(builder.description);
         this.setDeployPath(builder.deployPath);
         this.setProperties(builder.properties);
+        this.setMetadata(builder.metadata);
     }
 
     @Override
@@ -72,7 +85,8 @@ public class TArtifactDefinition implements VisitorNode {
             Objects.equals(getDescription(), that.getDescription()) &&
             Objects.equals(getDeployPath(), that.getDeployPath()) &&
             Objects.equals(getFiles(), that.getFiles()) &&
-            Objects.equals(getProperties(), that.getProperties());
+            Objects.equals(getProperties(), that.getProperties()) &&
+            Objects.equals(getMetadata(), that.getMetadata());
     }
 
     @Override
@@ -89,6 +103,7 @@ public class TArtifactDefinition implements VisitorNode {
             ", deployPath='" + getDeployPath() + '\'' +
             ", files=" + getFiles() +
             ", properties=" + getProperties() +
+            ", metadata=" + getMetadata() +
             '}';
     }
 
@@ -148,12 +163,33 @@ public class TArtifactDefinition implements VisitorNode {
         this.deployPath = deployPath;
     }
 
+    @NonNull
     public Map<String, TPropertyAssignment> getProperties() {
+        if (Objects.isNull(this.properties)) {
+            this.properties = new HashMap<>();
+        }
+
         return properties;
     }
 
     public void setProperties(Map<String, TPropertyAssignment> properties) {
         this.properties = properties;
+    }
+
+    public @NonNull Metadata getMetadata() {
+        if (Objects.isNull(this.metadata)) {
+            this.metadata = new Metadata();
+        }
+
+        return metadata;
+    }
+
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
+    }
+
+    public String getNamespace() {
+        return this.getMetadata().getOrDefault("namespace", "http://opentosca.org/artifacttemplates");
     }
 
     public <R extends AbstractResult<R>, P extends AbstractParameter<P>> R accept(IVisitor<R, P> visitor, P parameter) {
@@ -168,6 +204,7 @@ public class TArtifactDefinition implements VisitorNode {
         private String description;
         private String deployPath;
         private Map<String, TPropertyAssignment> properties;
+        private Metadata metadata;
 
         public Builder(QName type, List<String> files) {
             this.type = type;
@@ -181,6 +218,7 @@ public class TArtifactDefinition implements VisitorNode {
             this.description = artifactDefinition.getDescription();
             this.deployPath = artifactDefinition.getDeployPath();
             this.properties = artifactDefinition.getProperties();
+            this.metadata = artifactDefinition.getMetadata();
         }
 
         public Builder setRepository(String repository) {
@@ -201,6 +239,26 @@ public class TArtifactDefinition implements VisitorNode {
         public Builder setProperties(Map<String, TPropertyAssignment> properties) {
             this.properties = properties;
             return this;
+        }
+
+        public Builder setMetadata(Metadata metadata) {
+            this.metadata = metadata;
+            return this;
+        }
+
+        public Builder addMetadata(Metadata metadata) {
+            if (Objects.isNull(metadata) || metadata.isEmpty()) return this;
+            if (Objects.isNull(this.metadata)) {
+                this.metadata = metadata;
+            } else {
+                this.metadata.putAll(metadata);
+            }
+            return this;
+        }
+
+        public Builder addMetadata(String key, String value) {
+            if (Objects.isNull(key) || Objects.isNull(value)) return this;
+            return addMetadata(new Metadata().add(key, value));
         }
 
         public TArtifactDefinition build() {

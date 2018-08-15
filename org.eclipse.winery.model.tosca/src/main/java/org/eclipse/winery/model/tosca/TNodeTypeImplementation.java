@@ -14,15 +14,20 @@
 
 package org.eclipse.winery.model.tosca;
 
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-
-import javax.xml.bind.annotation.*;
-import javax.xml.namespace.QName;
 import java.util.List;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.model.tosca.visitor.Visitor;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * <p>Java class for tNodeTypeImplementation complex type.
@@ -218,13 +223,8 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
     }
 
     public static class Builder extends TEntityTypeImplementation.Builder<Builder> {
-        private TTags tags;
         private DerivedFrom derivedFrom;
-        private TRequiredContainerFeatures requiredContainerFeatures;
-        private TImplementationArtifacts implementationArtifacts;
         private TDeploymentArtifacts deploymentArtifacts;
-        private TBoolean _abstract;
-        private TBoolean _final;
 
         public Builder(TExtensibleElements extensibleElements, String name, QName implementedNodeType) {
             super(extensibleElements, name, implementedNodeType);
@@ -234,105 +234,14 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
             super(name, implementedNodeType);
         }
 
-        public Builder setTags(TTags tags) {
-            this.tags = tags;
-            return this;
-        }
-
         public Builder setDerivedFrom(TNodeTypeImplementation.DerivedFrom derivedFrom) {
             this.derivedFrom = derivedFrom;
-            return this;
-        }
-
-        public Builder setRequiredContainerFeatures(TRequiredContainerFeatures requiredContainerFeatures) {
-            this.requiredContainerFeatures = requiredContainerFeatures;
-            return this;
-        }
-
-        public Builder setImplementationArtifacts(TImplementationArtifacts implementationArtifacts) {
-            this.implementationArtifacts = implementationArtifacts;
             return this;
         }
 
         public Builder setDeploymentArtifacts(TDeploymentArtifacts deploymentArtifacts) {
             this.deploymentArtifacts = deploymentArtifacts;
             return this;
-        }
-
-        public Builder setAbstract(TBoolean _abstract) {
-            this._abstract = _abstract;
-            return this;
-        }
-
-        public Builder setFinal(TBoolean _final) {
-            this._final = _final;
-            return this;
-        }
-
-        public Builder addRequiredContainerFeatures(TRequiredContainerFeatures requiredContainerFeatures) {
-            if (requiredContainerFeatures == null || requiredContainerFeatures.getRequiredContainerFeature().isEmpty()) {
-                return this;
-            }
-
-            if (this.requiredContainerFeatures == null) {
-                this.requiredContainerFeatures = requiredContainerFeatures;
-            } else {
-                this.requiredContainerFeatures.getRequiredContainerFeature().addAll(requiredContainerFeatures.getRequiredContainerFeature());
-            }
-            return this;
-        }
-
-        public Builder addRequiredContainerFeatures(List<TRequiredContainerFeature> requiredContainerFeatures) {
-            if (requiredContainerFeatures == null) {
-                return this;
-            }
-
-            TRequiredContainerFeatures tmp = new TRequiredContainerFeatures();
-            tmp.getRequiredContainerFeature().addAll(requiredContainerFeatures);
-            return addRequiredContainerFeatures(tmp);
-        }
-
-        public Builder addRequiredContainerFeatures(TRequiredContainerFeature requiredContainerFeatures) {
-            if (requiredContainerFeatures == null) {
-                return this;
-            }
-
-            TRequiredContainerFeatures tmp = new TRequiredContainerFeatures();
-            tmp.getRequiredContainerFeature().add(requiredContainerFeatures);
-            return addRequiredContainerFeatures(tmp);
-        }
-
-        public Builder addImplementationArtifacts(TImplementationArtifacts implementationArtifacts) {
-            if (implementationArtifacts == null || implementationArtifacts.getImplementationArtifact().isEmpty()) {
-                return this;
-            }
-
-            if (this.implementationArtifacts == null) {
-                this.implementationArtifacts = implementationArtifacts;
-            } else {
-                this.implementationArtifacts.getImplementationArtifact().addAll(implementationArtifacts.getImplementationArtifact());
-            }
-            return this;
-        }
-
-        public Builder addImplementationArtifacts(List<TImplementationArtifacts.ImplementationArtifact> implementationArtifacts) {
-            if (implementationArtifacts == null) {
-                return this;
-            }
-
-            TImplementationArtifacts tmp = new TImplementationArtifacts();
-            tmp.getImplementationArtifact().addAll(implementationArtifacts);
-            return addImplementationArtifacts(tmp);
-        }
-
-        public Builder addImplementationArtifacts(TImplementationArtifacts.ImplementationArtifact implementationArtifacts) {
-            if (implementationArtifacts == null) {
-                return this;
-            }
-
-            TImplementationArtifacts tmp = new TImplementationArtifacts();
-            tmp.getImplementationArtifact().add(implementationArtifacts);
-            return addImplementationArtifacts(tmp);
         }
 
         public Builder addDeploymentArtifacts(TDeploymentArtifacts deploymentArtifacts) {

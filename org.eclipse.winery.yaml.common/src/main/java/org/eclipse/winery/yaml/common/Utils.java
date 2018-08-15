@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,12 +13,11 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common;
 
-import org.apache.commons.codec.digest.DigestUtils;
-import org.eclipse.winery.repository.backend.filebased.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,8 +26,16 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import org.eclipse.winery.repository.backend.filebased.FileUtils;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Utils {
-    private static final Logger logger = LoggerFactory.getLogger(Utils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
     private static Path tmpBase;
 
     public static String getFile(String path, String name) {
@@ -53,16 +60,16 @@ public class Utils {
                     Path targetPath = dir.resolve(entry.getName());
                     Files.createDirectories(targetPath.getParent());
                     Files.copy(inputStream, targetPath);
-                    logger.debug("Write tmp file: {}", targetPath.toString());
+                    LOGGER.debug("Write tmp file: {}", targetPath.toString());
                 }
             }
         } catch (Exception e) {
-            logger.error("Create zip tmp file error: ", e);
+            LOGGER.error("Create zip tmp file error: ", e);
         }
         return dir;
     }
 
-    public static InputStream zipPath(Path path) {
+    public static @Nullable InputStream zipPath(@NonNull Path path) {
         File zipFile = new File(path.getParent().toString() + File.separator + "tmp.zip");
         try (
             FileOutputStream fos = new FileOutputStream(zipFile);
@@ -81,25 +88,28 @@ public class Utils {
                 });
             return new FileInputStream(zipFile);
         } catch (Exception e) {
-            logger.error("Create zip tmp file error: ", e);
+            LOGGER.error("Create zip tmp file error: ", e);
         }
         return null;
     }
 
-    public static Path getTmpDir(Path path) {
+    /**
+     * @return null in the case of an exception
+     */
+    public static @Nullable Path getTmpDir(Path path) {
         try {
             if (Objects.isNull(tmpBase)) {
                 tmpBase = Files.createTempDirectory("winery");
             }
         } catch (Exception e) {
-            logger.error("Failed to create tmp dir with name 'winery'", e);
+            LOGGER.error("Failed to create tmp dir with name 'winery'", e);
         }
 
         Path result = tmpBase.resolve(path);
         try {
             Files.createDirectories(result);
         } catch (IOException e) {
-            logger.error("Failed to create tmp dir '{}':\n {}", result, e);
+            LOGGER.error("Failed to create tmp dir '{}':\n {}", result, e);
         }
         return result;
     }

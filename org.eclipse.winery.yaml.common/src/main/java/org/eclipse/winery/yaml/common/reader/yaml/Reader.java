@@ -43,6 +43,7 @@ import org.eclipse.winery.yaml.common.validator.Validator;
 import org.eclipse.winery.yaml.common.validator.support.ExceptionInterpreter;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
@@ -51,7 +52,7 @@ import org.yaml.snakeyaml.constructor.SafeConstructor;
 import org.yaml.snakeyaml.scanner.ScannerException;
 
 public class Reader {
-    public static final Logger logger = LoggerFactory.getLogger(Builder.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(Builder.class);
     private static Reader INSTANCE;
     private Yaml yaml;
 
@@ -70,8 +71,15 @@ public class Reader {
         return INSTANCE;
     }
 
-    public TServiceTemplate parse(Path path, Path file) throws MultiException {
-        return this.readServiceTemplate(path, file, Namespaces.DEFAULT_NS);
+    public TServiceTemplate parse(@NonNull Path file) throws MultiException {
+        return this.parse(file.getParent(), file);
+    }
+
+    /**
+     * @param rootPath if <code>null</code>, the imports of the yaml file cannot be validated
+     */
+    public TServiceTemplate parse(@Nullable Path rootPath, @NonNull Path file) throws MultiException {
+        return this.readServiceTemplate(rootPath, file, Namespaces.DEFAULT_NS);
     }
 
     public TServiceTemplate parse(Path path, Path file, String namespace) throws MultiException {
@@ -116,10 +124,10 @@ public class Reader {
      * Uses snakeyaml to convert a file into an Object
      *
      * @param path name
-     * @return Object (Lists, Maps, Strings, Integers, Dates)
+     * @return Object (Lists, Maps, Strings, Integers, Dates), null in case of an error
      * @throws UndefinedFile if the file could not be found.
      */
-    private Object readObject(Path path) throws MultiException {
+    private @Nullable Object readObject(Path path) throws MultiException {
         try (InputStream inputStream = new FileInputStream(path.toFile())) {
             return this.yaml.load(inputStream);
         } catch (FileNotFoundException e) {
@@ -128,7 +136,7 @@ public class Reader {
                 path
             ).setFileContext(path));
         } catch (IOException e) {
-            logger.error("Could not read from inputstream", e);
+            LOGGER.error("Could not read from inputstream", e);
             return null;
         }
     }
@@ -166,7 +174,7 @@ public class Reader {
                 path
             ).setFileContext(path));
         } catch (IOException e) {
-            logger.error("Could not read from inputstream", e);
+            LOGGER.error("Could not read from inputstream", e);
             return null;
         }
     }
@@ -188,7 +196,7 @@ public class Reader {
                 return true;
             }
         } catch (IOException e) {
-            logger.debug("File is not readable", e);
+            LOGGER.debug("File is not readable", e);
             return true;
         }
     }
@@ -199,7 +207,7 @@ public class Reader {
      * @return ServiceTemplate
      * @throws MultiException the ServiceTemplate or the file is invalid.
      */
-    private TServiceTemplate readServiceTemplate(Path path, Path file, String namespace) throws MultiException {
+    private TServiceTemplate readServiceTemplate(@Nullable Path path, @NonNull Path file, @NonNull String namespace) throws MultiException {
         Path filePath;
         if (Objects.isNull(path)) {
             filePath = file;
@@ -216,7 +224,7 @@ public class Reader {
             }
         }
 
-        logger.debug("Read Service Template: {}", filePath);
+        LOGGER.debug("Read Service Template: {}", filePath);
         try {
             // pre parse checking
             try {

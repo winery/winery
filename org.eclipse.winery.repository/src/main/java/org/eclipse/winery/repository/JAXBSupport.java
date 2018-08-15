@@ -118,6 +118,7 @@ public class JAXBSupport {
                 m.setProperty("com.sun.xml.bind.namespacePrefixMapper", JAXBSupport.prefixMapper);
             } catch (PropertyException e) {
                 // Namespace-Prefixing is not supported by the used Provider. Nothing we can do about that
+                LOGGER.debug("Namespace-Prefixing is not supported by the used Provider. Nothing we can do about that.");
             }
             if (!includeProcessingInstruction) {
                 // side effect of JAXB_FRAGMENT property (when true): processing instruction is not included

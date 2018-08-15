@@ -67,7 +67,7 @@ import org.w3c.dom.Document;
 public class WriterUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(WriterUtils.class);
 
-    public static void storeDefinitions(Definitions definitions, boolean overwrite, Path dir) {
+    public static Definitions storeDefinitions(Definitions definitions, boolean overwrite, Path dir) {
         Path path = null;
         try {
             path = Files.createTempDirectory("winery");
@@ -149,6 +149,8 @@ public class WriterUtils {
                 exceptions.add(e);
             }
         });
+
+        return cleanDefinitions;
     }
 
     public static void storeTypes(Path path, String name, String namespace, String id) {

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,6 +13,12 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.xml.support;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Map;
+
+import javax.xml.bind.JAXBException;
+
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -20,12 +26,8 @@ import org.eclipse.winery.yaml.common.Utils;
 import org.eclipse.winery.yaml.common.exception.MultiException;
 import org.eclipse.winery.yaml.common.reader.xml.Reader;
 import org.eclipse.winery.yaml.converter.Converter;
-import org.junit.BeforeClass;
 
-import javax.xml.bind.JAXBException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Map;
+import org.junit.jupiter.api.BeforeAll;
 
 public abstract class AbstractTestX2Y {
     protected final Path path;
@@ -37,7 +39,7 @@ public abstract class AbstractTestX2Y {
         this.outPath = path.resolve("tmp");
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setRepository() {
         RepositoryFactory.getRepository(Utils.getTmpDir(Paths.get("AbstractTests")));
     }

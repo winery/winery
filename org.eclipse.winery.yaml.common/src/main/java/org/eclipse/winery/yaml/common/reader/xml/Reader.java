@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,25 +13,34 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.reader.xml;
 
-import org.eclipse.winery.model.tosca.Definitions;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.file.Path;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+
+import org.eclipse.winery.model.tosca.Definitions;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Reader {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Reader.class);
+
     private Unmarshaller unmarshaller;
 
     public Reader() {
+        // TODO: There is some similar method in the BackendUtils
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(Definitions.class);
             unmarshaller = jaxbContext.createUnmarshaller();
         } catch (JAXBException e) {
-            e.printStackTrace();
+            LOGGER.error("Could not read from file", e);
         }
     }
 
@@ -39,17 +48,23 @@ public class Reader {
         return (Definitions) unmarshaller.unmarshal(inputStream);
     }
 
-    public Definitions parse(Path fileName) throws JAXBException {
+    /**
+     * @return null in the case of an error +
+     */
+    public @Nullable Definitions parse(@NonNull Path fileName) {
         File file = fileName.toFile();
         try {
             return parse(new FileInputStream(file));
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Could not read from file", e);
         }
         return null;
     }
 
-    public Definitions parse(Path path, Path name) throws Exception {
+    /**
+     * @return null in the case of an error
+     */
+    public @Nullable Definitions parse(@NonNull Path path, Path name) {
         return parse(path.resolve(name));
     }
 }
