@@ -19,10 +19,10 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.definitions.ComplianceRuleId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.topologygraph.matching.model.ToscaEdge;
-import org.eclipse.winery.topologygraph.matching.model.ToscaGraph;
-import org.eclipse.winery.topologygraph.matching.model.ToscaNode;
-import org.eclipse.winery.topologygraph.matching.transformation.ToscaTransformer;
+import org.eclipse.winery.topologygraph.model.ToscaEdge;
+import org.eclipse.winery.topologygraph.model.ToscaGraph;
+import org.eclipse.winery.topologygraph.model.ToscaNode;
+import org.eclipse.winery.topologygraph.transformation.ToscaTransformer;
 import org.eclipse.winery.model.tosca.TComplianceRule;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;

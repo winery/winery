@@ -13,3 +13,4 @@ npm-debug.log
 /dist/
 /src/assets/built-codeEdit15_1
 /src/assets/licenses/
+!/src/assets/licenses/Proprietary.txt

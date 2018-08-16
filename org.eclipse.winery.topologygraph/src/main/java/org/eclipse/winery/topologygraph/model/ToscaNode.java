@@ -11,35 +11,36 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-package org.eclipse.winery.topologygraph.matching.model;
+package org.eclipse.winery.topologygraph.model;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
 
-public abstract class ToscaEntity {
+public class ToscaNode extends ToscaEntity {
 
-	private final List<TEntityType> types = new ArrayList<>();
-	private String id;
+    private TNodeTemplate nodeTemplate;
 
-	public String getId() {
-		return id;
-	}
+    public List<TNodeType> getNodeTypes() {
+        return getTypes().stream().map(TNodeType.class::cast).collect(Collectors.toList());
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public TNodeTemplate getNodeTemplate() {
+        return nodeTemplate;
+    }
 
-	public List<TEntityType> getTypes() {
-		return types;
-	}
-
-	public TEntityType getActualType() {
-		return types.stream().findFirst().orElse(null);
-	}
-
-	public boolean addTEntityType(TEntityType type) {
-		return this.types.add(type);
-	}
+    public void setNodeTemplate(TNodeTemplate nodeTemplate) {
+        this.nodeTemplate = nodeTemplate;
+        this.setId(nodeTemplate.getId());
+    }
 }
+
+	
+
+	
+	
+
+
+	
