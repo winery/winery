@@ -51,6 +51,7 @@ public class PatternRefinement extends AbstractSubstitution {
 
     private List<TPatternRefinementModel> patternRefinementModels;
     private PatternRefinementChooser refinementChooser;
+    private ServiceTemplateId refinementServiceTemplateId;
 
     public PatternRefinement(PatternRefinementChooser refinementChooser) {
         this.refinementChooser = refinementChooser;
@@ -66,17 +67,17 @@ public class PatternRefinement extends AbstractSubstitution {
     }
 
     public ServiceTemplateId refineServiceTemplate(ServiceTemplateId id) {
-        ServiceTemplateId templateId = this.getSubstitutionServiceTemplateId(id);
-        TServiceTemplate element = this.repository.getElement(templateId);
+        refinementServiceTemplateId = this.getSubstitutionServiceTemplateId(id);
+        TServiceTemplate element = this.repository.getElement(refinementServiceTemplateId);
 
         this.refineTopology(element.getTopologyTemplate());
         try {
-            this.repository.setElement(templateId, element);
+            this.repository.setElement(refinementServiceTemplateId, element);
         } catch (IOException e) {
             LOGGER.error("Error while saving refined topology", e);
         }
 
-        return templateId;
+        return refinementServiceTemplateId;
     }
 
     public void refineTopology(TTopologyTemplate topology) {
@@ -108,7 +109,7 @@ public class PatternRefinement extends AbstractSubstitution {
                 break;
             }
 
-            PatternRefinementCandidate refinement = this.refinementChooser.choosePatternRefinement(candidates);
+            PatternRefinementCandidate refinement = this.refinementChooser.choosePatternRefinement(candidates, this.refinementServiceTemplateId);
 
             if (Objects.isNull(refinement)) {
                 break;

@@ -16,8 +16,10 @@ package org.eclipse.winery.model.substitution.pattern.refinement;
 
 import java.util.List;
 
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+
 public class DefaultPatternRefinementChooser implements PatternRefinementChooser {
-    public PatternRefinementCandidate choosePatternRefinement(List<PatternRefinementCandidate> candidates) {
+    public PatternRefinementCandidate choosePatternRefinement(List<PatternRefinementCandidate> candidates, ServiceTemplateId refinementServiceTemplate) {
         return candidates.get(0);
     }
 }

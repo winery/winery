@@ -27,8 +27,6 @@ export class TopologyModelerConfiguration {
                 public readonly parentPath = 'servicetemplates',
                 public readonly elementPath = 'topologytemplate') {
         this.webSocketUrl = repositoryURL.replace(/(^https?)/, 'ws');
-        this.definitionsElement = new QName();
-        this.definitionsElement.localName = id;
-        this.definitionsElement.nameSpace = ns;
+        this.definitionsElement = new QName('{' + ns + '}' + id);
     }
 }

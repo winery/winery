@@ -12,12 +12,23 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.model.substitution.pattern.refinement;
+package org.eclipse.winery.repository.rest.resources.apiData;
 
 import java.util.List;
 
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.substitution.pattern.refinement.PatternRefinementCandidate;
 
-public interface PatternRefinementChooser {
-    PatternRefinementCandidate choosePatternRefinement(List<PatternRefinementCandidate> candidates, ServiceTemplateId refinementServiceTemplate);
+public class RefinementElementApiData {
+
+    public List<PatternRefinementCandidate> patternRefinementCandidates;
+    public ServiceTemplateId serviceTemplateContainingRefinements;
+
+    public RefinementElementApiData() {
+    }
+
+    public RefinementElementApiData(List<PatternRefinementCandidate> candidates, ServiceTemplateId refinementServiceTemplate) {
+        this.patternRefinementCandidates = candidates;
+        this.serviceTemplateContainingRefinements = refinementServiceTemplate;
+    }
 }

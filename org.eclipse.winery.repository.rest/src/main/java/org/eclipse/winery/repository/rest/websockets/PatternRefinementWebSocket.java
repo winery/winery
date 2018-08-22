@@ -30,13 +30,11 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.substitution.pattern.refinement.PatternRefinement;
 import org.eclipse.winery.model.substitution.pattern.refinement.PatternRefinementCandidate;
 import org.eclipse.winery.model.substitution.pattern.refinement.PatternRefinementChooser;
+import org.eclipse.winery.repository.rest.resources.apiData.RefinementElementApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.RefinementWebSocketApiData;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.FilterProvider;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.sun.jersey.api.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,9 +78,10 @@ public class PatternRefinementWebSocket implements PatternRefinementChooser {
             case START:
                 if (!running) {
                     Thread thread = new Thread(() -> {
-                        ServiceTemplateId templateId = patternRefinement.refineServiceTemplate(new ServiceTemplateId(data.serviceTemplate));
+                        RefinementElementApiData element = new RefinementElementApiData();
+                        element.serviceTemplateContainingRefinements = patternRefinement.refineServiceTemplate(new ServiceTemplateId(data.serviceTemplate));
                         try {
-                            session.getAsyncRemote().sendText(mapper.writeValueAsString(templateId));
+                            this.send(element);
                             session.close();
                             session = null;
                         } catch (JsonProcessingException e) {
@@ -106,18 +105,15 @@ public class PatternRefinementWebSocket implements PatternRefinementChooser {
     }
 
     @Override
-    public PatternRefinementCandidate choosePatternRefinement(List<PatternRefinementCandidate> candidates) {
+    public PatternRefinementCandidate choosePatternRefinement(List<PatternRefinementCandidate> candidates, ServiceTemplateId refinementServiceTemplate) {
         try {
-            SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.serializeAllExcept(
-                "detector", "refinementstructure", "any", "documentation", "otherAttributes"
-            );
-            FilterProvider filterProvider = new SimpleFilterProvider().addFilter("cleanPRM", filter);
-            
             this.future = new CompletableFuture<>();
-            this.session.getAsyncRemote().sendText(this.mapper.writer(filterProvider).writeValueAsString(candidates));
-            
+
+            RefinementElementApiData element = new RefinementElementApiData(candidates, refinementServiceTemplate);
+            this.send(element);
+
             int id = future.get();
-            
+
             if (id >= 0) {
                 return candidates.stream()
                     .filter(candidate -> candidate.getId() == id)
@@ -129,7 +125,11 @@ public class PatternRefinementWebSocket implements PatternRefinementChooser {
         } catch (JsonProcessingException e) {
             LOGGER.error("Error while creating JSON request", e);
         }
-        
+
         return null;
+    }
+
+    private void send(RefinementElementApiData element) throws JsonProcessingException {
+        this.session.getAsyncRemote().sendText(mapper.writeValueAsString(element));
     }
 }

@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Component } from '@angular/core';
-import { RefinementElement, RefinementWebSocketService } from './refinementWebSocket.service';
+import { PatternRefinementModel, RefinementElement, RefinementWebSocketService } from './refinementWebSocket.service';
 import { BackendService } from '../services/backend.service';
 
 @Component({
@@ -27,7 +27,7 @@ export class RefinementSidebarComponent {
     refinementIsRunning: boolean;
     refinementIsLoading: boolean;
     refinementIsDone: boolean;
-    prmOptions: RefinementElement[];
+    prmCandidates: PatternRefinementModel[];
 
     constructor(private webSocketService: RefinementWebSocketService,
                 private backendService: BackendService) {
@@ -49,10 +49,15 @@ export class RefinementSidebarComponent {
         this.webSocketService.cancel();
     }
 
-    private handleWebSocketData(value: RefinementElement[]) {
+    private handleWebSocketData(value: RefinementElement) {
         if (value) {
             this.refinementIsLoading = false;
-            this.prmOptions = value;
+            this.prmCandidates = value.patternRefinementCandidates;
+
+            if (!this.prmCandidates) {
+                this.refinementIsDone = true;
+                this.refinementIsRunning = false;
+            }
         }
     }
 
@@ -68,8 +73,8 @@ export class RefinementSidebarComponent {
     }
 
     openModelerFor(patternRefinementModel: { name: string; targetNamespace: string }, element: string, type = 'patternrefinementmodels') {
-        const editorConfig = '?repositoryURL=' + this.backendService.configuration.repositoryURL
-            + '&uiURL=' + this.backendService.configuration.uiURL
+        const editorConfig = '?repositoryURL=' + encodeURIComponent(this.backendService.configuration.repositoryURL)
+            + '&uiURL=' + encodeURIComponent(this.backendService.configuration.uiURL)
             + '&ns=' + encodeURIComponent(patternRefinementModel.targetNamespace)
             + '&id=' + patternRefinementModel.name
             + '&parentPath=' + type
@@ -78,7 +83,7 @@ export class RefinementSidebarComponent {
         window.open(editorConfig, '_blank');
     }
 
-    prmChosen(option: RefinementElement) {
+    prmChosen(option: PatternRefinementModel) {
         this.webSocketService.refineWith(option);
         this.refinementIsLoading = true;
     }

@@ -25,12 +25,14 @@
         <div class="loader" *ngIf="refinementIsLoading; else showContent"></div>
         <ng-template #showContent>
             <ul>
-                <li *ngFor="let option of prmOptions">
-                    {{ option.patternRefinementModel.name }}
+                <li *ngFor="let candidate of prmCandidates">
+                    {{ candidate.patternRefinementModel.name }}
+                    <br>
                     <div class="btn-group">
-                        <button class="btn btn-sm btn-default" (click)="openModelerFor(option.patternRefinementModel, 'detector')">Detector Topology</button>
-                        <button class="btn btn-sm btn-default" (click)="openModelerFor(option.patternRefinementModel, 'refinementstructure')">Refinement Topology</button>
-                        <button class="btn btn-sm btn-primary" (click)="prmChosen(option)">Choose</button>
+                        <button class="btn btn-sm btn-info" (click)="openModelerFor(candidate.patternRefinementModel, 'refinementstructure')">
+                            Show Refinement Structure
+                        </button><br>
+                        <button class="btn btn-sm btn-primary" (click)="prmChosen(candidate)">Choose</button>
                     </div>
                 </li>
             </ul>

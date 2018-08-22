@@ -57,6 +57,9 @@ export class QName {
      * Getter for qName
      */
     get qName(): string {
+        if (!this._qName) {
+            this._qName = '{' + this._nameSpace + '}' + this._localName;
+        }
         return this._qName;
     }
 

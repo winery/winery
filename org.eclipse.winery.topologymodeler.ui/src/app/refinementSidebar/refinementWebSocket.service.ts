@@ -22,17 +22,23 @@ export enum RefinementTasks {
 }
 
 export interface RefinementElement {
+    patternRefinementCandidates: PatternRefinementModel[];
+    serviceTemplateContainingRefinements: {
+        xmlId?: {
+            decoded: string;
+        };
+        namespace?: {
+            decoded: string
+        };
+    };
+}
+
+export interface PatternRefinementModel {
     patternRefinementModel: {
         name: string;
         targetNamespace: string;
     };
     id: number;
-    xmlId?: {
-        decoded: string;
-    };
-    namespace?: {
-        decoded: string
-    };
 }
 
 export interface RefinementWebSocketData {
@@ -45,14 +51,14 @@ export interface RefinementWebSocketData {
 export class RefinementWebSocketService {
 
     private socket: WebSocket;
-    private listener: BehaviorSubject<RefinementElement[]>;
+    private listener: BehaviorSubject<RefinementElement>;
 
     constructor(private backendService: BackendService) {
     }
 
     startRefinement() {
         this.socket = new WebSocket(this.backendService.configuration.webSocketUrl + '/refinetopology');
-        this.listener = new BehaviorSubject<RefinementElement[]>(null);
+        this.listener = new BehaviorSubject<RefinementElement>(null);
 
         const start: RefinementWebSocketData = {
             task: RefinementTasks.START,
@@ -66,7 +72,7 @@ export class RefinementWebSocketService {
         return this.listener.asObservable();
     }
 
-    refineWith(option: RefinementElement) {
+    refineWith(option: PatternRefinementModel) {
         const update: RefinementWebSocketData = {
             task: RefinementTasks.REFINE_WITH,
             refineWith: option.id
@@ -76,7 +82,7 @@ export class RefinementWebSocketService {
 
     private onMessage(event: MessageEvent) {
         if (event.data) {
-            const data: RefinementElement[] = JSON.parse(event.data);
+            const data: RefinementElement = JSON.parse(event.data);
             this.listener.next(data);
         }
     }
