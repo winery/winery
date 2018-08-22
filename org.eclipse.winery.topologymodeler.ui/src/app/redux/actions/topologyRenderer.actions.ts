@@ -35,6 +35,7 @@ export class TopologyRendererActions {
     static SPLIT_TOPOLOGY = 'SPLIT_TOPOLOGY';
     static MATCH_TOPOLOGY = 'MATCH_TOPOLOGY';
     static SUBSTITUTE_TOPOLOGY = 'SUBSTITUTE_TOPOLOGY';
+    private static REFINE_TOPOLOGY = 'REFINE_TOPOLOGY';
 
     togglePolicies(): Action {
         return {type: TopologyRendererActions.TOGGLE_POLICIES};
@@ -90,5 +91,9 @@ export class TopologyRendererActions {
 
     substituteTopology(): Action {
         return { type: TopologyRendererActions.SUBSTITUTE_TOPOLOGY };
+    }
+
+    refineTopology() {
+        return { type: TopologyRendererActions.REFINE_TOPOLOGY};
     }
 }

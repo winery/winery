@@ -136,15 +136,17 @@
                 [style.background-color]="getStyle(navbarButtonsState.buttonsState.importTopologyButton)">
                 Import Topology
             </button>
-            <button
-                class="btn btn-sm align-middle dark-button-style"
-                type="button"
-                id="substituteTopology"
-                (click)="toggleButton($event)"
-                [style.background-color]="getStyle(navbarButtonsState.buttonsState.substituteTopologyButton)">
-                Substitute Topology
+        </div>
+
+        <div class="btn-group" data-toggle="buttons" style="margin-left: 4px">
+            <button class="btn btn-sm align-middle dark-button-style" id="refineTopology"
+                    (click)="toggleButton($event)"
+                    [disabled]="navbarButtonsState.buttonsState.refineTopologyButton"
+                    [style.background-color]="getStyle(navbarButtonsState.buttonsState.refineTopologyButton)">
+                Refine Topology
             </button>
         </div>
+
         <div *ngIf="!readonly" class="btn-group" style="margin-left: 4px" dropdown>
             <button dropdownToggle type="button" class="btn btn-sm dark-button-style align-middle dropdown-toggle">
                 Other <span class="caret"></span>
@@ -157,7 +159,16 @@
                             placement="left" class="dropdown-item" (click)="exportCsar($event)">Export CSAR
                     </button>
                 </li>
-                <li role="menuitem"><a class="dropdown-item" (click)="checkCompliance()" )>Check Compliance</a></li>
+                <li role="menuitem">
+                    <button
+                        style="cursor: pointer"
+                        class="dropdown-item"
+                        id="substituteTopology"
+                        (click)="toggleButton($event)">
+                        Substitute Topology
+                    </button>
+                </li>
+                <!--<li role="menuitem"><a class="dropdown-item" (click)="checkCompliance()">Check Compliance</a></li>-->
                 <li role="menuitem"><a class="dropdown-item" href="#">About</a></li>
             </ul>
         </div>

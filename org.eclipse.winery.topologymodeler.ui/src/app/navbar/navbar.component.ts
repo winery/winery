@@ -183,6 +183,9 @@ export class NavbarComponent implements OnDestroy {
             case 'substituteTopology':
                 this.ngRedux.dispatch(this.actions.substituteTopology());
                 break;
+            case 'refineTopology':
+                this.ngRedux.dispatch(this.actions.refineTopology());
+                break;
         }
     }
 

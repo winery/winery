@@ -13,7 +13,7 @@
  ********************************************************************************/
 import {
     AfterViewInit, Component, DoCheck, ElementRef, HostListener, Input, KeyValueDiffers, NgZone, OnChanges, OnDestroy, OnInit, QueryList, Renderer2,
-   SimpleChanges, ViewChild, ViewChildren
+    SimpleChanges, ViewChild, ViewChildren
 } from '@angular/core';
 import { JsPlumbService } from '../services/jsPlumb.service';
 import { EntityType, TNodeTemplate, TRelationshipTemplate } from '../models/ttopology-template';
@@ -949,19 +949,13 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         if (currentButtonsState) {
             this.navbarButtonsState = currentButtonsState;
             this.revalidateContainer();
-            const alignmentButtonLayout = this.navbarButtonsState.buttonsState.layoutButton;
-            const alignmentButtonAlignH = this.navbarButtonsState.buttonsState.alignHButton;
-            const alignmentButtonAlignV = this.navbarButtonsState.buttonsState.alignVButton;
-            const importTopologyButton = this.navbarButtonsState.buttonsState.importTopologyButton;
-            const splitTopologyButton = this.navbarButtonsState.buttonsState.splitTopologyButton;
-            const matchTopologyButton = this.navbarButtonsState.buttonsState.matchTopologyButton;
-            const substitutionButton = this.navbarButtonsState.buttonsState.substituteTopologyButton;
             let selectedNodes;
-            if (alignmentButtonLayout) {
+
+            if (this.navbarButtonsState.buttonsState.layoutButton) {
                 this.layoutDirective.layoutNodes(this.nodeChildrenArray, this.allRelationshipTemplates);
                 this.ngRedux.dispatch(this.topologyRendererActions.executeLayout());
                 selectedNodes = false;
-            } else if (alignmentButtonAlignH) {
+            } else if (this.navbarButtonsState.buttonsState.alignHButton) {
                 if (this.selectedNodes.length >= 1) {
                     this.layoutDirective.align(this.nodeChildrenArray, this.selectedNodes, align.Horizontal);
                     selectedNodes = true;
@@ -970,7 +964,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                     selectedNodes = false;
                 }
                 this.ngRedux.dispatch(this.topologyRendererActions.executeAlignH());
-            } else if (alignmentButtonAlignV) {
+            } else if (this.navbarButtonsState.buttonsState.alignVButton) {
                 if (this.selectedNodes.length >= 1) {
                     this.layoutDirective.align(this.nodeChildrenArray, this.selectedNodes, align.Vertical);
                     selectedNodes = true;
@@ -978,7 +972,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                     this.layoutDirective.align(this.nodeChildrenArray, this.allNodeTemplates, align.Vertical);
                 }
                 this.ngRedux.dispatch(this.topologyRendererActions.executeAlignV());
-            } else if (importTopologyButton) {
+            } else if (this.navbarButtonsState.buttonsState.importTopologyButton) {
                 if (!this.importTopologyData.allTopologyTemplates) {
                     this.importTopologyData.allTopologyTemplates = [];
                     this.backendService.requestAllTopologyTemplates().subscribe(allServiceTemplates => {
@@ -990,11 +984,12 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 }
                 this.ngRedux.dispatch(this.topologyRendererActions.importTopology());
                 this.importTopologyModal.show();
-            } else if (splitTopologyButton) {
+            } else if (this.navbarButtonsState.buttonsState.splitTopologyButton) {
                 this.splitMatchService.splitTopology(this.backendService, this.ngRedux, this.topologyRendererActions, this.errorHandler);
-            } else if (matchTopologyButton) {
+            } else if (this.navbarButtonsState.buttonsState.matchTopologyButton) {
                 this.splitMatchService.matchTopology(this.backendService, this.ngRedux, this.topologyRendererActions, this.errorHandler);
-            } else if (substitutionButton) {
+            } else if (this.navbarButtonsState.buttonsState.substituteTopologyButton) {
+                this.ngRedux.dispatch(this.topologyRendererActions.substituteTopology());
                 this.backendService.substituteTopology();
             }
 
