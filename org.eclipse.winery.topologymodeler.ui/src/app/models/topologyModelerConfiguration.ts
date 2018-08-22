@@ -11,8 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
+import { QName } from './qname';
 
 export class TopologyModelerConfiguration {
+
+    public readonly webSocketUrl: string;
+    public readonly definitionsElement: QName;
+
     constructor(public readonly id: string,
                 public readonly ns: string,
                 public readonly repositoryURL: string,
@@ -21,6 +26,9 @@ export class TopologyModelerConfiguration {
                 public readonly isReadonly?: boolean,
                 public readonly parentPath = 'servicetemplates',
                 public readonly elementPath = 'topologytemplate') {
-
+        this.webSocketUrl = repositoryURL.replace(/(^https?)/, 'ws');
+        this.definitionsElement = new QName();
+        this.definitionsElement.localName = id;
+        this.definitionsElement.nameSpace = ns;
     }
 }

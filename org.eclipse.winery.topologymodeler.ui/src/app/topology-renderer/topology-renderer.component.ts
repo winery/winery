@@ -60,7 +60,7 @@ export class TopologyRendererComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.loader = {loadedData: true, generatedReduxState: false};
+        this.loader = { loadedData: true, generatedReduxState: false };
         if (!isNullOrUndefined(this.differencesData)) {
             this.diffMode = true;
             this.topologyDiff = this.differencesData[0];

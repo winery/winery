@@ -12,21 +12,6 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
-.sidebar-root {
-    border: 1px solid #aaaaaa;
-    border-radius: 0.25rem;
-    /*color: #FFFFFF;*/
-    color: black;
-    top: 54px;
-    z-index: 999;
-    position: fixed;
-    box-shadow: 2px 2px 10px -2px rgba(42, 42, 42, 0.75);
-    /*background-color: #424242;*/
-    background-color: #efefef;
-    width: 300px;
-    max-width: 300px;
-}
-
 input {
     /*background-color: #303030 !important;
     color: #fafafa !important;  */

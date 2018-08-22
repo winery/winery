@@ -7,13 +7,13 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  */
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
 import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class ExistsService {
 
-    constructor(private http: Http) {
+    constructor(private http: HttpClient) {
     }
 
     check(url: string): Observable<any> {

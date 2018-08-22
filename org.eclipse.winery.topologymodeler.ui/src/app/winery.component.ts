@@ -27,6 +27,7 @@ import { EntityTypesModel, TopologyModelerInputDataFormat } from './models/entit
 import { ActivatedRoute } from '@angular/router';
 import { TopologyModelerConfiguration } from './models/topologyModelerConfiguration';
 import { ToastrService } from 'ngx-toastr';
+import { TopologyRendererState } from './redux/reducers/topologyRenderer.reducer';
 
 /**
  * This is the root component of the topology modeler.
@@ -56,6 +57,7 @@ export class WineryComponent implements OnInit {
     subscriptions: Array<Subscription> = [];
     // This variable is set via the topologyModelerData input and decides if the editing functionalities are enabled
     readonly: boolean;
+    refiningTopology: boolean;
 
     topologyDifferences: [ToscaDiff, TTopologyTemplate];
 
@@ -71,6 +73,8 @@ export class WineryComponent implements OnInit {
                 private activatedRoute: ActivatedRoute) {
         this.subscriptions.push(this.ngRedux.select(state => state.wineryState.hideNavBarAndPaletteState)
             .subscribe(hideNavBar => this.hideNavBarState = hideNavBar));
+        this.subscriptions.push(this.ngRedux.select(state => state.topologyRendererState)
+            .subscribe(currentButtonsState => this.setButtonsState(currentButtonsState)));
     }
 
     /**
@@ -337,6 +341,10 @@ export class WineryComponent implements OnInit {
             generatedReduxState: false
         };
         this.appReadyEvent.trigger();
+    }
+
+    private setButtonsState(currentButtonsState: TopologyRendererState) {
+        this.refiningTopology = currentButtonsState.buttonsState.refineTopologyButton;
     }
 }
 

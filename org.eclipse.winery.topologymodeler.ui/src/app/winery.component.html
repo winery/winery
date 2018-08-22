@@ -33,8 +33,11 @@
         </winery-palette-component>
     </div>
 
-    <winery-sidebar (sidebarDeleteButtonClicked)="sidebarDeleteButtonClicked($event)"
-                    style="width : 300px; float:right; z-index: 400"></winery-sidebar>
+    <winery-refinement *ngIf="refiningTopology" class="sidebar right">
+    </winery-refinement>
+
+    <winery-sidebar (sidebarDeleteButtonClicked)="sidebarDeleteButtonClicked($event)" class="sidebar right">
+    </winery-sidebar>
 </div>
 <!--
 <app-sidebar style="width : 300px; float:right"></app-sidebar>
