@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.substitution.pattern.refinement;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -61,5 +62,23 @@ public class PatternRefinementCandidate {
     @NonNull
     public int getId() {
         return id;
+    }
+
+    @NonNull
+    public List<List<String>> getNodeIdsToBeReplaced() {
+        ArrayList<List<String>> mappingsList = new ArrayList<>();
+        this.graphMapping.forEach(graphMapping -> {
+            ArrayList<String> ids = new ArrayList<>();
+
+            this.detectorGraph.vertexSet().forEach(toscaNode ->
+                ids.add(graphMapping.getVertexCorrespondence(toscaNode, false).getNodeTemplate().getId())
+            );
+
+            if (!ids.isEmpty()) {
+                mappingsList.add(ids);
+            }
+        });
+
+        return mappingsList;
     }
 }

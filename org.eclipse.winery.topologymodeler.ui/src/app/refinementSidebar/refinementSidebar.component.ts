@@ -90,4 +90,8 @@ export class RefinementSidebarComponent implements OnDestroy {
         this.refinementIsRunning = false;
         this.refinementIsLoading = false;
     }
+
+    onHoverOver(candidate: PatternRefinementModel) {
+        console.log(candidate)
+    }
 }

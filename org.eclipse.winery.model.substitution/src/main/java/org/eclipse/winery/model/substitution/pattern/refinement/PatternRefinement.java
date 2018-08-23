@@ -120,10 +120,10 @@ public class PatternRefinement extends AbstractSubstitution {
     }
 
     public void applyRefinement(PatternRefinementCandidate refinement, TTopologyTemplate topology) {
-        Map<String, String> idMapping = BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(refinement.getPatternRefinementModel().getRefinementStructure(), topology);
-
         refinement.getGraphMapping()
             .forEach(mapping -> {
+                    Map<String, String> idMapping = BackendUtils
+                        .mergeTopologyTemplateAinTopologyTemplateB(refinement.getPatternRefinementModel().getRefinementStructure(), topology);
                     refinement.getDetectorGraph().vertexSet()
                         .forEach(vertex -> {
                             TNodeTemplate matchingNode = mapping.getVertexCorrespondence(vertex, false).getNodeTemplate();
