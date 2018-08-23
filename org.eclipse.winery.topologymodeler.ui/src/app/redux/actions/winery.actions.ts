@@ -14,7 +14,7 @@
 
 import { Action, ActionCreator } from 'redux';
 import { Injectable } from '@angular/core';
-import { TNodeTemplate, TRelationshipTemplate } from '../../models/ttopology-template';
+import { TNodeTemplate, TRelationshipTemplate, Visuals } from '../../models/ttopology-template';
 import { TDeploymentArtifact } from '../../models/artifactsModalData';
 import { TPolicy } from '../../models/policiesModalData';
 
@@ -179,6 +179,10 @@ export interface SendCurrentNodeIdAction extends Action {
     currentNodeData: any;
 }
 
+export interface SetNodeVisuals extends Action {
+    visuals: Visuals[];
+}
+
 /**
  * Winery Actions
  */
@@ -212,6 +216,7 @@ export class WineryActions {
     static SET_TARGET_LOCATION = 'SET_TARGET_LOCATION';
     static DELETE_POLICY = 'DELETE_POLICY';
     static SEND_CURRENT_NODE_ID = 'SEND_CURRENT_NODE_ID';
+    static SET_NODE_VISUALS = 'SET_NODE_VISUALS';
 
     sendPaletteOpened: ActionCreator<SendPaletteOpenedAction> =
         ((paletteOpened) => ({
@@ -338,5 +343,10 @@ export class WineryActions {
         ((currentNodeData) => ({
             type: WineryActions.SEND_CURRENT_NODE_ID,
             currentNodeData: currentNodeData
+        }));
+    setNodeVisuals: ActionCreator<SetNodeVisuals> =
+        ((visuals: Visuals[]) => ({
+            type: WineryActions.SET_NODE_VISUALS,
+            visuals: visuals
         }));
 }

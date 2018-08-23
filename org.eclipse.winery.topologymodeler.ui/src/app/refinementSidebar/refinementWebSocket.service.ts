@@ -14,6 +14,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { BackendService } from '../services/backend.service';
+import { TTopologyTemplate } from '../models/ttopology-template';
 
 export enum RefinementTasks {
     START = 'START',
@@ -31,6 +32,7 @@ export interface RefinementElement {
             decoded: string
         };
     };
+    currentTopology: TTopologyTemplate;
 }
 
 export interface PatternRefinementModel {

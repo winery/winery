@@ -30,6 +30,7 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.substitution.pattern.refinement.PatternRefinement;
 import org.eclipse.winery.model.substitution.pattern.refinement.PatternRefinementCandidate;
 import org.eclipse.winery.model.substitution.pattern.refinement.PatternRefinementChooser;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.rest.resources.apiData.RefinementElementApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.RefinementWebSocketApiData;
 
@@ -105,11 +106,12 @@ public class PatternRefinementWebSocket implements PatternRefinementChooser {
     }
 
     @Override
-    public PatternRefinementCandidate choosePatternRefinement(List<PatternRefinementCandidate> candidates, ServiceTemplateId refinementServiceTemplate) {
+    public PatternRefinementCandidate choosePatternRefinement(List<PatternRefinementCandidate> candidates,
+                                                              ServiceTemplateId refinementServiceTemplate, TTopologyTemplate topology) {
         try {
             this.future = new CompletableFuture<>();
 
-            RefinementElementApiData element = new RefinementElementApiData(candidates, refinementServiceTemplate);
+            RefinementElementApiData element = new RefinementElementApiData(candidates, refinementServiceTemplate, topology);
             this.send(element);
 
             int id = future.get();

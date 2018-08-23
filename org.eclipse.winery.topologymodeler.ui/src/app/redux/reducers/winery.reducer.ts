@@ -16,11 +16,11 @@ import { Action } from 'redux';
 import {
     DecMaxInstances, DecMinInstances, DeleteDeploymentArtifactAction, DeleteNodeAction, DeletePolicyAction, DeleteRelationshipAction,
     HideNavBarAndPaletteAction, IncMaxInstances, IncMinInstances, SaveNodeTemplateAction, SaveRelationshipAction, SendCurrentNodeIdAction,
-    SendPaletteOpenedAction, SetCababilityAction, SetDeploymentArtifactAction, SetPolicyAction, SetPropertyAction, SetRequirementAction,
-    SetTargetLocation, SidebarMaxInstanceChanges, SidebarMinInstanceChanges, SidebarNodeNamechange, SidebarStateAction,
-    UpdateNodeCoordinatesAction, UpdateRelationshipNameAction, WineryActions
+    SendPaletteOpenedAction, SetCababilityAction, SetDeploymentArtifactAction, SetNodeVisuals, SetPolicyAction, SetPropertyAction, SetRequirementAction,
+    SetTargetLocation, SidebarMaxInstanceChanges, SidebarMinInstanceChanges, SidebarNodeNamechange, SidebarStateAction, UpdateNodeCoordinatesAction,
+    UpdateRelationshipNameAction, WineryActions
 } from '../actions/winery.actions';
-import { TNodeTemplate, TRelationshipTemplate, TTopologyTemplate } from '../../models/ttopology-template';
+import { TNodeTemplate, TRelationshipTemplate, TTopologyTemplate, Visuals } from '../../models/ttopology-template';
 import { TDeploymentArtifact } from '../../models/artifactsModalData';
 
 export interface WineryState {
@@ -29,6 +29,7 @@ export interface WineryState {
     sidebarContents: any;
     currentJsonTopology: TTopologyTemplate;
     currentNodeData: any;
+    nodeVisuals: Visuals[];
 }
 
 export const INITIAL_WINERY_STATE: WineryState = {
@@ -47,7 +48,8 @@ export const INITIAL_WINERY_STATE: WineryState = {
     currentNodeData: {
         id: '',
         focus: false
-    }
+    },
+    nodeVisuals: null
 };
 
 /**
@@ -449,6 +451,13 @@ export const WineryReducer =
                 return <WineryState>{
                     ...lastState,
                     currentNodeData: currentNodeData
+                };
+            case WineryActions.SET_NODE_VISUALS:
+                const visuals: Visuals[] = (<SetNodeVisuals> action).visuals;
+
+                return {
+                    ...lastState,
+                    nodeVisuals: visuals
                 };
 
             default:

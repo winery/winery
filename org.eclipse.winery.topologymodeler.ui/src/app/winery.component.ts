@@ -245,7 +245,7 @@ export class WineryComponent implements OnInit {
 
     initTopologyTemplate(nodeTemplateArray: Array<TNodeTemplate>, relationshipTemplateArray: Array<TRelationshipTemplate>) {
         // init node templates
-        this.nodeTemplates = Utils.initNodeTemplates(nodeTemplateArray, this.topologyDifferences, this.entityTypes.nodeVisuals);
+        this.nodeTemplates = Utils.initNodeTemplates(nodeTemplateArray, this.entityTypes.nodeVisuals, this.topologyDifferences);
         // init relationship templates
         this.relationshipTemplates = Utils.initRelationTemplates(relationshipTemplateArray, this.topologyDifferences);
     }

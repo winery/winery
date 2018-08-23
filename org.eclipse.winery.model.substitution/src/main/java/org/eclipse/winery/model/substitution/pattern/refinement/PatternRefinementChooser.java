@@ -17,7 +17,10 @@ package org.eclipse.winery.model.substitution.pattern.refinement;
 import java.util.List;
 
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
 public interface PatternRefinementChooser {
-    PatternRefinementCandidate choosePatternRefinement(List<PatternRefinementCandidate> candidates, ServiceTemplateId refinementServiceTemplate);
+    PatternRefinementCandidate choosePatternRefinement(List<PatternRefinementCandidate> candidates,
+                                                       ServiceTemplateId refinementServiceTemplate,
+                                                       TTopologyTemplate currentTopology);
 }

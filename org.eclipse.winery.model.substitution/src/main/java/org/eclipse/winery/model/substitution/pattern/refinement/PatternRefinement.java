@@ -109,7 +109,7 @@ public class PatternRefinement extends AbstractSubstitution {
                 break;
             }
 
-            PatternRefinementCandidate refinement = this.refinementChooser.choosePatternRefinement(candidates, this.refinementServiceTemplateId);
+            PatternRefinementCandidate refinement = this.refinementChooser.choosePatternRefinement(candidates, this.refinementServiceTemplateId, topology);
 
             if (Objects.isNull(refinement)) {
                 break;

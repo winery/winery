@@ -103,8 +103,8 @@ export class Utils {
         }
     }
 
-    static initNodeTemplates(nodeTemplateArray: Array<TNodeTemplate>, topologyDifferences: [ToscaDiff, TTopologyTemplate],
-                             nodeVisuals: Visuals[]): Array<TNodeTemplate> {
+    static initNodeTemplates(nodeTemplateArray: Array<TNodeTemplate>, nodeVisuals: Visuals[],
+                             topologyDifferences?: [ToscaDiff, TTopologyTemplate]): Array<TNodeTemplate> {
         const nodeTemplates: TNodeTemplate[] = [];
         if (nodeTemplateArray.length > 0) {
             nodeTemplateArray.forEach(node => {
@@ -119,7 +119,7 @@ export class Utils {
     }
 
     static initRelationTemplates(relationshipTemplateArray: Array<TRelationshipTemplate>,
-                                 topologyDifferences: [ToscaDiff, TTopologyTemplate]): Array<TRelationshipTemplate> {
+                                 topologyDifferences?: [ToscaDiff, TTopologyTemplate]): Array<TRelationshipTemplate> {
         const relationshipTemplates: TRelationshipTemplate[] = [];
         if (relationshipTemplateArray.length > 0) {
             relationshipTemplateArray.forEach(relationship => {

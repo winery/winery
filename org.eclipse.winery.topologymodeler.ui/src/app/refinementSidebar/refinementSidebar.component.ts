@@ -17,6 +17,8 @@ import { BackendService } from '../services/backend.service';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
+import { Utils } from '../models/utils';
+import { WineryActions } from '../redux/actions/winery.actions';
 
 @Component({
     selector: 'winery-refinement',
@@ -36,7 +38,8 @@ export class RefinementSidebarComponent implements OnDestroy {
     prmCandidates: PatternRefinementModel[];
 
     constructor(private ngRedux: NgRedux<IWineryState>,
-                private actions: TopologyRendererActions,
+                private rendererActions: TopologyRendererActions,
+                private wineryActions: WineryActions,
                 private webSocketService: RefinementWebSocketService,
                 private backendService: BackendService) {
     }
@@ -53,13 +56,13 @@ export class RefinementSidebarComponent implements OnDestroy {
             );
     }
 
-    openModelerFor(patternRefinementModel: { name: string; targetNamespace: string }, element: string, type = 'patternrefinementmodels') {
+    openModelerFor(patternRefinementModel: { name: string; targetNamespace: string }) {
         const editorConfig = '?repositoryURL=' + encodeURIComponent(this.backendService.configuration.repositoryURL)
             + '&uiURL=' + encodeURIComponent(this.backendService.configuration.uiURL)
             + '&ns=' + encodeURIComponent(patternRefinementModel.targetNamespace)
             + '&id=' + patternRefinementModel.name
-            + '&parentPath=' + type
-            + '&elementPath=' + element
+            + '&parentPath=patternrefinementmodels'
+            + '&elementPath=refinementstructure'
             + '&isReadonly=true';
         window.open(editorConfig, '_blank');
     }
@@ -100,6 +103,6 @@ export class RefinementSidebarComponent implements OnDestroy {
         candidate.nodeIdsToBeReplaced
             .forEach(value => idList.push(...value));
 
-        this.ngRedux.dispatch(this.actions.highlightNodes(idList));
+        this.ngRedux.dispatch(this.rendererActions.highlightNodes(idList));
     }
 }
