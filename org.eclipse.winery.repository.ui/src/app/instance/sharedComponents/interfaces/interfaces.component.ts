@@ -271,7 +271,7 @@ export class InterfacesComponent implements OnInit {
     }
 
     containsDefaultLifecycle(): boolean {
-        if (!this.sharedData.currentVersion.editable || this.sharedData.toscaComponent.toscaType === ToscaTypes.NodeType) {
+        if (this.sharedData.currentVersion.editable) {
             if (isNullOrUndefined(this.interfacesData)) {
                 return false;
             }
