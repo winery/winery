@@ -13,29 +13,33 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <div id="RefinementView" class="sidebar-root">
-    <div *ngIf="!refinementIsRunning; else showIsRunning">
-        <div *ngIf="refinementIsDone; else showStart">
-            <h5>Refinement successful!</h5>
+    <div class="refinementContainer">
+        <div class="informationContainer" *ngIf="!refinementIsRunning; else showIsRunning">
+            <div *ngIf="refinementIsDone; else showStart">
+                <h5>Refinement successful!</h5>
+            </div>
+            <ng-template #showStart>
+                <button class="btn btn-primary" (click)="startRefinement()">Start Refinement</button>
+            </ng-template>
         </div>
-        <ng-template #showStart>
-            <button class="btn btn-primary" (click)="startRefinement()">Start Refinement</button>
+        <ng-template #showIsRunning>
+            <div class="loader" *ngIf="refinementIsLoading; else showContent"></div>
+            <ng-template #showContent>
+                <ul>
+                    <li *ngFor="let candidate of prmCandidates">
+                        {{ candidate.patternRefinementModel.name }}
+                        <br>
+                        <div class="btn-group">
+                            <button class="btn btn-sm btn-info"
+                                    (click)="openModelerFor(candidate.patternRefinementModel, 'refinementstructure')">
+                                Show Refinement Structure
+                            </button>
+                            <br>
+                            <button class="btn btn-sm btn-primary" (click)="prmChosen(candidate)">Choose</button>
+                        </div>
+                    </li>
+                </ul>
+            </ng-template>
         </ng-template>
-    </div>
-    <ng-template #showIsRunning>
-        <div class="loader" *ngIf="refinementIsLoading; else showContent"></div>
-        <ng-template #showContent>
-            <ul>
-                <li *ngFor="let candidate of prmCandidates">
-                    {{ candidate.patternRefinementModel.name }}
-                    <br>
-                    <div class="btn-group">
-                        <button class="btn btn-sm btn-info" (click)="openModelerFor(candidate.patternRefinementModel, 'refinementstructure')">
-                            Show Refinement Structure
-                        </button><br>
-                        <button class="btn btn-sm btn-primary" (click)="prmChosen(candidate)">Choose</button>
-                    </div>
-                </li>
-            </ul>
-        </ng-template>
-    </ng-template>
-</div>
+        <div>
+        </div>

@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { PatternRefinementModel, RefinementElement, RefinementWebSocketService } from './refinementWebSocket.service';
 import { BackendService } from '../services/backend.service';
 
@@ -20,9 +20,12 @@ import { BackendService } from '../services/backend.service';
     templateUrl: 'refinementSidebar.component.html',
     providers: [
         RefinementWebSocketService
+    ],
+    styleUrls: [
+        'refinementSidebar.component.css'
     ]
 })
-export class RefinementSidebarComponent {
+export class RefinementSidebarComponent implements OnDestroy {
 
     refinementIsRunning: boolean;
     refinementIsLoading: boolean;
@@ -45,7 +48,23 @@ export class RefinementSidebarComponent {
             );
     }
 
-    onAbortRefinement() {
+    openModelerFor(patternRefinementModel: { name: string; targetNamespace: string }, element: string, type = 'patternrefinementmodels') {
+        const editorConfig = '?repositoryURL=' + encodeURIComponent(this.backendService.configuration.repositoryURL)
+            + '&uiURL=' + encodeURIComponent(this.backendService.configuration.uiURL)
+            + '&ns=' + encodeURIComponent(patternRefinementModel.targetNamespace)
+            + '&id=' + patternRefinementModel.name
+            + '&parentPath=' + type
+            + '&elementPath=' + element
+            + '&isReadonly=true';
+        window.open(editorConfig, '_blank');
+    }
+
+    prmChosen(option: PatternRefinementModel) {
+        this.webSocketService.refineWith(option);
+        this.refinementIsLoading = true;
+    }
+
+    ngOnDestroy(): void {
         this.webSocketService.cancel();
     }
 
@@ -70,21 +89,5 @@ export class RefinementSidebarComponent {
         this.refinementIsDone = true;
         this.refinementIsRunning = false;
         this.refinementIsLoading = false;
-    }
-
-    openModelerFor(patternRefinementModel: { name: string; targetNamespace: string }, element: string, type = 'patternrefinementmodels') {
-        const editorConfig = '?repositoryURL=' + encodeURIComponent(this.backendService.configuration.repositoryURL)
-            + '&uiURL=' + encodeURIComponent(this.backendService.configuration.uiURL)
-            + '&ns=' + encodeURIComponent(patternRefinementModel.targetNamespace)
-            + '&id=' + patternRefinementModel.name
-            + '&parentPath=' + type
-            + '&elementPath=' + element
-            + '&isReadonly=true';
-        window.open(editorConfig, '_blank');
-    }
-
-    prmChosen(option: PatternRefinementModel) {
-        this.webSocketService.refineWith(option);
-        this.refinementIsLoading = true;
     }
 }

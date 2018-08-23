@@ -12,6 +12,19 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
+.refinementContainer {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.informationContainer {
+    margin-left: 10px;
+}
+
+ul {
+    margin-left: -7px;
+}
+
 .loader {
     border: 5px solid #f3f3f3; /* Light grey */
     border-top: 5px solid #3498db; /* Blue */
