@@ -100,14 +100,14 @@ export class WineryComponent implements OnInit {
                     this.activatedRoute.queryParams.subscribe((params: TopologyModelerConfiguration) => {
                         this.backendService.endpointConfiguration.next(params);
                     });
-                    this.initiateBackendCalls();
+                    this.initiateData();
                 }
             }
         } else {
             this.activatedRoute.queryParams.subscribe((params: TopologyModelerConfiguration) => {
                 this.backendService.endpointConfiguration.next(params);
             });
-            this.initiateBackendCalls();
+            this.initiateData();
         }
     }
 
@@ -245,26 +245,12 @@ export class WineryComponent implements OnInit {
 
     initTopologyTemplate(nodeTemplateArray: Array<TNodeTemplate>, relationshipTemplateArray: Array<TRelationshipTemplate>) {
         // init node templates
-        if (nodeTemplateArray.length > 0) {
-            nodeTemplateArray.forEach(node => {
-                const state = isNullOrUndefined(this.topologyDifferences) ? null : DifferenceStates.UNCHANGED;
-                if (!this.nodeTemplates.find(nodeTemplate => nodeTemplate.id === node.id)) {
-                    this.nodeTemplates.push(Utils.createTNodeTemplateFromObject(node, this.entityTypes.nodeVisuals, state));
-                }
-            });
-        }
+        this.nodeTemplates = Utils.initNodeTemplates(nodeTemplateArray, this.topologyDifferences, this.entityTypes.nodeVisuals);
         // init relationship templates
-        if (relationshipTemplateArray.length > 0) {
-            relationshipTemplateArray.forEach(relationship => {
-                const state = isNullOrUndefined(this.topologyDifferences) ? null : DifferenceStates.UNCHANGED;
-                this.relationshipTemplates.push(
-                    Utils.createTRelationshipTemplateFromObject(relationship, state)
-                );
-            });
-        }
+        this.relationshipTemplates = Utils.initRelationTemplates(relationshipTemplateArray, this.topologyDifferences);
     }
 
-    initiateBackendCalls(): void {
+    initiateData(): void {
         this.backendService.allEntities$.subscribe(JSON => {
             // Grouped NodeTypes
             this.initEntityType(JSON[0], 'groupedNodeTypes');

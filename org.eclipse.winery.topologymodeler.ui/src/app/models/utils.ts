@@ -11,10 +11,10 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-import { TNodeTemplate, TRelationshipTemplate, Visuals } from './ttopology-template';
+import { TNodeTemplate, TRelationshipTemplate, TTopologyTemplate, Visuals } from './ttopology-template';
 import { QName } from './qname';
 import { isNullOrUndefined } from 'util';
-import { DifferenceStates, VersionUtils } from './ToscaDiff';
+import { DifferenceStates, ToscaDiff, VersionUtils } from './ToscaDiff';
 
 export class Utils {
 
@@ -101,5 +101,35 @@ export class Utils {
                 };
             }
         }
+    }
+
+    static initNodeTemplates(nodeTemplateArray: Array<TNodeTemplate>, topologyDifferences: [ToscaDiff, TTopologyTemplate],
+                             nodeVisuals: Visuals[]): Array<TNodeTemplate> {
+        const nodeTemplates: TNodeTemplate[] = [];
+        if (nodeTemplateArray.length > 0) {
+            nodeTemplateArray.forEach(node => {
+                const state = topologyDifferences ? DifferenceStates.UNCHANGED : null;
+                nodeTemplates.push(
+                    Utils.createTNodeTemplateFromObject(node, nodeVisuals, state)
+                );
+            });
+        }
+
+        return nodeTemplates;
+    }
+
+    static initRelationTemplates(relationshipTemplateArray: Array<TRelationshipTemplate>,
+                                 topologyDifferences: [ToscaDiff, TTopologyTemplate]): Array<TRelationshipTemplate> {
+        const relationshipTemplates: TRelationshipTemplate[] = [];
+        if (relationshipTemplateArray.length > 0) {
+            relationshipTemplateArray.forEach(relationship => {
+                const state = topologyDifferences ? DifferenceStates.UNCHANGED : null;
+                relationshipTemplates.push(
+                    Utils.createTRelationshipTemplateFromObject(relationship, state)
+                );
+            });
+        }
+
+        return relationshipTemplates;
     }
 }
