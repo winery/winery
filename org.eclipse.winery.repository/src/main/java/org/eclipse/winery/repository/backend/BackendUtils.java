@@ -159,8 +159,8 @@ import org.apache.xerces.xs.XSTerm;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.slf4j.ext.XLogger;
-import org.slf4j.ext.XLoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.ls.LSInput;
@@ -182,7 +182,7 @@ public class BackendUtils {
      */
     public static final ObjectMapper mapper = getObjectMapper();
 
-    private static final XLogger LOGGER = XLoggerFactory.getXLogger(BackendUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BackendUtils.class);
 
     private static final MediaType MEDIATYPE_APPLICATION_OCTET_STREAM = MediaType.parse("application/octet-stream");
 

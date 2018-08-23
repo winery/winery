@@ -104,8 +104,8 @@ import com.sun.jersey.core.header.ContentDisposition;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.slf4j.ext.XLogger;
-import org.slf4j.ext.XLoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Contains utility functionality concerning with everything that is <em>not</em> related only to the repository, but
@@ -114,7 +114,7 @@ import org.slf4j.ext.XLoggerFactory;
  */
 public class RestUtils {
 
-    private static final XLogger LOGGER = XLoggerFactory.getXLogger(RestUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestUtils.class);
 
     // RegExp inspired by http://stackoverflow.com/a/5396246/873282
     // NameStartChar without ":"
