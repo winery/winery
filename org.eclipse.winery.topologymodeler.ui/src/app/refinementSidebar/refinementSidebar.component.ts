@@ -87,7 +87,6 @@ export class RefinementSidebarComponent implements OnDestroy {
 
     private handleError(error: any) {
         this.refinementIsLoading = false;
-        console.log(error);
     }
 
     private handleWebSocketComplete() {
@@ -101,7 +100,6 @@ export class RefinementSidebarComponent implements OnDestroy {
         candidate.nodeIdsToBeReplaced
             .forEach(value => idList.push(...value));
 
-        // this.ngRedux.dispatch(this.actions.highlightNodes());
-        console.log(candidate, idList);
+        this.ngRedux.dispatch(this.actions.highlightNodes(idList));
     }
 }
