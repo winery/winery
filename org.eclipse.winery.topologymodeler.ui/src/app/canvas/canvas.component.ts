@@ -21,7 +21,6 @@ import { LayoutDirective } from '../layout/layout.directive';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
-import { ButtonsStateModel } from '../models/buttonsState.model';
 import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
 import { NodeComponent } from '../node/node.component';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
@@ -50,6 +49,7 @@ import { SplitMatchTopologyService } from '../services/split-match-topology.serv
 import { DifferenceStates, VersionUtils } from '../models/ToscaDiff';
 import { ErrorHandlerService } from '../services/error-handler.service';
 import { DragSource } from '../models/DragSource';
+import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reducer';
 
 @Component({
     selector: 'winery-canvas',
@@ -79,7 +79,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
     allNodeTemplates: Array<TNodeTemplate> = [];
     allRelationshipTemplates: Array<TRelationshipTemplate> = [];
-    navbarButtonsState: ButtonsStateModel;
+    topologyRendererState: TopologyRendererState;
     selectedNodes: Array<TNodeTemplate> = [];
     // current data emitted from a node
     currentModalData: any;
@@ -163,7 +163,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         this.subscriptions.push(this.ngRedux.select(state => state.wineryState.currentJsonTopology.relationshipTemplates)
             .subscribe(currentRelationships => this.updateRelationships(currentRelationships)));
         this.subscriptions.push(this.ngRedux.select(state => state.topologyRendererState)
-            .subscribe(currentButtonsState => this.setButtonsState(currentButtonsState)));
+            .subscribe(currentButtonsState => this.setRendererState(currentButtonsState)));
         this.subscriptions.push(this.ngRedux.select(state => state.wineryState.currentNodeData)
             .subscribe(currentNodeData => this.toggleMarkNode(currentNodeData)));
         this.gridTemplate = new GridTemplate(100, false, false, 30);
@@ -943,19 +943,19 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
     /**
      * Handler for the layout buttons.
-     * @param currentButtonsState  Representation of all possible buttons.
+     * @param rendererState  Representation of all possible buttons.
      */
-    setButtonsState(currentButtonsState: ButtonsStateModel): void {
-        if (currentButtonsState) {
-            this.navbarButtonsState = currentButtonsState;
+    setRendererState(rendererState: TopologyRendererState): void {
+        if (rendererState) {
+            this.topologyRendererState = rendererState;
             this.revalidateContainer();
             let selectedNodes;
 
-            if (this.navbarButtonsState.buttonsState.layoutButton) {
+            if (this.topologyRendererState.buttonsState.layoutButton) {
                 this.layoutDirective.layoutNodes(this.nodeChildrenArray, this.allRelationshipTemplates);
                 this.ngRedux.dispatch(this.topologyRendererActions.executeLayout());
                 selectedNodes = false;
-            } else if (this.navbarButtonsState.buttonsState.alignHButton) {
+            } else if (this.topologyRendererState.buttonsState.alignHButton) {
                 if (this.selectedNodes.length >= 1) {
                     this.layoutDirective.align(this.nodeChildrenArray, this.selectedNodes, align.Horizontal);
                     selectedNodes = true;
@@ -964,7 +964,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                     selectedNodes = false;
                 }
                 this.ngRedux.dispatch(this.topologyRendererActions.executeAlignH());
-            } else if (this.navbarButtonsState.buttonsState.alignVButton) {
+            } else if (this.topologyRendererState.buttonsState.alignVButton) {
                 if (this.selectedNodes.length >= 1) {
                     this.layoutDirective.align(this.nodeChildrenArray, this.selectedNodes, align.Vertical);
                     selectedNodes = true;
@@ -972,7 +972,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                     this.layoutDirective.align(this.nodeChildrenArray, this.allNodeTemplates, align.Vertical);
                 }
                 this.ngRedux.dispatch(this.topologyRendererActions.executeAlignV());
-            } else if (this.navbarButtonsState.buttonsState.importTopologyButton) {
+            } else if (this.topologyRendererState.buttonsState.importTopologyButton) {
                 if (!this.importTopologyData.allTopologyTemplates) {
                     this.importTopologyData.allTopologyTemplates = [];
                     this.backendService.requestAllTopologyTemplates().subscribe(allServiceTemplates => {
@@ -984,13 +984,15 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 }
                 this.ngRedux.dispatch(this.topologyRendererActions.importTopology());
                 this.importTopologyModal.show();
-            } else if (this.navbarButtonsState.buttonsState.splitTopologyButton) {
+            } else if (this.topologyRendererState.buttonsState.splitTopologyButton) {
                 this.splitMatchService.splitTopology(this.backendService, this.ngRedux, this.topologyRendererActions, this.errorHandler);
-            } else if (this.navbarButtonsState.buttonsState.matchTopologyButton) {
+            } else if (this.topologyRendererState.buttonsState.matchTopologyButton) {
                 this.splitMatchService.matchTopology(this.backendService, this.ngRedux, this.topologyRendererActions, this.errorHandler);
-            } else if (this.navbarButtonsState.buttonsState.substituteTopologyButton) {
+            } else if (this.topologyRendererState.buttonsState.substituteTopologyButton) {
                 this.ngRedux.dispatch(this.topologyRendererActions.substituteTopology());
                 this.backendService.substituteTopology();
+            } else if (this.topologyRendererState.nodesToSelect) {
+                console.log(this.topologyRendererState.nodesToSelect);
             }
 
             setTimeout(() => {

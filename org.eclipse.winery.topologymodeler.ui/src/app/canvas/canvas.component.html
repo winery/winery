@@ -37,7 +37,7 @@
                      [nodeTemplate]="nodeTemplate"
                      [entityTypes]="this.entityTypes"
                      (sendId)="activateNewNode($event)"
-                     [navbarButtonsState]="navbarButtonsState"
+                     [navbarButtonsState]="topologyRendererState"
                      (askForRepaint)="revalidateContainer()"
                      (askForRemoval)="removeElement($event)"
                      (setDragSource)="setDragSource($event)"

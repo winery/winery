@@ -34,11 +34,12 @@ export interface RefinementElement {
 }
 
 export interface PatternRefinementModel {
+    id: number;
+    nodeIdsToBeReplaced: Array<string[]>;
     patternRefinementModel: {
         name: string;
         targetNamespace: string;
     };
-    id: number;
 }
 
 export interface RefinementWebSocketData {
@@ -88,11 +89,12 @@ export class RefinementWebSocketService {
     }
 
     private onClose(event: CloseEvent) {
-        this.socket.close();
         this.listener.complete();
     }
 
     cancel() {
-        this.socket.send(JSON.stringify({ task: RefinementTasks.STOP }));
+        if (this.socket && this.socket.readyState !== this.socket.CLOSING && this.socket.readyState !== this.socket.CLOSED) {
+            this.socket.send(JSON.stringify({ task: RefinementTasks.STOP }));
+        }
     }
 }

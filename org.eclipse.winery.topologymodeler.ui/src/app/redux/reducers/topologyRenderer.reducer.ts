@@ -13,7 +13,7 @@
  ********************************************************************************/
 
 import { Action } from 'redux';
-import { TopologyRendererActions } from '../actions/topologyRenderer.actions';
+import { HighlightNodesAction, TopologyRendererActions } from '../actions/topologyRenderer.actions';
 
 export interface TopologyRendererState {
     buttonsState: {
@@ -33,6 +33,7 @@ export interface TopologyRendererState {
         substituteTopologyButton?: boolean;
         refineTopologyButton?: boolean;
     };
+    nodesToSelect?: string[];
 }
 
 export const INITIAL_TOPOLOGY_RENDERER_STATE: TopologyRendererState = {
@@ -182,6 +183,17 @@ export const TopologyRendererReducer =
                         refineTopologyButton: !lastState.buttonsState.refineTopologyButton
                     }
                 };
+            case TopologyRendererActions.HIGHLIGHT_NODES:
+                const data = <HighlightNodesAction> action;
+                if (data.nodesToHighlight) {
+                    return {
+                        ...lastState,
+                        nodesToSelect: data.nodesToHighlight
+                    };
+                } else {
+                    delete lastState.nodesToSelect;
+                }
+                break;
         }
         return lastState;
     };
