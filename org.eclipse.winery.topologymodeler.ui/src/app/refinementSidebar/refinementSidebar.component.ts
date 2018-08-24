@@ -44,7 +44,8 @@ export class RefinementSidebarComponent implements OnDestroy {
                 private backendService: BackendService) {
     }
 
-    startRefinement() {
+    startRefinement(event: MouseEvent) {
+        event.stopPropagation();
         this.refinementIsDone = false;
         this.refinementIsRunning = true;
         this.refinementIsLoading = true;
@@ -56,24 +57,27 @@ export class RefinementSidebarComponent implements OnDestroy {
             );
     }
 
-    openModelerFor(patternRefinementModel: { name: string; targetNamespace: string }) {
-        const editorConfig = '?repositoryURL=' + encodeURIComponent(this.backendService.configuration.repositoryURL)
-            + '&uiURL=' + encodeURIComponent(this.backendService.configuration.uiURL)
-            + '&ns=' + encodeURIComponent(patternRefinementModel.targetNamespace)
-            + '&id=' + patternRefinementModel.name
-            + '&parentPath=patternrefinementmodels'
-            + '&elementPath=refinementstructure'
-            + '&isReadonly=true';
-        window.open(editorConfig, '_blank');
-    }
-
-    prmChosen(option: PatternRefinementModel) {
-        this.webSocketService.refineWith(option);
+    prmChosen(event: MouseEvent, candidate: PatternRefinementModel) {
+        event.stopPropagation();
+        this.webSocketService.refineWith(candidate);
         this.refinementIsLoading = true;
     }
 
     ngOnDestroy(): void {
         this.webSocketService.cancel();
+    }
+
+    onHoverOver(candidate: PatternRefinementModel) {
+        const idList: string[] = [];
+        candidate.nodeIdsToBeReplaced
+            .forEach(value => idList.push(...value));
+
+        this.ngRedux.dispatch(this.rendererActions.highlightNodes(idList));
+    }
+
+    openModeler(event: MouseEvent, name: string, targetNamespace: string) {
+        event.stopPropagation();
+        this.openModelerFor(name, targetNamespace);
     }
 
     private handleWebSocketData(value: RefinementElement) {
@@ -107,7 +111,16 @@ export class RefinementSidebarComponent implements OnDestroy {
                         relationship => this.ngRedux.dispatch(this.wineryActions.saveRelationship(relationship))
                     );
 
-                setTimeout( () => this.ngRedux.dispatch(this.rendererActions.executeLayout()), 300);
+                setTimeout(() => {
+                    this.ngRedux.dispatch(this.rendererActions.executeLayout());
+                }, 300);
+            } else {
+                this.openModelerFor(value.serviceTemplateContainingRefinements.xmlId.decoded,
+                    value.serviceTemplateContainingRefinements.namespace.decoded,
+                    this.backendService.configuration.parentPath,
+                    this.backendService.configuration.elementPath,
+                    false
+                );
             }
         }
     }
@@ -122,11 +135,16 @@ export class RefinementSidebarComponent implements OnDestroy {
         this.refinementIsLoading = false;
     }
 
-    onHoverOver(candidate: PatternRefinementModel) {
-        const idList: string[] = [];
-        candidate.nodeIdsToBeReplaced
-            .forEach(value => idList.push(...value));
-
-        this.ngRedux.dispatch(this.rendererActions.highlightNodes(idList));
+    private openModelerFor(id: string, ns: string, type = 'patternrefinementmodels', elment = 'refinementstructure', readonly = true) {
+        let editorConfig = '?repositoryURL=' + encodeURIComponent(this.backendService.configuration.repositoryURL)
+            + '&uiURL=' + encodeURIComponent(this.backendService.configuration.uiURL)
+            + '&ns=' + encodeURIComponent(ns)
+            + '&id=' + id
+            + '&parentPath=' + type
+            + '&elementPath=' + elment;
+        if (readonly) {
+            editorConfig += '&isReadonly=true';
+        }
+        window.open(editorConfig, '_blank');
     }
 }

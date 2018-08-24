@@ -262,8 +262,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * @param currentPaletteOpened
      */
     setPaletteState(currentPaletteOpened: boolean): void {
-        if (currentPaletteOpened) {
-            this.paletteOpened = currentPaletteOpened;
+        this.paletteOpened = currentPaletteOpened;
+        if (this.paletteOpened) {
             this.gridTemplate.marginLeft = 300;
         } else {
             this.gridTemplate.marginLeft = 30;
@@ -880,7 +880,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * @param $event  The html event.
      */
     positionNewNode(): void {
-        setTimeout(() => this.updateSelectedNodes(), 1);
+        this.updateSelectedNodes();
         this.unbindAll();
         this.revalidateContainer();
     }
@@ -1953,13 +1953,11 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      */
     private bindNewNode(): void {
         if (this.newNode) {
-            setTimeout(() => this.handleNodePressActions(this.newNode.id), 1);
-            this.zone.run(() => {
-                this.unbindMouseActions.push(this.renderer.listen(this.eref.nativeElement, 'mousemove',
-                    (event) => this.moveNewNode(event)));
-                this.unbindMouseActions.push(this.renderer.listen(this.eref.nativeElement, 'mouseup',
-                    ($event) => this.positionNewNode()));
-            });
+            this.handleNodePressActions(this.newNode.id);
+            this.unbindMouseActions.push(this.renderer.listen(this.eref.nativeElement, 'mousemove',
+                (event) => this.moveNewNode(event)));
+            this.unbindMouseActions.push(this.renderer.listen(this.eref.nativeElement, 'mouseup',
+                ($event) => this.positionNewNode()));
         }
     }
 

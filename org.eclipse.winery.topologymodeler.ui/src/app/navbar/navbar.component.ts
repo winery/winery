@@ -22,6 +22,7 @@ import { BackendService } from '../services/backend.service';
 import { Subscription } from 'rxjs';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reducer';
+import { WineryActions } from '../redux/actions/winery.actions';
 
 /**
  * The navbar of the topologymodeler.
@@ -60,6 +61,7 @@ export class NavbarComponent implements OnDestroy {
     constructor(private alert: ToastrService,
                 private ngRedux: NgRedux<IWineryState>,
                 private actions: TopologyRendererActions,
+                private wineryActions: WineryActions,
                 private backendService: BackendService,
                 private hotkeysService: HotkeysService) {
         this.subscriptions.push(ngRedux.select(state => state.topologyRendererState)
@@ -185,6 +187,7 @@ export class NavbarComponent implements OnDestroy {
                 break;
             case 'refineTopology':
                 this.readonly = true;
+                this.ngRedux.dispatch(this.wineryActions.sendPaletteOpened(false));
                 this.ngRedux.dispatch(this.actions.refineTopology());
                 break;
         }

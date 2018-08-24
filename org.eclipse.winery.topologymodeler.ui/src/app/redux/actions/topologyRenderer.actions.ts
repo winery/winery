@@ -98,7 +98,7 @@ export class TopologyRendererActions {
         return { type: TopologyRendererActions.SUBSTITUTE_TOPOLOGY };
     }
 
-    refineTopology() {
+    refineTopology(): Action {
         return { type: TopologyRendererActions.REFINE_TOPOLOGY };
     }
 
