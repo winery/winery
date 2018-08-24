@@ -59,8 +59,6 @@ public class InterfacesResource {
                     return Response.status(Response.Status.BAD_REQUEST).entity("No operation provided!").build();
                 }
             }
-        } else {
-            return Response.status(Response.Status.BAD_REQUEST).entity("No interface provided!").build();
         }
 
         if (this.res instanceof RelationshipTypeResource) {

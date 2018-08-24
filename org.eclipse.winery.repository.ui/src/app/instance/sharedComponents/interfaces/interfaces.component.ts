@@ -29,8 +29,9 @@ import { ToscaTypes } from '../../../model/enums';
 import { Utils } from '../../../wineryUtils/utils';
 import { SelectableListComponent } from './selectableList/selectableList.component';
 import { WineryVersion } from '../../../model/wineryVersion';
-import { HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { LifecycleInterface } from './lifecycle';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'winery-instance-interfaces',
@@ -74,7 +75,8 @@ export class InterfacesComponent implements OnInit {
     artifactTemplate: GenerateData = new GenerateData();
 
     constructor(private service: InterfacesService, private notify: WineryNotificationService,
-                public sharedData: InstanceService, private existService: ExistService) {
+                public sharedData: InstanceService, private existService: ExistService,
+                private route: Router) {
     }
 
     ngOnInit() {
@@ -222,9 +224,6 @@ export class InterfacesComponent implements OnInit {
 
         this.generateArtifactApiData.autoCreateArtifactTemplate = 'yes';
         this.generateArtifactApiData.interfaceName = this.selectedInterface.name;
-
-        // enable auto generation of the implementation artifact
-        // currently works for node types only, not for relationship types
         this.generateArtifactApiData.autoGenerateIA = 'yes';
 
         this.implementation.name = this.sharedData.toscaComponent.localNameWithoutVersion
@@ -247,11 +246,11 @@ export class InterfacesComponent implements OnInit {
 
     generateImplementationArtifact(): void {
         this.generating = true;
-        this.generateArtifactApiData.artifactTemplate += WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + this.artifactTemplate.version.toString();
+        this.generateArtifactApiData.artifactTemplateName = this.artifactTemplate.name;
+        this.generateArtifactApiData.artifactTemplateNamespace = this.artifactTemplate.namespace;
         this.generateArtifactApiData.artifactName = this.generateArtifactApiData.artifactTemplateName;
-        if (this.toscaType !== ToscaTypes.NodeType) {
-            delete this.generateArtifactApiData.autoGenerateIA;
-        }
+        // Fix this prevent weired renaming by backend
+        this.generateArtifactApiData.artifactTemplate = null;
         // Save the current interfaces & operations first in order to prevent inconsistencies.
         this.save();
     }
@@ -260,7 +259,15 @@ export class InterfacesComponent implements OnInit {
 
     // region ########## Generate Lifecycle Interface ##########
     generateLifecycleInterface(): void {
-        const lifecycle = new InterfacesApiData(LifecycleInterface.INTERFACE);
+        const lifecycle = new InterfacesApiData();
+        lifecycle.name = LifecycleInterface.INTERFACE;
+        if (this.toscaType === ToscaTypes.RelationshipType) {
+            if (this.route.url.endsWith('sourceinterfaces')) {
+                lifecycle.name = LifecycleInterface.INTERFACE + '/source';
+            } else if (this.route.url.endsWith('targetinterfaces')) {
+                lifecycle.name = LifecycleInterface.INTERFACE + '/target';
+            }
+        }
         lifecycle.operation.push(new InterfaceOperationApiData(LifecycleInterface.INSTALL));
         lifecycle.operation.push(new InterfaceOperationApiData(LifecycleInterface.CONFIGURE));
         lifecycle.operation.push(new InterfaceOperationApiData(LifecycleInterface.START));
@@ -272,17 +279,14 @@ export class InterfacesComponent implements OnInit {
 
     containsDefaultLifecycle(): boolean {
         if (this.sharedData.currentVersion.editable) {
-            if (isNullOrUndefined(this.interfacesData)) {
+            if (this.interfacesData === null || this.interfacesData === undefined) {
                 return false;
             }
-
             const lifecycleId = this.interfacesData.findIndex((value) => {
-                return value.name.endsWith(LifecycleInterface.INTERFACE);
+                return value.name.startsWith(LifecycleInterface.INTERFACE);
             });
-
             return lifecycleId !== -1;
         }
-
         return true;
     }
 
@@ -367,10 +371,10 @@ export class InterfacesComponent implements OnInit {
         }
     }
 
-    private handleError(error: Error) {
+    private handleError(error: HttpErrorResponse) {
         this.loading = false;
         this.generating = false;
-        this.notify.error(error.toString());
+        this.notify.error(error.error);
     }
 
     private getPackageNameFromNamespace(): string {
