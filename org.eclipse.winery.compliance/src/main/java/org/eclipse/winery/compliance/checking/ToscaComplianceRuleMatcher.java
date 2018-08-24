@@ -19,9 +19,9 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.eclipse.winery.topologygraph.matching.IToscaMatcher;
-import org.eclipse.winery.topologygraph.matching.model.ToscaEdge;
-import org.eclipse.winery.topologygraph.matching.model.ToscaEntity;
-import org.eclipse.winery.topologygraph.matching.model.ToscaNode;
+import org.eclipse.winery.topologygraph.model.ToscaEdge;
+import org.eclipse.winery.topologygraph.model.ToscaEntity;
+import org.eclipse.winery.topologygraph.model.ToscaNode;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TPolicy;
 

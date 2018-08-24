@@ -13,12 +13,12 @@
  ********************************************************************************/
 package org.eclipse.winery.topologygraph.matching;
 
-import org.eclipse.winery.topologygraph.matching.model.ToscaEdge;
-import org.eclipse.winery.topologygraph.matching.model.ToscaNode;
+import org.eclipse.winery.topologygraph.model.ToscaEdge;
+import org.eclipse.winery.topologygraph.model.ToscaNode;
 
 public interface IToscaMatcher {
 
-	boolean isCompatible(ToscaNode left, ToscaNode right);
+    boolean isCompatible(ToscaNode left, ToscaNode right);
 
-	boolean isCompatible(ToscaEdge left, ToscaEdge right);
+    boolean isCompatible(ToscaEdge left, ToscaEdge right);
 }

@@ -78,6 +78,8 @@
         <org.apache.commons.configuration>2.3</org.apache.commons.configuration>
         <org.eclipse.jdt.annotation>2.1.0</org.eclipse.jdt.annotation>
         <org.mockito.moickito-core.version>2.19.0</org.mockito.moickito-core.version>
+        <de.danielbechler.java-object-diff>0.95</de.danielbechler.java-object-diff>
+        <org.jgrapht.jgrapht-core.version>1.0.1</org.jgrapht.jgrapht-core.version>
 
         <!-- grouped libraries -->
         <org.slf4j>1.7.25</org.slf4j>
