@@ -17,8 +17,8 @@ import { BackendService } from '../services/backend.service';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
-import { Utils } from '../models/utils';
 import { WineryActions } from '../redux/actions/winery.actions';
+import { Utils } from '../models/utils';
 
 @Component({
     selector: 'winery-refinement',
@@ -84,6 +84,30 @@ export class RefinementSidebarComponent implements OnDestroy {
             if (!this.prmCandidates) {
                 this.refinementIsDone = true;
                 this.refinementIsRunning = false;
+            }
+
+            if (value.currentTopology) {
+                const wineryState = this.ngRedux.getState().wineryState;
+
+                wineryState.currentJsonTopology.nodeTemplates
+                    .forEach(
+                        node => this.ngRedux.dispatch(this.wineryActions.deleteNodeTemplate(node.id))
+                    );
+                wineryState.currentJsonTopology.relationshipTemplates
+                    .forEach(
+                        relationship => this.ngRedux.dispatch(this.wineryActions.deleteRelationshipTemplate(relationship.id))
+                    );
+
+                Utils.initNodeTemplates(value.currentTopology.nodeTemplates, wineryState.nodeVisuals)
+                    .forEach(
+                        node => this.ngRedux.dispatch(this.wineryActions.saveNodeTemplate(node))
+                    );
+                Utils.initRelationTemplates(value.currentTopology.relationshipTemplates)
+                    .forEach(
+                        relationship => this.ngRedux.dispatch(this.wineryActions.saveRelationship(relationship))
+                    );
+
+                setTimeout( () => this.ngRedux.dispatch(this.rendererActions.executeLayout()), 300);
             }
         }
     }

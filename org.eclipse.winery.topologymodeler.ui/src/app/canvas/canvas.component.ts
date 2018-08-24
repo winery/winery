@@ -69,7 +69,6 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     @ViewChild('importTopologyModal') importTopologyModal: ModalDirective;
     @Input() readonly: boolean;
     @Input() entityTypes: EntityTypesModel;
-    @Input() relationshipTypes: Array<EntityType> = [];
     @Input() diffMode = false;
     @Input() sidebarDeleteButtonClickEvent: any;
 
@@ -1136,9 +1135,9 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                     }]
                 ],
             });
-            setTimeout(() => this.handleRelSideBar(conn, newRelationship), 1);
+            this.handleRelSideBar(conn, newRelationship);
 
-            if (!isNullOrUndefined(newRelationship.state)) {
+            if (newRelationship.state) {
                 setTimeout(() => {
                     conn.addType(newRelationship.state.toString().toLowerCase());
                     this.revalidateContainer();
@@ -1278,11 +1277,11 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     clearSelectedNodes(): void {
         if (this.selectedNodes.length > 0) {
             this.nodeChildrenArray.forEach(node => {
-                if (this.selectedNodes.find(selectedNode => selectedNode.id === node.nodeTemplate.id)) {
+                if (this.selectedNodes.find(selectedNode => selectedNode && selectedNode.id === node.nodeTemplate.id)) {
                     node.makeSelectionVisible = false;
                 }
             });
-            this.newJsPlumbInstance.removeFromAllPosses(this.selectedNodes.map(node => node.id));
+            this.newJsPlumbInstance.removeFromAllPosses(this.selectedNodes.map(node => node && node.id));
             this.selectedNodes = [];
         }
     }
@@ -1413,7 +1412,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      */
     arrayContainsNode(nodes: any[], id: string): boolean {
         if (nodes !== null && nodes.length > 0) {
-            return nodes.some(node => node.id === id);
+            return nodes.some(node => node && node.id === id);
         }
         return false;
     }
@@ -1748,11 +1747,13 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * @param newRelationship The new relationship internally
      */
     private handleRelSideBar(conn: any, newRelationship: TRelationshipTemplate): void {
-        conn.id = newRelationship.id;
-        conn.setType(newRelationship.type);
-        conn.bind('click', rel => {
-            this.onClickJsPlumbConnection(conn, rel);
-        });
+        if (conn) {
+            conn.id = newRelationship.id;
+            conn.setType(newRelationship.type);
+            conn.bind('click', rel => {
+                this.onClickJsPlumbConnection(conn, rel);
+            });
+        }
 
         this.revalidateContainer();
     }
@@ -1885,7 +1886,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             this.selectedNodes.push(this.getNodeByID(this.allNodeTemplates, nodeId));
             this.newJsPlumbInstance.addToPosse(nodeId, 'dragSelection');
             this.nodeChildrenArray.forEach(node => {
-                if (this.selectedNodes.find(selectedNode => selectedNode.id === node.nodeTemplate.id)) {
+                if (this.selectedNodes.find(selectedNode => selectedNode && selectedNode.id === node.nodeTemplate.id)) {
                     if (node.makeSelectionVisible === false) {
                         node.makeSelectionVisible = true;
                     }
