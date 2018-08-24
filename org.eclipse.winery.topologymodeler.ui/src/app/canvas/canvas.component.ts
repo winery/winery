@@ -12,11 +12,11 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 import {
-    AfterViewInit, Component, DoCheck, ElementRef, HostListener, Input, KeyValueDiffers, NgZone, OnChanges, OnDestroy, OnInit, QueryList, Renderer2,
-    SimpleChanges, ViewChild, ViewChildren
+    AfterViewInit, Component, ElementRef, HostListener, Input, KeyValueDiffers, NgZone, OnChanges, OnDestroy, OnInit,
+    QueryList, Renderer2, SimpleChanges, ViewChild, ViewChildren
 } from '@angular/core';
 import { JsPlumbService } from '../services/jsPlumb.service';
-import { EntityType, TNodeTemplate, TRelationshipTemplate } from '../models/ttopology-template';
+import { EntityType, TNodeTemplate, TRelationshipTemplate, VisualEntityType } from '../models/ttopology-template';
 import { LayoutDirective } from '../layout/layout.directive';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { NgRedux } from '@angular-redux/store';
@@ -57,7 +57,7 @@ import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reduce
     templateUrl: './canvas.component.html',
     styleUrls: ['./canvas.component.css']
 })
-export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit, DoCheck {
+export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
 
     @ViewChildren(NodeComponent) nodeComponentChildren: QueryList<NodeComponent>;
     @ViewChildren('KVTextareas') KVTextareas: QueryList<any>;
@@ -109,9 +109,6 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
     indexOfNewNode: number;
     targetNodes: Array<string> = [];
-
-    // used for Angular DoCheck Lifecycle hook
-    differ: any;
 
     // scroll offset
     scrollOffset = 0;
@@ -1458,7 +1455,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * Registers relationship (connection) types in JSPlumb (Color, strokewidth etc.)
      * @param relType
      */
-    assignRelTypes(relType: EntityType): void {
+    assignRelTypes(relType: VisualEntityType): void {
         this.newJsPlumbInstance.registerConnectionType(
             relType.qName, {
                 paintStyle: {
@@ -1496,19 +1493,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 }
             }
         });
-        this.differ = this.differs.find([]).create();
-    }
-
-    /**
-     * Angular lifecycle event.
-     */
-    ngDoCheck() {
-        const relationshipTypesChanges = this.differ.diff(this.relationshipTypes);
-        // TODO: instead of fetching all relationship visuals one by one, do it similar to nodeTypes -> this check will
-        // be obsolete
-        if (relationshipTypesChanges && !this.diffMode) {
-            relationshipTypesChanges.forEachAddedItem(r => this.assignRelTypes(r.currentValue));
-        }
+        this.entityTypes.relationshipTypes.forEach(value => this.assignRelTypes(value));
     }
 
     /**

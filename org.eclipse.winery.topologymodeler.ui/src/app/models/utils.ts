@@ -85,7 +85,7 @@ export class Utils {
     static getNodeVisualsForNodeTemplate(nodeType: string, nodeVisuals: Visuals[], state?: DifferenceStates): Visuals {
         let color, imageUrl: string;
         for (const visual of nodeVisuals) {
-            const qName = new QName(visual.nodeTypeId);
+            const qName = new QName(visual.typeId);
             const localName = qName.localName;
             if (localName === new QName(nodeType).localName) {
                 color = isNullOrUndefined(state) ? visual.color : VersionUtils.getElementColorByDiffState(state);
@@ -93,9 +93,9 @@ export class Utils {
                 if (imageUrl) {
                     imageUrl = imageUrl.replace('appearance', 'visualappearance');
                 }
-                return {
+                return <Visuals> {
                     color: color,
-                    nodeTypeId: nodeType,
+                    typeId: nodeType,
                     imageUrl: imageUrl,
                     pattern: visual.pattern
                 };

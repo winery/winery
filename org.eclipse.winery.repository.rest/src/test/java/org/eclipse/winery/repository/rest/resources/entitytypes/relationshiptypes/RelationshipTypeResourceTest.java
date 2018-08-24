@@ -46,20 +46,24 @@ public class RelationshipTypeResourceTest extends AbstractResourceTest {
     @Test
     public void kiwiVisualAppearance() throws Exception {
         this.setRevisionTo("d71de5e3c4c8bd117d035602ffbae115eff981d8");
-        this.assertGet("relationshiptypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Frelationshiptypes%252Ffruits/kiwi/visualappearance/", "entitytypes/relationshiptypes/kiwi_visualAppearance.json");
+        this.assertGet("relationshiptypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Frelationshiptypes%252Ffruits/kiwi/visualappearance/",
+            "entitytypes/relationshiptypes/kiwi_visualAppearance.json");
     }
 
     @Test
     public void kiwiPutVisualAppearance() throws Exception {
         this.setRevisionTo("d71de5e3c4c8bd117d035602ffbae115eff981d8");
-        this.assertPut("relationshiptypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Frelationshiptypes%252Ffruits/kiwi/visualappearance/", "entitytypes/relationshiptypes/kiwi_visualAppearance_put.json");
-        this.assertGet("relationshiptypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Frelationshiptypes%252Ffruits/kiwi/visualappearance/", "entitytypes/relationshiptypes/kiwi_visualAppearance.json");
+        this.assertPut("relationshiptypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Frelationshiptypes%252Ffruits/kiwi/visualappearance/",
+            "entitytypes/relationshiptypes/kiwi_visualAppearance_put.json");
+        this.assertGet("relationshiptypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Frelationshiptypes%252Ffruits/kiwi/visualappearance/", 
+            "entitytypes/relationshiptypes/kiwi_visualAppearance.json");
     }
 
     @Test
     public void kiwiValidSourcesAndTargets() throws Exception {
         this.setRevisionTo("d71de5e3c4c8bd117d035602ffbae115eff981d8");
-        this.assertGet("relationshiptypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Frelationshiptypes%252Ffruits/kiwi/validsourcesandtargets/", "entitytypes/relationshiptypes/kiwi_validEndings.json");
+        this.assertGet("relationshiptypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Frelationshiptypes%252Ffruits/kiwi/validsourcesandtargets/",
+            "entitytypes/relationshiptypes/kiwi_validEndings.json");
     }
 
     @Test

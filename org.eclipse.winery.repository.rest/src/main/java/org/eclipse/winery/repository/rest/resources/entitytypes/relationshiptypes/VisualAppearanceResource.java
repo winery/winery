@@ -13,10 +13,15 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
+import java.util.Map;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.PUT;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.constants.Defaults;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
@@ -25,19 +30,10 @@ import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.GenericVisualAppearanceResource;
 import org.eclipse.winery.repository.rest.resources.apiData.RelationshipTypesVisualsApiData;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.xml.namespace.QName;
-import java.io.StringWriter;
-import java.util.Map;
 
 public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 
@@ -49,133 +45,12 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
     private static final QName QNAME_LINEWIDTH = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "linewidth");
     private static final QName QNAME_HOVER_COLOR = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "hoverColor");
 
-
     public VisualAppearanceResource(RelationshipTypeResource res, Map<QName, String> map, RelationshipTypeId parentId) {
         super(res, map, new VisualAppearanceId(parentId));
     }
 
-    @GET
-    @ApiOperation(value = "@return JSON object to be used at jsPlumb.registerConnectionType('NAME', <data>)")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getConnectionTypeForJsPlumbData() {
-        JsonFactory jsonFactory = new JsonFactory();
-        StringWriter sw = new StringWriter();
-        try {
-            JsonGenerator jg = jsonFactory.createGenerator(sw);
-            jg.writeStartObject();
-
-            jg.writeFieldName("connector");
-            jg.writeString("Flowchart");
-
-            jg.writeFieldName("paintStyle");
-            jg.writeStartObject();
-            jg.writeFieldName("lineWidth");
-            jg.writeNumber(this.getLineWidth());
-            jg.writeFieldName("strokeStyle");
-            jg.writeObject(this.getColor());
-            String dash = this.getDash();
-            if (!StringUtils.isEmpty(dash)) {
-                String dashStyle = null;
-                switch (dash) {
-                    case "dotted":
-                        dashStyle = "1 5";
-                        break;
-                    case "dotted2":
-                        dashStyle = "3 4";
-                        break;
-                    case "plain":
-                        // default works
-                        // otherwise, "1 0" can be used
-                        break;
-                }
-                if (dashStyle != null) {
-                    jg.writeStringField("dashstyle", dashStyle);
-                }
-            }
-            jg.writeEndObject();
-
-            jg.writeFieldName("hoverPaintStyle");
-            jg.writeStartObject();
-            jg.writeFieldName("strokeStyle");
-            jg.writeObject(this.getHoverColor());
-            jg.writeEndObject();
-
-            jg.writeStringField("dash", getDash());
-            jg.writeStringField("sourceArrowHead", this.getSourceArrowHead());
-            jg.writeStringField("targetArrowHead", this.getTargetArrowHead());
-            jg.writeStringField("color", this.getColor());
-            jg.writeStringField("hoverColor", this.getHoverColor());
-            // BEGIN: Overlays
-
-            jg.writeFieldName("overlays");
-            jg.writeStartArray();
-
-            // source arrow head
-            String head = this.getSourceArrowHead();
-            if (!head.equals("none")) {
-                jg.writeStartArray();
-                jg.writeString(head);
-
-                jg.writeStartObject();
-
-                jg.writeFieldName("location");
-                jg.writeNumber(0);
-
-                // arrow should point towards the node and not away from it
-                jg.writeFieldName("direction");
-                jg.writeNumber(-1);
-
-                jg.writeFieldName("width");
-                jg.writeNumber(20);
-
-                jg.writeFieldName("length");
-                jg.writeNumber(12);
-
-                jg.writeEndObject();
-                jg.writeEndArray();
-            }
-
-            // target arrow head
-            head = this.getTargetArrowHead();
-            if (!head.equals("none")) {
-                jg.writeStartArray();
-                jg.writeString(head);
-                jg.writeStartObject();
-                jg.writeFieldName("location");
-                jg.writeNumber(1);
-                jg.writeFieldName("width");
-                jg.writeNumber(20);
-                jg.writeFieldName("length");
-                jg.writeNumber(12);
-                jg.writeEndObject();
-                jg.writeEndArray();
-            }
-
-            // Type in brackets on the arrow
-            jg.writeStartArray();
-            jg.writeString("Label");
-            jg.writeStartObject();
-            jg.writeStringField("id", "label");
-            jg.writeStringField("label", "(" + this.res.getName() + ")");
-            jg.writeStringField("cssClass", "relationshipTypeLabel");
-            jg.writeFieldName("location");
-            jg.writeNumber(0.5);
-            jg.writeEndObject();
-            jg.writeEndArray();
-
-            jg.writeEndArray();
-
-            // END: Overlays
-
-            jg.writeEndObject();
-
-            jg.close();
-        } catch (Exception e) {
-            VisualAppearanceResource.LOGGER.error(e.getMessage(), e);
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
-        }
-        String res = sw.toString();
-        return Response.ok(res).build();
+    public RelationshipTypesVisualsApiData getJsonData() {
+        return new RelationshipTypesVisualsApiData(this);
     }
 
     private String getOtherAttributeWithDefault(QName qname, String def) {

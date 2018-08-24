@@ -13,14 +13,16 @@
  ********************************************************************************/
 
 import { Component, Input, OnInit } from '@angular/core';
-import { EntityType, TNodeTemplate, TRelationshipTemplate, TTopologyTemplate, Visuals } from './models/ttopology-template';
+import {
+    Entity, EntityType, TNodeTemplate, TRelationshipTemplate, TTopologyTemplate, VisualEntityType
+} from './models/ttopology-template';
 import { ILoaded, LoadedService } from './services/loaded.service';
 import { AppReadyEventService } from './services/app-ready-event.service';
 import { BackendService } from './services/backend.service';
 import { Subscription } from 'rxjs';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from './redux/store/winery.store';
-import { DifferenceStates, ToscaDiff } from './models/ToscaDiff';
+import { ToscaDiff } from './models/ToscaDiff';
 import { isNullOrUndefined } from 'util';
 import { Utils } from './models/utils';
 import { EntityTypesModel, TopologyModelerInputDataFormat } from './models/entityTypesModel';
@@ -45,13 +47,7 @@ export class WineryComponent implements OnInit {
     sidebarDeleteButtonClickEvent: any;
     nodeTemplates: Array<TNodeTemplate> = [];
     relationshipTemplates: Array<TRelationshipTemplate> = [];
-    artifactTypes: Array<EntityType> = [];
-    policyTypes: Array<EntityType> = [];
-    policyTemplates: Array<any> = [];
-    capabilityTypes: Array<EntityType> = [];
-    requirementTypes: Array<EntityType> = [];
     groupedNodeTypes: Array<any> = [];
-    relationshipTypes: Array<EntityType> = [];
     entityTypes: EntityTypesModel;
     hideNavBarState: boolean;
     subscriptions: Array<Subscription> = [];
@@ -90,7 +86,8 @@ export class WineryComponent implements OnInit {
             if (this.topologyModelerData.configuration.isReadonly) {
                 this.readonly = true;
             }
-            // If data is passed to the topologymodeler directly, rendering is initiated immediately without backend calls
+            // If data is passed to the topologymodeler directly, rendering is initiated immediately without backend
+            // calls
             if (this.topologyModelerData.topologyTemplate) {
                 this.initiateLocalRendering(this.topologyModelerData);
             } else {
@@ -124,8 +121,9 @@ export class WineryComponent implements OnInit {
 
         switch (entityType) {
             case 'artifactTypes': {
+                this.entityTypes.artifactTypes = [];
                 entityTypeJSON.forEach(artifactType => {
-                    this.artifactTypes
+                    this.entityTypes.artifactTypes
                         .push(new EntityType(
                             artifactType.id,
                             artifactType.qName,
@@ -133,7 +131,6 @@ export class WineryComponent implements OnInit {
                             artifactType.namespace
                         ));
                 });
-                this.entityTypes.artifactTypes = this.artifactTypes;
                 break;
             }
             case 'artifactTemplates': {
@@ -141,8 +138,9 @@ export class WineryComponent implements OnInit {
                 break;
             }
             case 'policyTypes': {
+                this.entityTypes.policyTypes = [];
                 entityTypeJSON.forEach(policyType => {
-                    this.policyTypes
+                    this.entityTypes.policyTypes
                         .push(new EntityType(
                             policyType.id,
                             policyType.qName,
@@ -150,50 +148,47 @@ export class WineryComponent implements OnInit {
                             policyType.namespace
                         ));
                 });
-                this.entityTypes.policyTypes = this.policyTypes;
                 break;
             }
             case 'capabilityTypes': {
+                this.entityTypes.capabilityTypes = [];
                 entityTypeJSON.forEach(capabilityType => {
-                    this.capabilityTypes
+                    this.entityTypes.capabilityTypes
                         .push(new EntityType(
                             capabilityType.id,
                             capabilityType.qName,
                             capabilityType.name,
                             capabilityType.namespace,
-                            '',
                             capabilityType.full
                         ));
                 });
-                this.entityTypes.capabilityTypes = this.capabilityTypes;
                 break;
             }
             case 'requirementTypes': {
+                this.entityTypes.requirementTypes = [];
                 entityTypeJSON.forEach(requirementType => {
-                    this.requirementTypes
+                    this.entityTypes.requirementTypes
                         .push(new EntityType(
                             requirementType.id,
                             requirementType.qName,
                             requirementType.name,
                             requirementType.namespace,
-                            '',
                             requirementType.full
                         ));
                 });
-                this.entityTypes.requirementTypes = this.requirementTypes;
                 break;
             }
             case 'policyTemplates': {
+                this.entityTypes.policyTemplates = [];
                 entityTypeJSON.forEach(policyTemplate => {
-                    this.policyTemplates
-                        .push(new EntityType(
+                    this.entityTypes.policyTemplates
+                        .push(new Entity(
                             policyTemplate.id,
                             policyTemplate.qName,
                             policyTemplate.name,
                             policyTemplate.namespace
                         ));
                 });
-                this.entityTypes.policyTemplates = this.policyTemplates;
                 break;
             }
             case 'groupedNodeTypes': {
@@ -202,30 +197,31 @@ export class WineryComponent implements OnInit {
             }
             case 'unGroupedNodeTypes': {
                 this.entityTypes.unGroupedNodeTypes = entityTypeJSON;
-                this.setNodeVisuals(this.entityTypes.nodeVisuals);
+                this.entityTypes.nodeVisuals
+                    .forEach(nodeVisual => {
+                        const nodeId = nodeVisual.typeId.substring(nodeVisual.typeId.indexOf('}') + 1);
+                        this.entityTypes.unGroupedNodeTypes.forEach(node => {
+                            if (node.id === nodeId) {
+                                node.color = nodeVisual.color;
+                            }
+                        });
+                    });
                 break;
             }
             case 'relationshipTypes': {
-                this.requiredRelationshipVisuals = entityTypeJSON.length;
-                entityTypeJSON.forEach(relationshipType => {
-                    const relType = new EntityType(
-                        relationshipType.id,
-                        relationshipType.qName,
-                        relationshipType.name,
-                        relationshipType.namespace);
-                    this.relationshipTypes.push(relType);
-
-                    // get relationship type visualappearances
-                    this.backendService
-                        .requestRelationshipTypeVisualappearance(relationshipType.namespace, relationshipType.id)
-                        .subscribe(
-                            (visualAppearance) => {
-                                relType.color = visualAppearance.color;
-                                this.triggerLoaded('relationshipVisuals');
-                            }
+                this.entityTypes.relationshipTypes = [];
+                entityTypeJSON.forEach((relationshipType: EntityType) => {
+                    const visuals = this.entityTypes.relationshipVisuals
+                        .find(value => value.typeId === relationshipType.qName);
+                    this.entityTypes.relationshipTypes
+                        .push(new VisualEntityType(
+                            relationshipType.id,
+                            relationshipType.qName,
+                            relationshipType.name,
+                            relationshipType.namespace,
+                            visuals.color)
                         );
                 });
-                this.entityTypes.relationshipTypes = this.relationshipTypes;
                 break;
             }
         }
@@ -268,8 +264,9 @@ export class WineryComponent implements OnInit {
             const topologyData = JSON[2];
             const topologyTemplate = topologyData[0];
             this.entityTypes.nodeVisuals = topologyData[1];
-            if (topologyData.length === 4 && !isNullOrUndefined(topologyData[2]) && !isNullOrUndefined(topologyData[3])) {
-                this.topologyDifferences = [topologyData[2], topologyData[3]];
+            this.entityTypes.relationshipVisuals = topologyData[2];
+            if (topologyData.length === 5 && !isNullOrUndefined(topologyData[3]) && !isNullOrUndefined(topologyData[4])) {
+                this.topologyDifferences = [topologyData[3], topologyData[4]];
             }
             // init the NodeTemplates and RelationshipTemplates to start their rendering
             this.initTopologyTemplate(topologyTemplate.nodeTemplates, topologyTemplate.relationshipTemplates);
@@ -303,17 +300,6 @@ export class WineryComponent implements OnInit {
         this.loaded.generatedReduxState = true;
     }
 
-    private setNodeVisuals(nodeVisuals: Array<Visuals>): void {
-        nodeVisuals.forEach(nodeVisual => {
-            const nodeId = nodeVisual.nodeTypeId.substring(nodeVisual.nodeTypeId.indexOf('}') + 1);
-            this.entityTypes.unGroupedNodeTypes.forEach(node => {
-                if (node.id === nodeId) {
-                    node.color = nodeVisual.color;
-                }
-            });
-        });
-    }
-
     sidebarDeleteButtonClicked($event) {
         this.sidebarDeleteButtonClickEvent = $event;
     }
@@ -323,7 +309,7 @@ export class WineryComponent implements OnInit {
             this.loadedRelationshipVisuals++;
         }
         this.loaded = {
-            loadedData: this.loadedRelationshipVisuals === this.requiredRelationshipVisuals,
+            loadedData: true,
             generatedReduxState: false
         };
         this.appReadyEvent.trigger();

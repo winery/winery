@@ -16,7 +16,7 @@ import { Injectable } from '@angular/core';
 import { backendBaseURL, hostURL } from '../models/configuration';
 import { Subject } from 'rxjs/Subject';
 import { isNullOrUndefined } from 'util';
-import { EntityType, TTopologyTemplate, Visuals } from '../models/ttopology-template';
+import { EntityType, TTopologyTemplate, VisualEntityType, Visuals } from '../models/ttopology-template';
 import { QNameWithTypeApiData } from '../models/generateArtifactApiData';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { urlElement } from '../models/enums';
@@ -115,13 +115,15 @@ export class BackendService {
             const url = this.configuration.repositoryURL + '/' + this.configuration.parentPath + '/'
                 + encodeURIComponent(encodeURIComponent(this.configuration.ns)) + '/';
             const currentUrl = url + this.configuration.id + '/' + this.configuration.elementPath;
-            const visualsUrl = backendBaseURL + '/nodetypes/allvisualappearancedata';
+            const nodeVisualsUrl = backendBaseURL + '/nodetypes/allvisualappearancedata';
+            const relationshipVisualsUrl = backendBaseURL + '/relationshiptypes/allvisualappearancedata';
             // This is required because the information has to be returned together
 
             if (isNullOrUndefined(this.configuration.compareTo)) {
                 return forkJoin(
                     this.http.get<TTopologyTemplate>(currentUrl),
-                    this.http.get<Visuals>(visualsUrl)
+                    this.http.get<Visuals>(nodeVisualsUrl),
+                    this.http.get<Visuals>(relationshipVisualsUrl),
                 );
             } else {
                 const compareUrl = url
@@ -132,33 +134,12 @@ export class BackendService {
 
                 return forkJoin(
                     this.http.get<TTopologyTemplate>(currentUrl),
-                    this.http.get<Visuals>(visualsUrl),
+                    this.http.get<Visuals>(nodeVisualsUrl),
+                    this.http.get<Visuals>(relationshipVisualsUrl),
                     this.http.get<ToscaDiff>(compareUrl),
                     this.http.get<TTopologyTemplate>(templateUrl)
                 );
             }
-        }
-    }
-
-    /**
-     * Returns data that is later used by jsPlumb to render a relationship connector
-     * @returns data The JSON from the server
-     */
-    requestRelationshipTypeVisualappearance(namespace: string, id: string): Observable<EntityType> {
-        if (this.configuration) {
-            const url = this.configuration.repositoryURL + '/relationshiptypes/'
-                + encodeURIComponent(encodeURIComponent(namespace)) + '/'
-                + id + '/visualappearance/';
-            return this.http
-                .get<EntityType>(url, { headers: this.headers })
-                .pipe(
-                    map(relationship => {
-                        if (!isNullOrUndefined(this.configuration.compareTo)) {
-                            relationship.color = 'grey';
-                        }
-                        return relationship;
-                    })
-                );
         }
     }
 

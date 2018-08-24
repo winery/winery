@@ -37,7 +37,6 @@ export class TopologyRendererComponent implements OnInit, OnDestroy {
 
     @Input() readonly: boolean;
     @Input() entityTypes: EntityTypesModel;
-    @Input() relationshipTypes: Array<any> = [];
     @Input() differencesData: [ToscaDiff, TTopologyTemplate];
     @Input() nodeTemplates: Array<TNodeTemplate>;
     @Input() relationshipTemplates: Array<TRelationshipTemplate>;
