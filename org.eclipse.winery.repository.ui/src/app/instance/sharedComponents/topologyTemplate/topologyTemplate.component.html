@@ -16,9 +16,6 @@
     <button *ngIf="sharedData?.versions?.length > 1" class="btn btn-info" (click)="showCompareToModal()">
         Compare to...
     </button>
-    <button *ngIf="refinementAvailable" class="btn btn-default" (click)="showRefinementModal()">
-        Refine Topology
-    </button>
 </div>
 <div style="float: right">
     <a [href]="oldEditorUrl" target="_blank" class="btn btn-light">Open Old Editor</a>
@@ -45,37 +42,5 @@
     </winery-modal-body>
     <winery-modal-footer [modalRef]="compareToModalRef"
                          [okButtonLabel]="'Compare'" [disableOkButton]="!selectedVersion" (onOk)="onCompare()">
-    </winery-modal-footer>
-</ng-template>
-
-<ng-template #refinementModal>
-    <winery-modal-header [modalRef]="refinementModalRef" [title]="'Refine Topology'"></winery-modal-header>
-    <winery-modal-body>
-        <div *ngIf="!refinementIsRunning; else showIsRunning">
-            <div *ngIf="refinementIsDone; else showStart">
-                <h5>Refinement successful!</h5>
-            </div>
-            <ng-template #showStart>
-                <button class="btn btn-primary" (click)="startRefinement()">Start Refinement</button>
-            </ng-template>
-        </div>
-        <ng-template #showIsRunning>
-            <winery-loader *ngIf="refinementIsLoading; else showContent"></winery-loader>
-            <ng-template #showContent>
-                <ul>
-                    <li *ngFor="let option of prmOptions">
-                        {{ option.patternRefinementModel.name }}
-                        <div class="btn-group">
-                            <button class="btn btn-sm btn-default" (click)="openModelerFor(option.patternRefinementModel, 'detector')">Detector Topology</button>
-                            <button class="btn btn-sm btn-default" (click)="openModelerFor(option.patternRefinementModel, 'refinementstructure')">Refinement Topology</button>
-                            <button class="btn btn-sm btn-primary" (click)="prmChosen(option)">Choose</button>
-                        </div>
-                    </li>
-                </ul>
-            </ng-template>
-        </ng-template>
-    </winery-modal-body>
-    <winery-modal-footer [showDefaultButtons]="false">
-        <button (click)="onAbortRefinement()" class="btn btn-default">Close</button>
     </winery-modal-footer>
 </ng-template>

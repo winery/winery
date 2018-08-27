@@ -19,13 +19,9 @@ import { WineryVersion } from '../../../model/wineryVersion';
 import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
 import { ActivatedRoute } from '@angular/router';
 import { ToscaTypes } from '../../../model/enums';
-import { RefinementElement, RefinementWebSocketService } from './refinementWebSocket.service';
 
 @Component({
     templateUrl: 'topologyTemplate.component.html',
-    providers: [
-        RefinementWebSocketService
-    ]
 })
 export class TopologyTemplateComponent implements OnInit {
 
@@ -41,18 +37,14 @@ export class TopologyTemplateComponent implements OnInit {
 
     @ViewChild('compareToModal') compareToModal: ModalDirective;
     compareToModalRef: BsModalRef;
-    @ViewChild('refinementModal') refinementModal: ModalDirective;
-    refinementModalRef: BsModalRef;
 
     refinementIsRunning: boolean;
     refinementIsLoading: boolean;
     refinementIsDone: boolean;
-    prmOptions: RefinementElement[];
 
     constructor(private sanitizer: DomSanitizer,
                 public sharedData: InstanceService,
                 private modalService: BsModalService,
-                private webSocketService: RefinementWebSocketService,
                 private activatedRoute: ActivatedRoute) {
     }
 
@@ -98,62 +90,13 @@ export class TopologyTemplateComponent implements OnInit {
         window.open(compareUrl, '_blank');
     }
 
-    startRefinement() {
-        this.refinementIsDone = false;
-        this.refinementIsRunning = true;
-        this.refinementIsLoading = true;
-        this.webSocketService.startRefinement()
-            .subscribe(
-                value => this.handleWebSocketData(value),
-                error => this.handleError(error),
-                () => this.handleWebSocketComplete()
-            );
-    }
-
     showCompareToModal() {
         this.compareToModalRef = this.modalService.show(this.compareToModal);
-    }
-
-    showRefinementModal() {
-        this.refinementModalRef = this.modalService.show(this.refinementModal);
-    }
-
-    onAbortRefinement() {
-        this.refinementModalRef.hide();
-        this.webSocketService.cancel();
-    }
-
-    private handleWebSocketData(value: RefinementElement[]) {
-        if (value) {
-            this.refinementIsLoading = false;
-            this.prmOptions = value;
-        }
-    }
-
-    private handleError(error: any) {
-        this.refinementIsLoading = false;
-        console.log(error);
     }
 
     private handleWebSocketComplete() {
         this.refinementIsDone = true;
         this.refinementIsRunning = false;
         this.refinementIsLoading = false;
-    }
-
-    openModelerFor(patternRefinementModel: { name: string; targetNamespace: string }, element: string, type = 'patternrefinementmodels') {
-        const editorConfig = topologyModelerURL + '?repositoryURL=' + encodeURIComponent(backendBaseURL)
-            + '&uiURL=' + this.uiURL
-            + '&ns=' + encodeURIComponent(patternRefinementModel.targetNamespace)
-            + '&id=' + patternRefinementModel.name
-            + '&parentPath=' + type
-            + '&elementPath=' + element
-            + '&isReadonly=true';
-        window.open(editorConfig, '_blank');
-    }
-
-    prmChosen(option: RefinementElement) {
-        this.webSocketService.refineWith(option);
-        this.refinementIsLoading = true;
     }
 }
