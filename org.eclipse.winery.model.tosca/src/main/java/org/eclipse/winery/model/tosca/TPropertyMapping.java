@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -30,7 +31,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tPropertyMapping")
-public class TPropertyMapping {
+public class TPropertyMapping implements Serializable {
 
     @JsonIdentityReference(alwaysAsId = true)
     @XmlAttribute(name = "serviceTemplatePropertyRef", required = true)

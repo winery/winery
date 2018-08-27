@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -38,7 +39,7 @@ import org.eclipse.jdt.annotation.Nullable;
     "plan"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TExportedOperation implements HasName {
+public class TExportedOperation implements HasName, Serializable {
 
     @XmlElement(name = "NodeOperation")
     protected TExportedOperation.NodeOperation nodeOperation;
@@ -162,7 +163,7 @@ public class TExportedOperation implements HasName {
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class NodeOperation {
+    public static class NodeOperation implements Serializable {
 
         @XmlAttribute(name = "nodeRef", required = true)
         @XmlIDREF
@@ -255,7 +256,7 @@ public class TExportedOperation implements HasName {
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class Plan {
+    public static class Plan implements Serializable {
 
         @XmlAttribute(name = "planRef", required = true)
         @XmlIDREF
@@ -303,7 +304,7 @@ public class TExportedOperation implements HasName {
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class RelationshipOperation {
+    public static class RelationshipOperation implements Serializable {
 
         @XmlAttribute(name = "relationshipRef", required = true)
         @XmlIDREF

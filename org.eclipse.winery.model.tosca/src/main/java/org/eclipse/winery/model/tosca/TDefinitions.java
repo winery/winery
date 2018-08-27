@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -291,7 +292,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
     @XmlType(name = "", propOrder = {
         "extension"
     })
-    public static class Extensions {
+    public static class Extensions implements Serializable {
 
         @XmlElement(name = "Extension", required = true)
         protected List<TExtension> extension;
@@ -342,7 +343,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
     @XmlType(name = "", propOrder = {
         "any"
     })
-    public static class Types {
+    public static class Types implements Serializable {
 
         @XmlAnyElement(lax = true)
         protected List<Object> any;

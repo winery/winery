@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -144,7 +145,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         "any"
     })
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class Properties {
+    public static class Properties implements Serializable {
 
         @XmlAnyElement(lax = true)
         protected Object any;
@@ -343,7 +344,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
     @XmlType(name = "", propOrder = {
         "propertyConstraint"
     })
-    public static class PropertyConstraints {
+    public static class PropertyConstraints implements Serializable {
 
         @XmlElement(name = "PropertyConstraint", required = true)
         protected List<TPropertyConstraint> propertyConstraint;

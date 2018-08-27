@@ -18,6 +18,9 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.namespace.QName;
+
+import java.awt.SecondaryLoop;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -52,7 +55,7 @@ import java.util.Objects;
 @XmlType(name = "tAppliesTo", propOrder = {
     "nodeTypeReference"
 })
-public class TAppliesTo {
+public class TAppliesTo implements Serializable {
 
     @XmlElement(name = "NodeTypeReference", required = true)
     protected List<TAppliesTo.NodeTypeReference> nodeTypeReference;
@@ -120,7 +123,7 @@ public class TAppliesTo {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    public static class NodeTypeReference {
+    public static class NodeTypeReference implements Serializable {
 
         @XmlAttribute(name = "typeRef", required = true)
         protected QName typeRef;

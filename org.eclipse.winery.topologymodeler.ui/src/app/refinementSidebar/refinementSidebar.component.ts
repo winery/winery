@@ -110,10 +110,6 @@ export class RefinementSidebarComponent implements OnDestroy {
                     .forEach(
                         relationship => this.ngRedux.dispatch(this.wineryActions.saveRelationship(relationship))
                     );
-
-                setTimeout(() => {
-                    this.ngRedux.dispatch(this.rendererActions.executeLayout());
-                }, 300);
             } else {
                 this.openModelerFor(value.serviceTemplateContainingRefinements.xmlId.decoded,
                     value.serviceTemplateContainingRefinements.namespace.decoded,

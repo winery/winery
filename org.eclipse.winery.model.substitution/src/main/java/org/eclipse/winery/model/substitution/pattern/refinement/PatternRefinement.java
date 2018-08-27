@@ -15,6 +15,7 @@ package org.eclipse.winery.model.substitution.pattern.refinement;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -122,8 +123,25 @@ public class PatternRefinement extends AbstractSubstitution {
     public void applyRefinement(PatternRefinementCandidate refinement, TTopologyTemplate topology) {
         refinement.getGraphMapping()
             .forEach(mapping -> {
-                    Map<String, String> idMapping = BackendUtils
-                        .mergeTopologyTemplateAinTopologyTemplateB(refinement.getPatternRefinementModel().getRefinementStructure(), topology);
+                    Map<String, String> idMapping = BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(
+                        refinement.getPatternRefinementModel().getRefinementStructure(),
+                        topology
+                    );
+
+                    Map<String, Map<String, Integer>> coordinates = calculateNewPositions(
+                        refinement.getDetectorGraph(),
+                        mapping,
+                        refinement.getPatternRefinementModel().getRefinementStructure()
+                    );
+                    refinement.getPatternRefinementModel().getRefinementStructure().getNodeTemplates()
+                        .forEach(node -> {
+                                Map<String, Integer> newCoordinates = coordinates.get(node.getId());
+                                TNodeTemplate nodeTemplate = topology.getNodeTemplate(idMapping.get(node.getId()));
+                                nodeTemplate.setX(newCoordinates.get("x").toString());
+                                nodeTemplate.setY(newCoordinates.get("y").toString());
+                            }
+                        );
+
                     refinement.getDetectorGraph().vertexSet()
                         .forEach(vertex -> {
                             TNodeTemplate matchingNode = mapping.getVertexCorrespondence(vertex, false).getNodeTemplate();
@@ -164,6 +182,45 @@ public class PatternRefinement extends AbstractSubstitution {
                         });
                 }
             );
+    }
+
+    private Map<String, Map<String, Integer>> calculateNewPositions(ToscaGraph detectorGraph, GraphMapping<ToscaNode, ToscaEdge> mapping, TTopologyTemplate refinementStructure) {
+        HashMap<String, Map<String, Integer>> coordinates = new HashMap<>();
+        int[] topLeftOriginal = {-1, -1};
+        int[] topLeftReplacement = {-1, -1};
+
+        detectorGraph.vertexSet().forEach(toscaNode -> {
+            ToscaNode node = mapping.getVertexCorrespondence(toscaNode, false);
+            getTopLeft(node.getNodeTemplate().getX(), node.getNodeTemplate().getY(), topLeftOriginal);
+        });
+        refinementStructure.getNodeTemplates().forEach(
+            tNodeTemplate -> getTopLeft(tNodeTemplate.getX(), tNodeTemplate.getY(), topLeftReplacement)
+        );
+
+        refinementStructure.getNodeTemplates().forEach(nodeTemplate -> {
+            int x = Integer.parseInt(nodeTemplate.getX());
+            int y = Integer.parseInt(nodeTemplate.getY());
+
+            HashMap<String, Integer> newCoordinates = new HashMap<>();
+            newCoordinates.put("x", (x - topLeftReplacement[0]) + topLeftOriginal[0]);
+            newCoordinates.put("y", (y - topLeftReplacement[1]) + topLeftOriginal[1]);
+
+            coordinates.put(nodeTemplate.getId(), newCoordinates);
+        });
+
+        return coordinates;
+    }
+
+    private void getTopLeft(String stringX, String stringY, int[] topLeft) {
+        int x = Integer.parseInt(stringX);
+        int y = Integer.parseInt(stringY);
+
+        if (topLeft[0] > x || topLeft[0] == -1) {
+            topLeft[0] = x;
+        }
+        if (topLeft[1] > y || topLeft[1] == -1) {
+            topLeft[1] = y;
+        }
     }
 
     public boolean isApplicable(PatternRefinementCandidate candidate, TTopologyTemplate topology) {

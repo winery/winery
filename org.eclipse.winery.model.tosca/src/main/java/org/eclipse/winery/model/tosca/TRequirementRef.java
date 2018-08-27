@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -30,7 +31,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tRequirementRef")
-public class TRequirementRef {
+public class TRequirementRef implements Serializable {
 
     @XmlAttribute(name = "name")
     protected String name;

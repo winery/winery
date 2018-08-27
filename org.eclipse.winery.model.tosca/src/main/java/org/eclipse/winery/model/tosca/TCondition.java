@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +34,7 @@ import org.eclipse.jdt.annotation.NonNull;
 @XmlType(name = "tCondition", propOrder = {
     "any"
 })
-public class TCondition {
+public class TCondition implements Serializable {
 
     @XmlAnyElement(lax = true)
     protected List<Object> any;

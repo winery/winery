@@ -93,6 +93,7 @@ import org.eclipse.winery.model.tosca.HasId;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.model.tosca.HasName;
 import org.eclipse.winery.model.tosca.HasTargetNamespace;
+import org.eclipse.winery.model.tosca.RelationshipSourceOrTarget;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
@@ -141,6 +142,7 @@ import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.export.ToscaExportUtil;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.tika.detect.Detector;
 import org.apache.tika.metadata.Metadata;
@@ -1132,13 +1134,16 @@ public class BackendUtils {
     }
 
     /**
-     * Synchronizes the list of files of the given artifact template with the list of files contained in the given repository. The repository is upddated after synchronization.
+     * Synchronizes the list of files of the given artifact template with the list of files contained in the given
+     * repository. The repository is upddated after synchronization.
      *
-     * This was intended if a user manually added files in the "files" directory and expected winery to correctly export a CSAR
+     * This was intended if a user manually added files in the "files" directory and expected winery to correctly export
+     * a CSAR
      *
      * @param repository The repository to search for the files
      * @param id         the id of the artifact template
-     * @return The synchronized artifact template. Used for testing only, because mockito cannot mock static methods (https://github.com/mockito/mockito/issues/1013).
+     * @return The synchronized artifact template. Used for testing only, because mockito cannot mock static methods
+     * (https://github.com/mockito/mockito/issues/1013).
      */
     public static TArtifactTemplate synchronizeReferences(IGenericRepository repository, ArtifactTemplateId id) throws IOException {
         TArtifactTemplate template = repository.getElement(id);
@@ -1410,12 +1415,13 @@ public class BackendUtils {
     }
 
     /**
-     * Merges two Topology Templates and returns the mapping between the topology elements from the original Topology Template and their
-     * respective clones inside the merged topology.
+     * Merges two Topology Templates and returns the mapping between the topology elements from the original Topology
+     * Template and their respective clones inside the merged topology.
      *
      * @param topologyTemplateA the topology to merged into <code>topologyTemplateB</code>
      * @param topologyTemplateB the target topology in which <dode>topologyTemplateA</dode> should be merged in
-     * @return A mapping between the ids in the <code>topologyTemplateA</code> and their corresponding ids in <code>topologyTemplateB</code>
+     * @return A mapping between the ids in the <code>topologyTemplateA</code> and their corresponding ids in
+     * <code>topologyTemplateB</code>
      */
     public static Map<String, String> mergeTopologyTemplateAinTopologyTemplateB(TTopologyTemplate topologyTemplateA, TTopologyTemplate topologyTemplateB) {
         Objects.requireNonNull(topologyTemplateA);
@@ -1430,21 +1436,20 @@ public class BackendUtils {
             .map(n -> ModelUtilities.getLeft(n).orElse(0));
 
         if (shiftLeft.isPresent()) {
-            collectIdsOfExisitingTopologyElements(topologyTemplateB, idMapping);
+            collectIdsOfExistingTopologyElements(topologyTemplateB, idMapping);
 
             // patch ids of reqs change them if required
             topologyTemplateA.getNodeTemplates().stream()
                 .filter(nt -> nt.getRequirements() != null)
-                .forEach(nt -> nt.getRequirements().getRequirement().forEach(req -> {
-                    String oldId = req.getId();
-
+                .forEach(nt -> nt.getRequirements().getRequirement().forEach(oldReq -> {
+                    TRequirement req = SerializationUtils.clone(oldReq);
                     generateNewIdOfTemplate(req, idMapping);
 
                     topologyTemplateA.getRelationshipTemplates().stream()
                         .filter(rt -> rt.getSourceElement().getRef() instanceof TRequirement)
                         .forEach(rt -> {
                             TRequirement sourceElement = (TRequirement) rt.getSourceElement().getRef();
-                            if (sourceElement.getId().equalsIgnoreCase(oldId)) {
+                            if (sourceElement.getId().equalsIgnoreCase(oldReq.getId())) {
                                 sourceElement.setId(req.getId());
                             }
                         });
@@ -1453,33 +1458,53 @@ public class BackendUtils {
             // patch ids of caps change them if required
             topologyTemplateA.getNodeTemplates().stream()
                 .filter(nt -> nt.getCapabilities() != null)
-                .forEach(nt -> nt.getCapabilities().getCapability().forEach(cap -> {
-                    String oldId = cap.getId();
-
+                .forEach(nt -> nt.getCapabilities().getCapability().forEach(oldCap -> {
+                    TCapability cap = SerializationUtils.clone(oldCap);
                     generateNewIdOfTemplate(cap, idMapping);
 
                     topologyTemplateA.getRelationshipTemplates().stream()
                         .filter(rt -> rt.getTargetElement().getRef() instanceof TCapability)
                         .forEach(rt -> {
                             TCapability targetElement = (TCapability) rt.getTargetElement().getRef();
-                            if (targetElement.getId().equalsIgnoreCase(oldId)) {
+                            if (targetElement.getId().equalsIgnoreCase(oldCap.getId())) {
                                 targetElement.setId(cap.getId());
                             }
                         });
                 }));
 
-            // patch the ids of node templates and add them
+            ArrayList<TRelationshipTemplate> newRelationships = new ArrayList<>();
+
+            // patch the ids of templates and add them
             topologyTemplateA.getNodeTemplateOrRelationshipTemplate()
-                .forEach(rtOrNt -> {
+                .forEach(element -> {
+                    TEntityTemplate rtOrNt = SerializationUtils.clone(element);
                     generateNewIdOfTemplate(rtOrNt, idMapping);
 
                     if (rtOrNt instanceof TNodeTemplate) {
                         int newLeft = ModelUtilities.getLeft((TNodeTemplate) rtOrNt).orElse(0) + shiftLeft.get();
                         ((TNodeTemplate) rtOrNt).setX(Integer.toString(newLeft));
+                    } else if (rtOrNt instanceof TRelationshipTemplate) {
+                        newRelationships.add((TRelationshipTemplate) rtOrNt);
                     }
 
                     topologyTemplateB.getNodeTemplateOrRelationshipTemplate().add(rtOrNt);
                 });
+
+            // update references to the new elements
+            newRelationships.forEach(rel -> {
+                RelationshipSourceOrTarget source = rel.getSourceElement().getRef();
+                RelationshipSourceOrTarget target = rel.getTargetElement().getRef();
+
+                if (source instanceof TNodeTemplate) {
+                    TNodeTemplate newSource = topologyTemplateB.getNodeTemplate(idMapping.get(source.getId()));
+                    rel.setSourceNodeTemplate(newSource);
+                }
+
+                if (target instanceof TNodeTemplate) {
+                    TNodeTemplate newTarget = topologyTemplateB.getNodeTemplate(idMapping.get(target.getId()));
+                    rel.setTargetNodeTemplate(newTarget);
+                }
+            });
         } else {
             topologyTemplateB.getNodeTemplateOrRelationshipTemplate()
                 .addAll(topologyTemplateA.getNodeTemplateOrRelationshipTemplate());
@@ -1488,7 +1513,7 @@ public class BackendUtils {
         return idMapping;
     }
 
-    private static void collectIdsOfExisitingTopologyElements(TTopologyTemplate topologyTemplateB, Map<String, String> idMapping) {
+    private static void collectIdsOfExistingTopologyElements(TTopologyTemplate topologyTemplateB, Map<String, String> idMapping) {
         // collect existing node & relationship template ids
         topologyTemplateB.getNodeTemplateOrRelationshipTemplate()
             // the existing ids are left unchanged

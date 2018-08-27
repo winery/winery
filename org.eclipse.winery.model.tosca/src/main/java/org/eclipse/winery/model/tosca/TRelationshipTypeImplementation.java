@@ -18,6 +18,8 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.namespace.QName;
+
+import java.io.Serializable;
 import java.util.Objects;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
@@ -85,7 +87,7 @@ public class TRelationshipTypeImplementation extends TEntityTypeImplementation {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    public static class DerivedFrom implements HasType {
+    public static class DerivedFrom implements HasType, Serializable {
 
         @XmlAttribute(name = "relationshipTypeImplementationRef", required = true)
         protected QName relationshipTypeImplementationRef;

@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -29,7 +30,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tDeploymentArtifact")
-public class TDeploymentArtifact extends TExtensibleElements implements HasName {
+public class TDeploymentArtifact extends TExtensibleElements implements HasName, Serializable {
 
     @XmlAttribute(name = "name", required = true)
     protected String name;

@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -27,7 +28,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tParameter")
-public class TParameter {
+public class TParameter implements Serializable {
 
     @XmlAttribute(name = "name", required = true)
     @NonNull

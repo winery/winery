@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -137,7 +138,7 @@ public class TCapabilityDefinition extends TExtensibleElements {
     @XmlType(name = "", propOrder = {
         "constraint"
     })
-    public static class Constraints {
+    public static class Constraints implements Serializable {
 
         @XmlElement(name = "Constraint", required = true)
         protected List<TConstraint> constraint;

@@ -21,6 +21,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -48,7 +50,7 @@ import java.util.Objects;
 @XmlType(name = "tDeploymentArtifacts", propOrder = {
     "deploymentArtifact"
 })
-public class TDeploymentArtifacts {
+public class TDeploymentArtifacts implements Serializable {
 
     @XmlElement(name = "DeploymentArtifact", required = true)
     protected List<TDeploymentArtifact> deploymentArtifact;

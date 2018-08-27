@@ -14,6 +14,8 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -27,7 +29,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tRelationMapping")
-public class TRelationMapping {
+public class TRelationMapping implements Serializable {
 
     @XmlAttribute(name = "id")
     private String id;

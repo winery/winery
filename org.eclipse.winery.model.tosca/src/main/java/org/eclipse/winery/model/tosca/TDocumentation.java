@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +37,7 @@ import org.eclipse.jdt.annotation.Nullable;
 @XmlType(name = "tDocumentation", propOrder = {
     "content"
 })
-public class TDocumentation {
+public class TDocumentation implements Serializable {
 
     @XmlMixed
     @XmlAnyElement(lax = true)

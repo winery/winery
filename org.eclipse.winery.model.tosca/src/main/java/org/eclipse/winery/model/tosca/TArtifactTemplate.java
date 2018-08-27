@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -102,7 +103,7 @@ public class TArtifactTemplate extends TEntityTemplate {
     @XmlType(name = "", propOrder = {
         "artifactReference"
     })
-    public static class ArtifactReferences {
+    public static class ArtifactReferences implements Serializable {
 
         @XmlElement(name = "ArtifactReference", required = true)
         protected List<TArtifactReference> artifactReference;

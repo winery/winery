@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -228,7 +229,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
     @XmlType(name = "", propOrder = {
         "capability"
     })
-    public static class Capabilities {
+    public static class Capabilities implements Serializable {
 
         @XmlElement(name = "Capability", required = true)
         protected List<TCapability> capability;
@@ -283,7 +284,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
     @XmlType(name = "", propOrder = {
         "policy"
     })
-    public static class Policies {
+    public static class Policies implements Serializable {
 
         @XmlElement(name = "Policy", required = true)
         protected List<TPolicy> policy;
@@ -314,7 +315,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
     @XmlType(name = "", propOrder = {
         "requirement"
     })
-    public static class Requirements {
+    public static class Requirements implements Serializable {
 
         @XmlElement(name = "Requirement", required = true)
         protected List<TRequirement> requirement;

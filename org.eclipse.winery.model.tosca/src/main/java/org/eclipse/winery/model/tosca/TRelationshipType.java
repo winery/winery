@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -130,7 +131,7 @@ public class TRelationshipType extends TEntityType {
     @XmlType(name = "", propOrder = {
         "_interface"
     })
-    public static class SourceInterfaces {
+    public static class SourceInterfaces implements Serializable {
 
         @XmlElement(name = "Interface", required = true)
         protected List<TInterface> _interface;
@@ -161,7 +162,7 @@ public class TRelationshipType extends TEntityType {
     @XmlType(name = "", propOrder = {
         "_interface"
     })
-    public static class TargetInterfaces {
+    public static class TargetInterfaces implements Serializable {
 
         @XmlElement(name = "Interface", required = true)
         protected List<TInterface> _interface;
@@ -190,7 +191,7 @@ public class TRelationshipType extends TEntityType {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    public static class ValidSource {
+    public static class ValidSource implements Serializable {
 
         @XmlAttribute(name = "typeRef", required = true)
         protected QName typeRef;
@@ -221,7 +222,7 @@ public class TRelationshipType extends TEntityType {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    public static class ValidTarget {
+    public static class ValidTarget implements Serializable{
 
         @XmlAttribute(name = "typeRef", required = true)
         protected QName typeRef;

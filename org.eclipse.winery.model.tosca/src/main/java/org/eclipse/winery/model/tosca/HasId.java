@@ -21,6 +21,8 @@ import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import java.io.Serializable;
 import java.util.Objects;
 
 public abstract class HasId extends TExtensibleElements implements HasIdInIdOrNameField {

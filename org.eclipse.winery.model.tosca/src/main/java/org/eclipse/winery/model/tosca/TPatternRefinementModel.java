@@ -13,6 +13,7 @@
  ********************************************************************************/
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -106,7 +107,7 @@ public class TPatternRefinementModel extends TExtensibleElements implements HasN
     @XmlType(name = "", propOrder = {
         "relationMapping"
     })
-    public static class TRelationMappings {
+    public static class TRelationMappings implements Serializable {
 
         @XmlElement(name = "RelationMapping")
         protected List<TRelationMapping> relationMapping;

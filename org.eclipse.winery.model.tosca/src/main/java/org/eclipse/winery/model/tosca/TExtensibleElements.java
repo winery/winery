@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -59,7 +60,7 @@ import org.eclipse.jdt.annotation.NonNull;
     TDefinitions.class
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class TExtensibleElements {
+public abstract class TExtensibleElements implements Serializable {
 
     protected List<TDocumentation> documentation;
 
@@ -254,6 +255,5 @@ public abstract class TExtensibleElements {
 
         @ADR(11)
         public abstract T self();
-
     }
 }

@@ -21,6 +21,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -55,7 +57,7 @@ import java.util.Objects;
 @XmlType(name = "tImplementationArtifacts", propOrder = {
     "implementationArtifact"
 })
-public class TImplementationArtifacts {
+public class TImplementationArtifacts implements Serializable {
 
     @XmlElement(name = "ImplementationArtifact", required = true)
     protected List<TImplementationArtifacts.ImplementationArtifact> implementationArtifact;
