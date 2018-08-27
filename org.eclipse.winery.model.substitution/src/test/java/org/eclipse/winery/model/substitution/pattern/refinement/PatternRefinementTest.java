@@ -56,18 +56,26 @@ class PatternRefinementTest {
         TNodeTemplate nt1 = new TNodeTemplate();
         nt1.setType("{http://ex.org}nodeType_1");
         nt1.setId("1");
+        nt1.setX("10");
+        nt1.setY("10");
 
         TNodeTemplate nt2 = new TNodeTemplate();
         nt2.setType("{http://ex.org}nodeType_2");
         nt2.setId("2");
+        nt2.setX("110");
+        nt2.setY("10");
 
         TNodeTemplate nt3 = new TNodeTemplate();
         nt3.setType("{http://ex.org}nodeType_3");
         nt3.setId("3");
+        nt3.setX("210");
+        nt3.setY("10");
 
         TNodeTemplate nt4 = new TNodeTemplate();
         nt4.setType("{http://ex.org}nodeType_4");
         nt4.setId("4");
+        nt4.setX("110");
+        nt4.setY("110");
 
         TRelationshipTemplate rt21 = new TRelationshipTemplate();
         rt21.setType("{http://ex.org}relType_1");
@@ -162,18 +170,26 @@ class PatternRefinementTest {
         TNodeTemplate nt10 = new TNodeTemplate();
         nt10.setType("{http://ex.org}nodeType_10");
         nt10.setId("10");
+        nt10.setX("5");
+        nt10.setY("10");
 
         TNodeTemplate nt11 = new TNodeTemplate();
         nt11.setType("{http://ex.org}nodeType_11");
         nt11.setId("11");
+        nt11.setX("105");
+        nt11.setY("5");
 
         TNodeTemplate nt12 = new TNodeTemplate();
         nt12.setType("{http://ex.org}nodeType_12");
         nt12.setId("12");
+        nt12.setX("55");
+        nt12.setY("105");
 
         TNodeTemplate nt13 = new TNodeTemplate();
         nt13.setType("{http://ex.org}nodeType_13");
         nt13.setId("13");
+        nt13.setX("55");
+        nt13.setY("205");
 
         TRelationshipTemplate rt1012 = new TRelationshipTemplate();
         rt1012.setType("{http://ex.org}relType_2");
