@@ -30,8 +30,8 @@ import { Utils } from '../../../wineryUtils/utils';
 import { SelectableListComponent } from './selectableList/selectableList.component';
 import { WineryVersion } from '../../../model/wineryVersion';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { LifecycleInterface } from './lifecycle';
 import { Router } from '@angular/router';
+import { Interfaces } from './interfaces';
 
 @Component({
     selector: 'winery-instance-interfaces',
@@ -260,19 +260,21 @@ export class InterfacesComponent implements OnInit {
     // region ########## Generate Lifecycle Interface ##########
     generateLifecycleInterface(): void {
         const lifecycle = new InterfacesApiData();
-        lifecycle.name = LifecycleInterface.INTERFACE;
-        if (this.toscaType === ToscaTypes.RelationshipType) {
-            if (this.route.url.endsWith('sourceinterfaces')) {
-                lifecycle.name = LifecycleInterface.INTERFACE + '/source';
-            } else if (this.route.url.endsWith('targetinterfaces')) {
-                lifecycle.name = LifecycleInterface.INTERFACE + '/target';
-            }
+        if (this.toscaType === ToscaTypes.RelationshipType && this.route.url.endsWith('/interfaces')) {
+            lifecycle.name = Interfaces.RELATIONSHIP_CONFIGURE;
+            lifecycle.operation.push(new InterfaceOperationApiData(Interfaces.RELATIONSHIP_CONFIGURE_PRE_CONFIGURE_SOURCE));
+            lifecycle.operation.push(new InterfaceOperationApiData(Interfaces.RELATIONSHIP_CONFIGURE_PRE_CONFIGURE_TARGET));
+            lifecycle.operation.push(new InterfaceOperationApiData(Interfaces.RELATIONSHIP_CONFIGURE_POST_CONFIGURE_SOURCE));
+            lifecycle.operation.push(new InterfaceOperationApiData(Interfaces.RELATIONSHIP_CONFIGURE_POST_CONFIGURE_TARGET));
+        } else {
+            // Node Types and Relationship Types (Source and Target Interface)
+            lifecycle.name = Interfaces.LIFECYCLE_STANDARD;
+            lifecycle.operation.push(new InterfaceOperationApiData(Interfaces.LIFECYCLE_STANDARD_INSTALL));
+            lifecycle.operation.push(new InterfaceOperationApiData(Interfaces.LIFECYCLE_STANDARD_CONFIGURE));
+            lifecycle.operation.push(new InterfaceOperationApiData(Interfaces.LIFECYCLE_STANDARD_START));
+            lifecycle.operation.push(new InterfaceOperationApiData(Interfaces.LIFECYCLE_STANDARD_STOP));
+            lifecycle.operation.push(new InterfaceOperationApiData(Interfaces.LIFECYCLE_STANDARD_UNINSTALL));
         }
-        lifecycle.operation.push(new InterfaceOperationApiData(LifecycleInterface.INSTALL));
-        lifecycle.operation.push(new InterfaceOperationApiData(LifecycleInterface.CONFIGURE));
-        lifecycle.operation.push(new InterfaceOperationApiData(LifecycleInterface.START));
-        lifecycle.operation.push(new InterfaceOperationApiData(LifecycleInterface.STOP));
-        lifecycle.operation.push(new InterfaceOperationApiData(LifecycleInterface.UNINSTALL));
         this.interfacesData.push(lifecycle);
         this.interfaceComponent.selectItem(lifecycle);
     }
@@ -283,7 +285,8 @@ export class InterfacesComponent implements OnInit {
                 return false;
             }
             const lifecycleId = this.interfacesData.findIndex((value) => {
-                return value.name.startsWith(LifecycleInterface.INTERFACE);
+                return value.name.startsWith(Interfaces.LIFECYCLE_STANDARD)
+                    || value.name.startsWith(Interfaces.RELATIONSHIP_CONFIGURE);
             });
             return lifecycleId !== -1;
         }

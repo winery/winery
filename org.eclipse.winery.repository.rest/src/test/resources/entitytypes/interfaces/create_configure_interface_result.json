@@ -1,0 +1,43 @@
+[
+    {
+        "operation": [
+            {
+                "documentation": [
+                ],
+                "any": [
+                ],
+                "otherAttributes": {
+                },
+                "name": "pre_configure_source"
+            },
+            {
+                "documentation": [
+                ],
+                "any": [
+                ],
+                "otherAttributes": {
+                },
+                "name": "pre_configure_target"
+            },
+            {
+                "documentation": [
+                ],
+                "any": [
+                ],
+                "otherAttributes": {
+                },
+                "name": "post_configure_source"
+            },
+            {
+                "documentation": [
+                ],
+                "any": [
+                ],
+                "otherAttributes": {
+                },
+                "name": "post_configure_target"
+            }
+        ],
+        "name": "http://opentosca.org/interfaces/relationship/configure"
+    }
+]

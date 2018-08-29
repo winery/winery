@@ -13,12 +13,22 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes;
 
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TRelationshipType;
-import org.eclipse.winery.model.tosca.TRelationshipType.SourceInterfaces;
-import org.eclipse.winery.model.tosca.TRelationshipType.TargetInterfaces;
 import org.eclipse.winery.model.tosca.TRelationshipType.ValidSource;
 import org.eclipse.winery.model.tosca.TRelationshipType.ValidTarget;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
@@ -30,14 +40,9 @@ import org.eclipse.winery.repository.rest.resources.apiData.ValidEndingsApiDataS
 import org.eclipse.winery.repository.rest.resources.entitytypes.InstanceStatesResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 import org.eclipse.winery.repository.rest.resources.interfaces.InterfacesResource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.xml.namespace.QName;
-import java.util.List;
 
 public class RelationshipTypeResource extends TopologyGraphElementEntityTypeResource {
 
@@ -70,11 +75,21 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
         return new InstanceStatesResource(this.getRelationshipType().getInstanceStates(), this);
     }
 
+    @Path("interfaces/")
+    public InterfacesResource getInterfaces() {
+        TInterfaces interfaces = this.getRelationshipType().getInterfaces();
+        if (interfaces == null) {
+            interfaces = new TInterfaces();
+            this.getRelationshipType().setInterfaces(interfaces);
+        }
+        return new InterfacesResource(this, interfaces.getInterface(), "yaml");
+    }
+
     @Path("sourceinterfaces/")
     public InterfacesResource getSourceInterfaces() {
-        SourceInterfaces interfaces = this.getRelationshipType().getSourceInterfaces();
+        TInterfaces interfaces = this.getRelationshipType().getSourceInterfaces();
         if (interfaces == null) {
-            interfaces = new SourceInterfaces();
+            interfaces = new TInterfaces();
             this.getRelationshipType().setSourceInterfaces(interfaces);
         }
         return new InterfacesResource(this, interfaces.getInterface(), "source");
@@ -82,9 +97,9 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 
     @Path("targetinterfaces/")
     public InterfacesResource getTargetInterfaces() {
-        TargetInterfaces interfaces = this.getRelationshipType().getTargetInterfaces();
+        TInterfaces interfaces = this.getRelationshipType().getTargetInterfaces();
         if (interfaces == null) {
-            interfaces = new TargetInterfaces();
+            interfaces = new TInterfaces();
             this.getRelationshipType().setTargetInterfaces(interfaces);
         }
         return new InterfacesResource(this, interfaces.getInterface(), "target");

@@ -295,6 +295,9 @@ div.serviceTemplate div.bottom {
 div.mainContentContainer.relationshipType div.top {
     background: url('../assets/img/containers/rt/rt-FrameTopLarge.jpg');
 }
+div.mainContentContainer.relationshipType div.top.twolines {
+    height: 208px;
+}
 
 div.mainContentContainer.relationshipType div.middle {
     background: url('../assets/img/containers/rt/rt-FrameMiddle.jpg');
