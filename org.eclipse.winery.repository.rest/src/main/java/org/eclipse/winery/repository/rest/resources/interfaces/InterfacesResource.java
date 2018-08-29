@@ -13,7 +13,19 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.interfaces;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.eclipse.winery.model.tosca.TInterface;
+import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TOperation;
 import org.eclipse.winery.model.tosca.TRelationshipType;
@@ -22,12 +34,6 @@ import org.eclipse.winery.repository.rest.resources.apiData.InterfacesSelectApiD
 import org.eclipse.winery.repository.rest.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.List;
 
 public class InterfacesResource {
 
@@ -61,28 +67,23 @@ public class InterfacesResource {
             }
         }
 
+        TInterfaces interfaces = new TInterfaces();
+        interfaces.getInterface().clear();
+        interfaces.getInterface().addAll(interfaceApiData);
         if (this.res instanceof RelationshipTypeResource) {
             TRelationshipType relationshipType = (TRelationshipType) this.res.getElement();
             switch (this.interfaceType) {
                 case "source":
-                    TRelationshipType.SourceInterfaces sourceInterfaces = new TRelationshipType.SourceInterfaces();
-                    sourceInterfaces.getInterface().clear();
-                    sourceInterfaces.getInterface().addAll(interfaceApiData);
-                    relationshipType.setSourceInterfaces(sourceInterfaces);
+                    relationshipType.setSourceInterfaces(interfaces);
+                    break;
+                case "target":
+                    relationshipType.setTargetInterfaces(interfaces);
                     break;
                 default:
-                    // it will be target
-                    TRelationshipType.TargetInterfaces targetInterfaces = new TRelationshipType.TargetInterfaces();
-                    targetInterfaces.getInterface().clear();
-                    targetInterfaces.getInterface().addAll(interfaceApiData);
-                    relationshipType.setTargetInterfaces(targetInterfaces);
-                    break;
+                    relationshipType.setInterfaces(interfaces);
             }
         } else if (this.res instanceof NodeTypeResource) {
             TNodeType nodeType = (TNodeType) this.res.getElement();
-            TNodeType.Interfaces interfaces = new TNodeType.Interfaces();
-            interfaces.getInterface().clear();
-            interfaces.getInterface().addAll(interfaceApiData);
             nodeType.setInterfaces(interfaces);
         } else {
             throw new IllegalStateException("Interfaces are not supported for this element type!");
@@ -92,7 +93,7 @@ public class InterfacesResource {
     }
 
     @GET
-    @Produces( {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public List<?> onGet(@QueryParam("selectData") String selectData) {
         if (selectData == null) {
             return this.interfaces;
@@ -109,5 +110,4 @@ public class InterfacesResource {
 
         return list;
     }
-
 }

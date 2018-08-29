@@ -43,7 +43,7 @@ public class TNodeType extends TEntityType {
     @XmlElement(name = "InstanceStates")
     protected TTopologyElementInstanceStates instanceStates;
     @XmlElement(name = "Interfaces")
-    protected TNodeType.Interfaces interfaces;
+    protected TInterfaces interfaces;
 
     public TNodeType() {
     }
@@ -98,11 +98,11 @@ public class TNodeType extends TEntityType {
         this.instanceStates = value;
     }
 
-    public TNodeType.@Nullable Interfaces getInterfaces() {
+    public @Nullable TInterfaces getInterfaces() {
         return interfaces;
     }
 
-    public void setInterfaces(TNodeType.@Nullable Interfaces value) {
+    public void setInterfaces(@Nullable TInterfaces value) {
         this.interfaces = value;
     }
 
@@ -142,56 +142,6 @@ public class TNodeType extends TEntityType {
         }
     }
 
-
-    /**
-     * <p>Java class for anonymous complex type.
-     * <p>
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     * <p>
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;sequence>
-     *         &lt;element name="Interface" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tInterface"
-     * maxOccurs="unbounded"/>
-     *       &lt;/sequence>
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "_interface"
-    })
-    public static class Interfaces {
-
-        @XmlElement(name = "Interface", required = true)
-        protected List<TInterface> _interface;
-
-        @NonNull
-        public List<TInterface> getInterface() {
-            if (_interface == null) {
-                _interface = new ArrayList<TInterface>();
-            }
-            return this._interface;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Interfaces that = (Interfaces) o;
-            return Objects.equals(_interface, that._interface);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(_interface);
-        }
-    }
-
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
         "requirementDefinition"
@@ -227,7 +177,7 @@ public class TNodeType extends TEntityType {
         private RequirementDefinitions requirementDefinitions;
         private CapabilityDefinitions capabilityDefinitions;
         private TTopologyElementInstanceStates instanceStates;
-        private Interfaces interfaces;
+        private TInterfaces interfaces;
 
         public Builder(String name) {
             super(name);
@@ -252,7 +202,7 @@ public class TNodeType extends TEntityType {
             return this;
         }
 
-        public Builder setInterfaces(TNodeType.Interfaces interfaces) {
+        public Builder setInterfaces(TInterfaces interfaces) {
             this.interfaces = interfaces;
             return this;
         }
@@ -323,7 +273,7 @@ public class TNodeType extends TEntityType {
             return addCapabilityDefinitions(tmp);
         }
 
-        public Builder addInterfaces(TNodeType.Interfaces interfaces) {
+        public Builder addInterfaces(TInterfaces interfaces) {
             if (interfaces == null || interfaces.getInterface().isEmpty()) {
                 return this;
             }
@@ -341,7 +291,7 @@ public class TNodeType extends TEntityType {
                 return this;
             }
 
-            TNodeType.Interfaces tmp = new TNodeType.Interfaces();
+            TInterfaces tmp = new TInterfaces();
             tmp.getInterface().addAll(interfaces);
             return addInterfaces(tmp);
         }
@@ -351,7 +301,7 @@ public class TNodeType extends TEntityType {
                 return this;
             }
 
-            TNodeType.Interfaces tmp = new TNodeType.Interfaces();
+            TInterfaces tmp = new TInterfaces();
             tmp.getInterface().add(interfaces);
             return addInterfaces(tmp);
         }

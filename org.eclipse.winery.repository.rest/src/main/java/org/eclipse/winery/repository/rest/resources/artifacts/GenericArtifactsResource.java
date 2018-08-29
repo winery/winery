@@ -49,6 +49,7 @@ import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.EntityTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.generators.ia.Generator;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
@@ -299,7 +300,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 
         // Winery already ensures that this is a valid NCName
         // getName() returns the id of the nodeType: A nodeType carries the "id" attribute only (and no name attribute)
-        name += typeId.getXmlId().getDecoded();
+        name += VersionUtils.getNameWithoutVersion(typeId.getXmlId().getDecoded());
 
         // Two separators to distinguish node type and interface part
         name += Util.FORBIDDEN_CHARACTER_REPLACEMENT;
@@ -396,6 +397,9 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
             }
             if (relationshipType.getTargetInterfaces() != null) {
                 interfaces.addAll(relationshipType.getTargetInterfaces().getInterface());
+            }
+            if (relationshipType.getInterfaces() != null) {
+                interfaces.addAll(relationshipType.getInterfaces().getInterface());
             }
         }
         Iterator<TInterface> it = interfaces.iterator();
