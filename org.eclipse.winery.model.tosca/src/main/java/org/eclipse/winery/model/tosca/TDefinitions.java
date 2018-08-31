@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -68,7 +69,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         @XmlElement(name = "NodeTypeImplementation", type = TNodeTypeImplementation.class),
         @XmlElement(name = "RequirementType", type = TRequirementType.class),
         @XmlElement(name = "PolicyType", type = TPolicyType.class),
-        @XmlElement(name = "Compliancerule", type = TComplianceRule.class),
+        @XmlElement(name = "ComplianceRule", type = TComplianceRule.class),
         @XmlElement(name = "PatternRefinementModel", type = TPatternRefinementModel.class)
     })
     protected List<TExtensibleElements> serviceTemplateOrNodeTypeOrNodeTypeImplementation;

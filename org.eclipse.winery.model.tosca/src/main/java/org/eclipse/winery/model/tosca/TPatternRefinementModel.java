@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -40,7 +41,7 @@ public class TPatternRefinementModel extends TExtensibleElements implements HasN
     @XmlSchemaType(name = "anyURI")
     protected String targetNamespace;
 
-    @XmlElement(name = "Detector")
+    @XmlElement(name = "Detector" )
     private TTopologyTemplate detector;
 
     @XmlElement(name = "RefinementStructure")
