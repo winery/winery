@@ -41,7 +41,6 @@ import org.eclipse.winery.topologygraph.model.ToscaGraph;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
 import org.eclipse.winery.topologygraph.transformation.ToscaTransformer;
 
-import com.google.common.collect.Iterators;
 import org.jgrapht.GraphMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,16 +93,13 @@ public class PatternRefinement extends AbstractSubstitution {
                     ToscaGraph detectorGraph = ToscaTransformer.createTOSCAGraph(prm.getDetector());
                     Iterator<GraphMapping<ToscaNode, ToscaEdge>> matches = isomorphismMatcher.findMatches(detectorGraph, topologyGraph, new ToscaTypeMatcher());
 
-                    if (matches.hasNext()) {
-                        List<GraphMapping<ToscaNode, ToscaEdge>> graphMappings = new ArrayList<>();
-                        Iterators.addAll(graphMappings, matches);
-
-                        PatternRefinementCandidate candidate = new PatternRefinementCandidate(prm, graphMappings, detectorGraph, id[0]++);
+                    matches.forEachRemaining(mapping -> {
+                        PatternRefinementCandidate candidate = new PatternRefinementCandidate(prm, mapping, detectorGraph, id[0]++);
 
                         if (isApplicable(candidate, topology)) {
                             candidates.add(candidate);
                         }
-                    }
+                    });
                 });
 
             if (candidates.size() == 0) {
@@ -121,67 +117,63 @@ public class PatternRefinement extends AbstractSubstitution {
     }
 
     public void applyRefinement(PatternRefinementCandidate refinement, TTopologyTemplate topology) {
-        refinement.getGraphMapping()
-            .forEach(mapping -> {
-                    Map<String, String> idMapping = BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(
-                        refinement.getPatternRefinementModel().getRefinementStructure(),
-                        topology
-                    );
+        Map<String, String> idMapping = BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(
+            refinement.getPatternRefinementModel().getRefinementStructure(),
+            topology
+        );
 
-                    Map<String, Map<String, Integer>> coordinates = calculateNewPositions(
-                        refinement.getDetectorGraph(),
-                        mapping,
-                        refinement.getPatternRefinementModel().getRefinementStructure()
-                    );
-                    refinement.getPatternRefinementModel().getRefinementStructure().getNodeTemplates()
-                        .forEach(node -> {
-                                Map<String, Integer> newCoordinates = coordinates.get(node.getId());
-                                TNodeTemplate nodeTemplate = topology.getNodeTemplate(idMapping.get(node.getId()));
-                                nodeTemplate.setX(newCoordinates.get("x").toString());
-                                nodeTemplate.setY(newCoordinates.get("y").toString());
-                            }
-                        );
-
-                    refinement.getDetectorGraph().vertexSet()
-                        .forEach(vertex -> {
-                            TNodeTemplate matchingNode = mapping.getVertexCorrespondence(vertex, false).getNodeTemplate();
-                            this.getExternalRelations(matchingNode, refinement, topology)
-                                .forEach(relationship -> {
-                                    refinement.getPatternRefinementModel().getRelationMappings().getRelationMapping()
-                                        .stream()
-                                        // use anyMatch to reduce runtime
-                                        .anyMatch(relationMapping -> {
-                                            // TODO: check if any supertype of the relationship matches
-                                            if (relationship.getType().equals(relationMapping.getRelationType())) {
-                                                if (relationMapping.getDirection() == TRelationDirection.INGOING
-                                                    && (Objects.isNull(relationMapping.getValidSourceOrTarget())
-                                                    || relationship.getSourceElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget()))
-                                                ) {
-                                                    // change the source element to the new source defined in the relation mapping
-                                                    String id = idMapping.get(relationMapping.getRefinementNode().getId());
-                                                    relationship.setTargetNodeTemplate(topology.getNodeTemplate(id));
-                                                    return true;
-                                                } else if (Objects.isNull(relationMapping.getValidSourceOrTarget())
-                                                    || relationship.getTargetElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget())) {
-                                                    String id = idMapping.get(relationMapping.getRefinementNode().getId());
-                                                    relationship.setSourceNodeTemplate(topology.getNodeTemplate(id));
-                                                    return true;
-                                                }
-                                            }
-                                            return false;
-                                        });
-                                });
-                            topology.getNodeTemplateOrRelationshipTemplate()
-                                .remove(matchingNode);
-                        });
-                    refinement.getDetectorGraph().edgeSet()
-                        .forEach(edge -> {
-                            TRelationshipTemplate tRelationshipTemplate = mapping.getEdgeCorrespondence(edge, false).getTemplate();
-                            topology.getNodeTemplateOrRelationshipTemplate()
-                                .remove(tRelationshipTemplate);
-                        });
+        Map<String, Map<String, Integer>> coordinates = calculateNewPositions(
+            refinement.getDetectorGraph(),
+            refinement.getGraphMapping(),
+            refinement.getPatternRefinementModel().getRefinementStructure()
+        );
+        refinement.getPatternRefinementModel().getRefinementStructure().getNodeTemplates()
+            .forEach(node -> {
+                    Map<String, Integer> newCoordinates = coordinates.get(node.getId());
+                    TNodeTemplate nodeTemplate = topology.getNodeTemplate(idMapping.get(node.getId()));
+                    nodeTemplate.setX(newCoordinates.get("x").toString());
+                    nodeTemplate.setY(newCoordinates.get("y").toString());
                 }
             );
+
+        refinement.getDetectorGraph().vertexSet()
+            .forEach(vertex -> {
+                TNodeTemplate matchingNode = refinement.getGraphMapping().getVertexCorrespondence(vertex, false).getNodeTemplate();
+                this.getExternalRelations(matchingNode, refinement, topology)
+                    .forEach(relationship -> {
+                        refinement.getPatternRefinementModel().getRelationMappings().getRelationMapping()
+                            .stream()
+                            // use anyMatch to reduce runtime
+                            .anyMatch(relationMapping -> {
+                                // TODO: check if any supertype of the relationship matches
+                                if (relationship.getType().equals(relationMapping.getRelationType())) {
+                                    if (relationMapping.getDirection() == TRelationDirection.INGOING
+                                        && (Objects.isNull(relationMapping.getValidSourceOrTarget())
+                                        || relationship.getSourceElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget()))
+                                    ) {
+                                        // change the source element to the new source defined in the relation mapping
+                                        String id = idMapping.get(relationMapping.getRefinementNode().getId());
+                                        relationship.setTargetNodeTemplate(topology.getNodeTemplate(id));
+                                        return true;
+                                    } else if (Objects.isNull(relationMapping.getValidSourceOrTarget())
+                                        || relationship.getTargetElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget())) {
+                                        String id = idMapping.get(relationMapping.getRefinementNode().getId());
+                                        relationship.setSourceNodeTemplate(topology.getNodeTemplate(id));
+                                        return true;
+                                    }
+                                }
+                                return false;
+                            });
+                    });
+                topology.getNodeTemplateOrRelationshipTemplate()
+                    .remove(matchingNode);
+            });
+        refinement.getDetectorGraph().edgeSet()
+            .forEach(edge -> {
+                TRelationshipTemplate tRelationshipTemplate = refinement.getGraphMapping().getEdgeCorrespondence(edge, false).getTemplate();
+                topology.getNodeTemplateOrRelationshipTemplate()
+                    .remove(tRelationshipTemplate);
+            });
     }
 
     private Map<String, Map<String, Integer>> calculateNewPositions(ToscaGraph detectorGraph, GraphMapping<ToscaNode, ToscaEdge> mapping, TTopologyTemplate refinementStructure) {
@@ -224,35 +216,31 @@ public class PatternRefinement extends AbstractSubstitution {
     }
 
     public boolean isApplicable(PatternRefinementCandidate candidate, TTopologyTemplate topology) {
-        return candidate.getGraphMapping()
+        return candidate.getDetectorGraph().vertexSet()
             .stream()
-            .allMatch(mapping ->
-                candidate.getDetectorGraph().vertexSet()
-                    .stream()
-                    .allMatch(vertex -> {
-                        TNodeTemplate matchingNode = mapping.getVertexCorrespondence(vertex, false).getNodeTemplate();
-                        return this.getExternalRelations(matchingNode, candidate, topology)
-                            .allMatch(relationship ->
-                                // do the actual applicable check: can the relationship be mapped?
-                                Objects.nonNull(candidate.getPatternRefinementModel().getRelationMappings()) &&
-                                    candidate.getPatternRefinementModel().getRelationMappings().getRelationMapping()
-                                        .stream()
-                                        .anyMatch(relationMapping -> {
-                                            // TODO: check if any supertype of the relationship matches
-                                            if (relationship.getType().equals(relationMapping.getRelationType())) {
-                                                if (relationMapping.getDirection() == TRelationDirection.INGOING) {
-                                                    return Objects.isNull(relationMapping.getValidSourceOrTarget())
-                                                        || relationship.getSourceElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget());
-                                                } else {
-                                                    return Objects.isNull(relationMapping.getValidSourceOrTarget())
-                                                        || relationship.getTargetElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget());
-                                                }
-                                            }
-                                            return false;
-                                        })
-                            );
-                    })
-            );
+            .allMatch(vertex -> {
+                TNodeTemplate matchingNode = candidate.getGraphMapping().getVertexCorrespondence(vertex, false).getNodeTemplate();
+                return this.getExternalRelations(matchingNode, candidate, topology)
+                    .allMatch(relationship ->
+                        // do the actual applicable check: can the relationship be mapped?
+                        Objects.nonNull(candidate.getPatternRefinementModel().getRelationMappings()) &&
+                            candidate.getPatternRefinementModel().getRelationMappings().getRelationMapping()
+                                .stream()
+                                .anyMatch(relationMapping -> {
+                                    // TODO: check if any supertype of the relationship matches
+                                    if (relationship.getType().equals(relationMapping.getRelationType())) {
+                                        if (relationMapping.getDirection() == TRelationDirection.INGOING) {
+                                            return Objects.isNull(relationMapping.getValidSourceOrTarget())
+                                                || relationship.getSourceElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget());
+                                        } else {
+                                            return Objects.isNull(relationMapping.getValidSourceOrTarget())
+                                                || relationship.getTargetElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget());
+                                        }
+                                    }
+                                    return false;
+                                })
+                    );
+            });
     }
 
     public Stream<TRelationshipTemplate> getExternalRelations(TNodeTemplate matchingNode, PatternRefinementCandidate candidate, TTopologyTemplate topology) {
@@ -265,15 +253,12 @@ public class PatternRefinement extends AbstractSubstitution {
             ).filter(relationship -> {
                 // ignore all relationships which are part of the sub-graph
                 // \nexists sgm_y \in sgms : \pi_1(sgm_y) = r_j
-                return candidate.getGraphMapping().stream()
-                    .noneMatch(edgeMapping ->
-                        candidate.getDetectorGraph().edgeSet()
-                            .stream()
-                            .anyMatch(toscaEdge -> {
-                                ToscaEdge edgeCorrespondence = edgeMapping.getEdgeCorrespondence(candidate.getDetectorGraph().getReferenceEdge(), false);
-                                return edgeCorrespondence.getTemplate().equals(relationship);
-                            })
-                    );
+                return candidate.getDetectorGraph().edgeSet()
+                    .stream()
+                    .noneMatch(toscaEdge -> {
+                        ToscaEdge edgeCorrespondence = candidate.getGraphMapping().getEdgeCorrespondence(toscaEdge, false);
+                        return edgeCorrespondence.getTemplate().equals(relationship);
+                    });
             });
     }
 }

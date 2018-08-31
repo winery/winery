@@ -37,7 +37,7 @@ export interface RefinementElement {
 
 export interface PatternRefinementModel {
     id: number;
-    nodeIdsToBeReplaced: Array<string[]>;
+    nodeIdsToBeReplaced: string[];
     patternRefinementModel: {
         name: string;
         targetNamespace: string;

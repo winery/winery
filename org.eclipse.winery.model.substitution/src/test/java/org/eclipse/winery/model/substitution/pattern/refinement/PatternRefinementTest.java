@@ -15,8 +15,10 @@
 package org.eclipse.winery.model.substitution.pattern.refinement;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
@@ -259,15 +261,15 @@ class PatternRefinementTest {
         ToscaGraph detectorGraph = ToscaTransformer.createTOSCAGraph(matchingPrm.getDetector());
 
         ToscaIsomorphismMatcher matcher = new ToscaIsomorphismMatcher();
-        List<GraphMapping<ToscaNode, ToscaEdge>> mappings = new ArrayList<>();
-        Iterators.addAll(mappings, matcher.findMatches(detectorGraph, topologyGraph, new ToscaTypeMatcher()));
+        Iterator<GraphMapping<ToscaNode, ToscaEdge>> mappings = matcher.findMatches(detectorGraph, topologyGraph, new ToscaTypeMatcher());
+        GraphMapping<ToscaNode, ToscaEdge> mapping = mappings.next();
 
         TPatternRefinementModel.TRelationMappings relationMappings = new TPatternRefinementModel.TRelationMappings();
         relationMappings.getRelationMapping().add(rm1);
         relationMappings.getRelationMapping().add(rm2);
         matchingPrm.setRelationMappings(relationMappings);
 
-        candidate = new PatternRefinementCandidate(matchingPrm, mappings, detectorGraph, 1);
+        candidate = new PatternRefinementCandidate(matchingPrm, mapping, detectorGraph, 1);
         // endregion
 
         // region *** non-matching PRM **
@@ -278,7 +280,7 @@ class PatternRefinementTest {
         relationMappings1.getRelationMapping().add(rm2);
         nonMatchingPrm.setRelationMappings(relationMappings1);
 
-        invalidCandidate = new PatternRefinementCandidate(nonMatchingPrm, mappings, detectorGraph, 2);
+        invalidCandidate = new PatternRefinementCandidate(nonMatchingPrm, mapping, detectorGraph, 2);
         // endregion
     }
 
@@ -418,5 +420,43 @@ class PatternRefinementTest {
         assertEquals("10", topology2.getRelationshipTemplate("21").getSourceElement().getRef().getId());
         assertEquals(9, topology2.getNodeTemplateOrRelationshipTemplate().size());
     }
+    // endregion
+
+    // region ********** getExternalRelations **********
+
+    @Test
+    void getExternalRelations() {
+        setUp();
+
+         /*
+        input:
+        #######   (1)  #######   (1)  #######
+        # (1) # <===== # (2) # <===== # (3) #
+        #######        #######        #######
+                          | (2)
+                         \/
+                       #######
+                       # (4) #
+                       #######
+         
+         expect the algorithm to find the bold (==) relations
+         */
+        PatternRefinement patternRefinement = new PatternRefinement();
+        ArrayList<ToscaNode> matchingNodes = new ArrayList<>();
+        Iterators.addAll(matchingNodes, candidate.getDetectorGraph().vertexSet().iterator());
+
+        assertEquals(2, matchingNodes.size());
+
+        TNodeTemplate nt2 = candidate.getGraphMapping().getVertexCorrespondence(matchingNodes.get(0), false).getNodeTemplate();
+        List<TRelationshipTemplate> externalRelationsOf2 = patternRefinement.getExternalRelations(nt2, candidate, topology)
+            .collect(Collectors.toList());
+        assertEquals(2, externalRelationsOf2.size());
+
+        TNodeTemplate nt4 = matchingNodes.get(1).getNodeTemplate();
+        List<TRelationshipTemplate> externalRelationsOf4 = patternRefinement.getExternalRelations(nt4, candidate, topology)
+            .collect(Collectors.toList());
+        assertEquals(0, externalRelationsOf4.size());
+    }
+
     // endregion
 }

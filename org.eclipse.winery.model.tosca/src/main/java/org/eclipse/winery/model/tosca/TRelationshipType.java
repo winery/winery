@@ -222,7 +222,7 @@ public class TRelationshipType extends TEntityType {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    public static class ValidTarget implements Serializable{
+    public static class ValidTarget implements Serializable {
 
         @XmlAttribute(name = "typeRef", required = true)
         protected QName typeRef;

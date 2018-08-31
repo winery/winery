@@ -68,11 +68,7 @@ export class RefinementSidebarComponent implements OnDestroy {
     }
 
     onHoverOver(candidate: PatternRefinementModel) {
-        const idList: string[] = [];
-        candidate.nodeIdsToBeReplaced
-            .forEach(value => idList.push(...value));
-
-        this.ngRedux.dispatch(this.rendererActions.highlightNodes(idList));
+        this.ngRedux.dispatch(this.rendererActions.highlightNodes(candidate.nodeIdsToBeReplaced));
     }
 
     openModeler(event: MouseEvent, name: string, targetNamespace: string) {

@@ -15,7 +15,6 @@
 package org.eclipse.winery.model.substitution.pattern.refinement;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
@@ -31,12 +30,12 @@ public class PatternRefinementCandidate {
 
     private final TPatternRefinementModel patternRefinementModel;
     @JsonIgnore
-    private final List<GraphMapping<ToscaNode, ToscaEdge>> graphMapping;
+    private final GraphMapping<ToscaNode, ToscaEdge> graphMapping;
     @JsonIgnore
     private final ToscaGraph detectorGraph;
     private final int id;
 
-    public PatternRefinementCandidate(TPatternRefinementModel patternRefinementModel, List<GraphMapping<ToscaNode, ToscaEdge>> graphMapping,
+    public PatternRefinementCandidate(TPatternRefinementModel patternRefinementModel, GraphMapping<ToscaNode, ToscaEdge> graphMapping,
                                       ToscaGraph detectorGraph, int id) {
         this.patternRefinementModel = Objects.requireNonNull(patternRefinementModel);
         this.graphMapping = Objects.requireNonNull(graphMapping);
@@ -49,8 +48,7 @@ public class PatternRefinementCandidate {
         return patternRefinementModel;
     }
 
-    @NonNull
-    public List<GraphMapping<ToscaNode, ToscaEdge>> getGraphMapping() {
+    public GraphMapping<ToscaNode, ToscaEdge> getGraphMapping() {
         return graphMapping;
     }
 
@@ -64,21 +62,13 @@ public class PatternRefinementCandidate {
         return id;
     }
 
-    @NonNull
-    public List<List<String>> getNodeIdsToBeReplaced() {
-        ArrayList<List<String>> mappingsList = new ArrayList<>();
-        this.graphMapping.forEach(graphMapping -> {
-            ArrayList<String> ids = new ArrayList<>();
+    public ArrayList<String> getNodeIdsToBeReplaced() {
+        ArrayList<String> ids = new ArrayList<>();
 
-            this.detectorGraph.vertexSet().forEach(toscaNode ->
-                ids.add(graphMapping.getVertexCorrespondence(toscaNode, false).getNodeTemplate().getId())
-            );
+        this.detectorGraph.vertexSet().forEach(toscaNode ->
+            ids.add(graphMapping.getVertexCorrespondence(toscaNode, false).getNodeTemplate().getId())
+        );
 
-            if (!ids.isEmpty()) {
-                mappingsList.add(ids);
-            }
-        });
-
-        return mappingsList;
+        return ids;
     }
 }
