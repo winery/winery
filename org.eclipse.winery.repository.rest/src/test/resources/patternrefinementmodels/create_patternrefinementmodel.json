@@ -1,4 +1,4 @@
 {
     "localname": "MyCoolPRM_w1-wip1",
-    "namespace": "http://winery.opentosca.org/test/concrete/patternrefinementmodels"
+    "namespace": "http://plain.winery.opentosca.org/test/patternrefinementmodels"
 }

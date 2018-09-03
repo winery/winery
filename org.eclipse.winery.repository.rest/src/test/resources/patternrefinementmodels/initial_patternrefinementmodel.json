@@ -1,48 +1,65 @@
 {
     "documentation": [
+
     ],
     "any": [
+
     ],
     "otherAttributes": {
+
     },
-    "id": "winery-defs-for_patternrefinementmodels-pmr_1.0.0-w1-wip1",
+    "id": "winery-defs-for_patternrefinementmodels-MyCoolPRM_w1-wip1",
     "serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
         {
             "documentation": [
+
             ],
             "any": [
+
             ],
             "otherAttributes": {
+
             },
-            "name": "pmr_1.0.0-w1-wip1",
+            "name": "MyCoolPRM_w1-wip1",
             "targetNamespace": "http://plain.winery.opentosca.org/test/patternrefinementmodels",
             "detector": {
                 "documentation": [
+
                 ],
                 "any": [
+
                 ],
                 "otherAttributes": {
+
                 },
-                "nodeTemplates": [
-                ],
                 "relationshipTemplates": [
+
+                ],
+                "nodeTemplates": [
+
                 ]
             },
             "refinementStructure": {
                 "documentation": [
+
                 ],
                 "any": [
+
                 ],
                 "otherAttributes": {
+
                 },
-                "nodeTemplates": [
-                ],
                 "relationshipTemplates": [
+
+                ],
+                "nodeTemplates": [
+
                 ]
             }
         }
     ],
     "targetNamespace": "http://plain.winery.opentosca.org/test/patternrefinementmodels",
     "import": [
+
     ]
 }

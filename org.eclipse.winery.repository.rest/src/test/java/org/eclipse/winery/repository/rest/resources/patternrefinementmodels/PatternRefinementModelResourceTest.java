@@ -33,12 +33,4 @@ public class PatternRefinementModelResourceTest extends AbstractResourceTest {
         this.assertGet("patternrefinementmodels/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fconcrete%252Fpatternrefinementmodels/myExample_w1-wip1/",
             "patternrefinementmodels/first_patternrefinementmodel.xml");
     }
-
-    @Test
-    public void createPRM() throws Exception {
-        this.setRevisionTo("origin/plain");
-        this.assertPost("patternrefinementmodels/", "patternrefinementmodels/create_patternrefinementmodel.json");
-        this.assertGet("patternrefinementmodels/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fconcrete%252Fpatternrefinementmodels/MyCoolPRM_w1-wip1/",
-            "patternrefinementmodels/created_patternrefinementmodel.xml");
-    }
 }

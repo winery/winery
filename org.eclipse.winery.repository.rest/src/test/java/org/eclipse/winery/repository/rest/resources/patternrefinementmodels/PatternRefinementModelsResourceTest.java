@@ -21,10 +21,18 @@ import org.junit.Test;
 public class PatternRefinementModelsResourceTest extends AbstractResourceTest {
 
     @Test
-    public void createPatternRefinementModel() throws Exception{
+    public void createPatternRefinementModel() throws Exception {
         this.setRevisionTo("337119ea2e694e70b994bcb3d97295856c0ab0f6");
         this.assertPost("patternrefinementmodels/", "patternrefinementmodels/create_patternrefinementmodel.json");
-        this.assertGet("patternrefinementmodels/http%253A%252F%252Fplain.winery.opentosca.org%252Ftest%252Fpatternrefinementmodels/pmr_1.0.0-w1-wip1/",
+        this.assertGet("patternrefinementmodels/http%253A%252F%252Fplain.winery.opentosca.org%252Ftest%252Fpatternrefinementmodels/MyCoolPRM_w1-wip1/",
             "patternrefinementmodels/initial_patternrefinementmodel.json");
+    }
+
+    @Test
+    public void createPRM() throws Exception {
+        this.setRevisionTo("3de3025c9b96ec639b3c2a45eea8bf19fe017b56");
+        this.assertPost("patternrefinementmodels/", "patternrefinementmodels/create_patternrefinementmodel.json");
+        this.assertGet("patternrefinementmodels/http%253A%252F%252Fplain.winery.opentosca.org%252Ftest%252Fpatternrefinementmodels/MyCoolPRM_w1-wip1/",
+            "patternrefinementmodels/created_patternrefinementmodel.xml");
     }
 }
