@@ -19,7 +19,7 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 
-public class PatternRefinementModelId extends EntityTemplateId {
+public class PatternRefinementModelId extends DefinitionsChildId {
 
     public PatternRefinementModelId(Namespace namespace, XmlId xmlId) {
         super(namespace, xmlId);
