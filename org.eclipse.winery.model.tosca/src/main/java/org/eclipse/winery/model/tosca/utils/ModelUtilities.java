@@ -14,32 +14,56 @@
 
 package org.eclipse.winery.model.tosca.utils;
 
-import org.eclipse.winery.model.tosca.*;
-import org.eclipse.winery.model.tosca.TNodeTemplate.Capabilities;
-import org.eclipse.winery.model.tosca.TNodeTemplate.Requirements;
-import org.eclipse.winery.model.tosca.TRelationshipTemplate.SourceOrTargetElement;
-import org.eclipse.winery.model.tosca.constants.Namespaces;
-import org.eclipse.winery.model.tosca.constants.QNames;
-import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
-import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Comment;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.io.StringReader;
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.io.StringReader;
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.stream.Collectors;
+
+import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
+import org.eclipse.winery.model.tosca.TCapability;
+import org.eclipse.winery.model.tosca.TCapabilityDefinition;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeTemplate.Capabilities;
+import org.eclipse.winery.model.tosca.TNodeTemplate.Requirements;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TPlan;
+import org.eclipse.winery.model.tosca.TPlans;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate.SourceOrTargetElement;
+import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TRequirement;
+import org.eclipse.winery.model.tosca.TRequirementDefinition;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
+import org.eclipse.winery.model.tosca.constants.QNames;
+import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
+import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
+
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Comment;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 public class ModelUtilities {
 
@@ -48,10 +72,9 @@ public class ModelUtilities {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ModelUtilities.class);
 
     /**
-     * @deprecated Use {@link TEntityType#getWinerysPropertiesDefinition()}
-     * 
      * @param et the entity type to query
      * @return null if et == null
+     * @deprecated Use {@link TEntityType#getWinerysPropertiesDefinition()}
      */
     @Deprecated
     public static WinerysPropertiesDefinition getWinerysPropertiesDefinition(TEntityType et) {
@@ -208,11 +231,11 @@ public class ModelUtilities {
      * Special method to get the name of an extensible element as the TOSCA specification does not have a separate super
      * type for elements with a name
      * <p>
-     * @see Util#instanceSupportsNameAttribute(java.lang.Class) is related
      *
      * @param e the extensible element offering a name attribute (besides an id attribute)
      * @return the name of the extensible element
      * @throws IllegalStateException if e does not offer the method "getName"
+     * @see Util#instanceSupportsNameAttribute(java.lang.Class) is related
      */
     public static String getName(TExtensibleElements e) {
         Method method;
@@ -298,7 +321,7 @@ public class ModelUtilities {
             floatValue = Float.parseFloat(x);
         } catch (NumberFormatException e) {
             LOGGER.debug("Could not parse x value", e);
-            return Optional.empty();    
+            return Optional.empty();
         }
         return Optional.of(floatValue.intValue());
     }
@@ -533,20 +556,33 @@ public class ModelUtilities {
         return relationshipTemplate;
     }
 
+    /**
+     * Target label is not present if
+     * - empty string
+     * - undefined
+     * - null
+     * Target Label is not case sensitive -> always lower case.
+     */
     public static Optional<String> getTargetLabel(TNodeTemplate nodeTemplate) {
         if (nodeTemplate == null) {
             return Optional.empty();
         }
         Map<QName, String> otherAttributes = nodeTemplate.getOtherAttributes();
         String targetLabel = otherAttributes.get(QNAME_LOCATION);
-        return Optional.ofNullable(targetLabel);
+        if (targetLabel != null && (targetLabel.equals("undefined") || targetLabel.equals(""))) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(targetLabel).map(String::toLowerCase);
     }
 
+    /**
+     * Target Label is not case sensitive -> set to lowercase.
+     */
     public static void setTargetLabel(TNodeTemplate nodeTemplate, String targetLabel) {
         Objects.requireNonNull(nodeTemplate);
         Objects.requireNonNull(targetLabel);
         Map<QName, String> otherAttributes = nodeTemplate.getOtherAttributes();
-        otherAttributes.put(QNAME_LOCATION, targetLabel);
+        otherAttributes.put(QNAME_LOCATION, targetLabel.toLowerCase());
     }
 
     public static TNodeTemplate getSourceNodeTemplateOfRelationshipTemplate(TTopologyTemplate topologyTemplate, TRelationshipTemplate relationshipTemplate) {

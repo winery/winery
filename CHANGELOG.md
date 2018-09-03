@@ -15,6 +15,7 @@ This is similar to [Angular's CHANGELOG.md](https://github.com/angular/angular/b
 ## [unreleased]
 
 ### Changed
+- Add automated allocation of topologies to cloud providers
 - Add versioning for TOSCA definitions
 - Fix maven tests for junit5
 - Add a subtype in the inheritance view

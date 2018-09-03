@@ -123,7 +123,7 @@
                 "documentation": [
                     {
                         "content": [
-                            "Stack of Node Template dressageequipment from Provider Repository EquipmentProvider"
+                            "Stack of Node Template dressageequipment from Provider Repository equipmentprovider"
                         ],
                         "source": null,
                         "lang": null
@@ -141,7 +141,7 @@
                         "any": [
                         ],
                         "otherAttributes": {
-                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "EquipmentProvider",
+                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "equipmentprovider",
                             "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "804",
                             "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "270"
                         },

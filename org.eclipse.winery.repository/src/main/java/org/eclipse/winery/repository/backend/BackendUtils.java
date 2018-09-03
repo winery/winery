@@ -537,6 +537,7 @@ public class BackendUtils {
         nodeTemplateClone.setType(nodeTemplate.getType());
         nodeTemplateClone.setId(nodeTemplate.getId());
         nodeTemplateClone.setDeploymentArtifacts(nodeTemplate.getDeploymentArtifacts());
+        // returns 1 if null -> !original.equals(cloned)
         nodeTemplateClone.setMaxInstances(nodeTemplate.getMaxInstances());
         nodeTemplateClone.setMinInstances(nodeTemplate.getMinInstances());
         nodeTemplateClone.setName(nodeTemplate.getName());
@@ -545,6 +546,8 @@ public class BackendUtils {
         nodeTemplateClone.setCapabilities(nodeTemplate.getCapabilities());
         nodeTemplateClone.setProperties(nodeTemplate.getProperties());
         nodeTemplateClone.setPropertyConstraints(nodeTemplate.getPropertyConstraints());
+        nodeTemplateClone.setX(nodeTemplate.getX());
+        nodeTemplateClone.setY(nodeTemplate.getY());
 
         if (ModelUtilities.getTargetLabel(nodeTemplate).isPresent()) {
             ModelUtilities.setTargetLabel(nodeTemplateClone, ModelUtilities.getTargetLabel(nodeTemplate).get());
