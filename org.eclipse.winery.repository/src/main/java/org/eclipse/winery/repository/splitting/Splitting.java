@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
@@ -34,7 +33,6 @@ import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.version.VersionUtils;
-import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -83,7 +81,10 @@ public class Splitting {
         TServiceTemplate serviceTemplate = repository.getElement(id);
 
         // create wrapper service template
-        ServiceTemplateId splitServiceTemplateId = getNewServiceTemplateId(id, "split");
+        ServiceTemplateId splitServiceTemplateId = new ServiceTemplateId(
+            id.getNamespace().getDecoded(),
+            VersionUtils.getNewId(id, "split"),
+            false);
 
         repository.forceDelete(splitServiceTemplateId);
         repository.flagAsExisting(splitServiceTemplateId);
@@ -99,7 +100,10 @@ public class Splitting {
         LOGGER.debug("Persisted.");
 
         // create wrapper service template
-        ServiceTemplateId matchedServiceTemplateId = getNewServiceTemplateId(id, "split-matched");
+        ServiceTemplateId matchedServiceTemplateId = new ServiceTemplateId(
+            id.getNamespace().getDecoded(),
+            VersionUtils.getNewId(id, "split-matched"),
+            false);
 
         repository.forceDelete(matchedServiceTemplateId);
         repository.flagAsExisting(matchedServiceTemplateId);
@@ -174,7 +178,11 @@ public class Splitting {
         //End additional functionality Driver Injection
 
         // create wrapper service template
-        ServiceTemplateId matchedServiceTemplateId = getNewServiceTemplateId(id, "matched");
+        ServiceTemplateId matchedServiceTemplateId = new ServiceTemplateId(
+            id.getNamespace().getDecoded(),
+            VersionUtils.getNewId(id, "matched"),
+            false);
+
         RepositoryFactory.getRepository().forceDelete(matchedServiceTemplateId);
         RepositoryFactory.getRepository().flagAsExisting(matchedServiceTemplateId);
         repository.flagAsExisting(matchedServiceTemplateId);
@@ -217,7 +225,7 @@ public class Splitting {
         repository.setElement(composedServiceTemplateId, composedServiceTemplate);
         //add all node and relationship templates from the solution fragements to the composed topology template
         for (ServiceTemplateId id : serviceTemplateIds) {
-            BackendUtils.mergeServiceTemplateAinServiceTemplateB(id, composedServiceTemplateId);
+            BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(id, composedServiceTemplateId);
         }
         composedServiceTemplate = repository.getElement(composedServiceTemplateId);
         composedTopologyTemplate = composedServiceTemplate.getTopologyTemplate();
@@ -1345,23 +1353,5 @@ public class Splitting {
         matchingRelationshipTemplate.setSourceElement(sourceElement);
         matchingRelationshipTemplate.setTargetElement(targetElement);
         topologyTemplate.getNodeTemplateOrRelationshipTemplate().add(matchingRelationshipTemplate);
-    }
-
-    private ServiceTemplateId getNewServiceTemplateId(ServiceTemplateId oldId, String appendixName) {
-        WineryVersion version = VersionUtils.getVersion(oldId);
-        String componentVersion = version.getComponentVersion();
-        if (Objects.nonNull(componentVersion) && !componentVersion.isEmpty()) {
-            version.setComponentVersion(componentVersion + "-" + appendixName);
-        } else {
-            version.setComponentVersion(appendixName);
-        }
-
-        String newDefinitionId = VersionUtils.getNameWithoutVersion(oldId) + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
-
-        // create wrapper service template
-        return new ServiceTemplateId(
-            oldId.getNamespace().getDecoded(),
-            newDefinitionId,
-            false);
     }
 }

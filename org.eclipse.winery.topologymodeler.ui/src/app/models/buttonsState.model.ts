@@ -30,5 +30,6 @@ export interface ButtonsStateModel {
         importTopologyButton?: boolean;
         splitTopologyButton?: boolean;
         matchTopologyButton?: boolean;
+        substituteTopologyButton?: boolean;
     };
 }

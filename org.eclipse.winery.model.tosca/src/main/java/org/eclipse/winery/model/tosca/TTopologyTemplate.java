@@ -72,7 +72,7 @@ public class TTopologyTemplate extends TExtensibleElements {
     @NonNull
     public List<TEntityTemplate> getNodeTemplateOrRelationshipTemplate() {
         if (nodeTemplateOrRelationshipTemplate == null) {
-            nodeTemplateOrRelationshipTemplate = new ArrayList<TEntityTemplate>();
+            nodeTemplateOrRelationshipTemplate = new ArrayList<>();
         }
         return this.nodeTemplateOrRelationshipTemplate;
     }

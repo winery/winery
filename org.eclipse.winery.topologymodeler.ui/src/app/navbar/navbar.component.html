@@ -133,6 +133,13 @@
                 Other <span class="caret"></span>
             </button>
             <ul *dropdownMenu class="dropdown-menu" role="menu">
+                <li role="menuitem">
+                    <button class="dropdown-item" style="cursor: pointer"
+                        id="substituteTopology"
+                        (click)="toggleButton($event)">
+                        Substitute Topology
+                    </button>
+                </li>
                 <li role="menuitem"><a class="dropdown-item" href="#">Complete Topology</a></li>
                 <li role="menuitem">
                     <button style="cursor: pointer" #exportCsarButton target="_blank"
@@ -140,8 +147,8 @@
                             placement="left" class="dropdown-item" (click)="exportCsar($event)">Export CSAR
                     </button>
                 </li>
-                <li role="menuitem"><a class="dropdown-item" (click)="checkCompliance()" )>Check Compliance</a></li>
-                <li role="menuitem"><a class="dropdown-item" href="#">About</a></li>
+                <!--<li role="menuitem"><a class="dropdown-item" (click)="checkCompliance()" )>Check Compliance</a></li>-->
+                <li role="menuitem"><a class="dropdown-item">About</a></li>
             </ul>
         </div>
     </form>

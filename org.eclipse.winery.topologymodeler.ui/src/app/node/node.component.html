@@ -108,7 +108,7 @@
     </div>
 
     <!-- Repaint jsPlumb on every accordion click -->
-    <accordion *ngIf="nodeClass !== 'pattern'" #accordion (click)="repaint($event)">
+    <accordion #accordion (click)="repaint($event)">
         <!-- PROPERTIES -->
         <accordion-group
             #propertiesgroup

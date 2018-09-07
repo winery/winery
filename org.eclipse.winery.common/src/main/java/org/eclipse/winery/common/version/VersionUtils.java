@@ -194,4 +194,20 @@ public class VersionUtils {
 
         return ToscaDiff.convertDiffToToscaDiff(diffNode, oldVersion, newVersion);
     }
+
+    public static String getNewId(DefinitionsChildId oldId, String appendixName) {
+        WineryVersion version = VersionUtils.getVersion(oldId);
+        String oldVersion = version.toString();
+
+        if (Objects.nonNull(oldVersion) && !oldVersion.isEmpty()) {
+            version.setComponentVersion(oldVersion + "-" + appendixName);
+        } else {
+            version.setComponentVersion(appendixName);
+        }
+
+        version.setWineryVersion(1);
+        version.setWorkInProgressVersion(1);
+
+        return VersionUtils.getNameWithoutVersion(oldId) + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
+    }
 }
