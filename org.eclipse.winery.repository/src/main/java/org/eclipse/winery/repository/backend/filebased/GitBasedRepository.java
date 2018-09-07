@@ -157,9 +157,8 @@ public class GitBasedRepository extends FilebasedRepository {
         try (OutputStream stream = new ByteArrayOutputStream()) {
             List<DiffEntry> list = this.git.diff().setOutputStream(stream).call();
             BufferedReader reader = new BufferedReader(new StringReader(stream.toString()));
-            String line = reader.readLine();
             for (DiffEntry entry : list) {
-                line = reader.readLine();
+                String line = reader.readLine();
                 StringWriter diff = new StringWriter();
                 while (line != null && !line.startsWith("diff")) {
                     diff.append(line);

@@ -12,8 +12,8 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 import {
-    AfterViewInit, Component, DoCheck, ElementRef, HostListener, Input, KeyValueDiffers, NgZone, OnDestroy, OnInit,
-    QueryList, Renderer2, ViewChild, ViewChildren
+    AfterViewInit, Component, DoCheck, ElementRef, HostListener, Input, KeyValueDiffers, NgZone, OnDestroy, OnInit, QueryList, Renderer2,
+    ViewChild, ViewChildren
 } from '@angular/core';
 import { JsPlumbService } from '../services/jsPlumbService';
 import { EntityType, TNodeTemplate, TRelationshipTemplate } from '../models/ttopology-template';
@@ -983,6 +983,7 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
             const importTopologyButton = this.navbarButtonsState.buttonsState.importTopologyButton;
             const splitTopologyButton = this.navbarButtonsState.buttonsState.splitTopologyButton;
             const matchTopologyButton = this.navbarButtonsState.buttonsState.matchTopologyButton;
+            const substitutionButton = this.navbarButtonsState.buttonsState.substituteTopologyButton;
             let selectedNodes;
             if (alignmentButtonLayout) {
                 this.layoutDirective.layoutNodes(this.nodeChildrenArray, this.allRelationshipTemplates);
@@ -1020,7 +1021,10 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
                 this.splitMatchService.splitTopology(this.backendService, this.ngRedux, this.topologyRendererActions, this.errorHandler);
             } else if (matchTopologyButton) {
                 this.splitMatchService.matchTopology(this.backendService, this.ngRedux, this.topologyRendererActions, this.errorHandler);
+            } else if (substitutionButton) {
+                this.backendService.substituteTopology();
             }
+
             setTimeout(() => {
                 if (selectedNodes === true) {
                     this.updateSelectedNodes();

@@ -38,6 +38,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.compliance.checking.ServiceTemplateCheckingResult;
 import org.eclipse.winery.compliance.checking.ServiceTemplateComplianceRuleRuleChecker;
+import org.eclipse.winery.model.substitution.Substitution;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TPlans;
@@ -297,6 +298,14 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
         ServiceTemplateComplianceRuleRuleChecker checker = new ServiceTemplateComplianceRuleRuleChecker(this.getServiceTemplate());
         ServiceTemplateCheckingResult serviceTemplateCheckingResult = checker.checkComplianceRules();
         return Response.ok().entity(serviceTemplateCheckingResult.toXMLString()).build();
+    }
+
+    @Path("substitute")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public ServiceTemplateId substitute() {
+        Substitution substitution = new Substitution();
+        return substitution.substituteTopologyOfServiceTemplate((ServiceTemplateId) this.id);
     }
 
     @Override

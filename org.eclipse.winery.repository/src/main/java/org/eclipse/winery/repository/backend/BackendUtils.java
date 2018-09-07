@@ -89,6 +89,7 @@ import org.eclipse.winery.common.version.ToscaDiff;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.HasId;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.model.tosca.HasName;
 import org.eclipse.winery.model.tosca.HasTargetNamespace;
@@ -1393,7 +1394,7 @@ public class BackendUtils {
         return ((Definitions) u.unmarshal(new StringReader(xmlRepresentation)));
     }
 
-    public static void mergeServiceTemplateAinServiceTemplateB(ServiceTemplateId serviceTemplateIdA, ServiceTemplateId serviceTemplateIdB) throws IOException {
+    public static void mergeTopologyTemplateAinTopologyTemplateB(ServiceTemplateId serviceTemplateIdA, ServiceTemplateId serviceTemplateIdB) throws IOException {
         Objects.requireNonNull(serviceTemplateIdA);
         Objects.requireNonNull(serviceTemplateIdB);
 
@@ -1401,123 +1402,121 @@ public class BackendUtils {
         TTopologyTemplate topologyTemplateA = repository.getElement(serviceTemplateIdA).getTopologyTemplate();
         TServiceTemplate serviceTemplateB = repository.getElement(serviceTemplateIdB);
         TTopologyTemplate topologyTemplateB = serviceTemplateB.getTopologyTemplate();
+
         if (topologyTemplateB != null) {
-            Optional<Integer> shiftLeft = topologyTemplateB.getNodeTemplateOrRelationshipTemplate().stream()
-                .filter(x -> x instanceof TNodeTemplate)
-                .map(x -> (TNodeTemplate) x)
-                .max(Comparator.comparingInt(n -> ModelUtilities.getLeft(n).orElse(0)))
-                .map(n -> ModelUtilities.getLeft(n).orElse(0));
-            if (shiftLeft.isPresent()) {
-                Map<String, String> idMapping = new HashMap<>();
-
-                // collect existing node template ids
-                topologyTemplateB.getNodeTemplateOrRelationshipTemplate().stream()
-                    .filter(x -> x instanceof TNodeTemplate)
-                    .map(x -> (TNodeTemplate) x)
-                    // the existing ids are left unchanged
-                    .forEach(x -> idMapping.put(x.getId(), x.getId()));
-
-                // collect existing relationship template ids
-                topologyTemplateB.getNodeTemplateOrRelationshipTemplate().stream()
-                    .filter(x -> x instanceof TRelationshipTemplate)
-                    .map(x -> (TRelationshipTemplate) x)
-                    // the existing ids are left unchanged
-                    .forEach(x -> idMapping.put(x.getId(), x.getId()));
-
-                if (topologyTemplateB.getNodeTemplates() != null) {
-                    // collect existing requirement ids
-                    topologyTemplateB.getNodeTemplates().stream()
-                        .filter(nt -> nt.getRequirements() != null)
-                        .forEach(nt -> nt.getRequirements().getRequirement().stream()
-                            // the existing ids are left unchanged
-                            .forEach(x -> idMapping.put(x.getId(), x.getId())));
-
-                    //collect existing capability ids
-                    topologyTemplateB.getNodeTemplates().stream()
-                        .filter(nt -> nt.getCapabilities() != null)
-                        .forEach(nt -> nt.getCapabilities().getCapability().stream()
-                            // the existing ids are left unchanged
-                            .forEach(x -> idMapping.put(x.getId(), x.getId())));
-                }
-
-                if (topologyTemplateA.getNodeTemplates() != null) {
-                    // patch ids of reqs change them if required
-                    topologyTemplateA.getNodeTemplates().stream()
-                        .filter(nt -> nt.getRequirements() != null)
-                        .forEach(nt -> nt.getRequirements().getRequirement().forEach(req -> {
-                            String oldId = req.getId();
-                            String newId = req.getId();
-                            while (idMapping.containsKey(newId)) {
-                                newId = newId + "-new";
-                            }
-                            idMapping.put(req.getId(), newId);
-                            req.setId(newId);
-                            topologyTemplateA.getRelationshipTemplates().stream()
-                                .filter(rt -> rt.getSourceElement().getRef() instanceof TRequirement)
-                                .forEach(rt -> {
-                                    TRequirement sourceElement = (TRequirement) rt.getSourceElement().getRef();
-                                    if (sourceElement.getId().equalsIgnoreCase(oldId)) {
-                                        sourceElement.setId(req.getId());
-                                    }
-                                });
-                        }));
-                    // patch ids of caps change them if required
-                    topologyTemplateA.getNodeTemplates().stream()
-                        .filter(nt -> nt.getCapabilities() != null)
-                        .forEach(nt -> nt.getCapabilities().getCapability().forEach(cap -> {
-                            String oldId = cap.getId();
-                            String newId = cap.getId();
-                            while (idMapping.containsKey(newId)) {
-                                newId = newId + "-new";
-                            }
-                            idMapping.put(cap.getId(), newId);
-                            cap.setId(newId);
-                            topologyTemplateA.getRelationshipTemplates().stream()
-                                .filter(rt -> rt.getTargetElement().getRef() instanceof TCapability)
-                                .forEach(rt -> {
-                                    TCapability targetElement = (TCapability) rt.getTargetElement().getRef();
-                                    if (targetElement.getId().equalsIgnoreCase(oldId)) {
-                                        targetElement.setId(cap.getId());
-                                    }
-                                });
-                        }));
-                }
-                // patch the ids of node templates and add them
-                topologyTemplateA.getNodeTemplateOrRelationshipTemplate().stream()
-                    .filter(x -> x instanceof TNodeTemplate)
-                    .map(x -> (TNodeTemplate) x)
-                    .forEach(nt -> {
-                        String newId = nt.getId();
-                        while (idMapping.containsKey(newId)) {
-                            newId = newId + "-new";
-                        }
-                        idMapping.put(nt.getId(), newId);
-                        nt.setId(newId);
-                        int newLeft = ModelUtilities.getLeft((TNodeTemplate) nt).orElse(0) + shiftLeft.get();
-                        ((TNodeTemplate) nt).setX(Integer.toString(newLeft));
-                        topologyTemplateB.getNodeTemplateOrRelationshipTemplate().add(nt);
-                    });
-
-                // patch the ids of relationship templates and add them
-                topologyTemplateA.getNodeTemplateOrRelationshipTemplate().stream()
-                    .filter(x -> x instanceof TRelationshipTemplate)
-                    .map(x -> (TRelationshipTemplate) x)
-                    .forEach(rt -> {
-                        String newId = rt.getId();
-                        while (idMapping.containsKey(newId)) {
-                            newId = newId + "-new";
-                        }
-                        idMapping.put(rt.getId(), newId);
-                        rt.setId(newId);
-                        topologyTemplateB.getNodeTemplateOrRelationshipTemplate().add(rt);
-                    });
-            } else {
-                topologyTemplateB.getNodeTemplateOrRelationshipTemplate().addAll(topologyTemplateA.getNodeTemplateOrRelationshipTemplate());
-            }
+            mergeTopologyTemplateAinTopologyTemplateB(topologyTemplateA, topologyTemplateB);
         } else {
             serviceTemplateB.setTopologyTemplate(topologyTemplateA);
         }
+
         repository.setElement(serviceTemplateIdB, serviceTemplateB);
+    }
+
+    /**
+     * Merges two Topology Templates and returns the mapping between the topology elements from the original Topology Template and their
+     * respective clones inside the merged topology.
+     *
+     * @param topologyTemplateA the topology to
+     */
+    public static Map<String, String> mergeTopologyTemplateAinTopologyTemplateB(TTopologyTemplate topologyTemplateA, TTopologyTemplate topologyTemplateB) {
+        Objects.requireNonNull(topologyTemplateA);
+        Objects.requireNonNull(topologyTemplateB);
+
+        Map<String, String> idMapping = new HashMap<>();
+
+        Optional<Integer> shiftLeft = topologyTemplateB.getNodeTemplateOrRelationshipTemplate().stream()
+            .filter(x -> x instanceof TNodeTemplate)
+            .map(x -> (TNodeTemplate) x)
+            .max(Comparator.comparingInt(n -> ModelUtilities.getLeft(n).orElse(0)))
+            .map(n -> ModelUtilities.getLeft(n).orElse(0));
+
+        if (shiftLeft.isPresent()) {
+            collectIdsOfExisitingTopologyElements(topologyTemplateB, idMapping);
+
+            // patch ids of reqs change them if required
+            topologyTemplateA.getNodeTemplates().stream()
+                .filter(nt -> nt.getRequirements() != null)
+                .forEach(nt -> nt.getRequirements().getRequirement().forEach(req -> {
+                    String oldId = req.getId();
+
+                    generateNewIdOfTemplate(req, idMapping);
+
+                    topologyTemplateA.getRelationshipTemplates().stream()
+                        .filter(rt -> rt.getSourceElement().getRef() instanceof TRequirement)
+                        .forEach(rt -> {
+                            TRequirement sourceElement = (TRequirement) rt.getSourceElement().getRef();
+                            if (sourceElement.getId().equalsIgnoreCase(oldId)) {
+                                sourceElement.setId(req.getId());
+                            }
+                        });
+                }));
+
+            // patch ids of caps change them if required
+            topologyTemplateA.getNodeTemplates().stream()
+                .filter(nt -> nt.getCapabilities() != null)
+                .forEach(nt -> nt.getCapabilities().getCapability().forEach(cap -> {
+                    String oldId = cap.getId();
+
+                    generateNewIdOfTemplate(cap, idMapping);
+
+                    topologyTemplateA.getRelationshipTemplates().stream()
+                        .filter(rt -> rt.getTargetElement().getRef() instanceof TCapability)
+                        .forEach(rt -> {
+                            TCapability targetElement = (TCapability) rt.getTargetElement().getRef();
+                            if (targetElement.getId().equalsIgnoreCase(oldId)) {
+                                targetElement.setId(cap.getId());
+                            }
+                        });
+                }));
+
+            // patch the ids of node templates and add them
+            topologyTemplateA.getNodeTemplateOrRelationshipTemplate()
+                .forEach(rtOrNt -> {
+                    generateNewIdOfTemplate(rtOrNt, idMapping);
+
+                    if (rtOrNt instanceof TNodeTemplate) {
+                        int newLeft = ModelUtilities.getLeft((TNodeTemplate) rtOrNt).orElse(0) + shiftLeft.get();
+                        ((TNodeTemplate) rtOrNt).setX(Integer.toString(newLeft));
+                    }
+
+                    topologyTemplateB.getNodeTemplateOrRelationshipTemplate().add(rtOrNt);
+                });
+        } else {
+            topologyTemplateB.getNodeTemplateOrRelationshipTemplate()
+                .addAll(topologyTemplateA.getNodeTemplateOrRelationshipTemplate());
+        }
+
+        return idMapping;
+    }
+
+    private static void collectIdsOfExisitingTopologyElements(TTopologyTemplate topologyTemplateB, Map<String, String> idMapping) {
+        // collect existing node & relationship template ids
+        topologyTemplateB.getNodeTemplateOrRelationshipTemplate()
+            // the existing ids are left unchanged
+            .forEach(x -> idMapping.put(x.getId(), x.getId()));
+
+        // collect existing requirement ids
+        topologyTemplateB.getNodeTemplates().stream()
+            .filter(nt -> nt.getRequirements() != null)
+            .forEach(nt -> nt.getRequirements().getRequirement()
+                // the existing ids are left unchanged
+                .forEach(x -> idMapping.put(x.getId(), x.getId())));
+
+        //collect existing capability ids
+        topologyTemplateB.getNodeTemplates().stream()
+            .filter(nt -> nt.getCapabilities() != null)
+            .forEach(nt -> nt.getCapabilities().getCapability()
+                // the existing ids are left unchanged
+                .forEach(x -> idMapping.put(x.getId(), x.getId())));
+    }
+
+    private static void generateNewIdOfTemplate(HasId element, Map<String, String> idMapping) {
+        String newId = element.getId();
+        while (idMapping.containsKey(newId)) {
+            newId = newId + "-new";
+        }
+        idMapping.put(element.getId(), newId);
+        element.setId(newId);
     }
 
     /**

@@ -22,8 +22,11 @@ import { EntityType, TTopologyTemplate, Visuals } from '../models/ttopology-temp
 import { QNameWithTypeApiData } from '../models/generateArtifactApiData';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { urlElement } from '../models/enums';
+import { ServiceTemplateId } from '../models/serviceTemplateId';
 import { ToscaDiff } from '../models/ToscaDiff';
 import { TopologyModelerConfiguration } from '../models/topologyModelerConfiguration';
+import { WineryAlertService } from '../winery-alert/winery-alert.service';
+import { ErrorHandlerService } from './error-handler.service';
 
 /**
  * Responsible for interchanging data between the app and the server.
@@ -39,6 +42,8 @@ export class BackendService {
     allEntities$ = this.allEntities.asObservable();
 
     constructor(private http: HttpClient,
+                private alert: WineryAlertService,
+                private errorHandler: ErrorHandlerService,
                 private activatedRoute: ActivatedRoute) {
         this.activatedRoute.queryParams.subscribe((params: TopologyModelerConfiguration) => {
             if (!(isNullOrUndefined(params.id) &&
@@ -299,6 +304,23 @@ export class BackendService {
         return this.http.post(url + '/', importedTemplateQName, {
             headers: headers, observe: 'response', responseType: 'text'
         });
+    }
+
+    substituteTopology(): void {
+        this.alert.info('', 'Substitution in progress...');
+        this.http.get<ServiceTemplateId>(this.serviceTemplateURL + '/substitute')
+            .subscribe(res => {
+                    const url = window.location.origin + window.location.pathname + '?repositoryURL=' + this.configuration.repositoryURL
+                        + '&uiURL=' + this.configuration.uiURL
+                        + '&ns=' + res.namespace.encoded
+                        + '&id=' + res.xmlId.encoded
+                        + '&parentPath=' + this.configuration.parentPath
+                        + '&elementPath=' + this.configuration.elementPath;
+                    this.alert.success('automatically opening does not work currently...', 'Substitution successful!');
+                },
+                error => {
+                    this.errorHandler.handleError(error);
+                });
     }
 
     /**

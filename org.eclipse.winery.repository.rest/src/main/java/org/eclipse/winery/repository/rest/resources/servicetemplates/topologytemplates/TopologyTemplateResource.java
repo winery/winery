@@ -128,7 +128,7 @@ public class TopologyTemplateResource {
         ServiceTemplateId otherServiceTemplateId = new ServiceTemplateId(otherServiceTemplateQName);
         ServiceTemplateId thisServiceTemplateId = (ServiceTemplateId) this.serviceTemplateRes.getId();
         try {
-            BackendUtils.mergeServiceTemplateAinServiceTemplateB(otherServiceTemplateId, thisServiceTemplateId);
+            BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(otherServiceTemplateId, thisServiceTemplateId);
         } catch (IOException e) {
             LOGGER.debug("Could not merge", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
