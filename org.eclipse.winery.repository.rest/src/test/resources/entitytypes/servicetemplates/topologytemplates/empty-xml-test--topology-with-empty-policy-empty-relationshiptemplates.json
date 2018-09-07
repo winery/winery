@@ -1,0 +1,29 @@
+{
+    "documentation": [
+    ],
+    "any": [
+    ],
+    "otherAttributes": {
+    },
+    "nodeTemplates": [
+        {
+            "id": "shetland_pony",
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "677",
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "161"
+            },
+            "type": "{http://winery.opentosca.org/test/ponyuniverse}shetland_pony",
+            "name": "shetland_pony",
+            "minInstances": 1,
+            "maxInstances": "1",
+            "x": "677",
+            "y": "161"
+        }
+    ],
+    "relationshipTemplates": []
+}

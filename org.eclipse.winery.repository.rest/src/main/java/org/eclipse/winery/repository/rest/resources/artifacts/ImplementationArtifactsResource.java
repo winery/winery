@@ -13,6 +13,17 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.artifacts;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.INodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
@@ -21,16 +32,6 @@ import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTy
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypesResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes.RelationshipTypesResource;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * ImplementationArtifact instead of TImplementationArtifact has to be used because of difference in the XSD at
@@ -71,10 +72,11 @@ public class ImplementationArtifactsResource extends GenericArtifactsResource<Im
         List<Object> interfaces = new ArrayList<>();
 
         if (isNodeTypeImplementation) {
-            NodeTypeResource typeResource = (NodeTypeResource) new NodeTypesResource().getComponentInstanceResource(type);
+            NodeTypeResource typeResource = new NodeTypesResource().getComponentInstanceResource(type);
             interfaces.addAll(typeResource.getInterfaces().onGet("true"));
         } else {
-            RelationshipTypeResource typeResource = (RelationshipTypeResource) new RelationshipTypesResource().getComponentInstanceResource(type);
+            RelationshipTypeResource typeResource = new RelationshipTypesResource().getComponentInstanceResource(type);
+            interfaces.addAll(typeResource.getInterfaces().onGet("true"));
             interfaces.addAll(typeResource.getSourceInterfaces().onGet("true"));
             interfaces.addAll(typeResource.getTargetInterfaces().onGet("true"));
         }

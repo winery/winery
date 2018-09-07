@@ -23,6 +23,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.eclipse.winery.model.tosca.visitor.Visitor;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -41,7 +43,7 @@ public class TNodeType extends TEntityType {
     @XmlElement(name = "InstanceStates")
     protected TTopologyElementInstanceStates instanceStates;
     @XmlElement(name = "Interfaces")
-    protected TNodeType.Interfaces interfaces;
+    protected TInterfaces interfaces;
 
     public TNodeType() {
     }
@@ -75,7 +77,7 @@ public class TNodeType extends TEntityType {
         return requirementDefinitions;
     }
 
-    public void setRequirementDefinitions(TNodeType.RequirementDefinitions value) {
+    public void setRequirementDefinitions(TNodeType.@Nullable RequirementDefinitions value) {
         this.requirementDefinitions = value;
     }
 
@@ -83,7 +85,7 @@ public class TNodeType extends TEntityType {
         return capabilityDefinitions;
     }
 
-    public void setCapabilityDefinitions(TNodeType.CapabilityDefinitions value) {
+    public void setCapabilityDefinitions(TNodeType.@Nullable CapabilityDefinitions value) {
         this.capabilityDefinitions = value;
     }
 
@@ -92,16 +94,21 @@ public class TNodeType extends TEntityType {
         return instanceStates;
     }
 
-    public void setInstanceStates(TTopologyElementInstanceStates value) {
+    public void setInstanceStates(@Nullable TTopologyElementInstanceStates value) {
         this.instanceStates = value;
     }
 
-    public TNodeType.@Nullable Interfaces getInterfaces() {
+    public @Nullable TInterfaces getInterfaces() {
         return interfaces;
     }
 
-    public void setInterfaces(TNodeType.Interfaces value) {
+    public void setInterfaces(@Nullable TInterfaces value) {
         this.interfaces = value;
+    }
+
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -113,26 +120,6 @@ public class TNodeType extends TEntityType {
         @XmlElement(name = "CapabilityDefinition", required = true)
         protected List<TCapabilityDefinition> capabilityDefinition;
 
-        /**
-         * Gets the value of the capabilityDefinition property.
-         * <p>
-         * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the capabilityDefinition property.
-         * <p>
-         * <p>
-         * For example, to add a new item, do as follows:
-         * <pre>
-         *    getCapabilityDefinition().add(newItem);
-         * </pre>
-         * <p>
-         * <p>
-         * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link TCapabilityDefinition }
-         */
         @NonNull
         public List<TCapabilityDefinition> getCapabilityDefinition() {
             if (capabilityDefinition == null) {
@@ -155,95 +142,6 @@ public class TNodeType extends TEntityType {
         }
     }
 
-
-    /**
-     * <p>Java class for anonymous complex type.
-     * <p>
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     * <p>
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;sequence>
-     *         &lt;element name="Interface" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tInterface"
-     * maxOccurs="unbounded"/>
-     *       &lt;/sequence>
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "_interface"
-    })
-    public static class Interfaces {
-
-        @XmlElement(name = "Interface", required = true)
-        protected List<TInterface> _interface;
-
-        /**
-         * Gets the value of the interface property.
-         * <p>
-         * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the interface property.
-         * <p>
-         * <p>
-         * For example, to add a new item, do as follows:
-         * <pre>
-         *    getInterface().add(newItem);
-         * </pre>
-         * <p>
-         * <p>
-         * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link TInterface }
-         */
-        @NonNull
-        public List<TInterface> getInterface() {
-            if (_interface == null) {
-                _interface = new ArrayList<TInterface>();
-            }
-            return this._interface;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Interfaces that = (Interfaces) o;
-            return Objects.equals(_interface, that._interface);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(_interface);
-        }
-    }
-
-
-    /**
-     * <p>Java class for anonymous complex type.
-     * <p>
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     * <p>
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;sequence>
-     *         &lt;element name="RequirementDefinition" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tRequirementDefinition"
-     * maxOccurs="unbounded"/>
-     *       &lt;/sequence>
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
         "requirementDefinition"
@@ -253,26 +151,6 @@ public class TNodeType extends TEntityType {
         @XmlElement(name = "RequirementDefinition", required = true)
         protected List<TRequirementDefinition> requirementDefinition;
 
-        /**
-         * Gets the value of the requirementDefinition property.
-         * <p>
-         * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the requirementDefinition property.
-         * <p>
-         * <p>
-         * For example, to add a new item, do as follows:
-         * <pre>
-         *    getRequirementDefinition().add(newItem);
-         * </pre>
-         * <p>
-         * <p>
-         * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link TRequirementDefinition }
-         */
         @NonNull
         public List<TRequirementDefinition> getRequirementDefinition() {
             if (requirementDefinition == null) {
@@ -299,7 +177,7 @@ public class TNodeType extends TEntityType {
         private RequirementDefinitions requirementDefinitions;
         private CapabilityDefinitions capabilityDefinitions;
         private TTopologyElementInstanceStates instanceStates;
-        private Interfaces interfaces;
+        private TInterfaces interfaces;
 
         public Builder(String name) {
             super(name);
@@ -324,7 +202,7 @@ public class TNodeType extends TEntityType {
             return this;
         }
 
-        public Builder setInterfaces(TNodeType.Interfaces interfaces) {
+        public Builder setInterfaces(TInterfaces interfaces) {
             this.interfaces = interfaces;
             return this;
         }
@@ -395,7 +273,7 @@ public class TNodeType extends TEntityType {
             return addCapabilityDefinitions(tmp);
         }
 
-        public Builder addInterfaces(TNodeType.Interfaces interfaces) {
+        public Builder addInterfaces(TInterfaces interfaces) {
             if (interfaces == null || interfaces.getInterface().isEmpty()) {
                 return this;
             }
@@ -413,7 +291,7 @@ public class TNodeType extends TEntityType {
                 return this;
             }
 
-            TNodeType.Interfaces tmp = new TNodeType.Interfaces();
+            TInterfaces tmp = new TInterfaces();
             tmp.getInterface().addAll(interfaces);
             return addInterfaces(tmp);
         }
@@ -423,7 +301,7 @@ public class TNodeType extends TEntityType {
                 return this;
             }
 
-            TNodeType.Interfaces tmp = new TNodeType.Interfaces();
+            TInterfaces tmp = new TInterfaces();
             tmp.getInterface().add(interfaces);
             return addInterfaces(tmp);
         }

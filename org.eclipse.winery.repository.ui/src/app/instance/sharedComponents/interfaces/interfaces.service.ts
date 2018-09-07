@@ -84,6 +84,7 @@ export class InterfacesService {
 
     getRelationshipInterfaces(url: string): Observable<InterfacesApiData[]> {
         return forkJoin(
+                this.get<InterfacesApiData[]>(backendBaseURL + url + '/interfaces/'),
                 this.get<InterfacesApiData[]>(backendBaseURL + url + '/targetinterfaces/'),
                 this.get<InterfacesApiData[]>(backendBaseURL + url + '/sourceinterfaces/')
             ).pipe(map(res => {

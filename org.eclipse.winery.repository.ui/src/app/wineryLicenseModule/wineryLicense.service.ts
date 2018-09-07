@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -16,12 +16,20 @@ import { Observable } from 'rxjs';
 import { InstanceService } from '../instance/instance.service';
 import { backendBaseURL } from '../configuration';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { WineryLicense } from './wineryLicense';
+import { map } from 'rxjs/internal/operators';
+import { forkJoin } from 'rxjs/index';
 
 @Injectable()
 export class WineryLicenseService {
+    private _allLicences: WineryLicense[];
 
-    constructor(private http: HttpClient,
-                private sharedData: InstanceService) {
+    constructor(private http: HttpClient, private sharedData: InstanceService) {
+        this._allLicences = [
+            new WineryLicense('Apache-2.0', 'assets/licenses/Apache-2.0.txt'),
+            new WineryLicense('EPL-2.0', 'assets/licenses/EPL-2.0.txt'),
+            new WineryLicense('Proprietary', 'assets/licenses/Proprietary.txt')
+        ];
     }
 
     getData(): Observable<string> {
@@ -38,5 +46,36 @@ export class WineryLicenseService {
             licenseFile,
             { observe: 'response', responseType: 'text' }
         );
+    }
+
+    loadLicenses(): Observable<string[]> {
+        // create an array of observables to execute them later on parallel.
+        const allObservables = this._allLicences.map(license => {
+            const headers = new HttpHeaders({ 'Accept': 'text/plain' });
+            return this.http.get(license.LICENSE_FILE_URL, { headers: headers, responseType: 'text' })
+                .pipe(
+                    map((result: string) => {
+                        license.licenceText = result;
+                        return result;
+                    })
+                );
+        });
+
+        // execute the observables on parallel
+        return forkJoin(allObservables);
+    }
+
+    getLicenseText(name: string): string {
+        const theLicense = this._allLicences.find(item => item.LICENCE_NAME.toLowerCase() === name.toLowerCase());
+
+        if (theLicense !== null && theLicense !== undefined) {
+            return theLicense.licenceText;
+        } else {
+            return 'License not found!';
+        }
+    }
+
+    getLicenseNames(): string[] {
+        return this._allLicences.map(license => license.LICENCE_NAME);
     }
 }

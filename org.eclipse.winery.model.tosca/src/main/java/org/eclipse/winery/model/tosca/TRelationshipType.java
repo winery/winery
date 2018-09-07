@@ -14,7 +14,6 @@
 
 package org.eclipse.winery.model.tosca;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,12 +24,16 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.tosca.constants.Namespaces;
+import org.eclipse.winery.model.tosca.visitor.Visitor;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tRelationshipType", propOrder = {
     "instanceStates",
+    "interfaces",
     "sourceInterfaces",
     "targetInterfaces",
     "validSource",
@@ -39,10 +42,12 @@ import org.eclipse.jdt.annotation.Nullable;
 public class TRelationshipType extends TEntityType {
     @XmlElement(name = "InstanceStates")
     protected TTopologyElementInstanceStates instanceStates;
+    @XmlElement(name = "Interfaces", namespace = Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE)
+    protected TInterfaces interfaces;
     @XmlElement(name = "SourceInterfaces")
-    protected TRelationshipType.SourceInterfaces sourceInterfaces;
+    protected TInterfaces sourceInterfaces;
     @XmlElement(name = "TargetInterfaces")
-    protected TRelationshipType.TargetInterfaces targetInterfaces;
+    protected TInterfaces targetInterfaces;
     @XmlElement(name = "ValidSource")
     protected TRelationshipType.ValidSource validSource;
     @XmlElement(name = "ValidTarget")
@@ -54,6 +59,7 @@ public class TRelationshipType extends TEntityType {
     public TRelationshipType(Builder builder) {
         super(builder);
         this.instanceStates = builder.instanceStates;
+        this.interfaces = builder.interfaces;
         this.sourceInterfaces = builder.sourceInterfaces;
         this.targetInterfaces = builder.targetInterfaces;
         this.validSource = builder.validSource;
@@ -67,6 +73,7 @@ public class TRelationshipType extends TEntityType {
         if (!super.equals(o)) return false;
         TRelationshipType that = (TRelationshipType) o;
         return Objects.equals(instanceStates, that.instanceStates) &&
+            Objects.equals(interfaces, that.interfaces) &&
             Objects.equals(sourceInterfaces, that.sourceInterfaces) &&
             Objects.equals(targetInterfaces, that.targetInterfaces) &&
             Objects.equals(validSource, that.validSource) &&
@@ -75,253 +82,64 @@ public class TRelationshipType extends TEntityType {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), instanceStates, sourceInterfaces, targetInterfaces, validSource, validTarget);
+        return Objects.hash(super.hashCode(), instanceStates, interfaces, sourceInterfaces, targetInterfaces, validSource, validTarget);
     }
 
-    /**
-     * Gets the value of the instanceStates property.
-     *
-     * @return possible object is {@link TTopologyElementInstanceStates }
-     */
     @Nullable
     public TTopologyElementInstanceStates getInstanceStates() {
         return instanceStates;
     }
 
-    /**
-     * Sets the value of the instanceStates property.
-     *
-     * @param value allowed object is {@link TTopologyElementInstanceStates }
-     */
-    public void setInstanceStates(TTopologyElementInstanceStates value) {
+    public void setInstanceStates(@Nullable TTopologyElementInstanceStates value) {
         this.instanceStates = value;
     }
 
-    /**
-     * Gets the value of the sourceInterfaces property.
-     *
-     * @return possible object is {@link TRelationshipType.SourceInterfaces }
-     */
-    public TRelationshipType.@Nullable SourceInterfaces getSourceInterfaces() {
+    @Nullable
+    public TInterfaces getInterfaces() {
+        return interfaces;
+    }
+
+    public void setInterfaces(@Nullable TInterfaces interfaces) {
+        this.interfaces = interfaces;
+    }
+
+    public @Nullable TInterfaces getSourceInterfaces() {
         return sourceInterfaces;
     }
 
-    /**
-     * Sets the value of the sourceInterfaces property.
-     *
-     * @param value allowed object is {@link TRelationshipType.SourceInterfaces }
-     */
-    public void setSourceInterfaces(TRelationshipType.SourceInterfaces value) {
+    public void setSourceInterfaces(@Nullable TInterfaces value) {
         this.sourceInterfaces = value;
     }
 
-    /**
-     * Gets the value of the targetInterfaces property.
-     *
-     * @return possible object is {@link TRelationshipType.TargetInterfaces }
-     */
-    public TRelationshipType.@Nullable TargetInterfaces getTargetInterfaces() {
+    public @Nullable TInterfaces getTargetInterfaces() {
         return targetInterfaces;
     }
 
-    /**
-     * Sets the value of the targetInterfaces property.
-     *
-     * @param value allowed object is {@link TRelationshipType.TargetInterfaces }
-     */
-    public void setTargetInterfaces(TRelationshipType.TargetInterfaces value) {
+    public void setTargetInterfaces(@Nullable TInterfaces value) {
         this.targetInterfaces = value;
     }
 
-    /**
-     * Gets the value of the validSource property.
-     *
-     * @return possible object is {@link TRelationshipType.ValidSource }
-     */
     public TRelationshipType.@Nullable ValidSource getValidSource() {
         return validSource;
     }
 
-    /**
-     * Sets the value of the validSource property.
-     *
-     * @param value allowed object is {@link TRelationshipType.ValidSource }
-     */
-    public void setValidSource(TRelationshipType.ValidSource value) {
+    public void setValidSource(TRelationshipType.@Nullable ValidSource value) {
         this.validSource = value;
     }
 
-    /**
-     * Gets the value of the validTarget property.
-     *
-     * @return possible object is {@link TRelationshipType.ValidTarget }
-     */
     public TRelationshipType.@Nullable ValidTarget getValidTarget() {
         return validTarget;
     }
 
-    /**
-     * Sets the value of the validTarget property.
-     *
-     * @param value allowed object is {@link TRelationshipType.ValidTarget }
-     */
-    public void setValidTarget(TRelationshipType.ValidTarget value) {
+    public void setValidTarget(TRelationshipType.@Nullable ValidTarget value) {
         this.validTarget = value;
     }
 
-    /**
-     * <p>Java class for anonymous complex type.
-     * <p>
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     * <p>
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;sequence>
-     *         &lt;element name="Interface" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tInterface"
-     * maxOccurs="unbounded"/>
-     *       &lt;/sequence>
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "_interface"
-    })
-    public static class SourceInterfaces {
-
-        @XmlElement(name = "Interface", required = true)
-        protected List<TInterface> _interface;
-
-        /**
-         * Gets the value of the interface property.
-         * <p>
-         * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the interface property.
-         * <p>
-         * <p>
-         * For example, to add a new item, do as follows:
-         * <pre>
-         *    getInterface().add(newItem);
-         * </pre>
-         * <p>
-         * <p>
-         * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link TInterface }
-         */
-        @NonNull
-        public List<TInterface> getInterface() {
-            if (_interface == null) {
-                _interface = new ArrayList<TInterface>();
-            }
-            return this._interface;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            SourceInterfaces that = (SourceInterfaces) o;
-            return Objects.equals(_interface, that._interface);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(_interface);
-        }
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
 
-    /**
-     * <p>Java class for anonymous complex type.
-     * <p>
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     * <p>
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;sequence>
-     *         &lt;element name="Interface" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tInterface"
-     * maxOccurs="unbounded"/>
-     *       &lt;/sequence>
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "_interface"
-    })
-    public static class TargetInterfaces {
-
-        @XmlElement(name = "Interface", required = true)
-        protected List<TInterface> _interface;
-
-        /**
-         * Gets the value of the interface property.
-         * <p>
-         * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the interface property.
-         * <p>
-         * <p>
-         * For example, to add a new item, do as follows:
-         * <pre>
-         *    getInterface().add(newItem);
-         * </pre>
-         * <p>
-         * <p>
-         * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link TInterface }
-         */
-        @NonNull
-        public List<TInterface> getInterface() {
-            if (_interface == null) {
-                _interface = new ArrayList<TInterface>();
-            }
-            return this._interface;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            TargetInterfaces that = (TargetInterfaces) o;
-            return Objects.equals(_interface, that._interface);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(_interface);
-        }
-    }
-
-    /**
-     * <p>Java class for anonymous complex type.
-     * <p>
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     * <p>
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;attribute name="typeRef" use="required" type="{http://www.w3.org/2001/XMLSchema}QName" />
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
     public static class ValidSource {
@@ -329,22 +147,13 @@ public class TRelationshipType extends TEntityType {
         @XmlAttribute(name = "typeRef", required = true)
         protected QName typeRef;
 
-        /**
-         * Gets the value of the typeRef property.
-         *
-         * @return possible object is {@link QName }
-         */
         @NonNull
         public QName getTypeRef() {
             return typeRef;
         }
 
-        /**
-         * Sets the value of the typeRef property.
-         *
-         * @param value allowed object is {@link QName }
-         */
-        public void setTypeRef(QName value) {
+        public void setTypeRef(@NonNull QName value) {
+            Objects.requireNonNull(value);
             this.typeRef = value;
         }
 
@@ -362,21 +171,6 @@ public class TRelationshipType extends TEntityType {
         }
     }
 
-    /**
-     * <p>Java class for anonymous complex type.
-     * <p>
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     * <p>
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;attribute name="typeRef" use="required" type="{http://www.w3.org/2001/XMLSchema}QName" />
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
     public static class ValidTarget {
@@ -384,22 +178,13 @@ public class TRelationshipType extends TEntityType {
         @XmlAttribute(name = "typeRef", required = true)
         protected QName typeRef;
 
-        /**
-         * Gets the value of the typeRef property.
-         *
-         * @return possible object is {@link QName }
-         */
         @NonNull
         public QName getTypeRef() {
             return typeRef;
         }
 
-        /**
-         * Sets the value of the typeRef property.
-         *
-         * @param value allowed object is {@link QName }
-         */
-        public void setTypeRef(QName value) {
+        public void setTypeRef(@NonNull QName value) {
+            Objects.requireNonNull(value);
             this.typeRef = value;
         }
 
@@ -419,8 +204,9 @@ public class TRelationshipType extends TEntityType {
 
     public static class Builder extends TEntityType.Builder<Builder> {
         private TTopologyElementInstanceStates instanceStates;
-        private SourceInterfaces sourceInterfaces;
-        private TargetInterfaces targetInterfaces;
+        private TInterfaces interfaces;
+        private TInterfaces sourceInterfaces;
+        private TInterfaces targetInterfaces;
         private ValidSource validSource;
         private ValidTarget validTarget;
 
@@ -437,12 +223,12 @@ public class TRelationshipType extends TEntityType {
             return this;
         }
 
-        public Builder setSourceInterfaces(TRelationshipType.SourceInterfaces sourceInterfaces) {
+        public Builder setSourceInterfaces(TInterfaces sourceInterfaces) {
             this.sourceInterfaces = sourceInterfaces;
             return this;
         }
 
-        public Builder setTargetInterfaces(TRelationshipType.TargetInterfaces targetInterfaces) {
+        public Builder setTargetInterfaces(TInterfaces targetInterfaces) {
             this.targetInterfaces = targetInterfaces;
             return this;
         }
@@ -477,7 +263,40 @@ public class TRelationshipType extends TEntityType {
             return setValidTarget(tmp);
         }
 
-        public Builder addSourceInterfaces(TRelationshipType.SourceInterfaces sourceInterfaces) {
+        public Builder addInterfaces(TInterfaces interfaces) {
+            if (interfaces == null || interfaces.getInterface().isEmpty()) {
+                return this;
+            }
+
+            if (this.interfaces == null) {
+                this.interfaces = interfaces;
+            } else {
+                this.interfaces.getInterface().addAll(interfaces.getInterface());
+            }
+            return this;
+        }
+
+        public Builder addInterfaces(List<TInterface> interfaces) {
+            if (interfaces == null) {
+                return this;
+            }
+
+            TInterfaces tmp = new TInterfaces();
+            tmp.getInterface().addAll(interfaces);
+            return addInterfaces(tmp);
+        }
+
+        public Builder addInterfaces(TInterface interfaces) {
+            if (interfaces == null) {
+                return this;
+            }
+
+            TInterfaces tmp = new TInterfaces();
+            tmp.getInterface().add(interfaces);
+            return addInterfaces(tmp);
+        }
+
+        public Builder addSourceInterfaces(TInterfaces sourceInterfaces) {
             if (sourceInterfaces == null || sourceInterfaces.getInterface().isEmpty()) {
                 return this;
             }
@@ -495,7 +314,7 @@ public class TRelationshipType extends TEntityType {
                 return this;
             }
 
-            TRelationshipType.SourceInterfaces tmp = new TRelationshipType.SourceInterfaces();
+            TInterfaces tmp = new TInterfaces();
             tmp.getInterface().addAll(sourceInterfaces);
             return addSourceInterfaces(tmp);
         }
@@ -505,12 +324,12 @@ public class TRelationshipType extends TEntityType {
                 return this;
             }
 
-            TRelationshipType.SourceInterfaces tmp = new TRelationshipType.SourceInterfaces();
+            TInterfaces tmp = new TInterfaces();
             tmp.getInterface().add(sourceInterfaces);
             return addSourceInterfaces(tmp);
         }
 
-        public Builder addTargetInterfaces(TRelationshipType.TargetInterfaces targetInterfaces) {
+        public Builder addTargetInterfaces(TInterfaces targetInterfaces) {
             if (targetInterfaces == null || targetInterfaces.getInterface().isEmpty()) {
                 return this;
             }
@@ -528,7 +347,7 @@ public class TRelationshipType extends TEntityType {
                 return this;
             }
 
-            TRelationshipType.TargetInterfaces tmp = new TRelationshipType.TargetInterfaces();
+            TInterfaces tmp = new TInterfaces();
             tmp.getInterface().addAll(targetInterfaces);
             return addTargetInterfaces(tmp);
         }
@@ -538,7 +357,7 @@ public class TRelationshipType extends TEntityType {
                 return this;
             }
 
-            TRelationshipType.TargetInterfaces tmp = new TRelationshipType.TargetInterfaces();
+            TInterfaces tmp = new TInterfaces();
             tmp.getInterface().add(targetInterfaces);
             return addTargetInterfaces(tmp);
         }

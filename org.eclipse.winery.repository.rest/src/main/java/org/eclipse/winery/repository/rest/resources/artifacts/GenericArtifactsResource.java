@@ -13,40 +13,19 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.artifacts;
 
-import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XmlId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.generators.ia.Generator;
-import org.eclipse.winery.model.tosca.*;
-import org.eclipse.winery.model.tosca.TEntityTemplate.Properties;
-import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
-import org.eclipse.winery.model.tosca.constants.QNames;
-import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.IRepository;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.filebased.FileUtils;
-import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateSourceDirectoryId;
-import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
-import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
-import org.eclipse.winery.repository.rest.resources._support.INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
-import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
-import org.eclipse.winery.repository.rest.resources.apiData.GenerateArtifactApiData;
-import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
-import org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates.NodeTemplateResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Text;
-import org.xml.sax.InputSource;
+import java.io.IOException;
+import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+import java.util.SortedSet;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -60,14 +39,54 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.io.StringReader;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
+
+import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.common.ids.XmlId;
+import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.common.ids.definitions.EntityTypeId;
+import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.generators.ia.Generator;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.model.tosca.TArtifactType;
+import org.eclipse.winery.model.tosca.TDeploymentArtifact;
+import org.eclipse.winery.model.tosca.TEntityTemplate.Properties;
+import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
+import org.eclipse.winery.model.tosca.TInterface;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.constants.QNames;
+import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.filebased.FileUtils;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateSourceDirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
+import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
+import org.eclipse.winery.repository.rest.resources._support.INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
+import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
+import org.eclipse.winery.repository.rest.resources.apiData.GenerateArtifactApiData;
+import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
+import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
+import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationsResource;
+import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
+import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationsResource;
+import org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates.NodeTemplateResource;
+
+import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jdt.annotation.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
+import org.xml.sax.InputSource;
 
 /**
  * Resource handling both deployment and implementation artifacts
@@ -78,20 +97,18 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 
     protected final INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource resWithNamespace;
 
-    public GenericArtifactsResource(Class<ArtifactResource> entityResourceTClazz, Class<ArtifactT> entityTClazz, List<ArtifactT> list, INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource res) {
+    public GenericArtifactsResource(Class<ArtifactResource> entityResourceTClazz, Class<ArtifactT> entityTClazz,
+                                    List<ArtifactT> list, INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource res) {
         super(entityResourceTClazz, entityTClazz, list, GenericArtifactsResource.getAbstractComponentInstanceResource(res));
         this.resWithNamespace = res;
     }
-
-    // @formatter:off
 
     /**
      * @return TImplementationArtifact | TDeploymentArtifact (XML) | URL of generated IA zip (in case of autoGenerateIA)
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Creates a new implementation/deployment artifact. " +
-        "If an implementation artifact with the same name already exists, it is <em>overridden</em>.")
+    @ApiOperation(value = "Creates a new implementation/deployment artifact. If an implementation artifact with the same name already exists, it is <em>overridden</em>.")
     @SuppressWarnings("unchecked")
     public Response generateArtifact(GenerateArtifactApiData apiData, @Context UriInfo uriInfo) {
         // we assume that the parent ComponentInstance container exists
@@ -261,15 +278,11 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
             resultingArtifact = (ArtifactT) a;
         }
 
-        Response persistResponse = RestUtils.persist(super.res);
-        // TODO: check for error and in case one found return that
+        // TODO: Check for error, and in case one found return it
+        RestUtils.persist(super.res);
 
         if (StringUtils.isEmpty(apiData.autoGenerateIA)) {
-            // no IA generation
-            // we include an XML for the data table
-
-//			String implOrDeplArtifactXML = Utils.getXMLAsString(resultingArtifact);
-
+            // No IA generation
             return Response.created(RestUtils.createURI(Util.URLencode(apiData.artifactName))).entity(resultingArtifact).build();
         } else {
             // after everything was created, we fire up the artifact generation
@@ -281,13 +294,13 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
      * Generates a unique and valid name to be used for the generated maven project name, java project name, class name,
      * port type name.
      */
-    private String generateName(NodeTypeId nodeTypeId, String interfaceName) {
-        String name = Util.namespaceToJavaPackage(nodeTypeId.getNamespace().getDecoded());
+    private String generateName(EntityTypeId typeId, String interfaceName) {
+        String name = Util.namespaceToJavaPackage(typeId.getNamespace().getDecoded());
         name += Util.FORBIDDEN_CHARACTER_REPLACEMENT;
 
         // Winery already ensures that this is a valid NCName
         // getName() returns the id of the nodeType: A nodeType carries the "id" attribute only (and no name attribute)
-        name += nodeTypeId.getXmlId().getDecoded();
+        name += VersionUtils.getNameWithoutVersion(typeId.getXmlId().getDecoded());
 
         // Two separators to distinguish node type and interface part
         name += Util.FORBIDDEN_CHARACTER_REPLACEMENT;
@@ -300,37 +313,17 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
     }
 
     /**
-     * Generates the implementation artifact using the implementation artifact generator. Also sets the proeprties
+     * Generates the implementation artifact using the implementation artifact generator. Also sets the properties
      * according to the requirements of OpenTOSCA.
-     * <p>
-     * DOES NOT WORK FOR RELATION SHIP TYPE IMPLEMENTATIONS
-     *
-     * @param artifactTemplateResource the resource associated with the artifactTemplateId. If null, the object is
-     *                                 created in this method
      */
-    private Response generateImplementationArtifact(String interfaceNameStr, String javapackage, UriInfo uriInfo, ArtifactTemplateId artifactTemplateId) {
-        TInterface iface;
+    private Response generateImplementationArtifact(String interfaceName, String javaPackage, UriInfo uriInfo, ArtifactTemplateId artifactTemplateId) {
 
         assert (this instanceof ImplementationArtifactsResource);
+        IRepository repository = RepositoryFactory.getRepository();
 
         QName type = RestUtils.getType(this.res);
-        NodeTypeId typeId;
-        // required for IA Generation
-        typeId = new NodeTypeId(type);
-        final IRepository repository = RepositoryFactory.getRepository();
-        TNodeType nodeType = repository.getElement(typeId);
-
-        List<TInterface> interfaces = nodeType.getInterfaces().getInterface();
-        Iterator<TInterface> it = interfaces.iterator();
-        do {
-            iface = it.next();
-            if (iface.getName().equals(interfaceNameStr)) {
-                break;
-            }
-        } while (it.hasNext());
-        // iface now contains the right interface
-
-        ArtifactTemplateSourceDirectoryId sourceDirectoryId = new ArtifactTemplateSourceDirectoryId(artifactTemplateId);
+        EntityTypeId typeId = getTypeId(type).orElseThrow(IllegalStateException::new);
+        TInterface i = findInterface(typeId, interfaceName).orElseThrow(IllegalStateException::new);
 
         Path workingDir;
         try {
@@ -340,7 +333,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
             return Response.serverError().entity("Could not create temporary directory").build();
         }
 
-        URI artifactTemplateFilesUri = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(artifactTemplateId)).resolve("files/");
+        URI artifactTemplateFilesUri = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(artifactTemplateId)).resolve("files");
         URL artifactTemplateFilesUrl;
         try {
             artifactTemplateFilesUrl = artifactTemplateFilesUri.toURL();
@@ -349,8 +342,8 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
             return Response.serverError().entity("Could not convert URI to URL").build();
         }
 
-        String name = this.generateName(typeId, interfaceNameStr);
-        Generator gen = new Generator(iface, javapackage, artifactTemplateFilesUrl, name, workingDir.toFile());
+        String name = this.generateName(typeId, interfaceName);
+        Generator gen = new Generator(i, javaPackage, artifactTemplateFilesUrl, name, workingDir.toFile());
         Path targetPath;
         try {
             targetPath = gen.generateProject();
@@ -366,13 +359,57 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
             throw new WebApplicationException(e);
         }
 
-        // cleanup dir
+        // clean up
         FileUtils.forceDelete(workingDir);
 
         this.storeProperties(artifactTemplateId, typeId, name);
 
         URI url = uriInfo.getBaseUri().resolve(Util.getUrlPath(artifactTemplateId));
         return Response.created(url).build();
+    }
+
+    private Optional<EntityTypeId> getTypeId(QName type) {
+        if (this.res instanceof NodeTypeImplementationResource
+            || this.res instanceof NodeTypeImplementationsResource) {
+            return Optional.of(new NodeTypeId(type));
+        } else if (this.res instanceof RelationshipTypeImplementationResource
+            || this.res instanceof RelationshipTypeImplementationsResource) {
+            return Optional.of(new RelationshipTypeId(type));
+        }
+        return Optional.empty();
+    }
+
+    private Optional<TInterface> findInterface(EntityTypeId id, String interfaceName) {
+        TInterface i = null;
+        List<TInterface> interfaces = new ArrayList<>();
+        IRepository repository = RepositoryFactory.getRepository();
+        if (this.res instanceof NodeTypeImplementationResource
+            || this.res instanceof NodeTypeImplementationsResource) {
+            TNodeType nodeType = repository.getElement((NodeTypeId) id);
+            if (nodeType.getInterfaces() != null) {
+                interfaces.addAll(nodeType.getInterfaces().getInterface());
+            }
+        } else if (this.res instanceof RelationshipTypeImplementationResource
+            || this.res instanceof RelationshipTypeImplementationsResource) {
+            TRelationshipType relationshipType = repository.getElement((RelationshipTypeId) id);
+            if (relationshipType.getSourceInterfaces() != null) {
+                interfaces.addAll(relationshipType.getSourceInterfaces().getInterface());
+            }
+            if (relationshipType.getTargetInterfaces() != null) {
+                interfaces.addAll(relationshipType.getTargetInterfaces().getInterface());
+            }
+            if (relationshipType.getInterfaces() != null) {
+                interfaces.addAll(relationshipType.getInterfaces().getInterface());
+            }
+        }
+        Iterator<TInterface> it = interfaces.iterator();
+        do {
+            i = it.next();
+            if (i.getName().equals(interfaceName)) {
+                return Optional.of(i);
+            }
+        } while (it.hasNext());
+        return Optional.empty();
     }
 
     private void storeProperties(ArtifactTemplateId artifactTemplateId, DefinitionsChildId typeId, String name) {

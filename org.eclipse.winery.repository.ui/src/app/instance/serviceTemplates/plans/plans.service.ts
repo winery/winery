@@ -72,4 +72,12 @@ export class PlansService {
                 { headers: headers, observe: 'response', responseType: 'text' }
             );
     }
+
+    public generatePlans(): Observable<HttpResponse<string>> {
+        const url = this.path + 'generate';
+        const headers = new HttpHeaders({ 'Content-Type': 'text/plain' });
+        return this.http.post(url, null,
+            { headers: headers, observe: 'response', responseType: 'text' }
+        );
+    }
 }

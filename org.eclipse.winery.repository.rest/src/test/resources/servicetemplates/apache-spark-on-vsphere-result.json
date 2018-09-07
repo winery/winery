@@ -1,0 +1,186 @@
+{
+    "documentation": [],
+    "any": [],
+    "otherAttributes": {},
+    "relationshipTemplates": [
+        {
+            "documentation": [],
+            "any": [],
+            "otherAttributes": {},
+            "sourceElement": {
+                "ref": "Apache-Spark-App"
+            },
+            "targetElement": {
+                "ref": "Apache-Spark_2_0"
+            },
+            "name": "con_17",
+            "id": "con_17",
+            "type": "{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}HostedOn"
+        },
+        {
+            "documentation": [],
+            "any": [],
+            "otherAttributes": {},
+            "sourceElement": {
+                "ref": "Apache-Spark_2_0"
+            },
+            "targetElement": {
+                "ref": "Ubuntu-14_04-VM"
+            },
+            "name": "con_29",
+            "id": "con_29",
+            "type": "{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}HostedOn"
+        },
+        {
+            "documentation": [],
+            "any": [],
+            "otherAttributes": {},
+            "sourceElement": {
+                "ref": "Ubuntu-14_04-VM"
+            },
+            "targetElement": {
+                "ref": "VSphere_5_5"
+            },
+            "name": "con_41",
+            "id": "con_41",
+            "type": "{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}HostedOn"
+        },
+        {
+            "documentation": [],
+            "any": [],
+            "otherAttributes": {},
+            "sourceElement": {
+                "ref": "Apache-Spark_2_0"
+            },
+            "targetElement": {
+                "ref": "Java8"
+            },
+            "name": "con_53",
+            "id": "con_53",
+            "type": "{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}DependsOn"
+        },
+        {
+            "documentation": [],
+            "any": [],
+            "otherAttributes": {},
+            "sourceElement": {
+                "ref": "Java8"
+            },
+            "targetElement": {
+                "ref": "Ubuntu-14_04-VM"
+            },
+            "name": "con_65",
+            "id": "con_65",
+            "type": "{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}HostedOn"
+        }
+    ],
+    "nodeTemplates": [
+        {
+            "documentation": [],
+            "any": [],
+            "otherAttributes": {
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "678",
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "631"
+            },
+            "properties": {
+                "kvproperties": {
+                    "HypervisorEndpoint": "https://iaasvc.informatik.uni-stuttgart.de/sdk",
+                    "HypervisorTenantID": "smartservices",
+                    "HypervisorUserName": "get_input: VSphereUserName",
+                    "HypervisorUserPassword": "get_input: VSphereUserPassword"
+                }
+            },
+            "id": "VSphere_5_5",
+            "type": "{http://opentosca.org/nodetypes}VSphere_5.5",
+            "name": "VSphere_5.5",
+            "minInstances": 1,
+            "maxInstances": "1",
+            "x": "678",
+            "y": "631"
+        },
+        {
+            "documentation": [],
+            "any": [],
+            "otherAttributes": {
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "844",
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "514"
+            },
+            "properties": {
+                "kvproperties": {
+                    "VMIP": "",
+                    "VMInstanceID": "",
+                    "VMType": "m1.medium.template4",
+                    "VMUserName": "ubuntu",
+                    "VMUserPassword": "NotNeeded",
+                    "VMPrivateKey": "",
+                    "VMPublicKey": "",
+                    "VMKeyPairName": "NotNeeded"
+                }
+            },
+            "id": "Ubuntu-14_04-VM",
+            "type": "{http://opentosca.org/nodetypes}Ubuntu-14.04-VM",
+            "name": "Ubuntu-14.04-VM",
+            "minInstances": 1,
+            "maxInstances": "1",
+            "x": "844",
+            "y": "514"
+        },
+        {
+            "documentation": [],
+            "any": [],
+            "otherAttributes": {
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "744",
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "268"
+            },
+            "id": "Apache-Spark_2_0",
+            "type": "{http://opentosca.org/nodetypes}Apache-Spark_2.0",
+            "name": "Apache-Spark_2.0",
+            "minInstances": 1,
+            "maxInstances": "1",
+            "x": "744",
+            "y": "268"
+        },
+        {
+            "documentation": [],
+            "any": [],
+            "otherAttributes": {
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "740",
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "46"
+            },
+            "id": "Apache-Spark-App",
+            "type": "{http://opentosca.org/nodetypes}Apache-Spark-App",
+            "name": "Apache-Spark-App",
+            "minInstances": 1,
+            "maxInstances": "1",
+            "x": "740",
+            "y": "46",
+            "deploymentArtifacts": {
+                "deploymentArtifact": [
+                    {
+                        "documentation": [],
+                        "any": [],
+                        "otherAttributes": {},
+                        "name": "Pi_Estimation_DA",
+                        "artifactType": "{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}ScriptArtifact",
+                        "artifactRef": "{http://opentosca.org/artifacttemplates}Pi_Estimation_DA"
+                    }
+                ]
+            }
+        },
+        {
+            "documentation": [],
+            "any": [],
+            "otherAttributes": {
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "501",
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "419"
+            },
+            "id": "Java8",
+            "type": "{http://opentosca.org/nodetypes}Java8",
+            "name": "Java8",
+            "minInstances": 1,
+            "maxInstances": "1",
+            "x": "501",
+            "y": "419"
+        }
+    ]
+}

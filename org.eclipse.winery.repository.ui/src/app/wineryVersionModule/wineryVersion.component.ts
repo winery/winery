@@ -68,13 +68,15 @@ export class WineryVersionComponent {
         this.onShowModal();
         this.generateNewVersions();
 
-        this.currentSelected = null;
         this.newVersion = new WineryVersion('', 0, 0);
 
         this.modalConfig.action = WineryVersionActions.AddNewVersion;
         this.modalConfig.title = 'Add a new version';
         this.modalConfig.okButtonLabel = 'Add';
         this.modalConfig.valid = false;
+
+        this.wipVersionSelected();
+
         this.modal.show();
     }
 

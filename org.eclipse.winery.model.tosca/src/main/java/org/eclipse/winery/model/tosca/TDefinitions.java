@@ -31,11 +31,12 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import org.eclipse.winery.model.tosca.visitor.Visitor;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.w3c.dom.Element;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tDefinitions", propOrder = {
@@ -108,6 +109,11 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         return Objects.hash(super.hashCode(), extensions, _import, types, serviceTemplateOrNodeTypeOrNodeTypeImplementation, name, targetNamespace);
     }
 
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
+
     /**
      * Convenience method for <code>this.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0)</code>
      */
@@ -133,26 +139,6 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         this.extensions = value;
     }
 
-    /**
-     * Gets the value of the import property.
-     * <p>
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the import property.
-     * <p>
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getImport().add(newItem);
-     * </pre>
-     * <p>
-     * <p>
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link TImport }
-     */
     @NonNull
     public List<TImport> getImport() {
         if (_import == null) {
@@ -170,18 +156,6 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
     }
 
     /**
-     * Gets the value of the serviceTemplateOrNodeTypeOrNodeTypeImplementation property.
-     * <p>
-     * <p> This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you
-     * make to the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE>
-     * method for the serviceTemplateOrNodeTypeOrNodeTypeImplementation property.
-     * <p>
-     * <p> For example, to add a new item, do as follows:
-     * <pre>
-     *    getServiceTemplateOrNodeTypeOrNodeTypeImplementation().add(newItem);
-     * </pre>
-     * <p>
-     * <p>
      * <p> Objects of the following type(s) are allowed in the list {@link TRelationshipType } {@link
      * TRelationshipTypeImplementation } {@link TArtifactTemplate } {@link TPolicyTemplate } {@link TServiceTemplate }
      * {@link TArtifactType } {@link TCapabilityType } {@link TNodeType } {@link TNodeTypeImplementation } {@link
@@ -372,27 +346,6 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         @XmlAnyElement(lax = true)
         protected List<Object> any;
 
-        /**
-         * Gets the value of the any property.
-         * <p>
-         * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the any property.
-         * <p>
-         * <p>
-         * For example, to add a new item, do as follows:
-         * <pre>
-         *    getAny().add(newItem);
-         * </pre>
-         * <p>
-         * <p>
-         * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link Element }
-         * {@link Object }
-         */
         @NonNull
         public List<Object> getAny() {
             if (any == null) {

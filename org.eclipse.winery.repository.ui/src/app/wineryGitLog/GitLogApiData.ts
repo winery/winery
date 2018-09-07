@@ -32,5 +32,5 @@ export class GitChange {
     name: string;
     type: string;
     path: string;
-    diff: string;
+    diffs: string;
 }

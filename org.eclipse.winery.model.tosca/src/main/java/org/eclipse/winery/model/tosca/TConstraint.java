@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,32 +14,19 @@
 
 package org.eclipse.winery.model.tosca;
 
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-import org.w3c.dom.Element;
-
-import javax.xml.bind.annotation.*;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlType;
 
-/**
- * <p>Java class for tConstraint complex type.
- * <p>
- * <p>The following schema fragment specifies the expected content contained within this class.
- * <p>
- * <pre>
- * &lt;complexType name="tConstraint">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;any processContents='lax' namespace='##other'/>
- *       &lt;/sequence>
- *       &lt;attribute name="constraintType" use="required" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- */
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tConstraint", propOrder = {
     "any"
@@ -69,41 +56,21 @@ public class TConstraint {
         return Objects.hash(any, constraintType);
     }
 
-    /**
-     * Gets the value of the any property.
-     *
-     * @return possible object is {@link Element } {@link Object }
-     */
     @Nullable
     public Object getAny() {
         return any;
     }
 
-    /**
-     * Sets the value of the any property.
-     *
-     * @param value allowed object is {@link Element } {@link Object }
-     */
-    public void setAny(Object value) {
+    public void setAny(@Nullable Object value) {
         this.any = value;
     }
 
-    /**
-     * Gets the value of the constraintType property.
-     *
-     * @return possible object is {@link String }
-     */
     @NonNull
     public String getConstraintType() {
         return constraintType;
     }
 
-    /**
-     * Sets the value of the constraintType property.
-     *
-     * @param value allowed object is {@link String }
-     */
     public void setConstraintType(String value) {
-        this.constraintType = value;
+        this.constraintType = Objects.requireNonNull(value);
     }
 }

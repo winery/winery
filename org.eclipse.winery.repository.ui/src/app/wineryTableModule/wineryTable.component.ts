@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,8 +11,8 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, DoCheck, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {isNullOrUndefined} from 'util';
+import { Component, DoCheck, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { isNullOrUndefined } from 'util';
 
 /**
  * This component provides an easy and fast way to use the ng2-table with further modifications
@@ -21,9 +21,9 @@ import {isNullOrUndefined} from 'util';
  * <p>
  *     In order to use this component, the {@link WineryTableModule} must be imported in the corresponding
  *     module. Afterwards, it can be included in the template by inserting the `<winery-table></winery-table>` tag.
- *     Inputs, which must be passed to the component in order for the table to work, are <code>columns</code> and <code>data</code>.
- *     The <code>columns</code> array must contain objects of type {@link WineryTableColumn}.
- *     The <code>data</code> can be an array of any kind of objects.
+ *     Inputs, which must be passed to the component in order for the table to work, are <code>columns</code> and
+ * <code>data</code>. The <code>columns</code> array must contain objects of type {@link WineryTableColumn}. The
+ * <code>data</code> can be an array of any kind of objects.
  * </p>
  *
  * <label>Inputs</label>
@@ -73,11 +73,14 @@ import {isNullOrUndefined} from 'util';
  * <ul>
  *     <li><code>cellSelected</code> emits the selected cell in the table. Contains the data of the whole selected row.
  *     </li>
- *     <li><code>removeBtnClicked</code> emits the selected cell in the table. Contains the data of the whole selected row.
+ *     <li><code>removeBtnClicked</code> emits the selected cell in the table. Contains the data of the whole selected
+ * row.
  *     </li>
- *     <li><code>addBtnClicked</code> emits the selected cell in the table. Contains the data of the whole selected row.
+ *     <li><code>addBtnClicked</code> emits the selected cell in the table. Contains the data of the whole selected
+ * row.
  *     </li>
- *     <li><code>editBtnClicked</code> emits the selected cell in the table. Contains the data of the whole selected row.
+ *     <li><code>editBtnClicked</code> emits the selected cell in the table. Contains the data of the whole selected
+ * row.
  *     </li>
  *     <li><code>ioBtnClicked</code> emits the selected cell in the table. Contains the data of the whole selected row.
  *     </li>
@@ -113,6 +116,7 @@ import {isNullOrUndefined} from 'util';
 })
 export class WineryTableComponent implements OnInit, DoCheck {
 
+    @ViewChild('tableContainer') tableContainer: any;
     @Input() title: string;
     @Input() itemsPerPage = 10;
     @Input() maxSize = 5;
@@ -130,12 +134,12 @@ export class WineryTableComponent implements OnInit, DoCheck {
         /**
          * switch on the sorting plugin
          */
-        sorting: {columns: this.columns || true},
+        sorting: { columns: this.columns || true },
         /**
          * switch on the filtering plugin
          * {@link ColumnFilter}
          */
-        filtering: {filterString: ''},
+        filtering: { filterString: '' },
         /**
          * additional CSS classes that should be added to a table
          */
@@ -160,7 +164,10 @@ export class WineryTableComponent implements OnInit, DoCheck {
 
     // region #######Table events and functions######
 
-    public onChangeTable(config: any, page: any = {page: this.page, itemsPerPage: this.itemsPerPage}): any {
+    public onChangeTable(config: any, page: any = { page: this.page, itemsPerPage: this.itemsPerPage }): any {
+        this.currentSelected = null;
+        this.refreshRowHighlighting();
+
         if (config.filtering) {
             Object.assign(this.config.filtering, config.filtering);
         }
@@ -251,6 +258,16 @@ export class WineryTableComponent implements OnInit, DoCheck {
     onCellClick(data: WineryRowData) {
         this.cellSelected.emit(data);
         this.currentSelected = data.row;
+        this.refreshRowHighlighting();
+    }
+
+    private refreshRowHighlighting(): void {
+        const rowNumber: number = this.currentSelected ? this.rows.findIndex(row => row === this.currentSelected) : -1;
+        const tableRows = this.tableContainer.nativeElement.children[0].children[0].children[1].children;
+
+        for (let i = 0; i < tableRows.length; i++) {
+            tableRows[i].className = (i === rowNumber) ? 'active-row' : '';
+        }
     }
 
     onAddClick($event: Event) {

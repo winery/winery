@@ -18,7 +18,7 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 
-public class ComplianceRuleId extends EntityTemplateId {
+public class ComplianceRuleId extends DefinitionsChildId {
 
 	public ComplianceRuleId(Namespace namespace, XmlId xmlId) {
 		super(namespace, xmlId);

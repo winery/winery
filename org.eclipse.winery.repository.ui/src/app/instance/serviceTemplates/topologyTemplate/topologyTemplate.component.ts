@@ -17,9 +17,8 @@ import { backendBaseURL, oldTopologyModelerURL, topologyModelerURL } from '../..
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { WineryVersion } from '../../../model/wineryVersion';
 import { ModalDirective } from 'ngx-bootstrap';
-import { ToscaComponent } from '../../../model/toscaComponent';
-import { ToscaTypes } from '../../../model/enums';
 import { ActivatedRoute } from '@angular/router';
+import { ToscaTypes } from '../../../model/enums';
 
 @Component({
     templateUrl: 'topologyTemplate.component.html'
@@ -52,10 +51,15 @@ export class TopologyTemplateComponent implements OnInit {
             + '&ns=' + encodeURIComponent(this.sharedData.toscaComponent.namespace)
             + '&id=' + this.sharedData.toscaComponent.localName;
 
+        // for declarative compliance rules add additional information to identify the location of the topologytemplate
         if (this.sharedData.toscaComponent.toscaType === ToscaTypes.ComplianceRule) {
             const elementPath = this.activatedRoute.snapshot.url[0].path;
             editorConfig += '&parentPath=' + ToscaTypes.ComplianceRule.toLocaleString()
                 + '&elementPath=' + elementPath;
+        }
+
+        if (!this.sharedData.currentVersion.editable) {
+            editorConfig += '&isReadonly=true';
         }
 
         this.editorUrl = topologyModelerURL + editorConfig;

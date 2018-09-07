@@ -29,8 +29,8 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.ImportUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
-import org.slf4j.ext.XLogger;
-import org.slf4j.ext.XLoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 
 public class RepositoryBasedXsdImportManager implements XsdImportManager {
 
-    private static final XLogger LOGGER = XLoggerFactory.getXLogger(BackendUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BackendUtils.class);
 
     /**
      * Finds out all imports belonging to the given namespace

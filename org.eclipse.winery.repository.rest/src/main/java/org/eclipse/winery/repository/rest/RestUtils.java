@@ -71,11 +71,13 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.backend.xsd.NamespaceAndDefinedLocalNames;
 import org.eclipse.winery.repository.configuration.Environment;
+import org.eclipse.winery.repository.export.CsarExportOptions;
 import org.eclipse.winery.repository.export.CsarExporter;
 import org.eclipse.winery.repository.export.ToscaExportUtil;
 import org.eclipse.winery.repository.rest.datatypes.LocalNameForAngular;
@@ -102,8 +104,8 @@ import com.sun.jersey.core.header.ContentDisposition;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.slf4j.ext.XLogger;
-import org.slf4j.ext.XLoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Contains utility functionality concerning with everything that is <em>not</em> related only to the repository, but
@@ -112,7 +114,7 @@ import org.slf4j.ext.XLoggerFactory;
  */
 public class RestUtils {
 
-    private static final XLogger LOGGER = XLoggerFactory.getXLogger(RestUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestUtils.class);
 
     // RegExp inspired by http://stackoverflow.com/a/5396246/873282
     // NameStartChar without ":"
@@ -204,26 +206,42 @@ public class RestUtils {
          * sb.append(resource.getNamespace().getEncoded()); sb.append(".xml");
          * sb.append("\""); return Response.ok().header("Content-Disposition",
          * sb
-         * .toString()).type(MediaType.APPLICATION_XML_TYPE).entity(so).build();
+         * .toString()).type(MediaType.APPLICATION_XML_TYPE).entity(so).buildProvenanceSmartContract();
          */
         return Response.ok().type(MediaType.APPLICATION_XML).entity(so).build();
     }
 
-    public static Response getCSARofSelectedResource(final AbstractComponentInstanceResource resource) {
+    /**
+     * @param options the set of options that are applicable for exporting a csar
+     */
+    public static Response getCSARofSelectedResource(final AbstractComponentInstanceResource resource, CsarExportOptions options) {
         final CsarExporter exporter = new CsarExporter();
+        Map<String, Object> exportConfiguration = new HashMap<>();
+
         StreamingOutput so = output -> {
             try {
-                exporter.writeCsar(RepositoryFactory.getRepository(), resource.getId(), output);
+                // check which options are chosen
+                if (options.isAddToProvenance()) {
+                    // We wait for the provenance layer to confirm the transaction
+                    String result = exporter.writeCsarAndSaveManifestInProvenanceLayer(RepositoryFactory.getRepository(), resource.getId(), output)
+                        .get();
+                    LOGGER.debug("Stored state in provenance layer in transaction " + result);
+                } else {
+                    exporter.writeCsar(RepositoryFactory.getRepository(), resource.getId(), output, exportConfiguration);
+                }
             } catch (Exception e) {
+                LOGGER.error("Error while exporting CSAR", e);
                 throw new WebApplicationException(e);
             }
         };
-        StringBuilder sb = new StringBuilder();
-        sb.append("attachment;filename=\"");
-        sb.append(resource.getXmlId().getEncoded());
-        sb.append(org.eclipse.winery.repository.Constants.SUFFIX_CSAR);
-        sb.append("\"");
-        return Response.ok().header("Content-Disposition", sb.toString()).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
+        String contentDisposition = String.format("attachment;filename=\"%s%s\"",
+            resource.getXmlId().getEncoded(),
+            Constants.SUFFIX_CSAR);
+        return Response.ok()
+            .header("Content-Disposition", contentDisposition)
+            .type(MimeTypes.MIMETYPE_ZIP)
+            .entity(so)
+            .build();
     }
 
     public static Response getYamlOfSelectedResource(DefinitionsChildId id) {
@@ -587,6 +605,8 @@ public class RestUtils {
 
     public static Response.ResponseBuilder persistWithResponseBuilder(IPersistable res) {
         try {
+            NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
+            namespaceManager.addPermanentNamespace(res.getDefinitions().getTargetNamespace());
             BackendUtils.persist(res.getDefinitions(), res.getRepositoryFileReference(), MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
         } catch (IOException e) {
             LOGGER.debug("Could not persist resource", e);

@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -26,7 +26,7 @@
             </div>
         </div>
         <textarea id="wineryGitLogDiffs" wrap="soft"
-                  *ngIf="selectedFile != null && isExpanded">{{selectedFile?.diffs}}</textarea>
+                  *ngIf="selectedFile != null && isExpanded">{{selectedFile?.diff}}</textarea>
         <div id="wineryGitLogGui" *ngIf="isExpanded">
             <table role="presentation">
                 <tbody class="files">

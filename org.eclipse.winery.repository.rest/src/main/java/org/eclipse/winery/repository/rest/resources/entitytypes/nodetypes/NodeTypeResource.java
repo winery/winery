@@ -13,11 +13,18 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes;
 
+import java.util.List;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TNodeType;
-import org.eclipse.winery.model.tosca.TNodeType.Interfaces;
 import org.eclipse.winery.model.tosca.TNodeType.RequirementDefinitions;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
 import org.eclipse.winery.repository.rest.RestUtils;
@@ -27,12 +34,6 @@ import org.eclipse.winery.repository.rest.resources.entitytypes.TopologyGraphEle
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.reqandcapdefs.CapabilityDefinitionsResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.reqandcapdefs.RequirementDefinitionsResource;
 import org.eclipse.winery.repository.rest.resources.interfaces.InterfacesResource;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import java.util.List;
 
 public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
 
@@ -70,9 +71,9 @@ public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
 
     @Path("interfaces/")
     public InterfacesResource getInterfaces() {
-        Interfaces interfaces = this.getNodeType().getInterfaces();
+        TInterfaces interfaces = this.getNodeType().getInterfaces();
         if (interfaces == null) {
-            interfaces = new Interfaces();
+            interfaces = new TInterfaces();
             this.getNodeType().setInterfaces(interfaces);
         }
         return new InterfacesResource(this, interfaces.getInterface(), "nodeType");

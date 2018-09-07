@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.datatypes;
 
+import java.util.Objects;
+
 import org.eclipse.winery.model.tosca.Definitions;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -44,5 +46,18 @@ public class LocalNameForAngular {
 
     public Definitions getFull() {
         return full;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LocalNameForAngular that = (LocalNameForAngular) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, text, full);
     }
 }

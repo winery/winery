@@ -46,7 +46,9 @@ If this goes wrong at the first run, execute `mvn package -DskipTests` a second 
        - Set `Relative Location` to `Before other comments`
        - Increase `Separator before/after Length` to `81`
        - ![GitAutoCheck](graphics/CopyrightFormat.png)
-    8. Press "OK"
+    8. Go to Editor > Copyright
+    9. Set "Winery" as Default project copyright
+    10. Press "OK"
 5. Configure Non-Null annotations properly  
    This is required for the [IntelliJ code inspections](https://www.jetbrains.com/help/idea/running-inspections.html) to run properly.
     1. Open the Settings (by pressing <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>S</kbd>)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -46,7 +46,6 @@ public class Constants {
     // suffix for ZIP files
     public static final String SUFFIX_ZIP = ".zip";
 
-
     // suffix for files in the directory PATH_MIMETYPEIMAGES, including "."
     public static final String SUFFIX_MIMETYPEIMAGES = ".png";
 
@@ -56,6 +55,8 @@ public class Constants {
 
     // suffix for all property files
     public static final String SUFFIX_PROPERTIES = ".properties";
+
+    public static final String SUFFIX_JSON = ".json";
 
     // suffix for all files storing Definitions
     // following  line 2935 of TOSCA cos01
@@ -68,10 +69,10 @@ public class Constants {
 
     public static final String TOSCA_PLANTYPE_BUILD_PLAN = "http://docs.oasis-open.org/tosca/ns/2011/12/PlanTypes/BuildPlan";
     public static final String TOSCA_PLANTYPE_TERMINATION_PLAN = "http://docs.oasis-open.org/tosca/ns/2011/12/PlanTypes/TerminationPlan";
-
+    public static final String TOSCA_PLANTYPE_MANAGEMENT_PLAN = "http://opentosca.org/tosca/plantypes/management";
+    
     public static final String DIRNAME_SELF_SERVICE_METADATA = "SELFSERVICE-Metadata";
 
     public static final String LICENSE_FILE_NAME = "LICENSE";
     public static final String README_FILE_NAME = "README.md";
-
 }

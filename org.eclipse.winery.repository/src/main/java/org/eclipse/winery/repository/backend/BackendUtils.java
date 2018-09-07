@@ -159,8 +159,8 @@ import org.apache.xerces.xs.XSTerm;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.slf4j.ext.XLogger;
-import org.slf4j.ext.XLoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.ls.LSInput;
@@ -182,7 +182,7 @@ public class BackendUtils {
      */
     public static final ObjectMapper mapper = getObjectMapper();
 
-    private static final XLogger LOGGER = XLoggerFactory.getXLogger(BackendUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BackendUtils.class);
 
     private static final MediaType MEDIATYPE_APPLICATION_OCTET_STREAM = MediaType.parse("application/octet-stream");
 
@@ -382,6 +382,17 @@ public class BackendUtils {
         return new RepositoryFileReference(id, name);
     }
 
+    public static RepositoryFileReference getRefOfJsonConfiguration(GenericId id) {
+        String name = "";
+
+        if (id instanceof AdminId) {
+            name = BackendUtils.getTypeForAdminId(((AdminId) id).getClass());
+            name += Constants.SUFFIX_JSON;
+        }
+
+        return new RepositoryFileReference(id, name);
+    }
+
     /**
      * Returns a list of the topology template nested in the given service template
      */
@@ -391,7 +402,7 @@ public class BackendUtils {
         if (topologyTemplate == null) {
             return Collections.emptyList();
         }
-        for (TEntityTemplate t: topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
+        for (TEntityTemplate t : topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
             if (t instanceof TNodeTemplate) {
                 l.add((TNodeTemplate) t);
             }
@@ -409,7 +420,7 @@ public class BackendUtils {
             return Collections.emptyList();
         }
         Collection<QName> res = new ArrayList<>();
-        for (TDeploymentArtifact da: deploymentArtifacts) {
+        for (TDeploymentArtifact da : deploymentArtifacts) {
             QName artifactRef = da.getArtifactRef();
             if (artifactRef != null) {
                 res.add(artifactRef);
@@ -427,7 +438,7 @@ public class BackendUtils {
             return Collections.emptyList();
         }
         Collection<QName> res = new ArrayList<>();
-        for (ImplementationArtifact ia: implementationArtifacts) {
+        for (ImplementationArtifact ia : implementationArtifacts) {
             QName artifactRef = ia.getArtifactRef();
             if (artifactRef != null) {
                 res.add(artifactRef);
@@ -446,7 +457,7 @@ public class BackendUtils {
         // DAs may be assigned via node type implementations
         QName nodeTypeQName = nodeTemplate.getType();
         Collection<NodeTypeImplementationId> allNodeTypeImplementations = RepositoryFactory.getRepository().getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
-        for (NodeTypeImplementationId nodeTypeImplementationId: allNodeTypeImplementations) {
+        for (NodeTypeImplementationId nodeTypeImplementationId : allNodeTypeImplementations) {
             TDeploymentArtifacts deploymentArtifacts = RepositoryFactory.getRepository().getElement(nodeTypeImplementationId).getDeploymentArtifacts();
             allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(deploymentArtifacts);
             l.addAll(allReferencedArtifactTemplates);
@@ -461,7 +472,7 @@ public class BackendUtils {
         // IAs may be assigned via node type implementations
         QName nodeTypeQName = nodeTemplate.getType();
         Collection<NodeTypeImplementationId> allNodeTypeImplementations = RepositoryFactory.getRepository().getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
-        for (NodeTypeImplementationId nodeTypeImplementationId: allNodeTypeImplementations) {
+        for (NodeTypeImplementationId nodeTypeImplementationId : allNodeTypeImplementations) {
             TImplementationArtifacts implementationArtifacts = RepositoryFactory.getRepository().getElement(nodeTypeImplementationId).getImplementationArtifacts();
             Collection<QName> allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(implementationArtifacts);
             l.addAll(allReferencedArtifactTemplates);
@@ -526,6 +537,7 @@ public class BackendUtils {
         nodeTemplateClone.setType(nodeTemplate.getType());
         nodeTemplateClone.setId(nodeTemplate.getId());
         nodeTemplateClone.setDeploymentArtifacts(nodeTemplate.getDeploymentArtifacts());
+        // returns 1 if null -> !original.equals(cloned)
         nodeTemplateClone.setMaxInstances(nodeTemplate.getMaxInstances());
         nodeTemplateClone.setMinInstances(nodeTemplate.getMinInstances());
         nodeTemplateClone.setName(nodeTemplate.getName());
@@ -534,6 +546,8 @@ public class BackendUtils {
         nodeTemplateClone.setCapabilities(nodeTemplate.getCapabilities());
         nodeTemplateClone.setProperties(nodeTemplate.getProperties());
         nodeTemplateClone.setPropertyConstraints(nodeTemplate.getPropertyConstraints());
+        nodeTemplateClone.setX(nodeTemplate.getX());
+        nodeTemplateClone.setY(nodeTemplate.getY());
 
         if (ModelUtilities.getTargetLabel(nodeTemplate).isPresent()) {
             ModelUtilities.setTargetLabel(nodeTemplateClone, ModelUtilities.getTargetLabel(nodeTemplate).get());
@@ -642,7 +656,7 @@ public class BackendUtils {
         document.appendChild(wrapperElement);
 
         // we produce the serialization in the same order the XSD would be generated (because of the usage of xsd:sequence)
-        for (PropertyDefinitionKV propertyDefinitionKV: winerysPropertiesDefinition.getPropertyDefinitionKVList()) {
+        for (PropertyDefinitionKV propertyDefinitionKV : winerysPropertiesDefinition.getPropertyDefinitionKVList()) {
             // we always write the element tag as the XSD forces that
             final Element valueElement = document.createElementNS(namespace, propertyDefinitionKV.getKey());
             wrapperElement.appendChild(valueElement);
@@ -671,6 +685,8 @@ public class BackendUtils {
      */
     public static void persist(DefinitionsChildId id, Definitions definitions) throws IOException {
         RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
+        NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
+        namespaceManager.addPermanentNamespace(id.getNamespace().getDecoded());
         BackendUtils.persist(definitions, ref, MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
     }
 
@@ -939,7 +955,7 @@ public class BackendUtils {
      */
     public static Collection<QName> convertDefinitionsChildIdCollectionToQNameCollection(Collection<? extends DefinitionsChildId> col) {
         Collection<QName> res = new ArrayList<>();
-        for (DefinitionsChildId id: col) {
+        for (DefinitionsChildId id : col) {
             res.add(id.getQName());
         }
         return res;
@@ -1042,7 +1058,7 @@ public class BackendUtils {
         try (InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
             Unmarshaller u = JAXBSupport.createUnmarshaller();
             Definitions defs = ((Definitions) u.unmarshal(is));
-            for (TExtensibleElements elem: defs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation()) {
+            for (TExtensibleElements elem : defs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation()) {
                 if (elem instanceof TArtifactTemplate) {
                     return (TArtifactTemplate) elem;
                 }
@@ -1143,7 +1159,7 @@ public class BackendUtils {
                 template.setArtifactReferences(artifactReferences);
             }
             List<TArtifactReference> artRefList = artifactReferences.getArtifactReference();
-            for (RepositoryFileReference ref: files) {
+            for (RepositoryFileReference ref : files) {
                 // determine path
                 // path relative from the root of the CSAR is ok (COS01, line 2663)
                 // double encoded - see ADR-0003
@@ -1163,7 +1179,7 @@ public class BackendUtils {
 
     /**
      * Synchronizes the known plans with the data in the XML. When there is a stored file, but no known entry in the
-     * XML, we guess "BPEL" as language and "build plan" as type.
+     * XML, we guess "BPEL" as language and "buildProvenanceSmartContract plan" as type.
      */
     public static void synchronizeReferences(ServiceTemplateId id) throws IOException {
         final IRepository repository = RepositoryFactory.getRepository();
@@ -1226,7 +1242,7 @@ public class BackendUtils {
 
         // add all plans locally stored, but not contained in the XML, as plan element to the plans of the service template.
         List<TPlan> thePlans = plans.getPlan();
-        for (PlanId planId: plansToAdd) {
+        for (PlanId planId : plansToAdd) {
             SortedSet<RepositoryFileReference> files = repository.getContainedFiles(planId);
             if (files.size() != 1) {
                 throw new IllegalStateException("Currently, only one file per plan is supported.");
@@ -1385,117 +1401,121 @@ public class BackendUtils {
         TTopologyTemplate topologyTemplateA = repository.getElement(serviceTemplateIdA).getTopologyTemplate();
         TServiceTemplate serviceTemplateB = repository.getElement(serviceTemplateIdB);
         TTopologyTemplate topologyTemplateB = serviceTemplateB.getTopologyTemplate();
-        Optional<Integer> shiftLeft = topologyTemplateB.getNodeTemplateOrRelationshipTemplate().stream()
-            .filter(x -> x instanceof TNodeTemplate)
-            .map(x -> (TNodeTemplate) x)
-            .max(Comparator.comparingInt(n -> ModelUtilities.getLeft(n).orElse(0)))
-            .map(n -> ModelUtilities.getLeft(n).orElse(0));
-        if (shiftLeft.isPresent()) {
-            Map<String, String> idMapping = new HashMap<>();
-
-            // collect existing node template ids
-            topologyTemplateB.getNodeTemplateOrRelationshipTemplate().stream()
+        if (topologyTemplateB != null) {
+            Optional<Integer> shiftLeft = topologyTemplateB.getNodeTemplateOrRelationshipTemplate().stream()
                 .filter(x -> x instanceof TNodeTemplate)
                 .map(x -> (TNodeTemplate) x)
-                // the existing ids are left unchanged
-                .forEach(x -> idMapping.put(x.getId(), x.getId()));
+                .max(Comparator.comparingInt(n -> ModelUtilities.getLeft(n).orElse(0)))
+                .map(n -> ModelUtilities.getLeft(n).orElse(0));
+            if (shiftLeft.isPresent()) {
+                Map<String, String> idMapping = new HashMap<>();
 
-            // collect existing relationship template ids
-            topologyTemplateB.getNodeTemplateOrRelationshipTemplate().stream()
-                .filter(x -> x instanceof TRelationshipTemplate)
-                .map(x -> (TRelationshipTemplate) x)
-                // the existing ids are left unchanged
-                .forEach(x -> idMapping.put(x.getId(), x.getId()));
+                // collect existing node template ids
+                topologyTemplateB.getNodeTemplateOrRelationshipTemplate().stream()
+                    .filter(x -> x instanceof TNodeTemplate)
+                    .map(x -> (TNodeTemplate) x)
+                    // the existing ids are left unchanged
+                    .forEach(x -> idMapping.put(x.getId(), x.getId()));
 
-            if (topologyTemplateB.getNodeTemplates() != null) {
-                // collect existing requirement ids
-                topologyTemplateB.getNodeTemplates().stream()
-                    .filter(nt -> nt.getRequirements() != null)
-                    .forEach(nt -> nt.getRequirements().getRequirement().stream()
-                        // the existing ids are left unchanged
-                        .forEach(x -> idMapping.put(x.getId(), x.getId())));
+                // collect existing relationship template ids
+                topologyTemplateB.getNodeTemplateOrRelationshipTemplate().stream()
+                    .filter(x -> x instanceof TRelationshipTemplate)
+                    .map(x -> (TRelationshipTemplate) x)
+                    // the existing ids are left unchanged
+                    .forEach(x -> idMapping.put(x.getId(), x.getId()));
 
-                //collect existing capability ids
-                topologyTemplateB.getNodeTemplates().stream()
-                    .filter(nt -> nt.getCapabilities() != null)
-                    .forEach(nt -> nt.getCapabilities().getCapability().stream()
-                        // the existing ids are left unchanged
-                        .forEach(x -> idMapping.put(x.getId(), x.getId())));
-            }
+                if (topologyTemplateB.getNodeTemplates() != null) {
+                    // collect existing requirement ids
+                    topologyTemplateB.getNodeTemplates().stream()
+                        .filter(nt -> nt.getRequirements() != null)
+                        .forEach(nt -> nt.getRequirements().getRequirement().stream()
+                            // the existing ids are left unchanged
+                            .forEach(x -> idMapping.put(x.getId(), x.getId())));
 
-            if (topologyTemplateA.getNodeTemplates() != null) {
-                // patch ids of reqs change them if required
-                topologyTemplateA.getNodeTemplates().stream()
-                    .filter(nt -> nt.getRequirements() != null)
-                    .forEach(nt -> nt.getRequirements().getRequirement().forEach(req -> {
-                        String oldId = req.getId();
-                        String newId = req.getId();
+                    //collect existing capability ids
+                    topologyTemplateB.getNodeTemplates().stream()
+                        .filter(nt -> nt.getCapabilities() != null)
+                        .forEach(nt -> nt.getCapabilities().getCapability().stream()
+                            // the existing ids are left unchanged
+                            .forEach(x -> idMapping.put(x.getId(), x.getId())));
+                }
+
+                if (topologyTemplateA.getNodeTemplates() != null) {
+                    // patch ids of reqs change them if required
+                    topologyTemplateA.getNodeTemplates().stream()
+                        .filter(nt -> nt.getRequirements() != null)
+                        .forEach(nt -> nt.getRequirements().getRequirement().forEach(req -> {
+                            String oldId = req.getId();
+                            String newId = req.getId();
+                            while (idMapping.containsKey(newId)) {
+                                newId = newId + "-new";
+                            }
+                            idMapping.put(req.getId(), newId);
+                            req.setId(newId);
+                            topologyTemplateA.getRelationshipTemplates().stream()
+                                .filter(rt -> rt.getSourceElement().getRef() instanceof TRequirement)
+                                .forEach(rt -> {
+                                    TRequirement sourceElement = (TRequirement) rt.getSourceElement().getRef();
+                                    if (sourceElement.getId().equalsIgnoreCase(oldId)) {
+                                        sourceElement.setId(req.getId());
+                                    }
+                                });
+                        }));
+                    // patch ids of caps change them if required
+                    topologyTemplateA.getNodeTemplates().stream()
+                        .filter(nt -> nt.getCapabilities() != null)
+                        .forEach(nt -> nt.getCapabilities().getCapability().forEach(cap -> {
+                            String oldId = cap.getId();
+                            String newId = cap.getId();
+                            while (idMapping.containsKey(newId)) {
+                                newId = newId + "-new";
+                            }
+                            idMapping.put(cap.getId(), newId);
+                            cap.setId(newId);
+                            topologyTemplateA.getRelationshipTemplates().stream()
+                                .filter(rt -> rt.getTargetElement().getRef() instanceof TCapability)
+                                .forEach(rt -> {
+                                    TCapability targetElement = (TCapability) rt.getTargetElement().getRef();
+                                    if (targetElement.getId().equalsIgnoreCase(oldId)) {
+                                        targetElement.setId(cap.getId());
+                                    }
+                                });
+                        }));
+                }
+                // patch the ids of node templates and add them
+                topologyTemplateA.getNodeTemplateOrRelationshipTemplate().stream()
+                    .filter(x -> x instanceof TNodeTemplate)
+                    .map(x -> (TNodeTemplate) x)
+                    .forEach(nt -> {
+                        String newId = nt.getId();
                         while (idMapping.containsKey(newId)) {
                             newId = newId + "-new";
                         }
-                        idMapping.put(req.getId(), newId);
-                        req.setId(newId);
-                        topologyTemplateA.getRelationshipTemplates().stream()
-                            .filter(rt -> rt.getSourceElement().getRef() instanceof TRequirement)
-                            .forEach(rt -> {
-                                TRequirement sourceElement = (TRequirement) rt.getSourceElement().getRef();
-                                if (sourceElement.getId().equalsIgnoreCase(oldId)) {
-                                    sourceElement.setId(req.getId());
-                                }
-                            });
-                    }));
-                // patch ids of caps change them if required
-                topologyTemplateA.getNodeTemplates().stream()
-                    .filter(nt -> nt.getCapabilities() != null)
-                    .forEach(nt -> nt.getCapabilities().getCapability().forEach(cap -> {
-                        String oldId = cap.getId();
-                        String newId = cap.getId();
+                        idMapping.put(nt.getId(), newId);
+                        nt.setId(newId);
+                        int newLeft = ModelUtilities.getLeft((TNodeTemplate) nt).orElse(0) + shiftLeft.get();
+                        ((TNodeTemplate) nt).setX(Integer.toString(newLeft));
+                        topologyTemplateB.getNodeTemplateOrRelationshipTemplate().add(nt);
+                    });
+
+                // patch the ids of relationship templates and add them
+                topologyTemplateA.getNodeTemplateOrRelationshipTemplate().stream()
+                    .filter(x -> x instanceof TRelationshipTemplate)
+                    .map(x -> (TRelationshipTemplate) x)
+                    .forEach(rt -> {
+                        String newId = rt.getId();
                         while (idMapping.containsKey(newId)) {
                             newId = newId + "-new";
                         }
-                        idMapping.put(cap.getId(), newId);
-                        cap.setId(newId);
-                        topologyTemplateA.getRelationshipTemplates().stream()
-                            .filter(rt -> rt.getTargetElement().getRef() instanceof TCapability)
-                            .forEach(rt -> {
-                                TCapability targetElement = (TCapability) rt.getTargetElement().getRef();
-                                if (targetElement.getId().equalsIgnoreCase(oldId)) {
-                                    targetElement.setId(cap.getId());
-                                }
-                            });
-                    }));
+                        idMapping.put(rt.getId(), newId);
+                        rt.setId(newId);
+                        topologyTemplateB.getNodeTemplateOrRelationshipTemplate().add(rt);
+                    });
+            } else {
+                topologyTemplateB.getNodeTemplateOrRelationshipTemplate().addAll(topologyTemplateA.getNodeTemplateOrRelationshipTemplate());
             }
-            // patch the ids of node templates and add them
-            topologyTemplateA.getNodeTemplateOrRelationshipTemplate().stream()
-                .filter(x -> x instanceof TNodeTemplate)
-                .map(x -> (TNodeTemplate) x)
-                .forEach(nt -> {
-                    String newId = nt.getId();
-                    while (idMapping.containsKey(newId)) {
-                        newId = newId + "-new";
-                    }
-                    idMapping.put(nt.getId(), newId);
-                    nt.setId(newId);
-                    int newLeft = ModelUtilities.getLeft((TNodeTemplate) nt).orElse(0) + shiftLeft.get();
-                    ((TNodeTemplate) nt).setX(Integer.toString(newLeft));
-                    topologyTemplateB.getNodeTemplateOrRelationshipTemplate().add(nt);
-                });
-
-            // patch the ids of relationship templates and add them
-            topologyTemplateA.getNodeTemplateOrRelationshipTemplate().stream()
-                .filter(x -> x instanceof TRelationshipTemplate)
-                .map(x -> (TRelationshipTemplate) x)
-                .forEach(rt -> {
-                    String newId = rt.getId();
-                    while (idMapping.containsKey(newId)) {
-                        newId = newId + "-new";
-                    }
-                    idMapping.put(rt.getId(), newId);
-                    rt.setId(newId);
-                    topologyTemplateB.getNodeTemplateOrRelationshipTemplate().add(rt);
-                });
         } else {
-            topologyTemplateB.getNodeTemplateOrRelationshipTemplate().addAll(topologyTemplateA.getNodeTemplateOrRelationshipTemplate());
+            serviceTemplateB.setTopologyTemplate(topologyTemplateA);
         }
         repository.setElement(serviceTemplateIdB, serviceTemplateB);
     }

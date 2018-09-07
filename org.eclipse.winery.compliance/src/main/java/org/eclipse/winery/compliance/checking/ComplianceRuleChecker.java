@@ -20,12 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.eclipse.winery.compliance.matching.TOSCAComplianceRuleMatcher;
-import org.eclipse.winery.compliance.matching.TOSCAIsomorphismMatcher;
-import org.eclipse.winery.compliance.model.TOSCAEdge;
-import org.eclipse.winery.compliance.model.TOSCAGraph;
-import org.eclipse.winery.compliance.model.TOSCANode;
-import org.eclipse.winery.compliance.transformation.TOSCATransformer;
+import org.eclipse.winery.topologygraph.matching.ToscaIsomorphismMatcher;
+import org.eclipse.winery.topologygraph.model.ToscaEdge;
+import org.eclipse.winery.topologygraph.model.ToscaGraph;
+import org.eclipse.winery.topologygraph.model.ToscaNode;
+import org.eclipse.winery.topologygraph.transformation.ToscaTransformer;
 import org.eclipse.winery.model.tosca.TComplianceRule;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
@@ -37,9 +36,9 @@ public class ComplianceRuleChecker {
 	private TTopologyTemplate requiredStructureTemplate = null;
 	private TTopologyTemplate toCheckTemplate = null;
 
-	private TOSCAGraph identifierGraph = null;
-	private TOSCAGraph requiredStructureGraph = null;
-	private TOSCAGraph toCheckGraph = null;
+	private ToscaGraph identifierGraph = null;
+	private ToscaGraph requiredStructureGraph = null;
+	private ToscaGraph toCheckGraph = null;
 
 	public ComplianceRuleChecker(TComplianceRule rule, TTopologyTemplate toCheckTemplate) {
 		this(rule.getIdentifier(), rule.getRequiredStructure(), toCheckTemplate);
@@ -51,9 +50,9 @@ public class ComplianceRuleChecker {
 		this.toCheckTemplate = toCheckTemplate;
 	}
 
-	protected static TOSCAGraph initializeGraph(TTopologyTemplate topologyTemplate) {
+	protected static ToscaGraph initializeGraph(TTopologyTemplate topologyTemplate) {
 		if (topologyTemplate != null) {
-			return TOSCATransformer.createTOSCAGraph(topologyTemplate);
+			return ToscaTransformer.createTOSCAGraph(topologyTemplate);
 		}
 		return null;
 	}
@@ -86,7 +85,7 @@ public class ComplianceRuleChecker {
 		throw new ComplianceCheckingException(ComplianceCheckingException.EMPTY_COMPLIANCE_RULE);
 	}
 
-	public List<GraphMapping> checkForViolations(TOSCAGraph identifierGraph, TOSCAGraph requiredStructureGraph, TOSCAGraph graphToSearchIn) {
+	public List<GraphMapping> checkForViolations(ToscaGraph identifierGraph, ToscaGraph requiredStructureGraph, ToscaGraph graphToSearchIn) {
 		// identify all relevant areas
 		List<GraphMapping> identifierMatches = findMatches(identifierGraph, graphToSearchIn);
 
@@ -101,21 +100,21 @@ public class ComplianceRuleChecker {
 		}
 	}
 
-	public List<GraphMapping> findMatches(TOSCAGraph queryGraph, TOSCAGraph searchInGraph) {
-		TOSCAIsomorphismMatcher matcher = new TOSCAIsomorphismMatcher();
-		Iterator<GraphMapping<TOSCANode, TOSCAEdge>> iterator = matcher.findMatches(queryGraph, searchInGraph, new TOSCAComplianceRuleMatcher());
+	public List<GraphMapping> findMatches(ToscaGraph queryGraph, ToscaGraph searchInGraph) {
+		ToscaIsomorphismMatcher matcher = new ToscaIsomorphismMatcher();
+		Iterator<GraphMapping<ToscaNode, ToscaEdge>> iterator = matcher.findMatches(queryGraph, searchInGraph, new ToscaComplianceRuleMatcher());
 		return convertToList(iterator);
 	}
 
-	public List<GraphMapping> extractViolatingMappings(TOSCAGraph identifierGraph, List<GraphMapping> identifierMappings, List<GraphMapping> requiredStructureMappings) {
+	public List<GraphMapping> extractViolatingMappings(ToscaGraph identifierGraph, List<GraphMapping> identifierMappings, List<GraphMapping> requiredStructureMappings) {
 		List<GraphMapping> violatingMappings = new ArrayList<>();
 
 		// for all mappings in identifierMappings, we need to find the corresponding required Structure Mappings
 		for (GraphMapping identifierMapping : identifierMappings) {
 			boolean foundCorrespondence = false;
 			for (GraphMapping requiredStructureMapping : requiredStructureMappings) {
-				//get the corresponding TOSCANode from the searchInGraph 
-				TOSCANode identifierVertexCorrespondence = (TOSCANode) identifierMapping.getVertexCorrespondence(identifierGraph.getReferenceNode(), false);
+				//get the corresponding ToscaNode from the searchInGraph 
+				ToscaNode identifierVertexCorrespondence = (ToscaNode) identifierMapping.getVertexCorrespondence(identifierGraph.getReferenceNode(), false);
 				foundCorrespondence = (requiredStructureMapping.getVertexCorrespondence(identifierVertexCorrespondence, true) != null) ? true : false;
 			}
 			if (!foundCorrespondence) {
@@ -125,14 +124,14 @@ public class ComplianceRuleChecker {
 		return violatingMappings;
 	}
 
-	public List<GraphMapping> convertToList(Iterator<GraphMapping<TOSCANode, TOSCAEdge>> iterator) {
+	public List<GraphMapping> convertToList(Iterator<GraphMapping<ToscaNode, ToscaEdge>> iterator) {
 		return com.google.common.collect.Lists.newArrayList(iterator);
 	}
 
-	public Map<TOSCANode, TOSCANode> getSubGraphMappingAsMap(GraphMapping mapping, TOSCAGraph subGraph) {
-		Map<TOSCANode, TOSCANode> result = new HashMap<>();
-		for (TOSCANode node : subGraph.vertexSet()) {
-			Optional.of(mapping.getVertexCorrespondence(node, false)).map(vertex -> (TOSCANode) vertex).ifPresent(vertex -> result.put(node, vertex));
+	public Map<ToscaNode, ToscaNode> getSubGraphMappingAsMap(GraphMapping mapping, ToscaGraph subGraph) {
+		Map<ToscaNode, ToscaNode> result = new HashMap<>();
+		for (ToscaNode node : subGraph.vertexSet()) {
+			Optional.of(mapping.getVertexCorrespondence(node, false)).map(vertex -> (ToscaNode) vertex).ifPresent(vertex -> result.put(node, vertex));
 		}
 		return result;
 	}
@@ -169,21 +168,21 @@ public class ComplianceRuleChecker {
 		return toCheckTemplate;
 	}
 
-	public TOSCAGraph getIdentifierGraph() {
+	public ToscaGraph getIdentifierGraph() {
 		if (identifierGraph == null) {
 			identifierGraph = initializeGraph(identifierTemplate);
 		}
 		return identifierGraph;
 	}
 
-	public TOSCAGraph getRequiredStructureGraph() {
+	public ToscaGraph getRequiredStructureGraph() {
 		if (requiredStructureGraph == null) {
 			requiredStructureGraph = initializeGraph(requiredStructureTemplate);
 		}
 		return requiredStructureGraph;
 	}
 
-	public TOSCAGraph getToCheckGraph() {
+	public ToscaGraph getToCheckGraph() {
 		if (toCheckGraph == null) {
 			toCheckGraph = initializeGraph(toCheckTemplate);
 		}

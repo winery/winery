@@ -74,7 +74,7 @@ export class NavbarComponent implements OnDestroy {
             this.saveTopologyTemplateToRepository();
             return false; // Prevent bubbling
         }));
-        this.exportCsarUrl = this.backendService.topologyTemplateURL + '/?csar';
+        this.exportCsarUrl = this.backendService.serviceTemplateURL + '/?csar';
     }
 
     /**
@@ -201,8 +201,7 @@ export class NavbarComponent implements OnDestroy {
         });
         // remove the 'Color' field from all nodeTemplates as the REST Api does not recognize it.
         topologySkeleton.nodeTemplates.map(nodeTemplate => {
-            delete nodeTemplate.color;
-            delete nodeTemplate.imageUrl;
+            delete nodeTemplate.visuals;
             delete nodeTemplate.state;
         });
         const topologyToBeSaved = topologySkeleton;
@@ -214,7 +213,7 @@ export class NavbarComponent implements OnDestroy {
                     + res.statusText + ' ' + res.status + '</p>')
                     : this.alert.info('<p>Something went wrong! <br>' + 'Response Status: '
                     + res.statusText + ' ' + res.status + '</p>');
-            });
+            }, err => this.alert.error(err.error));
     }
 
     /**

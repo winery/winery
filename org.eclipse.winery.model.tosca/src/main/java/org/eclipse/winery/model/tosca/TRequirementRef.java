@@ -23,6 +23,8 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.eclipse.winery.model.tosca.visitor.Visitor;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -56,7 +58,7 @@ public class TRequirementRef {
         return name;
     }
 
-    public void setName(String value) {
+    public void setName(@Nullable String value) {
         this.name = value;
     }
 
@@ -66,6 +68,11 @@ public class TRequirementRef {
     }
 
     public void setRef(@NonNull Object value) {
+        Objects.requireNonNull(value);
         this.ref = value;
+    }
+
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
 }

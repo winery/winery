@@ -44,7 +44,7 @@ Windows:
 
 ## Steps to initialize the TOSCA repository
 
-Please go to the [quick start guide](../user/quickstart.md).
+Please go to the [quick setup guide](../user/quicksetup.md).
 
 ## Steps to initialize the IDE
 

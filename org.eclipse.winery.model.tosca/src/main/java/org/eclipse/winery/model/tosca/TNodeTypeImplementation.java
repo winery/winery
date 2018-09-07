@@ -22,6 +22,7 @@ import javax.xml.namespace.QName;
 import java.util.List;
 import java.util.Objects;
 
+import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 /**
  * <p>Java class for tNodeTypeImplementation complex type.
@@ -108,6 +109,11 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), tags, derivedFrom, requiredContainerFeatures, implementationArtifacts, deploymentArtifacts, _abstract, _final);
+    }
+
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
 
     @Nullable

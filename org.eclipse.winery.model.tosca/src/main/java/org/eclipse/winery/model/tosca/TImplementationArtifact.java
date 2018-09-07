@@ -14,36 +14,24 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.util.Objects;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.model.tosca.visitor.Visitor;
+
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import javax.xml.bind.annotation.*;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javax.xml.namespace.QName;
-import java.util.Objects;
-
-/**
- * <p>Java class for tImplementationArtifact complex type.
- * <p>
- * <p>The following schema fragment specifies the expected content contained within this class.
- * <p>
- * <pre>
- * &lt;complexType name="tImplementationArtifact">
- *   &lt;complexContent>
- *     &lt;extension base="{http://docs.oasis-open.org/tosca/ns/2011/12}tExtensibleElements">
- *       &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="interfaceName" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
- *       &lt;attribute name="operationName" type="{http://www.w3.org/2001/XMLSchema}NCName" />
- *       &lt;attribute name="artifactType" use="required" type="{http://www.w3.org/2001/XMLSchema}QName" />
- *       &lt;attribute name="artifactRef" type="{http://www.w3.org/2001/XMLSchema}QName" />
- *       &lt;anyAttribute processContents='lax' namespace='##other'/>
- *     &lt;/extension>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tImplementationArtifact")
 @XmlSeeAlso( {
@@ -96,100 +84,56 @@ public class TImplementationArtifact extends TExtensibleElements implements HasN
         return Objects.hash(super.hashCode(), name, interfaceName, operationName, artifactType, artifactRef);
     }
 
-    /**
-     * Gets the value of the name property.
-     *
-     * @return possible object is {@link String }
-     */
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
+
     @Nullable
     @Override
     public String getName() {
         return name;
     }
 
-    /**
-     * Sets the value of the name property.
-     *
-     * @param value allowed object is {@link String }
-     */
     @Override
-    public void setName(String value) {
+    public void setName(@Nullable String value) {
         this.name = value;
     }
 
-    /**
-     * Gets the value of the interfaceName property.
-     *
-     * @return possible object is {@link String }
-     */
     @Nullable
     public String getInterfaceName() {
         return interfaceName;
     }
 
-    /**
-     * Sets the value of the interfaceName property.
-     *
-     * @param value allowed object is {@link String }
-     */
-    public void setInterfaceName(String value) {
+    public void setInterfaceName(@Nullable String value) {
         this.interfaceName = value;
     }
 
-    /**
-     * Gets the value of the operationName property.
-     *
-     * @return possible object is {@link String }
-     */
     @Nullable
     public String getOperationName() {
         return operationName;
     }
 
-    /**
-     * Sets the value of the operationName property.
-     *
-     * @param value allowed object is {@link String }
-     */
-    public void setOperationName(String value) {
+    public void setOperationName(@Nullable String value) {
         this.operationName = value;
     }
 
-    /**
-     * Gets the value of the artifactType property.
-     *
-     * @return possible object is {@link QName }
-     */
     @NonNull
     public QName getArtifactType() {
         return artifactType;
     }
 
-    /**
-     * Sets the value of the artifactType property.
-     *
-     * @param value allowed object is {@link QName }
-     */
-    public void setArtifactType(QName value) {
+    public void setArtifactType(@NonNull QName value) {
+        Objects.requireNonNull(value);
         this.artifactType = value;
     }
 
-    /**
-     * Gets the value of the artifactRef property.
-     *
-     * @return possible object is {@link QName }
-     */
     @Nullable
     public QName getArtifactRef() {
         return artifactRef;
     }
 
-    /**
-     * Sets the value of the artifactRef property.
-     *
-     * @param value allowed object is {@link QName }
-     */
-    public void setArtifactRef(QName value) {
+    public void setArtifactRef(@Nullable QName value) {
         this.artifactRef = value;
     }
 

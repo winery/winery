@@ -28,10 +28,13 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.tosca.visitor.Visitor;
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.w3c.dom.Element;
 
@@ -47,11 +50,14 @@ public class TRelationshipTemplate extends TEntityTemplate {
 
     @XmlElement(name = "SourceElement", required = true)
     // AD: We need to combine source or target due to multi-inheritance
-    protected TRelationshipTemplate.SourceOrTargetElement sourceElement;
+    protected TRelationshipTemplate.@NonNull SourceOrTargetElement sourceElement;
+
     @XmlElement(name = "TargetElement", required = true)
-    protected TRelationshipTemplate.SourceOrTargetElement targetElement;
+    protected TRelationshipTemplate.@NonNull SourceOrTargetElement targetElement;
+
     @XmlElement(name = "RelationshipConstraints")
     protected TRelationshipTemplate.RelationshipConstraints relationshipConstraints;
+
     @XmlAttribute(name = "name")
     protected String name;
 
@@ -88,16 +94,16 @@ public class TRelationshipTemplate extends TEntityTemplate {
         return Objects.hash(super.hashCode(), sourceElement, targetElement, relationshipConstraints, name);
     }
 
-    /*@NonNull*/
-    public TRelationshipTemplate.SourceOrTargetElement getSourceElement() {
+    public TRelationshipTemplate.@NonNull SourceOrTargetElement getSourceElement() {
         return sourceElement;
     }
 
-    public void setSourceElement(TRelationshipTemplate.SourceOrTargetElement value) {
-        this.sourceElement = value;
+    public void setSourceElement(TRelationshipTemplate.@NonNull SourceOrTargetElement value) {
+        this.sourceElement = Objects.requireNonNull(value);
     }
 
-    public void setSourceNodeTemplate(TNodeTemplate value) {
+    public void setSourceNodeTemplate(@NonNull TNodeTemplate value) {
+        Objects.requireNonNull(value);
         SourceOrTargetElement sourceElement = new SourceOrTargetElement();
         sourceElement.setRef(value);
         this.sourceElement = sourceElement;
@@ -109,50 +115,33 @@ public class TRelationshipTemplate extends TEntityTemplate {
         this.targetElement = targetElement;
     }
 
-    /*@NonNull*/
-    public TRelationshipTemplate.SourceOrTargetElement getTargetElement() {
+    public TRelationshipTemplate.@NonNull SourceOrTargetElement getTargetElement() {
         return targetElement;
     }
 
-    public void setTargetElement(TRelationshipTemplate.SourceOrTargetElement value) {
-        this.targetElement = value;
+    public void setTargetElement(TRelationshipTemplate.@NonNull SourceOrTargetElement value) {
+        this.targetElement = Objects.requireNonNull(value);
     }
 
-    /**
-     * Gets the value of the relationshipConstraints property.
-     *
-     * @return possible object is {@link TRelationshipTemplate.RelationshipConstraints }
-     */
     public TRelationshipTemplate.@Nullable RelationshipConstraints getRelationshipConstraints() {
         return relationshipConstraints;
     }
 
-    /**
-     * Sets the value of the relationshipConstraints property.
-     *
-     * @param value allowed object is {@link TRelationshipTemplate.RelationshipConstraints }
-     */
-    public void setRelationshipConstraints(TRelationshipTemplate.RelationshipConstraints value) {
+    public void setRelationshipConstraints(TRelationshipTemplate.@Nullable RelationshipConstraints value) {
         this.relationshipConstraints = value;
     }
 
-    /**
-     * Gets the value of the name property.
-     *
-     * @return possible object is {@link String }
-     */
     @Nullable
     public String getName() {
         return name;
     }
 
-    /**
-     * Sets the value of the name property.
-     *
-     * @param value allowed object is {@link String }
-     */
-    public void setName(String value) {
+    public void setName(@Nullable  String value) {
         this.name = value;
+    }
+
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -164,26 +153,6 @@ public class TRelationshipTemplate extends TEntityTemplate {
         @XmlElement(name = "RelationshipConstraint", required = true)
         protected List<TRelationshipTemplate.RelationshipConstraints.RelationshipConstraint> relationshipConstraint;
 
-        /**
-         * Gets the value of the relationshipConstraint property.
-         * <p>
-         * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the relationshipConstraint property.
-         * <p>
-         * <p>
-         * For example, to add a new item, do as follows:
-         * <pre>
-         *    getRelationshipConstraint().add(newItem);
-         * </pre>
-         * <p>
-         * <p>
-         * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link TRelationshipTemplate.RelationshipConstraints.RelationshipConstraint }
-         */
         public List<TRelationshipTemplate.RelationshipConstraints.RelationshipConstraint> getRelationshipConstraint() {
             if (relationshipConstraint == null) {
                 relationshipConstraint = new ArrayList<TRelationshipTemplate.RelationshipConstraints.RelationshipConstraint>();
@@ -191,24 +160,6 @@ public class TRelationshipTemplate extends TEntityTemplate {
             return this.relationshipConstraint;
         }
 
-        /**
-         * <p>Java class for anonymous complex type.
-         * <p>
-         * <p>The following schema fragment specifies the expected content contained within this class.
-         * <p>
-         * <pre>
-         * &lt;complexType>
-         *   &lt;complexContent>
-         *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-         *       &lt;sequence>
-         *         &lt;any processContents='lax' namespace='##other' minOccurs="0"/>
-         *       &lt;/sequence>
-         *       &lt;attribute name="constraintType" use="required" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
-         *     &lt;/restriction>
-         *   &lt;/complexContent>
-         * &lt;/complexType>
-         * </pre>
-         */
         @XmlAccessorType(XmlAccessType.FIELD)
         @XmlType(name = "", propOrder = {
             "any"
@@ -270,6 +221,10 @@ public class TRelationshipTemplate extends TEntityTemplate {
             public int hashCode() {
                 return Objects.hash(any, constraintType);
             }
+
+            public void accept(Visitor visitor) {
+                visitor.visit(this);
+            }
         }
 
         @Override
@@ -295,13 +250,14 @@ public class TRelationshipTemplate extends TEntityTemplate {
         @XmlIDREF
         @XmlSchemaType(name = "IDREF")
         @JsonIdentityReference(alwaysAsId = true)
+        @NonNull
         private RelationshipSourceOrTarget ref;
 
         public RelationshipSourceOrTarget getRef() {
             return ref;
         }
 
-        public void setRef(RelationshipSourceOrTarget value) {
+        public void setRef(@NonNull RelationshipSourceOrTarget value) {
             this.ref = value;
         }
 

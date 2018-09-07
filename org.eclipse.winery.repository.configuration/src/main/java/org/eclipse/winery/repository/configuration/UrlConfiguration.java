@@ -14,9 +14,9 @@
 
 package org.eclipse.winery.repository.configuration;
 
-import org.apache.commons.configuration2.Configuration;
-
 import java.util.Objects;
+
+import org.apache.commons.configuration2.Configuration;
 
 public class UrlConfiguration {
 
@@ -24,6 +24,7 @@ public class UrlConfiguration {
     private String repositoryUiUrl = "http://localhost:8080/#";
     private String bpmn4ToscaModelerUrl = "http://localhost:8080/winery-workflowmodeler";
     private String topologyModelerUrl = "http://localhost:8080/winery-topoloymodeler";
+    private String containerApiUrl = "http://container:1337";
 
     public UrlConfiguration() {
     }
@@ -32,6 +33,7 @@ public class UrlConfiguration {
         this.setBpmn4ToscaModelerUrl(configuration.getString(Environment.KEY_URL_BPMN4TOSCA_MODELER, null));
         this.setRepositoryUiUrl(configuration.getString(Environment.KEY_URL_REPOSITORY_UI, null));
         this.setTopologyModelerUrl(configuration.getString(Environment.KEY_URL_TOPOLOGY_MODELER, null));
+        this.setContainerApiUrl(configuration.getString(Environment.KEY_URL_CONTAINER_API, null));
     }
 
     public String getRepositoryApiUrl() {
@@ -58,10 +60,6 @@ public class UrlConfiguration {
         this.bpmn4ToscaModelerUrl = Objects.requireNonNull(bpmn4ToscaModelerUrl);
     }
 
-    /*
-     * @return the base URL of the BPMN4TOSCA plan modeler. NULL if not
-     *         configured. May also be empty.
-     */
     public String getTopologyModelerUrl() {
         return topologyModelerUrl;
     }
@@ -70,8 +68,17 @@ public class UrlConfiguration {
         this.topologyModelerUrl = Objects.requireNonNull(topologyModelerUrl);
     }
 
+    public String getContainerApiUrl() {
+        return containerApiUrl;
+    }
+
+    public void setContainerApiUrl(String containerApiUrl) {
+        this.containerApiUrl = Objects.requireNonNull(containerApiUrl);
+    }
+
     public void update(Configuration configuration) {
         configuration.setProperty(Environment.KEY_URL_BPMN4TOSCA_MODELER, this.getBpmn4ToscaModelerUrl());
         configuration.setProperty(Environment.KEY_URL_TOPOLOGY_MODELER, this.getTopologyModelerUrl());
+        configuration.setProperty(Environment.KEY_URL_CONTAINER_API, this.getContainerApiUrl());
     }
 }

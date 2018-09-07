@@ -5,4 +5,5 @@
 - [ ] Ensure to use auto format in **all** files
 - [ ] Ensure that you appear in `NOTICE` at Copyright Holders
 - [ ] Tests created for changes
+- [ ] Documentation updated (if needed)
 - [ ] Screenshots added (for UI changes)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,7 +14,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../configuration';
-import { NamespaceWithPrefix } from '../model/namespaceWithPrefix';
+import { NamespaceProperties } from '../model/namespaceProperties';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class WineryNamespaceSelectorService {
     constructor(private http: HttpClient) {
     }
 
-    getNamespaces(all: boolean = false): Observable<NamespaceWithPrefix[]> {
+    getNamespaces(all: boolean = false): Observable<NamespaceProperties[]> {
         const headers = new HttpHeaders({ 'Accept': 'application/json' });
 
         let URL: string;
@@ -33,6 +33,6 @@ export class WineryNamespaceSelectorService {
             URL = backendBaseURL + '/admin/namespaces/';
         }
 
-        return this.http.get<NamespaceWithPrefix[]>(URL, { headers: headers });
+        return this.http.get<NamespaceProperties[]>(URL, { headers: headers });
     }
 }

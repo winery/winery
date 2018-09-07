@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -16,7 +16,7 @@ import { WineryNamespaceSelectorService } from '../../../wineryNamespaceSelector
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../../../configuration';
 import { Router } from '@angular/router';
-import { NamespaceWithPrefix } from '../../../model/namespaceWithPrefix';
+import { NamespaceProperties } from '../../../model/namespaceProperties';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()
@@ -30,11 +30,11 @@ export class NamespacesService {
         this.path = decodeURIComponent(this.route.url);
     }
 
-    getAllNamespaces(): Observable<NamespaceWithPrefix[]> {
+    getAllNamespaces(): Observable<NamespaceProperties[]> {
         return this.namespaceService.getNamespaces(true);
     }
 
-    postNamespaces(namespaces: NamespaceWithPrefix[]): Observable<HttpResponse<string>> {
+    postNamespaces(namespaces: NamespaceProperties[]): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
         return this.http.post<string>(
             backendBaseURL + this.path + '/',

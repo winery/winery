@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -14,6 +14,7 @@
 <div>
     <div class="table-component-header">
         <label>{{ title}}</label>
+        <ng-content></ng-content>
         <div *ngIf="!disableFiltering">
             <label>Search:</label>
             <input *ngIf="config.filtering" placeholder="Filter all columns"
@@ -27,7 +28,10 @@
                     [disabled]="rows.length === 0 || !currentSelected">
                 Remove
             </button>
-            <button class="rightbutton btn btn-primary btn-xs" (click)="onAddClick($event);">Add</button>
+            <button class="rightbutton btn btn-primary btn-xs"
+                    (click)="onAddClick($event);">
+                Add
+            </button>
             <button *ngIf="enableIOButton"
                     class="rightbutton btn btn-info btn-xs"
                     (click)="onIOClick($event)"
@@ -45,11 +49,14 @@
 </div>
 
 <div>
-    <ng-table [config]="config"
-              (tableChanged)="onChangeTable(config)"
-              (cellClicked)="onCellClick($event)"
-              [rows]="rows" [columns]="columns">
-    </ng-table>
+    <div #tableContainer>
+        <ng-table [config]="config"
+                  (tableChanged)="onChangeTable(config)"
+                  (cellClicked)="onCellClick($event)"
+                  [rows]="rows"
+                  [columns]="columns">
+        </ng-table>
+    </div>
     <div *ngIf="data.length > 10 || data.length > itemsPerPage">
         <pagination *ngIf="config.paging"
                     class="pagination-sm"
@@ -63,7 +70,7 @@
                     (numPages)="numPages = $event">
         </pagination>
         <div style="float: right; margin-top: 20px;">
-            <span>Show</span>
+            <span>Show </span>
             <div class="table-component-select-wrap">
                 <select #itemsPerPageSelect [value]="itemsPerPage"
                         (change)="onItemsPerPageChange($event, itemsPerPageSelect);" class="form-control">
@@ -73,7 +80,7 @@
                     <option value="100">100</option>
                 </select>
             </div>
-            <span>entries</span>
+            <span> entries</span>
         </div>
     </div>
 </div>

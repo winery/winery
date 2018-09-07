@@ -25,6 +25,7 @@ import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -36,11 +37,19 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
 
+    private ConsistencyChecker consistencyChecker;
+
+    @BeforeEach
+    public void initializeConsistencyChecker() {
+        ConsistencyCheckerConfiguration consistencyCheckerConfiguration = new ConsistencyCheckerConfiguration(false, true, EnumSet.of(ConsistencyCheckerVerbosity.NONE));
+        consistencyChecker = new ConsistencyChecker(consistencyCheckerConfiguration);
+    }
+
     @Test
     public void nodeTypeImplementationNamespaceHasNoErrors() throws Exception {
         NodeTypeImplementationId id = new NodeTypeImplementationId("http://winery.opentosca.org/test/nodetypeimplementations/fruits", "baobab_impl", false);
-        ConsistencyErrorLogger errorLogger = new ConsistencyErrorLogger();
-        ConsistencyChecker.checkNamespaceUri(errorLogger, EnumSet.of(ConsistencyCheckerVerbosity.NONE), id);
+        ConsistencyErrorCollector errorLogger = new ConsistencyErrorCollector();
+        consistencyChecker.checkNamespaceUri(id);
         assertEquals(Collections.emptyMap(), errorLogger.getErrorList());
     }
 
@@ -48,8 +57,7 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
     public void openToscaNamespaceIsNotLowerCaseErrorRaisedAtWrongNodeTypeImplementationNamespace() {
         QName qname = new QName("http://www.opentosca.org/NodeTypeImplementations/fruits", "baobab_impl");
         NodeTypeImplementationId id = new NodeTypeImplementationId(qname);
-        ConsistencyErrorLogger errorLogger = new ConsistencyErrorLogger();
-        ConsistencyChecker.checkNamespaceUri(errorLogger, EnumSet.of(ConsistencyCheckerVerbosity.NONE), id);
+        consistencyChecker.checkNamespaceUri(id);
 
         Map<QName, ElementErrorList> expected = new HashMap<>();
         ElementErrorList elementErrorList;
@@ -58,7 +66,7 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
         elementErrorList.addError("opentosca URI is not lowercase");
         expected.put(qname, elementErrorList);
 
-        assertEquals(expected, errorLogger.getErrorList());
+        assertEquals(expected, consistencyChecker.getErrorCollector().getErrorList());
     }
 
     private static Stream<Arguments> getCamelCasedOpenToscaQNames() {
@@ -79,18 +87,20 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
     @MethodSource("getCamelCasedOpenToscaQNames")
     public void openToscaNamespaceIsNotLowerCaseErrorNotRaisedAtQNameHavingCasedLocalName(QName qname) {
         NodeTypeId id = new NodeTypeId(qname);
-        ConsistencyErrorLogger errorLogger = new ConsistencyErrorLogger();
-        ConsistencyChecker.checkNamespaceUri(errorLogger, EnumSet.of(ConsistencyCheckerVerbosity.NONE), id);
+        ConsistencyErrorCollector errorLogger = new ConsistencyErrorCollector();
+        consistencyChecker.checkNamespaceUri(id);
         assertEquals(Collections.emptyMap(), errorLogger.getErrorList());
 
     }
 
-    public ConsistencyErrorLogger checkRevisionWithoutDocumentation(String revision) throws Exception {
+    public ConsistencyErrorCollector checkRevisionWithoutDocumentation(String revision) throws Exception {
         this.setRevisionTo(revision);
         EnumSet<ConsistencyCheckerVerbosity> verbosity = EnumSet.noneOf(ConsistencyCheckerVerbosity.class);
         ConsistencyCheckerConfiguration configuration = new ConsistencyCheckerConfiguration
-            (false, false, verbosity, repository);
-        return ConsistencyChecker.checkCorruption(configuration);
+            (false, false, verbosity, repository, true);
+        final ConsistencyChecker consistencyChecker = new ConsistencyChecker(configuration);
+        consistencyChecker.checkCorruption();
+        return  consistencyChecker.getErrorCollector();
     }
 
     @ParameterizedTest
@@ -98,7 +108,7 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
         "83714d54cefe30792a5ad181af7cf036a77baf9e" // origin/plain in a working version
     })
     public void noErrors(String revision) throws Exception {
-        final ConsistencyErrorLogger errorLogger = checkRevisionWithoutDocumentation(revision);
+        final ConsistencyErrorCollector errorLogger = checkRevisionWithoutDocumentation(revision);
         assertNotNull(errorLogger);
         assertEquals(Collections.emptyMap(), errorLogger.getErrorList());
     }
@@ -112,10 +122,12 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
         expected.put(new QName("http://plain.winery.opentosca.org/servicetemplates", "ServiceTemplateWithAllReqCapVariants"), elementErrorList);
 
         elementErrorList = new ElementErrorList("ServiceTemplate");
+        elementErrorList.addError("Referenced element \"RelationshipTypeWithoutProperties\" is not a full QName");
         elementErrorList.addError("Corrupt: Component instance RelationshipType RelationshipTypeWithoutProperties in namespace  does not exist.");
         expected.put(new QName("http://plain.winery.opentosca.org/servicetemplates", "ServiceTemplateWithTwoNodeTemplates_w2-wip1"), elementErrorList);
 
         elementErrorList = new ElementErrorList("ServiceTemplate");
+        elementErrorList.addError("Referenced element \"RelationshipTypeWithoutProperties\" is not a full QName");
         elementErrorList.addError("Corrupt: Component instance RelationshipType RelationshipTypeWithoutProperties in namespace  does not exist.");
         expected.put(new QName("http://plain.winery.opentosca.org/servicetemplates", "ServiceTemplateWithTwoNodeTemplates_w2-wip2"), elementErrorList);
 
@@ -131,6 +143,8 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
             "Fatal Error: cvc-complex-type.3.2.2: Attribute 'x' is not allowed to appear in element 'NodeTemplate'.\n" +
             "Fatal Error: cvc-complex-type.3.2.2: Attribute 'y' is not allowed to appear in element 'NodeTemplate'.\n" +
             "Fatal Error: cvc-complex-type.3.2.2: Attribute 'location' is not allowed to appear in element 'NodeTemplate'.\n");
+        elementErrorList.addError("type is null");
+        elementErrorList.addError("Referenced element \"RelationshlpTypeWithValidSourceAndTarget_w1-wip1\" is not a full QName");
         elementErrorList.addError("propertiesKV of node template NodeTypeWithTwoKVProperties is null");
         elementErrorList.addError("propertiesKV of node template NodeTypeWithTwoKVProperties is null");
         elementErrorList.addError("propertiesKV of node template NodeTypeWithTwoKVProperties_2 is null");
@@ -149,6 +163,7 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
             "Fatal Error: cvc-complex-type.3.2.2: Attribute 'x' is not allowed to appear in element 'NodeTemplate'.\n" +
             "Fatal Error: cvc-complex-type.3.2.2: Attribute 'y' is not allowed to appear in element 'NodeTemplate'.\n" +
             "Fatal Error: cvc-complex-type.3.2.2: Attribute 'location' is not allowed to appear in element 'NodeTemplate'.\n");
+        elementErrorList.addError("Referenced element \"RelationshipTypeWithoutProperties\" is not a full QName");
         elementErrorList.addError("propertiesKV of node template NodeTypeWithTwoKVProperties is null");
         elementErrorList.addError("propertiesKV of node template NodeTypeWithTwoKVProperties is null");
         elementErrorList.addError("Corrupt: Component instance RelationshipType RelationshipTypeWithoutProperties in namespace  does not exist.");
@@ -365,6 +380,7 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
         elementErrorList = new ElementErrorList("ArtifactTemplate");
         elementErrorList.addError("Fatal Error: UndeclaredPrefix: Cannot resolve 'wfa:WAR' as a QName: the prefix 'wfa' is not declared.\n" +
             "Fatal Error: cvc-attribute.3: The value 'wfa:WAR' of attribute 'type' on element 'tosca:ArtifactTemplate' is not valid with respect to its type, 'QName'.\n");
+        elementErrorList.addError("type is null");
         elementErrorList.addError("Corrupt: Type is null for ArtifactTemplate baobab_bananaInterface_IA in namespace http://winery.opentosca.org/test/artifacttemplates/fruits");
         expected.put(new QName("http://winery.opentosca.org/test/artifacttemplates/fruits", "baobab_bananaInterface_IA"), elementErrorList);
 
@@ -409,10 +425,16 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
         );
     }
 
+    /**
+     * If this method fails, reconfigure IntelliJ and rebuild the complete project <br>
+     * Settings | Build, Execution, Deployment | Compiler | [ ] Add runtime assertions for not-null-annotated methods and parameters.
+     * 
+     * See https://stackoverflow.com/a/40847858/873282 for more information
+     */
     @ParameterizedTest
     @MethodSource("getNonWorkingRepositoryStates")
     public void hasErrors(String revision, Map<QName, ElementErrorList> expected) throws Exception {
-        final ConsistencyErrorLogger errorLogger = checkRevisionWithoutDocumentation(revision);
+        final ConsistencyErrorCollector errorLogger = checkRevisionWithoutDocumentation(revision);
         assertNotNull(errorLogger);
         assertEquals(expected, errorLogger.getErrorList());
     }

@@ -18,6 +18,5 @@
 export interface NewNodeIdTypeColorPropertiesModel {
     id: string;
     type: string;
-    color: string;
     properties: any;
 }

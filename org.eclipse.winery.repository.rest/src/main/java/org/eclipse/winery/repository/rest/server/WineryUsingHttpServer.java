@@ -13,8 +13,6 @@
  ********************************************************************************/
 package org.eclipse.winery.repository.rest.server;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.EnumSet;
 
 import javax.servlet.DispatcherType;
@@ -24,26 +22,16 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
 import org.eclipse.winery.repository.rest.Prefs;
 
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
-import org.eclipse.jetty.toolchain.test.MavenTestingUtils;
-import org.eclipse.jetty.util.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class WineryUsingHttpServer {
-
-    public static final int REPOSITORY_UI_PORT = 4200;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WineryUsingHttpServer.class);
 
@@ -63,40 +51,6 @@ public class WineryUsingHttpServer {
         return createHttpServer(8080);
     }
 
-    /**
-     * Starts the repository UI on port {@value #REPOSITORY_UI_PORT}
-     */
-    public static Server createHttpServerForRepositoryUi() {
-        Server server = new Server();
-        ServerConnector connector = new ServerConnector(server);
-        connector.setPort(REPOSITORY_UI_PORT);
-        server.setConnectors(new Connector[] {connector});
-        ResourceHandler rh0 = new ResourceHandler();
-        ContextHandler context0 = new ContextHandler();
-        context0.setContextPath("/");
-        // Path indexHtmlPath = MavenTestingUtils.getProjectFilePath("../org.eclipse.winery.repository.ui/dist/index.html").getParent();
-        Path indexHtmlPath = MavenTestingUtils.getBasePath().resolve("org.eclipse.winery.repository.ui").resolve("dist");
-        if (Files.exists(indexHtmlPath)) {
-            LOGGER.debug("Serving UI from " + indexHtmlPath.toString());
-        } else {
-            // not sure, why we sometimes have to use `getParent()`.
-            indexHtmlPath = MavenTestingUtils.getBasePath().getParent().resolve("org.eclipse.winery.repository.ui").resolve("dist");
-            if (Files.exists(indexHtmlPath)) {
-                LOGGER.debug("Serving UI from " + indexHtmlPath.toString());
-            } else {
-                LOGGER.error("Path does not exist " + indexHtmlPath);
-            }
-        }
-        context0.setBaseResource(Resource.newResource(indexHtmlPath.toFile()));
-        context0.setHandler(rh0);
-        ContextHandlerCollection contexts = new ContextHandlerCollection();
-        contexts.setHandlers(new Handler[] {context0});
-
-        server.setHandler(contexts);
-
-        return server;
-    }
-
     private static void addServlet(ServletContextHandler context, String s) {
         // Add the filter, and then use the provided FilterHolder to configure it
         FilterHolder cors = context.addFilter(CrossOriginFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
@@ -107,14 +61,13 @@ public class WineryUsingHttpServer {
 
         // this mirrors org.eclipse.winery.repository.rest\src\main\webapp\WEB-INF\web.xml
         ServletHolder h = context.addServlet(com.sun.jersey.spi.container.servlet.ServletContainer.class, "/*");
-        h.setInitParameter("com.sun.jersey.config.property.packages", "org.eclipse.winery.repository.rest.resources");
         h.setInitParameter("com.sun.jersey.config.feature.FilterForwardOn404", "false");
         h.setInitParameter("com.sun.jersey.config.feature.CanonicalizeURIPath", "true");
         h.setInitParameter("com.sun.jersey.config.feature.DisableWADL", "true");
         h.setInitParameter("com.sun.jersey.config.feature.NormalizeURI", "true");
         h.setInitParameter("com.sun.jersey.config.feature.Redirect", "true");
         h.setInitParameter("com.sun.jersey.api.json.POJOMappingFeature", "true");
-        h.setInitParameter("com.sun.jersey.config.property.resourceConfigClass", "com.sun.jersey.api.core.PackagesResourceConfig");
+        h.setInitParameter("com.sun.jersey.config.property.resourceConfigClass", "org.eclipse.winery.repository.rest.server.WineryResourceConfig");
 
         //context.addFilter(RequestLoggingFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         context.addServlet(DefaultServlet.class, "/");
@@ -122,18 +75,12 @@ public class WineryUsingHttpServer {
         h.setInitOrder(1);
     }
 
-    /**
-     * When in IntelliJ, /tmp/winery-repository is used. See /src/test/resources/winery.properties
-     */
     public static void main(String[] args) throws Exception {
-        // initialize repository
+        // Initialize repository
         new Prefs(true);
 
         Server server = createHttpServer();
         server.start();
-
-        Server uiServer = createHttpServerForRepositoryUi();
-        uiServer.start();
 
         IRepository repository = RepositoryFactory.getRepository();
         if (repository instanceof FilebasedRepository) {
@@ -146,6 +93,5 @@ public class WineryUsingHttpServer {
         // Will never happen, thus user has to press Ctrl+C.
         // See also https://stackoverflow.com/a/14981621/873282.
         server.join();
-        uiServer.join();
     }
 }

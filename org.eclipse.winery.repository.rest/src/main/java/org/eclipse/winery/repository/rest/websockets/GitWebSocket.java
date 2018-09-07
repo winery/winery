@@ -90,7 +90,7 @@ public class GitWebSocket {
                         ((GitBasedRepository) RepositoryFactory.getRepository()).postEventMap();
                     } catch (GitAPIException e) {
                         LOGGER.warn("Git reset failed", e);
-                        writeInSession(session, "{ \"error\": \"Couldn't parse message!\" }");
+                        writeInSession(session, "{ \"error\": \"Could not parse message!\" }");
                     }
                 } else {
                     boolean doCommit = false;
@@ -145,7 +145,7 @@ public class GitWebSocket {
                 }
             }
         } catch (IOException e) {
-            writeInSession(session, "{ \"error\": \"Couldn't parse message!\" }");
+            writeInSession(session, "{ \"error\": \"Could not parse message!\" }");
         }
     }
 

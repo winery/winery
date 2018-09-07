@@ -29,10 +29,11 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.tosca.visitor.Visitor;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tExtensibleElements", propOrder = {
@@ -58,12 +59,15 @@ import org.eclipse.jdt.annotation.Nullable;
     TDefinitions.class
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TExtensibleElements {
+public abstract class TExtensibleElements {
 
     protected List<TDocumentation> documentation;
+
     @XmlAnyElement(lax = true)
     protected List<Object> any;
+
     @XmlAnyAttribute
+    @NonNull
     private Map<QName, String> otherAttributes = new HashMap<QName, String>();
 
     public TExtensibleElements() {
@@ -72,7 +76,11 @@ public class TExtensibleElements {
     public TExtensibleElements(Builder builder) {
         this.documentation = builder.documentation;
         this.any = builder.any;
-        this.otherAttributes = builder.otherAttributes;
+        if (builder.otherAttributes == null) {
+            this.otherAttributes.clear();
+        } else {
+            this.otherAttributes = builder.otherAttributes;
+        }
     }
 
     @Override
@@ -90,21 +98,6 @@ public class TExtensibleElements {
         return Objects.hash(documentation, any, otherAttributes);
     }
 
-    /**
-     * Gets the value of the documentation property.
-     * <p>
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the documentation property.
-     * <p>
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getDocumentation().add(newItem);
-     * </pre>
-     */
     @NonNull
     public List<TDocumentation> getDocumentation() {
         if (documentation == null) {
@@ -113,15 +106,6 @@ public class TExtensibleElements {
         return this.documentation;
     }
 
-    /**
-     * Gets the value of the any property.
-     * <p>
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the any property.
-     */
     @NonNull
     public List<Object> getAny() {
         if (any == null) {
@@ -130,22 +114,12 @@ public class TExtensibleElements {
         return this.any;
     }
 
-    /**
-     * Gets a map that contains attributes that aren't bound to any typed property on this class.
-     * <p>
-     * <p>
-     * the map is keyed by the name of the attribute and
-     * the value is the string value of the attribute.
-     * <p>
-     * the map returned by this method is live, and you can add new attribute
-     * by updating the map directly. Because of this design, there's no setter.
-     *
-     * @return always non-null
-     */
-    @Nullable
+    @NonNull
     public Map<QName, String> getOtherAttributes() {
         return otherAttributes;
     }
+
+    public abstract void accept(Visitor visitor);
 
     /**
      * Generic abstract Builder
@@ -159,7 +133,6 @@ public class TExtensibleElements {
         private Map<QName, String> otherAttributes;
 
         public Builder() {
-
         }
 
         public Builder(Builder builder) {
@@ -282,8 +255,5 @@ public class TExtensibleElements {
         @ADR(11)
         public abstract T self();
 
-        public TExtensibleElements build() {
-            return new TExtensibleElements(this);
-        }
     }
 }

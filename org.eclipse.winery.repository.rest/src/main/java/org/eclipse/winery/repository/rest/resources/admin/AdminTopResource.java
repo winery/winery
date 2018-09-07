@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,6 +13,32 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.admin;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyChecker;
+import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerConfiguration;
+import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerVerbosity;
+import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyErrorCollector;
+import org.eclipse.winery.repository.configuration.Environment;
+import org.eclipse.winery.repository.configuration.GitHubConfiguration;
+import org.eclipse.winery.repository.rest.resources.admin.types.ConstraintTypesManager;
+import org.eclipse.winery.repository.rest.resources.admin.types.PlanLanguagesManager;
+import org.eclipse.winery.repository.rest.resources.admin.types.PlanTypesManager;
+import org.eclipse.winery.repository.rest.resources.apiData.OAuthStateAndCodeApiData;
+
 import io.swagger.annotations.Api;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -21,25 +47,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.eclipse.winery.repository.backend.IRepository;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyChecker;
-import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerConfiguration;
-import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerVerbosity;
-import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyErrorLogger;
-import org.eclipse.winery.repository.configuration.Environment;
-import org.eclipse.winery.repository.configuration.GitHubConfiguration;
-import org.eclipse.winery.repository.rest.resources.admin.types.ConstraintTypesManager;
-import org.eclipse.winery.repository.rest.resources.admin.types.PlanLanguagesManager;
-import org.eclipse.winery.repository.rest.resources.admin.types.PlanTypesManager;
-import org.eclipse.winery.repository.rest.resources.apiData.OAuthStateAndCodeApiData;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
 
 @Api(tags = "Admin")
 public class AdminTopResource {
@@ -72,11 +79,13 @@ public class AdminTopResource {
     @GET
     @Path("consistencycheck")
     @Produces(MediaType.APPLICATION_JSON)
-    public ConsistencyErrorLogger checkConsistency(@QueryParam("serviceTemplatesOnly") boolean serviceTemplatesOnly, @QueryParam("checkDocumentation") boolean checkDocumentation) {
+    public ConsistencyErrorCollector checkConsistency(@QueryParam("serviceTemplatesOnly") boolean serviceTemplatesOnly, @QueryParam("checkDocumentation") boolean checkDocumentation) {
         IRepository repo = RepositoryFactory.getRepository();
         EnumSet<ConsistencyCheckerVerbosity> verbosity = EnumSet.of(ConsistencyCheckerVerbosity.NONE);
         ConsistencyCheckerConfiguration config = new ConsistencyCheckerConfiguration(serviceTemplatesOnly, checkDocumentation, verbosity, repo);
-        return ConsistencyChecker.checkCorruption(config);
+        final ConsistencyChecker consistencyChecker = new ConsistencyChecker(config);
+        consistencyChecker.checkCorruption();
+        return consistencyChecker.getErrorCollector();
     }
 
     @POST

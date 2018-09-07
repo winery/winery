@@ -62,7 +62,7 @@ export class SourceComponent implements OnInit {
     constructor(private service: SourceService,
                 private notify: WineryNotificationService,
                 public sharedData: InstanceService) {
-        this.srcPath = this.service.getSourcePath + 'zip';
+        this.srcPath = this.service.getSourcePath + '/zip';
         this.enableCopyToFiles = this.sharedData.toscaComponent.toscaType !== ToscaTypes.ServiceTemplate;
     }
 

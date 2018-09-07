@@ -12,21 +12,26 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
 -->
 
-<div class="container rounded"
+<div class="node" [ngClass]="nodeClass"
      style="padding: 3px; position: absolute; user-select: none;"
      [style.top]="nodeTemplate.y + 'px'"
      [style.left]="nodeTemplate.x + 'px'"
+     [style.borderColor]="nodeTemplate.visuals.color"
+     [style.shadowColor]="nodeTemplate.visuals.color"
      [class.selected]="makeSelectionVisible"
      [class.unselected]="!makeSelectionVisible"
-     id={{nodeTemplate.id}} [style.borderColor]="nodeTemplate.color" [style.shadowColor]="nodeTemplate.color"
+     id={{nodeTemplate.id}}
      (mousedown)="mouseDownHandler($event)"
      (mouseup)="mouseUpHandler($event)"
      [@onCreateNodeTemplateAnimation]='visibilityState'
      [class.removeZIndex]="removeZIndex">
+
     <div *ngIf="nodeTemplate.state" style="margin-bottom: 4px; padding-left: 4px;">
         {{ nodeTemplate.state }}
     </div>
-    <div class="row rounded col-sm-12 node-template-header"
+
+    <div *ngIf="nodeClass !== 'pattern'; else showPattern"
+         class="row rounded col-sm-12 node-template-header"
          (click)="openSidebar($event); closeConnectorEndpoints($event)">
         <div class="col-sm-1" style="padding: 0;">
             <table class="table table-responsive table-active table-border--grey table-sm">
@@ -46,9 +51,9 @@
             </table>
         </div>
         <div class="col-sm-3">
-            <img *ngIf="!nodeTemplate.imageUrl" src="http://via.placeholder.com/50x50"
+            <img *ngIf="!nodeTemplate.visuals.imageUrl" src="http://via.placeholder.com/50x50"
                  style="border-radius: 10%; margin-top: 1px; width: 50px; height: auto">
-            <img *ngIf="nodeTemplate.imageUrl" src="{{hostURL}}{{nodeTemplate.imageUrl}}">
+            <img *ngIf="nodeTemplate.visuals.imageUrl" src="{{hostURL}}{{nodeTemplate.visuals.imageUrl}}">
         </div>
         <div id="specifierDiv" class="col-sm-8" style="padding-left: 0; padding-right: 0;">
             <table class="header-table" style="margin-left: 6px">
@@ -78,12 +83,22 @@
             </table>
         </div>
     </div>
+    <ng-template #showPattern>
+        <div class="patternP" tooltip="{{ nodeTypeLocalName }}" (click)="openSidebar($event); closeConnectorEndpoints($event)">
+            <div class="col-sm-3">
+                <img *ngIf="!nodeTemplate.visuals.imageUrl" class="patternImage" src="http://via.placeholder.com/50x50"
+                     style="border-radius: 10%; width: 50px; height: auto">
+                <img *ngIf="nodeTemplate.visuals.imageUrl" class="patternImage" src="{{hostURL}}{{nodeTemplate.visuals.imageUrl}}">
+            </div>
+        </div>
+    </ng-template>
+
     <div class="endpointContainer center-block row" style="border: 0; box-shadow: none"
          *ngIf="connectorEndpointVisible"
          (mouseover)="makeSource($event)">
         <div class="btn-group-vertical btn-group-sm center-block" role="group" id={{dragSource}}
              (mousedown)="passCurrentType($event)">
-            <button *ngFor="let rel of relationshipTypes"
+            <button *ngFor="let rel of entityTypes.relationshipTypes"
                     type="button" class="btn btn-sm btn-outline-secondary btn-block"
                     [style.border-color]="this.nodeTemplate.color" [style.color]="rel.color"
                     style="font-size: x-small;">
@@ -93,7 +108,7 @@
     </div>
 
     <!-- Repaint jsPlumb on every accordion click -->
-    <accordion #accordion (click)="repaint($event)">
+    <accordion *ngIf="nodeClass !== 'pattern'" #accordion (click)="repaint($event)">
         <!-- PROPERTIES -->
         <accordion-group
             #propertiesgroup

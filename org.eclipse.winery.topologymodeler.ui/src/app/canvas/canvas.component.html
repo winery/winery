@@ -35,7 +35,6 @@
         <winery-node *ngFor="let nodeTemplate of allNodeTemplates"
                      [nodeTemplate]="nodeTemplate"
                      [entityTypes]="this.entityTypes"
-                     [relationshipTypes]="relationshipTypes"
                      (sendId)="activateNewNode($event)"
                      [navbarButtonsState]="navbarButtonsState"
                      (askForRepaint)="revalidateContainer($event)"
