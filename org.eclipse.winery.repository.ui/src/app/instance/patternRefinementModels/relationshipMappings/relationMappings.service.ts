@@ -13,7 +13,7 @@
  *******************************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { RelationMappings } from './relationMappings';
+import { RelationMapping } from './relationMapping';
 import { backendBaseURL } from '../../../configuration';
 import { Injectable } from '@angular/core';
 import { InstanceService } from '../../instance.service';
@@ -29,8 +29,8 @@ export class RelationMappingsService {
         this.path = backendBaseURL + this.sharedData.path;
     }
 
-    public getRelationshipMappings(): Observable<RelationMappings[]> {
-        return this.http.get<RelationMappings[]>(this.path + '/relationmappings');
+    public getRelationshipMappings(): Observable<RelationMapping[]> {
+        return this.http.get<RelationMapping[]>(this.path + '/relationmappings');
     }
 
     public getDetectorNodeTemplates(): Observable<NodeTemplate[]> {
@@ -49,11 +49,11 @@ export class RelationMappingsService {
         return this.http.get<SelectData[]>(backendBaseURL + '/nodetypes/?grouped=angularSelect');
     }
 
-    public addRelationMapping(element: RelationMappings): Observable<RelationMappings[]> {
-        return this.http.put<RelationMappings[]>(this.path + '/relationmappings', element);
+    public addRelationMapping(element: RelationMapping): Observable<RelationMapping[]> {
+        return this.http.put<RelationMapping[]>(this.path + '/relationmappings', element);
     }
 
-    deleteRelationMapping(mapping: RelationMappings): Observable<RelationMappings[]> {
-        return this.http.delete<RelationMappings[]>(this.path + '/relationmappings/' + mapping.id);
+    deleteRelationMapping(mapping: RelationMapping): Observable<RelationMapping[]> {
+        return this.http.delete<RelationMapping[]>(this.path + '/relationmappings/' + mapping.id);
     }
 }

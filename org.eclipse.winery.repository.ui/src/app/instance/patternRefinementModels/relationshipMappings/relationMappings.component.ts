@@ -14,7 +14,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { RelationMappingsService } from './relationMappings.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { RelationDirection, RelationMappings } from './relationMappings';
+import { RelationDirection, RelationMapping } from './relationMapping';
 import { HttpErrorResponse } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
 import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
@@ -42,13 +42,13 @@ export class RelationMappingsComponent implements OnInit {
         { title: 'Valid Endpoint', name: 'validSourceOrTarget', sort: true },
     ];
 
-    relationshipMappings: RelationMappings[];
+    relationshipMappings: RelationMapping[];
     detectorNodeTemplates: NodeTemplate[];
     refinementStructureNodeTemplates: NodeTemplate[];
     relationshipTypes: SelectData[];
     nodeTypes: SelectData[];
 
-    mapping: RelationMappings;
+    mapping: RelationMapping;
 
     @ViewChild('addModal') addModal: ModalDirective;
     @ViewChild('removeModal') removeModal: ModalDirective;
@@ -80,7 +80,6 @@ export class RelationMappingsComponent implements OnInit {
         this.refinementStructureNodeTemplates = data[2];
         this.relationshipTypes = data[3];
         this.nodeTypes = data[4];
-        console.log(data);
     }
 
     private handleError(error: HttpErrorResponse) {
@@ -91,7 +90,7 @@ export class RelationMappingsComponent implements OnInit {
     onAddButtonClicked() {
         let id = 0;
         this.relationshipMappings.forEach(value => {
-            const number = Number(value.id.split('mapping')[1]);
+            const number = Number(value.id.split(RelationMapping.idPrefix)[1]);
             if (!isNaN(number) && number >= id) {
                 id = number;
                 if (number === id) {
@@ -100,18 +99,11 @@ export class RelationMappingsComponent implements OnInit {
             }
         });
 
-        this.mapping = {
-            detectorNode: null,
-            direction: null,
-            id: 'mapping' + id,
-            refinementNode: null,
-            relationType: null,
-            validSourceOrTarget: null
-        };
+        this.mapping = new RelationMapping(id);
         this.addModalRef = this.modalService.show(this.addModal);
     }
 
-    onRemoveButtonClicked(selected: RelationMappings) {
+    onRemoveButtonClicked(selected: RelationMapping) {
         this.mapping = selected;
         this.removeModalRef = this.modalService.show(this.removeModal);
     }
@@ -133,7 +125,7 @@ export class RelationMappingsComponent implements OnInit {
             );
     }
 
-    private handleSave(type: string, data: RelationMappings[]) {
+    private handleSave(type: string, data: RelationMapping[]) {
         this.notify.success(type + ' Relation Mapping ' + this.mapping.id);
         this.relationshipMappings = data;
         this.loading = false;

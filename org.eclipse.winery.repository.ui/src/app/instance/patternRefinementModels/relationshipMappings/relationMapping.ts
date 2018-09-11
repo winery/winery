@@ -17,11 +17,18 @@ export enum RelationDirection {
     OUTGOING = 'OUTGOING'
 }
 
-export interface RelationMappings {
+export class RelationMapping {
+
+    public static readonly idPrefix = 'mapping';
+
     id: string;
     detectorNode: string;
     refinementNode: string;
     relationType: string;
     direction: RelationDirection;
     validSourceOrTarget: string;
+
+    constructor(id: number) {
+        this.id = RelationMapping.idPrefix + id;
+    }
 }

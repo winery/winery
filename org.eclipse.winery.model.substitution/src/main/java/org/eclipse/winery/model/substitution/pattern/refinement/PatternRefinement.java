@@ -23,10 +23,13 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.ids.definitions.PatternRefinementModelId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.substitution.AbstractSubstitution;
 import org.eclipse.winery.model.substitution.SubstitutionUtils;
+import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
 import org.eclipse.winery.model.tosca.TRelationDirection;
@@ -145,8 +148,7 @@ public class PatternRefinement extends AbstractSubstitution {
                             .stream()
                             // use anyMatch to reduce runtime
                             .anyMatch(relationMapping -> {
-                                // TODO: check if any supertype of the relationship matches
-                                if (relationship.getType().equals(relationMapping.getRelationType())) {
+                                if (isOfType(relationMapping.getRelationType(), relationship.getType(), this.relationshipTypes)) {
                                     if (relationMapping.getDirection() == TRelationDirection.INGOING
                                         && (Objects.isNull(relationMapping.getValidSourceOrTarget())
                                         || relationship.getSourceElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget()))
@@ -227,8 +229,7 @@ public class PatternRefinement extends AbstractSubstitution {
                             candidate.getPatternRefinementModel().getRelationMappings().getRelationMapping()
                                 .stream()
                                 .anyMatch(relationMapping -> {
-                                    // TODO: check if any supertype of the relationship matches
-                                    if (relationship.getType().equals(relationMapping.getRelationType())) {
+                                    if (isOfType(relationMapping.getRelationType(), relationship.getType(), this.relationshipTypes)) {
                                         if (relationMapping.getDirection() == TRelationDirection.INGOING) {
                                             return Objects.isNull(relationMapping.getValidSourceOrTarget())
                                                 || relationship.getSourceElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget());
@@ -260,5 +261,17 @@ public class PatternRefinement extends AbstractSubstitution {
                         return edgeCorrespondence.getTemplate().equals(relationship);
                     });
             });
+    }
+
+    public static boolean isOfType(QName requiredType, QName givenType, Map<QName, ? extends TEntityType> elements) {
+        if (!givenType.equals(requiredType)) {
+            TEntityType entityType = elements.get(givenType);
+            if (Objects.isNull(entityType) || Objects.isNull(entityType.getDerivedFrom())) {
+                return false;
+            } else {
+                return isOfType(requiredType, entityType.getDerivedFrom().getTypeAsQName(), elements);
+            }
+        }
+        return true;
     }
 }

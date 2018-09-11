@@ -26,8 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PatternRefinementTestWithGitBackedRepository extends TestWithGitBackedRepository {
 
-    // region ********** refineTopology **********
-
     @Test
     void refineTopologyWithMultipleSameSubGraphs() throws Exception {
         this.setRevisionTo("origin/plain");
@@ -56,6 +54,4 @@ public class PatternRefinementTestWithGitBackedRepository extends TestWithGitBac
         assertEquals("Pattern-basedDeplyomentModelWithTwoSameSubgraphs_w1-wip1-refined-w1-wip1", serviceTemplateId.getQName().getLocalPart());
         assertEquals("http://winery.opentosca.org/test/concrete/servicetemplates", serviceTemplateId.getQName().getNamespaceURI());
     }
-
-    // endregion
 }

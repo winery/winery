@@ -15,6 +15,7 @@
 package org.eclipse.winery.model.substitution.pattern.refinement;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -23,7 +24,9 @@ import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
 import org.eclipse.winery.model.tosca.TRelationDirection;
 import org.eclipse.winery.model.tosca.TRelationMapping;
@@ -456,6 +459,26 @@ class PatternRefinementTest {
         List<TRelationshipTemplate> externalRelationsOf4 = patternRefinement.getExternalRelations(nt4, candidate, topology)
             .collect(Collectors.toList());
         assertEquals(0, externalRelationsOf4.size());
+    }
+
+    // endregion
+
+    // region ********** isOfType **********
+
+    @Test
+    void isOfType() {
+        TEntityType.DerivedFrom derivedFrom = new TEntityType.DerivedFrom();
+        derivedFrom.setType(QName.valueOf("{https://ex.org/nt}parent"));
+
+        TNodeType nt1 = new TNodeType();
+        nt1.setDerivedFrom(derivedFrom);
+
+        HashMap<QName, TEntityType> map = new HashMap<>();
+        map.put(QName.valueOf("{http://ex.org/nt}child"), nt1);
+
+        assertTrue(
+            PatternRefinement.isOfType(QName.valueOf("{https://ex.org/nt}parent"), QName.valueOf("{http://ex.org/nt}child"), map)
+        );
     }
 
     // endregion

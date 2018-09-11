@@ -38,10 +38,6 @@ export class TopologyTemplateComponent implements OnInit {
     @ViewChild('compareToModal') compareToModal: ModalDirective;
     compareToModalRef: BsModalRef;
 
-    refinementIsRunning: boolean;
-    refinementIsLoading: boolean;
-    refinementIsDone: boolean;
-
     constructor(private sanitizer: DomSanitizer,
                 public sharedData: InstanceService,
                 private modalService: BsModalService,
@@ -92,11 +88,5 @@ export class TopologyTemplateComponent implements OnInit {
 
     showCompareToModal() {
         this.compareToModalRef = this.modalService.show(this.compareToModal);
-    }
-
-    private handleWebSocketComplete() {
-        this.refinementIsDone = true;
-        this.refinementIsRunning = false;
-        this.refinementIsLoading = false;
     }
 }
