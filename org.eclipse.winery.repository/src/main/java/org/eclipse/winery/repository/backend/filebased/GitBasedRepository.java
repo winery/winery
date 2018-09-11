@@ -167,8 +167,10 @@ public class GitBasedRepository extends FilebasedRepository {
                 }
                 diffMap.put(entry, diff.toString());
             }
-        } catch (JGitInternalException | IOException exc) {
+        } catch (IOException exc) {
             LOGGER.trace("Reading of git information failed!", exc);
+        } catch (JGitInternalException gitException) {
+            LOGGER.trace("Could not create Diff!", gitException);
         }
         this.eventBus.post(diffMap);
     }

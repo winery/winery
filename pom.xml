@@ -68,11 +68,14 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.version.osgi>2.0.0</project.version.osgi>
 
         <!-- versions of all used libraries -->
         <ch.qos.logback.logback-classic.version>1.2.3</ch.qos.logback.logback-classic.version>
         <com.fasterxml.jackson.core.jackson-annotations>2.8.0</com.fasterxml.jackson.core.jackson-annotations>
+        <de.danielbechler.java-object-diff>0.95</de.danielbechler.java-object-diff>
         <io.github.adr.e-adr.version>1.0.0</io.github.adr.e-adr.version>
+        <org.apache.commons.configuration>2.3</org.apache.commons.configuration>
         <org.eclipse.jdt.annotation>2.1.0</org.eclipse.jdt.annotation>
         <org.mockito.moickito-core.version>2.19.0</org.mockito.moickito-core.version>
         <de.danielbechler.java-object-diff>0.95</de.danielbechler.java-object-diff>
@@ -240,108 +243,262 @@
                                         <artifacts>
                                             <artifact>
                                                 <id>
-                                                    org.eclipse.winery:org.eclipse.winery.model.bpmn4tosca:2.0.0-SNAPSHOT
+                                                    org.eclipse.winery:org.eclipse.winery.model.bpmn4tosca:${project.version}
                                                 </id>
                                                 <source>true</source>
-                                                <transitive>false</transitive>
+                                                <transitive>true</transitive>
+                                                <excludes>
+                                                    <exclude>org.eclipse.winery::</exclude>
+                                                </excludes>
+                                                <instructions>
+                                                    <Import-Package>*;resolution:=optional</Import-Package>
+                                                    <Export-Package>org.eclipse.winery.bpmn2bpel.model.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                </instructions>
                                             </artifact>
                                             <artifact>
                                                 <id>
-                                                    org.eclipse.winery:org.eclipse.winery.model.csar.toscametafile:2.0.0-SNAPSHOT
+                                                    org.eclipse.winery:org.eclipse.winery.model.csar.toscametafile:${project.version}
                                                 </id>
                                                 <source>true</source>
-                                                <transitive>false</transitive>
+                                                <transitive>true</transitive>
+                                                <excludes>
+                                                    <exclude>org.eclipse.winery::</exclude>
+                                                </excludes>
+                                                <instructions>
+                                                    <Import-Package>*;resolution:=optional</Import-Package>
+                                                    <Export-Package>org.eclipse.winery.model.csar.toscametafile.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                </instructions>
                                             </artifact>
                                             <artifact>
                                                 <id>
-                                                    org.eclipse.winery:org.eclipse.winery.model.selfservice:2.0.0-SNAPSHOT
+                                                    org.eclipse.winery:org.eclipse.winery.model.selfservice:${project.version}
                                                 </id>
                                                 <source>true</source>
-                                                <transitive>false</transitive>
+                                                <transitive>true</transitive>
+                                                <excludes>
+                                                    <exclude>org.eclipse.winery::</exclude>
+                                                </excludes>
+                                                <instructions>
+                                                    <Import-Package>*;resolution:=optional</Import-Package>
+                                                    <Export-Package>org.eclipse.winery.model.selfservice.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                </instructions>
                                             </artifact>
                                             <artifact>
-                                                <id>org.eclipse.winery:org.eclipse.winery.model.tosca:2.0.0-SNAPSHOT
+                                                <id>org.eclipse.winery:org.eclipse.winery.model.tosca:${project.version}
                                                 </id>
                                                 <source>true</source>
-                                                <transitive>false</transitive>
+                                                <transitive>true</transitive>
+                                                <excludes>
+                                                    <exclude>org.eclipse.winery::</exclude>
+                                                </excludes>
+                                                <instructions>
+                                                    <Import-Package>*;resolution:=optional</Import-Package>
+                                                    <Export-Package>org.eclipse.winery.model.tosca.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                </instructions>
                                             </artifact>
                                             <artifact>
                                                 <id>
-                                                    org.eclipse.winery:org.eclipse.winery.model.tosca.yaml:2.0.0-SNAPSHOT
+                                                    org.eclipse.winery:org.eclipse.winery.model.tosca.yaml:${project.version}
                                                 </id>
                                                 <source>true</source>
-                                                <transitive>false</transitive>
+                                                <transitive>true</transitive>
+                                                <excludes>
+                                                    <exclude>org.eclipse.winery::</exclude>
+                                                </excludes>
+                                                <instructions>
+                                                    <Import-Package>*;resolution:=optional</Import-Package>
+                                                    <Export-Package>org.eclipse.winery.model.tosca.yaml.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                </instructions>
                                             </artifact>
                                             <artifact>
-                                                <id>org.eclipse.winery:org.eclipse.winery.common:2.0.0-SNAPSHOT</id>
+                                                <id>org.eclipse.winery:org.eclipse.winery.common:${project.version}</id>
                                                 <source>true</source>
-                                                <transitive>false</transitive>
+                                                <transitive>true</transitive>
+                                                <excludes>
+                                                    <exclude>org.eclipse.winery::</exclude>
+                                                    <!-- Export-Package specification is incorrect, 
+                                                         see https://github.com/SQiShER/java-object-diff/issues/205 -->
+                                                    <exclude>de.danielbechler:java-object-diff:${de.danielbechler.java-object-diff}</exclude>
+                                                </excludes>
+                                                <instructions>
+                                                    <Import-Package>*;resolution:=optional</Import-Package>
+                                                    <Export-Package>org.eclipse.winery.common.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                </instructions>
                                             </artifact>
                                             <artifact>
-                                                <id>org.eclipse.winery:org.eclipse.winery.yaml.common:2.0.0-SNAPSHOT
+                                                <id>org.eclipse.winery:org.eclipse.winery.yaml.common:${project.version}
                                                 </id>
                                                 <source>true</source>
-                                                <transitive>false</transitive>
+                                                <transitive>true</transitive>
+                                                <excludes>
+                                                    <exclude>org.eclipse.winery::</exclude>
+                                                </excludes>
+                                                <instructions>
+                                                    <Import-Package>*;resolution:=optional</Import-Package>
+                                                    <Export-Package>org.eclipse.winery.yaml.common.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                </instructions>
                                             </artifact>
                                             <artifact>
                                                 <id>
-                                                    org.eclipse.winery:org.eclipse.winery.yaml.converter:2.0.0-SNAPSHOT
+                                                    org.eclipse.winery:org.eclipse.winery.yaml.converter:${project.version}
                                                 </id>
                                                 <source>true</source>
-                                                <transitive>false</transitive>
-                                            </artifact>
-                                            <artifact>
-                                                <id>org.eclipse.winery:org.eclipse.winery.cli:2.0.0-SNAPSHOT</id>
-                                                <source>true</source>
-                                                <transitive>false</transitive>
+                                                <transitive>true</transitive>
+                                                <excludes>
+                                                    <exclude>org.eclipse.winery::</exclude>
+                                                </excludes>
+                                                <instructions>
+                                                    <Import-Package>*;resolution:=optional</Import-Package>
+                                                    <Export-Package>org.eclipse.winery.yaml.converter.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                </instructions>
                                             </artifact>
                                             <artifact>
                                                 <id>
-                                                    org.eclipse.winery:org.eclipse.winery.bpmn4tosca.converter.tobpel:2.0.0-SNAPSHOT
+                                                    org.eclipse.winery:org.eclipse.winery.bpmn4tosca.converter.tobpel:${project.version}
                                                 </id>
                                                 <source>true</source>
-                                                <transitive>false</transitive>
+                                                <transitive>true</transitive>
+                                                <excludes>
+                                                    <exclude>org.eclipse.winery::</exclude>
+                                                </excludes>
+                                                <instructions>
+                                                    <Import-Package>*;resolution:=optional</Import-Package>
+                                                    <Export-Package>org.eclipse.winery.bpmn2bpel.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                </instructions>
                                             </artifact>
                                             <artifact>
-                                                <id>org.eclipse.winery:org.eclipse.winery.repository:2.0.0-SNAPSHOT</id>
+                                                <id>org.eclipse.winery:org.eclipse.winery.repository:${project.version}</id>
                                                 <source>true</source>
                                                 <excludes>
-                                                    <exclude>org.slf4j:::</exclude>
-                                                    <exclude>org.eclipse.collections:eclipse-collections*::</exclude>
+                                                    <exclude>org.eclipse.winery:::</exclude>
                                                 </excludes>
                                                 <transitive>true</transitive>
+                                                <instructions>
+                                                    <Import-Package>*;resolution:=optional</Import-Package>
+                                                    <Export-Package>org.eclipse.winery.repository.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                </instructions>
                                             </artifact>
                                             <artifact>
                                                 <id>
-                                                    org.eclipse.winery:org.eclipse.winery.repository.client:2.0.0-SNAPSHOT
+                                                    org.eclipse.winery:org.eclipse.winery.repository.client:${project.version}
                                                 </id>
                                                 <source>true</source>
-                                                <transitive>false</transitive>
+                                                <transitive>true</transitive>
+                                                <excludes>
+                                                    <exclude>org.eclipse.winery::</exclude>
+                                                </excludes>
+                                                <instructions>
+                                                    <Import-Package>
+                                                        !com.sun.org.apache.xalan.*,
+                                                        *;resolution:=optional
+                                                    </Import-Package>
+                                                    <Export-Package>org.eclipse.winery.repository.client.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                </instructions>
                                             </artifact>
                                             <artifact>
                                                 <id>
-                                                    org.eclipse.winery:org.eclipse.winery.repository.configuration:2.0.0-SNAPSHOT
+                                                    org.eclipse.winery:org.eclipse.winery.repository.configuration:${project.version}
                                                 </id>
                                                 <source>true</source>
-                                                <transitive>false</transitive>
+                                                <transitive>true</transitive>
+                                                <excludes>
+                                                    <exclude>org.eclipse.winery::</exclude>
+                                                </excludes>
+                                                <instructions>
+                                                    <Import-Package>*;resolution:=optional</Import-Package>
+                                                    <Export-Package>org.eclipse.winery.repository.configuration.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                </instructions>
                                             </artifact>
                                             <artifact>
-                                                <id>org.eclipse.winery:org.eclipse.winery.compliance:2.0.0-SNAPSHOT</id>
+                                                <id>org.eclipse.winery:org.eclipse.winery.compliance:${project.version}</id>
                                                 <source>true</source>
-                                                <transitive>false</transitive>
+                                                <transitive>true</transitive>
+                                                <excludes>
+                                                    <exclude>org.eclipse.winery::</exclude>
+                                                </excludes>
+                                                <instructions>
+                                                    <Import-Package>*;resolution:=optional</Import-Package>
+                                                    <Export-Package>org.eclipse.winery.compliance.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                </instructions>
                                             </artifact>
                                             <artifact>
-                                                <id>org.eclipse.winery:org.eclipse.winery.generators.ia:2.0.0-SNAPSHOT
+                                                <id>org.eclipse.winery:org.eclipse.winery.topologygraph:${project.version}</id>
+                                                <source>true</source>
+                                                <transitive>true</transitive>
+                                                <excludes>
+                                                    <exclude>org.eclipse.winery::</exclude>
+                                                </excludes>
+                                                <instructions>
+                                                    <Import-Package>*;resolution:=optional</Import-Package>
+                                                    <Export-Package>org.eclipse.winery.topologygraph.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                </instructions>
+                                            </artifact>
+                                            <artifact>
+                                                <id>org.eclipse.winery:org.eclipse.winery.generators.ia:${project.version}
                                                 </id>
                                                 <source>true</source>
-                                                <transitive>false</transitive>
+                                                <transitive>true</transitive>
+                                                <excludes>
+                                                    <exclude>org.eclipse.winery::</exclude>
+                                                </excludes>
+                                                <instructions>
+                                                    <Import-Package>*;resolution:=optional</Import-Package>
+                                                    <Export-Package>org.eclipse.winery.generators.ia.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                </instructions>
                                             </artifact>
                                             <artifact>
                                                 <id>
-                                                    org.eclipse.winery:org.eclipse.winery.highlevelrestapi:2.0.0-SNAPSHOT
+                                                    org.eclipse.winery:org.eclipse.winery.highlevelrestapi:${project.version}
                                                 </id>
                                                 <source>true</source>
-                                                <transitive>false</transitive>
+                                                <transitive>true</transitive>
+                                                <excludes>
+                                                    <exclude>org.eclipse.winery::</exclude>
+                                                </excludes>
+                                                <instructions>
+                                                    <Import-Package>*;resolution:=optional</Import-Package>
+                                                    <Export-Package>org.eclipse.winery.highlevelrestapi.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                </instructions>
+                                            </artifact>
+                                            <artifact>
+                                                <id>
+                                                    org.eclipse.winery:org.eclipse.winery.provenance:${project.version}
+                                                </id>
+                                                <source>true</source>
+                                                <transitive>true</transitive>
+                                                <excludes>
+                                                    <exclude>org.eclipse.winery::</exclude>
+                                                </excludes>
+                                                <instructions>
+                                                    <Import-Package>*;resolution:=optional</Import-Package>
+                                                    <Export-Package>org.eclipse.winery.provenance.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                </instructions>
+                                            </artifact>
+                                            <!-- 
+                                                SECTION: Special artifact imports that fix some failed dependency chains
+                                             -->
+                                            
+                                            <artifact>
+                                                <id>com.diffplug.osgi:com.diffplug.osgi.extension.sun.misc:0.0.0</id>
+                                            </artifact>
+                                            <!-- Sidesteps the incorrect export, should be fixed with 0.96 -->
+                                            <artifact>
+                                                <id>de.danielbechler:java-object-diff:${de.danielbechler.java-object-diff}</id>
+                                                <source>true</source>
+                                                <transitive>true</transitive>
+                                                <override>true</override>
+                                                <instructions>
+                                                    <!-- BundleVendor and BundleDocs are copied from official github repo -->
+                                                    <Bundle-Vendor>Daniel Bechler</Bundle-Vendor>
+                                                    <Bundle-DocURL>https://github.com/SQiShER/java-object-diff</Bundle-DocURL>
+                                                    <Import-Package>*;resolution:=optional</Import-Package>
+                                                    <Export-Package>de.danielbechler.diff.*;-noimport:=true</Export-Package>
+                                                </instructions>
+                                            </artifact>
+                                            <artifact>
+                                                <id>org.slf4j:jul-to-slf4j:${org.slf4j}</id>
+                                                <source>true</source>
+                                                <transitive>true</transitive>
                                             </artifact>
                                         </artifacts>
                                     </feature>

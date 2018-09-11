@@ -12,11 +12,11 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-export enum LifecycleInterface {
-    INTERFACE = 'http://opentosca.org/interfaces/lifecycle',
-    INSTALL = 'install',
-    CONFIGURE = 'configure',
-    START = 'start',
-    STOP = 'stop',
-    UNINSTALL = 'uninstall'
+package org.eclipse.winery.repository.exceptions;
+
+public class AllocationException extends Exception {
+
+    public AllocationException(String message) {
+        super(message);
+    }
 }

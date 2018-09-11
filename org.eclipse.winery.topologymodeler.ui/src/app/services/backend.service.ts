@@ -16,7 +16,7 @@ import { Injectable } from '@angular/core';
 import { backendBaseURL, hostURL } from '../models/configuration';
 import { Subject } from 'rxjs/Subject';
 import { isNullOrUndefined } from 'util';
-import { EntityType, TTopologyTemplate, VisualEntityType, Visuals } from '../models/ttopology-template';
+import { EntityType, TTopologyTemplate, Visuals } from '../models/ttopology-template';
 import { QNameWithTypeApiData } from '../models/generateArtifactApiData';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { urlElement } from '../models/enums';
@@ -25,7 +25,6 @@ import { ToscaDiff } from '../models/ToscaDiff';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs/Observable';
 import { forkJoin } from 'rxjs';
-import { map } from 'rxjs/internal/operators';
 import { TopologyModelerConfiguration } from '../models/topologyModelerConfiguration';
 import { ErrorHandlerService } from './error-handler.service';
 

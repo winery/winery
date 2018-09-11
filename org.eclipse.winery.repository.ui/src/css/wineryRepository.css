@@ -295,6 +295,9 @@ div.serviceTemplate div.bottom {
 div.mainContentContainer.relationshipType div.top {
     background: url('../assets/img/containers/rt/rt-FrameTopLarge.jpg');
 }
+div.mainContentContainer.relationshipType div.top.twolines {
+    height: 208px;
+}
 
 div.mainContentContainer.relationshipType div.middle {
     background: url('../assets/img/containers/rt/rt-FrameMiddle.jpg');
@@ -547,7 +550,7 @@ div.entityContainer > div.center > div.informationContainer {
     text-decoration: none;
     text-shadow: 1px 1px 0 white;
     float: left;
-    /*max-width: 313px;*/
+    max-width: 274px;
 }
 
 div.entityContainer > div.center > div.informationContainer > div.name {
@@ -969,6 +972,15 @@ div.entityContainer > div.center > div.buttonContainer > a {
     float: left;
     height: 42px;
     margin-right: 5px;
+}
+
+div.entityContainer > div.center > div.buttonContainer > a.targetAllocationButton {
+    background: url('../assets/img/entityBox/targetAllocationButton.png');
+    width: 39px;
+}
+
+div.entityContainer > div.center > div.buttonContainer > a.targetAllocationButton:hover {
+    background: url('../assets/img/entityBox/targetAllocationButton.png');
 }
 
 div.entityContainer > div.center > div.buttonContainer > a.editButton {

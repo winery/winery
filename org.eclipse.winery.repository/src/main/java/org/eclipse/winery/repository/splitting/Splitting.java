@@ -595,7 +595,7 @@ public class Splitting {
         Map<String, TTopologyTemplate> defaultHostSelection = new HashMap<>();
         matchingOptions.entrySet().forEach(entry -> defaultHostSelection.put(entry.getKey(), entry.getValue().get(0)));
 
-        return injectNodeTemplates(topologyTemplate, defaultHostSelection);
+        return injectNodeTemplates(topologyTemplate, defaultHostSelection, InjectRemoval.REMOVE_REPLACED_AND_SUCCESSORS);
     }
 
     public TTopologyTemplate hostMatchingWithDefaultLabelingAndHostSelection(TTopologyTemplate topologyTemplate) throws SplittingException {
@@ -617,9 +617,10 @@ public class Splitting {
      *
      * @param topologyTemplate original topology for which the Node Templates shall be replaced
      * @param injectNodes      map with the Nodes to replace as key and the replacement as value
+     * @param removal          remove nothing, only replaced nt or replaced nt and all successors
      * @return modified topology with the replaced Node Templates
      */
-    public TTopologyTemplate injectNodeTemplates(TTopologyTemplate topologyTemplate, Map<String, TTopologyTemplate> injectNodes) throws SplittingException {
+    public TTopologyTemplate injectNodeTemplates(TTopologyTemplate topologyTemplate, Map<String, TTopologyTemplate> injectNodes, InjectRemoval removal) throws SplittingException {
         String id;
 
         // Matching contains all cloud provider nodes matched to the topology
@@ -652,7 +653,8 @@ public class Splitting {
             boolean matchingFound = matching.stream()
                 .anyMatch(nt -> ModelUtilities.getTargetLabel(nt).get().toLowerCase()
                     .equals(ModelUtilities.getTargetLabel(newHostNodeTemplate).get().toLowerCase())
-                    && nt.getId().equals(Util.makeNCName(newHostNodeTemplate.getId() + "-" + ModelUtilities.getTargetLabel(newHostNodeTemplate).get())));
+                    && (nt.getId().equals(Util.makeNCName(newHostNodeTemplate.getId() + "-" + ModelUtilities.getTargetLabel(newHostNodeTemplate).get()))
+                    || nt.equals(newHostNodeTemplate)));
 
             //Check if the chosen replace node is already in the matching
             if (!matchingFound) {
@@ -667,7 +669,8 @@ public class Splitting {
             } else {
                 newMatchingNodeTemplate = matching.stream().filter(nt -> ModelUtilities.getTargetLabel(nt).get().toLowerCase()
                     .equals(ModelUtilities.getTargetLabel(newHostNodeTemplate).get().toLowerCase())
-                    && nt.getId().equals(Util.makeNCName(newHostNodeTemplate.getId() + "-" + ModelUtilities.getTargetLabel(newHostNodeTemplate).get()))).findAny().get();
+                    && (nt.getId().equals(Util.makeNCName(newHostNodeTemplate.getId() + "-" + ModelUtilities.getTargetLabel(newHostNodeTemplate).get()))
+                    || nt.equals(newHostNodeTemplate))).findAny().get();
             }
 
             //In case the predecessor was a lowest node a new hostedOn relationship has to be added
@@ -766,8 +769,25 @@ public class Splitting {
             }
         }
 
-        Map<TNodeTemplate, Set<TNodeTemplate>> transitiveAndDirectSuccessors = computeTransitiveClosure(topologyTemplate);
+        switch (removal) {
+            case REMOVE_NOTHING:
+                return topologyTemplate;
+            case REMOVE_REPLACED:
+                for (TNodeTemplate deleteOriginNode : replacedNodeTemplatesToDelete) {
+                    topologyTemplate.getNodeTemplateOrRelationshipTemplate()
+                        .removeAll(ModelUtilities
+                            .getIncomingRelationshipTemplates(topologyTemplate, deleteOriginNode));
+                    topologyTemplate.getNodeTemplateOrRelationshipTemplate()
+                        .removeAll(ModelUtilities
+                            .getOutgoingRelationshipTemplates(topologyTemplate, deleteOriginNode));
+                }
+                topologyTemplate.getNodeTemplateOrRelationshipTemplate().removeAll(replacedNodeTemplatesToDelete);
+                return topologyTemplate;
+            default:
+                break;
+        }
 
+        Map<TNodeTemplate, Set<TNodeTemplate>> transitiveAndDirectSuccessors = computeTransitiveClosure(topologyTemplate);
         // Delete all replaced Nodes and their direct and transitive hostedOn successors
         for (TNodeTemplate deleteOriginNode : replacedNodeTemplatesToDelete) {
             if (!transitiveAndDirectSuccessors.get(deleteOriginNode).isEmpty()) {
@@ -1165,7 +1185,7 @@ public class Splitting {
      * Compute transitive closure of a given topology template based on the hostedOn relationships
      */
 
-    protected Map<TNodeTemplate, Set<TNodeTemplate>> computeTransitiveClosure(TTopologyTemplate topologyTemplate) {
+    public Map<TNodeTemplate, Set<TNodeTemplate>> computeTransitiveClosure(TTopologyTemplate topologyTemplate) {
         List<TNodeTemplate> nodeTemplates = new ArrayList<>(topologyTemplate.getNodeTemplates());
 
         for (TNodeTemplate node : nodeTemplates) {
@@ -1283,7 +1303,7 @@ public class Splitting {
         return requirementType.getRequiredCapabilityType();
     }
 
-    private TRelationshipType getBasisRelationshipType(QName relationshipTypeQName) {
+    public TRelationshipType getBasisRelationshipType(QName relationshipTypeQName) {
         RelationshipTypeId parentRelationshipTypeId = new RelationshipTypeId(relationshipTypeQName);
         TRelationshipType parentRelationshipType = RepositoryFactory.getRepository().getElement(parentRelationshipTypeId);
         TRelationshipType basisRelationshipType = parentRelationshipType;

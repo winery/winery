@@ -15,8 +15,14 @@
 package org.eclipse.winery.repository.splitting;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
@@ -65,6 +71,58 @@ public class ProviderRepository {
                 }
             })
             .collect(Collectors.toList());
+    }
+
+    /**
+     * Get all fragments which fulfill all specified requirements from the given provider.
+     *
+     * @return the matching fragments if any exists, empty list else
+     */
+    public List<TTopologyTemplate> getTopologyFragments(String targetLocation, List<TRequirement> requirements) {
+        if (targetLocation == null || requirements == null || requirements.isEmpty()) {
+            return new ArrayList<>();
+        }
+        Map<TRequirement, List<TTopologyTemplate>> fragmentsForRequirement = new HashMap<>();
+        List<TRequirement> mergedReqs = mergeByType(requirements);
+
+        for (TRequirement requirement : mergedReqs) {
+            List<TTopologyTemplate> fragments =
+                getAllTopologyFragmentsForLocationAndOfferingCapability(targetLocation, requirement);
+            // all requirements have to have at least one possible fragment
+            if (fragments.isEmpty()) {
+                return new ArrayList<>();
+            } else {
+                fragmentsForRequirement.put(requirement,
+                    getAllTopologyFragmentsForLocationAndOfferingCapability(targetLocation, requirement));
+            }
+        }
+        return getIntersection(fragmentsForRequirement.values());
+    }
+
+    /**
+     * Only get fragments which contain one node template.
+     */
+    public List<TTopologyTemplate> getPaaSFragments(String targetLabel, List<TRequirement> requirements) {
+        List<TTopologyTemplate> fragments = getTopologyFragments(targetLabel, requirements);
+        fragments.removeIf(tt -> tt.getNodeTemplates().size() != 1);
+        return fragments;
+    }
+
+    private List<TRequirement> mergeByType(List<TRequirement> requirements) {
+        // valid because only requirements/capability types are considered for matching
+        Map<QName, TRequirement> removeDuplicates = new HashMap<>();
+        requirements.forEach(req -> removeDuplicates.put(req.getType(), req));
+        return new ArrayList<>(removeDuplicates.values());
+    }
+
+    private List<TTopologyTemplate> getIntersection(Collection<List<TTopologyTemplate>> fragments) {
+        // get fragments fulfilling all requirements
+        Iterator<List<TTopologyTemplate>> iterator = fragments.iterator();
+        Set<TTopologyTemplate> intersection = new HashSet<>(iterator.next());
+        while (iterator.hasNext()) {
+            intersection.retainAll(iterator.next());
+        }
+        return new ArrayList<>(intersection);
     }
 
     public List<TTopologyTemplate> getAllTopologyFragmentsForLocation(String targetLocation) {

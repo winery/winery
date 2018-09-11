@@ -58,6 +58,7 @@ import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydef
 import org.eclipse.winery.repository.rest.resources.servicetemplates.plans.PlansResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.selfserviceportal.SelfServicePortalResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates.TopologyTemplateResource;
+import org.eclipse.winery.repository.splitting.InjectRemoval;
 import org.eclipse.winery.repository.splitting.Splitting;
 import org.eclipse.winery.repository.splitting.SplittingException;
 
@@ -260,7 +261,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
         // End Output check
 
         if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Container")) {
-            matchedHostsTopologyTemplate = splitting.injectNodeTemplates(this.getServiceTemplate().getTopologyTemplate(), injectorReplaceData.hostInjections);
+            matchedHostsTopologyTemplate = splitting.injectNodeTemplates(this.getServiceTemplate().getTopologyTemplate(), injectorReplaceData.hostInjections, InjectRemoval.REMOVE_REPLACED_AND_SUCCESSORS);
 
             if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Endpoint")) {
                 matchedConnectedTopologyTemplate = splitting.injectConnectionNodeTemplates(matchedHostsTopologyTemplate, injectorReplaceData.connectionInjections);

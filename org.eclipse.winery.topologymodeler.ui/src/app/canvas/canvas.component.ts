@@ -975,7 +975,6 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                         for (const serviceTemplate of allServiceTemplates) {
                             this.importTopologyData.allTopologyTemplates.push(serviceTemplate);
                         }
-                        console.log(this.importTopologyData.allTopologyTemplates);
                     });
                 }
                 this.ngRedux.dispatch(this.topologyRendererActions.importTopology());
@@ -1502,19 +1501,6 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     setSelectedRelationshipType(currentType: EntityType) {
         this.selectedRelationshipType = currentType;
     }
-
-    /*
-    isFieldValid(field: string) {
-        return !this.form.get(field).valid && this.form.get(field).touched;
-    }
-
-    displayFieldCss(field: string) {
-        return {
-            'has-error': this.isFieldValid(field),
-            'has-feedback': this.isFieldValid(field)
-        };
-    }
-*/
 
     /**
      * Removes an element from JSPlumb.

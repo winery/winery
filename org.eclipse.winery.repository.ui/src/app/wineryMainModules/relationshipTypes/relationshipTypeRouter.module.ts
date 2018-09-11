@@ -45,6 +45,7 @@ const relationshipTypeRoutes: Routes = [
             {path: 'visualappearance', component: VisualAppearanceComponent},
             {path: 'instancestates', component: InstanceStatesComponent},
             {path: 'sourceinterfaces', component: InterfacesComponent},
+            {path: 'interfaces', component: InterfacesComponent},
             {path: 'targetinterfaces', component: InterfacesComponent},
             {path: 'validsourcesandtargets', component: ValidSourcesAndTargetsComponent},
             {path: 'implementations', component: ImplementationsComponent},

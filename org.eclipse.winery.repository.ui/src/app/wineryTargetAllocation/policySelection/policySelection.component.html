@@ -1,0 +1,45 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<label class="control-label">Options</label>
+<div id="inputs">
+    <div *ngIf="policiesForSelect.length > 0">
+        <ng-select id="policy"
+                   [allowClear]="true"
+                   [items]="policiesForSelect"
+                   (data)="policySelected($event)"
+                   placeholder="Policy Template name">
+        </ng-select>
+    </div>
+    <ng-select #property id="property"
+               [allowClear]="true"
+               [items]="propertiesForSelect"
+               (data)="propertySelected($event)"
+               placeholder="Property key">
+    </ng-select>
+    <ng-select id="operator"
+               [allowClear]="true"
+               [items]="operators"
+               (data)="operatorSelected($event)"
+               placeholder="Operator">
+    </ng-select>
+</div>
+
+<winery-table
+    [data]="data"
+    [columns]="columns"
+    [disableFiltering]="true"
+    (addBtnClicked)="onAdd()"
+    (removeBtnClicked)="onDelete($event)">
+</winery-table>

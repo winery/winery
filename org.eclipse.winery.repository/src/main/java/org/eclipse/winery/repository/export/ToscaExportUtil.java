@@ -62,13 +62,13 @@ import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 
-import org.slf4j.ext.XLogger;
-import org.slf4j.ext.XLoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 public class ToscaExportUtil {
 
-    private static final XLogger LOGGER = XLoggerFactory.getXLogger(ToscaExportUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ToscaExportUtil.class);
 
     /*
      * these two are GLOBAL VARIABLES leading to the fact that this class has to

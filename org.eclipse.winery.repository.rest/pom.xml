@@ -222,22 +222,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-ext</artifactId>
-            <version>${org.slf4j}</version>
-            <scope>compile</scope>
-            <!-- not approved by Eclipse legal -->
-            <exclusions>
-                <exclusion>
-                    <groupId>ch.qos.cal10n</groupId>
-                    <artifactId>cal10n-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>commons-configuration</groupId>
-            <artifactId>commons-configuration</artifactId>
-            <version>1.9</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-configuration2</artifactId>
+            <version>${org.apache.commons.configuration}</version>
             <scope>compile</scope>
             <exclusions>
                 <!-- provided by jcl-over-slf4j to enable logging via logback -->
@@ -246,6 +233,13 @@
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <!-- previously included transitively through commons-configuration -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.7</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jgit</groupId>
