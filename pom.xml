@@ -172,8 +172,8 @@
                                 <goal>install-node-and-npm</goal>
                             </goals>
                             <configuration>
-                                <nodeVersion>v8.11.1</nodeVersion> <!-- LTS as of 2018-03-30 - see https://nodejs.org/en/blog/release/v8.11.1/ -->
-                                <npmVersion>5.6.0</npmVersion> <!-- defined as latest LTS version -->
+                                <nodeVersion>v8.11.4</nodeVersion> <!-- LTS as of 2018-03-30 - see https://nodejs.org/en/blog/release/v8.11.1/ -->
+                                <npmVersion>6.4.1</npmVersion> <!-- defined as latest LTS version -->
                             </configuration>
                         </execution>
                     </executions>
