@@ -252,7 +252,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
                         id: this.sidebarState.id
                     }
                 }));
-                this.sidebarState.maxInstances = Number.parseInt(this.sidebarState.maxInstances) + 1;
+                this.sidebarState.maxInstances = Number.parseInt(this.sidebarState.maxInstances, 10) + 1;
             } else if ($event === 'dec') {
                 if (this.sidebarState.maxInstances === 0) {
                     this.sidebarState.maxInstances = 0;

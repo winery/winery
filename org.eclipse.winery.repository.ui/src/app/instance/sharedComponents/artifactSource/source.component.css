@@ -43,7 +43,6 @@
     border-top: 1px solid #ddd;
     display: grid;
     grid-template-columns: 300px;
-    grid-auto-rows: auto;
 }
 
 span {
