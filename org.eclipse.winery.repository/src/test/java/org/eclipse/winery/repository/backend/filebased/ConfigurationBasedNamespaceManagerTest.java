@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.filebased;
 
-import org.apache.commons.configuration.BaseConfiguration;
+import org.apache.commons.configuration2.BaseConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

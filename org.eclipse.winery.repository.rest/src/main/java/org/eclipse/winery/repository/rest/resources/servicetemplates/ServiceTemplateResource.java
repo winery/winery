@@ -38,6 +38,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.compliance.checking.ServiceTemplateCheckingResult;
 import org.eclipse.winery.compliance.checking.ServiceTemplateComplianceRuleRuleChecker;
+import org.eclipse.winery.model.substitution.Substitution;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TPlans;
@@ -57,6 +58,7 @@ import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydef
 import org.eclipse.winery.repository.rest.resources.servicetemplates.plans.PlansResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.selfserviceportal.SelfServicePortalResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates.TopologyTemplateResource;
+import org.eclipse.winery.repository.splitting.InjectRemoval;
 import org.eclipse.winery.repository.splitting.Splitting;
 import org.eclipse.winery.repository.splitting.SplittingException;
 
@@ -254,7 +256,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
         // End Output check
 
         if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Container")) {
-            matchedHostsTopologyTemplate = splitting.injectNodeTemplates(this.getServiceTemplate().getTopologyTemplate(), injectorReplaceData.hostInjections);
+            matchedHostsTopologyTemplate = splitting.injectNodeTemplates(this.getServiceTemplate().getTopologyTemplate(), injectorReplaceData.hostInjections, InjectRemoval.REMOVE_REPLACED_AND_SUCCESSORS);
 
             if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Endpoint")) {
                 matchedConnectedTopologyTemplate = splitting.injectConnectionNodeTemplates(matchedHostsTopologyTemplate, injectorReplaceData.connectionInjections);
@@ -296,6 +298,14 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
         ServiceTemplateComplianceRuleRuleChecker checker = new ServiceTemplateComplianceRuleRuleChecker(this.getServiceTemplate());
         ServiceTemplateCheckingResult serviceTemplateCheckingResult = checker.checkComplianceRules();
         return Response.ok().entity(serviceTemplateCheckingResult.toXMLString()).build();
+    }
+
+    @Path("substitute")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public ServiceTemplateId substitute() {
+        Substitution substitution = new Substitution();
+        return substitution.substituteTopologyOfServiceTemplate((ServiceTemplateId) this.id);
     }
 
     @Override

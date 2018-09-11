@@ -1,42 +1,7 @@
 # Quickstart
 
-These steps ensure that
-
-- You have a set of TOSCA definitions
-- Winery sees that TOSCA definitions when you start it.
-
-## Windows
-
-Winery has built-in "magic" to check for existance of `C:\winery-repository`.
-If that directory exists, this is used as repository location.
-If that directory does not exists, it uses the home directory, which is `%HOME%` defaulting to `C:\Users\USERNAME\winery-repository`.
-
-1. Ensure that git and [git-lfs](https://git-lfs.github.com/) are installed.
-    1. Installation using [chocolatey](https://chocolatey.org/): `choco install git git-lfs`
-    1. Manual installation:
-        - Download git installer form <https://git-scm.com/downloads> and execute it.
-        - Download git-lfs installer from <https://git-lfs.github.com/> and execute it.
-1. Make repository available.
-    1. `mkdir c:\winery-repository`. The name `winery-repository` is important, because of Winery's magic (see above)
-    2. `cd c:\winery-repository`
-    2. `git config --global core.longpaths true` to enable long paths. Works perfectly on Windows.
-    3. `git clone https://github.com/winery/test-repository.git .` to clone the [test repository](https://github.com/winery/test-repository).
-    3. Execute `git lfs install`
-    4. Uni Stuttgart developers:
-        1. `git remote add tosca-definitions-internal https://github.com/OpenTOSCA/tosca-definitions-internal/` to make the [tosca-definitions-internal](https://github.com/OpenTOSCA/tosca-definitions-internal/) known.
-        1. `git fetch tosca-definitions-internal` - to fetch the tosca-definitions repository
-    6. `git checkout black` - to switch to the main branch of the test repository
-    7. Result: Now you are at the [test repository](https://github.com/winery/test-repository) containing testing types.
-       If you do `git checkout master`, you are seeing the [OpenTOSCA TOSCA Definitions repository](https://github.com/OpenTOSCA/tosca-definitions/).
-
-## Mac OS X
-
-Winery stores its repository at `~/winery-repository`.
-
-This howto is currently incomplete.
-
-1. Ensure that git and [git-lfs](https://git-lfs.github.com/) are installed.
-    1. `brew install git-lfs`
+This guide shows an overview of how to model TOSCA node types and service templates using Winery.
+Before starting this guide, please take a look at the [Miscellaneous Notes](#miscellaneous-notes).
 
 ## Modeling a Topology in Winery
 The following shows how to model new node types and how to use them at the modeling of a new service template. 
@@ -87,7 +52,7 @@ To create an artifact template, select the tab *Other Elements*, under the categ
 ![8-AddNewNodeType](graphics/modeling/8-AddNewArtifactTemplate.PNG)
 
 This will open a dialog in which the *Name*, *Versioning*, *Type*, and *Namespace* of the artifact template can be configured. 
-Assuming that some artifact types were previously modelled, choose the type *ScriptArtifact*.
+Assuming that some artifact types were previously modeled, choose the type *ScriptArtifact*.
 
 ![9-AddNewNodeType](graphics/modeling/9-AddNewArtifactTemplate.PNG)
 
@@ -147,11 +112,11 @@ Go to tab *Topology Template* and press the button *Open Editor*.
 
 ![17-AddNewNodeType](graphics/modeling/17-AddNewServiceTemplate.JPG)
 
-In the editor, the *Palette* on the left shows the available node types, which can be drag and dropped in the modelling area. 
+In the editor, the *Palette* on the left shows the available node types, which can be drag and dropped in the modeling area. 
 
 ![18-AddNewNodeType](graphics/modeling/18-AddNewServiceTemplate.JPG)
 
-To model the relationship that the Python3 runtime is hosted on the Ubuntu virtual machine, click at the Python3 node template. This will show a list of possible relationship types (previously modelled). Click in the option *HostedOn* and  pull the shown arrow to the Ubuntu node template area, in order to connect these node templates.
+To model the relationship that the Python3 runtime is hosted on the Ubuntu virtual machine, click at the Python3 node template. This will show a list of possible relationship types (previously modeled). Click in the option *HostedOn* and  pull the shown arrow to the Ubuntu node template area, in order to connect these node templates.
 
 ![19-AddNewServiceTemplate](graphics/modeling/19-AddNewServiceTemplate.JPG)
 
@@ -160,6 +125,26 @@ To model the relationship that the Python3 runtime is hosted on the Ubuntu virtu
 To export the Service Template as a CSAR package, press *Other*, then *Export CSAR*.
 
 ![20-AddNewServiceTemplate](graphics/modeling/20-AddNewServiceTemplate.JPG)
+
+
+## Miscellaneous Notes
+
+Properties of a Template can be either full XML or key/value based.
+If key/value based, a wrapper XML element is required.
+Since QNames have to be unique, Winery proposes as namespace the namespace of the template appended by `propertiesdefinition/winery`.
+The name of the wrapper element is `properties`.
+
+<!--
+Implementation hint: This is implemented in `PropertiesDefinitionComponent.onCustomKeyValuePairSelected` (TS) and `org.eclipse.winery.model.tosca.TEntityType.getWinerysPropertiesDefinition` (Java).
+-->
+
+### Uniqueness of QNames
+
+Intentionally, a QName should be unique within the repository.
+We did not follow this assumption, but only require that QNames are unique within a type.
+That means, the repository allows `{http://www.example.org}id` for both a service template and a node type.
+We introduced DefinitionsChildId uniquely identifying a TOSCA element.
+Future versions might redesign the backend to use a QName as the unique key.
 
 ## License
 

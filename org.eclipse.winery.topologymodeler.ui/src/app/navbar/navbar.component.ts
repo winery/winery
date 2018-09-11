@@ -180,6 +180,9 @@ export class NavbarComponent implements OnDestroy {
                 this.matchingOngoing = true;
                 break;
             }
+            case 'substituteTopology':
+                this.ngRedux.dispatch(this.actions.substituteTopology());
+                break;
         }
     }
 

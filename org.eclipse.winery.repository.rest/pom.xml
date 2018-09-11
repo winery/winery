@@ -222,22 +222,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-ext</artifactId>
-            <version>${org.slf4j}</version>
-            <scope>compile</scope>
-            <!-- not approved by Eclipse legal -->
-            <exclusions>
-                <exclusion>
-                    <groupId>ch.qos.cal10n</groupId>
-                    <artifactId>cal10n-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>commons-configuration</groupId>
-            <artifactId>commons-configuration</artifactId>
-            <version>1.9</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-configuration2</artifactId>
+            <version>${org.apache.commons.configuration}</version>
             <scope>compile</scope>
             <exclusions>
                 <!-- provided by jcl-over-slf4j to enable logging via logback -->
@@ -246,6 +233,13 @@
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <!-- previously included transitively through commons-configuration -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.7</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jgit</groupId>
@@ -323,6 +317,12 @@
             <groupId>org.eclipse.jetty.toolchain</groupId>
             <artifactId>jetty-test-helper</artifactId>
             <version>4.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.winery</groupId>
+            <artifactId>org.eclipse.winery.model.substitution</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- no review, but approval is required for test-only dependencies: http://wiki.eclipse.org/Development_Resources/IP/Test_and_Build_Dependencies -->
@@ -406,44 +406,6 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <minimizeJar>false</minimizeJar>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <finalName>${project.build.finalName}-rest-server</finalName>
-                            <transformers>
-                                <transformer
-                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>org.eclipse.winery.repository.rest.server.WineryUsingHttpServer
-                                    </mainClass>
-                                </transformer>
-                                <!-- hint by https://stackoverflow.com/a/33226176/873282 -->
-                                <transformer
-                                    implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                            </transformers>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
@@ -505,6 +467,19 @@
             </plugin>
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <!-- Spring Boot Maven Plugin
+                     https://docs.spring.io/spring-boot/docs/current/reference/html/build-tool-plugins-maven-plugin.html
+                     $ mvn package spring-boot:repackage
+                  -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.0.3.RELEASE</version>
+                <configuration>
+                    <executable>true</executable>
+                    <mainClass>org.eclipse.winery.repository.rest.server.WineryUsingHttpServer</mainClass>
+                </configuration>
             </plugin>
         </plugins>
         <finalName>winery</finalName>

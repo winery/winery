@@ -61,7 +61,7 @@
                 "documentation": [
                     {
                         "content": [
-                            "Stack of Node Template pasture from Provider Repository PastureProvider"
+                            "Stack of Node Template pasture from Provider Repository pastureprovider"
                         ],
                         "source": null,
                         "lang": null
@@ -81,7 +81,7 @@
                         "any": [
                         ],
                         "otherAttributes": {
-                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "PastureProvider",
+                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "pastureprovider",
                             "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "841",
                             "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "245"
                         },
@@ -113,7 +113,7 @@
                 "documentation": [
                     {
                         "content": [
-                            "Stack of Node Template straw from Provider Repository StallProvider"
+                            "Stack of Node Template straw from Provider Repository stallprovider"
                         ],
                         "source": null,
                         "lang": null
@@ -150,7 +150,7 @@
                         "any": [
                         ],
                         "otherAttributes": {
-                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "StallProvider",
+                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "stallprovider",
                             "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "909",
                             "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "62"
                         },
@@ -198,7 +198,7 @@
                         "any": [
                         ],
                         "otherAttributes": {
-                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "StallProvider",
+                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "stallprovider",
                             "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "911",
                             "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "485"
                         },
@@ -234,7 +234,7 @@
                 "documentation": [
                     {
                         "content": [
-                            "Stack of Node Template oat from Provider Repository FoodProvider"
+                            "Stack of Node Template oat from Provider Repository foodprovider"
                         ],
                         "source": null,
                         "lang": null
@@ -254,7 +254,7 @@
                         "any": [
                         ],
                         "otherAttributes": {
-                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "FoodProvider",
+                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "foodprovider",
                             "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "730",
                             "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "180"
                         },

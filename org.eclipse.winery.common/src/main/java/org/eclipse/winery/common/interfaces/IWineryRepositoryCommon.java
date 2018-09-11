@@ -72,7 +72,6 @@ public interface IWineryRepositoryCommon {
      *
      * @param id the DefinitionsChildId to load
      * @return the definitions belonging to the id
-     *
      * @throws IllegalStateException if repository cannot provide the content (e.g., due to file reading errors)
      */
     Definitions getDefinitions(DefinitionsChildId id);
@@ -123,9 +122,9 @@ public interface IWineryRepositoryCommon {
         return (TPolicyType) this.getDefinitions(id).getElement();
     }
 
-	default TComplianceRule getElement(ComplianceRuleId id) {
-		return (TComplianceRule) this.getDefinitions(id).getElement();
-	}
+    default TComplianceRule getElement(ComplianceRuleId id) {
+        return (TComplianceRule) this.getDefinitions(id).getElement();
+    }
 
     /**
      * Deletes the TOSCA element <b>and all sub elements</b> referenced by the given id from the repository
@@ -165,7 +164,7 @@ public interface IWineryRepositoryCommon {
      * Returns the stored type for the given template
      *
      * @param template the template to determine the type for
-     * @throws NullPointerException if template.getType() returns null
+     * @throws NullPointerException  if template.getType() returns null
      * @throws IllegalStateException if repository cannot provide the content (e.g., due to file reading errors)
      */
     // we suppress "unchecked" as we use Class.forName

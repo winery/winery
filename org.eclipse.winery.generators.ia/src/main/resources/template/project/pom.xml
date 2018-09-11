@@ -16,6 +16,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>IA_PACKAGE</groupId>
     <artifactId>IA_CLASS_NAME</artifactId>
     <packaging>war</packaging>
@@ -25,7 +26,11 @@
     <repositories>
         <repository>
             <id>opentosca</id>
-            <url>https://opentosca.github.io/mvn-repo/</url>
+            <url>https://raw.github.com/OpenTOSCA/mvn-repo/ustutt/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
         </repository>
     </repositories>
 
@@ -33,10 +38,10 @@
         <run.HttpPort>9090</run.HttpPort>
         <winery.upload.url>IA_ARTIFACT_TEMPLATE_UPLOAD_URL</winery.upload.url>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <cxf.version>2.7.6</cxf.version>
-        <highlevelrestapi.version>2.0.0-SNAPSHOT</highlevelrestapi.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <cxf.version>2.7.6</cxf.version>
+        <highlevelrestapi.version>2.0.0-SNAPSHOT</highlevelrestapi.version>
     </properties>
 
     <dependencies>
@@ -44,7 +49,6 @@
 
 
         <!-- END - LIBRARIES ADDED FOR IMPLEMENTATION ARTIFACT IMPLEMENTATION -->
-
         <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.highlevelrestapi</artifactId>
@@ -82,6 +86,7 @@
             <version>${cxf.version}</version>
         </dependency>
     </dependencies>
+
     <build>
         <finalName>IA_CLASS_NAME</finalName>
         <plugins>
@@ -90,7 +95,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.7.0</version>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-eclipse-plugin</artifactId>
@@ -100,7 +104,6 @@
                     <downloadJavadocs>true</downloadJavadocs>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-java2ws-plugin</artifactId>
@@ -133,7 +136,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -142,7 +144,6 @@
                     <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
                 </configuration>
             </plugin>
-
             <!-- Inspired by: http://giallone.blogspot.de/2013/02/post-file-to-web-page-as-part-of-maven.html -->
             <plugin>
                 <groupId>org.codehaus.gmaven</groupId>
@@ -205,17 +206,15 @@
                                 def response = httpclient.execute(post)
                                 def status = response.getStatusLine()
                                 if (!(status ==~ /.*201.*/))
-                                    fail("IA upload to Winery FAILED, please upload manually. (HTTP status code: $status)")
+                                fail("IA upload to Winery FAILED, please upload manually. (HTTP status code: $status)")
                                 else
-                                    println "IA upload finished sucessfully (HTTP status code $status)"
+                                println "IA upload finished sucessfully (HTTP status code $status)"
                             </source>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
-
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -231,7 +230,6 @@
                         <useTestClasspath>false</useTestClasspath>
                     </configuration>
                 </plugin>
-
                 <!-- Disable default install phase, because we don't install into maven
                     repo but into Winery (during deploy phase). -->
                 <plugin>
@@ -244,7 +242,6 @@
                         </execution>
                     </executions>
                 </plugin>
-
                 <!-- Disable default deploy phase, because we don't deploy into remote
                     maven repo but into remote Winery. -->
                 <plugin>
@@ -259,6 +256,6 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-
     </build>
+
 </project>

@@ -62,13 +62,13 @@ import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 
-import org.slf4j.ext.XLogger;
-import org.slf4j.ext.XLoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 public class ToscaExportUtil {
 
-    private static final XLogger LOGGER = XLoggerFactory.getXLogger(ToscaExportUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ToscaExportUtil.class);
 
     /*
      * these two are GLOBAL VARIABLES leading to the fact that this class has to
@@ -414,12 +414,14 @@ public class ToscaExportUtil {
             absolutePath = repo.ref2AbsolutePath(ref).toString();
         }
 
-        String hash = HashingUtil.getHashForFile(absolutePath, TOSCAMetaFileAttributes.HASH);
-        CsarContentProperties fileProperties = new CsarContentProperties(pathInsideRepo, hash);
+        if (this.exportConfiguration.containsKey(CsarExportConfiguration.INCLUDE_HASHES.name())) {
+            String hash = HashingUtil.getHashForFile(absolutePath, TOSCAMetaFileAttributes.HASH);
+            this.referencesToPathInCSARMap.put(ref, new CsarContentProperties(pathInsideRepo, hash));
+        }
 
         // put mapping reference to path into global map
         // the path is the same as put in "synchronizeReferences"
-        this.referencesToPathInCSARMap.put(ref, fileProperties);
+        this.referencesToPathInCSARMap.put(ref, new CsarContentProperties(pathInsideRepo));
     }
 
     private void addVisualAppearanceToCSAR(IRepository repository, TopologyGraphElementEntityTypeId id) {

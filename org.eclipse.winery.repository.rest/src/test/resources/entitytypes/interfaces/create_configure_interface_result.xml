@@ -1,0 +1,18 @@
+<Definitions xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"
+             xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12"
+             targetNamespace="http://plain.winery.opentosca.org/relationshiptypes"
+             id="winery-defs-for_relationshiptypes-RelationshipTypeWithoutProperties">
+    <RelationshipType name="RelationshipTypeWithoutProperties"
+                      targetNamespace="http://plain.winery.opentosca.org/relationshiptypes"
+                      winery:targetArrowHead="PlainArrow" winery:sourceArrowHead="none" winery:color="#87c889"
+                      winery:hoverColor="black" winery:dash="plain">
+        <winery:Interfaces>
+            <Interface name="http://opentosca.org/interfaces/relationship/configure">
+                <Operation name="pre_configure_source"/>
+                <Operation name="pre_configure_target"/>
+                <Operation name="post_configure_source"/>
+                <Operation name="post_configure_target"/>
+            </Interface>
+        </winery:Interfaces>
+    </RelationshipType>
+</Definitions>

@@ -21,6 +21,10 @@ Chosen option: "Dasherization", because
 * clear separation of parts of the name
 * consistent to other URLs (which are typically lowercase)
 
+## Links
+
+* GADR: https://github.com/adr/gadr-misc/blob/master/gadr--filename-convention.md
+
 ## License
 
 Copyright (c) 2018 Contributors to the Eclipse Foundation

@@ -68,13 +68,10 @@ import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
 import org.eclipse.winery.repository.configuration.FileBasedRepositoryConfiguration;
 import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 
-import org.apache.commons.compress.archivers.ArchiveException;
-import org.apache.commons.compress.archivers.ArchiveOutputStream;
-import org.apache.commons.compress.archivers.ArchiveStreamFactory;
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.event.ConfigurationEvent;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.tika.mime.MediaType;
@@ -467,28 +464,17 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
     public Configuration getConfiguration(RepositoryFileReference ref) {
         Path path = this.ref2AbsolutePath(ref);
 
-        /*ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            TypeReference<HashMap<String, NamespaceProperties>> hashMapTypeReference =
-                new TypeReference<HashMap<String, NamespaceProperties>>() {
-                };
-            HashMap<String, NamespaceProperties> hashMap = objectMapper.readValue(new File("C:\\winery-repository\\admin\\namespaces\\Namspaces.json"), hashMapTypeReference);
-            hashMap.entrySet();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
         PropertiesConfiguration configuration = new PropertiesConfiguration();
         if (Files.exists(path)) {
             try (Reader r = Files.newBufferedReader(path, Charset.defaultCharset())) {
-                configuration.load(r);
+                configuration.read(r);
             } catch (ConfigurationException | IOException e) {
                 FilebasedRepository.LOGGER.error("Could not read config file", e);
                 throw new IllegalStateException("Could not read config file", e);
             }
         }
 
-        configuration.addConfigurationListener(new AutoSaveListener(path, configuration));
+        configuration.addEventListener(ConfigurationEvent.ANY, new AutoSaveListener(path, configuration));
 
         // We do NOT implement reloading as the configuration is only accessed
         // in JAX-RS resources, which are created on a per-request basis
@@ -773,23 +759,21 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 
         SortedSet<RepositoryFileReference> containedFiles = this.getContainedFiles(id);
 
-        try (final ArchiveOutputStream zos = new ArchiveStreamFactory().createArchiveOutputStream("zip", out)) {
+        try (final ZipOutputStream zos = new ZipOutputStream(out)) {
             for (RepositoryFileReference ref : containedFiles) {
-                ZipArchiveEntry zipArchiveEntry;
+                ZipEntry zipArchiveEntry;
                 final Optional<Path> subDirectory = ref.getSubDirectory();
                 if (subDirectory.isPresent()) {
-                    zipArchiveEntry = new ZipArchiveEntry(subDirectory.get().resolve(ref.getFileName()).toString());
+                    zipArchiveEntry = new ZipEntry(subDirectory.get().resolve(ref.getFileName()).toString());
                 } else {
-                    zipArchiveEntry = new ZipArchiveEntry(ref.getFileName());
+                    zipArchiveEntry = new ZipEntry(ref.getFileName());
                 }
-                zos.putArchiveEntry(zipArchiveEntry);
+                zos.putNextEntry(zipArchiveEntry);
                 try (InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
                     IOUtils.copy(is, zos);
                 }
-                zos.closeArchiveEntry();
+                zos.closeEntry();
             }
-        } catch (ArchiveException e) {
-            throw new WineryRepositoryException("Internal error while generating archive", e);
         } catch (IOException e) {
             throw new WineryRepositoryException("I/O exception during export", e);
         }

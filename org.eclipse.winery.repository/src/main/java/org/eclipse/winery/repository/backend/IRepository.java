@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
-import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration2.Configuration;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.GenericId;
 
