@@ -17,6 +17,7 @@ export class TopologyModelerConfiguration {
 
     public readonly webSocketUrl: string;
     public readonly definitionsElement: QName;
+    public readonly relationshipPrefix;
 
     constructor(public readonly id: string,
                 public readonly ns: string,
@@ -28,5 +29,15 @@ export class TopologyModelerConfiguration {
                 public readonly elementPath = 'topologytemplate') {
         this.webSocketUrl = repositoryURL.replace(/(^https?)/, 'ws');
         this.definitionsElement = new QName('{' + ns + '}' + id);
+
+        if (this.elementPath === 'detector') {
+            this.relationshipPrefix = 'd_';
+        } else if (this.elementPath === 'refinementstructure') {
+            this.relationshipPrefix = 'rs_';
+        } else {
+            this.relationshipPrefix = '';
+        }
+
+        this.relationshipPrefix += 'con';
     }
 }
