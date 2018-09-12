@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -115,7 +116,7 @@ public class TNodeType extends TEntityType {
     @XmlType(name = "", propOrder = {
         "capabilityDefinition"
     })
-    public static class CapabilityDefinitions {
+    public static class CapabilityDefinitions implements Serializable {
 
         @XmlElement(name = "CapabilityDefinition", required = true)
         protected List<TCapabilityDefinition> capabilityDefinition;
@@ -146,7 +147,7 @@ public class TNodeType extends TEntityType {
     @XmlType(name = "", propOrder = {
         "requirementDefinition"
     })
-    public static class RequirementDefinitions {
+    public static class RequirementDefinitions implements Serializable {
 
         @XmlElement(name = "RequirementDefinition", required = true)
         protected List<TRequirementDefinition> requirementDefinition;

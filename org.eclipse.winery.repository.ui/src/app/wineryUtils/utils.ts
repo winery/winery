@@ -73,6 +73,8 @@ export class Utils {
                 return ToscaTypes.Imports;
             case ToscaTypes.ComplianceRule:
                 return ToscaTypes.ComplianceRule;
+            case ToscaTypes.PatternRefinementModel:
+                return ToscaTypes.PatternRefinementModel;
             default:
                 return ToscaTypes.Admin;
         }
@@ -120,6 +122,9 @@ export class Utils {
                 break;
             case ToscaTypes.ComplianceRule:
                 type = 'Compliance Rule';
+                break;
+            case ToscaTypes.PatternRefinementModel:
+                type = 'Pattern Refinement Model';
                 break;
             default:
                 type = 'Admin';

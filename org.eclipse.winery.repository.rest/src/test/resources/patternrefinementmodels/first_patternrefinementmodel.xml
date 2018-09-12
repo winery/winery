@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Definitions targetNamespace="http://winery.opentosca.org/test/concrete/patternrefinementmodels" id="winery-defs-for_patternrefinementmodels-myExample_w1-wip1" xmlns="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:testwineryopentoscaorg="http://test.winery.opentosca.org">
+    <PatternRefinementModel name="myExample_w1-wip1" targetNamespace="http://winery.opentosca.org/test/concrete/patternrefinementmodels">
+        <Detector>
+            <NodeTemplate name="Infrastructure-As-A-Service_w1" minInstances="1" maxInstances="1" type="ot-patterns:Infrastructure-As-A-Service_w1" id="Infrastructure-As-A-Service_w1" winery:x="541" winery:y="231" xmlns:ot-patterns="http://plain.winery.opentosca.org/patterns"/>
+        </Detector>
+        <RefinementStructure>
+            <NodeTemplate name="NodeTypeWith5Versions_0.3.4-w3-wip3" minInstances="1" maxInstances="1" type="nodetypes1:NodeTypeWith5Versions_0.3.4-w3-wip3" id="NodeTypeWith5Versions_0.3.4-w3-wip3" winery:x="761" winery:y="356" xmlns:nodetypes1="http://opentosca.org/nodetypes"/>
+            <NodeTemplate name="NodeTypeWith5Versions_0.3.0-w2" minInstances="1" maxInstances="1" type="nodetypes1:NodeTypeWith5Versions_0.3.0-w2" id="NodeTypeWith5Versions_0.3.0-w2" winery:x="764" winery:y="172" xmlns:nodetypes1="http://opentosca.org/nodetypes"/>
+            <RelationshipTemplate name="con_1" type="relationshiptypes:RelationshipTypeWithoutProperties" id="con_1" xmlns:relationshiptypes="http://plain.winery.opentosca.org/relationshiptypes">
+                <SourceElement ref="NodeTypeWith5Versions_0.3.0-w2"/>
+                <TargetElement ref="NodeTypeWith5Versions_0.3.4-w3-wip3"/>
+            </RelationshipTemplate>
+        </RefinementStructure>
+        <RelationMappings>
+            <RelationMapping id="mapping0" detectorNode="Infrastructure-As-A-Service_w1" refinementNode="NodeTypeWith5Versions_0.3.4-w3-wip3" relationType="relationshiptypes:RelationshipTypeWithTwoKvPropertie" direction="ingoing" xmlns:relationshiptypes="http://plain.winery.opentosca.org/relationshiptypes"/>
+            <RelationMapping id="mapping1" detectorNode="Infrastructure-As-A-Service_w1" refinementNode="NodeTypeWith5Versions_0.3.0-w2" relationType="relationshiptypes:RelationshipTypeWithoutProperties" direction="outgoing" validSourceOrTarget="nodetypes:NodeTypeWithTwoKVProperties" xmlns:relationshiptypes="http://plain.winery.opentosca.org/relationshiptypes" xmlns:nodetypes="http://plain.winery.opentosca.org/nodetypes"/>
+        </RelationMappings>
+    </PatternRefinementModel>
+</Definitions>

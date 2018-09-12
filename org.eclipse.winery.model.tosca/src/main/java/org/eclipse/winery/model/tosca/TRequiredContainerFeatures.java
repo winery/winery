@@ -20,6 +20,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -47,7 +49,7 @@ import java.util.Objects;
 @XmlType(name = "tRequiredContainerFeatures", propOrder = {
     "requiredContainerFeature"
 })
-public class TRequiredContainerFeatures {
+public class TRequiredContainerFeatures implements Serializable {
 
     @XmlElement(name = "RequiredContainerFeature", required = true)
     protected List<TRequiredContainerFeature> requiredContainerFeature;

@@ -51,7 +51,9 @@ public class ToscaTransformer {
             graph.addVertex(node);
         }
         for (TRelationshipTemplate tRelationshipTemplate : relationshipTemplates) {
-            ToscaEdge edge = graph.addEdge(nodes.get(tRelationshipTemplate.getSourceElement().getRef()), nodes.get(tRelationshipTemplate.getTargetElement().getRef()));
+            ToscaNode source = nodes.get(tRelationshipTemplate.getSourceElement().getRef());
+            ToscaNode target = nodes.get(tRelationshipTemplate.getTargetElement().getRef());
+            ToscaEdge edge = graph.addEdge(source, target);
             initializeTOSCAEdge(tRelationshipTemplate, edge);
         }
         return graph;

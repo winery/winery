@@ -1,34 +1,9 @@
 {
-    "connector": "Flowchart",
-    "paintStyle": {
-        "lineWidth": 1,
-        "strokeStyle": "#323cb0"
-    },
-    "hoverPaintStyle": {
-        "strokeStyle": "black"
-    },
-    "dash": "plain",
+    "color": "#323cb0",
+    "pattern": false,
+    "typeId": "{http://winery.opentosca.org/test/relationshiptypes/fruits}kiwi",
     "sourceArrowHead": "none",
     "targetArrowHead": "PlainArrow",
-    "color": "#323cb0",
-    "hoverColor": "black",
-    "overlays": [
-        [
-            "PlainArrow",
-            {
-                "location": 1,
-                "width": 20,
-                "length": 12
-            }
-        ],
-        [
-            "Label",
-            {
-                "id": "label",
-                "label": "(kiwi)",
-                "cssClass": "relationshipTypeLabel",
-                "location": 0.5
-            }
-        ]
-    ]
+    "dash": "plain",
+    "hoverColor": "black"
 }

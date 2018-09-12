@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -38,7 +39,8 @@ import org.eclipse.jdt.annotation.Nullable;
     "policies",
     "interfaces"
 })
-public class TBoundaryDefinitions {
+public class TBoundaryDefinitions implements Serializable {
+
     @XmlElement(name = "Properties")
     protected TBoundaryDefinitions.Properties properties;
     @XmlElement(name = "PropertyConstraints")
@@ -139,7 +141,7 @@ public class TBoundaryDefinitions {
     @XmlType(name = "", propOrder = {
         "capability"
     })
-    public static class Capabilities {
+    public static class Capabilities implements Serializable {
 
         @XmlElement(name = "Capability", required = true)
         protected List<TCapabilityRef> capability;
@@ -157,7 +159,7 @@ public class TBoundaryDefinitions {
     @XmlType(name = "", propOrder = {
         "_interface"
     })
-    public static class Interfaces {
+    public static class Interfaces implements Serializable {
 
         @XmlElement(name = "Interface", required = true)
         protected List<TExportedInterface> _interface;
@@ -175,7 +177,7 @@ public class TBoundaryDefinitions {
     @XmlType(name = "", propOrder = {
         "policy"
     })
-    public static class Policies {
+    public static class Policies implements Serializable {
 
         @XmlElement(name = "Policy", required = true)
         protected List<TPolicy> policy;
@@ -194,7 +196,7 @@ public class TBoundaryDefinitions {
         "any",
         "propertyMappings"
     })
-    public static class Properties {
+    public static class Properties implements Serializable {
 
         @XmlAnyElement(lax = true)
         protected Object any;
@@ -226,7 +228,7 @@ public class TBoundaryDefinitions {
         @XmlType(name = "", propOrder = {
             "propertyMapping"
         })
-        public static class PropertyMappings {
+        public static class PropertyMappings implements Serializable {
 
             @XmlElement(name = "PropertyMapping", required = true)
             protected List<TPropertyMapping> propertyMapping;
@@ -245,7 +247,7 @@ public class TBoundaryDefinitions {
     @XmlType(name = "", propOrder = {
         "propertyConstraint"
     })
-    public static class PropertyConstraints {
+    public static class PropertyConstraints implements Serializable {
 
         @XmlElement(name = "PropertyConstraint", required = true)
         protected List<TPropertyConstraint> propertyConstraint;
@@ -263,7 +265,7 @@ public class TBoundaryDefinitions {
     @XmlType(name = "", propOrder = {
         "requirement"
     })
-    public static class Requirements {
+    public static class Requirements implements Serializable {
 
         @XmlElement(name = "Requirement", required = true)
         protected List<TRequirementRef> requirement;

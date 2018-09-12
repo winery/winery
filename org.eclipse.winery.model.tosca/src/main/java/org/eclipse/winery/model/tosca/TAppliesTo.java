@@ -14,45 +14,25 @@
 
 package org.eclipse.winery.model.tosca;
 
-import org.eclipse.jdt.annotation.NonNull;
-
-import javax.xml.bind.annotation.*;
-import javax.xml.namespace.QName;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.namespace.QName;
 
-/**
- * <p>Java class for tAppliesTo complex type.
- * <p>
- * <p>The following schema fragment specifies the expected content contained within this class.
- * <p>
- * <pre>
- * &lt;complexType name="tAppliesTo">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="NodeTypeReference" maxOccurs="unbounded">
- *           &lt;complexType>
- *             &lt;complexContent>
- *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *                 &lt;attribute name="typeRef" use="required" type="{http://www.w3.org/2001/XMLSchema}QName" />
- *               &lt;/restriction>
- *             &lt;/complexContent>
- *           &lt;/complexType>
- *         &lt;/element>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- */
+import org.eclipse.jdt.annotation.NonNull;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tAppliesTo", propOrder = {
     "nodeTypeReference"
 })
-public class TAppliesTo {
+public class TAppliesTo implements Serializable {
 
     @XmlElement(name = "NodeTypeReference", required = true)
     protected List<TAppliesTo.NodeTypeReference> nodeTypeReference;
@@ -78,10 +58,9 @@ public class TAppliesTo {
      * Gets the value of the nodeTypeReference property.
      * <p>
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the nodeTypeReference property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to
+     * the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for
+     * the nodeTypeReference property.
      * <p>
      * <p>
      * For example, to add a new item, do as follows:
@@ -91,8 +70,7 @@ public class TAppliesTo {
      * <p>
      * <p>
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link TAppliesTo.NodeTypeReference }
+     * Objects of the following type(s) are allowed in the list {@link TAppliesTo.NodeTypeReference }
      */
     @NonNull
     public List<TAppliesTo.NodeTypeReference> getNodeTypeReference() {
@@ -101,7 +79,6 @@ public class TAppliesTo {
         }
         return this.nodeTypeReference;
     }
-
 
     /**
      * <p>Java class for anonymous complex type.
@@ -120,7 +97,7 @@ public class TAppliesTo {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    public static class NodeTypeReference {
+    public static class NodeTypeReference implements Serializable {
 
         @XmlAttribute(name = "typeRef", required = true)
         protected QName typeRef;

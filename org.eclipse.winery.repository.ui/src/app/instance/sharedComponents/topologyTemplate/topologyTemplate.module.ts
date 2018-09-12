@@ -17,6 +17,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TopologyTemplateComponent } from './topologyTemplate.component';
 import { WineryModalModule } from '../../../wineryModalModule/winery.modal.module';
+import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
+import { SelectModule } from 'ng2-select';
 
 @NgModule({
     imports: [
@@ -24,6 +26,7 @@ import { WineryModalModule } from '../../../wineryModalModule/winery.modal.modul
         CommonModule,
         RouterModule,
         WineryModalModule,
+        WineryLoaderModule,
     ],
     exports: [
         TopologyTemplateComponent

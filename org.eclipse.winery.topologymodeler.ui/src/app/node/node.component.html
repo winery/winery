@@ -93,7 +93,7 @@
         </div>
     </div>
     <ng-template #showPattern>
-        <div class="patternP" tooltip="{{ nodeTypeLocalName }}" (click)="openSidebar($event); closeConnectorEndpoints($event)">
+        <div class="patternP" tooltip="{{ nodeTypeLocalName }}" placement="right" (click)="openSidebar($event); closeConnectorEndpoints($event)">
             <div class="col-sm-3">
                 <img *ngIf="!nodeTemplate.visuals.imageUrl" class="patternImage" src="http://via.placeholder.com/50x50"
                      style="border-radius: 10%; width: 50px; height: auto">

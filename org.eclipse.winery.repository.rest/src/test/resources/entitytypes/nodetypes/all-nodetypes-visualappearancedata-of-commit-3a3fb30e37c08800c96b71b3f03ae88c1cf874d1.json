@@ -2,81 +2,81 @@
     {
         "color": "#d37202",
         "pattern": false,
-        "nodeTypeId": "{http://opentosca.org/nodetypes}NodeTypeWith5Versions_0.3.0-w2"
+        "typeId": "{http://opentosca.org/nodetypes}NodeTypeWith5Versions_0.3.0-w2"
     },
     {
         "color": "#d5437d",
         "pattern": false,
-        "nodeTypeId": "{http://opentosca.org/nodetypes}NodeTypeWith5Versions_0.3.4-w1"
+        "typeId": "{http://opentosca.org/nodetypes}NodeTypeWith5Versions_0.3.4-w1"
     },
     {
         "color": "#65e5a1",
         "pattern": false,
-        "nodeTypeId": "{http://opentosca.org/nodetypes}NodeTypeWith5Versions_0.3.4-w3-wip1"
+        "typeId": "{http://opentosca.org/nodetypes}NodeTypeWith5Versions_0.3.4-w3-wip1"
     },
     {
         "color": "#65e5a3",
         "pattern": false,
-        "nodeTypeId": "{http://opentosca.org/nodetypes}NodeTypeWith5Versions_0.3.4-w3-wip3"
+        "typeId": "{http://opentosca.org/nodetypes}NodeTypeWith5Versions_0.3.4-w3-wip3"
     },
     {
         "color": "#d5437f",
         "pattern": false,
-        "nodeTypeId": "{http://opentosca.org/nodetypes}NodeTypeWith5Versions_0.3.4-w3"
+        "typeId": "{http://opentosca.org/nodetypes}NodeTypeWith5Versions_0.3.4-w3"
     },
     {
         "color": "#02fad9",
         "pattern": false,
-        "nodeTypeId": "{http://opentosca.org/nodetypes}NodeTypeWithALowerReleasableManagementVersion_2-w1"
+        "typeId": "{http://opentosca.org/nodetypes}NodeTypeWithALowerReleasableManagementVersion_2-w1"
     },
     {
         "pattern": false,
         "color": "#7b8f26",
-        "nodeTypeId": "{http://opentosca.org/nodetypes}NodeTypeWithALowerReleasableManagementVersion_2-w2-wip1"
+        "typeId": "{http://opentosca.org/nodetypes}NodeTypeWithALowerReleasableManagementVersion_2-w2-wip1"
     },
     {
         "color": "#036f38",
         "pattern": false,
-        "nodeTypeId": "{http://opentosca.org/nodetypes}NodeTypeWithALowerReleasableManagementVersion_3-w1"
+        "typeId": "{http://opentosca.org/nodetypes}NodeTypeWithALowerReleasableManagementVersion_3-w1"
     },
     {
         "color": "#573141",
         "pattern": false,
-        "nodeTypeId": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithImplementation_1.0-w1-wip1"
+        "typeId": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithImplementation_1.0-w1-wip1"
     },
     {
         "color": "#cb9029",
         "pattern": false,
-        "nodeTypeId": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithOneReqCapPairWithoutProperties"
+        "typeId": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithOneReqCapPairWithoutProperties"
     },
     {
         "color": "#b4b38f",
         "pattern": false,
-        "nodeTypeId": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithThreeReqCapPairsCoveringAllReqCapVariants"
+        "typeId": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithThreeReqCapPairsCoveringAllReqCapVariants"
     },
     {
         "color": "#39c549",
         "pattern": false,
-        "nodeTypeId": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithThreeReqCapPairsCoveringAllReqCapVariants_-w1-wip1"
+        "typeId": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithThreeReqCapPairsCoveringAllReqCapVariants_-w1-wip1"
     },
     {
         "color": "#39c54a",
         "pattern": false,
-        "nodeTypeId": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithThreeReqCapPairsCoveringAllReqCapVariants_-w1-wip2"
+        "typeId": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithThreeReqCapPairsCoveringAllReqCapVariants_-w1-wip2"
     },
     {
         "color": "#081588",
         "pattern": false,
-        "nodeTypeId": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithTwoKVProperties"
+        "typeId": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithTwoKVProperties"
     },
     {
         "color": "#82aedc",
         "pattern": false,
-        "nodeTypeId": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithXmlElementProperty"
+        "typeId": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithXmlElementProperty"
     },
     {
         "color": "#a412ff",
         "pattern": false,
-        "nodeTypeId": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithoutProperties"
+        "typeId": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithoutProperties"
     }
 ]

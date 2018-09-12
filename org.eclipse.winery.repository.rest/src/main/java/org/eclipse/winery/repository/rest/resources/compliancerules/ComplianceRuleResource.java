@@ -13,59 +13,86 @@
  ********************************************************************************/
 package org.eclipse.winery.repository.rest.resources.compliancerules;
 
+import java.io.IOException;
+
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.TComplianceRule;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceContainingATopology;
 import org.eclipse.winery.repository.rest.resources._support.IHasName;
+import org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates.TopologyTemplateResource;
 
-public class ComplianceRuleResource extends AbstractComponentInstanceResource implements IHasName {
-	/**
-	 * Instantiates the resource. Assumes that the resource should exist (assured by the caller)
-	 *
-	 * The caller should <em>not</em> create the resource by other ways. E.g., by instantiating this resource and then
-	 * adding data.
-	 */
-	public ComplianceRuleResource(DefinitionsChildId id) {
-		super(id);
-	}
+public class ComplianceRuleResource extends AbstractComponentInstanceResourceContainingATopology implements IHasName {
 
-	@Override
-	protected TExtensibleElements createNewElement() {
-		return new TComplianceRule();
-	}
+    private static final String IDENTIFIER = "identifier";
+    private static final String REQUIRED_STRUCTURE = "required-structure";
 
-	public TComplianceRule getCompliancerule() {
-		return (TComplianceRule) this.getElement();
-	}
+    /**
+     * Instantiates the resource. Assumes that the resource should exist (assured by the caller)
+     *
+     * The caller should <em>not</em> create the resource by other ways. E.g., by instantiating this resource and then
+     * adding data.
+     */
+    public ComplianceRuleResource(DefinitionsChildId id) {
+        super(id);
+    }
 
-	@Override
-	public String getName() {
-		String name = this.getCompliancerule().getName();
-		if (name == null) {
-			// place default
-			name = this.getId().getXmlId().getDecoded();
-		}
-		return name;
-	}
+    @Override
+    protected TExtensibleElements createNewElement() {
+        return new TComplianceRule();
+    }
 
-	@Override
-	public Response setName(String name) {
-		this.getCompliancerule().setName(name);
-		return RestUtils.persist(this);
-	}
+    public TComplianceRule getCompliancerule() {
+        return (TComplianceRule) this.getElement();
+    }
 
-	@Path("identifier/")
-	public CRTopologyTemplateResource getIdentifier() {
-		return new CRTopologyTemplateResource(this, this.getCompliancerule().getIdentifier());
-	}	
-	
-	@Path("requiredstructure/")
-	public CRTopologyTemplateResource getRequiredStructure() {
-		return new CRTopologyTemplateResource(this, this.getCompliancerule().getRequiredStructure());
-	}
+    @Override
+    public String getName() {
+        String name = this.getCompliancerule().getName();
+        if (name == null) {
+            // place default
+            name = this.getId().getXmlId().getDecoded();
+        }
+        return name;
+    }
+
+    @Override
+    public Response setName(String name) {
+        this.getCompliancerule().setName(name);
+        return RestUtils.persist(this);
+    }
+
+    @Path("identifier/")
+    public TopologyTemplateResource getIdentifier() {
+        return new TopologyTemplateResource(this, this.getCompliancerule().getIdentifier(), IDENTIFIER);
+    }
+
+    @Path("requiredstructure/")
+    public TopologyTemplateResource getRequiredStructure() {
+        return new TopologyTemplateResource(this, this.getCompliancerule().getRequiredStructure(), REQUIRED_STRUCTURE);
+    }
+
+    @Override
+    public void setTopology(TTopologyTemplate topologyTemplate, String type) {
+        switch (type) {
+            case IDENTIFIER:
+                this.getCompliancerule().setIdentifier(topologyTemplate);
+                break;
+            case REQUIRED_STRUCTURE:
+                this.getCompliancerule().setRequiredStructure(topologyTemplate);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    protected void synchronizeReferences() throws IOException {
+        // no synchronizing needed
+    }
 }

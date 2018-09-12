@@ -23,6 +23,7 @@ import { IWineryState } from '../redux/store/winery.store';
 import { ILoaded } from '../services/loaded.service';
 import { Subscription } from 'rxjs';
 import { Utils } from '../models/utils';
+import { EntityTypesModel } from '../models/entityTypesModel';
 
 /**
  * This is the parent component of the canvas and navbar component.
@@ -35,8 +36,7 @@ import { Utils } from '../models/utils';
 export class TopologyRendererComponent implements OnInit, OnDestroy {
 
     @Input() readonly: boolean;
-    @Input() entityTypes: any;
-    @Input() relationshipTypes: Array<any> = [];
+    @Input() entityTypes: EntityTypesModel;
     @Input() differencesData: [ToscaDiff, TTopologyTemplate];
     @Input() nodeTemplates: Array<TNodeTemplate>;
     @Input() relationshipTemplates: Array<TRelationshipTemplate>;
@@ -60,7 +60,7 @@ export class TopologyRendererComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.loader = {loadedData: true, generatedReduxState: false};
+        this.loader = { loadedData: true, generatedReduxState: false };
         if (!isNullOrUndefined(this.differencesData)) {
             this.diffMode = true;
             this.topologyDiff = this.differencesData[0];
@@ -128,6 +128,8 @@ export class TopologyRendererComponent implements OnInit, OnDestroy {
         this.nodeTemplates.forEach(nodeTemplate => {
             this.ngRedux.dispatch(this.actions.saveNodeTemplate(nodeTemplate));
         });
+
+        this.ngRedux.dispatch(this.actions.setNodeVisuals(this.entityTypes.nodeVisuals));
 
         this.loader.generatedReduxState = true;
         this.generatedReduxState.emit(this.loader);

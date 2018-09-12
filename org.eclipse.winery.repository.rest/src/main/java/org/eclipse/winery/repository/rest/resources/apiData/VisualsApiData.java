@@ -17,29 +17,29 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.Filename;
-import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.VisualAppearanceResource;
+import org.eclipse.winery.repository.rest.resources._support.GenericVisualAppearanceResource;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class NodeTypesVisualsApiData {
+public class VisualsApiData {
 
     public String iconUrl;
     public String imageUrl;
     public String color;
     public boolean pattern;
-    public QName nodeTypeId;
+    public QName typeId;
 
-    public NodeTypesVisualsApiData(VisualAppearanceResource visuals) {
+    public VisualsApiData(GenericVisualAppearanceResource visuals) {
         IRepository repository = RepositoryFactory.getRepository();
-        NodeTypeId parent = (NodeTypeId) visuals.getId().getParent();
+        DefinitionsChildId parent = (DefinitionsChildId) visuals.getId().getParent();
 
-        this.color = visuals.getBorderColor();
-        this.nodeTypeId = parent.getQName();
+        this.color = visuals.getColor();
+        this.typeId = parent.getQName();
         this.pattern = repository.getNamespaceManager().isPatternNamespace(parent.getNamespace().getDecoded());
 
         RepositoryFileReference iconRef = new RepositoryFileReference(visuals.getId(), Filename.FILENAME_SMALL_ICON);
@@ -53,6 +53,6 @@ public class NodeTypesVisualsApiData {
         }
     }
 
-    public NodeTypesVisualsApiData() {
+    public VisualsApiData() {
     }
 }

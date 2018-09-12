@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -67,7 +68,8 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         @XmlElement(name = "NodeTypeImplementation", type = TNodeTypeImplementation.class),
         @XmlElement(name = "RequirementType", type = TRequirementType.class),
         @XmlElement(name = "PolicyType", type = TPolicyType.class),
-        @XmlElement(name = "Compliancerule", type = TComplianceRule.class)
+        @XmlElement(name = "ComplianceRule", type = TComplianceRule.class),
+        @XmlElement(name = "PatternRefinementModel", type = TPatternRefinementModel.class)
     })
     protected List<TExtensibleElements> serviceTemplateOrNodeTypeOrNodeTypeImplementation;
 
@@ -290,7 +292,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
     @XmlType(name = "", propOrder = {
         "extension"
     })
-    public static class Extensions {
+    public static class Extensions implements Serializable {
 
         @XmlElement(name = "Extension", required = true)
         protected List<TExtension> extension;
@@ -299,10 +301,9 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
          * Gets the value of the extension property.
          * <p>
          * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the extension property.
+         * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you
+         * make to the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE>
+         * method for the extension property.
          * <p>
          * <p>
          * For example, to add a new item, do as follows:
@@ -312,8 +313,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
          * <p>
          * <p>
          * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link TExtension }
+         * Objects of the following type(s) are allowed in the list {@link TExtension }
          */
         @NonNull
         public List<TExtension> getExtension() {
@@ -341,7 +341,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
     @XmlType(name = "", propOrder = {
         "any"
     })
-    public static class Types {
+    public static class Types implements Serializable {
 
         @XmlAnyElement(lax = true)
         protected List<Object> any;

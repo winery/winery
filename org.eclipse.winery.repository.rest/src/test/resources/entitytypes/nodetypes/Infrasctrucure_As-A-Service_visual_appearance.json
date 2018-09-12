@@ -1,5 +1,5 @@
 {
     "color": "#000000",
-    "nodeTypeId": "{http://plain.winery.opentosca.org/patterns}Infrastructure-As-A-Service_w1",
+    "typeId": "{http://plain.winery.opentosca.org/patterns}Infrastructure-As-A-Service_w1",
     "pattern": true
 }

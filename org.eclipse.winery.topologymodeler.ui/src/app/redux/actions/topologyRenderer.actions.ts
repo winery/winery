@@ -15,6 +15,10 @@
 import { Injectable } from '@angular/core';
 import { Action } from 'redux';
 
+export interface HighlightNodesAction extends Action {
+    nodesToHighlight: string[];
+}
+
 /**
  * Actions of the topologyRenderer
  */
@@ -35,60 +39,73 @@ export class TopologyRendererActions {
     static SPLIT_TOPOLOGY = 'SPLIT_TOPOLOGY';
     static MATCH_TOPOLOGY = 'MATCH_TOPOLOGY';
     static SUBSTITUTE_TOPOLOGY = 'SUBSTITUTE_TOPOLOGY';
+    static REFINE_TOPOLOGY = 'REFINE_TOPOLOGY';
+    static HIGHLIGHT_NODES = 'HIGHLIGHT_NODES';
 
     togglePolicies(): Action {
-        return {type: TopologyRendererActions.TOGGLE_POLICIES};
+        return { type: TopologyRendererActions.TOGGLE_POLICIES };
     }
 
     toggleTargetLocations(): Action {
-        return {type: TopologyRendererActions.TOGGLE_TARGET_LOCATIONS};
+        return { type: TopologyRendererActions.TOGGLE_TARGET_LOCATIONS };
     }
 
     toggleProperties(): Action {
-        return {type: TopologyRendererActions.TOGGLE_PROPERTIES};
+        return { type: TopologyRendererActions.TOGGLE_PROPERTIES };
     }
 
     toggleRequirementsCapabilities(): Action {
-        return {type: TopologyRendererActions.TOGGLE_REQUIREMENTS_CAPABILITIES};
+        return { type: TopologyRendererActions.TOGGLE_REQUIREMENTS_CAPABILITIES };
     }
 
     toggleDeploymentArtifacts(): Action {
-        return {type: TopologyRendererActions.TOGGLE_DEPLOYMENT_ARTIFACTS};
+        return { type: TopologyRendererActions.TOGGLE_DEPLOYMENT_ARTIFACTS };
     }
 
     toggleIds(): Action {
-        return {type: TopologyRendererActions.TOGGLE_IDS};
+        return { type: TopologyRendererActions.TOGGLE_IDS };
     }
 
     toggleTypes(): Action {
-        return {type: TopologyRendererActions.TOGGLE_TYPES};
+        return { type: TopologyRendererActions.TOGGLE_TYPES };
     }
 
     executeLayout(): Action {
-        return {type: TopologyRendererActions.EXECUTE_LAYOUT};
+        return { type: TopologyRendererActions.EXECUTE_LAYOUT };
     }
 
     executeAlignH(): Action {
-        return {type: TopologyRendererActions.EXECUTE_ALIGN_H};
+        return { type: TopologyRendererActions.EXECUTE_ALIGN_H };
     }
 
     executeAlignV(): Action {
-        return {type: TopologyRendererActions.EXECUTE_ALIGN_V};
+        return { type: TopologyRendererActions.EXECUTE_ALIGN_V };
     }
 
     importTopology(): Action {
-        return {type: TopologyRendererActions.IMPORT_TOPOLOGY};
+        return { type: TopologyRendererActions.IMPORT_TOPOLOGY };
     }
 
     splitTopology(): Action {
-        return {type: TopologyRendererActions.SPLIT_TOPOLOGY};
+        return { type: TopologyRendererActions.SPLIT_TOPOLOGY };
     }
 
     matchTopology(): Action {
-        return {type: TopologyRendererActions.MATCH_TOPOLOGY};
+        return { type: TopologyRendererActions.MATCH_TOPOLOGY };
     }
 
     substituteTopology(): Action {
         return { type: TopologyRendererActions.SUBSTITUTE_TOPOLOGY };
+    }
+
+    refineTopology(): Action {
+        return { type: TopologyRendererActions.REFINE_TOPOLOGY };
+    }
+
+    highlightNodes(listOfNodeIds: string[]): HighlightNodesAction {
+        return {
+            type: TopologyRendererActions.HIGHLIGHT_NODES,
+            nodesToHighlight: listOfNodeIds
+        };
     }
 }

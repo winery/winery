@@ -19,6 +19,8 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.namespace.QName;
+
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
@@ -165,7 +167,7 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    public static class DerivedFrom implements HasType {
+    public static class DerivedFrom implements HasType, Serializable {
 
         @XmlAttribute(name = "nodeTypeImplementationRef", required = true)
         protected QName nodeTypeImplementationRef;

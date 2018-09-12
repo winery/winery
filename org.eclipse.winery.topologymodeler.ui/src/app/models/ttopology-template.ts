@@ -133,9 +133,20 @@ export class EntityType extends Entity {
                 qName: string,
                 name: string,
                 namespace: string,
-                public color?: string,
                 public full?: any) {
         super(id, qName, name, namespace);
+    }
+}
+
+export class VisualEntityType extends EntityType {
+    constructor(id: string,
+                qName: string,
+                name: string,
+                namespace: string,
+                public color: string,
+                public visuals?: Visuals,
+                public full?: any) {
+        super(id, qName, name, namespace, full);
     }
 }
 
@@ -179,7 +190,7 @@ export class TRelationshipTemplate extends AbstractTTemplate {
 export class Visuals {
 
     constructor(public color: string,
-                public nodeTypeId: string,
+                public typeId: string,
                 public localName?: string,
                 public imageUrl?: string,
                 public pattern?: string) {

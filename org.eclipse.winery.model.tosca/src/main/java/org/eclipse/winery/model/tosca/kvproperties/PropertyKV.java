@@ -13,9 +13,10 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.kvproperties;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class PropertyKV {
+public class PropertyKV implements Serializable {
 
     private String key;
     private String value;

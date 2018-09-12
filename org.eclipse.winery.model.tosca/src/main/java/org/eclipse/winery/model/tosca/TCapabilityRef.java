@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -30,14 +31,14 @@ import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tCapabilityRef")
-public class TCapabilityRef {
+public class TCapabilityRef implements Serializable {
 
     @XmlAttribute(name = "name")
     protected String name;
     @XmlAttribute(name = "ref", required = true)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    protected Object ref;
+    protected TCapability ref;
 
     @Override
     public boolean equals(Object o) {
@@ -63,11 +64,11 @@ public class TCapabilityRef {
     }
 
     @NonNull
-    public Object getRef() {
+    public TCapability getRef() {
         return ref;
     }
 
-    public void setRef(@NonNull Object value) {
+    public void setRef(@NonNull TCapability value) {
         Objects.requireNonNull(value);
         this.ref = value;
     }

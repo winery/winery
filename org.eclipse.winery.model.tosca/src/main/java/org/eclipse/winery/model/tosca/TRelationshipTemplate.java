@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -148,7 +149,7 @@ public class TRelationshipTemplate extends TEntityTemplate {
     @XmlType(name = "", propOrder = {
         "relationshipConstraint"
     })
-    public static class RelationshipConstraints {
+    public static class RelationshipConstraints implements Serializable {
 
         @XmlElement(name = "RelationshipConstraint", required = true)
         protected List<TRelationshipTemplate.RelationshipConstraints.RelationshipConstraint> relationshipConstraint;
@@ -164,7 +165,7 @@ public class TRelationshipTemplate extends TEntityTemplate {
         @XmlType(name = "", propOrder = {
             "any"
         })
-        public static class RelationshipConstraint {
+        public static class RelationshipConstraint implements Serializable {
 
             @XmlAnyElement(lax = true)
             protected Object any;
@@ -243,7 +244,7 @@ public class TRelationshipTemplate extends TEntityTemplate {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "RelationshipSourceOrTaget")
-    public static class SourceOrTargetElement {
+    public static class SourceOrTargetElement implements Serializable {
 
         // We serialize XML and JSON differently. Solution for JSON taken from https://stackoverflow.com/a/17583175/873282
         @XmlAttribute(name = "ref", required = true)

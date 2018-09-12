@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -34,7 +35,7 @@ import org.eclipse.jdt.annotation.Nullable;
 @XmlSeeAlso( {
     TPropertyConstraint.class
 })
-public class TConstraint {
+public class TConstraint implements Serializable {
 
     @XmlAnyElement(lax = true)
     protected Object any;

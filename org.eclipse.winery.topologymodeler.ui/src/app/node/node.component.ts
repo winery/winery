@@ -17,7 +17,6 @@ import {
     Renderer2
 } from '@angular/core';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
-import { ButtonsStateModel } from '../models/buttonsState.model';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { WineryActions } from '../redux/actions/winery.actions';
@@ -29,6 +28,7 @@ import { BackendService } from '../services/backend.service';
 import { isNullOrUndefined } from 'util';
 import { GroupedNodeTypeModel } from '../models/groupedNodeTypeModel';
 import { EntityTypesModel } from '../models/entityTypesModel';
+import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reducer';
 
 /**
  * Every node has its own component and gets created dynamically.
@@ -70,7 +70,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     @Input() readonly: boolean;
     @Input() entityTypes: EntityTypesModel;
     @Input() dragSource: string;
-    @Input() navbarButtonsState: ButtonsStateModel;
+    @Input() navbarButtonsState: TopologyRendererState;
     @Input() nodeTemplate: TNodeTemplate;
 
     @Output() sendId: EventEmitter<string>;

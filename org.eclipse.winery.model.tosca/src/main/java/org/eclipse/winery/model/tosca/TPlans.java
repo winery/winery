@@ -18,6 +18,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import javax.xml.bind.annotation.*;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -45,7 +47,7 @@ import java.util.Objects;
 @XmlType(name = "tPlans", propOrder = {
     "plan"
 })
-public class TPlans {
+public class TPlans implements Serializable {
 
     @XmlElement(name = "Plan", required = true)
     protected List<TPlan> plan;

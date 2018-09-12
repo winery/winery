@@ -20,16 +20,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.model.tosca.TCapabilityRef;
 import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -41,28 +37,17 @@ import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.IRepository;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Substitution {
+public class Substitution extends AbstractSubstitution {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Substitution.class);
-    private static final String versionAppendix = "substituted";
-
-    private final IRepository repository;
 
     private final Map<QName, TServiceTemplate> nodeTypeSubstitutableWithServiceTemplate = new HashMap<>();
-    private final Map<QName, TRelationshipType> relationshipTypes = new HashMap<>();
-    private final Map<QName, TNodeType> nodeTypes = new HashMap<>();
     private final Map<QName, TRequirementType> requirementTypes = new HashMap<>();
     private final Map<QName, TCapabilityType> capabilityTypes = new HashMap<>();
-
-    public Substitution() {
-        repository = RepositoryFactory.getRepository();
-    }
 
     public ServiceTemplateId substituteTopologyOfServiceTemplate(final ServiceTemplateId serviceTemplateId) {
         // 0. Create a new version of the Service Template
@@ -213,52 +198,13 @@ public class Substitution {
         });
     }
 
-    /**
-     * Creates a new version of the given Service Template for the substitution. If no new version can be created, the
-     * given Service Template will be returned.
-     *
-     * @param serviceTemplateId the Service Template containing abstract types to be substituted
-     * @return the new Id of the Service Template
-     */
-    private ServiceTemplateId getSubstitutionServiceTemplateId(ServiceTemplateId serviceTemplateId) {
-        try {
-            ServiceTemplateId substitutedServiceTemplateId = new ServiceTemplateId(
-                serviceTemplateId.getNamespace().getDecoded(),
-                VersionUtils.getNewId(serviceTemplateId, versionAppendix),
-                false
-            );
-
-            repository.duplicate(serviceTemplateId, substitutedServiceTemplateId);
-            LOGGER.debug("Created new Service Template version {}", substitutedServiceTemplateId);
-
-            return substitutedServiceTemplateId;
-        } catch (IOException e) {
-            LOGGER.debug("Could not create new Service Template version during substitution", e);
-            LOGGER.debug("Reusing existing element");
-        }
-
-        return serviceTemplateId;
-    }
-
     private void loadAllRequiredDefinitionsForTopologySubstitution() {
-        List<TServiceTemplate> serviceTemplates = this.repository.getAllDefinitionsChildIds(ServiceTemplateId.class)
+        this.repository.getAllDefinitionsChildIds(ServiceTemplateId.class)
             .stream()
-            .map(repository::getElement).collect(Collectors.toList());
-
-        serviceTemplates.stream()
+            .map(repository::getElement)
             .filter(element -> Objects.nonNull(element.getSubstitutableNodeType()))
             .forEach(tServiceTemplate ->
                 this.nodeTypeSubstitutableWithServiceTemplate.put(tServiceTemplate.getSubstitutableNodeType(), tServiceTemplate)
-            );
-
-        this.repository.getAllDefinitionsChildIds(NodeTypeId.class)
-            .forEach(id ->
-                this.nodeTypes.put(id.getQName(), this.repository.getElement(id))
-            );
-
-        this.repository.getAllDefinitionsChildIds(RelationshipTypeId.class)
-            .forEach(id ->
-                this.relationshipTypes.put(id.getQName(), this.repository.getElement(id))
             );
 
         this.repository.getAllDefinitionsChildIds(RequirementTypeId.class)

@@ -17,6 +17,8 @@ package org.eclipse.winery.model.tosca;
 import org.eclipse.jdt.annotation.NonNull;
 
 import javax.xml.bind.annotation.*;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -45,7 +47,7 @@ import java.util.Objects;
 @XmlType(name = "tInterface", propOrder = {
     "operation"
 })
-public class TInterface implements HasName {
+public class TInterface implements HasName, Serializable {
     @XmlElement(name = "Operation", required = true)
     protected List<TOperation> operation;
     @XmlAttribute(name = "name", required = true)

@@ -16,15 +16,18 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 
 import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes.VisualAppearanceResource;
 
-public class RelationshipTypesVisualsApiData {
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class RelationshipTypesVisualsApiData extends VisualsApiData {
 
     public String sourceArrowHead;
     public String targetArrowHead;
     public String dash;
-    public String color;
     public String hoverColor;
 
     public RelationshipTypesVisualsApiData(VisualAppearanceResource visuals) {
+        super(visuals);
         this.sourceArrowHead = visuals.getSourceArrowHead();
         this.targetArrowHead = visuals.getTargetArrowHead();
         this.dash = visuals.getDash();

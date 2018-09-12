@@ -17,11 +17,12 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { ToastrService } from 'ngx-toastr';
 import { NgRedux } from '@angular-redux/store';
 import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
-import { ButtonsStateModel } from '../models/buttonsState.model';
 import { IWineryState } from '../redux/store/winery.store';
 import { BackendService } from '../services/backend.service';
 import { Subscription } from 'rxjs';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
+import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reducer';
+import { WineryActions } from '../redux/actions/winery.actions';
 
 /**
  * The navbar of the topologymodeler.
@@ -50,7 +51,7 @@ export class NavbarComponent implements OnDestroy {
     @ViewChild('exportCsarButton')
     private exportCsarButtonRef: ElementRef;
 
-    navbarButtonsState: ButtonsStateModel;
+    navbarButtonsState: TopologyRendererState;
     unformattedTopologyTemplate;
     subscriptions: Array<Subscription> = [];
     exportCsarUrl: string;
@@ -60,6 +61,7 @@ export class NavbarComponent implements OnDestroy {
     constructor(private alert: ToastrService,
                 private ngRedux: NgRedux<IWineryState>,
                 private actions: TopologyRendererActions,
+                private wineryActions: WineryActions,
                 private backendService: BackendService,
                 private hotkeysService: HotkeysService) {
         this.subscriptions.push(ngRedux.select(state => state.topologyRendererState)
@@ -83,7 +85,7 @@ export class NavbarComponent implements OnDestroy {
      * Setter for buttonstate
      * @param newButtonsState
      */
-    setButtonsState(newButtonsState: ButtonsStateModel): void {
+    setButtonsState(newButtonsState: TopologyRendererState): void {
         this.navbarButtonsState = newButtonsState;
         if (!this.navbarButtonsState.buttonsState.splitTopologyButton) {
             this.splittingOngoing = false;
@@ -182,6 +184,11 @@ export class NavbarComponent implements OnDestroy {
             }
             case 'substituteTopology':
                 this.ngRedux.dispatch(this.actions.substituteTopology());
+                break;
+            case 'refineTopology':
+                this.readonly = true;
+                this.ngRedux.dispatch(this.wineryActions.sendPaletteOpened(false));
+                this.ngRedux.dispatch(this.actions.refineTopology());
                 break;
         }
     }

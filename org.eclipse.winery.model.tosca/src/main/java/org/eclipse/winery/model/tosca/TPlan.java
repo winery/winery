@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -195,7 +196,7 @@ public class TPlan extends TExtensibleElements {
     @XmlType(name = "", propOrder = {
         "inputParameter"
     })
-    public static class InputParameters {
+    public static class InputParameters implements Serializable {
 
         @XmlElement(name = "InputParameter", required = true)
         protected List<TParameter> inputParameter;
@@ -246,7 +247,7 @@ public class TPlan extends TExtensibleElements {
     @XmlType(name = "", propOrder = {
         "outputParameter"
     })
-    public static class OutputParameters {
+    public static class OutputParameters implements Serializable {
 
         @XmlElement(name = "OutputParameter", required = true)
         protected List<TParameter> outputParameter;
@@ -297,7 +298,7 @@ public class TPlan extends TExtensibleElements {
     @XmlType(name = "", propOrder = {
         "any"
     })
-    public static class PlanModel {
+    public static class PlanModel implements Serializable {
 
         @XmlAnyElement(lax = true)
         protected Object any;
@@ -338,7 +339,7 @@ public class TPlan extends TExtensibleElements {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    public static class PlanModelReference {
+    public static class PlanModelReference implements Serializable {
 
         @XmlAttribute(name = "reference", required = true)
         @XmlSchemaType(name = "anyURI")

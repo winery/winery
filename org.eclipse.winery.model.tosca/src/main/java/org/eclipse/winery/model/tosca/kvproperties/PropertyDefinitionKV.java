@@ -13,12 +13,13 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.kvproperties;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "PropertyDefinition")
-public class PropertyDefinitionKV {
+public class PropertyDefinitionKV implements Serializable {
 
     private String key;
     private String type;

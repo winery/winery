@@ -13,18 +13,19 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.kvproperties;
 
-import org.eclipse.winery.model.tosca.constants.Namespaces;
+import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.eclipse.winery.model.tosca.constants.Namespaces;
+
 /**
- * This is Winery's main extension element for a key/value based properties
- * definition
+ * This is Winery's main extension element for a key/value based properties definition
  */
 @XmlRootElement(name = "PropertiesDefinition")
-public class WinerysPropertiesDefinition {
+public class WinerysPropertiesDefinition implements Serializable {
 
     private String namespace;
     private String elementName;
@@ -59,8 +60,8 @@ public class WinerysPropertiesDefinition {
     }
 
     /**
-     * @return null if not derived from XSD, "Boolean.TRUE" otherwise. This
-     * leads JAXB to write the attribute only if derivedFromXSD is true
+     * @return null if not derived from XSD, "Boolean.TRUE" otherwise. This leads JAXB to write the attribute only if
+     * derivedFromXSD is true
      */
     @XmlAttribute(name = "derivedFromXSD", namespace = Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE)
     public Boolean getIsDerivedFromXSD() {
@@ -74,5 +75,4 @@ public class WinerysPropertiesDefinition {
     public void setIsDerivedFromXSD(Boolean isDerivedFromXSD) {
         this.isDerivedFromXSD = isDerivedFromXSD;
     }
-
 }

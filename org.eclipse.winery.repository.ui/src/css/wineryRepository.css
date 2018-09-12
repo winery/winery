@@ -343,6 +343,18 @@ div.mainContentContainer.xSDImport div.bottom {
     background: url('../assets/img/containers/admin/FrameBottom.jpg');
 }
 
+div.mainContentContainer.patternRefinementModel div.top {
+    background: url('../assets/img/containers/admin/FrameTop.jpg');
+}
+
+div.mainContentContainer.patternRefinementModel div.middle {
+    background: url('../assets/img/containers/admin/FrameMiddle.jpg');
+}
+
+div.mainContentContainer.patternRefinementModel div.bottom {
+    background: url('../assets/img/containers/admin/FrameBottom.jpg');
+}
+
 div.componentHeaderImg {
     position: absolute;
     margin-top: 32px;
@@ -731,6 +743,30 @@ div.entityContainer.policyTypeContainer > div.right {
     background: url('../assets/img/entityBox/adminContainer/a-container-right.png');
 }
 
+div.entityContainer.complianceRuleContainer > div.left {
+    background: url('../assets/img/entityBox/adminContainer/a-container-left.png');
+}
+
+div.entityContainer.complianceRuleContainer > div.center {
+    background: url('../assets/img/entityBox/adminContainer/a-container-center.jpg');
+}
+
+div.entityContainer.complianceRuleContainer > div.right {
+    background: url('../assets/img/entityBox/adminContainer/a-container-right.png');
+}
+
+div.entityContainer.patternRefinementModelContainer > div.left {
+    background: url('../assets/img/entityBox/adminContainer/a-container-left.png');
+}
+
+div.entityContainer.patternRefinementModelContainer > div.center {
+    background: url('../assets/img/entityBox/adminContainer/a-container-center.jpg');
+}
+
+div.entityContainer.patternRefinementModelContainer > div.right {
+    background: url('../assets/img/entityBox/adminContainer/a-container-right.png');
+}
+
 div.entityContainer.serviceTemplate > div.left {
     background: url('../assets/img/entityBox/serviceTemplate/st-left.png');
 }
@@ -908,6 +944,18 @@ div.entityContainer.xSDImport > div.center {
 }
 
 div.entityContainer.xSDImport > div.right {
+    background: url('../assets/img/entityBox/admin/right.png');
+}
+
+div.entityContainer.patternRefinementModel > div.left {
+    background: url('../assets/img/entityBox/admin/left.png');
+}
+
+div.entityContainer.patternRefinementModel > div.center {
+    background: url('../assets/img/entityBox/admin/center.jpg');
+}
+
+div.entityContainer.patternRefinementModel > div.right {
     background: url('../assets/img/entityBox/admin/right.png');
 }
 

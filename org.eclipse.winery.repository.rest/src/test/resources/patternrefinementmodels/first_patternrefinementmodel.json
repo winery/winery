@@ -1,0 +1,136 @@
+{
+    "documentation": [
+    ],
+    "any": [
+    ],
+    "otherAttributes": {
+    },
+    "id": "winery-defs-for_patternrefinementmodels-myExample_w1-wip1",
+    "serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+            },
+            "name": "myExample_w1-wip1",
+            "targetNamespace": "http://winery.opentosca.org/test/concrete/patternrefinementmodels",
+            "detector": {
+                "documentation": [
+                ],
+                "any": [
+                ],
+                "otherAttributes": {
+                },
+                "relationshipTemplates": [
+                ],
+                "nodeTemplates": [
+                    {
+                        "id": "Infrastructure-As-A-Service_w1",
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "541",
+                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "231"
+                        },
+                        "type": "{http://plain.winery.opentosca.org/patterns}Infrastructure-As-A-Service_w1",
+                        "name": "Infrastructure-As-A-Service_w1",
+                        "minInstances": 1,
+                        "maxInstances": "1",
+                        "y": "231",
+                        "x": "541"
+                    }
+                ]
+            },
+            "refinementStructure": {
+                "documentation": [
+                ],
+                "any": [
+                ],
+                "otherAttributes": {
+                },
+                "relationshipTemplates": [
+                    {
+                        "id": "con_1",
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
+                        "type": "{http://plain.winery.opentosca.org/relationshiptypes}RelationshipTypeWithoutProperties",
+                        "sourceElement": {
+                            "ref": "NodeTypeWith5Versions_0.3.0-w2"
+                        },
+                        "targetElement": {
+                            "ref": "NodeTypeWith5Versions_0.3.4-w3-wip3"
+                        },
+                        "name": "con_1"
+                    }
+                ],
+                "nodeTemplates": [
+                    {
+                        "id": "NodeTypeWith5Versions_0.3.4-w3-wip3",
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "761",
+                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "356"
+                        },
+                        "type": "{http://opentosca.org/nodetypes}NodeTypeWith5Versions_0.3.4-w3-wip3",
+                        "name": "NodeTypeWith5Versions_0.3.4-w3-wip3",
+                        "minInstances": 1,
+                        "maxInstances": "1",
+                        "y": "356",
+                        "x": "761"
+                    },
+                    {
+                        "id": "NodeTypeWith5Versions_0.3.0-w2",
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "764",
+                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "172"
+                        },
+                        "type": "{http://opentosca.org/nodetypes}NodeTypeWith5Versions_0.3.0-w2",
+                        "name": "NodeTypeWith5Versions_0.3.0-w2",
+                        "minInstances": 1,
+                        "maxInstances": "1",
+                        "y": "172",
+                        "x": "764"
+                    }
+                ]
+            },
+            "relationMappings": {
+                "relationMapping": [
+                    {
+                        "id": "mapping0",
+                        "detectorNode": "Infrastructure-As-A-Service_w1",
+                        "refinementNode": "NodeTypeWith5Versions_0.3.4-w3-wip3",
+                        "relationType": "{http://plain.winery.opentosca.org/relationshiptypes}RelationshipTypeWithTwoKvPropertie",
+                        "direction": "INGOING",
+                        "validSourceOrTarget": null
+                    },
+                    {
+                        "id": "mapping1",
+                        "detectorNode": "Infrastructure-As-A-Service_w1",
+                        "refinementNode": "NodeTypeWith5Versions_0.3.0-w2",
+                        "relationType": "{http://plain.winery.opentosca.org/relationshiptypes}RelationshipTypeWithoutProperties",
+                        "direction": "OUTGOING",
+                        "validSourceOrTarget": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithTwoKVProperties"
+                    }
+                ]
+            }
+        }
+    ],
+    "targetNamespace": "http://winery.opentosca.org/test/concrete/patternrefinementmodels",
+    "import": [
+    ]
+}

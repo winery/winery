@@ -15,6 +15,7 @@
     <winery-loader></winery-loader>
 </div>
 <div class="content" *ngIf="!loading">
+    <h4>Colors</h4>
     <div class="colorPickerArea" *ngIf="!loading && nodeTypeData != null">
         <div class="floatContent">
             <b>Bordercolor:</b><br>
@@ -44,7 +45,7 @@
                          (onSuccess)="onUploadSuccess()">
         </winery-uploader>
         <br/>
-        <div *ngIf="isNodeType">
+        <div>
             <b>Icon (50x50) used in the node template shapes</b><br/>
             <div class="typeIcon"><img src="{{img50Path}}" height="50" width="50"></div>
             <winery-uploader #uploader50 id="uploader50"
@@ -58,7 +59,7 @@
     </div>
 
     <div class="arrowSelectArea" *ngIf="relationshipData != null">
-        <b>Line style:</b><br>
+        <h4>Line style:</h4>
         choose the style used for the connection line between the node and the relationship in the topologymodeler<br/>
         by <b>clicking on the different parts of the connection</b> shown below<p>
         <div class="slot">
@@ -110,6 +111,8 @@
                       (click)="selectArrowItem('targetArrowHead','Diamond');"></span>
             </div>
         </div>
+        <br>
+        <button *ngIf="relationshipData" (click)="saveToServer()" [disabled]="!sharedData?.currentVersion?.editable" class="btn btn-primary btn-sm save">Save</button>
     </div>
 </div>
 

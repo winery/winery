@@ -57,6 +57,7 @@ import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.EntityTemplateId;
 import org.eclipse.winery.common.ids.definitions.EntityTypeId;
 import org.eclipse.winery.common.ids.definitions.EntityTypeImplementationId;
+import org.eclipse.winery.common.ids.definitions.PatternRefinementModelId;
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
@@ -520,6 +521,8 @@ public class Util {
         if (ServiceTemplateId.class.isAssignableFrom(idClass)) {
             return true;
         } else if (ComplianceRuleId.class.isAssignableFrom(idClass)) {
+            return true;
+        } else if (PatternRefinementModelId.class.isAssignableFrom(idClass)) {
             return true;
         } else if ((EntityTypeId.class.isAssignableFrom(idClass)) || (EntityTypeImplementationId.class.isAssignableFrom(idClass))) {
             // name is available, but no id attribute

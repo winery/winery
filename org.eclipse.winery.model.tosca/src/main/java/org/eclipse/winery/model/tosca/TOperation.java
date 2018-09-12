@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -108,7 +109,7 @@ public class TOperation extends TExtensibleElements {
     @XmlType(name = "", propOrder = {
         "inputParameter"
     })
-    public static class InputParameters {
+    public static class InputParameters implements Serializable {
 
         @XmlElement(name = "InputParameter", required = true)
         protected List<TParameter> inputParameter;
@@ -139,7 +140,7 @@ public class TOperation extends TExtensibleElements {
     @XmlType(name = "", propOrder = {
         "outputParameter"
     })
-    public static class OutputParameters {
+    public static class OutputParameters implements Serializable {
 
         @XmlElement(name = "OutputParameter", required = true)
         protected List<TParameter> outputParameter;

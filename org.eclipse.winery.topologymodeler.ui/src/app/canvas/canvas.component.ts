@@ -12,16 +12,15 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 import {
-    AfterViewInit, Component, DoCheck, ElementRef, HostListener, Input, KeyValueDiffers, NgZone, OnChanges, OnDestroy, OnInit, QueryList,
-    Renderer2, SimpleChanges, ViewChild, ViewChildren
+    AfterViewInit, Component, ElementRef, HostListener, Input, KeyValueDiffers, NgZone, OnChanges, OnDestroy, OnInit,
+    QueryList, Renderer2, SimpleChanges, ViewChild, ViewChildren
 } from '@angular/core';
 import { JsPlumbService } from '../services/jsPlumb.service';
-import { EntityType, TNodeTemplate, TRelationshipTemplate } from '../models/ttopology-template';
+import { EntityType, TNodeTemplate, TRelationshipTemplate, VisualEntityType } from '../models/ttopology-template';
 import { LayoutDirective } from '../layout/layout.directive';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
-import { ButtonsStateModel } from '../models/buttonsState.model';
 import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
 import { NodeComponent } from '../node/node.component';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
@@ -50,6 +49,7 @@ import { SplitMatchTopologyService } from '../services/split-match-topology.serv
 import { DifferenceStates, VersionUtils } from '../models/ToscaDiff';
 import { ErrorHandlerService } from '../services/error-handler.service';
 import { DragSource } from '../models/DragSource';
+import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reducer';
 
 @Component({
     selector: 'winery-canvas',
@@ -57,7 +57,7 @@ import { DragSource } from '../models/DragSource';
     templateUrl: './canvas.component.html',
     styleUrls: ['./canvas.component.css']
 })
-export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit, DoCheck {
+export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
 
     @ViewChildren(NodeComponent) nodeComponentChildren: QueryList<NodeComponent>;
     @ViewChildren('KVTextareas') KVTextareas: QueryList<any>;
@@ -69,7 +69,6 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     @ViewChild('importTopologyModal') importTopologyModal: ModalDirective;
     @Input() readonly: boolean;
     @Input() entityTypes: EntityTypesModel;
-    @Input() relationshipTypes: Array<EntityType> = [];
     @Input() diffMode = false;
     @Input() sidebarDeleteButtonClickEvent: any;
 
@@ -79,7 +78,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
     allNodeTemplates: Array<TNodeTemplate> = [];
     allRelationshipTemplates: Array<TRelationshipTemplate> = [];
-    navbarButtonsState: ButtonsStateModel;
+    topologyRendererState: TopologyRendererState;
     selectedNodes: Array<TNodeTemplate> = [];
     // current data emitted from a node
     currentModalData: any;
@@ -109,9 +108,6 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
     indexOfNewNode: number;
     targetNodes: Array<string> = [];
-
-    // used for Angular DoCheck Lifecycle hook
-    differ: any;
 
     // scroll offset
     scrollOffset = 0;
@@ -157,13 +153,13 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 private errorHandler: ErrorHandlerService) {
         this.newJsPlumbInstance = this.jsPlumbService.getJsPlumbInstance();
         this.newJsPlumbInstance.setContainer('container');
-        console.log(this.newJsPlumbInstance);
+
         this.subscriptions.push(this.ngRedux.select(state => state.wineryState.currentJsonTopology.nodeTemplates)
             .subscribe(currentNodes => this.updateNodes(currentNodes)));
         this.subscriptions.push(this.ngRedux.select(state => state.wineryState.currentJsonTopology.relationshipTemplates)
             .subscribe(currentRelationships => this.updateRelationships(currentRelationships)));
         this.subscriptions.push(this.ngRedux.select(state => state.topologyRendererState)
-            .subscribe(currentButtonsState => this.setButtonsState(currentButtonsState)));
+            .subscribe(currentButtonsState => this.setRendererState(currentButtonsState)));
         this.subscriptions.push(this.ngRedux.select(state => state.wineryState.currentNodeData)
             .subscribe(currentNodeData => this.toggleMarkNode(currentNodeData)));
         this.gridTemplate = new GridTemplate(100, false, false, 30);
@@ -266,8 +262,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * @param currentPaletteOpened
      */
     setPaletteState(currentPaletteOpened: boolean): void {
-        if (currentPaletteOpened) {
-            this.paletteOpened = currentPaletteOpened;
+        this.paletteOpened = currentPaletteOpened;
+        if (this.paletteOpened) {
             this.gridTemplate.marginLeft = 300;
         } else {
             this.gridTemplate.marginLeft = 30;
@@ -884,7 +880,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * @param $event  The html event.
      */
     positionNewNode(): void {
-        setTimeout(() => this.updateSelectedNodes(), 1);
+        this.updateSelectedNodes();
         this.unbindAll();
         this.revalidateContainer();
     }
@@ -943,25 +939,19 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
     /**
      * Handler for the layout buttons.
-     * @param currentButtonsState  Representation of all possible buttons.
+     * @param rendererState  Representation of all possible buttons.
      */
-    setButtonsState(currentButtonsState: ButtonsStateModel): void {
-        if (currentButtonsState) {
-            this.navbarButtonsState = currentButtonsState;
+    setRendererState(rendererState: TopologyRendererState): void {
+        if (rendererState) {
+            this.topologyRendererState = rendererState;
             this.revalidateContainer();
-            const alignmentButtonLayout = this.navbarButtonsState.buttonsState.layoutButton;
-            const alignmentButtonAlignH = this.navbarButtonsState.buttonsState.alignHButton;
-            const alignmentButtonAlignV = this.navbarButtonsState.buttonsState.alignVButton;
-            const importTopologyButton = this.navbarButtonsState.buttonsState.importTopologyButton;
-            const splitTopologyButton = this.navbarButtonsState.buttonsState.splitTopologyButton;
-            const matchTopologyButton = this.navbarButtonsState.buttonsState.matchTopologyButton;
-            const substitutionButton = this.navbarButtonsState.buttonsState.substituteTopologyButton;
             let selectedNodes;
-            if (alignmentButtonLayout) {
+
+            if (this.topologyRendererState.buttonsState.layoutButton) {
                 this.layoutDirective.layoutNodes(this.nodeChildrenArray, this.allRelationshipTemplates);
                 this.ngRedux.dispatch(this.topologyRendererActions.executeLayout());
                 selectedNodes = false;
-            } else if (alignmentButtonAlignH) {
+            } else if (this.topologyRendererState.buttonsState.alignHButton) {
                 if (this.selectedNodes.length >= 1) {
                     this.layoutDirective.align(this.nodeChildrenArray, this.selectedNodes, align.Horizontal);
                     selectedNodes = true;
@@ -970,7 +960,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                     selectedNodes = false;
                 }
                 this.ngRedux.dispatch(this.topologyRendererActions.executeAlignH());
-            } else if (alignmentButtonAlignV) {
+            } else if (this.topologyRendererState.buttonsState.alignVButton) {
                 if (this.selectedNodes.length >= 1) {
                     this.layoutDirective.align(this.nodeChildrenArray, this.selectedNodes, align.Vertical);
                     selectedNodes = true;
@@ -978,7 +968,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                     this.layoutDirective.align(this.nodeChildrenArray, this.allNodeTemplates, align.Vertical);
                 }
                 this.ngRedux.dispatch(this.topologyRendererActions.executeAlignV());
-            } else if (importTopologyButton) {
+            } else if (this.topologyRendererState.buttonsState.importTopologyButton) {
                 if (!this.importTopologyData.allTopologyTemplates) {
                     this.importTopologyData.allTopologyTemplates = [];
                     this.backendService.requestAllTopologyTemplates().subscribe(allServiceTemplates => {
@@ -989,12 +979,17 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 }
                 this.ngRedux.dispatch(this.topologyRendererActions.importTopology());
                 this.importTopologyModal.show();
-            } else if (splitTopologyButton) {
+            } else if (this.topologyRendererState.buttonsState.splitTopologyButton) {
                 this.splitMatchService.splitTopology(this.backendService, this.ngRedux, this.topologyRendererActions, this.errorHandler);
-            } else if (matchTopologyButton) {
+            } else if (this.topologyRendererState.buttonsState.matchTopologyButton) {
                 this.splitMatchService.matchTopology(this.backendService, this.ngRedux, this.topologyRendererActions, this.errorHandler);
-            } else if (substitutionButton) {
+            } else if (this.topologyRendererState.buttonsState.substituteTopologyButton) {
+                this.ngRedux.dispatch(this.topologyRendererActions.substituteTopology());
                 this.backendService.substituteTopology();
+            } else if (this.topologyRendererState.nodesToSelect) {
+                this.clearSelectedNodes();
+                this.topologyRendererState.nodesToSelect
+                    .forEach(value => this.enhanceDragSelection(value));
             }
 
             setTimeout(() => {
@@ -1139,9 +1134,9 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                     }]
                 ],
             });
-            setTimeout(() => this.handleRelSideBar(conn, newRelationship), 1);
+            this.handleRelSideBar(conn, newRelationship);
 
-            if (!isNullOrUndefined(newRelationship.state)) {
+            if (newRelationship.state) {
                 setTimeout(() => {
                     conn.addType(newRelationship.state.toString().toLowerCase());
                     this.revalidateContainer();
@@ -1281,11 +1276,11 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     clearSelectedNodes(): void {
         if (this.selectedNodes.length > 0) {
             this.nodeChildrenArray.forEach(node => {
-                if (this.selectedNodes.find(selectedNode => selectedNode.id === node.nodeTemplate.id)) {
+                if (this.selectedNodes.find(selectedNode => selectedNode && selectedNode.id === node.nodeTemplate.id)) {
                     node.makeSelectionVisible = false;
                 }
             });
-            this.newJsPlumbInstance.removeFromAllPosses(this.selectedNodes.map(node => node.id));
+            this.newJsPlumbInstance.removeFromAllPosses(this.selectedNodes.map(node => node && node.id));
             this.selectedNodes = [];
         }
     }
@@ -1416,7 +1411,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      */
     arrayContainsNode(nodes: any[], id: string): boolean {
         if (nodes !== null && nodes.length > 0) {
-            return nodes.some(node => node.id === id);
+            return nodes.some(node => node && node.id === id);
         }
         return false;
     }
@@ -1458,7 +1453,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * Registers relationship (connection) types in JSPlumb (Color, strokewidth etc.)
      * @param relType
      */
-    assignRelTypes(relType: EntityType): void {
+    assignRelTypes(relType: VisualEntityType): void {
         this.newJsPlumbInstance.registerConnectionType(
             relType.qName, {
                 paintStyle: {
@@ -1496,19 +1491,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 }
             }
         });
-        this.differ = this.differs.find([]).create();
-    }
-
-    /**
-     * Angular lifecycle event.
-     */
-    ngDoCheck() {
-        const relationshipTypesChanges = this.differ.diff(this.relationshipTypes);
-        // TODO: instead of fetching all relationship visuals one by one, do it similar to nodeTypes -> this check will
-        // be obsolete
-        if (relationshipTypesChanges && !this.diffMode) {
-            relationshipTypesChanges.forEachAddedItem(r => this.assignRelTypes(r.currentValue));
-        }
+        this.entityTypes.relationshipTypes.forEach(value => this.assignRelTypes(value));
     }
 
     /**
@@ -1750,11 +1733,13 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * @param newRelationship The new relationship internally
      */
     private handleRelSideBar(conn: any, newRelationship: TRelationshipTemplate): void {
-        conn.id = newRelationship.id;
-        conn.setType(newRelationship.type);
-        conn.bind('click', rel => {
-            this.onClickJsPlumbConnection(conn, rel);
-        });
+        if (conn) {
+            conn.id = newRelationship.id;
+            conn.setType(newRelationship.type);
+            conn.bind('click', rel => {
+                this.onClickJsPlumbConnection(conn, rel);
+            });
+        }
 
         this.revalidateContainer();
     }
@@ -1887,7 +1872,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             this.selectedNodes.push(this.getNodeByID(this.allNodeTemplates, nodeId));
             this.newJsPlumbInstance.addToPosse(nodeId, 'dragSelection');
             this.nodeChildrenArray.forEach(node => {
-                if (this.selectedNodes.find(selectedNode => selectedNode.id === node.nodeTemplate.id)) {
+                if (this.selectedNodes.find(selectedNode => selectedNode && selectedNode.id === node.nodeTemplate.id)) {
                     if (node.makeSelectionVisible === false) {
                         node.makeSelectionVisible = true;
                     }
@@ -1954,13 +1939,11 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      */
     private bindNewNode(): void {
         if (this.newNode) {
-            setTimeout(() => this.handleNodePressActions(this.newNode.id), 1);
-            this.zone.run(() => {
-                this.unbindMouseActions.push(this.renderer.listen(this.eref.nativeElement, 'mousemove',
-                    (event) => this.moveNewNode(event)));
-                this.unbindMouseActions.push(this.renderer.listen(this.eref.nativeElement, 'mouseup',
-                    ($event) => this.positionNewNode()));
-            });
+            this.handleNodePressActions(this.newNode.id);
+            this.unbindMouseActions.push(this.renderer.listen(this.eref.nativeElement, 'mousemove',
+                (event) => this.moveNewNode(event)));
+            this.unbindMouseActions.push(this.renderer.listen(this.eref.nativeElement, 'mouseup',
+                ($event) => this.positionNewNode()));
         }
     }
 

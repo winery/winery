@@ -27,8 +27,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tPropertyConstraint")
-public class TPropertyConstraint
-    extends TConstraint {
+public class TPropertyConstraint extends TConstraint {
 
     @XmlAttribute(name = "property", required = true)
     protected String property;
