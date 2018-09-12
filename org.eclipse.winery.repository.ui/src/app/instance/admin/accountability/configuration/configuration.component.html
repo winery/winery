@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<form #configurationForm="ngForm">
+    <div *ngIf="!loading; else showLoader">
+        <div *ngIf="!error; else showError">
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="enableAccountability" name="enableAccountability"
+                               [(ngModel)]="configuration.enableAccountability">
+                        Enable Accountability Tracking
+                    </label>
+                </div>
+                <br/>
+
+                <div *ngIf="configuration.enableAccountability">
+                    <label for="blockchainNodeUrl">Geth JSON-RPC API URL (with port number)</label>
+                    <input type="text" id="blockchainNodeUrl" class="form-control" name="blockchainNodeUrl"
+                           [(ngModel)]="configuration.blockchainNodeUrl" required>
+                    <br/>
+
+                    <label for="swarmGatewayURL">Swarm HTTP Gateway URL (without port number)</label>
+                    <input type="text" id="swarmGatewayURL" class="form-control" name="swarmGatewayURL"
+                           [(ngModel)]="configuration.swarmGatewayUrl" required>
+                    <br/>
+
+                    <label for="keystorePathOnServer">Active Keystore</label>
+                    <input type="text" id="keystorePathOnServer" class="form-control" name="keystorePathOnServer"
+                           [(ngModel)]="configuration.activeKeystore" readonly="readonly">
+                    <br/>
+
+                    <label for="fileUploader">Change Keystore (will be uploaded when clicking on "Save")</label>
+                    <input type="file" id="fileUploader" name="fileUploader"
+                           (change)="keyStoreSelected($event.target.files)"/>
+                    <br/>
+
+                    <label for="keystorePassword">Keystore Password (Caution: password is transmitted in
+                        plaintext!)</label>
+                    <input type="password" id="keystorePassword" class="form-control" name="keystorePassword"
+                           [(ngModel)]="configuration.keystorePassword" required>
+                    <br/>
+
+                    <label for="provenanceSmartContract">Provenance Smart Contract Address</label>
+                    <input type="text" id="provenanceSmartContract" class="form-control" name="provenanceSmartContract"
+                           pattern="^0x[a-fA-F0-9]{40}$"
+                           [(ngModel)]="configuration.provenanceSmartContractAddress" required>
+                    <br/>
+
+                    <label for="authorizationSmartContract">Authorization Smart Contract Address</label>
+                    <input type="text" id="authorizationSmartContract" class="form-control"
+                           name="authorizationSmartContract"
+                           pattern="^0x[a-fA-F0-9]{40}$"
+                           [(ngModel)]="configuration.authorizationSmartContractAddress" required>
+                    <br/>
+                </div>
+
+                <button type="button" class="btn btn-primary" (click)="onSave()"
+                        [disabled]="(!configurationForm?.valid && configuration.enableAccountability) || loading">
+                    Save
+                </button>
+
+                <button type="button" class="btn btn-primary" (click)="onRestore()" style="margin-left: 10px;"
+                        [disabled]="(!configurationForm?.valid && configuration.enableAccountability) || loading">
+                    Restore Defaults
+                </button>
+            </div>
+        </div>
+        <ng-template #showError>
+            <alert [type]="'danger'">
+                <i class="fa fa-ban"></i>
+                <span>&nbsp;&nbsp;{{ error }}</span>
+            </alert>
+        </ng-template>
+    </div>
+    <ng-template #showLoader>
+        <winery-loader></winery-loader>
+    </ng-template>
+
+</form>

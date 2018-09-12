@@ -244,7 +244,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         }
         CsarExportOptions options = new CsarExportOptions();
         options.setAddToProvenance(Objects.nonNull(addToProvenance));
-        return RestUtils.getCSARofSelectedResource(this, options);
+        return RestUtils.getCsarOfSelectedResource(this, options);
     }
 
     /**
@@ -280,7 +280,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
             CsarExportOptions options = new CsarExportOptions();
             options.setAddToProvenance(Objects.nonNull(addToProvenance));
             
-            return RestUtils.getCSARofSelectedResource(this, options);
+            return RestUtils.getCsarOfSelectedResource(this, options);
         }
     }
 

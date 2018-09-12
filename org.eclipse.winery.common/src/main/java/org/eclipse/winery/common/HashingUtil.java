@@ -16,6 +16,7 @@ package org.eclipse.winery.common;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -42,21 +43,20 @@ public class HashingUtil {
         return null;
     }
 
-    public static String getChecksum(byte[] bytes, String algorithm) throws NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance(algorithm);
-        return new BigInteger(1, digest.digest(bytes))
-            .toString(16);
+    public static String getChecksum(File file, String algorithm) throws IOException, NoSuchAlgorithmException {
+        try (FileInputStream fileInputStream = new FileInputStream(file)) {
+            return getChecksum(fileInputStream, algorithm);
+        }
     }
 
-    public static String getChecksum(File file, String algorithm) throws IOException, NoSuchAlgorithmException {
-        FileInputStream fileInputStream = new FileInputStream(file);
+    public static String getChecksum(InputStream content, String algorithm) throws IOException, NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance(algorithm);
 
         // buffer with a size of 1MB
         byte[] buffer = new byte[1048576];
         int bufferLength = 0;
 
-        while ((bufferLength = fileInputStream.read(buffer)) != -1) {
+        while ((bufferLength = content.read(buffer)) != -1) {
             digest.update(buffer, 0, bufferLength);
         }
 

@@ -11,20 +11,30 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-export interface ProvenanceElement {
+export interface BlockchainElement {
     transactionHash: string;
-    blockNumber: number;
     unixTimestamp: number;
 }
 
-export interface Provenance extends ProvenanceElement {
-    fileHash: string;
-    stateSetterAddress: string;
-    state: string;
+export interface ProvenanceElement extends BlockchainElement {
+    authorAddress: string;
+    authorName: string;
     authorized: boolean;
 }
 
-export interface AuthorizationNode extends ProvenanceElement {
+export interface FileProvenanceElement extends ProvenanceElement {
+    fileHash: string;
+    addressInImmutableStorage: string;
+    fileName: string;
+}
+
+export interface ModelProvenanceElement extends ProvenanceElement {
+    fingerprint: string;
+    files: FileProvenanceElement[];
+}
+
+export interface AuthorizationElement extends BlockchainElement {
     address: string;
     identity: string;
 }
+

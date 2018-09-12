@@ -13,12 +13,12 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support;
 
-import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 
 /**
  * This class does NOT inherit from TEntityTemplatesResource<ArtifactTemplate> as these templates are directly nested in

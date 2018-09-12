@@ -26,13 +26,15 @@ import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
 import { SectionComponent } from './section.component';
 import { SectionPipe } from './section.pipe';
 import { WineryUploaderModule } from '../wineryUploader/wineryUploader.module';
-import { TooltipModule } from 'ngx-bootstrap';
+import { ModalModule, TooltipModule } from 'ngx-bootstrap';
 import { WineryPipesModule } from '../wineryPipes/wineryPipes.module';
 import { XaasPackagerComponent } from './xaasPackager/xaasPackager.component';
 import { WineryAddModule } from '../wineryAddComponentModule/addComponent.moudle';
 import { TargetAllocationModule } from '../wineryTargetAllocation/targetAllocation.module';
 import { EntityComponent } from './entityContainer/entity.component';
 import { TagInputModule } from 'ngx-chips';
+import { AdminModule } from '../wineryMainModules/admin/admin.module';
+import { WineryFileComparisonModule } from '../wineryFileComparisonModule/wineryFileComparison.module';
 
 @NgModule({
     imports: [
@@ -51,6 +53,9 @@ import { TagInputModule } from 'ngx-chips';
         WineryPipesModule,
         TagInputModule,
         WineryAddModule,
+        AdminModule, // to be able to access the ConfigurationService and AccountabilitySerrvice
+        WineryFileComparisonModule,
+        ModalModule,
         TargetAllocationModule
     ],
     exports: [SectionComponent],

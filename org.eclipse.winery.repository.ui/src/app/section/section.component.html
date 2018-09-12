@@ -85,9 +85,9 @@
                 <input [(ngModel)]="overwriteValue" (change)="importOptionsChanged()" type="checkbox" value="">
                 Overwrite existing content
             </label>
-            <label>
+            <label *ngIf="isAccountabilityCheckEnabled" style="display: block;">
                 <input [(ngModel)]="validateInput" (change)="importOptionsChanged()" type="checkbox" value="">
-                Validate content (only available if the Ethereum blockchian is configured)
+                Validate content integrity (uses the Ethereum blockchain)
             </label>
         </div>
     </winery-modal-body>
@@ -116,13 +116,21 @@
                 <li *ngFor="let file of importMetadata.verificationMap" class="noWrap">
                     <span [class]="getVerificationClass(file.value)">{{ file.value }}</span>
                     <a class="pointer" (click)="getProvenance(file)">{{ file.key }}</a>
-                    <ul *ngIf="provenanceHistory[file.key]">
-                        <li *ngFor="let item of provenanceHistory[file.key]">
-                            Author: <b>{{ item.name }}</b> ({{ item.stateSetterAddress }})<br>
-                            is authorized: <span [class]="getAuthorizedClass(item.authorized)">{{ item.authorized }}</span><br>
-                            Transaction: {{ item.transactionHash }}<br>
-                            <span *ngIf="item.fileHash">File hash: {{ item.fileHash }}<br></span>
+                    <ul *ngIf="fileProvenance[file.key]">
+                        <li *ngFor="let item of fileProvenance[file.key]">
+                            Author: <b>{{ item.authorName }}</b> ({{ item.authorAddress }})<br>
+                            Is authorized: <span [class]="getAuthorizedClass(item.authorized)">{{ item.authorized }}</span><br>
+                            Transaction Id: {{ item.transactionHash }}<br>
+                            <span *ngIf="item.fileHash">
+                                File hash: {{ item.fileHash }}<br>
+                            </span>
+                            <span *ngIf="item.addressInImmutableStorage">
+                                Address in Immutable Storage: {{item.addressInImmutableStorage}} <br>
+                            </span>
                             Timestamp: {{ item.unixTimestamp * 1000 | date:'yyyy-MM-dd HH:mm:ss' }}<br>
+                            <a *ngIf="item.addressInImmutableStorage" class="pointer"
+                               (click)="downloadFileFromImmutableStorage(item.addressInImmutableStorage, item.fileName)">(download)</a>
+                            <a *ngIf="item.addressInImmutableStorage" (click)="openFileComparisonModal(fileComparer, item)">(compare)</a>
                         </li>
                     </ul>
                 </li>
@@ -133,3 +141,21 @@
         <button type="button" class="btn btn-default" (click)="validationModal.hide()">Close</button>
     </winery-modal-footer>
 </winery-modal>
+
+<ng-template #fileComparer>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">File Version Comparison</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        <winery-file-comparison
+            [selectedServiceTemplate]="importMetadata.entryServiceTemplate.qname"
+            [fileProvenance]="selectedFileProvenance"
+            [selectedFileProvenanceElement]="selectedFile"
+            [accountabilityService]="accountability"
+        ></winery-file-comparison>
+    </div>
+</ng-template>

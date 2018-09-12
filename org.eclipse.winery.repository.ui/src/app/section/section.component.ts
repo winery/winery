@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SectionResolverData } from '../model/resolverData';
@@ -19,7 +19,7 @@ import { WineryNotificationService } from '../wineryNotificationModule/wineryNot
 import { SectionService } from './section.service';
 import { SectionData } from './sectionData';
 import { backendBaseURL } from '../configuration';
-import { ModalDirective } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
 import { ToscaTypes } from '../model/enums';
 import { WineryUploaderComponent } from '../wineryUploader/wineryUploader.component';
 import { WineryAddComponent } from '../wineryAddComponentModule/addComponent.component';
@@ -28,6 +28,9 @@ import { Utils } from '../wineryUtils/utils';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ImportMetaInformation } from '../model/importMetaInformation';
 import { KeyValueItem } from '../model/keyValueItem';
+import { ConfigurationService } from '../instance/admin/accountability/configuration/configuration.service';
+import { AccountabilityService } from '../instance/admin/accountability/accountability.service';
+import { FileProvenanceElement } from '../model/provenance';
 
 const showAll = 'Show all Items';
 const showGrouped = 'Group by Namespace';
@@ -43,7 +46,6 @@ const showGrouped = 'Group by Namespace';
     ]
 })
 export class SectionComponent implements OnInit, OnDestroy {
-
     loading = true;
     toscaType: ToscaTypes;
     toscaTypes = ToscaTypes;
@@ -58,9 +60,15 @@ export class SectionComponent implements OnInit, OnDestroy {
     elementToRemove: SectionData;
     overwriteValue = false;
     validateInput = false;
+    isAccountabilityCheckEnabled = false;
 
     importMetadata: ImportMetaInformation;
-    provenanceHistory: any = {};
+    fileProvenance: Map<string, FileProvenanceElement[]> = new Map<string, FileProvenanceElement[]>();
+
+    /* File Comparison-Related */
+    modalRef: BsModalRef;
+    selectedFileProvenance: FileProvenanceElement[];
+    selectedFile: FileProvenanceElement;
 
     importXsdSchemaType: string;
 
@@ -77,7 +85,10 @@ export class SectionComponent implements OnInit, OnDestroy {
                 private change: ChangeDetectorRef,
                 private router: Router,
                 private service: SectionService,
-                private notify: WineryNotificationService) {
+                private notify: WineryNotificationService,
+                private accountabilityConfig: ConfigurationService,
+                protected accountability: AccountabilityService,
+                private modalService: BsModalService) {
     }
 
     /**
@@ -86,6 +97,7 @@ export class SectionComponent implements OnInit, OnDestroy {
      * Subscribe to the url on initialisation in order to get the corresponding resource type.
      */
     ngOnInit(): void {
+        this.isAccountabilityCheckEnabled = this.accountabilityConfig.isAccountablilityCheckEnabled();
         this.loading = true;
         this.routeSub = this.route
             .data
@@ -137,7 +149,7 @@ export class SectionComponent implements OnInit, OnDestroy {
 
     onUploadSuccess(response: string) {
         const metadata = JSON.parse(response);
-        this.provenanceHistory = {};
+        this.fileProvenance = new Map<string, FileProvenanceElement[]>();
 
         if (this.validateInput) {
             if (metadata.valid) {
@@ -271,9 +283,9 @@ export class SectionComponent implements OnInit, OnDestroy {
     }
 
     getProvenance(file: KeyValueItem) {
-        this.service.getProvenanceHistroy(this.importMetadata.entryServiceTemplate.qname, file.key)
+        this.accountability.getFileProvenance(this.importMetadata.entryServiceTemplate.qname, file.key)
             .subscribe(
-                value => this.provenanceHistory[file.key] = value,
+                value => this.fileProvenance[file.key] = value,
                 error => this.handleError(error)
             );
     }
@@ -287,4 +299,18 @@ export class SectionComponent implements OnInit, OnDestroy {
             this.onUploadSuccess(response);
         }
     }
+
+    downloadFileFromImmutableStorage(fileAddress: string, fileName: string): void {
+        const provenanceId = this.importMetadata.entryServiceTemplate.qname;
+        const url = AccountabilityService.getDownloadURLForFile(fileAddress, fileName, provenanceId);
+        window.open(url, '_blank');
+    }
+
+
+    openFileComparisonModal(modalTemplate: TemplateRef<any>, file: FileProvenanceElement) {
+        this.selectedFile = file;
+        this.selectedFileProvenance = this.fileProvenance[file.fileName];
+        this.modalRef = this.modalService.show(modalTemplate);
+    }
+
 }

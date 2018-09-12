@@ -13,7 +13,15 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support;
 
-import org.apache.commons.lang3.StringUtils;
+import java.io.IOException;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.EntityTemplateId;
 import org.eclipse.winery.model.tosca.Definitions;
@@ -25,13 +33,7 @@ import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameWithTypeApiData;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import java.io.IOException;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * This class does NOT inherit from TEntityTemplatesResource<ArtifactTemplate> as these templates are directly nested in

@@ -49,6 +49,7 @@ import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
+import org.eclipse.winery.common.ids.admin.AccountabilityId;
 import org.eclipse.winery.common.ids.admin.NamespacesId;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
@@ -58,6 +59,7 @@ import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.AbstractRepository;
+import org.eclipse.winery.repository.backend.AccountabilityConfigurationManager;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepositoryAdministration;
 import org.eclipse.winery.repository.backend.NamespaceManager;
@@ -574,6 +576,16 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
         }
 
         return manager;
+    }
+
+    @Override
+    public AccountabilityConfigurationManager getAccountabilityConfigurationManager() {
+        RepositoryFileReference repoRef = BackendUtils.getRefOfConfiguration(new AccountabilityId());
+        RepositoryFileReference keystoreRef = new RepositoryFileReference(new AccountabilityId(), "CustomKeystore.json");
+        RepositoryFileReference defaultKeystoreRef = new RepositoryFileReference(new AccountabilityId(), "DefaultKeystore.json");
+
+        return AccountabilityConfigurationManager.getInstance(ref2AbsolutePath(repoRef).toFile(), 
+            ref2AbsolutePath(keystoreRef).toFile(), ref2AbsolutePath(defaultKeystoreRef).toFile());
     }
 
     @Override

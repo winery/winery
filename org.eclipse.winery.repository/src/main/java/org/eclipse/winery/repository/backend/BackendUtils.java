@@ -1393,7 +1393,7 @@ public class BackendUtils {
         // we include everything related
         Map<String, Object> conf = new HashMap<>();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        exporter.exportTOSCA(repository, id, bos, conf);
+        exporter.writeTOSCA(repository, id, conf, bos);
         String xmlRepresentation = bos.toString(StandardCharsets.UTF_8.toString());
         Unmarshaller u = JAXBSupport.createUnmarshaller();
         return ((Definitions) u.unmarshal(new StringReader(xmlRepresentation)));

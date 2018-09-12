@@ -1,0 +1,47 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div>
+    <h5 class="horizontalSpace" style="word-wrap: break-word;"><b>File Name: </b>
+        {{selectedFileProvenanceElement.fileName}}</h5>
+    <label for="leftFileVersion" class="control-label horizontalSpace">Version 1</label>
+    <ng-select
+        id="leftFileVersion"
+        [items]="getProvenanceVersionTitles(selectedFileProvenanceElement.fileName)"
+        [active]="[leftVersion]"
+        (selected)="leftFileVersionSelected($event)"
+    ></ng-select>
+
+    <label for="rightFileVersion" class="control-label horizontalSpace">Version 2</label>
+    <ng-select
+        id="rightFileVersion"
+        [items]="getProvenanceVersionTitles(selectedFileProvenanceElement.fileName)"
+        (selected)="rightFileVersionSelected($event)"
+    ></ng-select>
+    <button type="button" class="btn btn-primary horizontalSpace" [disabled]="!leftFile || !rightFile"
+            (click)="retrieveFilesForComparison()">Compare
+    </button>
+    <dmp-line-compare [left]="leftFileText" [right]="rightFileText"
+                      *ngIf="leftFileText && rightFileText && canCompareFile(leftFile.fileName)"
+                      class="horizontalSpace"></dmp-line-compare>
+
+    <div *ngIf="leftFileText && rightFileText && !canCompareFile(leftFile.fileName)">
+        <div *ngIf="leftFile.fileHash !== rightFile.fileHash">
+            <h5 class="red">File has changed:</h5>
+            <span><b>Version 1 Hash: </b> {{leftFile.fileHash}}</span> <br/>
+            <span><b>Version 2 Hash: </b> {{rightFile.fileHash}}</span>
+        </div>
+        <span *ngIf="leftFile.fileHash === rightFile.fileHash">There are no changes to display.</span>
+    </div>
+</div>
+

@@ -15,6 +15,7 @@ package org.eclipse.winery.repository.export;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
 
 import static org.eclipse.winery.repository.export.CsarExportConfiguration.INCLUDE_HASHES;
+import static org.eclipse.winery.repository.export.CsarExportConfiguration.STORE_IMMUTABLY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -48,7 +50,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CsarExporterTest extends TestWithGitBackedRepository {
 
-    public ByteArrayInputStream createOutputAndInputStream(String commitId, DefinitionsChildId id, Map<String, Object> exportConfiguration) throws Exception {
+    private ByteArrayInputStream createOutputAndInputStream(String commitId, DefinitionsChildId id, Map<String, Object> exportConfiguration) throws Exception {
         setRevisionTo(commitId);
         CsarExporter exporter = new CsarExporter();
         ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -56,11 +58,28 @@ public class CsarExporterTest extends TestWithGitBackedRepository {
         return new ByteArrayInputStream(os.toByteArray());
     }
 
+    private ManifestContents parseManifest(ZipInputStream zis) throws IOException {
+        ZipEntry entry;
+        ManifestContents manifestContents = null;
+
+        while ((entry = zis.getNextEntry()) != null) {
+            if ("TOSCA-Metadata/TOSCA.meta".equals(entry.getName())) {
+                byte[] bytes = IOUtils.toByteArray(zis);
+                String s = new String(bytes, StandardCharsets.UTF_8);
+
+                manifestContents = new RecoveringManifestParser().parse(s);
+            }
+        }
+
+        return manifestContents;
+    }
+
     @Test
     public void csarIsValidZipForArtifactTemplateWithFilesAndSources() throws Exception {
         Map<String, Object> exportConfiguration = new HashMap<>();
-        exportConfiguration.put(INCLUDE_HASHES.toString(), true);
-        try (InputStream inputStream = this.createOutputAndInputStream("origin/plain", new ArtifactTemplateId("http://plain.winery.opentosca.org/artifacttemplates", "ArtifactTemplateWithFilesAndSources-ArtifactTypeWithoutProperties", false), exportConfiguration); ZipInputStream zis = new ZipInputStream(inputStream)) {
+        exportConfiguration.put(INCLUDE_HASHES.name(), null);
+        try (InputStream inputStream = this.createOutputAndInputStream("origin/plain", new ArtifactTemplateId("http://plain.winery.opentosca.org/artifacttemplates", "ArtifactTemplateWithFilesAndSources-ArtifactTypeWithoutProperties", false), exportConfiguration);
+             ZipInputStream zis = new ZipInputStream(inputStream)) {
             ZipEntry entry;
             while ((entry = zis.getNextEntry()) != null) {
                 String name = entry.getName();
@@ -71,27 +90,18 @@ public class CsarExporterTest extends TestWithGitBackedRepository {
     }
 
     @Test
-    public void csarDoesNotContainHashes() throws Exception {
+    public void metafileDoesNotContainUnnecessaryFileAttributes() throws Exception {
         // create an empty configuration object
         Map<String, Object> exportConfiguration = new HashMap<>();
 
         try (InputStream inputStream = this.createOutputAndInputStream("origin/plain", new ArtifactTemplateId("http://plain.winery.opentosca.org/artifacttemplates", "ArtifactTemplateWithFilesAndSources-ArtifactTypeWithoutProperties", false), exportConfiguration); ZipInputStream zis = new ZipInputStream(inputStream)) {
-            ZipEntry entry;
-            ManifestContents manifestContents = null;
-
-            while ((entry = zis.getNextEntry()) != null) {
-                if ("TOSCA-Metadata/TOSCA.meta".equals(entry.getName())) {
-                    byte[] bytes = IOUtils.toByteArray(zis);
-                    String s = new String(bytes, StandardCharsets.UTF_8);
-
-                    manifestContents = new RecoveringManifestParser().parse(s);
-                }
-            }
+            ManifestContents manifestContents = parseManifest(zis);
 
             assertNotNull(manifestContents);
 
             for (String section : manifestContents.getSectionNames()) {
                 assertNull(manifestContents.getAttributesForSection(section).get(TOSCAMetaFileAttributes.HASH));
+                assertNull(manifestContents.getAttributesForSection(section).get(TOSCAMetaFileAttributes.IMMUTABLE_ADDRESS));
             }
         }
     }
@@ -99,7 +109,7 @@ public class CsarExporterTest extends TestWithGitBackedRepository {
     @Test
     public void testCsarFilesAreMentionedInTheManifest() throws Exception {
         Map<String, Object> exportConfiguration = new HashMap<>();
-        exportConfiguration.put(INCLUDE_HASHES.toString(), true);
+        exportConfiguration.put(INCLUDE_HASHES.name(), null);
 
         try (InputStream inputStream = this.createOutputAndInputStream("origin/plain", new ServiceTemplateId("http://plain.winery.opentosca.org/servicetemplates", "ServiceTemplateWithAllReqCapVariants", false), exportConfiguration); ZipInputStream zis = new ZipInputStream(inputStream)) {
             ZipEntry entry;
@@ -109,7 +119,6 @@ public class CsarExporterTest extends TestWithGitBackedRepository {
             while ((entry = zis.getNextEntry()) != null) {
                 String name = entry.getName();
                 elementsList.add(name);
-
                 assertNotNull(name);
                 assertFalse(name.contains("\\"), "name contains backslashes");
 
@@ -138,7 +147,7 @@ public class CsarExporterTest extends TestWithGitBackedRepository {
     @Test
     public void testHashesForEachFile() throws Exception {
         Map<String, Object> exportConfiguration = new HashMap<>();
-        exportConfiguration.put(INCLUDE_HASHES.toString(), true);
+        exportConfiguration.put(INCLUDE_HASHES.name(), null);
 
         try (InputStream inputStream = this.createOutputAndInputStream(
             // quick fix - should work if eclipse/winery#305 is merged
@@ -153,12 +162,12 @@ public class CsarExporterTest extends TestWithGitBackedRepository {
             while ((entry = zis.getNextEntry()) != null) {
                 CsarContentProperties fileProperties = new CsarContentProperties(entry.getName());
                 elementsList.add(fileProperties);
-
-                byte[] bytes = IOUtils.toByteArray(zis);
-                fileProperties.setFileHash(HashingUtil.getChecksum(bytes, TOSCAMetaFileAttributes.HASH));
+                byte[] array = IOUtils.toByteArray(zis);
+                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(array);
+                fileProperties.setFileHash(HashingUtil.getChecksum(byteArrayInputStream, TOSCAMetaFileAttributes.HASH));
 
                 if ("TOSCA-Metadata/TOSCA.meta".equals(fileProperties.getPathInsideCsar())) {
-                    String s = new String(bytes, StandardCharsets.UTF_8);
+                    String s = new String(array, StandardCharsets.UTF_8);
                     manifestContents = new RecoveringManifestParser().parse(s);
                 }
             }
@@ -183,7 +192,29 @@ public class CsarExporterTest extends TestWithGitBackedRepository {
 
     @Test
     @EnabledIf("(new java.io.File(\"C:/Ethereum/keystore/UTC--2018-03-05T15-33-22.456000000Z--e4b51a3d4e77d2ce2a9d9ce107ec8ec7cff5571d.json\")).exists()")
-    public void testPutCsarInBlockchain() throws Exception {
+    public void csarFilesHaveImmutableStorageAddresses() throws Exception {
+        Map<String, Object> exportConfiguration = new HashMap<>();
+        exportConfiguration.put(STORE_IMMUTABLY.name(), null);
+
+        try (InputStream inputStream = this.createOutputAndInputStream(
+            "origin/plain",
+            new ServiceTemplateId("http://plain.winery.opentosca.org/servicetemplates", "ServiceTemplateWithAllReqCapVariants", false),
+            exportConfiguration);
+             ZipInputStream zis = new ZipInputStream(inputStream)) {
+
+            ManifestContents manifestContents = parseManifest(zis);
+
+            assertNotNull(manifestContents);
+
+            for (String section : manifestContents.getSectionNames()) {
+                assertNotNull(manifestContents.getAttributesForSection(section).get(TOSCAMetaFileAttributes.IMMUTABLE_ADDRESS));
+            }
+        }
+    }
+
+    @Test
+    @EnabledIf("(new java.io.File(\"C:/Ethereum/keystore/UTC--2018-03-05T15-33-22.456000000Z--e4b51a3d4e77d2ce2a9d9ce107ec8ec7cff5571d.json\")).exists()")
+    public void testPutCsarInBlockchainAndImmutableStorage() throws Exception {
         setRevisionTo("origin/plain");
         CsarExporter exporter = new CsarExporter();
         DefinitionsChildId id = new ServiceTemplateId("http://plain.winery.opentosca.org/servicetemplates", "ServiceTemplateWithAllReqCapVariants", false);
@@ -193,5 +224,16 @@ public class CsarExporterTest extends TestWithGitBackedRepository {
         String transactionHash = future.get();
 
         assertNotNull(transactionHash);
+
+        try (InputStream inputStream = new ByteArrayInputStream(os.toByteArray());
+             ZipInputStream zis = new ZipInputStream(inputStream)) {
+            ManifestContents manifestContents = parseManifest(zis);
+
+            assertNotNull(manifestContents);
+
+            for (String section : manifestContents.getSectionNames()) {
+                assertNotNull(manifestContents.getAttributesForSection(section).get(TOSCAMetaFileAttributes.IMMUTABLE_ADDRESS));
+            }
+        }
     }
 }

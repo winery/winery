@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.provenance.model.ProvenanceVerification;
+import org.eclipse.winery.accountability.model.ProvenanceVerification;
 
 public class ImportMetaInformation {
 
