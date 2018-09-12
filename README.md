@@ -9,7 +9,7 @@ Winery is also part of the OpenTOSCA ecosystem where more information is availab
 
 **The code and the linked libraries are NOT approved by Eclipse Legal.**
 
-**There was no security of Eclipse Winey. There might be [remote code execution vulnerabilities](https://github.com/mbechler/marshalsec). Thus, when hosting Eclipse Winery, make it accessible to turstworthy parties only.**
+**There was no security of Eclipse Winey. There might be [remote code execution vulnerabilities](https://github.com/mbechler/marshalsec). Thus, when hosting Eclipse Winery, make it accessible to trustworthy parties only.**
 
 Both development and user documentation is rendered at <https://eclipse.github.io/winery/>.
 The source for the documentation can be found at [docs/](docs).
