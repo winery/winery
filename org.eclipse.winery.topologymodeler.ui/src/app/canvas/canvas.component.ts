@@ -1103,7 +1103,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 // why not use name -> save the type's id into the name (without management version)
                 + newRelationship.name;
 
-            if (labelString.startsWith('con')) {
+            if (labelString.startsWith(this.backendService.configuration.relationshipPrefix)) {
                 // Workaround to support old topology templates with the real name
                 labelString = newRelationship.type.substring(newRelationship.type.indexOf('}') + 1);
             }
@@ -1905,23 +1905,23 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             this.jsPlumbBindConnection = true;
             this.newJsPlumbInstance.bind('connection', info => {
                 const sourceElement = info.sourceId.substring(0, info.sourceId.indexOf('_E'));
-                info.sourceId = sourceElement;
                 const currentTypeValid = this.entityTypes.relationshipTypes.some(relType => relType.qName === this.selectedRelationshipType.qName);
                 const currentSourceIdValid = this.allNodeTemplates.some(node => node.id === sourceElement);
                 if (sourceElement && currentTypeValid && currentSourceIdValid) {
-                    const targetElement = info.targetId;
-                    let lastRelId = 'con_0';
-                    if (this.allRelationshipTemplates.length > 0) {
-                        lastRelId = this.allRelationshipTemplates[this.allRelationshipTemplates.length - 1].id;
-                    }
-                    const newRelCount = parseInt(lastRelId.substring(lastRelId.indexOf('_') + 1), 10) + 1;
-                    const relationshipId = 'con_' + newRelCount.toString();
-                    const relTypeExists = this.allRelationshipTemplates.some(rel => rel.id === relationshipId);
-                    if (relTypeExists === false && sourceElement !== targetElement) {
+                    const prefix = this.backendService.configuration.relationshipPrefix;
+                    const relName = this.selectedRelationshipType.name;
+                    let relNumber = 0;
+                    let relationshipId: string;
+
+                    do {
+                        relationshipId = prefix + '_' + relName + '_' + relNumber++;
+                    } while (this.allRelationshipTemplates.find(value => value.id === relationshipId));
+
+                    if (sourceElement !== info.targetId) {
                         const newRelationship = new TRelationshipTemplate(
                             { ref: sourceElement },
-                            { ref: targetElement },
-                            relationshipId,
+                            { ref: info.targetId },
+                            this.selectedRelationshipType.name,
                             relationshipId,
                             this.selectedRelationshipType.qName
                         );
