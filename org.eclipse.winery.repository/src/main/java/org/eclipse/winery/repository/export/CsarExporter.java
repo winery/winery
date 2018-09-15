@@ -475,22 +475,33 @@ public class CsarExporter {
         }
 
         Application application = SelfServiceMetaDataUtils.getApplication(selfServiceMetaDataId);
+        // set to true only if changes are applied to application
+        boolean isApplicationChanged = false;
 
-        // clear CSAR name as this may change.
-        application.setCsarName(null);
+        if (application.getCsarName() != null) {
+            // clear CSAR name as this may change.
+            application.setCsarName(null);
+            isApplicationChanged = true;
+        }
 
-        // hack for the OpenTOSCA container to display something
-        application.setVersion("1.0");
+        if (application.getVersion() == null || !application.getVersion().equals("1.0")) {
+            // hack for the OpenTOSCA container to display something
+            application.setVersion("1.0");
+            isApplicationChanged = true;
+        }
         List<String> authors = application.getAuthors();
         if (authors.isEmpty()) {
             authors.add("Winery");
+            isApplicationChanged = true;
         }
 
-        // make the patches to data.xml permanent
-        try {
-            BackendUtils.persist(application, SelfServiceMetaDataUtils.getDataXmlRef(selfServiceMetaDataId), MediaTypes.MEDIATYPE_TEXT_XML);
-        } catch (IOException e) {
-            LOGGER.error("Could not persist patches to data.xml", e);
+        if (isApplicationChanged) {
+            // make the patches to data.xml permanent
+            try {
+                BackendUtils.persist(application, SelfServiceMetaDataUtils.getDataXmlRef(selfServiceMetaDataId), MediaTypes.MEDIATYPE_TEXT_XML);
+            } catch (IOException e) {
+                LOGGER.error("Could not persist patches to data.xml", e);
+            }
         }
 
         Options options = application.getOptions();
