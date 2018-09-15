@@ -1111,34 +1111,11 @@ public class BackendUtils {
         }
         return loc;
     }
-
-    /**
-     * Removes only the relative URIs and URIs that are throwing exceptions
-     */
-    private static void removeFileBasedReferences(TArtifactTemplate template) {
-        if (template.getArtifactReferences() == null) {
-            // nothing there, so nothing to remove
-            return;
-        }
-
-        Iterator<TArtifactReference> fileReferenceIterator = template.getArtifactReferences().getArtifactReference().iterator();
-        while (fileReferenceIterator.hasNext()) {
-            TArtifactReference artifactRef = fileReferenceIterator.next();
-            try {
-                if (!(new URI(artifactRef.getReference()).isAbsolute())) {
-                    //remove if it is not absolute
-                    fileReferenceIterator.remove();
-                }
-            } catch (URISyntaxException e) {
-                // we remove these too as they are throwing exceptions
-                fileReferenceIterator.remove();
-            }
-        }
-    }
+    
 
     /**
      * Synchronizes the list of files of the given artifact template with the list of files contained in the given
-     * repository. The repository is upddated after synchronization.
+     * repository. The repository is updated after synchronization.
      *
      * This was intended if a user manually added files in the "files" directory and expected winery to correctly export
      * a CSAR
@@ -1150,37 +1127,75 @@ public class BackendUtils {
      */
     public static TArtifactTemplate synchronizeReferences(IGenericRepository repository, ArtifactTemplateId id) throws IOException {
         TArtifactTemplate template = repository.getElement(id);
-
-        // this straight-forwardly populates the list of contained files
-
-        removeFileBasedReferences(template);
-        // only absolute URLs are remaining
-
+        List<TArtifactReference> toRemove = new ArrayList<>();
+        List<RepositoryFileReference> toAdd = new ArrayList<>();
+        TArtifactTemplate.ArtifactReferences artifactReferences = template.getArtifactReferences();
         DirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(id);
         SortedSet<RepositoryFileReference> files = repository.getContainedFiles(fileDir);
-        if (!files.isEmpty()) {
-            TArtifactTemplate.ArtifactReferences artifactReferences = template.getArtifactReferences();
-            if (artifactReferences == null) {
-                artifactReferences = new TArtifactTemplate.ArtifactReferences();
-                template.setArtifactReferences(artifactReferences);
-            }
-            List<TArtifactReference> artRefList = artifactReferences.getArtifactReference();
-            for (RepositoryFileReference ref : files) {
-                // determine path
-                // path relative from the root of the CSAR is ok (COS01, line 2663)
-                // double encoded - see ADR-0003
-                String path = Util.getUrlPath(ref);
+        
+        if (artifactReferences == null) {
+            artifactReferences = new TArtifactTemplate.ArtifactReferences();
+            template.setArtifactReferences(artifactReferences);
+        }
+
+        List<TArtifactReference> artRefList = artifactReferences.getArtifactReference();
+        determineChanges(artRefList, files, toRemove, toAdd);
+        
+        if (toAdd.size() > 0 || toRemove.size() > 0) {
+            // apply removal list
+            toRemove.forEach(artRefList::remove);
+
+            // apply addition list
+            artRefList.addAll(toAdd.stream().map(fileRef -> {
+                String path = Util.getUrlPath(fileRef);
 
                 // put path into data structure
                 // we do not use Include/Exclude as we directly reference a concrete file
                 TArtifactReference artRef = new TArtifactReference();
                 artRef.setReference(path);
-                artRefList.add(artRef);
+
+                return artRef;
+            }).collect(Collectors.toList()));
+
+            // finally, persist only if something changed
+            BackendUtils.persist(repository, id, template);
+        }
+        
+        return template;
+    }
+
+    /**
+     * determines the difference between the list of artifact references (derived from the template) and the actual files stored on disk
+     * @param artRefList the list of artifact references derived from the corresponding artifact template
+     * @param filesOnDisk the list of files actually stored on disk
+     * @param toRemove the items to remove from the artifact list (output)
+     * @param toAdd the items to add to the artifact list (output)
+     */
+    private static void determineChanges(List<TArtifactReference> artRefList, SortedSet<RepositoryFileReference> filesOnDisk, List<TArtifactReference> toRemove, List<RepositoryFileReference> toAdd) {
+        // first find references to remove
+        for (TArtifactReference reference : artRefList) {
+            try {
+                String urlString = reference.getReference();
+
+                // we leave out the absolute paths
+                if (!(new URI(urlString)).isAbsolute()) {
+                    if (filesOnDisk.stream().noneMatch(file -> Util.getUrlPath(file).equals(urlString))) {
+                        // we remove references not pointing to a file
+                        toRemove.add(reference);
+                    }
+                }
+            } catch (URISyntaxException e) {
+                // we remove malformed references
+                toRemove.add(reference);
             }
         }
 
-        BackendUtils.persist(repository, id, template);
-        return template;
+        // second find references to add
+        for (RepositoryFileReference file : filesOnDisk) {
+            if (artRefList.stream().noneMatch(ref -> ref.getReference().equals(Util.getUrlPath(file)))) {
+                toAdd.add(file);
+            }
+        }
     }
 
     /**
