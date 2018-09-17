@@ -172,7 +172,6 @@ export class PaletteComponent implements OnDestroy {
             for (let i = this.allNodeTemplates.length - 1; i >= 0; i--) {
                 // get type of node Template
                 const type = this.allNodeTemplates[i].type;
-                const color = this.allNodeTemplates[i].visuals.color;
                 // split it to get a string like "NodeTypeWithTwoProperties"
                 let typeOfCurrentNode = type.split('}').pop();
                 // eliminate whitespaces from both strings, important for string comparison
