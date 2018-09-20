@@ -18,6 +18,7 @@ For more information on TOSCA see [our TOSCA information page](../tosca/).
 - [XaaSPackager](XaaSPackager) - Enables reusing modeled topologies as templates for single applications
 - [Compliance Checking](ComplianceChecking.md) - Enables compliance checking of Topology Templates based on reusable Compliance Rules  
 - [Implementation Artifact Generation](generateIA.md) - Shows how to generate and update an implementation artifact of type .war
+- [Securing](Securing.md) - Secures insecure communication between two nodes
 
 ## Background Literature
 

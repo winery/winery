@@ -136,6 +136,14 @@
                 [style.background-color]="getStyle(navbarButtonsState.buttonsState.importTopologyButton)">
                 Import Topology
             </button>
+            <button
+                class="btn btn-sm align-middle dark-button-style"
+                type="button"
+                id="secure"
+                (click)="toggleButton($event)"
+                [style.background-color]="getStyle(navbarButtonsState.buttonsState.secureTopologyButton)">
+                Secure
+            </button>
         </div>
 
         <div class="btn-group" data-toggle="buttons" style="margin-left: 4px">

@@ -43,6 +43,9 @@ import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceContainingATopology;
 import org.eclipse.winery.repository.rest.resources._support.dataadapter.composeadapter.CompositionData;
+import org.eclipse.winery.repository.securechannelinjection.ProblemJson;
+import org.eclipse.winery.repository.securechannelinjection.SecureChannelException;
+import org.eclipse.winery.repository.securechannelinjection.SecureChannelInjector;
 import org.eclipse.winery.repository.splitting.Splitting;
 import org.eclipse.winery.repository.targetallocation.Allocation;
 import org.eclipse.winery.repository.targetallocation.util.AllocationRequest;
@@ -220,6 +223,31 @@ public class TopologyTemplateResource {
         }
         URI url = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(matchedServiceTemplateId));
         return Response.created(url).build();
+    }
+
+    @Path("secure/")
+    @Produces(MediaType.TEXT_PLAIN)
+    @POST
+    public Response secure(@Context UriInfo uriInfo, ProblemJson json) {
+        try {
+            if (json != null && json.getProblemOccurrences() != null) {
+                ProblemJson.Problem secureChannelProblem = json.getProblemOccurrences().stream()
+                    .filter(problem -> problem.getPattern().equals("Secure Channel")).findFirst()
+                    .orElseThrow(() -> new SecureChannelException("Could not find a secure channel problem"));
+                String firstNodeId = secureChannelProblem.getFindings().get(0).getComponent1();
+                String secondNodeId = secureChannelProblem.getFindings().get(0).getComponent2();
+
+                SecureChannelInjector sci = new SecureChannelInjector();
+                ServiceTemplateId secureServiceId = sci.createSecureChannel((ServiceTemplateId) this.parent.getId(), firstNodeId, secondNodeId);
+                URI uri = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(secureServiceId));
+                return Response.created(uri).build();
+            } else {
+                return Response.status(400).entity("No problem description found").build();
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Caught exception", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Could not secure the communication. " + e.getMessage()).build();
+        }
     }
 
     @Path("allocate")

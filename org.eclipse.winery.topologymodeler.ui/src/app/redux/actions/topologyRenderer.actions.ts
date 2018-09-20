@@ -38,6 +38,7 @@ export class TopologyRendererActions {
     static IMPORT_TOPOLOGY = 'IMPORT_TOPOLOGY';
     static SPLIT_TOPOLOGY = 'SPLIT_TOPOLOGY';
     static MATCH_TOPOLOGY = 'MATCH_TOPOLOGY';
+    static SECURE_TOPOLOGY = 'SECURE_TOPOLOGY';
     static SUBSTITUTE_TOPOLOGY = 'SUBSTITUTE_TOPOLOGY';
     static REFINE_TOPOLOGY = 'REFINE_TOPOLOGY';
     static HIGHLIGHT_NODES = 'HIGHLIGHT_NODES';
@@ -92,6 +93,10 @@ export class TopologyRendererActions {
 
     matchTopology(): Action {
         return { type: TopologyRendererActions.MATCH_TOPOLOGY };
+    }
+
+    secureTopology(): Action {
+        return { type: TopologyRendererActions.SECURE_TOPOLOGY };
     }
 
     substituteTopology(): Action {

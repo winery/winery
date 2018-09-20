@@ -43,6 +43,7 @@ import { ImportTopologyService } from './services/import-topology.service';
 import { ReqCapService } from './services/req-cap.service';
 import { SplitMatchTopologyService } from './services/split-match-topology.service';
 import { ErrorHandlerService } from './services/error-handler.service';
+import { SecureTopologyService } from './services/secure-topology.service';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { RefinementSidebarComponent } from './refinementSidebar/refinementSidebar.component';
 
@@ -92,6 +93,7 @@ import { RefinementSidebarComponent } from './refinementSidebar/refinementSideba
         ImportTopologyService,
         ReqCapService,
         SplitMatchTopologyService,
+        SecureTopologyService,
         ErrorHandlerService
     ],
     bootstrap: [WineryComponent]

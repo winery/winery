@@ -49,6 +49,8 @@ import { SplitMatchTopologyService } from '../services/split-match-topology.serv
 import { DifferenceStates, VersionUtils } from '../models/ToscaDiff';
 import { ErrorHandlerService } from '../services/error-handler.service';
 import { DragSource } from '../models/DragSource';
+import { SecureTopologyService } from '../services/secure-topology.service';
+import { SecureTopologyModalData } from '../models/secureTopologyModalData';
 import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reducer';
 
 @Component({
@@ -67,6 +69,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     @ViewChild('capabilitiesModal') capabilitiesModal: ModalDirective;
     @ViewChild('requirementsModal') requirementsModal: ModalDirective;
     @ViewChild('importTopologyModal') importTopologyModal: ModalDirective;
+    @ViewChild('secureTopologyModal') secureTopologyModal: ModalDirective;
     @Input() readonly: boolean;
     @Input() entityTypes: EntityTypesModel;
     @Input() diffMode = false;
@@ -105,6 +108,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     capabilities: CapabilitiesModalData;
     requirements: RequirementsModalData;
     importTopologyData: ImportTopologyModalData;
+    secureTopologyData: SecureTopologyModalData;
 
     indexOfNewNode: number;
     targetNodes: Array<string> = [];
@@ -149,6 +153,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 private importTopologyService: ImportTopologyService,
                 private existsService: ExistsService,
                 private splitMatchService: SplitMatchTopologyService,
+                private secureTopologyService: SecureTopologyService,
                 private reqCapService: ReqCapService,
                 private errorHandler: ErrorHandlerService) {
         this.newJsPlumbInstance = this.jsPlumbService.getJsPlumbInstance();
@@ -177,6 +182,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         this.capabilities = new CapabilitiesModalData();
         this.requirements = new RequirementsModalData();
         this.importTopologyData = new ImportTopologyModalData();
+        this.secureTopologyData = new SecureTopologyModalData();
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -983,6 +989,9 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 this.splitMatchService.splitTopology(this.backendService, this.ngRedux, this.topologyRendererActions, this.errorHandler);
             } else if (this.topologyRendererState.buttonsState.matchTopologyButton) {
                 this.splitMatchService.matchTopology(this.backendService, this.ngRedux, this.topologyRendererActions, this.errorHandler);
+            } else if (this.topologyRendererState.buttonsState.secureTopologyButton) {
+                this.ngRedux.dispatch(this.topologyRendererActions.secureTopology());
+                this.secureTopologyModal.show();
             } else if (this.topologyRendererState.buttonsState.substituteTopologyButton) {
                 this.ngRedux.dispatch(this.topologyRendererActions.substituteTopology());
                 this.backendService.substituteTopology();
@@ -1034,6 +1043,19 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         });
         this.importTopologyService.importTopologyTemplate(selectedTopologyTemplate.qName, this.backendService, this.errorHandler);
         this.importTopologyData.selectedTopologyTemplateId = null;
+    }
+
+    closeSecureTopologyModal(): void {
+        this.secureTopologyData.component1 = null;
+        this.secureTopologyData.component2 = null;
+        this.secureTopologyModal.hide();
+    }
+
+    secureTopology(): void {
+        const firstComponent = this.secureTopologyData.component1;
+        const secondComponent = this.secureTopologyData.component2;
+        this.secureTopologyService.secureTopologyTemplate(firstComponent, secondComponent, this.backendService, this.errorHandler);
+        this.secureTopologyModal.hide();
     }
 
     /**

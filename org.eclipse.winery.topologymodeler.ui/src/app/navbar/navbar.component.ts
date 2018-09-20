@@ -182,6 +182,10 @@ export class NavbarComponent implements OnDestroy {
                 this.matchingOngoing = true;
                 break;
             }
+            case 'secure': {
+                this.ngRedux.dispatch(this.actions.secureTopology());
+                break;
+            }
             case 'substituteTopology':
                 this.ngRedux.dispatch(this.actions.substituteTopology());
                 break;

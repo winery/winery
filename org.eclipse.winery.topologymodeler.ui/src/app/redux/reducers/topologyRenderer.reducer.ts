@@ -30,6 +30,7 @@ export interface TopologyRendererState {
         importTopologyButton?: boolean;
         splitTopologyButton?: boolean;
         matchTopologyButton?: boolean;
+        secureTopologyButton?: boolean;
         substituteTopologyButton?: boolean;
         refineTopologyButton?: boolean;
     };
@@ -51,6 +52,7 @@ export const INITIAL_TOPOLOGY_RENDERER_STATE: TopologyRendererState = {
         importTopologyButton: false,
         splitTopologyButton: false,
         matchTopologyButton: false,
+        secureTopologyButton: false,
         substituteTopologyButton: false,
         refineTopologyButton: false
     }
@@ -165,6 +167,14 @@ export const TopologyRendererReducer =
                     buttonsState: {
                         ...lastState.buttonsState,
                         matchTopologyButton: !lastState.buttonsState.matchTopologyButton
+                    }
+                };
+            case TopologyRendererActions.SECURE_TOPOLOGY:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        secureTopologyButton: !lastState.buttonsState.secureTopologyButton
                     }
                 };
             case TopologyRendererActions.SUBSTITUTE_TOPOLOGY:

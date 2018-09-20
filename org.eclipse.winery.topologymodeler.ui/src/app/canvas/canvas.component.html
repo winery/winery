@@ -327,6 +327,35 @@
     </winery-modal-footer>
 </winery-modal>
 
+<!-- SECURE TOPOLOGY MODAL -->
+<winery-modal bsModal #secureTopologyModal="bs-modal" [modalRef]="secureTopologyModal">
+    <winery-modal-header [title]="'Input the two node templates to secure'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <form #secureTopologyForm="ngForm" id="secureTopologyForm">
+            <fieldset>
+                <div class="form-group">
+                    <label for="firstComponent" class="form-control">First Node Template Id</label>
+                    <input id="firstComponent" type="text" [(ngModel)]="secureTopologyData.component1" name="component1"
+                           required>
+                    <label for="secondComponent" class="form-control">Second Node Template Id</label>
+                    <input id="secondComponent" type="text" [(ngModel)]="secureTopologyData.component2"
+                           name="component2" required>
+                </div>
+            </fieldset>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer [showDefaultButtons]="false">
+        <button type="button" id="closeSecureTopologyModal" class="btn btn-default" (click)="closeSecureTopologyModal();
+        secureTopologyForm.reset()">Cancel
+        </button>
+        <button (click)="secureTopology(); secureTopologyForm.reset()"
+                type="button" id="secureTopologyBtn" class="btn btn-primary"
+                [disabled]="!secureTopologyForm.form.valid">Secure
+        </button>
+    </winery-modal-footer>
+</winery-modal>
+
 <winery-entities-modal *ngIf="!readonly"
                        [(modalVariantAndState)]="modalData"
                        [entityTypes]="entityTypes"

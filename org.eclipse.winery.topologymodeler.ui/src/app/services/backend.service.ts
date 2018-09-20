@@ -335,6 +335,23 @@ export class BackendService {
     }
 
     /**
+     *
+     * @returns {Observable<HttpResponse<string>>}
+     */
+    secureTopology(firstComponent: string, secondComponent: string): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders().set('Content-Type', 'application/json');
+        const url = this.serviceTemplateURL + urlElement.TopologyTemplate + 'secure';
+        return this.http.post(url + '/', '{\"problemOccurrences\": [\n' +
+            '\t{\"problem\":\"Insecure communication channel\",\n' +
+            '\t\"pattern\":\"Secure Channel\",\n' +
+            '\t\"description\":\"\",\n' +
+            '\t\"findings\": [\n' +
+            `\t\t{\"Component_2\":\"${firstComponent}\",\n` +
+            `\t\t\"Component_1\":\"${secondComponent}\"}\n` +
+            '\t]}]}', { headers: headers, observe: 'response', responseType: 'text' });
+    }
+
+    /**
      * Used for creating new artifact templates on the backend.
      * @param {QNameWithTypeApiData} artifact
      * @returns {Observable<any>}
