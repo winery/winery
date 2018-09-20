@@ -40,8 +40,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <winery.version>2.0.0-SNAPSHOT</winery.version>
+        <spring.version>3.0.7.RELEASE</spring.version>
         <cxf.version>2.7.6</cxf.version>
-        <highlevelrestapi.version>2.0.0-SNAPSHOT</highlevelrestapi.version>
     </properties>
 
     <dependencies>
@@ -51,24 +52,28 @@
         <!-- END - LIBRARIES ADDED FOR IMPLEMENTATION ARTIFACT IMPLEMENTATION -->
         <dependency>
             <groupId>org.eclipse.winery</groupId>
-            <artifactId>org.eclipse.winery.highlevelrestapi</artifactId>
-            <version>${highlevelrestapi.version}</version>
+            <artifactId>org.eclipse.winery.generators.ia</artifactId>
+            <version>${winery.version}</version>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.5</version>
-            <scope>test</scope>
+            <groupId>org.eclipse.winery</groupId>
+            <artifactId>org.eclipse.winery.highlevelrestapi</artifactId>
+            <version>${winery.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.25</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>3.0.7.RELEASE</version>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>3.0.7.RELEASE</version>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
@@ -206,9 +211,9 @@
                                 def response = httpclient.execute(post)
                                 def status = response.getStatusLine()
                                 if (!(status ==~ /.*201.*/))
-                                fail("IA upload to Winery FAILED, please upload manually. (HTTP status code: $status)")
+                                    fail("IA upload to Winery FAILED, please upload manually. (HTTP status code: $status)")
                                 else
-                                println "IA upload finished sucessfully (HTTP status code $status)"
+                                    println "IA upload finished sucessfully (HTTP status code $status)"
                             </source>
                         </configuration>
                     </execution>

@@ -9,8 +9,17 @@ import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.xml.bind.annotation.XmlElement;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.eclipse.winery.generators.ia.jaxws.AbstractService;
+
 @WebService
-public class IA_CLASS_NAME extends AbstractIAService {
+public class IA_CLASS_NAME extends AbstractService {
+
+    private static final Logger logger = LoggerFactory.getLogger(
+            IA_CLASS_NAME.class
+    );
 
 GENERATED_WEBSERVICE_METHODS
 
