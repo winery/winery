@@ -30,25 +30,26 @@
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.common</artifactId>
             <version>2.0.0-SNAPSHOT</version>
-            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.winery</groupId>
+            <artifactId>org.eclipse.winery.highlevelrestapi</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${org.slf4j}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.model.tosca</artifactId>
             <version>2.0.0-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
             <version>1.6</version>
-            <scope>compile</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.tukaani</groupId>
@@ -66,7 +67,16 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.4</version>
-            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxws</artifactId>
+            <version>2.7.6</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
