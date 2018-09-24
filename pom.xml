@@ -248,7 +248,8 @@
                                                 <source>true</source>
                                                 <transitive>true</transitive>
                                                 <excludes>
-                                                    <exclude>org.eclipse.winery::</exclude>
+                                                    <exclude>org.eclipse.winery*</exclude>
+                                                    <exclude>com.github.jnr:*:::</exclude>
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
@@ -262,7 +263,8 @@
                                                 <source>true</source>
                                                 <transitive>true</transitive>
                                                 <excludes>
-                                                    <exclude>org.eclipse.winery::</exclude>
+                                                    <exclude>org.eclipse.winery*</exclude>
+                                                    <exclude>com.github.jnr:*:::</exclude>
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
@@ -276,7 +278,8 @@
                                                 <source>true</source>
                                                 <transitive>true</transitive>
                                                 <excludes>
-                                                    <exclude>org.eclipse.winery::</exclude>
+                                                    <exclude>org.eclipse.winery*</exclude>
+                                                    <exclude>com.github.jnr:*:::</exclude>
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
@@ -289,7 +292,8 @@
                                                 <source>true</source>
                                                 <transitive>true</transitive>
                                                 <excludes>
-                                                    <exclude>org.eclipse.winery::</exclude>
+                                                    <exclude>org.eclipse.winery*</exclude>
+                                                    <exclude>com.github.jnr:*:::</exclude>
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
@@ -303,7 +307,8 @@
                                                 <source>true</source>
                                                 <transitive>true</transitive>
                                                 <excludes>
-                                                    <exclude>org.eclipse.winery::</exclude>
+                                                    <exclude>org.eclipse.winery*</exclude>
+                                                    <exclude>com.github.jnr:*:::</exclude>
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
@@ -315,10 +320,11 @@
                                                 <source>true</source>
                                                 <transitive>true</transitive>
                                                 <excludes>
-                                                    <exclude>org.eclipse.winery::</exclude>
+                                                    <exclude>org.eclipse.winery*</exclude>
                                                     <!-- Export-Package specification is incorrect, 
                                                          see https://github.com/SQiShER/java-object-diff/issues/205 -->
                                                     <exclude>de.danielbechler:java-object-diff:${de.danielbechler.java-object-diff}</exclude>
+                                                    <exclude>com.github.jnr:*:::</exclude>
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
@@ -331,7 +337,8 @@
                                                 <source>true</source>
                                                 <transitive>true</transitive>
                                                 <excludes>
-                                                    <exclude>org.eclipse.winery::</exclude>
+                                                    <exclude>org.eclipse.winery*</exclude>
+                                                    <exclude>com.github.jnr:*:::</exclude>
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
@@ -345,7 +352,8 @@
                                                 <source>true</source>
                                                 <transitive>true</transitive>
                                                 <excludes>
-                                                    <exclude>org.eclipse.winery::</exclude>
+                                                    <exclude>org.eclipse.winery*</exclude>
+                                                    <exclude>com.github.jnr:*:::</exclude>
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
@@ -359,7 +367,8 @@
                                                 <source>true</source>
                                                 <transitive>true</transitive>
                                                 <excludes>
-                                                    <exclude>org.eclipse.winery::</exclude>
+                                                    <exclude>org.eclipse.winery*</exclude>
+                                                    <exclude>com.github.jnr:*:::</exclude>
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
@@ -370,7 +379,8 @@
                                                 <id>org.eclipse.winery:org.eclipse.winery.repository:${project.version}</id>
                                                 <source>true</source>
                                                 <excludes>
-                                                    <exclude>org.eclipse.winery:::</exclude>
+                                                    <exclude>org.eclipse.winery*</exclude>
+                                                    <exclude>com.github.jnr:*:::</exclude>
                                                 </excludes>
                                                 <transitive>true</transitive>
                                                 <instructions>
@@ -385,7 +395,8 @@
                                                 <source>true</source>
                                                 <transitive>true</transitive>
                                                 <excludes>
-                                                    <exclude>org.eclipse.winery::</exclude>
+                                                    <exclude>org.eclipse.winery*</exclude>
+                                                    <exclude>com.github.jnr:*:::</exclude>
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>
@@ -402,7 +413,8 @@
                                                 <source>true</source>
                                                 <transitive>true</transitive>
                                                 <excludes>
-                                                    <exclude>org.eclipse.winery::</exclude>
+                                                    <exclude>org.eclipse.winery*</exclude>
+                                                    <exclude>com.github.jnr:*:::</exclude>
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
@@ -414,7 +426,8 @@
                                                 <source>true</source>
                                                 <transitive>true</transitive>
                                                 <excludes>
-                                                    <exclude>org.eclipse.winery::</exclude>
+                                                    <exclude>org.eclipse.winery*</exclude>
+                                                    <exclude>com.github.jnr:*:::</exclude>
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
@@ -426,7 +439,8 @@
                                                 <source>true</source>
                                                 <transitive>true</transitive>
                                                 <excludes>
-                                                    <exclude>org.eclipse.winery::</exclude>
+                                                    <exclude>org.eclipse.winery*</exclude>
+                                                    <exclude>com.github.jnr:*:::</exclude>
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
@@ -439,7 +453,8 @@
                                                 <source>true</source>
                                                 <transitive>true</transitive>
                                                 <excludes>
-                                                    <exclude>org.eclipse.winery::</exclude>
+                                                    <exclude>org.eclipse.winery*</exclude>
+                                                    <exclude>com.github.jnr:*:::</exclude>
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
@@ -453,7 +468,8 @@
                                                 <source>true</source>
                                                 <transitive>true</transitive>
                                                 <excludes>
-                                                    <exclude>org.eclipse.winery::</exclude>
+                                                    <exclude>org.eclipse.winery*</exclude>
+                                                    <exclude>com.github.jnr:*:::</exclude>
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
@@ -467,7 +483,8 @@
                                                 <source>true</source>
                                                 <transitive>true</transitive>
                                                 <excludes>
-                                                    <exclude>org.eclipse.winery::</exclude>
+                                                    <exclude>org.eclipse.winery*</exclude>
+                                                    <exclude>com.github.jnr:*:::</exclude>
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
