@@ -230,6 +230,11 @@
             <version>${org.slf4j}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.winery</groupId>
+            <artifactId>org.eclipse.winery.accountability</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <resources>
@@ -246,6 +251,8 @@
                 <includes>
                     <include>winery.properties</include>
                     <include>patterndetection.properties</include>
+                    <include>defaultaccountabilityconfig.properties</include>
+                    <include>UTC--2018-03-05T15-33-22.456000000Z--e4b51a3d4e77d2ce2a9d9ce107ec8ec7cff5571d.json</include>
                     <include>logback.xml</include>
                     <include>logback-test.xml</include>
                 </includes>

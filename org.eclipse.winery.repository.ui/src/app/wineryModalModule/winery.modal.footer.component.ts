@@ -24,6 +24,7 @@ export class WineryModalFooterComponent {
     @Input() closeButtonLabel = 'Cancel';
     @Input() okButtonLabel = 'Add';
     @Input() modalRef: ModalDirective;
+    @Input() hideOkButton = false;
     @Input() disableOkButton = false;
     @Input() hideOnOk = true;
     @Output() onOk = new EventEmitter<any>();

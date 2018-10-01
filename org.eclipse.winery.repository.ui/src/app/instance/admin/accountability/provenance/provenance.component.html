@@ -1,0 +1,96 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+
+<div *ngIf="!loading; else showProvenanceLoader" id="contentContainer">
+    <div *ngIf="!error; else showError">
+        <form #selectServiceTemplateForm="ngForm">
+            <div class="form-group">
+                <label for="provenanceSelect" class="control-label">Service Template (Process Id)</label>
+                <ng-select id="provenanceSelect" [items]="serviceTemplateList"
+                           (selected)="provenanceIdSelected($event)"
+                           [active]="[selectedProvenanceId]"></ng-select>
+                <br/>
+                <button type="button" class="btn btn-primary" (click)="getModelProvenance()"
+                        [disabled]="loading">
+                    Show Provenance
+                </button>
+            </div>
+        </form>
+    </div>
+    <div *ngIf="modelProvenance && modelProvenance.length > 0">
+        <h4>Provenance for Service Template <b>{{selectedProvenanceId.id}}</b> (Newest First):</h4>
+        <accordion>
+            <accordion-group *ngFor="let item of modelProvenance" id="theGroup"
+                             [heading]="(item.unixTimestamp * 1000 | date:'yyyy-MM-dd HH:mm:ss') + ' (' + (item.authorName? item.authorName: 'unauthorized') + ')'"
+                             panelClass="panel-primary" style="font-size: 1.3em;">
+                <span class="fileDetail"><b>Timestamp:</b> {{ item.unixTimestamp * 1000 | date:'yyyy-MM-dd HH:mm:ss' }}</span>
+                <span class="fileDetail"><b>Author:</b>  {{ item.authorName }}({{ item.authorAddress }})</span>
+                <span class="fileDetail"><b>Is Authorized: </b>
+                    <span [class]="getVerificationClass(item.authorized)">{{ item.authorized? 'True': 'False' }}</span>
+                </span>
+                <span class="fileDetail"><b>Transaction ID:</b> {{ item.transactionHash }}</span>
+
+                <span class="fileDetail"><b>Files:</b></span>
+                <accordion>
+                    <accordion-group *ngFor="let file of item.files" [heading]="file.fileName"
+                                     style="word-wrap: break-word;">
+                        <span class="fileDetail"><b>File Hash: </b>{{file.fileHash}}</span>
+                        <span class="fileDetail"><b>File Address In Immutable Storage: </b>
+                            <span *ngIf="file.addressInImmutableStorage">{{file.addressInImmutableStorage}}</span>
+                            <span *ngIf="!file.addressInImmutableStorage"
+                                  class="red">Not stored in immutable storage!</span>
+                        </span>
+                        <a *ngIf="file.addressInImmutableStorage" class="pointer"
+                           (click)="downloadFileFromImmutableStorage(file.addressInImmutableStorage, file.fileName)">(download)</a>
+                        <a *ngIf="file.addressInImmutableStorage" (click)="openModal(fileComparer, file)">(compare)</a>
+                    </accordion-group>
+                </accordion>
+
+
+            </accordion-group>
+        </accordion>
+
+    </div>
+    <div *ngIf="modelProvenance && modelProvenance.length === 0">
+        <h4>No Provenance Available for the Specified Service Template...</h4>
+    </div>
+    <ng-template #showError>
+        <alert [type]="'danger'">
+            <i class="fa fa-ban"></i>
+            <span>&nbsp;&nbsp;{{ error }}</span>
+        </alert>
+    </ng-template>
+</div>
+
+
+<ng-template #showProvenanceLoader>
+    <winery-loader></winery-loader>
+</ng-template>
+
+<ng-template #fileComparer>
+    <winery-modal-header [modalRef]="modalRef" [title]="'File Version Comparison'">-->
+    </winery-modal-header>
+
+    <winery-modal-body>
+        <winery-file-comparison
+            [selectedServiceTemplate]="selectedProvenanceId"
+            [fileProvenance]="selectedFileProvenance"
+            [selectedFileProvenanceElement]="selectedFileProvenanceElement"
+            [accountabilityService]="service"
+        ></winery-file-comparison>
+    </winery-modal-body>
+
+    <winery-modal-footer [modalRef]="modalRef" [showDefaultButtons]="true" [closeButtonLabel]="'Close'"  [hideOkButton]="true" ></winery-modal-footer>
+</ng-template>

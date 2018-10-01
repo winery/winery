@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,9 +14,9 @@
 
 package org.eclipse.winery.repository.rest.resources.apiData.converter;
 
-import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
-
 import javax.xml.namespace.QName;
+
+import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 
 public class QNameConverter implements Converter<QNameApiData, QName> {
 

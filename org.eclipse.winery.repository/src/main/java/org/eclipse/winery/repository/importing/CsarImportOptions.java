@@ -29,7 +29,7 @@ public class CsarImportOptions {
     private boolean asyncWPDParsing;
 
     /**
-     * if true: Validates the CSAR being imported with the state stored in the provenance layer.
+     * if true: Validates the CSAR being imported with the state stored in the accountability layer.
      */
     private boolean validate;
 

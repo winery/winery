@@ -31,6 +31,6 @@ public class ToscaExportUtilTest extends TestWithGitBackedRepository {
         // we include everything related
         Map<String, Object> conf = new HashMap<>();
         NullOutputStream out = new NullOutputStream();
-        // exporter.exportTOSCA(TestToscaExporter.serviceTemplateId, out, conf);
+        // exporter.processTOSCA(TestToscaExporter.serviceTemplateId, out, conf);
     }
 }

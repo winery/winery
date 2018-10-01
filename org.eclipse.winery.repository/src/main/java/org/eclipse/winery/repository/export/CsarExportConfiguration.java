@@ -15,6 +15,14 @@
 package org.eclipse.winery.repository.export;
 
 public enum CsarExportConfiguration {
-    INCLUDE_PROVENANCE,
+    /**
+     * Indicates that all refs included in the exported CSAR should be stored in an immutable file storage, and that
+     * the address to locate them in that storage should be included in the tosca meta-file
+     */
+    STORE_IMMUTABLY,
+
+    /**
+     * Indicates the hash of all files referenced in the exported CSAR should be included in the tosca meta-file
+     */
     INCLUDE_HASHES;
 }

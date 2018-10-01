@@ -18,7 +18,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Map;
 
-import org.eclipse.winery.provenance.model.ProvenanceVerification;
+import org.eclipse.winery.accountability.model.ProvenanceVerification;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -45,52 +45,55 @@ class CsarImporterValidationTest extends TestWithGitBackedRepository {
 
     @Test
     void testImportAndValidation() throws Exception {
-        InputStream input = new FileInputStream("src/test/resources/csar/ServiceTemplateWithAllReqCapVariants.csar");
+        try (InputStream input = new FileInputStream("src/test/resources/csar/ServiceTemplateWithAllReqCapVariants.csar")) {
 
-        CsarImportOptions options = new CsarImportOptions();
-        options.setOverwrite(true);
-        options.setAsyncWPDParsing(false);
-        options.setValidate(true);
-        ImportMetaInformation importMetaInformation = csarImporter.readCSAR(input, options);
+            CsarImportOptions options = new CsarImportOptions();
+            options.setOverwrite(true);
+            options.setAsyncWPDParsing(false);
+            options.setValidate(true);
+            ImportMetaInformation importMetaInformation = csarImporter.readCSAR(input, options);
 
-        assertEquals(ProvenanceVerification.VERIFIED, importMetaInformation.verificationMap.remove("TOSCA-Metadata/TOSCA.meta"));
+            assertEquals(ProvenanceVerification.VERIFIED, importMetaInformation.verificationMap.remove("TOSCA-Metadata/TOSCA.meta"));
 
-        for (Map.Entry<String, ProvenanceVerification> entry : importMetaInformation.verificationMap.entrySet()) {
-            assertEquals(ProvenanceVerification.VERIFIED, entry.getValue());
+            for (Map.Entry<String, ProvenanceVerification> entry : importMetaInformation.verificationMap.entrySet()) {
+                assertEquals(ProvenanceVerification.VERIFIED, entry.getValue());
+            }
         }
     }
 
     @Test
     void testImportAndInvalidValidation() throws Exception {
-        InputStream inputStream = new FileInputStream("src/test/resources/csar/ServiceTemplateWithAllReqCapVariants-Invalid.csar");
+        try (InputStream inputStream = new FileInputStream("src/test/resources/csar/ServiceTemplateWithAllReqCapVariants-Invalid.csar")) {
 
-        CsarImportOptions options = new CsarImportOptions();
-        options.setOverwrite(true);
-        options.setAsyncWPDParsing(false);
-        options.setValidate(true);
-        ImportMetaInformation importMetaInformation = csarImporter.readCSAR(inputStream, options);
+            CsarImportOptions options = new CsarImportOptions();
+            options.setOverwrite(true);
+            options.setAsyncWPDParsing(false);
+            options.setValidate(true);
+            ImportMetaInformation importMetaInformation = csarImporter.readCSAR(inputStream, options);
 
-        ProvenanceVerification invalidDefinition = importMetaInformation.verificationMap
-            .remove("Definitions/servicetemplates__ServiceTemplateWithAllReqCapVariants.tosca");
-        assertEquals(ProvenanceVerification.INVALID, invalidDefinition);
+            ProvenanceVerification invalidDefinition = importMetaInformation.verificationMap
+                .remove("Definitions/servicetemplates__ServiceTemplateWithAllReqCapVariants.tosca");
+            assertEquals(ProvenanceVerification.INVALID, invalidDefinition);
 
-        for (Map.Entry<String, ProvenanceVerification> entry : importMetaInformation.verificationMap.entrySet()) {
-            assertEquals(ProvenanceVerification.VERIFIED, entry.getValue());
+            for (Map.Entry<String, ProvenanceVerification> entry : importMetaInformation.verificationMap.entrySet()) {
+                assertEquals(ProvenanceVerification.VERIFIED, entry.getValue());
+            }
         }
     }
 
     @Test
     void testImportOfCsarWithoutAuthorship() throws Exception {
-        InputStream inputStream = new FileInputStream("src/test/resources/csar/ProvenanceCsarWithoutAuthorizedAuthors_w1-wip1.csar");
+        try (InputStream inputStream = new FileInputStream("src/test/resources/csar/ProvenanceCsarWithoutAuthorizedAuthors_w1-wip1.csar")) {
 
-        CsarImportOptions options = new CsarImportOptions();
-        options.setOverwrite(true);
-        options.setAsyncWPDParsing(false);
-        options.setValidate(true);
-        ImportMetaInformation importMetaInformation = csarImporter.readCSAR(inputStream, options);
+            CsarImportOptions options = new CsarImportOptions();
+            options.setOverwrite(true);
+            options.setAsyncWPDParsing(false);
+            options.setValidate(true);
+            ImportMetaInformation importMetaInformation = csarImporter.readCSAR(inputStream, options);
 
-        ProvenanceVerification verification = importMetaInformation.verificationMap.get("TOSCA-Metadata/TOSCA.meta");
+            ProvenanceVerification verification = importMetaInformation.verificationMap.get("TOSCA-Metadata/TOSCA.meta");
 
-        assertEquals(ProvenanceVerification.NO_AUTHORIZATION_DATA_AVAILABLE, verification);
+            assertEquals(ProvenanceVerification.NO_AUTHORIZATION_DATA_AVAILABLE, verification);
+        }
     }
 }

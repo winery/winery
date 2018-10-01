@@ -17,6 +17,9 @@ import { WineryNotificationService } from '../wineryNotificationModule/wineryNot
 import { InstanceService } from '../instance/instance.service';
 import { ToscaTypes } from '../model/enums';
 import { HttpErrorResponse } from '@angular/common/http';
+import { catchError, map } from 'rxjs/internal/operators';
+import { forkJoin, throwError } from 'rxjs/index';
+import { Observable } from 'rxjs/Rx';
 
 @Component({
     templateUrl: 'wineryLicense.component.html',
@@ -43,19 +46,30 @@ export class WineryLicenseComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.service.getData().subscribe(
-            data => {
-                this.licenseText = data;
-                this.intialLicenseText = data;
-                this.service.loadLicenses().subscribe(
-                    () => {
-                        // on success, loaded licenses are already assigned to WineryLicense objects
-                    },
-                    error => this.handleError(error)
-                );
-            },
-            () => this.handleMissingLicense()
-        );
+        const observables =
+            [
+                this.service.getData()
+                    .pipe(
+                        map(
+                            data => {
+                                this.licenseText = data;
+                                this.intialLicenseText = data;
+                            }),
+                        catchError((e) => {
+                            this.handleMissingLicense();
+                            return Observable.of(null);
+                        })
+                    ),
+                this.service.loadLicenses()
+                    .pipe(
+                        catchError(e => {
+                            this.handleError(e);
+                            return Observable.of(null);
+                        })
+                    )
+            ];
+
+        forkJoin(observables).subscribe();
     }
 
     saveLicenseFile() {

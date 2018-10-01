@@ -34,7 +34,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.Source;
@@ -433,10 +432,6 @@ public class ConsistencyChecker {
         try (OutputStream outputStream = Files.newOutputStream(tempCsar, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
             try {
                 exporter.writeCsar(RepositoryFactory.getRepository(), id, outputStream, exportConfiguration);
-            } catch (JAXBException e) {
-                LOGGER.debug("Error during checking ZIP", e);
-                printAndAddError(id, "Some XML could not be parsed: " + e.getMessage() + " " + e.toString());
-                return;
             } catch (IOException e) {
                 LOGGER.debug("Error during checking ZIP", e);
                 printAndAddError(id, "I/O error: " + e.getMessage());

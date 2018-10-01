@@ -14,10 +14,10 @@
 import { Injectable } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
-import { isNullOrUndefined } from 'util';
+import { debug, isNullOrUndefined } from 'util';
 import { backendBaseURL } from '../configuration';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { Provenance } from '../model/provenance';
+import { FileProvenanceElement } from '../model/provenance';
 
 @Injectable()
 export class SectionService {
@@ -61,15 +61,4 @@ export class SectionService {
         this.path = '/' + path;
     }
 
-    getProvenanceHistroy(provenanceId: string, fileId?: string): Observable<Provenance> {
-        let url = backendBaseURL + '/API/provenance/'
-            + encodeURIComponent(encodeURIComponent(provenanceId))
-            +  '/history';
-
-        if (!isNullOrUndefined(fileId)) {
-            url += '?fileId=' + fileId;
-        }
-
-        return this.http.get<Provenance>(url);
-    }
 }

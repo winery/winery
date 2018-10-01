@@ -161,3 +161,7 @@ div.orionxmleditordiv {
 .pointer {
     cursor: pointer;
 }
+
+div.dmp-line-compare {
+    width: auto !important;
+}

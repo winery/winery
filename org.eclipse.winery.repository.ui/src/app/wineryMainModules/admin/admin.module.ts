@@ -25,10 +25,18 @@ import { WineryDuplicateValidatorModule } from '../../wineryValidators/wineryDup
 import { WineryNamespaceSelectorModule } from '../../wineryNamespaceSelector/wineryNamespaceSelector.module';
 import { FormsModule } from '@angular/forms';
 import { ConsistencyCheckComponent } from '../../instance/admin/consistencyCheck/consistencyCheck.component';
-import { AlertModule, ProgressbarModule } from 'ngx-bootstrap';
+import { AccordionModule, AlertModule, CollapseModule, ModalModule, ProgressbarModule } from 'ngx-bootstrap';
 import { ErrorElementToLinkPipe } from '../../instance/admin/consistencyCheck/errorElementToLink.pipe';
-import { ProvenanceComponent } from '../../instance/admin/provenance/provenance.component';
+import { AccountabilityComponent } from '../../instance/admin/accountability/accountability.component';
 import { SelectModule } from 'ng2-select';
+import { AuthorizationComponent } from '../../instance/admin/accountability/authorization/authorization.component';
+import { AuthenticationComponent } from '../../instance/admin/accountability/authentication/authentication.component';
+import { ConfigurationComponent } from '../../instance/admin/accountability/configuration/configuration.component';
+import { WineryUploaderModule } from '../../wineryUploader/wineryUploader.module';
+import { ConfigurationService } from '../../instance/admin/accountability/configuration/configuration.service';
+import { AccountabilityService } from '../../instance/admin/accountability/accountability.service';
+import { WineryFileComparisonModule } from '../../wineryFileComparisonModule/wineryFileComparison.module';
+import { ProvenanceComponent } from '../../instance/admin/accountability/provenance/provenance.component';
 
 @NgModule({
     imports: [
@@ -40,10 +48,15 @@ import { SelectModule } from 'ng2-select';
         WineryLoaderModule,
         WineryModalModule,
         WineryTableModule,
+        WineryUploaderModule,
         WineryNamespaceSelectorModule,
+        WineryFileComparisonModule,
         ProgressbarModule.forRoot(),
         AlertModule.forRoot(),
-        AdminRouterModule,
+        AccordionModule.forRoot(),
+        CollapseModule.forRoot(),
+        ModalModule.forRoot(),
+        AdminRouterModule
     ],
     declarations: [
         NamespacesComponent,
@@ -51,8 +64,14 @@ import { SelectModule } from 'ng2-select';
         TypeWithShortNameComponent,
         ConsistencyCheckComponent,
         ErrorElementToLinkPipe,
-        ProvenanceComponent,
-    ]
+        AccountabilityComponent,
+        AuthorizationComponent,
+        AuthenticationComponent,
+        ConfigurationComponent,
+        ProvenanceComponent
+    ],
+    providers: [ConfigurationService, AccountabilityService]
+
 })
 export class AdminModule {
 }

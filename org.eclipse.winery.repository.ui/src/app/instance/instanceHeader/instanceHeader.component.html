@@ -39,7 +39,7 @@
                     <li>
                         <a target="_blank" href="{{ toscaComponent.xmlCsarPath }}">CSAR (XML)</a>
                     </li>
-                    <li>
+                    <li *ngIf="accountabilityEnabled">
                         <a target="_blank" href="{{ toscaComponent.provenanceCsarPath }}">Provenance CSAR (XML)</a>
                     </li>
                 </ul>

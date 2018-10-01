@@ -19,6 +19,8 @@ import {ToscaComponent} from '../../model/toscaComponent';
 import {ToscaTypes} from '../../model/enums';
 import {WineryVersion} from '../../model/wineryVersion';
 import {InstanceService} from '../instance.service';
+import { AccountabilityService } from '../admin/accountability/accountability.service';
+import { ConfigurationService } from '../admin/accountability/configuration/configuration.service';
 
 @Component({
     selector: 'winery-instance-header',
@@ -47,11 +49,14 @@ export class InstanceHeaderComponent implements OnInit {
     needTwoLines = false;
     selectedTab: string;
     showManagementButtons = true;
+    accountabilityEnabled: boolean;
 
-    constructor(private router: Router, public sharedData: InstanceService) {
+    constructor(private router: Router, private accountabilityConfig: ConfigurationService, public sharedData: InstanceService) {
     }
 
     ngOnInit(): void {
+        this.accountabilityEnabled = this.accountabilityConfig.isAccountablilityCheckEnabled();
+
         if (this.subMenu.length > 7) {
             this.needTwoLines = true;
         }

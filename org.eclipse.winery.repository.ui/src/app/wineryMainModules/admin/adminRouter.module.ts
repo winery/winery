@@ -22,7 +22,11 @@ import { TypeWithShortNameComponent } from '../../instance/admin/typesWithShortN
 import { NamespacesComponent } from '../../instance/admin/namespaces/namespaces.component';
 import { LoggerComponent } from '../../instance/admin/logger/logger.component';
 import { ConsistencyCheckComponent } from '../../instance/admin/consistencyCheck/consistencyCheck.component';
-import { ProvenanceComponent } from '../../instance/admin/provenance/provenance.component';
+import { AccountabilityComponent } from '../../instance/admin/accountability/accountability.component';
+import { AuthorizationComponent } from '../../instance/admin/accountability/authorization/authorization.component';
+import { AuthenticationComponent } from '../../instance/admin/accountability/authentication/authentication.component';
+import { ConfigurationComponent } from '../../instance/admin/accountability/configuration/configuration.component';
+import { ProvenanceComponent } from '../../instance/admin/accountability/provenance/provenance.component';
 
 const toscaType = ToscaTypes.Admin;
 
@@ -37,7 +41,17 @@ const adminRoutes: Routes = [
             { path: 'plantypes', component: TypeWithShortNameComponent },
             { path: 'constrainttypes', component: TypeWithShortNameComponent },
             { path: 'consistencycheck', component: ConsistencyCheckComponent },
-            { path: 'provenance', component: ProvenanceComponent },
+            {
+                path: 'accountability',
+                component: AccountabilityComponent,
+                children: [
+                    { path: 'authorization', component: AuthorizationComponent },
+                    { path: 'authentication', component: AuthenticationComponent},
+                    { path: 'provenance', component: ProvenanceComponent},
+                    { path: 'configuration', component: ConfigurationComponent},
+                    { path: '', redirectTo: 'authorization', pathMatch: 'full' }
+                ]
+            },
             { path: 'log', component: LoggerComponent },
             { path: '', redirectTo: 'namespaces', pathMatch: 'full' }
         ]
