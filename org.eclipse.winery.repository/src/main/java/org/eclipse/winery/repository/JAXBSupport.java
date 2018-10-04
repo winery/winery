@@ -104,7 +104,10 @@ public class JAXBSupport {
     }
 
     /**
-     * Creates a marshaller
+     * Creates a marshaller.
+     *
+     * IMPORTANT: always create a new instance and do not reuse the marhaller, otherwise the input-stream will throw a
+     * NullPointerException! see https://stackoverflow.com/questions/11114665/org-xml-sax-saxparseexception-premature-end-of-file-for-valid-xml
      *
      * @throws IllegalStateException if marshaller could not be instantiated
      */
