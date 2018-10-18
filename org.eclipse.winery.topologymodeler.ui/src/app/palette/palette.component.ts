@@ -12,18 +12,17 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
-import { EntityType, TNodeTemplate, Visuals } from '../models/ttopology-template';
+import { TNodeTemplate, Visuals } from '../models/ttopology-template';
 import { NewNodeIdTypeColorPropertiesModel } from '../models/newNodeIdTypeColorModel';
 import { isNullOrUndefined } from 'util';
 import { Subscription } from 'rxjs';
 import { Utils } from '../models/utils';
 import { EntityTypesModel } from '../models/entityTypesModel';
-import { NodeVisualsModel } from '../models/nodeVisualsModel';
 import { GroupedNodeTypeModel } from '../models/groupedNodeTypeModel';
 import { hostURL } from '../models/configuration';
 
@@ -65,9 +64,9 @@ import { hostURL } from '../models/configuration';
             })),
             transition('left => top', animate('50ms ease-in')),
             transition('top => left', animate('50ms ease-in', keyframes([
-                style({opacity: '1', transform: 'rotate(0deg) translateY(0px) translateX(0px)'}),
-                style({opacity: '0', transform: 'rotate(-45deg) translateY(-75px) translateX(-75px)'}),
-                style({opacity: '1', transform: 'rotate(-90deg) translateY(-135px) translateX(-135px)'})
+                style({ opacity: '1', transform: 'rotate(0deg) translateY(0px) translateX(0px)' }),
+                style({ opacity: '0', transform: 'rotate(-45deg) translateY(-75px) translateX(-75px)' }),
+                style({ opacity: '1', transform: 'rotate(-90deg) translateY(-135px) translateX(-135px)' })
             ])))
         ])
     ]
@@ -258,7 +257,8 @@ export class PaletteComponent implements OnDestroy {
                 // if any is defined with at least one element it's a KV property, sets default values if there aren't
                 // any in the node template
                 if (nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any) {
-                    if (nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any.length > 0) {
+                    if (nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any.length > 0 &&
+                        nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any.propertyDefinitionKVList) {
                         const properties = {
                             kvproperties: this.setKVProperties(nodeType)
                         };
