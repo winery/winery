@@ -258,20 +258,20 @@ export class PaletteComponent implements OnDestroy {
                 // any in the node template
                 if (nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any) {
                     if (nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any.length > 0 &&
-                        nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any.propertyDefinitionKVList) {
+                        nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any[0].propertyDefinitionKVList) {
                         const properties = {
                             kvproperties: this.setKVProperties(nodeType)
                         };
                         return properties;
                     }
                     // if propertiesDefinition is defined it's a XML property
-                } else if (nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition) {
-                    if (nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element) {
-                        const properties = {
-                            any: nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element
-                        };
-                        return properties;
-                    }
+                } else if (nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition
+                    && nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element) {
+                    const properties = {
+                        any: nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element
+                    };
+                    return properties;
+
                 } else {
                     // else no properties
                     return null;
