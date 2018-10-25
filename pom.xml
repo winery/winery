@@ -82,6 +82,7 @@
         <org.jgrapht.jgrapht-core.version>1.0.1</org.jgrapht.jgrapht-core.version>
 
         <!-- grouped libraries -->
+        <org.apache.cxf.version>2.7.6</org.apache.cxf.version>
         <org.slf4j>1.7.25</org.slf4j>
         <junit.jupiter.version>5.2.0</junit.jupiter.version>
         <junit.platform.version>1.2.0</junit.platform.version>
@@ -494,9 +495,16 @@
                                             <!-- 
                                                 SECTION: Special artifact imports that fix some failed dependency chains
                                              -->
-                                            
+                                            <!-- fixes missing sun misc provision on linux hosts -->
                                             <artifact>
                                                 <id>com.diffplug.osgi:com.diffplug.osgi.extension.sun.misc:0.0.0</id>
+                                            </artifact>
+                                            <!-- 
+                                                is only included in certain configurations of cxf-rt-frontent-jaxws
+                                                Accordingly we add it explicitly here
+                                             -->
+                                            <artifact>
+                                                <id>org.apache.cxf:cxf-rt-transports-http:${org.apache.cxf.version}</id>
                                             </artifact>
                                             <!-- Sidesteps the incorrect export, should be fixed with 0.96 -->
                                             <artifact>
