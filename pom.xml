@@ -244,6 +244,21 @@
                                         <artifacts>
                                             <artifact>
                                                 <id>
+                                                    org.eclipse.winery:org.eclipse.winery.accountability:${project.version}
+                                                </id>
+                                                <source>true</source>
+                                                <transitive>true</transitive>
+                                                <excludes>
+                                                    <exclude>org.eclipse.winery*</exclude>
+                                                    <exclude>com.github.jnr:*:::</exclude>
+                                                </excludes>
+                                                <instructions>
+                                                    <Import-Package>*;resolution:=optional</Import-Package>
+                                                    <Export-Package>org.eclipse.winery.accountability.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                </instructions>
+                                            </artifact>
+                                            <artifact>
+                                                <id>
                                                     org.eclipse.winery:org.eclipse.winery.model.bpmn4tosca:${project.version}
                                                 </id>
                                                 <source>true</source>
