@@ -23,22 +23,22 @@ import {
     SimpleChanges,
     ViewChild
 } from '@angular/core';
-import { ModalDirective } from 'ngx-bootstrap';
-import { TPolicy } from '../../models/policiesModalData';
-import { TDeploymentArtifact } from '../../models/artifactsModalData';
-import { QNameWithTypeApiData } from '../../models/generateArtifactApiData';
-import { EntityTypesModel } from '../../models/entityTypesModel';
-import { BackendService } from '../../services/backend.service';
-import { IWineryState } from '../../redux/store/winery.store';
-import { NgRedux } from '@angular-redux/store';
-import { isNullOrUndefined } from 'util';
-import { backendBaseURL, hostURL } from '../../models/configuration';
-import { WineryActions } from '../../redux/actions/winery.actions';
-import { ExistsService } from '../../services/exists.service';
-import { ToastrService } from 'ngx-toastr';
-import { DeploymentArtifactOrPolicyModalData, ModalVariant, ModalVariantAndState } from './modal-model';
-import { EntitiesModalService, OpenModalEvent } from './entities-modal.service';
-import { QName } from '../../models/qname';
+import {ModalDirective} from 'ngx-bootstrap';
+import {TPolicy} from '../../models/policiesModalData';
+import {TDeploymentArtifact} from '../../models/artifactsModalData';
+import {QNameWithTypeApiData} from '../../models/generateArtifactApiData';
+import {EntityTypesModel} from '../../models/entityTypesModel';
+import {BackendService} from '../../services/backend.service';
+import {IWineryState} from '../../redux/store/winery.store';
+import {NgRedux} from '@angular-redux/store';
+import {isNullOrUndefined} from 'util';
+import {backendBaseURL, hostURL} from '../../models/configuration';
+import {WineryActions} from '../../redux/actions/winery.actions';
+import {ExistsService} from '../../services/exists.service';
+import {ToastrService} from 'ngx-toastr';
+import {DeploymentArtifactOrPolicyModalData, ModalVariant, ModalVariantAndState} from './modal-model';
+import {EntitiesModalService, OpenModalEvent} from './entities-modal.service';
+import {QName} from '../../models/qname';
 
 @Component({
     selector: 'winery-entities-modal',
@@ -62,11 +62,11 @@ export class EntitiesModalComponent implements OnInit, AfterViewInit, OnChanges 
         policiesModalData: PoliciesModalData;*/
 
     deploymentArtifactOrPolicyModalData: DeploymentArtifactOrPolicyModalData;
-    modalSelectedRadioButton = 'createArtifactTemplate';
-    artifactTemplateAlreadyExists: boolean;
-    // artifact creation
-    artifact: QNameWithTypeApiData = new QNameWithTypeApiData();
-    artifactUrl: string;
+    modalSelectedRadioButton = '';
+    artifactOrPolicyAlreadyExists: boolean;
+    // artifactOrPolicy creation
+    artifactOrPolicy: QNameWithTypeApiData = new QNameWithTypeApiData();
+    artifactOrPolicyUrl: string;
     // needed for edit and delete tasks
     modalVariantForEditDeleteTasks = '(none)';
 
@@ -120,8 +120,9 @@ export class EntitiesModalComponent implements OnInit, AfterViewInit, OnChanges 
      * Updates the modal state when needed
      */
     updateModal() {
+        // Ths if statement sets the initial radio button state
         if (this.modalVariantAndState.modalVariant.toString() === 'policies') {
-            this.modalSelectedRadioButton = 'linkpolicies';
+            this.modalSelectedRadioButton = 'createPolicyTemplate';
         } else {
             this.modalSelectedRadioButton = 'createArtifactTemplate';
         }
@@ -151,10 +152,10 @@ export class EntitiesModalComponent implements OnInit, AfterViewInit, OnChanges 
      * This method gets called when the add button is pressed inside the "Add Deployment Artifact" modal
      */
     addDeploymentArtifactOrPolicy() {
+        this.artifactOrPolicy.localname = this.deploymentArtifactOrPolicyModalData.modalTemplateName;
+        this.artifactOrPolicy.namespace = this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace;
+        this.artifactOrPolicy.type = this.deploymentArtifactOrPolicyModalData.modalType;
         if (this.modalSelectedRadioButton === 'createArtifactTemplate') {
-            this.artifact.localname = this.deploymentArtifactOrPolicyModalData.modalTemplateName;
-            this.artifact.namespace = this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace;
-            this.artifact.type = this.deploymentArtifactOrPolicyModalData.modalType;
             const deploymentArtifactToBeSavedToRedux: TDeploymentArtifact = new TDeploymentArtifact(
                 [],
                 [],
@@ -164,7 +165,7 @@ export class EntitiesModalComponent implements OnInit, AfterViewInit, OnChanges 
                 this.deploymentArtifactOrPolicyModalData.modalTemplateRef
             );
             // POST to the backend
-            this.backendService.createNewArtifact(this.artifact)
+            this.backendService.createNewArtifactOrPolicy(this.artifactOrPolicy, 'artifact')
                 .subscribe(res => {
                     if (res.ok === true) {
                         this.alert.success('<p>Saved the Deployment Artifact!<br>' + 'Response Status: '
@@ -178,6 +179,32 @@ export class EntitiesModalComponent implements OnInit, AfterViewInit, OnChanges 
                     // get list of artifactTemplates to reflect latest change
                     this.backendService.requestArtifactTemplates().subscribe((artifactTemplates) => {
                         this.deploymentArtifactOrPolicyModalData.artifactTemplates = artifactTemplates;
+                    });
+                });
+        } else if (this.modalSelectedRadioButton === 'createPolicyTemplate') {
+            const policyToBeSavedToRedux: TPolicy = new TPolicy(
+                this.deploymentArtifactOrPolicyModalData.modalName,
+                this.deploymentArtifactOrPolicyModalData.modalTemplateRef,
+                this.deploymentArtifactOrPolicyModalData.modalType,
+                [],
+                [],
+                {}
+            );
+            // POST to the backend
+            this.backendService.createNewArtifactOrPolicy(this.artifactOrPolicy, 'policy')
+                .subscribe(res => {
+                    if (res.ok === true) {
+                        this.alert.success('<p>Saved the Policy Template!<br>' + 'Response Status: '
+                            + res.statusText + ' ' + res.status + '</p>');
+                        // if saved successfully to backend, also add to topologyTemplate
+                        this.savePoliciesToModel(policyToBeSavedToRedux);
+                    } else {
+                        this.alert.info('<p>Something went wrong! The Policy was not added to the Topology Template!<br>' + 'Response Status: '
+                            + res.statusText + ' ' + res.status + '</p>');
+                    }
+                    // get list of policyTemplates to reflect latest change
+                    this.backendService.requestPolicyTemplates().subscribe((policyTemplates) => {
+                        this.deploymentArtifactOrPolicyModalData.policyTemplates = policyTemplates;
                     });
                 });
         } else if (this.modalSelectedRadioButton === 'link' + 'deployment_artifacts') {
@@ -228,7 +255,7 @@ export class EntitiesModalComponent implements OnInit, AfterViewInit, OnChanges 
     }
 
     /**
-     * Auto-completes other relevant values when a deployment-artifact or policy type has been selected in
+     * Auto-completes other relevant values when a deployment-artifactOrPolicy or policy type has been selected in
      * the modal
      */
     onChangeArtifactTypeOrPolicyTypeInModal(artifactTypeOrPolicyType: any, variant: string): void {
@@ -272,7 +299,8 @@ export class EntitiesModalComponent implements OnInit, AfterViewInit, OnChanges 
         console.log(this.deploymentArtifactOrPolicyModalData);
     }
 
-    checkIfArtifactTemplateAlreadyExists(event: any, changedField: string) {
+    checkIfArtifactOrPolicyAlreadyExists(event: any, changedField: string) {
+        let url = '';
         if (changedField === 'templateName') {
             this.deploymentArtifactOrPolicyModalData.modalTemplateName = event.target.value;
         } else if (changedField === 'namespace') {
@@ -282,13 +310,22 @@ export class EntitiesModalComponent implements OnInit, AfterViewInit, OnChanges 
             this.deploymentArtifactOrPolicyModalData.modalTemplateName)) {
             this.deploymentArtifactOrPolicyModalData.modalTemplateRef = '{' +
                 this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace + '}' + this.deploymentArtifactOrPolicyModalData.modalTemplateName;
-            const url = backendBaseURL + '/artifacttemplates/'
-                + encodeURIComponent(encodeURIComponent(this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace)) + '/'
-                + this.deploymentArtifactOrPolicyModalData.modalTemplateName + '/';
+
+            if (this.modalVariantAndState.modalVariant === 'policies') {
+                url = backendBaseURL + '/policytemplates/'
+                    + encodeURIComponent(encodeURIComponent(this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace)) + '/'
+                    + this.deploymentArtifactOrPolicyModalData.modalTemplateName + '/';
+
+            } else {
+                url = backendBaseURL + '/artifacttemplates/'
+                    + encodeURIComponent(encodeURIComponent(this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace)) + '/'
+                    + this.deploymentArtifactOrPolicyModalData.modalTemplateName + '/';
+            }
+
             this.existsService.check(url)
                 .subscribe(
-                    data => this.artifactTemplateAlreadyExists = true,
-                    error => this.artifactTemplateAlreadyExists = false
+                    data => this.artifactOrPolicyAlreadyExists = true,
+                    error => this.artifactOrPolicyAlreadyExists = false
                 );
         }
     }
@@ -384,10 +421,10 @@ export class EntitiesModalComponent implements OnInit, AfterViewInit, OnChanges 
     }
 
     private makeArtifactUrl() {
-        this.artifactUrl = backendBaseURL + '/artifacttemplates/' + encodeURIComponent(encodeURIComponent(
+        this.artifactOrPolicyUrl = backendBaseURL + '/artifacttemplates/' + encodeURIComponent(encodeURIComponent(
             this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace))
             + '/' + this.deploymentArtifactOrPolicyModalData.modalTemplateName + '/';
-        // TODO: add upload ability "this.uploadUrl = this.artifactUrl + 'files/';"
+        // TODO: add upload ability "this.uploadUrl = this.artifactOrPolicyUrl + 'files/';"
     }
 
 }

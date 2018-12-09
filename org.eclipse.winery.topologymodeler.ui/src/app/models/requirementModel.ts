@@ -21,7 +21,7 @@ export class RequirementModel {
     public id: string;
     public name: string;
     public otherAttributes: any;
-    public type: any;
+    public type: string;
     public properties?: any;
 
     constructor() {

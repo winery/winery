@@ -51,9 +51,9 @@
             </table>
         </div>
         <div class="col-sm-3">
-            <img *ngIf="!nodeTemplate.visuals.imageUrl" src="http://via.placeholder.com/50x50"
+            <img *ngIf="!nodeTemplate.visuals?.imageUrl" src="http://via.placeholder.com/50x50"
                  style="border-radius: 10%; margin-top: 1px; width: 50px; height: auto">
-            <img *ngIf="nodeTemplate.visuals.imageUrl" src="{{hostURL}}{{nodeTemplate.visuals.imageUrl}}">
+            <img *ngIf="nodeTemplate.visuals?.imageUrl" src="{{hostURL}}{{nodeTemplate.visuals?.imageUrl}}">
         </div>
         <div id="specifierDiv" class="col-sm-8" style="padding-left: 0; padding-right: 0;">
             <table class="header-table" style="margin-left: 6px">
@@ -109,7 +109,7 @@
              (mousedown)="passCurrentType($event)">
             <button *ngFor="let rel of entityTypes.relationshipTypes"
                     type="button" class="btn btn-sm btn-outline-secondary btn-block"
-                    [style.border-color]="this.nodeTemplate.color" [style.color]="rel.color"
+                    [style.border-color]="this.nodeTemplate?.color" [style.color]="rel.color"
                     style="font-size: x-small;">
                 <i class="fa fa-arrow-circle-o-right" aria-hidden="true" style="padding-left: 1em;"></i> {{rel.id}}
             </button>

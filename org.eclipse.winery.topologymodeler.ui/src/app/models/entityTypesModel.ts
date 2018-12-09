@@ -22,14 +22,14 @@ export class EntityTypesModel {
     artifactTemplates: any;
     artifactTypes: EntityType[];
     capabilityTypes: EntityType[];
-    groupedNodeTypes: any;
+    groupedNodeTypes: any[];
     nodeVisuals: Visuals[];
     relationshipVisuals: Visuals[];
     policyTemplates: Entity[];
     policyTypes: EntityType[];
     relationshipTypes: VisualEntityType[];
     requirementTypes: EntityType[];
-    unGroupedNodeTypes: any;
+    unGroupedNodeTypes: EntityType[];
 }
 
 /**

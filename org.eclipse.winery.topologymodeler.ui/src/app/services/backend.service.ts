@@ -83,7 +83,6 @@ export class BackendService {
      * Requests all entities together.
      * We use forkJoin() to await all responses from the backend.
      * This is required
-     * @returns data  The JSON from the server
      */
     private requestAllEntitiesAtOnce(): Observable<any> {
         if (this.configuration) {
@@ -107,7 +106,6 @@ export class BackendService {
      * the old topology as well as the diff representation.
      * We use Observable.forkJoin to await all responses from the backend.
      * This is required
-     * @returns data  The JSON from the server
      */
     private requestTopologyTemplateAndVisuals(): Observable<any> {
         if (this.configuration) {
@@ -144,7 +142,6 @@ export class BackendService {
 
     /**
      * Requests all policy types from the backend
-     * @returns {Observable<string>}
      */
     private requestPolicyTypes(): Observable<any> {
         if (this.configuration) {
@@ -154,7 +151,6 @@ export class BackendService {
 
     /**
      * Requests all requirement types from the backend
-     * @returns {Observable<string>}
      */
     private requestRequirementTypes(): Observable<any> {
         if (this.configuration) {
@@ -164,7 +160,6 @@ export class BackendService {
 
     /**
      * Requests all capability types from the backend
-     * @returns {Observable<string>}
      */
     private requestCapabilityTypes(): Observable<any> {
         if (this.configuration) {
@@ -174,7 +169,6 @@ export class BackendService {
 
     /**
      * Requests all grouped node types from the backend
-     * @returns {Observable<string>}
      */
     private requestGroupedNodeTypes(): Observable<any> {
         if (this.configuration) {
@@ -184,7 +178,6 @@ export class BackendService {
 
     /**
      * Requests all ungrouped node types from the backend
-     * @returns {Observable<string>}
      */
     private requestNodeTypes(): Observable<any> {
         if (this.configuration) {
@@ -193,18 +186,7 @@ export class BackendService {
     }
 
     /**
-     * Requests all policy templates from the backend
-     * @returns {Observable<string>}
-     */
-    private requestPolicyTemplates(): Observable<any> {
-        if (this.configuration) {
-            return this.http.get(backendBaseURL + '/policytemplates', { headers: this.headers });
-        }
-    }
-
-    /**
      * Requests all artifact types from the backend
-     * @returns {Observable<string>}
      */
     private requestArtifactTypes(): Observable<any> {
         if (this.configuration) {
@@ -214,7 +196,6 @@ export class BackendService {
 
     /**
      * Requests all artifact templates from the backend
-     * @returns {Observable<string>}
      */
     requestArtifactTemplates(): Observable<any> {
         if (this.configuration) {
@@ -223,8 +204,16 @@ export class BackendService {
     }
 
     /**
+     * Requests all policy templates from the backend
+     */
+    requestPolicyTemplates(): Observable<any> {
+        if (this.configuration) {
+            return this.http.get(backendBaseURL + '/policytemplates', { headers: this.headers });
+        }
+    }
+
+    /**
      * Requests all relationship types from the backend
-     * @returns {Observable<string>}
      */
     private requestRelationshipTypes(): Observable<any> {
         if (this.configuration) {
@@ -234,7 +223,6 @@ export class BackendService {
 
     /**
      * Requests all namespaces from the backend
-     * @returns {Observable<any>} json of namespaces
      */
     requestNamespaces(all: boolean = false): Observable<any> {
         if (this.configuration) {
@@ -250,8 +238,6 @@ export class BackendService {
 
     /**
      * This method retrieves a single Artifact Template from the backend.
-     * @param {QNameWithTypeApiData} artifact
-     * @returns {Observable<any>}
      */
     requestArtifactTemplate(artifact: QNameWithTypeApiData): Observable<any> {
         const url = this.configuration.repositoryURL + '/artifacttemplates/'
@@ -261,8 +247,6 @@ export class BackendService {
 
     /**
      * This method retrieves a single Policy Template from the backend.
-     * @param {QNameWithTypeApiData} artifact
-     * @returns {Observable<any>}
      */
     requestPolicyTemplate(artifact: QNameWithTypeApiData): Observable<any> {
         const url = this.configuration.repositoryURL + '/policytemplates/'
@@ -272,7 +256,6 @@ export class BackendService {
 
     /**
      * Saves the topologyTemplate back to the repository
-     * @returns {Observable<Response>}
      */
     saveTopologyTemplate(topologyTemplate: any): Observable<HttpResponse<string>> {
         if (this.configuration) {
@@ -287,7 +270,6 @@ export class BackendService {
 
     /**
      * Imports the template.
-     * @returns {Observable<any>}
      */
     importTopology(importedTemplateQName: string): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders().set('Content-Type', 'text/plain');
@@ -316,7 +298,6 @@ export class BackendService {
 
     /**
      * Splits the template.
-     * @returns {Observable<any>}
      */
     splitTopology(): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
@@ -326,7 +307,6 @@ export class BackendService {
 
     /**
      * Matches the template.
-     * @returns {Observable<any>}
      */
     matchTopology(): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
@@ -335,19 +315,21 @@ export class BackendService {
     }
 
     /**
-     * Used for creating new artifact templates on the backend.
-     * @param {QNameWithTypeApiData} artifact
-     * @returns {Observable<any>}
+     * Used for creating new artifactOrPolicy templates on the backend.
      */
-    createNewArtifact(artifact: QNameWithTypeApiData): Observable<HttpResponse<string>> {
+    createNewArtifactOrPolicy(artifactOrPolicy: QNameWithTypeApiData, type: string): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
-        const url = this.configuration.repositoryURL + '/artifacttemplates/';
-        return this.http.post(url + '/', artifact, { headers: headers, responseType: 'text', observe: 'response' });
+        let url;
+        if (type === 'policy') {
+            url = this.configuration.repositoryURL + '/policytemplates/';
+        } else {
+            url = this.configuration.repositoryURL + '/artifacttemplates/';
+        }
+        return this.http.post(url + '/', artifactOrPolicy, {headers: headers, responseType: 'text', observe: 'response'});
     }
 
     /**
      * Requests all topology template ids
-     * @returns {Observable<string>}
      */
     requestAllTopologyTemplates(): Observable<EntityType[]> {
         const url = hostURL + urlElement.Winery + urlElement.ServiceTemplates;
