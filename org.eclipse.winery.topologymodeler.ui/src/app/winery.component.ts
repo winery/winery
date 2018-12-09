@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit } from '@angular/core';
 import {
     Entity, EntityType, TNodeTemplate, TRelationshipTemplate, TTopologyTemplate, VisualEntityType
 } from './models/ttopology-template';
@@ -30,6 +30,7 @@ import { ActivatedRoute } from '@angular/router';
 import { TopologyModelerConfiguration } from './models/topologyModelerConfiguration';
 import { ToastrService } from 'ngx-toastr';
 import { TopologyRendererState } from './redux/reducers/topologyRenderer.reducer';
+import { TopologyRendererActions } from './redux/actions/topologyRenderer.actions';
 
 /**
  * This is the root component of the topology modeler.
@@ -39,7 +40,7 @@ import { TopologyRendererState } from './redux/reducers/topologyRenderer.reducer
     templateUrl: './winery.component.html',
     styleUrls: ['./winery.component.css']
 })
-export class WineryComponent implements OnInit {
+export class WineryComponent implements OnInit, AfterViewInit {
 
     // If this input variable is not null, it means that data is passed to the topologymodeler to be rendered.
     @Input() topologyModelerData: TopologyModelerInputDataFormat;
@@ -51,6 +52,8 @@ export class WineryComponent implements OnInit {
     entityTypes: EntityTypesModel;
     hideNavBarState: boolean;
     subscriptions: Array<Subscription> = [];
+    someNodeMissingCoordinates = false;
+
     // This variable is set via the topologyModelerData input and decides if the editing functionalities are enabled
     readonly: boolean;
     refiningTopology: boolean;
@@ -65,6 +68,7 @@ export class WineryComponent implements OnInit {
                 private appReadyEvent: AppReadyEventService,
                 public backendService: BackendService,
                 private ngRedux: NgRedux<IWineryState>,
+                private actions: TopologyRendererActions,
                 private alert: ToastrService,
                 private activatedRoute: ActivatedRoute) {
         this.subscriptions.push(this.ngRedux.select(state => state.wineryState.hideNavBarAndPaletteState)
@@ -108,11 +112,16 @@ export class WineryComponent implements OnInit {
         }
     }
 
+    ngAfterViewInit() {
+        // auto layout when some nodes are missing coordinates
+        if (this.someNodeMissingCoordinates) {
+            this.ngRedux.dispatch(this.actions.executeLayout());
+        }
+    }
+
     /**
      * Save the received Array of Entity Types inside the respective variables in the entityTypes array of arrays
      * which is getting passed to the palette and the topology renderer
-     * @param {Array<any>} entityTypeJSON
-     * @param {string} entityType
      */
     initEntityType(entityTypeJSON: Array<any>, entityType: string): void {
         if (!entityTypeJSON || entityTypeJSON.length === 0) {
@@ -197,15 +206,6 @@ export class WineryComponent implements OnInit {
             }
             case 'unGroupedNodeTypes': {
                 this.entityTypes.unGroupedNodeTypes = entityTypeJSON;
-                this.entityTypes.nodeVisuals
-                    .forEach(nodeVisual => {
-                        const nodeId = nodeVisual.typeId.substring(nodeVisual.typeId.indexOf('}') + 1);
-                        this.entityTypes.unGroupedNodeTypes.forEach(node => {
-                            if (node.id === nodeId) {
-                                node.color = nodeVisual.color;
-                            }
-                        });
-                    });
                 break;
             }
             case 'relationshipTypes': {

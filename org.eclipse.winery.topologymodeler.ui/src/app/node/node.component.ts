@@ -134,8 +134,6 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     /**
      * This function determines which kind of properties the nodeType embodies.
      * We have 3 possibilities: none, XML element, or Key value pairs.
-     * @param {string} type
-     * @param groupedNodeTypes
      */
     findOutPropertyDefinitionTypeForProperties(type: string, groupedNodeTypes: Array<GroupedNodeTypeModel>): void {
         let propertyDefinitionTypeAssigned: boolean;
@@ -171,7 +169,9 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
      */
     ngOnInit() {
         this.differ = this.differs.find([]).create();
-        this.nodeClass = this.nodeTemplate.visuals.pattern ? 'pattern' : 'nodeTemplate';
+        if (!isNullOrUndefined(this.nodeTemplate.visuals)) {
+            this.nodeClass = this.nodeTemplate.visuals.pattern ? 'pattern' : 'nodeTemplate';
+        }
     }
 
     /**

@@ -22,9 +22,9 @@ export class DeploymentArtifactsModalData {
                 public artifactType?: string,
                 public artifactTypes?: string[],
                 public artifactTemplates?: string[],
-                public artifactTemplateName?: any,
-                public artifactTemplateRef?: any,
-                public artifactTemplateNameSpace?: any,
+                public artifactTemplateName?: string,
+                public artifactTemplateRef?: string,
+                public artifactTemplateNameSpace?: string,
                 public nodeTemplateId?: string,
                 public deploymentArtifacts?: any) {
     }

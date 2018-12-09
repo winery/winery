@@ -13,12 +13,10 @@
  ********************************************************************************/
 
 import { TTopologyTemplate, Visuals } from './ttopology-template';
+import { TopologyModelerConfiguration } from './topologyModelerConfiguration';
 
 export interface TopologyModelerInputDataFormat {
-    configuration: {
-        readonly: boolean,
-        endpointConfig?: any;
-    };
+    configuration: TopologyModelerConfiguration;
     topologyTemplate: TTopologyTemplate;
     visuals: Visuals;
 }

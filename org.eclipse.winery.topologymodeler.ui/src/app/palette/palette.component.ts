@@ -199,30 +199,6 @@ export class PaletteComponent implements OnDestroy {
     }
 
     /**
-     * This function transforms the node's KV properties from an array to an object representation
-     * @param any type : the element type, e.g. capabilityType, requirementType etc.
-     * @return newKvProperties : properties as a object
-     */
-    setKVProperties(type: any): any {
-        let newKVProperies;
-        const kvProperties = type.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any[0].propertyDefinitionKVList;
-        for (const obj of kvProperties) {
-            const key = obj.key;
-            let value;
-            if (isNullOrUndefined(obj.value)) {
-                value = '';
-            } else {
-                value = obj.value;
-            }
-            const keyValuePair = {
-                [key]: value
-            };
-            newKVProperies = { ...newKVProperies, ...keyValuePair };
-        }
-        return newKVProperies;
-    }
-
-    /**
      * Generates node id, type, color and properties from the node types
      * @param name
      * @return result
@@ -236,8 +212,7 @@ export class PaletteComponent implements OnDestroy {
                     const result = {
                         id: node.id,
                         type: node.qName,
-                        properties: this.getDefaultPropertiesFromNodeTypes(name),
-                        color: node.color,
+                        properties: this.getDefaultPropertiesFromNodeTypes(name)
                     };
                     return result;
                 }
@@ -260,7 +235,7 @@ export class PaletteComponent implements OnDestroy {
                     if (nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any.length > 0 &&
                         nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any[0].propertyDefinitionKVList) {
                         const properties = {
-                            kvproperties: this.setKVProperties(nodeType)
+                            kvproperties: Utils.setKVProperties(nodeType)
                         };
                         return properties;
                     }

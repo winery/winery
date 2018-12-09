@@ -27,7 +27,7 @@ export class CapabilitiesModalData {
                 public capabilities?: any,
                 public capDefinitionNames?: Array<string>,
                 public nodeId?: string,
-                public propertyType?: any,
+                public propertyType?: string,
                 public properties?: any) {
     }
 }

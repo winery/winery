@@ -33,7 +33,7 @@ export interface ToggleModalDataModel {
     policies: any;
     properties: any;
     requirements: any;
-    targetLocations: any;
+    targetLocations: string;
     type: string;
     x: number;
     y: number;

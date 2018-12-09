@@ -36,7 +36,7 @@ export class DeploymentArtifactsComponent implements OnInit {
     }
 
     /**
-     * Propagates the click event to node.component, where deployment artifact modal gets opened.
+     * Propagates the click event to node.component, where deployment artifactOrPolicy modal gets opened.
      * @param $event
      */
     public toggleModal($event) {

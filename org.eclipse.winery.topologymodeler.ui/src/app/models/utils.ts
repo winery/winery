@@ -18,6 +18,9 @@ import { DifferenceStates, ToscaDiff, VersionUtils } from './ToscaDiff';
 
 export class Utils {
 
+    static HORIZONTAL_OFFSET_FOR_NODES_WITHOUT_COORDINATES = 350;
+    static VERTICAL_OFFSET_FOR_NODES_WITHOUT_COORDINATES = 200;
+
     static createTNodeTemplateFromObject(node: TNodeTemplate, nodeVisuals: Visuals[], state?: DifferenceStates): TNodeTemplate {
         const nodeVisualsObject = this.getNodeVisualsForNodeTemplate(node.type, nodeVisuals, state);
         let properties;
@@ -107,7 +110,12 @@ export class Utils {
                              topologyDifferences?: [ToscaDiff, TTopologyTemplate]): Array<TNodeTemplate> {
         const nodeTemplates: TNodeTemplate[] = [];
         if (nodeTemplateArray.length > 0) {
-            nodeTemplateArray.forEach(node => {
+            nodeTemplateArray.forEach((node, index) => {
+                const offset = 10 * index;
+                if (!node.x || !node.y) {
+                    node.x = this.HORIZONTAL_OFFSET_FOR_NODES_WITHOUT_COORDINATES + offset;
+                    node.y = this.VERTICAL_OFFSET_FOR_NODES_WITHOUT_COORDINATES + offset;
+                }
                 const state = topologyDifferences ? DifferenceStates.UNCHANGED : null;
                 nodeTemplates.push(
                     Utils.createTNodeTemplateFromObject(node, nodeVisuals, state)
@@ -116,6 +124,30 @@ export class Utils {
         }
 
         return nodeTemplates;
+    }
+
+    /**
+     * This function sets KV properties
+     * @param any type: the element type, e.g. capabilityType, requirementType etc.
+     * @returns newKVProperties: KV Properties as Object
+     */
+    static setKVProperties(type: any): any {
+        let newKVProperies;
+        const kvProperties = type.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any[0].propertyDefinitionKVList;
+        for (const obj of kvProperties) {
+            const key = obj.key;
+            let value;
+            if (isNullOrUndefined(obj.value)) {
+                value = '';
+            } else {
+                value = obj.value;
+            }
+            const keyValuePair = {
+                [key]: value
+            };
+            newKVProperies = { ...newKVProperies, ...keyValuePair };
+        }
+        return newKVProperies;
     }
 
     static initRelationTemplates(relationshipTemplateArray: Array<TRelationshipTemplate>,

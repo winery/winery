@@ -12,13 +12,13 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
-import { Directive, ElementRef, } from '@angular/core';
+import {Directive, ElementRef} from '@angular/core';
 import ELK from 'elkjs/lib/elk.bundled.js';
-import { TNodeTemplate, TRelationshipTemplate } from '../models/ttopology-template';
-import { ToastrService } from 'ngx-toastr';
-import { LayoutChildNodeModel } from '../models/layoutChildNodeModel';
-import { NodeComponent } from '../node/node.component';
-import { align } from '../models/enums';
+import {TNodeTemplate, TRelationshipTemplate} from '../models/ttopology-template';
+import {ToastrService} from 'ngx-toastr';
+import {LayoutChildNodeModel} from '../models/layoutChildNodeModel';
+import {NodeComponent} from '../node/node.component';
+import {align} from '../models/enums';
 
 @Directive({
     selector: '[wineryLayout]'
@@ -27,8 +27,8 @@ import { align } from '../models/enums';
  * Manages all layouting operations besides drag and drop (this is in canvas.ts)
  */
 export class LayoutDirective {
-    readonly nodeXOffset = 40;
-    readonly nodeYOffset = 50;
+    readonly nodeXOffset = 340;
+    readonly nodeYOffset = 100;
     private jsPlumbInstance: any;
 
     constructor(private alert: ToastrService,
@@ -50,7 +50,7 @@ export class LayoutDirective {
      * @param relationshipTemplates
      */
     public layoutNodes(nodeChildrenArray: Array<NodeComponent>,
-                       relationshipTemplates: Array<TRelationshipTemplate>): void {
+                       relationshipTemplates: Array<TRelationshipTemplate>): Promise<boolean> {
         // These are the input arrays for eclipse layout kernel (ELK).
         const children: LayoutChildNodeModel[] = [];
         const edges: any[] = [];
@@ -87,10 +87,14 @@ export class LayoutDirective {
             children: children,
             edges: edges,
         };
+        return new Promise(resolve => {
 
-        const promise = elk.layout(graph);
-        promise.then((data) => {
-            this.applyPositions(data, nodeChildrenArray);
+            const promise = elk.layout(graph);
+            promise.then((data) => {
+                this.applyPositions(data, nodeChildrenArray).then(() => {
+                    resolve(true);
+                });
+            });
         });
     }
 
@@ -102,14 +106,19 @@ export class LayoutDirective {
      * @param jsPlumbInstance
      */
     private applyPositions(data: any,
-                           nodeChildrenArray: Array<NodeComponent>): void {
-        nodeChildrenArray.forEach((node, index) => {
-            // apply the new positions to the nodes
-            node.nodeTemplate.x = data.children[index].x + this.nodeXOffset;
-            node.nodeTemplate.y = data.children[index].y + this.nodeYOffset;
+                           nodeChildrenArray: Array<NodeComponent>): Promise<boolean> {
+        return new Promise(resolve => {
+
+            nodeChildrenArray.forEach((node, index) => {
+                // apply the new positions to the nodes
+                node.nodeTemplate.x = data.children[index].x + this.nodeXOffset;
+                node.nodeTemplate.y = data.children[index].y + this.nodeYOffset;
+            });
+
+            this.repaintEverything();
+            resolve(true);
         });
 
-        this.repaintEverything();
     }
 
     /**
@@ -119,7 +128,7 @@ export class LayoutDirective {
      * @param selectedNodes
      * @param alignMode
      */
-    public align(nodeChildrenArray: Array<NodeComponent>, selectedNodes: Array<TNodeTemplate>, alignMode): void {
+    public align(nodeChildrenArray: Array<NodeComponent>, selectedNodes: Array<TNodeTemplate>, alignMode): Promise<boolean> {
         let result;
         let selectedNodeComponents;
         if (nodeChildrenArray.length !== selectedNodes.length) {
@@ -128,25 +137,28 @@ export class LayoutDirective {
         } else {
             selectedNodeComponents = nodeChildrenArray;
         }
-        // if there is only 1 node selected, do nothing
-        if (!(selectedNodeComponents.length === 1)) {
-            const topPositions = selectedNodeComponents.map((node) => {
-                return node.elRef.nativeElement.firstChild.offsetTop;
-            });
-            // add biggest value to smallest and divide by 2, to get the exact middle of both
-            result = ((Math.max.apply(null, topPositions) + Math.min.apply(null, topPositions)) / 2);
-            // iterate over the nodes again, and apply positions
-            selectedNodeComponents.forEach((node) => {
-                if (alignMode === align.Horizontal) {
-                    node.nodeTemplate.y = result;
-                } else {
-                    node.nodeTemplate.x = result;
-                }
-            });
-            this.repaintEverything();
-        } else {
-            this.alert.info('You have only one node selected.');
-        }
+        return new Promise((resolve, reject) => {
+            // if there is only 1 node selected, do nothing
+            if (!(selectedNodeComponents.length === 1)) {
+                const topPositions = selectedNodeComponents.map((node) => {
+                    return node.elRef.nativeElement.firstChild.offsetTop;
+                });
+                // add biggest value to smallest and divide by 2, to get the exact middle of both
+                result = ((Math.max.apply(null, topPositions) + Math.min.apply(null, topPositions)) / 2);
+                // iterate over the nodes again, and apply positions
+                selectedNodeComponents.forEach((node) => {
+                    if (alignMode === align.Horizontal) {
+                        node.nodeTemplate.y = result;
+                    } else {
+                        node.nodeTemplate.x = result;
+                    }
+                });
+                this.repaintEverything();
+                resolve(true);
+            } else {
+                reject(this.alert.info('You have only one node selected.'));
+            }
+        });
     }
 
     /**
