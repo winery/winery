@@ -31,6 +31,7 @@ import { KeyValueItem } from '../model/keyValueItem';
 import { ConfigurationService } from '../instance/admin/accountability/configuration/configuration.service';
 import { AccountabilityService } from '../instance/admin/accountability/accountability.service';
 import { FileProvenanceElement } from '../model/provenance';
+import { WineryVersion } from '../model/wineryVersion';
 
 const showAll = 'Show all Items';
 const showGrouped = 'Group by Namespace';
@@ -212,7 +213,14 @@ export class SectionComponent implements OnInit, OnDestroy {
 
         resources.forEach(item => {
             const container = new SectionData();
+            item.version = new WineryVersion(item.version.componentVersion,
+                item.version.wineryVersion, item.version.workInProgressVersion, item.version.currentVersion,
+                item.version.latestVersion, item.version.releasable, item.version.editable);
+            item.name = Utils.getNameWithoutVersion(item.name);
+
             container.createContainerCopy(item);
+
+
 
             if (this.componentData.length === 0) {
                 this.componentData.push(container);
