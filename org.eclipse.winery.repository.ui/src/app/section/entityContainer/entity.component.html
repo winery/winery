@@ -18,8 +18,13 @@
         <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIconInList">
     </div>
     <div class="center" [style.width.px]="maxWidth">
-        <div class="{{ containerSizeClass + ' informationContainer '}}">
+        <div *ngIf="data.id" class="{{ containerSizeClass + ' informationContainer '}}">
             <div *ngIf="data.id" class="name">{{ data.name }}</div>
+            <div *ngIf="data.id" class="version">Version: {{ data?.version?.toReadableString() }}</div>
+            <div [ngClass]="{'name': !data.id, 'namespace': data.id}">{{ data.namespace }}</div>
+        </div>
+        <div *ngIf="!data.id" class="{{ containerSizeClass + ' informationContainer '}}">
+            <div class="name">{{ data.name }}</div>
             <div [ngClass]="{'name': !data.id, 'namespace': data.id}">{{ data.namespace }}</div>
         </div>
         <div *ngIf="!data.id" class="badge numberOfComponentInstances">{{ data.count }}</div>

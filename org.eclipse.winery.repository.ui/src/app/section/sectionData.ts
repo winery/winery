@@ -18,6 +18,7 @@ import { WineryVersion } from '../model/wineryVersion';
  * Type definition for data returned by the section service.
  */
 export class SectionData {
+
     id?: string;
     name?: string;
     namespace: string;
@@ -30,7 +31,9 @@ export class SectionData {
         this.id = Utils.getNameWithoutVersion(original.id);
         this.name = Utils.getNameWithoutVersion(original.name);
         this.namespace = original.namespace;
-        this.version = original.version;
+        this.version = new WineryVersion(original.version.componentVersion,
+            original.version.wineryVersion, original.version.workInProgressVersion, original.version.currentVersion,
+            original.version.latestVersion, original.version.releasable, original.version.editable);
         this.versionInstances = [original];
 
         return this;
