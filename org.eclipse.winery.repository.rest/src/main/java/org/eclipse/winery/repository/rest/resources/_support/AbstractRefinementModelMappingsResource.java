@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.rest.resources.patternrefinementmodels;
+package org.eclipse.winery.repository.rest.resources._support;
 
 import java.util.List;
 
@@ -29,12 +29,12 @@ import org.eclipse.winery.repository.rest.RestUtils;
 
 import com.sun.jersey.api.NotFoundException;
 
-public abstract class AbstractPrmMappingsResource {
+public abstract class AbstractRefinementModelMappingsResource {
 
-    protected final PatternRefinementModelResource res;
+    protected final AbstractRefinementModelResource res;
     protected List<? extends HasId> mappings;
 
-    public AbstractPrmMappingsResource(PatternRefinementModelResource res) {
+    public AbstractRefinementModelMappingsResource(AbstractRefinementModelResource res) {
         this.res = res;
     }
 
@@ -58,7 +58,7 @@ public abstract class AbstractPrmMappingsResource {
     }
 
     protected TNodeTemplate getRefinementNodeTemplate(String id) {
-        return getNodeTemplate(this.res.getRefinementStructure().getComponentInstanceJSON().getNodeTemplates(), id);
+        return getNodeTemplate(this.res.getRefinementTopology().getComponentInstanceJSON().getNodeTemplates(), id);
     }
 
     private TNodeTemplate getNodeTemplate(List<TNodeTemplate> nodeTemplates, String id) {

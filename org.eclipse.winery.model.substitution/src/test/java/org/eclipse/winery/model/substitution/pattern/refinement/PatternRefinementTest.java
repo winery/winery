@@ -30,6 +30,7 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
 import org.eclipse.winery.model.tosca.TPrmPropertyMapping;
 import org.eclipse.winery.model.tosca.TPrmPropertyMappingType;
+import org.eclipse.winery.model.tosca.TRefinementModel;
 import org.eclipse.winery.model.tosca.TRelationDirection;
 import org.eclipse.winery.model.tosca.TRelationMapping;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
@@ -262,7 +263,7 @@ class PatternRefinementTest {
 
         TPatternRefinementModel matchingPrm = new TPatternRefinementModel();
         matchingPrm.setDetector(detector);
-        matchingPrm.setRefinementStructure(refinementStructure);
+        matchingPrm.setRefinementTopology(refinementStructure);
 
         ToscaGraph topologyGraph = ToscaTransformer.createTOSCAGraph(topology);
         ToscaGraph detectorGraph = ToscaTransformer.createTOSCAGraph(matchingPrm.getDetector());
@@ -271,7 +272,7 @@ class PatternRefinementTest {
         Iterator<GraphMapping<ToscaNode, ToscaEdge>> mappings = matcher.findMatches(detectorGraph, topologyGraph, new ToscaTypeMatcher());
         GraphMapping<ToscaNode, ToscaEdge> mapping = mappings.next();
 
-        TPatternRefinementModel.TRelationMappings relationMappings = new TPatternRefinementModel.TRelationMappings();
+        TRefinementModel.TRelationMappings relationMappings = new TRefinementModel.TRelationMappings();
         relationMappings.getRelationMapping().add(rm1);
         relationMappings.getRelationMapping().add(rm2);
         matchingPrm.setRelationMappings(relationMappings);
@@ -283,7 +284,7 @@ class PatternRefinementTest {
         TPatternRefinementModel nonMatchingPrm = new TPatternRefinementModel();
         nonMatchingPrm.setDetector(detector);
 
-        TPatternRefinementModel.TRelationMappings relationMappings1 = new TPatternRefinementModel.TRelationMappings();
+        TRefinementModel.TRelationMappings relationMappings1 = new TRefinementModel.TRelationMappings();
         relationMappings1.getRelationMapping().add(rm2);
         nonMatchingPrm.setRelationMappings(relationMappings1);
 
@@ -523,7 +524,7 @@ class PatternRefinementTest {
         // endregion
 
         // region *** setup the PRM ***
-        TNodeTemplate nt13 = candidate.getPatternRefinementModel().getRefinementStructure().getNodeTemplate("13");
+        TNodeTemplate nt13 = candidate.getPatternRefinementModel().getRefinementTopology().getNodeTemplate("13");
         TEntityTemplate.Properties nt13Props = new TEntityTemplate.Properties();
         HashMap<String, String> nt13PropsMap = new HashMap<>();
         nt13PropsMap.put("a", null);
@@ -532,14 +533,14 @@ class PatternRefinementTest {
         nt13Props.setKVProperties(nt13PropsMap);
         nt13.setProperties(nt13Props);
 
-        TNodeTemplate nt12 = candidate.getPatternRefinementModel().getRefinementStructure().getNodeTemplate("12");
+        TNodeTemplate nt12 = candidate.getPatternRefinementModel().getRefinementTopology().getNodeTemplate("12");
         TEntityTemplate.Properties nt12Props = new TEntityTemplate.Properties();
         HashMap<String, String> nt12PropsMap = new HashMap<>();
         nt12PropsMap.put("j", null);
         nt12Props.setKVProperties(nt12PropsMap);
         nt12.setProperties(nt12Props);
 
-        TNodeTemplate nt11 = candidate.getPatternRefinementModel().getRefinementStructure().getNodeTemplate("11");
+        TNodeTemplate nt11 = candidate.getPatternRefinementModel().getRefinementTopology().getNodeTemplate("11");
         TEntityTemplate.Properties nt11Props = new TEntityTemplate.Properties();
         HashMap<String, String> nt11PropsMap = new HashMap<>();
         nt11PropsMap.put("k", null);
@@ -591,7 +592,7 @@ class PatternRefinementTest {
         nt4.setProperties(nt4Props);
 
         Map<String, String> idMapping = BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(
-            candidate.getPatternRefinementModel().getRefinementStructure(),
+            candidate.getPatternRefinementModel().getRefinementTopology(),
             topology
         );
         // endregion

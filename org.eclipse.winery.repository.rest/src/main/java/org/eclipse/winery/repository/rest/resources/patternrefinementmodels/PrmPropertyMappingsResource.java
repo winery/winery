@@ -24,9 +24,10 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
 import org.eclipse.winery.model.tosca.TPrmPropertyMapping;
+import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelMappingsResource;
 import org.eclipse.winery.repository.rest.resources.apiData.PrmPropertyMappingApiData;
 
-public class PrmPropertyMappingsResource extends AbstractPrmMappingsResource {
+public class PrmPropertyMappingsResource extends AbstractRefinementModelMappingsResource {
 
     public PrmPropertyMappingsResource(PatternRefinementModelResource res, TPatternRefinementModel.TPrmPropertyMappings propertyMappings) {
         super(res);

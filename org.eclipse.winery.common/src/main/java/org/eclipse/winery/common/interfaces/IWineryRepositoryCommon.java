@@ -37,6 +37,7 @@ import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.ids.definitions.TestRefinementModelId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
@@ -53,6 +54,7 @@ import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTestRefinementModel;
 
 import org.slf4j.LoggerFactory;
 
@@ -130,6 +132,10 @@ public interface IWineryRepositoryCommon {
 
     default TPatternRefinementModel getElement(PatternRefinementModelId id) {
         return (TPatternRefinementModel) this.getDefinitions(id).getElement();
+    }
+
+    default TTestRefinementModel getElement(TestRefinementModelId id) {
+        return (TTestRefinementModel) this.getDefinitions(id).getElement();
     }
 
     /**

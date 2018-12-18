@@ -372,6 +372,8 @@ public class RestUtils {
             location = "compliancerules";
         } else if (type.contains("PatternRefinementModel")) {
             location = "patternrefinementmodels";
+        } else if (type.contains("TestRefinementModel")) {
+            location = "testrefinementmodels";
         } else {
             if (type.contains("TypeImplementation")) {
                 location = "entitytypeimplementations";

@@ -1,4 +1,4 @@
-/********************************************************************************
+/*******************************************************************************
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.rest.resources.patternrefinementmodels;
+package org.eclipse.winery.repository.rest.resources.refinementmodels;
 
 import java.util.List;
 
@@ -24,11 +24,13 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
 import org.eclipse.winery.model.tosca.TRelationMapping;
+import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelMappingsResource;
+import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelResource;
 import org.eclipse.winery.repository.rest.resources.apiData.RelationMappingApiData;
 
-public class RelationMappingsResource extends AbstractPrmMappingsResource {
+public class RelationMappingsResource extends AbstractRefinementModelMappingsResource {
 
-    public RelationMappingsResource(PatternRefinementModelResource res, TPatternRefinementModel.TRelationMappings relationMappings) {
+    public RelationMappingsResource(AbstractRefinementModelResource res, TPatternRefinementModel.TRelationMappings relationMappings) {
         super(res);
         this.mappings = relationMappings.getRelationMapping();
     }

@@ -26,12 +26,10 @@ import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.version.VersionUtils;
 
 /**
- * Identifies a definitions child. Each component is required to be identified
- * subclasses this class
+ * Identifies a definitions child. Each component is required to be identified subclasses this class
  * <p>
- * A DefinitionsChildId has a namespace and an id within that namespace. In XML,
- * the ID might be serialized as NCName (in the case of EntityTypes and
- * EntityTemplates) and as xs:id (in the case of EntityTypeImplementations)
+ * A DefinitionsChildId has a namespace and an id within that namespace. In XML, the ID might be serialized as NCName
+ * (in the case of EntityTypes and EntityTemplates) and as xs:id (in the case of EntityTypeImplementations)
  * <p>
  * Components are elements, which may appear directly nested in TDefinitions:
  * <ul>
@@ -56,7 +54,8 @@ public abstract class DefinitionsChildId extends GenericId {
         RequirementTypeId.class,
         ServiceTemplateId.class,
         ComplianceRuleId.class,
-        PatternRefinementModelId.class
+        PatternRefinementModelId.class,
+        TestRefinementModelId.class
     );
 
     private final Namespace namespace;

@@ -132,7 +132,7 @@ public class PatternRefinement extends AbstractSubstitution {
     public void applyRefinement(PatternRefinementCandidate refinement, TTopologyTemplate topology) {
         // import the refinement structure
         Map<String, String> idMapping = BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(
-            refinement.getPatternRefinementModel().getRefinementStructure(),
+            refinement.getPatternRefinementModel().getRefinementTopology(),
             topology
         );
 
@@ -140,9 +140,9 @@ public class PatternRefinement extends AbstractSubstitution {
         Map<String, Map<String, Integer>> coordinates = calculateNewPositions(
             refinement.getDetectorGraph(),
             refinement.getGraphMapping(),
-            refinement.getPatternRefinementModel().getRefinementStructure()
+            refinement.getPatternRefinementModel().getRefinementTopology()
         );
-        refinement.getPatternRefinementModel().getRefinementStructure().getNodeTemplates()
+        refinement.getPatternRefinementModel().getRefinementTopology().getNodeTemplates()
             .forEach(node -> {
                     Map<String, Integer> newCoordinates = coordinates.get(node.getId());
                     TNodeTemplate nodeTemplate = topology.getNodeTemplate(idMapping.get(node.getId()));

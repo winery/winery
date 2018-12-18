@@ -20,118 +20,49 @@ import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import org.eclipse.winery.model.tosca.visitor.Visitor;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tPatternRefinementModel")
-public class TPatternRefinementModel extends TExtensibleElements implements HasName, HasTargetNamespace {
-
-    @XmlAttribute
-    protected String name;
-
-    @XmlAttribute(name = "targetNamespace")
-    @XmlSchemaType(name = "anyURI")
-    protected String targetNamespace;
-
-    @XmlElement(name = "Detector")
-    private TTopologyTemplate detector;
+public class TPatternRefinementModel extends TRefinementModel {
 
     @XmlElement(name = "RefinementStructure")
     private TTopologyTemplate refinementStructure;
 
-    @XmlElement(name = "RelationMappings")
-    private TRelationMappings relationMappings;
-
     @XmlElement(name = "PrmPropertyMappings")
     private TPrmPropertyMappings propertyMappings;
 
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String value) {
-        this.name = value;
-    }
-
-    @Override
-    public String getIdFromIdOrNameField() {
-        return getName();
-    }
-
-    @Override
-    public String getTargetNamespace() {
-        return targetNamespace;
-    }
-
-    @Override
-    public void setTargetNamespace(String value) {
-        targetNamespace = value;
-    }
-
     @NonNull
-    public TTopologyTemplate getDetector() {
-        if (detector == null) {
-            detector = new TTopologyTemplate();
-        }
-        return detector;
-    }
-
-    public void setDetector(TTopologyTemplate detector) {
-        this.detector = detector;
-    }
-
-    @NonNull
-    public TTopologyTemplate getRefinementStructure() {
+    @JsonIgnore
+    @XmlTransient
+    public TTopologyTemplate getRefinementTopology() {
         if (refinementStructure == null) {
             refinementStructure = new TTopologyTemplate();
         }
         return refinementStructure;
     }
 
-    public void setRefinementStructure(TTopologyTemplate refinementStructure) {
+    public TTopologyTemplate getRefinementStructure() {
+        return getRefinementTopology();
+    }
+
+    public void setRefinementTopology(TTopologyTemplate refinementStructure) {
         this.refinementStructure = refinementStructure;
     }
 
-    @Override
-    public void accept(Visitor visitor) {
-        visitor.visit(this);
-    }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "relationMapping"
-    })
-    public static class TRelationMappings implements Serializable {
-
-        @XmlElement(name = "RelationMapping")
-        protected List<TRelationMapping> relationMapping;
-
-        @NonNull
-        public List<TRelationMapping> getRelationMapping() {
-            if (Objects.isNull(this.relationMapping)) {
-                this.relationMapping = new ArrayList<>();
-            }
-            return this.relationMapping;
-        }
-    }
-
     @Nullable
-    public TRelationMappings getRelationMappings() {
-        return relationMappings;
+    public TPrmPropertyMappings getPropertyMappings() {
+        return propertyMappings;
     }
 
-    public void setRelationMappings(TRelationMappings relationMappings) {
-        this.relationMappings = relationMappings;
+    public void setPropertyMappings(TPrmPropertyMappings propertyMappings) {
+        this.propertyMappings = propertyMappings;
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -150,14 +81,5 @@ public class TPatternRefinementModel extends TExtensibleElements implements HasN
             }
             return this.propertyMapping;
         }
-    }
-
-    @Nullable
-    public TPrmPropertyMappings getPropertyMappings() {
-        return propertyMappings;
-    }
-
-    public void setPropertyMappings(TPrmPropertyMappings propertyMappings) {
-        this.propertyMappings = propertyMappings;
     }
 }
