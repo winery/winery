@@ -68,6 +68,18 @@ public class PatternRefinementModelResource extends AbstractComponentInstanceRes
 
         return new RelationMappingsResource(this, relationMappings);
     }
+    
+    @Path("propertymappings")
+    public PrmPropertyMappingsResource getPropertyMappings() {
+        TPatternRefinementModel.TPrmPropertyMappings propertyMappings = this.getTPatternRefinementModel().getPropertyMappings();
+        
+        if (Objects.isNull(propertyMappings)) {
+            propertyMappings = new TPatternRefinementModel.TPrmPropertyMappings();
+            this.getTPatternRefinementModel().setPropertyMappings(propertyMappings);
+        }
+        
+        return new PrmPropertyMappingsResource(this, propertyMappings);
+    }
 
     @Override
     public String getName() {

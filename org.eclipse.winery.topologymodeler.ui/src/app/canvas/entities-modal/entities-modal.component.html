@@ -35,17 +35,11 @@
                 <div class="radio"
                      *ngIf="modalVariantForEditDeleteTasks === '(none)'">
                     <label>
-                        <input type="radio" name="templateCreation"
-                               value="{{modalVariantAndState.modalVariant === 'deployment_artifacts' ? 'createArtifactTemplate' : 'createPolicyTemplate'}}"
-                               checked="checked" id="createArtifactTemplateInput"
+                        <input type="radio" name="templateCreation" value="create" checked="checked"
                                [(ngModel)]="modalSelectedRadioButton"/>
-
-                        <div *ngIf="modalVariantAndState.modalVariant === 'deployment_artifacts'"
-                             style="display: inline-block;">
-                            Create Artifact Template
-                        </div>
-                        <div *ngIf="modalVariantAndState.modalVariant === 'policies'" style="display: inline-block;">
-                            Create Policy Template
+                        <div style="display: inline-block;">
+                            &nbsp;Create {{modalVariantAndState.modalVariant === 'deployment_artifacts' ? 'Artifact' : 'Policy'}}
+                            Template
                         </div>
                     </label>
                     <p *ngIf="modalVariantAndState.modalVariant === 'deployment_artifacts'"
@@ -59,22 +53,18 @@
                 </div>
                 <div class="radio" *ngIf="modalVariantForEditDeleteTasks === '(none)'">
                     <label>
-                        <input type="radio" name="templateCreation" value="link{{modalVariantAndState.modalVariant}}"
-                               id="linkArtifactTemplateOrPolicyTemplateInput"
+                        <input type="radio" name="templateCreation" value="link"
                                [(ngModel)]="modalSelectedRadioButton"/>
-                        <div *ngIf="modalVariantAndState.modalVariant === 'deployment_artifacts'"
-                             style="display: inline-block;">Link Artifact Template
-                        </div>
-                        <div *ngIf="modalVariantAndState.modalVariant === 'policies'" style="display: inline-block;">
-                            Link Policy Template
+                        <div style="display: inline-block;">
+                            &nbsp;Link {{modalVariantAndState.modalVariant === 'deployment_artifacts' ? 'Artifact' : 'Policy'}}
+                            Template
                         </div>
                     </label>
                     <p class="help-block">Check if you want to reuse existing files.</p>
                 </div>
                 <div class="radio" *ngIf="modalVariantForEditDeleteTasks === '(none)'">
                     <label style="margin-bottom: 1em;">
-                        <input type="radio" name="templateCreation" value="skip{{modalVariantAndState.modalVariant}}"
-                               id="skipArtifactTemplateOrPolicyTemplateInput"
+                        <input type="radio" name="templateCreation" value="skip"
                                [(ngModel)]="modalSelectedRadioButton"/>
                         Do not create a template.
                     </label>
@@ -83,7 +73,7 @@
                 </div>
             </fieldset>
             <fieldset>
-                <div class="form-group-grouping">
+                <div class="form-group-grouping" *ngIf="modalSelectedRadioButton === 'create'">
 
                     <!-- createArtifactTemplate class is required for artifactcreationdialog -->
                     <div class="form-group createArtifactTemplate">
@@ -127,9 +117,7 @@
 
                 </div>
                 <!-- link ArtifactTemplate or PolicyTemplate -->
-                <ng-container *ngIf="modalSelectedRadioButton === 'linkdeployment_artifacts' ||
-                                     modalSelectedRadioButton === 'linkpolicies' ||
-                                     modalVariantForEditDeleteTasks !== '(none)'">
+                <ng-container *ngIf="modalSelectedRadioButton === 'link'">
                     <div id="linkArtifactTemplateOrPolicyTemplate" class="form-group">
                         <label *ngIf="modalVariantAndState.modalVariant === 'deployment_artifacts' ||
                                       modalVariantForEditDeleteTasks === 'deployment_artifacts'"
@@ -181,27 +169,20 @@
             </fieldset>
             <fieldset id="artifactTypeFieldset">
                 <div class="form-group" id="artifactTypeOrPolicyTypeDiv">
-                    <label
-                        *ngIf="modalVariantAndState.modalVariant === 'deployment_artifacts' || modalVariantForEditDeleteTasks === 'deployment_artifacts'"
-                        for="artifactTypeOrPolicyTypeField">Artifact Type</label>
-                    <label
-                        *ngIf="modalVariantAndState.modalVariant === 'policies' || modalVariantForEditDeleteTasks === 'policies'"
-                        for="artifactTypeOrPolicyTypeField">Policy Type</label>
+                    <label for="artifactTypeOrPolicyTypeField">
+                        {{modalVariantAndState.modalVariant === 'deployment_artifacts' ? 'Artifact' : 'Policy'}} Type
+                    </label>
 
                     <input type="text"
                            class="form-control"
-                           *ngIf="modalSelectedRadioButton === 'linkpolicies' || modalSelectedRadioButton === 'linkdeployment_artifacts' || modalVariantForEditDeleteTasks != '(none)'"
+                           *ngIf="modalSelectedRadioButton === 'link'"
                            [disabled]="true"
                            [ngModel]="deploymentArtifactOrPolicyModalData.modalType"
                            name="artifactTypeOrPolicyTypeField"
                            placeholder="Select a Template to see its Type."
                            id="artifactTypeOrPolicyTypeField">
                     <select [(ngModel)]="deploymentArtifactOrPolicyModalData.modalType"
-                            *ngIf="modalVariantForEditDeleteTasks === '(none)' &&
-                            (modalSelectedRadioButton === 'skippolicies' ||
-                            modalSelectedRadioButton === 'skipdeployment_artifacts' ||
-                            modalSelectedRadioButton === 'createArtifactTemplate' ||
-                            modalSelectedRadioButton === 'createPolicyTemplate')"
+                            *ngIf="modalSelectedRadioButton === 'skip' || modalSelectedRadioButton === 'create'"
                             name="artifactTypeOrPolicyTypeChooser"
                             class="form-control"
                             id="artifactTypeOrPolicyTypeChooser"

@@ -13,8 +13,13 @@
    See https://github.com/eclipse/winery/issues/71 for a discussion.
  - `processContents="lax"` was added to Properties at Boundary definitions.
  - Make "Types" in "<Definitions>" valid as the only nested element in "<Definitions>"
- - Add "PatternRefinementModels"
- - Add "ComplianceRule"
+ - Add "PatternRefinementModels" as tPatternRefinementModel
+   - tRelationMapping
+   - tDirection
+   - tPrmPropertyMapping
+   - tPrmPropertyMappingType
+ - Add "ComplianceRules" as tComplianceRule
+ - Add tPolicies to Relationship Templates
 -->
 <xs:schema targetNamespace="http://docs.oasis-open.org/tosca/ns/2011/12" elementFormDefault="qualified"
            attributeFormDefault="unqualified" xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"
@@ -368,6 +373,13 @@
           <xs:attribute name="constraintType" type="xs:anyURI" use="required"/>
          </xs:complexType>
         </xs:element>
+       </xs:sequence>
+      </xs:complexType>
+     </xs:element>
+     <xs:element name="Policies" minOccurs="0">
+      <xs:complexType>
+       <xs:sequence>
+        <xs:element name="Policy" type="tPolicy" maxOccurs="unbounded"/>
        </xs:sequence>
       </xs:complexType>
      </xs:element>
@@ -808,6 +820,13 @@
        </xs:sequence>
       </xs:complexType>
      </xs:element>
+     <xs:element name="PropertyMappings">
+      <xs:complexType>
+       <xs:sequence>
+        <xs:element name="PropertyMapping" type="tPrmPropertyMapping" maxOccurs="unbounded"/>
+       </xs:sequence>
+      </xs:complexType>
+     </xs:element>
     </xs:sequence>
     <xs:attribute name="name" type="xs:string" use="optional"/>
     <xs:attribute name="targetNamespace" type="xs:anyURI"/>
@@ -822,10 +841,24 @@
   <xs:attribute name="direction" type="tDirection" use="required"/>
   <xs:attribute name="validSourceOrTarget" type="xs:QName"/>
  </xs:complexType>
+ <xs:complexType name="tPrmPropertyMapping">
+  <xs:attribute name="id" type="xs:ID" use="required"/>
+  <xs:attribute name="detectorNode" type="xs:string" use="required"/>
+  <xs:attribute name="refinementNode" type="xs:string" use="required"/>
+  <xs:attribute name="type" type="tPrmPropertyMappingType" use="required"/>
+  <xs:attribute name="detectorProperty" type="xs:string" use="optional"/>
+  <xs:attribute name="refinementProperty" type="xs:string" use="optional"/>
+ </xs:complexType>
  <xs:simpleType name="tDirection">
   <xs:restriction base="xs:string">
    <xs:enumeration value="ingoing"/>
    <xs:enumeration value="outgoing"/>
+  </xs:restriction>
+ </xs:simpleType>
+ <xs:simpleType name="tPrmPropertyMappingType">
+  <xs:restriction base="xs:string">
+   <xs:enumeration value="all"/>
+   <xs:enumeration value="selective"/>
   </xs:restriction>
  </xs:simpleType>
  <xs:simpleType name="tBoolean">

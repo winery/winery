@@ -1,4 +1,4 @@
-/********************************************************************************
+/*******************************************************************************
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -13,24 +13,23 @@
  *******************************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { RelationMapping } from './relationMapping';
-import { backendBaseURL } from '../../../configuration';
+import { RelationMapping } from './relationshipMappings/relationMapping';
+import { backendBaseURL } from '../../configuration';
 import { Injectable } from '@angular/core';
-import { InstanceService } from '../../instance.service';
-import { NodeTemplate } from '../../../model/wineryComponent';
-import { SelectData } from '../../../model/selectData';
+import { InstanceService } from '../instance.service';
+import { NodeTemplate } from '../../model/wineryComponent';
+import { SelectData } from '../../model/selectData';
+import { PrmPropertyMapping } from './propertyMappings/prmPropertyMapping';
+import { Utils } from '../../wineryUtils/utils';
+import { PropertiesDefinitionsResourceApiData } from '../sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
 
 @Injectable()
-export class RelationMappingsService {
+export class PrmMappingsService {
 
     private readonly path: string;
 
     constructor(private http: HttpClient, private sharedData: InstanceService) {
         this.path = backendBaseURL + this.sharedData.path;
-    }
-
-    public getRelationshipMappings(): Observable<RelationMapping[]> {
-        return this.http.get<RelationMapping[]>(this.path + '/relationmappings');
     }
 
     public getDetectorNodeTemplates(): Observable<NodeTemplate[]> {
@@ -49,11 +48,33 @@ export class RelationMappingsService {
         return this.http.get<SelectData[]>(backendBaseURL + '/nodetypes/?grouped=angularSelect');
     }
 
+    public getRelationshipMappings(): Observable<RelationMapping[]> {
+        return this.http.get<RelationMapping[]>(this.path + '/relationmappings');
+    }
+
     public addRelationMapping(element: RelationMapping): Observable<RelationMapping[]> {
         return this.http.put<RelationMapping[]>(this.path + '/relationmappings', element);
     }
 
-    deleteRelationMapping(mapping: RelationMapping): Observable<RelationMapping[]> {
+    public deleteRelationMapping(mapping: RelationMapping): Observable<RelationMapping[]> {
         return this.http.delete<RelationMapping[]>(this.path + '/relationmappings/' + mapping.id);
+    }
+
+    getPropertyMappings(): Observable<PrmPropertyMapping[]> {
+        return this.http.get<PrmPropertyMapping[]>(this.path + '/propertymappings');
+    }
+
+    public addPrmPropertyMapping(element: PrmPropertyMapping): Observable<PrmPropertyMapping[]> {
+        return this.http.put<PrmPropertyMapping[]>(this.path + '/propertymappings', element);
+    }
+
+    public deletePrmPropertyMapping(element: PrmPropertyMapping): Observable<PrmPropertyMapping[]> {
+        return this.http.delete<PrmPropertyMapping[]>(this.path + '/propertymappings/' + element.id);
+    }
+
+    public getNodeTypeProperties(type: string): Observable<PropertiesDefinitionsResourceApiData> {
+        const qName = Utils.getNamespaceAndLocalNameFromQName(type);
+        const url = backendBaseURL + `/nodetypes/${encodeURIComponent(encodeURIComponent(qName.namespace))}/${qName.localName}/propertiesdefinition/`;
+        return this.http.get<PropertiesDefinitionsResourceApiData>(url);
     }
 }

@@ -43,7 +43,7 @@ const nodeTypeRoutes: Routes = [
         children: [
             { path: 'readme', component: WineryReadmeComponent },
             { path: 'license', component: WineryLicenseComponent },
-            { path: 'visualappearance', component: VisualAppearanceComponent },
+            { path: 'appearance', component: VisualAppearanceComponent },
             { path: 'instancestates', component: InstanceStatesComponent },
             { path: 'interfaces', component: InterfacesComponent },
             { path: 'implementations', component: ImplementationsComponent },

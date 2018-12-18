@@ -66,7 +66,7 @@ public class PatternRefinementCandidate {
         ArrayList<String> ids = new ArrayList<>();
 
         this.detectorGraph.vertexSet().forEach(toscaNode ->
-            ids.add(graphMapping.getVertexCorrespondence(toscaNode, false).getNodeTemplate().getId())
+            ids.add(graphMapping.getVertexCorrespondence(toscaNode, false).getTemplate().getId())
         );
 
         return ids;

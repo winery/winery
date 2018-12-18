@@ -21,11 +21,11 @@ public class ToscaTypeMatcher implements IToscaMatcher {
 
     @Override
     public boolean isCompatible(ToscaNode left, ToscaNode right) {
-        return left.getNodeTemplate().getType().equals(right.getNodeTemplate().getType());
+        return left.getActualType().equals(right.getActualType());
     }
 
     @Override
     public boolean isCompatible(ToscaEdge left, ToscaEdge right) {
-        return right.getTemplate().getType().equals(left.getTemplate().getType());
+        return right.getActualType().equals(left.getActualType());
     }
 }

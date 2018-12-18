@@ -17,7 +17,7 @@ import { animate, keyframes, state, style, transition, trigger } from '@angular/
 import { WineryActions } from '../redux/actions/winery.actions';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
-import { TNodeTemplate, Visuals } from '../models/ttopology-template';
+import { TNodeTemplate } from '../models/ttopology-template';
 import { NewNodeIdTypeColorPropertiesModel } from '../models/newNodeIdTypeColorModel';
 import { isNullOrUndefined } from 'util';
 import { Subscription } from 'rxjs';
@@ -25,6 +25,8 @@ import { Utils } from '../models/utils';
 import { EntityTypesModel } from '../models/entityTypesModel';
 import { GroupedNodeTypeModel } from '../models/groupedNodeTypeModel';
 import { hostURL } from '../models/configuration';
+import { Visuals } from '../models/visuals';
+import { BackendService } from '../services/backend.service';
 
 /**
  * This is the left sidebar, where nodes can be created from.
@@ -85,6 +87,7 @@ export class PaletteComponent implements OnDestroy {
     readonly newNodePositionOffsetY = 30;
 
     constructor(private ngRedux: NgRedux<IWineryState>,
+                private backendService: BackendService,
                 private actions: WineryActions) {
         this.subscriptions.push(ngRedux.select(wineryState => wineryState.wineryState.currentJsonTopology.nodeTemplates)
             .subscribe(currentNodes => this.updateNodes(currentNodes)));
@@ -186,7 +189,7 @@ export class PaletteComponent implements OnDestroy {
                         newId = name.concat('_', '2');
                     }
                     return {
-                        id: newId,
+                        id: this.backendService.configuration.idPrefix + newId,
                         type: type,
                         properties: this.getDefaultPropertiesFromNodeTypes(name)
                     };
@@ -210,7 +213,7 @@ export class PaletteComponent implements OnDestroy {
             for (const node of this.entityTypes.unGroupedNodeTypes) {
                 if (node.id === name) {
                     const result = {
-                        id: node.id,
+                        id: this.backendService.configuration.idPrefix + node.id,
                         type: node.qName,
                         properties: this.getDefaultPropertiesFromNodeTypes(name)
                     };

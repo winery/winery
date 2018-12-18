@@ -46,9 +46,9 @@ public class ToscaComplianceRuleMatcher implements IToscaMatcher {
     }
 
     public boolean isPoliciesCompatible(ToscaNode left, ToscaNode right) {
-        if (left.getNodeTemplate().getPolicies() != null) {
-            if (right.getNodeTemplate().getPolicies() != null) {
-                return mapToStringList(right.getNodeTemplate().getPolicies().getPolicy()).containsAll(mapToStringList(left.getNodeTemplate().getPolicies().getPolicy()));
+        if (left.getTemplate().getPolicies() != null) {
+            if (right.getTemplate().getPolicies() != null) {
+                return mapToStringList(right.getTemplate().getPolicies().getPolicy()).containsAll(mapToStringList(left.getTemplate().getPolicies().getPolicy()));
             } else {
                 return false;
             }
@@ -61,10 +61,10 @@ public class ToscaComplianceRuleMatcher implements IToscaMatcher {
     }
 
     public boolean isPropertiesCompatible(ToscaNode left, ToscaNode right) {
-        if (left.getNodeTemplate().getProperties() != null) {
-            if (right.getNodeTemplate().getProperties() != null) {
-                for (Entry<String, String> leftEntry : left.getNodeTemplate().getProperties().getKVProperties().entrySet()) {
-                    if (!isPropertyCompatible(leftEntry, right.getNodeTemplate().getProperties().getKVProperties())) {
+        if (left.getTemplate().getProperties() != null) {
+            if (right.getTemplate().getProperties() != null) {
+                for (Entry<String, String> leftEntry : left.getTemplate().getProperties().getKVProperties().entrySet()) {
+                    if (!isPropertyCompatible(leftEntry, right.getTemplate().getProperties().getKVProperties())) {
                         return false;
                     }
                 }
@@ -94,7 +94,7 @@ public class ToscaComplianceRuleMatcher implements IToscaMatcher {
     }
 
     public boolean isLeftSubtypeOfRight(ToscaEntity left, ToscaEntity right) {
-        return left.getTypes().stream().filter(lType -> equals(lType, right.getActualType())).findAny().isPresent();
+        return left.getTypes().stream().anyMatch(lType -> equals(lType, right.getActualType()));
     }
 
     public boolean isTEntityTypesCompatible(ToscaEntity left, ToscaEntity right) {

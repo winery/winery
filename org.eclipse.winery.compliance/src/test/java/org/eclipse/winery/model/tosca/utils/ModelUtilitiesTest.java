@@ -14,7 +14,13 @@
 
 package org.eclipse.winery.model.tosca.utils;
 
+import java.util.HashMap;
+
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 
 import org.junit.jupiter.api.Test;
@@ -40,4 +46,24 @@ public class ModelUtilitiesTest extends TestWithGitBackedRepository {
         assertTrue(ModelUtilities.getTargetLabel(nodeTemplate).isPresent());
         assertEquals("targetlabel", ModelUtilities.getTargetLabel(nodeTemplate).get());
     }
+
+    // region ********** isOfType **********
+
+    @Test
+    void isOfType() {
+        TEntityType.DerivedFrom derivedFrom = new TEntityType.DerivedFrom();
+        derivedFrom.setType(QName.valueOf("{https://ex.org/nt}parent"));
+
+        TNodeType nt1 = new TNodeType();
+        nt1.setDerivedFrom(derivedFrom);
+
+        HashMap<QName, TEntityType> map = new HashMap<>();
+        map.put(QName.valueOf("{http://ex.org/nt}child"), nt1);
+
+        assertTrue(
+            ModelUtilities.isOfType(QName.valueOf("{https://ex.org/nt}parent"), QName.valueOf("{http://ex.org/nt}child"), map)
+        );
+    }
+
+    // endregion
 }

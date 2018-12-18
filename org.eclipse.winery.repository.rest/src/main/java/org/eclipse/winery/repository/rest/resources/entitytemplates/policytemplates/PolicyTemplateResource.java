@@ -23,6 +23,7 @@ import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources._support.IHasName;
+import org.eclipse.winery.repository.rest.resources._support.VisualAppearanceResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.IEntityTemplateResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.PropertiesResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.PropertyConstraintsResource;
@@ -82,5 +83,10 @@ public final class PolicyTemplateResource extends AbstractComponentInstanceResou
             this.getPolicyTemplate().setPropertyConstraints(constraints);
         }
         return new PropertyConstraintsResource(constraints, this);
+    }
+
+    @Path("appearance")
+    public VisualAppearanceResource getVisualAppearanceResource() {
+        return new VisualAppearanceResource(this, this.getElement().getOtherAttributes(), this.id);
     }
 }

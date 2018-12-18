@@ -15,8 +15,8 @@
     <winery-loader></winery-loader>
 </div>
 <div class="content" *ngIf="!loading">
-    <h4>Colors</h4>
-    <div class="colorPickerArea" *ngIf="!loading && nodeTypeData != null">
+    <h4 *ngIf="isNodeType || isRelationshipType">Colors</h4>
+    <div class="colorPickerArea" *ngIf="!loading && isNodeType">
         <div class="floatContent">
             <b>Bordercolor:</b><br>
             <input class="colorInput" name="eventColor" type="color" [(ngModel)]="borderColorLocal" [disabled]="!sharedData?.currentVersion?.editable">

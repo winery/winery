@@ -27,7 +27,7 @@ public class ToscaNode extends ToscaEntity {
         return getTypes().stream().map(TNodeType.class::cast).collect(Collectors.toList());
     }
 
-    public TNodeTemplate getNodeTemplate() {
+    public TNodeTemplate getTemplate() {
         return nodeTemplate;
     }
 

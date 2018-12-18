@@ -30,6 +30,10 @@
         {{ nodeTemplate.state }}
     </div>
 
+    <div *ngIf="policyIcons">
+        <img *ngFor="let policyIcon of policyIcons" [src]="policyIcon" class="policyAnnotation">
+    </div>
+
     <div *ngIf="nodeClass !== 'pattern'; else showPattern"
          class="row rounded col-sm-12 node-template-header"
          (click)="openSidebar($event); closeConnectorEndpoints($event)">

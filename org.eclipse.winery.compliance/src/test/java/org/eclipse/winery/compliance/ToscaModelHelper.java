@@ -91,7 +91,7 @@ public class ToscaModelHelper {
     public static ToscaNode createTOSCANodeOnlyProperties(ToscaModelPropertiesBuilder bldr) {
         ToscaNode node = new ToscaNode();
         node.setNodeTemplate(new TNodeTemplate());
-        node.getNodeTemplate().setProperties(bldr.build());
+        node.getTemplate().setProperties(bldr.build());
         return node;
     }
 

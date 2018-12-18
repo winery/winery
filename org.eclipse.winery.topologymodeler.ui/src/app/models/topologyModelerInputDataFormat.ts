@@ -12,8 +12,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
-import { TTopologyTemplate, Visuals } from './ttopology-template';
+import { TTopologyTemplate } from './ttopology-template';
 import { TopologyModelerConfiguration } from './topologyModelerConfiguration';
+import { Visuals } from './visuals';
 
 export interface TopologyModelerInputDataFormat {
     configuration: TopologyModelerConfiguration;

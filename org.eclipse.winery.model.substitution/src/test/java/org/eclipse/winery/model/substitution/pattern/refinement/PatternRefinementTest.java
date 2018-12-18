@@ -18,20 +18,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
+import org.eclipse.winery.model.tosca.TPrmPropertyMapping;
+import org.eclipse.winery.model.tosca.TPrmPropertyMappingType;
 import org.eclipse.winery.model.tosca.TRelationDirection;
 import org.eclipse.winery.model.tosca.TRelationMapping;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.topologygraph.matching.ToscaIsomorphismMatcher;
 import org.eclipse.winery.topologygraph.matching.ToscaTypeMatcher;
 import org.eclipse.winery.topologygraph.model.ToscaEdge;
@@ -47,6 +50,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PatternRefinementTest {
@@ -291,7 +295,7 @@ class PatternRefinementTest {
     @ParameterizedTest(name = "{index} => ''{3}''")
     @MethodSource("getIsApplicableArguments")
     void testIsApplicable(PatternRefinementCandidate refinementCandidate, TTopologyTemplate topologyTemplate, boolean expected, String description) {
-        PatternRefinement patternRefinement = new PatternRefinement();
+        PatternRefinement patternRefinement = new PatternRefinement(new DefaultPatternRefinementChooser());
         assertEquals(expected, patternRefinement.isApplicable(refinementCandidate, topologyTemplate));
     }
 
@@ -450,12 +454,12 @@ class PatternRefinementTest {
 
         assertEquals(2, matchingNodes.size());
 
-        TNodeTemplate nt2 = candidate.getGraphMapping().getVertexCorrespondence(matchingNodes.get(0), false).getNodeTemplate();
+        TNodeTemplate nt2 = candidate.getGraphMapping().getVertexCorrespondence(matchingNodes.get(0), false).getTemplate();
         List<TRelationshipTemplate> externalRelationsOf2 = patternRefinement.getExternalRelations(nt2, candidate, topology)
             .collect(Collectors.toList());
         assertEquals(2, externalRelationsOf2.size());
 
-        TNodeTemplate nt4 = matchingNodes.get(1).getNodeTemplate();
+        TNodeTemplate nt4 = matchingNodes.get(1).getTemplate();
         List<TRelationshipTemplate> externalRelationsOf4 = patternRefinement.getExternalRelations(nt4, candidate, topology)
             .collect(Collectors.toList());
         assertEquals(0, externalRelationsOf4.size());
@@ -463,23 +467,149 @@ class PatternRefinementTest {
 
     // endregion
 
-    // region ********** isOfType **********
-
+    // region ********** applyPropertyMappings **********
     @Test
-    void isOfType() {
-        TEntityType.DerivedFrom derivedFrom = new TEntityType.DerivedFrom();
-        derivedFrom.setType(QName.valueOf("{https://ex.org/nt}parent"));
+    void applyPropertyMappings() {
+        setUp();
 
-        TNodeType nt1 = new TNodeType();
-        nt1.setDerivedFrom(derivedFrom);
+        // region *** Graphical description ***
+        /*
+        input:
+        #######   (1)  #########   (1)  #######    ########        ########
+        # (1) # <----- #  (2)  # <----- # (3) #    # (10) #        # (11) #
+        #######        #########        #######    ########        ########
+                       #  p=1  #                       |           # k=   #
+                       #  x=2 #                        |           ########
+                       #########                       | (2)          | (2)
+                           | (2)                       +-------|------+
+                          \/                                  \/
+                        #######                            ########
+                        # (4) #                            # (12) #
+                        #######                            ########
+                        # a=3 #                            # j=   #
+                        # b=4 #                            ########
+                        #######                                | (2)
+                                                              \/
+                                                           ########
+                                                           # (13) #
+                                                           ########
+                                                           # a=   #
+                                                           # b=   #
+                                                           # c=0  #
+                                                           ########
+        expected output
+        #######   (1)  #########   (1)  #######    ########        ########
+        # (1) # <----- #  (2)  # <----- # (3) #    # (10) #        # (11) #
+        #######        #########        #######    ########        ########
+                       #  p=1  #                       |           # k=2  #
+                       #  x=2 #                        |           ########
+                       #########                       | (2)          | (2)
+                           | (2)                       +-------|------+
+                          \/                                  \/
+                        #######                            ########
+                        # (4) #                            # (12) #
+                        #######                            ########
+                        # a=3 #                            # j=1  #
+                        # b=4 #                            ########
+                        #######                                | (2)
+                                                              \/
+                                                           ########
+                                                           # (13) #
+                                                           ########
+                                                           # a=3  #
+                                                           # b=4  #
+                                                           # c=0  #
+                                                           ######## */
+        // endregion
 
-        HashMap<QName, TEntityType> map = new HashMap<>();
-        map.put(QName.valueOf("{http://ex.org/nt}child"), nt1);
+        // region *** setup the PRM ***
+        TNodeTemplate nt13 = candidate.getPatternRefinementModel().getRefinementStructure().getNodeTemplate("13");
+        TEntityTemplate.Properties nt13Props = new TEntityTemplate.Properties();
+        HashMap<String, String> nt13PropsMap = new HashMap<>();
+        nt13PropsMap.put("a", null);
+        nt13PropsMap.put("b", null);
+        nt13PropsMap.put("c", "0");
+        nt13Props.setKVProperties(nt13PropsMap);
+        nt13.setProperties(nt13Props);
 
-        assertTrue(
-            PatternRefinement.isOfType(QName.valueOf("{https://ex.org/nt}parent"), QName.valueOf("{http://ex.org/nt}child"), map)
+        TNodeTemplate nt12 = candidate.getPatternRefinementModel().getRefinementStructure().getNodeTemplate("12");
+        TEntityTemplate.Properties nt12Props = new TEntityTemplate.Properties();
+        HashMap<String, String> nt12PropsMap = new HashMap<>();
+        nt12PropsMap.put("j", null);
+        nt12Props.setKVProperties(nt12PropsMap);
+        nt12.setProperties(nt12Props);
+
+        TNodeTemplate nt11 = candidate.getPatternRefinementModel().getRefinementStructure().getNodeTemplate("11");
+        TEntityTemplate.Properties nt11Props = new TEntityTemplate.Properties();
+        HashMap<String, String> nt11PropsMap = new HashMap<>();
+        nt11PropsMap.put("k", null);
+        nt11Props.setKVProperties(nt11PropsMap);
+        nt11.setProperties(nt11Props);
+
+        TPrmPropertyMapping allOn4to13 = new TPrmPropertyMapping();
+        allOn4to13.setType(TPrmPropertyMappingType.ALL);
+        allOn4to13.setDetectorNode(candidate.getPatternRefinementModel().getDetector().getNodeTemplate("8"));
+        allOn4to13.setRefinementNode(nt13);
+
+        TPrmPropertyMapping pIn2_to_jIn12 = new TPrmPropertyMapping();
+        pIn2_to_jIn12.setType(TPrmPropertyMappingType.SELECTIVE);
+        pIn2_to_jIn12.setDetectorNode(candidate.getPatternRefinementModel().getDetector().getNodeTemplate("7"));
+        pIn2_to_jIn12.setRefinementNode(nt12);
+        pIn2_to_jIn12.setDetectorProperty("p");
+        pIn2_to_jIn12.setRefinementProperty("j");
+
+        TPrmPropertyMapping xIn2_to_kIn11 = new TPrmPropertyMapping();
+        xIn2_to_kIn11.setType(TPrmPropertyMappingType.SELECTIVE);
+        xIn2_to_kIn11.setDetectorNode(candidate.getPatternRefinementModel().getDetector().getNodeTemplate("7"));
+        xIn2_to_kIn11.setRefinementNode(nt11);
+        xIn2_to_kIn11.setDetectorProperty("x");
+        xIn2_to_kIn11.setRefinementProperty("k");
+
+        TPatternRefinementModel.TPrmPropertyMappings relationMappings = new TPatternRefinementModel.TPrmPropertyMappings();
+        relationMappings.getPropertyMapping().add(allOn4to13);
+        relationMappings.getPropertyMapping().add(pIn2_to_jIn12);
+        relationMappings.getPropertyMapping().add(xIn2_to_kIn11);
+
+        candidate.getPatternRefinementModel().setPropertyMappings(relationMappings);
+        // endregion
+
+        // region *** setup the topology ***
+        TNodeTemplate nt2 = topology.getNodeTemplate("2");
+        TEntityTemplate.Properties nt2Props = new TEntityTemplate.Properties();
+        HashMap<String, String> nt2PropsMap = new HashMap<>();
+        nt2PropsMap.put("p", "1");
+        nt2PropsMap.put("x", "2");
+        nt2Props.setKVProperties(nt2PropsMap);
+        nt2.setProperties(nt2Props);
+
+        TNodeTemplate nt4 = topology.getNodeTemplate("4");
+        TEntityTemplate.Properties nt4Props = new TEntityTemplate.Properties();
+        HashMap<String, String> nt4PropsMap = new HashMap<>();
+        nt4PropsMap.put("a", "3");
+        nt4PropsMap.put("b", "4");
+        nt4Props.setKVProperties(nt4PropsMap);
+        nt4.setProperties(nt4Props);
+
+        Map<String, String> idMapping = BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(
+            candidate.getPatternRefinementModel().getRefinementStructure(),
+            topology
         );
-    }
+        // endregion
 
+        PatternRefinement patternRefinement = new PatternRefinement();
+
+        patternRefinement.applyPropertyMappings(candidate, "8", nt4, topology, idMapping);
+        assertEquals(3, topology.getNodeTemplate("13").getProperties().getKVProperties().size());
+        assertEquals("3", topology.getNodeTemplate("13").getProperties().getKVProperties().get("a"));
+        assertEquals("4", topology.getNodeTemplate("13").getProperties().getKVProperties().get("b"));
+        assertEquals("0", topology.getNodeTemplate("13").getProperties().getKVProperties().get("c"));
+
+        patternRefinement.applyPropertyMappings(candidate, "7", nt2, topology, idMapping);
+        assertEquals(1, topology.getNodeTemplate("11").getProperties().getKVProperties().size());
+        assertEquals("2", topology.getNodeTemplate("11").getProperties().getKVProperties().get("k"));
+        assertEquals(1, topology.getNodeTemplate("12").getProperties().getKVProperties().size());
+        assertEquals("1", topology.getNodeTemplate("12").getProperties().getKVProperties().get("j"));
+        assertNull(topology.getNodeTemplate("10").getProperties());
+    }
     // endregion
 }

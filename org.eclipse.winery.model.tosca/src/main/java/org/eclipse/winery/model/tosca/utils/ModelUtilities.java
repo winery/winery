@@ -557,11 +557,8 @@ public class ModelUtilities {
     }
 
     /**
-     * Target label is not present if
-     * - empty string
-     * - undefined
-     * - null
-     * Target Label is not case sensitive -> always lower case.
+     * Target label is not present if - empty string - undefined - null Target Label is not case sensitive -> always
+     * lower case.
      */
     public static Optional<String> getTargetLabel(TNodeTemplate nodeTemplate) {
         if (nodeTemplate == null) {
@@ -725,5 +722,17 @@ public class ModelUtilities {
                 }
             }
         }
+    }
+
+    public static boolean isOfType(QName requiredType, QName givenType, Map<QName, ? extends TEntityType> elements) {
+        if (!givenType.equals(requiredType)) {
+            TEntityType entityType = elements.get(givenType);
+            if (Objects.isNull(entityType) || Objects.isNull(entityType.getDerivedFrom())) {
+                return false;
+            } else {
+                return isOfType(requiredType, entityType.getDerivedFrom().getTypeAsQName(), elements);
+            }
+        }
+        return true;
     }
 }

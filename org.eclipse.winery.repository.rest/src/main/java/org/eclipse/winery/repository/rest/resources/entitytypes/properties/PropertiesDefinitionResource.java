@@ -52,7 +52,8 @@ import org.slf4j.LoggerFactory;
  * <li>Winery's KV properties (in the subresource "winery")</li>
  * </ol>
  * <p>
- * This class does not have "KV" in its name, because it models {@link TEntityType.PropertiesDefinition}
+ * This class does not have "KV" in its name, because it models
+ * {@link TEntityType.PropertiesDefinition}
  */
 public class PropertiesDefinitionResource {
 
@@ -64,6 +65,7 @@ public class PropertiesDefinitionResource {
     // we assume that this class is created at each request
     // therefore, we can have "wpd" final
     private final WinerysPropertiesDefinition wpd;
+
 
     public PropertiesDefinitionResource(EntityTypeResource res) {
         this.parentRes = res;

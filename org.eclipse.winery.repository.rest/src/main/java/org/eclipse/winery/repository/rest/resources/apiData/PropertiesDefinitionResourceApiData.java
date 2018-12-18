@@ -33,7 +33,7 @@ public class PropertiesDefinitionResourceApiData {
         this.propertiesDefinition = propertiesDefinition;
         this.winerysPropertiesDefinition = winerysPropertiesDefinition;
 
-        if ((winerysPropertiesDefinition != null) && (winerysPropertiesDefinition.getIsDerivedFromXSD() == null) && winerysPropertiesDefinition.getPropertyDefinitionKVList() != null) {
+        if ((winerysPropertiesDefinition != null) && (winerysPropertiesDefinition.getIsDerivedFromXSD() == null)) {
             this.selectedValue = PropertiesDefinitionEnum.Custom;
         } else if ((this.propertiesDefinition != null) && (this.propertiesDefinition.getElement() != null)) {
             this.selectedValue = PropertiesDefinitionEnum.Element;

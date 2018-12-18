@@ -33,10 +33,8 @@ import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.configuration.Environment;
-import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.VisualsApiData;
-import org.eclipse.winery.repository.rest.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
@@ -53,14 +51,14 @@ import com.sun.jersey.multipart.FormDataParam;
 public abstract class GenericVisualAppearanceResource {
 
     protected final Map<QName, String> otherAttributes;
-    protected final TopologyGraphElementEntityTypeResource res;
+    protected final AbstractComponentInstanceResource res;
     protected final ToscaElementId id;
 
     /**
      * @param otherAttributes the other attributes of the node/relationship type
      * @param id              the id of this subresource required for storing the images
      */
-    public GenericVisualAppearanceResource(TopologyGraphElementEntityTypeResource res, Map<QName, String> otherAttributes, VisualAppearanceId id) {
+    public GenericVisualAppearanceResource(AbstractComponentInstanceResource res, Map<QName, String> otherAttributes, ToscaElementId id) {
         this.id = id;
         this.res = res;
         this.otherAttributes = otherAttributes;

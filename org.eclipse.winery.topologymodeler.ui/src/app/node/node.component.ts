@@ -13,8 +13,8 @@
  ********************************************************************************/
 
 import {
-    AfterViewInit, Component, ComponentRef, DoCheck, ElementRef, EventEmitter, Input, KeyValueDiffers, NgZone, OnDestroy, OnInit, Output,
-    Renderer2
+    AfterViewInit, Component, ComponentRef, DoCheck, ElementRef, EventEmitter, Input, KeyValueDiffers, NgZone,
+    OnDestroy, OnInit, Output, Renderer2
 } from '@angular/core';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { NgRedux } from '@angular-redux/store';
@@ -29,6 +29,8 @@ import { isNullOrUndefined } from 'util';
 import { GroupedNodeTypeModel } from '../models/groupedNodeTypeModel';
 import { EntityTypesModel } from '../models/entityTypesModel';
 import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reducer';
+import { TPolicy } from '../models/policiesModalData';
+import { Visuals } from '../models/visuals';
 
 /**
  * Every node has its own component and gets created dynamically.
@@ -66,6 +68,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     artifactTypes: any;
     removeZIndex: any;
     propertyDefinitionType: string;
+    policyIcons: string[];
 
     @Input() readonly: boolean;
     @Input() entityTypes: EntityTypesModel;
@@ -171,6 +174,36 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         this.differ = this.differs.find([]).create();
         if (!isNullOrUndefined(this.nodeTemplate.visuals)) {
             this.nodeClass = this.nodeTemplate.visuals.pattern ? 'pattern' : 'nodeTemplate';
+        }
+
+        this.nodeClass = this.nodeTemplate.visuals.pattern ? 'pattern' : 'nodeTemplate';
+
+        // todo: refactor to be updated upon addition of a policy
+        if (this.nodeTemplate.policies && this.nodeTemplate.policies.policy) {
+            this.policyIcons = [];
+            const list: TPolicy[] = this.nodeTemplate.policies.policy;
+
+            for (const value of list) {
+                let visual: Visuals;
+                if (value.policyRef) {
+                    visual = this.entityTypes.policyTemplateVisuals
+                        .find(policyVisual => policyVisual.typeId === value.policyRef);
+                }
+
+                if (!visual) {
+                    visual = this.entityTypes.policyTypeVisuals.find(
+                        policyTypeVisual => policyTypeVisual.typeId === value.policyType
+                    );
+                }
+
+                if (visual && visual.imageUrl) {
+                    this.policyIcons.push(this.hostURL + visual.imageUrl);
+                }
+            }
+
+            if (this.policyIcons.length === 0) {
+                this.policyIcons = null;
+            }
         }
     }
 

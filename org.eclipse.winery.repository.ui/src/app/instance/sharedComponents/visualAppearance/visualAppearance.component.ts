@@ -19,6 +19,7 @@ import { RelationshipTypesVisualsApiData } from './relationshipTypesVisualsApiDa
 import { NodeTypesVisualsApiData } from './nodeTypesVisualsApiData';
 import { InstanceService } from '../../instance.service';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { ToscaTypes } from '../../../model/enums';
 
 @Component({
     templateUrl: 'visualAppearance.component.html',
@@ -34,7 +35,8 @@ export class VisualAppearanceComponent implements OnInit {
     loading = true;
     img16Path: string;
     img50Path: string;
-    isNodeType = true;
+    isRelationshipType = false;
+    isNodeType = false;
 
     constructor(public sharedData: InstanceService,
                 private service: VisualAppearanceService,
@@ -46,14 +48,13 @@ export class VisualAppearanceComponent implements OnInit {
         this.img16Path = this.service.getImg16x16Path();
         this.img50Path = this.service.getImg50x50Path();
 
-        if (this.service.path.includes('relationshiptypes')) {
-            this.isNodeType = false;
-        }
+        this.isRelationshipType = this.sharedData.toscaComponent.toscaType === ToscaTypes.RelationshipType;
+        this.isNodeType = this.sharedData.toscaComponent.toscaType === ToscaTypes.NodeType;
 
-        if (this.isNodeType) {
-            this.getNodeTypeData();
-        } else {
+        if (this.isRelationshipType) {
             this.getRelationshipData();
+        } else {
+            this.getNodeTypeData();
         }
     }
 
@@ -100,13 +101,13 @@ export class VisualAppearanceComponent implements OnInit {
     }
 
     saveToServer() {
-        if (this.isNodeType) {
-            this.service.saveVisuals(new NodeTypesVisualsApiData(this.nodeTypeData)).subscribe(
+        if (this.isRelationshipType) {
+            this.service.saveVisuals(new RelationshipTypesVisualsApiData(this.relationshipData, false)).subscribe(
                 data => this.handleResponse(data),
                 error => this.handleError(error)
             );
         } else {
-            this.service.saveVisuals(new RelationshipTypesVisualsApiData(this.relationshipData, false)).subscribe(
+            this.service.saveVisuals(new NodeTypesVisualsApiData(this.nodeTypeData)).subscribe(
                 data => this.handleResponse(data),
                 error => this.handleError(error)
             );
@@ -139,10 +140,10 @@ export class VisualAppearanceComponent implements OnInit {
 
     onUploadSuccess() {
         this.loading = true;
-        if (this.isNodeType) {
-            this.getNodeTypeData();
-        } else {
+        if (this.isRelationshipType) {
             this.getRelationshipData();
+        } else {
+            this.getNodeTypeData();
         }
     }
 

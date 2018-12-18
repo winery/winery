@@ -14,9 +14,10 @@
 
 import { Action, ActionCreator } from 'redux';
 import { Injectable } from '@angular/core';
-import { TNodeTemplate, TRelationshipTemplate, Visuals } from '../../models/ttopology-template';
+import { TNodeTemplate, TRelationshipTemplate } from '../../models/ttopology-template';
 import { TDeploymentArtifact } from '../../models/artifactsModalData';
 import { TPolicy } from '../../models/policiesModalData';
+import { Visuals } from '../../models/visuals';
 
 export interface SendPaletteOpenedAction extends Action {
     paletteOpened: boolean;

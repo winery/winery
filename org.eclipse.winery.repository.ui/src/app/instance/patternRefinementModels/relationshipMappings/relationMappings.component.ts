@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { RelationMappingsService } from './relationMappings.service';
+import { PrmMappingsService } from '../prmMappings.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { RelationDirection, RelationMapping } from './relationMapping';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -21,11 +21,12 @@ import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.compon
 import { NodeTemplate } from '../../../model/wineryComponent';
 import { SelectData } from '../../../model/selectData';
 import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
+import { InstanceService } from '../../instance.service';
 
 @Component({
     templateUrl: 'relationMappings.component.html',
     providers: [
-        RelationMappingsService
+        PrmMappingsService
     ]
 })
 export class RelationMappingsComponent implements OnInit {
@@ -55,8 +56,9 @@ export class RelationMappingsComponent implements OnInit {
     addModalRef: BsModalRef;
     removeModalRef: BsModalRef;
 
-    constructor(private service: RelationMappingsService,
+    constructor(private service: PrmMappingsService,
                 private notify: WineryNotificationService,
+                private sharedData: InstanceService,
                 private modalService: BsModalService) {
     }
 

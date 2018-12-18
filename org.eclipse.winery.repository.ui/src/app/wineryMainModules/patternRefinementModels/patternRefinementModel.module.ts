@@ -18,7 +18,7 @@ import { InstanceModule } from '../../instance/instance.module';
 import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
 import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';
 import { PatternRefinementModelRouterModule } from './patternRefinementModelRouter.module';
-import { RelationMappingsModule } from '../../instance/patternRefinementModels/relationshipMappings/relationMappings.module';
+import { PatternRefinementModelsModule } from '../../instance/patternRefinementModels/patternRefinementModels.module';
 
 @NgModule({
     imports: [
@@ -27,7 +27,7 @@ import { RelationMappingsModule } from '../../instance/patternRefinementModels/r
         TopologyTemplateModule,
         WineryReadmeModule,
         WineryLicenseModule,
-        RelationMappingsModule,
+        PatternRefinementModelsModule,
         PatternRefinementModelRouterModule,
     ]
 })

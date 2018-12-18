@@ -21,6 +21,7 @@ import java.util.Objects;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.HasId;
+import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.RelationshipSourceOrTarget;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TCapability;
@@ -55,13 +56,16 @@ import org.eclipse.jdt.annotation.NonNull;
  * Visitor with a default visit order to go from top of a definitions to the bottom. No follow up across TDefinitions.
  * In other words: The nesting is followed.
  *
- * In general, for all elements in the hierarchy, a visit method is implemented. This visit method visits all children (in the TOSCA graph meta model).
- * In case an element in the hierarchy has no children in the TOSCA graph meta model and no children in the inheritance hierarchy, it is omitted.
+ * In general, for all elements in the hierarchy, a visit method is implemented. This visit method visits all children
+ * (in the TOSCA graph meta model). In case an element in the hierarchy has no children in the TOSCA graph meta model
+ * and no children in the inheritance hierarchy, it is omitted.
  *
- * This class intentionally defines all default methods not as abstract to keep the children simple and to avoid unnecessary lines of code.
+ * This class intentionally defines all default methods not as abstract to keep the children simple and to avoid
+ * unnecessary lines of code.
  *
  * For more information on options on implementing visitors see
- * <a href="https://dspace.library.uu.nl/handle/1874/2558">Bravenboer, M., & Visser, E. (2001). Guiding visitors: Separating navigation from computation.</a>
+ * <a href="https://dspace.library.uu.nl/handle/1874/2558">Bravenboer, M., & Visser, E. (2001). Guiding visitors:
+ * Separating navigation from computation.</a>
  *
  * TODO: Implement it for all DefinitionsChildren (NodeType, NodeTypeImplementation, ...)
  */
@@ -176,7 +180,7 @@ public abstract class Visitor {
                 deploymentArtifact.accept(this);
             }
         }
-        final TNodeTemplate.Policies policies = nodeTemplate.getPolicies();
+        final TPolicies policies = nodeTemplate.getPolicies();
         if (policies != null) {
             for (TPolicy policy : policies.getPolicy()) {
                 policy.accept(this);
@@ -294,7 +298,7 @@ public abstract class Visitor {
     }
 
     private void acceptBoundaryDefinitionsPolicies(@NonNull TBoundaryDefinitions boundaryDefinitions) {
-        final TBoundaryDefinitions.Policies policies = boundaryDefinitions.getPolicies();
+        final TPolicies policies = boundaryDefinitions.getPolicies();
         if (policies != null) {
             for (TPolicy policy : policies.getPolicy()) {
                 policy.accept(this);

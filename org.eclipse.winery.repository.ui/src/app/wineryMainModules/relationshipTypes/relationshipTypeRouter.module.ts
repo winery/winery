@@ -42,7 +42,7 @@ const relationshipTypeRoutes: Routes = [
         children: [
             {path: 'readme', component: WineryReadmeComponent},
             {path: 'license', component: WineryLicenseComponent},
-            {path: 'visualappearance', component: VisualAppearanceComponent},
+            {path: 'appearance', component: VisualAppearanceComponent},
             {path: 'instancestates', component: InstanceStatesComponent},
             {path: 'sourceinterfaces', component: InterfacesComponent},
             {path: 'interfaces', component: InterfacesComponent},

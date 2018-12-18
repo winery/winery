@@ -69,7 +69,7 @@ export class InstanceComponent implements OnDestroy {
                         && this.toscaComponent.toscaType !== ToscaTypes.Imports
                         && this.toscaComponent.toscaType !== ToscaTypes.Admin) {
                         if (this.toscaComponent.toscaType === ToscaTypes.NodeType) {
-                            const img = backendBaseURL + this.service.path + '/visualappearance/50x50';
+                            const img = backendBaseURL + this.service.path + '/appearance/50x50';
                             this.existService.check(img)
                                 .subscribe(
                                     () => this.imageUrl = img,

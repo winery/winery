@@ -57,7 +57,7 @@ export class EntityComponent implements OnInit {
             + encodeURIComponent(encodeURIComponent(this.data.namespace)) + '/' + this.data.id;
 
         if (this.toscaType === ToscaTypes.NodeType && this.data.id) {
-            const img = this.backendLink + '/visualappearance/50x50';
+            const img = this.backendLink + '/appearance/50x50';
 
             this.existService.check(img)
                 .subscribe(

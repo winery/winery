@@ -46,7 +46,7 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
     @GET
     @Path("bordercolor")
     public String getColor() {
-        return RestUtils.getColor(this.getId().getParent().getXmlId().getDecoded(), QNames.QNAME_BORDER_COLOR, this.otherAttributes, this.res);
+        return RestUtils.getColor(this.getId().getParent().getXmlId().getDecoded(), QNames.QNAME_BORDER_COLOR, this.otherAttributes);
     }
 
     @PUT

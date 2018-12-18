@@ -15,6 +15,7 @@
 <winery-loader *ngIf="loading; else content"></winery-loader>
 <ng-template #content>
     <winery-table [columns]="columns" [data]="relationshipMappings"
+                  [disableButtons]="!sharedData.currentVersion.editable"
                   (addBtnClicked)="onAddButtonClicked()" (removeBtnClicked)="onRemoveButtonClicked($event)">
     </winery-table>
 </ng-template>
@@ -33,6 +34,7 @@
                 <input type="radio" name="direction" id="outgoing" (click)="mapping.direction = relDirections.OUTGOING">
                 <label for="outgoing">Outgoing</label>
             </div>
+            <hr>
 
             <div class="form-group">
                 <label for="detectorNode" class="control-label">Detector Node</label>
@@ -47,6 +49,7 @@
                            (selected)="mapping.refinementNode = $event.id">
                 </ng-select>
             </div>
+            <hr>
 
             <div class="form-group">
                 <label for="relationTypeSelect" class="control-label">Applicable Relationship Type</label>
@@ -54,7 +57,7 @@
                            (selected)="mapping.relationType = $event.id">
                 </ng-select>
             </div>
-
+            <hr>
             <div class="form-group">
                 <label for="nodeTypeSelect" class="control-label">Valid Endpoint Type</label>
                 <ng-select id="nodeTypeSelect" [items]="nodeTypes"

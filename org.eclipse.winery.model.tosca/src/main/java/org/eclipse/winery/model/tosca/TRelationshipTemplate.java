@@ -43,21 +43,22 @@ import org.w3c.dom.Element;
 @XmlType(name = "tRelationshipTemplate", propOrder = {
     "sourceElement",
     "targetElement",
-    "relationshipConstraints"
+    "relationshipConstraints",
+    "policies"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class TRelationshipTemplate extends TEntityTemplate {
+public class TRelationshipTemplate extends TEntityTemplate implements HasPolicies {
 
     @XmlElement(name = "SourceElement", required = true)
     // AD: We need to combine source or target due to multi-inheritance
     protected TRelationshipTemplate.@NonNull SourceOrTargetElement sourceElement;
-
     @XmlElement(name = "TargetElement", required = true)
     protected TRelationshipTemplate.@NonNull SourceOrTargetElement targetElement;
-
     @XmlElement(name = "RelationshipConstraints")
     protected TRelationshipTemplate.RelationshipConstraints relationshipConstraints;
+    @XmlElement(name = "Policies")
+    protected TPolicies policies;
 
     @XmlAttribute(name = "name")
     protected String name;
@@ -137,7 +138,7 @@ public class TRelationshipTemplate extends TEntityTemplate {
         return name;
     }
 
-    public void setName(@Nullable  String value) {
+    public void setName(@Nullable String value) {
         this.name = value;
     }
 
@@ -274,6 +275,14 @@ public class TRelationshipTemplate extends TEntityTemplate {
         public int hashCode() {
             return Objects.hash(ref);
         }
+    }
+
+    public TPolicies getPolicies() {
+        return policies;
+    }
+
+    public void setPolicies(TPolicies policies) {
+        this.policies = policies;
     }
 
     public static class Builder extends TEntityTemplate.Builder<Builder> {
