@@ -59,7 +59,7 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
         return RestUtils.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, this.id.getQName());
     }
 
-    @Path("visualappearance/")
+    @Path("appearance")
     public VisualAppearanceResource getVisualAppearanceResource() {
         return new VisualAppearanceResource(this, this.getElement().getOtherAttributes(), (RelationshipTypeId) this.id);
     }

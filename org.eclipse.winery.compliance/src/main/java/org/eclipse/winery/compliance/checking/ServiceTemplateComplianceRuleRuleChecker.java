@@ -66,7 +66,7 @@ public class ServiceTemplateComplianceRuleRuleChecker {
                         for (GraphMapping mapping : graphMappings) {
                             Map<ToscaNode, ToscaNode> resultMap = checker.getSubGraphMappingAsMap(mapping, checker.getIdentifierGraph());
                             checkingResult.append(System.lineSeparator());
-                            checkingResult.append(resultMap.values().stream().map(node -> node.getNodeTemplate().getIdFromIdOrNameField()).collect(Collectors.joining(";", "NodeTemplateIds: ", "")));
+                            checkingResult.append(resultMap.values().stream().map(node -> node.getTemplate().getIdFromIdOrNameField()).collect(Collectors.joining(";", "NodeTemplateIds: ", "")));
                         }
                     } else {
                         result.getSatisfied().add(ruleId.getQName());

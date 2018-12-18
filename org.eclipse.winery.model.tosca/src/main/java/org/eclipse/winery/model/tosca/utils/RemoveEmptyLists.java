@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.utils;
 
+import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -23,9 +24,9 @@ import org.eclipse.winery.model.tosca.visitor.Visitor;
 import io.github.adr.embedded.ADR;
 
 /**
- * This class removes empty lists. For instance, if a node template has a list of policies and this list is empty, it is removed.
- * This is important for XSD validation.
- * 
+ * This class removes empty lists. For instance, if a node template has a list of policies and this list is empty, it is
+ * removed. This is important for XSD validation.
+ *
  * Use it by calling <code>removeEmptyLists(topologyTemplate)</code>
  *
  * TODO: Extend this for all model elements
@@ -60,7 +61,7 @@ public class RemoveEmptyLists extends Visitor {
         if ((deploymentArtifacts != null) && deploymentArtifacts.getDeploymentArtifact().isEmpty()) {
             nodeTemplate.setDeploymentArtifacts(null);
         }
-        final TNodeTemplate.Policies policies = nodeTemplate.getPolicies();
+        final TPolicies policies = nodeTemplate.getPolicies();
         if ((policies != null) && policies.getPolicy().isEmpty()) {
             nodeTemplate.setPolicies(null);
         }

@@ -16,6 +16,7 @@ package org.eclipse.winery.topologygraph.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 
 public abstract class ToscaEntity {
@@ -39,10 +40,13 @@ public abstract class ToscaEntity {
     }
 
     public TEntityType getActualType() {
-        return types.stream().findFirst().orElse(null);
+        // according to the convention that the first element is the actual type:
+        return types.get(0);
     }
 
     public boolean addTEntityType(TEntityType type) {
         return this.types.add(type);
     }
+
+    public abstract TEntityTemplate getTemplate();
 }

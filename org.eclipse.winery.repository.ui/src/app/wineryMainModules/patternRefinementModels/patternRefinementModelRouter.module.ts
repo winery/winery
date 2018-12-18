@@ -23,6 +23,7 @@ import { EditXMLComponent } from '../../instance/sharedComponents/editXML/editXM
 import { NgModule } from '@angular/core';
 import { RelationMappingsComponent } from '../../instance/patternRefinementModels/relationshipMappings/relationMappings.component';
 import { TopologyTemplateComponent } from '../../instance/sharedComponents/topologyTemplate/topologyTemplate.component';
+import { PrmPropertyMappingsComponent } from '../../instance/patternRefinementModels/propertyMappings/prmPropertyMappings.component';
 
 const toscaType = ToscaTypes.PatternRefinementModel;
 
@@ -39,6 +40,7 @@ const patternRefinementRoutes: Routes = [
             { path: 'detector', component: TopologyTemplateComponent },
             { path: 'refinementstructure', component: TopologyTemplateComponent },
             { path: 'relationmappings', component: RelationMappingsComponent },
+            { path: 'propertymappings', component: PrmPropertyMappingsComponent },
             { path: 'xml', component: EditXMLComponent },
             { path: '', redirectTo: 'readme', pathMatch: 'full' }
         ]

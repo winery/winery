@@ -265,8 +265,10 @@ export class WineryComponent implements OnInit, AfterViewInit {
             const topologyTemplate = topologyData[0];
             this.entityTypes.nodeVisuals = topologyData[1];
             this.entityTypes.relationshipVisuals = topologyData[2];
-            if (topologyData.length === 5 && !isNullOrUndefined(topologyData[3]) && !isNullOrUndefined(topologyData[4])) {
-                this.topologyDifferences = [topologyData[3], topologyData[4]];
+            this.entityTypes.policyTemplateVisuals = topologyData[3];
+            this.entityTypes.policyTypeVisuals = topologyData[4];
+            if (topologyData.length === 7 && !isNullOrUndefined(topologyData[5]) && !isNullOrUndefined(topologyData[6])) {
+                this.topologyDifferences = [topologyData[5], topologyData[6]];
             }
             // init the NodeTemplates and RelationshipTemplates to start their rendering
             this.initTopologyTemplate(topologyTemplate.nodeTemplates, topologyTemplate.relationshipTemplates);

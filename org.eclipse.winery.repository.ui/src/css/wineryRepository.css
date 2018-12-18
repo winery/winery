@@ -295,7 +295,6 @@ div.serviceTemplate div.bottom {
 div.mainContentContainer.relationshipType div.top {
     background: url('../assets/img/containers/rt/rt-FrameTopLarge.jpg');
 }
-
 div.mainContentContainer.relationshipType div.top.twolines {
     height: 208px;
 }
@@ -542,7 +541,7 @@ div.entityContainer > div.right {
 }
 
 div.entityContainer > div.center > div.informationContainer {
-    margin-top: 15px;
+    margin-top: 25px;
     height: 45px;
     color: #787878;
     font-family: arial, sans-serif;
@@ -560,18 +559,7 @@ div.entityContainer > div.center > div.informationContainer > div.name {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    direction: ltr;
-    text-align: left;
-}
-
-div.entityContainer > div.center > div.informationContainer > div.name:hover {
-    color: #00c2ff;
-}
-
-div.entityContainer > div.center > div.informationContainer > div.version {
-    font-size: 14px;
-    height: 18px;
-    direction: ltr;
+    direction: rtl;
     text-align: left;
 }
 

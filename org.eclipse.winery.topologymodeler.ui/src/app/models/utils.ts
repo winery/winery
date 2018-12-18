@@ -11,10 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-import { TNodeTemplate, TRelationshipTemplate, TTopologyTemplate, Visuals } from './ttopology-template';
+import { TNodeTemplate, TRelationshipTemplate, TTopologyTemplate } from './ttopology-template';
 import { QName } from './qname';
 import { isNullOrUndefined } from 'util';
 import { DifferenceStates, ToscaDiff, VersionUtils } from './ToscaDiff';
+import { Visuals } from './visuals';
 
 export class Utils {
 
@@ -86,20 +87,15 @@ export class Utils {
     }
 
     static getNodeVisualsForNodeTemplate(nodeType: string, nodeVisuals: Visuals[], state?: DifferenceStates): Visuals {
-        let color, imageUrl: string;
         for (const visual of nodeVisuals) {
             const qName = new QName(visual.typeId);
             const localName = qName.localName;
             if (localName === new QName(nodeType).localName) {
-                color = isNullOrUndefined(state) ? visual.color : VersionUtils.getElementColorByDiffState(state);
-                imageUrl = visual.imageUrl;
-                if (imageUrl) {
-                    imageUrl = imageUrl.replace('appearance', 'visualappearance');
-                }
+                const color = !state ? visual.color : VersionUtils.getElementColorByDiffState(state);
                 return <Visuals> {
                     color: color,
                     typeId: nodeType,
-                    imageUrl: imageUrl,
+                    imageUrl: visual.imageUrl,
                     pattern: visual.pattern
                 };
             }

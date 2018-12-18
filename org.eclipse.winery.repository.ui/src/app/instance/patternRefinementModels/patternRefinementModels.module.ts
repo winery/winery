@@ -1,4 +1,4 @@
-/********************************************************************************
+/*******************************************************************************
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -12,16 +12,17 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { NgModule } from '@angular/core';
-import { WineryModalModule } from '../../../wineryModalModule/winery.modal.module';
+import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
 import { CommonModule } from '@angular/common';
-import { RelationMappingsComponent } from './relationMappings.component';
+import { RelationMappingsComponent } from './relationshipMappings/relationMappings.component';
 import { HttpClientModule } from '@angular/common/http';
-import { WineryNotificationModule } from '../../../wineryNotificationModule/wineryNotification.module';
-import { InstanceModule } from '../../instance.module';
+import { WineryNotificationModule } from '../../wineryNotificationModule/wineryNotification.module';
+import { InstanceModule } from '../instance.module';
 import { BrowserModule } from '@angular/platform-browser';
-import { WineryTableModule } from '../../../wineryTableModule/wineryTable.module';
-import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
+import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
+import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
 import { SelectModule } from 'ng2-select';
+import { PrmPropertyMappingsComponent } from './propertyMappings/prmPropertyMappings.component';
 
 @NgModule({
     imports: [
@@ -36,11 +37,13 @@ import { SelectModule } from 'ng2-select';
         WineryLoaderModule,
     ],
     exports: [
-        RelationMappingsComponent
+        RelationMappingsComponent,
+        PrmPropertyMappingsComponent
     ],
     declarations: [
         RelationMappingsComponent,
+        PrmPropertyMappingsComponent
     ]
 })
-export class RelationMappingsModule {
+export class PatternRefinementModelsModule {
 }

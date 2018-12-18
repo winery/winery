@@ -22,7 +22,7 @@ public class ToscaDefaultMatcher implements IToscaMatcher {
 
     @Override
     public boolean isCompatible(ToscaNode left, ToscaNode right) {
-        return StringUtils.equals(left.getNodeTemplate().getName(), right.getNodeTemplate().getName());
+        return StringUtils.equals(left.getTemplate().getName(), right.getTemplate().getName());
     }
 
     @Override

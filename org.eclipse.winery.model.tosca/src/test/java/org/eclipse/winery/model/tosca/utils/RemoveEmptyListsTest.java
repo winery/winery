@@ -15,6 +15,7 @@
 
 package org.eclipse.winery.model.tosca.utils;
 
+import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
@@ -33,7 +34,7 @@ public class RemoveEmptyListsTest {
         topologyTemplate.getNodeTemplateOrRelationshipTemplate().add(nodeTemplate);
 
         nodeTemplate.setProperties(new TEntityTemplate.Properties());
-        nodeTemplate.setPolicies(new TNodeTemplate.Policies());
+        nodeTemplate.setPolicies(new TPolicies());
 
         assertNotNull(((TNodeTemplate) topologyTemplate.getNodeTemplateOrRelationshipTemplate().get(0)).getPolicies());
         assertNotNull(((TNodeTemplate) topologyTemplate.getNodeTemplateOrRelationshipTemplate().get(0)).getProperties());

@@ -53,7 +53,7 @@ export class EntityContainerComponent implements OnInit {
             const img = backendBaseURL + '/' + this.toscaType
                 + '/' + encodeURIComponent(encodeURIComponent(this.data.versionInstances[0].namespace))
                 + '/' + this.data.versionInstances[0].id
-                + '/visualappearance/50x50';
+                + '/appearance/50x50';
 
             this.existService.check(img)
                 .subscribe(

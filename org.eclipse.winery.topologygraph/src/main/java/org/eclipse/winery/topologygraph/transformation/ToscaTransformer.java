@@ -20,7 +20,6 @@ import java.util.Optional;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.EntityTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.TEntityType;
@@ -81,7 +80,6 @@ public class ToscaTransformer {
     }
 
     protected static TEntityType getEntityType(QName qName, Class<? extends TEntityType> tEntityTypeClass) {
-        EntityTypeId ntId = null;
         if (tEntityTypeClass.isAssignableFrom(TNodeType.class)) {
             return RepositoryFactory.getRepository().getElement(new NodeTypeId(qName));
         }

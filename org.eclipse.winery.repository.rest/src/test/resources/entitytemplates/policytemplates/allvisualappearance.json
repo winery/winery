@@ -1,0 +1,19 @@
+[
+    {
+        "pattern": false,
+        "typeId": "{http://plain.winery.opentosca.org/policytemplates}PolicyTemplateWithTwoKvProperties"
+    },
+    {
+        "pattern": false,
+        "typeId": "{http://plain.winery.opentosca.org/policytemplates}PolicyTemplateWithXmlElementProperty-PolicyTypeWithXmlElementProperty"
+    },
+    {
+        "pattern": false,
+        "typeId": "{http://plain.winery.opentosca.org/policytemplates}PolicyTemplateWithoutProperties"
+    },
+    {
+        "imageUrl": "http://localhost:8080/winery/policytemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fpolicytemplates/PolicyWithIcon_w1-wip1/appearance/50x50",
+        "pattern": false,
+        "typeId": "{http://plain.winery.opentosca.org/policytemplates}PolicyWithIcon_w1-wip1"
+    }
+]

@@ -12,8 +12,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
-import { Entity, EntityType, TTopologyTemplate, VisualEntityType, Visuals } from './ttopology-template';
+import { Entity, EntityType, TTopologyTemplate, VisualEntityType } from './ttopology-template';
 import { TopologyModelerConfiguration } from './topologyModelerConfiguration';
+import { Visuals } from './visuals';
 
 /**
  * Internal representation of entity Types
@@ -26,7 +27,9 @@ export class EntityTypesModel {
     nodeVisuals: Visuals[];
     relationshipVisuals: Visuals[];
     policyTemplates: Entity[];
+    policyTemplateVisuals: Visuals[];
     policyTypes: EntityType[];
+    policyTypeVisuals: Visuals[];
     relationshipTypes: VisualEntityType[];
     requirementTypes: EntityType[];
     unGroupedNodeTypes: EntityType[];

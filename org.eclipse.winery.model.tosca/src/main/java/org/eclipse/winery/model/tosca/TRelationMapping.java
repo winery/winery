@@ -24,15 +24,14 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.tosca.visitor.Visitor;
+
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import org.eclipse.jdt.annotation.NonNull;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tRelationMapping")
-public class TRelationMapping implements Serializable {
-
-    @XmlAttribute(name = "id")
-    private String id;
+public class TRelationMapping extends HasId implements Serializable {
 
     @JsonIdentityReference(alwaysAsId = true)
     @XmlAttribute(name = "detectorNode", required = true)
@@ -97,17 +96,14 @@ public class TRelationMapping implements Serializable {
         this.validSourceOrTarget = validSourceOrTarget;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     @Override
     public boolean equals(Object obj) {
         return obj instanceof TRelationMapping
-            && id.equals(((TRelationMapping) obj).id);
+            && getId().equals(((TRelationMapping) obj).getId());
+    }
+
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
 }

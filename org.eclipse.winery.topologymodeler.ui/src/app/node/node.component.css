@@ -176,3 +176,7 @@ button.btn.btn-sm.btn-outline-secondary:hover, button.btn.btn-sm.btn-outline-sec
     border-radius: 2px;
     color: #000;
 }
+
+.policyAnnotation {
+    margin: 3px;
+}

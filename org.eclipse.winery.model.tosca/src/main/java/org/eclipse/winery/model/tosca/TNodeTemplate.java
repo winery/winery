@@ -49,13 +49,14 @@ import org.eclipse.jdt.annotation.Nullable;
     use = JsonTypeInfo.Id.NAME,
     include = JsonTypeInfo.As.EXISTING_PROPERTY,
     property = "fakeJacksonType")
-public class TNodeTemplate extends RelationshipSourceOrTarget {
+public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPolicies {
+
     @XmlElement(name = "Requirements")
     protected TNodeTemplate.Requirements requirements;
     @XmlElement(name = "Capabilities")
     protected TNodeTemplate.Capabilities capabilities;
     @XmlElement(name = "Policies")
-    protected TNodeTemplate.Policies policies;
+    protected TPolicies policies;
     @XmlElement(name = "DeploymentArtifacts")
     protected TDeploymentArtifacts deploymentArtifacts;
     @XmlAttribute(name = "name")
@@ -126,11 +127,11 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
         this.capabilities = value;
     }
 
-    public TNodeTemplate.@Nullable Policies getPolicies() {
+    public @Nullable TPolicies getPolicies() {
         return policies;
     }
 
-    public void setPolicies(TNodeTemplate.@Nullable Policies value) {
+    public void setPolicies(@Nullable TPolicies value) {
         this.policies = value;
     }
 
@@ -179,8 +180,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
     }
 
     /**
-     * In the JSON, also output this direct child of the node template object.
-     * Therefore, no JsonIgnore annotation.
+     * In the JSON, also output this direct child of the node template object. Therefore, no JsonIgnore annotation.
      */
     @XmlTransient
     @Nullable
@@ -190,7 +190,8 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
     }
 
     /**
-     * Sets the top coordinate of a {@link TNodeTemplate}. When receiving the JSON, this method ensures that (i) the "y" property can be handled and (ii) the Y coordinate is written correctly in the extension namespace.
+     * Sets the top coordinate of a {@link TNodeTemplate}. When receiving the JSON, this method ensures that (i) the "y"
+     * property can be handled and (ii) the Y coordinate is written correctly in the extension namespace.
      *
      * @param x the value of the x-coordinate to be set
      */
@@ -201,8 +202,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
     }
 
     /**
-     * In the JSON, also output this direct child of the node template object.
-     * Therefore, no JsonIgnore annotation.
+     * In the JSON, also output this direct child of the node template object. Therefore, no JsonIgnore annotation.
      */
     @XmlTransient
     @Nullable
@@ -212,7 +212,8 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
     }
 
     /**
-     * Sets the top coordinate of a {@link TNodeTemplate}. When receiving the JSON, this method ensures that (i) the "y" property can be handled and (ii) the Y coordinate is written correctly in the extension namespace.
+     * Sets the top coordinate of a {@link TNodeTemplate}. When receiving the JSON, this method ensures that (i) the "y"
+     * property can be handled and (ii) the Y coordinate is written correctly in the extension namespace.
      *
      * @param y the value of the coordinate to be set
      */
@@ -238,10 +239,9 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
          * Gets the value of the capability property.
          * <p>
          * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the capability property.
+         * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you
+         * make to the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE>
+         * method for the capability property.
          * <p>
          * <p>
          * For example, to add a new item, do as follows:
@@ -251,8 +251,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
          * <p>
          * <p>
          * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link TCapability }
+         * Objects of the following type(s) are allowed in the list {@link TCapability }
          */
         @NonNull
         public List<TCapability> getCapability() {
@@ -277,37 +276,6 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
 
         public void accept(Visitor visitor) {
             visitor.visit(this);
-        }
-    }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "policy"
-    })
-    public static class Policies implements Serializable {
-
-        @XmlElement(name = "Policy", required = true)
-        protected List<TPolicy> policy;
-
-        @NonNull
-        public List<TPolicy> getPolicy() {
-            if (policy == null) {
-                policy = new ArrayList<>();
-            }
-            return this.policy;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Policies policies = (Policies) o;
-            return Objects.equals(policy, policies.policy);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(policy);
         }
     }
 
@@ -349,7 +317,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
     public static class Builder extends RelationshipSourceOrTarget.Builder<Builder> {
         private Requirements requirements;
         private Capabilities capabilities;
-        private Policies policies;
+        private TPolicies policies;
         private TDeploymentArtifacts deploymentArtifacts;
         private String name;
         private Integer minInstances;
@@ -373,7 +341,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
             return this;
         }
 
-        public Builder setPolicies(TNodeTemplate.Policies policies) {
+        public Builder setPolicies(TPolicies policies) {
             this.policies = policies;
             return this;
         }
@@ -464,7 +432,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
             return addCapabilities(tmp);
         }
 
-        public Builder addPolicies(TNodeTemplate.Policies policies) {
+        public Builder addPolicies(TPolicies policies) {
             if (policies == null) {
                 return this;
             }
@@ -482,7 +450,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
                 return this;
             }
 
-            TNodeTemplate.Policies tmp = new TNodeTemplate.Policies();
+            TPolicies tmp = new TPolicies();
             tmp.getPolicy().addAll(policies);
             return addPolicies(tmp);
         }
@@ -492,7 +460,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
                 return this;
             }
 
-            TNodeTemplate.Policies tmp = new TNodeTemplate.Policies();
+            TPolicies tmp = new TPolicies();
             tmp.getPolicy().add(policies);
             return addPolicies(tmp);
         }

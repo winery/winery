@@ -39,7 +39,6 @@ import org.eclipse.winery.model.tosca.TPlan.PlanModelReference;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.collections.EntityCollectionResource;
@@ -146,7 +145,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
                 fileName = tPlan.getId() + Constants.SUFFIX_BPMN4TOSCA;
                 RepositoryFileReference ref = new RepositoryFileReference(planId, fileName);
                 // Errors are ignored in the following call
-                RestUtils.putContentToFile(ref, "{}", MediaTypes.MEDIATYPE_APPLICATION_JSON);
+                RestUtils.putContentToFile(ref, "{}", MediaType.APPLICATION_JSON_TYPE);
             } else {
                 // We use the filename also as local file name. Alternatively, we could use the xml id
                 // With URL encoding, this should not be an issue

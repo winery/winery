@@ -34,5 +34,4 @@ public abstract class TopologyGraphElementEntityTypeId extends EntityTypeId {
     public TopologyGraphElementEntityTypeId(QName type) {
         super(type);
     }
-
 }

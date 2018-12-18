@@ -111,14 +111,25 @@
             "relationMappings": {
                 "relationMapping": [
                     {
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
                         "id": "mapping0",
                         "detectorNode": "Infrastructure-As-A-Service_w1",
                         "refinementNode": "NodeTypeWith5Versions_0.3.4-w3-wip3",
                         "relationType": "{http://plain.winery.opentosca.org/relationshiptypes}RelationshipTypeWithTwoKvPropertie",
-                        "direction": "INGOING",
-                        "validSourceOrTarget": null
+                        "direction": "INGOING"
                     },
                     {
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
                         "id": "mapping1",
                         "detectorNode": "Infrastructure-As-A-Service_w1",
                         "refinementNode": "NodeTypeWith5Versions_0.3.0-w2",

@@ -16,7 +16,7 @@ import { Injectable } from '@angular/core';
 import { backendBaseURL, hostURL } from '../models/configuration';
 import { Subject } from 'rxjs/Subject';
 import { isNullOrUndefined } from 'util';
-import { EntityType, TTopologyTemplate, Visuals } from '../models/ttopology-template';
+import { EntityType, TTopologyTemplate } from '../models/ttopology-template';
 import { QNameWithTypeApiData } from '../models/generateArtifactApiData';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { urlElement } from '../models/enums';
@@ -27,6 +27,7 @@ import { Observable } from 'rxjs/Observable';
 import { forkJoin } from 'rxjs';
 import { TopologyModelerConfiguration } from '../models/topologyModelerConfiguration';
 import { ErrorHandlerService } from './error-handler.service';
+import { Visuals } from '../models/visuals';
 
 /**
  * Responsible for interchanging data between the app and the server.
@@ -114,6 +115,8 @@ export class BackendService {
             const currentUrl = url + this.configuration.id + '/' + this.configuration.elementPath;
             const nodeVisualsUrl = backendBaseURL + '/nodetypes/allvisualappearancedata';
             const relationshipVisualsUrl = backendBaseURL + '/relationshiptypes/allvisualappearancedata';
+            const policyVisualsUrl = backendBaseURL + '/policytemplates/allvisualappearancedata';
+            const policyTypesVisualsUrl = backendBaseURL + '/policytypes/allvisualappearancedata';
             // This is required because the information has to be returned together
 
             if (isNullOrUndefined(this.configuration.compareTo)) {
@@ -121,6 +124,8 @@ export class BackendService {
                     this.http.get<TTopologyTemplate>(currentUrl),
                     this.http.get<Visuals>(nodeVisualsUrl),
                     this.http.get<Visuals>(relationshipVisualsUrl),
+                    this.http.get<Visuals>(policyVisualsUrl),
+                    this.http.get<Visuals>(policyTypesVisualsUrl)
                 );
             } else {
                 const compareUrl = url
@@ -133,6 +138,8 @@ export class BackendService {
                     this.http.get<TTopologyTemplate>(currentUrl),
                     this.http.get<Visuals>(nodeVisualsUrl),
                     this.http.get<Visuals>(relationshipVisualsUrl),
+                    this.http.get<Visuals>(policyVisualsUrl),
+                    this.http.get<Visuals>(policyTypesVisualsUrl),
                     this.http.get<ToscaDiff>(compareUrl),
                     this.http.get<TTopologyTemplate>(templateUrl)
                 );

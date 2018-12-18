@@ -22,11 +22,8 @@ import org.eclipse.winery.model.tosca.TRelationMapping;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class RelationMappingApiData {
+public class RelationMappingApiData extends AbstractPrmMappingElement {
 
-    public String detectorNode;
-    public String id;
-    public String refinementNode;
     public TRelationDirection direction;
     public QName relationType;
     public QName validSourceOrTarget;

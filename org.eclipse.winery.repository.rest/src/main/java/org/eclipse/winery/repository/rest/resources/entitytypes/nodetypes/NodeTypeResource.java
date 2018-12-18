@@ -99,7 +99,7 @@ public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
         return new CapabilityDefinitionsResource(this, definitions.getCapabilityDefinition());
     }
 
-    @Path("visualappearance/")
+    @Path("appearance")
     public VisualAppearanceResource getVisualAppearanceResource() {
         return new VisualAppearanceResource(this, this.getElement().getOtherAttributes(), (NodeTypeId) this.id);
     }

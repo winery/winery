@@ -33,20 +33,16 @@ export class VisualAppearanceService {
     }
 
     getData() {
-        return this.http.get(backendBaseURL + this.route.url + '/');
+        return this.http.get(backendBaseURL + this.route.url);
     }
 
     saveVisuals(data: any): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
         return this.http
             .put(
-                backendBaseURL + this.route.url + '/',
+                backendBaseURL + this.route.url,
                 data,
                 { headers: headers, observe: 'response', responseType: 'text' }
             );
-    }
-
-    get path(): string {
-        return this.route.url;
     }
 }

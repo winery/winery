@@ -42,10 +42,13 @@ class SubstitutionUtilsTestWithGitBackedRepository extends TestWithGitBackedRepo
             "ServiceTemplateWithTwoNodeTemplates_w1-wip2", false);
         ServiceTemplateId st2 = new ServiceTemplateId("http://plain.winery.org/pattern-based/servicetemplates",
             "ServiceTemplateContainingAbstractNodeTemplates_w2-wip1", false);
+        ServiceTemplateId st3 = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates",
+            "NodeTemplateAnnotedWithPattern_w1-wip1", false);
 
         return Stream.of(
             Arguments.of(st1, false, "expecting no patterns in the topology"),
-            Arguments.of(st2, true, "expecting patterns in the topology")
+            Arguments.of(st2, true, "expecting patterns in the topology"),
+            Arguments.of(st3, true, "expecting patterns as annotation in the topology")
         );
     }
 }

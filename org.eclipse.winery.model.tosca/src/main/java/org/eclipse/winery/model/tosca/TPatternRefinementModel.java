@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tPatternRefinementModel")
@@ -48,6 +49,9 @@ public class TPatternRefinementModel extends TExtensibleElements implements HasN
 
     @XmlElement(name = "RelationMappings")
     private TRelationMappings relationMappings;
+
+    @XmlElement(name = "PrmPropertyMappings")
+    private TPrmPropertyMappings propertyMappings;
 
     @Override
     public String getName() {
@@ -121,11 +125,39 @@ public class TPatternRefinementModel extends TExtensibleElements implements HasN
         }
     }
 
+    @Nullable
     public TRelationMappings getRelationMappings() {
         return relationMappings;
     }
 
     public void setRelationMappings(TRelationMappings relationMappings) {
         this.relationMappings = relationMappings;
+    }
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", propOrder = {
+        "propertyMapping"
+    })
+    public static class TPrmPropertyMappings implements Serializable {
+
+        @XmlElement(name = "PropertyMapping")
+        protected List<TPrmPropertyMapping> propertyMapping;
+
+        @NonNull
+        public List<TPrmPropertyMapping> getPropertyMapping() {
+            if (Objects.isNull(this.propertyMapping)) {
+                this.propertyMapping = new ArrayList<>();
+            }
+            return this.propertyMapping;
+        }
+    }
+
+    @Nullable
+    public TPrmPropertyMappings getPropertyMappings() {
+        return propertyMappings;
+    }
+
+    public void setPropertyMappings(TPrmPropertyMappings propertyMappings) {
+        this.propertyMappings = propertyMappings;
     }
 }

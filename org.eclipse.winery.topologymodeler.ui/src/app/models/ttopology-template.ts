@@ -12,6 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 import { DifferenceStates, VersionUtils } from './ToscaDiff';
+import { Visuals } from './visuals';
 
 export class AbstractTTemplate {
     constructor(public documentation?: any,
@@ -182,17 +183,4 @@ export class TRelationshipTemplate extends AbstractTTemplate {
         return relTemplate;
     }
 
-}
-
-/**
- * This is the datamodel for the style of nodes and relationships
- */
-export class Visuals {
-
-    constructor(public color: string,
-                public typeId: string,
-                public localName?: string,
-                public imageUrl?: string,
-                public pattern?: string) {
-    }
 }
