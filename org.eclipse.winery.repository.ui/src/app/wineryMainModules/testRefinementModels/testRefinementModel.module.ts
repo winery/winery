@@ -1,4 +1,4 @@
-/********************************************************************************
+/*******************************************************************************
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -17,7 +17,7 @@ import { TopologyTemplateModule } from '../../instance/sharedComponents/topology
 import { InstanceModule } from '../../instance/instance.module';
 import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
 import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';
-import { PatternRefinementModelRouterModule } from './patternRefinementModelRouter.module';
+import { TestRefinementModelRouterModule } from './testRefinementModelRouter.module';
 import { RefinementModelsModule } from '../../instance/refinementModels/refinementModels.module';
 
 @NgModule({
@@ -28,8 +28,8 @@ import { RefinementModelsModule } from '../../instance/refinementModels/refineme
         WineryReadmeModule,
         WineryLicenseModule,
         RefinementModelsModule,
-        PatternRefinementModelRouterModule,
+        TestRefinementModelRouterModule,
     ]
 })
-export class PatternRefinementModelModule {
+export class TestRefinementModelModule {
 }

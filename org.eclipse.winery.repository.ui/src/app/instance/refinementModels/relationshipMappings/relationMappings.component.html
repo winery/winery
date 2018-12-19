@@ -57,8 +57,9 @@
                            (selected)="mapping.relationType = $event.id">
                 </ng-select>
             </div>
-            <hr>
-            <div class="form-group">
+
+            <div class="form-group" *ngIf="sharedData.toscaComponent.toscaType === toscaType.PatternRefinementModels">
+                <hr>
                 <label for="nodeTypeSelect" class="control-label">Valid Endpoint Type</label>
                 <ng-select id="nodeTypeSelect" [items]="nodeTypes"
                            (selected)="mapping.validSourceOrTarget = $event.id">

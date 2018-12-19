@@ -1,4 +1,4 @@
-/********************************************************************************
+/*******************************************************************************
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -23,11 +23,10 @@ import { EditXMLComponent } from '../../instance/sharedComponents/editXML/editXM
 import { NgModule } from '@angular/core';
 import { RelationMappingsComponent } from '../../instance/refinementModels/relationshipMappings/relationMappings.component';
 import { TopologyTemplateComponent } from '../../instance/sharedComponents/topologyTemplate/topologyTemplate.component';
-import { PrmPropertyMappingsComponent } from '../../instance/refinementModels/propertyMappings/prmPropertyMappings.component';
 
-const toscaType = ToscaTypes.PatternRefinementModel;
+const toscaType = ToscaTypes.TestRefinementModel;
 
-const patternRefinementRoutes: Routes = [
+const testRefinementRoutes: Routes = [
     { path: toscaType, component: SectionComponent, resolve: { resolveData: SectionResolver } },
     { path: toscaType + '/:namespace', component: SectionComponent, resolve: { resolveData: SectionResolver } },
     {
@@ -38,9 +37,8 @@ const patternRefinementRoutes: Routes = [
             { path: 'readme', component: WineryReadmeComponent },
             { path: 'license', component: WineryLicenseComponent },
             { path: 'detector', component: TopologyTemplateComponent },
-            { path: 'refinementstructure', component: TopologyTemplateComponent },
+            { path: 'testfragment', component: TopologyTemplateComponent },
             { path: 'relationmappings', component: RelationMappingsComponent },
-            { path: 'propertymappings', component: PrmPropertyMappingsComponent },
             { path: 'xml', component: EditXMLComponent },
             { path: '', redirectTo: 'readme', pathMatch: 'full' }
         ]
@@ -49,7 +47,7 @@ const patternRefinementRoutes: Routes = [
 
 @NgModule({
     imports: [
-        RouterModule.forChild(patternRefinementRoutes),
+        RouterModule.forChild(testRefinementRoutes),
     ],
     exports: [
         RouterModule,
@@ -59,5 +57,5 @@ const patternRefinementRoutes: Routes = [
         InstanceResolver
     ]
 })
-export class PatternRefinementModelRouterModule {
+export class TestRefinementModelRouterModule {
 }

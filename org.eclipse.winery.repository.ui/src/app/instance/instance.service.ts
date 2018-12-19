@@ -90,6 +90,9 @@ export class InstanceService {
             case ToscaTypes.PatternRefinementModel:
                 subMenu = ['README', 'LICENSE', 'Detector', 'Refinement Structure', 'Relation Mappings', 'Property Mappings', 'XML'];
                 break;
+            case ToscaTypes.TestRefinementModel:
+                subMenu = ['README', 'LICENSE', 'Detector', 'Test Fragment', 'Relation Mappings', 'XML'];
+                break;
             default: // assume Admin
                 subMenu = ['Namespaces', 'Repository', 'Plan Languages', 'Plan Types', 'Constraint Types', 'Consistency Check', 'Accountability', 'Log'];
         }

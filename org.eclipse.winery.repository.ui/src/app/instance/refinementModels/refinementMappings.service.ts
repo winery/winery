@@ -22,9 +22,10 @@ import { SelectData } from '../../model/selectData';
 import { PrmPropertyMapping } from './propertyMappings/prmPropertyMapping';
 import { Utils } from '../../wineryUtils/utils';
 import { PropertiesDefinitionsResourceApiData } from '../sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
+import { ToscaTypes } from '../../model/enums';
 
 @Injectable()
-export class PrmMappingsService {
+export class RefinementMappingsService {
 
     private readonly path: string;
 
@@ -36,8 +37,15 @@ export class PrmMappingsService {
         return this.http.get<NodeTemplate[]>(this.path + '/detector/nodetemplates/');
     }
 
-    public getRefinementStructureNodeTemplates(): Observable<NodeTemplate[]> {
-        return this.http.get<NodeTemplate[]>(this.path + '/refinementstructure/nodetemplates/');
+    public getRefinementTopologyNodeTemplates(): Observable<NodeTemplate[]> {
+        let url = this.path;
+        if (this.sharedData.toscaComponent.toscaType === ToscaTypes.PatternRefinementModel) {
+            url += '/refinementstructure';
+        } else if (this.sharedData.toscaComponent.toscaType === ToscaTypes.TestRefinementModel) {
+            url += '/testfragment';
+        }
+        url += '/nodetemplates/';
+        return this.http.get<NodeTemplate[]>(url);
     }
 
     public getRelationshipTypes(): Observable<SelectData[]> {

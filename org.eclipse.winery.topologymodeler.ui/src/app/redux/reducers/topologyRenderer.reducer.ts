@@ -44,7 +44,7 @@ export const INITIAL_TOPOLOGY_RENDERER_STATE: TopologyRendererState = {
         deploymentArtifactsButton: false,
         propertiesButton: false,
         typesButton: true,
-        idsButton: true,
+        idsButton: false,
         layoutButton: false,
         alignHButton: false,
         alignVButton: false,

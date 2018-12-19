@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import { PrmMappingsService } from '../prmMappings.service';
+import { RefinementMappingsService } from '../refinementMappings.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
 import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
@@ -30,7 +30,7 @@ import { InstanceService } from '../../instance.service';
 @Component({
     templateUrl: 'prmPropertyMappings.component.html',
     providers: [
-        PrmMappingsService
+        RefinementMappingsService
     ]
 })
 export class PrmPropertyMappingsComponent implements OnInit {
@@ -64,7 +64,7 @@ export class PrmPropertyMappingsComponent implements OnInit {
     loadingRefinementProperties = false;
     loadingDetectorProperties = false;
 
-    constructor(private service: PrmMappingsService,
+    constructor(private service: RefinementMappingsService,
                 private notify: WineryNotificationService,
                 private sharedData: InstanceService,
                 private modalService: BsModalService) {
@@ -74,7 +74,7 @@ export class PrmPropertyMappingsComponent implements OnInit {
         forkJoin(
             this.service.getPropertyMappings(),
             this.service.getDetectorNodeTemplates(),
-            this.service.getRefinementStructureNodeTemplates(),
+            this.service.getRefinementTopologyNodeTemplates(),
         ).subscribe(
             data => this.handleData(data),
             error => this.handleError(error)

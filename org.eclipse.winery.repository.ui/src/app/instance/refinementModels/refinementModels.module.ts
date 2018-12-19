@@ -45,5 +45,5 @@ import { PrmPropertyMappingsComponent } from './propertyMappings/prmPropertyMapp
         PrmPropertyMappingsComponent
     ]
 })
-export class PatternRefinementModelsModule {
+export class RefinementModelsModule {
 }

@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { PrmMappingsService } from '../prmMappings.service';
+import { RefinementMappingsService } from '../refinementMappings.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { RelationDirection, RelationMapping } from './relationMapping';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -22,16 +22,18 @@ import { NodeTemplate } from '../../../model/wineryComponent';
 import { SelectData } from '../../../model/selectData';
 import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
 import { InstanceService } from '../../instance.service';
+import { ToscaTypes } from '../../../model/enums';
 
 @Component({
     templateUrl: 'relationMappings.component.html',
     providers: [
-        PrmMappingsService
+        RefinementMappingsService
     ]
 })
 export class RelationMappingsComponent implements OnInit {
 
     readonly relDirections = RelationDirection;
+    readonly toscaType = ToscaTypes;
 
     loading = true;
     columns: Array<WineryTableColumn> = [
@@ -40,7 +42,6 @@ export class RelationMappingsComponent implements OnInit {
         { title: 'Detector Node', name: 'detectorNode', sort: true },
         { title: 'Refinement Node', name: 'refinementNode', sort: true },
         { title: 'Relation Type', name: 'relationType', sort: true },
-        { title: 'Valid Endpoint', name: 'validSourceOrTarget', sort: true },
     ];
 
     relationshipMappings: RelationMapping[];
@@ -56,7 +57,7 @@ export class RelationMappingsComponent implements OnInit {
     addModalRef: BsModalRef;
     removeModalRef: BsModalRef;
 
-    constructor(private service: PrmMappingsService,
+    constructor(private service: RefinementMappingsService,
                 private notify: WineryNotificationService,
                 private sharedData: InstanceService,
                 private modalService: BsModalService) {
@@ -66,13 +67,17 @@ export class RelationMappingsComponent implements OnInit {
         forkJoin(
             this.service.getRelationshipMappings(),
             this.service.getDetectorNodeTemplates(),
-            this.service.getRefinementStructureNodeTemplates(),
+            this.service.getRefinementTopologyNodeTemplates(),
             this.service.getRelationshipTypes(),
             this.service.getNodeTypes()
         ).subscribe(
             data => this.handleData(data),
             error => this.handleError(error)
         );
+
+        if (this.sharedData.toscaComponent.toscaType === ToscaTypes.PatternRefinementModel) {
+            this.columns.push({ title: 'Valid Endpoint', name: 'validSourceOrTarget', sort: true });
+        }
     }
 
     private handleData(data: any) {

@@ -35,6 +35,8 @@ export class TopologyModelerConfiguration {
             this.idPrefix = 'd_';
         } else if (this.elementPath === 'refinementstructure') {
             this.idPrefix = 'rs_';
+        } else if (this.elementPath === 'testfragment') {
+            this.idPrefix = 'test_';
         } else {
             this.idPrefix = '';
         }
