@@ -28,6 +28,7 @@ export interface TopologyRendererState {
         alignHButton?: boolean;
         alignVButton?: boolean;
         importTopologyButton?: boolean;
+        threatModelingButton?: boolean;
         splitTopologyButton?: boolean;
         matchTopologyButton?: boolean;
         substituteTopologyButton?: boolean;
@@ -49,6 +50,7 @@ export const INITIAL_TOPOLOGY_RENDERER_STATE: TopologyRendererState = {
         alignHButton: false,
         alignVButton: false,
         importTopologyButton: false,
+        threatModelingButton: false,
         splitTopologyButton: false,
         matchTopologyButton: false,
         substituteTopologyButton: false,
@@ -149,6 +151,14 @@ export const TopologyRendererReducer =
                     buttonsState: {
                         ...lastState.buttonsState,
                         importTopologyButton: !lastState.buttonsState.importTopologyButton
+                    }
+                };
+            case TopologyRendererActions.THREATMODEL_TOPOLOGY:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        threatModelingButton: !lastState.buttonsState.threatModelingButton
                     }
                 };
             case TopologyRendererActions.SPLIT_TOPOLOGY:

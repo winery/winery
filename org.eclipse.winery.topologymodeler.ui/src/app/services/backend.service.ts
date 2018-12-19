@@ -27,6 +27,8 @@ import { Observable } from 'rxjs/Observable';
 import { forkJoin } from 'rxjs';
 import { TopologyModelerConfiguration } from '../models/topologyModelerConfiguration';
 import { ErrorHandlerService } from './error-handler.service';
+import { ThreatCreation } from '../models/threatCreation';
+import { Threat, ThreatAssessmentApiData } from '../models/threatModelingModalData';
 import { Visuals } from '../models/visuals';
 
 /**
@@ -52,7 +54,7 @@ export class BackendService {
                 private errorHandler: ErrorHandlerService) {
         this.endpointConfiguration$.subscribe((params: TopologyModelerConfiguration) => {
             if (!(isNullOrUndefined(params.id) && isNullOrUndefined(params.ns) &&
-                isNullOrUndefined(params.repositoryURL) && isNullOrUndefined(params.uiURL))) {
+                    isNullOrUndefined(params.repositoryURL) && isNullOrUndefined(params.uiURL))) {
 
                 this.configuration = new TopologyModelerConfiguration(
                     params.id,
@@ -286,6 +288,28 @@ export class BackendService {
         });
     }
 
+    /**
+     *
+     */
+    threatCatalogue(): Observable<Array<Threat>> {
+        return this.http.get<Array<Threat>>(this.configuration.repositoryURL + '/threats');
+    }
+
+    /**
+     *
+     */
+    threatCreation(data: ThreatCreation): Observable<string> {
+        const url = this.configuration.repositoryURL;
+        return this.http.post(url + '/threats', data, { responseType: 'text' });
+    }
+
+    /**
+     *
+     */
+    threatAssessment(): Observable<ThreatAssessmentApiData> {
+        return this.http.get<ThreatAssessmentApiData>(this.serviceTemplateURL + '/threatmodeling');
+    }
+
     substituteTopology(): void {
         this.alert.info('', 'Substitution in progress...');
         this.http.get<ServiceTemplateId>(this.serviceTemplateURL + '/substitute')
@@ -332,7 +356,9 @@ export class BackendService {
         } else {
             url = this.configuration.repositoryURL + '/artifacttemplates/';
         }
-        return this.http.post(url + '/', artifactOrPolicy, {headers: headers, responseType: 'text', observe: 'response'});
+        return this.http.post(url + '/', artifactOrPolicy, {
+            headers: headers, responseType: 'text', observe: 'response'
+        });
     }
 
     /**

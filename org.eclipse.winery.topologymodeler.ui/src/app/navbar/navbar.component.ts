@@ -172,6 +172,10 @@ export class NavbarComponent implements OnDestroy {
                 this.ngRedux.dispatch(this.actions.importTopology());
                 break;
             }
+            case 'threatModeling': {
+                this.ngRedux.dispatch(this.actions.threatModeling());
+                break;
+            }
             case 'split': {
                 this.ngRedux.dispatch(this.actions.splitTopology());
                 this.splittingOngoing = true;

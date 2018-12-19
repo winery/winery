@@ -36,6 +36,7 @@ export class TopologyRendererActions {
     static EXECUTE_ALIGN_H = 'EXECUTE_ALIGN_H';
     static EXECUTE_ALIGN_V = 'EXECUTE_ALIGN_V';
     static IMPORT_TOPOLOGY = 'IMPORT_TOPOLOGY';
+    static THREATMODEL_TOPOLOGY = 'THREATMODEL_TOPOLOGY';
     static SPLIT_TOPOLOGY = 'SPLIT_TOPOLOGY';
     static MATCH_TOPOLOGY = 'MATCH_TOPOLOGY';
     static SUBSTITUTE_TOPOLOGY = 'SUBSTITUTE_TOPOLOGY';
@@ -84,6 +85,10 @@ export class TopologyRendererActions {
 
     importTopology(): Action {
         return { type: TopologyRendererActions.IMPORT_TOPOLOGY };
+    }
+
+    threatModeling(): Action {
+        return { type: TopologyRendererActions.THREATMODEL_TOPOLOGY };
     }
 
     splitTopology(): Action {

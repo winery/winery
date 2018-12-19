@@ -113,6 +113,7 @@
         <module>org.eclipse.winery.highlevelrestapi</module>
         <module>org.eclipse.winery.tools.copybaragenerator</module>
         <module>org.eclipse.winery.model.substitution</module>
+        <module>org.eclipse.winery.model.threatmodeling</module>
     </modules>
     <build>
         <plugins>
@@ -520,6 +521,23 @@
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
                                                     <Export-Package>org.eclipse.winery.accountability.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                </instructions>
+                                            </artifact>
+                                            <artifact>
+                                                <id>
+                                                    org.eclipse.winery:org.eclipse.winery.model.threatmodeling:${project.version}
+                                                </id>
+                                                <source>true</source>
+                                                <transitive>true</transitive>
+                                                <excludes>
+                                                    <exclude>org.eclipse.winery*</exclude>
+                                                    <exclude>com.github.jnr:*:::</exclude>
+                                                    <exclude>org.web3j:*</exclude>
+                                                    <exclude>org.bouncycastle</exclude>
+                                                </excludes>
+                                                <instructions>
+                                                    <Import-Package>*;resolution:=optional</Import-Package>
+                                                    <Export-Package>org.eclipse.winery.model.threatmodeling.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
                                                 </instructions>
                                             </artifact>
                                             <!-- 

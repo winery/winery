@@ -35,6 +35,7 @@ import { WinerySourceModule } from '../../instance/sharedComponents/artifactSour
 import { ConstraintCheckingComponent } from '../../instance/serviceTemplates/constraintChecking/constraintChecking.component';
 import { WineryEditorModule } from '../../wineryEditorModule/wineryEditor.module';
 import { TopologyTemplateModule } from '../../instance/sharedComponents/topologyTemplate/topologyTemplate.module';
+import { ThreatAssessmentComponent } from '../../instance/serviceTemplates/threatAssessment/threatAssessment.component';
 
 @NgModule({
     imports: [
@@ -61,6 +62,7 @@ import { TopologyTemplateModule } from '../../instance/sharedComponents/topology
     declarations: [
         PlansComponent,
         ConstraintCheckingComponent,
+        ThreatAssessmentComponent
     ]
 })
 export class ServiceTemplateModule {

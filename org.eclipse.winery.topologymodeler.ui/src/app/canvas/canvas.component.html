@@ -327,6 +327,98 @@
     </winery-modal-footer>
 </winery-modal>
 
+<winery-modal *ngIf="!readonly" bsModal #threatModelingModal="bs-modal" [modalRef]="threatModelingModal">
+    <winery-modal-header [title]="'Threat Model'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <div id="accordion">
+            <div class="card">
+                <div class="card-header" id="headingOne">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link"  (click)="this.threatModalTab='create'">Create New Threat</button>
+                    </h5>
+                </div>
+
+                <div id="collapseOne" class="collapse" [class.show]="this.threatModalTab==='create'" >
+                    <div class="card-body">
+                        <form (ngSubmit)="this.createNewThreat()">
+                            <div class="form-group row">
+                                <label for="text" class="col-sm-4 col-form-label">Threat name</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="name" name="name" required [(ngModel)]="this.threatModelingData.threatCreation.name">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="text" class="col-sm-4 col-form-label">Description</label>
+                                <div class="col-sm-8"><textarea class="form-control" id="description" name="description" required [(ngModel)]="this.threatModelingData.threatCreation.description"></textarea></div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="stride" class="col-sm-4 col-form-label">STRIDE</label>
+                                <div class="col-sm-8"><select class="form-control" id="stride"  name="stride" [(ngModel)]="this.threatModelingData.threatCreation.stride">
+                                    <option>Spoofing</option>
+                                    <option>Tampering</option>
+                                    <option>Repudiation</option>
+                                    <option>Information Disclosure</option>
+                                    <option>Denial of Service</option>
+                                    <option>Elevation of Privilege</option>
+                                </select></div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="severity" class="col-sm-4 col-form-label">Severity</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" id="severity"  name="severity" [(ngModel)]="this.threatModelingData.threatCreation.severity">
+                                        <option>Low</option>
+                                        <option>Middle</option>
+                                        <option>High</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header" id="headingTwo">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link collapsed" (click)="this.threatModalTab='mitigations'">Available Mitigations</button>
+                    </h5>
+                </div>
+                <div id="collapseTwo" class="collapse" [class.show]="this.threatModalTab==='mitigations'">
+                    <div class="card-body">
+                        <p>Click on a Mitigation to directly add it to the topology</p>
+                        <button class="btn btn-primary" style="margin-right:10px;margin-bottom:10px" *ngFor="let mitigation of this.threatModelingData.mitigations" (click)="addMitigationToTopology(mitigation)">{{mitigation.localName}}</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header" id="headingThree">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link collapsed" (click)="this.threatModalTab='catalog'">Threat Catalog</button>
+                    </h5>
+                </div>
+                <div id="collapseThree" class="collapse" [class.show]="this.threatModalTab==='catalog'">
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item" *ngFor="let threat of this.threatModelingData.threatCatalog">
+                                <h5 class="">{{threat.templateName}}</h5>
+                                <p>{{threat.properties.description}}</p>
+                                <div class="pull-right">
+                                    <span class="badge badge-pill badge-warning" style="margin-right: 10px;">{{threat.properties.strideClassification}}</span>
+                                    <span class="badge badge-pill badge-danger" style="">{{threat.properties.severity}}</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </winery-modal-body>
+    <winery-modal-footer [showDefaultButtons]="false">
+        <button type="button" id="cancelThreatModeling" class="btn btn-primary" (click)="closeThreatModeling()">Cancel</button>
+    </winery-modal-footer>
+</winery-modal>
+
 <winery-entities-modal *ngIf="!readonly"
                        [(modalVariantAndState)]="modalData"
                        [entityTypes]="entityTypes"

@@ -50,6 +50,8 @@ import { DifferenceStates, VersionUtils } from '../models/ToscaDiff';
 import { ErrorHandlerService } from '../services/error-handler.service';
 import { DragSource } from '../models/DragSource';
 import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reducer';
+import { ThreatModelingModalData } from '../models/threatModelingModalData';
+import { ThreatCreation } from '../models/threatCreation';
 import { Utils } from '../models/utils';
 
 @Component({
@@ -68,6 +70,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     @ViewChild('capabilitiesModal') capabilitiesModal: ModalDirective;
     @ViewChild('requirementsModal') requirementsModal: ModalDirective;
     @ViewChild('importTopologyModal') importTopologyModal: ModalDirective;
+    @ViewChild('threatModelingModal') threatModelingModal: ModalDirective;
     @Input() readonly: boolean;
     @Input() entityTypes: EntityTypesModel;
     @Input() diffMode = false;
@@ -106,6 +109,10 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     capabilities: CapabilitiesModalData;
     requirements: RequirementsModalData;
     importTopologyData: ImportTopologyModalData;
+    threatModelingData: ThreatModelingModalData;
+
+    // threatmodeling accordion state
+    threatModalTab = 'create';
 
     indexOfNewNode: number;
     targetNodes: Array<string> = [];
@@ -178,6 +185,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         this.capabilities = new CapabilitiesModalData();
         this.requirements = new RequirementsModalData();
         this.importTopologyData = new ImportTopologyModalData();
+        this.threatModelingData = new ThreatModelingModalData();
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -934,7 +942,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                         this.ngRedux.dispatch(this.topologyRendererActions.executeLayout());
                     });
             } else if (this.topologyRendererState.buttonsState.alignHButton
-                    || this.topologyRendererState.buttonsState.alignVButton) {
+                || this.topologyRendererState.buttonsState.alignVButton) {
                 const selectionActive = (this.selectedNodes.length >= 1);
                 const nodesToBeAligned = selectionActive ? this.selectedNodes : this.allNodeTemplates;
                 leaveNodesAsSelectedAfterLayouting = selectionActive;
@@ -963,6 +971,28 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 this.importTopologyModal.show();
             } else if (this.topologyRendererState.buttonsState.splitTopologyButton) {
                 this.splitMatchService.splitTopology(this.backendService, this.ngRedux, this.topologyRendererActions, this.errorHandler);
+            } else if (this.topologyRendererState.buttonsState.threatModelingButton) {
+
+                // don't cache data, always refetch.
+                this.threatModelingData = new ThreatModelingModalData();
+                this.ngRedux.dispatch(this.topologyRendererActions.threatModeling());
+                // show modal
+                this.threatModelingModal.show();
+
+                this.backendService.threatCatalogue().subscribe(
+                    threats => threats.forEach(threat => this.threatModelingData.threatCatalog.push(threat))
+                );
+
+                this.backendService.threatAssessment().subscribe(
+                    assessment => {
+                        Object.keys(assessment.threats)
+                            .map(key => assessment.threats[key])
+                            .map(threat => threat.mitigations
+                                .filter(mitigation => assessment.svnfs.includes(mitigation))
+                                .map(mitigation => this.threatModelingData.mitigations.add(new QName(mitigation)))
+                            );
+                    }
+                );
             } else if (this.topologyRendererState.buttonsState.matchTopologyButton) {
                 this.splitMatchService.matchTopology(this.backendService, this.ngRedux, this.topologyRendererActions, this.errorHandler);
             } else if (this.topologyRendererState.buttonsState.substituteTopologyButton) {
@@ -1016,6 +1046,52 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         });
         this.importTopologyService.importTopologyTemplate(selectedTopologyTemplate.qName, this.backendService, this.errorHandler);
         this.importTopologyData.selectedTopologyTemplateId = null;
+    }
+
+    /**
+     * Closes the threat modeling modal
+     */
+    closeThreatModeling(): void {
+        this.threatModelingModal.hide();
+    }
+
+    /**
+     *
+     *
+     */
+    createNewThreat(): void {
+        this.backendService.threatCreation(this.threatModelingData.threatCreation).subscribe(res => {
+            this.threatModelingData.threatCreation = new ThreatCreation();
+            this.alert.info(res);
+        });
+    }
+
+    /**
+     *
+     */
+
+    addMitigationToTopology(mitigation): void {
+        this.closeThreatModeling();
+        const newNode: TNodeTemplate = new TNodeTemplate(
+            {},
+            mitigation.localName + '_' + Math.floor(Math.random() * 10),
+            mitigation.qName,
+            mitigation.localName,
+            1,
+            1,
+            Utils.getNodeVisualsForNodeTemplate(mitigation.qName, this.entityTypes.nodeVisuals),
+            [],
+            [],
+            {},
+            1,
+            1,
+            null,
+            null,
+            null,
+            null
+        );
+
+        this.ngRedux.dispatch(this.actions.saveNodeTemplate(newNode));
     }
 
     /**
@@ -1090,12 +1166,35 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 labelString = newRelationship.type.substring(newRelationship.type.indexOf('}') + 1);
             }
 
+            let relationSource = newRelationship.sourceElement.ref;
+            let relationTarget = newRelationship.targetElement.ref;
+
+            // check if source reference is not a node template
+            if (!this.allNodesIds.includes(relationSource)) {
+                // check if source reference is a requirement of a node template
+                const findNode = this.allNodeTemplates
+                    .find(node => node.requirements && node.requirements.requirement && node.requirements.requirement.find(req => req.id === relationSource));
+                if (findNode) {
+                    relationSource = findNode.id;
+                }
+            }
+
+            // check if target reference is a node template
+            if (!this.allNodesIds.includes(relationTarget)) {
+                // check if target reference is a capability of a node template
+                const findNode = this.allNodeTemplates
+                    .find(node => node.capabilities && node.capabilities.capability && node.capabilities.capability.find(cap => cap.id === relationTarget));
+                if (findNode) {
+                    relationTarget = findNode.id;
+                }
+            }
+
             const border = isNullOrUndefined(newRelationship.state)
                 ? '#fafafa' : VersionUtils.getElementColorByDiffState(newRelationship.state);
             const me = this;
             const conn = this.newJsPlumbInstance.connect({
-                source: newRelationship.sourceElement.ref,
-                target: newRelationship.targetElement.ref,
+                source: relationSource,
+                target: relationTarget,
                 overlays: [['Arrow', { width: 15, length: 15, location: 1, id: 'arrow', direction: 1 }],
                     ['Label', {
                         label: labelString,
