@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -43,7 +43,7 @@ public class TTestRefinementModel extends TRefinementModel {
     public void setRefinementTopology(TTopologyTemplate refinementStructure) {
         this.testFragment = refinementStructure;
     }
-    
+
     public TTopologyTemplate getTestFragment() {
         return getRefinementTopology();
     }

@@ -124,7 +124,7 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
                 .get(callURL(restURL))
                 .then()
                 .log()
-                .all()
+                .ifValidationFails()
                 .statusCode(200)
                 .extract()
                 .response()
