@@ -1,4 +1,4 @@
-/********************************************************************************
+/*******************************************************************************
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.model.substitution.pattern.refinement;
+package org.eclipse.winery.model.substitution.refinement.patterns;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +25,8 @@ import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.substitution.refinement.DefaultRefinementChooser;
+import org.eclipse.winery.model.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
@@ -58,8 +60,8 @@ class PatternRefinementTest {
 
     private static TTopologyTemplate topology;
     private static TTopologyTemplate topology2;
-    private static PatternRefinementCandidate candidate;
-    private static PatternRefinementCandidate invalidCandidate;
+    private static RefinementCandidate candidate;
+    private static RefinementCandidate invalidCandidate;
 
     private static void setUp() {
         // region *** topology ***
@@ -277,7 +279,7 @@ class PatternRefinementTest {
         relationMappings.getRelationMapping().add(rm2);
         matchingPrm.setRelationMappings(relationMappings);
 
-        candidate = new PatternRefinementCandidate(matchingPrm, mapping, detectorGraph, 1);
+        candidate = new RefinementCandidate(matchingPrm, mapping, detectorGraph, 1);
         // endregion
 
         // region *** non-matching PRM **
@@ -288,15 +290,15 @@ class PatternRefinementTest {
         relationMappings1.getRelationMapping().add(rm2);
         nonMatchingPrm.setRelationMappings(relationMappings1);
 
-        invalidCandidate = new PatternRefinementCandidate(nonMatchingPrm, mapping, detectorGraph, 2);
+        invalidCandidate = new RefinementCandidate(nonMatchingPrm, mapping, detectorGraph, 2);
         // endregion
     }
 
     // region ********** isApplicable() **********
     @ParameterizedTest(name = "{index} => ''{3}''")
     @MethodSource("getIsApplicableArguments")
-    void testIsApplicable(PatternRefinementCandidate refinementCandidate, TTopologyTemplate topologyTemplate, boolean expected, String description) {
-        PatternRefinement patternRefinement = new PatternRefinement(new DefaultPatternRefinementChooser());
+    void testIsApplicable(RefinementCandidate refinementCandidate, TTopologyTemplate topologyTemplate, boolean expected, String description) {
+        PatternRefinement patternRefinement = new PatternRefinement(new DefaultRefinementChooser());
         assertEquals(expected, patternRefinement.isApplicable(refinementCandidate, topologyTemplate));
     }
 
@@ -524,7 +526,7 @@ class PatternRefinementTest {
         // endregion
 
         // region *** setup the PRM ***
-        TNodeTemplate nt13 = candidate.getPatternRefinementModel().getRefinementTopology().getNodeTemplate("13");
+        TNodeTemplate nt13 = candidate.getRefinementModel().getRefinementTopology().getNodeTemplate("13");
         TEntityTemplate.Properties nt13Props = new TEntityTemplate.Properties();
         HashMap<String, String> nt13PropsMap = new HashMap<>();
         nt13PropsMap.put("a", null);
@@ -533,14 +535,14 @@ class PatternRefinementTest {
         nt13Props.setKVProperties(nt13PropsMap);
         nt13.setProperties(nt13Props);
 
-        TNodeTemplate nt12 = candidate.getPatternRefinementModel().getRefinementTopology().getNodeTemplate("12");
+        TNodeTemplate nt12 = candidate.getRefinementModel().getRefinementTopology().getNodeTemplate("12");
         TEntityTemplate.Properties nt12Props = new TEntityTemplate.Properties();
         HashMap<String, String> nt12PropsMap = new HashMap<>();
         nt12PropsMap.put("j", null);
         nt12Props.setKVProperties(nt12PropsMap);
         nt12.setProperties(nt12Props);
 
-        TNodeTemplate nt11 = candidate.getPatternRefinementModel().getRefinementTopology().getNodeTemplate("11");
+        TNodeTemplate nt11 = candidate.getRefinementModel().getRefinementTopology().getNodeTemplate("11");
         TEntityTemplate.Properties nt11Props = new TEntityTemplate.Properties();
         HashMap<String, String> nt11PropsMap = new HashMap<>();
         nt11PropsMap.put("k", null);
@@ -549,19 +551,19 @@ class PatternRefinementTest {
 
         TPrmPropertyMapping allOn4to13 = new TPrmPropertyMapping();
         allOn4to13.setType(TPrmPropertyMappingType.ALL);
-        allOn4to13.setDetectorNode(candidate.getPatternRefinementModel().getDetector().getNodeTemplate("8"));
+        allOn4to13.setDetectorNode(candidate.getRefinementModel().getDetector().getNodeTemplate("8"));
         allOn4to13.setRefinementNode(nt13);
 
         TPrmPropertyMapping pIn2_to_jIn12 = new TPrmPropertyMapping();
         pIn2_to_jIn12.setType(TPrmPropertyMappingType.SELECTIVE);
-        pIn2_to_jIn12.setDetectorNode(candidate.getPatternRefinementModel().getDetector().getNodeTemplate("7"));
+        pIn2_to_jIn12.setDetectorNode(candidate.getRefinementModel().getDetector().getNodeTemplate("7"));
         pIn2_to_jIn12.setRefinementNode(nt12);
         pIn2_to_jIn12.setDetectorProperty("p");
         pIn2_to_jIn12.setRefinementProperty("j");
 
         TPrmPropertyMapping xIn2_to_kIn11 = new TPrmPropertyMapping();
         xIn2_to_kIn11.setType(TPrmPropertyMappingType.SELECTIVE);
-        xIn2_to_kIn11.setDetectorNode(candidate.getPatternRefinementModel().getDetector().getNodeTemplate("7"));
+        xIn2_to_kIn11.setDetectorNode(candidate.getRefinementModel().getDetector().getNodeTemplate("7"));
         xIn2_to_kIn11.setRefinementNode(nt11);
         xIn2_to_kIn11.setDetectorProperty("x");
         xIn2_to_kIn11.setRefinementProperty("k");
@@ -571,7 +573,7 @@ class PatternRefinementTest {
         relationMappings.getPropertyMapping().add(pIn2_to_jIn12);
         relationMappings.getPropertyMapping().add(xIn2_to_kIn11);
 
-        candidate.getPatternRefinementModel().setPropertyMappings(relationMappings);
+        ((TPatternRefinementModel) candidate.getRefinementModel()).setPropertyMappings(relationMappings);
         // endregion
 
         // region *** setup the topology ***
@@ -592,7 +594,7 @@ class PatternRefinementTest {
         nt4.setProperties(nt4Props);
 
         Map<String, String> idMapping = BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(
-            candidate.getPatternRefinementModel().getRefinementTopology(),
+            candidate.getRefinementModel().getRefinementTopology(),
             topology
         );
         // endregion

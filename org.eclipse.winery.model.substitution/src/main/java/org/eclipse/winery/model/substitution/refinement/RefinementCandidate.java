@@ -1,4 +1,4 @@
-/********************************************************************************
+/*******************************************************************************
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -12,12 +12,12 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.model.substitution.pattern.refinement;
+package org.eclipse.winery.model.substitution.refinement;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-import org.eclipse.winery.model.tosca.TPatternRefinementModel;
+import org.eclipse.winery.model.tosca.TRefinementModel;
 import org.eclipse.winery.topologygraph.model.ToscaEdge;
 import org.eclipse.winery.topologygraph.model.ToscaGraph;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
@@ -26,26 +26,26 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.jdt.annotation.NonNull;
 import org.jgrapht.GraphMapping;
 
-public class PatternRefinementCandidate {
+public class RefinementCandidate {
 
-    private final TPatternRefinementModel patternRefinementModel;
+    private final TRefinementModel refinementModel;
     @JsonIgnore
     private final GraphMapping<ToscaNode, ToscaEdge> graphMapping;
     @JsonIgnore
     private final ToscaGraph detectorGraph;
     private final int id;
 
-    public PatternRefinementCandidate(TPatternRefinementModel patternRefinementModel, GraphMapping<ToscaNode, ToscaEdge> graphMapping,
-                                      ToscaGraph detectorGraph, int id) {
-        this.patternRefinementModel = Objects.requireNonNull(patternRefinementModel);
+    public RefinementCandidate(TRefinementModel refinementModel, GraphMapping<ToscaNode, ToscaEdge> graphMapping,
+                               ToscaGraph detectorGraph, int id) {
+        this.refinementModel = Objects.requireNonNull(refinementModel);
         this.graphMapping = Objects.requireNonNull(graphMapping);
         this.detectorGraph = Objects.requireNonNull(detectorGraph);
         this.id = id;
     }
 
     @NonNull
-    public TPatternRefinementModel getPatternRefinementModel() {
-        return patternRefinementModel;
+    public TRefinementModel getRefinementModel() {
+        return refinementModel;
     }
 
     public GraphMapping<ToscaNode, ToscaEdge> getGraphMapping() {

@@ -1,4 +1,4 @@
-/********************************************************************************
+/*******************************************************************************
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -12,15 +12,17 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.model.substitution.pattern.refinement;
+package org.eclipse.winery.model.substitution.refinement;
 
 import java.util.List;
 
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
-public interface PatternRefinementChooser {
-    PatternRefinementCandidate choosePatternRefinement(List<PatternRefinementCandidate> candidates,
+public class DefaultRefinementChooser implements RefinementChooser {
+    public RefinementCandidate choosePatternRefinement(List<RefinementCandidate> candidates,
                                                        ServiceTemplateId refinementServiceTemplate,
-                                                       TTopologyTemplate currentTopology);
+                                                       TTopologyTemplate currentTopology) {
+        return candidates.get(0);
+    }
 }

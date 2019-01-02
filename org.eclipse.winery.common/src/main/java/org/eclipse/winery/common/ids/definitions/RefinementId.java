@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -19,22 +19,16 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 
-public class TestRefinementModelId extends RefinementId {
-
-    public TestRefinementModelId(Namespace namespace, XmlId xmlId) {
+public abstract class RefinementId extends DefinitionsChildId {
+    public RefinementId(Namespace namespace, XmlId xmlId) {
         super(namespace, xmlId);
     }
 
-    public TestRefinementModelId(String ns, String id, boolean URLencoded) {
+    public RefinementId(String ns, String id, boolean URLencoded) {
         super(ns, id, URLencoded);
     }
 
-    public TestRefinementModelId(QName type) {
-        super(type);
-    }
-
-    @Override
-    public String getGroup() {
-        return "TestRefinementModel";
+    public RefinementId(QName qname) {
+        super(qname);
     }
 }

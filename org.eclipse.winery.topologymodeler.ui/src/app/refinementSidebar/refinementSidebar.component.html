@@ -27,11 +27,11 @@
             <ng-template #showContent>
                 <ul>
                     <li *ngFor="let candidate of prmCandidates" (mouseover)="onHoverOver(candidate)">
-                        {{ candidate.patternRefinementModel.name }}
+                        {{ candidate.refinementModel.name }}
                         <br>
                         <div class="btn-group">
                             <button class="btn btn-sm btn-info"
-                                    (click)="openModeler($event, candidate.patternRefinementModel.name, candidate.patternRefinementModel.targetNamespace)">
+                                    (click)="openModeler($event, candidate.refinementModel.name, candidate.refinementModel.targetNamespace)">
                                 Show Refinement Structure
                             </button>
                             <br>

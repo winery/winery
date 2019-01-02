@@ -23,7 +23,7 @@ export enum RefinementTasks {
 }
 
 export interface RefinementElement {
-    patternRefinementCandidates: PatternRefinementModel[];
+    refinementCandidates: PatternRefinementModel[];
     serviceTemplateContainingRefinements: {
         xmlId?: {
             decoded: string;
@@ -38,7 +38,7 @@ export interface RefinementElement {
 export interface PatternRefinementModel {
     id: number;
     nodeIdsToBeReplaced: string[];
-    patternRefinementModel: {
+    refinementModel: {
         name: string;
         targetNamespace: string;
     };

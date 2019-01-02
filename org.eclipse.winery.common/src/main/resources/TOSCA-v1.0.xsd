@@ -90,7 +90,7 @@
       <xs:element name="PolicyTemplate" type="tPolicyTemplate"/>
       <xs:element name="PatternRefinementModel" type="tPatternRefinementModel"/>
       <xs:element name="ComplianceRule" type="tComplianceRule"/>
-      <xs:element name="TestRefeinementModel" type="tTestRefinementModel"/>
+      <xs:element name="TestRefinementModel" type="tTestRefinementModel"/>
      </xs:choice>
     </xs:sequence>
     <xs:attribute name="id" type="xs:ID" use="required"/>

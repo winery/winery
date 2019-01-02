@@ -79,7 +79,7 @@ export class RefinementSidebarComponent implements OnDestroy {
     private handleWebSocketData(value: RefinementElement) {
         if (value) {
             this.refinementIsLoading = false;
-            this.prmCandidates = value.patternRefinementCandidates;
+            this.prmCandidates = value.refinementCandidates;
 
             if (!this.prmCandidates) {
                 this.refinementIsDone = true;

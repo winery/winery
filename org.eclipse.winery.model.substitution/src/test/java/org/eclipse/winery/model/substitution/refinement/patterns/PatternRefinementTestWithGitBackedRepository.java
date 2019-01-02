@@ -12,12 +12,13 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.model.substitution.pattern.refinement;
+package org.eclipse.winery.model.substitution.refinement.patterns;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ public class PatternRefinementTestWithGitBackedRepository extends TestWithGitBac
     void refineTopologyWithMultipleSameSubGraphs() throws Exception {
         this.setRevisionTo("origin/plain");
 
-        List<PatternRefinementCandidate> myCandidates = new ArrayList<>();
+        List<RefinementCandidate> myCandidates = new ArrayList<>();
         PatternRefinement refinement = new PatternRefinement((candidates, refinementServiceTemplate, currentTopology) -> {
             myCandidates.addAll(candidates);
             return null;
@@ -41,7 +42,7 @@ public class PatternRefinementTestWithGitBackedRepository extends TestWithGitBac
             "Pattern-basedDeplyomentModelWithTwoSameSubgraphs_w1-wip1", false));
 
         assertEquals(2, myCandidates.size());
-        myCandidates.forEach(prmc -> assertEquals("IaaS_connectedTo_ThirdPattern_w1-wip1", prmc.getPatternRefinementModel().getName()));
+        myCandidates.forEach(prmc -> assertEquals("IaaS_connectedTo_ThirdPattern_w1-wip1", prmc.getRefinementModel().getName()));
 
         ArrayList<String> nodeIdsToBeReplacedInFirstPmc = myCandidates.get(0).getNodeIdsToBeReplaced();
         assertEquals("Infrastructure-As-A-Service_w1", nodeIdsToBeReplacedInFirstPmc.get(0));

@@ -17,20 +17,20 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 import java.util.List;
 
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.model.substitution.pattern.refinement.PatternRefinementCandidate;
+import org.eclipse.winery.model.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
 public class RefinementElementApiData {
 
-    public List<PatternRefinementCandidate> patternRefinementCandidates;
+    public List<RefinementCandidate> refinementCandidates;
     public ServiceTemplateId serviceTemplateContainingRefinements;
     public TTopologyTemplate currentTopology;
 
     public RefinementElementApiData() {
     }
 
-    public RefinementElementApiData(List<PatternRefinementCandidate> candidates, ServiceTemplateId refinementServiceTemplate, TTopologyTemplate currentTopology) {
-        this.patternRefinementCandidates = candidates;
+    public RefinementElementApiData(List<RefinementCandidate> candidates, ServiceTemplateId refinementServiceTemplate, TTopologyTemplate currentTopology) {
+        this.refinementCandidates = candidates;
         this.serviceTemplateContainingRefinements = refinementServiceTemplate;
         this.currentTopology = currentTopology;
     }

@@ -27,9 +27,9 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.model.substitution.pattern.refinement.PatternRefinement;
-import org.eclipse.winery.model.substitution.pattern.refinement.PatternRefinementCandidate;
-import org.eclipse.winery.model.substitution.pattern.refinement.PatternRefinementChooser;
+import org.eclipse.winery.model.substitution.refinement.patterns.PatternRefinement;
+import org.eclipse.winery.model.substitution.refinement.RefinementCandidate;
+import org.eclipse.winery.model.substitution.refinement.RefinementChooser;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.rest.resources.apiData.RefinementElementApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.RefinementWebSocketApiData;
@@ -41,7 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ServerEndpoint(value = "/refinetopology")
-public class PatternRefinementWebSocket implements PatternRefinementChooser {
+public class PatternRefinementWebSocket implements RefinementChooser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsistencyCheckWebSocket.class);
 
@@ -106,8 +106,8 @@ public class PatternRefinementWebSocket implements PatternRefinementChooser {
     }
 
     @Override
-    public PatternRefinementCandidate choosePatternRefinement(List<PatternRefinementCandidate> candidates,
-                                                              ServiceTemplateId refinementServiceTemplate, TTopologyTemplate topology) {
+    public RefinementCandidate choosePatternRefinement(List<RefinementCandidate> candidates,
+                                                       ServiceTemplateId refinementServiceTemplate, TTopologyTemplate topology) {
         try {
             this.future = new CompletableFuture<>();
 
