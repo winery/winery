@@ -39,6 +39,9 @@
                         </div>
                     </li>
                 </ul>
+                <button class="btn btn-sm btn-danger" *ngIf="refinementType === 'tests'" (click)="stopRefinement()">
+                    Stop
+                </button>
             </ng-template>
         </ng-template>
     </div>

@@ -29,6 +29,7 @@ import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.topologygraph.matching.IToscaMatcher;
 import org.eclipse.winery.topologygraph.matching.ToscaTypeMatcher;
+import org.eclipse.winery.topologygraph.model.ToscaNode;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,12 @@ public class TestRefinement extends AbstractRefinement {
 
     public TestRefinement() {
         this(new DefaultRefinementChooser());
+    }
+
+    @Override
+    public boolean getLoopCondition(TTopologyTemplate topology) {
+        // the only condition for breaking the loop is, if there are no more candidates
+        return true;
     }
 
     @Override
@@ -73,17 +80,20 @@ public class TestRefinement extends AbstractRefinement {
                         TRelationshipTemplate relationshipTemplate = new TRelationshipTemplate();
                         relationshipTemplate.setType(relationMapping.getRelationType());
                         relationshipTemplate.setId(relId);
+                        relationshipTemplate.setName(relationMapping.getRelationType().getLocalPart());
+
+                        // Retrieve the id from the correspondence node of the graph mapping.
+                        ToscaNode node = refinement.getDetectorGraph().getNode(relationMapping.getDetectorNode().getId());
+                        String topologyNodeId = refinement.getGraphMapping().getVertexCorrespondence(node, false).getId();
 
                         if (relationMapping.getDirection() == TRelationDirection.INGOING) {
-                            String sourceId = idMapping.get(relationMapping.getDetectorNode().getId());
                             String targetId = idMapping.get(relationMapping.getRefinementNode().getId());
-                            relationshipTemplate.setSourceNodeTemplate(topology.getNodeTemplate(sourceId));
+                            relationshipTemplate.setSourceNodeTemplate(topology.getNodeTemplate(topologyNodeId));
                             relationshipTemplate.setTargetNodeTemplate(topology.getNodeTemplate(targetId));
                         } else {
                             String sourceId = idMapping.get(relationMapping.getRefinementNode().getId());
-                            String targetId = idMapping.get(relationMapping.getDetectorNode().getId());
                             relationshipTemplate.setSourceNodeTemplate(topology.getNodeTemplate(sourceId));
-                            relationshipTemplate.setTargetNodeTemplate(topology.getNodeTemplate(targetId));
+                            relationshipTemplate.setTargetNodeTemplate(topology.getNodeTemplate(topologyNodeId));
                         }
 
                         topology.addRelationshipTemplate(relationshipTemplate);

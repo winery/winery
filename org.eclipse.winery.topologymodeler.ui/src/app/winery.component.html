@@ -32,7 +32,7 @@
         </winery-palette-component>
     </div>
 
-    <winery-refinement *ngIf="refiningTopology" class="sidebar">
+    <winery-refinement *ngIf="refiningType" [refinementType]="refiningType" class="sidebar">
     </winery-refinement>
 
     <winery-sidebar (sidebarDeleteButtonClicked)="sidebarDeleteButtonClicked($event)" class="sidebar">

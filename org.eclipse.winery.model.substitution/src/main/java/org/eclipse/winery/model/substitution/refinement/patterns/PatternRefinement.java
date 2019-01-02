@@ -19,6 +19,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.eclipse.winery.common.ids.definitions.PatternRefinementModelId;
+import org.eclipse.winery.model.substitution.SubstitutionUtils;
 import org.eclipse.winery.model.substitution.refinement.AbstractRefinement;
 import org.eclipse.winery.model.substitution.refinement.DefaultRefinementChooser;
 import org.eclipse.winery.model.substitution.refinement.RefinementCandidate;
@@ -189,6 +190,11 @@ public class PatternRefinement extends AbstractRefinement {
                         return edgeCorrespondence.getTemplate().equals(relationship);
                     });
             });
+    }
+
+    @Override
+    public boolean getLoopCondition(TTopologyTemplate topology) {
+        return SubstitutionUtils.containsPatterns(topology.getNodeTemplates(), this.nodeTypes);
     }
 
     @Override

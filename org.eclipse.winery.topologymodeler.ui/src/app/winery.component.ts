@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
-import { Component, Input, OnInit, AfterViewInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import {
     Entity, EntityType, TNodeTemplate, TRelationshipTemplate, TTopologyTemplate, VisualEntityType
 } from './models/ttopology-template';
@@ -56,7 +56,7 @@ export class WineryComponent implements OnInit, AfterViewInit {
 
     // This variable is set via the topologyModelerData input and decides if the editing functionalities are enabled
     readonly: boolean;
-    refiningTopology: boolean;
+    refiningType: string;
 
     topologyDifferences: [ToscaDiff, TTopologyTemplate];
 
@@ -318,8 +318,12 @@ export class WineryComponent implements OnInit, AfterViewInit {
     }
 
     private setButtonsState(currentButtonsState: TopologyRendererState) {
-        this.refiningTopology = currentButtonsState.buttonsState.refineTopologyButton;
+        if (currentButtonsState.buttonsState.refineTopologyButton) {
+            this.refiningType = 'patterns';
+        } else if (currentButtonsState.buttonsState.refineTopologyWithTestsButton) {
+            this.refiningType = 'tests';
+        } else if (!currentButtonsState.buttonsState.refineTopologyWithTestsButton && !currentButtonsState.buttonsState.refineTopologyButton) {
+            delete this.refiningType;
+        }
     }
 }
-
-

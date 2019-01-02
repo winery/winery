@@ -20,7 +20,7 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
 public interface RefinementChooser {
-    RefinementCandidate choosePatternRefinement(List<RefinementCandidate> candidates,
-                                                ServiceTemplateId refinementServiceTemplate,
-                                                TTopologyTemplate currentTopology);
+    RefinementCandidate chooseRefinement(List<RefinementCandidate> candidates,
+                                         ServiceTemplateId refinementServiceTemplate,
+                                         TTopologyTemplate currentTopology);
 }

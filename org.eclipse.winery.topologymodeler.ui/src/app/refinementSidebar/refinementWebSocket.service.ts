@@ -59,8 +59,8 @@ export class RefinementWebSocketService {
     constructor(private backendService: BackendService) {
     }
 
-    startRefinement() {
-        this.socket = new WebSocket(this.backendService.configuration.webSocketUrl + '/refinetopology');
+    startRefinement(refinementType: string) {
+        this.socket = new WebSocket(this.backendService.configuration.webSocketUrl + '/refinetopology?type=' + refinementType);
         this.listener = new BehaviorSubject<RefinementElement>(null);
 
         const start: RefinementWebSocketData = {

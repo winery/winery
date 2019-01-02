@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import org.eclipse.winery.common.ids.definitions.RefinementId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.substitution.AbstractSubstitution;
-import org.eclipse.winery.model.substitution.SubstitutionUtils;
 import org.eclipse.winery.model.tosca.TRefinementModel;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
@@ -75,7 +74,7 @@ public abstract class AbstractRefinement extends AbstractSubstitution {
         ToscaIsomorphismMatcher isomorphismMatcher = new ToscaIsomorphismMatcher();
         int id[] = new int[1];
 
-        while (SubstitutionUtils.containsPatterns(topology.getNodeTemplates(), this.nodeTypes)) {
+        while (getLoopCondition(topology)) {
             ToscaGraph topologyGraph = ToscaTransformer.createTOSCAGraph(topology);
 
             List<RefinementCandidate> candidates = new ArrayList<>();
@@ -98,7 +97,7 @@ public abstract class AbstractRefinement extends AbstractSubstitution {
                 break;
             }
 
-            RefinementCandidate refinement = this.refinementChooser.choosePatternRefinement(candidates, this.refinementServiceTemplateId, topology);
+            RefinementCandidate refinement = this.refinementChooser.chooseRefinement(candidates, this.refinementServiceTemplateId, topology);
 
             if (Objects.isNull(refinement)) {
                 break;
@@ -107,6 +106,8 @@ public abstract class AbstractRefinement extends AbstractSubstitution {
             applyRefinement(refinement, topology);
         }
     }
+
+    public abstract boolean getLoopCondition(TTopologyTemplate topology);
 
     public abstract IToscaMatcher getMatcher(TRefinementModel prm);
 

@@ -190,6 +190,11 @@ export class NavbarComponent implements OnDestroy {
                 this.ngRedux.dispatch(this.wineryActions.sendPaletteOpened(false));
                 this.ngRedux.dispatch(this.actions.refineTopology());
                 break;
+            case 'refineTopologyWithTests':
+                this.readonly = true;
+                this.ngRedux.dispatch(this.wineryActions.sendPaletteOpened(false));
+                this.ngRedux.dispatch(this.actions.addTestRefinementts());
+                break;
         }
     }
 

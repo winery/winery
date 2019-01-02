@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { PatternRefinementModel, RefinementElement, RefinementWebSocketService } from './refinementWebSocket.service';
 import { BackendService } from '../services/backend.service';
 import { NgRedux } from '@angular-redux/store';
@@ -32,6 +32,8 @@ import { Utils } from '../models/utils';
 })
 export class RefinementSidebarComponent implements OnDestroy {
 
+    @Input() refinementType: string;
+
     refinementIsRunning: boolean;
     refinementIsLoading: boolean;
     refinementIsDone: boolean;
@@ -49,7 +51,7 @@ export class RefinementSidebarComponent implements OnDestroy {
         this.refinementIsDone = false;
         this.refinementIsRunning = true;
         this.refinementIsLoading = true;
-        this.webSocketService.startRefinement()
+        this.webSocketService.startRefinement(this.refinementType)
             .subscribe(
                 value => this.handleWebSocketData(value),
                 error => this.handleError(error),
@@ -74,6 +76,10 @@ export class RefinementSidebarComponent implements OnDestroy {
     openModeler(event: MouseEvent, name: string, targetNamespace: string) {
         event.stopPropagation();
         this.openModelerFor(name, targetNamespace);
+    }
+
+    stopRefinement(): void {
+        this.webSocketService.cancel();
     }
 
     private handleWebSocketData(value: RefinementElement) {

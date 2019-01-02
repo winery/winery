@@ -14,6 +14,8 @@
 
 package org.eclipse.winery.model.substitution.refinement.tests;
 
+import java.util.Iterator;
+
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.substitution.refinement.RefinementCandidate;
@@ -24,10 +26,12 @@ import org.eclipse.winery.model.tosca.TRelationMapping;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTestRefinementModel;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.topologygraph.matching.ToscaIsomorphismMatcher;
+import org.eclipse.winery.topologygraph.matching.ToscaTypeMatcher;
 import org.eclipse.winery.topologygraph.model.ToscaEdge;
-import org.eclipse.winery.topologygraph.model.ToscaEdgeFactory;
 import org.eclipse.winery.topologygraph.model.ToscaGraph;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
+import org.eclipse.winery.topologygraph.transformation.ToscaTransformer;
 
 import org.jgrapht.GraphMapping;
 import org.junit.jupiter.api.Test;
@@ -42,18 +46,23 @@ public class TestRefinementTest {
         // region *** topology ***
         TNodeTemplate tomcat = new TNodeTemplate();
         tomcat.setId("tomcat");
+        tomcat.setType("{ns}tomcat");
         TNodeTemplate webShop = new TNodeTemplate();
         webShop.setId("webShop");
+        webShop.setType("{ns}webShop");
         TNodeTemplate database = new TNodeTemplate();
         database.setId("database");
+        database.setType("{ns}database");
 
         TRelationshipTemplate webShopOnTomcat = new TRelationshipTemplate();
         webShopOnTomcat.setSourceNodeTemplate(webShop);
         webShopOnTomcat.setTargetNodeTemplate(tomcat);
+        webShopOnTomcat.setType("{ns}hostedOn");
 
         TRelationshipTemplate webShopToDatabase = new TRelationshipTemplate();
         webShopToDatabase.setTargetNodeTemplate(database);
         webShopToDatabase.setSourceNodeTemplate(webShop);
+        webShopToDatabase.setType("{ns}connectsTo");
 
         TTopologyTemplate topologyTemplate = new TTopologyTemplate();
         topologyTemplate.addNodeTemplate(tomcat);
@@ -66,6 +75,7 @@ public class TestRefinementTest {
         // region *** refinement model ***
         TNodeTemplate mySqlConnectorTest = new TNodeTemplate();
         mySqlConnectorTest.setId("sqlConnectorTest");
+        mySqlConnectorTest.setType("{ns}sqlConnectorTest");
         TTopologyTemplate refinementTopology = new TTopologyTemplate();
         refinementTopology.addNodeTemplate(mySqlConnectorTest);
 
@@ -91,11 +101,17 @@ public class TestRefinementTest {
 
         TTestRefinementModel testRefinementModel = new TTestRefinementModel();
         testRefinementModel.setRefinementTopology(refinementTopology);
+        testRefinementModel.setDetector(topologyTemplate);
         testRefinementModel.setRelationMappings(relationMappings);
         // endregion
 
-        RefinementCandidate refinementCandidate = new RefinementCandidate(testRefinementModel, new EmptyGraphMapping(),
-            new ToscaGraph(new ToscaEdgeFactory()), 1);
+        ToscaGraph topologyGraph = ToscaTransformer.createTOSCAGraph(topologyTemplate);
+        ToscaGraph detectorGraph = ToscaTransformer.createTOSCAGraph(testRefinementModel.getDetector());
+        ToscaIsomorphismMatcher matcher = new ToscaIsomorphismMatcher();
+        Iterator<GraphMapping<ToscaNode, ToscaEdge>> mappings = matcher.findMatches(detectorGraph, topologyGraph, new ToscaTypeMatcher());
+        GraphMapping<ToscaNode, ToscaEdge> mapping = mappings.next();
+
+        RefinementCandidate refinementCandidate = new RefinementCandidate(testRefinementModel, mapping, detectorGraph, 1);
 
         TestRefinement testRefinement = new TestRefinement();
         testRefinement.applyRefinement(refinementCandidate, topologyTemplate);
@@ -119,17 +135,5 @@ public class TestRefinementTest {
         assertEquals("webShop", mimicTestTestIngoingConnection.getSourceElement().getRef().getId());
         assertEquals("sqlConnectorTest", mimicTestTestIngoingConnection.getTargetElement().getRef().getId());
         // endregion
-    }
-
-    private class EmptyGraphMapping implements GraphMapping<ToscaNode, ToscaEdge> {
-        @Override
-        public ToscaNode getVertexCorrespondence(ToscaNode vertex, boolean forward) {
-            return null;
-        }
-
-        @Override
-        public ToscaEdge getEdgeCorrespondence(ToscaEdge edge, boolean forward) {
-            return null;
-        }
     }
 }
