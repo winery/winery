@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,9 +21,9 @@ import { WineryReadmeComponent } from '../../wineryReadmeModule/wineryReadme.com
 import { WineryLicenseComponent } from '../../wineryLicenseModule/wineryLicense.component';
 import { EditXMLComponent } from '../../instance/sharedComponents/editXML/editXML.component';
 import { NgModule } from '@angular/core';
-import { RelationMappingsComponent } from '../../instance/patternRefinementModels/relationshipMappings/relationMappings.component';
+import { RelationMappingsComponent } from '../../instance/refinementModels/relationshipMappings/relationMappings.component';
 import { TopologyTemplateComponent } from '../../instance/sharedComponents/topologyTemplate/topologyTemplate.component';
-import { PrmPropertyMappingsComponent } from '../../instance/patternRefinementModels/propertyMappings/prmPropertyMappings.component';
+import { PrmPropertyMappingsComponent } from '../../instance/refinementModels/propertyMappings/prmPropertyMappings.component';
 
 const toscaType = ToscaTypes.PatternRefinementModel;
 

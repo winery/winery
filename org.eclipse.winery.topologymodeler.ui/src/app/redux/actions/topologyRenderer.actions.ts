@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -40,6 +40,7 @@ export class TopologyRendererActions {
     static MATCH_TOPOLOGY = 'MATCH_TOPOLOGY';
     static SUBSTITUTE_TOPOLOGY = 'SUBSTITUTE_TOPOLOGY';
     static REFINE_TOPOLOGY = 'REFINE_TOPOLOGY';
+    static REFINE_TOPOLOGY_WITH_TESTS = 'REFINE_TOPOLOGY_WITH_TESTS';
     static HIGHLIGHT_NODES = 'HIGHLIGHT_NODES';
 
     togglePolicies(): Action {
@@ -100,6 +101,12 @@ export class TopologyRendererActions {
 
     refineTopology(): Action {
         return { type: TopologyRendererActions.REFINE_TOPOLOGY };
+    }
+
+    addTestRefinementts(): Action {
+        return {
+            type: TopologyRendererActions.REFINE_TOPOLOGY_WITH_TESTS
+        };
     }
 
     highlightNodes(listOfNodeIds: string[]): HighlightNodesAction {

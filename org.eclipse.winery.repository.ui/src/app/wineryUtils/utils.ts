@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -75,6 +75,8 @@ export class Utils {
                 return ToscaTypes.ComplianceRule;
             case ToscaTypes.PatternRefinementModel:
                 return ToscaTypes.PatternRefinementModel;
+            case ToscaTypes.TestRefinementModel:
+                return ToscaTypes.TestRefinementModel;
             default:
                 return ToscaTypes.Admin;
         }
@@ -125,6 +127,9 @@ export class Utils {
                 break;
             case ToscaTypes.PatternRefinementModel:
                 type = 'Pattern Refinement Model';
+                break;
+            case ToscaTypes.TestRefinementModel:
+                type = 'Test Refinement Model';
                 break;
             default:
                 type = 'Admin';

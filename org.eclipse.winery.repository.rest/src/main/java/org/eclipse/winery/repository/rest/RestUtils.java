@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -372,6 +372,8 @@ public class RestUtils {
             location = "compliancerules";
         } else if (type.contains("PatternRefinementModel")) {
             location = "patternrefinementmodels";
+        } else if (type.contains("TestRefinementModel")) {
+            location = "testrefinementmodels";
         } else {
             if (type.contains("TypeImplementation")) {
                 location = "entitytypeimplementations";

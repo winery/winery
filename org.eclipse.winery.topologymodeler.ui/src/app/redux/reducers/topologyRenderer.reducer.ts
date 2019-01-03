@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -32,6 +32,7 @@ export interface TopologyRendererState {
         matchTopologyButton?: boolean;
         substituteTopologyButton?: boolean;
         refineTopologyButton?: boolean;
+        refineTopologyWithTestsButton?: boolean;
     };
     nodesToSelect?: string[];
 }
@@ -44,7 +45,7 @@ export const INITIAL_TOPOLOGY_RENDERER_STATE: TopologyRendererState = {
         deploymentArtifactsButton: false,
         propertiesButton: false,
         typesButton: true,
-        idsButton: true,
+        idsButton: false,
         layoutButton: false,
         alignHButton: false,
         alignVButton: false,
@@ -52,7 +53,8 @@ export const INITIAL_TOPOLOGY_RENDERER_STATE: TopologyRendererState = {
         splitTopologyButton: false,
         matchTopologyButton: false,
         substituteTopologyButton: false,
-        refineTopologyButton: false
+        refineTopologyButton: false,
+        refineTopologyWithTestsButton: false,
     }
 };
 /**
@@ -181,6 +183,14 @@ export const TopologyRendererReducer =
                     buttonsState: {
                         ...lastState.buttonsState,
                         refineTopologyButton: !lastState.buttonsState.refineTopologyButton
+                    }
+                };
+            case TopologyRendererActions.REFINE_TOPOLOGY_WITH_TESTS:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        refineTopologyWithTestsButton: !lastState.buttonsState.refineTopologyWithTestsButton
                     }
                 };
             case TopologyRendererActions.HIGHLIGHT_NODES:

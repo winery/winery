@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -344,14 +344,26 @@ div.mainContentContainer.xSDImport div.bottom {
 }
 
 div.mainContentContainer.patternRefinementModel div.top {
-    background: url('../assets/img/containers/admin/FrameTop.jpg');
-}
+     background: url('../assets/img/containers/admin/FrameTop.jpg');
+ }
 
 div.mainContentContainer.patternRefinementModel div.middle {
     background: url('../assets/img/containers/admin/FrameMiddle.jpg');
 }
 
 div.mainContentContainer.patternRefinementModel div.bottom {
+    background: url('../assets/img/containers/admin/FrameBottom.jpg');
+}
+
+div.mainContentContainer.testRefinementModel div.top {
+    background: url('../assets/img/containers/admin/FrameTop.jpg');
+}
+
+div.mainContentContainer.testRefinementModel div.middle {
+    background: url('../assets/img/containers/admin/FrameMiddle.jpg');
+}
+
+div.mainContentContainer.testRefinementModel div.bottom {
     background: url('../assets/img/containers/admin/FrameBottom.jpg');
 }
 
@@ -766,6 +778,18 @@ div.entityContainer.patternRefinementModelContainer > div.right {
     background: url('../assets/img/entityBox/adminContainer/a-container-right.png');
 }
 
+div.entityContainer.testRefinementModelContainer > div.left {
+    background: url('../assets/img/entityBox/adminContainer/a-container-left.png');
+}
+
+div.entityContainer.testRefinementModelContainer > div.center {
+    background: url('../assets/img/entityBox/adminContainer/a-container-center.jpg');
+}
+
+div.entityContainer.testRefinementModelContainer > div.right {
+    background: url('../assets/img/entityBox/adminContainer/a-container-right.png');
+}
+
 div.entityContainer.serviceTemplate > div.left {
     background: url('../assets/img/entityBox/serviceTemplate/st-left.png');
 }
@@ -955,6 +979,18 @@ div.entityContainer.patternRefinementModel > div.center {
 }
 
 div.entityContainer.patternRefinementModel > div.right {
+    background: url('../assets/img/entityBox/admin/right.png');
+}
+
+div.entityContainer.testRefinementModel > div.left {
+    background: url('../assets/img/entityBox/admin/left.png');
+}
+
+div.entityContainer.testRefinementModel > div.center {
+    background: url('../assets/img/entityBox/admin/center.jpg');
+}
+
+div.entityContainer.testRefinementModel > div.right {
     background: url('../assets/img/entityBox/admin/right.png');
 }
 

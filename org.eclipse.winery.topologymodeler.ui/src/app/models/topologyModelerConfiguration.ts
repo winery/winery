@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -35,6 +35,8 @@ export class TopologyModelerConfiguration {
             this.idPrefix = 'd_';
         } else if (this.elementPath === 'refinementstructure') {
             this.idPrefix = 'rs_';
+        } else if (this.elementPath === 'testfragment') {
+            this.idPrefix = 'test_';
         } else {
             this.idPrefix = '';
         }

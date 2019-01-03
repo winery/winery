@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -38,6 +38,7 @@ import org.eclipse.winery.repository.importing.CsarImportOptions;
 import org.eclipse.winery.repository.importing.CsarImporter;
 import org.eclipse.winery.repository.importing.ImportMetaInformation;
 import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.rest.resources.testrefinementmodels.TestRefinementModelsResource;
 import org.eclipse.winery.repository.rest.resources.admin.AdminTopResource;
 import org.eclipse.winery.repository.rest.resources.API.APIResource;
 import org.eclipse.winery.repository.rest.resources.compliancerules.ComplianceRulesResource;
@@ -153,6 +154,11 @@ public class MainResource {
     @Path("patternrefinementmodels/")
     public PatternRefinementModelsResource patternRefinementModels() {
         return new PatternRefinementModelsResource();
+    }
+
+    @Path("testrefinementmodels/")
+    public TestRefinementModelsResource testRefinementModelsResource() {
+        return new TestRefinementModelsResource();
     }
 
     @Path("yaml/")

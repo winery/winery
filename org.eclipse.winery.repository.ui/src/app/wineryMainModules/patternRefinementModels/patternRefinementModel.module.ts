@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -18,7 +18,7 @@ import { InstanceModule } from '../../instance/instance.module';
 import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
 import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';
 import { PatternRefinementModelRouterModule } from './patternRefinementModelRouter.module';
-import { PatternRefinementModelsModule } from '../../instance/patternRefinementModels/patternRefinementModels.module';
+import { RefinementModelsModule } from '../../instance/refinementModels/refinementModels.module';
 
 @NgModule({
     imports: [
@@ -27,7 +27,7 @@ import { PatternRefinementModelsModule } from '../../instance/patternRefinementM
         TopologyTemplateModule,
         WineryReadmeModule,
         WineryLicenseModule,
-        PatternRefinementModelsModule,
+        RefinementModelsModule,
         PatternRefinementModelRouterModule,
     ]
 })

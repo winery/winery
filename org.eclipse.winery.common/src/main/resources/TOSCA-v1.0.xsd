@@ -20,6 +20,7 @@
    - tPrmPropertyMappingType
  - Add "ComplianceRules" as tComplianceRule
  - Add tPolicies to Relationship Templates
+ - Add "TestRefinementModels" as tTestRefinementModel
 -->
 <xs:schema targetNamespace="http://docs.oasis-open.org/tosca/ns/2011/12" elementFormDefault="qualified"
            attributeFormDefault="unqualified" xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"
@@ -89,6 +90,7 @@
       <xs:element name="PolicyTemplate" type="tPolicyTemplate"/>
       <xs:element name="PatternRefinementModel" type="tPatternRefinementModel"/>
       <xs:element name="ComplianceRule" type="tComplianceRule"/>
+      <xs:element name="TestRefinementModel" type="tTestRefinementModel"/>
      </xs:choice>
     </xs:sequence>
     <xs:attribute name="id" type="xs:ID" use="required"/>
@@ -879,6 +881,25 @@
      <xs:element name="Tags" type="tTags" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="targetNamespace" type="xs:anyURI"/>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+ <xs:complexType name="tTestRefinementModel">
+  <xs:complexContent>
+   <xs:extension base="tExtensibleElements">
+    <xs:sequence>
+     <xs:element name="Detector" type="tTopologyTemplate"/>
+     <xs:element name="TestFragment" type="tTopologyTemplate"/>
+     <xs:element name="RelationMappings">
+      <xs:complexType>
+       <xs:sequence>
+        <xs:element name="RelationMapping" type="tRelationMapping" maxOccurs="unbounded"/>
+       </xs:sequence>
+      </xs:complexType>
+     </xs:element>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="optional"/>
     <xs:attribute name="targetNamespace" type="xs:anyURI"/>
    </xs:extension>
   </xs:complexContent>

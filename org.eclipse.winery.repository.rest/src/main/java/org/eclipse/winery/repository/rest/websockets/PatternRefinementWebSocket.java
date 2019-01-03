@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -16,6 +16,8 @@ package org.eclipse.winery.repository.rest.websockets;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -27,9 +29,11 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.model.substitution.pattern.refinement.PatternRefinement;
-import org.eclipse.winery.model.substitution.pattern.refinement.PatternRefinementCandidate;
-import org.eclipse.winery.model.substitution.pattern.refinement.PatternRefinementChooser;
+import org.eclipse.winery.model.substitution.refinement.AbstractRefinement;
+import org.eclipse.winery.model.substitution.refinement.RefinementCandidate;
+import org.eclipse.winery.model.substitution.refinement.RefinementChooser;
+import org.eclipse.winery.model.substitution.refinement.patterns.PatternRefinement;
+import org.eclipse.winery.model.substitution.refinement.tests.TestRefinement;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.rest.resources.apiData.RefinementElementApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.RefinementWebSocketApiData;
@@ -41,22 +45,38 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ServerEndpoint(value = "/refinetopology")
-public class PatternRefinementWebSocket implements PatternRefinementChooser {
+public class PatternRefinementWebSocket implements RefinementChooser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsistencyCheckWebSocket.class);
 
     private Session session;
     private ObjectMapper mapper = new ObjectMapper();
-    private PatternRefinement patternRefinement;
+    private AbstractRefinement patternRefinement;
     private CompletableFuture<Integer> future;
     private boolean running = false;
+    private ServiceTemplateId refinementServiceTemplate;
 
     @OnOpen
-    public void onOpen(Session session) {
+    public void onOpen(Session session) throws IOException {
         this.session = session;
-        this.patternRefinement = new PatternRefinement(this);
+        Map<String, List<String>> requestParameterMap = session.getRequestParameterMap();
 
-        LOGGER.debug("Opened consistency check web-socket with id: " + session.getId());
+        List<String> refinementType = requestParameterMap.get("type");
+        if (Objects.nonNull(refinementType)) {
+            String type = refinementType.get(0);
+            if (type.equals("patterns")) {
+                this.patternRefinement = new PatternRefinement(this);
+            } else if (type.equals("tests")) {
+                this.patternRefinement = new TestRefinement(this);
+            }
+            if (Objects.nonNull(this.patternRefinement)) {
+                LOGGER.info("Opened consistency check web-socket with id: " + session.getId());
+                return;
+            }
+        }
+
+        this.onClose(this.session);
+        LOGGER.debug("Closed session due to missing or incompatible refinement type!");
     }
 
     @OnClose
@@ -101,13 +121,16 @@ public class PatternRefinementWebSocket implements PatternRefinementChooser {
                 break;
             case STOP:
                 this.future.complete(-1);
+                this.send(new RefinementElementApiData(null, this.refinementServiceTemplate, null));
+                this.onClose(this.session);
                 break;
         }
     }
 
     @Override
-    public PatternRefinementCandidate choosePatternRefinement(List<PatternRefinementCandidate> candidates,
-                                                              ServiceTemplateId refinementServiceTemplate, TTopologyTemplate topology) {
+    public RefinementCandidate chooseRefinement(List<RefinementCandidate> candidates,
+                                                ServiceTemplateId refinementServiceTemplate, TTopologyTemplate topology) {
+        this.refinementServiceTemplate = refinementServiceTemplate;
         try {
             this.future = new CompletableFuture<>();
 

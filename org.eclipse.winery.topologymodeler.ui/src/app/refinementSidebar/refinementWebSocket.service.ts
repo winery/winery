@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,7 +23,7 @@ export enum RefinementTasks {
 }
 
 export interface RefinementElement {
-    patternRefinementCandidates: PatternRefinementModel[];
+    refinementCandidates: PatternRefinementModel[];
     serviceTemplateContainingRefinements: {
         xmlId?: {
             decoded: string;
@@ -38,7 +38,7 @@ export interface RefinementElement {
 export interface PatternRefinementModel {
     id: number;
     nodeIdsToBeReplaced: string[];
-    patternRefinementModel: {
+    refinementModel: {
         name: string;
         targetNamespace: string;
     };
@@ -59,8 +59,8 @@ export class RefinementWebSocketService {
     constructor(private backendService: BackendService) {
     }
 
-    startRefinement() {
-        this.socket = new WebSocket(this.backendService.configuration.webSocketUrl + '/refinetopology');
+    startRefinement(refinementType: string) {
+        this.socket = new WebSocket(this.backendService.configuration.webSocketUrl + '/refinetopology?type=' + refinementType);
         this.listener = new BehaviorSubject<RefinementElement>(null);
 
         const start: RefinementWebSocketData = {

@@ -1,5 +1,5 @@
 <!--
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -32,7 +32,7 @@
         </winery-palette-component>
     </div>
 
-    <winery-refinement *ngIf="refiningTopology" class="sidebar">
+    <winery-refinement *ngIf="refiningType" [refinementType]="refiningType" class="sidebar">
     </winery-refinement>
 
     <winery-sidebar (sidebarDeleteButtonClicked)="sidebarDeleteButtonClicked($event)" class="sidebar">

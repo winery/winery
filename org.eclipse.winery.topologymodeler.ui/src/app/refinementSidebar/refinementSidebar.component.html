@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2018 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -27,11 +27,11 @@
             <ng-template #showContent>
                 <ul>
                     <li *ngFor="let candidate of prmCandidates" (mouseover)="onHoverOver(candidate)">
-                        {{ candidate.patternRefinementModel.name }}
+                        {{ candidate.refinementModel.name }}
                         <br>
                         <div class="btn-group">
                             <button class="btn btn-sm btn-info"
-                                    (click)="openModeler($event, candidate.patternRefinementModel.name, candidate.patternRefinementModel.targetNamespace)">
+                                    (click)="openModeler($event, candidate.refinementModel.name, candidate.refinementModel.targetNamespace)">
                                 Show Refinement Structure
                             </button>
                             <br>
@@ -39,6 +39,9 @@
                         </div>
                     </li>
                 </ul>
+                <button class="btn btn-sm btn-danger" *ngIf="refinementType === 'tests'" (click)="stopRefinement()">
+                    Stop
+                </button>
             </ng-template>
         </ng-template>
     </div>

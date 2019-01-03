@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -60,6 +60,7 @@ import org.eclipse.winery.common.ids.definitions.EntityTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.PatternRefinementModelId;
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.ids.definitions.TestRefinementModelId;
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.common.ids.definitions.imports.WsdlImportId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
@@ -523,6 +524,8 @@ public class Util {
         } else if (ComplianceRuleId.class.isAssignableFrom(idClass)) {
             return true;
         } else if (PatternRefinementModelId.class.isAssignableFrom(idClass)) {
+            return true;
+        } else if (TestRefinementModelId.class.isAssignableFrom(idClass)) {
             return true;
         } else if ((EntityTypeId.class.isAssignableFrom(idClass)) || (EntityTypeImplementationId.class.isAssignableFrom(idClass))) {
             // name is available, but no id attribute

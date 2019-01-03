@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -19,7 +19,7 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 
-public class PatternRefinementModelId extends DefinitionsChildId {
+public class PatternRefinementModelId extends RefinementId {
 
     public PatternRefinementModelId(Namespace namespace, XmlId xmlId) {
         super(namespace, xmlId);

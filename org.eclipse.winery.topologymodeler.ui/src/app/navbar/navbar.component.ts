@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -189,6 +189,11 @@ export class NavbarComponent implements OnDestroy {
                 this.readonly = true;
                 this.ngRedux.dispatch(this.wineryActions.sendPaletteOpened(false));
                 this.ngRedux.dispatch(this.actions.refineTopology());
+                break;
+            case 'refineTopologyWithTests':
+                this.readonly = true;
+                this.ngRedux.dispatch(this.wineryActions.sendPaletteOpened(false));
+                this.ngRedux.dispatch(this.actions.addTestRefinementts());
                 break;
         }
     }

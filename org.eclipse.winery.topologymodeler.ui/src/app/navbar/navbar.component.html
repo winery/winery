@@ -1,5 +1,5 @@
 <!--
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -142,7 +142,12 @@
             <button class="btn btn-sm align-middle dark-button-style" id="refineTopology"
                     (click)="toggleButton($event)"
                     [style.background-color]="getStyle(navbarButtonsState.buttonsState.refineTopologyButton)">
-                Refine Topology
+                Refine Patterns
+            </button>
+            <button class="btn btn-sm align-middle dark-button-style" id="refineTopologyWithTests"
+                    (click)="toggleButton($event)"
+                    [style.background-color]="getStyle(navbarButtonsState.buttonsState.refineTopologyWithTestsButton)">
+                Refine Topology with Tests
             </button>
         </div>
 

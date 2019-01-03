@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -45,6 +45,7 @@ import { WineryGitLogComponent } from './wineryGitLog/wineryGitLog.component';
 import { ComplianceRuleModule } from './wineryMainModules/complianceRules/complianceRule.module';
 import { HttpClientModule } from '@angular/common/http';
 import { PatternRefinementModelModule } from './wineryMainModules/patternRefinementModels/patternRefinementModel.module';
+import { TestRefinementModelModule } from './wineryMainModules/testRefinementModels/testRefinementModel.module';
 
 @NgModule({
     imports: [
@@ -73,6 +74,7 @@ import { PatternRefinementModelModule } from './wineryMainModules/patternRefinem
         ImportModule,
         ComplianceRuleModule,
         PatternRefinementModelModule,
+        TestRefinementModelModule,
         WineryRepositoryRoutingModule,
     ],
     declarations: [
