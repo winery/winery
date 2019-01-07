@@ -29,11 +29,11 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.model.substitution.refinement.AbstractRefinement;
-import org.eclipse.winery.model.substitution.refinement.RefinementCandidate;
-import org.eclipse.winery.model.substitution.refinement.RefinementChooser;
-import org.eclipse.winery.model.substitution.refinement.patterns.PatternRefinement;
-import org.eclipse.winery.model.substitution.refinement.tests.TestRefinement;
+import org.eclipse.winery.model.adaptation.substitution.refinement.AbstractRefinement;
+import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
+import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementChooser;
+import org.eclipse.winery.model.adaptation.substitution.refinement.patterns.PatternRefinement;
+import org.eclipse.winery.model.adaptation.substitution.refinement.tests.TestRefinement;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.rest.resources.apiData.RefinementElementApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.RefinementWebSocketApiData;

@@ -38,7 +38,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.compliance.checking.ServiceTemplateCheckingResult;
 import org.eclipse.winery.compliance.checking.ServiceTemplateComplianceRuleRuleChecker;
-import org.eclipse.winery.model.substitution.Substitution;
+import org.eclipse.winery.model.adaptation.problemsolving.SolutionFactory;
+import org.eclipse.winery.model.adaptation.problemsolving.SolutionInputData;
+import org.eclipse.winery.model.adaptation.problemsolving.SolutionStrategy;
+import org.eclipse.winery.model.adaptation.substitution.Substitution;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TPlans;
@@ -311,6 +314,21 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     public ServiceTemplateId substitute() {
         Substitution substitution = new Substitution();
         return substitution.substituteTopologyOfServiceTemplate((ServiceTemplateId) this.id);
+    }
+
+    @POST
+    @Path("applysolution")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public TTopologyTemplate applySolution(SolutionInputData data) {
+        TServiceTemplate serviceTemplate = this.getServiceTemplate();
+
+        SolutionStrategy strategy = SolutionFactory.getSolution(data);
+        strategy.applySolution(serviceTemplate.getTopologyTemplate(), data);
+
+        RestUtils.persist(this);
+
+        return serviceTemplate.getTopologyTemplate();
     }
 
     @Override
