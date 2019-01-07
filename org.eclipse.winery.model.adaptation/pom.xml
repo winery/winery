@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>org.eclipse.winery.model.substitution</artifactId>
+    <artifactId>org.eclipse.winery.model.adaptation</artifactId>
     <dependencies>
         <dependency>
             <groupId>org.eclipse.winery</groupId>
