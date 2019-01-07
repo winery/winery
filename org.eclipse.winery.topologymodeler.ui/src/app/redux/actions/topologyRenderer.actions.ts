@@ -42,6 +42,7 @@ export class TopologyRendererActions {
     static REFINE_TOPOLOGY = 'REFINE_TOPOLOGY';
     static REFINE_TOPOLOGY_WITH_TESTS = 'REFINE_TOPOLOGY_WITH_TESTS';
     static HIGHLIGHT_NODES = 'HIGHLIGHT_NODES';
+    static DETECT_PROBLEMS = 'DETECT_PROBLEMS';
 
     togglePolicies(): Action {
         return { type: TopologyRendererActions.TOGGLE_POLICIES };
@@ -93,6 +94,10 @@ export class TopologyRendererActions {
 
     matchTopology(): Action {
         return { type: TopologyRendererActions.MATCH_TOPOLOGY };
+    }
+
+    detectProblems(): Action {
+        return { type: TopologyRendererActions.DETECT_PROBLEMS };
     }
 
     substituteTopology(): Action {

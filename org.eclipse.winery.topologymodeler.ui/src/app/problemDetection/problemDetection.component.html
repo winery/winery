@@ -1,0 +1,34 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2019 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<div id="ProblemDetectionView" *ngIf="!loading && problemFindings" class="sidebar-root">
+    <div class="detectionContainer">
+        <ul>
+            <li *ngFor="let problem of problemFindings">
+                {{problem.problem}}
+                <ul>
+                    <li *ngFor="let finding of problem.findings" (mouseover)="onHoverOver(finding)"
+                        (mouseleave)="hoverOut()" (click)="selectFinding(problem, finding)">
+                        Finding<br>
+                        <span *ngFor="let entry of finding">
+                            {{entry.componentId}},
+                        </span>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <button class="btn btn-sm btn-primary" [disabled]= "!selectedFinding" (click)="solve()">Solve</button>
+        <button class="btn btn-sm btn-danger" (click)="cancel()">Cancel</button>
+    </div>
+</div>

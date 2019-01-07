@@ -73,6 +73,10 @@ export class RefinementSidebarComponent implements OnDestroy {
         this.ngRedux.dispatch(this.rendererActions.highlightNodes(candidate.nodeIdsToBeReplaced));
     }
 
+    hoverOut() {
+        this.ngRedux.dispatch(this.rendererActions.highlightNodes([]));
+    }
+
     openModeler(event: MouseEvent, name: string, targetNamespace: string) {
         event.stopPropagation();
         this.openModelerFor(name, targetNamespace);
