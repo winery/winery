@@ -269,7 +269,7 @@ export class PaletteComponent implements OnDestroy {
             this.entityTypes.nodeVisuals);
 
         // if the node doesn't have a picture the URL is "null"
-        if (visuals.imageUrl != "null") {
+        if (visuals.imageUrl !== 'null') {
             return hostURL + visuals.imageUrl;
         }
     }
