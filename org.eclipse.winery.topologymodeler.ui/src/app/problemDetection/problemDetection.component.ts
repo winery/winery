@@ -22,6 +22,7 @@ import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BackendService } from '../services/backend.service';
 import { PatternRefinementModel } from '../refinementSidebar/refinementWebSocket.service';
+import { SolutionInputData } from './solutionEntity';
 
 @Component({
     selector: 'winery-problemDetection',
@@ -34,8 +35,10 @@ import { PatternRefinementModel } from '../refinementSidebar/refinementWebSocket
 export class ProblemDetectionComponent {
 
     loading = false;
-    problemFindings : ProblemFindings[];
+    problemFindings: ProblemFindings[];
     selectedFinding: ProblemOccurrence;
+    possibleSolutions: SolutionInputData[];
+    selectedSolution: SolutionInputData;
 
     constructor(private ngRedux: NgRedux<IWineryState>,
                 private actions: TopologyRendererActions,
@@ -47,7 +50,7 @@ export class ProblemDetectionComponent {
     }
 
     private checkButtonsState(currentButtonsState: TopologyRendererState) {
-        if(currentButtonsState.buttonsState.problemDetectionButton && !this.problemFindings) {
+        if (currentButtonsState.buttonsState.problemDetectionButton && !this.problemFindings) {
             this.problemDetectionService.detectProblems()
                 .subscribe(
                     data => this.showDetectedProblems(data),
@@ -67,7 +70,7 @@ export class ProblemDetectionComponent {
         this.alert.error(error.message);
     }
 
-    selectFinding(problem: ProblemEntity, finding: ComponentFinding[]){
+    selectFinding(problem: ProblemEntity, finding: ComponentFinding[]) {
         this.selectedFinding = {
             problem: problem.problem,
             description: problem.description,
@@ -77,6 +80,26 @@ export class ProblemDetectionComponent {
             occurrence: finding
         }
         console.log(this.selectedFinding);
+    }
+
+    solve() {
+        this.problemDetectionService.findSolutions(this.selectedFinding)
+            .subscribe(
+                data => this.showPossibleSolutions(data),
+                error => this.handleError(error)
+            );
+        this.loading = true;
+        delete this.problemFindings;
+    }
+
+    selectSolution(solution: SolutionInputData) {
+        this.selectedSolution = solution;
+    }
+
+    private showPossibleSolutions(possibleSolutions: SolutionInputData[]) {
+        this.possibleSolutions = possibleSolutions;
+        console.log(this.possibleSolutions);
+        this.loading = false;
     }
 
     onHoverOver(findings: ComponentFinding[]) {
@@ -92,5 +115,12 @@ export class ProblemDetectionComponent {
     cancel() {
         delete this.selectedFinding;
         delete this.problemFindings;
+        delete this.possibleSolutions;
+        delete this.selectedSolution;
+        this.ngRedux.dispatch(this.actions.detectProblems());
+    }
+
+    applySolution() {
+        this.cancel();
     }
 }
