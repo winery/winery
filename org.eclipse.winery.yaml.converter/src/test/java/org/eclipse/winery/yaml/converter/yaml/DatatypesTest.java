@@ -22,9 +22,9 @@ import org.eclipse.winery.yaml.converter.yaml.support.AbstractTestY2X;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class Datatypes extends AbstractTestY2X {
+public class DatatypesTest extends AbstractTestY2X {
 
-    public Datatypes() {
+    public DatatypesTest() {
         super(Paths.get("src/test/resources/yaml/Datatypes"));
     }
 
