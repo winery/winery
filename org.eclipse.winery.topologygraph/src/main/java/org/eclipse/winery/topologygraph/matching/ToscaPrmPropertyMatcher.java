@@ -39,13 +39,15 @@ public class ToscaPrmPropertyMatcher extends ToscaTypeMatcher {
     @Override
     public boolean isCompatible(ToscaNode left, ToscaNode right) {
         return super.isCompatible(left, right)
-            && propertiesCompatible(left, right);
+            && propertiesCompatible(left, right)
+            && characterizingPatternsCompatible(left, right);
     }
 
     @Override
     public boolean isCompatible(ToscaEdge left, ToscaEdge right) {
         return super.isCompatible(left, right)
-            && propertiesCompatible(left, right);
+            && propertiesCompatible(left, right)
+            && characterizingPatternsCompatible(left, right);
     }
 
     public boolean propertiesCompatible(ToscaEntity left, ToscaEntity right) {
