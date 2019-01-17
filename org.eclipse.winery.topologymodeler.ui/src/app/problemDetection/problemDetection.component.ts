@@ -25,7 +25,7 @@ import { PatternRefinementModel } from '../refinementSidebar/refinementWebSocket
 import { SolutionInputData } from './solutionEntity';
 
 @Component({
-    selector: 'winery-problemDetection',
+    selector: 'winery-problem-detection',
     templateUrl: 'problemDetection.component.html',
     providers: [
         ProblemDetectionService
@@ -78,8 +78,7 @@ export class ProblemDetectionComponent {
             serviceTemplateNs: this.backendService.configuration.ns,
             serviceTemplateId: this.backendService.configuration.id,
             occurrence: finding
-        }
-        console.log(this.selectedFinding);
+        };
     }
 
     solve() {
@@ -98,7 +97,6 @@ export class ProblemDetectionComponent {
 
     private showPossibleSolutions(possibleSolutions: SolutionInputData[]) {
         this.possibleSolutions = possibleSolutions;
-        console.log(this.possibleSolutions);
         this.loading = false;
     }
 

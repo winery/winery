@@ -178,7 +178,7 @@ export const TopologyRendererReducer =
                         ...lastState.buttonsState,
                         problemDetectionButton: !lastState.buttonsState.problemDetectionButton
                     }
-                }
+                };
             case TopologyRendererActions.SUBSTITUTE_TOPOLOGY:
                 return {
                     ...lastState,
@@ -204,7 +204,7 @@ export const TopologyRendererReducer =
                     }
                 };
             case TopologyRendererActions.HIGHLIGHT_NODES:
-                const data = <HighlightNodesAction> action;
+                const data = <HighlightNodesAction>action;
                 if (data.nodesToHighlight) {
                     return {
                         ...lastState,

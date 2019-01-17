@@ -34,7 +34,7 @@ export class ProblemDetectionService {
             + '&serviceTemplateNS=' + encodeURIComponent(configuration.ns)
             + '&serviceTemplateID=' + encodeURIComponent(configuration.id);
 
-        return this.http.get<ProblemFindings[]>(url, {headers: header})
+        return this.http.get<ProblemFindings[]>(url, {headers: header});
     }
 
     findSolutions(selectedProblem: ProblemOccurrence): Observable<SolutionInputData[]> {
@@ -42,6 +42,6 @@ export class ProblemDetectionService {
         const url = configuration.topologyProDecURL + '/findSolutions';
         const headers = new HttpHeaders().set('Accept', 'application/json');
         headers.set('Content-Type', 'application/json');
-        return this.http.post<SolutionInputData[]>(url, selectedProblem, {headers: headers})
+        return this.http.post<SolutionInputData[]>(url, selectedProblem, {headers: headers});
     }
 }
