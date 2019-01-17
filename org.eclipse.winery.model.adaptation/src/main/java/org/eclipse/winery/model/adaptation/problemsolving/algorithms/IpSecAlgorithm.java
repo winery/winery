@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.adaptation.problemsolving.algorithms;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -28,6 +29,8 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
+import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.NamespaceManager;
@@ -43,55 +46,66 @@ public class IpSecAlgorithm implements SolutionStrategy {
         Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
 
         TNodeTemplate[] elements = new TNodeTemplate[2];
-        
+
         for (int index = 0; index < 2; index++) {
-            ComponentFinding componentFinding  = inputData.getFindings().get(index);
-            QName currentNodeType = topology.getNodeTemplate(componentFinding.getComponentId()).getType();
+            ComponentFinding componentFinding = inputData.getFindings().get(index);
+            elements[index] = getVmHost(topology, componentFinding.getComponentId());
 
-            if (ModelUtilities.isOfType(QName.valueOf("{http://opentosca.org/baseelements/nodetypes}VM"), currentNodeType, nodeTypes)) {
-                Map<QName, TNodeType> children = ModelUtilities.getChildrenOf(currentNodeType, nodeTypes);
-
-                // simply use the first element
-                Optional<Map.Entry<QName, TNodeType>> firstSecure = children.entrySet()
-                    .stream()
-                    .filter(
-                        entry -> namespaceManager.isSecureCollection(entry.getKey().getNamespaceURI())
-                    ).findFirst();
-
-                if (firstSecure.isPresent()) {
-                    ModelUtilities.updateNodeTemplate(
-                        topology,
-                        componentFinding.getComponentId(),
-                        firstSecure.get().getKey(),
-                        firstSecure.get().getValue()
-                    );
-                } else {
-                    return false;
-                }
-                
+            if (Objects.isNull(elements[index])) {
                 elements[index] = topology.getNodeTemplate(componentFinding.getComponentId());
             }
-        }
-        
-        if (Objects.isNull(elements[0]) || Objects.isNull(elements[1])) {
-            return false;
+
+            Map<QName, TNodeType> children = ModelUtilities.getChildrenOf(elements[index].getType(), nodeTypes);
+
+            // simply use the first element
+            Optional<Map.Entry<QName, TNodeType>> firstSecure = children.entrySet()
+                .stream()
+                .filter(
+                    entry -> namespaceManager.isSecureCollection(entry.getKey().getNamespaceURI())
+                ).findFirst();
+
+            if (firstSecure.isPresent()) {
+                ModelUtilities.updateNodeTemplate(
+                    topology,
+                    elements[index].getId(),
+                    firstSecure.get().getKey(),
+                    firstSecure.get().getValue()
+                );
+            } else {
+                return false;
+            }
         }
 
         TRelationshipTemplate forward = new TRelationshipTemplate();
-        forward.setType(QName.valueOf("{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}ConnectsTo"));
+        forward.setType(ToscaBaseTypes.connectsToRelationshipType);
         forward.setId(elements[0].getId() + "_securely-connectsTo_" + elements[1].getId());
         forward.setTargetNodeTemplate(elements[0]);
         forward.setSourceNodeTemplate(elements[1]);
-        
+
         TRelationshipTemplate backward = new TRelationshipTemplate();
-        backward.setType(QName.valueOf("{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}ConnectsTo"));
+        backward.setType(ToscaBaseTypes.connectsToRelationshipType);
         backward.setId(elements[1].getId() + "_securely-connectsTo_" + elements[0].getId());
         backward.setTargetNodeTemplate(elements[1]);
         backward.setSourceNodeTemplate(elements[0]);
-        
+
         topology.addRelationshipTemplate(forward);
         topology.addRelationshipTemplate(backward);
 
         return true;
+    }
+
+    private TNodeTemplate getVmHost(TTopologyTemplate topology, String nodeTemplateId) {
+        Map<QName, TNodeType> nodeTypes = RepositoryFactory.getRepository().getQNameToElementMapping(NodeTypeId.class);
+        ArrayList<TNodeTemplate> hostedOnSuccessors = ModelUtilities.getHostedOnSuccessors(topology, nodeTemplateId);
+
+        if (!hostedOnSuccessors.isEmpty()) {
+            for (TNodeTemplate hostedOn : hostedOnSuccessors) {
+                if (ModelUtilities.isOfType(OpenToscaBaseTypes.virtualMachineNodeType, hostedOn.getType(), nodeTypes)) {
+                    return hostedOn;
+                }
+            }
+        }
+
+        return null;
     }
 }

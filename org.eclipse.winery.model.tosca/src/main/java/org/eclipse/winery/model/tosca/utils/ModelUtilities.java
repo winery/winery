@@ -17,6 +17,7 @@ package org.eclipse.winery.model.tosca.utils;
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -33,6 +34,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.winery.model.tosca.RelationshipSourceOrTarget;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
@@ -54,6 +56,7 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.constants.QNames;
+import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
 import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
@@ -740,7 +743,7 @@ public class ModelUtilities {
         TEntityType entityType = elements.get(givenType);
         if (Objects.nonNull(entityType) && Objects.nonNull(entityType.getDerivedFrom())) {
             elements.forEach((qName, type) -> {
-                if (isOfType(givenType, qName, elements)) {
+                if (!qName.equals(givenType) && isOfType(givenType, qName, elements)) {
                     children.put(qName, type);
                 }
             });
@@ -753,5 +756,64 @@ public class ModelUtilities {
         nodeTemplate.setType(newType);
         nodeTemplate.setName(newType.getLocalPart());
         // TODO: also make some more adjustments etc.
+    }
+
+    /**
+     * This is specific to the TOSCA hostedOn relationship type.
+     */
+    public static ArrayList<TNodeTemplate> getHostedOnSuccessors(TTopologyTemplate topologyTemplate, String nodeTemplateId) {
+        ArrayList<TNodeTemplate> hostedOnSuccessors = new ArrayList<>();
+
+        TNodeTemplate nodeTemplate = topologyTemplate.getNodeTemplate(nodeTemplateId);
+        Optional<TRelationshipTemplate> hostedOn;
+
+        do {
+            List<TRelationshipTemplate> outgoingRelationshipTemplates = getOutgoingRelationshipTemplates(topologyTemplate, nodeTemplate);
+
+            hostedOn = outgoingRelationshipTemplates.stream()
+                .filter(relation -> relation.getType().equals(ToscaBaseTypes.hostedOnRelationshipType))
+                .findFirst();
+            if (hostedOn.isPresent()) {
+                nodeTemplate = getNodeTemplateFromRelationshipSourceOrTarget(topologyTemplate, hostedOn.get().getTargetElement().getRef());
+                hostedOnSuccessors.add(nodeTemplate);
+            }
+        } while (hostedOn.isPresent());
+
+        return hostedOnSuccessors;
+    }
+
+    /**
+     * Returns the referenced TNodeTemplate of a TRelationshipTemplate which internally uses a RelationshipSourceOrTarget element.
+     * to point to the respective TNodeTemplate.
+     * If the referenced TNodeTemplate cannot be found, a NullPointerException is thrown.
+     *
+     * @param topologyTemplate the TTopologyTemplate the TNodeTemplate and TRelationshipTemplate are contained in.
+     * @param relationshipSourceOrTarget the source or target element the relationship points to.
+     * @return the actual TNodeTemplate the TRelationshipTemplate is referring to.
+     */
+    public static TNodeTemplate getNodeTemplateFromRelationshipSourceOrTarget(TTopologyTemplate topologyTemplate, RelationshipSourceOrTarget relationshipSourceOrTarget) {
+        Optional<TNodeTemplate> nodeTemplate = Optional.empty();
+
+        if (relationshipSourceOrTarget instanceof TNodeTemplate) {
+            nodeTemplate = Optional.of((TNodeTemplate) relationshipSourceOrTarget);
+        } else if (relationshipSourceOrTarget instanceof TCapability) {
+            nodeTemplate = topologyTemplate.getNodeTemplates().stream()
+                .filter(node -> Objects.nonNull(node.getCapabilities()))
+                .filter(node ->
+                    node.getCapabilities()
+                        .getCapability().stream().anyMatch(capability -> capability.getId().equals(relationshipSourceOrTarget.getId())
+                    )
+                ).findFirst();
+        } else if (relationshipSourceOrTarget instanceof TRequirement) {
+            nodeTemplate = topologyTemplate.getNodeTemplates().stream()
+                .filter(node -> Objects.nonNull(node.getRequirements()))
+                .filter(node ->
+                    node.getRequirements()
+                        .getRequirement().stream().anyMatch(requirement -> requirement.getId().equals(relationshipSourceOrTarget.getId())
+                    )
+                ).findFirst();
+        }
+
+        return nodeTemplate.orElseThrow(NullPointerException::new);
     }
 }

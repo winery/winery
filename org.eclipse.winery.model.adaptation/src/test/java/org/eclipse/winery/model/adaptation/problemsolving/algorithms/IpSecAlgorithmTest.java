@@ -35,7 +35,7 @@ class IpSecAlgorithmTest extends TestWithGitBackedRepository {
 
     @Test
     public void applySolutionTest() throws Exception {
-        this.setRevisionTo("9f75c447b9cc960f960d0e5e914cb63468858d47");
+        this.setRevisionTo("a23f1c89c77fcde4de9fe7822532dc04e31731a0");
         IpSecAlgorithm ipSecAlgorithm = new IpSecAlgorithm();
 
         TTopologyTemplate topologyTemplate = RepositoryFactory.getRepository().getElement(
@@ -43,8 +43,8 @@ class IpSecAlgorithmTest extends TestWithGitBackedRepository {
         ).getTopologyTemplate();
 
         ArrayList<ComponentFinding> componentFindings = new ArrayList<>();
-        componentFindings.add(new ComponentFinding(null, "replaceableNode_1"));
-        componentFindings.add(new ComponentFinding(null, "replaceableNode_2"));
+        componentFindings.add(new ComponentFinding(null, "NodeTypeWithImplementation_1.0-w1-wip1"));
+        componentFindings.add(new ComponentFinding(null, "NodeTypeWithXmlElementProperty"));
         SolutionInputData inputData = new SolutionInputData();
         inputData.setFindings(componentFindings);
 
