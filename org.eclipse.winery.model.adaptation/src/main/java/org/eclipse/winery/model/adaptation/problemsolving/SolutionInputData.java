@@ -19,19 +19,13 @@ import java.util.Map;
 
 public class SolutionInputData {
 
-    private String algorithm;
+    private String name;
+    private String description;
+    private ConcreteSolutionImplementation csi;
     private List<ComponentFinding> findings;
     private Map<String, String> algorithmSpecificInformation;
 
     public SolutionInputData() {
-    }
-
-    public String getAlgorithm() {
-        return algorithm;
-    }
-
-    public void setAlgorithm(String algorithm) {
-        this.algorithm = algorithm;
     }
 
     public List<ComponentFinding> getFindings() {
@@ -48,5 +42,29 @@ public class SolutionInputData {
 
     public void setAlgorithmSpecificInformation(Map<String, String> algorithmSpecificInformation) {
         this.algorithmSpecificInformation = algorithmSpecificInformation;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public ConcreteSolutionImplementation getCsi() {
+        return csi;
+    }
+
+    public void setCsi(ConcreteSolutionImplementation csi) {
+        this.csi = csi;
     }
 }

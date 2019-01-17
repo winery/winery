@@ -18,5 +18,13 @@ import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
 public interface SolutionStrategy {
 
-    public void applySolution(TTopologyTemplate topology, SolutionInputData inputData);
+    /**
+     * Applies the solution to the given topology using the given input data. Returns a boolean flag whether the
+     * solution was successfully applied or not.
+     *
+     * @param topology  The topology the solution is applied to.
+     * @param inputData The input data to the corresponding algorithm.
+     * @return A boolean whether the solution was successfully applied.
+     */
+    public boolean applySolution(TTopologyTemplate topology, SolutionInputData inputData);
 }

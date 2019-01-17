@@ -11,24 +11,30 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { ComponentFinding } from './problemEntity';
 
-export interface SolutionEntity {
-    name: string;
-    description: string;
-    csi: ConcreteSolutionImplementation;
-}
+package org.eclipse.winery.model.adaptation.problemsolving;
 
-export interface SolutionInputData extends SolutionEntity {
+public class ConcreteSolutionImplementation {
 
-    findings: ComponentFinding[];
-    // any because key-value pairs and not used/modified in the topology modeler
-    algorithmSpecificInformation: any;
+    private String name;
+    private String serviceEndpoint;
 
-}
+    public ConcreteSolutionImplementation() {
+    }
 
-export interface ConcreteSolutionImplementation {
+    public String getName() {
+        return name;
+    }
 
-    name: string;
-    serviceEndpoint: string;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getServiceEndpoint() {
+        return serviceEndpoint;
+    }
+
+    public void setServiceEndpoint(String serviceEndpoint) {
+        this.serviceEndpoint = serviceEndpoint;
+    }
 }

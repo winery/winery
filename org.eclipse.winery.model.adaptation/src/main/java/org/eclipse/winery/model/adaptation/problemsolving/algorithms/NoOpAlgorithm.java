@@ -21,7 +21,7 @@ import org.eclipse.winery.model.tosca.TTopologyTemplate;
 public class NoOpAlgorithm implements SolutionStrategy {
 
     @Override
-    public void applySolution(TTopologyTemplate topology, SolutionInputData inputData) {
-
+    public boolean applySolution(TTopologyTemplate topology, SolutionInputData inputData) {
+        return true;
     }
 }

@@ -14,11 +14,20 @@
 
 package org.eclipse.winery.model.adaptation.problemsolving;
 
+import org.eclipse.winery.model.adaptation.problemsolving.algorithms.IpSecAlgorithm;
 import org.eclipse.winery.model.adaptation.problemsolving.algorithms.NoOpAlgorithm;
 
 public class SolutionFactory {
 
     public static SolutionStrategy getSolution(SolutionInputData inputData) {
-        return new NoOpAlgorithm();
+        switch (inputData.getCsi().getName()) {
+            case "IpSec":
+            case "ipsec":
+            case "IpSecure":
+            case "ipsecure":
+                return new IpSecAlgorithm();
+            default:
+                return new NoOpAlgorithm();
+        }
     }
 }

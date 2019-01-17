@@ -67,4 +67,9 @@ public class MockNamespaceManager implements NamespaceManager {
     public boolean isPatternNamespace(String namespace) {
         return false;
     }
+
+    @Override
+    public boolean isSecureCollection(String namespace) {
+        return false;
+    }
 }

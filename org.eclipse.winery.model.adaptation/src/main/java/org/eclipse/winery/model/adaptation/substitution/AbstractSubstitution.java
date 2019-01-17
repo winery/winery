@@ -48,15 +48,8 @@ public class AbstractSubstitution {
     }
 
     private void loadDefinitions() {
-        this.repository.getAllDefinitionsChildIds(NodeTypeId.class)
-            .forEach(id ->
-                this.nodeTypes.put(id.getQName(), this.repository.getElement(id))
-            );
-
-        this.repository.getAllDefinitionsChildIds(RelationshipTypeId.class)
-            .forEach(id ->
-                this.relationshipTypes.put(id.getQName(), this.repository.getElement(id))
-            );
+        this.nodeTypes.putAll(this.repository.getQNameToElementMapping(NodeTypeId.class));
+        this.relationshipTypes.putAll(this.repository.getQNameToElementMapping(RelationshipTypeId.class));
     }
 
     /**

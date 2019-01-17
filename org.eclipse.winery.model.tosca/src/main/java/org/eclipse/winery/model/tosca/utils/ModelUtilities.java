@@ -235,7 +235,6 @@ public class ModelUtilities {
      * @param e the extensible element offering a name attribute (besides an id attribute)
      * @return the name of the extensible element
      * @throws IllegalStateException if e does not offer the method "getName"
-     * @see Util#instanceSupportsNameAttribute(java.lang.Class) is related
      */
     public static String getName(TExtensibleElements e) {
         Method method;
@@ -734,5 +733,25 @@ public class ModelUtilities {
             }
         }
         return true;
+    }
+
+    public static <T extends TEntityType> Map<QName, T> getChildrenOf(QName givenType, Map<QName, T> elements) {
+        HashMap<QName, T> children = new HashMap<>();
+        TEntityType entityType = elements.get(givenType);
+        if (Objects.nonNull(entityType) && Objects.nonNull(entityType.getDerivedFrom())) {
+            elements.forEach((qName, type) -> {
+                if (isOfType(givenType, qName, elements)) {
+                    children.put(qName, type);
+                }
+            });
+        }
+        return children;
+    }
+
+    public static void updateNodeTemplate(TTopologyTemplate topology, String oldComponentId, QName newType, TNodeType newComponentType) {
+        TNodeTemplate nodeTemplate = topology.getNodeTemplate(oldComponentId);
+        nodeTemplate.setType(newType);
+        nodeTemplate.setName(newType.getLocalPart());
+        // TODO: also make some more adjustments etc.
     }
 }
