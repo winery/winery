@@ -18,5 +18,13 @@ import javax.xml.namespace.QName;
 
 public class OpenToscaBaseTypes {
 
+    // region ********* base elements *********
     public static final QName virtualMachineNodeType = QName.valueOf("{http://opentosca.org/baseelements/nodetypes}VM");
+    public static final QName DockerEngineNodeType = QName.valueOf("{http://opentosca.org/baseelements/nodetypes}DockerEngine");
+    // endregion
+
+    // region ********* secure elements *********
+    public static final QName secureProxyContainer = QName.valueOf("{http://opentosca.org/secureelements/nodetypes}SecureProxyContainer");
+    public static final QName secureProxy = QName.valueOf("{http://opentosca.org/secureelements/nodetypes}SecureProxy");
+    // endregion
 }

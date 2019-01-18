@@ -16,16 +16,19 @@ package org.eclipse.winery.model.adaptation.problemsolving;
 
 import org.eclipse.winery.model.adaptation.problemsolving.algorithms.IpSecAlgorithm;
 import org.eclipse.winery.model.adaptation.problemsolving.algorithms.NoOpAlgorithm;
+import org.eclipse.winery.model.adaptation.problemsolving.algorithms.SecureContainerProxyAlgorithm;
+import org.eclipse.winery.model.adaptation.problemsolving.algorithms.SecureVmProxyAlgorithm;
 
 public class SolutionFactory {
 
     public static SolutionStrategy getSolution(SolutionInputData inputData) {
-        switch (inputData.getCsi().getName()) {
-            case "IpSec":
+        switch (inputData.getCsi().getName().toLowerCase()) {
             case "ipsec":
-            case "IpSecure":
-            case "ipsecure":
                 return new IpSecAlgorithm();
+            case "securecontainerproxy":
+                return new SecureContainerProxyAlgorithm();
+            case "securevmproxy":
+                return new SecureVmProxyAlgorithm();
             default:
                 return new NoOpAlgorithm();
         }

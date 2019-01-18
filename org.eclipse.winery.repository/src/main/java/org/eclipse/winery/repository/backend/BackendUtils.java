@@ -1466,14 +1466,14 @@ public class BackendUtils {
             .map(n -> ModelUtilities.getLeft(n).orElse(0));
 
         if (shiftLeft.isPresent()) {
-            collectIdsOfExistingTopologyElements(topologyTemplateB, idMapping);
+            ModelUtilities.collectIdsOfExistingTopologyElements(topologyTemplateB, idMapping);
 
             // patch ids of reqs change them if required
             topologyTemplateA.getNodeTemplates().stream()
                 .filter(nt -> nt.getRequirements() != null)
                 .forEach(nt -> nt.getRequirements().getRequirement().forEach(oldReq -> {
                     TRequirement req = SerializationUtils.clone(oldReq);
-                    generateNewIdOfTemplate(req, idMapping);
+                    ModelUtilities.generateNewIdOfTemplate(req, idMapping);
 
                     topologyTemplateA.getRelationshipTemplates().stream()
                         .filter(rt -> rt.getSourceElement().getRef() instanceof TRequirement)
@@ -1490,7 +1490,7 @@ public class BackendUtils {
                 .filter(nt -> nt.getCapabilities() != null)
                 .forEach(nt -> nt.getCapabilities().getCapability().forEach(oldCap -> {
                     TCapability cap = SerializationUtils.clone(oldCap);
-                    generateNewIdOfTemplate(cap, idMapping);
+                    ModelUtilities.generateNewIdOfTemplate(cap, idMapping);
 
                     topologyTemplateA.getRelationshipTemplates().stream()
                         .filter(rt -> rt.getTargetElement().getRef() instanceof TCapability)
@@ -1508,7 +1508,7 @@ public class BackendUtils {
             topologyTemplateA.getNodeTemplateOrRelationshipTemplate()
                 .forEach(element -> {
                     TEntityTemplate rtOrNt = SerializationUtils.clone(element);
-                    generateNewIdOfTemplate(rtOrNt, idMapping);
+                    ModelUtilities.generateNewIdOfTemplate(rtOrNt, idMapping);
 
                     if (rtOrNt instanceof TNodeTemplate) {
                         int newLeft = ModelUtilities.getLeft((TNodeTemplate) rtOrNt).orElse(0) + shiftLeft.get();
@@ -1541,36 +1541,6 @@ public class BackendUtils {
         }
 
         return idMapping;
-    }
-
-    private static void collectIdsOfExistingTopologyElements(TTopologyTemplate topologyTemplateB, Map<String, String> idMapping) {
-        // collect existing node & relationship template ids
-        topologyTemplateB.getNodeTemplateOrRelationshipTemplate()
-            // the existing ids are left unchanged
-            .forEach(x -> idMapping.put(x.getId(), x.getId()));
-
-        // collect existing requirement ids
-        topologyTemplateB.getNodeTemplates().stream()
-            .filter(nt -> nt.getRequirements() != null)
-            .forEach(nt -> nt.getRequirements().getRequirement()
-                // the existing ids are left unchanged
-                .forEach(x -> idMapping.put(x.getId(), x.getId())));
-
-        //collect existing capability ids
-        topologyTemplateB.getNodeTemplates().stream()
-            .filter(nt -> nt.getCapabilities() != null)
-            .forEach(nt -> nt.getCapabilities().getCapability()
-                // the existing ids are left unchanged
-                .forEach(x -> idMapping.put(x.getId(), x.getId())));
-    }
-
-    private static void generateNewIdOfTemplate(HasId element, Map<String, String> idMapping) {
-        String newId = element.getId();
-        while (idMapping.containsKey(newId)) {
-            newId = newId + "-new";
-        }
-        idMapping.put(element.getId(), newId);
-        element.setId(newId);
     }
 
     /**

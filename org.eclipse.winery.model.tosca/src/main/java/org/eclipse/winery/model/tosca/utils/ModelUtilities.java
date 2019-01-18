@@ -34,6 +34,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.winery.model.tosca.HasId;
 import org.eclipse.winery.model.tosca.RelationshipSourceOrTarget;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TCapability;
@@ -761,10 +762,13 @@ public class ModelUtilities {
     /**
      * This is specific to the TOSCA hostedOn relationship type.
      */
-    public static ArrayList<TNodeTemplate> getHostedOnSuccessors(TTopologyTemplate topologyTemplate, String nodeTemplateId) {
+    public static ArrayList<TNodeTemplate> getHostedOnSuccessors(TTopologyTemplate topologyTemplate, String nodeTemplate) {
+        return getHostedOnSuccessors(topologyTemplate, topologyTemplate.getNodeTemplate(nodeTemplate));
+    }
+
+    public static ArrayList<TNodeTemplate> getHostedOnSuccessors(TTopologyTemplate topologyTemplate, TNodeTemplate nodeTemplate) {
         ArrayList<TNodeTemplate> hostedOnSuccessors = new ArrayList<>();
 
-        TNodeTemplate nodeTemplate = topologyTemplate.getNodeTemplate(nodeTemplateId);
         Optional<TRelationshipTemplate> hostedOn;
 
         do {
@@ -783,11 +787,12 @@ public class ModelUtilities {
     }
 
     /**
-     * Returns the referenced TNodeTemplate of a TRelationshipTemplate which internally uses a RelationshipSourceOrTarget element.
-     * to point to the respective TNodeTemplate.
-     * If the referenced TNodeTemplate cannot be found, a NullPointerException is thrown.
+     * Returns the referenced TNodeTemplate of a TRelationshipTemplate which internally uses a
+     * RelationshipSourceOrTarget element. to point to the respective TNodeTemplate. If the referenced TNodeTemplate
+     * cannot be found, a NullPointerException is thrown.
      *
-     * @param topologyTemplate the TTopologyTemplate the TNodeTemplate and TRelationshipTemplate are contained in.
+     * @param topologyTemplate           the TTopologyTemplate the TNodeTemplate and TRelationshipTemplate are contained
+     *                                   in.
      * @param relationshipSourceOrTarget the source or target element the relationship points to.
      * @return the actual TNodeTemplate the TRelationshipTemplate is referring to.
      */
@@ -815,5 +820,68 @@ public class ModelUtilities {
         }
 
         return nodeTemplate.orElseThrow(NullPointerException::new);
+    }
+
+    public static void collectIdsOfExistingTopologyElements(TTopologyTemplate topologyTemplateB, Map<String, String> idMapping) {
+        // collect existing node & relationship template ids
+        topologyTemplateB.getNodeTemplateOrRelationshipTemplate()
+            // the existing ids are left unchanged
+            .forEach(x -> idMapping.put(x.getId(), x.getId()));
+
+        // collect existing requirement ids
+        topologyTemplateB.getNodeTemplates().stream()
+            .filter(nt -> nt.getRequirements() != null)
+            .forEach(nt -> nt.getRequirements().getRequirement()
+                // the existing ids are left unchanged
+                .forEach(x -> idMapping.put(x.getId(), x.getId())));
+
+        //collect existing capability ids
+        topologyTemplateB.getNodeTemplates().stream()
+            .filter(nt -> nt.getCapabilities() != null)
+            .forEach(nt -> nt.getCapabilities().getCapability()
+                // the existing ids are left unchanged
+                .forEach(x -> idMapping.put(x.getId(), x.getId())));
+    }
+
+    public static void generateNewIdOfTemplate(HasId element, TTopologyTemplate topologyTemplate) {
+        HashMap<String, String> map = new HashMap<>();
+        collectIdsOfExistingTopologyElements(topologyTemplate, map);
+        generateNewIdOfTemplate(element, map);
+    }
+
+    public static void generateNewIdOfTemplate(HasId element, Map<String, String> idMapping) {
+        String newId = element.getId();
+        while (idMapping.containsKey(newId)) {
+            newId = newId + "-new";
+        }
+        idMapping.put(element.getId(), newId);
+        element.setId(newId);
+    }
+
+    public static TRelationshipTemplate createRelationshipTemplate(TNodeTemplate sourceNode, TNodeTemplate targetNode, QName type) {
+        return createRelationshipTemplate(sourceNode, targetNode, type, "");
+    }
+
+    public static TRelationshipTemplate createRelationshipTemplate(TNodeTemplate sourceNode, TNodeTemplate targetNode, QName type, String connectionDescription) {
+        TRelationshipTemplate rel = new TRelationshipTemplate();
+        rel.setType(type);
+        rel.setId(sourceNode.getId() + "-" + connectionDescription + "-" + targetNode.getId());
+        rel.setSourceNodeTemplate(sourceNode);
+        rel.setTargetNodeTemplate(targetNode);
+        return rel;
+    }
+
+    public static TRelationshipTemplate createRelationshipTemplateAndAddToTopology(TNodeTemplate sourceNode, TNodeTemplate targetNode, QName type,
+                                                                                   TTopologyTemplate topology) {
+        return createRelationshipTemplateAndAddToTopology(sourceNode, targetNode, type, "", topology);
+    }
+
+    public static TRelationshipTemplate createRelationshipTemplateAndAddToTopology(TNodeTemplate
+                                                                                       sourceNode, TNodeTemplate targetNode, QName type,
+                                                                                   String connectionDescription, TTopologyTemplate topology) {
+        TRelationshipTemplate relationshipTemplate = createRelationshipTemplate(sourceNode, targetNode, type, connectionDescription);
+        generateNewIdOfTemplate(relationshipTemplate, topology);
+        topology.addRelationshipTemplate(relationshipTemplate);
+        return relationshipTemplate;
     }
 }

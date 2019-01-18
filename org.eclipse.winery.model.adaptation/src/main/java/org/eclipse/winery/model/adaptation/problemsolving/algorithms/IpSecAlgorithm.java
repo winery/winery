@@ -76,20 +76,12 @@ public class IpSecAlgorithm implements SolutionStrategy {
             }
         }
 
-        TRelationshipTemplate forward = new TRelationshipTemplate();
-        forward.setType(ToscaBaseTypes.connectsToRelationshipType);
-        forward.setId(elements[0].getId() + "_securely-connectsTo_" + elements[1].getId());
-        forward.setTargetNodeTemplate(elements[0]);
-        forward.setSourceNodeTemplate(elements[1]);
-
-        TRelationshipTemplate backward = new TRelationshipTemplate();
-        backward.setType(ToscaBaseTypes.connectsToRelationshipType);
-        backward.setId(elements[1].getId() + "_securely-connectsTo_" + elements[0].getId());
-        backward.setTargetNodeTemplate(elements[1]);
-        backward.setSourceNodeTemplate(elements[0]);
-
-        topology.addRelationshipTemplate(forward);
-        topology.addRelationshipTemplate(backward);
+        // forward connection
+        ModelUtilities.createRelationshipTemplateAndAddToTopology(elements[1], elements[0],
+            ToscaBaseTypes.connectsToRelationshipType, "securely_connectsTo", topology);
+        // backward connection
+        ModelUtilities.createRelationshipTemplateAndAddToTopology(elements[0], elements[1],
+            ToscaBaseTypes.connectsToRelationshipType, "securely_connectsTo", topology);
 
         return true;
     }
