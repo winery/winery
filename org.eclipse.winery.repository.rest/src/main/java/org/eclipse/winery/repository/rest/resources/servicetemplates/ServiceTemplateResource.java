@@ -324,9 +324,11 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
         TServiceTemplate serviceTemplate = this.getServiceTemplate();
 
         SolutionStrategy strategy = SolutionFactory.getSolution(data);
-        strategy.applySolution(serviceTemplate.getTopologyTemplate(), data);
-
-        RestUtils.persist(this);
+        if (strategy.applySolution(serviceTemplate.getTopologyTemplate(), data)) {
+            RestUtils.persist(this);
+        } else {
+            throw new InternalError("Could not apply the given algorithm to the topology!");
+        }
 
         return serviceTemplate.getTopologyTemplate();
     }

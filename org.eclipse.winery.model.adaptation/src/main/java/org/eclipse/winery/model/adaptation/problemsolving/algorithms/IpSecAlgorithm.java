@@ -27,7 +27,6 @@ import org.eclipse.winery.model.adaptation.problemsolving.SolutionInputData;
 import org.eclipse.winery.model.adaptation.problemsolving.SolutionStrategy;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
-import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
