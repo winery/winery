@@ -22,7 +22,7 @@ import org.eclipse.winery.model.adaptation.problemsolving.algorithms.SecureVmPro
 public class SolutionFactory {
 
     public static SolutionStrategy getSolution(SolutionInputData inputData) {
-        switch (inputData.getCsi().getName().toLowerCase()) {
+        switch (inputData.getCsi().getAlgorithm().toLowerCase()) {
             case "ipsec":
                 return new IpSecAlgorithm();
             case "securecontainerproxy":

@@ -865,6 +865,7 @@ public class ModelUtilities {
     public static TRelationshipTemplate createRelationshipTemplate(TNodeTemplate sourceNode, TNodeTemplate targetNode, QName type, String connectionDescription) {
         TRelationshipTemplate rel = new TRelationshipTemplate();
         rel.setType(type);
+        rel.setName(type.getLocalPart());
         rel.setId(sourceNode.getId() + "-" + connectionDescription + "-" + targetNode.getId());
         rel.setSourceNodeTemplate(sourceNode);
         rel.setTargetNodeTemplate(targetNode);

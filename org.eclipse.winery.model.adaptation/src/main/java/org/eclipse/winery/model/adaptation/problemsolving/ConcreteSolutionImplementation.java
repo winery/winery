@@ -16,18 +16,18 @@ package org.eclipse.winery.model.adaptation.problemsolving;
 
 public class ConcreteSolutionImplementation {
 
-    private String name;
+    private String algorithm;
     private String serviceEndpoint;
 
     public ConcreteSolutionImplementation() {
     }
 
-    public String getName() {
-        return name;
+    public String getAlgorithm() {
+        return algorithm;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAlgorithm(String algorithm) {
+        this.algorithm = algorithm;
     }
 
     public String getServiceEndpoint() {

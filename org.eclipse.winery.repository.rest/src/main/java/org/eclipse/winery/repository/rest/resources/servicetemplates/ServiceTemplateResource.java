@@ -316,23 +316,6 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
         return substitution.substituteTopologyOfServiceTemplate((ServiceTemplateId) this.id);
     }
 
-    @POST
-    @Path("applysolution")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public TTopologyTemplate applySolution(SolutionInputData data) {
-        TServiceTemplate serviceTemplate = this.getServiceTemplate();
-
-        SolutionStrategy strategy = SolutionFactory.getSolution(data);
-        if (strategy.applySolution(serviceTemplate.getTopologyTemplate(), data)) {
-            RestUtils.persist(this);
-        } else {
-            throw new InternalError("Could not apply the given algorithm to the topology!");
-        }
-
-        return serviceTemplate.getTopologyTemplate();
-    }
-
     @Override
     protected TExtensibleElements createNewElement() {
         return new TServiceTemplate();

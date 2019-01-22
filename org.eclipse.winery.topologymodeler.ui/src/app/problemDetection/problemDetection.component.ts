@@ -21,8 +21,10 @@ import { ComponentFinding, ProblemEntity, ProblemFindings, ProblemOccurrence } f
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BackendService } from '../services/backend.service';
-import { PatternRefinementModel } from '../refinementSidebar/refinementWebSocket.service';
 import { SolutionInputData } from './solutionEntity';
+import { TTopologyTemplate } from '../models/ttopology-template';
+import { Utils } from '../models/utils';
+import { WineryActions } from '../redux/actions/winery.actions';
 
 @Component({
     selector: 'winery-problem-detection',
@@ -42,6 +44,7 @@ export class ProblemDetectionComponent {
 
     constructor(private ngRedux: NgRedux<IWineryState>,
                 private actions: TopologyRendererActions,
+                private wineryActions: WineryActions,
                 private problemDetectionService: ProblemDetectionService,
                 private alert: ToastrService,
                 private backendService: BackendService) {
@@ -119,6 +122,16 @@ export class ProblemDetectionComponent {
     }
 
     applySolution() {
-        this.cancel();
+        this.problemDetectionService.applySolution(this.selectedSolution)
+            .subscribe(
+                data => this.solutionApplied(data),
+                error => this.handleError(error)
+            );
+        this.loading = true;
+    }
+
+    private solutionApplied(data: TTopologyTemplate) {
+        Utils.updateTopologyTemplate(this.ngRedux, this.wineryActions, data);
+        this.loading = false;
     }
 }
