@@ -156,4 +156,9 @@ public class ConfigurationBasedNamespaceManager extends AbstractNamespaceManager
     public boolean isPatternNamespace(String namespace) {
         return false;
     }
+
+    @Override
+    public boolean isSecureCollection(String namespace) {
+        return false;
+    }
 }

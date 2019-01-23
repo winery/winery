@@ -29,6 +29,7 @@ public class NamespaceProperties implements Serializable, Comparable<NamespacePr
      */
     private String upstreamRepository = "";
     private boolean isPatternCollection = false;
+    private boolean isSecureCollection = false;
 
     /**
      * This constructor must not be used. It is only required for serialization.
@@ -87,6 +88,14 @@ public class NamespaceProperties implements Serializable, Comparable<NamespacePr
 
     public void setPatternCollection(boolean patternCollection) {
         isPatternCollection = patternCollection;
+    }
+
+    public boolean isSecureCollection() {
+        return isSecureCollection;
+    }
+
+    public void setSecureCollection(boolean secureCollection) {
+        isSecureCollection = secureCollection;
     }
 
     @Override

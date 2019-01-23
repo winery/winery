@@ -176,4 +176,15 @@ public class JsonBasedNamespaceManager extends AbstractNamespaceManager {
             return false;
         }
     }
+
+    @Override
+    public boolean isSecureCollection(String namespace) {
+        NamespaceProperties properties = this.namespaceProperties.get(namespace);
+
+        if (Objects.nonNull(properties)) {
+            return properties.isSecureCollection();
+        } else {
+            return false;
+        }
+    }
 }
