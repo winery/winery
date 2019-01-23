@@ -16,7 +16,7 @@
 </div>
 <div *ngIf="!loading">
     <div class="right">
-        <button class="btn btn-primary" algorithm="save"
+        <button class="btn btn-primary" name="save"
                 [disabled]="!sharedData?.currentVersion?.editable"
                 (click)="save()">
             Save
