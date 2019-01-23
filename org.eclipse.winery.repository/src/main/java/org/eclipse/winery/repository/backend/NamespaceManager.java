@@ -32,9 +32,9 @@ public interface NamespaceManager {
     }
 
     /**
-     * Returns a prefix for the given namespace. With two different namespaces, to different prefixes are returned.
-     * The returned prefixes are not persistest. Thus, two instances of a NamespaceManager might return different
-     * prefixes when called in another order.
+     * Returns a prefix for the given namespace. With two different namespaces, to different prefixes are returned. The
+     * returned prefixes are not persistest. Thus, two instances of a NamespaceManager might return different prefixes
+     * when called in another order.
      */
     String getPrefix(String namespace);
 
@@ -77,4 +77,6 @@ public interface NamespaceManager {
     void clear();
 
     boolean isPatternNamespace(String namespace);
+
+    boolean isSecureCollection(String namespace);
 }
