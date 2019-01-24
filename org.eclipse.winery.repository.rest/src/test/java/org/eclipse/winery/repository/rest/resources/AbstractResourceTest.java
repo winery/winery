@@ -269,6 +269,14 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
             .statusCode(201);
     }
 
+    protected void assertNoContentPost(String restUrl, Path file) {
+        start()
+            .multiPart(file.toFile())
+            .post(callURL(restUrl))
+            .then()
+            .statusCode(204);
+    }
+
     protected void assertDelete(String restURL) {
         try {
             start()
@@ -287,7 +295,16 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
             .statusCode(204);
     }
 
-    public static String replacePathStringEncoding(String toConvert) {
+    protected static String replacePathStringEncoding(String toConvert) {
         return toConvert.replace("%3A", "%253A").replace("%2F", "%252F");
+    }
+
+    protected void assertPostWithOverwrite(String restUrl, Path file, boolean overwrite) {
+        start()
+            .multiPart(file.toFile())
+            .formParam("overwrite", overwrite)
+            .post(callURL(restUrl))
+            .then()
+            .statusCode(201);
     }
 }
