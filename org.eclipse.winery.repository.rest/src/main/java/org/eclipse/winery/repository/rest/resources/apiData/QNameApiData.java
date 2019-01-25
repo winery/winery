@@ -14,7 +14,17 @@
 
 package org.eclipse.winery.repository.rest.resources.apiData;
 
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+
 public class QNameApiData {
     public String localname;
     public String namespace;
+
+    public QNameApiData() {
+    }
+
+    public QNameApiData(DefinitionsChildId newId) {
+        this.localname = newId.getXmlId().getDecoded();
+        this.namespace = newId.getNamespace().getDecoded();
+    }
 }

@@ -307,4 +307,16 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
             .then()
             .statusCode(201);
     }
+
+    protected String assertPostWithNoContent(String restUrl) {
+        return start()
+            .accept(ContentType.JSON.toString())
+            .post(callURL(restUrl))
+            .then()
+            .statusCode(201)
+            .extract()
+            .response()
+            .body()
+            .asString();
+    }
 }

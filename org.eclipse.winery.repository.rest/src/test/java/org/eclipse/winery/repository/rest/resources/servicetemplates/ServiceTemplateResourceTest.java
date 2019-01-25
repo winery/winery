@@ -14,10 +14,17 @@
 package org.eclipse.winery.repository.rest.resources.servicetemplates;
 
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
+import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static org.eclipse.jdt.annotation.Checks.assertNonNull;
+import static org.junit.Assert.assertTrue;
 
 public class ServiceTemplateResourceTest extends AbstractResourceTest {
 
@@ -131,5 +138,18 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
     public void getListWithComponentVersionsOnly() throws Exception {
         this.setRevisionTo("20f6d0afd4395ab83f059cb5fabbb08218c9fcbd");
         this.assertGet("servicetemplates?grouped=angularSelect&includeVersions=componentVersionOnly", "servicetemplates/listWithComponentVersionsOnly.json");
+    }
+
+    @Test
+    public void createNewStatefulVersion() throws Exception {
+        this.setRevisionTo("eb37f5cfec50c046985eac308e46482ce8bea8e3");
+        String response = this.assertPostWithNoContent("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithOneNodeTemplate_w1-wip1/createnewstatefulversion");
+
+        QNameApiData newId = new ObjectMapper().readValue(response, QNameApiData.class);
+
+        assertNonNull(newId);
+        WineryVersion version = VersionUtils.getVersion(newId.localname);
+        assertNonNull(version);
+        assertTrue(version.getComponentVersion().startsWith("stateful-w1-wip1-"));
     }
 }
