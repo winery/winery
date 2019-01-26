@@ -140,7 +140,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
         return deploymentArtifacts;
     }
 
-    public void setDeploymentArtifacts(@Nullable TDeploymentArtifacts value) {
+    public void setDeploymentArtifacts(TDeploymentArtifacts value) {
         this.deploymentArtifacts = value;
     }
 

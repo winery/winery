@@ -83,7 +83,7 @@ public class Splitting {
         // create wrapper service template
         ServiceTemplateId splitServiceTemplateId = new ServiceTemplateId(
             id.getNamespace().getDecoded(),
-            VersionUtils.getNewId(id, "split"),
+            VersionUtils.getNewComponentVersionId(id, "split"),
             false);
 
         repository.forceDelete(splitServiceTemplateId);
@@ -102,7 +102,7 @@ public class Splitting {
         // create wrapper service template
         ServiceTemplateId matchedServiceTemplateId = new ServiceTemplateId(
             id.getNamespace().getDecoded(),
-            VersionUtils.getNewId(id, "split-matched"),
+            VersionUtils.getNewComponentVersionId(id, "split-matched"),
             false);
 
         repository.forceDelete(matchedServiceTemplateId);
@@ -180,7 +180,7 @@ public class Splitting {
         // create wrapper service template
         ServiceTemplateId matchedServiceTemplateId = new ServiceTemplateId(
             id.getNamespace().getDecoded(),
-            VersionUtils.getNewId(id, "matched"),
+            VersionUtils.getNewComponentVersionId(id, "matched"),
             false);
 
         RepositoryFactory.getRepository().forceDelete(matchedServiceTemplateId);
