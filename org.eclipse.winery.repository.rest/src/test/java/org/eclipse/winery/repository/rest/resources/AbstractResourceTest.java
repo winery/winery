@@ -308,9 +308,9 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
             .statusCode(201);
     }
 
-    protected String assertPostWithNoContent(String restUrl) {
+    protected String assertPostWithNoContent(String restUrl, ContentType contentType) {
         return start()
-            .accept(ContentType.JSON.toString())
+            .accept(contentType)
             .post(callURL(restUrl))
             .then()
             .statusCode(201)

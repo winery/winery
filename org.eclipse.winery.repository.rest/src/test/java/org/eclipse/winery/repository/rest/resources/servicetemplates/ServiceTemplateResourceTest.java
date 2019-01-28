@@ -20,6 +20,7 @@ import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.restassured.http.ContentType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -143,7 +144,7 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
     @Test
     public void createNewStatefulVersion() throws Exception {
         this.setRevisionTo("eb37f5cfec50c046985eac308e46482ce8bea8e3");
-        String response = this.assertPostWithNoContent("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithOneNodeTemplate_w1-wip1/createnewstatefulversion");
+        String response = this.assertPostWithNoContent("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithOneNodeTemplate_w1-wip1/createnewstatefulversion", ContentType.JSON);
 
         QNameApiData newId = new ObjectMapper().readValue(response, QNameApiData.class);
 
@@ -151,5 +152,11 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
         WineryVersion version = VersionUtils.getVersion(newId.localname);
         assertNonNull(version);
         assertTrue(version.getComponentVersion().startsWith("stateful-w1-wip1-"));
+    }
+
+    @Test
+    public void createNewStatefulVersionAndGetXml() throws Exception {
+        this.setRevisionTo("eb37f5cfec50c046985eac308e46482ce8bea8e3");
+        this.assertPostWithNoContent("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithOneNodeTemplate_w1-wip1/createnewstatefulversion", ContentType.XML);
     }
 }
