@@ -320,7 +320,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
 
     @POST()
     @Path("createnewstatefulversion")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces( {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response createNewStatefulVersion() {
         ServiceTemplateId id = (ServiceTemplateId) this.getId();
         WineryVersion version = VersionUtils.getVersion(id);

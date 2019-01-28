@@ -14,8 +14,11 @@
 
 package org.eclipse.winery.repository.rest.resources.apiData;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 
+@XmlRootElement(name = "QName")
 public class QNameApiData {
     public String localname;
     public String namespace;
