@@ -35,7 +35,8 @@ export interface SidebarStateAction extends Action {
         nameTextFieldValue: string,
         type: string,
         minInstances: string,
-        maxInstances: string
+        maxInstances: string,
+        properties: string
     };
 }
 

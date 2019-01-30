@@ -75,7 +75,6 @@ export class PropertiesContentComponent implements OnInit, OnChanges, OnDestroy 
             } catch (e) {
             }
         }
-
         // find out which row was edited by key
         this.subscriptions.push(this.keyOfEditedKVProperty.pipe(
             debounceTime(200),

@@ -28,14 +28,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { JsPlumbService } from '../services/jsPlumb.service';
 import { TopologyRendererComponent } from './topology-renderer.component';
 import { NgReduxModule } from '@angular-redux/store';
-import { PropertiesComponent } from '../node/properties/properties.component';
 import { RequirementsComponent } from '../node/requirements/requirements.component';
 import { TargetLocationsComponent } from '../node/target-locations/target-locations.component';
 import { PoliciesComponent } from '../node/policies/policies.component';
 import { DeploymentArtifactsComponent } from '../node/deployment-artifacts/deployment-artifacts.component';
 import { WineryModalModule } from '../../repositoryUiDependencies/wineryModalModule/winery.modal.module';
 import { CapabilitiesComponent } from '../node/capabilities/capabilities.component';
-import { PropertiesContentComponent } from '../node/properties-content/properties-content.component';
 import { KeysPipe } from '../pipes/keys.pipe';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { ToscatypeTableComponent } from '../node/toscatype-table/toscatype-table.component';
@@ -43,6 +41,7 @@ import { EntitiesModalComponent } from '../canvas/entities-modal/entities-modal.
 import { LocalnamePipe } from '../pipes/localname.pipe';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { PopoverModule } from 'ngx-bootstrap/popover';
+import { PropertiesModule } from '../properties/properties.module';
 
 @NgModule({
     imports: [
@@ -58,7 +57,8 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
         WineryModalModule,
         TypeaheadModule.forRoot(),
         TooltipModule.forRoot(),
-        PopoverModule.forRoot()
+        PopoverModule.forRoot(),
+        PropertiesModule
     ],
     declarations: [
         NavbarComponent,
@@ -66,21 +66,18 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
         CanvasComponent,
         LayoutDirective,
         TopologyRendererComponent,
-        PropertiesComponent,
         RequirementsComponent,
         TargetLocationsComponent,
         PoliciesComponent,
         DeploymentArtifactsComponent,
         CapabilitiesComponent,
-        PropertiesContentComponent,
         ToscatypeTableComponent,
         EntitiesModalComponent,
-        KeysPipe,
         LocalnamePipe
     ],
     exports: [
         TopologyRendererComponent,
-        KeysPipe
+
     ],
 })
 export class TopologyRendererModule {

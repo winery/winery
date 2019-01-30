@@ -43,6 +43,17 @@
                     {{sidebarState.type}}
                 </a>
             </div>
+            <div *ngIf="sidebarState.nodeClicked == false">
+                <div class="form-group">
+                    <label>Properties</label>
+                    <winery-properties
+                        (toggleModalHandler)="sendToggleAction($event)"
+                        [currentNodeData]="{
+                                    nodeTemplate: sidebarState,
+                                    propertyDefinitionType:findOutPropertyDefinitionTypeForProperties()}">
+                    </winery-properties>
+                </div>
+            </div>
             <div *ngIf="sidebarState.nodeClicked">
                 <div class="form-group">
                     <label for="maxInstances">max</label>

@@ -1368,7 +1368,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 nodeClicked: false,
                 id: '',
                 nameTextFieldValue: '',
-                type: ''
+                type: '',
+                properties: ''
             }
         }));
     }
@@ -1740,7 +1741,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                     nodeClicked: false,
                     id: currentRel.id,
                     nameTextFieldValue: currentRel.name,
-                    type: currentRel.type
+                    type: currentRel.type,
+                    properties: currentRel.properties
                 }
             }));
             conn.addType('marked');

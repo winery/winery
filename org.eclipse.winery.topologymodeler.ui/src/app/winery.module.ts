@@ -45,6 +45,7 @@ import { SplitMatchTopologyService } from './services/split-match-topology.servi
 import { ErrorHandlerService } from './services/error-handler.service';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { RefinementSidebarComponent } from './refinementSidebar/refinementSidebar.component';
+import { PropertiesModule } from './properties/properties.module';
 
 @NgModule({
     declarations: [
@@ -77,7 +78,8 @@ import { RefinementSidebarComponent } from './refinementSidebar/refinementSideba
         HotkeyModule.forRoot({cheatSheetHotkey: 'mod+space'}),
         WineryModalModule,
         TypeaheadModule.forRoot(),
-        PopoverModule.forRoot()
+        PopoverModule.forRoot(),
+        PropertiesModule
     ],
     providers: [
         // { provide: ToastOptions, useClass: WineryCustomOption },
