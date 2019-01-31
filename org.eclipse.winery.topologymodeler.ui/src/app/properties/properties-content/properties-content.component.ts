@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -75,7 +75,6 @@ export class PropertiesContentComponent implements OnInit, OnChanges, OnDestroy 
             } catch (e) {
             }
         }
-
         // find out which row was edited by key
         this.subscriptions.push(this.keyOfEditedKVProperty.pipe(
             debounceTime(200),

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -1368,7 +1368,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 nodeClicked: false,
                 id: '',
                 nameTextFieldValue: '',
-                type: ''
+                type: '',
+                properties: ''
             }
         }));
     }
@@ -1740,7 +1741,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                     nodeClicked: false,
                     id: currentRel.id,
                     nameTextFieldValue: currentRel.name,
-                    type: currentRel.type
+                    type: currentRel.type,
+                    properties: currentRel.properties
                 }
             }));
             conn.addType('marked');
