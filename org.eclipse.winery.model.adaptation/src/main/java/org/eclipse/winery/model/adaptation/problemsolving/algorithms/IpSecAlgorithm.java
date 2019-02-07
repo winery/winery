@@ -35,6 +35,22 @@ import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
+/**
+ * For this algorithm to work, there are some assumptions:
+ * <ol>
+ *      <li>
+ *          The virtual machines which were detected by the problem detector must inherit from
+ *          {@link OpenToscaBaseTypes#virtualMachineNodeType}
+ *      </li>
+ *      <li>
+ *          The secure VM type replacing the non-secure ones must
+ *          <ol>
+ *              <li>inherit from the currently used one</li>
+ *              <li>be in another namespace which is flagged as a secure collection</li>
+ *          </ol>
+ *      </li>
+ * </ol>
+ */
 public class IpSecAlgorithm implements SolutionStrategy {
 
     @Override

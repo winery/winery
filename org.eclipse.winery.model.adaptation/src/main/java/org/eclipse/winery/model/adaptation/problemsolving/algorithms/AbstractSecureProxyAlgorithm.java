@@ -32,6 +32,13 @@ import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
+/**
+ * For this algorithm to work, the following Relationship Types must have been used to model hostedOn and connectsTo relations:
+ * <ul>
+ *     <li>{@link ToscaBaseTypes#connectsToRelationshipType }</li>
+ *     <li>{@link ToscaBaseTypes#hostedOnRelationshipType }</li>
+ * </ul>
+ */
 public abstract class AbstractSecureProxyAlgorithm implements SolutionStrategy {
 
     @Override
