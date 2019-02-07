@@ -35,9 +35,9 @@ import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-public class Showcases extends AbstractTestY2X {
+public class ShowcasesTest extends AbstractTestY2X {
 
-    public Showcases() {
+    public ShowcasesTest() {
         super(Paths.get("src/test/resources/yaml/Showcase"));
     }
 

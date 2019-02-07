@@ -84,10 +84,13 @@ public class FilesResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response onPost(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("file") FormDataBodyPart body, @Context UriInfo uriInfo) {
+        return onPost(uploadedInputStream, fileDetail, body, uriInfo, fileDetail.getFileName());
+    }
+
+    public Response onPost(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("file") FormDataBodyPart body, @Context UriInfo uriInfo, String fileName) {
         // existence check not required as instantiation of the resource ensures that the object only exists if the resource exists
         FilesResource.LOGGER.debug("Beginning with file upload");
 
-        String fileName = fileDetail.getFileName();
         if (StringUtils.isEmpty(fileName)) {
             return Response.status(Status.BAD_REQUEST).build();
         }

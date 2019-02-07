@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -46,6 +46,7 @@ import { ErrorHandlerService } from './services/error-handler.service';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { RefinementSidebarComponent } from './refinementSidebar/refinementSidebar.component';
 import { ProblemDetectionComponent } from './problemDetection/problemDetection.component';
+import { PropertiesModule } from './properties/properties.module';
 
 @NgModule({
     declarations: [
@@ -79,7 +80,8 @@ import { ProblemDetectionComponent } from './problemDetection/problemDetection.c
         HotkeyModule.forRoot({cheatSheetHotkey: 'mod+space'}),
         WineryModalModule,
         TypeaheadModule.forRoot(),
-        PopoverModule.forRoot()
+        PopoverModule.forRoot(),
+        PropertiesModule
     ],
     providers: [
         // { provide: ToastOptions, useClass: WineryCustomOption },

@@ -31,8 +31,8 @@ import org.eclipse.winery.yaml.converter.xml.support.AbstractTestX2Y;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class Showcase extends AbstractTestX2Y {
-    public Showcase() {
+public class ShowcaseTest extends AbstractTestX2Y {
+    public ShowcaseTest() {
         super(Paths.get("src/test/resources/xml/Showcase"));
     }
 

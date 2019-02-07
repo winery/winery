@@ -19,7 +19,6 @@ import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { TNodeTemplate } from '../models/ttopology-template';
 import { NewNodeIdTypeColorPropertiesModel } from '../models/newNodeIdTypeColorModel';
-import { isNullOrUndefined } from 'util';
 import { Subscription } from 'rxjs';
 import { Utils } from '../models/utils';
 import { EntityTypesModel } from '../models/entityTypesModel';
@@ -269,7 +268,8 @@ export class PaletteComponent implements OnDestroy {
         const visuals = Utils.getNodeVisualsForNodeTemplate(child.id,
             this.entityTypes.nodeVisuals);
 
-        if (visuals.imageUrl) {
+        // if the node doesn't have a picture the URL is "null"
+        if (visuals.imageUrl !== 'null') {
             return hostURL + visuals.imageUrl;
         }
     }

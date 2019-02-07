@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -172,11 +172,11 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
      */
     ngOnInit() {
         this.differ = this.differs.find([]).create();
-        if (!isNullOrUndefined(this.nodeTemplate.visuals)) {
-            this.nodeClass = this.nodeTemplate.visuals.pattern ? 'pattern' : 'nodeTemplate';
+        if (this.nodeTemplate.visuals && this.nodeTemplate.visuals.pattern) {
+            this.nodeClass = 'pattern';
+        } else {
+            this.nodeClass = 'nodeTemplate';
         }
-
-        this.nodeClass = this.nodeTemplate.visuals.pattern ? 'pattern' : 'nodeTemplate';
 
         // todo: refactor to be updated upon addition of a policy
         if (this.nodeTemplate.policies && this.nodeTemplate.policies.policy) {

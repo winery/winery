@@ -153,7 +153,7 @@ public class VersionUtilsTest {
         String expectedId = "myId_w1-wip56-" + appendix + "-w1-wip1";
         ServiceTemplateId serviceTemplateId = new ServiceTemplateId("https://ex.org/tosca/sts", id, false);
 
-        assertEquals(expectedId, VersionUtils.getNewId(serviceTemplateId, appendix));
+        assertEquals(expectedId, VersionUtils.getNewComponentVersionId(serviceTemplateId, appendix));
     }
 
     @Test
@@ -163,7 +163,7 @@ public class VersionUtilsTest {
         String expectedId = "myId_component-version-w1-" + appendix + "-w1-wip1";
         ArtifactTypeId serviceTemplateId = new ArtifactTypeId("https://ex.org/tosca/sts", id, false);
 
-        assertEquals(expectedId, VersionUtils.getNewId(serviceTemplateId, appendix));
+        assertEquals(expectedId, VersionUtils.getNewComponentVersionId(serviceTemplateId, appendix));
     }
 
     private DefinitionsChildId getDefinitionChildId(String namespace, String name, String componentVersion, int wineryVersion, int wipVersion) {

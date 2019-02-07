@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -161,6 +161,7 @@ export class TRelationshipTemplate extends AbstractTTemplate {
                 public name?: string,
                 public id?: string,
                 public type?: string,
+                public properties?: string,
                 documentation?: any,
                 any?: any,
                 otherAttributes?: any,
@@ -177,7 +178,7 @@ export class TRelationshipTemplate extends AbstractTTemplate {
      * @return relTemplate: a new relationship template with the updated value
      */
     generateNewRelTemplateWithUpdatedAttribute(updatedAttribute: string, updatedValue: any): TRelationshipTemplate {
-        const relTemplate = new TRelationshipTemplate(this.sourceElement, this.targetElement, this.name, this.id, this.type,
+        const relTemplate = new TRelationshipTemplate(this.sourceElement, this.targetElement, this.name, this.id, this.type, this.properties,
             this.documentation, this.any, this.otherAttributes);
         relTemplate[updatedAttribute] = updatedValue;
         return relTemplate;

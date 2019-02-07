@@ -63,7 +63,7 @@ public class AbstractSubstitution {
         try {
             ServiceTemplateId substitutedServiceTemplateId = new ServiceTemplateId(
                 serviceTemplateId.getNamespace().getDecoded(),
-                VersionUtils.getNewId(serviceTemplateId, versionAppendix),
+                VersionUtils.getNewComponentVersionId(serviceTemplateId, versionAppendix),
                 false
             );
 

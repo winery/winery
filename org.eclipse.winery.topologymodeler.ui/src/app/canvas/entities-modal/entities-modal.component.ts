@@ -12,9 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import {
-    AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { ModalDirective } from 'ngx-bootstrap';
 import { TPolicy } from '../../models/policiesModalData';
 import { TDeploymentArtifact } from '../../models/artifactsModalData';
@@ -37,7 +35,7 @@ import { QName } from '../../models/qname';
     templateUrl: './entities-modal.component.html',
     styleUrls: ['./entities-modal.component.css']
 })
-export class EntitiesModalComponent implements OnInit, AfterViewInit, OnChanges {
+export class EntitiesModalComponent implements OnInit, OnChanges {
 
     @ViewChild('modal') public modal: ModalDirective;
 
@@ -99,9 +97,6 @@ export class EntitiesModalComponent implements OnInit, AfterViewInit, OnChanges 
             this.modalVariantForEditDeleteTasks = newEvent.modalVariant.toString();
             this.modal.show();
         });
-    }
-
-    ngAfterViewInit() {
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -195,7 +190,7 @@ export class EntitiesModalComponent implements OnInit, AfterViewInit, OnChanges 
                         this.deploymentArtifactOrPolicyModalData.policyTemplates = policyTemplates;
                     });
                 });
-        } else if (this.modalSelectedRadioButton === 'link' + 'deployment_artifacts') {
+        } else if (this.modalSelectedRadioButton === 'link' && this.modalVariantAndState.modalVariant === ModalVariant.DeploymentArtifacts) {
             // with artifactRef
             const deploymentArtifactToBeSavedToRedux: TDeploymentArtifact = new TDeploymentArtifact(
                 [],

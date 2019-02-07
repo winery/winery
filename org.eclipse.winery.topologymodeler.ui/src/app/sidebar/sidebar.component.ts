@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,8 +21,9 @@ import { Subject, Subscription } from 'rxjs';
 
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { QName } from '../models/qname';
-import { urlElement } from '../models/enums';
+import { PropertyDefinitionType, urlElement } from '../models/enums';
 import { BackendService } from '../services/backend.service';
+import { isNullOrUndefined } from 'util';
 
 /**
  * This is the right sidebar, where attributes of nodes and relationships get displayed.
@@ -33,9 +34,9 @@ import { BackendService } from '../services/backend.service';
     styleUrls: ['./sidebar.component.css'],
     animations: [
         trigger('sidebarAnimationStatus', [
-            state('in', style({transform: 'translateX(0)'})),
+            state('in', style({ transform: 'translateX(0)' })),
             transition('void => *', [
-                style({transform: 'translateX(100%)'}),
+                style({ transform: 'translateX(100%)' }),
                 animate('100ms cubic-bezier(0.86, 0, 0.07, 1)')
             ]),
             transition('* => void', [
@@ -53,7 +54,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     sidebarState: any;
     sidebarAnimationStatus: string;
     maxInputEnabled = true;
-    min = 1;
+    propertyDefinitionType: string;
 
     @Output() sidebarDeleteButtonClicked: EventEmitter<any> = new EventEmitter<any>();
     public nodeNameKeyUp: Subject<string> = new Subject<string>();
@@ -85,7 +86,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
                 nameTextFieldValue: '',
                 type: '',
                 minInstances: -1,
-                maxInstances: -1
+                maxInstances: -1,
+                properties: ''
             }
         }));
     }
@@ -95,6 +97,22 @@ export class SidebarComponent implements OnInit, OnDestroy {
      */
     getInfinityButtonStyle(): string {
         return !this.maxInputEnabled ? '#ffc0c0' : 'rgb(240, 240, 240)';
+    }
+
+    findOutPropertyDefinitionTypeForProperties(): string {
+        // if PropertiesDefinition doesn't exist then it must be of type NONE
+        if (isNullOrUndefined(this.sidebarState.properties)) {
+            this.propertyDefinitionType = PropertyDefinitionType.NONE;
+        } else {
+            // if no XML element inside PropertiesDefinition then it must be of type Key Value
+            if (!this.sidebarState.properties.element) {
+                this.propertyDefinitionType = PropertyDefinitionType.KV;
+            } else {
+                // else we have XML
+                this.propertyDefinitionType = PropertyDefinitionType.XML;
+            }
+        }
+        return this.propertyDefinitionType;
     }
 
     /**
@@ -129,7 +147,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
                     this.$ngRedux.dispatch(this.actions.updateRelationshipName({
                         relData: {
                             newRelName: data,
-                            id: this.sidebarState.id
+                            id: this.sidebarState.id,
+                            properties: this.sidebarState.properties
                         }
                     }));
                 }
@@ -142,10 +161,12 @@ export class SidebarComponent implements OnInit, OnDestroy {
                         nameTextFieldValue: data,
                         type: this.sidebarState.type,
                         minInstances: Number(this.sidebarState.minInstances),
-                        maxInstances: Number(this.sidebarState.maxInstances)
+                        maxInstances: Number(this.sidebarState.maxInstances),
+                        properties: this.sidebarState.properties
                     }
                 }));
             });
+
         // minInstances
         const nodeMinInstancesKeyUpObservable = this.nodeMinInstancesKeyUp.pipe(
             debounceTime(300),
@@ -168,7 +189,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
                         nameTextFieldValue: this.sidebarState.name,
                         type: this.sidebarState.type,
                         minInstances: Number(data),
-                        maxInstances: this.sidebarState.maxInstances
+                        maxInstances: this.sidebarState.maxInstances,
+                        properties: this.sidebarState.properties
                     }
                 }));
             });
@@ -194,7 +216,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
                         nameTextFieldValue: this.sidebarState.name,
                         type: this.sidebarState.type,
                         minInstances: this.sidebarState.minInstances,
-                        maxInstances: Number(data)
+                        maxInstances: Number(data),
+                        properties: this.sidebarState.properties
                     }
                 }));
             });
@@ -235,7 +258,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
                 nameTextFieldValue: this.sidebarState.name,
                 type: this.sidebarState.type,
                 minInstances: this.sidebarState.minInstances,
-                maxInstances: this.sidebarState.maxInstances
+                maxInstances: this.sidebarState.maxInstances,
+                properties: this.sidebarState.properties
             }
         }));
     }
@@ -294,7 +318,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
                 nameTextFieldValue: this.sidebarState.name,
                 type: this.sidebarState.type,
                 minInstances: this.sidebarState.minInstances,
-                maxInstances: this.sidebarState.maxInstances
+                maxInstances: this.sidebarState.maxInstances,
+                properties: this.sidebarState.properties
             }
         }));
     }

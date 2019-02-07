@@ -82,6 +82,7 @@ export class Utils {
             relationship.name,
             relationship.id,
             relationship.type,
+            relationship.properties,
             relationship.documentation,
             relationship.any,
             relationship.otherAttributes,

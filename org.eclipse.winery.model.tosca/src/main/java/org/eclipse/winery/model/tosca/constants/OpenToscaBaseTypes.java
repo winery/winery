@@ -27,4 +27,6 @@ public class OpenToscaBaseTypes {
     public static final QName secureProxyContainer = QName.valueOf("{http://opentosca.org/secureelements/nodetypes}SecureProxyContainer");
     public static final QName secureProxy = QName.valueOf("{http://opentosca.org/secureelements/nodetypes}SecureProxy");
     // endregion
+
+    public static final QName stateArtifactType = QName.valueOf("{http://opentosca.org/artifacttypes}State");
 }

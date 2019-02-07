@@ -13,6 +13,7 @@
  ********************************************************************************/
 package org.eclipse.winery.common.version;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,7 +44,8 @@ import io.github.adr.embedded.ADR;
 /**
  * Utility class for working with versions.
  *
- * TODO: DefinitionsChildId specific parts should go into into the DefinitionsChildId to have a true object-oriented thinking
+ * TODO: DefinitionsChildId specific parts should go into into the DefinitionsChildId to have a true object-oriented
+ * thinking
  */
 public class VersionUtils {
 
@@ -195,7 +197,7 @@ public class VersionUtils {
         return ToscaDiff.convertDiffToToscaDiff(diffNode, oldVersion, newVersion);
     }
 
-    public static String getNewId(DefinitionsChildId oldId, String appendixName) {
+    public static String getNewComponentVersionId(DefinitionsChildId oldId, String appendixName) {
         WineryVersion version = VersionUtils.getVersion(oldId);
         String oldVersion = version.toString();
 
@@ -209,5 +211,23 @@ public class VersionUtils {
         version.setWorkInProgressVersion(1);
 
         return VersionUtils.getNameWithoutVersion(oldId) + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
+    }
+
+    public static WineryVersion getNewWineryVersion(List<WineryVersion> versions) {
+        WineryVersion[] version = new WineryVersion[1];
+        version[0] = versions.stream().filter(WineryVersion::isCurrentVersion)
+            .findFirst()
+            .orElseThrow(NullPointerException::new);
+
+        if (!version[0].isReleasable()) {
+            versions.forEach(wineryVersion -> {
+                if (Objects.nonNull(version[0].getComponentVersion()) && version[0].getComponentVersion().equals(wineryVersion.getComponentVersion())
+                    && wineryVersion.getWineryVersion() > version[0].getWineryVersion()) {
+                    version[0] = wineryVersion;
+                }
+            });
+        }
+
+        return new WineryVersion(version[0].getComponentVersion(), version[0].getWineryVersion() + 1, 1);
     }
 }
