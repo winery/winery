@@ -29,4 +29,5 @@ public class OpenToscaBaseTypes {
     // endregion
 
     public static final QName stateArtifactType = QName.valueOf("{http://opentosca.org/artifacttypes}State");
+    public static final QName statefulComponentPolicyType = QName.valueOf("{http://opentosca.org/policytypes}StatefulComponent");
 }

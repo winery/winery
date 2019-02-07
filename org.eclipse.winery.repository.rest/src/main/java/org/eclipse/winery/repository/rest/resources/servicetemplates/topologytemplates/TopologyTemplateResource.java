@@ -304,4 +304,12 @@ public class TopologyTemplateResource {
 
         return this.topologyTemplate;
     }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("determinestatefulcomponents")
+    public TTopologyTemplate determineStatefulComponents() {
+
+        return this.topologyTemplate;
+    }
 }

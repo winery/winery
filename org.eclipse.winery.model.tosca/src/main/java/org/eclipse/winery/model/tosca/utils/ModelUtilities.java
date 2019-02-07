@@ -877,12 +877,16 @@ public class ModelUtilities {
         return createRelationshipTemplateAndAddToTopology(sourceNode, targetNode, type, "", topology);
     }
 
-    public static TRelationshipTemplate createRelationshipTemplateAndAddToTopology(TNodeTemplate
-                                                                                       sourceNode, TNodeTemplate targetNode, QName type,
+    public static TRelationshipTemplate createRelationshipTemplateAndAddToTopology(TNodeTemplate sourceNode, TNodeTemplate targetNode, QName type,
                                                                                    String connectionDescription, TTopologyTemplate topology) {
         TRelationshipTemplate relationshipTemplate = createRelationshipTemplate(sourceNode, targetNode, type, connectionDescription);
         generateNewIdOfTemplate(relationshipTemplate, topology);
         topology.addRelationshipTemplate(relationshipTemplate);
         return relationshipTemplate;
+    }
+
+    public static boolean checkFreezability(TTopologyTemplate topology) {
+        // TODO
+        return false;
     }
 }
