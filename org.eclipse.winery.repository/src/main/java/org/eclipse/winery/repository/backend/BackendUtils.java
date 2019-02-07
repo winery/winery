@@ -92,7 +92,6 @@ import org.eclipse.winery.common.version.ToscaDiff;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.tosca.Definitions;
-import org.eclipse.winery.model.tosca.HasId;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.model.tosca.HasName;
 import org.eclipse.winery.model.tosca.HasTargetNamespace;
@@ -622,7 +621,7 @@ public class BackendUtils {
             element = new TServiceTemplate();
         } else if (id instanceof ArtifactTemplateId) {
             element = new TArtifactTemplate();
-        }  else if (id instanceof ComplianceRuleId) {
+        } else if (id instanceof ComplianceRuleId) {
             element = new TComplianceRule();
         } else if (id instanceof PatternRefinementModelId) {
             element = new TPatternRefinementModel();
@@ -1123,7 +1122,6 @@ public class BackendUtils {
         }
         return loc;
     }
-    
 
     /**
      * Synchronizes the list of files of the given artifact template with the list of files contained in the given
@@ -1144,7 +1142,7 @@ public class BackendUtils {
         TArtifactTemplate.ArtifactReferences artifactReferences = template.getArtifactReferences();
         DirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(id);
         SortedSet<RepositoryFileReference> files = repository.getContainedFiles(fileDir);
-        
+
         if (artifactReferences == null) {
             artifactReferences = new TArtifactTemplate.ArtifactReferences();
             template.setArtifactReferences(artifactReferences);
@@ -1152,7 +1150,7 @@ public class BackendUtils {
 
         List<TArtifactReference> artRefList = artifactReferences.getArtifactReference();
         determineChanges(artRefList, files, toRemove, toAdd);
-        
+
         if (toAdd.size() > 0 || toRemove.size() > 0) {
             // apply removal list
             toRemove.forEach(artRefList::remove);
@@ -1172,16 +1170,18 @@ public class BackendUtils {
             // finally, persist only if something changed
             BackendUtils.persist(repository, id, template);
         }
-        
+
         return template;
     }
 
     /**
-     * determines the difference between the list of artifact references (derived from the template) and the actual files stored on disk
-     * @param artRefList the list of artifact references derived from the corresponding artifact template
+     * determines the difference between the list of artifact references (derived from the template) and the actual
+     * files stored on disk
+     *
+     * @param artRefList  the list of artifact references derived from the corresponding artifact template
      * @param filesOnDisk the list of files actually stored on disk
-     * @param toRemove the items to remove from the artifact list (output)
-     * @param toAdd the items to add to the artifact list (output)
+     * @param toRemove    the items to remove from the artifact list (output)
+     * @param toAdd       the items to add to the artifact list (output)
      */
     private static void determineChanges(List<TArtifactReference> artRefList, SortedSet<RepositoryFileReference> filesOnDisk, List<TArtifactReference> toRemove, List<RepositoryFileReference> toAdd) {
         // first find references to remove
@@ -1466,14 +1466,14 @@ public class BackendUtils {
             .map(n -> ModelUtilities.getLeft(n).orElse(0));
 
         if (shiftLeft.isPresent()) {
-            collectIdsOfExistingTopologyElements(topologyTemplateB, idMapping);
+            ModelUtilities.collectIdsOfExistingTopologyElements(topologyTemplateB, idMapping);
 
             // patch ids of reqs change them if required
             topologyTemplateA.getNodeTemplates().stream()
                 .filter(nt -> nt.getRequirements() != null)
                 .forEach(nt -> nt.getRequirements().getRequirement().forEach(oldReq -> {
                     TRequirement req = SerializationUtils.clone(oldReq);
-                    generateNewIdOfTemplate(req, idMapping);
+                    ModelUtilities.generateNewIdOfTemplate(req, idMapping);
 
                     topologyTemplateA.getRelationshipTemplates().stream()
                         .filter(rt -> rt.getSourceElement().getRef() instanceof TRequirement)
@@ -1490,7 +1490,7 @@ public class BackendUtils {
                 .filter(nt -> nt.getCapabilities() != null)
                 .forEach(nt -> nt.getCapabilities().getCapability().forEach(oldCap -> {
                     TCapability cap = SerializationUtils.clone(oldCap);
-                    generateNewIdOfTemplate(cap, idMapping);
+                    ModelUtilities.generateNewIdOfTemplate(cap, idMapping);
 
                     topologyTemplateA.getRelationshipTemplates().stream()
                         .filter(rt -> rt.getTargetElement().getRef() instanceof TCapability)
@@ -1508,7 +1508,7 @@ public class BackendUtils {
             topologyTemplateA.getNodeTemplateOrRelationshipTemplate()
                 .forEach(element -> {
                     TEntityTemplate rtOrNt = SerializationUtils.clone(element);
-                    generateNewIdOfTemplate(rtOrNt, idMapping);
+                    ModelUtilities.generateNewIdOfTemplate(rtOrNt, idMapping);
 
                     if (rtOrNt instanceof TNodeTemplate) {
                         int newLeft = ModelUtilities.getLeft((TNodeTemplate) rtOrNt).orElse(0) + shiftLeft.get();
@@ -1541,36 +1541,6 @@ public class BackendUtils {
         }
 
         return idMapping;
-    }
-
-    private static void collectIdsOfExistingTopologyElements(TTopologyTemplate topologyTemplateB, Map<String, String> idMapping) {
-        // collect existing node & relationship template ids
-        topologyTemplateB.getNodeTemplateOrRelationshipTemplate()
-            // the existing ids are left unchanged
-            .forEach(x -> idMapping.put(x.getId(), x.getId()));
-
-        // collect existing requirement ids
-        topologyTemplateB.getNodeTemplates().stream()
-            .filter(nt -> nt.getRequirements() != null)
-            .forEach(nt -> nt.getRequirements().getRequirement()
-                // the existing ids are left unchanged
-                .forEach(x -> idMapping.put(x.getId(), x.getId())));
-
-        //collect existing capability ids
-        topologyTemplateB.getNodeTemplates().stream()
-            .filter(nt -> nt.getCapabilities() != null)
-            .forEach(nt -> nt.getCapabilities().getCapability()
-                // the existing ids are left unchanged
-                .forEach(x -> idMapping.put(x.getId(), x.getId())));
-    }
-
-    private static void generateNewIdOfTemplate(HasId element, Map<String, String> idMapping) {
-        String newId = element.getId();
-        while (idMapping.containsKey(newId)) {
-            newId = newId + "-new";
-        }
-        idMapping.put(element.getId(), newId);
-        element.setId(newId);
     }
 
     /**

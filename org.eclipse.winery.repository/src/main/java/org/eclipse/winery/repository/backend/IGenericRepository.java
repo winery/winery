@@ -23,8 +23,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.SortedSet;
@@ -236,6 +238,15 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
             .stream()
             .flatMap(idClass -> this.getAllDefinitionsChildIds(idClass).stream())
             .collect(Collectors.toCollection(() -> new TreeSet<>()));
+    }
+
+    default <T extends DefinitionsChildId, S extends TExtensibleElements> Map<QName, S> getQNameToElementMapping(Class<T> idClass) {
+        Map<QName, S> elements = new HashMap<>();
+        getAllDefinitionsChildIds(idClass)
+            .forEach(id ->
+                elements.put(id.getQName(), getElement(id))
+            );
+        return elements;
     }
 
     /**

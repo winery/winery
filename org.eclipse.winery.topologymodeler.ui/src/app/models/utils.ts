@@ -16,6 +16,9 @@ import { QName } from './qname';
 import { isNullOrUndefined } from 'util';
 import { DifferenceStates, ToscaDiff, VersionUtils } from './ToscaDiff';
 import { Visuals } from './visuals';
+import { NgRedux } from '@angular-redux/store';
+import { IWineryState } from '../redux/store/winery.store';
+import { WineryActions } from '../redux/actions/winery.actions';
 
 export class Utils {
 
@@ -93,7 +96,7 @@ export class Utils {
             const localName = qName.localName;
             if (localName === new QName(nodeType).localName) {
                 const color = !state ? visual.color : VersionUtils.getElementColorByDiffState(state);
-                return <Visuals> {
+                return <Visuals>{
                     color: color,
                     typeId: nodeType,
                     imageUrl: visual.imageUrl,
@@ -160,5 +163,27 @@ export class Utils {
         }
 
         return relationshipTemplates;
+    }
+
+    static updateTopologyTemplate(ngRedux: NgRedux<IWineryState>, wineryActions: WineryActions, topology: TTopologyTemplate) {
+        const wineryState = ngRedux.getState().wineryState;
+
+        wineryState.currentJsonTopology.nodeTemplates
+            .forEach(
+                node => ngRedux.dispatch(wineryActions.deleteNodeTemplate(node.id))
+            );
+        wineryState.currentJsonTopology.relationshipTemplates
+            .forEach(
+                relationship => ngRedux.dispatch(wineryActions.deleteRelationshipTemplate(relationship.id))
+            );
+
+        Utils.initNodeTemplates(topology.nodeTemplates, wineryState.nodeVisuals)
+            .forEach(
+                node => ngRedux.dispatch(wineryActions.saveNodeTemplate(node))
+            );
+        Utils.initRelationTemplates(topology.relationshipTemplates)
+            .forEach(
+                relationship => ngRedux.dispatch(wineryActions.saveRelationship(relationship))
+            );
     }
 }

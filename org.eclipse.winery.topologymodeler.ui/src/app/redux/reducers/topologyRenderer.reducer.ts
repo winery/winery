@@ -30,6 +30,7 @@ export interface TopologyRendererState {
         importTopologyButton?: boolean;
         splitTopologyButton?: boolean;
         matchTopologyButton?: boolean;
+        problemDetectionButton?: boolean;
         substituteTopologyButton?: boolean;
         refineTopologyButton?: boolean;
         refineTopologyWithTestsButton?: boolean;
@@ -52,6 +53,7 @@ export const INITIAL_TOPOLOGY_RENDERER_STATE: TopologyRendererState = {
         importTopologyButton: false,
         splitTopologyButton: false,
         matchTopologyButton: false,
+        problemDetectionButton: false,
         substituteTopologyButton: false,
         refineTopologyButton: false,
         refineTopologyWithTestsButton: false,
@@ -169,6 +171,14 @@ export const TopologyRendererReducer =
                         matchTopologyButton: !lastState.buttonsState.matchTopologyButton
                     }
                 };
+            case TopologyRendererActions.DETECT_PROBLEMS:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        problemDetectionButton: !lastState.buttonsState.problemDetectionButton
+                    }
+                };
             case TopologyRendererActions.SUBSTITUTE_TOPOLOGY:
                 return {
                     ...lastState,
@@ -194,7 +204,7 @@ export const TopologyRendererReducer =
                     }
                 };
             case TopologyRendererActions.HIGHLIGHT_NODES:
-                const data = <HighlightNodesAction> action;
+                const data = <HighlightNodesAction>action;
                 if (data.nodesToHighlight) {
                     return {
                         ...lastState,

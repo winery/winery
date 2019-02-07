@@ -45,6 +45,7 @@ import { SplitMatchTopologyService } from './services/split-match-topology.servi
 import { ErrorHandlerService } from './services/error-handler.service';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { RefinementSidebarComponent } from './refinementSidebar/refinementSidebar.component';
+import { ProblemDetectionComponent } from './problemDetection/problemDetection.component';
 import { PropertiesModule } from './properties/properties.module';
 
 @NgModule({
@@ -54,6 +55,7 @@ import { PropertiesModule } from './properties/properties.module';
         SidebarComponent,
         PrintViewComponent,
         RefinementSidebarComponent,
+        ProblemDetectionComponent
     ],
     exports: [WineryComponent],
     imports: [

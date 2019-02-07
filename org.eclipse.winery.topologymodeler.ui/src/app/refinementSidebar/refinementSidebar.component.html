@@ -26,7 +26,7 @@
             <div class="loader" *ngIf="refinementIsLoading; else showContent"></div>
             <ng-template #showContent>
                 <ul>
-                    <li *ngFor="let candidate of prmCandidates" (mouseover)="onHoverOver(candidate)">
+                    <li *ngFor="let candidate of prmCandidates" (mouseover)="onHoverOver(candidate)" (mouseleave)="hoverOut()">
                         {{ candidate.refinementModel.name }}
                         <br>
                         <div class="btn-group">

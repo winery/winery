@@ -112,7 +112,7 @@
         <module>org.eclipse.winery.generators.ia</module>
         <module>org.eclipse.winery.highlevelrestapi</module>
         <module>org.eclipse.winery.tools.copybaragenerator</module>
-        <module>org.eclipse.winery.model.substitution</module>
+        <module>org.eclipse.winery.model.adaptation</module>
     </modules>
     <build>
         <plugins>

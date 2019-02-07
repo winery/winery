@@ -46,6 +46,7 @@ import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.TComplianceRule;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
@@ -83,6 +84,10 @@ public interface IWineryRepositoryCommon {
     Definitions getDefinitions(DefinitionsChildId id);
 
     // in case one needs a new element, just copy and paste one of the following methods and adapt it.
+
+    default <T extends DefinitionsChildId, S extends TExtensibleElements> S getElement(T id) {
+        return (S) this.getDefinitions(id).getElement();
+    }
 
     default TNodeTypeImplementation getElement(NodeTypeImplementationId id) {
         return (TNodeTypeImplementation) this.getDefinitions(id).getElement();

@@ -73,6 +73,10 @@ export class RefinementSidebarComponent implements OnDestroy {
         this.ngRedux.dispatch(this.rendererActions.highlightNodes(candidate.nodeIdsToBeReplaced));
     }
 
+    hoverOut() {
+        this.ngRedux.dispatch(this.rendererActions.highlightNodes([]));
+    }
+
     openModeler(event: MouseEvent, name: string, targetNamespace: string) {
         event.stopPropagation();
         this.openModelerFor(name, targetNamespace);
@@ -93,25 +97,7 @@ export class RefinementSidebarComponent implements OnDestroy {
             }
 
             if (value.currentTopology) {
-                const wineryState = this.ngRedux.getState().wineryState;
-
-                wineryState.currentJsonTopology.nodeTemplates
-                    .forEach(
-                        node => this.ngRedux.dispatch(this.wineryActions.deleteNodeTemplate(node.id))
-                    );
-                wineryState.currentJsonTopology.relationshipTemplates
-                    .forEach(
-                        relationship => this.ngRedux.dispatch(this.wineryActions.deleteRelationshipTemplate(relationship.id))
-                    );
-
-                Utils.initNodeTemplates(value.currentTopology.nodeTemplates, wineryState.nodeVisuals)
-                    .forEach(
-                        node => this.ngRedux.dispatch(this.wineryActions.saveNodeTemplate(node))
-                    );
-                Utils.initRelationTemplates(value.currentTopology.relationshipTemplates)
-                    .forEach(
-                        relationship => this.ngRedux.dispatch(this.wineryActions.saveRelationship(relationship))
-                    );
+                Utils.updateTopologyTemplate(this.ngRedux, this.wineryActions, value.currentTopology);
             } else {
                 this.openModelerFor(value.serviceTemplateContainingRefinements.xmlId.decoded,
                     value.serviceTemplateContainingRefinements.namespace.decoded,
