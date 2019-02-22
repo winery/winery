@@ -14,25 +14,28 @@
 
 package org.eclipse.winery.model.adaptation.enhance;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
-import org.eclipse.winery.model.tosca.TPolicies;
-import org.eclipse.winery.model.tosca.TPolicy;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
-import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.model.tosca.constants.OpenToscaInterfaces;
+import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 public class EnhancementUtils {
 
     public static TTopologyTemplate determineStatefulComponents(TTopologyTemplate topology) {
-        IRepository repository = RepositoryFactory.getRepository();
-        Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
+        Map<QName, TNodeType> nodeTypes = RepositoryFactory.getRepository().getQNameToElementMapping(NodeTypeId.class);
 
         topology.getNodeTemplates().stream()
             .filter(nodeTemplate -> {
@@ -45,19 +48,59 @@ public class EnhancementUtils {
 
                 return false;
             })
-            .forEach(node -> {
-                TPolicies policies = node.getPolicies();
-                if (Objects.isNull(policies)) {
-                    policies = new TPolicies();
-                    node.setPolicies(policies);
-                }
-
-                TPolicy statefulPolicy = new TPolicy();
-                statefulPolicy.setPolicyType(OpenToscaBaseTypes.statefulComponentPolicyType);
-                policies.getPolicy()
-                    .add(statefulPolicy);
-            });
+            .forEach(node ->
+                ModelUtilities.addPolicy(node, OpenToscaBaseTypes.statefulComponentPolicyType)
+            );
 
         return topology;
+    }
+
+    public static TopologyAndErrorList determineFreezableComponents(TTopologyTemplate topology) {
+        Map<QName, TNodeType> nodeTypes = RepositoryFactory.getRepository().getQNameToElementMapping(NodeTypeId.class);
+
+        ArrayList<String> errorList = new ArrayList<>();
+        topology.getNodeTemplates().stream()
+            // only iterate over all stateful components
+            .filter(node ->
+                Objects.nonNull(node.getPolicies()) &&
+                    node.getPolicies().getPolicy().stream()
+                        .anyMatch(policy -> policy.getPolicyType()
+                            .equals(OpenToscaBaseTypes.statefulComponentPolicyType)
+                        ))
+            .forEach(node -> {
+                TNodeType type = nodeTypes.get(node.getType());
+                if (ModelUtilities.nodeTypeHasInterface(type, OpenToscaInterfaces.stateInterface)) {
+                    ModelUtilities.addPolicy(node, OpenToscaBaseTypes.freezableComponentPolicyType);
+                } else {
+                    TRelationshipTemplate relationshipTemplate;
+                    boolean isFreezable = false;
+                    do {
+                        List<TRelationshipTemplate> outgoingRelationshipTemplates = ModelUtilities.getOutgoingRelationshipTemplates(topology, node);
+                        relationshipTemplate = outgoingRelationshipTemplates.stream()
+                            .filter(relation -> ToscaBaseTypes.hostedOnRelationshipType.equals(relation.getType()))
+                            .findFirst()
+                            .orElse(null);
+
+                        if (Objects.nonNull(relationshipTemplate)) {
+                            TNodeTemplate host = (TNodeTemplate) relationshipTemplate.getTargetElement().getRef();
+                            TNodeType hostType = nodeTypes.get(host.getType());
+                            if (ModelUtilities.nodeTypeHasInterface(hostType, OpenToscaInterfaces.stateInterface)) {
+                                ModelUtilities.addPolicy(host, OpenToscaBaseTypes.freezableComponentPolicyType);
+                                isFreezable = true;
+                            }
+                        }
+                    } while (!isFreezable && Objects.nonNull(relationshipTemplate));
+
+                    if (!isFreezable) {
+                        errorList.add(node.getId());
+                    }
+                }
+            });
+
+        TopologyAndErrorList topologyAndErrorList = new TopologyAndErrorList();
+        topologyAndErrorList.errorList = errorList;
+        topologyAndErrorList.topologyTemplate = topology;
+
+        return topologyAndErrorList;
     }
 }

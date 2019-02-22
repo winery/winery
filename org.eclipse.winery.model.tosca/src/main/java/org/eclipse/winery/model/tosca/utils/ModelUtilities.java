@@ -48,6 +48,8 @@ import org.eclipse.winery.model.tosca.TNodeTemplate.Requirements;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlans;
+import org.eclipse.winery.model.tosca.TPolicies;
+import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate.SourceOrTargetElement;
 import org.eclipse.winery.model.tosca.TRelationshipType;
@@ -883,5 +885,23 @@ public class ModelUtilities {
         generateNewIdOfTemplate(relationshipTemplate, topology);
         topology.addRelationshipTemplate(relationshipTemplate);
         return relationshipTemplate;
+    }
+
+    public static boolean nodeTypeHasInterface(TNodeType nodeType, String interfaceName) {
+        return Objects.nonNull(nodeType.getInterfaces()) && nodeType.getInterfaces().getInterface().stream()
+            .anyMatch(nodeInterface -> interfaceName.equals(nodeInterface.getName()));
+    }
+
+    public static void addPolicy(TNodeTemplate node, QName policyType) {
+        TPolicies policies = node.getPolicies();
+        if (Objects.isNull(policies)) {
+            policies = new TPolicies();
+            node.setPolicies(policies);
+        }
+
+        TPolicy policy = new TPolicy();
+        policy.setPolicyType(policyType);
+        policies.getPolicy()
+            .add(policy);
     }
 }
