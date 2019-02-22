@@ -14,46 +14,50 @@
 
 package org.eclipse.winery.model.adaptation.enhance;
 
-import java.util.ArrayList;
+import java.util.Map;
 import java.util.Objects;
 
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicy;
-import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
-import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 public class EnhancementUtils {
 
-    public static TTopologyTemplate annotateStatefulComponents(TTopologyTemplate topology) {
-        for (TNodeTemplate nodeTemplate : topology.getNodeTemplates()) {
-            if (isNodeTypeAnnotatedAsStateful(nodeTemplate)) {
-                addStatefulPolicy(nodeTemplate);
+    public static TTopologyTemplate determineStatefulComponents(TTopologyTemplate topology) {
+        IRepository repository = RepositoryFactory.getRepository();
+        Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
 
-                ArrayList<TNodeTemplate> hostedOnSuccessors = ModelUtilities.getHostedOnSuccessors(topology, nodeTemplate);
-                hostedOnSuccessors.forEach(EnhancementUtils::addStatefulPolicy);
-            }
-        }
+        topology.getNodeTemplates().stream()
+            .filter(nodeTemplate -> {
+                TNodeType type = nodeTypes.get(nodeTemplate.getType());
+                if (Objects.nonNull(type.getTags())) {
+                    return type.getTags().getTag()
+                        .stream()
+                        .anyMatch(tag -> "stateful".equals(tag.getName().toLowerCase()));
+                }
+
+                return false;
+            })
+            .forEach(node -> {
+                TPolicies policies = node.getPolicies();
+                if (Objects.isNull(policies)) {
+                    policies = new TPolicies();
+                    node.setPolicies(policies);
+                }
+
+                TPolicy statefulPolicy = new TPolicy();
+                statefulPolicy.setPolicyType(OpenToscaBaseTypes.statefulComponentPolicyType);
+                policies.getPolicy()
+                    .add(statefulPolicy);
+            });
 
         return topology;
-    }
-
-    private static void addStatefulPolicy(TNodeTemplate nodeTemplate) {
-        if (Objects.isNull(nodeTemplate.getPolicies())) {
-            nodeTemplate.setPolicies(new TPolicies());
-        }
-        TPolicy stateful = new TPolicy();
-        stateful.setPolicyType(OpenToscaBaseTypes.statefulComponentPolicyType);
-        nodeTemplate.getPolicies().getPolicy().add(stateful);
-    }
-
-    public static boolean isNodeTypeAnnotatedAsStateful(TNodeTemplate nodeTemplate) {
-        TTags tags = RepositoryFactory.getRepository().getElement(new NodeTypeId(nodeTemplate.getType())).getTags();
-        return Objects.nonNull(tags) &&
-            tags.getTag().stream().anyMatch(tag -> "type".equals(tag.getName()) && "stateful".equals(tag.getValue()));
     }
 }

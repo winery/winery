@@ -33,6 +33,7 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.adaptation.enhance.EnhancementUtils;
 import org.eclipse.winery.model.adaptation.problemsolving.SolutionFactory;
 import org.eclipse.winery.model.adaptation.problemsolving.SolutionInputData;
 import org.eclipse.winery.model.adaptation.problemsolving.SolutionStrategy;
@@ -309,7 +310,6 @@ public class TopologyTemplateResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("determinestatefulcomponents")
     public TTopologyTemplate determineStatefulComponents() {
-
-        return this.topologyTemplate;
+        return EnhancementUtils.determineStatefulComponents(this.topologyTemplate);
     }
 }

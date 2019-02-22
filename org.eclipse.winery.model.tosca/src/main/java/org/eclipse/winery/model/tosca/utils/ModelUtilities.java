@@ -884,9 +884,4 @@ public class ModelUtilities {
         topology.addRelationshipTemplate(relationshipTemplate);
         return relationshipTemplate;
     }
-
-    public static boolean checkFreezability(TTopologyTemplate topology) {
-        // TODO
-        return false;
-    }
 }
