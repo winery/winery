@@ -97,4 +97,29 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
         assertNull(topologyTemplate.getNodeTemplate("AbstractNodeTypeWithProperties_1-w1-wip1").getPolicies());
         assertNull(topologyTemplate.getNodeTemplate("Infrastructure-As-A-Service-Implementation_1-w1-wip1").getPolicies());
     }
+
+    @Test
+    void cleanFreezableComponents() throws Exception {
+        this.setRevisionTo("origin/plain");
+
+        TServiceTemplate element = RepositoryFactory.getRepository()
+            .getElement(new ServiceTemplateId(
+                    QName.valueOf("{http://opentosca.org/examples/servicetemplates}TopologyWithStatefulComponent_w1-wip3")
+                )
+            );
+
+        TPolicy freezablePolicy = new TPolicy();
+        freezablePolicy.setPolicyType(OpenToscaBaseTypes.freezableComponentPolicyType);
+        freezablePolicy.setName("freezable");
+
+        TTopologyTemplate topologyTemplate = EnhancementUtils.cleanFreezableComponents(element.getTopologyTemplate());
+        assertTrue(topologyTemplate.getNodeTemplate("statefulFreezableComponent").getPolicies().getPolicy().contains(freezablePolicy));
+
+        assertFalse(topologyTemplate.getNodeTemplate("statefulNotFreezableComponent").getPolicies().getPolicy().contains(freezablePolicy));
+        assertFalse(topologyTemplate.getNodeTemplate("AbstractNodeTypeWithProperties_1-w1-wip1").getPolicies().getPolicy().contains(freezablePolicy));
+        assertTrue(topologyTemplate.getNodeTemplate("statelessFreezableComponent").getPolicies().getPolicy().contains(freezablePolicy));
+
+        assertFalse(topologyTemplate.getNodeTemplate("statefulFreezableImplicitlyProvisioned").getPolicies().getPolicy().contains(freezablePolicy));
+        assertTrue(topologyTemplate.getNodeTemplate("VM_3").getPolicies().getPolicy().contains(freezablePolicy));
+    }
 }

@@ -22,9 +22,11 @@ import java.util.Objects;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.model.tosca.constants.OpenToscaInterfaces;
@@ -61,12 +63,7 @@ public class EnhancementUtils {
         ArrayList<String> errorList = new ArrayList<>();
         topology.getNodeTemplates().stream()
             // only iterate over all stateful components
-            .filter(node ->
-                Objects.nonNull(node.getPolicies()) &&
-                    node.getPolicies().getPolicy().stream()
-                        .anyMatch(policy -> policy.getPolicyType()
-                            .equals(OpenToscaBaseTypes.statefulComponentPolicyType)
-                        ))
+            .filter(node -> ModelUtilities.containsPolicyType(node, OpenToscaBaseTypes.statefulComponentPolicyType))
             .forEach(node -> {
                 TNodeType type = nodeTypes.get(node.getType());
                 if (ModelUtilities.nodeTypeHasInterface(type, OpenToscaInterfaces.stateInterface)) {
@@ -75,11 +72,7 @@ public class EnhancementUtils {
                     TRelationshipTemplate relationshipTemplate;
                     boolean isFreezable = false;
                     do {
-                        List<TRelationshipTemplate> outgoingRelationshipTemplates = ModelUtilities.getOutgoingRelationshipTemplates(topology, node);
-                        relationshipTemplate = outgoingRelationshipTemplates.stream()
-                            .filter(relation -> ToscaBaseTypes.hostedOnRelationshipType.equals(relation.getType()))
-                            .findFirst()
-                            .orElse(null);
+                        relationshipTemplate = getHostedOnRelationship(topology, node);
 
                         if (Objects.nonNull(relationshipTemplate)) {
                             TNodeTemplate host = (TNodeTemplate) relationshipTemplate.getTargetElement().getRef();
@@ -102,5 +95,35 @@ public class EnhancementUtils {
         topologyAndErrorList.topologyTemplate = topology;
 
         return topologyAndErrorList;
+    }
+
+    public static TTopologyTemplate cleanFreezableComponents(TTopologyTemplate topology) {
+        topology.getNodeTemplates().stream()
+            // only iterate over all freezable components
+            .filter(node -> ModelUtilities.containsPolicyType(node, OpenToscaBaseTypes.freezableComponentPolicyType))
+            .forEach(node -> {
+                TRelationshipTemplate hostedOnRelationship = getHostedOnRelationship(topology, node);
+                while (Objects.nonNull(hostedOnRelationship)) {
+                    TNodeTemplate host = (TNodeTemplate) hostedOnRelationship.getTargetElement().getRef();
+                    if (ModelUtilities.containsPolicyType(host, OpenToscaBaseTypes.freezableComponentPolicyType)) {
+                        node.getPolicies().getPolicy()
+                            .removeIf(policy -> policy.getPolicyType().equals(OpenToscaBaseTypes.freezableComponentPolicyType));
+                        hostedOnRelationship = null;
+                    } else {
+                        hostedOnRelationship = getHostedOnRelationship(topology, host);
+                    }
+                }
+            });
+
+        return topology;
+    }
+
+    private static TRelationshipTemplate getHostedOnRelationship(TTopologyTemplate topology, TNodeTemplate node) {
+        Map<QName, TRelationshipType> relationshipTypes = RepositoryFactory.getRepository().getQNameToElementMapping(RelationshipTypeId.class);
+        List<TRelationshipTemplate> outgoingRelationshipTemplates = ModelUtilities.getOutgoingRelationshipTemplates(topology, node);
+        return outgoingRelationshipTemplates.stream()
+            .filter(relation -> ModelUtilities.isOfType(ToscaBaseTypes.hostedOnRelationshipType, relation.getType(), relationshipTypes))
+            .findFirst()
+            .orElse(null);
     }
 }

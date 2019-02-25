@@ -905,4 +905,12 @@ public class ModelUtilities {
         policies.getPolicy()
             .add(policy);
     }
+
+    public static boolean containsPolicyType(TNodeTemplate node, QName policyType) {
+        return Objects.nonNull(node.getPolicies()) &&
+            node.getPolicies().getPolicy().stream()
+                .anyMatch(policy -> policy.getPolicyType()
+                    .equals(policyType)
+                );
+    }
 }
