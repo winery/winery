@@ -42,10 +42,11 @@ The next steps are:
 The initial code contribution has been supported by the [Federal Ministry for Economic Affairs and Energy] as part of the [CloudCycle] project (01MD11023).
 Current development is supported by the Federal Ministry for Economic Affairs and Energy as part of the projects
 [SmartOrchestra] (01MD16001F) and [SePiA.Pro] (01MD16013F), as well as by the [DFG] (Deutsche Forschungsgemeinschaft) projects [SustainLife] (641730) and [ADDCompliance] (636503).
+Further development is also funded by the European Union’s Horizon 2020 project [RADON].
 
 ## License
 
-Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
 
 See the NOTICE file(s) distributed with this work for additional
 information regarding copyright ownership.
@@ -64,4 +65,5 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   [SePiA.Pro]: http://projekt-sepiapro.de/en/
   [ADDCompliance]: http://addcompliance.cs.univie.ac.at/
   [SustainLife]: http://www.iaas.uni-stuttgart.de/forschung/projects/SustainLife
+  [RADON]: http://radon-h2020.eu/
   [DFG]: http://www.dfg.de/en/

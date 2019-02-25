@@ -13,7 +13,7 @@
  *******************************************************************************/
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { InstanceService } from '../../instance.service';
-import { backendBaseURL, oldTopologyModelerURL, topologyModelerURL } from '../../../configuration';
+import { backendBaseURL, topologyModelerURL } from '../../../configuration';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { WineryVersion } from '../../../model/wineryVersion';
 import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
@@ -30,7 +30,6 @@ export class TopologyTemplateComponent implements OnInit {
     loading = true;
     templateUrl: SafeResourceUrl;
     editorUrl: string;
-    oldEditorUrl: string;
     refinementAvailable = false;
 
     selectedVersion: WineryVersion;
@@ -66,7 +65,6 @@ export class TopologyTemplateComponent implements OnInit {
         }
 
         this.editorUrl = topologyModelerURL + editorConfig;
-        this.oldEditorUrl = oldTopologyModelerURL + editorConfig;
         this.refinementAvailable = this.sharedData.toscaComponent.toscaType === ToscaTypes.ServiceTemplate;
     }
 

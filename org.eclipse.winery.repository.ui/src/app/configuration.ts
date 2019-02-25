@@ -24,5 +24,3 @@ export const workflowModelerURL = location.protocol + '//' + location.hostname +
 // similar to the workflowModeler, configure the topologyModelerURL
 export const topologyModelerURL = location.protocol + '//' + location.hostname + ':'
     + (location.port === '4200' ? '4201' : location.port + '/winery-topologymodeler-ui');
-
-export const oldTopologyModelerURL = backendBaseURL + '-topologymodeler';

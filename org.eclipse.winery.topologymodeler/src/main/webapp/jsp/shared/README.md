@@ -1,1 +1,0 @@
-This folder is shared between repository and topology modeler
