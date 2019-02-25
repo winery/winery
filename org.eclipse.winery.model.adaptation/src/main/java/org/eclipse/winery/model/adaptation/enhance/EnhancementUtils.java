@@ -49,7 +49,7 @@ public class EnhancementUtils {
                 return false;
             })
             .forEach(node ->
-                ModelUtilities.addPolicy(node, OpenToscaBaseTypes.statefulComponentPolicyType)
+                ModelUtilities.addPolicy(node, OpenToscaBaseTypes.statefulComponentPolicyType, "stateful")
             );
 
         return topology;
@@ -70,7 +70,7 @@ public class EnhancementUtils {
             .forEach(node -> {
                 TNodeType type = nodeTypes.get(node.getType());
                 if (ModelUtilities.nodeTypeHasInterface(type, OpenToscaInterfaces.stateInterface)) {
-                    ModelUtilities.addPolicy(node, OpenToscaBaseTypes.freezableComponentPolicyType);
+                    ModelUtilities.addPolicy(node, OpenToscaBaseTypes.freezableComponentPolicyType, "freezable");
                 } else {
                     TRelationshipTemplate relationshipTemplate;
                     boolean isFreezable = false;
@@ -85,7 +85,7 @@ public class EnhancementUtils {
                             TNodeTemplate host = (TNodeTemplate) relationshipTemplate.getTargetElement().getRef();
                             TNodeType hostType = nodeTypes.get(host.getType());
                             if (ModelUtilities.nodeTypeHasInterface(hostType, OpenToscaInterfaces.stateInterface)) {
-                                ModelUtilities.addPolicy(host, OpenToscaBaseTypes.freezableComponentPolicyType);
+                                ModelUtilities.addPolicy(host, OpenToscaBaseTypes.freezableComponentPolicyType, "freezable");
                                 isFreezable = true;
                             }
                         }

@@ -14,6 +14,8 @@
 
 package org.eclipse.winery.model.adaptation.enhance;
 
+import java.util.List;
+
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
@@ -28,8 +30,10 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepository {
 
@@ -53,5 +57,44 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
         TNodeTemplate stateless = topologyTemplate.getNodeTemplate("stateless");
         assertNotNull(stateless);
         assertNull(stateless.getPolicies());
+    }
+
+    @Test
+    void determineFreezableComponents() throws Exception {
+        this.setRevisionTo("origin/plain");
+
+        TServiceTemplate element = RepositoryFactory.getRepository()
+            .getElement(new ServiceTemplateId(
+                    QName.valueOf("{http://opentosca.org/examples/servicetemplates}TopologyWithStatefulComponent_w1-wip2")
+                )
+            );
+        TPolicy expectedPolicy = new TPolicy();
+        expectedPolicy.setPolicyType(OpenToscaBaseTypes.freezableComponentPolicyType);
+        expectedPolicy.setName("freezable");
+
+        TopologyAndErrorList result = EnhancementUtils.determineFreezableComponents(element.getTopologyTemplate());
+
+        assertEquals(0, result.errorList.size());
+
+        TTopologyTemplate topologyTemplate = result.topologyTemplate;
+        assertNull(topologyTemplate.getNodeTemplate("VM_2").getPolicies());
+
+        List<TPolicy> statefulFreezableComponentPolicies = topologyTemplate.getNodeTemplate("statefulFreezableComponent")
+            .getPolicies().getPolicy();
+        assertEquals(2, statefulFreezableComponentPolicies.size());
+        assertTrue(statefulFreezableComponentPolicies.contains(expectedPolicy));
+
+        List<TPolicy> statefulNotFreezableComponentPolicies = topologyTemplate.getNodeTemplate("statefulNotFreezableComponent")
+            .getPolicies().getPolicy();
+        assertEquals(1, statefulNotFreezableComponentPolicies.size());
+        assertFalse(statefulNotFreezableComponentPolicies.contains(expectedPolicy));
+
+        List<TPolicy> statelessFreezableComponentPolicies = topologyTemplate.getNodeTemplate("statelessFreezableComponent")
+            .getPolicies().getPolicy();
+        assertEquals(1, statelessFreezableComponentPolicies.size());
+        assertTrue(statelessFreezableComponentPolicies.contains(expectedPolicy));
+
+        assertNull(topologyTemplate.getNodeTemplate("AbstractNodeTypeWithProperties_1-w1-wip1").getPolicies());
+        assertNull(topologyTemplate.getNodeTemplate("Infrastructure-As-A-Service-Implementation_1-w1-wip1").getPolicies());
     }
 }

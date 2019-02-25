@@ -892,7 +892,7 @@ public class ModelUtilities {
             .anyMatch(nodeInterface -> interfaceName.equals(nodeInterface.getName()));
     }
 
-    public static void addPolicy(TNodeTemplate node, QName policyType) {
+    public static void addPolicy(TNodeTemplate node, QName policyType, String name) {
         TPolicies policies = node.getPolicies();
         if (Objects.isNull(policies)) {
             policies = new TPolicies();
@@ -901,6 +901,7 @@ public class ModelUtilities {
 
         TPolicy policy = new TPolicy();
         policy.setPolicyType(policyType);
+        policy.setName(name);
         policies.getPolicy()
             .add(policy);
     }
