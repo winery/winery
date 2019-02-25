@@ -34,6 +34,9 @@ export interface TopologyRendererState {
         substituteTopologyButton?: boolean;
         refineTopologyButton?: boolean;
         refineTopologyWithTestsButton?: boolean;
+        determineStatefulComponents?: boolean;
+        determineFreezableComponentsButton?: boolean;
+        cleanFreezableComponentsButton?: boolean;
     };
     nodesToSelect?: string[];
 }
@@ -57,6 +60,9 @@ export const INITIAL_TOPOLOGY_RENDERER_STATE: TopologyRendererState = {
         substituteTopologyButton: false,
         refineTopologyButton: false,
         refineTopologyWithTestsButton: false,
+        determineStatefulComponents: false,
+        determineFreezableComponentsButton: false,
+        cleanFreezableComponentsButton: false,
     }
 };
 /**
@@ -214,6 +220,30 @@ export const TopologyRendererReducer =
                     delete lastState.nodesToSelect;
                 }
                 break;
+            case TopologyRendererActions.DETERMINE_STATEFUL_COMPONENTS:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        determineStatefulComponents: !lastState.buttonsState.determineStatefulComponents
+                    }
+                };
+            case TopologyRendererActions.DETERMINE_FREEZABLE_COMPONENTS:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        determineFreezableComponentsButton: !lastState.buttonsState.determineFreezableComponentsButton
+                    }
+                };
+            case TopologyRendererActions.CLEAN_FREEZABLE_COMPONENTS:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        cleanFreezableComponentsButton: !lastState.buttonsState.cleanFreezableComponentsButton
+                    }
+                };
         }
         return lastState;
     };

@@ -61,3 +61,6 @@
     background-image: linear-gradient(to bottom, #fff 0%, #e0e0e0 100%);
 }
 
+.button-group {
+    margin-left: 5px;
+}

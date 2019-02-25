@@ -47,6 +47,7 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
 import { RefinementSidebarComponent } from './refinementSidebar/refinementSidebar.component';
 import { ProblemDetectionComponent } from './problemDetection/problemDetection.component';
 import { PropertiesModule } from './properties/properties.module';
+import { StatefulAnnotationsService } from './services/statefulAnnotations.service';
 
 @NgModule({
     declarations: [
@@ -62,7 +63,7 @@ import { PropertiesModule } from './properties/properties.module';
         BrowserModule,
         FormsModule,
         HttpClientModule,
-        RouterModule.forRoot([{path: '**', redirectTo: '', pathMatch: 'full'}]),
+        RouterModule.forRoot([{ path: '**', redirectTo: '', pathMatch: 'full' }]),
         BrowserAnimationsModule,
         NgReduxModule,
         BsDropdownModule.forRoot(),
@@ -77,7 +78,7 @@ import { PropertiesModule } from './properties/properties.module';
         }),
         AccordionModule.forRoot(),
         TopologyRendererModule.forRoot(),
-        HotkeyModule.forRoot({cheatSheetHotkey: 'mod+space'}),
+        HotkeyModule.forRoot({ cheatSheetHotkey: 'mod+space' }),
         WineryModalModule,
         TypeaheadModule.forRoot(),
         PopoverModule.forRoot(),
@@ -96,7 +97,8 @@ import { PropertiesModule } from './properties/properties.module';
         ImportTopologyService,
         ReqCapService,
         SplitMatchTopologyService,
-        ErrorHandlerService
+        ErrorHandlerService,
+        StatefulAnnotationsService,
     ],
     bootstrap: [WineryComponent]
 })

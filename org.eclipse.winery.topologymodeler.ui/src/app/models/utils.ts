@@ -13,7 +13,6 @@
  ********************************************************************************/
 import { TNodeTemplate, TRelationshipTemplate, TTopologyTemplate } from './ttopology-template';
 import { QName } from './qname';
-import { isNullOrUndefined } from 'util';
 import { DifferenceStates, ToscaDiff, VersionUtils } from './ToscaDiff';
 import { Visuals } from './visuals';
 import { NgRedux } from '@angular-redux/store';
@@ -137,7 +136,7 @@ export class Utils {
         for (const obj of kvProperties) {
             const key = obj.key;
             let value;
-            if (isNullOrUndefined(obj.value)) {
+            if (!obj.value) {
                 value = '';
             } else {
                 value = obj.value;
@@ -167,6 +166,9 @@ export class Utils {
 
     static updateTopologyTemplate(ngRedux: NgRedux<IWineryState>, wineryActions: WineryActions, topology: TTopologyTemplate) {
         const wineryState = ngRedux.getState().wineryState;
+
+        // Required because if the palette is open, the last node inserted will be bound to the mouse movement.
+        ngRedux.dispatch(wineryActions.sendPaletteOpened(false));
 
         wineryState.currentJsonTopology.nodeTemplates
             .forEach(

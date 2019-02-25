@@ -34,6 +34,7 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.adaptation.enhance.EnhancementUtils;
+import org.eclipse.winery.model.adaptation.enhance.TopologyAndErrorList;
 import org.eclipse.winery.model.adaptation.problemsolving.SolutionFactory;
 import org.eclipse.winery.model.adaptation.problemsolving.SolutionInputData;
 import org.eclipse.winery.model.adaptation.problemsolving.SolutionStrategy;
@@ -311,5 +312,19 @@ public class TopologyTemplateResource {
     @Path("determinestatefulcomponents")
     public TTopologyTemplate determineStatefulComponents() {
         return EnhancementUtils.determineStatefulComponents(this.topologyTemplate);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("determinefreezablecomponents")
+    public TopologyAndErrorList determineFreezableComponents() {
+        return EnhancementUtils.determineFreezableComponents(this.topologyTemplate);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("cleanfreezablecomponents")
+    public TTopologyTemplate cleanFreezableComponents() {
+        return EnhancementUtils.cleanFreezableComponents(this.topologyTemplate);
     }
 }
