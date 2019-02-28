@@ -43,6 +43,9 @@ export class TopologyRendererActions {
     static REFINE_TOPOLOGY_WITH_TESTS = 'REFINE_TOPOLOGY_WITH_TESTS';
     static HIGHLIGHT_NODES = 'HIGHLIGHT_NODES';
     static DETECT_PROBLEMS = 'DETECT_PROBLEMS';
+    static DETERMINE_STATEFUL_COMPONENTS = 'DETERMINE_STATEFUL_COMPONENTS';
+    static DETERMINE_FREEZABLE_COMPONENTS = 'DETERMINE_FREEZABLE_COMPONENTS';
+    static CLEAN_FREEZABLE_COMPONENTS = 'CLEAN_FREEZABLE_COMPONENTS';
 
     togglePolicies(): Action {
         return { type: TopologyRendererActions.TOGGLE_POLICIES };
@@ -108,7 +111,7 @@ export class TopologyRendererActions {
         return { type: TopologyRendererActions.REFINE_TOPOLOGY };
     }
 
-    addTestRefinementts(): Action {
+    addTestRefinements(): Action {
         return {
             type: TopologyRendererActions.REFINE_TOPOLOGY_WITH_TESTS
         };
@@ -119,5 +122,17 @@ export class TopologyRendererActions {
             type: TopologyRendererActions.HIGHLIGHT_NODES,
             nodesToHighlight: listOfNodeIds
         };
+    }
+
+    determineStatefulComponents(): Action {
+        return { type: TopologyRendererActions.DETERMINE_STATEFUL_COMPONENTS };
+    }
+
+    determineFreezableComponents(): Action {
+        return { type: TopologyRendererActions.DETERMINE_FREEZABLE_COMPONENTS };
+    }
+
+    cleanFreezableComponents(): Action {
+        return { type: TopologyRendererActions.CLEAN_FREEZABLE_COMPONENTS };
     }
 }

@@ -28,5 +28,9 @@ public class OpenToscaBaseTypes {
     public static final QName secureProxy = QName.valueOf("{http://opentosca.org/secureelements/nodetypes}SecureProxy");
     // endregion
 
+    // region ********* freeze and defrost *********
     public static final QName stateArtifactType = QName.valueOf("{http://opentosca.org/artifacttypes}State");
+    public static final QName statefulComponentPolicyType = QName.valueOf("{http://opentosca.org/policytypes}StatefulComponent");
+    public static final QName freezableComponentPolicyType = QName.valueOf("{http://opentosca.org/policytypes}FreezableComponent");
+    // endregion
 }

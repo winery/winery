@@ -23,6 +23,7 @@ import { Subscription } from 'rxjs';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reducer';
 import { WineryActions } from '../redux/actions/winery.actions';
+import { StatefulAnnotationsService } from '../services/statefulAnnotations.service';
 
 /**
  * The navbar of the topologymodeler.
@@ -34,11 +35,11 @@ import { WineryActions } from '../redux/actions/winery.actions';
     animations: [
         trigger('navbarInOut', [
             transition('void => *', [
-                style({transform: 'translateY(-100%)'}),
+                style({ transform: 'translateY(-100%)' }),
                 animate('200ms ease-out')
             ]),
             transition('* => void', [
-                animate('200ms ease-in', style({transform: 'translateY(-100%)'}))
+                animate('200ms ease-in', style({ transform: 'translateY(-100%)' }))
             ])
         ])
     ]
@@ -63,6 +64,7 @@ export class NavbarComponent implements OnDestroy {
                 private actions: TopologyRendererActions,
                 private wineryActions: WineryActions,
                 private backendService: BackendService,
+                private statefulService: StatefulAnnotationsService,
                 private hotkeysService: HotkeysService) {
         this.subscriptions.push(ngRedux.select(state => state.topologyRendererState)
             .subscribe(newButtonsState => this.setButtonsState(newButtonsState)));
@@ -197,7 +199,16 @@ export class NavbarComponent implements OnDestroy {
             case 'refineTopologyWithTests':
                 this.readonly = true;
                 this.ngRedux.dispatch(this.wineryActions.sendPaletteOpened(false));
-                this.ngRedux.dispatch(this.actions.addTestRefinementts());
+                this.ngRedux.dispatch(this.actions.addTestRefinements());
+                break;
+            case 'determineStatefulComponents':
+                this.ngRedux.dispatch(this.actions.determineStatefulComponents());
+                break;
+            case 'determineFreezableComponents':
+                this.ngRedux.dispatch(this.actions.determineFreezableComponents());
+                break;
+            case 'cleanFreezableComponents':
+                this.ngRedux.dispatch(this.actions.cleanFreezableComponents());
                 break;
         }
     }

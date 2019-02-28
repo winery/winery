@@ -13,7 +13,6 @@
  ********************************************************************************/
 
 import { Injectable } from '@angular/core';
-import { backendBaseURL, hostURL } from '../models/configuration';
 import { Subject } from 'rxjs/Subject';
 import { isNullOrUndefined } from 'util';
 import { EntityType, TTopologyTemplate } from '../models/ttopology-template';
@@ -114,10 +113,10 @@ export class BackendService {
             const url = this.configuration.repositoryURL + '/' + this.configuration.parentPath + '/'
                 + encodeURIComponent(encodeURIComponent(this.configuration.ns)) + '/';
             const currentUrl = url + this.configuration.id + '/' + this.configuration.elementPath;
-            const nodeVisualsUrl = backendBaseURL + '/nodetypes/allvisualappearancedata';
-            const relationshipVisualsUrl = backendBaseURL + '/relationshiptypes/allvisualappearancedata';
-            const policyVisualsUrl = backendBaseURL + '/policytemplates/allvisualappearancedata';
-            const policyTypesVisualsUrl = backendBaseURL + '/policytypes/allvisualappearancedata';
+            const nodeVisualsUrl = this.configuration.repositoryURL + '/nodetypes/allvisualappearancedata';
+            const relationshipVisualsUrl = this.configuration.repositoryURL + '/relationshiptypes/allvisualappearancedata';
+            const policyVisualsUrl = this.configuration.repositoryURL + '/policytemplates/allvisualappearancedata';
+            const policyTypesVisualsUrl = this.configuration.repositoryURL + '/policytypes/allvisualappearancedata';
             // This is required because the information has to be returned together
 
             if (isNullOrUndefined(this.configuration.compareTo)) {
@@ -153,7 +152,7 @@ export class BackendService {
      */
     private requestPolicyTypes(): Observable<any> {
         if (this.configuration) {
-            return this.http.get(backendBaseURL + '/policytypes?full', { headers: this.headers });
+            return this.http.get(this.configuration.repositoryURL + '/policytypes?full', { headers: this.headers });
         }
     }
 
@@ -162,7 +161,7 @@ export class BackendService {
      */
     private requestRequirementTypes(): Observable<any> {
         if (this.configuration) {
-            return this.http.get(backendBaseURL + '/requirementtypes?full', { headers: this.headers });
+            return this.http.get(this.configuration.repositoryURL + '/requirementtypes?full', { headers: this.headers });
         }
     }
 
@@ -171,7 +170,7 @@ export class BackendService {
      */
     private requestCapabilityTypes(): Observable<any> {
         if (this.configuration) {
-            return this.http.get(backendBaseURL + '/capabilitytypes?full', { headers: this.headers });
+            return this.http.get(this.configuration.repositoryURL + '/capabilitytypes?full', { headers: this.headers });
         }
     }
 
@@ -180,7 +179,7 @@ export class BackendService {
      */
     private requestGroupedNodeTypes(): Observable<any> {
         if (this.configuration) {
-            return this.http.get(backendBaseURL + '/nodetypes?grouped&full', { headers: this.headers });
+            return this.http.get(this.configuration.repositoryURL + '/nodetypes?grouped&full', { headers: this.headers });
         }
     }
 
@@ -189,7 +188,7 @@ export class BackendService {
      */
     private requestNodeTypes(): Observable<any> {
         if (this.configuration) {
-            return this.http.get(backendBaseURL + '/nodetypes?full', { headers: this.headers });
+            return this.http.get(this.configuration.repositoryURL + '/nodetypes?full', { headers: this.headers });
         }
     }
 
@@ -198,7 +197,7 @@ export class BackendService {
      */
     private requestArtifactTypes(): Observable<any> {
         if (this.configuration) {
-            return this.http.get(backendBaseURL + '/artifacttypes', { headers: this.headers });
+            return this.http.get(this.configuration.repositoryURL + '/artifacttypes', { headers: this.headers });
         }
     }
 
@@ -207,7 +206,7 @@ export class BackendService {
      */
     requestArtifactTemplates(): Observable<any> {
         if (this.configuration) {
-            return this.http.get(backendBaseURL + '/artifacttemplates', { headers: this.headers });
+            return this.http.get(this.configuration.repositoryURL + '/artifacttemplates', { headers: this.headers });
         }
     }
 
@@ -216,7 +215,7 @@ export class BackendService {
      */
     requestPolicyTemplates(): Observable<any> {
         if (this.configuration) {
-            return this.http.get(backendBaseURL + '/policytemplates', { headers: this.headers });
+            return this.http.get(this.configuration.repositoryURL + '/policytemplates', { headers: this.headers });
         }
     }
 
@@ -225,7 +224,7 @@ export class BackendService {
      */
     private requestRelationshipTypes(): Observable<any> {
         if (this.configuration) {
-            return this.http.get(backendBaseURL + '/relationshiptypes', { headers: this.headers });
+            return this.http.get(this.configuration.repositoryURL + '/relationshiptypes', { headers: this.headers });
         }
     }
 
@@ -236,9 +235,9 @@ export class BackendService {
         if (this.configuration) {
             let URL: string;
             if (all) {
-                URL = backendBaseURL + '/admin/namespaces/?all';
+                URL = this.configuration.repositoryURL + '/admin/namespaces/?all';
             } else {
-                URL = backendBaseURL + '/admin/namespaces/';
+                URL = this.configuration.repositoryURL + '/admin/namespaces/';
             }
             return this.http.get(URL, { headers: this.headers });
         }
@@ -333,14 +332,16 @@ export class BackendService {
         } else {
             url = this.configuration.repositoryURL + '/artifacttemplates/';
         }
-        return this.http.post(url + '/', artifactOrPolicy, {headers: headers, responseType: 'text', observe: 'response'});
+        return this.http.post(url + '/', artifactOrPolicy, {
+            headers: headers, responseType: 'text', observe: 'response'
+        });
     }
 
     /**
      * Requests all topology template ids
      */
     requestAllTopologyTemplates(): Observable<EntityType[]> {
-        const url = hostURL + urlElement.Winery + urlElement.ServiceTemplates;
-        return this.http.get<EntityType[]>(url + '/', { headers: this.headers });
+        const url = this.configuration.repositoryURL + urlElement.ServiceTemplates;
+        return this.http.get<EntityType[]>(url, { headers: this.headers });
     }
 }
