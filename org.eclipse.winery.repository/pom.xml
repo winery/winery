@@ -52,6 +52,14 @@
             <version>${com.fasterxml.jackson.core.jackson-annotations}</version>
             <scope>compile</scope>
         </dependency>
+
+        <!-- required for java 11 -->
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>2.4.0-b180608.0325</version>
+        </dependency>
+
         <dependency>
             <!-- Version 1.3 is approved by Eclipse, Version 1.4 is not -->
             <groupId>org.tukaani</groupId>
@@ -252,7 +260,8 @@
                     <include>winery.properties</include>
                     <include>patterndetection.properties</include>
                     <include>defaultaccountabilityconfig.properties</include>
-                    <include>UTC--2018-03-05T15-33-22.456000000Z--e4b51a3d4e77d2ce2a9d9ce107ec8ec7cff5571d.json</include>
+                    <include>UTC--2018-03-05T15-33-22.456000000Z--e4b51a3d4e77d2ce2a9d9ce107ec8ec7cff5571d.json
+                    </include>
                     <include>logback.xml</include>
                     <include>logback-test.xml</include>
                 </includes>
@@ -295,7 +304,12 @@
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.21.0</version>
+                <version>${maven.surefire.version}</version>
+                <configuration>
+                    <argLine>
+                        --illegal-access=permit
+                    </argLine>
+                </configuration>
                 <dependencies>
                     <dependency>
                         <groupId>org.junit.platform</groupId>

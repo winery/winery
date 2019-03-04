@@ -172,12 +172,6 @@
             <version>1.9.4</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.7</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.model.selfservice</artifactId>
             <version>2.0.0-SNAPSHOT</version>
@@ -268,6 +262,22 @@
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.11</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.4.0-b180725.0427</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>2.4.0-b180725.0644</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -435,7 +445,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.16</version>
+                <version>${maven.surefire.version}</version>
+                <configuration>
+                    <argLine>
+                        --illegal-access=permit
+                    </argLine>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
