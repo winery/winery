@@ -56,7 +56,7 @@ class AccountabilityManagerImplIntegrationTest {
     }
 
     @Test
-    void addParticipant() throws Exception {
+    public void addParticipant() throws Exception {
         String processId = "ServiceTemplateWithAllReqCapVariants";
         String participantBlockchainId = "0x0000000000000000000000000111111222223333";
         String participantName = "Ghareeb";
@@ -71,7 +71,7 @@ class AccountabilityManagerImplIntegrationTest {
     }
 
     @Test
-    void getHistory() throws Exception {
+    public void getHistory() throws Exception {
         String processId = "{http://plain.winery.opentosca.org/servicetemplates}ServiceTemplateWithAllReqCapVariants";
 
         CompletableFuture<List<ModelProvenanceElement>> history = this.provenance.getHistory(processId);
@@ -85,7 +85,7 @@ class AccountabilityManagerImplIntegrationTest {
     }
 
     @Test
-    void getHistoryWithoutAuthenticationData() throws Exception {
+    public void getHistoryWithoutAuthenticationData() throws Exception {
         String processId = "SomeProcessIdForIvalidTestingPurposeOnly";
         String fileId = "not needed in this test";
 

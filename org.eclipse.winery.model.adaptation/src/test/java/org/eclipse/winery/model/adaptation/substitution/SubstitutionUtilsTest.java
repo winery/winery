@@ -110,7 +110,7 @@ class SubstitutionUtilsTest {
 
     // region ########## collectTypeHierarchy ##########
     @Test
-    void retrieveTypeHierarchy() {
+    public void retrieveTypeHierarchy() {
         Optional<List<Subtypes<TNodeType>>> tNodeTypeSubtypes = SubstitutionUtils.collectTypeHierarchy(nodeTypes, grandFather);
 
         assertTrue(tNodeTypeSubtypes.isPresent());
@@ -124,7 +124,7 @@ class SubstitutionUtilsTest {
     }
 
     @Test
-    void retrieveTypeHierarchy2() {
+    public void retrieveTypeHierarchy2() {
         Optional<List<Subtypes<TNodeType>>> tNodeTypeSubtypes = SubstitutionUtils.collectTypeHierarchy(nodeTypes, parent);
 
         assertTrue(tNodeTypeSubtypes.isPresent());
@@ -159,7 +159,7 @@ class SubstitutionUtilsTest {
     // region ########## collectSubstitutableTemplates ##########
 
     @Test
-    void getSubstitutableTemplateMap() {
+    public void getSubstitutableTemplateMap() {
         List<TNodeTemplate> templates = Arrays.asList(
             new TNodeTemplate.Builder("id0", stranger).build(),
             new TNodeTemplate.Builder("id1", parent).build(),

@@ -37,7 +37,7 @@ class SubstitutionTestWithGitBackedRepository extends TestWithGitBackedRepositor
     private IRepository repo = RepositoryFactory.getRepository();
 
     @Test
-    void substituteNodeTemplateTypes() throws Exception {
+    public void substituteNodeTemplateTypes() throws Exception {
         this.setRevisionTo("16a4ec8a55c4a87d8a46088d283640adadd2f07c");
 
         Substitution substitution = new Substitution();
@@ -75,7 +75,7 @@ class SubstitutionTestWithGitBackedRepository extends TestWithGitBackedRepositor
     }
 
     @Test
-    void substituteNodeTemplateWithServiceTemplate() throws Exception {
+    public void substituteNodeTemplateWithServiceTemplate() throws Exception {
         this.setRevisionTo("origin/plain");
 
         Substitution substitution = new Substitution();
@@ -95,7 +95,7 @@ class SubstitutionTestWithGitBackedRepository extends TestWithGitBackedRepositor
     }
 
     @Test
-    void substituteNodeTemplateWithServiceTemplateAndOutgoingRelationship() throws Exception {
+    public void substituteNodeTemplateWithServiceTemplateAndOutgoingRelationship() throws Exception {
         this.setRevisionTo("origin/plain");
 
         Substitution substitution = new Substitution();
