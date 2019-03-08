@@ -1,0 +1,15 @@
+{
+    "extends": "../../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "../../../dist/topologymodeler",
+        "module": "es2015",
+        "noImplicitAny": false
+    },
+    "include": [
+        "**/*.ts"
+    ],
+    "exclude": [
+        "test.ts",
+        "**/*.spec.ts"
+    ]
+}

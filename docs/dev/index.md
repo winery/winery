@@ -16,10 +16,9 @@ This document provides an index to all development guidelines and background inf
 - [Property Handling](property-handling.md)
 - [Recommended Reading](recommended-reading.md)
 - [RepositoryLayout](RepositoryLayout.md) - documents the layout of the repository (stored as plain text files)
-- [RepositoryUI](RepositoryUI.md)
+- [TOSCA-Mangement UI](TOSCA-Management.md)
 - [REST](REST.md) - how Winery's REST API works
 - [ToolChain](ToolChain) - GitHub workflow
-- [Topology Modeler](topology-modeler.md)
 - [Trouble Shooting](troubleshootings.md)
 - [TOSCA](../tosca/) - notes on OASIS TOSCA
 

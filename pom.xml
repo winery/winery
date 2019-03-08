@@ -103,15 +103,13 @@
         <module>org.eclipse.winery.repository.client</module>
         <module>org.eclipse.winery.repository.configuration</module>
         <module>org.eclipse.winery.repository.rest</module>
-        <module>org.eclipse.winery.repository.ui</module>
-        <module>org.eclipse.winery.topologymodeler.ui</module>
         <module>org.eclipse.winery.topologygraph</module>
-        <module>org.eclipse.winery.workflowmodeler</module>
         <module>org.eclipse.winery.compliance</module>
         <module>org.eclipse.winery.generators.ia</module>
         <module>org.eclipse.winery.highlevelrestapi</module>
         <module>org.eclipse.winery.tools.copybaragenerator</module>
         <module>org.eclipse.winery.model.adaptation</module>
+        <module>org.eclipse.winery.frontends</module>
     </modules>
     <build>
         <plugins>
@@ -119,20 +117,6 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>2.1</version>
-            </plugin>
-            <plugin>
-                <groupId>org.zeroturnaround</groupId>
-                <artifactId>jrebel-maven-plugin</artifactId>
-                <version>1.1.6</version>
-                <executions>
-                    <execution>
-                        <id>generate-rebel-xml</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -156,28 +140,6 @@
         </plugins>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <!--
-                        TODO: Also include all other Angular executions here.
-                        However, this is not yet possible because of the "old" topology modeler.
-                    -->
-                    <groupId>com.github.eirslett</groupId>
-                    <artifactId>frontend-maven-plugin</artifactId>
-                    <version>1.6</version>
-                    <executions>
-                        <execution>
-                            <phase>generate-resources</phase>
-                            <id>install node and npm</id>
-                            <goals>
-                                <goal>install-node-and-npm</goal>
-                            </goals>
-                            <configuration>
-                                <nodeVersion>v8.11.4</nodeVersion> <!-- LTS as of 2018-03-30 - see https://nodejs.org/en/blog/release/v8.11.1/ -->
-                                <npmVersion>6.4.1</npmVersion> <!-- defined as latest LTS version -->
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
                 <plugin>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>3.0.1</version>
@@ -255,7 +217,9 @@
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>org.eclipse.winery.bpmn2bpel.model.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                    <Export-Package>
+                                                        org.eclipse.winery.bpmn2bpel.model.*;-noimport:=true;version:=${project.version.osgi}
+                                                    </Export-Package>
                                                 </instructions>
                                             </artifact>
                                             <artifact>
@@ -272,7 +236,9 @@
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>org.eclipse.winery.model.csar.toscametafile.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                    <Export-Package>
+                                                        org.eclipse.winery.model.csar.toscametafile.*;-noimport:=true;version:=${project.version.osgi}
+                                                    </Export-Package>
                                                 </instructions>
                                             </artifact>
                                             <artifact>
@@ -289,7 +255,9 @@
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>org.eclipse.winery.model.selfservice.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                    <Export-Package>
+                                                        org.eclipse.winery.model.selfservice.*;-noimport:=true;version:=${project.version.osgi}
+                                                    </Export-Package>
                                                 </instructions>
                                             </artifact>
                                             <artifact>
@@ -305,7 +273,9 @@
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>org.eclipse.winery.model.tosca.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                    <Export-Package>
+                                                        org.eclipse.winery.model.tosca.*;-noimport:=true;version:=${project.version.osgi}
+                                                    </Export-Package>
                                                 </instructions>
                                             </artifact>
                                             <artifact>
@@ -322,7 +292,9 @@
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>org.eclipse.winery.model.tosca.yaml.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                    <Export-Package>
+                                                        org.eclipse.winery.model.tosca.yaml.*;-noimport:=true;version:=${project.version.osgi}
+                                                    </Export-Package>
                                                 </instructions>
                                             </artifact>
                                             <artifact>
@@ -333,12 +305,16 @@
                                                     <exclude>org.eclipse.winery*</exclude>
                                                     <!-- Export-Package specification is incorrect, 
                                                          see https://github.com/SQiShER/java-object-diff/issues/205 -->
-                                                    <exclude>de.danielbechler:java-object-diff:${de.danielbechler.java-object-diff}</exclude>
+                                                    <exclude>
+                                                        de.danielbechler:java-object-diff:${de.danielbechler.java-object-diff}
+                                                    </exclude>
                                                     <exclude>com.github.jnr:*:::</exclude>
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>org.eclipse.winery.common.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                    <Export-Package>
+                                                        org.eclipse.winery.common.*;-noimport:=true;version:=${project.version.osgi}
+                                                    </Export-Package>
                                                 </instructions>
                                             </artifact>
                                             <artifact>
@@ -354,7 +330,9 @@
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>org.eclipse.winery.yaml.common.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                    <Export-Package>
+                                                        org.eclipse.winery.yaml.common.*;-noimport:=true;version:=${project.version.osgi}
+                                                    </Export-Package>
                                                 </instructions>
                                             </artifact>
                                             <artifact>
@@ -371,7 +349,9 @@
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>org.eclipse.winery.yaml.converter.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                    <Export-Package>
+                                                        org.eclipse.winery.yaml.converter.*;-noimport:=true;version:=${project.version.osgi}
+                                                    </Export-Package>
                                                 </instructions>
                                             </artifact>
                                             <artifact>
@@ -386,11 +366,15 @@
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>org.eclipse.winery.bpmn2bpel.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                    <Export-Package>
+                                                        org.eclipse.winery.bpmn2bpel.*;-noimport:=true;version:=${project.version.osgi}
+                                                    </Export-Package>
                                                 </instructions>
                                             </artifact>
                                             <artifact>
-                                                <id>org.eclipse.winery:org.eclipse.winery.repository:${project.version}</id>
+                                                <id>
+                                                    org.eclipse.winery:org.eclipse.winery.repository:${project.version}
+                                                </id>
                                                 <source>true</source>
                                                 <excludes>
                                                     <exclude>org.eclipse.winery*</exclude>
@@ -401,7 +385,9 @@
                                                 <transitive>true</transitive>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>org.eclipse.winery.repository.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                    <Export-Package>
+                                                        org.eclipse.winery.repository.*;-noimport:=true;version:=${project.version.osgi}
+                                                    </Export-Package>
                                                 </instructions>
                                             </artifact>
                                             <artifact>
@@ -421,7 +407,9 @@
                                                         !com.sun.org.apache.xalan.*,
                                                         *;resolution:=optional
                                                     </Import-Package>
-                                                    <Export-Package>org.eclipse.winery.repository.client.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                    <Export-Package>
+                                                        org.eclipse.winery.repository.client.*;-noimport:=true;version:=${project.version.osgi}
+                                                    </Export-Package>
                                                 </instructions>
                                             </artifact>
                                             <artifact>
@@ -438,41 +426,14 @@
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>org.eclipse.winery.repository.configuration.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                    <Export-Package>
+                                                        org.eclipse.winery.repository.configuration.*;-noimport:=true;version:=${project.version.osgi}
+                                                    </Export-Package>
                                                 </instructions>
                                             </artifact>
                                             <artifact>
-                                                <id>org.eclipse.winery:org.eclipse.winery.compliance:${project.version}</id>
-                                                <source>true</source>
-                                                <transitive>true</transitive>
-                                                <excludes>
-                                                    <exclude>org.eclipse.winery*</exclude>
-                                                    <exclude>com.github.jnr:*:::</exclude>
-                                                    <exclude>org.web3j:*</exclude>
-                                                    <exclude>org.bouncycastle</exclude>
-                                                </excludes>
-                                                <instructions>
-                                                    <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>org.eclipse.winery.compliance.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
-                                                </instructions>
-                                            </artifact>
-                                            <artifact>
-                                                <id>org.eclipse.winery:org.eclipse.winery.topologygraph:${project.version}</id>
-                                                <source>true</source>
-                                                <transitive>true</transitive>
-                                                <excludes>
-                                                    <exclude>org.eclipse.winery*</exclude>
-                                                    <exclude>com.github.jnr:*:::</exclude>
-                                                    <exclude>org.web3j:*</exclude>
-                                                    <exclude>org.bouncycastle</exclude>
-                                                </excludes>
-                                                <instructions>
-                                                    <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>org.eclipse.winery.topologygraph.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
-                                                </instructions>
-                                            </artifact>
-                                            <artifact>
-                                                <id>org.eclipse.winery:org.eclipse.winery.generators.ia:${project.version}
+                                                <id>
+                                                    org.eclipse.winery:org.eclipse.winery.compliance:${project.version}
                                                 </id>
                                                 <source>true</source>
                                                 <transitive>true</transitive>
@@ -484,7 +445,47 @@
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>org.eclipse.winery.generators.ia.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                    <Export-Package>
+                                                        org.eclipse.winery.compliance.*;-noimport:=true;version:=${project.version.osgi}
+                                                    </Export-Package>
+                                                </instructions>
+                                            </artifact>
+                                            <artifact>
+                                                <id>
+                                                    org.eclipse.winery:org.eclipse.winery.topologygraph:${project.version}
+                                                </id>
+                                                <source>true</source>
+                                                <transitive>true</transitive>
+                                                <excludes>
+                                                    <exclude>org.eclipse.winery*</exclude>
+                                                    <exclude>com.github.jnr:*:::</exclude>
+                                                    <exclude>org.web3j:*</exclude>
+                                                    <exclude>org.bouncycastle</exclude>
+                                                </excludes>
+                                                <instructions>
+                                                    <Import-Package>*;resolution:=optional</Import-Package>
+                                                    <Export-Package>
+                                                        org.eclipse.winery.topologygraph.*;-noimport:=true;version:=${project.version.osgi}
+                                                    </Export-Package>
+                                                </instructions>
+                                            </artifact>
+                                            <artifact>
+                                                <id>
+                                                    org.eclipse.winery:org.eclipse.winery.generators.ia:${project.version}
+                                                </id>
+                                                <source>true</source>
+                                                <transitive>true</transitive>
+                                                <excludes>
+                                                    <exclude>org.eclipse.winery*</exclude>
+                                                    <exclude>com.github.jnr:*:::</exclude>
+                                                    <exclude>org.web3j:*</exclude>
+                                                    <exclude>org.bouncycastle</exclude>
+                                                </excludes>
+                                                <instructions>
+                                                    <Import-Package>*;resolution:=optional</Import-Package>
+                                                    <Export-Package>
+                                                        org.eclipse.winery.generators.ia.*;-noimport:=true;version:=${project.version.osgi}
+                                                    </Export-Package>
                                                 </instructions>
                                             </artifact>
                                             <artifact>
@@ -501,7 +502,9 @@
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>org.eclipse.winery.highlevelrestapi.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                    <Export-Package>
+                                                        org.eclipse.winery.highlevelrestapi.*;-noimport:=true;version:=${project.version.osgi}
+                                                    </Export-Package>
                                                 </instructions>
                                             </artifact>
                                             <artifact>
@@ -518,7 +521,9 @@
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>org.eclipse.winery.accountability.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                    <Export-Package>
+                                                        org.eclipse.winery.accountability.*;-noimport:=true;version:=${project.version.osgi}
+                                                    </Export-Package>
                                                 </instructions>
                                             </artifact>
                                             <!-- 
@@ -537,16 +542,20 @@
                                             </artifact>
                                             <!-- Sidesteps the incorrect export, should be fixed with 0.96 -->
                                             <artifact>
-                                                <id>de.danielbechler:java-object-diff:${de.danielbechler.java-object-diff}</id>
+                                                <id>
+                                                    de.danielbechler:java-object-diff:${de.danielbechler.java-object-diff}
+                                                </id>
                                                 <source>true</source>
                                                 <transitive>true</transitive>
                                                 <override>true</override>
                                                 <instructions>
                                                     <!-- BundleVendor and BundleDocs are copied from official github repo -->
                                                     <Bundle-Vendor>Daniel Bechler</Bundle-Vendor>
-                                                    <Bundle-DocURL>https://github.com/SQiShER/java-object-diff</Bundle-DocURL>
+                                                    <Bundle-DocURL>https://github.com/SQiShER/java-object-diff
+                                                    </Bundle-DocURL>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>de.danielbechler.diff.*;-noimport:=true</Export-Package>
+                                                    <Export-Package>de.danielbechler.diff.*;-noimport:=true
+                                                    </Export-Package>
                                                 </instructions>
                                             </artifact>
                                             <artifact>
@@ -561,7 +570,7 @@
                         </execution>
                     </executions>
                 </plugin>
-                
+
                 <!--
                     This plugin allows generating java code that represents a given ethereum smart contract written in
                     Solidity. The actual configuration of the plugin is found the pom file accountability module. 

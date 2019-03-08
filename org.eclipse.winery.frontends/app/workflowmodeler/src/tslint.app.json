@@ -1,0 +1,20 @@
+{
+    "rulesDirectory": [
+        "../../../",
+        "../../../node_modules/codelyzer"
+    ],
+    "rules": {
+        "directive-selector": [
+            true,
+            "attribute",
+            "b4t",
+            "camelCase"
+        ],
+        "component-selector": [
+            true,
+            "element",
+            "b4t",
+            "kebab-case"
+        ]
+    }
+}
