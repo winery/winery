@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-import { TNodeTemplate, TRelationshipTemplate, TTopologyTemplate } from './ttopology-template';
+import { EntityType, TNodeTemplate, TRelationshipTemplate, TTopologyTemplate } from './ttopology-template';
 import { QName } from './qname';
 import { DifferenceStates, ToscaDiff, VersionUtils } from './ToscaDiff';
 import { Visuals } from './visuals';
@@ -123,6 +123,41 @@ export class Utils {
         }
 
         return nodeTemplates;
+    }
+
+    /**
+     * Generates default properties from node types or relationshipTypes
+     * @param name
+     * @param entities
+     * @return properties
+     */
+    static getDefaultPropertiesFromEntityTypes(name: string, entities: EntityType[]): any {
+        for (const element of entities) {
+            if (element.name === name) {
+                // if any is defined with at least one element it's a KV property, sets default values if there aren't
+                // any in the node template
+                if (element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any) {
+                    if (element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any.length > 0 &&
+                        element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any[0].propertyDefinitionKVList) {
+                        const properties = {
+                            kvproperties: Utils.setKVProperties(element)
+                        };
+                        return properties;
+                    }
+                    // if propertiesDefinition is defined it's a XML property
+                } else if (element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition
+                    && element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element) {
+                    const properties = {
+                        any: element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element
+                    };
+                    return properties;
+
+                } else {
+                    // else no properties
+                    return null;
+                }
+            }
+        }
     }
 
     /**

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -47,12 +47,18 @@ export class WineryVersion {
 
     toReadableString(): string {
         let versionString = this.toString();
-
         if (versionString.length === 0) {
             versionString = WineryVersion.EMPTY_STRING;
         }
-
         return versionString;
+    }
+
+    hasVersion(): boolean {
+        if (!this.wineryVersion) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     equals(item: WineryVersion) {

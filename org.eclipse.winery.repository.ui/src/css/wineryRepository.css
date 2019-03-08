@@ -553,7 +553,6 @@ div.entityContainer > div.right {
 }
 
 div.entityContainer > div.center > div.informationContainer {
-    margin-top: 25px;
     height: 45px;
     color: #787878;
     font-family: arial, sans-serif;
@@ -564,14 +563,34 @@ div.entityContainer > div.center > div.informationContainer {
     float: left;
 }
 
+div.entityContainer > div.center > div.informationContainer > div.nameWithVersion {
+     margin-top: 15px;
+     font-size: 14px;
+     font-weight: bold;
+     height: 18px;
+     white-space: nowrap;
+     text-overflow: ellipsis;
+     overflow: hidden;
+     direction: ltr;
+     text-align: left;
+ }
+
 div.entityContainer > div.center > div.informationContainer > div.name {
+    margin-top: 25px;
     font-size: 14px;
     font-weight: bold;
     height: 18px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    direction: rtl;
+    direction: ltr;
+    text-align: left;
+}
+
+div.entityContainer > div.center > div.informationContainer > div.version {
+    font-size: 14px;
+    height: 18px;
+    direction: ltr;
     text-align: left;
 }
 
@@ -582,6 +601,7 @@ div.entityContainer > div.center > div.informationContainer > div.namespace {
 }
 
 div.entityContainer > div.center > div.informationContainer > div.namespace > div.namespaceOnly {
+    margin-top: 25px;
     font-size: 14px;
     font-weight: bold;
     height: 18px;

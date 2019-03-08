@@ -219,7 +219,9 @@ export class WineryComponent implements OnInit, AfterViewInit {
                             relationshipType.qName,
                             relationshipType.name,
                             relationshipType.namespace,
-                            visuals.color)
+                            relationshipType.properties,
+                            visuals.color,
+                            relationshipType.full)
                         );
                 });
                 break;
