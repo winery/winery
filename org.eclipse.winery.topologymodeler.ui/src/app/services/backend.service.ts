@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright(c) 2018 Contributors to the Eclipse Foundation
+ * Copyright(c) 2018-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -224,7 +224,7 @@ export class BackendService {
      */
     private requestRelationshipTypes(): Observable<any> {
         if (this.configuration) {
-            return this.http.get(this.configuration.repositoryURL + '/relationshiptypes', { headers: this.headers });
+            return this.http.get(this.configuration.repositoryURL + '/relationshiptypes?full', { headers: this.headers });
         }
     }
 

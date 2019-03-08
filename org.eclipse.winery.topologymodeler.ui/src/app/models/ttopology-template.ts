@@ -122,7 +122,8 @@ export class Entity {
     constructor(public id: string,
                 public qName: string,
                 public name: string,
-                public namespace: string) {
+                public namespace: string,
+                public properties?: any) {
     }
 }
 
@@ -134,8 +135,9 @@ export class EntityType extends Entity {
                 qName: string,
                 name: string,
                 namespace: string,
+                properties?: any,
                 public full?: any) {
-        super(id, qName, name, namespace);
+        super(id, qName, name, namespace, properties);
     }
 }
 
@@ -144,10 +146,11 @@ export class VisualEntityType extends EntityType {
                 qName: string,
                 name: string,
                 namespace: string,
+                properties: any,
                 public color: string,
-                public visuals?: Visuals,
-                public full?: any) {
-        super(id, qName, name, namespace, full);
+                public full: any,
+                public visuals?: Visuals) {
+        super(id, qName, name, namespace, properties, full);
     }
 }
 
@@ -161,7 +164,7 @@ export class TRelationshipTemplate extends AbstractTTemplate {
                 public name?: string,
                 public id?: string,
                 public type?: string,
-                public properties?: string,
+                public properties?: any,
                 documentation?: any,
                 any?: any,
                 otherAttributes?: any,

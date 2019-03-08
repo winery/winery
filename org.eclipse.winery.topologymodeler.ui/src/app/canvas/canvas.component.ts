@@ -1907,7 +1907,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                             { ref: info.targetId },
                             this.selectedRelationshipType.name,
                             relationshipId,
-                            this.selectedRelationshipType.qName
+                            this.selectedRelationshipType.qName,
+                            Utils.getDefaultPropertiesFromEntityTypes(this.selectedRelationshipType.name, this.entityTypes.relationshipTypes)
                         );
                         this.ngRedux.dispatch(this.actions.saveRelationship(newRelationship));
                     }
