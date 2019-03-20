@@ -207,7 +207,7 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
                 ));
 
             TDeploymentArtifacts list = this.nodeTemplate.getDeploymentArtifacts();
-            if (Objects.nonNull(list)) {
+            if (Objects.isNull(list)) {
                 list = new TDeploymentArtifacts();
                 this.nodeTemplate.setDeploymentArtifacts(list);
             }
