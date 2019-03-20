@@ -17,6 +17,6 @@ package org.eclipse.winery.model.tosca.constants;
 public class OpenToscaInterfaces {
     
     public static final String stateInterface = "http://opentosca.org/interfaces/state";
-    public static final String freezeStateOperation = "freeze";
-    public static final String defrostStateOperation = "defrost";
+    public static final String freezeStateOperation = "saveState";
+    public static final String defrostStateOperation = "restoreState";
 }

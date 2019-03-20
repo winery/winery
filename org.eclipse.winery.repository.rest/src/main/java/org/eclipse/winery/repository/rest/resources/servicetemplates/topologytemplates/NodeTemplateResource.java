@@ -168,7 +168,7 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
             .filter(artifact -> artifact.getArtifactType().equals(OpenToscaBaseTypes.stateArtifactType))
             .findFirst();
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmm");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss");
 
         TDeploymentArtifact deploymentArtifact = new TDeploymentArtifact();
         deploymentArtifact.setArtifactType(OpenToscaBaseTypes.stateArtifactType);

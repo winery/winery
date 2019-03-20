@@ -16,8 +16,9 @@ package org.eclipse.winery.repository.rest.resources.servicetemplates;
 
 import java.io.IOException;
 import java.net.URI;
-import java.time.Instant;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -324,7 +325,13 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     public Response createNewStatefulVersion() {
         ServiceTemplateId id = (ServiceTemplateId) this.getId();
         WineryVersion version = VersionUtils.getVersion(id);
-        WineryVersion newVersion = new WineryVersion("stateful-" + version.toString() + "-" + Instant.now().toString(), 1, 0);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss");
+        WineryVersion newVersion = new WineryVersion(
+            "stateful-" + version.toString() + "-" + dateFormat.format(new Date()),
+            1,
+            0
+        );
 
         ServiceTemplateId newId = new ServiceTemplateId(id.getNamespace().getDecoded(),
             VersionUtils.getNameWithoutVersion(id) + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + newVersion.toString(),
