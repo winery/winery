@@ -18,13 +18,13 @@
         <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIconInList">
     </div>
     <div class="center" [style.width.px]="maxWidth">
-        <div *ngIf="data.id && data?.version?.hasVersion()"
-             class="{{ containerSizeClass + ' informationContainer '}}">
+        <div *ngIf="data.id && data?.version?.hasVersion('wineryVersion')" class="{{ containerSizeClass + ' informationContainer '}}">
             <div class="nameWithVersion">{{ data.name }}</div>
-            <div class="version">Version: {{ data?.version?.toReadableString() }}</div>
+            <div *ngIf="containerSizeClass === 'smallContainer'" class="version">Version: {{ data?.version?.getWineryAndWipVersion() }}</div>
+            <div *ngIf="containerSizeClass !== 'smallContainer'" class="version">Version: {{ data?.version?.toReadableString() }}</div>
             <div [ngClass]="{'name': !data.id, 'namespace': data.id}">{{ data.namespace }}</div>
         </div>
-        <div *ngIf="data.id && !data?.version?.hasVersion()"
+        <div *ngIf="data.id && !data?.version?.hasVersion('wineryVersion')"
              class="{{ containerSizeClass + ' informationContainer '}}">
             <div class="name">{{ data.name }}</div>
             <div [ngClass]="{'name': !data.id, 'namespace': data.id}">{{ data.namespace }}</div>
