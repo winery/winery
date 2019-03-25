@@ -199,13 +199,6 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
                 newWineryVersion
             );
         } else {
-            new ArtifactTemplatesResource()
-                .onJsonPost(new QNameWithTypeApiData(
-                    newArtifactTemplateId.getQName().getLocalPart(),
-                    newArtifactTemplateId.getQName().getNamespaceURI(),
-                    OpenToscaBaseTypes.stateArtifactType.toString()
-                ));
-
             TDeploymentArtifacts list = this.nodeTemplate.getDeploymentArtifacts();
             if (Objects.isNull(list)) {
                 list = new TDeploymentArtifacts();
@@ -214,6 +207,13 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
 
             list.getDeploymentArtifact().add(deploymentArtifact);
         }
+
+        new ArtifactTemplatesResource()
+            .onJsonPost(new QNameWithTypeApiData(
+                newArtifactTemplateId.getQName().getLocalPart(),
+                newArtifactTemplateId.getQName().getNamespaceURI(),
+                OpenToscaBaseTypes.stateArtifactType.toString()
+            ));
 
         deploymentArtifact.setArtifactRef(newArtifactTemplateId.getQName());
 
