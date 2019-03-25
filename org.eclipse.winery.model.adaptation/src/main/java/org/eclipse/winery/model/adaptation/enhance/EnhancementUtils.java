@@ -45,11 +45,16 @@ public class EnhancementUtils {
                 if (Objects.nonNull(type.getTags())) {
                     return type.getTags().getTag()
                         .stream()
-                        .anyMatch(tag -> "stateful".equals(tag.getName().toLowerCase()));
+                        .anyMatch(
+                            tag -> "stateful".equals(tag.getName().toLowerCase())
+                                || "isStateful".toLowerCase().equals(tag.getName().toLowerCase())
+                        );
                 }
 
                 return false;
             })
+            // avoid duplicate annotations
+            .filter(node -> !ModelUtilities.containsPolicyType(node, OpenToscaBaseTypes.statefulComponentPolicyType))
             .forEach(node ->
                 ModelUtilities.addPolicy(node, OpenToscaBaseTypes.statefulComponentPolicyType, "stateful")
             );
@@ -64,6 +69,8 @@ public class EnhancementUtils {
         topology.getNodeTemplates().stream()
             // only iterate over all stateful components
             .filter(node -> ModelUtilities.containsPolicyType(node, OpenToscaBaseTypes.statefulComponentPolicyType))
+            // avoid duplicate annotations
+            .filter(node -> !ModelUtilities.containsPolicyType(node, OpenToscaBaseTypes.freezableComponentPolicyType))
             .forEach(node -> {
                 TNodeType type = nodeTypes.get(node.getType());
                 if (ModelUtilities.nodeTypeHasInterface(type, OpenToscaInterfaces.stateInterface)) {

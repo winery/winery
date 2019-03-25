@@ -168,7 +168,7 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
             .filter(artifact -> artifact.getArtifactType().equals(OpenToscaBaseTypes.stateArtifactType))
             .findFirst();
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmm");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss");
 
         TDeploymentArtifact deploymentArtifact = new TDeploymentArtifact();
         deploymentArtifact.setArtifactType(OpenToscaBaseTypes.stateArtifactType);
@@ -199,21 +199,21 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
                 newWineryVersion
             );
         } else {
-            new ArtifactTemplatesResource()
-                .onJsonPost(new QNameWithTypeApiData(
-                    newArtifactTemplateId.getQName().getLocalPart(),
-                    newArtifactTemplateId.getQName().getNamespaceURI(),
-                    OpenToscaBaseTypes.stateArtifactType.toString()
-                ));
-
             TDeploymentArtifacts list = this.nodeTemplate.getDeploymentArtifacts();
-            if (Objects.nonNull(list)) {
+            if (Objects.isNull(list)) {
                 list = new TDeploymentArtifacts();
                 this.nodeTemplate.setDeploymentArtifacts(list);
             }
 
             list.getDeploymentArtifact().add(deploymentArtifact);
         }
+
+        new ArtifactTemplatesResource()
+            .onJsonPost(new QNameWithTypeApiData(
+                newArtifactTemplateId.getQName().getLocalPart(),
+                newArtifactTemplateId.getQName().getNamespaceURI(),
+                OpenToscaBaseTypes.stateArtifactType.toString()
+            ));
 
         deploymentArtifact.setArtifactRef(newArtifactTemplateId.getQName());
 

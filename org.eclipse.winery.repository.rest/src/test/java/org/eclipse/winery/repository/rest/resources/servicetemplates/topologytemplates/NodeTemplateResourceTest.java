@@ -22,8 +22,6 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.restassured.http.ContentType;
 import org.eclipse.jetty.toolchain.test.MavenTestingUtils;
 import org.junit.Test;
 
@@ -41,24 +39,40 @@ public class NodeTemplateResourceTest extends AbstractResourceTest {
                 + "topologytemplate/nodetemplates/NodeTypeWith5Versions_0_3.4-w3-wip1/state",
             filePath);
 
-        String s = start()
-            .accept(ContentType.JSON.toString())
-            .get(callURL("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithOneNodeTemplate_w1-wip1/" +
-                "topologytemplate/nodetemplates/NodeTypeWith5Versions_0_3.4-w3-wip1"))
-            .then()
-            .log()
-            .ifValidationFails()
-            .statusCode(200)
-            .extract()
-            .response()
-            .getBody()
-            .asString();
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        TNodeTemplate nodeTemplate = objectMapper.readValue(s, TNodeTemplate.class);
+        TNodeTemplate nodeTemplate = getObjectFromGetRequest("servicetemplates/" +
+                "http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithOneNodeTemplate_w1-wip1/" +
+                "topologytemplate/nodetemplates/NodeTypeWith5Versions_0_3.4-w3-wip1",
+            TNodeTemplate.class
+        );
 
         TDeploymentArtifacts deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
         assertNonNull(deploymentArtifacts);
+        TDeploymentArtifact deploymentArtifact = deploymentArtifacts.getDeploymentArtifact("state");
+        assertNonNull(deploymentArtifact);
+        assertEquals(OpenToscaBaseTypes.stateArtifactType, deploymentArtifact.getArtifactType());
+    }
+
+    @Test
+    public void addStateArtifactToNodeTemplateThatAlreadyHasADeploymentArtifact() throws Exception {
+        this.setRevisionTo("origin/plain");
+
+        Path filePath = MavenTestingUtils.getProjectFilePath("src/test/resources/servicetemplates/plan.zip");
+        this.assertNoContentPost("servicetemplates/http%253A%252F%252Fopentosca.org%252Fexamples%252Fservicetemplates/ServiceTemplateWithDeploymentArtifact_w1-wip1/"
+                + "topologytemplate/nodetemplates/StatefulComponent_w1-wip1/state",
+            filePath);
+
+        TNodeTemplate nodeTemplate = getObjectFromGetRequest("servicetemplates/" +
+                "http%253A%252F%252Fopentosca.org%252Fexamples%252Fservicetemplates/ServiceTemplateWithDeploymentArtifact_w1-wip1/" +
+                "topologytemplate/nodetemplates/StatefulComponent_w1-wip1",
+            TNodeTemplate.class
+        );
+
+        TDeploymentArtifacts deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
+        assertNonNull(deploymentArtifacts);
+        assertEquals(2, deploymentArtifacts.getDeploymentArtifact().size());
+
+        assertNonNull(deploymentArtifacts.getDeploymentArtifact("test-artifact"));
+
         TDeploymentArtifact deploymentArtifact = deploymentArtifacts.getDeploymentArtifact("state");
         assertNonNull(deploymentArtifact);
         assertEquals(OpenToscaBaseTypes.stateArtifactType, deploymentArtifact.getArtifactType());
