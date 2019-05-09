@@ -29,7 +29,7 @@ As a user, continue at our [quick Start](../user/quickstart.md), which shows how
 ## Quick Develop
 
 1. Clone the repositroy `git clone https://github.com/eclipse/winery && cd winery`.
-2. If you are a Mac user, [install solidity as native build](https://solidity.readthedocs.io/en/latest/installing-solidity.html#binary-packages).
+2. If you are a Mac user, [install solidity natively](https://solidity.readthedocs.io/en/latest/installing-solidity.html#binary-packages).
 3. Build the repository `mvn package -DskipTests` (skiping the tests for a faster build).
 4. Continue your IDE setup:
     - [IntelliJ Ultimate](config/IntelliJ%20IDEA/)
