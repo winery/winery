@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -67,8 +67,8 @@ public class JsonBasedNamespaceManager extends AbstractNamespaceManager {
 
     @Override
     protected Set<String> getAllPrefixes(String namespace) {
-        return this.namespaceProperties.entrySet().stream()
-            .map(entry -> entry.getValue().getPrefix())
+        return this.namespaceProperties.values().stream()
+            .map(NamespaceProperties::getPrefix)
             .collect(Collectors.toSet());
     }
 
@@ -183,6 +183,17 @@ public class JsonBasedNamespaceManager extends AbstractNamespaceManager {
 
         if (Objects.nonNull(properties)) {
             return properties.isSecureCollection();
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean isGeneratedNamespace(String namespace) {
+        NamespaceProperties properties = this.namespaceProperties.get(namespace);
+
+        if (Objects.nonNull(properties)) {
+            return properties.isGeneratedNamespace();
         } else {
             return false;
         }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -79,4 +79,6 @@ public interface NamespaceManager {
     boolean isPatternNamespace(String namespace);
 
     boolean isSecureCollection(String namespace);
+
+    boolean isGeneratedNamespace(String namespace);
 }

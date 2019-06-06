@@ -301,6 +301,8 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
 
                 this.setAny(doc.getDocumentElement());
             } else {
+                //TODO: this implementation does not support adding a new property. However, I don't understand it yet so we need to fix it in future.
+
                 // straight-forward copy over to existing property structure
                 NodeList childNodes = el.getChildNodes();
 
@@ -352,9 +354,9 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         /**
          * Gets the value of the propertyConstraint property.
          * <p>
-         * <p> This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you
-         * make to the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE>
-         * method for the propertyConstraint property.
+         * <p> This accessor method returns a reference to the live list, not a snapshot. Therefore any modification
+         * you make to the returned list will be present inside the JAXB object. This is why there is not a
+         * <CODE>set</CODE> method for the propertyConstraint property.
          * <p>
          * <p> For example, to add a new item, do as follows:
          * <pre>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -16,7 +16,10 @@ package org.eclipse.winery.repository.rest.resources.servicetemplates.topologyte
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -48,6 +51,7 @@ import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceContainingATopology;
 import org.eclipse.winery.repository.rest.resources._support.dataadapter.composeadapter.CompositionData;
+import org.eclipse.winery.repository.rest.resources.apiData.AvailableFeaturesApiData;
 import org.eclipse.winery.repository.splitting.Splitting;
 import org.eclipse.winery.repository.targetallocation.Allocation;
 import org.eclipse.winery.repository.targetallocation.util.AllocationRequest;
@@ -326,5 +330,46 @@ public class TopologyTemplateResource {
     @Path("cleanfreezablecomponents")
     public TTopologyTemplate cleanFreezableComponents() {
         return EnhancementUtils.cleanFreezableComponents(this.topologyTemplate);
+    }
+
+    @GET
+    @Path("availablefeatures")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ArrayList<AvailableFeaturesApiData> getAvailableFeatures() {
+        ArrayList<AvailableFeaturesApiData> apiData = new ArrayList<>();
+
+        EnhancementUtils.getAvailableFeaturesForTopology(this.topologyTemplate).forEach((nodeTemplateId, featuresMap) -> {
+            ArrayList<AvailableFeaturesApiData.Features> features = new ArrayList<>();
+            featuresMap.forEach(
+                (featureType, featureName) -> features.add(new AvailableFeaturesApiData.Features(featureType, featureName))
+            );
+            apiData.add(new AvailableFeaturesApiData(nodeTemplateId, features));
+        });
+
+        return apiData;
+    }
+
+    @PUT
+    @Path("availablefeatures")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public TTopologyTemplate applyAvailableFeatures(ArrayList<AvailableFeaturesApiData> featuresList) {
+        Map<String, Map<QName, String>> featureMap = new HashMap<>();
+
+        featuresList.forEach(availableFeaturesApiData -> {
+            HashMap<QName, String> featureTypesMap = new HashMap<>();
+            if (Objects.nonNull(availableFeaturesApiData.getFeatures())
+                && availableFeaturesApiData.getFeatures().size() > 0) {
+                availableFeaturesApiData.getFeatures()
+                    .forEach(features -> featureTypesMap.put(features.getType(), features.getFeatureName()));
+                featureMap.put(availableFeaturesApiData.getNodeTemplateId(), featureTypesMap);
+            }
+        });
+
+        TTopologyTemplate enrichedTopology = EnhancementUtils.applyFeaturesForTopology(this.topologyTemplate, featureMap);
+        this.parent.setTopology(enrichedTopology, this.type);
+        RestUtils.persist(this.parent);
+
+        return enrichedTopology;
     }
 }

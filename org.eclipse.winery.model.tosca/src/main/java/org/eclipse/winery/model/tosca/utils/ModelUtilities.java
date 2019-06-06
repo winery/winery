@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -56,6 +56,7 @@ import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.constants.QNames;
@@ -744,7 +745,7 @@ public class ModelUtilities {
     public static <T extends TEntityType> Map<QName, T> getChildrenOf(QName givenType, Map<QName, T> elements) {
         HashMap<QName, T> children = new HashMap<>();
         TEntityType entityType = elements.get(givenType);
-        if (Objects.nonNull(entityType) && Objects.nonNull(entityType.getDerivedFrom())) {
+        if (Objects.nonNull(entityType)) {
             elements.forEach((qName, type) -> {
                 if (!qName.equals(givenType) && isOfType(givenType, qName, elements)) {
                     children.put(qName, type);
@@ -752,6 +753,20 @@ public class ModelUtilities {
             });
         }
         return children;
+    }
+
+    public static <T extends TEntityType> Map<T, String> getAvailableFeaturesOfType(QName givenType, Map<QName, T> elements) {
+        HashMap<T, String> features = new HashMap<>();
+        getChildrenOf(givenType, elements).forEach((qName, t) -> {
+            if (Objects.nonNull(t.getTags())) {
+                List<TTag> list = t.getTags().getTag();
+                list.stream()
+                    .filter(tag -> "feature".equals(tag.getName()))
+                    .findFirst()
+                    .ifPresent(tTag -> features.put(elements.get(qName), tTag.getValue()));
+            }
+        });
+        return features;
     }
 
     public static void updateNodeTemplate(TTopologyTemplate topology, String oldComponentId, QName newType, TNodeType newComponentType) {
