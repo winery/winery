@@ -18,19 +18,23 @@ import javax.xml.namespace.QName;
 
 public class OpenToscaBaseTypes {
 
-    // region ********* base elements *********
+    // region ********** base elements **********
     public static final QName virtualMachineNodeType = QName.valueOf("{http://opentosca.org/baseelements/nodetypes}VM");
     public static final QName DockerEngineNodeType = QName.valueOf("{http://opentosca.org/baseelements/nodetypes}DockerEngine");
     // endregion
 
-    // region ********* secure elements *********
+    // region ********** secure elements **********
     public static final QName secureProxyContainer = QName.valueOf("{http://opentosca.org/secureelements/nodetypes}SecureProxyContainer");
     public static final QName secureProxy = QName.valueOf("{http://opentosca.org/secureelements/nodetypes}SecureProxy");
     // endregion
 
-    // region ********* freeze and defrost *********
+    // region ********** freeze and defrost **********
     public static final QName stateArtifactType = QName.valueOf("{http://opentosca.org/artifacttypes}State");
     public static final QName statefulComponentPolicyType = QName.valueOf("{http://opentosca.org/policytypes}StatefulComponent");
     public static final QName freezableComponentPolicyType = QName.valueOf("{http://opentosca.org/policytypes}FreezableComponent");
+    // endregion
+
+    // region ********** management features **********
+    public static final QName managementFeatureRequirement = QName.valueOf("{http://opentosca.org/management/features/requirementtypes}FeatureRequirement");
     // endregion
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -37,7 +37,7 @@ public class TInterfaces {
     @NonNull
     public List<TInterface> getInterface() {
         if (_interface == null) {
-            _interface = new ArrayList<TInterface>();
+            _interface = new ArrayList<>();
         }
         return this._interface;
     }
