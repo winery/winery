@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,8 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest;
 
-import java.io.File;
-import java.net.URL;
 import java.util.Objects;
 
 import javax.servlet.ServletContext;
@@ -23,9 +21,7 @@ import javax.servlet.ServletContextListener;
 
 import org.eclipse.winery.common.ToscaDocumentBuilderFactory;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
-import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.rest.websockets.GitWebSocket;
 
 import org.slf4j.Logger;
@@ -60,12 +56,6 @@ public class Prefs implements ServletContextListener {
      */
     public Prefs(boolean initializeRepository) throws Exception {
         this();
-
-        // emulate behavior of doInitialization(Context)
-        URL resource = this.getClass().getClassLoader().getResource("winery.properties");
-        LOGGER.debug("URL: {}", resource.toString());
-        Environment.copyConfiguration(resource);
-
         if (initializeRepository) {
             this.doRepositoryInitialization();
         }
@@ -77,7 +67,6 @@ public class Prefs implements ServletContextListener {
      * <p>
      * Called from both the constructor for JUnit and the servlet-based initialization
      * <p>
-     * Pre-Condition: Environment is loaded
      */
     private void doRepositoryInitialization() throws Exception {
         RepositoryFactory.reconfigure();
@@ -94,26 +83,10 @@ public class Prefs implements ServletContextListener {
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         ServletContext ctx = servletContextEvent.getServletContext();
         Objects.requireNonNull(ctx);
-        Environment.getUrlConfiguration().setRepositoryApiUrl(ctx.getContextPath());
 
         // first set default URLs
         // they will be overwritten with the configuration later
         initializeUrlConfigurationWithDefaultValues(ctx);
-
-        // overwrite configuration with local configuration in all cases
-        // if winery.property exists in the root of the default repository path (~/winery-repository), load it
-        File propFile = new File(FilebasedRepository.getDefaultRepositoryFilePath(), "winery.properties");
-        Prefs.LOGGER.info("Trying " + propFile.getAbsolutePath());
-        if (propFile.exists()) {
-            Prefs.LOGGER.info("Found");
-            try {
-                Environment.copyConfiguration(propFile.toPath());
-            } catch (Exception e) {
-                Prefs.LOGGER.error("Could not load repository-local winery.properties", e);
-            }
-        } else {
-            Prefs.LOGGER.info("Not found");
-        }
 
         try {
             this.doRepositoryInitialization();
@@ -140,13 +113,10 @@ public class Prefs implements ServletContextListener {
         } else {
             basePath = basePath.substring(0, pos);
         }
-        Environment.getUrlConfiguration().setTopologyModelerUrl(basePath + "winery-topologymodeler");
-        Environment.getUrlConfiguration().setRepositoryUiUrl(basePath + "#");
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent arg0) {
         // nothing to do at tear down
     }
-
 }

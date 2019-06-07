@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -46,6 +46,7 @@ import java.util.zip.ZipOutputStream;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
@@ -67,7 +68,7 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.xsd.RepositoryBasedXsdImportManager;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
-import org.eclipse.winery.repository.configuration.FileBasedRepositoryConfiguration;
+import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
 import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 
 import org.apache.commons.configuration2.Configuration;
@@ -112,7 +113,9 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
         if (fileBasedRepositoryConfiguration.getRepositoryPath().isPresent()) {
             return makeAbsoluteAndCreateRepositoryPath(fileBasedRepositoryConfiguration.getRepositoryPath().get());
         } else {
-            return determineAndCreateRepositoryPath();
+            Path newPath = determineAndCreateRepositoryPath();
+            Environments.setRepositoryRoot(newPath.toString());
+            return newPath;
         }
     }
 
