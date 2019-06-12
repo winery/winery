@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,23 +13,24 @@
  *******************************************************************************/
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { WineryNotificationService } from './wineryNotificationModule/wineryNotification.service';
-import { WineryGitLogComponent } from './wineryGitLog/wineryGitLog.component';
 import { ExistService } from './wineryUtils/existService';
-import { backendBaseURL } from './configuration';
 import { BackendAvailabilityStates } from './model/enums';
+import { WineryGitLogComponent } from './wineryGitLog/wineryGitLog.component';
+import { WineryRepositoryConfigurationService } from './wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 @Component({
     selector: 'winery-repository',
     templateUrl: './wineryRepository.html',
     styleUrls: ['./wineryRepository.component.css'],
     providers: [
-        ExistService
+        ExistService, WineryRepositoryConfigurationService
     ]
 })
 /*
  * This component represents the root component for the Winery Repository.
  */
 export class WineryRepositoryComponent implements OnInit {
+
     // region variables
     name = 'Winery Repository';
     backendState = BackendAvailabilityStates.Undefined;
@@ -44,21 +45,21 @@ export class WineryRepositoryComponent implements OnInit {
         lastOnBottom: true
     };
 
-    constructor(private notify: WineryNotificationService, private existService: ExistService) {
-
+    constructor(private notify: WineryNotificationService, private existService: ExistService,
+                private configurationService: WineryRepositoryConfigurationService) {
     }
 
     ngOnInit() {
-        this.existService.check(backendBaseURL + '/').subscribe(
-            data => {
-                this.backendState = BackendAvailabilityStates.Available;
-                this.loading = false;
-            },
-            error => {
-                this.loading = false;
-                this.backendState = BackendAvailabilityStates.Unavailable;
-            }
-        );
+        this.configurationService.getConfigurationFromBackend()
+            .subscribe(data => {
+                    this.backendState = BackendAvailabilityStates.Available;
+                    this.loading = false;
+                },
+                error => {
+                    this.loading = false;
+                    this.backendState = BackendAvailabilityStates.Unavailable;
+                }
+            );
     }
 
     onClick() {

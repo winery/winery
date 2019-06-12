@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -18,7 +18,7 @@ import {Pipe, PipeTransform} from '@angular/core';
 })
 
 export class UrlEncodePipe implements PipeTransform {
-    transform(value: any, args: any[]): any {
+    transform(value: string): string {
         if (value) {
             return encodeURIComponent(value);
         }

@@ -19,6 +19,7 @@ import { ToscaComponent } from '../model/toscaComponent';
 import { ToscaTypes } from '../model/enums';
 import { WineryVersion } from '../model/wineryVersion';
 import { HttpClient, HttpResponse } from '@angular/common/http';
+import { WineryRepositoryConfigurationService } from '../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 @Injectable()
 export class InstanceService {
@@ -29,7 +30,7 @@ export class InstanceService {
     currentVersion: WineryVersion;
     path: string;
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private configurationService: WineryRepositoryConfigurationService) {
     }
 
     /**
@@ -94,9 +95,12 @@ export class InstanceService {
                 subMenu = ['README', 'LICENSE', 'Detector', 'Test Fragment', 'Relation Mappings', 'XML'];
                 break;
             default: // assume Admin
-                subMenu = ['Namespaces', 'Repository', 'Plan Languages', 'Plan Types', 'Constraint Types', 'Consistency Check', 'Accountability', 'Log'];
+                subMenu = ['Namespaces', 'Repository', 'Plan Languages', 'Plan Types',
+                    'Constraint Types', 'Consistency Check', 'Log', 'Configuration'];
+                if (this.configurationService.configuration.features.accountability) {
+                    subMenu.push('Accountability');
+                }
         }
-
         return subMenu;
     }
 
