@@ -1,0 +1,9 @@
+{
+    "features": {
+        "bar": false,
+        "foo": true
+    },
+    "endpoints": {
+        "quaz": "http://quaz:8080"
+    }
+}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,21 +13,21 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
-import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
-import org.eclipse.winery.repository.configuration.Environment;
-import org.eclipse.winery.repository.configuration.FileBasedRepositoryConfiguration;
-import org.eclipse.winery.repository.configuration.GitBasedRepositoryConfiguration;
-import org.eclipse.winery.repository.configuration.JCloudsConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
+
+import org.eclipse.winery.common.configuration.Environments;
+import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
+import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
+import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
+import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
+
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RepositoryFactory {
 
@@ -35,63 +35,46 @@ public class RepositoryFactory {
 
     private static GitBasedRepositoryConfiguration gitBasedRepositoryConfiguration = null;
     private static FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration = null;
-    private static JCloudsConfiguration jCloudsConfiguration;
 
     private static IRepository repository = null;
 
     public static void reconfigure(GitBasedRepositoryConfiguration gitBasedRepositoryConfiguration) throws IOException, GitAPIException {
         RepositoryFactory.gitBasedRepositoryConfiguration = gitBasedRepositoryConfiguration;
         RepositoryFactory.fileBasedRepositoryConfiguration = null;
-        RepositoryFactory.jCloudsConfiguration = null;
-
         repository = new GitBasedRepository(gitBasedRepositoryConfiguration);
     }
 
     public static void reconfigure(FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
         RepositoryFactory.fileBasedRepositoryConfiguration = fileBasedRepositoryConfiguration;
         RepositoryFactory.gitBasedRepositoryConfiguration = null;
-        RepositoryFactory.jCloudsConfiguration = null;
 
         repository = new FilebasedRepository(fileBasedRepositoryConfiguration);
-    }
-
-    public static void reconfigure(JCloudsConfiguration jCloudsConfiguration) {
-        RepositoryFactory.jCloudsConfiguration = jCloudsConfiguration;
-        RepositoryFactory.fileBasedRepositoryConfiguration = null;
-        RepositoryFactory.gitBasedRepositoryConfiguration = null;
-
-        // TODO
     }
 
     /**
      * Reconfigures based on Environment
      */
     public static void reconfigure() throws Exception {
-        final Optional<JCloudsConfiguration> jCloudsConfiguration = Environment.getJCloudsConfiguration();
-        if (jCloudsConfiguration.isPresent()) {
-            reconfigure(jCloudsConfiguration.get());
+        final Optional<GitBasedRepositoryConfiguration> gitBasedRepositoryConfiguration = Environments.getGitBasedRepsitoryConfiguration();
+        final FileBasedRepositoryConfiguration filebasedRepositoryConfiguration = Environments.getFilebasedRepositoryConfiguration().orElse(new FileBasedRepositoryConfiguration());
+
+        // Determine whether the filebased repository could be git repository.
+        // We do not use JGit's capabilities, but do it just by checking for the existance of a ".git" directory.
+        final Path repositoryRoot = FilebasedRepository.getRepositoryRoot(filebasedRepositoryConfiguration);
+        final Path gitDirectory = repositoryRoot.resolve(".git");
+        boolean isGit = (Files.exists(gitDirectory) && Files.isDirectory(gitDirectory));
+
+        if (gitBasedRepositoryConfiguration.isPresent()) {
+            reconfigure(gitBasedRepositoryConfiguration.get());
+        } else if (isGit) {
+            reconfigure(new GitBasedRepositoryConfiguration(false, filebasedRepositoryConfiguration));
         } else {
-            final Optional<GitBasedRepositoryConfiguration> gitBasedRepositoryConfiguration = Environment.getGitBasedRepositoryConfiguration();
-            final FileBasedRepositoryConfiguration filebasedRepositoryConfiguration = Environment.getFilebasedRepositoryConfiguration().orElse(new FileBasedRepositoryConfiguration());
-
-            // Determine whether the filebased repository could be git repository.
-            // We do not use JGit's capabilities, but do it just by checking for the existance of a ".git" directory.
-            final Path repositoryRoot = FilebasedRepository.getRepositoryRoot(filebasedRepositoryConfiguration);
-            final Path gitDirectory = repositoryRoot.resolve(".git");
-            boolean isGit = (Files.exists(gitDirectory) && Files.isDirectory(gitDirectory));
-
-            if (gitBasedRepositoryConfiguration.isPresent()) {
-                reconfigure(gitBasedRepositoryConfiguration.get());
-            } else if (isGit) {
-                reconfigure(new GitBasedRepositoryConfiguration(false, filebasedRepositoryConfiguration));
-            } else {
-                reconfigure(filebasedRepositoryConfiguration);
-            }
+            reconfigure(filebasedRepositoryConfiguration);
         }
     }
 
     public static IRepository getRepository() {
-        if ((gitBasedRepositoryConfiguration == null) && (fileBasedRepositoryConfiguration == null) && (jCloudsConfiguration == null)) {
+        if ((gitBasedRepositoryConfiguration == null) && (fileBasedRepositoryConfiguration == null)) {
             // in case nothing is configured, use the file-based repository as fallback
             LOGGER.debug("No repository configuration available. Using default configuration.");
             reconfigure(new FileBasedRepositoryConfiguration());

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,9 +15,9 @@ package org.eclipse.winery.repository.rest.datatypes;
 
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +62,7 @@ public class FileMeta {
         }
         this.url = RestUtils.getAbsoluteURL(ref);
         this.deleteUrl = this.url;
-        this.thumbnailUrl = Environment.getUrlConfiguration().getRepositoryApiUrl() + Constants.PATH_MIMETYPEIMAGES + FilenameUtils.getExtension(this.name) + Constants.SUFFIX_MIMETYPEIMAGES;
+        this.thumbnailUrl = Environments.get().getEndpoints().get("repositoryApiUrl") + Constants.PATH_MIMETYPEIMAGES + FilenameUtils.getExtension(this.name) + Constants.SUFFIX_MIMETYPEIMAGES;
     }
 
     /**

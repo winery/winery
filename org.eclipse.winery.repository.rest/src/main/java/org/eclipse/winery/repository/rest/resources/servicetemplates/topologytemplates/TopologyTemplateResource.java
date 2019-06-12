@@ -35,6 +35,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.adaptation.enhance.EnhancementUtils;
 import org.eclipse.winery.model.adaptation.enhance.TopologyAndErrorList;
@@ -47,7 +48,6 @@ import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceContainingATopology;
 import org.eclipse.winery.repository.rest.resources._support.dataadapter.composeadapter.CompositionData;
@@ -92,7 +92,7 @@ public class TopologyTemplateResource {
         // @formatter:on
         Response res;
         String JSPName;
-        String location = Environment.getUrlConfiguration().getTopologyModelerUrl();
+        String location = Environments.get().getEndpoints().get("topologymodeler");
         location = uriInfo.getBaseUri().resolve(location).toString();
         // at the topology modeler, jersey needs to have an absolute path
         URI repositoryURI = uriInfo.getBaseUri();

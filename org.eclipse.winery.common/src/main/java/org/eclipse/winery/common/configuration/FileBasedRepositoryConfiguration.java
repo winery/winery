@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,13 +12,13 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.configuration;
-
-import org.eclipse.jdt.annotation.NonNull;
+package org.eclipse.winery.common.configuration;
 
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 public class FileBasedRepositoryConfiguration {
 

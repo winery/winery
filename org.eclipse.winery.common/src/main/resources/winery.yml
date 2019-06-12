@@ -1,0 +1,23 @@
+ui:
+  features:
+    splitting: true
+    completion: true
+    patternRefinement: true
+    compliance: true
+    accountability: true
+    nfv: true
+  endpoints:
+    container: http://localhost:1337
+    workflowmodeler: http://localhost:8080/winery-workflowmodeler
+    topologymodeler: http://localhost:8080/winery-topologymodeler
+    repositoryApiUrl: http://localhost:8080/winery
+    repositoryUiUrl: http://localhost:8080/#
+repository:
+  provider: file
+  repositoryRoot: ""
+  git:
+    clientSecret: secret
+    password: default
+    clientID: id
+    autocommit: false
+    username: default

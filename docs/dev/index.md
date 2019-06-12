@@ -5,6 +5,7 @@ This document provides an index to all development guidelines and background inf
 - [ADR](../adr) - list of [architectural decision records](https://adr.github.io) showing which design decisions were taken during development of Winery
 - [Branches](branches.md) - information on branches
 - [CodeHeaders](CodeHeaders.md) - documentation about required code headers
+- [UI Configuration](Configurationmanagment.md) - documentation how to configure the frontends 
 - IDE Setup
     - IntelliJ Ultimate setup: [config/IntelliJ IDEA/README.md](config/IntelliJ%20IDEA/)
     - Eclipse setup: [config/Eclipse/README.md](config/Eclipse/)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -20,20 +20,21 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.winery.common.configuration.ConfigurationObject;
+import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyChecker;
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerConfiguration;
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerVerbosity;
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyErrorCollector;
-import org.eclipse.winery.repository.configuration.Environment;
-import org.eclipse.winery.repository.configuration.GitHubConfiguration;
 import org.eclipse.winery.repository.rest.resources.admin.types.ConstraintTypesManager;
 import org.eclipse.winery.repository.rest.resources.admin.types.PlanLanguagesManager;
 import org.eclipse.winery.repository.rest.resources.admin.types.PlanTypesManager;
@@ -88,6 +89,27 @@ public class AdminTopResource {
         return consistencyChecker.getErrorCollector();
     }
 
+    /**
+     * This method answers a get-request by the WineryRepositoryConfigurationService
+     *
+     * @return the winery config file in json format.
+     */
+    @GET
+    @Path("config")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ConfigurationObject getConfig() {
+        return Environments.get();
+    }
+
+    @PUT
+    @Path("config")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public ConfigurationObject setConfig(ConfigurationObject changedConfiguration) {
+        Environments.saveFeatures(changedConfiguration);
+        return Environments.get();
+    }
+
     @POST
     @Path("githubaccesstoken")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -98,12 +120,9 @@ public class AdminTopResource {
         httppost.setHeader("Accept", "application/json");
 
         List<NameValuePair> params = new ArrayList<>(4);
-
-        // get configuration and fill with default values if no configuration exists
-        final GitHubConfiguration gitHubConfiguration = Environment.getGitHubConfiguration().orElse(new GitHubConfiguration("id", "secreat"));
-
-        params.add(new BasicNameValuePair("client_id", gitHubConfiguration.getGitHubClientId()));
-        params.add(new BasicNameValuePair("client_secret", gitHubConfiguration.getGitHubClientSecret()));
+        
+        params.add(new BasicNameValuePair("client_id", Environments.getGit().get("clientID")));
+        params.add(new BasicNameValuePair("client_secret", Environments.getGit().get("clientSecret")));
         params.add(new BasicNameValuePair("code", codeApiData.code));
         params.add(new BasicNameValuePair("state", codeApiData.state));
         httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));

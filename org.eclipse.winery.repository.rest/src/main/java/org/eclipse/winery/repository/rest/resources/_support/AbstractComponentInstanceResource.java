@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -40,6 +40,7 @@ import javax.xml.parsers.DocumentBuilder;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ToscaDocumentBuilderFactory;
 import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
@@ -61,7 +62,6 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
-import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.export.CsarExportOptions;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.NewVersionApiData;
@@ -298,8 +298,8 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         if ((csar != null) || (yaml != null) || (xml != null)) {
             return this.getDefinitionsAsResponse(csar, yaml, addToProvenance, uriInfo);
         }
-        String repositoryUiUrl = Environment.getUrlConfiguration().getRepositoryUiUrl();
-        String uiUrl = uriInfo.getAbsolutePath().toString().replaceAll(Environment.getUrlConfiguration().getRepositoryApiUrl(), repositoryUiUrl);
+        String repositoryUiUrl = Environments.get().getEndpoints().get("repositoryUiUrl");
+        String uiUrl = uriInfo.getAbsolutePath().toString().replaceAll(Environments.get().getEndpoints().get("repositoryApiUrl"), repositoryUiUrl);
         return Response.temporaryRedirect(URI.create(uiUrl)).build();
     }
 
