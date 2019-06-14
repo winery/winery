@@ -43,6 +43,7 @@ export class TopologyRendererActions {
     static REFINE_TOPOLOGY_WITH_TESTS = 'REFINE_TOPOLOGY_WITH_TESTS';
     static HIGHLIGHT_NODES = 'HIGHLIGHT_NODES';
     static DETECT_PROBLEMS = 'DETECT_PROBLEMS';
+    static ENRICH_NODE_TEMPLATES = 'ENRICH_NODE_TEMPLATES';
     static DETERMINE_STATEFUL_COMPONENTS = 'DETERMINE_STATEFUL_COMPONENTS';
     static DETERMINE_FREEZABLE_COMPONENTS = 'DETERMINE_FREEZABLE_COMPONENTS';
     static CLEAN_FREEZABLE_COMPONENTS = 'CLEAN_FREEZABLE_COMPONENTS';
@@ -101,6 +102,10 @@ export class TopologyRendererActions {
 
     detectProblems(): Action {
         return { type: TopologyRendererActions.DETECT_PROBLEMS };
+    }
+
+    enrichNodeTemplates(): Action {
+        return { type: TopologyRendererActions.ENRICH_NODE_TEMPLATES };
     }
 
     substituteTopology(): Action {
