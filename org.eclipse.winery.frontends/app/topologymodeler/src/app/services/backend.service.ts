@@ -27,6 +27,7 @@ import { forkJoin } from 'rxjs';
 import { TopologyModelerConfiguration } from '../models/topologyModelerConfiguration';
 import { ErrorHandlerService } from './error-handler.service';
 import { Visuals } from '../models/visuals';
+import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 /**
  * Responsible for interchanging data between the app and the server.
@@ -48,7 +49,8 @@ export class BackendService {
 
     constructor(private http: HttpClient,
                 private alert: ToastrService,
-                private errorHandler: ErrorHandlerService) {
+                private errorHandler: ErrorHandlerService,
+                private configurationService: WineryRepositoryConfigurationService) {
         this.endpointConfiguration$.subscribe((params: TopologyModelerConfiguration) => {
             if (!(isNullOrUndefined(params.id) && isNullOrUndefined(params.ns) &&
                 isNullOrUndefined(params.repositoryURL) && isNullOrUndefined(params.uiURL))) {
@@ -97,7 +99,8 @@ export class BackendService {
                 this.requestRequirementTypes(),
                 this.requestPolicyTemplates(),
                 this.requestRelationshipTypes(),
-                this.requestNodeTypes()
+                this.requestNodeTypes(),
+                this.configurationService.getConfigurationFromBackend(this.configuration.repositoryURL)
             );
         }
     }
@@ -125,7 +128,7 @@ export class BackendService {
                     this.http.get<Visuals>(nodeVisualsUrl),
                     this.http.get<Visuals>(relationshipVisualsUrl),
                     this.http.get<Visuals>(policyVisualsUrl),
-                    this.http.get<Visuals>(policyTypesVisualsUrl)
+                    this.http.get<Visuals>(policyTypesVisualsUrl),
                 );
             } else {
                 const compareUrl = url

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,10 +12,12 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Component } from '@angular/core';
+import {FeatureEnum} from '../../../wineryFeatureToggleModule/wineryRepository.feature.direct';
 
 @Component({
     templateUrl: 'accountability.component.html',
     styleUrls: ['accountability.component.css']
 })
 export class AccountabilityComponent {
+    configEnum = FeatureEnum;
 }

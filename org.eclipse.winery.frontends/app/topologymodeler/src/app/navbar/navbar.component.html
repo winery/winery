@@ -119,6 +119,7 @@
                 [style.background-color]="getStyle(navbarButtonsState.buttonsState.targetLocationsButton)">
                 Target Locations
             </button>
+        <div *wineryRepositoryFeatureToggle="configEnum.Splitting">
             <button
                 class="btn btn-sm align-middle dark-button-style"
                 type="button"
@@ -128,6 +129,7 @@
                 [disabled]="splittingOngoing">
                 {{splittingOngoing ? 'Splitting...' : 'Split'}}
             </button>
+        </div>
             <button
                 class="btn btn-sm align-middle dark-button-style"
                 type="button"

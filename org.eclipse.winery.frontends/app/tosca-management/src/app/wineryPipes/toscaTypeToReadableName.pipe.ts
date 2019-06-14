@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -19,7 +19,7 @@ import {Utils} from '../wineryUtils/utils';
     name: 'toscaTypeToReadableName'
 })
 export class ToscaTypeToReadableNamePipe implements PipeTransform {
-    transform(value: ToscaTypes, args: any[]): string {
+    transform(value: ToscaTypes): string {
         if (value) {
             return Utils.getToscaTypeNameFromToscaType(value);
         } else {

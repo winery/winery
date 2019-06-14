@@ -31,6 +31,7 @@ import { TopologyModelerConfiguration } from './models/topologyModelerConfigurat
 import { ToastrService } from 'ngx-toastr';
 import { TopologyRendererState } from './redux/reducers/topologyRenderer.reducer';
 import { TopologyRendererActions } from './redux/actions/topologyRenderer.actions';
+import { WineryRepositoryConfigurationService } from '../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 /**
  * This is the root component of the topology modeler.
@@ -70,7 +71,8 @@ export class WineryComponent implements OnInit, AfterViewInit {
                 private ngRedux: NgRedux<IWineryState>,
                 private actions: TopologyRendererActions,
                 private alert: ToastrService,
-                private activatedRoute: ActivatedRoute) {
+                private activatedRoute: ActivatedRoute,
+                private configurationService: WineryRepositoryConfigurationService) {
         this.subscriptions.push(this.ngRedux.select(state => state.wineryState.hideNavBarAndPaletteState)
             .subscribe(hideNavBar => this.hideNavBarState = hideNavBar));
         this.subscriptions.push(this.ngRedux.select(state => state.topologyRendererState)

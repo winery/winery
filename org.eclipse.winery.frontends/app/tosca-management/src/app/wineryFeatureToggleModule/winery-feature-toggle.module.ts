@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,13 +11,23 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component} from '@angular/core';
-import { FeatureEnum } from '../wineryFeatureToggleModule/wineryRepository.feature.direct';
 
-@Component({
-    templateUrl: './other.component.html',
-    styleUrls: ['other.component.css']
+import { NgModule } from '@angular/core';
+import { FeatureToggleDirective } from './wineryRepository.feature.direct';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { WineryRepositoryConfigurationService } from './WineryRepositoryConfiguration.service';
+
+@NgModule({
+    imports: [CommonModule],
+    declarations: [
+        FeatureToggleDirective
+    ],
+    exports: [
+        FeatureToggleDirective
+    ],
+    providers: [WineryRepositoryConfigurationService]
 })
-export class OtherComponent {
-    configEnum = FeatureEnum;
+
+export class WineryFeatureToggleModule {
 }

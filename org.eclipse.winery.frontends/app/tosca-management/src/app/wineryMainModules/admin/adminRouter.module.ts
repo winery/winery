@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -27,6 +27,7 @@ import { AuthorizationComponent } from '../../instance/admin/accountability/auth
 import { AuthenticationComponent } from '../../instance/admin/accountability/authentication/authentication.component';
 import { ConfigurationComponent } from '../../instance/admin/accountability/configuration/configuration.component';
 import { ProvenanceComponent } from '../../instance/admin/accountability/provenance/provenance.component';
+import { FeatureConfigurationComponent } from '../../instance/admin/configuration/configuration.component';
 
 const toscaType = ToscaTypes.Admin;
 
@@ -53,6 +54,7 @@ const adminRoutes: Routes = [
                 ]
             },
             { path: 'log', component: LoggerComponent },
+            { path: 'configuration', component: FeatureConfigurationComponent},
             { path: '', redirectTo: 'namespaces', pathMatch: 'full' }
         ]
     },

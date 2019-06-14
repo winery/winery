@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,6 +23,7 @@ import { PropertyRenameComponent } from './instanceHeader/propertyRename/propert
 import { FormsModule } from '@angular/forms';
 import { AlertModule, BsDropdownModule } from 'ngx-bootstrap';
 import { WineryAddVersionModule } from '../wineryVersionModule/wineryVersion.module';
+import { WineryFeatureToggleModule } from '../wineryFeatureToggleModule/winery-feature-toggle.module';
 
 @NgModule({
     imports: [
@@ -34,7 +35,8 @@ import { WineryAddVersionModule } from '../wineryVersionModule/wineryVersion.mod
         FormsModule,
         WineryAddVersionModule,
         AlertModule.forRoot(),
-        BsDropdownModule.forRoot()
+        WineryFeatureToggleModule,
+        BsDropdownModule.forRoot(),
     ],
     exports: [InstanceComponent],
     declarations: [
