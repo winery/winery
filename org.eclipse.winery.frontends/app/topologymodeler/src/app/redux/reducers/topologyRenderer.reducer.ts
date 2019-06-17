@@ -31,6 +31,7 @@ export interface TopologyRendererState {
         splitTopologyButton?: boolean;
         matchTopologyButton?: boolean;
         problemDetectionButton?: boolean;
+        enrichmentButton?: boolean;
         substituteTopologyButton?: boolean;
         refineTopologyButton?: boolean;
         refineTopologyWithTestsButton?: boolean;
@@ -57,6 +58,7 @@ export const INITIAL_TOPOLOGY_RENDERER_STATE: TopologyRendererState = {
         splitTopologyButton: false,
         matchTopologyButton: false,
         problemDetectionButton: false,
+        enrichmentButton: false,
         substituteTopologyButton: false,
         refineTopologyButton: false,
         refineTopologyWithTestsButton: false,
@@ -185,6 +187,14 @@ export const TopologyRendererReducer =
                         problemDetectionButton: !lastState.buttonsState.problemDetectionButton
                     }
                 };
+            case TopologyRendererActions.ENRICH_NODE_TEMPLATES:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        enrichmentButton: !lastState.buttonsState.enrichmentButton
+                }
+            };
             case TopologyRendererActions.SUBSTITUTE_TOPOLOGY:
                 return {
                     ...lastState,

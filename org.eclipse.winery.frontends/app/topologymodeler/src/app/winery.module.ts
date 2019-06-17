@@ -48,6 +48,7 @@ import { ProblemDetectionComponent } from './problemDetection/problemDetection.c
 import { PropertiesModule } from './properties/properties.module';
 import { StatefulAnnotationsService } from './services/statefulAnnotations.service';
 import { WineryModalModule } from '../../../tosca-management/src/app/wineryModalModule/winery.modal.module';
+import { EnricherComponent } from './enricher/enricher.component';
 import { WineryFeatureToggleModule } from '../../../tosca-management/src/app/wineryFeatureToggleModule/winery-feature-toggle.module';
 
 @NgModule({
@@ -57,7 +58,8 @@ import { WineryFeatureToggleModule } from '../../../tosca-management/src/app/win
         SidebarComponent,
         PrintViewComponent,
         RefinementSidebarComponent,
-        ProblemDetectionComponent
+        ProblemDetectionComponent,
+        EnricherComponent
     ],
     exports: [WineryComponent],
     imports: [
