@@ -17,10 +17,13 @@ package org.eclipse.winery.repository.rest.resources.servicetemplates;
 import java.io.IOException;
 import java.net.URI;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -45,20 +48,28 @@ import org.eclipse.winery.compliance.checking.ServiceTemplateComplianceRuleRuleC
 import org.eclipse.winery.model.adaptation.substitution.Substitution;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPlans;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.driverspecificationandinjection.DASpecification;
 import org.eclipse.winery.repository.driverspecificationandinjection.DriverInjection;
+import org.eclipse.winery.repository.export.CsarExportOptions;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceContainingATopology;
 import org.eclipse.winery.repository.rest.resources._support.IHasName;
 import org.eclipse.winery.repository.rest.resources._support.ResourceResult;
 import org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionadapter.InjectorReplaceData;
 import org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionadapter.InjectorReplaceOptions;
+import org.eclipse.winery.repository.rest.resources._support.dataadapter.placementadapter.CpbNode;
+import org.eclipse.winery.repository.rest.resources._support.dataadapter.placementadapter.PlacementMatch;
+import org.eclipse.winery.repository.rest.resources._support.dataadapter.placementadapter.PropertyMap;
+import org.eclipse.winery.repository.rest.resources._support.dataadapter.placementadapter.TbpNode;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.BoundaryDefinitionsResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.plans.PlansResource;
@@ -68,11 +79,15 @@ import org.eclipse.winery.repository.splitting.InjectRemoval;
 import org.eclipse.winery.repository.splitting.Splitting;
 import org.eclipse.winery.repository.splitting.SplittingException;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.web3j.abi.datatypes.Array;
 import org.xml.sax.SAXException;
 
 public class ServiceTemplateResource extends AbstractComponentInstanceResourceContainingATopology implements IHasName {
@@ -223,6 +238,70 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
             return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
         return Response.ok().entity(injectionReplaceOptions).build();
+    }
+
+    @POST
+    @Path("placement/completion")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
+    public Response completePlacementCandidate(Object placementCandidate, @Context UriInfo uriInfo) throws Exception, IOException, ParserConfigurationException, SAXException, SplittingException {
+        
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+        List<PlacementMatch> placementMatches = Arrays.asList(mapper.readValue(placementCandidate.toString(), PlacementMatch[].class));
+        TTopologyTemplate topologyTemplateToBeCompleted = this.getServiceTemplate().getTopologyTemplate();
+        
+        // Go through every match and get the capable NodeTemplate
+        placementMatches.forEach(match -> {
+            CpbNode cpbNode = match.getCpbNode();
+            TbpNode tbpNode = match.getTbpNode();
+            Map<String, String> cpbNodeProps = cpbNode.getPropertyMap().getProperties();
+
+            // Get all required entities
+            ServiceTemplateId stid = new ServiceTemplateId(QName.valueOf(cpbNode.getServiceTemplateOfOsNode()));
+            TServiceTemplate serviceTemplateOfCpbNode = RepositoryFactory.getRepository().getElement(stid);
+            TNodeTemplate cpbNodeTemplate = serviceTemplateOfCpbNode.getTopologyTemplate().getNodeTemplate(cpbNode.getOsNode());
+            TNodeTemplate tbpNodeTemplate = topologyTemplateToBeCompleted.getNodeTemplate(tbpNode.getToBePlacedNode());
+            
+            // Set State property to "running"
+            cpbNodeProps.put("State", "running");
+
+            // Set the added NodeTemplate's properties as the properties of the running NodeTemplateInstance
+            cpbNodeTemplate.getProperties().setKVProperties(cpbNodeProps);
+
+            // Add the nodeTemplate to the existing TopologyTemplate only if not added before
+            if (topologyTemplateToBeCompleted.getNodeTemplate(cpbNodeTemplate.getId()) == null) {
+                topologyTemplateToBeCompleted.addNodeTemplate(cpbNodeTemplate);
+            }
+            
+            // Add a HostedOn relation between the tbpNode and the cpbNode
+            TRelationshipTemplate relationshipTemplate = new TRelationshipTemplate();
+            relationshipTemplate.setTargetNodeTemplate(cpbNodeTemplate);
+            relationshipTemplate.setSourceNodeTemplate(tbpNodeTemplate);
+            relationshipTemplate.setType(QName.valueOf("{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}HostedOn"));
+            relationshipTemplate.setName("HostedOn");
+            relationshipTemplate.setId(tbpNodeTemplate.getId() + "-HostedOn-" + cpbNodeTemplate.getId());
+            topologyTemplateToBeCompleted.addRelationshipTemplate(relationshipTemplate);
+            
+            // Set TopologyTemplate
+            this.getServiceTemplate().setTopologyTemplate(topologyTemplateToBeCompleted);
+            
+        });
+
+        LOGGER.debug("Persisting...");
+        RestUtils.persist(this);
+        LOGGER.debug("Persisted.");
+
+        // No renaming of the Service Template allowed because of the plans
+
+        // Export CSAR
+        CsarExportOptions options = new CsarExportOptions();
+        options.setAddToProvenance(false);
+        RestUtils.getCsarOfSelectedResource(this, options);
+
+        URI url = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(id));
+        LOGGER.debug("URI of the old and new service template {}", url.toString());
+        return Response.created(url).build();
     }
 
     @POST
