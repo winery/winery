@@ -20,7 +20,7 @@ import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reduce
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { TTopologyTemplate } from '../models/ttopology-template';
-import { Utils } from '../models/utils';
+import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 import { EnricherService } from './enricher.service';
 import { Enrichment, FeatureEntity } from './enrichmentEntity';
 
@@ -205,7 +205,7 @@ export class EnricherComponent {
      * @param data: topology template that was updated
      */
     private enrichmentApplied(data: TTopologyTemplate) {
-        Utils.updateTopologyTemplate(this.ngRedux, this.wineryActions, data);
+        TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, data);
         // reset available features since they are no longer valid
         this.availableFeatures = null;
         this.alert.success('Updated Topology Template!');

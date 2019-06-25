@@ -1543,6 +1543,14 @@ public class BackendUtils {
         return idMapping;
     }
 
+    public static TTopologyTemplate updateVersionOfNodeTemplate(TTopologyTemplate topologyTemplate, String nodeTemplateId, String newComponentType) {
+        topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream()
+            .filter(template -> template.getId().equals(nodeTemplateId))
+            .findFirst()
+            .ifPresent(template -> template.setType(newComponentType));
+        return topologyTemplate;
+    }
+    
     /**
      * Collects all the definitions which describe the same component in different versions.
      *

@@ -1,0 +1,76 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2019 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<ng-template #updateVersionModal>
+    <winery-modal-header [modalRef]="updateVersionModalRef" [title]="'Select new version'">
+
+    </winery-modal-header>
+    <winery-modal-body>
+        <div *ngFor="let wineryVersion of versions">
+            <input type="radio" name="wineryVersion" (click)="selectedVersion(wineryVersion)">{{" " +
+            wineryVersion.toReadableString()}}<br>
+        </div>
+        <br>
+        
+    </winery-modal-body>
+    <winery-modal-footer [modalRef]="updateVersionModalRef" [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Continue'" [disableOkButton] = "!versionClicked"
+                         (onOk)="openProperty()">
+    </winery-modal-footer>
+</ng-template>
+<ng-template #updatePropertyModal>
+    <winery-modal-header [modalRef]="updatePropertyModalRef" [title]="'Map Properties'">
+    </winery-modal-header>
+    <p>Click continue when you finished mapping. Click save to finish updating the Node Template.</p>
+    <winery-modal-body>
+        <table>
+            <tr>
+                <th class="propertiesMappingData">
+                    NEW
+                </th>
+                <th class="propertiesMappingData">
+                    REMOVED
+                </th>
+                <th class="propertiesMappingData">
+                    RESOLVED
+                </th>
+            </tr>
+
+            <tr *ngFor="let iterations of
+            readProperties(propertyDiff.removedProperties.length,
+            propertyDiff.newProperties.length,
+            propertyDiff.resolvedProperties.length);
+            index as i">
+                <td class="propertiesMappingData">
+                    <input *ngIf="propertyDiff.newProperties[i] != null" type="radio" name="newProperties"
+                           (click)="selectedNewProperty(propertyDiff.newProperties[i])">
+                            {{propertyDiff.newProperties[i]}}
+                </td>
+                <td class="propertiesMappingData">
+                    <input *ngIf="propertyDiff.removedProperties[i] != null" type="radio" name="removedProperties"
+                           (click)="selectedRemovedProperty(propertyDiff.removedProperties[i])">
+                            {{propertyDiff.removedProperties[i]}}
+                </td>
+                <td class="propertiesMappingData">
+                    <input *ngIf="propertyDiff.resolvedProperties[i] != null" type="checkbox"
+                           name="resolvedProperties"
+                           checked disabled>
+                            {{propertyDiff.resolvedProperties[i]}}
+                </td>
+            </tr>
+        </table>
+    </winery-modal-body>
+    <winery-modal-footer [modalRef]="updatePropertyModalRef" [closeButtonLabel]="'Back'" [okButtonLabel]="continueOrMap"
+                         (onOk)="triggerUpdateOrMatchProperties(this.nodeTemplateId)" (onCancel)="open()">
+    </winery-modal-footer>
+</ng-template>

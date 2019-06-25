@@ -18,7 +18,7 @@ import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
 import { WineryActions } from '../redux/actions/winery.actions';
-import { Utils } from '../models/utils';
+import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 
 @Component({
     selector: 'winery-refinement',
@@ -97,7 +97,7 @@ export class RefinementSidebarComponent implements OnDestroy {
             }
 
             if (value.currentTopology) {
-                Utils.updateTopologyTemplate(this.ngRedux, this.wineryActions, value.currentTopology);
+                TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, value.currentTopology);
             } else {
                 this.openModelerFor(value.serviceTemplateContainingRefinements.xmlId.decoded,
                     value.serviceTemplateContainingRefinements.namespace.decoded,

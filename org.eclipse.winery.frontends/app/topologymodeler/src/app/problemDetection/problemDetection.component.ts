@@ -23,7 +23,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { BackendService } from '../services/backend.service';
 import { SolutionInputData } from './solutionEntity';
 import { TTopologyTemplate } from '../models/ttopology-template';
-import { Utils } from '../models/utils';
+import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 import { WineryActions } from '../redux/actions/winery.actions';
 
 @Component({
@@ -131,7 +131,7 @@ export class ProblemDetectionComponent {
     }
 
     private solutionApplied(data: TTopologyTemplate) {
-        Utils.updateTopologyTemplate(this.ngRedux, this.wineryActions, data);
+        TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, data);
         this.loading = false;
     }
 }

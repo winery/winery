@@ -20,7 +20,7 @@ export enum YesNoEnum {
  * ToscaTypes represent the main types found in TOSCA. All of them are components reachable via
  * a main route. Additionally, <code>Admin</code> has been added because it is also a main route.
  *
- * If you add a new TOSCA Type, you also need to adjust the utils.ts file.
+ * If you add a new TOSCA Type, you also need to adjust the topologyTemplateUtil.ts file.
  * Default is assumed ToscaTypes.Admin.
  */
 export enum ToscaTypes {

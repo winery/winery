@@ -24,12 +24,13 @@ import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from './redux/store/winery.store';
 import { ToscaDiff } from './models/ToscaDiff';
 import { isNullOrUndefined } from 'util';
-import { Utils } from './models/utils';
+import { TopologyTemplateUtil } from './models/topologyTemplateUtil';
 import { EntityTypesModel, TopologyModelerInputDataFormat } from './models/entityTypesModel';
 import { ActivatedRoute } from '@angular/router';
 import { TopologyModelerConfiguration } from './models/topologyModelerConfiguration';
 import { ToastrService } from 'ngx-toastr';
 import { TopologyRendererState } from './redux/reducers/topologyRenderer.reducer';
+import { VersionElement } from './models/versionElement';
 import { TopologyRendererActions } from './redux/actions/topologyRenderer.actions';
 import { WineryRepositoryConfigurationService } from '../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
@@ -45,7 +46,7 @@ export class WineryComponent implements OnInit, AfterViewInit {
 
     // If this input variable is not null, it means that data is passed to the topologymodeler to be rendered.
     @Input() topologyModelerData: TopologyModelerInputDataFormat;
-
+    versionElements: VersionElement[];
     sidebarDeleteButtonClickEvent: any;
     nodeTemplates: Array<TNodeTemplate> = [];
     relationshipTemplates: Array<TRelationshipTemplate> = [];
@@ -206,6 +207,13 @@ export class WineryComponent implements OnInit, AfterViewInit {
                 this.entityTypes.groupedNodeTypes = entityTypeJSON;
                 break;
             }
+            case 'versionElements': {
+                this.entityTypes.versionElements = [];
+                entityTypeJSON.forEach((versionElements => {
+                    this.entityTypes.versionElements.push(new VersionElement(versionElements.qName, versionElements.versions));
+                }));
+                break;
+            }
             case 'unGroupedNodeTypes': {
                 this.entityTypes.unGroupedNodeTypes = entityTypeJSON;
                 break;
@@ -245,9 +253,9 @@ export class WineryComponent implements OnInit, AfterViewInit {
 
     initTopologyTemplate(nodeTemplateArray: Array<TNodeTemplate>, relationshipTemplateArray: Array<TRelationshipTemplate>) {
         // init node templates
-        this.nodeTemplates = Utils.initNodeTemplates(nodeTemplateArray, this.entityTypes.nodeVisuals, this.topologyDifferences);
+        this.nodeTemplates = TopologyTemplateUtil.initNodeTemplates(nodeTemplateArray, this.entityTypes.nodeVisuals, this.topologyDifferences);
         // init relationship templates
-        this.relationshipTemplates = Utils.initRelationTemplates(relationshipTemplateArray, this.topologyDifferences);
+        this.relationshipTemplates = TopologyTemplateUtil.initRelationTemplates(relationshipTemplateArray, this.topologyDifferences);
     }
 
     initiateData(): void {
@@ -297,6 +305,9 @@ export class WineryComponent implements OnInit, AfterViewInit {
 
             // NodeTypes
             this.initEntityType(JSON[9], 'unGroupedNodeTypes');
+
+            // Version Elements
+            this.initEntityType(JSON[10], 'versionElements');
 
             this.triggerLoaded('everything');
         });

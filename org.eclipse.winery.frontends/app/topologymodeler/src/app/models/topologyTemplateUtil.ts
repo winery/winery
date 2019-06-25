@@ -19,7 +19,7 @@ import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { WineryActions } from '../redux/actions/winery.actions';
 
-export class Utils {
+export class TopologyTemplateUtil {
 
     static HORIZONTAL_OFFSET_FOR_NODES_WITHOUT_COORDINATES = 350;
     static VERTICAL_OFFSET_FOR_NODES_WITHOUT_COORDINATES = 200;
@@ -117,7 +117,7 @@ export class Utils {
                 }
                 const state = topologyDifferences ? DifferenceStates.UNCHANGED : null;
                 nodeTemplates.push(
-                    Utils.createTNodeTemplateFromObject(node, nodeVisuals, state)
+                    TopologyTemplateUtil.createTNodeTemplateFromObject(node, nodeVisuals, state)
                 );
             });
         }
@@ -140,7 +140,7 @@ export class Utils {
                     if (element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any.length > 0 &&
                         element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any[0].propertyDefinitionKVList) {
                         const properties = {
-                            kvproperties: Utils.setKVProperties(element)
+                            kvproperties: TopologyTemplateUtil.setKVProperties(element)
                         };
                         return properties;
                     }
@@ -191,7 +191,7 @@ export class Utils {
             relationshipTemplateArray.forEach(relationship => {
                 const state = topologyDifferences ? DifferenceStates.UNCHANGED : null;
                 relationshipTemplates.push(
-                    Utils.createTRelationshipTemplateFromObject(relationship, state)
+                    TopologyTemplateUtil.createTRelationshipTemplateFromObject(relationship, state)
                 );
             });
         }
@@ -214,11 +214,11 @@ export class Utils {
                 relationship => ngRedux.dispatch(wineryActions.deleteRelationshipTemplate(relationship.id))
             );
 
-        Utils.initNodeTemplates(topology.nodeTemplates, wineryState.nodeVisuals)
+        TopologyTemplateUtil.initNodeTemplates(topology.nodeTemplates, wineryState.nodeVisuals)
             .forEach(
                 node => ngRedux.dispatch(wineryActions.saveNodeTemplate(node))
             );
-        Utils.initRelationTemplates(topology.relationshipTemplates)
+        TopologyTemplateUtil.initRelationTemplates(topology.relationshipTemplates)
             .forEach(
                 relationship => ngRedux.dispatch(wineryActions.saveRelationship(relationship))
             );
