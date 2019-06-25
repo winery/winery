@@ -14,7 +14,7 @@
 
 import {
     AfterViewInit, Component, ComponentRef, DoCheck, ElementRef, EventEmitter, Input, KeyValueDiffers, NgZone,
-    OnDestroy, OnInit, Output, Renderer2
+    OnDestroy, OnInit, Output, Renderer2, ViewChild
 } from '@angular/core';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { NgRedux } from '@angular-redux/store';
@@ -31,6 +31,10 @@ import { EntityTypesModel } from '../models/entityTypesModel';
 import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reducer';
 import { TPolicy } from '../models/policiesModalData';
 import { Visuals } from '../models/visuals';
+
+import { VersionElement } from '../models/versionElement';
+import { VersionsComponent } from './versions/versions.component';
+import { WineryVersion } from '../../../../tosca-management/src/app/model/wineryVersion';
 
 /**
  * Every node has its own component and gets created dynamically.
@@ -89,6 +93,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     @Output() sendPaletteStatus: EventEmitter<any>;
     @Output() sendNodeData: EventEmitter<any>;
 
+    @ViewChild('versionModal') versionModal: VersionsComponent;
     previousPosition: any;
     currentPosition: any;
     nodeRef: ComponentRef<Component>;
@@ -100,6 +105,10 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     popoverHtml = `<div class="">Open NodeType in a separate tab</div>`;
     // differ object for detecting changes made to the nodeTemplate object for DoCheck
     differ: any;
+
+    newerVersions: WineryVersion[];
+    newerVersionExist: boolean;
+    newVersionElement: VersionElement;
 
     constructor(private zone: NgZone,
                 private $ngRedux: NgRedux<IWineryState>,
@@ -205,6 +214,9 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                 this.policyIcons = null;
             }
         }
+
+        this.addNewVersions(new QName(this.nodeTemplate.type)); // yannik
+
     }
 
     /**
@@ -436,5 +448,35 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         } else if (this.endTime - this.startTime >= 200) {
             this.longpress = true;
         }
+    }
+
+    /**
+     * Adding all newer Versions of Node Type
+     */
+    private addNewVersions(currentQname: QName): void {
+        this.newerVersions = new Array<WineryVersion>();
+        this.newerVersionExist = true;
+        let index: number;
+        const currentVersionElement = this.entityTypes.versionElements.find(versionElement => {
+
+            return versionElement.qName === currentQname.qName;
+        });
+
+        if (currentVersionElement) {
+            currentVersionElement.versions.find((version, indexNumber) => {
+                if (version.currentVersion) {
+                    index = indexNumber;
+                }
+                return version.currentVersion;
+            });
+
+            this.newerVersions = currentVersionElement.versions.slice(0, index);
+            this.newVersionElement = new VersionElement(currentQname.qName, this.newerVersions);
+        }
+
+    }
+
+    public openVersionModal() {
+        this.versionModal.open();
     }
 }

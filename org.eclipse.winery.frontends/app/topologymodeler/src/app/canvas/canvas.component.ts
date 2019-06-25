@@ -50,7 +50,7 @@ import { DifferenceStates, VersionUtils } from '../models/ToscaDiff';
 import { ErrorHandlerService } from '../services/error-handler.service';
 import { DragSource } from '../models/DragSource';
 import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reducer';
-import { Utils } from '../models/utils';
+import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 
 @Component({
     selector: 'winery-canvas',
@@ -316,12 +316,12 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                                         this.requirements.properties = currentNodeData.currentRequirement.properties.kvproperties;
                                         return true;
                                     } else {
-                                        this.requirements.properties = Utils.setKVProperties(reqType);
+                                        this.requirements.properties = TopologyTemplateUtil.setKVProperties(reqType);
                                         this.setDefaultReqKVProperties();
                                         return true;
                                     }
                                 } else {
-                                    this.requirements.properties = Utils.setKVProperties(reqType);
+                                    this.requirements.properties = TopologyTemplateUtil.setKVProperties(reqType);
                                     this.setDefaultReqKVProperties();
                                     return true;
                                 }
@@ -398,12 +398,12 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                                         this.capabilities.properties = currentNodeData.currentCapability.properties.kvproperties;
                                         return true;
                                     } else {
-                                        this.capabilities.properties = Utils.setKVProperties(capType);
+                                        this.capabilities.properties = TopologyTemplateUtil.setKVProperties(capType);
                                         this.setDefaultCapKVProperties();
                                         return true;
                                     }
                                 } else {
-                                    this.capabilities.properties = Utils.setKVProperties(capType);
+                                    this.capabilities.properties = TopologyTemplateUtil.setKVProperties(capType);
                                     this.setDefaultCapKVProperties();
                                     return true;
                                 }
@@ -639,7 +639,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 if (cap.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any.length > 0) {
                     this.capabilities.propertyType = 'KV';
                     this.showDefaultProperties = true;
-                    this.capabilities.properties = Utils.setKVProperties(cap);
+                    this.capabilities.properties = TopologyTemplateUtil.setKVProperties(cap);
                     // if propertiesDefinition is defined it's a XML property
                 } else if (cap.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition) {
                     if (cap.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element) {
@@ -745,7 +745,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 if (req.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any.length > 0) {
                     this.requirements.propertyType = 'KV';
                     this.showDefaultProperties = true;
-                    this.requirements.properties = Utils.setKVProperties(req);
+                    this.requirements.properties = TopologyTemplateUtil.setKVProperties(req);
                     return true;
                     // if propertiesDefinition is defined it's a XML property
                 } else if (req.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition) {
@@ -1907,7 +1907,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                             this.selectedRelationshipType.name,
                             relationshipId,
                             this.selectedRelationshipType.qName,
-                            Utils.getDefaultPropertiesFromEntityTypes(this.selectedRelationshipType.name, this.entityTypes.relationshipTypes),
+                            TopologyTemplateUtil.getDefaultPropertiesFromEntityTypes(this.selectedRelationshipType.name, this.entityTypes.relationshipTypes),
                             [],
                             [],
                             {}

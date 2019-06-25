@@ -19,7 +19,7 @@ For more information on TOSCA see [our TOSCA information page](../tosca/).
 - [Compliance Checking](ComplianceChecking.md) - Enables compliance checking of Topology Templates based on reusable Compliance Rules  
 - [Implementation Artifact Generation](generateIA.md) - Shows how to generate and update an implementation artifact of type .war
 - [Accountability](../../org.eclipse.winery.accountability/README.md) - Enables enforcing accountability in decentralized scenarios for collaborative development of CSARs
-
+- [Version Management](VersionManagement.md) - shows how to update the version of a node template in the topology modeler
 ## Background Literature
 
 [BBKL14] Breitenbücher, Uwe; Binz, Tobias; Kopp, Oliver; Leymann, Frank: Vinothek - A Self-Service Portal for TOSCA. In: Herzberg, Nico (Hrsg); Kunze, Matthias (Hrsg): Proceedings of the 6th Central-European Workshop on Services and their Composition (ZEUS 2014).
@@ -35,7 +35,7 @@ More readings at <https://www.opentosca.org>.
 
 ## License
 
-Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
 
 See the NOTICE file(s) distributed with this work for additional
 information regarding copyright ownership.

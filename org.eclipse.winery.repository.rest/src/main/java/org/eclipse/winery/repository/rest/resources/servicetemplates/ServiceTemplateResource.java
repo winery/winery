@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -17,10 +17,13 @@ package org.eclipse.winery.repository.rest.resources.servicetemplates;
 import java.io.IOException;
 import java.net.URI;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -37,6 +40,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
@@ -45,12 +49,15 @@ import org.eclipse.winery.compliance.checking.ServiceTemplateComplianceRuleRuleC
 import org.eclipse.winery.model.adaptation.substitution.Substitution;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.driverspecificationandinjection.DASpecification;
 import org.eclipse.winery.repository.driverspecificationandinjection.DriverInjection;
 import org.eclipse.winery.repository.rest.RestUtils;
@@ -59,6 +66,7 @@ import org.eclipse.winery.repository.rest.resources._support.IHasName;
 import org.eclipse.winery.repository.rest.resources._support.ResourceResult;
 import org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionadapter.InjectorReplaceData;
 import org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionadapter.InjectorReplaceOptions;
+import org.eclipse.winery.repository.rest.resources.apiData.NewVersionListElement;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.BoundaryDefinitionsResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.plans.PlansResource;
@@ -354,5 +362,46 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     @Override
     public void synchronizeReferences() throws IOException {
         BackendUtils.synchronizeReferences((ServiceTemplateId) this.id);
+    }
+
+    @Path("newversions")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public List<NewVersionListElement> getNewVersionList() {
+        IRepository repository = RepositoryFactory.getRepository();
+
+        TServiceTemplate element = repository.getElement((ServiceTemplateId) this.id);
+        
+        /*
+        Catches the case the topologytemplate is empty
+         */
+        try {
+            element.getTopologyTemplate().getNodeTemplates();
+        } catch (NullPointerException e) {
+            WineryVersion noTemplateVersion = new WineryVersion();
+            List<WineryVersion> noTemplateVersionList = new ArrayList<>();
+            noTemplateVersionList.add(noTemplateVersion);
+            NewVersionListElement noVersionElement = new NewVersionListElement(new QName("", ""), noTemplateVersionList);
+            List<NewVersionListElement> nullList = new ArrayList<>();
+            nullList.add(noVersionElement);
+            return nullList;
+        }
+
+        List<TNodeTemplate> nodeList = element.getTopologyTemplate().getNodeTemplates();
+
+        Map<QName, List<WineryVersion>> versionElements = new HashMap<>();
+
+        for (TNodeTemplate node : nodeList) {
+            NodeTypeId nodeTypeId = new NodeTypeId(node.getType());
+
+            if (!versionElements.containsKey(nodeTypeId.getQName())) {
+                List<WineryVersion> versionList = BackendUtils.getAllVersionsOfOneDefinition(nodeTypeId);
+                versionElements.put(nodeTypeId.getQName(), versionList);
+            }
+        }
+
+        return versionElements.entrySet().stream()
+            .map(qNameListEntry -> new NewVersionListElement(qNameListEntry.getKey(), qNameListEntry.getValue()))
+            .collect(Collectors.toList());
     }
 }

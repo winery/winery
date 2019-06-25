@@ -27,6 +27,7 @@ import { forkJoin } from 'rxjs';
 import { TopologyModelerConfiguration } from '../models/topologyModelerConfiguration';
 import { ErrorHandlerService } from './error-handler.service';
 import { Visuals } from '../models/visuals';
+import { VersionElement } from '../models/versionElement';
 import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 /**
@@ -100,6 +101,7 @@ export class BackendService {
                 this.requestPolicyTemplates(),
                 this.requestRelationshipTypes(),
                 this.requestNodeTypes(),
+                this.requestVersionElements(),
                 this.configurationService.getConfigurationFromBackend(this.configuration.repositoryURL)
             );
         }
@@ -346,5 +348,11 @@ export class BackendService {
     requestAllTopologyTemplates(): Observable<EntityType[]> {
         const url = this.configuration.repositoryURL + urlElement.ServiceTemplates;
         return this.http.get<EntityType[]>(url, { headers: this.headers });
+    }
+
+    requestVersionElements(): Observable<VersionElement[]> {
+        if (this.configuration) {
+            return this.http.get<VersionElement[]>(this.serviceTemplateURL + '/newversions', { headers: this.headers });
+        }
     }
 }

@@ -20,7 +20,7 @@ import { IWineryState } from '../redux/store/winery.store';
 import { TNodeTemplate } from '../models/ttopology-template';
 import { NewNodeIdTypeColorPropertiesModel } from '../models/newNodeIdTypeColorModel';
 import { Subscription } from 'rxjs';
-import { Utils } from '../models/utils';
+import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 import { EntityTypesModel } from '../models/entityTypesModel';
 import { GroupedNodeTypeModel } from '../models/groupedNodeTypeModel';
 import { hostURL } from '../models/configuration';
@@ -139,7 +139,7 @@ export class PaletteComponent implements OnDestroy {
         const y = $event.pageY - this.newNodePositionOffsetY;
 
         const newIdTypeColorProperties = this.generateIdTypeAndProperties(child.text);
-        const nodeVisuals: Visuals = Utils.getNodeVisualsForNodeTemplate(newIdTypeColorProperties.type, this.entityTypes.nodeVisuals);
+        const nodeVisuals: Visuals = TopologyTemplateUtil.getNodeVisualsForNodeTemplate(newIdTypeColorProperties.type, this.entityTypes.nodeVisuals);
         const newNode: TNodeTemplate = new TNodeTemplate(
             newIdTypeColorProperties.properties,
             newIdTypeColorProperties.id,
@@ -190,7 +190,7 @@ export class PaletteComponent implements OnDestroy {
                     return {
                         id: this.backendService.configuration.idPrefix + newId,
                         type: type,
-                        properties: Utils.getDefaultPropertiesFromEntityTypes(name , this.entityTypes.unGroupedNodeTypes)
+                        properties: TopologyTemplateUtil.getDefaultPropertiesFromEntityTypes(name , this.entityTypes.unGroupedNodeTypes)
                     };
                 }
             }
@@ -214,7 +214,7 @@ export class PaletteComponent implements OnDestroy {
                     const result = {
                         id: this.backendService.configuration.idPrefix + node.id,
                         type: node.qName,
-                        properties: Utils.getDefaultPropertiesFromEntityTypes(name, this.entityTypes.unGroupedNodeTypes)
+                        properties: TopologyTemplateUtil.getDefaultPropertiesFromEntityTypes(name, this.entityTypes.unGroupedNodeTypes)
                     };
                     return result;
                 }
@@ -231,7 +231,7 @@ export class PaletteComponent implements OnDestroy {
     }
 
     getImageUrl(child: GroupedNodeTypeModel): string {
-        const visuals = Utils.getNodeVisualsForNodeTemplate(child.id,
+        const visuals = TopologyTemplateUtil.getNodeVisualsForNodeTemplate(child.id,
             this.entityTypes.nodeVisuals);
 
         // if the node doesn't have a picture the URL is "null"

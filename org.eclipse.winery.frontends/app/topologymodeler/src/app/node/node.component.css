@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -132,6 +132,10 @@ div.connectorLabel {
     text-overflow: ellipsis !important;
 }
 
+td {
+    padding: 0;
+}
+
 button.btn.btn-sm.btn-outline-secondary {
     /*  background-color: rgba(255,255,255,0.8);*/
     background-color: rgba(237, 234, 230, 1) !important;
@@ -179,4 +183,12 @@ button.btn.btn-sm.btn-outline-secondary:hover, button.btn.btn-sm.btn-outline-sec
 
 .policyAnnotation {
     margin: 3px;
+}
+
+.newVersionTriangle {
+    position: absolute;
+    right: -4px;
+    top: -12px;
+    color: red;
+    font-size: 20px;
 }

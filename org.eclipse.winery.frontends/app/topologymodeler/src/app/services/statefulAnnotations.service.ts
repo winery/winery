@@ -17,7 +17,7 @@ import { IWineryState } from '../redux/store/winery.store';
 import { HttpClient } from '@angular/common/http';
 import { BackendService } from './backend.service';
 import { TTopologyTemplate } from '../models/ttopology-template';
-import { Utils } from '../models/utils';
+import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 import { ErrorHandlerService } from './error-handler.service';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
@@ -71,7 +71,7 @@ export class StatefulAnnotationsService {
 
         this.http.get<TTopologyTemplate>(url)
             .subscribe(
-                data => Utils.updateTopologyTemplate(this.ngRedux, this.actions, data),
+                data => TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.actions, data),
                 error => this.errorHandler.handleError(error)
             );
     }
@@ -87,7 +87,7 @@ export class StatefulAnnotationsService {
         this.http.get<TopologyAndErrorList>(url)
             .subscribe(
                 data => {
-                    Utils.updateTopologyTemplate(this.ngRedux, this.actions, data.topologyTemplate);
+                    TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.actions, data.topologyTemplate);
                     if (data.errorList && data.errorList.length > 0) {
                         this.alert.warning(
                             'There were no freeze operations found for some stateful components!',

@@ -16,10 +16,14 @@ package org.eclipse.winery.repository.rest.resources.servicetemplates.topologyte
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -36,6 +40,7 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.configuration.Environments;
+import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.adaptation.enhance.EnhancementUtils;
 import org.eclipse.winery.model.adaptation.enhance.TopologyAndErrorList;
@@ -43,15 +48,21 @@ import org.eclipse.winery.model.adaptation.problemsolving.SolutionFactory;
 import org.eclipse.winery.model.adaptation.problemsolving.SolutionInputData;
 import org.eclipse.winery.model.adaptation.problemsolving.SolutionStrategy;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.rest.datatypes.UpdateInfo;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceContainingATopology;
 import org.eclipse.winery.repository.rest.resources._support.dataadapter.composeadapter.CompositionData;
 import org.eclipse.winery.repository.rest.resources.apiData.AvailableFeaturesApiData;
+import org.eclipse.winery.repository.rest.resources.apiData.PropertyDiffList;
 import org.eclipse.winery.repository.splitting.Splitting;
 import org.eclipse.winery.repository.targetallocation.Allocation;
 import org.eclipse.winery.repository.targetallocation.util.AllocationRequest;
@@ -293,6 +304,123 @@ public class TopologyTemplateResource {
             return Response.ok().build();
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
+
+    @POST
+    @Path("kvcomparison")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public PropertyDiffList computeDi(UpdateInfo updateInfo) {
+
+        List<String> resolvedProperties = new ArrayList<>();
+        List<String> removedProperties = new ArrayList<>();
+        List<String> newProperties = new ArrayList<>();
+        HashMap<String, String> oldKvs;
+        List<PropertyDefinitionKV> newKvs;
+
+        Optional<TEntityTemplate> foundTemplate = topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream()
+            .filter(template -> template.getId().equals(updateInfo.getNodeTemplateId()))
+            .filter(template -> template.getProperties() != null)
+            .findFirst();
+
+        if (foundTemplate.isPresent() && foundTemplate.get().getProperties() != null) {
+
+            oldKvs = foundTemplate.get().getProperties().getKVProperties();
+
+            QName qNameType = QName.valueOf(updateInfo.getNewComponentType());
+
+            IRepository repository = RepositoryFactory.getRepository();
+            TEntityType tNodeTypeOfNewType = repository.getElement(new NodeTypeId(qNameType));
+
+            newKvs = tNodeTypeOfNewType.getWinerysPropertiesDefinition()
+                .getPropertyDefinitionKVList()
+                .getPropertyDefinitionKVs();
+
+            resolvedProperties = newKvs.stream()
+                .map(PropertyDefinitionKV::getKey)
+                .filter(keys -> oldKvs.keySet()
+                    .stream()
+                    .map(String::toLowerCase)
+                    .collect(Collectors.toList()).contains(keys.toLowerCase()))
+                .collect(Collectors.toList());
+
+            removedProperties = oldKvs.keySet().stream()
+                .filter(keys -> !newKvs.stream()
+                    .map(newProp -> newProp.getKey().toLowerCase())
+                    .collect(Collectors.toList()).contains(keys.toLowerCase()))
+                .collect(Collectors.toList());
+
+            newProperties = newKvs.stream()
+                .map(PropertyDefinitionKV::getKey)
+                .filter(keys -> !oldKvs.keySet()
+                    .stream()
+                    .map(String::toLowerCase)
+                    .collect(Collectors.toList()).contains(keys.toLowerCase()))
+                .collect(Collectors.toList());
+        }
+
+        PropertyDiffList diffList = new PropertyDiffList(resolvedProperties, removedProperties, newProperties);
+
+        return diffList;
+    }
+
+    @POST
+    @Path("update")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public TTopologyTemplate updateVersionOfNodeTemplate(UpdateInfo updateInfo) {
+        if (topologyTemplate.getNodeTemplate(updateInfo.getNodeTemplateId()).getProperties() != null) {
+            String[][] mappingList = updateInfo.getMappingList();
+            String[] newList = updateInfo.getNewList();
+            String[] resolvedList = updateInfo.getResolvedList();
+
+            Map<String, String> mappingMap = new LinkedHashMap<>();
+
+            for (int i = 0; i < mappingList.length; i++) {
+                mappingMap.put(mappingList[i][0], mappingList[i][1]);
+            }
+
+            HashMap<String, String> oldKvs = new HashMap<>();
+            LinkedHashMap<String, String> resultKvs = new LinkedHashMap<>();
+
+            Optional<TEntityTemplate> oldTemplate = topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream()
+                .filter(template -> template.getId().equals(updateInfo.getNodeTemplateId()))
+                .filter(template -> template.getProperties() != null)
+                .findFirst();
+            if (oldTemplate.isPresent() && oldTemplate.get().getProperties() != null) {
+                oldKvs = oldTemplate.get().getProperties().getKVProperties();
+                HashMap<String, String> finalOldKvs = oldKvs;
+
+                oldKvs.entrySet()
+                    .stream()
+                    .filter(kv -> mappingMap.containsValue(kv.getKey()))
+                    .forEach(kv -> resultKvs.put(kv.getKey(), kv.getValue()));
+
+                Arrays.stream(resolvedList)
+                    .forEach(k -> resultKvs.put(k, finalOldKvs.get(k)));
+            }
+
+            Arrays.stream(newList)
+                .forEach(k -> resultKvs.put(k, ""));
+
+            this.topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream()
+                .filter(template -> template.getId().equals(updateInfo.getNodeTemplateId()))
+                .findFirst()
+                .ifPresent(template -> {
+                    template.setType(updateInfo.getNewComponentType());
+                    TNodeTemplate.Builder builder = new TNodeTemplate.Builder(template);
+
+                    TEntityTemplate.Properties oldProps = template.getProperties();
+                    oldProps.setAny(null);
+                    oldProps.setKVProperties(resultKvs);
+
+                    builder.setProperties(oldProps);
+                    template = new TNodeTemplate(builder);
+                });
+
+            return this.topologyTemplate;
+        } else {
+            return BackendUtils.updateVersionOfNodeTemplate(this.topologyTemplate, updateInfo.getNodeTemplateId(), updateInfo.getNewComponentType());
         }
     }
 
