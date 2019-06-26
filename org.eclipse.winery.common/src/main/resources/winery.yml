@@ -8,10 +8,10 @@ ui:
     nfv: true
   endpoints:
     container: http://localhost:1337
-    workflowmodeler: http://localhost:8080/winery-workflowmodeler
-    topologymodeler: http://localhost:8080/winery-topologymodeler
+    workflowmodeler: http://localhost:9527
+    topologymodeler: http://localhost:4201
     repositoryApiUrl: http://localhost:8080/winery
-    repositoryUiUrl: http://localhost:8080/#
+    repositoryUiUrl: http://localhost:4200/#
 repository:
   provider: file
   repositoryRoot: ""

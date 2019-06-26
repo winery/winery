@@ -21,10 +21,11 @@ import { SelectData } from '../../../model/selectData';
 import { WineryUploaderComponent } from '../../../wineryUploader/wineryUploader.component';
 import { SelectItem } from 'ng2-select';
 import { InputParameters, OutputParameters } from '../../../model/parameters';
-import { backendBaseURL, workflowModelerURL } from '../../../configuration';
+import { backendBaseURL } from '../../../configuration';
 import { InstanceService } from '../../instance.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { WineryRepositoryConfigurationService } from '../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 const bpmn4tosca = 'http://www.opentosca.org/bpmn4tosca';
 
@@ -81,7 +82,8 @@ export class PlansComponent implements OnInit {
     constructor(private notify: WineryNotificationService,
                 public sharedData: InstanceService,
                 private service: PlansService,
-                private modalService: BsModalService) {
+                private modalService: BsModalService,
+                private configurationService: WineryRepositoryConfigurationService) {
     }
 
     ngOnInit() {
@@ -122,7 +124,7 @@ export class PlansComponent implements OnInit {
     }
 
     onEditPlan(plan: PlansApiData) {
-        const bpmnUrl = workflowModelerURL
+        const bpmnUrl = this.configurationService.configuration.endpoints.workflowmodeler
             + '?repositoryURL=' + encodeURIComponent(backendBaseURL + '/')
             + '&namespace=' + encodeURIComponent(this.sharedData.toscaComponent.namespace)
             + '&id=' + this.sharedData.toscaComponent.localName

@@ -11,16 +11,9 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-
+const wineryContext = '/winery';
 // when running in development mode on port 4200, use default port 8080
-// otherwise, assume that backend runs on the some port
+// otherwise, assume that backend runs on the some port#
 export const hostURL = location.protocol + '//' + location.hostname + ':' + (location.port === '4200' ? '8080' : location.port);
-export const backendBaseURL = hostURL + '/winery';
-export const webSocketURL = 'ws://' + location.hostname + ':' + (location.port === '4200' ? '8080' : location.port) + '/winery';
-// when running in development mode, use the workflow modelers development port
-// it also is not running on /winery-workflowmodeler in dev-mode.
-export const workflowModelerURL = location.protocol + '//' + location.hostname + ':'
-    + (location.port === '4200' ? '9527' : location.port + '/winery-workflowmodeler');
-// similar to the workflowModeler, configure the topologyModelerURL
-export const topologyModelerURL = location.protocol + '//' + location.hostname + ':'
-    + (location.port === '4200' ? '4201' : location.port + '/winery-topologymodeler-ui');
+export const backendBaseURL = hostURL + wineryContext;
+export const webSocketURL = 'ws://' + location.hostname + ':' + (location.port === '4200' ? '8080' : location.port) + wineryContext;
