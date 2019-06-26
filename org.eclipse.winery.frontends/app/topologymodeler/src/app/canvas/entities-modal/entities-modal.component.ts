@@ -22,13 +22,13 @@ import { BackendService } from '../../services/backend.service';
 import { IWineryState } from '../../redux/store/winery.store';
 import { NgRedux } from '@angular-redux/store';
 import { isNullOrUndefined } from 'util';
-import { backendBaseURL, hostURL } from '../../models/configuration';
 import { WineryActions } from '../../redux/actions/winery.actions';
 import { ExistsService } from '../../services/exists.service';
 import { ToastrService } from 'ngx-toastr';
 import { DeploymentArtifactOrPolicyModalData, ModalVariant, ModalVariantAndState } from './modal-model';
 import { EntitiesModalService, OpenModalEvent } from './entities-modal.service';
 import { QName } from '../../models/qname';
+import { urlElement } from '../../models/enums';
 
 @Component({
     selector: 'winery-entities-modal',
@@ -63,7 +63,7 @@ export class EntitiesModalComponent implements OnInit, OnChanges {
     // this is required for some reason
     ModalVariant = ModalVariant;
 
-    constructor(private backendService: BackendService,
+    constructor(public backendService: BackendService,
                 private ngRedux: NgRedux<IWineryState>,
                 private actions: WineryActions,
                 private existsService: ExistsService,
@@ -257,6 +257,7 @@ export class EntitiesModalComponent implements OnInit, OnChanges {
     /**
      * This is required to figure out which templateName and Ref have to be pushed to the redux state
      * @param template - either an artifactTemplate or a policyTemplate
+     * @param modalVariant - describing the type of the modal
      */
     updatedTemplateToBeLinkedInModal(template, modalVariant: ModalVariant) {
         const templateObject: any = JSON.parse(template);
@@ -294,12 +295,14 @@ export class EntitiesModalComponent implements OnInit, OnChanges {
                 this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace + '}' + this.deploymentArtifactOrPolicyModalData.modalTemplateName;
 
             if (this.modalVariantAndState.modalVariant === ModalVariant.Policies) {
-                url = backendBaseURL + '/policytemplates/'
+                url = this.backendService.configuration.repositoryURL
+                    + urlElement.PolicyTemplateURL
                     + encodeURIComponent(encodeURIComponent(this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace)) + '/'
                     + this.deploymentArtifactOrPolicyModalData.modalTemplateName + '/';
 
             } else {
-                url = backendBaseURL + '/artifacttemplates/'
+                url = this.backendService.configuration.repositoryURL
+                    + urlElement.ArtifactTemplateURL
                     + encodeURIComponent(encodeURIComponent(this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace)) + '/'
                     + this.deploymentArtifactOrPolicyModalData.modalTemplateName + '/';
             }
@@ -346,10 +349,6 @@ export class EntitiesModalComponent implements OnInit, OnChanges {
     }
 
     // util functions
-    getHostUrl(): string {
-        return hostURL;
-    }
-
     resetModalData() {
         // reset variant to none and hide
         this.deploymentArtifactOrPolicyModalData.modalName = undefined;
@@ -361,19 +360,17 @@ export class EntitiesModalComponent implements OnInit, OnChanges {
     }
 
     deleteDeploymentArtifactOrPolicy() {
-        if (this.modalVariantForEditDeleteTasks === 'policies') {
-            const policyToBeDeletedInRedux = this.deploymentArtifactOrPolicyModalData.modalName;
+        if (this.modalVariantForEditDeleteTasks === ModalVariant.Policies) {
             const actionObject = {
                 nodeId: this.deploymentArtifactOrPolicyModalData.nodeTemplateId,
-                deletedPolicy: policyToBeDeletedInRedux
+                deletedPolicy: this.deploymentArtifactOrPolicyModalData.modalName
             };
             this.ngRedux.dispatch(this.actions.deletePolicy(actionObject));
             this.resetDeploymentArtifactOrPolicyModalData();
-        } else if (this.modalVariantForEditDeleteTasks === 'deployment_artifacts') {
-            const deploymentArtifactToBeSavedToRedux = this.deploymentArtifactOrPolicyModalData.modalName;
+        } else if (this.modalVariantForEditDeleteTasks === ModalVariant.DeploymentArtifacts) {
             const actionObject = {
                 nodeId: this.deploymentArtifactOrPolicyModalData.nodeTemplateId,
-                deletedDeploymentArtifact: deploymentArtifactToBeSavedToRedux
+                deletedDeploymentArtifact: this.deploymentArtifactOrPolicyModalData.modalName
             };
             this.ngRedux.dispatch(this.actions.deleteDeploymentArtifact(actionObject));
             this.resetDeploymentArtifactOrPolicyModalData();
@@ -394,8 +391,8 @@ export class EntitiesModalComponent implements OnInit, OnChanges {
     clickArtifactRef() {
         if (this.deploymentArtifactOrPolicyModalData.modalTemplateRef) {
             const artifactRef = this.deploymentArtifactOrPolicyModalData.modalTemplateRef;
-            const url = hostURL
-                + '/artifacttemplates/'
+            const url = this.backendService.configuration.repositoryURL
+                + urlElement.ArtifactTemplateURL
                 + encodeURIComponent(encodeURIComponent(this.getNamespace(artifactRef)))
                 + '/' + this.getLocalName(artifactRef);
             window.open(url, '_blank');
@@ -403,8 +400,9 @@ export class EntitiesModalComponent implements OnInit, OnChanges {
     }
 
     private makeArtifactUrl() {
-        this.artifactOrPolicyUrl = backendBaseURL + '/artifacttemplates/' + encodeURIComponent(encodeURIComponent(
-            this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace))
+        this.artifactOrPolicyUrl = this.backendService.configuration.repositoryURL
+            + urlElement.ArtifactTemplateURL
+            + encodeURIComponent(encodeURIComponent(this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace))
             + '/' + this.deploymentArtifactOrPolicyModalData.modalTemplateName + '/';
         // TODO: add upload ability "this.uploadUrl = this.artifactOrPolicyUrl + 'files/';"
     }

@@ -23,6 +23,8 @@ export enum definitionType {
 }
 
 export enum urlElement {
+    PolicyTemplateURL = '/policytemplates/',
+    ArtifactTemplateURL = '/artifacttemplates/',
     NodeTypeURL = '/nodetypes/',
     RequirementTypeURL = '/requirementtypes/',
     CapabilityTypeURL = '/capabilitytypes/',

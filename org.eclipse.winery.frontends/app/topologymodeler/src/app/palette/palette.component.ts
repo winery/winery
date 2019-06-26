@@ -23,7 +23,6 @@ import { Subscription } from 'rxjs';
 import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 import { EntityTypesModel } from '../models/entityTypesModel';
 import { GroupedNodeTypeModel } from '../models/groupedNodeTypeModel';
-import { hostURL } from '../models/configuration';
 import { Visuals } from '../models/visuals';
 import { BackendService } from '../services/backend.service';
 
@@ -190,7 +189,7 @@ export class PaletteComponent implements OnDestroy {
                     return {
                         id: this.backendService.configuration.idPrefix + newId,
                         type: type,
-                        properties: TopologyTemplateUtil.getDefaultPropertiesFromEntityTypes(name , this.entityTypes.unGroupedNodeTypes)
+                        properties: TopologyTemplateUtil.getDefaultPropertiesFromEntityTypes(name, this.entityTypes.unGroupedNodeTypes)
                     };
                 }
             }
@@ -236,7 +235,7 @@ export class PaletteComponent implements OnDestroy {
 
         // if the node doesn't have a picture the URL is "null"
         if (visuals.imageUrl !== 'null') {
-            return hostURL + visuals.imageUrl;
+            return visuals.imageUrl;
         }
     }
 }

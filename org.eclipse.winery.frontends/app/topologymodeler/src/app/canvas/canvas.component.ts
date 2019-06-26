@@ -33,7 +33,6 @@ import { NodeIdAndFocusModel } from '../models/nodeIdAndFocusModel';
 import { ToggleModalDataModel } from '../models/toggleModalDataModel';
 import { ToastrService } from 'ngx-toastr';
 import { BackendService } from '../services/backend.service';
-import { hostURL } from '../models/configuration';
 import { CapabilityModel } from '../models/capabilityModel';
 import { isNullOrUndefined } from 'util';
 import { RequirementModel } from '../models/requirementModel';
@@ -570,10 +569,6 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         this.ngRedux.dispatch(this.actions.setRequirement(newRequirementData));
         this.resetRequirements();
         this.requirementsModal.hide();
-    }
-
-    getHostUrl(): string {
-        return hostURL;
     }
 
     /**
