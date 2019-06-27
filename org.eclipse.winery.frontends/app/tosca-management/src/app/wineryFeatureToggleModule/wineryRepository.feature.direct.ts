@@ -11,24 +11,28 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-
-import {Directive, Input, TemplateRef, ViewContainerRef, OnInit} from '@angular/core';
-import {WineryRepositoryConfigurationService} from './WineryRepositoryConfiguration.service';
+import { Directive, Input, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
+import { WineryRepositoryConfigurationService } from './WineryRepositoryConfiguration.service';
 
 export enum FeatureEnum {
-    Splitting = 'splitting', Completion = 'completion', Compliance = 'compliance',
-    PatternRefinement = 'patternRefinement', Accountability = 'accountability', NFV = 'nfv'
+    Accountability = 'accountability', Completion = 'completion', Compliance = 'compliance', FreezeAndDefrost = 'freezeAndDefrost',
+    ManagementFeatureEnrichment = 'managementFeatureEnrichment', NFV = 'nfv', PatternRefinement = 'patternRefinement', ProblemDetection = 'problemDetection',
+    Splitting = 'splitting', TestRefinement = 'testRefinement',
 }
+
 @Directive({
     selector: '[wineryRepositoryFeatureToggle]'
 })
 export class FeatureToggleDirective implements OnInit {
     @Input() wineryRepositoryFeatureToggle: string;
+
     constructor(
         private templateRef: TemplateRef<any>,
         private viewContainer: ViewContainerRef,
         private configService: WineryRepositoryConfigurationService
-    ) {}
+    ) {
+    }
+
     ngOnInit() {
         if (this.configService.configuration.features[this.wineryRepositoryFeatureToggle]) {
             this.viewContainer.createEmbeddedView(this.templateRef);
