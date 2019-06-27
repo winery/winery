@@ -11,9 +11,27 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-export class PropertyDiffList {
-    constructor(public resolvedProperties: string[],
-                public removedProperties: string[],
-                public newProperties: string[]) {
+
+package org.eclipse.winery.repository.rest.resources.apiData;
+
+public class PropertyMatching {
+
+    private String oldKey;
+    private String newKey;
+
+    public String getOldKey() {
+        return oldKey;
+    }
+
+    public void setOldKey(String oldKey) {
+        this.oldKey = oldKey;
+    }
+
+    public String getNewKey() {
+        return newKey;
+    }
+
+    public void setNewKey(String newKey) {
+        this.newKey = newKey;
     }
 }
