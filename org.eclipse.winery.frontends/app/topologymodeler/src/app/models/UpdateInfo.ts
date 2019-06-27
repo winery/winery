@@ -16,7 +16,8 @@ export class UpdateInfo {
                 public newComponentType: string,
                 public propertyMatchingList?: PropertyMatching[],
                 public newList?: string[],
-                public resolvedList?: string[]) {
+                public resolvedList?: string[],
+                public saveAfterUpdate = false) {
 
     }
 }

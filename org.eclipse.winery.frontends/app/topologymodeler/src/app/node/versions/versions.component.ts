@@ -60,6 +60,7 @@ export class VersionsComponent implements OnInit {
     continueOrMap: string;
 
     propertyDiff: PropertyDiffList;
+    saveAfterUpdate: boolean;
 
     constructor(private modalService: BsModalService,
                 private updateService: UpdateService,
@@ -87,6 +88,7 @@ export class VersionsComponent implements OnInit {
     open() {
         this.updateVersionModalRef = this.modalService.show(this.updateVersionModal);
         this.chosenVersion = null;
+        this.saveAfterUpdate = false;
     }
 
     openProperty() {
@@ -120,7 +122,8 @@ export class VersionsComponent implements OnInit {
             qName,
             this.matchedProperties,
             this.propertyDiff.newProperties,
-            this.propertyDiff.resolvedProperties
+            this.propertyDiff.resolvedProperties,
+            this.saveAfterUpdate
         );
 
         this.updateService.update(updateInfo)
