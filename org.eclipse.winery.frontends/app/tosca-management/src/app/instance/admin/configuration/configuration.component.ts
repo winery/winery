@@ -11,17 +11,17 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-
 import { Component, OnInit } from '@angular/core';
-import {
-    WineryConfiguration, WineryRepositoryConfigurationService
-} from '../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { WineryConfiguration, WineryRepositoryConfigurationService } from '../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { HttpClient } from '@angular/common/http';
 import { backendBaseURL } from '../../../configuration';
 
 @Component({
     selector: 'winery-instance-configuration-component',
-    templateUrl: 'configuration.component.html'
+    templateUrl: 'configuration.component.html',
+    styleUrls: [
+        'configuration.component.css',
+    ]
 })
 
 export class FeatureConfigurationComponent implements OnInit {
