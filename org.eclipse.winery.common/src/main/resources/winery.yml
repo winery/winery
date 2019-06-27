@@ -1,15 +1,15 @@
 ui:
   features:
-    accountability: true;
-    completion: true;
-    compliance: true;
-    freezeAndDefrost: true;
-    managementFeatureEnrichment: true;
-    nfv: true;
-    patternRefinement: true;
-    problemDetection: true;
-    splitting: true;
-    testRefinement: true;
+    accountability: true
+    completion: true
+    compliance: true
+    freezeAndDefrost: true
+    managementFeatureEnrichment: true
+    nfv: true
+    patternRefinement: true
+    problemDetection: true
+    splitting: true
+    testRefinement: true
   endpoints:
     container: http://localhost:1337
     workflowmodeler: http://localhost:9527

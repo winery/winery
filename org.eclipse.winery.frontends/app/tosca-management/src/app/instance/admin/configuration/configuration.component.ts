@@ -15,6 +15,7 @@ import { Component, OnInit } from '@angular/core';
 import { WineryConfiguration, WineryRepositoryConfigurationService } from '../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { HttpClient } from '@angular/common/http';
 import { backendBaseURL } from '../../../configuration';
+import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 
 @Component({
     selector: 'winery-instance-configuration-component',
@@ -27,7 +28,7 @@ import { backendBaseURL } from '../../../configuration';
 export class FeatureConfigurationComponent implements OnInit {
     config: WineryConfiguration;
 
-    constructor(private http: HttpClient, private configData: WineryRepositoryConfigurationService) {
+    constructor(private http: HttpClient, private configData: WineryRepositoryConfigurationService, private notify: WineryNotificationService) {
     }
 
     ngOnInit(): void {
@@ -35,6 +36,10 @@ export class FeatureConfigurationComponent implements OnInit {
     }
 
     saveChanges() {
-        this.http.put<WineryConfiguration>(backendBaseURL + '/admin' + '/config', this.config).subscribe();
+        this.http.put<WineryConfiguration>(backendBaseURL + '/admin' + '/config', this.config)
+            .subscribe(
+                () => this.notify.success('Successfully saved changes!'),
+                () => this.notify.error('Error while saving changes')
+            );
     }
 }
