@@ -769,6 +769,13 @@ public class ModelUtilities {
         return features;
     }
 
+    public static <T extends TEntityType> boolean isFeatureType(QName givenType, Map<QName, T> elements) {
+        return Objects.nonNull(elements.get(givenType))
+            && Objects.nonNull(elements.get(givenType).getTags())
+            && elements.get(givenType).getTags().getTag().stream()
+            .anyMatch(tag -> "feature".equals(tag.getName()));
+    }
+
     public static void updateNodeTemplate(TTopologyTemplate topology, String oldComponentId, QName newType, TNodeType newComponentType) {
         TNodeTemplate nodeTemplate = topology.getNodeTemplate(oldComponentId);
         nodeTemplate.setType(newType);

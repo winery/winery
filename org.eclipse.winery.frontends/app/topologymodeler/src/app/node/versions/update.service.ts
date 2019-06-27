@@ -11,7 +11,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UpdateInfo } from '../../models/UpdateInfo';
@@ -40,7 +39,6 @@ export class UpdateService {
     }
 
     update(updateInfo: UpdateInfo): Observable<TTopologyTemplate> {
-
         const url = this.url + '/update';
         console.log(url);
         console.log(updateInfo);
