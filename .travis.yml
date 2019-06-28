@@ -22,8 +22,49 @@ before_install:
   #- curl -sL https://cdn.rawgit.com/jpm4j/jpm4j.installers/6b3c5176/dist/biz.aQute.jpm.run.jar >jpm4j.jar
   #- java -jar jpm4j.jar -u init
   # - ~/jpm/bin/jpm install com.codacy:codacy-coverage-reporter:assembly
+  - npm install -g ganache-cli
+#  - ganache-cli -h 127.0.0.1 -p 7545 > /dev/null &   #moved
+#  - sleep 5                                          #moved
+  - cp .travis.settings.xml $HOME/.m2/settings.xml
   - mvn -q resources:resources -pl org.eclipse.winery.repository.configuration
 
+
+
 script:
+#launch ganache as background task
+#  - ganache-cli --account="0xb1211de9fb36bc81c9e269e1f6b783d80e01f3709562bb78451d1a956b3c2038,99999999999999999999999999999999" -v -l 0xfffffffffff > /dev/null &
+#  - sleep 5
+    
   - mvn -q package
-#  - mvn jacoco:report-aggregate
+  - mvn -DskipTests deploy
+  # - mvn jacoco:report-aggregate
+
+#  - truffle migrate 
+#  - truffle test
+
+deploy:
+  - provider: script
+    script: "mvn org.reficio:p2-maven-plugin:site -N"
+    skip_cleanup: true
+    on:
+      all_branches: true
+  - provider: pages
+    skip-cleanup: true
+    github-token: $GITHUB_TOKEN
+    keep-history: false
+    local-dir: target/repository
+    repo: OpenTOSCA/winery-update-site
+    # ADR-0018
+    target-branch: $TRAVIS_BRANCH
+    on:
+      all_branches: true
+  - provider: pages
+    skip-cleanup: true
+    github-token: $GITHUB_TOKEN
+    keep-history: false
+    local-dir: target/mvn-repo
+    repo: OpenTOSCA/mvn-repo
+    # ADR-0019    
+    target-branch: $TRAVIS_BRANCH
+    on:
+      all_branches: true

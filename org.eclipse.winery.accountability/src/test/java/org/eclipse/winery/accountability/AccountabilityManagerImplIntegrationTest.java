@@ -21,6 +21,10 @@ import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.winery.accountability.blockchain.BlockchainAccess;
 import org.eclipse.winery.accountability.blockchain.BlockchainFactory;
+import org.eclipse.winery.accountability.blockchain.ethereum.AuthorizationSmartContractWrapper;
+import org.eclipse.winery.accountability.blockchain.ethereum.EthereumAccessLayer;
+import org.eclipse.winery.accountability.blockchain.ethereum.ProvenanceSmartContractWrapper;
+import org.eclipse.winery.accountability.exceptions.EthereumException;
 import org.eclipse.winery.accountability.model.FileProvenanceElement;
 import org.eclipse.winery.accountability.model.ModelProvenanceElement;
 import org.eclipse.winery.accountability.model.authorization.AuthorizationInfo;
@@ -28,25 +32,48 @@ import org.eclipse.winery.accountability.storage.ImmutableStorageProvider;
 import org.eclipse.winery.accountability.storage.ImmutableStorageProviderFactory;
 
 import org.apache.commons.lang3.StringUtils;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
+import sun.security.x509.GeneralName;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@EnabledIf("(new java.io.File(\"C:/Ethereum/keystore/UTC--2018-03-05T15-33-22.456000000Z--e4b51a3d4e77d2ce2a9d9ce107ec8ec7cff5571d.json\").exists())")
+//@EnabledIf("(new java.io.File(\"C:/Ethereum/keystore/UTC--2019-01-23T10-48-04.632976800Z--44fb31577305b7b6ed8ff05ee7c0f07b3cc99306\").exists())")
+//remove d to enable the relative path
+@EnabledIf("(new java.io.File(\"./UTC--2019-01-23T10-48-04.632976800Z--44fb31577305b7b6ed8ff05ee7c0f07b3cc99306\").exists())")
 class AccountabilityManagerImplIntegrationTest {
+
+    private ContractDeployer deploying;
+    private GanacheManager ganacheManager;
+    
     private static final String CONFIGURATION_FILE_NAME = "defaultaccountabilityconfig.properties";
     private AccountabilityManagerImpl provenance;
 
     @BeforeEach
     public void setUp() throws Exception {
+
         try (InputStream propsStream = getClass().getClassLoader().getResourceAsStream(CONFIGURATION_FILE_NAME)) {
+        this.ganacheManager = new GanacheManager();
+        this.ganacheManager.startGanache();
+        this.ganacheManager.startGanache();
+
+            long start = System.currentTimeMillis();
+            while (System.currentTimeMillis() < start + 10000)
+            {
+            }
+
+
             Properties props = new Properties();
-            props.load(propsStream);
+        props.load(propsStream);
+        this.deploying = new ContractDeployer(props);
+        props.setProperty("ethereum-provenance-smart-contract-address", this.deploying.deployProvenance());
+            props.setProperty("ethereum-authorization-smart-contract-address", this.deploying.deployAuthorization());
             BlockchainAccess blockchainAccess = BlockchainFactory
                 .getBlockchainAccess(BlockchainFactory.AvailableBlockchains.ETHEREUM, props);
             ImmutableStorageProvider storageProvider = ImmutableStorageProviderFactory
@@ -54,9 +81,14 @@ class AccountabilityManagerImplIntegrationTest {
             this.provenance = new AccountabilityManagerImpl(blockchainAccess, storageProvider);
         }
     }
-
+    
+    @AfterEach
+    public void killGanache(){
+        this.ganacheManager.stopGanache();
+    }
     @Test
     void addParticipant() throws Exception {
+
         String processId = "ServiceTemplateWithAllReqCapVariants";
         String participantBlockchainId = "0x0000000000000000000000000111111222223333";
         String participantName = "Ghareeb";
@@ -72,14 +104,16 @@ class AccountabilityManagerImplIntegrationTest {
 
     @Test
     void getHistory() throws Exception {
+        this.deploying.makehistory(); //method that tries to push the needed records before the Test
         String processId = "{http://plain.winery.opentosca.org/servicetemplates}ServiceTemplateWithAllReqCapVariants";
 
         CompletableFuture<List<ModelProvenanceElement>> history = this.provenance.getHistory(processId);
         List<ModelProvenanceElement> historyElements = history.get();
 
-        assertTrue(historyElements.size() == 2);// we manually added 2
+        assertEquals(2,historyElements.size() );// we manually added 2
 
         historyElements.forEach(
+
             historyElement -> assertTrue(StringUtils.isNotEmpty(historyElement.getAuthorAddress()))
         );
     }
