@@ -12,7 +12,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.rest.datatypes;
+package org.eclipse.winery.repository.rest.resources.apiData;
+
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -21,9 +23,10 @@ public class UpdateInfo {
 
     private String nodeTemplateId;
     private String newComponentType;
-    private String[][] mappingList;
-    private String[] newList;
-    private String[] resolvedList;
+    private List<PropertyMatching> propertyMatchingList;
+    private List<String> newList;
+    private List<String> resolvedList;
+    private boolean saveAfterUpdate;
 
     public String getNodeTemplateId() {
         return nodeTemplateId;
@@ -41,27 +44,39 @@ public class UpdateInfo {
         this.newComponentType = newComponentType;
     }
 
-    public String[][] getMappingList() {
-        return mappingList;
+    public List<PropertyMatching> getMappingList() {
+        return propertyMatchingList;
     }
 
-    public void setMappingList(String[][] mappingList) {
-        this.mappingList = mappingList;
+    public List<PropertyMatching> getPropertyMatchingList() {
+        return propertyMatchingList;
     }
 
-    public String[] getNewList() {
+    public void setPropertyMatchingList(List<PropertyMatching> propertyMatchingList) {
+        this.propertyMatchingList = propertyMatchingList;
+    }
+
+    public List<String> getNewList() {
         return newList;
     }
 
-    public void setNewList(String[] newList) {
+    public void setNewList(List<String> newList) {
         this.newList = newList;
     }
 
-    public String[] getResolvedList() {
+    public List<String> getResolvedList() {
         return resolvedList;
     }
 
-    public void setResolvedList(String[] resolvedList) {
+    public void setResolvedList(List<String> resolvedList) {
         this.resolvedList = resolvedList;
+    }
+
+    public boolean isSaveAfterUpdate() {
+        return saveAfterUpdate;
+    }
+
+    public void setSaveAfterUpdate(boolean saveAfterUpdate) {
+        this.saveAfterUpdate = saveAfterUpdate;
     }
 }

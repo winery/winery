@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
  * read the current configuration of the winery and methods to change certain configurations even while the winery is
  * running.
  */
-
 final class Environment {
     private static final Logger LOGGER = LoggerFactory.getLogger(Environment.class);
     //Path to the directory of the winery configuration file
@@ -84,7 +83,7 @@ final class Environment {
     }
 
     /**
-     * Method copies the default winery.yml file (all flags are true) into the config directory of the win ery in
+     * Method copies the default winery.yml file (all flags are true) into the config directory of the winery in
      * HOME/.winery. If the directory doesn't exist it will be created.
      *
      * @param configFilePath Path where the configuration will be copied to

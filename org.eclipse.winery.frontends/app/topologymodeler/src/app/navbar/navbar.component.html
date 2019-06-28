@@ -110,7 +110,7 @@
                     class="btn btn-sm align-middle dark-button-style" type="button" style="margin-left: 4px">Print View
             </button>-->
         </div>
-        <div class="btn-group button-group" data-toggle="buttons">
+        <div *wineryRepositoryFeatureToggle="configEnum.Splitting" class="btn-group button-group" data-toggle="buttons">
             <button
                 class="btn btn-sm align-middle dark-button-style"
                 type="button"
@@ -119,7 +119,6 @@
                 [style.background-color]="getStyle(navbarButtonsState.buttonsState.targetLocationsButton)">
                 Target Locations
             </button>
-        <div *wineryRepositoryFeatureToggle="configEnum.Splitting">
             <button
                 class="btn btn-sm align-middle dark-button-style"
                 type="button"
@@ -130,6 +129,7 @@
                 {{splittingOngoing ? 'Splitting...' : 'Split'}}
             </button>
         </div>
+        <div *wineryRepositoryFeatureToggle="configEnum.Splitting" class="btn-group button-group" data-toggle="buttons">
             <button
                 class="btn btn-sm align-middle dark-button-style"
                 type="button"
@@ -139,6 +139,9 @@
                 [disabled]="matchingOngoing">
                 {{matchingOngoing ? 'Matching...' : 'Match'}}
             </button>
+        </div>
+        <div *wineryRepositoryFeatureToggle="configEnum.ProblemDetection" class="btn-group button-group"
+             data-toggle="buttons">
             <button
                 class="btn btn-sm align-middle dark-button-style"
                 type="button"
@@ -147,17 +150,21 @@
                 [style.background-color]="getStyle(navbarButtonsState.buttonsState.problemDetectionButton)">
                 Detect Problems
             </button>
+        </div>
+        <div *wineryRepositoryFeatureToggle="configEnum.ManagementFeatureEnrichment" class="btn-group button-group"
+             data-toggle="buttons">
             <button
                 class="btn btn-sm align-middle dark-button-style"
                 type="button"
                 id="enrichment"
                 (click)="toggleButton($event)"
                 [style.background-color]="getStyle(navbarButtonsState.buttonsState.enrichmentButton)">
-                Enrich Node Templates
+                Management Feature Enrichment
             </button>
         </div>
 
-        <div class="btn-group button-group" data-toggle="buttons">
+        <div *wineryRepositoryFeatureToggle="configEnum.FreezeAndDefrost" class="btn-group button-group"
+             data-toggle="buttons">
             <button class="btn btn-sm align-middle dark-button-style" id="determineStatefulComponents"
                     (click)="toggleButton($event)">
                 Determine Stateful Components
@@ -172,12 +179,16 @@
             </button>
         </div>
 
-        <div class="btn-group button-group" data-toggle="buttons">
+        <div *wineryRepositoryFeatureToggle="configEnum.PatternRefinement" class="btn-group button-group"
+             data-toggle="buttons">
             <button class="btn btn-sm align-middle dark-button-style" id="refineTopology"
                     (click)="toggleButton($event)"
                     [style.background-color]="getStyle(navbarButtonsState.buttonsState.refineTopologyButton)">
                 Refine Patterns
             </button>
+        </div>
+        <div *wineryRepositoryFeatureToggle="configEnum.TestRefinement" class="btn-group button-group"
+             data-toggle="buttons">
             <button class="btn btn-sm align-middle dark-button-style" id="refineTopologyWithTests"
                     (click)="toggleButton($event)"
                     [style.background-color]="getStyle(navbarButtonsState.buttonsState.refineTopologyWithTestsButton)">

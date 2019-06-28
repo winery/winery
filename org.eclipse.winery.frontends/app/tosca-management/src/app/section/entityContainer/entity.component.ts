@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { backendBaseURL, topologyModelerURL } from '../../configuration';
+import { backendBaseURL } from '../../configuration';
 import { SectionData } from '../sectionData';
 import { ExistService } from '../../wineryUtils/existService';
 import { ModalDirective } from 'ngx-bootstrap';
@@ -21,6 +21,7 @@ import { EntityService } from './entity.service';
 import { ToscaTypes } from '../../model/enums';
 import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
 import { TargetAllocationComponent } from '../../wineryTargetAllocation/targetAllocation.component';
+import { WineryRepositoryConfigurationService } from '../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 @Component({
     selector: 'winery-entity',
@@ -49,7 +50,8 @@ export class EntityComponent implements OnInit {
     containerSizeClass: string;
 
     constructor(private existService: ExistService, private router: Router,
-                private service: EntityService, private notify: WineryNotificationService) {
+                private service: EntityService, private notify: WineryNotificationService,
+                private configurationService: WineryRepositoryConfigurationService) {
     }
 
     ngOnInit(): void {
@@ -123,7 +125,7 @@ export class EntityComponent implements OnInit {
     editComponent(event: MouseEvent) {
         event.stopPropagation();
         if (this.toscaType === ToscaTypes.ServiceTemplate && event.ctrlKey) {
-            const topologyModeler = topologyModelerURL
+            const topologyModeler = this.configurationService.configuration.endpoints.topologymodeler
                 + '?repositoryURL=' + encodeURIComponent(backendBaseURL)
                 + '&uiURL=' + encodeURIComponent(window.location.origin + window.location.pathname)
                 + '&ns=' + encodeURIComponent(this.data.namespace)

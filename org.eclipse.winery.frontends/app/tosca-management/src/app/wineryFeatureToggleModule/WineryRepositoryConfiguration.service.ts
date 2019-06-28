@@ -11,26 +11,28 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { backendBaseURL } from '../configuration';
 import { Observable, Subject } from 'rxjs';
-import { Debugger } from 'inspector';
 
 export interface WineryConfiguration {
     features: {
-        splitting: boolean;
+        accountability: boolean;
         completion: boolean;
         compliance: boolean;
-        patternRefinement: boolean;
-        accountability: boolean;
+        freezeAndDefrost: boolean;
+        managementFeatureEnrichment: boolean;
         nfv: boolean;
+        patternRefinement: boolean;
+        problemDetection: boolean;
+        splitting: boolean;
+        testRefinement: boolean;
     };
     endpoints: {
         container: String;
-        workflowmodeler: String;
         topologymodeler: String;
+        workflowmodeler: String;
     };
 }
 

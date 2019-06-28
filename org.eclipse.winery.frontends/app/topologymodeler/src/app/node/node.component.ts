@@ -13,14 +13,12 @@
  ********************************************************************************/
 
 import {
-    AfterViewInit, Component, ComponentRef, DoCheck, ElementRef, EventEmitter, Input, KeyValueDiffers, NgZone,
-    OnDestroy, OnInit, Output, Renderer2, ViewChild
+    AfterViewInit, Component, ComponentRef, DoCheck, ElementRef, EventEmitter, Input, KeyValueDiffers, NgZone, OnDestroy, OnInit, Output, Renderer2, ViewChild
 } from '@angular/core';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { WineryActions } from '../redux/actions/winery.actions';
-import { hostURL } from '../models/configuration';
 import { EntityType, TNodeTemplate } from '../models/ttopology-template';
 import { QName } from '../models/qname';
 import { PropertyDefinitionType, urlElement } from '../models/enums';
@@ -99,7 +97,6 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     nodeRef: ComponentRef<Component>;
     unbindMouseMove: Function;
     currentNodeId: string;
-    hostURL = hostURL;
     flashTimer = 300;
     parentEl: string;
     popoverHtml = `<div class="">Open NodeType in a separate tab</div>`;
@@ -206,7 +203,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                 }
 
                 if (visual && visual.imageUrl) {
-                    this.policyIcons.push(this.hostURL + visual.imageUrl);
+                    this.policyIcons.push(visual.imageUrl);
                 }
             }
 

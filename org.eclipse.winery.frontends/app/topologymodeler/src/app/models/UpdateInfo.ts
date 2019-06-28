@@ -11,14 +11,19 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-
 export class UpdateInfo {
-
     constructor(public nodeTemplateId: string,
                 public newComponentType: string,
-                public mappingList?: string[][],
+                public propertyMatchingList?: PropertyMatching[],
                 public newList?: string[],
-                public resolvedList?: string[]) {
+                public resolvedList?: string[],
+                public saveAfterUpdate = false) {
 
+    }
+}
+
+export class PropertyMatching {
+    constructor(public oldKey: string,
+                public newKey: string) {
     }
 }

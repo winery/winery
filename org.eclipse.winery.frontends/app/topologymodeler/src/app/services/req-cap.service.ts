@@ -16,8 +16,8 @@ import { Injectable } from '@angular/core';
 import { definitionType, urlElement } from '../models/enums';
 import { QName } from '../models/qname';
 import { Observable } from 'rxjs/Rx';
-import { backendBaseURL } from '../models/configuration';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { BackendService } from './backend.service';
 
 @Injectable()
 export class ReqCapService {
@@ -28,7 +28,7 @@ export class ReqCapService {
         })
     };
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private backendService: BackendService) {
     }
 
     /**
@@ -38,8 +38,11 @@ export class ReqCapService {
      */
     requestRequirementDefinitionsOfNodeType(nodeType: string): Observable<any> {
         const qName = new QName(nodeType);
-        const url = backendBaseURL + urlElement.NodeTypeURL +
-            encodeURIComponent(encodeURIComponent(qName.nameSpace)) + '/' + qName.localName + definitionType.RequirementDefinitions;
+        const url = this.backendService.configuration.repositoryURL
+            + urlElement.NodeTypeURL
+            + encodeURIComponent(encodeURIComponent(qName.nameSpace))
+            + '/' + qName.localName
+            + definitionType.RequirementDefinitions;
         return this.http.get(url, this.options);
     }
 
@@ -50,8 +53,11 @@ export class ReqCapService {
      */
     requestCapabilityDefinitionsOfNodeType(nodeType: string): Observable<any> {
         const qName = new QName(nodeType);
-        const url = backendBaseURL + urlElement.NodeTypeURL +
-            encodeURIComponent(encodeURIComponent(qName.nameSpace)) + '/' + qName.localName + definitionType.CapabilityDefinitions;
+        const url = this.backendService.configuration.repositoryURL
+            + urlElement.NodeTypeURL
+            + encodeURIComponent(encodeURIComponent(qName.nameSpace)) + '/'
+            + qName.localName
+            + definitionType.CapabilityDefinitions;
         return this.http.get(url, this.options);
     }
 }

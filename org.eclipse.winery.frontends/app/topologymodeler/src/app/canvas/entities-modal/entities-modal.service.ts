@@ -13,24 +13,24 @@
  ********************************************************************************/
 
 import { Injectable } from '@angular/core';
-import { backendBaseURL } from '../../models/configuration';
 import { Observable } from 'rxjs/Rx';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { ModalVariant } from './modal-model';
 import { TopologyModelerConfiguration } from '../../models/topologyModelerConfiguration';
+import { BackendService } from '../../services/backend.service';
 
 @Injectable()
 export class EntitiesModalService {
 
-    readonly headers = new HttpHeaders({'Accept': 'application/json'});
+    readonly headers = new HttpHeaders({ 'Accept': 'application/json' });
 
     openModalEvent = new Subject<OpenModalEvent>();
     openModalEvent$ = this.openModalEvent.asObservable();
 
     configuration: TopologyModelerConfiguration;
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private backendService: BackendService) {
     }
 
     /**
@@ -40,11 +40,11 @@ export class EntitiesModalService {
     requestNamespaces(all: boolean = false): Observable<any> {
         let URL: string;
         if (all) {
-            URL = backendBaseURL + '/admin/namespaces/?all';
+            URL = this.backendService.configuration.repositoryURL + '/admin/namespaces/?all';
         } else {
-            URL = backendBaseURL + '/admin/namespaces/';
+            URL = this.backendService.configuration.repositoryURL + '/admin/namespaces/';
         }
-        return this.http.get(URL, {headers: this.headers});
+        return this.http.get(URL, { headers: this.headers });
     }
 
 }

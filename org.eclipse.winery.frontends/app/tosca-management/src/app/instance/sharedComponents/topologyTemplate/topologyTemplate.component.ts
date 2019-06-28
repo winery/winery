@@ -13,12 +13,13 @@
  *******************************************************************************/
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { InstanceService } from '../../instance.service';
-import { backendBaseURL, topologyModelerURL } from '../../../configuration';
+import { backendBaseURL } from '../../../configuration';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { WineryVersion } from '../../../model/wineryVersion';
 import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
 import { ActivatedRoute } from '@angular/router';
 import { ToscaTypes } from '../../../model/enums';
+import { WineryRepositoryConfigurationService } from '../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 @Component({
     templateUrl: 'topologyTemplate.component.html',
@@ -40,7 +41,8 @@ export class TopologyTemplateComponent implements OnInit {
     constructor(private sanitizer: DomSanitizer,
                 public sharedData: InstanceService,
                 private modalService: BsModalService,
-                private activatedRoute: ActivatedRoute) {
+                private activatedRoute: ActivatedRoute,
+                private configurationService: WineryRepositoryConfigurationService) {
     }
 
     ngOnInit() {
@@ -64,7 +66,7 @@ export class TopologyTemplateComponent implements OnInit {
             editorConfig += '&isReadonly=true';
         }
 
-        this.editorUrl = topologyModelerURL + editorConfig;
+        this.editorUrl = this.configurationService.configuration.endpoints.topologymodeler + editorConfig;
         this.refinementAvailable = this.sharedData.toscaComponent.toscaType === ToscaTypes.ServiceTemplate;
     }
 

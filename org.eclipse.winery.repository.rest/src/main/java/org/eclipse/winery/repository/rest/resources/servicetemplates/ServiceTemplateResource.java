@@ -11,7 +11,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-
 package org.eclipse.winery.repository.rest.resources.servicetemplates;
 
 import java.io.IOException;
@@ -23,6 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
@@ -50,6 +50,7 @@ import org.eclipse.winery.model.adaptation.substitution.Substitution;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
@@ -58,6 +59,7 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.filebased.NamespaceProperties;
 import org.eclipse.winery.repository.driverspecificationandinjection.DASpecification;
 import org.eclipse.winery.repository.driverspecificationandinjection.DriverInjection;
 import org.eclipse.winery.repository.rest.RestUtils;
@@ -364,38 +366,32 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
         BackendUtils.synchronizeReferences((ServiceTemplateId) this.id);
     }
 
+    @GET
     @Path("newversions")
     @Produces(MediaType.APPLICATION_JSON)
-    @GET
     public List<NewVersionListElement> getNewVersionList() {
         IRepository repository = RepositoryFactory.getRepository();
-
         TServiceTemplate element = repository.getElement((ServiceTemplateId) this.id);
-        
-        /*
-        Catches the case the topologytemplate is empty
-         */
-        try {
-            element.getTopologyTemplate().getNodeTemplates();
-        } catch (NullPointerException e) {
-            WineryVersion noTemplateVersion = new WineryVersion();
-            List<WineryVersion> noTemplateVersionList = new ArrayList<>();
-            noTemplateVersionList.add(noTemplateVersion);
-            NewVersionListElement noVersionElement = new NewVersionListElement(new QName("", ""), noTemplateVersionList);
-            List<NewVersionListElement> nullList = new ArrayList<>();
-            nullList.add(noVersionElement);
-            return nullList;
+
+        if (Objects.isNull(element.getTopologyTemplate())) {
+            return new ArrayList<>();
         }
 
-        List<TNodeTemplate> nodeList = element.getTopologyTemplate().getNodeTemplates();
-
+        Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
         Map<QName, List<WineryVersion>> versionElements = new HashMap<>();
 
-        for (TNodeTemplate node : nodeList) {
+        for (TNodeTemplate node : element.getTopologyTemplate().getNodeTemplates()) {
             NodeTypeId nodeTypeId = new NodeTypeId(node.getType());
-
             if (!versionElements.containsKey(nodeTypeId.getQName())) {
-                List<WineryVersion> versionList = BackendUtils.getAllVersionsOfOneDefinition(nodeTypeId);
+                List<WineryVersion> versionList = BackendUtils.getAllVersionsOfOneDefinition(nodeTypeId).stream()
+                    .filter(wineryVersion -> {
+                        QName qName = VersionUtils.getDefinitionInTheGivenVersion(nodeTypeId, wineryVersion).getQName();
+                        NamespaceProperties namespaceProperties = repository.getNamespaceManager().getNamespaceProperties(qName.getNamespaceURI());
+                        return !(namespaceProperties.isGeneratedNamespace()
+                            || ModelUtilities.isFeatureType(qName, nodeTypes));
+                    })
+                    .collect(Collectors.toList());
+
                 versionElements.put(nodeTypeId.getQName(), versionList);
             }
         }

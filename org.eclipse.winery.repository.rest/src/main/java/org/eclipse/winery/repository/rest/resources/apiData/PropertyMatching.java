@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,9 +11,27 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-const wineryContext = '/winery';
-// when running in development mode on port 4200, use default port 8080
-// otherwise, assume that backend runs on the some port#
-export const hostURL = location.protocol + '//' + location.hostname + ':' + (location.port === '4200' ? '8080' : location.port);
-export const backendBaseURL = hostURL + wineryContext;
-export const webSocketURL = 'ws://' + location.hostname + ':' + (location.port === '4200' ? '8080' : location.port) + wineryContext;
+
+package org.eclipse.winery.repository.rest.resources.apiData;
+
+public class PropertyMatching {
+
+    private String oldKey;
+    private String newKey;
+
+    public String getOldKey() {
+        return oldKey;
+    }
+
+    public void setOldKey(String oldKey) {
+        this.oldKey = oldKey;
+    }
+
+    public String getNewKey() {
+        return newKey;
+    }
+
+    public void setNewKey(String newKey) {
+        this.newKey = newKey;
+    }
+}

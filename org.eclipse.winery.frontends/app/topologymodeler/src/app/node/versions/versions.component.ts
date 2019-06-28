@@ -15,7 +15,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
 import { VersionElement } from '../../models/versionElement';
-import { UpdateInfo } from '../../models/UpdateInfo';
+import { PropertyMatching, UpdateInfo } from '../../models/UpdateInfo';
 import { UpdateService } from './update.service';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { TTopologyTemplate } from '../../models/ttopology-template';
@@ -35,13 +35,15 @@ import { WineryVersion } from '../../../../../tosca-management/src/app/model/win
 })
 export class VersionsComponent implements OnInit {
 
-    chosenVersion: WineryVersion;
+    readonly CONTINUE = 'Continue';
+    readonly MAP = 'Map';
 
-    choosedNewProperty: string;
-    choosedRemovedProperty: string;
+    chosenVersion: WineryVersion;
+    chosenNewProperty: string;
+    chosenRemovedProperty: string;
 
     // first entry newProperties, second entry removedProperties
-    matchedProperties: string[][];
+    matchedProperties: PropertyMatching[] = [];
 
     @ViewChild('updateVersionModal') updateVersionModal: ModalDirective;
     updateVersionModalRef: BsModalRef;
@@ -55,10 +57,10 @@ export class VersionsComponent implements OnInit {
     qNamePrefix: string;
     versions: WineryVersion[];
     kvComparison: any;
-    versionClicked = false;
     continueOrMap: string;
 
     propertyDiff: PropertyDiffList;
+    saveAfterUpdate: boolean;
 
     constructor(private modalService: BsModalService,
                 private updateService: UpdateService,
@@ -72,47 +74,59 @@ export class VersionsComponent implements OnInit {
         this.versions = this.aVersionElement.versions;
     }
 
-    readProperties(removedProperties: number, newProperties: number, resolvedProperties: number) {
-        if (Math.max(removedProperties, newProperties) >= resolvedProperties) {
-            return removedProperties >= newProperties ? this.propertyDiff.removedProperties : this.propertyDiff.newProperties;
+    readProperties() {
+        if (this.propertyDiff &&
+            Math.max(this.propertyDiff.removedProperties.length, this.propertyDiff.newProperties.length) >= this.propertyDiff.resolvedProperties.length) {
+            return this.propertyDiff.removedProperties.length >= this.propertyDiff.newProperties.length
+                ? this.propertyDiff.removedProperties
+                : this.propertyDiff.newProperties;
         }
+
         return this.propertyDiff.resolvedProperties;
     }
 
     open() {
         this.updateVersionModalRef = this.modalService.show(this.updateVersionModal);
-        this.versionClicked = false;
+        this.chosenVersion = null;
+        this.saveAfterUpdate = false;
     }
 
     openProperty() {
         this.updatePropertyModalRef = this.modalService.show(this.updatePropertyModal);
 
-        this.continueOrMap = 'Continue';
+        this.continueOrMap = this.CONTINUE;
 
     }
 
     matchProperties() {
-        if (this.choosedNewProperty != null && this.choosedRemovedProperty != null) {
-            this.matchedProperties.push([this.choosedNewProperty, this.choosedRemovedProperty]);
-            this.propertyDiff.newProperties.splice(this.propertyDiff.newProperties.indexOf(this.choosedNewProperty), 1);
-            this.propertyDiff.removedProperties.splice(this.propertyDiff.removedProperties.indexOf(this.choosedRemovedProperty), 1);
+        if (this.chosenNewProperty != null && this.chosenRemovedProperty != null) {
+            this.matchedProperties
+                .push(
+                    new PropertyMatching(this.chosenRemovedProperty, this.chosenNewProperty)
+                );
 
-            this.choosedRemovedProperty = null;
-            this.choosedNewProperty = null;
-
-            this.continueOrMap = 'Continue';
+            this.propertyDiff.newProperties
+                .splice(this.propertyDiff.newProperties.indexOf(this.chosenNewProperty), 1);
+            this.propertyDiff.removedProperties
+                .splice(this.propertyDiff.removedProperties.indexOf(this.chosenRemovedProperty), 1);
+            this.resetChosen();
         }
 
     }
 
     triggerUpdate(nodeTemplateId: string) {
-
         const qName = this.qNamePrefix + Utils.getNameWithoutVersion(Utils.getNameFromQName(this.nodeType))
             + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + this.chosenVersion.toString();
-        this.updateService.update(new UpdateInfo(nodeTemplateId, qName,
+        const updateInfo = new UpdateInfo(
+            nodeTemplateId,
+            qName,
             this.matchedProperties,
             this.propertyDiff.newProperties,
-            this.propertyDiff.resolvedProperties))
+            this.propertyDiff.resolvedProperties,
+            this.saveAfterUpdate
+        );
+
+        this.updateService.update(updateInfo)
             .subscribe(
                 data => this.updateTopology(data),
                 error => this.errorHandler.handleError(error)
@@ -123,17 +137,16 @@ export class VersionsComponent implements OnInit {
         this.kvComparison = null;
         this.chosenVersion = version;
         this.showKVComparison();
-        this.versionClicked = true;
     }
 
     selectedNewProperty(newProperty: string) {
-        this.continueOrMap = 'Map';
-        this.choosedNewProperty = newProperty;
+        this.continueOrMap = this.MAP;
+        this.chosenNewProperty = newProperty;
     }
 
     selectedRemovedProperty(removedProperty) {
-        this.continueOrMap = 'Map';
-        this.choosedRemovedProperty = removedProperty;
+        this.continueOrMap = this.MAP;
+        this.chosenRemovedProperty = removedProperty;
     }
 
     updateTopology(topology: TTopologyTemplate) {
@@ -150,8 +163,8 @@ export class VersionsComponent implements OnInit {
             );
 
         this.matchedProperties = [];
-        this.choosedNewProperty = null;
-        this.choosedRemovedProperty = null;
+        this.chosenNewProperty = null;
+        this.chosenRemovedProperty = null;
     }
 
     triggerUpdateOrMatchProperties(nodeTemplateId: string) {
@@ -159,9 +172,21 @@ export class VersionsComponent implements OnInit {
             this.triggerUpdate(nodeTemplateId);
         } else {
             this.matchProperties();
-
             this.openProperty();
         }
     }
 
+    disableMapButton() {
+        if (this.continueOrMap === this.CONTINUE) {
+            return false;
+        }
+
+        return !(this.chosenNewProperty && this.chosenRemovedProperty);
+    }
+
+    resetChosen() {
+        this.chosenRemovedProperty = null;
+        this.chosenNewProperty = null;
+        this.continueOrMap = this.CONTINUE;
+    }
 }

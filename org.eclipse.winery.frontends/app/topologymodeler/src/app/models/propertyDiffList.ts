@@ -11,10 +11,9 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-
 export class PropertyDiffList {
-
-    constructor(public resolvedProperties: string[], public removedProperties: string[], public newProperties: string[]) {
-
+    constructor(public resolvedProperties: string[],
+                public removedProperties: string[],
+                public newProperties: string[]) {
     }
 }
