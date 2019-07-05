@@ -14,18 +14,15 @@
 
 package org.eclipse.winery.common.configuration;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Optional;
+import java.util.Properties;
 
 import org.apache.commons.configuration2.YAMLConfiguration;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +37,9 @@ public final class Environments {
     private final static String endpointPrefix = "ui.endpoints.";
     private final static String gitPrefix = "repository.git.";
     private final static String repositoryPrefix = "repository.";
+
+    private Environments() {
+    }
 
     /**
      * Returns an ConfigurationObject Instance representing the configuration of the configuration - class attribute of
@@ -82,15 +82,13 @@ public final class Environments {
     }
 
     /**
-     * When no error occurs, this method returns the version specified in the pom file. Otherwise null is returned.
-     * If an error occurs the version 0.0.0 is returned.
+     * When no error occurs, this method returns the version specified in the pom file. Otherwise null is returned. If
+     * an error occurs the version 0.0.0 is returned.
      */
     public static String getVersion() {
         try {
-            MavenXpp3Reader pomReader = new MavenXpp3Reader();
-            Model pomModel = pomReader.read(new FileReader("pom.xml"));
-            return pomModel.getVersion();
-        } catch (XmlPullParserException | IOException e) {
+            return new Environments().getVersionFromProperties();
+        } catch (IOException e) {
             LOGGER.debug("Error while retrieving version from pom.", e);
         }
         return "0.0.0";
@@ -167,5 +165,11 @@ public final class Environments {
         YAMLConfiguration config = Environment.getConfiguration();
         changedProperties.getEndpoints().keySet().forEach(property -> config.setProperty(endpointPrefix + property, changedProperties.getEndpoints().get(property)));
         Environment.save();
+    }
+
+    private String getVersionFromProperties() throws IOException {
+        Properties properties = new Properties();
+        properties.load(this.getClass().getClassLoader().getResourceAsStream("version.properties"));
+        return properties.getProperty("version");
     }
 }
