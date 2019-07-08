@@ -27,8 +27,11 @@ public class GanacheManager {
         }
         
         else{
+            /*
             processBuilder.command("bash", "-c", "ganache-cli", "--account=\"0xb1211de9fb36bc81c9e269e1f6b783d80e01f3709562bb78451d1a956b3c2038,99999999999999999999999999999999\"" , "-l 0xffffffffffffff", "-v");
+*/
 
+            processBuilder.command("bash", "-c", "ganache-cli--account=\"0xb1211de9fb36bc81c9e269e1f6b783d80e01f3709562bb78451d1a956b3c2038,99999999999999999999999999999999\" -l 0xffffffffffffff -v");
         }
         this.process = processBuilder.start();
         Thread.sleep(10000);
