@@ -26,6 +26,8 @@ import { Observable } from 'rxjs/Observable';
 import { forkJoin } from 'rxjs';
 import { TopologyModelerConfiguration } from '../models/topologyModelerConfiguration';
 import { ErrorHandlerService } from './error-handler.service';
+import { ThreatCreation } from '../models/threatCreation';
+import { Threat, ThreatAssessmentApiData } from '../models/threatModelingModalData';
 import { Visuals } from '../models/visuals';
 import { VersionElement } from '../models/versionElement';
 import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
@@ -54,7 +56,7 @@ export class BackendService {
                 private configurationService: WineryRepositoryConfigurationService) {
         this.endpointConfiguration$.subscribe((params: TopologyModelerConfiguration) => {
             if (!(isNullOrUndefined(params.id) && isNullOrUndefined(params.ns) &&
-                isNullOrUndefined(params.repositoryURL) && isNullOrUndefined(params.uiURL))) {
+                    isNullOrUndefined(params.repositoryURL) && isNullOrUndefined(params.uiURL))) {
 
                 this.configuration = new TopologyModelerConfiguration(
                     params.id,
@@ -289,6 +291,28 @@ export class BackendService {
         return this.http.post(url + '/', importedTemplateQName, {
             headers: headers, observe: 'response', responseType: 'text'
         });
+    }
+
+    /**
+     *
+     */
+    threatCatalogue(): Observable<Array<Threat>> {
+        return this.http.get<Array<Threat>>(this.configuration.repositoryURL + '/threats');
+    }
+
+    /**
+     *
+     */
+    threatCreation(data: ThreatCreation): Observable<string> {
+        const url = this.configuration.repositoryURL;
+        return this.http.post(url + '/threats', data, { responseType: 'text' });
+    }
+
+    /**
+     *
+     */
+    threatAssessment(): Observable<ThreatAssessmentApiData> {
+        return this.http.get<ThreatAssessmentApiData>(this.serviceTemplateURL + '/threatmodeling');
     }
 
     substituteTopology(): void {

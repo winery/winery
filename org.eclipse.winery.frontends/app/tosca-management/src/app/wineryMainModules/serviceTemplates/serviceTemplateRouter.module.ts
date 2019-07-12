@@ -30,6 +30,7 @@ import { ToscaTypes } from '../../model/enums';
 import { WineryReadmeComponent } from '../../wineryReadmeModule/wineryReadme.component';
 import { WineryLicenseComponent } from '../../wineryLicenseModule/wineryLicense.component';
 import { ConstraintCheckingComponent } from '../../instance/serviceTemplates/constraintChecking/constraintChecking.component';
+import { ThreatAssessmentComponent } from '../../instance/serviceTemplates/threatAssessment/threatAssessment.component';
 
 const toscaType = ToscaTypes.ServiceTemplate;
 
@@ -63,6 +64,7 @@ const serviceTemplateRoutes: Routes = [
             { path: 'tags', component: TagComponent },
             { path: 'documentation', component: DocumentationComponent },
             { path: 'xml', component: EditXMLComponent },
+            { path: 'threatmodeling', component: ThreatAssessmentComponent },
             { path: '', redirectTo: 'readme', pathMatch: 'full' }
         ]
     }

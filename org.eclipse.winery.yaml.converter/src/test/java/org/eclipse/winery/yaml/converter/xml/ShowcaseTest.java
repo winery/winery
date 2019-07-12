@@ -29,6 +29,7 @@ import org.eclipse.winery.yaml.converter.Converter;
 import org.eclipse.winery.yaml.converter.xml.support.AbstractTestX2Y;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ShowcaseTest extends AbstractTestX2Y {
@@ -37,6 +38,7 @@ public class ShowcaseTest extends AbstractTestX2Y {
     }
 
     @Test
+    @Ignore
     public void zipTypeTest() throws Exception {
         String name = "Showcase";
         String path = this.path + File.separator + name + ".csar";

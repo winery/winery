@@ -55,6 +55,7 @@ import org.eclipse.winery.repository.rest.resources.imports.ImportsResource;
 import org.eclipse.winery.repository.rest.resources.patternrefinementmodels.PatternRefinementModelsResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplatesResource;
 import org.eclipse.winery.repository.rest.resources.testrefinementmodels.TestRefinementModelsResource;
+import org.eclipse.winery.repository.rest.resources.threats.ThreatsResource;
 import org.eclipse.winery.repository.rest.resources.yaml.YAMLParserResource;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
@@ -165,6 +166,11 @@ public class MainResource {
     @Path("yaml/")
     public YAMLParserResource yamlParser() {
         return new YAMLParserResource();
+    }
+
+    @Path("threats")
+    public ThreatsResource threats() {
+        return new ThreatsResource();
     }
 
     /**

@@ -20,6 +20,8 @@ For more information on TOSCA see [our TOSCA information page](../tosca/).
 - [Implementation Artifact Generation](generateIA.md) - Shows how to generate and update an implementation artifact of type .war
 - [Accountability](../../org.eclipse.winery.accountability/README.md) - Enables enforcing accountability in decentralized scenarios for collaborative development of CSARs
 - [Version Management](VersionManagement.md) - shows how to update the version of a node template in the topology modeler
+- [Threat Modeling For NFV](ThreatModelingNFV.md) - Enables threat modeling capabilities and NFV-based mitigation recommendation
+
 ## Background Literature
 
 [BBKL14] Breitenbücher, Uwe; Binz, Tobias; Kopp, Oliver; Leymann, Frank: Vinothek - A Self-Service Portal for TOSCA. In: Herzberg, Nico (Hrsg); Kunze, Matthias (Hrsg): Proceedings of the 6th Central-European Workshop on Services and their Composition (ZEUS 2014).
