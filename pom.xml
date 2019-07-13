@@ -109,6 +109,7 @@
         <module>org.eclipse.winery.tools.copybaragenerator</module>
         <module>org.eclipse.winery.model.adaptation</module>
         <module>org.eclipse.winery.frontends</module>
+        <module>org.eclipse.winery.tools.deployablecomponents</module>
         <module>org.eclipse.winery.model.threatmodeling</module>
     </modules>
     <build>

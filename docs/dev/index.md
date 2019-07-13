@@ -22,6 +22,7 @@ This document provides an index to all development guidelines and background inf
 - [ToolChain](ToolChain) - GitHub workflow
 - [Trouble Shooting](troubleshootings.md)
 - [TOSCA](../tosca/) - notes on OASIS TOSCA
+- [DeployableComponents](../user/DeployableComponentsUsage.md) - Explanations on dockerfile component extraction tool
 
 To get started, go on at [ToolChain](ToolChain.md).
 
