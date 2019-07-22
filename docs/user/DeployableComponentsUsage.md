@@ -45,7 +45,7 @@ crawler, before a request is cancelled.
 
 ### Example
 
-    DeployableComponents comp = new DeployableComponents(CrawlerType.GITHUB, loginName, loginToken);
+    DeployableComponents comp = new DeployableComponents(CrawlerType.GITHUB, loginName, loginToken, localCopyPath);
     comp.setCrawlPoint(randomNumber);
     
     Runnable extractionTask = () -> {

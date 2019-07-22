@@ -33,7 +33,7 @@ class CrawlerTest {
     // needs internet access
     @Test
     void TestGithubCrawler() {
-        Crawler crawler = new Crawler(CrawlerType.GITHUB, "", "");
+        Crawler crawler = new Crawler(CrawlerType.GITHUB, "", "", "");
         crawler.setStartPoint(114777405);
         crawler.crawlNewDockerfiles(1);
         Dockerfile dockerfile = crawler.nextDockerfile();

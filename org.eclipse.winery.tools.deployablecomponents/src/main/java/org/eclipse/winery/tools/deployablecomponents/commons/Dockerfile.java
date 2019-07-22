@@ -16,19 +16,19 @@ package org.eclipse.winery.tools.deployablecomponents.commons;
 
 public class Dockerfile {
 
-    private String Path;
+    private String path;
     private String content;
     private String repoName;
 
     public Dockerfile(String path, String content, String repoName) {
-        this.Path = path;
+        this.path = path;
         this.content = content;
         this.repoName = repoName;
     }
 
 
     public String getPath() {
-        return Path;
+        return path;
     }
 
     public String getContent() {

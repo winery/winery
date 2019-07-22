@@ -25,40 +25,21 @@ import org.eclipse.winery.tools.deployablecomponents.fileanalyzer.Fileanalyzer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-/* Example how to use:
-        DeployableComponents comp = new DeployableComponents(CrawlerType.GITHUB, loginName, loginToken);
-        comp.setCrawlPoint(randomNumber);
-        
-        Runnable crawlerTask = () -> {
-            comp.start();
-        };
-        
-        Thread crawlerThread = new Thread(crawlerTask);
-        crawlerThread.start();
-
-        try {
-            Thread.sleep(3600000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        comp.stop();
-
-        HashMap<Component, List<Pair<Component, Integer>>> results = comp.getFoundComponents();
- */
 public class DeployableComponents {
 
-    private Crawler crawler;
-    private Fileanalyzer analyzer;
+    private final Crawler crawler;
+    private final Fileanalyzer analyzer;
 
-    private HashMap<Component, List<Pair<Component, Integer>>> foundComponents = new HashMap<>();
+    private final Map<Component, List<Pair<Component, Integer>>> foundComponents = new HashMap<>();
 
     private boolean crawlStatus = false;
     private final int CRAWL_AT_ONCE = 1;
     public static final int MAX_FAILED_CRAWLER_REQUESTS = 10;
 
-    public DeployableComponents(CrawlerType type, String serviceName, String serviceToken) {
-        crawler = new Crawler(type, serviceName, serviceToken);
+    public DeployableComponents(CrawlerType type, String serviceName, String serviceToken, String localCopyPath) {
+        crawler = new Crawler(type, serviceName, serviceToken, localCopyPath);
         analyzer = new Fileanalyzer();
     }
 
@@ -123,7 +104,7 @@ public class DeployableComponents {
         }
     }
 
-    public HashMap<Component, List<Pair<Component, Integer>>> getFoundComponents() {
+    public Map<Component, List<Pair<Component, Integer>>> getFoundComponents() {
         return foundComponents;
     }
 

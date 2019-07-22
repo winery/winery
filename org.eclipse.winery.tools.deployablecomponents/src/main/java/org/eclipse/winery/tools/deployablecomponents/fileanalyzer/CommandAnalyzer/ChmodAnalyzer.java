@@ -27,10 +27,10 @@ public class ChmodAnalyzer implements CommandAnalyzer {
         }
         command = command.replace(Commands.Chmod.asString(), "");
         String[] words = command.split("\\s");
-        List<String> packets = new ArrayList<>();
+        List<String> packages = new ArrayList<>();
 
         if (words[0].contains("+") && words[0].contains("x")) {
-            packets.add(words[1]);
+            packages.add(words[1]);
         }
 
         boolean execFound = false;
@@ -39,20 +39,20 @@ public class ChmodAnalyzer implements CommandAnalyzer {
                 continue;
             }
             if (execFound) {
-                packets.add(word);
+                packages.add(word);
             }
             if (word.contains("+") && word.contains("x")) {
                 execFound = true;
             }
         }
-        return parseComponents(packets);
+        return parseComponents(packages);
     }
 
-    private List<Component> parseComponents(List<String> packets) {
+    private List<Component> parseComponents(List<String> packages) {
         List<Component> components = new ArrayList<>();
-        for (String packet : packets) {
+        for (String softwarePackage : packages) {
             String version = "undefined";
-            String name = packet;
+            String name = softwarePackage;
             components.add(new Component(name, version, "undefined"));
         }
         return components;

@@ -20,13 +20,12 @@ import org.eclipse.winery.tools.deployablecomponents.commons.Component;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 class DeployableComponentsToscaConverter {
 
-    List<TNodeType> convertToToscaModel(HashMap<Component, List<Pair<Component, Integer>>> components) {
+    List<TNodeType> convertToToscaModel(Map<Component, List<Pair<Component, Integer>>> components) {
         List<TNodeType> nodes = new ArrayList<>();
         for (Map.Entry<Component, List<Pair<Component, Integer>>> entry : components.entrySet()) {
             TNodeType.Builder nodeBuilder = convertComponentToNode(entry.getKey());

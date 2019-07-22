@@ -21,19 +21,22 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class Crawler {
 
     private ICrawlerImplementation crawlerInstance;
 
     // contains dockerfile, which are crawled but not yet retrieved
-    private List<Dockerfile> crawledDockerfiles = new ArrayList<>();
+    private final Deque<Dockerfile> crawledDockerfiles = new ConcurrentLinkedDeque<>();
+    
+    private final String localCopyPath;
 
     public final static Logger LOGGER = LoggerFactory.getLogger(Crawler.class);
 
-    public Crawler(CrawlerType type, String serviceName, String serviceToken) {
+    public Crawler(CrawlerType type, String serviceName, String serviceToken, String localCopyPath) {
         switch (type) {
             case GITHUB:
                 crawlerInstance = new GithubCrawler(serviceName, serviceToken);
@@ -42,6 +45,7 @@ public class Crawler {
                 crawlerInstance = new LocalCrawler(serviceName);
                 break;
         }
+        this.localCopyPath = localCopyPath;
     }
 
     public void setStartPoint(int number) {
@@ -50,22 +54,17 @@ public class Crawler {
 
     // access to already crawled dockerfiles
     public Dockerfile nextDockerfile() {
-        Dockerfile nextDockerfile;
-        synchronized (crawledDockerfiles) {
-            if (crawledDockerfiles.isEmpty()) {
-                return null;
-            }
-
-            nextDockerfile = crawledDockerfiles.get(0);
-            // all following elements are shifted one down, order is kept
-            crawledDockerfiles.remove(0);
-        }
-        return nextDockerfile;
+        return crawledDockerfiles.pollFirst();
     }
 
-    /* crawls at least the given number of dockerfiles
-    one crawling-step (e.g. a repository) is always finished before the number is checked
-    returns the actual crawled number of dockerfiles*/
+    /**
+     * crawls at least the given number of dockerfiles
+     * one crawling-step (e.g. a repository) is always finished before the number is checked
+     * returns the actual crawled number of dockerfiles
+     *
+     * @param number how many dockerfiles should be crawled
+     * @return actual number of crawled dockerfiles
+     */
     public int crawlNewDockerfiles(int number) {
         int crawledDockerfilesCount = 0;
         try {
@@ -75,15 +74,17 @@ public class Crawler {
                 synchronized (crawledDockerfiles) {
                     crawledDockerfiles.addAll(newDockerfiles);
                 }
-                for (Dockerfile dockerfile : newDockerfiles) {
-                    String filePath = dockerfile.getRepoName() + "." + dockerfile.getPath();
-                    filePath = filePath.replace("/", ".");
-                    filePath = System.getProperty("user.home") + "/Dockerfiles/" + filePath;
-                    BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
-                    writer.write(dockerfile.getRepoName() + "\n");
-                    writer.write(dockerfile.getPath() + "\n");
-                    writer.write(dockerfile.getContent());
-                    writer.close();
+                if (!localCopyPath.isEmpty()) {
+                    for (Dockerfile dockerfile : newDockerfiles) {
+                        String filePath = dockerfile.getRepoName() + "." + dockerfile.getPath();
+                        filePath = filePath.replace("/", ".");
+                        filePath = localCopyPath + filePath;
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
+                        writer.write(dockerfile.getRepoName() + "\n");
+                        writer.write(dockerfile.getPath() + "\n");
+                        writer.write(dockerfile.getContent());
+                        writer.close();
+                    }
                 }
             }
         } catch (IOException e) {

@@ -26,28 +26,28 @@ public class NpmAnalyzer implements CommandAnalyzer {
         }
         command = command.replace(Commands.Npm.asString(), "");
         String[] words = command.split("\\s");
-        List<String> packets = new ArrayList<>();
+        List<String> packages = new ArrayList<>();
 
         for (String word : words) {
             if (word.length() > 0 && word.charAt(0) != '-') {
-                packets.add(word);
+                packages.add(word);
             }
             // remove RUN and "install" itself
             if (word.equals("install") || word.equals("i") || word.equals("add")) {
-                packets.clear();
+                packages.clear();
             }
         }
-        return parseComponents(packets);
+        return parseComponents(packages);
     }
 
-    private List<Component> parseComponents(List<String> packets) {
+    private List<Component> parseComponents(List<String> packages) {
         List<Component> components = new ArrayList<>();
-        for (String packet : packets) {
+        for (String softwarePackage : packages) {
             String version = "undefined";
-            String name = packet;
-            if (packet.contains("@")) {
-                version = packet.substring(packet.indexOf('@') + 1);
-                name = packet.substring(0, packet.indexOf('@'));
+            String name = softwarePackage;
+            if (softwarePackage.contains("@")) {
+                version = softwarePackage.substring(softwarePackage.indexOf('@') + 1);
+                name = softwarePackage.substring(0, softwarePackage.indexOf('@'));
             }
             components.add(new Component(name, version, "equals"));
         }
