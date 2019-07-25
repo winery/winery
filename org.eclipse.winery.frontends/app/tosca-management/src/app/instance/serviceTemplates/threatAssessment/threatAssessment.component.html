@@ -1,0 +1,45 @@
+<div [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div class="flash">
+    This panel shows all current threats that impose potential risks to the system. Additionally employed mitigation strategies are displayed.
+</div>
+<div *ngIf="threats && threats.length == 0">
+    <h2>No Threats</h2>
+    <p>There are no threats assigned to any NodeTemplates in this ServiceTemplate.
+        To begin threatmodeling please open the Topology Editor and assign threats.</p>
+</div>
+<div class="panel panel-default" *ngFor="let threat of threats">
+    <div class="panel-heading clearfix">
+        <h3 class="panel-title pull-left">{{s2Q(threat.name).localPart}}</h3>
+        <div class="pull-right" >
+            STRIDE: <span class="label label-warning" style="font-size: 1.1em;margin-right: 10px;" >{{threat.properties.strideClassification}}</span>
+            Severity: <span class="label label-danger" style="font-size: 1.1em;">{{threat.properties.severity}}</span>
+        </div>
+    </div>
+    <div class="panel-body">
+        <h4>Description</h4>
+        <p>{{threat.properties.description}}</p>
+        <div *ngIf="threat.properties.cveReference">
+            <h4>CVE:</h4>
+            <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name={{threat.properties.cveReference}}" target="new">{{threat.properties.cveReference}}</a>
+        </div>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+            <h4 class="list-group-item-heading">Targeted Node Template(s):</h4>
+            <p class="list-group-item-text" *ngFor="let target of threat.targets">
+                <b>&quot;{{target.nodeTemplate}}&quot;</b>  of type <a href="{{nodeTypeURL(target.nodeType)}}" class="btn btn-default" target="new">{{target.nodeType}}</a>
+            </p>
+        </li>
+        <div *ngFor="let mitigation of threat.mitigations">
+        <li [className]="isMitigated(mitigation) ? 'list-group-item list-group-item-success' : 'list-group-item list-group-item-warning'" >
+                <span>{{isMitigated(mitigation) ? 'Mitigated by: ' : 'Can be mitigated by: '}} </span>
+                <a href="{{nodeTypeUrlForQName(mitigation)}}" class="btn btn-default" target="_blank">{{mitigation.localPart}}</a>
+        </li>
+        </div>
+        <li *ngIf="threat.mitigations && threat.mitigations.length === 0" class="list-group-item list-group-item-danger">
+            <p><b>No mitigation available</b> There is currently no S-VNF or S-NS available that could possible mitigate this threat.</p>
+        </li>
+    </ul>
+</div>
