@@ -32,6 +32,8 @@
     </distributionManagement>
     <properties>
         <checkstyle.config.location>../checkstyle.xml</checkstyle.config.location>
+        <!-- property is required for deployment to mvn-repo -->
+        <main.basedir>${project.parent.basedir}</main.basedir>
     </properties>
     <dependencies>
         <dependency>
@@ -61,7 +63,7 @@
         <dependency>
             <groupId>org.web3j</groupId>
             <artifactId>core</artifactId>
-            <version>3.4.0</version>
+            <version>${org.web3j}</version>
         </dependency>
         <dependency>
             <groupId>com.github.rutledgepaulv</groupId>
@@ -168,7 +170,7 @@
             <plugin>
                 <groupId>org.web3j</groupId>
                 <artifactId>web3j-maven-plugin</artifactId>
-                <version>0.3.1</version>
+                <version>${org.web3j}</version>
                 <configuration>
                     <nativeJavaType>true</nativeJavaType>
                     <soliditySourceFiles>

@@ -38,6 +38,7 @@ class SwarmProviderTest {
     public void testStorageAndRetrieval() throws ExecutionException, InterruptedException {
 
         final String dataToStore = "This a string intended for testing!";
+        ImmutableStorageProviderFactory.reset();
         ImmutableStorageProvider swarm = ImmutableStorageProviderFactory
             .getStorageProvider(ImmutableStorageProviderFactory.AvailableImmutableStorages.TEST, null);
         assertNotNull(swarm);

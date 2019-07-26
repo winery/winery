@@ -121,7 +121,7 @@ public class AccountabilityManagerImpl implements AccountabilityManager {
 
         return CompletableFuture
             // execute all futures on parallel
-            .allOf(allFuturesMap.values().toArray(new CompletableFuture[allFuturesMap.size()]))
+            .allOf(allFuturesMap.values().toArray(new CompletableFuture[0]))
             // when all done, collect the results
             .thenApply((Void) -> {
                 Map<String, String> result = new HashMap<>();
@@ -181,12 +181,14 @@ public class AccountabilityManagerImpl implements AccountabilityManager {
     @Override
     public CompletableFuture<String> authorize(String processIdentifier, String authorizedEthereumAddress, String authorizedIdentity) {
         LOGGER.info("Authorizing \"" + authorizedEthereumAddress + "\" for " + processIdentifier);
+        
         return this.blockchain.authorize(processIdentifier, authorizedEthereumAddress, authorizedIdentity);
     }
 
     @Override
     public CompletableFuture<AuthorizationInfo> getAuthorization(String processIdentifier) {
         LOGGER.info("Retrieving authorization info for process " + processIdentifier);
+        
         return this.blockchain.getAuthorizationTree(processIdentifier);
     }
 
