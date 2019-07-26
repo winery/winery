@@ -80,9 +80,9 @@ export class LayoutDirective {
             id: 'root',
             properties: {
                 'elk.algorithm': 'layered',
-                'elk.spacing.nodeNode': '200',
+                'elk.spacing.nodeNode': '80',
                 'elk.direction': 'DOWN',
-                'elk.layered.spacing.nodeNodeBetweenLayers': '200'
+                'elk.layered.spacing.nodeNodeBetweenLayers': '100'
             },
             children: children,
             edges: edges,

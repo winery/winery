@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
 -->
 
-<div class="bootstrap-vertical-nav">
+<div class="bootstrap-vertical-nav" id="paletteBody" [ngClass]="{'paletteBodyOpenZindex':paletteRootState === 'extended'}">
 
     <button [@paletteButtonState]="paletteButtonRootState" id="palette_root" class="btn btn-primary" type="button"
             (click)="toggleRootState()" style="transform: rotate(-90deg) translateY(-135px) translateX(-135px)">

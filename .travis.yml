@@ -22,7 +22,8 @@ before_install:
   #- curl -sL https://cdn.rawgit.com/jpm4j/jpm4j.installers/6b3c5176/dist/biz.aQute.jpm.run.jar >jpm4j.jar
   #- java -jar jpm4j.jar -u init
   # - ~/jpm/bin/jpm install com.codacy:codacy-coverage-reporter:assembly
+  - npm install -g ganache-cli
 
 script:
-  - mvn -q package
+  - mvn -q -e package
 #  - mvn jacoco:report-aggregate

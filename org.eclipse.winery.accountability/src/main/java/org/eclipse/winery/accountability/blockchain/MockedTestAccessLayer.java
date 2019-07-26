@@ -20,11 +20,14 @@ import java.util.concurrent.CompletableFuture;
 import org.eclipse.winery.accountability.model.ModelProvenanceElement;
 import org.eclipse.winery.accountability.model.authorization.AuthorizationInfo;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Workaround to test the Blockchain Access because Mockito and PowerMockito are not supporting JUnit5 up until now...
  */
 public class MockedTestAccessLayer implements BlockchainAccess {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(MockedTestAccessLayer.class);
     @Override
     public CompletableFuture<String> saveFingerprint(String identifier, String fingerprint) {
         return null;
@@ -37,6 +40,7 @@ public class MockedTestAccessLayer implements BlockchainAccess {
 
     @Override
     public CompletableFuture<String> authorize(String processIdentifier, String authorizedEthereumAddress, String authorizedIdentity) {
+        LOGGER.error("Inside Mocked Class");
         return null;
     }
 

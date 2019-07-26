@@ -19,7 +19,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -28,6 +27,7 @@ import org.eclipse.winery.accountability.blockchain.util.CompressionUtils;
 import org.eclipse.winery.accountability.exceptions.EthereumException;
 import org.eclipse.winery.accountability.model.ModelProvenanceElement;
 
+import io.reactivex.disposables.Disposable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.abi.EventEncoder;
@@ -43,8 +43,6 @@ import org.web3j.protocol.core.methods.request.EthFilter;
 import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.Contract;
-import rx.Subscriber;
-import rx.Subscription;
 
 /**
  * Provide access to the functionality of the provenance smart contract
@@ -61,7 +59,7 @@ public class ProvenanceSmartContractWrapper extends SmartContractWrapper {
         LocalDateTime start = LocalDateTime.now();
         byte[] compressed = CompressionUtils.compress(state.getBytes());
         LOGGER.debug("Compressing fingerprint lasted {}", Duration.between(LocalDateTime.now(), start).toString());
-        
+
         return ((Provenance) contract).addResourceVersion(identifier, compressed)
             .sendAsync()
             // replace the complete receipt with the transaction hash only.
@@ -71,11 +69,15 @@ public class ProvenanceSmartContractWrapper extends SmartContractWrapper {
     public CompletableFuture<List<ModelProvenanceElement>> getProvenance(final String identifier) {
         // eventName, indexed parameters, unindexed parameters
         final Event event = new Event("ResourceVersion",
-            Arrays.asList(new TypeReference<Utf8String>() {
-            }, new TypeReference<Address>() {
-            }),
-            Collections.singletonList(new TypeReference<Bytes>() {
-            }));
+            Arrays.asList(
+                new TypeReference<Utf8String>() {
+                },
+                new TypeReference<Address>() {
+                },
+                new TypeReference<Bytes>() {
+                }
+            )
+        );
         EthFilter filter = new EthFilter(DefaultBlockParameterName.EARLIEST, DefaultBlockParameterName.LATEST,
             contract.getContractAddress()).
             addSingleTopic(EventEncoder.encode(event)).
@@ -88,37 +90,23 @@ public class ProvenanceSmartContractWrapper extends SmartContractWrapper {
             LOGGER.info(recordsCount + " provenance elements detected.");
 
             if (recordsCount > 0) {
-                final Subscription subscription = ((Provenance) contract).resourceVersionEventObservable(filter)
-                    .subscribe(new Subscriber<Provenance.ResourceVersionEventResponse>() {
-                        private List<ModelProvenanceElement> provenanceElements = new ArrayList<>();
+                final List<ModelProvenanceElement> provenanceElements = new ArrayList<>();
+                final Disposable subscription = ((Provenance) contract).resourceVersionEventFlowable(filter)
+                    .subscribe(resourceVersionEventResponse -> {
+                        try {
+                            final ModelProvenanceElement currentElement = generateProvenanceElement(resourceVersionEventResponse);
+                            provenanceElements.add(currentElement);
 
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable throwable) {
-                            LOGGER.error("Error detected. Reason: " + throwable.getMessage());
-                            result.completeExceptionally(new EthereumException(throwable));
-                        }
-
-                        @Override
-                        public void onNext(Provenance.ResourceVersionEventResponse resourceVersionEventResponse) {
-                            try {
-                                final ModelProvenanceElement currentElement = generateProvenanceElement(resourceVersionEventResponse);
-                                provenanceElements.add(currentElement);
-
-                                if (provenanceElements.size() == recordsCount) {
-                                    result.complete(provenanceElements);
-                                }
-                            } catch (EthereumException e) {
-                                result.completeExceptionally(e);
+                            if (provenanceElements.size() == recordsCount) {
+                                result.complete(provenanceElements);
                             }
+                        } catch (EthereumException e) {
+                            result.completeExceptionally(e);
                         }
                     });
+
                 // unsubscribe the observable when the CompletableFuture completes (this frees threads)
-                result.whenComplete((r, e) -> subscription.unsubscribe());
+                result.whenComplete((r, e) -> subscription.dispose());
             } else { // empty result
                 result.complete(new ArrayList<>());
             }

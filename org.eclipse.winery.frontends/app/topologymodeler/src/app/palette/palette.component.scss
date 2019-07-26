@@ -25,12 +25,20 @@
     font-size: small;
 }
 
+#paletteBody {
+    z-index: 3;
+}
+
+.paletteBodyOpenZindex {
+    z-index: 55 !important;
+}
+
 #palette_root:hover {
     background-color: #EAF2F5;
 }
 
 .palette-items-wrapper {
-    height: 90%;
+    height: 100vh;
     background: #eee;
     overflow: scroll;
     -webkit-user-select: none;
