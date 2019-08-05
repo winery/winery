@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.SortedSet;
@@ -68,6 +69,7 @@ import org.eclipse.winery.repository.backend.EdmmManager;
 import org.eclipse.winery.repository.backend.IRepositoryAdministration;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.xsd.RepositoryBasedXsdImportManager;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
@@ -91,6 +93,11 @@ import org.slf4j.LoggerFactory;
 public class FilebasedRepository extends AbstractRepository implements IRepositoryAdministration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FilebasedRepository.class);
+
+    private final static Path oldRepository = FilebasedRepository.getDefaultRepositoryFilePath().toPath();
+    private final static Path newRepository = new File(FilebasedRepository.getDefaultRepositoryFilePath(), Constants.DEFAULT_LOCAL_REPO_NAME).toPath();
+
+    private static List<String> ignoreFile = new ArrayList<>();
 
     protected final Path repositoryRoot;
     protected final Path repositoryDep;
@@ -116,7 +123,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
         this.provider = this.fileSystem.provider();
 
         this.isLocal = this.repositoryRoot.getFileName().toString().equals(Constants.DEFAULT_LOCAL_REPO_NAME);
-
+        RepositoryFactory.repositoryList.add(this);
         LOGGER.debug("Repository root: {}", this.repositoryRoot);
     }
 
@@ -196,7 +203,16 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
         Objects.requireNonNull(configuredRepositoryPath);
         Path repositoryPath = configuredRepositoryPath.toAbsolutePath().normalize();
         try {
-            org.apache.commons.io.FileUtils.forceMkdir(repositoryPath.toFile());
+            if (configuredRepositoryPath.endsWith(Constants.DEFAULT_LOCAL_REPO_NAME) && !configuredRepositoryPath.toFile().exists()) {
+                org.apache.commons.io.FileUtils.forceMkdir(repositoryPath.toFile());
+                ignoreFile.add(Constants.DEFAULT_LOCAL_REPO_NAME);
+                ignoreFile.add(Filename.FILENAME_JSON_REPOSITORIES);
+                FileUtils.copyFiles(oldRepository, newRepository, ignoreFile);
+                ignoreFile.add(".git");
+                FileUtils.deleteFiles(oldRepository, ignoreFile);
+            } else {
+                org.apache.commons.io.FileUtils.forceMkdir(repositoryPath.toFile());
+            }
         } catch (IOException e) {
             FilebasedRepository.LOGGER.error("Could not create repository directory", e);
         }

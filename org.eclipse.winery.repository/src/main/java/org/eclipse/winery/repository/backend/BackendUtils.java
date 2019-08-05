@@ -138,6 +138,7 @@ import org.eclipse.winery.repository.GitInfo;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
@@ -1647,9 +1648,15 @@ public class BackendUtils {
         versionList.get(0).setReleasable(true);
 
         if (current[0].isVersionedInWinery() && RepositoryFactory.getRepository() instanceof GitBasedRepository) {
-            GitBasedRepository gitRepo = (GitBasedRepository) RepositoryFactory.getRepository();
-            boolean changesInFile = gitRepo.hasChangesInFile(BackendUtils.getRefOfDefinitions(id));
-
+            boolean changesInFile = false;
+            for (FilebasedRepository repo : RepositoryFactory.repositoryList) {
+                if (repo.getClass().equals(GitBasedRepository.class)) {
+                    GitBasedRepository gitRepo = (GitBasedRepository) repo;
+                    if (gitRepo.hasChangesInFile(BackendUtils.getRefOfDefinitions(id))) {
+                        changesInFile = true;
+                    }
+                }
+            }
             if (!current[0].isLatestVersion()) {
                 // The current version may still be releasable, if it's the latest WIP version of a component version.
                 List<WineryVersion> collect = versionList.stream()

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,16 +11,22 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {NgModule} from '@angular/core';
-import {RepositoryComponent} from './repository.component';
-import {WineryUploaderModule} from '../../../wineryUploader/wineryUploader.module';
-import {RepositoryService} from './repository.service';
-import {WineryModalModule} from '../../../wineryModalModule/winery.modal.module';
+import { NgModule } from '@angular/core';
+import { RepositoryComponent } from './repository.component';
+import { WineryUploaderModule } from '../../../wineryUploader/wineryUploader.module';
+import { RepositoryService } from './repository.service';
+import { WineryModalModule } from '../../../wineryModalModule/winery.modal.module';
+import { WineryTableModule } from '../../../wineryTableModule/wineryTable.module';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
     imports: [
+        WineryTableModule,
         WineryUploaderModule,
-        WineryModalModule
+        WineryModalModule,
+        FormsModule,
+        CommonModule
     ],
     exports: [RepositoryComponent],
     declarations: [RepositoryComponent],

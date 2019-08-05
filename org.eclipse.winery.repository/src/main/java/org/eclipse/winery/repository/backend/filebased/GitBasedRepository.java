@@ -98,7 +98,15 @@ public class GitBasedRepository extends FilebasedRepository {
             this.git = new Git(gitRepo);
         }
 
-        this.workingRepositoryRoot = generateWorkingRepositoryRoot();
+        if (this.repositoryRoot.resolve(Constants.DEFAULT_LOCAL_REPO_NAME).toFile().exists()) {
+            if (!(this instanceof MultiRepository)) {
+                this.workingRepositoryRoot = this.repositoryRoot.resolve(Constants.DEFAULT_LOCAL_REPO_NAME);
+            } else {
+                this.workingRepositoryRoot = repositoryDep;
+            }
+        } else {
+            this.workingRepositoryRoot = repositoryDep;
+        }
 
         this.eventBus = new EventBus();
 

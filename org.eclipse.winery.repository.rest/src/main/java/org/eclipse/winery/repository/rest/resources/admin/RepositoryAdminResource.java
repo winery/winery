@@ -13,18 +13,29 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.admin;
 
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataParam;
-import org.eclipse.winery.repository.backend.IRepositoryAdministration;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
+
+import org.eclipse.winery.repository.backend.IRepositoryAdministration;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.filebased.RepositoryConfigurationManager;
+import org.eclipse.winery.repository.backend.filebased.RepositoryProperties;
+
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataParam;
 
 public class RepositoryAdminResource {
 
@@ -54,5 +65,31 @@ public class RepositoryAdminResource {
             }
         };
         return Response.ok().header("Content-Disposition", "attachment;filename=\"repository.zip\"").type(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP).entity(so).build();
+    }
+
+    /**
+     * returns List of Repositories to frontend
+     *
+     * @return List of Repositories
+     */
+    @GET
+    @Path("repositories")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<RepositoryProperties> getRepositoriesAsJson() {
+        return RepositoryConfigurationManager.getRepositoriesFromFile();
+    }
+
+    /**
+     * get Repositories from frontend
+     */
+    @POST
+    @Path("repositories")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addRepository(List<RepositoryProperties> repositoriesList) {
+        if (repositoriesList == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("repositories list must be given.").build();
+        }
+        RepositoryConfigurationManager.addRepositoryToFile(repositoriesList);
+        return Response.ok().build();
     }
 }

@@ -70,14 +70,15 @@ class RepositoryUtils {
             } catch (UnsupportedOperationException uoe) {
                 LOGGER.warn("Error when setting the attributes of the .gitignore", uoe);
             }
-
         }
     }
 
-    protected boolean checkRepositoryDuplicate(String url) {
-        for (FilebasedRepository frepo : this.multiRepository.getRepositoriesMap().keySet()) {
-            if ((frepo instanceof GitBasedRepository) && ((GitBasedRepository) frepo).getRepositoryUrl().equals(url)) {
-                return true;
+    protected static boolean checkRepositoryDuplicate(String url) {
+        for (FilebasedRepository frepo : MultiRepository.getRepositoriesMap().keySet()) {
+            if ((frepo instanceof GitBasedRepository) && (((GitBasedRepository) frepo).getRepositoryUrl() != null)) {
+                if (((GitBasedRepository) frepo).getRepositoryUrl().equals(url)) {
+                    return true;
+                }
             }
         }
         return false;

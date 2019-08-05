@@ -77,7 +77,7 @@ public class Constants {
     public static final String TOSCA_PLANTYPE_BUILD_PLAN = "http://docs.oasis-open.org/tosca/ns/2011/12/PlanTypes/BuildPlan";
     public static final String TOSCA_PLANTYPE_TERMINATION_PLAN = "http://docs.oasis-open.org/tosca/ns/2011/12/PlanTypes/TerminationPlan";
     public static final String TOSCA_PLANTYPE_MANAGEMENT_PLAN = "http://opentosca.org/tosca/plantypes/management";
-    
+
     public static final String DIRNAME_SELF_SERVICE_METADATA = "SELFSERVICE-Metadata";
 
     public static final String LICENSE_FILE_NAME = "LICENSE";
