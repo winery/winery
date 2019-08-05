@@ -28,10 +28,17 @@ public class Constants {
     // $HOME/DEFAULT_REPO_NAME is used
     public static final Path GLOBAL_REPO_PATH_WINDOWS = Paths.get("C:/" + Constants.DEFAULT_REPO_NAME);
 
+    public static final String MASTER_BRANCH = "master";
+
     /**
      * file-system in general
      **/
     public static final String newline = System.getProperty("line.separator");
+    public static final String URL_SEPARATOR = "/";
+
+    // Location of the local repository
+    public static final String DEFAULT_LOCAL_REPO_NAME = "workspace";
+    public static final String FILE_GIT_IGNORE = ".gitignore";
 
     // Path to images for extensions
     // Currently, we require the format <filenamextension>.png

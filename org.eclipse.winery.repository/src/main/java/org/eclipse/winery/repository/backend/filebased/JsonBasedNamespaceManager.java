@@ -42,27 +42,33 @@ public class JsonBasedNamespaceManager extends AbstractNamespaceManager {
     private Map<String, NamespaceProperties> namespaceProperties;
 
     public JsonBasedNamespaceManager(File file) {
+        this(file, true);
+    }
+
+    public JsonBasedNamespaceManager(File file, boolean local) {
         Objects.requireNonNull(file);
         this.file = file;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         this.namespaceProperties = this.loadNamespacePropertiesFromFile();
 
-        this.namespaceProperties.put(Namespaces.TOSCA_NAMESPACE,
-            new NamespaceProperties(Namespaces.TOSCA_NAMESPACE, "tosca", "Predefined TOSCA elements", "", false)
-        );
-        this.namespaceProperties.put(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE,
-            new NamespaceProperties(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "winery", "TOSCA extension by Eclipse Winery", "", false)
-        );
-        this.namespaceProperties.put(Namespaces.W3C_NAMESPACE_URI,
-            new NamespaceProperties(Namespaces.W3C_NAMESPACE_URI, "xmlns", "W3C XML namespace", "", false)
-        );
-        this.namespaceProperties.put(Namespaces.W3C_XML_SCHEMA_NS_URI,
-            new NamespaceProperties(Namespaces.W3C_XML_SCHEMA_NS_URI, "xsd", "W3C XML schema namespace", "", false)
-        );
-        this.namespaceProperties.put(Namespaces.EXAMPLE_NAMESPACE_URI,
-            new NamespaceProperties(Namespaces.EXAMPLE_NAMESPACE_URI, "ex", "Namespace for creating examples", "", false)
-        );
+        if (local) {
+            this.namespaceProperties.put(Namespaces.TOSCA_NAMESPACE,
+                new NamespaceProperties(Namespaces.TOSCA_NAMESPACE, "tosca", "Predefined TOSCA elements", "", false)
+            );
+            this.namespaceProperties.put(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE,
+                new NamespaceProperties(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "winery", "TOSCA extension by Eclipse Winery", "", false)
+            );
+            this.namespaceProperties.put(Namespaces.W3C_NAMESPACE_URI,
+                new NamespaceProperties(Namespaces.W3C_NAMESPACE_URI, "xmlns", "W3C XML namespace", "", false)
+            );
+            this.namespaceProperties.put(Namespaces.W3C_XML_SCHEMA_NS_URI,
+                new NamespaceProperties(Namespaces.W3C_XML_SCHEMA_NS_URI, "xsd", "W3C XML schema namespace", "", false)
+            );
+            this.namespaceProperties.put(Namespaces.EXAMPLE_NAMESPACE_URI,
+                new NamespaceProperties(Namespaces.EXAMPLE_NAMESPACE_URI, "ex", "Namespace for creating examples", "", false)
+            );
+        }
     }
 
     @Override
