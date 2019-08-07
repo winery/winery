@@ -110,6 +110,7 @@
         <module>org.eclipse.winery.tools.copybaragenerator</module>
         <module>org.eclipse.winery.model.adaptation</module>
         <module>org.eclipse.winery.frontends</module>
+        <module>org.eclipse.winery.crawler</module>
         <module>org.eclipse.winery.model.threatmodeling</module>
     </modules>
     <build>
@@ -525,6 +526,7 @@
                                                     <Export-Package>org.eclipse.winery.model.threatmodeling.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
                                                 </instructions>
                                             </artifact>
+
                                             <!-- 
                                                 SECTION: Special artifact imports that fix some failed dependency chains
                                              -->
