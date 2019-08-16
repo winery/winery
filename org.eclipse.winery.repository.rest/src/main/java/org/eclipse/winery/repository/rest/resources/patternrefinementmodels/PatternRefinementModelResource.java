@@ -14,12 +14,15 @@
 
 package org.eclipse.winery.repository.rest.resources.patternrefinementmodels;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import javax.ws.rs.Path;
 
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
+import org.eclipse.winery.model.tosca.TPrmPropertyMapping;
 import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates.TopologyTemplateResource;
 
@@ -45,10 +48,10 @@ public class PatternRefinementModelResource extends AbstractRefinementModelResou
 
     @Path("propertymappings")
     public PrmPropertyMappingsResource getPropertyMappings() {
-        TPatternRefinementModel.TPrmPropertyMappings propertyMappings = this.getTRefinementModel().getPropertyMappings();
+        List<TPrmPropertyMapping> propertyMappings = this.getTRefinementModel().getPropertyMappings();
 
         if (Objects.isNull(propertyMappings)) {
-            propertyMappings = new TPatternRefinementModel.TPrmPropertyMappings();
+            propertyMappings = new ArrayList<>();
             this.getTRefinementModel().setPropertyMappings(propertyMappings);
         }
 

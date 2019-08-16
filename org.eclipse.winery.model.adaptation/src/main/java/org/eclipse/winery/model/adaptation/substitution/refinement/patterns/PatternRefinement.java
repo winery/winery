@@ -14,19 +14,21 @@
 package org.eclipse.winery.model.adaptation.substitution.refinement.patterns;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.eclipse.winery.common.ids.definitions.PatternRefinementModelId;
+import org.eclipse.winery.model.adaptation.substitution.SubstitutionUtils;
+import org.eclipse.winery.model.adaptation.substitution.refinement.AbstractRefinement;
 import org.eclipse.winery.model.adaptation.substitution.refinement.DefaultRefinementChooser;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementChooser;
-import org.eclipse.winery.model.adaptation.substitution.SubstitutionUtils;
-import org.eclipse.winery.model.adaptation.substitution.refinement.AbstractRefinement;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
+import org.eclipse.winery.model.tosca.TPrmPropertyMapping;
 import org.eclipse.winery.model.tosca.TPrmPropertyMappingType;
 import org.eclipse.winery.model.tosca.TRefinementModel;
 import org.eclipse.winery.model.tosca.TRelationDirection;
@@ -109,10 +111,9 @@ public class PatternRefinement extends AbstractRefinement {
     }
 
     public void applyPropertyMappings(RefinementCandidate refinement, String detectorNodeId, TNodeTemplate matchingNode, TTopologyTemplate topology, Map<String, String> idMapping) {
-        TPatternRefinementModel.TPrmPropertyMappings propertyMappings = ((TPatternRefinementModel) refinement.getRefinementModel()).getPropertyMappings();
+        List<TPrmPropertyMapping> propertyMappings = ((TPatternRefinementModel) refinement.getRefinementModel()).getPropertyMappings();
         if (Objects.nonNull(propertyMappings)) {
-            propertyMappings.getPropertyMapping()
-                .stream()
+            propertyMappings.stream()
                 .filter(mapping -> mapping.getDetectorNode().getId().equals(detectorNodeId))
                 .forEach(mapping -> {
                     Map<String, String> sourceProperties = matchingNode.getProperties().getKVProperties();

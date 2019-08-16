@@ -568,10 +568,10 @@ class PatternRefinementTest {
         xIn2_to_kIn11.setDetectorProperty("x");
         xIn2_to_kIn11.setRefinementProperty("k");
 
-        TPatternRefinementModel.TPrmPropertyMappings relationMappings = new TPatternRefinementModel.TPrmPropertyMappings();
-        relationMappings.getPropertyMapping().add(allOn4to13);
-        relationMappings.getPropertyMapping().add(pIn2_to_jIn12);
-        relationMappings.getPropertyMapping().add(xIn2_to_kIn11);
+        List<TPrmPropertyMapping> relationMappings = new ArrayList<>();
+        relationMappings.add(allOn4to13);
+        relationMappings.add(pIn2_to_jIn12);
+        relationMappings.add(xIn2_to_kIn11);
 
         ((TPatternRefinementModel) candidate.getRefinementModel()).setPropertyMappings(relationMappings);
         // endregion

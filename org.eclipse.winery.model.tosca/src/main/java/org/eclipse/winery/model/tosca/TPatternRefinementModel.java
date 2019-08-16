@@ -13,14 +13,12 @@
  ********************************************************************************/
 package org.eclipse.winery.model.tosca;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
@@ -35,8 +33,9 @@ public class TPatternRefinementModel extends TRefinementModel {
     @XmlElement(name = "RefinementStructure")
     private TTopologyTemplate refinementStructure;
 
-    @XmlElement(name = "PrmPropertyMappings")
-    private TPrmPropertyMappings propertyMappings;
+    @XmlElementWrapper(name = "PrmPropertyMappings")
+    @XmlElement(name = "PrmPropertyMapping")
+    private List<TPrmPropertyMapping> propertyMappings;
 
     @NonNull
     @JsonIgnore
@@ -57,29 +56,11 @@ public class TPatternRefinementModel extends TRefinementModel {
     }
 
     @Nullable
-    public TPrmPropertyMappings getPropertyMappings() {
+    public List<TPrmPropertyMapping> getPropertyMappings() {
         return propertyMappings;
     }
 
-    public void setPropertyMappings(TPrmPropertyMappings propertyMappings) {
+    public void setPropertyMappings(List<TPrmPropertyMapping> propertyMappings) {
         this.propertyMappings = propertyMappings;
-    }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "propertyMapping"
-    })
-    public static class TPrmPropertyMappings implements Serializable {
-
-        @XmlElement(name = "PropertyMapping")
-        protected List<TPrmPropertyMapping> propertyMapping;
-
-        @NonNull
-        public List<TPrmPropertyMapping> getPropertyMapping() {
-            if (Objects.isNull(this.propertyMapping)) {
-                this.propertyMapping = new ArrayList<>();
-            }
-            return this.propertyMapping;
-        }
     }
 }
