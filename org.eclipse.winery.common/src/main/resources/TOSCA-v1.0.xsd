@@ -829,6 +829,13 @@
        </xs:sequence>
       </xs:complexType>
      </xs:element>
+     <xs:element name="StayMappings">
+      <xs:complexType>
+       <xs:sequence>
+        <xs:element name="StayMapping" type="tStayMapping" maxOccurs="unbounded"/>
+       </xs:sequence>
+      </xs:complexType>
+     </xs:element>
     </xs:sequence>
     <xs:attribute name="name" type="xs:string" use="optional"/>
     <xs:attribute name="targetNamespace" type="xs:anyURI"/>
@@ -851,6 +858,12 @@
   <xs:attribute name="detectorProperty" type="xs:string" use="optional"/>
   <xs:attribute name="refinementProperty" type="xs:string" use="optional"/>
  </xs:complexType>
+ <xs:complexType name="tStayMapping">
+  <xs:attribute name="id" type="xs:ID" use="required"/>
+  <xs:attribute name="detectorNode" type="xs:string" use="required"/>
+  <xs:attribute name="refinementNode" type="xs:string" use="required"/>
+  <xs:attribute name="modelElementType" type="tPrmModelElementType" use="required"/>
+ </xs:complexType>
  <xs:simpleType name="tDirection">
   <xs:restriction base="xs:string">
    <xs:enumeration value="ingoing"/>
@@ -861,6 +874,13 @@
   <xs:restriction base="xs:string">
    <xs:enumeration value="all"/>
    <xs:enumeration value="selective"/>
+  </xs:restriction>
+ </xs:simpleType>
+ <xs:simpleType name="tPrmModelElementType">
+  <xs:restriction base="xs:string">
+   <xs:enumeration value="node"/>
+   <xs:enumeration value="relation"/>
+   <xs:enumeration value="annotation"/>
   </xs:restriction>
  </xs:simpleType>
  <xs:simpleType name="tBoolean">

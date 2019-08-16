@@ -14,38 +14,17 @@
 
 package org.eclipse.winery.model.tosca;
 
-import java.io.Serializable;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import org.eclipse.jdt.annotation.NonNull;
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tRelationMapping")
-public class TRelationMapping extends HasId implements Serializable {
-
-    @JsonIdentityReference(alwaysAsId = true)
-    @XmlAttribute(name = "detectorNode", required = true)
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @NonNull
-    private TNodeTemplate detectorNode;
-
-    @JsonIdentityReference(alwaysAsId = true)
-    @XmlAttribute(name = "refinementNode", required = true)
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @NonNull
-    private TNodeTemplate refinementNode;
+public class TRelationMapping extends TPrmMapping {
 
     @XmlAttribute(name = "relationType")
     private QName relationType;
@@ -55,22 +34,6 @@ public class TRelationMapping extends HasId implements Serializable {
 
     @XmlAttribute(name = "validSourceOrTarget")
     private QName validSourceOrTarget;
-
-    public TNodeTemplate getDetectorNode() {
-        return detectorNode;
-    }
-
-    public void setDetectorNode(TNodeTemplate detectorNode) {
-        this.detectorNode = detectorNode;
-    }
-
-    public TNodeTemplate getRefinementNode() {
-        return refinementNode;
-    }
-
-    public void setRefinementNode(TNodeTemplate refinementNode) {
-        this.refinementNode = refinementNode;
-    }
 
     public QName getRelationType() {
         return relationType;
