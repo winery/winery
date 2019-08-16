@@ -15,30 +15,30 @@
 package org.eclipse.winery.repository.rest.resources.apiData;
 
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TPrmPropertyMapping;
-import org.eclipse.winery.model.tosca.TPrmPropertyMappingType;
+import org.eclipse.winery.model.tosca.TPrmAttributeMapping;
+import org.eclipse.winery.model.tosca.TPrmAttributeMappingType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class PrmPropertyMappingApiData extends AbstractPrmMappingElement {
+public class PrmAttributeMappingApiData extends AbstractPrmMappingElement {
 
-    public TPrmPropertyMappingType type;
+    public TPrmAttributeMappingType type;
     public String detectorProperty;
     public String refinementProperty;
 
-    public PrmPropertyMappingApiData() {
+    public PrmAttributeMappingApiData() {
     }
-    
+
     @JsonIgnore
-    public TPrmPropertyMapping createTPrmPropertyMapping(TNodeTemplate detectorNodeTemplate, TNodeTemplate refinementNodeTemplate) {
-        TPrmPropertyMapping mapping = new TPrmPropertyMapping();
+    public TPrmAttributeMapping createTPrmPropertyMapping(TNodeTemplate detectorNodeTemplate, TNodeTemplate refinementNodeTemplate) {
+        TPrmAttributeMapping mapping = new TPrmAttributeMapping();
         mapping.setId(this.id);
         mapping.setDetectorNode(detectorNodeTemplate);
         mapping.setRefinementNode(refinementNodeTemplate);
         mapping.setType(this.type);
         mapping.setDetectorProperty(this.detectorProperty);
         mapping.setRefinementProperty(this.refinementProperty);
-        
+
         return mapping;
     }
 }

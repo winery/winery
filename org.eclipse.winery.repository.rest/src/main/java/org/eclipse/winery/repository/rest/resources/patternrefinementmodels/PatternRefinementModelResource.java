@@ -22,7 +22,7 @@ import javax.ws.rs.Path;
 
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
-import org.eclipse.winery.model.tosca.TPrmPropertyMapping;
+import org.eclipse.winery.model.tosca.TPrmAttributeMapping;
 import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates.TopologyTemplateResource;
 
@@ -47,14 +47,14 @@ public class PatternRefinementModelResource extends AbstractRefinementModelResou
     }
 
     @Path("propertymappings")
-    public PrmPropertyMappingsResource getPropertyMappings() {
-        List<TPrmPropertyMapping> propertyMappings = this.getTRefinementModel().getPropertyMappings();
+    public PrmAttributeMappingsResource getPropertyMappings() {
+        List<TPrmAttributeMapping> propertyMappings = this.getTRefinementModel().getPropertyMappings();
 
         if (Objects.isNull(propertyMappings)) {
             propertyMappings = new ArrayList<>();
             this.getTRefinementModel().setPropertyMappings(propertyMappings);
         }
 
-        return new PrmPropertyMappingsResource(this, propertyMappings);
+        return new PrmAttributeMappingsResource(this, propertyMappings);
     }
 }

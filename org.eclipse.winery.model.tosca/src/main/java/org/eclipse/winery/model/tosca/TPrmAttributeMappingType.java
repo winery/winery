@@ -21,29 +21,29 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-public enum TPrmPropertyMappingType implements Serializable {
-    
+public enum TPrmAttributeMappingType implements Serializable {
+
     @XmlEnumValue("all")
     ALL("all"),
     @XmlEnumValue("selective")
     SELECTIVE("selective");
-    
+
     private final String value;
 
-    TPrmPropertyMappingType(String value) {
+    TPrmAttributeMappingType(String value) {
         this.value = value;
     }
-    
+
     @NonNull
-    public static TPrmPropertyMappingType fromValue(String v) {
-        for (TPrmPropertyMappingType c : TPrmPropertyMappingType.values()) {
+    public static TPrmAttributeMappingType fromValue(String v) {
+        for (TPrmAttributeMappingType c : TPrmAttributeMappingType.values()) {
             if (c.value.equalsIgnoreCase(v)) {
                 return c;
             }
         }
         throw new IllegalArgumentException(v);
     }
-    
+
     @Nullable
     public String value() {
         return this.value;

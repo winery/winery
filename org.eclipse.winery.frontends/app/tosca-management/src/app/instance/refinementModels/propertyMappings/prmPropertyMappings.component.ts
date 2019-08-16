@@ -16,7 +16,7 @@ import { RefinementMappingsService } from '../refinementMappings.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
 import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
-import { PrmPropertyMapping, PrmPropertyMappingType } from './prmPropertyMapping';
+import { PrmAttributeMapping, PrmAttributeMappingType } from './prmAttributeMapping';
 import { NodeTemplate } from '../../../model/wineryComponent';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { forkJoin } from 'rxjs';
@@ -35,7 +35,7 @@ import { InstanceService } from '../../instance.service';
 })
 export class PrmPropertyMappingsComponent implements OnInit {
 
-    readonly propertyMappingTypes = PrmPropertyMappingType;
+    readonly propertyMappingTypes = PrmAttributeMappingType;
 
     loading = true;
     columns: Array<WineryTableColumn> = [
@@ -47,7 +47,7 @@ export class PrmPropertyMappingsComponent implements OnInit {
         { title: 'Refinement Node Property', name: 'refinementProperty', sort: true },
     ];
 
-    propertyMappings: PrmPropertyMapping[];
+    propertyMappings: PrmAttributeMapping[];
     detectorNodeTemplates: NodeTemplate[];
     detectorProperties: PropertiesDefinitionKVElement[];
     refinementStructureNodeTemplates: NodeTemplate[];
@@ -58,7 +58,7 @@ export class PrmPropertyMappingsComponent implements OnInit {
     addModalRef: BsModalRef;
     removeModalRef: BsModalRef;
 
-    mapping: PrmPropertyMapping;
+    mapping: PrmAttributeMapping;
     selectedDetectorNode: NodeTemplate;
     selectedRefinementNode: NodeTemplate;
     loadingRefinementProperties = false;
@@ -85,7 +85,7 @@ export class PrmPropertyMappingsComponent implements OnInit {
     onAddButtonClicked() {
         let id = 0;
         this.propertyMappings.forEach(value => {
-            const number = Number(value.id.split(PrmPropertyMapping.idPrefix)[1]);
+            const number = Number(value.id.split(PrmAttributeMapping.idPrefix)[1]);
             if (!isNaN(number) && number >= id) {
                 id = number;
                 if (number === id) {
@@ -94,12 +94,12 @@ export class PrmPropertyMappingsComponent implements OnInit {
             }
         });
 
-        this.mapping = new PrmPropertyMapping(id);
+        this.mapping = new PrmAttributeMapping(id);
         this.cleanProperties();
         this.addModalRef = this.modalService.show(this.addModal);
     }
 
-    onRemoveButtonClicked(selected: PrmPropertyMapping) {
+    onRemoveButtonClicked(selected: PrmAttributeMapping) {
         this.mapping = selected;
         this.removeModalRef = this.modalService.show(this.removeModal);
     }
@@ -116,9 +116,9 @@ export class PrmPropertyMappingsComponent implements OnInit {
             );
     }
 
-    propertyTypeSelected(type: PrmPropertyMappingType) {
+    propertyTypeSelected(type: PrmAttributeMappingType) {
         this.mapping.type = type;
-        if (type === PrmPropertyMappingType.ALL) {
+        if (type === PrmAttributeMappingType.ALL) {
             this.cleanProperties();
         }
         this.getProperties();
@@ -152,14 +152,14 @@ export class PrmPropertyMappingsComponent implements OnInit {
     // endregion
 
     // region ********** Private Methods *********
-    private handleSave(type: string, data: PrmPropertyMapping[]) {
+    private handleSave(type: string, data: PrmAttributeMapping[]) {
         this.notify.success(type + ' Property Mapping ' + this.mapping.id);
         this.propertyMappings = data;
         this.loading = false;
     }
 
     private getProperties() {
-        if (this.mapping.type && this.mapping.type === PrmPropertyMappingType.SELECTIVE) {
+        if (this.mapping.type && this.mapping.type === PrmAttributeMappingType.SELECTIVE) {
             if (this.selectedRefinementNode) {
                 this.loadingRefinementProperties = true;
                 this.service.getNodeTypeProperties(this.selectedRefinementNode.type)

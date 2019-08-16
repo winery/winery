@@ -35,7 +35,7 @@ public class TPatternRefinementModel extends TRefinementModel {
 
     @XmlElementWrapper(name = "PrmPropertyMappings")
     @XmlElement(name = "PrmPropertyMapping")
-    private List<TPrmPropertyMapping> propertyMappings;
+    private List<TPrmAttributeMapping> propertyMappings;
 
     @NonNull
     @JsonIgnore
@@ -56,11 +56,11 @@ public class TPatternRefinementModel extends TRefinementModel {
     }
 
     @Nullable
-    public List<TPrmPropertyMapping> getPropertyMappings() {
+    public List<TPrmAttributeMapping> getPropertyMappings() {
         return propertyMappings;
     }
 
-    public void setPropertyMappings(List<TPrmPropertyMapping> propertyMappings) {
+    public void setPropertyMappings(List<TPrmAttributeMapping> propertyMappings) {
         this.propertyMappings = propertyMappings;
     }
 }

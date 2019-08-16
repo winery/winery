@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-public class TPrmPropertyMapping extends HasId implements Serializable {
+public class TPrmAttributeMapping extends HasId implements Serializable {
 
     @JsonIdentityReference(alwaysAsId = true)
     @XmlAttribute(name = "detectorNode", required = true)
@@ -42,14 +42,14 @@ public class TPrmPropertyMapping extends HasId implements Serializable {
     @XmlSchemaType(name = "IDREF")
     @NonNull
     private TNodeTemplate refinementNode;
-    
+
     @XmlAttribute(name = "type")
-    private TPrmPropertyMappingType type;
-    
+    private TPrmAttributeMappingType type;
+
     @XmlAttribute(name = "detectorProperty")
     @Nullable
     private String detectorProperty;
-    
+
     @XmlAttribute(name = "refinementProperty")
     @Nullable
     private String refinementProperty;
@@ -70,11 +70,11 @@ public class TPrmPropertyMapping extends HasId implements Serializable {
         this.refinementNode = refinementNode;
     }
 
-    public TPrmPropertyMappingType getType() {
+    public TPrmAttributeMappingType getType() {
         return type;
     }
 
-    public void setType(TPrmPropertyMappingType type) {
+    public void setType(TPrmAttributeMappingType type) {
         this.type = type;
     }
 
@@ -98,7 +98,7 @@ public class TPrmPropertyMapping extends HasId implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TPrmPropertyMapping that = (TPrmPropertyMapping) o;
+        TPrmAttributeMapping that = (TPrmAttributeMapping) o;
         return getId().equals(that.getId());
     }
 

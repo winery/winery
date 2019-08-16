@@ -19,7 +19,7 @@ import { Injectable } from '@angular/core';
 import { InstanceService } from '../instance.service';
 import { NodeTemplate } from '../../model/wineryComponent';
 import { SelectData } from '../../model/selectData';
-import { PrmPropertyMapping } from './propertyMappings/prmPropertyMapping';
+import { PrmAttributeMapping } from './propertyMappings/prmAttributeMapping';
 import { Utils } from '../../wineryUtils/utils';
 import { PropertiesDefinitionsResourceApiData } from '../sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
 import { ToscaTypes } from '../../model/enums';
@@ -68,16 +68,16 @@ export class RefinementMappingsService {
         return this.http.delete<RelationMapping[]>(this.path + '/relationmappings/' + mapping.id);
     }
 
-    getPropertyMappings(): Observable<PrmPropertyMapping[]> {
-        return this.http.get<PrmPropertyMapping[]>(this.path + '/propertymappings');
+    getPropertyMappings(): Observable<PrmAttributeMapping[]> {
+        return this.http.get<PrmAttributeMapping[]>(this.path + '/propertymappings');
     }
 
-    public addPrmPropertyMapping(element: PrmPropertyMapping): Observable<PrmPropertyMapping[]> {
-        return this.http.put<PrmPropertyMapping[]>(this.path + '/propertymappings', element);
+    public addPrmPropertyMapping(element: PrmAttributeMapping): Observable<PrmAttributeMapping[]> {
+        return this.http.put<PrmAttributeMapping[]>(this.path + '/propertymappings', element);
     }
 
-    public deletePrmPropertyMapping(element: PrmPropertyMapping): Observable<PrmPropertyMapping[]> {
-        return this.http.delete<PrmPropertyMapping[]>(this.path + '/propertymappings/' + element.id);
+    public deletePrmPropertyMapping(element: PrmAttributeMapping): Observable<PrmAttributeMapping[]> {
+        return this.http.delete<PrmAttributeMapping[]>(this.path + '/propertymappings/' + element.id);
     }
 
     public getNodeTypeProperties(type: string): Observable<PropertiesDefinitionsResourceApiData> {

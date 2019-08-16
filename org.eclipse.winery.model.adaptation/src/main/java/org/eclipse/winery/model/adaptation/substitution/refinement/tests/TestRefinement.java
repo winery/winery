@@ -18,10 +18,10 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.winery.common.ids.definitions.TestRefinementModelId;
+import org.eclipse.winery.model.adaptation.substitution.refinement.AbstractRefinement;
 import org.eclipse.winery.model.adaptation.substitution.refinement.DefaultRefinementChooser;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementChooser;
-import org.eclipse.winery.model.adaptation.substitution.refinement.AbstractRefinement;
 import org.eclipse.winery.model.tosca.TRefinementModel;
 import org.eclipse.winery.model.tosca.TRelationDirection;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
@@ -69,7 +69,7 @@ public class TestRefinement extends AbstractRefinement {
         // iterate over the refinement nodes and add the configured relations
         refinement.getRefinementModel().getRefinementTopology().getNodeTemplates()
             .forEach(nodeTemplate ->
-                refinement.getRefinementModel().getRelationMappings().getRelationMapping().stream()
+                refinement.getRefinementModel().getRelationMappings().stream()
                     .filter(relationMapping -> relationMapping.getRefinementNode().getId().equals(nodeTemplate.getId()))
                     .forEach(relationMapping -> {
                         String relId = this.versionAppendix + "-" + relationMapping.getRelationType().getLocalPart();

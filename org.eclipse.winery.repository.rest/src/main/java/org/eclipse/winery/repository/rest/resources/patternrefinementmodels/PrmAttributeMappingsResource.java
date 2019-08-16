@@ -22,13 +22,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TPrmPropertyMapping;
+import org.eclipse.winery.model.tosca.TPrmAttributeMapping;
 import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelMappingsResource;
-import org.eclipse.winery.repository.rest.resources.apiData.PrmPropertyMappingApiData;
+import org.eclipse.winery.repository.rest.resources.apiData.PrmAttributeMappingApiData;
 
-public class PrmPropertyMappingsResource extends AbstractRefinementModelMappingsResource {
+public class PrmAttributeMappingsResource extends AbstractRefinementModelMappingsResource {
 
-    public PrmPropertyMappingsResource(PatternRefinementModelResource res, List<TPrmPropertyMapping> propertyMappings) {
+    public PrmAttributeMappingsResource(PatternRefinementModelResource res, List<TPrmAttributeMapping> propertyMappings) {
         super(res);
         this.mappings = propertyMappings;
     }
@@ -36,9 +36,9 @@ public class PrmPropertyMappingsResource extends AbstractRefinementModelMappings
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public List<TPrmPropertyMapping> addPropertyMappingFromApi(PrmPropertyMappingApiData mapping) {
+    public List<TPrmAttributeMapping> addPropertyMappingFromApi(PrmAttributeMappingApiData mapping) {
         TNodeTemplate detectorNode = this.getDetectorNodeTemplate(mapping.detectorNode);
         TNodeTemplate refinementNode = this.getRefinementNodeTemplate(mapping.refinementNode);
-        return (List<TPrmPropertyMapping>) this.addMapping(mapping.createTPrmPropertyMapping(detectorNode, refinementNode));
+        return (List<TPrmAttributeMapping>) this.addMapping(mapping.createTPrmPropertyMapping(detectorNode, refinementNode));
     }
 }

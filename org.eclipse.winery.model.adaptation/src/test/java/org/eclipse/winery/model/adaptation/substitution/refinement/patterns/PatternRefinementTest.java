@@ -30,9 +30,8 @@ import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCan
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
-import org.eclipse.winery.model.tosca.TPrmPropertyMapping;
-import org.eclipse.winery.model.tosca.TPrmPropertyMappingType;
-import org.eclipse.winery.model.tosca.TRefinementModel;
+import org.eclipse.winery.model.tosca.TPrmAttributeMapping;
+import org.eclipse.winery.model.tosca.TPrmAttributeMappingType;
 import org.eclipse.winery.model.tosca.TRelationDirection;
 import org.eclipse.winery.model.tosca.TRelationMapping;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
@@ -274,9 +273,9 @@ class PatternRefinementTest {
         Iterator<GraphMapping<ToscaNode, ToscaEdge>> mappings = matcher.findMatches(detectorGraph, topologyGraph, new ToscaTypeMatcher());
         GraphMapping<ToscaNode, ToscaEdge> mapping = mappings.next();
 
-        TRefinementModel.TRelationMappings relationMappings = new TRefinementModel.TRelationMappings();
-        relationMappings.getRelationMapping().add(rm1);
-        relationMappings.getRelationMapping().add(rm2);
+        List<TRelationMapping> relationMappings = new ArrayList<TRelationMapping>();
+        relationMappings.add(rm1);
+        relationMappings.add(rm2);
         matchingPrm.setRelationMappings(relationMappings);
 
         candidate = new RefinementCandidate(matchingPrm, mapping, detectorGraph, 1);
@@ -286,8 +285,8 @@ class PatternRefinementTest {
         TPatternRefinementModel nonMatchingPrm = new TPatternRefinementModel();
         nonMatchingPrm.setDetector(detector);
 
-        TRefinementModel.TRelationMappings relationMappings1 = new TRefinementModel.TRelationMappings();
-        relationMappings1.getRelationMapping().add(rm2);
+        List<TRelationMapping> relationMappings1 = new ArrayList<>();
+        relationMappings1.add(rm2);
         nonMatchingPrm.setRelationMappings(relationMappings1);
 
         invalidCandidate = new RefinementCandidate(nonMatchingPrm, mapping, detectorGraph, 2);
@@ -549,26 +548,26 @@ class PatternRefinementTest {
         nt11Props.setKVProperties(nt11PropsMap);
         nt11.setProperties(nt11Props);
 
-        TPrmPropertyMapping allOn4to13 = new TPrmPropertyMapping();
-        allOn4to13.setType(TPrmPropertyMappingType.ALL);
+        TPrmAttributeMapping allOn4to13 = new TPrmAttributeMapping();
+        allOn4to13.setType(TPrmAttributeMappingType.ALL);
         allOn4to13.setDetectorNode(candidate.getRefinementModel().getDetector().getNodeTemplate("8"));
         allOn4to13.setRefinementNode(nt13);
 
-        TPrmPropertyMapping pIn2_to_jIn12 = new TPrmPropertyMapping();
-        pIn2_to_jIn12.setType(TPrmPropertyMappingType.SELECTIVE);
+        TPrmAttributeMapping pIn2_to_jIn12 = new TPrmAttributeMapping();
+        pIn2_to_jIn12.setType(TPrmAttributeMappingType.SELECTIVE);
         pIn2_to_jIn12.setDetectorNode(candidate.getRefinementModel().getDetector().getNodeTemplate("7"));
         pIn2_to_jIn12.setRefinementNode(nt12);
         pIn2_to_jIn12.setDetectorProperty("p");
         pIn2_to_jIn12.setRefinementProperty("j");
 
-        TPrmPropertyMapping xIn2_to_kIn11 = new TPrmPropertyMapping();
-        xIn2_to_kIn11.setType(TPrmPropertyMappingType.SELECTIVE);
+        TPrmAttributeMapping xIn2_to_kIn11 = new TPrmAttributeMapping();
+        xIn2_to_kIn11.setType(TPrmAttributeMappingType.SELECTIVE);
         xIn2_to_kIn11.setDetectorNode(candidate.getRefinementModel().getDetector().getNodeTemplate("7"));
         xIn2_to_kIn11.setRefinementNode(nt11);
         xIn2_to_kIn11.setDetectorProperty("x");
         xIn2_to_kIn11.setRefinementProperty("k");
 
-        List<TPrmPropertyMapping> relationMappings = new ArrayList<>();
+        List<TPrmAttributeMapping> relationMappings = new ArrayList<>();
         relationMappings.add(allOn4to13);
         relationMappings.add(pIn2_to_jIn12);
         relationMappings.add(xIn2_to_kIn11);

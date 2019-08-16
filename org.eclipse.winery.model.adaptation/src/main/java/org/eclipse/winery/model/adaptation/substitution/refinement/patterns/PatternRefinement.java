@@ -28,8 +28,8 @@ import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCho
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
-import org.eclipse.winery.model.tosca.TPrmPropertyMapping;
-import org.eclipse.winery.model.tosca.TPrmPropertyMappingType;
+import org.eclipse.winery.model.tosca.TPrmAttributeMapping;
+import org.eclipse.winery.model.tosca.TPrmAttributeMappingType;
 import org.eclipse.winery.model.tosca.TRefinementModel;
 import org.eclipse.winery.model.tosca.TRelationDirection;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
@@ -111,7 +111,7 @@ public class PatternRefinement extends AbstractRefinement {
     }
 
     public void applyPropertyMappings(RefinementCandidate refinement, String detectorNodeId, TNodeTemplate matchingNode, TTopologyTemplate topology, Map<String, String> idMapping) {
-        List<TPrmPropertyMapping> propertyMappings = ((TPatternRefinementModel) refinement.getRefinementModel()).getPropertyMappings();
+        List<TPrmAttributeMapping> propertyMappings = ((TPatternRefinementModel) refinement.getRefinementModel()).getPropertyMappings();
         if (Objects.nonNull(propertyMappings)) {
             propertyMappings.stream()
                 .filter(mapping -> mapping.getDetectorNode().getId().equals(detectorNodeId))
@@ -124,7 +124,7 @@ public class PatternRefinement extends AbstractRefinement {
 
                     if (Objects.nonNull(matchingNode.getProperties()) && Objects.nonNull(sourceProperties) && !sourceProperties.isEmpty()
                         && Objects.nonNull(targetProperties)) {
-                        if (mapping.getType() == TPrmPropertyMappingType.ALL) {
+                        if (mapping.getType() == TPrmAttributeMappingType.ALL) {
                             sourceProperties.forEach(targetProperties::replace);
                         } else {
                             // TPrmPropertyMappingType.SELECTIVE
@@ -145,7 +145,7 @@ public class PatternRefinement extends AbstractRefinement {
     private boolean redirectExternalRelations(RefinementCandidate refinement, TNodeTemplate matchingNode, TTopologyTemplate topology, Map<String, String> idMapping) {
         return this.getExternalRelations(matchingNode, refinement, topology)
             .allMatch(relationship ->
-                refinement.getRefinementModel().getRelationMappings().getRelationMapping()
+                refinement.getRefinementModel().getRelationMappings()
                     .stream()
                     // use anyMatch to reduce runtime
                     .anyMatch(relationMapping -> {
