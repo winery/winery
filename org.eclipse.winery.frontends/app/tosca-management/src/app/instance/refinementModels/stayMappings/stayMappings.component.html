@@ -28,42 +28,24 @@
                 <span><b>Stay Mapping Type</b></span>
                 <br>
                 <input type="radio" name="elementType" id="d-node"
-                       (click)="detectorModelElementTypeSelected(modelElementTypes.NODE)">
+                       (click)="modelElementTypeSelected(modelElementTypes.NODE)">
                 <label for="d-node">Model Node</label>
                 <br>
                 <input type="radio" name="elementType" id="d-relation"
-                       (click)="detectorModelElementTypeSelected(modelElementTypes.RELATION)">
+                       (click)="modelElementTypeSelected(modelElementTypes.RELATION)">
                 <label for="d-relation">Relation</label>
             </div>
-            <div *ngIf="!detectorTemplates; else showDeElementsSelector">
+            <div *ngIf="!detectorTemplates; else showElementsSelector">
                 <winery-loader [hidden]="!loadingElements"></winery-loader>
             </div>
-            <ng-template #showDeElementsSelector>
+            <ng-template #showElementsSelector>
                 <div class="form-group">
                     <label for="detectorNode" class="control-label">Detector Element</label>
                     <ng-select id="detectorNode" [items]="detectorTemplates" [textField]="'name'"
                                (selected)="detectorNodeSelected($event)">
                     </ng-select>
                 </div>
-            </ng-template>
-            <hr>
 
-
-            <div class="form-group">
-                <span><b>Refinement Structure Element Type</b></span>
-                <br>
-                <input type="radio" name="elementType" id="rs-node"
-                       (click)="refinementModelElementTypeSelected(modelElementTypes.NODE)">
-                <label for="rs-node">Model Node</label>
-                <br>
-                <input type="radio" name="elementType" id="rs-relation"
-                       (click)="refinementModelElementTypeSelected(modelElementTypes.RELATION)">
-                <label for="rs-relation">Relation</label>
-            </div>
-            <div *ngIf="!refinementStructureTemplates; else showRsElementsSelector">
-                <winery-loader [hidden]="!loadingElements"></winery-loader>
-            </div>
-            <ng-template #showRsElementsSelector>
                 <div class="form-group">
                     <label for="refinementNode" class="control-label">Refinement Structure Element</label>
                     <ng-select id="refinementNode" [items]="refinementStructureTemplates" [textField]="'name'"
@@ -75,8 +57,7 @@
     </winery-modal-body>
     <winery-modal-footer [modalRef]="addModalRef"
                          [okButtonLabel]="'Add'"
-                         [disableOkButton]="(!mapping.refinementElementType || !mapping.detectorElementType ||
-                                                !mapping.detectorNode || !mapping.refinementNode)"
+                         [disableOkButton]="(!mapping.modelElementType || !mapping.detectorNode || !mapping.refinementNode)"
                          (onOk)="onAddPrmPropertyMapping()">
     </winery-modal-footer>
 </ng-template>

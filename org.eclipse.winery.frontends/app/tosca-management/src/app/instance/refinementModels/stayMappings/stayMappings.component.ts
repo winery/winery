@@ -22,6 +22,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { SelectData } from '../../../model/selectData';
 import { InstanceService } from '../../instance.service';
 import { PrmModelElementType, StayMapping } from './stayMapping';
+import { forkJoin } from 'rxjs';
 
 @Component({
     templateUrl: 'StayMappings.component.html',
@@ -37,9 +38,8 @@ export class StayMappingsComponent implements OnInit {
     loadingElements = false;
     columns: Array<WineryTableColumn> = [
         { title: 'Id', name: 'id', sort: true },
-        { title: 'Detector Element Type', name: 'detectorElementType', sort: true },
+        { title: 'Element Type', name: 'modelElementType', sort: true },
         { title: 'Detector Element', name: 'detectorNode', sort: true },
-        { title: 'Refinement Element Type', name: 'refinementElementType', sort: true },
         { title: 'Refinement Element', name: 'refinementNode', sort: true },
     ];
 
@@ -105,49 +105,24 @@ export class StayMappingsComponent implements OnInit {
             );
     }
 
-    detectorModelElementTypeSelected(type: PrmModelElementType) {
-        this.mapping.detectorElementType = type;
+    modelElementTypeSelected(type: PrmModelElementType) {
+        this.mapping.modelElementType = type;
         if (type === PrmModelElementType.NODE) {
-            this.service.getDetectorNodeTemplates()
-                .subscribe(
-                    data => {
-                        this.loadingElements = false;
-                        this.detectorTemplates = data;
-                    },
-                    error => this.handleError(error)
-                );
+            forkJoin([
+                this.service.getDetectorNodeTemplates(),
+                this.service.getRefinementTopologyNodeTemplates()
+            ]).subscribe(
+                data => this.handleData(data),
+                error => this.handleError(error)
+            );
         } else { // Relation
-            this.service.getDetectorRelationshipTemplates()
-                .subscribe(
-                    data => {
-                        this.loadingElements = false;
-                        this.detectorTemplates = data;
-                    },
-                    error => this.handleError(error)
-                );
-        }
-    }
-
-    refinementModelElementTypeSelected(type: PrmModelElementType) {
-        this.mapping.refinementElementType = type;
-        if (type === PrmModelElementType.NODE) {
-            this.service.getRefinementTopologyNodeTemplates()
-                .subscribe(
-                    data => {
-                        this.loadingElements = false;
-                        this.refinementStructureTemplates = data;
-                    },
-                    error => this.handleError(error)
-                );
-        } else { // Relation
-            this.service.getRefinementTopologyRelationshipTemplates()
-                .subscribe(
-                    data => {
-                        this.loadingElements = false;
-                        this.refinementStructureTemplates = data;
-                    },
-                    error => this.handleError(error)
-                );
+            forkJoin([
+                this.service.getDetectorRelationshipTemplates(),
+                this.service.getRefinementTopologyRelationshipTemplates()
+            ]).subscribe(
+                data => this.handleData(data),
+                error => this.handleError(error)
+            );
         }
     }
 
@@ -182,6 +157,12 @@ export class StayMappingsComponent implements OnInit {
     private handleError(error: HttpErrorResponse) {
         this.loading = false;
         this.notify.error(error.message);
+    }
+
+    private handleData(data: [WineryTemplate[], WineryTemplate[]]) {
+        this.loadingElements = false;
+        this.detectorTemplates = data[0];
+        this.refinementStructureTemplates = data [1];
     }
 
     // endregion

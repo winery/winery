@@ -38,16 +38,13 @@ public class StayMappingsResource extends AbstractRefinementModelMappingsResourc
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public List<TStayMapping> addPropertyMappingFromApi(PrmStayMappingApiData mapping) {
-        TEntityTemplate detectorElement;
-        if (mapping.detectorElementType == TPrmModelElementType.NODE) {
+        TEntityTemplate detectorElement, refinementNode;
+
+        if (mapping.modelElementType == TPrmModelElementType.NODE) {
             detectorElement = this.getDetectorNodeTemplate(mapping.detectorNode);
-        } else {
-            detectorElement = this.getDetectorRelationshipTemplate(mapping.detectorNode);
-        }
-        TEntityTemplate refinementNode;
-        if (mapping.refinementElementType == TPrmModelElementType.NODE) {
             refinementNode = this.getRefinementNodeTemplate(mapping.refinementNode);
         } else {
+            detectorElement = this.getDetectorRelationshipTemplate(mapping.detectorNode);
             refinementNode = this.getRefinementRelationshipTemplate(mapping.refinementNode);
         }
 

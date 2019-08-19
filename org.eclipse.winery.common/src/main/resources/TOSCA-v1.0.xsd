@@ -860,9 +860,8 @@
  </xs:complexType>
  <xs:complexType name="tStayMapping">
   <xs:attribute name="id" type="xs:ID" use="required"/>
-  <xs:attribute name="detectorElementType" type="tPrmModelElementType" use="required"/>
+  <xs:attribute name="modelElementType" type="tPrmModelElementType" use="required"/>
   <xs:attribute name="detectorNode" type="xs:string" use="required"/>
-  <xs:attribute name="refinementElementType" type="tPrmModelElementType" use="required"/>
   <xs:attribute name="refinementNode" type="xs:string" use="required"/>
  </xs:complexType>
  <xs:simpleType name="tDirection">

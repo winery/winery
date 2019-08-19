@@ -24,8 +24,7 @@ export class StayMapping {
     id: string;
     detectorNode: string;
     refinementNode: string;
-    refinementElementType: PrmModelElementType;
-    detectorElementType: PrmModelElementType;
+    modelElementType: PrmModelElementType;
 
     constructor(id: number) {
         this.id = StayMapping.idPrefix + id;

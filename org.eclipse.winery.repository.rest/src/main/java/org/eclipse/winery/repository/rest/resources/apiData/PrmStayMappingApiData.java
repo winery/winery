@@ -22,8 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class PrmStayMappingApiData extends AbstractPrmMappingElement {
 
-    public TPrmModelElementType refinementElementType;
-    public TPrmModelElementType detectorElementType;
+    public TPrmModelElementType modelElementType;
 
     public PrmStayMappingApiData() {
     }
@@ -34,8 +33,7 @@ public class PrmStayMappingApiData extends AbstractPrmMappingElement {
         mapping.setId(this.id);
         mapping.setDetectorNode(detectorNodeTemplate);
         mapping.setRefinementNode(refinementNodeTemplate);
-        mapping.setDetectorElementType(this.detectorElementType);
-        mapping.setRefinementElementType(this.refinementElementType);
+        mapping.setModelElementType(this.modelElementType);
 
         return mapping;
     }
