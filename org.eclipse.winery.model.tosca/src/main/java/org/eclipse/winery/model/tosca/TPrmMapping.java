@@ -32,28 +32,28 @@ public abstract class TPrmMapping extends HasId implements Serializable {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @NonNull
-    private TNodeTemplate detectorNode;
+    private TEntityTemplate detectorNode;
 
     @JsonIdentityReference(alwaysAsId = true)
     @XmlAttribute(name = "refinementNode", required = true)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @NonNull
-    private TNodeTemplate refinementNode;
+    private TEntityTemplate refinementNode;
 
-    public TNodeTemplate getDetectorNode() {
+    public TEntityTemplate getDetectorNode() {
         return detectorNode;
     }
 
-    public void setDetectorNode(TNodeTemplate detectorNode) {
+    public void setDetectorNode(TEntityTemplate detectorNode) {
         this.detectorNode = detectorNode;
     }
 
-    public TNodeTemplate getRefinementNode() {
+    public TEntityTemplate getRefinementNode() {
         return refinementNode;
     }
 
-    public void setRefinementNode(TNodeTemplate refinementNode) {
+    public void setRefinementNode(TEntityTemplate refinementNode) {
         this.refinementNode = refinementNode;
     }
 

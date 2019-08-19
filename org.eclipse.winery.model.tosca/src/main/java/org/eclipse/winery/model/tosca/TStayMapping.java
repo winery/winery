@@ -25,8 +25,11 @@ import org.eclipse.winery.model.tosca.visitor.Visitor;
 @XmlType(name = "tStayMapping")
 public class TStayMapping extends TPrmMapping {
 
-    @XmlAttribute(name = "modelElementType")
-    private TPrmModelElementType modelElementType;
+    @XmlAttribute(name = "detectorElementType")
+    private TPrmModelElementType detectorElementType;
+
+    @XmlAttribute(name = "refinementElementType")
+    private TPrmModelElementType refinementElementType;
 
     @Override
     public boolean equals(Object obj) {
@@ -39,11 +42,19 @@ public class TStayMapping extends TPrmMapping {
         visitor.visit(this);
     }
 
-    public TPrmModelElementType getModelElementType() {
-        return modelElementType;
+    public TPrmModelElementType getDetectorElementType() {
+        return detectorElementType;
     }
 
-    public void setModelElementType(TPrmModelElementType modelElementType) {
-        this.modelElementType = modelElementType;
+    public void setDetectorElementType(TPrmModelElementType detectorElementType) {
+        this.detectorElementType = detectorElementType;
+    }
+
+    public TPrmModelElementType getRefinementElementType() {
+        return refinementElementType;
+    }
+
+    public void setRefinementElementType(TPrmModelElementType refinementElementType) {
+        this.refinementElementType = refinementElementType;
     }
 }

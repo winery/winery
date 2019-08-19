@@ -24,6 +24,7 @@ import { NgModule } from '@angular/core';
 import { RelationMappingsComponent } from '../../instance/refinementModels/relationshipMappings/relationMappings.component';
 import { TopologyTemplateComponent } from '../../instance/sharedComponents/topologyTemplate/topologyTemplate.component';
 import { PrmPropertyMappingsComponent } from '../../instance/refinementModels/propertyMappings/prmPropertyMappings.component';
+import { StayMappingsComponent } from '../../instance/refinementModels/stayMappings/StayMappings.component';
 
 const toscaType = ToscaTypes.PatternRefinementModel;
 
@@ -41,6 +42,7 @@ const patternRefinementRoutes: Routes = [
             { path: 'refinementstructure', component: TopologyTemplateComponent },
             { path: 'relationmappings', component: RelationMappingsComponent },
             { path: 'propertymappings', component: PrmPropertyMappingsComponent },
+            { path: 'staymappings', component: StayMappingsComponent },
             { path: 'xml', component: EditXMLComponent },
             { path: '', redirectTo: 'readme', pathMatch: 'full' }
         ]

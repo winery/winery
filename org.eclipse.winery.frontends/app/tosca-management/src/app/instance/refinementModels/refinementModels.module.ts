@@ -23,6 +23,7 @@ import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
 import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
 import { SelectModule } from 'ng2-select';
 import { PrmPropertyMappingsComponent } from './propertyMappings/prmPropertyMappings.component';
+import { StayMappingsComponent } from './stayMappings/StayMappings.component';
 
 @NgModule({
     imports: [
@@ -42,7 +43,8 @@ import { PrmPropertyMappingsComponent } from './propertyMappings/prmPropertyMapp
     ],
     declarations: [
         RelationMappingsComponent,
-        PrmPropertyMappingsComponent
+        PrmPropertyMappingsComponent,
+        StayMappingsComponent,
     ]
 })
 export class RefinementModelsModule {

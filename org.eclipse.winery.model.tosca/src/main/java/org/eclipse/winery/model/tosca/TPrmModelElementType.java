@@ -26,9 +26,7 @@ public enum TPrmModelElementType implements Serializable {
     @XmlEnumValue("node")
     NODE("node"),
     @XmlEnumValue("relation")
-    RELATION("relation"),
-    @XmlEnumValue("annotation")
-    ANNOTATION("annotation");
+    RELATION("relation");
 
     private final String value;
 

@@ -295,6 +295,7 @@ div.serviceTemplate div.bottom {
 div.mainContentContainer.relationshipType div.top {
     background: url('../assets/img/containers/rt/rt-FrameTopLarge.jpg');
 }
+
 div.mainContentContainer.relationshipType div.top.twolines {
     height: 208px;
 }
@@ -344,8 +345,8 @@ div.mainContentContainer.xSDImport div.bottom {
 }
 
 div.mainContentContainer.patternRefinementModel div.top {
-     background: url('../assets/img/containers/admin/FrameTop.jpg');
- }
+    background: url('../assets/img/containers/admin/FrameTopLarge.jpg');
+}
 
 div.mainContentContainer.patternRefinementModel div.middle {
     background: url('../assets/img/containers/admin/FrameMiddle.jpg');
@@ -564,16 +565,16 @@ div.entityContainer > div.center > div.informationContainer {
 }
 
 div.entityContainer > div.center > div.informationContainer > div.nameWithVersion {
-     margin-top: 15px;
-     font-size: 14px;
-     font-weight: bold;
-     height: 18px;
-     white-space: nowrap;
-     text-overflow: ellipsis;
-     overflow: hidden;
-     direction: ltr;
-     text-align: left;
- }
+    margin-top: 15px;
+    font-size: 14px;
+    font-weight: bold;
+    height: 18px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    direction: ltr;
+    text-align: left;
+}
 
 div.entityContainer > div.center > div.informationContainer > div.name {
     margin-top: 25px;
