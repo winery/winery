@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-public enum TPrmAttributeMappingType implements Serializable {
+public enum TAttributeMappingType implements Serializable {
 
     @XmlEnumValue("all")
     ALL("all"),
@@ -30,13 +30,13 @@ public enum TPrmAttributeMappingType implements Serializable {
 
     private final String value;
 
-    TPrmAttributeMappingType(String value) {
+    TAttributeMappingType(String value) {
         this.value = value;
     }
 
     @NonNull
-    public static TPrmAttributeMappingType fromValue(String v) {
-        for (TPrmAttributeMappingType c : TPrmAttributeMappingType.values()) {
+    public static TAttributeMappingType fromValue(String v) {
+        for (TAttributeMappingType c : TAttributeMappingType.values()) {
             if (c.value.equalsIgnoreCase(v)) {
                 return c;
             }

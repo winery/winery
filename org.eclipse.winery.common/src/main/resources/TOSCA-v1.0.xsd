@@ -825,7 +825,7 @@
      <xs:element name="AttributeMappings">
       <xs:complexType>
        <xs:sequence>
-        <xs:element name="AttributeMapping" type="tPrmAttributeMapping" maxOccurs="unbounded"/>
+        <xs:element name="AttributeMapping" type="tAttributeMapping" maxOccurs="unbounded"/>
        </xs:sequence>
       </xs:complexType>
      </xs:element>
@@ -850,11 +850,11 @@
   <xs:attribute name="direction" type="tDirection" use="required"/>
   <xs:attribute name="validSourceOrTarget" type="xs:QName"/>
  </xs:complexType>
- <xs:complexType name="tPrmAttributeMapping">
+ <xs:complexType name="tAttributeMapping">
   <xs:attribute name="id" type="xs:ID" use="required"/>
   <xs:attribute name="detectorNode" type="xs:string" use="required"/>
   <xs:attribute name="refinementNode" type="xs:string" use="required"/>
-  <xs:attribute name="type" type="tPrmAttributeMappingType" use="required"/>
+  <xs:attribute name="type" type="tAttributeMappingType" use="required"/>
   <xs:attribute name="detectorProperty" type="xs:string" use="optional"/>
   <xs:attribute name="refinementProperty" type="xs:string" use="optional"/>
  </xs:complexType>
@@ -871,7 +871,7 @@
    <xs:enumeration value="outgoing"/>
   </xs:restriction>
  </xs:simpleType>
- <xs:simpleType name="tPrmAttributeMappingType">
+ <xs:simpleType name="tAttributeMappingType">
   <xs:restriction base="xs:string">
    <xs:enumeration value="all"/>
    <xs:enumeration value="selective"/>

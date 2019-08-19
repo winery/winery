@@ -19,11 +19,11 @@ import { Injectable } from '@angular/core';
 import { InstanceService } from '../instance.service';
 import { NodeTemplate, RelationshipTemplate } from '../../model/wineryComponent';
 import { SelectData } from '../../model/selectData';
-import { PrmAttributeMapping } from './propertyMappings/prmAttributeMapping';
 import { Utils } from '../../wineryUtils/utils';
 import { PropertiesDefinitionsResourceApiData } from '../sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
 import { ToscaTypes } from '../../model/enums';
 import { StayMapping } from './stayMappings/stayMapping';
+import { AttributeMapping } from './attributeMappings/attributeMapping';
 
 @Injectable()
 export class RefinementMappingsService {
@@ -70,16 +70,16 @@ export class RefinementMappingsService {
         return this.http.delete<RelationMapping[]>(this.path + '/relationmappings/' + mapping.id);
     }
 
-    public getPropertyMappings(): Observable<PrmAttributeMapping[]> {
-        return this.http.get<PrmAttributeMapping[]>(this.path + '/propertymappings');
+    public getPropertyMappings(): Observable<AttributeMapping[]> {
+        return this.http.get<AttributeMapping[]>(this.path + '/attributemappings');
     }
 
-    public addPrmPropertyMapping(element: PrmAttributeMapping): Observable<PrmAttributeMapping[]> {
-        return this.http.put<PrmAttributeMapping[]>(this.path + '/propertymappings', element);
+    public addPrmPropertyMapping(element: AttributeMapping): Observable<AttributeMapping[]> {
+        return this.http.put<AttributeMapping[]>(this.path + '/attributemappings', element);
     }
 
-    public deletePrmPropertyMapping(element: PrmAttributeMapping): Observable<PrmAttributeMapping[]> {
-        return this.http.delete<PrmAttributeMapping[]>(this.path + '/propertymappings/' + element.id);
+    public deletePrmPropertyMapping(element: AttributeMapping): Observable<AttributeMapping[]> {
+        return this.http.delete<AttributeMapping[]>(this.path + '/attributemappings/' + element.id);
     }
 
     public getNodeTypeProperties(type: string): Observable<PropertiesDefinitionsResourceApiData> {

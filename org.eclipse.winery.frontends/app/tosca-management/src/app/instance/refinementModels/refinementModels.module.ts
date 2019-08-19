@@ -22,8 +22,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
 import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
 import { SelectModule } from 'ng2-select';
-import { PrmPropertyMappingsComponent } from './propertyMappings/prmPropertyMappings.component';
 import { StayMappingsComponent } from './stayMappings/StayMappings.component';
+import { AttributeMappingsComponent } from './attributeMappings/attributeMappings.component';
 
 @NgModule({
     imports: [
@@ -39,11 +39,12 @@ import { StayMappingsComponent } from './stayMappings/StayMappings.component';
     ],
     exports: [
         RelationMappingsComponent,
-        PrmPropertyMappingsComponent
+        AttributeMappingsComponent,
+        StayMappingsComponent,
     ],
     declarations: [
         RelationMappingsComponent,
-        PrmPropertyMappingsComponent,
+        AttributeMappingsComponent,
         StayMappingsComponent,
     ]
 })

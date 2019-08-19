@@ -25,11 +25,11 @@ import org.eclipse.winery.model.adaptation.substitution.refinement.AbstractRefin
 import org.eclipse.winery.model.adaptation.substitution.refinement.DefaultRefinementChooser;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementChooser;
+import org.eclipse.winery.model.tosca.AttributeMapping;
+import org.eclipse.winery.model.tosca.TAttributeMappingType;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
-import org.eclipse.winery.model.tosca.TPrmAttributeMapping;
-import org.eclipse.winery.model.tosca.TPrmAttributeMappingType;
 import org.eclipse.winery.model.tosca.TRefinementModel;
 import org.eclipse.winery.model.tosca.TRelationDirection;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
@@ -111,7 +111,7 @@ public class PatternRefinement extends AbstractRefinement {
     }
 
     public void applyPropertyMappings(RefinementCandidate refinement, String detectorNodeId, TNodeTemplate matchingNode, TTopologyTemplate topology, Map<String, String> idMapping) {
-        List<TPrmAttributeMapping> propertyMappings = ((TPatternRefinementModel) refinement.getRefinementModel()).getPropertyMappings();
+        List<AttributeMapping> propertyMappings = ((TPatternRefinementModel) refinement.getRefinementModel()).getAttributeMappings();
         if (Objects.nonNull(propertyMappings)) {
             propertyMappings.stream()
                 .filter(mapping -> mapping.getDetectorNode().getId().equals(detectorNodeId))
@@ -124,7 +124,7 @@ public class PatternRefinement extends AbstractRefinement {
 
                     if (Objects.nonNull(matchingNode.getProperties()) && Objects.nonNull(sourceProperties) && !sourceProperties.isEmpty()
                         && Objects.nonNull(targetProperties)) {
-                        if (mapping.getType() == TPrmAttributeMappingType.ALL) {
+                        if (mapping.getType() == TAttributeMappingType.ALL) {
                             sourceProperties.forEach(targetProperties::replace);
                         } else {
                             // TPrmPropertyMappingType.SELECTIVE

@@ -25,13 +25,13 @@
     <winery-modal-body>
         <form>
             <div class="form-group">
-                <span><b>Property Mapping Type</b></span>
+                <span><b>Attribute Mapping Type</b></span>
                 <br>
-                <input type="radio" name="direction" id="all" (click)="propertyTypeSelected(propertyMappingTypes.ALL)">
+                <input type="radio" name="direction" id="all" (click)="propertyTypeSelected(attributeMappingType.ALL)">
                 <label for="all">All</label>
                 <br>
                 <input type="radio" name="direction" id="selective"
-                       (click)="propertyTypeSelected(propertyMappingTypes.SELECTIVE)">
+                       (click)="propertyTypeSelected(attributeMappingType.SELECTIVE)">
                 <label for="selective">Selective</label>
             </div>
             <hr>
@@ -70,18 +70,18 @@
                          [okButtonLabel]="'Add'"
                          [disableOkButton]="(!mapping.type || !mapping.detectorNode ||
                                             !mapping.refinementNode)"
-                         (onOk)="onAddPrmPropertyMapping()">
+                         (onOk)="onAddAttributeMapping()">
     </winery-modal-footer>
 </ng-template>
 
 <ng-template #removeModal>
-    <winery-modal-header [modalRef]="removeModalRef" [title]="'Remove Property Mapping'">
+    <winery-modal-header [modalRef]="removeModalRef" [title]="'Remove Attribute Mapping'">
     </winery-modal-header>
     <winery-modal-body>
         <p>Are you sure you want to delete <b>{{ mapping.id }}</b>?</p>
     </winery-modal-body>
     <winery-modal-footer [modalRef]="removeModalRef"
                          [okButtonLabel]="'Delete'"
-                         (onOk)="onRemovePrmPropertyMapping()">
+                         (onOk)="onRemoveAttributeMapping()">
     </winery-modal-footer>
 </ng-template>

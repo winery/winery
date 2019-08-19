@@ -33,9 +33,9 @@ public class TPatternRefinementModel extends TRefinementModel {
     @XmlElement(name = "RefinementStructure")
     private TTopologyTemplate refinementStructure;
 
-    @XmlElementWrapper(name = "PrmPropertyMappings")
-    @XmlElement(name = "PrmPropertyMapping")
-    private List<TPrmAttributeMapping> propertyMappings;
+    @XmlElementWrapper(name = "AttributeMappings")
+    @XmlElement(name = "AttributeMapping")
+    private List<AttributeMapping> attributeMappings;
 
     @XmlElementWrapper(name = "StayMappings")
     @XmlElement(name = "StayMapping")
@@ -60,12 +60,12 @@ public class TPatternRefinementModel extends TRefinementModel {
     }
 
     @Nullable
-    public List<TPrmAttributeMapping> getPropertyMappings() {
-        return propertyMappings;
+    public List<AttributeMapping> getAttributeMappings() {
+        return attributeMappings;
     }
 
-    public void setPropertyMappings(List<TPrmAttributeMapping> propertyMappings) {
-        this.propertyMappings = propertyMappings;
+    public void setAttributeMappings(List<AttributeMapping> attributeMappings) {
+        this.attributeMappings = attributeMappings;
     }
 
     @Nullable

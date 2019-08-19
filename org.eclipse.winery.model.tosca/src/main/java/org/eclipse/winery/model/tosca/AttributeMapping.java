@@ -20,10 +20,10 @@ import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-public class TPrmAttributeMapping extends TPrmMapping {
+public class AttributeMapping extends TPrmMapping {
 
     @XmlAttribute(name = "type")
-    private TPrmAttributeMappingType type;
+    private TAttributeMappingType type;
 
     @XmlAttribute(name = "detectorProperty")
     @Nullable
@@ -33,11 +33,11 @@ public class TPrmAttributeMapping extends TPrmMapping {
     @Nullable
     private String refinementProperty;
 
-    public TPrmAttributeMappingType getType() {
+    public TAttributeMappingType getType() {
         return type;
     }
 
-    public void setType(TPrmAttributeMappingType type) {
+    public void setType(TAttributeMappingType type) {
         this.type = type;
     }
 
@@ -59,8 +59,8 @@ public class TPrmAttributeMapping extends TPrmMapping {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof TPrmAttributeMapping
-            && getId().equals(((TPrmAttributeMapping) obj).getId());
+        return obj instanceof AttributeMapping
+            && getId().equals(((AttributeMapping) obj).getId());
     }
 
     @Override

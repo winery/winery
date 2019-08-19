@@ -27,9 +27,9 @@ import org.eclipse.winery.model.tosca.TStayMapping;
 import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelMappingsResource;
 import org.eclipse.winery.repository.rest.resources.apiData.PrmStayMappingApiData;
 
-public class PrmStayMappingsResource extends AbstractRefinementModelMappingsResource {
+public class StayMappingsResource extends AbstractRefinementModelMappingsResource {
 
-    public PrmStayMappingsResource(PatternRefinementModelResource res, List<TStayMapping> stayMappings) {
+    public StayMappingsResource(PatternRefinementModelResource res, List<TStayMapping> stayMappings) {
         super(res);
         this.mappings = stayMappings;
     }

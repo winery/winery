@@ -21,8 +21,8 @@ import java.util.Objects;
 import javax.ws.rs.Path;
 
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.tosca.AttributeMapping;
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
-import org.eclipse.winery.model.tosca.TPrmAttributeMapping;
 import org.eclipse.winery.model.tosca.TStayMapping;
 import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates.TopologyTemplateResource;
@@ -47,20 +47,20 @@ public class PatternRefinementModelResource extends AbstractRefinementModelResou
         return new TopologyTemplateResource(this, this.getTRefinementModel().getRefinementTopology(), REFINEMENT_TOPOLOGY);
     }
 
-    @Path("propertymappings")
-    public PrmAttributeMappingsResource getPropertyMappings() {
-        List<TPrmAttributeMapping> propertyMappings = this.getTRefinementModel().getPropertyMappings();
+    @Path("attributemappings")
+    public AttributeMappingsResource getPropertyMappings() {
+        List<AttributeMapping> propertyMappings = this.getTRefinementModel().getAttributeMappings();
 
         if (Objects.isNull(propertyMappings)) {
             propertyMappings = new ArrayList<>();
-            this.getTRefinementModel().setPropertyMappings(propertyMappings);
+            this.getTRefinementModel().setAttributeMappings(propertyMappings);
         }
 
-        return new PrmAttributeMappingsResource(this, propertyMappings);
+        return new AttributeMappingsResource(this, propertyMappings);
     }
 
     @Path("staymappings")
-    public PrmStayMappingsResource getStayMappings() {
+    public StayMappingsResource getStayMappings() {
         List<TStayMapping> stayMappings = this.getTRefinementModel().getStayMappings();
 
         if (Objects.isNull(stayMappings)) {
@@ -68,6 +68,6 @@ public class PatternRefinementModelResource extends AbstractRefinementModelResou
             this.getTRefinementModel().setStayMappings(stayMappings);
         }
 
-        return new PrmStayMappingsResource(this, stayMappings);
+        return new StayMappingsResource(this, stayMappings);
     }
 }

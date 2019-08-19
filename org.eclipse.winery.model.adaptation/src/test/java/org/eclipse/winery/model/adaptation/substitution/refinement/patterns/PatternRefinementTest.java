@@ -27,11 +27,11 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.adaptation.substitution.refinement.DefaultRefinementChooser;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
+import org.eclipse.winery.model.tosca.AttributeMapping;
+import org.eclipse.winery.model.tosca.TAttributeMappingType;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
-import org.eclipse.winery.model.tosca.TPrmAttributeMapping;
-import org.eclipse.winery.model.tosca.TPrmAttributeMappingType;
 import org.eclipse.winery.model.tosca.TRelationDirection;
 import org.eclipse.winery.model.tosca.TRelationMapping;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
@@ -548,31 +548,31 @@ class PatternRefinementTest {
         nt11Props.setKVProperties(nt11PropsMap);
         nt11.setProperties(nt11Props);
 
-        TPrmAttributeMapping allOn4to13 = new TPrmAttributeMapping();
-        allOn4to13.setType(TPrmAttributeMappingType.ALL);
+        AttributeMapping allOn4to13 = new AttributeMapping();
+        allOn4to13.setType(TAttributeMappingType.ALL);
         allOn4to13.setDetectorNode(candidate.getRefinementModel().getDetector().getNodeTemplate("8"));
         allOn4to13.setRefinementNode(nt13);
 
-        TPrmAttributeMapping pIn2_to_jIn12 = new TPrmAttributeMapping();
-        pIn2_to_jIn12.setType(TPrmAttributeMappingType.SELECTIVE);
+        AttributeMapping pIn2_to_jIn12 = new AttributeMapping();
+        pIn2_to_jIn12.setType(TAttributeMappingType.SELECTIVE);
         pIn2_to_jIn12.setDetectorNode(candidate.getRefinementModel().getDetector().getNodeTemplate("7"));
         pIn2_to_jIn12.setRefinementNode(nt12);
         pIn2_to_jIn12.setDetectorProperty("p");
         pIn2_to_jIn12.setRefinementProperty("j");
 
-        TPrmAttributeMapping xIn2_to_kIn11 = new TPrmAttributeMapping();
-        xIn2_to_kIn11.setType(TPrmAttributeMappingType.SELECTIVE);
+        AttributeMapping xIn2_to_kIn11 = new AttributeMapping();
+        xIn2_to_kIn11.setType(TAttributeMappingType.SELECTIVE);
         xIn2_to_kIn11.setDetectorNode(candidate.getRefinementModel().getDetector().getNodeTemplate("7"));
         xIn2_to_kIn11.setRefinementNode(nt11);
         xIn2_to_kIn11.setDetectorProperty("x");
         xIn2_to_kIn11.setRefinementProperty("k");
 
-        List<TPrmAttributeMapping> relationMappings = new ArrayList<>();
+        List<AttributeMapping> relationMappings = new ArrayList<>();
         relationMappings.add(allOn4to13);
         relationMappings.add(pIn2_to_jIn12);
         relationMappings.add(xIn2_to_kIn11);
 
-        ((TPatternRefinementModel) candidate.getRefinementModel()).setPropertyMappings(relationMappings);
+        ((TPatternRefinementModel) candidate.getRefinementModel()).setAttributeMappings(relationMappings);
         // endregion
 
         // region *** setup the topology ***
