@@ -16,7 +16,7 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 
 import org.eclipse.winery.model.tosca.AttributeMapping;
 import org.eclipse.winery.model.tosca.TAttributeMappingType;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -30,7 +30,7 @@ public class PrmAttributeMappingApiData extends AbstractPrmMappingElement {
     }
 
     @JsonIgnore
-    public AttributeMapping createTPrmPropertyMapping(TNodeTemplate detectorNodeTemplate, TNodeTemplate refinementNodeTemplate) {
+    public AttributeMapping createTPrmPropertyMapping(TEntityTemplate detectorNodeTemplate, TEntityTemplate refinementNodeTemplate) {
         AttributeMapping mapping = new AttributeMapping();
         mapping.setId(this.id);
         mapping.setDetectorNode(detectorNodeTemplate);

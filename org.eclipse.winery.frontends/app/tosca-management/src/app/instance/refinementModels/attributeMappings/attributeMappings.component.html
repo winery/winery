@@ -11,9 +11,9 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<winery-loader *ngIf="loading; else content"></winery-loader>
+<winery-loader *ngIf="loading || !attributeMappings; else content"></winery-loader>
 <ng-template #content>
-    <winery-table [columns]="columns" [data]="propertyMappings"
+    <winery-table [columns]="columns" [data]="attributeMappings"
                   [disableButtons]="!sharedData.currentVersion.editable"
                   (addBtnClicked)="onAddButtonClicked()" (removeBtnClicked)="onRemoveButtonClicked($event)">
     </winery-table>
@@ -38,7 +38,7 @@
 
             <div class="form-group">
                 <label for="detectorNode" class="control-label">Detector Node</label>
-                <ng-select id="detectorNode" [items]="detectorNodeTemplates" [textField]="'name'"
+                <ng-select id="detectorNode" [items]="detectorTemplates" [textField]="'name'"
                            (selected)="detectorNodeSelected($event)">
                 </ng-select>
             </div>
@@ -53,7 +53,7 @@
 
             <div class="form-group">
                 <label for="refinementNode" class="control-label">Refinement Structure Node</label>
-                <ng-select id="refinementNode" [items]="refinementStructureNodeTemplates" [textField]="'name'"
+                <ng-select id="refinementNode" [items]="refinementStructureTemplates" [textField]="'name'"
                            (selected)="refinementNodeSelected($event)">
                 </ng-select>
             </div>

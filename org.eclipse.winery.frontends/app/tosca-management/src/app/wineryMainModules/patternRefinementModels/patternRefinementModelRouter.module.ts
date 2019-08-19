@@ -23,7 +23,7 @@ import { EditXMLComponent } from '../../instance/sharedComponents/editXML/editXM
 import { NgModule } from '@angular/core';
 import { RelationMappingsComponent } from '../../instance/refinementModels/relationshipMappings/relationMappings.component';
 import { TopologyTemplateComponent } from '../../instance/sharedComponents/topologyTemplate/topologyTemplate.component';
-import { StayMappingsComponent } from '../../instance/refinementModels/stayMappings/StayMappings.component';
+import { StayMappingsComponent } from '../../instance/refinementModels/stayMappings/stayMappings.component';
 import { AttributeMappingsComponent } from '../../instance/refinementModels/attributeMappings/attributeMappings.component';
 
 const toscaType = ToscaTypes.PatternRefinementModel;

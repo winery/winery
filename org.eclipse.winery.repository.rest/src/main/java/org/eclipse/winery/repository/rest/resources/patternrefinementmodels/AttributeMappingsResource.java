@@ -22,23 +22,29 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.winery.model.tosca.AttributeMapping;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelMappingsResource;
 import org.eclipse.winery.repository.rest.resources.apiData.PrmAttributeMappingApiData;
 
 public class AttributeMappingsResource extends AbstractRefinementModelMappingsResource {
 
-    public AttributeMappingsResource(PatternRefinementModelResource res, List<AttributeMapping> propertyMappings) {
+    public AttributeMappingsResource(PatternRefinementModelResource res, List<AttributeMapping> attributeMappings) {
         super(res);
-        this.mappings = propertyMappings;
+        this.mappings = attributeMappings;
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public List<AttributeMapping> addPropertyMappingFromApi(PrmAttributeMappingApiData mapping) {
-        TNodeTemplate detectorNode = this.getDetectorNodeTemplate(mapping.detectorNode);
-        TNodeTemplate refinementNode = this.getRefinementNodeTemplate(mapping.refinementNode);
+        TEntityTemplate refinementNode = this.res.getRefinementTopology().getComponentInstanceJSON().getNodeTemplateOrRelationshipTemplate().stream()
+            .filter(entityTemplate -> entityTemplate.getId().equals(mapping.refinementNode))
+            .findFirst()
+            .orElseGet(null);
+        TEntityTemplate detectorNode = this.res.getDetector().getComponentInstanceJSON().getNodeTemplateOrRelationshipTemplate().stream()
+            .filter(entityTemplate -> entityTemplate.getId().equals(mapping.detectorNode))
+            .findFirst()
+            .orElseGet(null);
         return (List<AttributeMapping>) this.addMapping(mapping.createTPrmPropertyMapping(detectorNode, refinementNode));
     }
 }

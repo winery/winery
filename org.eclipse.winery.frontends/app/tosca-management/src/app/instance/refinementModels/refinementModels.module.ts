@@ -22,7 +22,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
 import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
 import { SelectModule } from 'ng2-select';
-import { StayMappingsComponent } from './stayMappings/StayMappings.component';
+import { StayMappingsComponent } from './stayMappings/stayMappings.component';
 import { AttributeMappingsComponent } from './attributeMappings/attributeMappings.component';
 
 @NgModule({

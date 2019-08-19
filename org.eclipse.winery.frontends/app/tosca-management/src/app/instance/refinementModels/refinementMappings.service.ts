@@ -82,9 +82,10 @@ export class RefinementMappingsService {
         return this.http.delete<AttributeMapping[]>(this.path + '/attributemappings/' + element.id);
     }
 
-    public getNodeTypeProperties(type: string): Observable<PropertiesDefinitionsResourceApiData> {
+    public getTypeProperties(type: string, nodeTemplate: boolean): Observable<PropertiesDefinitionsResourceApiData> {
         const qName = Utils.getNamespaceAndLocalNameFromQName(type);
-        const url = backendBaseURL + `/nodetypes/${encodeURIComponent(encodeURIComponent(qName.namespace))}/${qName.localName}/propertiesdefinition/`;
+        const toscaType = nodeTemplate ? '/nodetypes/' : '/relationshiptypes/';
+        const url = backendBaseURL + `/${toscaType}/${encodeURIComponent(encodeURIComponent(qName.namespace))}/${qName.localName}/propertiesdefinition/`;
         return this.http.get<PropertiesDefinitionsResourceApiData>(url);
     }
 
