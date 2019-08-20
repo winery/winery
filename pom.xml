@@ -111,6 +111,7 @@
         <module>org.eclipse.winery.model.adaptation</module>
         <module>org.eclipse.winery.frontends</module>
         <module>org.eclipse.winery.model.threatmodeling</module>
+        <module>org.eclipse.winery.edmm</module>
     </modules>
     <build>
         <plugins>
