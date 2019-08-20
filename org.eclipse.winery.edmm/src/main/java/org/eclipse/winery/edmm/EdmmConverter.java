@@ -16,6 +16,7 @@ package org.eclipse.winery.edmm;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.xml.namespace.QName;
@@ -86,6 +87,10 @@ public class EdmmConverter {
             entityGraph.addEntity(nodeTypeMappingEntity);
 
             TNodeType nodeType = this.nodeTypes.get(type);
+            if (Objects.nonNull(nodeType.getDerivedFrom())) {
+                EntityId baseTypeEntityId = createNodeType(nodeType.getDerivedFrom().getType(), entityGraph);
+                entityGraph.addEntity(new ScalarEntity(baseTypeEntityId.getName(), nodeTypeId.extend(DefaultKeys.EXTENDS), entityGraph));
+            }
         }
 
         return nodeTypeId;
