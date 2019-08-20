@@ -31,10 +31,10 @@ import io.github.edmm.core.parser.EntityGraph;
 import io.github.edmm.core.parser.EntityId;
 import io.github.edmm.core.parser.MappingEntity;
 import io.github.edmm.core.parser.ScalarEntity;
+import io.github.edmm.core.parser.support.DefaultKeys;
 
 public class EdmmConverter {
 
-    private static final String TYPE = "type";
     private final Map<QName, TNodeType> nodeTypes;
     private final Map<QName, TRelationshipType> relationshipTypes;
 
@@ -70,7 +70,7 @@ public class EdmmConverter {
 
         // add the type to the model
         EntityId nodeTypeEntityId = createNodeType(nodeTemplate.getType(), entityGraph);
-        entityGraph.addEntity(new ScalarEntity(nodeTypeEntityId.getName(), componentNodeId.extend(TYPE), entityGraph));
+        entityGraph.addEntity(new ScalarEntity(nodeTypeEntityId.getName(), componentNodeId.extend(DefaultKeys.TYPE), entityGraph));
     }
 
     private EntityId createNodeType(QName type, EntityGraph entityGraph) {
@@ -84,6 +84,8 @@ public class EdmmConverter {
         if (!entity.isPresent()) {
             MappingEntity nodeTypeMappingEntity = new MappingEntity(nodeTypeId, entityGraph);
             entityGraph.addEntity(nodeTypeMappingEntity);
+
+            TNodeType nodeType = this.nodeTypes.get(type);
         }
 
         return nodeTypeId;

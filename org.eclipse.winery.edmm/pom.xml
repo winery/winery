@@ -36,7 +36,7 @@
         <dependency>
             <groupId>com.github.ust-edmm.transformation-framework</groupId>
             <artifactId>edmm-core</artifactId>
-            <version>emptyGraph-SNAPSHOT</version>
+            <version>emptyGraph-502b86b4ed-1</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.winery</groupId>
