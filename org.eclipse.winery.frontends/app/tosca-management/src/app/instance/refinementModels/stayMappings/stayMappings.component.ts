@@ -25,7 +25,7 @@ import { PrmModelElementType, StayMapping } from './stayMapping';
 import { forkJoin } from 'rxjs';
 
 @Component({
-    templateUrl: 'StayMappings.component.html',
+    templateUrl: 'stayMappings.component.html',
     providers: [
         RefinementMappingsService
     ]
