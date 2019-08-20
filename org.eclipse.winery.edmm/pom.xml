@@ -23,7 +23,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>edmm</artifactId>
+    <artifactId>org.eclipse.wienry.edmm</artifactId>
 
     <repositories>
         <repository>
@@ -34,9 +34,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.ust-edmm</groupId>
-            <artifactId>transformation-framework</artifactId>
-            <version>master-60ccf1243e-1</version>
+            <groupId>com.github.ust-edmm.transformation-framework</groupId>
+            <artifactId>edmm-core</artifactId>
+            <version>emptyGraph-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.winery</groupId>
@@ -55,6 +55,12 @@
             <artifactId>junit-jupiter-params</artifactId>
             <version>${junit.jupiter.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.winery</groupId>
+            <artifactId>org.eclipse.winery.repository</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
