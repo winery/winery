@@ -32,9 +32,11 @@ import org.eclipse.winery.model.tosca.TAttributeMappingType;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
+import org.eclipse.winery.model.tosca.TPrmModelElementType;
 import org.eclipse.winery.model.tosca.TRelationDirection;
 import org.eclipse.winery.model.tosca.TRelationMapping;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TStayMapping;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.topologygraph.matching.ToscaIsomorphismMatcher;
@@ -46,12 +48,14 @@ import org.eclipse.winery.topologygraph.transformation.ToscaTransformer;
 
 import com.google.common.collect.Iterators;
 import org.jgrapht.GraphMapping;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -613,5 +617,75 @@ class PatternRefinementTest {
         assertEquals("1", topology.getNodeTemplate("12").getProperties().getKVProperties().get("j"));
         assertNull(topology.getNodeTemplate("10").getProperties());
     }
+    // endregion
+
+    // region ********** redirectStayMappings **********
+    @Test
+    @Disabled
+    void redirectStayMappings() {
+        setUp();
+
+         /*
+        input:
+        #######   (1)  #######
+        # (1) # <----- # (2) #
+        #######        #######
+                          | (2)
+                         \/
+                       #######
+                       # (4) #
+                       #######
+
+        expected output:
+        #######   (1)  ########        ########
+        # (1) # <----- # (10) #        # (11) #
+        #######        ########        ########
+                           | (2)          | (2)
+                           +-------|------+
+                                  \/
+                                #######
+                                # (4) #
+                                #######
+         */
+
+        // region *** add stay mapping to PRM ***
+        TTopologyTemplate refinementTopology = candidate.getRefinementModel().getRefinementTopology();
+        TTopologyTemplate detector = candidate.getRefinementModel().getDetector();
+
+        refinementTopology.getNodeTemplateOrRelationshipTemplate()
+            .removeIf(template -> {
+                if (template.getId().equals("13") || template.getId().equals("1213")) {
+                    return true;
+                }
+                return false;
+            });
+
+        TNodeTemplate nt12 = refinementTopology.getNodeTemplate("12");
+        nt12.setType("{http://ex.org}nodeType_4");
+        TNodeTemplate nt4 = detector.getNodeTemplate("8");
+
+        TStayMapping nt4staysAsNt12 = new TStayMapping();
+        nt4staysAsNt12.setModelElementType(TPrmModelElementType.NODE);
+        nt4staysAsNt12.setId("stay1");
+        nt4staysAsNt12.setDetectorNode(nt4);
+        nt4staysAsNt12.setRefinementNode(nt12);
+        // endregion
+
+        PatternRefinement patternRefinement = new PatternRefinement();
+        patternRefinement.applyRefinement(candidate, topology2);
+
+        // region *** assertions ***
+        assertNotNull(topology2.getNodeTemplate("4"));
+        assertEquals(topology2.getRelationshipTemplate("1012").getTargetElement().getRef().getId(), "4");
+        assertEquals(topology2.getRelationshipTemplate("1012").getSourceElement().getRef().getId(), "10");
+
+        assertEquals(topology2.getRelationshipTemplate("1112").getTargetElement().getRef().getId(), "4");
+        assertEquals(topology2.getRelationshipTemplate("1112").getSourceElement().getRef().getId(), "11");
+
+        assertEquals(topology2.getRelationshipTemplate("21").getTargetElement().getRef().getId(), "1");
+        assertEquals(topology2.getRelationshipTemplate("21").getSourceElement().getRef().getId(), "2");
+        // endregion
+    }
+
     // endregion
 }

@@ -95,8 +95,10 @@ public class PatternRefinement extends AbstractRefinement {
                 // get the matching node in the topology
                 TNodeTemplate matchingNode = refinement.getGraphMapping().getVertexCorrespondence(vertex, false).getTemplate();
 
+                this.redirectInternalRelations(refinement, matchingNode, topology, idMapping);
                 this.redirectExternalRelations(refinement, matchingNode, topology, idMapping);
 
+                // TODO: enable the application among relations as well as nodes and relations
                 this.applyPropertyMappings(refinement, vertex.getId(), matchingNode, topology, idMapping);
 
                 topology.getNodeTemplateOrRelationshipTemplate()
@@ -172,6 +174,10 @@ public class PatternRefinement extends AbstractRefinement {
                         return false;
                     })
             );
+    }
+
+    private void redirectInternalRelations(RefinementCandidate refinement, TNodeTemplate matchingNode, TTopologyTemplate topology, Map<String, String> idMapping) {
+        // todo
     }
 
     public Stream<TRelationshipTemplate> getExternalRelations(TNodeTemplate matchingNode, RefinementCandidate candidate, TTopologyTemplate topology) {
