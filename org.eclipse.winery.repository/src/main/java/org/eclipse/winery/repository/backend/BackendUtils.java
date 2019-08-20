@@ -1454,9 +1454,25 @@ public class BackendUtils {
      * <code>topologyTemplateB</code>
      */
     public static Map<String, String> mergeTopologyTemplateAinTopologyTemplateB(TTopologyTemplate topologyTemplateA, TTopologyTemplate topologyTemplateB) {
+        return mergeTopologyTemplateAinTopologyTemplateB(topologyTemplateA, topologyTemplateB, null);
+    }
+
+    /**
+     * Merges two Topology Templates and returns the mapping between the topology elements from the original Topology
+     * Template and their respective clones inside the merged topology. Hereby, the staying elements must not be
+     * merged.
+     *
+     * @param topologyTemplateA the topology to merged into <code>topologyTemplateB</code>
+     * @param topologyTemplateB the target topology in which <dode>topologyTemplateA</dode> should be merged in
+     * @param stayingElements   the TEntityTemplates that must not be merged from A to B.
+     * @return A mapping between the ids in the <code>topologyTemplateA</code> and their corresponding ids in
+     * <code>topologyTemplateB</code>
+     */
+    public static Map<String, String> mergeTopologyTemplateAinTopologyTemplateB(TTopologyTemplate topologyTemplateA, TTopologyTemplate topologyTemplateB, List<TEntityTemplate> stayingElements) {
         Objects.requireNonNull(topologyTemplateA);
         Objects.requireNonNull(topologyTemplateB);
 
+        TTopologyTemplate topologyTemplateToBeMerged = new TTopologyTemplate();
         Map<String, String> idMapping = new HashMap<>();
 
         Optional<Integer> shiftLeft = topologyTemplateB.getNodeTemplateOrRelationshipTemplate().stream()
@@ -1465,17 +1481,30 @@ public class BackendUtils {
             .max(Comparator.comparingInt(n -> ModelUtilities.getLeft(n).orElse(0)))
             .map(n -> ModelUtilities.getLeft(n).orElse(0));
 
+        if (Objects.nonNull(stayingElements)) {
+            topologyTemplateA.getNodeTemplateOrRelationshipTemplate()
+                .forEach(entity -> {
+                    if (!stayingElements.contains(entity)) {
+                        if (entity instanceof TNodeTemplate) {
+                            topologyTemplateToBeMerged.addNodeTemplate((TNodeTemplate) entity);
+                        } else if (entity instanceof TRelationshipTemplate) {
+                            topologyTemplateToBeMerged.addRelationshipTemplate((TRelationshipTemplate) entity);
+                        }
+                    }
+                });
+        }
+
         if (shiftLeft.isPresent()) {
             ModelUtilities.collectIdsOfExistingTopologyElements(topologyTemplateB, idMapping);
 
             // patch ids of reqs change them if required
-            topologyTemplateA.getNodeTemplates().stream()
+            topologyTemplateToBeMerged.getNodeTemplates().stream()
                 .filter(nt -> nt.getRequirements() != null)
                 .forEach(nt -> nt.getRequirements().getRequirement().forEach(oldReq -> {
                     TRequirement req = SerializationUtils.clone(oldReq);
                     ModelUtilities.generateNewIdOfTemplate(req, idMapping);
 
-                    topologyTemplateA.getRelationshipTemplates().stream()
+                    topologyTemplateToBeMerged.getRelationshipTemplates().stream()
                         .filter(rt -> rt.getSourceElement().getRef() instanceof TRequirement)
                         .forEach(rt -> {
                             TRequirement sourceElement = (TRequirement) rt.getSourceElement().getRef();
@@ -1486,13 +1515,13 @@ public class BackendUtils {
                 }));
 
             // patch ids of caps change them if required
-            topologyTemplateA.getNodeTemplates().stream()
+            topologyTemplateToBeMerged.getNodeTemplates().stream()
                 .filter(nt -> nt.getCapabilities() != null)
                 .forEach(nt -> nt.getCapabilities().getCapability().forEach(oldCap -> {
                     TCapability cap = SerializationUtils.clone(oldCap);
                     ModelUtilities.generateNewIdOfTemplate(cap, idMapping);
 
-                    topologyTemplateA.getRelationshipTemplates().stream()
+                    topologyTemplateToBeMerged.getRelationshipTemplates().stream()
                         .filter(rt -> rt.getTargetElement().getRef() instanceof TCapability)
                         .forEach(rt -> {
                             TCapability targetElement = (TCapability) rt.getTargetElement().getRef();
@@ -1505,7 +1534,7 @@ public class BackendUtils {
             ArrayList<TRelationshipTemplate> newRelationships = new ArrayList<>();
 
             // patch the ids of templates and add them
-            topologyTemplateA.getNodeTemplateOrRelationshipTemplate()
+            topologyTemplateToBeMerged.getNodeTemplateOrRelationshipTemplate()
                 .forEach(element -> {
                     TEntityTemplate rtOrNt = SerializationUtils.clone(element);
                     ModelUtilities.generateNewIdOfTemplate(rtOrNt, idMapping);
@@ -1537,7 +1566,7 @@ public class BackendUtils {
             });
         } else {
             topologyTemplateB.getNodeTemplateOrRelationshipTemplate()
-                .addAll(topologyTemplateA.getNodeTemplateOrRelationshipTemplate());
+                .addAll(topologyTemplateToBeMerged.getNodeTemplateOrRelationshipTemplate());
         }
 
         return idMapping;
@@ -1550,7 +1579,7 @@ public class BackendUtils {
             .ifPresent(template -> template.setType(newComponentType));
         return topologyTemplate;
     }
-    
+
     /**
      * Collects all the definitions which describe the same component in different versions.
      *

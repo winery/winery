@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.eclipse.winery.common.ids.definitions.PatternRefinementModelId;
@@ -30,6 +31,7 @@ import org.eclipse.winery.model.tosca.TAttributeMappingType;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
+import org.eclipse.winery.model.tosca.TPrmMapping;
 import org.eclipse.winery.model.tosca.TRefinementModel;
 import org.eclipse.winery.model.tosca.TRelationDirection;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
@@ -68,10 +70,21 @@ public class PatternRefinement extends AbstractRefinement {
     }
 
     public void applyRefinement(RefinementCandidate refinement, TTopologyTemplate topology) {
+        if (!(refinement.getRefinementModel() instanceof TPatternRefinementModel)) {
+            throw new UnsupportedOperationException("The refinement candidate is not a PRM!");
+        }
+
+        // determine the elements that are staying
+        TPatternRefinementModel prm = (TPatternRefinementModel) refinement.getRefinementModel();
+        List<TEntityTemplate> stayingElements = prm.getStayMappings().stream()
+            .map(TPrmMapping::getRefinementNode)
+            .collect(Collectors.toList());
+
         // import the refinement structure
         Map<String, String> idMapping = BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(
             refinement.getRefinementModel().getRefinementTopology(),
-            topology
+            topology,
+            stayingElements
         );
 
         // only for UI: position the imported nodes next to the nodes to be refined
@@ -95,7 +108,7 @@ public class PatternRefinement extends AbstractRefinement {
                 // get the matching node in the topology
                 TNodeTemplate matchingNode = refinement.getGraphMapping().getVertexCorrespondence(vertex, false).getTemplate();
 
-                this.redirectInternalRelations(refinement, matchingNode, topology, idMapping);
+                this.redirectInternalRelations(refinement, matchingNode, stayingElements, topology, idMapping);
                 this.redirectExternalRelations(refinement, matchingNode, topology, idMapping);
 
                 // TODO: enable the application among relations as well as nodes and relations
@@ -176,8 +189,19 @@ public class PatternRefinement extends AbstractRefinement {
             );
     }
 
-    private void redirectInternalRelations(RefinementCandidate refinement, TNodeTemplate matchingNode, TTopologyTemplate topology, Map<String, String> idMapping) {
-        // todo
+    private void redirectInternalRelations(RefinementCandidate refinement, TNodeTemplate matchingNode,
+                                           List<TEntityTemplate> stayingElements, TTopologyTemplate topology,
+                                           Map<String, String> idMapping) {
+        topology.getRelationshipTemplates().stream()
+            .filter(relationship ->
+                stayingElements.stream()
+                    .anyMatch(staying ->
+                        relationship.getTargetElement().getRef().getId().equals(idMapping.get(staying.getId()))
+                            || relationship.getSourceElement().getRef().getId().equals(idMapping.get(staying.getId()))
+                    )
+            ).forEach(relationship -> {
+            // get the corresponding element from the mapping
+        });
     }
 
     public Stream<TRelationshipTemplate> getExternalRelations(TNodeTemplate matchingNode, RefinementCandidate candidate, TTopologyTemplate topology) {
