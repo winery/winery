@@ -56,12 +56,6 @@
             <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.eclipse.winery</groupId>
-            <artifactId>org.eclipse.winery.repository</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
 
     <build>
