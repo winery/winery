@@ -15,17 +15,24 @@
 package org.eclipse.winery.edmm;
 
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
+import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 
 import io.github.edmm.core.parser.EntityGraph;
+import io.github.edmm.core.parser.MappingEntity;
 import io.github.edmm.core.parser.ScalarEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,6 +65,19 @@ public class EdmmConverterTest {
         derivedFrom.setTypeRef(nodeType1QName);
         nodeType2.setDerivedFrom(derivedFrom);
         nodeTypes.put(nodeType2QName, nodeType2);
+
+        QName nodeType3QName = QName.valueOf("{" + NAMESPACE + "}" + "test_node_type_3");
+        TNodeType nodeType3 = new TNodeType();
+        nodeType3.setName(nodeType3QName.getLocalPart());
+        nodeType3.setTargetNamespace(nodeType3QName.getNamespaceURI());
+        PropertyDefinitionKVList kvList = new PropertyDefinitionKVList();
+        kvList.add(new PropertyDefinitionKV("os_family", "xsd:string"));
+        kvList.add(new PropertyDefinitionKV("public_key", "xsd:string"));
+        kvList.add(new PropertyDefinitionKV("ssh_port", "number"));
+        WinerysPropertiesDefinition wpd = new WinerysPropertiesDefinition();
+        wpd.setPropertyDefinitionKVList(kvList);
+        ModelUtilities.replaceWinerysPropertiesDefinition(nodeType3, wpd);
+        nodeTypes.put(nodeType3QName, nodeType3);
         // endregion
 
         // region *** RelationType setup ***
@@ -74,6 +94,18 @@ public class EdmmConverterTest {
         nt2.setType(nodeType2QName);
         nt2.setId("test_node_2");
         nodeTemplates.put(nt2.getId(), nt2);
+
+        TNodeTemplate nt3 = new TNodeTemplate();
+        nt3.setType(nodeType3QName);
+        nt3.setId("test_node_3");
+        TEntityTemplate.Properties properties = new TEntityTemplate.Properties();
+        HashMap<String, String> nt3Properties = new HashMap<>();
+        nt3Properties.put("os_family", "ubuntu");
+        nt3Properties.put("public_key", "-----BEGIN PUBLIC KEY----- ... -----END PUBLIC KEY-----");
+        nt3Properties.put("ssh_port", "22");
+        properties.setKVProperties(nt3Properties);
+        nt3.setProperties(properties);
+        nodeTemplates.put(nt3.getId(), nt3);
         // endregion 
 
         // region *** create the RelationshipTemplate ***
@@ -116,5 +148,44 @@ public class EdmmConverterTest {
             entity instanceof ScalarEntity
                 && entity.getName().equals("extends")
                 && ((ScalarEntity) entity).getValue().equals("https_ex.orgtoscatoedmm__test_node_type")));
+    }
+
+    @Test
+    void transformProperties() {
+        // region *** build the TopologyTemplate ***
+        TTopologyTemplate topology = new TTopologyTemplate();
+        topology.addNodeTemplate(nodeTemplates.get("test_node_3"));
+        // endregion
+
+        TServiceTemplate serviceTemplate = new TServiceTemplate();
+        serviceTemplate.setTopologyTemplate(topology);
+
+        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes);
+        EntityGraph transform = edmmConverter.transform(serviceTemplate);
+
+        assertNotNull(transform);
+        assertEquals(17, transform.vertexSet().size());
+        assertTrue(transform.vertexSet().stream().anyMatch(entity ->
+            entity instanceof MappingEntity
+                && entity.getName().equals("properties")
+        ));
+        Stream.of("os_family", "public_key", "ssh_port").forEach(key -> {
+            assertTrue(transform.vertexSet().stream().anyMatch(entity ->
+                entity instanceof MappingEntity
+                    && entity.getName().equals(key)
+                    && entity.getParent().isPresent()
+                    && entity.getParent().get().getName().equals("properties")
+                    && entity.getChildren().size() == 1
+            ));
+        });
+        Stream.of("os_family", "public_key", "ssh_port").forEach(key -> {
+            assertTrue(transform.vertexSet().stream().anyMatch(entity ->
+                entity instanceof ScalarEntity
+                    && entity.getName().equals(key)
+                    && !((ScalarEntity) entity).getValue().isEmpty()
+                    && entity.getParent().isPresent()
+                    && entity.getParent().get().getName().equals("properties")
+            ));
+        });
     }
 }

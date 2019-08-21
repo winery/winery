@@ -72,6 +72,17 @@ public class EdmmConverter {
         // add the type to the model
         EntityId nodeTypeEntityId = createNodeType(nodeTemplate.getType(), entityGraph);
         entityGraph.addEntity(new ScalarEntity(nodeTypeEntityId.getName(), componentNodeId.extend(DefaultKeys.TYPE), entityGraph));
+
+        if (Objects.nonNull(nodeTemplate.getProperties()) && Objects.nonNull(nodeTemplate.getProperties().getKVProperties())) {
+            EntityId propertiesEntityId = componentNodeId.extend(DefaultKeys.PROPERTIES);
+            entityGraph.addEntity(new MappingEntity(propertiesEntityId, entityGraph));
+
+            nodeTemplate.getProperties().getKVProperties()
+                .forEach((key, value) -> {
+                    EntityId propertyEntityId = propertiesEntityId.extend(key);
+                    entityGraph.addEntity(new ScalarEntity(value, propertyEntityId, entityGraph));
+                });
+        }
     }
 
     private EntityId createNodeType(QName type, EntityGraph entityGraph) {
@@ -79,21 +90,36 @@ public class EdmmConverter {
             entityGraph.addEntity(new MappingEntity(EntityGraph.COMPONENT_TYPES, entityGraph));
         }
 
-        EntityId nodeTypeId = EntityGraph.COMPONENT_TYPES.extend(normalizeQName(type));
-        Optional<Entity> entity = entityGraph.getEntity(nodeTypeId);
+        EntityId nodeTypeEntityId = EntityGraph.COMPONENT_TYPES.extend(normalizeQName(type));
+        Optional<Entity> entity = entityGraph.getEntity(nodeTypeEntityId);
 
         if (!entity.isPresent()) {
-            MappingEntity nodeTypeMappingEntity = new MappingEntity(nodeTypeId, entityGraph);
+            MappingEntity nodeTypeMappingEntity = new MappingEntity(nodeTypeEntityId, entityGraph);
             entityGraph.addEntity(nodeTypeMappingEntity);
 
             TNodeType nodeType = this.nodeTypes.get(type);
             if (Objects.nonNull(nodeType.getDerivedFrom())) {
                 EntityId baseTypeEntityId = createNodeType(nodeType.getDerivedFrom().getType(), entityGraph);
-                entityGraph.addEntity(new ScalarEntity(baseTypeEntityId.getName(), nodeTypeId.extend(DefaultKeys.EXTENDS), entityGraph));
+                entityGraph.addEntity(new ScalarEntity(baseTypeEntityId.getName(), nodeTypeEntityId.extend(DefaultKeys.EXTENDS), entityGraph));
+            }
+
+            if (Objects.nonNull(nodeType.getWinerysPropertiesDefinition())) {
+                EntityId propertiesEntityId = nodeTypeEntityId.extend(DefaultKeys.PROPERTIES);
+                entityGraph.addEntity(new MappingEntity(propertiesEntityId, entityGraph));
+
+                nodeType.getWinerysPropertiesDefinition().getPropertyDefinitionKVList().getPropertyDefinitionKVs()
+                    .forEach(propertyDef -> {
+                        EntityId propertyEntityId = propertiesEntityId.extend(propertyDef.getKey());
+                        entityGraph.addEntity(new MappingEntity(propertyEntityId, entityGraph));
+
+                        String normalizedType = propertyDef.getType().replace("xsd:", "");
+                        EntityId propertyTypeEntityId = propertyEntityId.extend(DefaultKeys.TYPE);
+                        entityGraph.addEntity(new ScalarEntity(normalizedType, propertyTypeEntityId, entityGraph));
+                    });
             }
         }
 
-        return nodeTypeId;
+        return nodeTypeEntityId;
     }
 
     private static String normalizeQName(QName qName) {
