@@ -23,6 +23,7 @@ import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
@@ -47,6 +48,7 @@ public class EdmmConverterTest {
     private static final HashMap<QName, TNodeType> nodeTypes = new HashMap<>();
     private static final HashMap<QName, TRelationshipType> relationshipTypes = new HashMap<>();
     private static final HashMap<String, TNodeTemplate> nodeTemplates = new HashMap<>();
+    private static final HashMap<String, TRelationshipTemplate> relationshipTemplates = new HashMap<>();
 
     @BeforeEach
     void setup() {
@@ -81,6 +83,17 @@ public class EdmmConverterTest {
         // endregion
 
         // region *** RelationType setup ***
+        QName hostedOnQName = QName.valueOf("{" + NAMESPACE + "}" + "hostedOn");
+        TRelationshipType hostedOnType = new TRelationshipType();
+        hostedOnType.setName(hostedOnQName.getLocalPart());
+        hostedOnType.setTargetNamespace(hostedOnQName.getNamespaceURI());
+        relationshipTypes.put(hostedOnQName, hostedOnType);
+
+        QName connectsToQName = QName.valueOf("{" + NAMESPACE + "}" + "connectsTo");
+        TRelationshipType connectsToType = new TRelationshipType();
+        connectsToType.setName(connectsToQName.getLocalPart());
+        connectsToType.setTargetNamespace(connectsToQName.getNamespaceURI());
+        relationshipTypes.put(connectsToQName, connectsToType);
         // endregion
 
         // region *** creation of the ServiceTemplate ***
@@ -109,6 +122,26 @@ public class EdmmConverterTest {
         // endregion 
 
         // region *** create the RelationshipTemplate ***
+        TRelationshipTemplate rt13 = new TRelationshipTemplate();
+        rt13.setType(hostedOnQName);
+        rt13.setId("1_hosted_on_3");
+        rt13.setSourceNodeTemplate(nt1);
+        rt13.setTargetNodeTemplate(nt3);
+        relationshipTemplates.put(rt13.getId(), rt13);
+
+        TRelationshipTemplate rt23 = new TRelationshipTemplate();
+        rt23.setType(hostedOnQName);
+        rt23.setId("2_hosted_on_3");
+        rt23.setSourceNodeTemplate(nt2);
+        rt23.setTargetNodeTemplate(nt3);
+        relationshipTemplates.put(rt23.getId(), rt23);
+
+        TRelationshipTemplate rt12 = new TRelationshipTemplate();
+        rt12.setType(connectsToQName);
+        rt12.setId("1_connects_to_2");
+        rt12.setSourceNodeTemplate(nt1);
+        rt12.setTargetNodeTemplate(nt2);
+        relationshipTemplates.put(rt12.getId(), rt12);
         // endregion
     }
 
@@ -187,5 +220,41 @@ public class EdmmConverterTest {
                     && entity.getParent().get().getName().equals("properties")
             ));
         });
+    }
+
+    @Test
+    void transformTopologyWithRelationsAndRelationTypes() {
+        // region *** build the TopologyTemplate ***
+        TTopologyTemplate topology = new TTopologyTemplate();
+        topology.addNodeTemplate(nodeTemplates.get("test_node_1"));
+        topology.addNodeTemplate(nodeTemplates.get("test_node_2"));
+        topology.addNodeTemplate(nodeTemplates.get("test_node_3"));
+        topology.addRelationshipTemplate(relationshipTemplates.get("1_hosted_on_3"));
+        topology.addRelationshipTemplate(relationshipTemplates.get("2_hosted_on_3"));
+        topology.addRelationshipTemplate(relationshipTemplates.get("1_connects_to_2"));
+        // endregion
+
+        TServiceTemplate serviceTemplate = new TServiceTemplate();
+        serviceTemplate.setTopologyTemplate(topology);
+
+        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes);
+        EntityGraph transform = edmmConverter.transform(serviceTemplate);
+
+        assertNotNull(transform);
+        assertEquals(32, transform.vertexSet().size());
+        assertTrue(transform.vertexSet().stream().anyMatch(entity ->
+            entity instanceof ScalarEntity
+                && entity.getName().equals("https_ex.orgtoscatoedmm__hostedOn")
+                && ((ScalarEntity) entity).getValue().equals("test_node_3")
+                && entity.getParent().isPresent()
+                && entity.getParent().get().getName().equals("relations")
+        ));
+        assertTrue(transform.vertexSet().stream().anyMatch(entity ->
+            entity instanceof ScalarEntity
+                && entity.getName().equals("https_ex.orgtoscatoedmm__connectsTo")
+                && ((ScalarEntity) entity).getValue().equals("test_node_2")
+                && entity.getParent().isPresent()
+                && entity.getParent().get().getName().equals("relations")
+        ));
     }
 }
