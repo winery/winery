@@ -52,25 +52,32 @@ public class EdmmConverter {
     private final Map<QName, TNodeTypeImplementation> nodeTypeImplementations;
     private final Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations;
     private final Map<QName, TArtifactTemplate> artifactTemplates;
+    private final Map<QName, EdmmType> edmmTypeMapping;
+    private final Map<QName, EdmmType> edmm1to1Mapping;
     private final boolean useAbsolutePaths;
 
     public EdmmConverter(Map<QName, TNodeType> nodeTypes, Map<QName, TRelationshipType> relationshipTypes,
                          Map<QName, TNodeTypeImplementation> nodeTypeImplementations,
                          Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations,
-                         Map<QName, TArtifactTemplate> artifactTemplates) {
-        this(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations, artifactTemplates, true);
+                         Map<QName, TArtifactTemplate> artifactTemplates,
+                         Map<QName, EdmmType> edmmTypeMapping, Map<QName, EdmmType> edmm1to1Mapping) {
+        this(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations, artifactTemplates,
+            edmmTypeMapping, edmm1to1Mapping, true);
     }
 
     public EdmmConverter(Map<QName, TNodeType> nodeTypes, Map<QName, TRelationshipType> relationshipTypes,
                          Map<QName, TNodeTypeImplementation> nodeTypeImplementations,
                          Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations,
-                         Map<QName, TArtifactTemplate> artifactTemplates, boolean useAbsolutePaths) {
+                         Map<QName, TArtifactTemplate> artifactTemplates, Map<QName, EdmmType> edmmTypeMapping,
+                         Map<QName, EdmmType> edmm1to1Mapping, boolean useAbsolutePaths) {
         this.nodeTypes = nodeTypes;
         this.relationshipTypes = relationshipTypes;
         this.nodeTypeImplementations = nodeTypeImplementations;
         this.relationshipTypeImplementations = relationshipTypeImplementations;
         this.artifactTemplates = artifactTemplates;
+        this.edmmTypeMapping = edmmTypeMapping;
         this.useAbsolutePaths = useAbsolutePaths;
+        this.edmm1to1Mapping = edmm1to1Mapping;
     }
 
     public EntityGraph transform(TServiceTemplate serviceTemplate) {
@@ -144,45 +151,56 @@ public class EdmmConverter {
         }
     }
 
-    private EntityId createType(TEntityType type, EntityId parentEntityId, EntityGraph entityGraph) {
+    private EntityId createType(TEntityType toscaType, EntityId parentEntityId, EntityGraph entityGraph) {
         if (!entityGraph.getEntity(parentEntityId).isPresent()) {
             entityGraph.addEntity(new MappingEntity(parentEntityId, entityGraph));
         }
 
-        EntityId nodeTypeEntityId = parentEntityId.extend(normalizeQName(type.getQName()));
-        createTypeDefinition(type, nodeTypeEntityId, parentEntityId, entityGraph);
+        EntityId typeEntityId = parentEntityId.extend(this.normalizeQName(toscaType.getQName()));
+        EdmmType edmmType = edmm1to1Mapping.get(toscaType.getQName());
 
-        return nodeTypeEntityId;
-    }
-
-    private void createTypeDefinition(TEntityType toscaType, EntityId typeEntityId, EntityId parentEntityId, EntityGraph entityGraph) {
-        Optional<Entity> entity = entityGraph.getEntity(typeEntityId);
-        if (!entity.isPresent()) {
+        if (edmmType != null) {
+            typeEntityId = parentEntityId.extend(edmmType.getName());
             entityGraph.addEntity(new MappingEntity(typeEntityId, entityGraph));
+            EdmmTypeProperties.getDefaultConfiguration(edmmType, entityGraph);
+        } else {
+            Optional<Entity> entity = entityGraph.getEntity(typeEntityId);
+            if (!entity.isPresent()) {
+                entityGraph.addEntity(new MappingEntity(typeEntityId, entityGraph));
 
-            if (Objects.nonNull(toscaType.getDerivedFrom())) {
-                QName inheritsFrom = toscaType.getDerivedFrom().getType();
-                TEntityType parent = toscaType instanceof TNodeType
-                    ? nodeTypes.get(inheritsFrom)
-                    : relationshipTypes.get(inheritsFrom);
+                if (Objects.nonNull(toscaType.getDerivedFrom())) {
+                    QName inheritsFrom = toscaType.getDerivedFrom().getType();
+                    TEntityType parent = toscaType instanceof TNodeType
+                        ? nodeTypes.get(inheritsFrom)
+                        : relationshipTypes.get(inheritsFrom);
 
-                EntityId baseTypeEntityId = createType(parent, parentEntityId, entityGraph);
-                entityGraph.addEntity(
-                    new ScalarEntity(baseTypeEntityId.getName(), typeEntityId.extend(DefaultKeys.EXTENDS), entityGraph)
-                );
-            } else if (toscaType instanceof TNodeType) {
-                entityGraph.addEntity(
-                    new ScalarEntity("base", typeEntityId.extend(DefaultKeys.EXTENDS), entityGraph)
-                );
-            } else if (toscaType instanceof TRelationshipType) {
-                entityGraph.addEntity(
-                    new ScalarEntity(null, typeEntityId.extend(DefaultKeys.EXTENDS), entityGraph)
-                );
+                    EntityId baseTypeEntityId = createType(parent, parentEntityId, entityGraph);
+                    entityGraph.addEntity(
+                        new ScalarEntity(baseTypeEntityId.getName(), typeEntityId.extend(DefaultKeys.EXTENDS), entityGraph)
+                    );
+                } else {
+                    String parentElement = "base";
+
+                    edmmType = edmmTypeMapping.get(toscaType.getQName());
+                    if (edmmType != null) {
+                        parentElement = edmmType.getName();
+                        EdmmTypeProperties.getDefaultConfiguration(edmmType, entityGraph);
+                    } else if (toscaType instanceof TRelationshipType) {
+                        parentElement = EdmmType.DEPENDS_ON.getName();
+                        EdmmTypeProperties.getDefaultConfiguration(EdmmType.DEPENDS_ON, entityGraph);
+                    }
+
+                    entityGraph.addEntity(
+                        new ScalarEntity(parentElement, typeEntityId.extend(DefaultKeys.EXTENDS), entityGraph)
+                    );
+                }
+
+                this.createPropertiesDefinition(toscaType, typeEntityId, entityGraph);
+                this.createOperations(toscaType, typeEntityId, entityGraph);
             }
-
-            this.createPropertiesDefinition(toscaType, typeEntityId, entityGraph);
-            this.createOperations(toscaType, typeEntityId, entityGraph);
         }
+
+        return typeEntityId;
     }
 
     private void createPropertiesDefinition(TEntityType toscaType, EntityId typeEntityId, EntityGraph entityGraph) {
@@ -254,7 +272,7 @@ public class EdmmConverter {
         return null;
     }
 
-    private static String normalizeQName(QName qName) {
+    private String normalizeQName(QName qName) {
         return qName.toString().substring(1)
             .replace("}", "__")
             .replace("/", "")

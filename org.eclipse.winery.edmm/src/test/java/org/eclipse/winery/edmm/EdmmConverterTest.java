@@ -64,6 +64,8 @@ public class EdmmConverterTest {
     private static final HashMap<QName, TNodeTypeImplementation> nodeTypeImplementations = new HashMap<>();
     private static final HashMap<QName, TRelationshipTypeImplementation> relationshipTypeImplementations = new HashMap<>();
     private static final HashMap<QName, TArtifactTemplate> artifactTemplates = new HashMap<>();
+    private static final HashMap<QName, EdmmType> edmmTypeExtendsMapping = new HashMap<>();
+    private static final HashMap<QName, EdmmType> edmm1to1Mapping = new HashMap<>();
 
     @BeforeEach
     void setup() {
@@ -112,6 +114,7 @@ public class EdmmConverterTest {
         tInterfaces.getInterface().add(lifecycle);
         nodeType4.setInterfaces(tInterfaces);
         nodeTypes.put(nodeType4QName, nodeType4);
+        // endregion
 
         // region *** ArtifactTemplates setup ***
         TArtifactReference startArtifactReference = new TArtifactReference();
@@ -232,6 +235,15 @@ public class EdmmConverterTest {
         rt12.setTargetNodeTemplate(nt2);
         relationshipTemplates.put(rt12.getId(), rt12);
         // endregion
+
+        // region *** create edmm type mapping ***
+        edmm1to1Mapping.put(nodeType1QName, EdmmType.SOFTWARE_COMPONENT);
+        // edmmTypeMapping.put(nodeType2QName, EdmmType.SOFTWARE_COMPONENT);
+        edmmTypeExtendsMapping.put(nodeType3QName, EdmmType.COMPUTE);
+        edmmTypeExtendsMapping.put(nodeType4QName, EdmmType.WEB_APPLICATION);
+        edmm1to1Mapping.put(hostedOnQName, EdmmType.HOSTED_ON);
+        edmm1to1Mapping.put(connectsToQName, EdmmType.CONNECTS_TO);
+        // endregion
     }
 
     @Test
@@ -245,7 +257,7 @@ public class EdmmConverterTest {
         serviceTemplate.setTopologyTemplate(topology);
 
         EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
-            relationshipTypeImplementations, artifactTemplates);
+            relationshipTypeImplementations, artifactTemplates, edmmTypeExtendsMapping, edmm1to1Mapping);
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
@@ -263,7 +275,7 @@ public class EdmmConverterTest {
         serviceTemplate.setTopologyTemplate(topology);
 
         EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
-            relationshipTypeImplementations, artifactTemplates);
+            relationshipTypeImplementations, artifactTemplates, edmmTypeExtendsMapping, edmm1to1Mapping);
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
@@ -271,7 +283,7 @@ public class EdmmConverterTest {
         assertTrue(transform.vertexSet().stream().anyMatch(entity ->
             entity instanceof ScalarEntity
                 && entity.getName().equals("extends")
-                && ((ScalarEntity) entity).getValue().equals("https_ex.orgtoscatoedmm__test_node_type")));
+                && ((ScalarEntity) entity).getValue().equals("software_component")));
     }
 
     @Test
@@ -285,11 +297,11 @@ public class EdmmConverterTest {
         serviceTemplate.setTopologyTemplate(topology);
 
         EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
-            relationshipTypeImplementations, artifactTemplates);
+            relationshipTypeImplementations, artifactTemplates, edmmTypeExtendsMapping, edmm1to1Mapping);
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
-        assertEquals(18, transform.vertexSet().size());
+        assertEquals(20, transform.vertexSet().size());
         assertTrue(transform.vertexSet().stream().anyMatch(entity ->
             entity instanceof MappingEntity
                 && entity.getName().equals("properties")
@@ -330,21 +342,21 @@ public class EdmmConverterTest {
         serviceTemplate.setTopologyTemplate(topology);
 
         EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
-            relationshipTypeImplementations, artifactTemplates);
+            relationshipTypeImplementations, artifactTemplates, edmmTypeExtendsMapping, edmm1to1Mapping);
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
-        assertEquals(36, transform.vertexSet().size());
+        assertEquals(40, transform.vertexSet().size());
         assertTrue(transform.vertexSet().stream().anyMatch(entity ->
             entity instanceof ScalarEntity
-                && entity.getName().equals("https_ex.orgtoscatoedmm__hostedOn")
+                && entity.getName().equals("hosted_on")
                 && ((ScalarEntity) entity).getValue().equals("test_node_3")
                 && entity.getParent().isPresent()
                 && entity.getParent().get().getName().equals("relations")
         ));
         assertTrue(transform.vertexSet().stream().anyMatch(entity ->
             entity instanceof ScalarEntity
-                && entity.getName().equals("https_ex.orgtoscatoedmm__connectsTo")
+                && entity.getName().equals("connects_to")
                 && ((ScalarEntity) entity).getValue().equals("test_node_2")
                 && entity.getParent().isPresent()
                 && entity.getParent().get().getName().equals("relations")
@@ -362,11 +374,11 @@ public class EdmmConverterTest {
         serviceTemplate.setTopologyTemplate(topology);
 
         EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
-            relationshipTypeImplementations, artifactTemplates, false);
+            relationshipTypeImplementations, artifactTemplates, edmmTypeExtendsMapping, edmm1to1Mapping, false);
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
-        assertEquals(10, transform.vertexSet().size());
+        assertEquals(12, transform.vertexSet().size());
 
         Optional<Entity> operations = transform.getEntity(Arrays.asList("0", "component_types", "https_ex.orgtoscatoedmm__test_node_type_4", "operations"));
         assertTrue(operations.isPresent());
@@ -397,17 +409,17 @@ public class EdmmConverterTest {
         // endregion
 
         EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
-            relationshipTypeImplementations, artifactTemplates, false);
+            relationshipTypeImplementations, artifactTemplates, edmmTypeExtendsMapping, edmm1to1Mapping, false);
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
         StringWriter stringWriter = new StringWriter();
         transform.generateYamlOutput(stringWriter);
 
         assertEquals("components:\n" +
             "  test_node_1:\n" +
-            "    type: https_ex.orgtoscatoedmm__test_node_type\n" +
+            "    type: software_component\n" +
             "    relations:\n" +
-            "    - https_ex.orgtoscatoedmm__connectsTo: test_node_2\n" +
-            "    - https_ex.orgtoscatoedmm__hostedOn: test_node_3\n" +
+            "    - hosted_on: test_node_3\n" +
+            "    - connects_to: test_node_2\n" +
             "  test_node_3:\n" +
             "    type: https_ex.orgtoscatoedmm__test_node_type_3\n" +
             "    properties:\n" +
@@ -417,21 +429,25 @@ public class EdmmConverterTest {
             "  test_node_2:\n" +
             "    type: https_ex.orgtoscatoedmm__test_node_type_2\n" +
             "    relations:\n" +
-            "    - https_ex.orgtoscatoedmm__hostedOn: test_node_3\n" +
+            "    - hosted_on: test_node_3\n" +
             "  test_node_4:\n" +
             "    type: https_ex.orgtoscatoedmm__test_node_type_4\n" +
             "    relations:\n" +
-            "    - https_ex.orgtoscatoedmm__hostedOn: test_node_1\n" +
+            "    - hosted_on: test_node_1\n" +
             "relation_types:\n" +
-            "  https_ex.orgtoscatoedmm__connectsTo:\n" +
+            "  depends_on:\n" +
             "    extends: null\n" +
-            "  https_ex.orgtoscatoedmm__hostedOn:\n" +
-            "    extends: null\n" +
+            "  hosted_on:\n" +
+            "    extends: depends_on\n" +
+            "  connects_to:\n" +
+            "    extends: depends_on\n" +
             "component_types:\n" +
             "  https_ex.orgtoscatoedmm__test_node_type_2:\n" +
-            "    extends: https_ex.orgtoscatoedmm__test_node_type\n" +
-            "  https_ex.orgtoscatoedmm__test_node_type_3:\n" +
+            "    extends: software_component\n" +
+            "  compute:\n" +
             "    extends: base\n" +
+            "  https_ex.orgtoscatoedmm__test_node_type_3:\n" +
+            "    extends: compute\n" +
             "    properties:\n" +
             "      public_key:\n" +
             "        type: string\n" +
@@ -439,12 +455,14 @@ public class EdmmConverterTest {
             "        type: number\n" +
             "      os_family:\n" +
             "        type: string\n" +
-            "  https_ex.orgtoscatoedmm__test_node_type:\n" +
+            "  web_application:\n" +
             "    extends: base\n" +
             "  https_ex.orgtoscatoedmm__test_node_type_4:\n" +
             "    operations:\n" +
             "      stop: /artifacttemplates/ns/startTestNode4/files/script.sh\n" +
             "      start: /artifacttemplates/ns/startTestNode4/files/script.sh\n" +
+            "    extends: web_application\n" +
+            "  software_component:\n" +
             "    extends: base\n", stringWriter.toString());
     }
 }
