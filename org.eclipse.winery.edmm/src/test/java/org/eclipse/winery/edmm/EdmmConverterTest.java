@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.edmm;
 
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
@@ -239,6 +240,10 @@ public class EdmmConverterTest {
 
         EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes);
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
+
+        StringWriter stringWriter = new StringWriter();
+        transform.generateYamlOutput(stringWriter);
+        System.out.println(stringWriter.toString());
 
         assertNotNull(transform);
         assertEquals(32, transform.vertexSet().size());
