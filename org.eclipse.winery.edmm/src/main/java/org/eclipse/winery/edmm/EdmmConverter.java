@@ -18,11 +18,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.common.configuration.Environments;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TEntityTypeImplementation;
+import org.eclipse.winery.model.tosca.TImplementationArtifacts;
+import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
@@ -45,14 +51,18 @@ public class EdmmConverter {
     private final Map<QName, TRelationshipType> relationshipTypes;
     private final Map<QName, TNodeTypeImplementation> nodeTypeImplementations;
     private final Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations;
+    private final Map<QName, TArtifactTemplate> artifactTemplates;
+    private boolean useAbsolutePaths;
 
     public EdmmConverter(Map<QName, TNodeType> nodeTypes, Map<QName, TRelationshipType> relationshipTypes,
                          Map<QName, TNodeTypeImplementation> nodeTypeImplementations,
-                         Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations) {
+                         Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations, Map<QName, TArtifactTemplate> artifactTemplates, boolean useAbsolutePaths) {
         this.nodeTypes = nodeTypes;
         this.relationshipTypes = relationshipTypes;
         this.nodeTypeImplementations = nodeTypeImplementations;
         this.relationshipTypeImplementations = relationshipTypeImplementations;
+        this.artifactTemplates = artifactTemplates;
+        this.useAbsolutePaths = useAbsolutePaths;
     }
 
     public EntityGraph transform(TServiceTemplate serviceTemplate) {
@@ -163,6 +173,7 @@ public class EdmmConverter {
             }
 
             this.createPropertiesDefinition(toscaType, typeEntityId, entityGraph);
+            this.createOperations(toscaType, typeEntityId, entityGraph);
         }
     }
 
@@ -181,6 +192,58 @@ public class EdmmConverter {
                     entityGraph.addEntity(new ScalarEntity(normalizedType, propertyTypeEntityId, entityGraph));
                 });
         }
+    }
+
+    private void createOperations(TEntityType type, EntityId nodeTypeEntityId, EntityGraph entityGraph) {
+        if (type instanceof TNodeType && Objects.nonNull(((TNodeType) type).getInterfaces())) {
+            TInterfaces interfaces = ((TNodeType) type).getInterfaces();
+            interfaces.getInterface().forEach(anInterface -> {
+                anInterface.getOperation().forEach(operation -> {
+                    EntityId operationsEntityId = nodeTypeEntityId.extend(DefaultKeys.OPERATIONS);
+                    entityGraph.addEntity(new MappingEntity(operationsEntityId, entityGraph));
+
+                    TNodeTypeImplementation implementation = nodeTypeImplementations.values().stream()
+                        .filter(impl -> impl.getNodeType().equals(type.getQName()))
+                        .findFirst()
+                        .orElse(null);
+                    String path = getImplementationForOperation(implementation, anInterface.getName(), operation.getName());
+
+                    EntityId operationId = operationsEntityId.extend(operation.getName());
+                    entityGraph.addEntity(new ScalarEntity(
+                        path != null && this.useAbsolutePaths ? Environments.getRepositoryRoot() + path : path,
+                        operationId,
+                        entityGraph
+                    ));
+                });
+            });
+        }
+    }
+
+    private String getImplementationForOperation(TEntityTypeImplementation implementation,
+                                                 String interfaceName, String operationName) {
+        if (implementation != null && implementation.getImplementationArtifacts() != null) {
+            List<TImplementationArtifacts.ImplementationArtifact> artifacts = implementation.getImplementationArtifacts()
+                .getImplementationArtifact().stream()
+                .filter(artifact -> artifact.getInterfaceName().equals(interfaceName))
+                .collect(Collectors.toList());
+
+            if (artifacts.size() == 1 && artifacts.get(0).getArtifactRef() != null) {
+                TArtifactTemplate artifactTemplate = artifactTemplates.get(artifacts.get(0).getArtifactRef());
+                if (artifactTemplate.getArtifactReferences().getArtifactReference().size() > 0) {
+                    return artifactTemplate.getArtifactReferences().getArtifactReference().get(0).getReference();
+                }
+            }
+
+            for (TImplementationArtifacts.ImplementationArtifact artifact : artifacts) {
+                if (artifact.getOperationName().equals(operationName)) {
+                    TArtifactTemplate artifactTemplate = artifactTemplates.get(artifact.getArtifactRef());
+                    if (artifactTemplate != null && artifactTemplate.getArtifactReferences().getArtifactReference().size() > 0) {
+                        return artifactTemplate.getArtifactReferences().getArtifactReference().get(0).getReference();
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     private static String normalizeQName(QName qName) {

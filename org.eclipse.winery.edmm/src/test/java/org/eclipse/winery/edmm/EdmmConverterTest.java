@@ -15,16 +15,24 @@
 package org.eclipse.winery.edmm;
 
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.tosca.TArtifactReference;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TImplementationArtifacts;
+import org.eclipse.winery.model.tosca.TInterface;
+import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
+import org.eclipse.winery.model.tosca.TOperation;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
@@ -35,6 +43,7 @@ import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
 import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 
+import io.github.edmm.core.parser.Entity;
 import io.github.edmm.core.parser.EntityGraph;
 import io.github.edmm.core.parser.MappingEntity;
 import io.github.edmm.core.parser.ScalarEntity;
@@ -54,6 +63,7 @@ public class EdmmConverterTest {
     private static final HashMap<String, TRelationshipTemplate> relationshipTemplates = new HashMap<>();
     private static final HashMap<QName, TNodeTypeImplementation> nodeTypeImplementations = new HashMap<>();
     private static final HashMap<QName, TRelationshipTypeImplementation> relationshipTypeImplementations = new HashMap<>();
+    private static final HashMap<QName, TArtifactTemplate> artifactTemplates = new HashMap<>();
 
     @BeforeEach
     void setup() {
@@ -85,6 +95,69 @@ public class EdmmConverterTest {
         wpd.setPropertyDefinitionKVList(kvList);
         ModelUtilities.replaceWinerysPropertiesDefinition(nodeType3, wpd);
         nodeTypes.put(nodeType3QName, nodeType3);
+
+        QName nodeType4QName = QName.valueOf("{" + NAMESPACE + "}" + "test_node_type_4");
+        TNodeType nodeType4 = new TNodeType();
+        nodeType4.setName(nodeType4QName.getLocalPart());
+        nodeType4.setTargetNamespace(nodeType4QName.getNamespaceURI());
+        TOperation start = new TOperation();
+        start.setName("start");
+        TOperation stop = new TOperation();
+        stop.setName("stop");
+        TInterface lifecycle = new TInterface();
+        lifecycle.setName("lifecycle_interface");
+        lifecycle.getOperation().add(start);
+        lifecycle.getOperation().add(stop);
+        TInterfaces tInterfaces = new TInterfaces();
+        tInterfaces.getInterface().add(lifecycle);
+        nodeType4.setInterfaces(tInterfaces);
+        nodeTypes.put(nodeType4QName, nodeType4);
+
+        // region *** ArtifactTemplates setup ***
+        TArtifactReference startArtifactReference = new TArtifactReference();
+        startArtifactReference.setReference("/artifacttemplates/ns/startTestNode4/files/script.sh");
+        TArtifactTemplate startArtifactTemplate = new TArtifactTemplate();
+        TArtifactTemplate.ArtifactReferences startArtifactReferences = new TArtifactTemplate.ArtifactReferences();
+        startArtifactReferences.getArtifactReference().add(startArtifactReference);
+        startArtifactTemplate.setArtifactReferences(startArtifactReferences);
+        TArtifactTemplate startArtifactIA = new TArtifactTemplate();
+        QName startArtifactIAQName = QName.valueOf("{" + NAMESPACE + "}" + "Start_IA");
+        startArtifactIA.setName(startArtifactIAQName.getLocalPart());
+        startArtifactIA.setArtifactReferences(startArtifactReferences);
+        artifactTemplates.put(startArtifactIAQName, startArtifactIA);
+
+        TArtifactReference stopArtifactReference = new TArtifactReference();
+        stopArtifactReference.setReference("/artifacttemplates/ns/stopTestNode4/files/script.sh");
+        TArtifactTemplate stopArtifactTemplate = new TArtifactTemplate();
+        TArtifactTemplate.ArtifactReferences stopArtifactReferences = new TArtifactTemplate.ArtifactReferences();
+        stopArtifactReferences.getArtifactReference().add(startArtifactReference);
+        stopArtifactTemplate.setArtifactReferences(stopArtifactReferences);
+        TArtifactTemplate stopArtifactIA = new TArtifactTemplate();
+        QName stopArtifactIAQName = QName.valueOf("{" + NAMESPACE + "}" + "Stop_IA");
+        stopArtifactIA.setName(stopArtifactIAQName.getLocalPart());
+        stopArtifactIA.setArtifactReferences(stopArtifactReferences);
+        artifactTemplates.put(stopArtifactIAQName, stopArtifactIA);
+        // endregion
+
+        // region *** NodeTypeImplementations setup ***
+        TImplementationArtifacts artifacts = new TImplementationArtifacts();
+        QName nodeTypeImpl4QName = QName.valueOf("{" + NAMESPACE + "}" + "test_node_type_Impl_4");
+        TNodeTypeImplementation nodeTypeImpl4 = new TNodeTypeImplementation();
+        nodeTypeImpl4.setNodeType(nodeType4QName);
+        nodeTypeImpl4.setName(nodeTypeImpl4QName.getLocalPart());
+        TImplementationArtifacts.ImplementationArtifact startArtifact = new TImplementationArtifacts.ImplementationArtifact();
+        startArtifact.setArtifactRef(startArtifactIAQName);
+        startArtifact.setInterfaceName("lifecycle_interface");
+        startArtifact.setOperationName("start");
+        TImplementationArtifacts.ImplementationArtifact stopArtifact = new TImplementationArtifacts.ImplementationArtifact();
+        stopArtifact.setArtifactRef(stopArtifactIAQName);
+        stopArtifact.setInterfaceName("lifecycle_interface");
+        stopArtifact.setOperationName("stop");
+        artifacts.getImplementationArtifact().add(startArtifact);
+        artifacts.getImplementationArtifact().add(stopArtifact);
+        nodeTypeImpl4.setImplementationArtifacts(artifacts);
+        nodeTypeImplementations.put(nodeTypeImpl4QName, nodeTypeImpl4);
+
         // endregion
 
         // region *** RelationType setup ***
@@ -101,8 +174,7 @@ public class EdmmConverterTest {
         relationshipTypes.put(connectsToQName, connectsToType);
         // endregion
 
-        // region *** creation of the ServiceTemplate ***
-        // region *** create the NodeTemplates ***
+        // region *** create NodeTemplates ***
         TNodeTemplate nt1 = new TNodeTemplate();
         nt1.setType(nodeType1QName);
         nt1.setId("test_node_1");
@@ -124,21 +196,26 @@ public class EdmmConverterTest {
         properties.setKVProperties(nt3Properties);
         nt3.setProperties(properties);
         nodeTemplates.put(nt3.getId(), nt3);
+
+        TNodeTemplate nt4 = new TNodeTemplate();
+        nt4.setType(nodeType4QName);
+        nt4.setId("test_node_4");
+        nodeTemplates.put(nt4.getId(), nt4);
         // endregion 
 
-        // region *** create the RelationshipTemplate ***
+        // region *** create RelationshipTemplate ***
         TRelationshipTemplate rt13 = new TRelationshipTemplate();
         rt13.setType(hostedOnQName);
         rt13.setId("1_hosted_on_3");
         rt13.setSourceNodeTemplate(nt1);
-        rt13.setTargetNodeTemplate(nt3);
+        rt13.setTargetNodeTemplate(nt4);
         relationshipTemplates.put(rt13.getId(), rt13);
 
         TRelationshipTemplate rt23 = new TRelationshipTemplate();
         rt23.setType(hostedOnQName);
         rt23.setId("2_hosted_on_3");
         rt23.setSourceNodeTemplate(nt2);
-        rt23.setTargetNodeTemplate(nt3);
+        rt23.setTargetNodeTemplate(nt4);
         relationshipTemplates.put(rt23.getId(), rt23);
 
         TRelationshipTemplate rt12 = new TRelationshipTemplate();
@@ -160,7 +237,8 @@ public class EdmmConverterTest {
         TServiceTemplate serviceTemplate = new TServiceTemplate();
         serviceTemplate.setTopologyTemplate(topology);
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations);
+        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
+            relationshipTypeImplementations, artifactTemplates, true);
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
@@ -177,7 +255,8 @@ public class EdmmConverterTest {
         TServiceTemplate serviceTemplate = new TServiceTemplate();
         serviceTemplate.setTopologyTemplate(topology);
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations);
+        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
+            relationshipTypeImplementations, artifactTemplates, true);
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
@@ -198,7 +277,8 @@ public class EdmmConverterTest {
         TServiceTemplate serviceTemplate = new TServiceTemplate();
         serviceTemplate.setTopologyTemplate(topology);
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations);
+        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
+            relationshipTypeImplementations, artifactTemplates, true);
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
@@ -242,7 +322,8 @@ public class EdmmConverterTest {
         TServiceTemplate serviceTemplate = new TServiceTemplate();
         serviceTemplate.setTopologyTemplate(topology);
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations);
+        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
+            relationshipTypeImplementations, artifactTemplates, true);
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         StringWriter stringWriter = new StringWriter();
@@ -301,5 +382,34 @@ public class EdmmConverterTest {
             "  https_ex.orgtoscatoedmm__test_node_type:\n" +
             "    extends: base\n" +
             "", stringWriter.toString());
+    }
+
+    @Test
+    void transformTopologyWithOperations() {
+        // region *** build the TopologyTemplate ***
+        TTopologyTemplate topology = new TTopologyTemplate();
+        topology.addNodeTemplate(nodeTemplates.get("test_node_4"));
+        // endregion
+
+        TServiceTemplate serviceTemplate = new TServiceTemplate();
+        serviceTemplate.setTopologyTemplate(topology);
+
+        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
+            relationshipTypeImplementations, artifactTemplates, false);
+        EntityGraph transform = edmmConverter.transform(serviceTemplate);
+
+        assertNotNull(transform);
+        assertEquals(10, transform.vertexSet().size());
+
+        Optional<Entity> operations = transform.getEntity(Arrays.asList("0", "component_types", "https_ex.orgtoscatoedmm__test_node_type_4", "operations"));
+        assertTrue(operations.isPresent());
+        Optional<Entity> start = transform.getEntity(Arrays.asList("0", "component_types", "https_ex.orgtoscatoedmm__test_node_type_4", "operations", "start"));
+        assertTrue(start.isPresent());
+        assertTrue(start.get() instanceof ScalarEntity);
+        assertEquals("/artifacttemplates/ns/startTestNode4/files/script.sh", ((ScalarEntity) start.get()).getValue());
+        Optional<Entity> stop = transform.getEntity(Arrays.asList("0", "component_types", "https_ex.orgtoscatoedmm__test_node_type_4", "operations", "stop"));
+        assertTrue(stop.isPresent());
+        assertTrue(stop.get() instanceof ScalarEntity);
+        assertEquals("/artifacttemplates/ns/startTestNode4/files/script.sh", ((ScalarEntity) stop.get()).getValue());
     }
 }
