@@ -52,11 +52,19 @@ public class EdmmConverter {
     private final Map<QName, TNodeTypeImplementation> nodeTypeImplementations;
     private final Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations;
     private final Map<QName, TArtifactTemplate> artifactTemplates;
-    private boolean useAbsolutePaths;
+    private final boolean useAbsolutePaths;
 
     public EdmmConverter(Map<QName, TNodeType> nodeTypes, Map<QName, TRelationshipType> relationshipTypes,
                          Map<QName, TNodeTypeImplementation> nodeTypeImplementations,
-                         Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations, Map<QName, TArtifactTemplate> artifactTemplates, boolean useAbsolutePaths) {
+                         Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations,
+                         Map<QName, TArtifactTemplate> artifactTemplates) {
+        this(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations, artifactTemplates, true);
+    }
+
+    public EdmmConverter(Map<QName, TNodeType> nodeTypes, Map<QName, TRelationshipType> relationshipTypes,
+                         Map<QName, TNodeTypeImplementation> nodeTypeImplementations,
+                         Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations,
+                         Map<QName, TArtifactTemplate> artifactTemplates, boolean useAbsolutePaths) {
         this.nodeTypes = nodeTypes;
         this.relationshipTypes = relationshipTypes;
         this.nodeTypeImplementations = nodeTypeImplementations;

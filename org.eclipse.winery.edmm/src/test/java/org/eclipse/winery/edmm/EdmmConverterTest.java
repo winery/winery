@@ -208,15 +208,22 @@ public class EdmmConverterTest {
         rt13.setType(hostedOnQName);
         rt13.setId("1_hosted_on_3");
         rt13.setSourceNodeTemplate(nt1);
-        rt13.setTargetNodeTemplate(nt4);
+        rt13.setTargetNodeTemplate(nt3);
         relationshipTemplates.put(rt13.getId(), rt13);
 
         TRelationshipTemplate rt23 = new TRelationshipTemplate();
         rt23.setType(hostedOnQName);
         rt23.setId("2_hosted_on_3");
         rt23.setSourceNodeTemplate(nt2);
-        rt23.setTargetNodeTemplate(nt4);
+        rt23.setTargetNodeTemplate(nt3);
         relationshipTemplates.put(rt23.getId(), rt23);
+
+        TRelationshipTemplate rt41 = new TRelationshipTemplate();
+        rt41.setType(hostedOnQName);
+        rt41.setId("4_hosted_on_1");
+        rt41.setSourceNodeTemplate(nt4);
+        rt41.setTargetNodeTemplate(nt1);
+        relationshipTemplates.put(rt41.getId(), rt41);
 
         TRelationshipTemplate rt12 = new TRelationshipTemplate();
         rt12.setType(connectsToQName);
@@ -238,7 +245,7 @@ public class EdmmConverterTest {
         serviceTemplate.setTopologyTemplate(topology);
 
         EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
-            relationshipTypeImplementations, artifactTemplates, true);
+            relationshipTypeImplementations, artifactTemplates);
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
@@ -256,7 +263,7 @@ public class EdmmConverterTest {
         serviceTemplate.setTopologyTemplate(topology);
 
         EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
-            relationshipTypeImplementations, artifactTemplates, true);
+            relationshipTypeImplementations, artifactTemplates);
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
@@ -278,7 +285,7 @@ public class EdmmConverterTest {
         serviceTemplate.setTopologyTemplate(topology);
 
         EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
-            relationshipTypeImplementations, artifactTemplates, true);
+            relationshipTypeImplementations, artifactTemplates);
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
@@ -323,12 +330,8 @@ public class EdmmConverterTest {
         serviceTemplate.setTopologyTemplate(topology);
 
         EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
-            relationshipTypeImplementations, artifactTemplates, true);
+            relationshipTypeImplementations, artifactTemplates);
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
-
-        StringWriter stringWriter = new StringWriter();
-        transform.generateYamlOutput(stringWriter);
-        System.out.println(stringWriter.toString());
 
         assertNotNull(transform);
         assertEquals(36, transform.vertexSet().size());
@@ -346,42 +349,6 @@ public class EdmmConverterTest {
                 && entity.getParent().isPresent()
                 && entity.getParent().get().getName().equals("relations")
         ));
-        assertEquals("components:\n" +
-            "  test_node_1:\n" +
-            "    type: https_ex.orgtoscatoedmm__test_node_type\n" +
-            "    relations:\n" +
-            "    - https_ex.orgtoscatoedmm__connectsTo: test_node_2\n" +
-            "    - https_ex.orgtoscatoedmm__hostedOn: test_node_3\n" +
-            "  test_node_3:\n" +
-            "    type: https_ex.orgtoscatoedmm__test_node_type_3\n" +
-            "    properties:\n" +
-            "      public_key: '-----BEGIN PUBLIC KEY----- ... -----END PUBLIC KEY-----'\n" +
-            "      ssh_port: '22'\n" +
-            "      os_family: ubuntu\n" +
-            "  test_node_2:\n" +
-            "    type: https_ex.orgtoscatoedmm__test_node_type_2\n" +
-            "    relations:\n" +
-            "    - https_ex.orgtoscatoedmm__hostedOn: test_node_3\n" +
-            "relation_types:\n" +
-            "  https_ex.orgtoscatoedmm__connectsTo:\n" +
-            "    extends: null\n" +
-            "  https_ex.orgtoscatoedmm__hostedOn:\n" +
-            "    extends: null\n" +
-            "component_types:\n" +
-            "  https_ex.orgtoscatoedmm__test_node_type_2:\n" +
-            "    extends: https_ex.orgtoscatoedmm__test_node_type\n" +
-            "  https_ex.orgtoscatoedmm__test_node_type_3:\n" +
-            "    extends: base\n" +
-            "    properties:\n" +
-            "      public_key:\n" +
-            "        type: string\n" +
-            "      ssh_port:\n" +
-            "        type: number\n" +
-            "      os_family:\n" +
-            "        type: string\n" +
-            "  https_ex.orgtoscatoedmm__test_node_type:\n" +
-            "    extends: base\n" +
-            "", stringWriter.toString());
     }
 
     @Test
@@ -411,5 +378,73 @@ public class EdmmConverterTest {
         assertTrue(stop.isPresent());
         assertTrue(stop.get() instanceof ScalarEntity);
         assertEquals("/artifacttemplates/ns/startTestNode4/files/script.sh", ((ScalarEntity) stop.get()).getValue());
+    }
+
+    @Test
+    void transformTopology() {
+        // region *** build the TopologyTemplate ***
+        TTopologyTemplate topology = new TTopologyTemplate();
+        topology.addNodeTemplate(nodeTemplates.get("test_node_1"));
+        topology.addNodeTemplate(nodeTemplates.get("test_node_2"));
+        topology.addNodeTemplate(nodeTemplates.get("test_node_3"));
+        topology.addNodeTemplate(nodeTemplates.get("test_node_4"));
+        topology.addRelationshipTemplate(relationshipTemplates.get("1_hosted_on_3"));
+        topology.addRelationshipTemplate(relationshipTemplates.get("2_hosted_on_3"));
+        topology.addRelationshipTemplate(relationshipTemplates.get("4_hosted_on_1"));
+        topology.addRelationshipTemplate(relationshipTemplates.get("1_connects_to_2"));
+        TServiceTemplate serviceTemplate = new TServiceTemplate();
+        serviceTemplate.setTopologyTemplate(topology);
+        // endregion
+
+        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
+            relationshipTypeImplementations, artifactTemplates, false);
+        EntityGraph transform = edmmConverter.transform(serviceTemplate);
+        StringWriter stringWriter = new StringWriter();
+        transform.generateYamlOutput(stringWriter);
+
+        assertEquals("components:\n" +
+            "  test_node_1:\n" +
+            "    type: https_ex.orgtoscatoedmm__test_node_type\n" +
+            "    relations:\n" +
+            "    - https_ex.orgtoscatoedmm__connectsTo: test_node_2\n" +
+            "    - https_ex.orgtoscatoedmm__hostedOn: test_node_3\n" +
+            "  test_node_3:\n" +
+            "    type: https_ex.orgtoscatoedmm__test_node_type_3\n" +
+            "    properties:\n" +
+            "      public_key: '-----BEGIN PUBLIC KEY----- ... -----END PUBLIC KEY-----'\n" +
+            "      ssh_port: '22'\n" +
+            "      os_family: ubuntu\n" +
+            "  test_node_2:\n" +
+            "    type: https_ex.orgtoscatoedmm__test_node_type_2\n" +
+            "    relations:\n" +
+            "    - https_ex.orgtoscatoedmm__hostedOn: test_node_3\n" +
+            "  test_node_4:\n" +
+            "    type: https_ex.orgtoscatoedmm__test_node_type_4\n" +
+            "    relations:\n" +
+            "    - https_ex.orgtoscatoedmm__hostedOn: test_node_1\n" +
+            "relation_types:\n" +
+            "  https_ex.orgtoscatoedmm__connectsTo:\n" +
+            "    extends: null\n" +
+            "  https_ex.orgtoscatoedmm__hostedOn:\n" +
+            "    extends: null\n" +
+            "component_types:\n" +
+            "  https_ex.orgtoscatoedmm__test_node_type_2:\n" +
+            "    extends: https_ex.orgtoscatoedmm__test_node_type\n" +
+            "  https_ex.orgtoscatoedmm__test_node_type_3:\n" +
+            "    extends: base\n" +
+            "    properties:\n" +
+            "      public_key:\n" +
+            "        type: string\n" +
+            "      ssh_port:\n" +
+            "        type: number\n" +
+            "      os_family:\n" +
+            "        type: string\n" +
+            "  https_ex.orgtoscatoedmm__test_node_type:\n" +
+            "    extends: base\n" +
+            "  https_ex.orgtoscatoedmm__test_node_type_4:\n" +
+            "    operations:\n" +
+            "      stop: /artifacttemplates/ns/startTestNode4/files/script.sh\n" +
+            "      start: /artifacttemplates/ns/startTestNode4/files/script.sh\n" +
+            "    extends: base\n", stringWriter.toString());
     }
 }
