@@ -141,6 +141,10 @@ public class EdmmConverter {
             if (Objects.nonNull(toscaType.getDerivedFrom())) {
                 EntityId baseTypeEntityId = createNodeType(toscaType.getDerivedFrom().getType(), entityGraph);
                 entityGraph.addEntity(new ScalarEntity(baseTypeEntityId.getName(), typeEntityId.extend(DefaultKeys.EXTENDS), entityGraph));
+            } else if (toscaType instanceof TNodeType) {
+                entityGraph.addEntity(new ScalarEntity("base", typeEntityId.extend(DefaultKeys.EXTENDS), entityGraph));
+            } else if (toscaType instanceof TRelationshipType) {
+                entityGraph.addEntity(new ScalarEntity(null, typeEntityId.extend(DefaultKeys.EXTENDS), entityGraph));
             }
 
             this.createPropertiesDefinition(toscaType, typeEntityId, entityGraph);

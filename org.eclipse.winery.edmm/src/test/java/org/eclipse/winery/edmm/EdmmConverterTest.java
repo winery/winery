@@ -160,7 +160,7 @@ public class EdmmConverterTest {
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
-        assertEquals(6, transform.vertexSet().size());
+        assertEquals(7, transform.vertexSet().size());
     }
 
     @Test
@@ -177,7 +177,7 @@ public class EdmmConverterTest {
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
-        assertEquals(8, transform.vertexSet().size());
+        assertEquals(9, transform.vertexSet().size());
         assertTrue(transform.vertexSet().stream().anyMatch(entity ->
             entity instanceof ScalarEntity
                 && entity.getName().equals("extends")
@@ -198,7 +198,7 @@ public class EdmmConverterTest {
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
-        assertEquals(17, transform.vertexSet().size());
+        assertEquals(18, transform.vertexSet().size());
         assertTrue(transform.vertexSet().stream().anyMatch(entity ->
             entity instanceof MappingEntity
                 && entity.getName().equals("properties")
@@ -246,7 +246,7 @@ public class EdmmConverterTest {
         System.out.println(stringWriter.toString());
 
         assertNotNull(transform);
-        assertEquals(32, transform.vertexSet().size());
+        assertEquals(36, transform.vertexSet().size());
         assertTrue(transform.vertexSet().stream().anyMatch(entity ->
             entity instanceof ScalarEntity
                 && entity.getName().equals("https_ex.orgtoscatoedmm__hostedOn")
@@ -261,5 +261,41 @@ public class EdmmConverterTest {
                 && entity.getParent().isPresent()
                 && entity.getParent().get().getName().equals("relations")
         ));
+        assertEquals("components:\n" +
+            "  test_node_1:\n" +
+            "    type: https_ex.orgtoscatoedmm__test_node_type\n" +
+            "    relations:\n" +
+            "    - https_ex.orgtoscatoedmm__connectsTo: test_node_2\n" +
+            "    - https_ex.orgtoscatoedmm__hostedOn: test_node_3\n" +
+            "  test_node_3:\n" +
+            "    type: https_ex.orgtoscatoedmm__test_node_type_3\n" +
+            "    properties:\n" +
+            "      public_key: '-----BEGIN PUBLIC KEY----- ... -----END PUBLIC KEY-----'\n" +
+            "      ssh_port: '22'\n" +
+            "      os_family: ubuntu\n" +
+            "  test_node_2:\n" +
+            "    type: https_ex.orgtoscatoedmm__test_node_type_2\n" +
+            "    relations:\n" +
+            "    - https_ex.orgtoscatoedmm__hostedOn: test_node_3\n" +
+            "relation_types:\n" +
+            "  https_ex.orgtoscatoedmm__connectsTo:\n" +
+            "    extends: null\n" +
+            "  https_ex.orgtoscatoedmm__hostedOn:\n" +
+            "    extends: null\n" +
+            "component_types:\n" +
+            "  https_ex.orgtoscatoedmm__test_node_type_2:\n" +
+            "    extends: https_ex.orgtoscatoedmm__test_node_type\n" +
+            "  https_ex.orgtoscatoedmm__test_node_type_3:\n" +
+            "    extends: base\n" +
+            "    properties:\n" +
+            "      public_key:\n" +
+            "        type: string\n" +
+            "      ssh_port:\n" +
+            "        type: number\n" +
+            "      os_family:\n" +
+            "        type: string\n" +
+            "  https_ex.orgtoscatoedmm__test_node_type:\n" +
+            "    extends: base\n" +
+            "", stringWriter.toString());
     }
 }
