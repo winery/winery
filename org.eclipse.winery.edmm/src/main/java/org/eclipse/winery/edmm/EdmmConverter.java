@@ -25,8 +25,10 @@ import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 
 import io.github.edmm.core.parser.Entity;
@@ -41,10 +43,16 @@ public class EdmmConverter {
 
     private final Map<QName, TNodeType> nodeTypes;
     private final Map<QName, TRelationshipType> relationshipTypes;
+    private final Map<QName, TNodeTypeImplementation> nodeTypeImplementations;
+    private final Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations;
 
-    public EdmmConverter(Map<QName, TNodeType> nodeTypes, Map<QName, TRelationshipType> relationshipTypes) {
+    public EdmmConverter(Map<QName, TNodeType> nodeTypes, Map<QName, TRelationshipType> relationshipTypes,
+                         Map<QName, TNodeTypeImplementation> nodeTypeImplementations,
+                         Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations) {
         this.nodeTypes = nodeTypes;
         this.relationshipTypes = relationshipTypes;
+        this.nodeTypeImplementations = nodeTypeImplementations;
+        this.relationshipTypeImplementations = relationshipTypeImplementations;
     }
 
     public EntityGraph transform(TServiceTemplate serviceTemplate) {
@@ -56,7 +64,7 @@ public class EdmmConverter {
             entityGraph.addEntity(new MappingEntity(EntityGraph.COMPONENTS, entityGraph));
         }
 
-        nodeTemplates.forEach(nodeTemplate -> createNode(nodeTemplate, relationshipTemplates, entityGraph));
+        nodeTemplates.forEach(nodeTemplate -> createNode(nodeTemplate, entityGraph));
         relationshipTemplates.forEach(relationship -> createRelation(relationship, entityGraph));
 
         return entityGraph;
@@ -66,7 +74,11 @@ public class EdmmConverter {
         EntityId sourceComponentEntityId = EntityGraph.COMPONENTS.extend(relationship.getSourceElement().getRef().getId());
         // the entity will always be in the graph since we first transform the NodeTemplates 
         entityGraph.getEntity(sourceComponentEntityId).ifPresent(entity -> {
-            EntityId relationTypeEntityId = createRelationType(relationship.getType(), entityGraph);
+            EntityId relationTypeEntityId = createType(
+                relationshipTypes.get(relationship.getType()),
+                EntityGraph.RELATION_TYPES,
+                entityGraph
+            );
 
             EntityId relationsCollectionEntityId = sourceComponentEntityId.extend(DefaultKeys.RELATIONS);
             if (!entityGraph.getEntity(relationsCollectionEntityId).isPresent()) {
@@ -85,13 +97,17 @@ public class EdmmConverter {
         });
     }
 
-    private void createNode(TNodeTemplate nodeTemplate, List<TRelationshipTemplate> relationshipTemplates, EntityGraph entityGraph) {
+    private void createNode(TNodeTemplate nodeTemplate, EntityGraph entityGraph) {
         // create the component inside the topology.
         EntityId componentNodeId = EntityGraph.COMPONENTS.extend(nodeTemplate.getId());
         entityGraph.addEntity(new MappingEntity(componentNodeId, entityGraph));
 
         // add the type to the model
-        EntityId nodeTypeEntityId = createNodeType(nodeTemplate.getType(), entityGraph);
+        EntityId nodeTypeEntityId = this.createType(
+            nodeTypes.get(nodeTemplate.getType()),
+            EntityGraph.COMPONENT_TYPES,
+            entityGraph
+        );
         entityGraph.addEntity(new ScalarEntity(nodeTypeEntityId.getName(), componentNodeId.extend(DefaultKeys.TYPE), entityGraph));
 
         createProperties(nodeTemplate, componentNodeId, entityGraph);
@@ -110,41 +126,40 @@ public class EdmmConverter {
         }
     }
 
-    private EntityId createNodeType(QName type, EntityGraph entityGraph) {
-        if (!entityGraph.getEntity(EntityGraph.COMPONENT_TYPES).isPresent()) {
-            entityGraph.addEntity(new MappingEntity(EntityGraph.COMPONENT_TYPES, entityGraph));
+    private EntityId createType(TEntityType type, EntityId parentEntityId, EntityGraph entityGraph) {
+        if (!entityGraph.getEntity(parentEntityId).isPresent()) {
+            entityGraph.addEntity(new MappingEntity(parentEntityId, entityGraph));
         }
 
-        EntityId nodeTypeEntityId = EntityGraph.COMPONENT_TYPES.extend(normalizeQName(type));
-
-        createTypeDefinition(nodeTypes.get(type), nodeTypeEntityId, entityGraph);
+        EntityId nodeTypeEntityId = parentEntityId.extend(normalizeQName(type.getQName()));
+        createTypeDefinition(type, nodeTypeEntityId, parentEntityId, entityGraph);
 
         return nodeTypeEntityId;
     }
 
-    private EntityId createRelationType(QName type, EntityGraph entityGraph) {
-        if (!entityGraph.getEntity(EntityGraph.RELATION_TYPES).isPresent()) {
-            entityGraph.addEntity(new MappingEntity(EntityGraph.RELATION_TYPES, entityGraph));
-        }
-
-        EntityId relationTypeEntityId = EntityGraph.RELATION_TYPES.extend(normalizeQName(type));
-        createTypeDefinition(relationshipTypes.get(type), relationTypeEntityId, entityGraph);
-
-        return relationTypeEntityId;
-    }
-
-    private void createTypeDefinition(TEntityType toscaType, EntityId typeEntityId, EntityGraph entityGraph) {
+    private void createTypeDefinition(TEntityType toscaType, EntityId typeEntityId, EntityId parentEntityId, EntityGraph entityGraph) {
         Optional<Entity> entity = entityGraph.getEntity(typeEntityId);
         if (!entity.isPresent()) {
             entityGraph.addEntity(new MappingEntity(typeEntityId, entityGraph));
 
             if (Objects.nonNull(toscaType.getDerivedFrom())) {
-                EntityId baseTypeEntityId = createNodeType(toscaType.getDerivedFrom().getType(), entityGraph);
-                entityGraph.addEntity(new ScalarEntity(baseTypeEntityId.getName(), typeEntityId.extend(DefaultKeys.EXTENDS), entityGraph));
+                QName inheritsFrom = toscaType.getDerivedFrom().getType();
+                TEntityType parent = toscaType instanceof TNodeType
+                    ? nodeTypes.get(inheritsFrom)
+                    : relationshipTypes.get(inheritsFrom);
+
+                EntityId baseTypeEntityId = createType(parent, parentEntityId, entityGraph);
+                entityGraph.addEntity(
+                    new ScalarEntity(baseTypeEntityId.getName(), typeEntityId.extend(DefaultKeys.EXTENDS), entityGraph)
+                );
             } else if (toscaType instanceof TNodeType) {
-                entityGraph.addEntity(new ScalarEntity("base", typeEntityId.extend(DefaultKeys.EXTENDS), entityGraph));
+                entityGraph.addEntity(
+                    new ScalarEntity("base", typeEntityId.extend(DefaultKeys.EXTENDS), entityGraph)
+                );
             } else if (toscaType instanceof TRelationshipType) {
-                entityGraph.addEntity(new ScalarEntity(null, typeEntityId.extend(DefaultKeys.EXTENDS), entityGraph));
+                entityGraph.addEntity(
+                    new ScalarEntity(null, typeEntityId.extend(DefaultKeys.EXTENDS), entityGraph)
+                );
             }
 
             this.createPropertiesDefinition(toscaType, typeEntityId, entityGraph);

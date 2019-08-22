@@ -24,8 +24,10 @@ import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
@@ -50,6 +52,8 @@ public class EdmmConverterTest {
     private static final HashMap<QName, TRelationshipType> relationshipTypes = new HashMap<>();
     private static final HashMap<String, TNodeTemplate> nodeTemplates = new HashMap<>();
     private static final HashMap<String, TRelationshipTemplate> relationshipTemplates = new HashMap<>();
+    private static final HashMap<QName, TNodeTypeImplementation> nodeTypeImplementations = new HashMap<>();
+    private static final HashMap<QName, TRelationshipTypeImplementation> relationshipTypeImplementations = new HashMap<>();
 
     @BeforeEach
     void setup() {
@@ -62,7 +66,7 @@ public class EdmmConverterTest {
 
         QName nodeType2QName = QName.valueOf("{" + NAMESPACE + "}" + "test_node_type_2");
         TNodeType nodeType2 = new TNodeType();
-        nodeType2.setName(nodeType1QName.getLocalPart());
+        nodeType2.setName(nodeType2QName.getLocalPart());
         nodeType2.setTargetNamespace(nodeType2QName.getNamespaceURI());
         TEntityType.DerivedFrom derivedFrom = new TNodeType.DerivedFrom();
         derivedFrom.setTypeRef(nodeType1QName);
@@ -156,7 +160,7 @@ public class EdmmConverterTest {
         TServiceTemplate serviceTemplate = new TServiceTemplate();
         serviceTemplate.setTopologyTemplate(topology);
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes);
+        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations);
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
@@ -173,7 +177,7 @@ public class EdmmConverterTest {
         TServiceTemplate serviceTemplate = new TServiceTemplate();
         serviceTemplate.setTopologyTemplate(topology);
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes);
+        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations);
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
@@ -194,7 +198,7 @@ public class EdmmConverterTest {
         TServiceTemplate serviceTemplate = new TServiceTemplate();
         serviceTemplate.setTopologyTemplate(topology);
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes);
+        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations);
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
@@ -238,7 +242,7 @@ public class EdmmConverterTest {
         TServiceTemplate serviceTemplate = new TServiceTemplate();
         serviceTemplate.setTopologyTemplate(topology);
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes);
+        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations);
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         StringWriter stringWriter = new StringWriter();
