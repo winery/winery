@@ -34,8 +34,8 @@ public class JsonBasedEdmmManager implements EdmmManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonBasedEdmmManager.class);
 
-    private final String ONE_TO_ONE = "oneToOneMapping";
-    private final String TYPE_MAPPING = "edmmTypeMapping";
+    public final String ONE_TO_ONE = "oneToOneMapping";
+    public final String TYPE_MAPPING = "edmmTypeMapping";
 
     private final File file;
     private final ObjectMapper objectMapper;

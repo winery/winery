@@ -111,7 +111,6 @@
         <module>org.eclipse.winery.model.adaptation</module>
         <module>org.eclipse.winery.frontends</module>
         <module>org.eclipse.winery.model.threatmodeling</module>
-        <module>org.eclipse.winery.edmm</module>
     </modules>
     <build>
         <plugins>
@@ -523,7 +522,9 @@
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>org.eclipse.winery.model.threatmodeling.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                    <Export-Package>
+                                                        org.eclipse.winery.model.threatmodeling.*;-noimport:=true;version:=${project.version.osgi}
+                                                    </Export-Package>
                                                 </instructions>
                                             </artifact>
                                             <!-- 
