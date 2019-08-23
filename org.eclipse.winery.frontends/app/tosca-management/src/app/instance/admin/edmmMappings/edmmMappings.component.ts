@@ -73,7 +73,7 @@ export class EdmmMappingsComponent implements OnInit {
                 relationshipTypes.id = 'relationshipTypes';
                 relationshipTypes.text = 'Relationship Types';
                 relationshipTypes.children = [];
-                data[0].forEach(element => relationshipTypes.children.push({ id: element.qName, text: element.name }));
+                data[1].forEach(element => relationshipTypes.children.push({ id: element.qName, text: element.name }));
 
                 this.typesSelect = [nodeTypes, relationshipTypes];
             },

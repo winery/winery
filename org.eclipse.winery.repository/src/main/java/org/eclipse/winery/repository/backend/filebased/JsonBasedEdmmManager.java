@@ -52,7 +52,11 @@ public class JsonBasedEdmmManager implements EdmmManager {
 
     @Override
     public List<EdmmMappingItem> getOneToOneMappings() {
-        return this.edmmMappings.computeIfAbsent(ONE_TO_ONE, k -> new ArrayList<>());
+        List<EdmmMappingItem> edmmMappingItems = this.edmmMappings.get(ONE_TO_ONE);
+        if (edmmMappingItems == null) {
+            return new ArrayList<>();
+        }
+        return edmmMappingItems;
     }
 
     @Override
@@ -63,7 +67,11 @@ public class JsonBasedEdmmManager implements EdmmManager {
 
     @Override
     public List<EdmmMappingItem> getTypeMappings() {
-        return this.edmmMappings.computeIfAbsent(TYPE_MAPPING, k -> new ArrayList<>());
+        List<EdmmMappingItem> edmmMappingItems = this.edmmMappings.get(TYPE_MAPPING);
+        if (edmmMappingItems == null) {
+            return new ArrayList<>();
+        }
+        return edmmMappingItems;
     }
 
     @Override
