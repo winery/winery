@@ -94,7 +94,7 @@ public class JsonBasedNamespaceManager extends AbstractNamespaceManager {
                 if (this.file.getParentFile().mkdirs() || this.file.createNewFile()) {
                     LOGGER.debug("Created new namespace file at {}", this.file);
                 } else {
-                    LOGGER.error("Could not craete namespace file at {}", this.file);
+                    LOGGER.error("Could not create namespace file at {}", this.file);
                 }
             }
 

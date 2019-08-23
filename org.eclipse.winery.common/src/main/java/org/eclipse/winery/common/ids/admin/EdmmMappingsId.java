@@ -12,35 +12,16 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.edmm;
+package org.eclipse.winery.common.ids.admin;
 
-import java.io.Serializable;
+import org.eclipse.winery.common.ids.IdNames;
+import org.eclipse.winery.common.ids.XmlId;
 
-public enum EdmmType implements Serializable {
+public class EdmmMappingsId extends AdminId {
 
-    // component types
-    COMPUTE("compute"),
-    DATABASE("database"),
-    DBMS("dbms"),
-    MYSQL_DATABASE("mysql_database"),
-    MYSQL_DBMS("mysql_mmbs"),
-    SOFTWARE_COMPONENT("software_component"),
-    TOMCAT("tomcat"),
-    WEB_APPLICATION("web_application"),
-    WEB_SERVER("web_server"),
+    private final static XmlId xmlId = new XmlId(IdNames.EDMM_MAPPINGS, false);
 
-    // relation types
-    CONNECTS_TO("connects_to"),
-    DEPENDS_ON("depends_on"),
-    HOSTED_ON("hosted_on");
-
-    private final String name;
-
-    EdmmType(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return this.name;
+    public EdmmMappingsId() {
+        super(EdmmMappingsId.xmlId);
     }
 }

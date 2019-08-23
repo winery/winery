@@ -120,7 +120,7 @@ public class AdminTopResource {
         httppost.setHeader("Accept", "application/json");
 
         List<NameValuePair> params = new ArrayList<>(4);
-        
+
         params.add(new BasicNameValuePair("client_id", Environments.getGit().get("clientID")));
         params.add(new BasicNameValuePair("client_secret", Environments.getGit().get("clientSecret")));
         params.add(new BasicNameValuePair("code", codeApiData.code));
@@ -133,5 +133,15 @@ public class AdminTopResource {
             .status(response.getStatusLine().getStatusCode())
             .entity(response.getEntity().getContent())
             .build();
+    }
+
+    @Path("1to1edmmmappings")
+    public EdmmMappingsResource get1to1EdmmMappingsResource() {
+        return new EdmmMappingsResource(EdmmMappingsResource.Type.ONE_TO_ONE);
+    }
+
+    @Path("edmmtypemappings")
+    public EdmmMappingsResource getEdmmTypeMappingsResource() {
+        return new EdmmMappingsResource(EdmmMappingsResource.Type.EXTENDS);
     }
 }

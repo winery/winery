@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.edmm;
+package org.eclipse.winery.common.edmm;
 
 import java.util.List;
 import java.util.Map;
@@ -160,7 +160,7 @@ public class EdmmConverter {
         EdmmType edmmType = edmm1to1Mapping.get(toscaType.getQName());
 
         if (edmmType != null) {
-            typeEntityId = parentEntityId.extend(edmmType.getName());
+            typeEntityId = parentEntityId.extend(edmmType.getValue());
             entityGraph.addEntity(new MappingEntity(typeEntityId, entityGraph));
             EdmmTypeProperties.getDefaultConfiguration(edmmType, entityGraph);
         } else {
@@ -183,11 +183,11 @@ public class EdmmConverter {
 
                     edmmType = edmmTypeMapping.get(toscaType.getQName());
                     if (edmmType != null) {
-                        parentElement = edmmType.getName();
+                        parentElement = edmmType.getValue();
                         EdmmTypeProperties.getDefaultConfiguration(edmmType, entityGraph);
                     } else if (toscaType instanceof TRelationshipType) {
-                        parentElement = EdmmType.DEPENDS_ON.getName();
-                        EdmmTypeProperties.getDefaultConfiguration(EdmmType.DEPENDS_ON, entityGraph);
+                        parentElement = EdmmType.depends_on.getValue();
+                        EdmmTypeProperties.getDefaultConfiguration(EdmmType.depends_on, entityGraph);
                     }
 
                     entityGraph.addEntity(

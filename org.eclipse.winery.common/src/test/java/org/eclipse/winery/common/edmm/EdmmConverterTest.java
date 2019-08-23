@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.edmm;
+package org.eclipse.winery.common.edmm;
 
 import java.io.StringWriter;
 import java.util.Arrays;
@@ -237,12 +237,12 @@ public class EdmmConverterTest {
         // endregion
 
         // region *** create edmm type mapping ***
-        edmm1to1Mapping.put(nodeType1QName, EdmmType.SOFTWARE_COMPONENT);
+        edmm1to1Mapping.put(nodeType1QName, EdmmType.software_component);
         // edmmTypeMapping.put(nodeType2QName, EdmmType.SOFTWARE_COMPONENT);
-        edmmTypeExtendsMapping.put(nodeType3QName, EdmmType.COMPUTE);
-        edmmTypeExtendsMapping.put(nodeType4QName, EdmmType.WEB_APPLICATION);
-        edmm1to1Mapping.put(hostedOnQName, EdmmType.HOSTED_ON);
-        edmm1to1Mapping.put(connectsToQName, EdmmType.CONNECTS_TO);
+        edmmTypeExtendsMapping.put(nodeType3QName, EdmmType.compute);
+        edmmTypeExtendsMapping.put(nodeType4QName, EdmmType.web_application);
+        edmm1to1Mapping.put(hostedOnQName, EdmmType.hosted_on);
+        edmm1to1Mapping.put(connectsToQName, EdmmType.connects_to);
         // endregion
     }
 
