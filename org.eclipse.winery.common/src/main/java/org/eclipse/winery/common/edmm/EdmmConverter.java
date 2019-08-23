@@ -236,7 +236,7 @@ public class EdmmConverter {
 
                     EntityId operationId = operationsEntityId.extend(operation.getName());
                     entityGraph.addEntity(new ScalarEntity(
-                        path != null && this.useAbsolutePaths ? Environments.getRepositoryRoot() + path : path,
+                        path != null && this.useAbsolutePaths ? Environments.getRepositoryRoot() + "/" + path : path,
                         operationId,
                         entityGraph
                     ));
