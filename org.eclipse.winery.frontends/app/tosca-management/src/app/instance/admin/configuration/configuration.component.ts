@@ -28,7 +28,9 @@ import { WineryNotificationService } from '../../../wineryNotificationModule/win
 export class FeatureConfigurationComponent implements OnInit {
     config: WineryConfiguration;
 
-    constructor(private http: HttpClient, private configData: WineryRepositoryConfigurationService, private notify: WineryNotificationService) {
+    constructor(private http: HttpClient,
+                private configData: WineryRepositoryConfigurationService,
+                private notify: WineryNotificationService) {
     }
 
     ngOnInit(): void {

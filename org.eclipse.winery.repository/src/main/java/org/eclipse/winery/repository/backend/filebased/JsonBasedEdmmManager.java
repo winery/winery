@@ -16,6 +16,7 @@ package org.eclipse.winery.repository.backend.filebased;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,7 @@ public class JsonBasedEdmmManager implements EdmmManager {
 
     @Override
     public List<EdmmMappingItem> getOneToOneMappings() {
-        return this.edmmMappings.get(ONE_TO_ONE);
+        return this.edmmMappings.computeIfAbsent(ONE_TO_ONE, k -> new ArrayList<>());
     }
 
     @Override
@@ -62,7 +63,7 @@ public class JsonBasedEdmmManager implements EdmmManager {
 
     @Override
     public List<EdmmMappingItem> getTypeMappings() {
-        return this.edmmMappings.get(TYPE_MAPPING);
+        return this.edmmMappings.computeIfAbsent(TYPE_MAPPING, k -> new ArrayList<>());
     }
 
     @Override

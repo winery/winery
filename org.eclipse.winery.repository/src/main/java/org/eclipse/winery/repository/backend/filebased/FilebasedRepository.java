@@ -586,9 +586,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
     @Override
     public EdmmManager getEdmmManager() {
         RepositoryFileReference ref = BackendUtils.getRefOfJsonConfiguration(new EdmmMappingsId());
-        EdmmManager manager = new JsonBasedEdmmManager(ref2AbsolutePath(ref).toFile());
-
-        return null;
+        return new JsonBasedEdmmManager(ref2AbsolutePath(ref).toFile());
     }
 
     @Override

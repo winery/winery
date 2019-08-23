@@ -23,7 +23,7 @@ public enum EdmmType implements Serializable {
     database("database"),
     dbms("dbms"),
     mysql_database("mysql_database"),
-    mysql_dbms("mysql_dmbs"),
+    mysql_dbms("mysql_dbms"),
     software_component("software_component"),
     tomcat("tomcat"),
     web_application("web_application"),
