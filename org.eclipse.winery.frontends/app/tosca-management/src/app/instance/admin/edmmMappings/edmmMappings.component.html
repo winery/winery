@@ -53,7 +53,7 @@
     <winery-modal-header [modalRef]="removeModalRef" [title]="'Remove Property Mapping'">
     </winery-modal-header>
     <winery-modal-body>
-        <p>Are you sure you want to delete <b>{{ elementToEdit }}</b>?</p>
+        <p>Are you sure you want to delete <b>{{ elementToEdit.toscaType }}</b>?</p>
     </winery-modal-body>
     <winery-modal-footer [modalRef]="removeModalRef"
                          [okButtonLabel]="'Delete'"

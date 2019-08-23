@@ -31,7 +31,7 @@ import { SelectItem } from 'ng2-select';
 })
 export class EdmmMappingsComponent implements OnInit {
 
-    private loading = true;
+    loading = true;
 
     edmmTypes: string[];
 
@@ -102,7 +102,7 @@ export class EdmmMappingsComponent implements OnInit {
 
     public onRemoveConfirmed() {
         const index = this.edmmMappings.findIndex(value => value.toscaType === this.elementToEdit.toscaType);
-        this.edmmMappings = this.edmmMappings.splice(index, 1);
+        this.edmmMappings.splice(index, 1);
         this.save();
     }
 

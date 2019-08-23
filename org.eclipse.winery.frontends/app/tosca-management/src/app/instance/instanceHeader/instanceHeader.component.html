@@ -20,31 +20,34 @@
                                 [multipleVersionsAvailable]="versions?.length > 0"></winery-property-rename>
     </div>
     <div class="managementButtons row" *ngIf="showManagementButtons">
-            <button class="btn btn-danger col-lg-4" (click)="confirmDeleteModal.show()">Delete</button>
-            <div class="btn-group col-lg-4" dropdown>
-                <button dropdownToggle type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split">
-                    Export <span class="caret"></span>
-                </button>
-                <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
-                    <li>
-                        <a target="_blank" href="{{ toscaComponent.xmlPath }}">XML</a>
-                    </li>
-                    <li>
-                        <a target="_blank" href="{{ toscaComponent.yamlPath }}">YAML</a>
-                    </li>
-                    <li class="divider dropdown-divider"></li>
-                    <li>
-                        <a target="_blank" href="{{ toscaComponent.yamlCsarPath }}">CSAR (YAML)</a>
-                    </li>
-                    <li>
-                        <a target="_blank" href="{{ toscaComponent.xmlCsarPath }}">CSAR (XML)</a>
-                    </li>
-                    <li *ngIf="accountabilityEnabled">
-                        <a target="_blank" href="{{ toscaComponent.provenanceCsarPath }}">Provenance CSAR (XML)</a>
-                    </li>
-                </ul>
-            </div>
-            <winery-version class="col-lg-4" [versions]="versions"></winery-version>
+        <button class="btn btn-danger col-lg-4" (click)="confirmDeleteModal.show()">Delete</button>
+        <div class="btn-group col-lg-4" dropdown>
+            <button dropdownToggle type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split">
+                Export <span class="caret"></span>
+            </button>
+            <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+                <li>
+                    <a target="_blank" href="{{ toscaComponent.xmlPath }}">XML</a>
+                </li>
+                <li>
+                    <a target="_blank" href="{{ toscaComponent.yamlPath }}">YAML</a>
+                </li>
+                <li class="divider dropdown-divider"></li>
+                <li>
+                    <a target="_blank" href="{{ toscaComponent.yamlCsarPath }}">CSAR (YAML)</a>
+                </li>
+                <li>
+                    <a target="_blank" href="{{ toscaComponent.xmlCsarPath }}">CSAR (XML)</a>
+                </li>
+                <li *ngIf="accountabilityEnabled">
+                    <a target="_blank" href="{{ toscaComponent.provenanceCsarPath }}">Provenance CSAR (XML)</a>
+                </li>
+                <li *ngIf="showEdmmExport">
+                    <a target="_blank" href="{{ toscaComponent.edmmExportPath }}">Export to EDMM</a>
+                </li>
+            </ul>
+        </div>
+        <winery-version class="col-lg-4" [versions]="versions"></winery-version>
         <div *ngIf="typeUrl">
             <span style="white-space: pre">{{ typeOf }} <a [routerLink]="typeUrl">{{ typeId }}</a></span>
         </div>

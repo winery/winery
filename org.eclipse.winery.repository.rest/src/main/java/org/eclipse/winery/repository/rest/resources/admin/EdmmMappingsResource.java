@@ -57,9 +57,9 @@ public class EdmmMappingsResource {
     public List<EdmmMappingItem> setMappings(List<EdmmMappingItem> list) {
         if (type == Type.ONE_TO_ONE) {
             this.edmmManager.setOneToOneMappings(list);
+        } else {
+            this.edmmManager.setTypeMappings(list);
         }
-
-        this.edmmManager.setTypeMappings(list);
         return this.getMapping();
     }
 }

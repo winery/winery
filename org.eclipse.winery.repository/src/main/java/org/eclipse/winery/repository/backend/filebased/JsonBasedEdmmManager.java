@@ -17,15 +17,13 @@ package org.eclipse.winery.repository.backend.filebased;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.winery.common.edmm.EdmmMappingItem;
 import org.eclipse.winery.repository.backend.EdmmManager;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.slf4j.Logger;
@@ -35,60 +33,47 @@ public class JsonBasedEdmmManager implements EdmmManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonBasedEdmmManager.class);
 
-    public final String ONE_TO_ONE = "oneToOneMapping";
-    public final String TYPE_MAPPING = "edmmTypeMapping";
-
     private final File file;
     private final ObjectMapper objectMapper;
-    private final Map<String, List<EdmmMappingItem>> edmmMappings;
+    private final MappingsWrapper edmmMappings;
 
     public JsonBasedEdmmManager(File file) {
         Objects.requireNonNull(file);
         this.file = file;
         this.objectMapper = new ObjectMapper();
+        this.objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         this.edmmMappings = this.loadMappingsFromFile();
     }
 
     @Override
     public List<EdmmMappingItem> getOneToOneMappings() {
-        List<EdmmMappingItem> edmmMappingItems = this.edmmMappings.get(ONE_TO_ONE);
-        if (edmmMappingItems == null) {
-            return new ArrayList<>();
-        }
-        return edmmMappingItems;
+        return this.edmmMappings.oneToOneMapping;
     }
 
     @Override
     public void setOneToOneMappings(List<EdmmMappingItem> list) {
-        this.edmmMappings.put(ONE_TO_ONE, list);
+        this.edmmMappings.oneToOneMapping = list;
         this.save();
     }
 
     @Override
     public List<EdmmMappingItem> getTypeMappings() {
-        List<EdmmMappingItem> edmmMappingItems = this.edmmMappings.get(TYPE_MAPPING);
-        if (edmmMappingItems == null) {
-            return new ArrayList<>();
-        }
-        return edmmMappingItems;
+        return this.edmmMappings.edmmTypeMapping;
     }
 
     @Override
     public void setTypeMappings(List<EdmmMappingItem> list) {
-        this.edmmMappings.put(TYPE_MAPPING, list);
+        this.edmmMappings.edmmTypeMapping = list;
         this.save();
     }
 
-    private Map<String, List<EdmmMappingItem>> loadMappingsFromFile() {
-        Map<String, List<EdmmMappingItem>> edmmMappings = new HashMap<>();
+    private MappingsWrapper loadMappingsFromFile() {
+        MappingsWrapper edmmMappings = new MappingsWrapper();
 
         try {
             if (this.file.exists()) {
-                TypeReference<HashMap<String, List<EdmmMappingItem>>> hashMapTypeReference =
-                    new TypeReference<HashMap<String, List<EdmmMappingItem>>>() {
-                    };
-                edmmMappings = objectMapper.readValue(file, hashMapTypeReference);
+                edmmMappings = objectMapper.readValue(file, MappingsWrapper.class);
             }
         } catch (IOException e) {
             LOGGER.debug("Error while loading the namespace file.", e);
@@ -111,6 +96,16 @@ public class JsonBasedEdmmManager implements EdmmManager {
             this.objectMapper.writeValue(this.file, this.edmmMappings);
         } catch (IOException e) {
             LOGGER.debug("Could not save EDMM Mappings to json file!", e);
+        }
+    }
+
+    public static class MappingsWrapper {
+        public List<EdmmMappingItem> oneToOneMapping;
+        public List<EdmmMappingItem> edmmTypeMapping;
+
+        public MappingsWrapper() {
+            this.oneToOneMapping = new ArrayList<>();
+            this.edmmTypeMapping = new ArrayList<>();
         }
     }
 }

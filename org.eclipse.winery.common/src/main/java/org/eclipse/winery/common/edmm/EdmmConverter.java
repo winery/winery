@@ -52,32 +52,32 @@ public class EdmmConverter {
     private final Map<QName, TNodeTypeImplementation> nodeTypeImplementations;
     private final Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations;
     private final Map<QName, TArtifactTemplate> artifactTemplates;
-    private final Map<QName, EdmmType> edmmTypeMapping;
-    private final Map<QName, EdmmType> edmm1to1Mapping;
+    private final Map<QName, EdmmType> edmmTypeMappings;
+    private final Map<QName, EdmmType> oneToOneMappings;
     private final boolean useAbsolutePaths;
 
     public EdmmConverter(Map<QName, TNodeType> nodeTypes, Map<QName, TRelationshipType> relationshipTypes,
                          Map<QName, TNodeTypeImplementation> nodeTypeImplementations,
                          Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations,
                          Map<QName, TArtifactTemplate> artifactTemplates,
-                         Map<QName, EdmmType> edmmTypeMapping, Map<QName, EdmmType> edmm1to1Mapping) {
+                         Map<QName, EdmmType> edmmTypeMappings, Map<QName, EdmmType> oneToOneMappings) {
         this(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations, artifactTemplates,
-            edmmTypeMapping, edmm1to1Mapping, true);
+            edmmTypeMappings, oneToOneMappings, true);
     }
 
     public EdmmConverter(Map<QName, TNodeType> nodeTypes, Map<QName, TRelationshipType> relationshipTypes,
                          Map<QName, TNodeTypeImplementation> nodeTypeImplementations,
                          Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations,
-                         Map<QName, TArtifactTemplate> artifactTemplates, Map<QName, EdmmType> edmmTypeMapping,
-                         Map<QName, EdmmType> edmm1to1Mapping, boolean useAbsolutePaths) {
+                         Map<QName, TArtifactTemplate> artifactTemplates, Map<QName, EdmmType> edmmTypeMappings,
+                         Map<QName, EdmmType> oneToOneMappings, boolean useAbsolutePaths) {
         this.nodeTypes = nodeTypes;
         this.relationshipTypes = relationshipTypes;
         this.nodeTypeImplementations = nodeTypeImplementations;
         this.relationshipTypeImplementations = relationshipTypeImplementations;
         this.artifactTemplates = artifactTemplates;
-        this.edmmTypeMapping = edmmTypeMapping;
+        this.edmmTypeMappings = edmmTypeMappings;
         this.useAbsolutePaths = useAbsolutePaths;
-        this.edmm1to1Mapping = edmm1to1Mapping;
+        this.oneToOneMappings = oneToOneMappings;
     }
 
     public EntityGraph transform(TServiceTemplate serviceTemplate) {
@@ -157,7 +157,7 @@ public class EdmmConverter {
         }
 
         EntityId typeEntityId = parentEntityId.extend(this.normalizeQName(toscaType.getQName()));
-        EdmmType edmmType = edmm1to1Mapping.get(toscaType.getQName());
+        EdmmType edmmType = oneToOneMappings.get(toscaType.getQName());
 
         if (edmmType != null) {
             typeEntityId = parentEntityId.extend(edmmType.getValue());
@@ -181,7 +181,7 @@ public class EdmmConverter {
                 } else {
                     String parentElement = "base";
 
-                    edmmType = edmmTypeMapping.get(toscaType.getQName());
+                    edmmType = edmmTypeMappings.get(toscaType.getQName());
                     if (edmmType != null) {
                         parentElement = edmmType.getValue();
                         EdmmTypeProperties.getDefaultConfiguration(edmmType, entityGraph);
