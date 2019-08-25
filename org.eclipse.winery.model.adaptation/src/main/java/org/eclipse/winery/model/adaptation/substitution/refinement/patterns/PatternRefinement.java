@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.winery.model.adaptation.substitution.refinement.patterns;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ import org.eclipse.winery.model.tosca.TPrmMapping;
 import org.eclipse.winery.model.tosca.TRefinementModel;
 import org.eclipse.winery.model.tosca.TRelationDirection;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TStayMapping;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -76,15 +78,16 @@ public class PatternRefinement extends AbstractRefinement {
 
         // determine the elements that are staying
         TPatternRefinementModel prm = (TPatternRefinementModel) refinement.getRefinementModel();
-        List<TEntityTemplate> stayingElements = prm.getStayMappings().stream()
-            .map(TPrmMapping::getRefinementNode)
-            .collect(Collectors.toList());
+        List<TEntityTemplate> stayingRefinementElements = prm.getStayMappings() == null ? new ArrayList<>() :
+            prm.getStayMappings().stream()
+                .map(TPrmMapping::getRefinementNode)
+                .collect(Collectors.toList());
 
         // import the refinement structure
         Map<String, String> idMapping = BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(
             refinement.getRefinementModel().getRefinementTopology(),
             topology,
-            stayingElements
+            stayingRefinementElements
         );
 
         // only for UI: position the imported nodes next to the nodes to be refined
@@ -93,7 +96,8 @@ public class PatternRefinement extends AbstractRefinement {
             refinement.getGraphMapping(),
             refinement.getRefinementModel().getRefinementTopology()
         );
-        refinement.getRefinementModel().getRefinementTopology().getNodeTemplates()
+        refinement.getRefinementModel().getRefinementTopology().getNodeTemplates().stream()
+            .filter(element -> !stayingRefinementElements.contains(element))
             .forEach(node -> {
                     Map<String, Integer> newCoordinates = coordinates.get(node.getId());
                     TNodeTemplate nodeTemplate = topology.getNodeTemplate(idMapping.get(node.getId()));
@@ -108,14 +112,16 @@ public class PatternRefinement extends AbstractRefinement {
                 // get the matching node in the topology
                 TNodeTemplate matchingNode = refinement.getGraphMapping().getVertexCorrespondence(vertex, false).getTemplate();
 
-                this.redirectInternalRelations(refinement, matchingNode, stayingElements, topology, idMapping);
+                this.redirectInternalRelations(prm, vertex.getTemplate(), matchingNode, topology);
                 this.redirectExternalRelations(refinement, matchingNode, topology, idMapping);
 
                 // TODO: enable the application among relations as well as nodes and relations
                 this.applyPropertyMappings(refinement, vertex.getId(), matchingNode, topology, idMapping);
 
-                topology.getNodeTemplateOrRelationshipTemplate()
-                    .remove(matchingNode);
+                if (!getStayMappingsOfCurrentNode(prm, vertex.getTemplate()).findFirst().isPresent()) {
+                    topology.getNodeTemplateOrRelationshipTemplate()
+                        .remove(matchingNode);
+                }
             });
         refinement.getDetectorGraph().edgeSet()
             .forEach(edge -> {
@@ -189,19 +195,30 @@ public class PatternRefinement extends AbstractRefinement {
             );
     }
 
-    private void redirectInternalRelations(RefinementCandidate refinement, TNodeTemplate matchingNode,
-                                           List<TEntityTemplate> stayingElements, TTopologyTemplate topology,
-                                           Map<String, String> idMapping) {
-        topology.getRelationshipTemplates().stream()
-            .filter(relationship ->
-                stayingElements.stream()
-                    .anyMatch(staying ->
-                        relationship.getTargetElement().getRef().getId().equals(idMapping.get(staying.getId()))
-                            || relationship.getSourceElement().getRef().getId().equals(idMapping.get(staying.getId()))
-                    )
-            ).forEach(relationship -> {
-            // get the corresponding element from the mapping
-        });
+    private void redirectInternalRelations(TPatternRefinementModel prm, TNodeTemplate currentDetectorNode,
+                                           TNodeTemplate matchingNodeInTopology, TTopologyTemplate topology) {
+        if (prm.getStayMappings() != null) {
+            topology.getRelationshipTemplates()
+                .forEach(relationship ->
+                    // get all relationships that are either the source or the target of the current node that is staying
+                    this.getStayMappingsOfCurrentNode(prm, currentDetectorNode)
+                        .forEach(staying -> {
+                                String targetId = relationship.getTargetElement().getRef().getId();
+                                String sourceId = relationship.getSourceElement().getRef().getId();
+
+                                String idInRefinementStructure = staying.getRefinementNode().getId();
+
+                                if (targetId.equals(idInRefinementStructure)) {
+                                    LOGGER.debug("Redirecting target of {} to {}", relationship.getId(), matchingNodeInTopology.getId());
+                                    relationship.getTargetElement().setRef(matchingNodeInTopology);
+                                } else if (sourceId.equals(idInRefinementStructure)) {
+                                    LOGGER.debug("Redirecting source of {} to {}", relationship.getId(), matchingNodeInTopology.getId());
+                                    relationship.getSourceElement().setRef(matchingNodeInTopology);
+                                }
+                            }
+                        )
+                );
+        }
     }
 
     public Stream<TRelationshipTemplate> getExternalRelations(TNodeTemplate matchingNode, RefinementCandidate candidate, TTopologyTemplate topology) {
@@ -270,5 +287,10 @@ public class PatternRefinement extends AbstractRefinement {
         if (topLeft[1] > y || topLeft[1] == -1) {
             topLeft[1] = y;
         }
+    }
+
+    private Stream<TStayMapping> getStayMappingsOfCurrentNode(TPatternRefinementModel prm, TNodeTemplate currentDetectorNode) {
+        return prm.getStayMappings().stream()
+            .filter(stayMapping -> stayMapping.getDetectorNode().getId().equals(currentDetectorNode.getId()));
     }
 }
