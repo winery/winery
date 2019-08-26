@@ -290,7 +290,8 @@ public class PatternRefinement extends AbstractRefinement {
     }
 
     private Stream<TStayMapping> getStayMappingsOfCurrentNode(TPatternRefinementModel prm, TNodeTemplate currentDetectorNode) {
-        return prm.getStayMappings().stream()
-            .filter(stayMapping -> stayMapping.getDetectorNode().getId().equals(currentDetectorNode.getId()));
+        return prm.getStayMappings() == null ? Stream.of() :
+            prm.getStayMappings().stream()
+                .filter(stayMapping -> stayMapping.getDetectorNode().getId().equals(currentDetectorNode.getId()));
     }
 }
