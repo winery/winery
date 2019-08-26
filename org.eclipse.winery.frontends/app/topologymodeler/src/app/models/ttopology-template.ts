@@ -168,21 +168,22 @@ export class TRelationshipTemplate extends AbstractTTemplate {
                 documentation?: any,
                 any?: any,
                 otherAttributes?: any,
-                public state?: DifferenceStates) {
+                public state?: DifferenceStates,
+                public policies?: any) {
         super(documentation, any, otherAttributes);
     }
 
     /**
      * needed for the winery redux reducer,
      * updates a specific attribute and returns the whole new relationship template
-     * @param indexOfUpdatedAttribute: index of the to be updated attribute in the constructor
+     * @param updatedAttribute: index of the to be updated attribute in the constructor
      * @param updatedValue: the new value
      *
      * @return relTemplate: a new relationship template with the updated value
      */
     generateNewRelTemplateWithUpdatedAttribute(updatedAttribute: string, updatedValue: any): TRelationshipTemplate {
         const relTemplate = new TRelationshipTemplate(this.sourceElement, this.targetElement, this.name, this.id, this.type, this.properties,
-            this.documentation, this.any, this.otherAttributes);
+            this.documentation, this.any, this.otherAttributes, this.state, this.policies);
         relTemplate[updatedAttribute] = updatedValue;
         return relTemplate;
     }
