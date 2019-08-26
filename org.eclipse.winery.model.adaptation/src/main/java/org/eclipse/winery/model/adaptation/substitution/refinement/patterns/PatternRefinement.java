@@ -67,7 +67,7 @@ public class PatternRefinement extends AbstractRefinement {
             .stream()
             .allMatch(vertex -> {
                 TNodeTemplate matchingNode = candidate.getGraphMapping().getVertexCorrespondence(vertex, false).getTemplate();
-                return this.canRedirectExternalRelations(candidate, matchingNode, topology);
+                return this.canRedirectExternalRelations(candidate, vertex.getTemplate(), matchingNode, topology);
             });
     }
 
@@ -113,37 +113,45 @@ public class PatternRefinement extends AbstractRefinement {
                 TNodeTemplate matchingNode = refinement.getGraphMapping().getVertexCorrespondence(vertex, false).getTemplate();
 
                 this.redirectInternalRelations(prm, vertex.getTemplate(), matchingNode, topology);
-                this.redirectExternalRelations(refinement, matchingNode, topology, idMapping);
+                this.redirectExternalRelations(refinement, vertex.getTemplate(), matchingNode, topology, idMapping);
 
-                // TODO: enable the application among relations as well as nodes and relations
                 this.applyPropertyMappings(refinement, vertex.getId(), matchingNode, topology, idMapping);
 
-                if (!getStayMappingsOfCurrentNode(prm, vertex.getTemplate()).findFirst().isPresent()) {
+                if (!getStayMappingsOfCurrentElement(prm, vertex.getTemplate()).findFirst().isPresent()) {
                     topology.getNodeTemplateOrRelationshipTemplate()
                         .remove(matchingNode);
                 }
             });
         refinement.getDetectorGraph().edgeSet()
             .forEach(edge -> {
-                TRelationshipTemplate tRelationshipTemplate = refinement.getGraphMapping().getEdgeCorrespondence(edge, false).getTemplate();
-                topology.getNodeTemplateOrRelationshipTemplate()
-                    .remove(tRelationshipTemplate);
+                TRelationshipTemplate relationshipTemplate = refinement.getGraphMapping().getEdgeCorrespondence(edge, false).getTemplate();
+
+                this.applyPropertyMappings(refinement, edge.getId(), relationshipTemplate, topology, idMapping);
+
+                if (!getStayMappingsOfCurrentElement(prm, edge.getTemplate()).findFirst().isPresent()) {
+                    topology.getNodeTemplateOrRelationshipTemplate()
+                        .remove(relationshipTemplate);
+                }
             });
     }
 
-    public void applyPropertyMappings(RefinementCandidate refinement, String detectorNodeId, TNodeTemplate matchingNode, TTopologyTemplate topology, Map<String, String> idMapping) {
+    public void applyPropertyMappings(RefinementCandidate refinement, String detectorNodeId, TEntityTemplate matchingEntity,
+                                      TTopologyTemplate topology, Map<String, String> idMapping) {
         List<AttributeMapping> propertyMappings = ((TPatternRefinementModel) refinement.getRefinementModel()).getAttributeMappings();
         if (Objects.nonNull(propertyMappings)) {
             propertyMappings.stream()
                 .filter(mapping -> mapping.getDetectorNode().getId().equals(detectorNodeId))
                 .forEach(mapping -> {
-                    Map<String, String> sourceProperties = matchingNode.getProperties().getKVProperties();
-                    TEntityTemplate.Properties properties = topology
-                        .getNodeTemplate(idMapping.get(mapping.getRefinementNode().getId()))
+                    Map<String, String> sourceProperties = matchingEntity.getProperties().getKVProperties();
+                    TEntityTemplate.Properties properties = topology.getNodeTemplateOrRelationshipTemplate()
+                        .stream()
+                        .filter(element -> element.getId().equals(idMapping.get(mapping.getRefinementNode().getId())))
+                        .findFirst()
+                        .get()
                         .getProperties();
                     Map<String, String> targetProperties = properties.getKVProperties();
 
-                    if (Objects.nonNull(matchingNode.getProperties()) && Objects.nonNull(sourceProperties) && !sourceProperties.isEmpty()
+                    if (Objects.nonNull(matchingEntity.getProperties()) && Objects.nonNull(sourceProperties) && !sourceProperties.isEmpty()
                         && Objects.nonNull(targetProperties)) {
                         if (mapping.getType() == TAttributeMappingType.ALL) {
                             sourceProperties.forEach(targetProperties::replace);
@@ -159,40 +167,45 @@ public class PatternRefinement extends AbstractRefinement {
         }
     }
 
-    private boolean canRedirectExternalRelations(RefinementCandidate refinement, TNodeTemplate matchingNode, TTopologyTemplate topology) {
-        return this.redirectExternalRelations(refinement, matchingNode, topology, null);
+    private boolean canRedirectExternalRelations(RefinementCandidate refinement, TNodeTemplate detectorNode, TNodeTemplate matchingNode, TTopologyTemplate topology) {
+        return this.redirectExternalRelations(refinement, detectorNode, matchingNode, topology, null);
     }
 
-    private boolean redirectExternalRelations(RefinementCandidate refinement, TNodeTemplate matchingNode, TTopologyTemplate topology, Map<String, String> idMapping) {
-        return this.getExternalRelations(matchingNode, refinement, topology)
-            .allMatch(relationship ->
-                refinement.getRefinementModel().getRelationMappings()
-                    .stream()
-                    // use anyMatch to reduce runtime
-                    .anyMatch(relationMapping -> {
-                        if (ModelUtilities.isOfType(relationMapping.getRelationType(), relationship.getType(), this.relationshipTypes)) {
-                            if (relationMapping.getDirection() == TRelationDirection.INGOING
-                                && (Objects.isNull(relationMapping.getValidSourceOrTarget())
-                                || relationship.getSourceElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget()))
-                            ) {
-                                // change the source element to the new source defined in the relation mapping
-                                if (Objects.nonNull(idMapping)) {
-                                    String id = idMapping.get(relationMapping.getRefinementNode().getId());
-                                    relationship.setTargetNodeTemplate(topology.getNodeTemplate(id));
+    private boolean redirectExternalRelations(RefinementCandidate refinement, TNodeTemplate detectorNode, TNodeTemplate matchingNode,
+                                              TTopologyTemplate topology, Map<String, String> idMapping) {
+        // if the current element is a staying element, the external elements do not need to be redirected
+        return this.getStayMappingsOfCurrentElement((TPatternRefinementModel) refinement.getRefinementModel(), detectorNode)
+            .findFirst().isPresent()
+            ||
+            this.getExternalRelations(matchingNode, refinement, topology)
+                .allMatch(relationship ->
+                    refinement.getRefinementModel().getRelationMappings()
+                        .stream()
+                        // use anyMatch to reduce runtime
+                        .anyMatch(relationMapping -> {
+                            if (ModelUtilities.isOfType(relationMapping.getRelationType(), relationship.getType(), this.relationshipTypes)) {
+                                if (relationMapping.getDirection() == TRelationDirection.INGOING
+                                    && (Objects.isNull(relationMapping.getValidSourceOrTarget())
+                                    || relationship.getSourceElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget()))
+                                ) {
+                                    // change the source element to the new source defined in the relation mapping
+                                    if (Objects.nonNull(idMapping)) {
+                                        String id = idMapping.get(relationMapping.getRefinementNode().getId());
+                                        relationship.setTargetNodeTemplate(topology.getNodeTemplate(id));
+                                    }
+                                    return true;
+                                } else if (Objects.isNull(relationMapping.getValidSourceOrTarget())
+                                    || relationship.getTargetElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget())) {
+                                    if (Objects.nonNull(idMapping)) {
+                                        String id = idMapping.get(relationMapping.getRefinementNode().getId());
+                                        relationship.setSourceNodeTemplate(topology.getNodeTemplate(id));
+                                    }
+                                    return true;
                                 }
-                                return true;
-                            } else if (Objects.isNull(relationMapping.getValidSourceOrTarget())
-                                || relationship.getTargetElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget())) {
-                                if (Objects.nonNull(idMapping)) {
-                                    String id = idMapping.get(relationMapping.getRefinementNode().getId());
-                                    relationship.setSourceNodeTemplate(topology.getNodeTemplate(id));
-                                }
-                                return true;
                             }
-                        }
-                        return false;
-                    })
-            );
+                            return false;
+                        })
+                );
     }
 
     private void redirectInternalRelations(TPatternRefinementModel prm, TNodeTemplate currentDetectorNode,
@@ -201,7 +214,7 @@ public class PatternRefinement extends AbstractRefinement {
             topology.getRelationshipTemplates()
                 .forEach(relationship ->
                     // get all relationships that are either the source or the target of the current node that is staying
-                    this.getStayMappingsOfCurrentNode(prm, currentDetectorNode)
+                    this.getStayMappingsOfCurrentElement(prm, currentDetectorNode)
                         .forEach(staying -> {
                                 String targetId = relationship.getTargetElement().getRef().getId();
                                 String sourceId = relationship.getSourceElement().getRef().getId();
@@ -289,7 +302,7 @@ public class PatternRefinement extends AbstractRefinement {
         }
     }
 
-    private Stream<TStayMapping> getStayMappingsOfCurrentNode(TPatternRefinementModel prm, TNodeTemplate currentDetectorNode) {
+    private Stream<TStayMapping> getStayMappingsOfCurrentElement(TPatternRefinementModel prm, TEntityTemplate currentDetectorNode) {
         return prm.getStayMappings() == null ? Stream.of() :
             prm.getStayMappings().stream()
                 .filter(stayMapping -> stayMapping.getDetectorNode().getId().equals(currentDetectorNode.getId()));
