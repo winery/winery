@@ -120,6 +120,12 @@ public class PatternRefinement extends AbstractRefinement {
                 if (!getStayMappingsOfCurrentElement(prm, vertex.getTemplate()).findFirst().isPresent()) {
                     topology.getNodeTemplateOrRelationshipTemplate()
                         .remove(matchingNode);
+                } else if (vertex.getTemplate().getPolicies() != null && matchingNode.getPolicies() != null) {
+                    vertex.getTemplate().getPolicies().getPolicy()
+                        .forEach(detectorPolicy -> {
+                            matchingNode.getPolicies().getPolicy()
+                                .removeIf(matchingPolicy -> matchingPolicy.getPolicyType().equals(detectorPolicy.getPolicyType()));
+                        });
                 }
             });
         refinement.getDetectorGraph().edgeSet()
