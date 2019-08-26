@@ -28,6 +28,7 @@ export interface WineryConfiguration {
         problemDetection: boolean;
         splitting: boolean;
         testRefinement: boolean;
+        updateTemplates: boolean;
     };
     endpoints: {
         container: String;

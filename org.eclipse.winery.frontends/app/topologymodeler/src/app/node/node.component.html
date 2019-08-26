@@ -35,7 +35,8 @@
     </div>
 
     <div *ngIf="newerVersions?.length !== 0">
-        <i class="fas fa-exclamation-triangle newVersionTriangle" (click)="openVersionModal()"></i>
+        <i *wineryRepositoryFeatureToggle="configEnum.updateTemplates"
+           class="fas fa-exclamation-triangle newVersionTriangle" (click)="openVersionModal()"></i>
         <winery-versions #versionModal [aVersionElement]="newVersionElement" [nodeTemplateId]="nodeTemplate.id"
                          [nodeType]="nodeTemplate.type"></winery-versions>
     </div>
