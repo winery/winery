@@ -1176,7 +1176,9 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 if (!this.allNodesIds.includes(relationSource)) {
                     // check if source reference is a requirement of a node template
                     const findNode = this.allNodeTemplates
-                        .find(node => node.requirements && node.requirements.requirement && node.requirements.requirement.find(req => req.id === relationSource));
+                        .find(node => node.requirements && node.requirements.requirement
+                            && node.requirements.requirement.find(req => req.id === relationSource)
+                        );
                     if (findNode) {
                         relationSource = findNode.id;
                     }

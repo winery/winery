@@ -30,7 +30,7 @@
         {{ nodeTemplate.state }}
     </div>
 
-    <div *ngIf="policyIcons">
+    <div *ngIf="policyIcons" style="position: absolute; top: -27px">
         <img *ngFor="let policyIcon of policyIcons" [src]="policyIcon" class="policyAnnotation">
     </div>
 
