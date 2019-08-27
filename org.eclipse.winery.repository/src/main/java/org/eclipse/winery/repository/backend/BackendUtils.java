@@ -1557,12 +1557,14 @@ public class BackendUtils {
                 RelationshipSourceOrTarget source = rel.getSourceElement().getRef();
                 RelationshipSourceOrTarget target = rel.getTargetElement().getRef();
 
-                if (source instanceof TNodeTemplate && (stayingElements == null || !stayingElements.contains(source))) {
+                if (source instanceof TNodeTemplate && (stayingElements == null
+                    || stayingElements.stream().noneMatch(element -> element.getId().equals(source.getId())))) {
                     TNodeTemplate newSource = topologyTemplateB.getNodeTemplate(idMapping.get(source.getId()));
                     rel.setSourceNodeTemplate(newSource);
                 }
 
-                if (target instanceof TNodeTemplate && (stayingElements == null || !stayingElements.contains(target))) {
+                if (target instanceof TNodeTemplate && (stayingElements == null
+                    || stayingElements.stream().noneMatch(element -> element.getId().equals(target.getId())))) {
                     TNodeTemplate newTarget = topologyTemplateB.getNodeTemplate(idMapping.get(target.getId()));
                     rel.setTargetNodeTemplate(newTarget);
                 }
