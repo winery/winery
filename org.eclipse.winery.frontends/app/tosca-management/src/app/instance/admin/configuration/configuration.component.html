@@ -35,13 +35,10 @@
            [checked]="config.features.managementFeatureEnrichment">
     <label for="managementFeatureEnrichment">Management Feature Enrichment</label>
     <br>
-    <!--
-        This feature is currently awaiting to be merged: follow up at https://github.com/eclipse/winery/pull/383
-        <input type="checkbox" [(ngModel)]="config.features.nfv" id="nfv" name="nfv"
-               [checked]="config.features.nfv">
-        <label for="nfv">NFV</label>
-        <br>
-    -->
+    <input type="checkbox" [(ngModel)]="config.features.nfv" id="nfv" name="nfv"
+           [checked]="config.features.nfv">
+    <label for="nfv">NFV</label>
+    <br>
     <input type="checkbox" [(ngModel)]="config.features.patternRefinement" id="patternRefinement"
            name="patternRefinement"
            [checked]="config.features.patternRefinement">
@@ -58,6 +55,10 @@
     <input type="checkbox" [(ngModel)]="config.features.testRefinement" id="testRefinement" name="testRefinement"
            [checked]="config.features.testRefinement">
     <label for="testRefinement">Test Refinement</label>
+    <br>
+    <input type="checkbox" [(ngModel)]="config.features.edmmModeling" id="edmmModelling" name="edmmModeling"
+           [checked]="config.features.edmmModeling">
+    <label for="testRefinement">EDMM Modeling</label>
     <br>
 </div>
 <div>

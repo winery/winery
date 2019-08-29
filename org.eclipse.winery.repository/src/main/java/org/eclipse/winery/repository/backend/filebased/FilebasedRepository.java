@@ -47,10 +47,12 @@ import java.util.zip.ZipOutputStream;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.configuration.Environments;
+import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.admin.AccountabilityId;
+import org.eclipse.winery.common.ids.admin.EdmmMappingsId;
 import org.eclipse.winery.common.ids.admin.NamespacesId;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
@@ -62,13 +64,13 @@ import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.AbstractRepository;
 import org.eclipse.winery.repository.backend.AccountabilityConfigurationManager;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.EdmmManager;
 import org.eclipse.winery.repository.backend.IRepositoryAdministration;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.xsd.RepositoryBasedXsdImportManager;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
-import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
 import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 
 import org.apache.commons.configuration2.Configuration;
@@ -582,12 +584,18 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
     }
 
     @Override
+    public EdmmManager getEdmmManager() {
+        RepositoryFileReference ref = BackendUtils.getRefOfJsonConfiguration(new EdmmMappingsId());
+        return new JsonBasedEdmmManager(ref2AbsolutePath(ref).toFile());
+    }
+
+    @Override
     public AccountabilityConfigurationManager getAccountabilityConfigurationManager() {
         RepositoryFileReference repoRef = BackendUtils.getRefOfConfiguration(new AccountabilityId());
         RepositoryFileReference keystoreRef = new RepositoryFileReference(new AccountabilityId(), "CustomKeystore.json");
         RepositoryFileReference defaultKeystoreRef = new RepositoryFileReference(new AccountabilityId(), "DefaultKeystore.json");
 
-        return AccountabilityConfigurationManager.getInstance(ref2AbsolutePath(repoRef).toFile(), 
+        return AccountabilityConfigurationManager.getInstance(ref2AbsolutePath(repoRef).toFile(),
             ref2AbsolutePath(keystoreRef).toFile(), ref2AbsolutePath(defaultKeystoreRef).toFile());
     }
 

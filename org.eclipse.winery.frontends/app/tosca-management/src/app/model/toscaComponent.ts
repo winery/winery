@@ -26,6 +26,7 @@ export class ToscaComponent {
     readonly xmlCsarPath: string;
     readonly provenanceCsarPath: string;
     readonly yamlCsarPath: string;
+    readonly edmmExportPath: string;
 
     constructor(public readonly toscaType: ToscaTypes,
                 public readonly namespace: string,
@@ -42,6 +43,7 @@ export class ToscaComponent {
                 this.xmlCsarPath = this.backendPath + '/?csar';
                 this.provenanceCsarPath = this.xmlCsarPath + '&addToProvenance';
                 this.yamlCsarPath = this.backendPath + '/?yaml&csar';
+                this.edmmExportPath = this.backendPath + '/?edmm';
             }
         }
         if (!isNullOrUndefined(this.localName)) {

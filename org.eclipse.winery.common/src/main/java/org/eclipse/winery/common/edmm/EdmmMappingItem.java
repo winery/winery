@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,16 +11,21 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-package org.eclipse.winery.common.ids.admin;
 
-import org.eclipse.winery.common.ids.IdNames;
-import org.eclipse.winery.common.ids.XmlId;
+package org.eclipse.winery.common.edmm;
 
-public class NamespacesId extends AdminId {
+import javax.xml.namespace.QName;
 
-    private final static XmlId xmlId = new XmlId(IdNames.NAMESPACES, false);
+public class EdmmMappingItem {
 
-    public NamespacesId() {
-        super(NamespacesId.xmlId);
+    public EdmmType edmmType;
+    public QName toscaType;
+
+    public EdmmMappingItem() {
+    }
+
+    public EdmmMappingItem(EdmmType edmmType, QName toscaType) {
+        this.edmmType = edmmType;
+        this.toscaType = toscaType;
     }
 }

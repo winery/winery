@@ -522,7 +522,9 @@
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>org.eclipse.winery.model.threatmodeling.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                    <Export-Package>
+                                                        org.eclipse.winery.model.threatmodeling.*;-noimport:=true;version:=${project.version.osgi}
+                                                    </Export-Package>
                                                 </instructions>
                                             </artifact>
                                             <!-- 
