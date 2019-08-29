@@ -20,20 +20,20 @@ import { SectionData } from '../../../section/sectionData';
 import { ToscaTypes } from '../../../model/enums';
 
 export enum EdmmType {
-    compute = 'compute',
-    database = 'database',
-    dbms = 'dbms',
-    mysql_database = 'mysql_database',
-    mysql_dbms = 'mysql_dbms',
-    software_component = 'software_component',
-    tomcat = 'tomcat',
-    web_application = 'web_application',
-    web_server = 'web_server',
+    COMPUTE = 'compute',
+    DATABASE = 'database',
+    DMBS = 'dbms',
+    MYSQL_DATABASE = 'mysql_database',
+    MYSQL_DBMS = 'mysql_dbms',
+    SOFTWARE_COMPONENT = 'software_component',
+    TOMCAT = 'tomcat',
+    WEB_APPLICATION = 'web_application',
+    WEB_SERVER = 'web_server',
 
     // relation types
-    connects_to = 'connects_to',
-    depends_on = 'depends_on',
-    hosted_on = 'hosted_on'
+    CONNECTS_TO = 'connects_to',
+    DEPENDS_ON = 'depends_on',
+    HOSTED_ON = 'hosted_on'
 }
 
 export class EdmmMappingItem {

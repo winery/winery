@@ -40,7 +40,7 @@
         <dependency>
             <groupId>com.github.ust-edmm.transformation-framework</groupId>
             <artifactId>edmm-core</artifactId>
-            <version>emptyGraph-d5272e06d0-1</version>
+            <version>master-edceefd6ee-1</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

@@ -26,72 +26,72 @@ public class EdmmTypeProperties {
 
     public static void getDefaultConfiguration(EdmmType edmmType, EntityGraph entityGraph) {
         switch (edmmType) {
-            case compute:
-                EntityId computeId = EntityGraph.COMPONENT_TYPES.extend(EdmmType.compute.getValue());
+            case COMPUTE:
+                EntityId computeId = EntityGraph.COMPONENT_TYPES.extend(EdmmType.COMPUTE.getValue());
                 entityGraph.addEntity(new MappingEntity(computeId, entityGraph));
                 entityGraph.addEntity(new ScalarEntity(BASE, computeId.extend(DefaultKeys.EXTENDS), entityGraph));
                 break;
-            case database:
-                EntityId databaseId = EntityGraph.COMPONENT_TYPES.extend(EdmmType.database.getValue());
+            case DATABASE:
+                EntityId databaseId = EntityGraph.COMPONENT_TYPES.extend(EdmmType.DATABASE.getValue());
                 entityGraph.addEntity(new MappingEntity(databaseId, entityGraph));
                 entityGraph.addEntity(new ScalarEntity(BASE, databaseId.extend(DefaultKeys.EXTENDS), entityGraph));
                 break;
-            case dbms:
-                EntityId dbmsId = EntityGraph.COMPONENT_TYPES.extend(EdmmType.dbms.getValue());
+            case DBMS:
+                EntityId dbmsId = EntityGraph.COMPONENT_TYPES.extend(EdmmType.DBMS.getValue());
                 entityGraph.addEntity(new MappingEntity(dbmsId, entityGraph));
-                entityGraph.addEntity(new ScalarEntity(EdmmType.software_component.getValue(), dbmsId.extend(DefaultKeys.EXTENDS), entityGraph));
-                getDefaultConfiguration(EdmmType.software_component, entityGraph);
+                entityGraph.addEntity(new ScalarEntity(EdmmType.SOFTWARE_COMPONENT.getValue(), dbmsId.extend(DefaultKeys.EXTENDS), entityGraph));
+                getDefaultConfiguration(EdmmType.SOFTWARE_COMPONENT, entityGraph);
                 break;
-            case mysql_database:
-                EntityId mySqlDatabaseId = EntityGraph.COMPONENT_TYPES.extend(EdmmType.mysql_database.getValue());
+            case MYSQL_DATABASE:
+                EntityId mySqlDatabaseId = EntityGraph.COMPONENT_TYPES.extend(EdmmType.MYSQL_DATABASE.getValue());
                 entityGraph.addEntity(new MappingEntity(mySqlDatabaseId, entityGraph));
-                entityGraph.addEntity(new ScalarEntity(EdmmType.database.getValue(), mySqlDatabaseId.extend(DefaultKeys.EXTENDS), entityGraph));
-                getDefaultConfiguration(EdmmType.database, entityGraph);
+                entityGraph.addEntity(new ScalarEntity(EdmmType.DATABASE.getValue(), mySqlDatabaseId.extend(DefaultKeys.EXTENDS), entityGraph));
+                getDefaultConfiguration(EdmmType.DATABASE, entityGraph);
                 break;
-            case mysql_dbms:
-                EntityId mySqlDbmsId = EntityGraph.COMPONENT_TYPES.extend(EdmmType.mysql_dbms.getValue());
+            case MYSQL_DBMS:
+                EntityId mySqlDbmsId = EntityGraph.COMPONENT_TYPES.extend(EdmmType.MYSQL_DBMS.getValue());
                 entityGraph.addEntity(new MappingEntity(mySqlDbmsId, entityGraph));
-                entityGraph.addEntity(new ScalarEntity(EdmmType.mysql_dbms.getValue(), mySqlDbmsId.extend(DefaultKeys.EXTENDS), entityGraph));
-                getDefaultConfiguration(EdmmType.dbms, entityGraph);
+                entityGraph.addEntity(new ScalarEntity(EdmmType.MYSQL_DBMS.getValue(), mySqlDbmsId.extend(DefaultKeys.EXTENDS), entityGraph));
+                getDefaultConfiguration(EdmmType.DBMS, entityGraph);
                 break;
-            case software_component:
-                EntityId softwareComponent = EntityGraph.COMPONENT_TYPES.extend(EdmmType.software_component.getValue());
+            case SOFTWARE_COMPONENT:
+                EntityId softwareComponent = EntityGraph.COMPONENT_TYPES.extend(EdmmType.SOFTWARE_COMPONENT.getValue());
                 entityGraph.addEntity(new MappingEntity(softwareComponent, entityGraph));
                 entityGraph.addEntity(new ScalarEntity(BASE, softwareComponent.extend(DefaultKeys.EXTENDS), entityGraph));
                 break;
-            case tomcat:
-                EntityId tomcatId = EntityGraph.COMPONENT_TYPES.extend(EdmmType.tomcat.getValue());
+            case TOMCAT:
+                EntityId tomcatId = EntityGraph.COMPONENT_TYPES.extend(EdmmType.TOMCAT.getValue());
                 entityGraph.addEntity(new MappingEntity(tomcatId, entityGraph));
-                entityGraph.addEntity(new ScalarEntity(EdmmType.web_server.getValue(), tomcatId.extend(DefaultKeys.EXTENDS), entityGraph));
-                getDefaultConfiguration(EdmmType.web_server, entityGraph);
+                entityGraph.addEntity(new ScalarEntity(EdmmType.WEB_SERVER.getValue(), tomcatId.extend(DefaultKeys.EXTENDS), entityGraph));
+                getDefaultConfiguration(EdmmType.WEB_SERVER, entityGraph);
                 break;
-            case web_application:
-                EntityId webApplication = EntityGraph.COMPONENT_TYPES.extend(EdmmType.web_application.getValue());
+            case WEB_APPLICATION:
+                EntityId webApplication = EntityGraph.COMPONENT_TYPES.extend(EdmmType.WEB_APPLICATION.getValue());
                 entityGraph.addEntity(new MappingEntity(webApplication, entityGraph));
                 entityGraph.addEntity(new ScalarEntity(BASE, webApplication.extend(DefaultKeys.EXTENDS), entityGraph));
                 break;
-            case web_server:
-                EntityId webServerId = EntityGraph.COMPONENT_TYPES.extend(EdmmType.web_server.getValue());
+            case WEB_SERVER:
+                EntityId webServerId = EntityGraph.COMPONENT_TYPES.extend(EdmmType.WEB_SERVER.getValue());
                 entityGraph.addEntity(new MappingEntity(webServerId, entityGraph));
-                entityGraph.addEntity(new ScalarEntity(EdmmType.software_component.getValue(), webServerId.extend(DefaultKeys.EXTENDS), entityGraph));
-                getDefaultConfiguration(EdmmType.software_component, entityGraph);
+                entityGraph.addEntity(new ScalarEntity(EdmmType.SOFTWARE_COMPONENT.getValue(), webServerId.extend(DefaultKeys.EXTENDS), entityGraph));
+                getDefaultConfiguration(EdmmType.SOFTWARE_COMPONENT, entityGraph);
                 break;
-            case connects_to:
-                EntityId connectsToId = EntityGraph.RELATION_TYPES.extend(EdmmType.connects_to.getValue());
+            case CONNECTS_TO:
+                EntityId connectsToId = EntityGraph.RELATION_TYPES.extend(EdmmType.CONNECTS_TO.getValue());
                 entityGraph.addEntity(new MappingEntity(connectsToId, entityGraph));
-                entityGraph.addEntity(new ScalarEntity(EdmmType.depends_on.getValue(), connectsToId.extend(DefaultKeys.EXTENDS), entityGraph));
-                getDefaultConfiguration(EdmmType.depends_on, entityGraph);
+                entityGraph.addEntity(new ScalarEntity(EdmmType.DEPENDS_ON.getValue(), connectsToId.extend(DefaultKeys.EXTENDS), entityGraph));
+                getDefaultConfiguration(EdmmType.DEPENDS_ON, entityGraph);
                 break;
-            case depends_on:
-                EntityId dependsOnId = EntityGraph.RELATION_TYPES.extend(EdmmType.depends_on.getValue());
+            case DEPENDS_ON:
+                EntityId dependsOnId = EntityGraph.RELATION_TYPES.extend(EdmmType.DEPENDS_ON.getValue());
                 entityGraph.addEntity(new MappingEntity(dependsOnId, entityGraph));
                 entityGraph.addEntity(new ScalarEntity(null, dependsOnId.extend(DefaultKeys.EXTENDS), entityGraph));
                 break;
-            case hosted_on:
-                EntityId hostedOnId = EntityGraph.RELATION_TYPES.extend(EdmmType.hosted_on.getValue());
+            case HOSTED_ON:
+                EntityId hostedOnId = EntityGraph.RELATION_TYPES.extend(EdmmType.HOSTED_ON.getValue());
                 entityGraph.addEntity(new MappingEntity(hostedOnId, entityGraph));
-                entityGraph.addEntity(new ScalarEntity(EdmmType.depends_on.getValue(), hostedOnId.extend(DefaultKeys.EXTENDS), entityGraph));
-                getDefaultConfiguration(EdmmType.depends_on, entityGraph);
+                entityGraph.addEntity(new ScalarEntity(EdmmType.DEPENDS_ON.getValue(), hostedOnId.extend(DefaultKeys.EXTENDS), entityGraph));
+                getDefaultConfiguration(EdmmType.DEPENDS_ON, entityGraph);
                 break;
         }
     }

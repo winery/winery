@@ -40,6 +40,6 @@ class JsonBasedEdmmManagerTest {
 
         EdmmMappingItem item = manager.getOneToOneMappings().get(0);
         assertEquals(QName.valueOf("{https://ex.org/test/tosca}hostedOn"), item.toscaType);
-        assertEquals(EdmmType.hosted_on, item.edmmType);
+        assertEquals(EdmmType.HOSTED_ON, item.edmmType);
     }
 }

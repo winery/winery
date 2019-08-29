@@ -237,12 +237,12 @@ public class EdmmConverterTest {
         // endregion
 
         // region *** create edmm type mapping ***
-        edmm1to1Mapping.put(nodeType1QName, EdmmType.software_component);
+        edmm1to1Mapping.put(nodeType1QName, EdmmType.SOFTWARE_COMPONENT);
         // edmmTypeMapping.put(nodeType2QName, EdmmType.SOFTWARE_COMPONENT);
-        edmmTypeExtendsMapping.put(nodeType3QName, EdmmType.compute);
-        edmmTypeExtendsMapping.put(nodeType4QName, EdmmType.web_application);
-        edmm1to1Mapping.put(hostedOnQName, EdmmType.hosted_on);
-        edmm1to1Mapping.put(connectsToQName, EdmmType.connects_to);
+        edmmTypeExtendsMapping.put(nodeType3QName, EdmmType.COMPUTE);
+        edmmTypeExtendsMapping.put(nodeType4QName, EdmmType.WEB_APPLICATION);
+        edmm1to1Mapping.put(hostedOnQName, EdmmType.HOSTED_ON);
+        edmm1to1Mapping.put(connectsToQName, EdmmType.CONNECTS_TO);
         // endregion
     }
 
@@ -414,7 +414,8 @@ public class EdmmConverterTest {
         StringWriter stringWriter = new StringWriter();
         transform.generateYamlOutput(stringWriter);
 
-        assertEquals("components:\n" +
+        assertEquals("---\n" +
+            "components:\n" +
             "  test_node_1:\n" +
             "    type: software_component\n" +
             "    relations:\n" +

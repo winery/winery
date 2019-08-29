@@ -186,8 +186,8 @@ public class EdmmConverter {
                         parentElement = edmmType.getValue();
                         EdmmTypeProperties.getDefaultConfiguration(edmmType, entityGraph);
                     } else if (toscaType instanceof TRelationshipType) {
-                        parentElement = EdmmType.depends_on.getValue();
-                        EdmmTypeProperties.getDefaultConfiguration(EdmmType.depends_on, entityGraph);
+                        parentElement = EdmmType.DEPENDS_ON.getValue();
+                        EdmmTypeProperties.getDefaultConfiguration(EdmmType.DEPENDS_ON, entityGraph);
                     }
 
                     entityGraph.addEntity(
@@ -273,7 +273,8 @@ public class EdmmConverter {
     }
 
     private String normalizeQName(QName qName) {
-        return qName.toString().substring(1)
+        return qName.toString()
+            .replace("}", "")
             .replace("}", "__")
             .replace("/", "")
             .replace(':', '_');

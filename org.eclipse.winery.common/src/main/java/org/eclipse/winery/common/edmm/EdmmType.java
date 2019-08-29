@@ -16,23 +16,26 @@ package org.eclipse.winery.common.edmm;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum EdmmType implements Serializable {
 
     // component types
-    compute("compute"),
-    database("database"),
-    dbms("dbms"),
-    mysql_database("mysql_database"),
-    mysql_dbms("mysql_dbms"),
-    software_component("software_component"),
-    tomcat("tomcat"),
-    web_application("web_application"),
-    web_server("web_server"),
+    COMPUTE("compute"),
+    DATABASE("database"),
+    DBMS("dbms"),
+    MYSQL_DATABASE("mysql_database"),
+    MYSQL_DBMS("mysql_dbms"),
+    SOFTWARE_COMPONENT("software_component"),
+    TOMCAT("tomcat"),
+    WEB_APPLICATION("web_application"),
+    WEB_SERVER("web_server"),
 
     // relation types
-    connects_to("connects_to"),
-    depends_on("depends_on"),
-    hosted_on("hosted_on");
+    CONNECTS_TO("connects_to"),
+    DEPENDS_ON("depends_on"),
+    HOSTED_ON("hosted_on");
 
     private final String value;
 
@@ -40,6 +43,7 @@ public enum EdmmType implements Serializable {
         this.value = value;
     }
 
+    @JsonCreator
     public static EdmmType fromValue(String v) {
         for (EdmmType c : EdmmType.values()) {
             if (c.value.equalsIgnoreCase(v)) {
@@ -49,6 +53,7 @@ public enum EdmmType implements Serializable {
         throw new IllegalArgumentException(v);
     }
 
+    @JsonValue
     public String getValue() {
         return this.value;
     }

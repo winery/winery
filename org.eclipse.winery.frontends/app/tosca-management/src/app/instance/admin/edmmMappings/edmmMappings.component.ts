@@ -49,7 +49,10 @@ export class EdmmMappingsComponent implements OnInit {
     ];
 
     constructor(private service: EdmmMappingsService, private notify: WineryNotificationService, private modalService: BsModalService) {
-        this.edmmTypes = Object.keys(EdmmType);
+        this.edmmTypes = [];
+        for (const edmmType of Object.keys(EdmmType)) {
+            this.edmmTypes.push(edmmType.toLowerCase());
+        }
     }
 
     ngOnInit() {
