@@ -22,7 +22,7 @@ import { ToscaTypes } from '../../../model/enums';
 export enum EdmmType {
     COMPUTE = 'compute',
     DATABASE = 'database',
-    DMBS = 'dbms',
+    DBMS = 'dbms',
     MYSQL_DATABASE = 'mysql_database',
     MYSQL_DBMS = 'mysql_dbms',
     SOFTWARE_COMPONENT = 'software_component',

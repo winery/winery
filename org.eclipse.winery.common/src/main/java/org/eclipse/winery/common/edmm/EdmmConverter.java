@@ -24,6 +24,7 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TEntityTypeImplementation;
@@ -136,6 +137,33 @@ public class EdmmConverter {
         entityGraph.addEntity(new ScalarEntity(nodeTypeEntityId.getName(), componentNodeId.extend(DefaultKeys.TYPE), entityGraph));
 
         createProperties(nodeTemplate, componentNodeId, entityGraph);
+        createArtifact(nodeTemplate, componentNodeId, entityGraph);
+    }
+
+    private void createArtifact(TNodeTemplate nodeTemplate, EntityId componentNodeId, EntityGraph entityGraph) {
+        if (nodeTemplate.getDeploymentArtifacts() != null
+            && nodeTemplate.getDeploymentArtifacts().getDeploymentArtifact().size() > 0) {
+            EntityId artifactsEntityId = componentNodeId.extend(DefaultKeys.ARTIFACTS);
+            entityGraph.addEntity(new SequenceEntity(artifactsEntityId, entityGraph));
+
+            for (TDeploymentArtifact artifact : nodeTemplate.getDeploymentArtifacts().getDeploymentArtifact()) {
+                String path = null;
+
+                TArtifactTemplate artifactTemplate = artifactTemplates.get(artifact.getArtifactRef());
+                if (artifactTemplate != null && artifactTemplate.getArtifactReferences().getArtifactReference().size() > 0) {
+                    path = artifactTemplate.getArtifactReferences().getArtifactReference().get(0).getReference();
+                }
+
+                EntityId artifactEntityId = artifactsEntityId.extend(
+                    artifact.getArtifactType().getLocalPart().toLowerCase()
+                );
+                entityGraph.addEntity(new ScalarEntity(
+                    path != null && this.useAbsolutePaths ? Environments.getRepositoryRoot() + "/" + path : path,
+                    artifactEntityId,
+                    entityGraph
+                ));
+            }
+        }
     }
 
     private void createProperties(TEntityTemplate toscaTemplate, EntityId componentNodeId, EntityGraph entityGraph) {
@@ -163,6 +191,17 @@ public class EdmmConverter {
             typeEntityId = parentEntityId.extend(edmmType.getValue());
             entityGraph.addEntity(new MappingEntity(typeEntityId, entityGraph));
             EdmmTypeProperties.getDefaultConfiguration(edmmType, entityGraph);
+
+            this.createPropertiesDefinition(toscaType, typeEntityId, entityGraph);
+            this.createOperations(toscaType, typeEntityId, entityGraph);
+
+            if (Objects.nonNull(toscaType.getDerivedFrom())) {
+                QName inheritsFrom = toscaType.getDerivedFrom().getType();
+                TEntityType parent = toscaType instanceof TNodeType
+                    ? nodeTypes.get(inheritsFrom)
+                    : relationshipTypes.get(inheritsFrom);
+                createType(parent, parentEntityId, entityGraph);
+            }
         } else {
             Optional<Entity> entity = entityGraph.getEntity(typeEntityId);
             if (!entity.isPresent()) {
@@ -274,7 +313,7 @@ public class EdmmConverter {
 
     private String normalizeQName(QName qName) {
         return qName.toString()
-            .replace("}", "")
+            .replace("{", "")
             .replace("}", "__")
             .replace("/", "")
             .replace(':', '_');
