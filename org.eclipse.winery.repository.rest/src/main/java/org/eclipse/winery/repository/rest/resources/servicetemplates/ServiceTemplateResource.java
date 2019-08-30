@@ -61,6 +61,7 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.filebased.NamespaceProperties;
 import org.eclipse.winery.repository.driverspecificationandinjection.DASpecification;
 import org.eclipse.winery.repository.driverspecificationandinjection.DriverInjection;
 import org.eclipse.winery.repository.rest.RestUtils;
@@ -392,14 +393,14 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
         for (TNodeTemplate node : element.getTopologyTemplate().getNodeTemplates()) {
             NodeTypeId nodeTypeId = new NodeTypeId(node.getType());
             if (!versionElements.containsKey(nodeTypeId.getQName())) {
-                List<WineryVersion> versionList = new ArrayList<>(); /* BackendUtils.getAllVersionsOfOneDefinition(nodeTypeId).stream()
+                List<WineryVersion> versionList = BackendUtils.getAllVersionsOfOneDefinition(nodeTypeId).stream()
                     .filter(wineryVersion -> {
                         QName qName = VersionUtils.getDefinitionInTheGivenVersion(nodeTypeId, wineryVersion).getQName();
                         NamespaceProperties namespaceProperties = repository.getNamespaceManager().getNamespaceProperties(qName.getNamespaceURI());
                         return !(namespaceProperties.isGeneratedNamespace()
                             || ModelUtilities.isFeatureType(qName, nodeTypes));
                     })
-                    .collect(Collectors.toList());*/
+                    .collect(Collectors.toList());
 
                 versionElements.put(nodeTypeId.getQName(), versionList);
             }
