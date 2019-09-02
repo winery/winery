@@ -24,6 +24,8 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.model.tosca.TDeploymentArtifact;
+import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
@@ -119,10 +121,8 @@ public class EdmmConverterTest {
         // region *** ArtifactTemplates setup ***
         TArtifactReference startArtifactReference = new TArtifactReference();
         startArtifactReference.setReference("/artifacttemplates/ns/startTestNode4/files/script.sh");
-        TArtifactTemplate startArtifactTemplate = new TArtifactTemplate();
         TArtifactTemplate.ArtifactReferences startArtifactReferences = new TArtifactTemplate.ArtifactReferences();
         startArtifactReferences.getArtifactReference().add(startArtifactReference);
-        startArtifactTemplate.setArtifactReferences(startArtifactReferences);
         TArtifactTemplate startArtifactIA = new TArtifactTemplate();
         QName startArtifactIAQName = QName.valueOf("{" + NAMESPACE + "}" + "Start_IA");
         startArtifactIA.setName(startArtifactIAQName.getLocalPart());
@@ -131,15 +131,24 @@ public class EdmmConverterTest {
 
         TArtifactReference stopArtifactReference = new TArtifactReference();
         stopArtifactReference.setReference("/artifacttemplates/ns/stopTestNode4/files/script.sh");
-        TArtifactTemplate stopArtifactTemplate = new TArtifactTemplate();
         TArtifactTemplate.ArtifactReferences stopArtifactReferences = new TArtifactTemplate.ArtifactReferences();
         stopArtifactReferences.getArtifactReference().add(startArtifactReference);
-        stopArtifactTemplate.setArtifactReferences(stopArtifactReferences);
         TArtifactTemplate stopArtifactIA = new TArtifactTemplate();
         QName stopArtifactIAQName = QName.valueOf("{" + NAMESPACE + "}" + "Stop_IA");
         stopArtifactIA.setName(stopArtifactIAQName.getLocalPart());
         stopArtifactIA.setArtifactReferences(stopArtifactReferences);
         artifactTemplates.put(stopArtifactIAQName, stopArtifactIA);
+
+        TArtifactReference deploymentArtifactArtifactReference = new TArtifactReference();
+        deploymentArtifactArtifactReference.setReference("/artifacttemplates/ns/testNode1-DA/files/da.war");
+        TArtifactTemplate deploymentArtifactTemplate = new TArtifactTemplate();
+        TArtifactTemplate.ArtifactReferences dploymentArtifactArtifactReferences = new TArtifactTemplate.ArtifactReferences();
+        dploymentArtifactArtifactReferences.getArtifactReference().add(startArtifactReference);
+        deploymentArtifactTemplate.setArtifactReferences(dploymentArtifactArtifactReferences);
+        QName deploymentArtifactIAQName = QName.valueOf("{" + NAMESPACE + "}" + "TestNode1-DA");
+        deploymentArtifactTemplate.setName(deploymentArtifactIAQName.getLocalPart());
+        deploymentArtifactTemplate.setArtifactReferences(dploymentArtifactArtifactReferences);
+        artifactTemplates.put(deploymentArtifactIAQName, deploymentArtifactTemplate);
         // endregion
 
         // region *** NodeTypeImplementations setup ***
@@ -153,7 +162,7 @@ public class EdmmConverterTest {
         startArtifact.setInterfaceName("lifecycle_interface");
         startArtifact.setOperationName("start");
         TImplementationArtifacts.ImplementationArtifact stopArtifact = new TImplementationArtifacts.ImplementationArtifact();
-        stopArtifact.setArtifactRef(stopArtifactIAQName);
+        stopArtifact.setArtifactRef(deploymentArtifactIAQName);
         stopArtifact.setInterfaceName("lifecycle_interface");
         stopArtifact.setOperationName("stop");
         artifacts.getImplementationArtifact().add(startArtifact);
@@ -181,6 +190,12 @@ public class EdmmConverterTest {
         TNodeTemplate nt1 = new TNodeTemplate();
         nt1.setType(nodeType1QName);
         nt1.setId("test_node_1");
+        TDeploymentArtifacts deploymentArtifacts = new TDeploymentArtifacts();
+        TDeploymentArtifact artifact = new TDeploymentArtifact();
+        artifact.setArtifactRef(deploymentArtifactIAQName);
+        artifact.setArtifactType(QName.valueOf("{" + NAMESPACE + "}" + "WAR"));
+        deploymentArtifacts.getDeploymentArtifact().add(artifact);
+        nt1.setDeploymentArtifacts(deploymentArtifacts);
         nodeTemplates.put(nt1.getId(), nt1);
 
         TNodeTemplate nt2 = new TNodeTemplate();
@@ -261,7 +276,7 @@ public class EdmmConverterTest {
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
-        assertEquals(7, transform.vertexSet().size());
+        assertEquals(9, transform.vertexSet().size());
     }
 
     @Test
@@ -346,7 +361,7 @@ public class EdmmConverterTest {
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
-        assertEquals(40, transform.vertexSet().size());
+        assertEquals(42, transform.vertexSet().size());
         assertTrue(transform.vertexSet().stream().anyMatch(entity ->
             entity instanceof ScalarEntity
                 && entity.getName().equals("hosted_on")
@@ -421,6 +436,8 @@ public class EdmmConverterTest {
             "    relations:\n" +
             "    - hosted_on: test_node_3\n" +
             "    - connects_to: test_node_2\n" +
+            "    artifacts:\n" +
+            "    - war: /artifacttemplates/ns/startTestNode4/files/script.sh\n" +
             "  test_node_3:\n" +
             "    type: https_ex.orgtoscatoedmm__test_node_type_3\n" +
             "    properties:\n" +
