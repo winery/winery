@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component} from '@angular/core';
+import { Component } from '@angular/core';
 import { FeatureEnum } from '../wineryFeatureToggleModule/wineryRepository.feature.direct';
 
 @Component({
