@@ -50,7 +50,10 @@ export class InstanceService {
                 break;
             case ToscaTypes.ServiceTemplate:
                 subMenu = ['README', 'LICENSE', 'Topology Template', 'Plans', 'Selfservice Portal',
-                    'Boundary Definitions', 'Tags', 'Constraint Checking', 'Documentation', 'XML', 'Threat Modeling'];
+                    'Boundary Definitions', 'Tags', 'Constraint Checking', 'Documentation', 'XML'];
+                if (this.configurationService.configuration.features.nfv) {
+                    subMenu.push('Threat Modeling');
+                }
                 break;
             case ToscaTypes.RelationshipType:
                 subMenu = ['README', 'LICENSE', 'Appearance', 'Instance States', 'Source Interfaces', 'Interfaces',
@@ -99,6 +102,9 @@ export class InstanceService {
                     'Constraint Types', 'Consistency Check', 'Log', 'Configuration'];
                 if (this.configurationService.configuration.features.accountability) {
                     subMenu.push('Accountability');
+                }
+                if (this.configurationService.configuration.features.edmmModeling) {
+                    subMenu.push('1 to 1 EDMM Mappings', 'EDMM Type Mappings');
                 }
         }
         return subMenu;

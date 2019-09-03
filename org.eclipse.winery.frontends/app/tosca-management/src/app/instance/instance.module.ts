@@ -42,7 +42,7 @@ import { WineryFeatureToggleModule } from '../wineryFeatureToggleModule/winery-f
     declarations: [
         InstanceComponent,
         InstanceHeaderComponent,
-        PropertyRenameComponent
+        PropertyRenameComponent,
     ],
     providers: [],
 })
