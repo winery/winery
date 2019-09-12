@@ -21,6 +21,7 @@ For more information on TOSCA see [our TOSCA information page](../tosca/).
 - [Accountability](../../org.eclipse.winery.accountability/README.md) - Enables enforcing accountability in decentralized scenarios for collaborative development of CSARs
 - [Version Management](VersionManagement.md) - shows how to update the version of a node template in the topology modeler
 - [Threat Modeling For NFV](ThreatModelingNFV.md) - Enables threat modeling capabilities and NFV-based mitigation recommendation
+- [Pattern-based Deployment and Configuration Models](Pattern-basedDeploymentModelling.md) - describes how PbDCMs can be crated and refined to executable deployment models
 
 ## Background Literature
 
