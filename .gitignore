@@ -24,3 +24,8 @@ copy.bara.sky
 ## Eclipse
 **/.classpath
 **/.settings
+
+!.idea/codeStyles
+!.idea/copyright
+!.idea/runConfigurations
+!.idea/modules.xml

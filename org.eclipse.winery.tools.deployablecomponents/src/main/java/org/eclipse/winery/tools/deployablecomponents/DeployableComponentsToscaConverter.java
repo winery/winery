@@ -14,14 +14,20 @@
 
 package org.eclipse.winery.tools.deployablecomponents;
 
-import javafx.util.Pair;
-import org.eclipse.winery.model.tosca.*;
-import org.eclipse.winery.tools.deployablecomponents.commons.Component;
-
-import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.model.tosca.TCapabilityDefinition;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TRequirementDefinition;
+import org.eclipse.winery.model.tosca.TTag;
+import org.eclipse.winery.model.tosca.TTags;
+import org.eclipse.winery.tools.deployablecomponents.commons.Component;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 class DeployableComponentsToscaConverter {
 

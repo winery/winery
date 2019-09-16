@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.accountability/org.eclipse.winery.accountability.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.accountability/org.eclipse.winery.accountability.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.bpmn4tosca.converter.tobpel/org.eclipse.winery.bpmn4tosca.converter.tobpel.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.bpmn4tosca.converter.tobpel/org.eclipse.winery.bpmn4tosca.converter.tobpel.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.cli/org.eclipse.winery.cli.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.cli/org.eclipse.winery.cli.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.common/org.eclipse.winery.common.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.common/org.eclipse.winery.common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.compliance/org.eclipse.winery.compliance.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.compliance/org.eclipse.winery.compliance.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.crawler/org.eclipse.winery.crawler.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.crawler/org.eclipse.winery.crawler.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.frontends/org.eclipse.winery.frontends.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.frontends/org.eclipse.winery.frontends.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.generators.ia/org.eclipse.winery.generators.ia.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.generators.ia/org.eclipse.winery.generators.ia.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.highlevelrestapi/org.eclipse.winery.highlevelrestapi.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.highlevelrestapi/org.eclipse.winery.highlevelrestapi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.model.adaptation/org.eclipse.winery.model.adaptation.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.model.adaptation/org.eclipse.winery.model.adaptation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.model.bpmn4tosca/org.eclipse.winery.model.bpmn4tosca.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.model.bpmn4tosca/org.eclipse.winery.model.bpmn4tosca.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.model.csar.toscametafile/org.eclipse.winery.model.csar.toscametafile.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.model.csar.toscametafile/org.eclipse.winery.model.csar.toscametafile.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.model.selfservice/org.eclipse.winery.model.selfservice.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.model.selfservice/org.eclipse.winery.model.selfservice.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.model.threatmodeling/org.eclipse.winery.model.threatmodeling.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.model.threatmodeling/org.eclipse.winery.model.threatmodeling.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.model.tosca/org.eclipse.winery.model.tosca.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.model.tosca/org.eclipse.winery.model.tosca.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.model.tosca.yaml/org.eclipse.winery.model.tosca.yaml.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.model.tosca.yaml/org.eclipse.winery.model.tosca.yaml.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.repository/org.eclipse.winery.repository.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.repository/org.eclipse.winery.repository.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.repository.client/org.eclipse.winery.repository.client.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.repository.client/org.eclipse.winery.repository.client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.repository.rest/org.eclipse.winery.repository.rest.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.repository.rest/org.eclipse.winery.repository.rest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.tools.copybaragenerator/org.eclipse.winery.tools.copybaragenerator.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.tools.copybaragenerator/org.eclipse.winery.tools.copybaragenerator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.tools.deployablecomponents/org.eclipse.winery.tools.deployablecomponents.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.tools.deployablecomponents/org.eclipse.winery.tools.deployablecomponents.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.topologygraph/org.eclipse.winery.topologygraph.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.topologygraph/org.eclipse.winery.topologygraph.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.yaml.common/org.eclipse.winery.yaml.common.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.yaml.common/org.eclipse.winery.yaml.common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.eclipse.winery.yaml.converter/org.eclipse.winery.yaml.converter.iml" filepath="$PROJECT_DIR$/org.eclipse.winery.yaml.converter/org.eclipse.winery.yaml.converter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/winery.iml" filepath="$PROJECT_DIR$/.idea/winery.iml" />
+    </modules>
+  </component>
+</project>

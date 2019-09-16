@@ -66,5 +66,11 @@
             <version>${org.slf4j}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${org.apache.commons-lang3.version}</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>

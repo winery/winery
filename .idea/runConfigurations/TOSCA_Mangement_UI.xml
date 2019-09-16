@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="TOSCA Mangement UI" type="js.build_tools.npm">
+    <package-json value="$PROJECT_DIR$/org.eclipse.winery.frontends/package.json" />
+    <command value="run" />
+    <scripts>
+      <script value="start-tosca-management" />
+    </scripts>
+    <node-interpreter value="project" />
+    <envs />
+    <method v="2" />
+  </configuration>
+</component>
