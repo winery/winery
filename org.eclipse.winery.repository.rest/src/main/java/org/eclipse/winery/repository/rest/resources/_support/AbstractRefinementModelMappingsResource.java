@@ -23,16 +23,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.eclipse.winery.model.tosca.HasId;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TPrmMapping;
 import org.eclipse.winery.repository.rest.RestUtils;
-
-import com.sun.jersey.api.NotFoundException;
 
 public abstract class AbstractRefinementModelMappingsResource {
 
     protected final AbstractRefinementModelResource res;
-    protected List<? extends HasId> mappings;
+    protected List<? extends TPrmMapping> mappings;
 
     public AbstractRefinementModelMappingsResource(AbstractRefinementModelResource res) {
         this.res = res;
@@ -40,38 +37,23 @@ public abstract class AbstractRefinementModelMappingsResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<? extends HasId> get() {
+    public List<? extends TPrmMapping> get() {
         return this.mappings;
     }
 
     @DELETE
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<? extends HasId> removePatternRefinement(@PathParam("id") String id) {
+    public List<? extends TPrmMapping> removePatternRefinement(@PathParam("id") String id) {
         this.mappings.removeIf(mapping -> mapping.getId().equals(id));
         RestUtils.persist(this.res);
         return this.mappings;
     }
 
-    protected TNodeTemplate getDetectorNodeTemplate(String id) {
-        return getNodeTemplate(this.res.getDetector().getComponentInstanceJSON().getNodeTemplates(), id);
-    }
-
-    protected TNodeTemplate getRefinementNodeTemplate(String id) {
-        return getNodeTemplate(this.res.getRefinementTopology().getComponentInstanceJSON().getNodeTemplates(), id);
-    }
-
-    private TNodeTemplate getNodeTemplate(List<TNodeTemplate> nodeTemplates, String id) {
-        return nodeTemplates.stream()
-            .filter(nodeTemplate -> nodeTemplate.getId().equals(id))
-            .findFirst()
-            .orElseThrow(NotFoundException::new);
-    }
-
-    public List<? extends HasId> addMapping(HasId mapping) {
+    public List<? extends TPrmMapping> addMapping(TPrmMapping mapping) {
         // to update an element, just remove the old one from the list and add it again
         this.mappings.remove(mapping);
-        ((List<HasId>) this.mappings).add(mapping);
+        ((List<TPrmMapping>) this.mappings).add(mapping);
         RestUtils.persist(this.res);
         return mappings;
     }

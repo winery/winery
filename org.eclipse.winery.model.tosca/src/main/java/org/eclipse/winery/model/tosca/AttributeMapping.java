@@ -14,67 +14,30 @@
 
 package org.eclipse.winery.model.tosca;
 
-import java.io.Serializable;
-import java.util.Objects;
-
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlSchemaType;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-public class TPrmPropertyMapping extends HasId implements Serializable {
+public class AttributeMapping extends TPrmMapping {
 
-    @JsonIdentityReference(alwaysAsId = true)
-    @XmlAttribute(name = "detectorNode", required = true)
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @NonNull
-    private TNodeTemplate detectorNode;
-
-    @JsonIdentityReference(alwaysAsId = true)
-    @XmlAttribute(name = "refinementNode", required = true)
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @NonNull
-    private TNodeTemplate refinementNode;
-    
     @XmlAttribute(name = "type")
-    private TPrmPropertyMappingType type;
-    
+    private TAttributeMappingType type;
+
     @XmlAttribute(name = "detectorProperty")
     @Nullable
     private String detectorProperty;
-    
+
     @XmlAttribute(name = "refinementProperty")
     @Nullable
     private String refinementProperty;
 
-    public TNodeTemplate getDetectorNode() {
-        return detectorNode;
-    }
-
-    public void setDetectorNode(TNodeTemplate detectorNode) {
-        this.detectorNode = detectorNode;
-    }
-
-    public TNodeTemplate getRefinementNode() {
-        return refinementNode;
-    }
-
-    public void setRefinementNode(TNodeTemplate refinementNode) {
-        this.refinementNode = refinementNode;
-    }
-
-    public TPrmPropertyMappingType getType() {
+    public TAttributeMappingType getType() {
         return type;
     }
 
-    public void setType(TPrmPropertyMappingType type) {
+    public void setType(TAttributeMappingType type) {
         this.type = type;
     }
 
@@ -95,16 +58,9 @@ public class TPrmPropertyMapping extends HasId implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TPrmPropertyMapping that = (TPrmPropertyMapping) o;
-        return getId().equals(that.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId());
+    public boolean equals(Object obj) {
+        return obj instanceof AttributeMapping
+            && getId().equals(((AttributeMapping) obj).getId());
     }
 
     @Override

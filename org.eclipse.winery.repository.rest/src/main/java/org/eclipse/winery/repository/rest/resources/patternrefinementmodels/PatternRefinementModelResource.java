@@ -14,12 +14,16 @@
 
 package org.eclipse.winery.repository.rest.resources.patternrefinementmodels;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import javax.ws.rs.Path;
 
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.tosca.AttributeMapping;
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
+import org.eclipse.winery.model.tosca.TStayMapping;
 import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates.TopologyTemplateResource;
 
@@ -43,15 +47,27 @@ public class PatternRefinementModelResource extends AbstractRefinementModelResou
         return new TopologyTemplateResource(this, this.getTRefinementModel().getRefinementTopology(), REFINEMENT_TOPOLOGY);
     }
 
-    @Path("propertymappings")
-    public PrmPropertyMappingsResource getPropertyMappings() {
-        TPatternRefinementModel.TPrmPropertyMappings propertyMappings = this.getTRefinementModel().getPropertyMappings();
+    @Path("attributemappings")
+    public AttributeMappingsResource getPropertyMappings() {
+        List<AttributeMapping> propertyMappings = this.getTRefinementModel().getAttributeMappings();
 
         if (Objects.isNull(propertyMappings)) {
-            propertyMappings = new TPatternRefinementModel.TPrmPropertyMappings();
-            this.getTRefinementModel().setPropertyMappings(propertyMappings);
+            propertyMappings = new ArrayList<>();
+            this.getTRefinementModel().setAttributeMappings(propertyMappings);
         }
 
-        return new PrmPropertyMappingsResource(this, propertyMappings);
+        return new AttributeMappingsResource(this, propertyMappings);
+    }
+
+    @Path("staymappings")
+    public StayMappingsResource getStayMappings() {
+        List<TStayMapping> stayMappings = this.getTRefinementModel().getStayMappings();
+
+        if (Objects.isNull(stayMappings)) {
+            stayMappings = new ArrayList<>();
+            this.getTRefinementModel().setStayMappings(stayMappings);
+        }
+
+        return new StayMappingsResource(this, stayMappings);
     }
 }

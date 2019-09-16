@@ -20,13 +20,28 @@
         <artifactId>winery</artifactId>
         <version>2.0.0-SNAPSHOT</version>
     </parent>
+
     <artifactId>org.eclipse.winery.common</artifactId>
+
     <properties>
         <checkstyle.config.location>../checkstyle.xml</checkstyle.config.location>
         <!-- property is required for deployment to mvn-repo -->
         <main.basedir>${project.parent.basedir}</main.basedir>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <dependencies>
+        <dependency>
+            <groupId>com.github.ust-edmm.transformation-framework</groupId>
+            <artifactId>edmm-core</artifactId>
+            <version>master-edceefd6ee-1</version>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>

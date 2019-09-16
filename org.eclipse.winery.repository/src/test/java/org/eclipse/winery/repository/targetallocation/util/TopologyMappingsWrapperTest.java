@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TopologyWrapperTest extends TestWithGitBackedRepository {
+public class TopologyMappingsWrapperTest extends TestWithGitBackedRepository {
 
     private TopologyWrapper policiesTopology;
     private TopologyWrapper minHostsTopology;

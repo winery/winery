@@ -16,8 +16,7 @@ import { RefinementMappingsService } from '../refinementMappings.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
 import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
-import { PrmPropertyMapping, PrmPropertyMappingType } from './prmPropertyMapping';
-import { NodeTemplate } from '../../../model/wineryComponent';
+import { WineryTemplate } from '../../../model/wineryComponent';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -26,16 +25,17 @@ import {
     PropertiesDefinitionKVElement, PropertiesDefinitionsResourceApiData
 } from '../../sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
 import { InstanceService } from '../../instance.service';
+import { AttributeMapping, AttributeMappingType } from './attributeMapping';
 
 @Component({
-    templateUrl: 'prmPropertyMappings.component.html',
+    templateUrl: 'attributeMappings.component.html',
     providers: [
         RefinementMappingsService
     ]
 })
-export class PrmPropertyMappingsComponent implements OnInit {
+export class AttributeMappingsComponent implements OnInit {
 
-    readonly propertyMappingTypes = PrmPropertyMappingType;
+    readonly attributeMappingType = AttributeMappingType;
 
     loading = true;
     columns: Array<WineryTableColumn> = [
@@ -47,10 +47,10 @@ export class PrmPropertyMappingsComponent implements OnInit {
         { title: 'Refinement Node Property', name: 'refinementProperty', sort: true },
     ];
 
-    propertyMappings: PrmPropertyMapping[];
-    detectorNodeTemplates: NodeTemplate[];
+    attributeMappings: AttributeMapping[];
+    detectorTemplates: WineryTemplate[];
     detectorProperties: PropertiesDefinitionKVElement[];
-    refinementStructureNodeTemplates: NodeTemplate[];
+    refinementStructureTemplates: WineryTemplate[];
     refinementProperties: PropertiesDefinitionKVElement[];
 
     @ViewChild('addModal') addModal: ModalDirective;
@@ -58,11 +58,16 @@ export class PrmPropertyMappingsComponent implements OnInit {
     addModalRef: BsModalRef;
     removeModalRef: BsModalRef;
 
-    mapping: PrmPropertyMapping;
-    selectedDetectorNode: NodeTemplate;
-    selectedRefinementNode: NodeTemplate;
+    mapping: AttributeMapping;
+    selectedDetectorElement: WineryTemplate;
+    selectedRefinementElement: WineryTemplate;
     loadingRefinementProperties = false;
     loadingDetectorProperties = false;
+
+    private detectorNodeTemplates: WineryTemplate[];
+    private detectorRelationshipTemplates: WineryTemplate[];
+    private refinementNodeTemplates: WineryTemplate[];
+    private refinementRelationshipTemplates: WineryTemplate[];
 
     constructor(private service: RefinementMappingsService,
                 private notify: WineryNotificationService,
@@ -74,7 +79,9 @@ export class PrmPropertyMappingsComponent implements OnInit {
         forkJoin(
             this.service.getPropertyMappings(),
             this.service.getDetectorNodeTemplates(),
+            this.service.getDetectorRelationshipTemplates(),
             this.service.getRefinementTopologyNodeTemplates(),
+            this.service.getRefinementTopologyRelationshipTemplates(),
         ).subscribe(
             data => this.handleData(data),
             error => this.handleError(error)
@@ -84,8 +91,8 @@ export class PrmPropertyMappingsComponent implements OnInit {
     // region ********** Table Callbacks **********
     onAddButtonClicked() {
         let id = 0;
-        this.propertyMappings.forEach(value => {
-            const number = Number(value.id.split(PrmPropertyMapping.idPrefix)[1]);
+        this.attributeMappings.forEach(value => {
+            const number = Number(value.id.split(AttributeMapping.idPrefix)[1]);
             if (!isNaN(number) && number >= id) {
                 id = number;
                 if (number === id) {
@@ -94,12 +101,12 @@ export class PrmPropertyMappingsComponent implements OnInit {
             }
         });
 
-        this.mapping = new PrmPropertyMapping(id);
+        this.mapping = new AttributeMapping(id);
         this.cleanProperties();
         this.addModalRef = this.modalService.show(this.addModal);
     }
 
-    onRemoveButtonClicked(selected: PrmPropertyMapping) {
+    onRemoveButtonClicked(selected: AttributeMapping) {
         this.mapping = selected;
         this.removeModalRef = this.modalService.show(this.removeModal);
     }
@@ -107,7 +114,7 @@ export class PrmPropertyMappingsComponent implements OnInit {
     // endregion
 
     // region ********** Add Modal Callbacks **********
-    onAddPrmPropertyMapping() {
+    onAddAttributeMapping() {
         this.loading = true;
         this.service.addPrmPropertyMapping(this.mapping)
             .subscribe(
@@ -116,9 +123,9 @@ export class PrmPropertyMappingsComponent implements OnInit {
             );
     }
 
-    propertyTypeSelected(type: PrmPropertyMappingType) {
+    propertyTypeSelected(type: AttributeMappingType) {
         this.mapping.type = type;
-        if (type === PrmPropertyMappingType.ALL) {
+        if (type === AttributeMappingType.ALL) {
             this.cleanProperties();
         }
         this.getProperties();
@@ -126,14 +133,14 @@ export class PrmPropertyMappingsComponent implements OnInit {
 
     detectorNodeSelected(node: SelectData) {
         this.mapping.detectorNode = node.id;
-        this.selectedDetectorNode = this.detectorNodeTemplates
+        this.selectedDetectorElement = this.detectorTemplates
             .find(value => value.id === node.id);
         this.getProperties();
     }
 
     refinementNodeSelected(node: SelectData) {
         this.mapping.refinementNode = node.id;
-        this.selectedRefinementNode = this.refinementStructureNodeTemplates
+        this.selectedRefinementElement = this.refinementStructureTemplates
             .find(value => value.id === node.id);
         this.getProperties();
     }
@@ -141,7 +148,7 @@ export class PrmPropertyMappingsComponent implements OnInit {
     // endregion
 
     // region ********** Remove Modal Callback **********
-    onRemovePrmPropertyMapping() {
+    onRemoveAttributeMapping() {
         this.service.deletePrmPropertyMapping(this.mapping)
             .subscribe(
                 data => this.handleSave('Removed', data),
@@ -152,24 +159,27 @@ export class PrmPropertyMappingsComponent implements OnInit {
     // endregion
 
     // region ********** Private Methods *********
-    private handleSave(type: string, data: PrmPropertyMapping[]) {
+    private handleSave(type: string, data: AttributeMapping[]) {
         this.notify.success(type + ' Property Mapping ' + this.mapping.id);
-        this.propertyMappings = data;
+        this.attributeMappings = data;
         this.loading = false;
     }
 
     private getProperties() {
-        if (this.mapping.type && this.mapping.type === PrmPropertyMappingType.SELECTIVE) {
-            if (this.selectedRefinementNode) {
+        if (this.mapping.type && this.mapping.type === AttributeMappingType.SELECTIVE) {
+            if (this.selectedRefinementElement) {
                 this.loadingRefinementProperties = true;
-                this.service.getNodeTypeProperties(this.selectedRefinementNode.type)
+                const nodeTemplate = this.refinementNodeTemplates.includes(this.selectedRefinementElement);
+                this.service.getTypeProperties(this.selectedRefinementElement.type, nodeTemplate)
                     .subscribe(
                         data => this.handleProperties(data),
                         error => this.handleError(error)
                     );
             }
-            if (this.selectedDetectorNode) {
-                this.service.getNodeTypeProperties(this.selectedDetectorNode.type)
+            if (this.selectedDetectorElement) {
+                this.loadingDetectorProperties = true;
+                const nodeTemplate = this.detectorNodeTemplates.includes(this.selectedDetectorElement);
+                this.service.getTypeProperties(this.selectedDetectorElement.type, nodeTemplate)
                     .subscribe(
                         data => this.handleProperties(data, true),
                         error => this.handleError(error)
@@ -178,11 +188,17 @@ export class PrmPropertyMappingsComponent implements OnInit {
         }
     }
 
-    private handleData(data: any) {
+    private handleData(data: [AttributeMapping[], WineryTemplate[], WineryTemplate[], WineryTemplate[], WineryTemplate[]]) {
         this.loading = false;
-        this.propertyMappings = data[0];
+        this.attributeMappings = data[0];
+
         this.detectorNodeTemplates = data[1];
-        this.refinementStructureNodeTemplates = data[2];
+        this.detectorRelationshipTemplates = data[2];
+        this.detectorTemplates = data[1].concat(...data[2]);
+
+        this.refinementNodeTemplates = data[3];
+        this.refinementRelationshipTemplates = data[4];
+        this.refinementStructureTemplates = data[3].concat(data[4]);
     }
 
     private handleError(error: HttpErrorResponse) {
@@ -196,8 +212,10 @@ export class PrmPropertyMappingsComponent implements OnInit {
             this.notify.error('Mapping of non-winery properties is currently not supported!', 'No Winery Properties Definitions!');
         } else {
             if (isDetector) {
+                this.loadingDetectorProperties = false;
                 this.detectorProperties = data.winerysPropertiesDefinition.propertyDefinitionKVList;
             } else {
+                this.loadingRefinementProperties = false;
                 this.refinementProperties = data.winerysPropertiesDefinition.propertyDefinitionKVList;
             }
         }

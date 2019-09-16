@@ -33,6 +33,7 @@ import { Visuals } from '../models/visuals';
 import { VersionElement } from '../models/versionElement';
 import { VersionsComponent } from './versions/versions.component';
 import { WineryVersion } from '../../../../tosca-management/src/app/model/wineryVersion';
+import { FeatureEnum } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/wineryRepository.feature.direct';
 
 /**
  * Every node has its own component and gets created dynamically.
@@ -71,6 +72,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     removeZIndex: any;
     propertyDefinitionType: string;
     policyIcons: string[];
+    configEnum = FeatureEnum;
 
     @Input() readonly: boolean;
     @Input() entityTypes: EntityTypesModel;
@@ -212,7 +214,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
             }
         }
 
-        this.addNewVersions(new QName(this.nodeTemplate.type)); // yannik
+        this.addNewVersions(new QName(this.nodeTemplate.type));
 
     }
 

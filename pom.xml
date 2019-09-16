@@ -111,6 +111,7 @@
         <module>org.eclipse.winery.model.adaptation</module>
         <module>org.eclipse.winery.frontends</module>
         <module>org.eclipse.winery.crawler</module>
+        <module>org.eclipse.winery.tools.deployablecomponents</module>
         <module>org.eclipse.winery.model.threatmodeling</module>
     </modules>
     <build>
@@ -523,7 +524,9 @@
                                                 </excludes>
                                                 <instructions>
                                                     <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>org.eclipse.winery.model.threatmodeling.*;-noimport:=true;version:=${project.version.osgi}</Export-Package>
+                                                    <Export-Package>
+                                                        org.eclipse.winery.model.threatmodeling.*;-noimport:=true;version:=${project.version.osgi}
+                                                    </Export-Package>
                                                 </instructions>
                                             </artifact>
 

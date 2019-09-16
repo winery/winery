@@ -22,6 +22,7 @@ export class SectionData {
     name?: string;
     namespace: string;
     count?: number;
+    qName?: string;
     version?: WineryVersion;
     versionInstances?: SectionData[];
     hasChildren?: boolean;
@@ -43,6 +44,7 @@ export class SectionData {
         this.name = original.name;
         this.namespace = original.namespace;
         this.version = original.version;
+        this.qName = original.name;
 
         return this;
     }

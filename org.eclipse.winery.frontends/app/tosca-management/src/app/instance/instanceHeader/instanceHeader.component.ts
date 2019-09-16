@@ -11,16 +11,16 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {Router} from '@angular/router';
-import {RemoveWhiteSpacesPipe} from '../../wineryPipes/removeWhiteSpaces.pipe';
-import {ModalDirective} from 'ngx-bootstrap';
-import {ToscaComponent} from '../../model/toscaComponent';
-import {ToscaTypes} from '../../model/enums';
-import {WineryVersion} from '../../model/wineryVersion';
-import {InstanceService} from '../instance.service';
-import { AccountabilityService } from '../admin/accountability/accountability.service';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { RemoveWhiteSpacesPipe } from '../../wineryPipes/removeWhiteSpaces.pipe';
+import { ModalDirective } from 'ngx-bootstrap';
+import { ToscaComponent } from '../../model/toscaComponent';
+import { ToscaTypes } from '../../model/enums';
+import { WineryVersion } from '../../model/wineryVersion';
+import { InstanceService } from '../instance.service';
 import { ConfigurationService } from '../admin/accountability/configuration/configuration.service';
+import { WineryRepositoryConfigurationService } from '../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 @Component({
     selector: 'winery-instance-header',
@@ -50,8 +50,11 @@ export class InstanceHeaderComponent implements OnInit {
     selectedTab: string;
     showManagementButtons = true;
     accountabilityEnabled: boolean;
+    showEdmmExport: boolean;
 
-    constructor(private router: Router, private accountabilityConfig: ConfigurationService, public sharedData: InstanceService) {
+    constructor(private router: Router, private accountabilityConfig: ConfigurationService,
+                public sharedData: InstanceService,
+                private configurationService: WineryRepositoryConfigurationService) {
     }
 
     ngOnInit(): void {
@@ -64,6 +67,8 @@ export class InstanceHeaderComponent implements OnInit {
         if (this.toscaComponent.toscaType === ToscaTypes.Imports || this.toscaComponent.toscaType === ToscaTypes.Admin) {
             this.showManagementButtons = false;
         }
+
+        this.showEdmmExport = this.toscaComponent.toscaType === ToscaTypes.ServiceTemplate && this.configurationService.configuration.features.edmmModeling;
     }
 
     removeConfirmed() {

@@ -39,6 +39,7 @@ import { WineryFileComparisonModule } from '../../wineryFileComparisonModule/win
 import { ProvenanceComponent } from '../../instance/admin/accountability/provenance/provenance.component';
 import { FeatureConfigurationComponent } from '../../instance/admin/configuration/configuration.component';
 import { WineryFeatureToggleModule } from '../../wineryFeatureToggleModule/winery-feature-toggle.module';
+import { EdmmMappingsComponent } from '../../instance/admin/edmmMappings/edmmMappings.component';
 
 @NgModule({
     imports: [
@@ -73,6 +74,7 @@ import { WineryFeatureToggleModule } from '../../wineryFeatureToggleModule/winer
         ConfigurationComponent,
         FeatureConfigurationComponent,
         ProvenanceComponent,
+        EdmmMappingsComponent,
     ],
     providers: [ConfigurationService, AccountabilityService]
 

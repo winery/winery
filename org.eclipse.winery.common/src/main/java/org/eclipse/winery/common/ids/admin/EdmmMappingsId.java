@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,24 +12,16 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-export enum PrmPropertyMappingType {
-    ALL = 'ALL',
-    SELECTIVE = 'SELECTIVE'
-}
+package org.eclipse.winery.common.ids.admin;
 
-export class PrmPropertyMapping {
+import org.eclipse.winery.common.ids.IdNames;
+import org.eclipse.winery.common.ids.XmlId;
 
-    public static readonly idPrefix = 'propMap';
+public class EdmmMappingsId extends AdminId {
 
-    id: string;
-    detectorNode: string;
-    refinementNode: string;
-    detectorProperty: string;
-    refinementProperty: string;
-    type: PrmPropertyMappingType;
+    private final static XmlId xmlId = new XmlId(IdNames.EDMM_MAPPINGS, false);
 
-    constructor(id: number) {
-        this.id = PrmPropertyMapping.idPrefix + id;
+    public EdmmMappingsId() {
+        super(EdmmMappingsId.xmlId);
     }
-
 }

@@ -1,0 +1,75 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<winery-loader *ngIf="loading; else content"></winery-loader>
+<ng-template #content>
+    <winery-table [columns]="columns" [data]="stayMappings"
+                  [disableButtons]="!sharedData.currentVersion.editable"
+                  (addBtnClicked)="onAddButtonClicked()" (removeBtnClicked)="onRemoveButtonClicked($event)">
+    </winery-table>
+</ng-template>
+
+<ng-template #addModal>
+    <winery-modal-header [modalRef]="addModalRef" [title]="'Add Property Mapping'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <form>
+            <div class="form-group">
+                <span><b>Stay Mapping Type</b></span>
+                <br>
+                <input type="radio" name="elementType" id="d-node"
+                       (click)="modelElementTypeSelected(modelElementTypes.NODE)">
+                <label for="d-node">Model Node</label>
+                <br>
+                <input type="radio" name="elementType" id="d-relation"
+                       (click)="modelElementTypeSelected(modelElementTypes.RELATION)">
+                <label for="d-relation">Relation</label>
+            </div>
+            <div *ngIf="!detectorTemplates; else showElementsSelector">
+                <winery-loader [hidden]="!loadingElements"></winery-loader>
+            </div>
+            <ng-template #showElementsSelector>
+                <div class="form-group">
+                    <label for="detectorNode" class="control-label">Detector Element</label>
+                    <ng-select id="detectorNode" [items]="detectorTemplates" [textField]="'name'"
+                               (selected)="detectorNodeSelected($event)">
+                    </ng-select>
+                </div>
+
+                <div class="form-group">
+                    <label for="refinementNode" class="control-label">Refinement Structure Element</label>
+                    <ng-select id="refinementNode" [items]="refinementStructureTemplates" [textField]="'name'"
+                               (selected)="refinementNodeSelected($event)">
+                    </ng-select>
+                </div>
+            </ng-template>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer [modalRef]="addModalRef"
+                         [okButtonLabel]="'Add'"
+                         [disableOkButton]="(!mapping.modelElementType || !mapping.detectorNode || !mapping.refinementNode)"
+                         (onOk)="onAddPrmPropertyMapping()">
+    </winery-modal-footer>
+</ng-template>
+
+<ng-template #removeModal>
+    <winery-modal-header [modalRef]="removeModalRef" [title]="'Remove Property Mapping'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <p>Are you sure you want to delete <b>{{ mapping.id }}</b>?</p>
+    </winery-modal-body>
+    <winery-modal-footer [modalRef]="removeModalRef"
+                         [okButtonLabel]="'Delete'"
+                         (onOk)="onRemovePrmPropertyMapping()">
+    </winery-modal-footer>
+</ng-template>

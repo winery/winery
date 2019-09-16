@@ -822,10 +822,17 @@
        </xs:sequence>
       </xs:complexType>
      </xs:element>
-     <xs:element name="PropertyMappings">
+     <xs:element name="AttributeMappings">
       <xs:complexType>
        <xs:sequence>
-        <xs:element name="PropertyMapping" type="tPrmPropertyMapping" maxOccurs="unbounded"/>
+        <xs:element name="AttributeMapping" type="tAttributeMapping" maxOccurs="unbounded"/>
+       </xs:sequence>
+      </xs:complexType>
+     </xs:element>
+     <xs:element name="StayMappings">
+      <xs:complexType>
+       <xs:sequence>
+        <xs:element name="StayMapping" type="tStayMapping" maxOccurs="unbounded"/>
        </xs:sequence>
       </xs:complexType>
      </xs:element>
@@ -843,13 +850,19 @@
   <xs:attribute name="direction" type="tDirection" use="required"/>
   <xs:attribute name="validSourceOrTarget" type="xs:QName"/>
  </xs:complexType>
- <xs:complexType name="tPrmPropertyMapping">
+ <xs:complexType name="tAttributeMapping">
   <xs:attribute name="id" type="xs:ID" use="required"/>
   <xs:attribute name="detectorNode" type="xs:string" use="required"/>
   <xs:attribute name="refinementNode" type="xs:string" use="required"/>
-  <xs:attribute name="type" type="tPrmPropertyMappingType" use="required"/>
+  <xs:attribute name="type" type="tAttributeMappingType" use="required"/>
   <xs:attribute name="detectorProperty" type="xs:string" use="optional"/>
   <xs:attribute name="refinementProperty" type="xs:string" use="optional"/>
+ </xs:complexType>
+ <xs:complexType name="tStayMapping">
+  <xs:attribute name="id" type="xs:ID" use="required"/>
+  <xs:attribute name="modelElementType" type="tPrmModelElementType" use="required"/>
+  <xs:attribute name="detectorNode" type="xs:string" use="required"/>
+  <xs:attribute name="refinementNode" type="xs:string" use="required"/>
  </xs:complexType>
  <xs:simpleType name="tDirection">
   <xs:restriction base="xs:string">
@@ -857,10 +870,16 @@
    <xs:enumeration value="outgoing"/>
   </xs:restriction>
  </xs:simpleType>
- <xs:simpleType name="tPrmPropertyMappingType">
+ <xs:simpleType name="tAttributeMappingType">
   <xs:restriction base="xs:string">
    <xs:enumeration value="all"/>
    <xs:enumeration value="selective"/>
+  </xs:restriction>
+ </xs:simpleType>
+ <xs:simpleType name="tPrmModelElementType">
+  <xs:restriction base="xs:string">
+   <xs:enumeration value="node"/>
+   <xs:enumeration value="relation"/>
   </xs:restriction>
  </xs:simpleType>
  <xs:simpleType name="tBoolean">

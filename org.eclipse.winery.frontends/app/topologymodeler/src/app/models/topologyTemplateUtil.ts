@@ -85,7 +85,8 @@ export class TopologyTemplateUtil {
             relationship.documentation,
             relationship.any,
             relationship.otherAttributes,
-            state
+            state,
+            relationship.policies
         );
     }
 

@@ -17,14 +17,14 @@ import { WineryRepositoryConfigurationService } from './WineryRepositoryConfigur
 export enum FeatureEnum {
     Accountability = 'accountability', Completion = 'completion', Compliance = 'compliance', FreezeAndDefrost = 'freezeAndDefrost',
     ManagementFeatureEnrichment = 'managementFeatureEnrichment', NFV = 'nfv', PatternRefinement = 'patternRefinement', ProblemDetection = 'problemDetection',
-    Splitting = 'splitting', TestRefinement = 'testRefinement',
+    Splitting = 'splitting', TestRefinement = 'testRefinement', updateTemplates = 'updateTemplates'
 }
 
 @Directive({
     selector: '[wineryRepositoryFeatureToggle]'
 })
 export class FeatureToggleDirective implements OnInit {
-    @Input() wineryRepositoryFeatureToggle: string;
+    @Input() wineryRepositoryFeatureToggle: string | string[];
 
     constructor(
         private templateRef: TemplateRef<any>,
@@ -34,10 +34,23 @@ export class FeatureToggleDirective implements OnInit {
     }
 
     ngOnInit() {
-        if (this.configService.configuration.features[this.wineryRepositoryFeatureToggle]) {
-            this.viewContainer.createEmbeddedView(this.templateRef);
-        } else {
-            this.viewContainer.clear();
+        if (Array.isArray(this.wineryRepositoryFeatureToggle)) {
+            let found = false;
+            for (const feature of this.wineryRepositoryFeatureToggle) {
+                if (this.configService.configuration.features[feature]) {
+                    this.viewContainer.createEmbeddedView(this.templateRef);
+                    found = true;
+                }
+            }
+            if (!found) {
+                this.viewContainer.clear();
+            }
+        } else if (typeof this.wineryRepositoryFeatureToggle === 'string') {
+            if (this.configService.configuration.features[this.wineryRepositoryFeatureToggle]) {
+                this.viewContainer.createEmbeddedView(this.templateRef);
+            } else {
+                this.viewContainer.clear();
+            }
         }
     }
 }

@@ -19,10 +19,19 @@ import java.util.Objects;
 public class GitBasedRepositoryConfiguration extends FileBasedRepositoryConfiguration {
 
     private boolean autoCommit;
+    private String repositoryUrl;
+    private String branch;
 
     public GitBasedRepositoryConfiguration(boolean autoCommit, FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
         super(Objects.requireNonNull(fileBasedRepositoryConfiguration));
         this.autoCommit = autoCommit;
+    }
+
+    public GitBasedRepositoryConfiguration(boolean autoCommit, String repositoryUrl, String branch, FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
+        super(Objects.requireNonNull(fileBasedRepositoryConfiguration));
+        this.autoCommit = autoCommit;
+        this.repositoryUrl = repositoryUrl;
+        this.branch = branch;
     }
 
     public boolean isAutoCommit() {
@@ -31,5 +40,21 @@ public class GitBasedRepositoryConfiguration extends FileBasedRepositoryConfigur
 
     public void setAutoCommit(boolean autoCommit) {
         this.autoCommit = autoCommit;
+    }
+
+    public String getRepositoryUrl() {
+        return repositoryUrl;
+    }
+
+    public void setRepositoryUrl(String repositoryUrl) {
+        this.repositoryUrl = repositoryUrl;
+    }
+
+    public String getBranch() {
+        return branch;
+    }
+
+    public void setBranch(String branch) {
+        this.branch = branch;
     }
 }

@@ -23,6 +23,7 @@ This document provides an index to all development guidelines and background inf
 - [Trouble Shooting](troubleshootings.md)
 - [TOSCA](../tosca/) - notes on OASIS TOSCA
 - [Extract Deployable Components from Chef Cookbooks](../user/CrawlerAndComponentExtractionForChefCookbooks.md) - Notes on crawler and extraction of components from chef cookbooks
+- [DeployableComponents](../user/DeployableComponentsUsage.md) - Explanations on dockerfile component extraction tool
 
 To get started, go on at [ToolChain](ToolChain.md).
 
