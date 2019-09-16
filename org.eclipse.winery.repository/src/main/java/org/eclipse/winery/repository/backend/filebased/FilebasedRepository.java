@@ -93,11 +93,14 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
     private static final Logger LOGGER = LoggerFactory.getLogger(FilebasedRepository.class);
 
     protected final Path repositoryRoot;
+    protected final Path repositoryDep;
 
     // convenience variables to have a clean code
     private final FileSystem fileSystem;
 
     private final FileSystemProvider provider;
+
+    private final boolean isLocal;
 
     /**
      * @param fileBasedRepositoryConfiguration configuration of the filebased repository. The contained repositoryPath
@@ -105,9 +108,15 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
      */
     public FilebasedRepository(FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
         Objects.requireNonNull(fileBasedRepositoryConfiguration);
+
         this.repositoryRoot = getRepositoryRoot(fileBasedRepositoryConfiguration);
+        this.repositoryDep = repositoryRoot;
+
         this.fileSystem = this.repositoryRoot.getFileSystem();
         this.provider = this.fileSystem.provider();
+
+        this.isLocal = this.repositoryRoot.getFileName().toString().equals(Constants.DEFAULT_LOCAL_REPO_NAME);
+
         LOGGER.debug("Repository root: {}", this.repositoryRoot);
     }
 
@@ -122,7 +131,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
     }
 
     private Path makeAbsolute(Path relativePath) {
-        return this.repositoryRoot.resolve(relativePath);
+        return this.getRepositoryRoot().resolve(relativePath);
     }
 
     /**
@@ -130,6 +139,10 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
      */
     public Path getRepositoryRoot() {
         return repositoryRoot;
+    }
+
+    protected Path getRepositoryDep() {
+        return repositoryDep;
     }
 
     @Override
@@ -144,15 +157,19 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
         return true;
     }
 
-    private Path id2AbsolutePath(GenericId id) {
-        Path relativePath = this.fileSystem.getPath(Util.getPathInsideRepo(id));
+    protected Path id2RelativePath(GenericId id) {
+        return this.fileSystem.getPath(Util.getPathInsideRepo(id));
+    }
+
+    protected Path id2AbsolutePath(GenericId id) {
+        Path relativePath = id2RelativePath(id);
         return this.makeAbsolute(relativePath);
     }
 
     /**
      * Converts the given reference to an absolute path of the underlying FileSystem
      */
-    public Path ref2AbsolutePath(RepositoryFileReference ref) {
+    protected Path ref2AbsolutePath(RepositoryFileReference ref) {
         Path resultPath = this.id2AbsolutePath(ref.getParent());
         final Optional<Path> subDirectory = ref.getSubDirectory();
         if (subDirectory.isPresent()) {
@@ -188,6 +205,10 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 
     public static File getDefaultRepositoryFilePath() {
         return new File(org.apache.commons.io.FileUtils.getUserDirectory(), Constants.DEFAULT_REPO_NAME);
+    }
+
+    public static File getLocalRepositoryFilePath() {
+        return new File(getDefaultRepositoryFilePath(), Constants.DEFAULT_REPO_NAME);
     }
 
     private static Path createDefaultRepositoryPath() {
@@ -373,6 +394,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
         return getDefinitionsChildIds(idClass, false);
     }
 
+    @Override
     public <T extends DefinitionsChildId> SortedSet<T> getStableDefinitionsChildIdsOnly(Class<T> idClass) {
         return getDefinitionsChildIds(idClass, true);
     }
@@ -380,7 +402,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
     private <T extends DefinitionsChildId> SortedSet<T> getDefinitionsChildIds(Class<T> idClass, boolean omitDevelopmentVersions) {
         SortedSet<T> res = new TreeSet<>();
         String rootPathFragment = Util.getRootPathFragment(idClass);
-        Path dir = this.repositoryRoot.resolve(rootPathFragment);
+        Path dir = this.getRepositoryRoot().resolve(rootPathFragment);
         if (!Files.exists(dir)) {
             // return empty list if no ids are available
             return res;
@@ -567,7 +589,8 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
     public NamespaceManager getNamespaceManager() {
         NamespaceManager manager;
         RepositoryFileReference ref = BackendUtils.getRefOfJsonConfiguration(new NamespacesId());
-        manager = new JsonBasedNamespaceManager(ref2AbsolutePath(ref).toFile());
+        manager = new JsonBasedNamespaceManager(ref2AbsolutePath(ref).toFile(), isLocal);
+
         Configuration configuration = this.getConfiguration(new NamespacesId());
 
         if (!configuration.isEmpty()) {
@@ -610,7 +633,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 
         for (Class<? extends DefinitionsChildId> id : definitionsChildIds) {
             String rootPathFragment = Util.getRootPathFragment(id);
-            Path dir = this.repositoryRoot.resolve(rootPathFragment);
+            Path dir = this.getRepositoryRoot().resolve(rootPathFragment);
             if (!Files.exists(dir)) {
                 continue;
             }
@@ -635,7 +658,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
     public Collection<? extends DefinitionsChildId> getAllIdsInNamespace(Class<? extends DefinitionsChildId> clazz, Namespace namespace) {
         Collection<DefinitionsChildId> result = new HashSet<>();
         String rootPathFragment = Util.getRootPathFragment(clazz);
-        Path dir = this.repositoryRoot.resolve(rootPathFragment);
+        Path dir = this.getRepositoryRoot().resolve(rootPathFragment);
         dir = dir.resolve(namespace.getEncoded());
         if (Files.exists(dir) && Files.isDirectory(dir)) {
 
@@ -670,9 +693,9 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
     @Override
     public void doDump(OutputStream out) throws IOException {
         final ZipOutputStream zout = new ZipOutputStream(out);
-        final int cutLength = this.repositoryRoot.toString().length() + 1;
+        final int cutLength = this.getRepositoryRoot().toString().length() + 1;
 
-        Files.walkFileTree(this.repositoryRoot, new SimpleFileVisitor<Path>() {
+        Files.walkFileTree(this.getRepositoryRoot(), new SimpleFileVisitor<Path>() {
 
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
@@ -710,7 +733,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
         try {
             DirectoryStream.Filter<Path> noGitDirFilter = entry -> !(entry.getFileName().toString().equals(".git"));
 
-            try (DirectoryStream<Path> ds = Files.newDirectoryStream(this.repositoryRoot, noGitDirFilter)) {
+            try (DirectoryStream<Path> ds = Files.newDirectoryStream(this.getRepositoryRoot(), noGitDirFilter)) {
                 for (Path p : ds) {
                     FileUtils.forceDelete(p);
                 }
@@ -724,7 +747,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
      * Removes the repository completely, even with the .git directory
      */
     public void forceClear() {
-        try (DirectoryStream<Path> ds = Files.newDirectoryStream(this.repositoryRoot)) {
+        try (DirectoryStream<Path> ds = Files.newDirectoryStream(this.getRepositoryRoot())) {
             for (Path p : ds) {
                 FileUtils.forceDelete(p);
             }
@@ -740,7 +763,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
         try {
             while ((entry = zis.getNextEntry()) != null) {
                 if (!entry.isDirectory()) {
-                    Path path = this.repositoryRoot.resolve(entry.getName());
+                    Path path = this.getRepositoryRoot().resolve(entry.getName());
                     try {
                         FileUtils.createDirectory(path.getParent());
                         try {

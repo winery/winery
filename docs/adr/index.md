@@ -33,6 +33,8 @@ This lists the architectural decisions for Eclipse Winery.
 - [ADR-0026](0026-store-license-and-readme-in-entity-root-folder-in-csar.md) - Store `LICENSE` and `README.md` in respective entity's root folder in a CSAR
 - [ADR-0027](0027-use-dasherization-for-filenames.md) - Use dasherization for filenames
 - [ADR-0028](0028-use-hardcoded-namespaces-for-threat-modeling.md) - Use hardcoded namespaces for threat modeling
+- [ADR-0029](0029-IPSec-algorithm-application.md) - IPSec Algorithm Implementation
+- [ADR-0030](0030-multiple-repositories) - Support of multiple repositories
 
 <!-- adrlogstop -->
 
