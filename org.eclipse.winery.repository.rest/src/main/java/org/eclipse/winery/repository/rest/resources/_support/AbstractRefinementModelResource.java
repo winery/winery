@@ -15,14 +15,16 @@
 package org.eclipse.winery.repository.rest.resources._support;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.model.tosca.TPatternRefinementModel;
 import org.eclipse.winery.model.tosca.TRefinementModel;
+import org.eclipse.winery.model.tosca.TRelationMapping;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.refinementmodels.RelationMappingsResource;
@@ -48,10 +50,10 @@ public abstract class AbstractRefinementModelResource extends AbstractComponentI
 
     @Path("relationmappings")
     public RelationMappingsResource getRelationMappings() {
-        TPatternRefinementModel.TRelationMappings relationMappings = this.getTRefinementModel().getRelationMappings();
+        List<TRelationMapping> relationMappings = this.getTRefinementModel().getRelationMappings();
 
         if (Objects.isNull(relationMappings)) {
-            relationMappings = new TPatternRefinementModel.TRelationMappings();
+            relationMappings = new ArrayList<>();
             this.getTRefinementModel().setRelationMappings(relationMappings);
         }
 

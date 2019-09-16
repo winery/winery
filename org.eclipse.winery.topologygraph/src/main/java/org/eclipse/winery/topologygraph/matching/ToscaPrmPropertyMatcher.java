@@ -39,13 +39,15 @@ public class ToscaPrmPropertyMatcher extends ToscaTypeMatcher {
     @Override
     public boolean isCompatible(ToscaNode left, ToscaNode right) {
         return super.isCompatible(left, right)
-            && propertiesCompatible(left, right);
+            && propertiesCompatible(left, right)
+            && characterizingPatternsCompatible(left, right);
     }
 
     @Override
     public boolean isCompatible(ToscaEdge left, ToscaEdge right) {
         return super.isCompatible(left, right)
-            && propertiesCompatible(left, right);
+            && propertiesCompatible(left, right)
+            && characterizingPatternsCompatible(left, right);
     }
 
     public boolean propertiesCompatible(ToscaEntity left, ToscaEntity right) {
@@ -82,6 +84,7 @@ public class ToscaPrmPropertyMatcher extends ToscaTypeMatcher {
     }
 
     public boolean characterizingPatternsCompatible(ToscaEntity left, ToscaEntity right) {
+        // if the detector has no patterns attached but the candidate has --> it's a match
         boolean characterizingPatternsCompatible = true;
 
         TEntityTemplate[] templates = getTemplates(left, right);
@@ -117,14 +120,6 @@ public class ToscaPrmPropertyMatcher extends ToscaTypeMatcher {
                     .stream()
                     .noneMatch(detectorPolicy ->
                         this.namespaceManager.isPatternNamespace(detectorPolicy.getPolicyType().getNamespaceURI())
-                    );
-            } else if (Objects.nonNull(candidate.getPolicies())) {
-                // if the detector has no patterns attached but the candidate has --> not a match
-                // only if there are unresolved patterns
-                characterizingPatternsCompatible = candidate.getPolicies().getPolicy()
-                    .stream()
-                    .noneMatch(candidatePolicy ->
-                        this.namespaceManager.isPatternNamespace(candidatePolicy.getPolicyType().getNamespaceURI())
                     );
             }
         }

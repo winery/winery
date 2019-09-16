@@ -12,12 +12,12 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-export enum PrmPropertyMappingType {
+export enum AttributeMappingType {
     ALL = 'ALL',
     SELECTIVE = 'SELECTIVE'
 }
 
-export class PrmPropertyMapping {
+export class AttributeMapping {
 
     public static readonly idPrefix = 'propMap';
 
@@ -26,10 +26,10 @@ export class PrmPropertyMapping {
     refinementNode: string;
     detectorProperty: string;
     refinementProperty: string;
-    type: PrmPropertyMappingType;
+    type: AttributeMappingType;
 
     constructor(id: number) {
-        this.id = PrmPropertyMapping.idPrefix + id;
+        this.id = AttributeMapping.idPrefix + id;
     }
 
 }

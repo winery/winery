@@ -41,6 +41,8 @@ import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.adaptation.enhance.EnhancementUtils;
 import org.eclipse.winery.model.adaptation.enhance.TopologyAndErrorList;
 import org.eclipse.winery.model.adaptation.problemsolving.SolutionFactory;
@@ -49,6 +51,7 @@ import org.eclipse.winery.model.adaptation.problemsolving.SolutionStrategy;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
@@ -56,10 +59,12 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.filebased.NamespaceProperties;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceContainingATopology;
 import org.eclipse.winery.repository.rest.resources._support.dataadapter.composeadapter.CompositionData;
 import org.eclipse.winery.repository.rest.resources.apiData.AvailableFeaturesApiData;
+import org.eclipse.winery.repository.rest.resources.apiData.NewVersionListElement;
 import org.eclipse.winery.repository.rest.resources.apiData.PropertyDiffList;
 import org.eclipse.winery.repository.rest.resources.apiData.UpdateInfo;
 import org.eclipse.winery.repository.splitting.Splitting;
@@ -487,5 +492,35 @@ public class TopologyTemplateResource {
         RestUtils.persist(this.parent);
 
         return enrichedTopology;
+    }
+
+    @GET
+    @Path("newversions")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<NewVersionListElement> getNewVersionList() {
+        IRepository repository = RepositoryFactory.getRepository();
+
+        Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
+        Map<QName, List<WineryVersion>> versionElements = new HashMap<>();
+
+        for (TNodeTemplate node : this.topologyTemplate.getNodeTemplates()) {
+            NodeTypeId nodeTypeId = new NodeTypeId(node.getType());
+            if (!versionElements.containsKey(nodeTypeId.getQName())) {
+                List<WineryVersion> versionList = BackendUtils.getAllVersionsOfOneDefinition(nodeTypeId).stream()
+                    .filter(wineryVersion -> {
+                        QName qName = VersionUtils.getDefinitionInTheGivenVersion(nodeTypeId, wineryVersion).getQName();
+                        NamespaceProperties namespaceProperties = repository.getNamespaceManager().getNamespaceProperties(qName.getNamespaceURI());
+                        return !(namespaceProperties.isGeneratedNamespace()
+                            || ModelUtilities.isFeatureType(qName, nodeTypes));
+                    })
+                    .collect(Collectors.toList());
+
+                versionElements.put(nodeTypeId.getQName(), versionList);
+            }
+        }
+
+        return versionElements.entrySet().stream()
+            .map(qNameListEntry -> new NewVersionListElement(qNameListEntry.getKey(), qNameListEntry.getValue()))
+            .collect(Collectors.toList());
     }
 }

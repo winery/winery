@@ -60,6 +60,10 @@
            [checked]="config.features.edmmModeling">
     <label for="testRefinement">EDMM Modeling</label>
     <br>
+    <input type="checkbox" [(ngModel)]="config.features.updateTemplates" id="updateTemplates" name="updateTemplates"
+           [checked]="config.features.updateTemplates">
+    <label for="testRefinement">Show update Notifications</label>
+    <br>
 </div>
 <div>
     <button class="btn btn-primary" (click)="saveChanges()">Save Changes</button>

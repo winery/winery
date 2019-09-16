@@ -14,13 +14,14 @@
 
 package org.eclipse.winery.model.adaptation.substitution.refinement.tests;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TRefinementModel;
 import org.eclipse.winery.model.tosca.TRelationDirection;
 import org.eclipse.winery.model.tosca.TRelationMapping;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
@@ -94,10 +95,10 @@ public class TestRefinementTest {
         testIngoingRelationTest.setRelationType(QName.valueOf("{ns}ingoingTest"));
         testIngoingRelationTest.setRefinementNode(mySqlConnectorTest);
         testIngoingRelationTest.setDetectorNode(webShop);
-        TRefinementModel.TRelationMappings relationMappings = new TRefinementModel.TRelationMappings();
-        relationMappings.getRelationMapping().add(testHostedOn);
-        relationMappings.getRelationMapping().add(testConnectsTo);
-        relationMappings.getRelationMapping().add(testIngoingRelationTest);
+        List<TRelationMapping> relationMappings = new ArrayList<>();
+        relationMappings.add(testHostedOn);
+        relationMappings.add(testConnectsTo);
+        relationMappings.add(testIngoingRelationTest);
 
         TTestRefinementModel testRefinementModel = new TTestRefinementModel();
         testRefinementModel.setRefinementTopology(refinementTopology);

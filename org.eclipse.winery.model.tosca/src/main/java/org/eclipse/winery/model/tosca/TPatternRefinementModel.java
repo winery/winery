@@ -13,14 +13,12 @@
  ********************************************************************************/
 package org.eclipse.winery.model.tosca;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
@@ -35,8 +33,13 @@ public class TPatternRefinementModel extends TRefinementModel {
     @XmlElement(name = "RefinementStructure")
     private TTopologyTemplate refinementStructure;
 
-    @XmlElement(name = "PrmPropertyMappings")
-    private TPrmPropertyMappings propertyMappings;
+    @XmlElementWrapper(name = "AttributeMappings")
+    @XmlElement(name = "AttributeMapping")
+    private List<AttributeMapping> attributeMappings;
+
+    @XmlElementWrapper(name = "StayMappings")
+    @XmlElement(name = "StayMapping")
+    private List<TStayMapping> stayMappings;
 
     @NonNull
     @JsonIgnore
@@ -57,29 +60,20 @@ public class TPatternRefinementModel extends TRefinementModel {
     }
 
     @Nullable
-    public TPrmPropertyMappings getPropertyMappings() {
-        return propertyMappings;
+    public List<AttributeMapping> getAttributeMappings() {
+        return attributeMappings;
     }
 
-    public void setPropertyMappings(TPrmPropertyMappings propertyMappings) {
-        this.propertyMappings = propertyMappings;
+    public void setAttributeMappings(List<AttributeMapping> attributeMappings) {
+        this.attributeMappings = attributeMappings;
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "propertyMapping"
-    })
-    public static class TPrmPropertyMappings implements Serializable {
+    @Nullable
+    public List<TStayMapping> getStayMappings() {
+        return stayMappings;
+    }
 
-        @XmlElement(name = "PropertyMapping")
-        protected List<TPrmPropertyMapping> propertyMapping;
-
-        @NonNull
-        public List<TPrmPropertyMapping> getPropertyMapping() {
-            if (Objects.isNull(this.propertyMapping)) {
-                this.propertyMapping = new ArrayList<>();
-            }
-            return this.propertyMapping;
-        }
+    public void setStayMappings(List<TStayMapping> stayMappings) {
+        this.stayMappings = stayMappings;
     }
 }

@@ -14,17 +14,12 @@
 
 package org.eclipse.winery.model.tosca;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
@@ -42,8 +37,9 @@ public abstract class TRefinementModel extends TExtensibleElements implements Ha
     @XmlElement(name = "Detector")
     protected TTopologyTemplate detector;
 
-    @XmlElement(name = "RelationMappings")
-    protected TRefinementModel.TRelationMappings relationMappings;
+    @XmlElementWrapper(name = "RelationMappings")
+    @XmlElement(name = "RelationMapping")
+    protected List<TRelationMapping> relationMappings;
 
     @Override
     public String getName() {
@@ -91,29 +87,11 @@ public abstract class TRefinementModel extends TExtensibleElements implements Ha
         visitor.visit(this);
     }
 
-    public TRefinementModel.TRelationMappings getRelationMappings() {
+    public List<TRelationMapping> getRelationMappings() {
         return relationMappings;
     }
 
-    public void setRelationMappings(TRelationMappings relationMappings) {
+    public void setRelationMappings(List<TRelationMapping> relationMappings) {
         this.relationMappings = relationMappings;
-    }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "relationMapping"
-    })
-    public static class TRelationMappings implements Serializable {
-
-        @XmlElement(name = "RelationMapping")
-        protected List<TRelationMapping> relationMapping;
-
-        @NonNull
-        public List<TRelationMapping> getRelationMapping() {
-            if (Objects.isNull(this.relationMapping)) {
-                this.relationMapping = new ArrayList<>();
-            }
-            return this.relationMapping;
-        }
     }
 }

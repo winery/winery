@@ -56,7 +56,7 @@ export class BackendService {
                 private configurationService: WineryRepositoryConfigurationService) {
         this.endpointConfiguration$.subscribe((params: TopologyModelerConfiguration) => {
             if (!(isNullOrUndefined(params.id) && isNullOrUndefined(params.ns) &&
-                    isNullOrUndefined(params.repositoryURL) && isNullOrUndefined(params.uiURL))) {
+                isNullOrUndefined(params.repositoryURL) && isNullOrUndefined(params.uiURL))) {
 
                 this.configuration = new TopologyModelerConfiguration(
                     params.id,
@@ -117,9 +117,6 @@ export class BackendService {
      */
     private requestTopologyTemplateAndVisuals(): Observable<any> {
         if (this.configuration) {
-            const url = this.configuration.repositoryURL + '/' + this.configuration.parentPath + '/'
-                + encodeURIComponent(encodeURIComponent(this.configuration.ns)) + '/';
-            const currentUrl = url + this.configuration.id + '/' + this.configuration.elementPath;
             const nodeVisualsUrl = this.configuration.repositoryURL + '/nodetypes/allvisualappearancedata';
             const relationshipVisualsUrl = this.configuration.repositoryURL + '/relationshiptypes/allvisualappearancedata';
             const policyVisualsUrl = this.configuration.repositoryURL + '/policytemplates/allvisualappearancedata';
@@ -128,13 +125,15 @@ export class BackendService {
 
             if (isNullOrUndefined(this.configuration.compareTo)) {
                 return forkJoin(
-                    this.http.get<TTopologyTemplate>(currentUrl),
+                    this.http.get<TTopologyTemplate>(this.configuration.elementUrl),
                     this.http.get<Visuals>(nodeVisualsUrl),
                     this.http.get<Visuals>(relationshipVisualsUrl),
                     this.http.get<Visuals>(policyVisualsUrl),
                     this.http.get<Visuals>(policyTypesVisualsUrl),
                 );
             } else {
+                const url = this.configuration.repositoryURL + '/' + this.configuration.parentPath + '/'
+                    + encodeURIComponent(encodeURIComponent(this.configuration.ns)) + '/';
                 const compareUrl = url
                     + this.configuration.id + '/?compareTo='
                     + this.configuration.compareTo;
@@ -142,7 +141,7 @@ export class BackendService {
                     + this.configuration.compareTo + '/topologytemplate';
 
                 return forkJoin(
-                    this.http.get<TTopologyTemplate>(currentUrl),
+                    this.http.get<TTopologyTemplate>(this.configuration.elementUrl),
                     this.http.get<Visuals>(nodeVisualsUrl),
                     this.http.get<Visuals>(relationshipVisualsUrl),
                     this.http.get<Visuals>(policyVisualsUrl),
@@ -254,7 +253,7 @@ export class BackendService {
      * This method retrieves a single Artifact Template from the backend.
      */
     requestArtifactTemplate(artifact: QNameWithTypeApiData): Observable<any> {
-        const url = this.configuration.repositoryURL + '/artifacttemplates/'
+        const url = this.configuration.repositoryURL + urlElement.ArtifactTemplateURL
             + encodeURIComponent(encodeURIComponent(artifact.namespace)) + '/' + artifact.localname;
         return this.http.get(url + '/', { headers: this.headers });
     }
@@ -263,7 +262,7 @@ export class BackendService {
      * This method retrieves a single Policy Template from the backend.
      */
     requestPolicyTemplate(artifact: QNameWithTypeApiData): Observable<any> {
-        const url = this.configuration.repositoryURL + '/policytemplates/'
+        const url = this.configuration.repositoryURL + urlElement.PolicyTemplateURL
             + encodeURIComponent(encodeURIComponent(artifact.namespace)) + '/' + artifact.localname;
         return this.http.get(url + '/', { headers: this.headers });
     }
@@ -274,11 +273,10 @@ export class BackendService {
     saveTopologyTemplate(topologyTemplate: any): Observable<HttpResponse<string>> {
         if (this.configuration) {
             const headers = new HttpHeaders().set('Content-Type', 'application/json');
-            const url = this.serviceTemplateURL + '/' + this.configuration.elementPath;
-
-            return this.http.put(url, topologyTemplate, {
-                headers: headers, responseType: 'text', observe: 'response'
-            });
+            return this.http.put(this.configuration.elementUrl,
+                topologyTemplate,
+                { headers: headers, responseType: 'text', observe: 'response' }
+            );
         }
     }
 
@@ -287,10 +285,10 @@ export class BackendService {
      */
     importTopology(importedTemplateQName: string): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders().set('Content-Type', 'text/plain');
-        const url = this.serviceTemplateURL + urlElement.TopologyTemplate + 'merge';
-        return this.http.post(url + '/', importedTemplateQName, {
-            headers: headers, observe: 'response', responseType: 'text'
-        });
+        return this.http.post(this.configuration.elementPath + '/merge/',
+            importedTemplateQName,
+            { headers: headers, observe: 'response', responseType: 'text' }
+        );
     }
 
     /**
@@ -337,8 +335,10 @@ export class BackendService {
      */
     splitTopology(): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
-        const url = this.serviceTemplateURL + urlElement.TopologyTemplate + 'split';
-        return this.http.post(url + '/', {}, { headers: headers, observe: 'response', responseType: 'text' });
+        return this.http.post(this.configuration.elementUrl + '/split/',
+            {},
+            { headers: headers, observe: 'response', responseType: 'text' }
+        );
     }
 
     /**
@@ -346,8 +346,10 @@ export class BackendService {
      */
     matchTopology(): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
-        const url = this.serviceTemplateURL + urlElement.TopologyTemplate + 'match';
-        return this.http.post(url + '/', {}, { headers: headers, observe: 'response', responseType: 'text' });
+        return this.http.post(this.configuration.elementUrl + '/match/',
+            {},
+            { headers: headers, observe: 'response', responseType: 'text' }
+        );
     }
 
     /**
@@ -357,13 +359,15 @@ export class BackendService {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
         let url;
         if (type === 'policy') {
-            url = this.configuration.repositoryURL + '/policytemplates/';
+            url = this.configuration.repositoryURL + urlElement.PolicyTemplateURL;
         } else {
-            url = this.configuration.repositoryURL + '/artifacttemplates/';
+            url = this.configuration.repositoryURL + urlElement.ArtifactTemplateURL;
         }
-        return this.http.post(url + '/', artifactOrPolicy, {
-            headers: headers, responseType: 'text', observe: 'response'
-        });
+        return this.http.post(
+            url,
+            artifactOrPolicy,
+            { headers: headers, responseType: 'text', observe: 'response' }
+        );
     }
 
     /**
@@ -376,7 +380,7 @@ export class BackendService {
 
     requestVersionElements(): Observable<VersionElement[]> {
         if (this.configuration) {
-            return this.http.get<VersionElement[]>(this.serviceTemplateURL + '/newversions', { headers: this.headers });
+            return this.http.get<VersionElement[]>(this.configuration.elementUrl + '/newversions', { headers: this.headers });
         }
     }
 }

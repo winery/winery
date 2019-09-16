@@ -118,7 +118,7 @@ public class ToscaPrmPropertyMatcherTest {
                 return true;
             }
         };
-        
+
         TPolicies leftPolicies1 = new TPolicies();
         TPolicy leftPolicy1 = new TPolicy();
         leftPolicy1.setPolicyType(QName.valueOf("{ns}policyType1"));
@@ -128,29 +128,29 @@ public class ToscaPrmPropertyMatcherTest {
         TPolicy leftPolicy2 = new TPolicy();
         leftPolicy2.setPolicyType(QName.valueOf("{ns}policyType1123"));
         leftPolicies2.getPolicy().add(leftPolicy2);
-        
+
         TPolicies rightPolicies1 = new TPolicies();
         TPolicy rightPolicy1 = new TPolicy();
         rightPolicy1.setPolicyType(QName.valueOf("{ns}policyType1"));
         rightPolicies1.getPolicy().add(rightPolicy1);
-        
+
         TPolicies rightPolicies2 = new TPolicies();
         TPolicy rightPolicy2 = new TPolicy();
         rightPolicy2.setPolicyType(QName.valueOf("{ns}policyType1"));
         rightPolicy2.setPolicyRef(QName.valueOf("{ns2}policyTemplate1"));
         rightPolicies2.getPolicy().add(rightPolicy2);
-        
+
         return Stream.of(
             Arguments.of(leftPolicies1, rightPolicies1, patternNamespaceManager, true, "Matching policy types without templates"),
             Arguments.of(leftPolicies1, rightPolicies2, patternNamespaceManager, true, "Matching policy types and more specific policy template in the candidate"),
             Arguments.of(rightPolicies2, leftPolicies1, patternNamespaceManager, false, "Matching policy types but a specific policy template in the detector"),
             Arguments.of(leftPolicies2, rightPolicies1, patternNamespaceManager, false, "Different policy types"),
             Arguments.of(leftPolicies2, null, patternNamespaceManager, false, "Patterns annotated at the detector but not at the candidate"),
-            Arguments.of(null, rightPolicies1, patternNamespaceManager, false, "Patterns annotated at the candidate but not at the detector"),
+            Arguments.of(null, rightPolicies1, patternNamespaceManager, true, "Patterns annotated at the candidate but not at the detector"),
             Arguments.of(null, rightPolicies1, namespaceManager, true, "Polices annotated at the candidate but not patterns")
         );
     }
-    
+
     @ParameterizedTest(name = "{index} => ''{4}''")
     @MethodSource("characterizingPatternsCompatibleArguments")
     public void characterizingPatternsCompatibleTest(TPolicies leftPolicies, TPolicies rightPolicies,

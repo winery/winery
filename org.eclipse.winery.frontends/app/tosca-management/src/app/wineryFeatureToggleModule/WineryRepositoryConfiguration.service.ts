@@ -29,6 +29,7 @@ export interface WineryConfiguration {
         splitting: boolean;
         testRefinement: boolean;
         edmmModeling: boolean;
+        updateTemplates: boolean;
     };
     endpoints: {
         container: String;

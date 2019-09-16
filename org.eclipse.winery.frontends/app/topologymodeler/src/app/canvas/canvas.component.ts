@@ -52,6 +52,7 @@ import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reduce
 import { ThreatModelingModalData } from '../models/threatModelingModalData';
 import { ThreatCreation } from '../models/threatCreation';
 import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
+import { TPolicy } from '../models/policiesModalData';
 
 @Component({
     selector: 'winery-canvas',
@@ -1155,13 +1156,32 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             let relationSource = newRelationship.sourceElement.ref;
             let relationTarget = newRelationship.targetElement.ref;
 
+            if (newRelationship.policies && newRelationship.policies.policy) {
+                const list: TPolicy[] = newRelationship.policies.policy;
+                labelString += '<br>';
+                for (const value of list) {
+                    const visual = this.entityTypes.policyTypeVisuals.find(
+                        policyTypeVisual => policyTypeVisual.typeId === value.policyType
+                    );
+
+                    if (visual && visual.imageUrl) {
+                        labelString += '<img style="display: block; margin-left: auto; margin-right: auto; margin-top: 5px;' +
+                            ' max-width: 40px; max-height: 40px;" src="' + visual.imageUrl + '" />';
+                    }
+                }
+            }
+
             // check if source reference is not a node template
-            if (!this.allNodesIds.includes(relationSource)) {
-                // check if source reference is a requirement of a node template
-                const findNode = this.allNodeTemplates
-                    .find(node => node.requirements && node.requirements.requirement && node.requirements.requirement.find(req => req.id === relationSource));
-                if (findNode) {
-                    relationSource = findNode.id;
+            {
+                if (!this.allNodesIds.includes(relationSource)) {
+                    // check if source reference is a requirement of a node template
+                    const findNode = this.allNodeTemplates
+                        .find(node => node.requirements && node.requirements.requirement
+                            && node.requirements.requirement.find(req => req.id === relationSource)
+                        );
+                    if (findNode) {
+                        relationSource = findNode.id;
+                    }
                 }
             }
 

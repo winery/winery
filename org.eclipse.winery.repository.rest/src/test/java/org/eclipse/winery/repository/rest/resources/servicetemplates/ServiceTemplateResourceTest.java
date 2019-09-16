@@ -142,20 +142,6 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
     }
 
     @Test
-    public void getNewVersionList() throws Exception {
-        this.setRevisionTo("origin/plain");
-        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithTwoNodeTemplates_oldVersions-w1-wip1/newversions",
-            "servicetemplates/newVersionList.json");
-    }
-
-    @Test
-    public void getNewVersionListWithoutFeaturesAndGeneratedTypes() throws Exception {
-        this.setRevisionTo("origin/plain");
-        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/STWithUpdateableComponent_w1-wip1/newversions",
-            "servicetemplates/nodeTemplateVersionListWithoutFeatures.json");
-    }
-
-    @Test
     public void createNewStatefulVersion() throws Exception {
         this.setRevisionTo("eb37f5cfec50c046985eac308e46482ce8bea8e3");
         String response = this.assertPostWithNoContent("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithOneNodeTemplate_w1-wip1/createnewstatefulversion", ContentType.JSON);

@@ -37,8 +37,14 @@
     <hr>
     <div *wineryRepositoryFeatureToggle="configEnum.PatternRefinement">
         <h4>Refinement Models</h4>
-        <a class="btn btn-default" [routerLink]="['/patternrefinementmodels']">Pattern Refinement Models</a>
-    <a class="btn btn-default" [routerLink]="['/testrefinementmodels']">Test Refinement Models</a>
+        <a class="btn btn-default" [routerLink]="['/patternrefinementmodels']"
+           *wineryRepositoryFeatureToggle="configEnum.PatternRefinement">
+            Pattern Refinement Models
+        </a>
+        <a class="btn btn-default" [routerLink]="['/testrefinementmodels']"
+           *wineryRepositoryFeatureToggle="configEnum.TestRefinement">
+            Test Refinement Models
+        </a>
     </div>
     <div *wineryRepositoryFeatureToggle="configEnum.Compliance">
         <h4>Compliance Rules</h4>

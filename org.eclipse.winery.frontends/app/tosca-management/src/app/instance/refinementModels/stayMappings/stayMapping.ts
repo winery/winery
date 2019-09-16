@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,13 +11,23 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component } from '@angular/core';
-import { FeatureEnum } from '../wineryFeatureToggleModule/wineryRepository.feature.direct';
 
-@Component({
-    templateUrl: './other.component.html',
-    styleUrls: ['other.component.css']
-})
-export class OtherComponent {
-    configEnum = FeatureEnum;
+export enum PrmModelElementType {
+    NODE = 'NODE',
+    RELATION = 'RELATION',
+}
+
+export class StayMapping {
+
+    public static readonly idPrefix = 'stayMap';
+
+    id: string;
+    detectorNode: string;
+    refinementNode: string;
+    modelElementType: PrmModelElementType;
+
+    constructor(id: number) {
+        this.id = StayMapping.idPrefix + id;
+    }
+
 }

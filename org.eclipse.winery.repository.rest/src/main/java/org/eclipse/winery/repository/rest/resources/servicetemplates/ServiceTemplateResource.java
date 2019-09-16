@@ -16,14 +16,10 @@ package org.eclipse.winery.repository.rest.resources.servicetemplates;
 import java.io.IOException;
 import java.net.URI;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -40,7 +36,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
@@ -51,17 +46,12 @@ import org.eclipse.winery.model.threatmodeling.ThreatAssessment;
 import org.eclipse.winery.model.threatmodeling.ThreatModeling;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.IRepository;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.filebased.NamespaceProperties;
 import org.eclipse.winery.repository.driverspecificationandinjection.DASpecification;
 import org.eclipse.winery.repository.driverspecificationandinjection.DriverInjection;
 import org.eclipse.winery.repository.rest.RestUtils;
@@ -70,7 +60,6 @@ import org.eclipse.winery.repository.rest.resources._support.IHasName;
 import org.eclipse.winery.repository.rest.resources._support.ResourceResult;
 import org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionadapter.InjectorReplaceData;
 import org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionadapter.InjectorReplaceOptions;
-import org.eclipse.winery.repository.rest.resources.apiData.NewVersionListElement;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.BoundaryDefinitionsResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.plans.PlansResource;
@@ -374,40 +363,5 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     @Override
     public void synchronizeReferences() throws IOException {
         BackendUtils.synchronizeReferences((ServiceTemplateId) this.id);
-    }
-
-    @GET
-    @Path("newversions")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<NewVersionListElement> getNewVersionList() {
-        IRepository repository = RepositoryFactory.getRepository();
-        TServiceTemplate element = repository.getElement((ServiceTemplateId) this.id);
-
-        if (Objects.isNull(element.getTopologyTemplate())) {
-            return new ArrayList<>();
-        }
-
-        Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
-        Map<QName, List<WineryVersion>> versionElements = new HashMap<>();
-
-        for (TNodeTemplate node : element.getTopologyTemplate().getNodeTemplates()) {
-            NodeTypeId nodeTypeId = new NodeTypeId(node.getType());
-            if (!versionElements.containsKey(nodeTypeId.getQName())) {
-                List<WineryVersion> versionList = BackendUtils.getAllVersionsOfOneDefinition(nodeTypeId).stream()
-                    .filter(wineryVersion -> {
-                        QName qName = VersionUtils.getDefinitionInTheGivenVersion(nodeTypeId, wineryVersion).getQName();
-                        NamespaceProperties namespaceProperties = repository.getNamespaceManager().getNamespaceProperties(qName.getNamespaceURI());
-                        return !(namespaceProperties.isGeneratedNamespace()
-                            || ModelUtilities.isFeatureType(qName, nodeTypes));
-                    })
-                    .collect(Collectors.toList());
-
-                versionElements.put(nodeTypeId.getQName(), versionList);
-            }
-        }
-
-        return versionElements.entrySet().stream()
-            .map(qNameListEntry -> new NewVersionListElement(qNameListEntry.getKey(), qNameListEntry.getValue()))
-            .collect(Collectors.toList());
     }
 }

@@ -17,12 +17,13 @@ import { RelationMapping } from './relationshipMappings/relationMapping';
 import { backendBaseURL } from '../../configuration';
 import { Injectable } from '@angular/core';
 import { InstanceService } from '../instance.service';
-import { NodeTemplate } from '../../model/wineryComponent';
+import { NodeTemplate, RelationshipTemplate } from '../../model/wineryComponent';
 import { SelectData } from '../../model/selectData';
-import { PrmPropertyMapping } from './propertyMappings/prmPropertyMapping';
 import { Utils } from '../../wineryUtils/utils';
 import { PropertiesDefinitionsResourceApiData } from '../sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
 import { ToscaTypes } from '../../model/enums';
+import { StayMapping } from './stayMappings/stayMapping';
+import { AttributeMapping } from './attributeMappings/attributeMapping';
 
 @Injectable()
 export class RefinementMappingsService {
@@ -37,15 +38,16 @@ export class RefinementMappingsService {
         return this.http.get<NodeTemplate[]>(this.path + '/detector/nodetemplates/');
     }
 
+    public getDetectorRelationshipTemplates(): Observable<RelationshipTemplate[]> {
+        return this.http.get<RelationshipTemplate[]>(this.path + '/detector/relationshiptemplates/');
+    }
+
     public getRefinementTopologyNodeTemplates(): Observable<NodeTemplate[]> {
-        let url = this.path;
-        if (this.sharedData.toscaComponent.toscaType === ToscaTypes.PatternRefinementModel) {
-            url += '/refinementstructure';
-        } else if (this.sharedData.toscaComponent.toscaType === ToscaTypes.TestRefinementModel) {
-            url += '/testfragment';
-        }
-        url += '/nodetemplates/';
-        return this.http.get<NodeTemplate[]>(url);
+        return this.http.get<NodeTemplate[]>(this.getRefinementStructureUrl() + '/nodetemplates/');
+    }
+
+    public getRefinementTopologyRelationshipTemplates(): Observable<RelationshipTemplate[]> {
+        return this.http.get<RelationshipTemplate[]>(this.getRefinementStructureUrl() + '/relationshiptemplates/');
     }
 
     public getRelationshipTypes(): Observable<SelectData[]> {
@@ -68,21 +70,44 @@ export class RefinementMappingsService {
         return this.http.delete<RelationMapping[]>(this.path + '/relationmappings/' + mapping.id);
     }
 
-    getPropertyMappings(): Observable<PrmPropertyMapping[]> {
-        return this.http.get<PrmPropertyMapping[]>(this.path + '/propertymappings');
+    public getPropertyMappings(): Observable<AttributeMapping[]> {
+        return this.http.get<AttributeMapping[]>(this.path + '/attributemappings');
     }
 
-    public addPrmPropertyMapping(element: PrmPropertyMapping): Observable<PrmPropertyMapping[]> {
-        return this.http.put<PrmPropertyMapping[]>(this.path + '/propertymappings', element);
+    public addPrmPropertyMapping(element: AttributeMapping): Observable<AttributeMapping[]> {
+        return this.http.put<AttributeMapping[]>(this.path + '/attributemappings', element);
     }
 
-    public deletePrmPropertyMapping(element: PrmPropertyMapping): Observable<PrmPropertyMapping[]> {
-        return this.http.delete<PrmPropertyMapping[]>(this.path + '/propertymappings/' + element.id);
+    public deletePrmPropertyMapping(element: AttributeMapping): Observable<AttributeMapping[]> {
+        return this.http.delete<AttributeMapping[]>(this.path + '/attributemappings/' + element.id);
     }
 
-    public getNodeTypeProperties(type: string): Observable<PropertiesDefinitionsResourceApiData> {
+    public getTypeProperties(type: string, nodeTemplate: boolean): Observable<PropertiesDefinitionsResourceApiData> {
         const qName = Utils.getNamespaceAndLocalNameFromQName(type);
-        const url = backendBaseURL + `/nodetypes/${encodeURIComponent(encodeURIComponent(qName.namespace))}/${qName.localName}/propertiesdefinition/`;
+        const toscaType = nodeTemplate ? '/nodetypes/' : '/relationshiptypes/';
+        const url = backendBaseURL + `/${toscaType}/${encodeURIComponent(encodeURIComponent(qName.namespace))}/${qName.localName}/propertiesdefinition/`;
         return this.http.get<PropertiesDefinitionsResourceApiData>(url);
+    }
+
+    public getStayMappings(): Observable<StayMapping[]> {
+        return this.http.get<StayMapping[]>(this.path + '/staymappings');
+    }
+
+    public addStayMapping(element: StayMapping): Observable<StayMapping[]> {
+        return this.http.put<StayMapping[]>(this.path + '/staymappings', element);
+    }
+
+    public deleteStayMapping(mapping: StayMapping): Observable<StayMapping[]> {
+        return this.http.delete<StayMapping[]>(this.path + '/staymappings/' + mapping.id);
+    }
+
+    private getRefinementStructureUrl(): string {
+        let url = this.path;
+        if (this.sharedData.toscaComponent.toscaType === ToscaTypes.PatternRefinementModel) {
+            url += '/refinementstructure';
+        } else if (this.sharedData.toscaComponent.toscaType === ToscaTypes.TestRefinementModel) {
+            url += '/testfragment';
+        }
+        return url;
     }
 }
