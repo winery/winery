@@ -29,15 +29,21 @@ public abstract class AbstractGitResolver implements IRepositoryResolver {
     private final String vcsSystem = "git";
     private final String repositoryUrl;
     private final String repositoryBranch;
+    private final String repositoryMaintainer;
+    private final String repositoryName;
 
     public AbstractGitResolver(String url) {
         this.repositoryUrl = url;
         this.repositoryBranch = "master";
+        this.repositoryMaintainer = getRepositoryMaintainer();
+        this.repositoryName = getRepositoryName();
     }
 
     public AbstractGitResolver(String url, String branch) {
         this.repositoryUrl = url;
         this.repositoryBranch = branch;
+        this.repositoryMaintainer = getRepositoryMaintainer();
+        this.repositoryName = getRepositoryName();
     }
 
     @Override

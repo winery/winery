@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,7 +15,8 @@ import { Injectable } from '@angular/core';
 import { backendBaseURL } from '../../../configuration';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { Repository } from './repository';
 
 @Injectable()
 export class RepositoryService {
@@ -35,4 +36,17 @@ export class RepositoryService {
             );
     }
 
+    getAllRepositories(): Observable<Repository[]> {
+        return this.http.get<Repository[]>(backendBaseURL + this.path + '/repositories');
+    }
+
+    postRepositories(repository: Repository[]): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        return this.http
+            .post(
+                backendBaseURL + this.path + '/repositories',
+                repository,
+                { headers: headers, observe: 'response', responseType: 'text' }
+            );
+    }
 }

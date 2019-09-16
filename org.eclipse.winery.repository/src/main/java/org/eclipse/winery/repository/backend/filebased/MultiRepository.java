@@ -57,20 +57,28 @@ public class MultiRepository extends GitBasedRepository {
     private final static Map<FilebasedRepository, Set<String>> repositoryGlobal = new HashMap<>();
     private final static Map<FilebasedRepository, Set<Namespace>> repositoryCommonNamespace = new HashMap<>();
 
+    private static GitBasedRepository localRepository;
     private final RepositoryUtils repositoryUtils;
-    private final RepositoryConfigurationManager repositoryConfigurationManager;
 
-    private FilebasedRepository localRepository;
+    static {
+        try {
+            localRepository = new GitBasedRepository(new GitBasedRepositoryConfiguration(false, new FileBasedRepositoryConfiguration(new File(FilebasedRepository.getDefaultRepositoryFilePath(), Constants.DEFAULT_LOCAL_REPO_NAME).toPath())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (GitAPIException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private final RepositoryConfigurationManager repositoryConfigurationManager = new RepositoryConfigurationManager();
 
     public MultiRepository(GitBasedRepositoryConfiguration configuration) throws IOException, GitAPIException {
         super(configuration);
         this.repositoryUtils = new RepositoryUtils(this);
-        this.repositoryConfigurationManager = new RepositoryConfigurationManager(this);
-        localRepository = new FilebasedRepository(new FileBasedRepositoryConfiguration(new File(this.getRepositoryRoot().toFile(), Constants.DEFAULT_LOCAL_REPO_NAME).toPath()));
         repositoryGlobal.put(localRepository, new HashSet<>());
         repositoryCommonNamespace.put(localRepository, new HashSet<>());
         repositoryUtils.checkGitIgnore();
-        repositoryConfigurationManager.initRepositoryConfigurationManager();
+        repositoryConfigurationManager.initRepositoryConfigurationManager(this);
     }
 
     @Override
@@ -90,7 +98,7 @@ public class MultiRepository extends GitBasedRepository {
         return localRepository;
     }
 
-    protected Map<FilebasedRepository, Set<String>> getRepositoriesMap() {
+    protected static Map<FilebasedRepository, Set<String>> getRepositoriesMap() {
         return repositoryGlobal;
     }
 
@@ -102,7 +110,7 @@ public class MultiRepository extends GitBasedRepository {
         return repositoryGlobal.keySet();
     }
 
-    protected void addRepository(FilebasedRepository repository) {
+    protected static void addRepository(FilebasedRepository repository) {
         registerRepository(repository);
     }
 
@@ -146,7 +154,7 @@ public class MultiRepository extends GitBasedRepository {
         addNamespacesToRepository(repository, ref.getParent());
     }
 
-    protected void updateNamespaces() {
+    protected static void updateNamespaces() {
         Map<FilebasedRepository, Set<String>> tempMap = new HashMap<>(repositoryGlobal);
         tempMap.keySet().forEach(repository -> {
             Collection<String> repositoryNamespaces = repository.getNamespaceManager().getAllNamespaces().keySet();
@@ -155,7 +163,7 @@ public class MultiRepository extends GitBasedRepository {
         });
     }
 
-    private HashSet<Namespace> generateCommonNamespace(Collection<String> repositoryNamespaces) {
+    private static HashSet<Namespace> generateCommonNamespace(Collection<String> repositoryNamespaces) {
         HashSet<Namespace> setNS = new HashSet<>();
 
         repositoryNamespaces.forEach(ns -> {
@@ -172,7 +180,7 @@ public class MultiRepository extends GitBasedRepository {
         return setNS;
     }
 
-    private void registerRepository(FilebasedRepository repository) {
+    private static void registerRepository(FilebasedRepository repository) {
         if (repositoryGlobal.get(repository) != null) {
             LOGGER.debug("The repository is probably already registered.");
             return;
