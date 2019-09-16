@@ -14,15 +14,21 @@
 
 package org.eclipse.winery.tools.deployablecomponents.crawler;
 
-import javafx.util.Pair;
+import java.util.List;
+
 import org.eclipse.winery.tools.deployablecomponents.commons.Component;
 import org.eclipse.winery.tools.deployablecomponents.commons.Dockerfile;
-import org.eclipse.winery.tools.deployablecomponents.fileanalyzer.CommandAnalyzer.*;
+import org.eclipse.winery.tools.deployablecomponents.fileanalyzer.CommandAnalyzer.ApkAnalyzer;
+import org.eclipse.winery.tools.deployablecomponents.fileanalyzer.CommandAnalyzer.AptgetAnalyzer;
+import org.eclipse.winery.tools.deployablecomponents.fileanalyzer.CommandAnalyzer.NpmAnalyzer;
+import org.eclipse.winery.tools.deployablecomponents.fileanalyzer.CommandAnalyzer.Pip3Analyzer;
+import org.eclipse.winery.tools.deployablecomponents.fileanalyzer.CommandAnalyzer.PipAnalyzer;
+import org.eclipse.winery.tools.deployablecomponents.fileanalyzer.CommandAnalyzer.YumAnalyzer;
 import org.eclipse.winery.tools.deployablecomponents.fileanalyzer.Fileanalyzer;
 import org.eclipse.winery.tools.deployablecomponents.fileanalyzer.Filesplitter;
-import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -67,17 +73,17 @@ class CrawlerTest {
         assertEquals("2", result.get(0).getValue().get(0).getVersion());
         assertEquals("equals", result.get(0).getValue().get(0).getVersionOperator());
     }
-    
+
     @Test
     void TestApkCommandAnalyzer() {
         ApkAnalyzer analyzer = new ApkAnalyzer();
         List<Component> result1 = analyzer.analyze("apk add -abc winery@1.2.3 depComp");
         List<Component> result2 = analyzer.analyze("apk addr -def yreniw@3.2.1 pmoCped");
-        
+
         String version = "1.2.3";
         String name = "winery";
         Component component1 = new Component(name, version, "equals");
-        
+
         version = "undefined";
         name = "depComp";
         Component component2 = new Component(name, version, "equals");

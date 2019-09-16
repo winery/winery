@@ -14,13 +14,21 @@
 
 package org.eclipse.winery.tools.deployablecomponents.fileanalyzer;
 
-import javafx.util.Pair;
-import org.eclipse.winery.tools.deployablecomponents.commons.Component;
-import org.eclipse.winery.tools.deployablecomponents.commons.Dockerfile;
-import org.eclipse.winery.tools.deployablecomponents.fileanalyzer.CommandAnalyzer.*;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.eclipse.winery.tools.deployablecomponents.commons.Component;
+import org.eclipse.winery.tools.deployablecomponents.commons.Dockerfile;
+import org.eclipse.winery.tools.deployablecomponents.fileanalyzer.CommandAnalyzer.ApkAnalyzer;
+import org.eclipse.winery.tools.deployablecomponents.fileanalyzer.CommandAnalyzer.AptgetAnalyzer;
+import org.eclipse.winery.tools.deployablecomponents.fileanalyzer.CommandAnalyzer.ChmodAnalyzer;
+import org.eclipse.winery.tools.deployablecomponents.fileanalyzer.CommandAnalyzer.CommandAnalyzer;
+import org.eclipse.winery.tools.deployablecomponents.fileanalyzer.CommandAnalyzer.NpmAnalyzer;
+import org.eclipse.winery.tools.deployablecomponents.fileanalyzer.CommandAnalyzer.Pip3Analyzer;
+import org.eclipse.winery.tools.deployablecomponents.fileanalyzer.CommandAnalyzer.PipAnalyzer;
+import org.eclipse.winery.tools.deployablecomponents.fileanalyzer.CommandAnalyzer.YumAnalyzer;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 /* Analyzes a dockerfile by using command analyzers dependent on the included commands in the file
  */
@@ -47,7 +55,7 @@ public class Fileanalyzer {
                     if (baseComponent == null || topComponents.isEmpty()) {
                         continue;
                     }
-                    results.add(new Pair<>(baseComponent, topComponents));
+                    results.add(Pair.of(baseComponent, topComponents));
                     linesToAnalyze.clear();
                 }
                 isFirst = false;
@@ -61,7 +69,7 @@ public class Fileanalyzer {
         if (baseComponent == null || topComponents.isEmpty()) {
             return results;
         }
-        results.add(new Pair<>(baseComponent, topComponents));
+        results.add(Pair.of(baseComponent, topComponents));
 
         return results;
     }

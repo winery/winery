@@ -14,7 +14,11 @@
 
 package org.eclipse.winery.tools.deployablecomponents;
 
-import javafx.util.Pair;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.tools.deployablecomponents.commons.Component;
 import org.eclipse.winery.tools.deployablecomponents.commons.Dockerfile;
@@ -22,10 +26,7 @@ import org.eclipse.winery.tools.deployablecomponents.crawler.Crawler;
 import org.eclipse.winery.tools.deployablecomponents.crawler.CrawlerType;
 import org.eclipse.winery.tools.deployablecomponents.fileanalyzer.Fileanalyzer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class DeployableComponents {
 
@@ -82,7 +83,7 @@ public class DeployableComponents {
             for (int i = 0; i < oldValue.size(); i++) {
                 Component oldComponent = oldValue.get(i).getKey();
                 if (newComponents.getValue().contains(oldComponent)) {
-                    Pair<Component, Integer> newEntry = new Pair<>(oldValue.get(i).getKey(), oldValue.get(i).getValue() + 1);
+                    Pair<Component, Integer> newEntry = Pair.of(oldValue.get(i).getKey(), oldValue.get(i).getValue() + 1);
                     // remove and add (update) at the same index to not break the loop!
                     oldValue.remove(i);
                     oldValue.add(i, newEntry);
@@ -91,14 +92,14 @@ public class DeployableComponents {
             }
             // add components, which are not known yet (but base component is known)
             for (Component newComponent : newComponents.getValue()) {
-                oldValue.add(new Pair<>(newComponent, 1));
+                oldValue.add(Pair.of(newComponent, 1));
             }
             foundComponents.put(newBaseComponent, oldValue);
         } else {
             // add not known base component
             List<Pair<Component, Integer>> newEntries = new ArrayList<>();
             for (Component newComponent : newComponents.getValue()) {
-                newEntries.add(new Pair<>(newComponent, 1));
+                newEntries.add(Pair.of(newComponent, 1));
             }
             foundComponents.put(newBaseComponent, newEntries);
         }

@@ -81,6 +81,7 @@
         <de.danielbechler.java-object-diff>0.95</de.danielbechler.java-object-diff>
         <org.jgrapht.jgrapht-core.version>1.0.1</org.jgrapht.jgrapht-core.version>
         <org.web3j>4.2.0</org.web3j>
+        <org.apache.commons-lang3.version>3.7</org.apache.commons-lang3.version>
 
         <!-- grouped libraries -->
         <org.apache.cxf.version>2.7.6</org.apache.cxf.version>
