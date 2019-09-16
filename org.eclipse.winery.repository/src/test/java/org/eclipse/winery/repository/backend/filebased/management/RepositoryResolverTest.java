@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.SortedSet;
 
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -30,7 +31,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class RepositoryResolverTest {
+public class RepositoryResolverTest extends TestWithGitBackedRepository {
 
     private final String url = "https://github.com/winery/test-repository";
     private IRepositoryResolver resolver;
@@ -67,15 +68,16 @@ public class RepositoryResolverTest {
     }
 
     @Test
-    public void getRepository() {
+    public void getRepository() throws GitAPIException {
+        this.setRevisionTo("1f24de8867bf3df5d26b932abf4526c625d8502f");
         Path resolverRepositoryPath = Paths.get(System.getProperty("java.io.tmpdir")).resolve("winery").resolve("test-repository");
 
         try {
             FilebasedRepository resolverRepository = resolver.createRepository(resolverRepositoryPath.toFile());
-            assertEquals(56, resolverRepository.getNamespaceManager().getAllNamespaces().size()); //better way to define the value?
+            assertEquals(59, resolverRepository.getNamespaceManager().getAllNamespaces().size());
 
             SortedSet<NodeTypeId> allNodeTypes = resolverRepository.getAllDefinitionsChildIds(NodeTypeId.class);
-            assertEquals(40, allNodeTypes.size());//better way to define the value?
+            assertEquals(45, allNodeTypes.size());
         } catch (IOException | GitAPIException ex) {
             ex.getStackTrace();
         }
