@@ -94,7 +94,7 @@ public class RepositoryConfigurationManager {
     }
 
     private static boolean repoContainsConfigFile() {
-        File repo = new File(FilebasedRepository.getDefaultRepositoryFilePath(), Filename.FILENAME_JSON_REPOSITORIES);
+        File repo = new File(FilebasedRepository.getActiveRepositoryFilePath(), Filename.FILENAME_JSON_REPOSITORIES);
 
         if (repo.exists()) {
             return true;
@@ -112,15 +112,14 @@ public class RepositoryConfigurationManager {
     }
 
     private static void loadRepositoriesByList() {
-        for (RepositoryProperties repository : repositoriesList
-        ) {
+        for (RepositoryProperties repository : repositoriesList) {
             createRepository(repository.getUrl(), repository.getBranch());
         }
     }
 
     private static void createRepositoryConfigurationFile() {
         ObjectMapper objectMapper = new ObjectMapper();
-        repositoryConfiguration = new File(FilebasedRepository.getDefaultRepositoryFilePath(), Filename.FILENAME_JSON_REPOSITORIES);
+        repositoryConfiguration = new File(FilebasedRepository.getActiveRepositoryFilePath(), Filename.FILENAME_JSON_REPOSITORIES);
         try {
             Files.createFile(repositoryConfiguration.toPath());
             objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -141,7 +140,7 @@ public class RepositoryConfigurationManager {
             File ownerRootFile;
             try {
                 ownerDirectory = URLEncoder.encode(resolver.getRepositoryMaintainerUrl(), "UTF-8");
-                ownerRootFile = new File(FilebasedRepository.getDefaultRepositoryFilePath(), ownerDirectory);
+                ownerRootFile = new File(FilebasedRepository.getActiveRepositoryFilePath(), ownerDirectory);
 
                 if (!ownerRootFile.exists()) {
                     Files.createDirectories(ownerRootFile.toPath());

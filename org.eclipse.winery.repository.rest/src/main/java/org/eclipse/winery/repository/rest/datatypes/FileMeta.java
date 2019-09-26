@@ -13,24 +13,24 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.datatypes;
 
-import org.apache.commons.io.FilenameUtils;
+import java.io.IOException;
+
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.configuration.Environments;
-import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
+
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import java.io.IOException;
-
 /**
- * based on
- * https://github.com/blueimp/jQuery-File-Upload/wiki/Google-App-Engine-Java
+ * based on https://github.com/blueimp/jQuery-File-Upload/wiki/Google-App-Engine-Java
  * <p>
- * The getters are named according to the requirements of the template in
- * jquery-file-upload-full.jsp
+ * The getters are named according to the requirements of the template in jquery-file-upload-full.jsp
  */
 @XmlRootElement
 public class FileMeta {
@@ -67,8 +67,7 @@ public class FileMeta {
 
     /**
      * @param ref       the reference to get information from
-     * @param URLprefix the string which should be prepended the actual URL.
-     *                  Including the "/"
+     * @param URLprefix the string which should be prepended the actual URL. Including the "/"
      */
     public FileMeta(RepositoryFileReference ref, String URLprefix) {
         this(ref);
@@ -76,8 +75,7 @@ public class FileMeta {
     }
 
     /**
-     * The constructor is used for JAX-B only. Therefore, the warning "unused"
-     * is suppressed
+     * The constructor is used for JAX-B only. Therefore, the warning "unused" is suppressed
      */
     @SuppressWarnings("unused")
     private FileMeta() {
@@ -106,5 +104,4 @@ public class FileMeta {
     public String getThumbnailUrl() {
         return this.thumbnailUrl;
     }
-
 }

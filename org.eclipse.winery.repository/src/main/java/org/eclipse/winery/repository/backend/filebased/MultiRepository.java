@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
 import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
@@ -37,7 +38,6 @@ import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
-import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 
@@ -62,14 +62,14 @@ public class MultiRepository extends GitBasedRepository {
 
     static {
         try {
-            localRepository = new GitBasedRepository(new GitBasedRepositoryConfiguration(false, new FileBasedRepositoryConfiguration(new File(FilebasedRepository.getDefaultRepositoryFilePath(), Constants.DEFAULT_LOCAL_REPO_NAME).toPath())));
+            localRepository = new GitBasedRepository(new GitBasedRepositoryConfiguration(false, new FileBasedRepositoryConfiguration(new File(FilebasedRepository.getActiveRepositoryFilePath(), Constants.DEFAULT_LOCAL_REPO_NAME).toPath())));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (GitAPIException e) {
             e.printStackTrace();
         }
     }
-    
+
     private final RepositoryConfigurationManager repositoryConfigurationManager = new RepositoryConfigurationManager();
 
     public MultiRepository(GitBasedRepositoryConfiguration configuration) throws IOException, GitAPIException {

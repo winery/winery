@@ -45,6 +45,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.configuration.Environments;
@@ -61,7 +62,6 @@ import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
-import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.AbstractRepository;
 import org.eclipse.winery.repository.backend.AccountabilityConfigurationManager;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -94,8 +94,8 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FilebasedRepository.class);
 
-    private final static Path oldRepository = FilebasedRepository.getDefaultRepositoryFilePath().toPath();
-    private final static Path newRepository = new File(FilebasedRepository.getDefaultRepositoryFilePath(), Constants.DEFAULT_LOCAL_REPO_NAME).toPath();
+    private static final Path repository = FilebasedRepository.getActiveRepositoryFilePath().toPath();
+    private static final Path workspaceRepository = new File(FilebasedRepository.getActiveRepositoryFilePath(), Constants.DEFAULT_LOCAL_REPO_NAME).toPath();
 
     private static List<String> ignoreFile = new ArrayList<>();
 
@@ -207,9 +207,9 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
                 org.apache.commons.io.FileUtils.forceMkdir(repositoryPath.toFile());
                 ignoreFile.add(Constants.DEFAULT_LOCAL_REPO_NAME);
                 ignoreFile.add(Filename.FILENAME_JSON_REPOSITORIES);
-                FileUtils.copyFiles(oldRepository, newRepository, ignoreFile);
+                FileUtils.copyFiles(repository, workspaceRepository, ignoreFile);
                 ignoreFile.add(".git");
-                FileUtils.deleteFiles(oldRepository, ignoreFile);
+                FileUtils.deleteFiles(repository, ignoreFile);
             } else {
                 org.apache.commons.io.FileUtils.forceMkdir(repositoryPath.toFile());
             }
@@ -219,19 +219,15 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
         return repositoryPath;
     }
 
-    public static File getDefaultRepositoryFilePath() {
-        return new File(org.apache.commons.io.FileUtils.getUserDirectory(), Constants.DEFAULT_REPO_NAME);
-    }
-
-    public static File getLocalRepositoryFilePath() {
-        return new File(getDefaultRepositoryFilePath(), Constants.DEFAULT_REPO_NAME);
+    public static File getActiveRepositoryFilePath() {
+        return new File(Environments.getRepositoryRoot());
     }
 
     private static Path createDefaultRepositoryPath() {
         File repo = null;
         boolean operationalFileSystemAccess;
         try {
-            repo = FilebasedRepository.getDefaultRepositoryFilePath();
+            repo = new File(org.apache.commons.io.FileUtils.getUserDirectory(), Constants.DEFAULT_REPO_NAME);
             operationalFileSystemAccess = true;
         } catch (NullPointerException e) {
             // it seems, we run at a system, where we do not have any filesystem

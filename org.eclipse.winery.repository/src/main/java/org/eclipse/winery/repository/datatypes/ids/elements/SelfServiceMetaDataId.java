@@ -13,10 +13,10 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.datatypes.ids.elements;
 
+import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
-import org.eclipse.winery.repository.Constants;
 
 /**
  * Id of the directory containing the self-service metadata
@@ -26,5 +26,4 @@ public class SelfServiceMetaDataId extends ToscaElementId {
     public SelfServiceMetaDataId(ServiceTemplateId parent) {
         super(parent, new XmlId(Constants.DIRNAME_SELF_SERVICE_METADATA, true));
     }
-
 }

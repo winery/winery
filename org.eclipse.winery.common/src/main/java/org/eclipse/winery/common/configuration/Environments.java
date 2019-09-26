@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.Properties;
 
+import org.eclipse.winery.common.Constants;
+
 import org.apache.commons.configuration2.YAMLConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,10 +102,11 @@ public final class Environments {
      * @return path to configuration
      */
     public static String getRepositoryRoot() {
-        if (Environment.getConfiguration().getString(repositoryPrefix + "repositoryRoot").equals("")) {
-            return null;
+        String repositoryRoot = Environment.getConfiguration().getString(repositoryPrefix + "repositoryRoot");
+        if (repositoryRoot == null || repositoryRoot.isEmpty()) {
+            return org.apache.commons.io.FileUtils.getUserDirectory().getAbsolutePath() + Constants.DEFAULT_REPO_NAME;
         } else {
-            return Environment.getConfiguration().getString(repositoryPrefix + "repositoryRoot");
+            return repositoryRoot;
         }
     }
 

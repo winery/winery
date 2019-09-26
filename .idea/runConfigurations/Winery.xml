@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Winery" type="CompoundRunConfigurationType">
+    <toRun name="Winery Server" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" />
     <toRun name="Topologymodeler" type="js.build_tools.npm" />
     <toRun name="TOSCA Mangement UI" type="js.build_tools.npm" />
-    <toRun name="Winery Server" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" />
     <method v="2" />
   </configuration>
 </component>

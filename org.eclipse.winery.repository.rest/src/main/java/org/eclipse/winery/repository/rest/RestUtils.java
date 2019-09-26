@@ -47,6 +47,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.configuration.Environments;
@@ -82,7 +83,6 @@ import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.EdmmManager;
 import org.eclipse.winery.repository.backend.IRepository;
@@ -294,7 +294,7 @@ public class RestUtils {
         StringBuilder sb = new StringBuilder();
         sb.append("attachment;filename=\"");
         sb.append(resource.getXmlId().getEncoded());
-        sb.append(org.eclipse.winery.repository.Constants.SUFFIX_CSAR);
+        sb.append(Constants.SUFFIX_CSAR);
         sb.append("\"");
         return Response.ok().header("Content-Disposition", sb.toString()).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
     }
