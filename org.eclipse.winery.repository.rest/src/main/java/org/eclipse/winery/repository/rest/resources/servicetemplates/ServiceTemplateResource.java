@@ -324,6 +324,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     @Path("createnewstatefulversion")
     @Produces( {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response createNewStatefulVersion() {
+        LOGGER.debug("Creating new stateful version of Service Template {}...", this.getId());
         ServiceTemplateId id = (ServiceTemplateId) this.getId();
         WineryVersion version = VersionUtils.getVersion(id);
 
@@ -343,6 +344,8 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
             response.setUri(null);
             response.setMessage(new QNameApiData(newId));
         }
+
+        LOGGER.debug("Created Service Template {}", newId.getQName());
 
         return response.getResponse();
     }

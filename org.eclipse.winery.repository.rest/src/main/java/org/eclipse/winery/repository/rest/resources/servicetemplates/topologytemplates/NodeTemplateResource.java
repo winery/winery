@@ -63,8 +63,12 @@ import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate> implements INodeTemplateResourceOrNodeTypeImplementationResource {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeTemplateResource.class);
 
     private final QName qnameX = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "x");
     private final QName qnameY = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "y");
@@ -159,6 +163,9 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response createStateElement(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file")
         FormDataContentDisposition fileDetail, @FormDataParam("file") FormDataBodyPart body, @Context UriInfo uriInfo) {
+        LOGGER.debug("Received state artifact for Node Template {} with ID {}", this.nodeTemplate.getName(), this.nodeTemplate.getId());
+        LOGGER.debug("Artifact file name is {} and is {} bytes big.", fileDetail.getFileName(), fileDetail.getSize());
+
         // ensure that the artifact type exists.
         IRepository repo = RepositoryFactory.getRepository();
         repo.getElement(new ArtifactTypeId(OpenToscaBaseTypes.stateArtifactType));
@@ -182,9 +189,11 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
                 + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_VERSION_PREFIX + "1"
             , false
         );
+        LOGGER.debug("Created Artifact Template of Type \"State\" called {}", newArtifactTemplateId.getQName());
 
         // if there is already a state artifact, update the file
         if (stateDeploymentArtifact.isPresent()) {
+            LOGGER.debug("Updating the state DA of the Node Template...");
             deploymentArtifact = stateDeploymentArtifact.get();
 
             // create new ArtifactTemplate version
@@ -199,6 +208,7 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
                 newWineryVersion
             );
         } else {
+            LOGGER.debug("Creating the state DA of the Node Template...");
             TDeploymentArtifacts list = this.nodeTemplate.getDeploymentArtifacts();
             if (Objects.isNull(list)) {
                 list = new TDeploymentArtifacts();
@@ -215,6 +225,7 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
                 OpenToscaBaseTypes.stateArtifactType.toString()
             ));
 
+        LOGGER.debug("Attaching the new Artifact...");
         deploymentArtifact.setArtifactRef(newArtifactTemplateId.getQName());
 
         Response response = new ArtifactTemplateResource(newArtifactTemplateId)
@@ -222,9 +233,11 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
             .onPost(uploadedInputStream, fileDetail, body, uriInfo, this.nodeTemplate.getId() + ".state");
 
         if (response.getStatus() != Response.Status.CREATED.getStatusCode()) {
+            LOGGER.debug("Could not create artifact file! Response was {}", response);
             return response;
         }
 
+        LOGGER.debug("Persisting now...");
         return RestUtils.persist(this.res);
     }
 
