@@ -13,9 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.admin;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -24,13 +23,14 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.IRepositoryAdministration;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.filebased.MultiRepository;
 import org.eclipse.winery.repository.backend.filebased.RepositoryConfigurationManager;
 import org.eclipse.winery.repository.backend.filebased.RepositoryProperties;
 
@@ -57,14 +57,12 @@ public class RepositoryAdminResource {
     @GET
     @Produces(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP)
     public Response dumpRepository() {
-        StreamingOutput so = new StreamingOutput() {
-
-            @Override
-            public void write(OutputStream output) throws IOException, WebApplicationException {
-                ((IRepositoryAdministration) RepositoryFactory.getRepository()).doDump(output);
-            }
-        };
-        return Response.ok().header("Content-Disposition", "attachment;filename=\"repository.zip\"").type(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP).entity(so).build();
+        StreamingOutput so = output -> ((IRepositoryAdministration) RepositoryFactory.getRepository()).doDump(output);
+        return Response.ok()
+            .header("Content-Disposition", "attachment;filename=\"repository.zip\"")
+            .type(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP)
+            .entity(so)
+            .build();
     }
 
     /**
@@ -76,7 +74,11 @@ public class RepositoryAdminResource {
     @Path("repositories")
     @Produces(MediaType.APPLICATION_JSON)
     public List<RepositoryProperties> getRepositoriesAsJson() {
-        return RepositoryConfigurationManager.getRepositoriesFromFile();
+        IRepository repository = RepositoryFactory.getRepository();
+        if (repository instanceof MultiRepository) {
+            return RepositoryConfigurationManager.getRepositoriesFromFile((MultiRepository) repository);
+        }
+        return Collections.emptyList();
     }
 
     /**
@@ -87,7 +89,9 @@ public class RepositoryAdminResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addRepository(List<RepositoryProperties> repositoriesList) {
         if (repositoriesList == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("repositories list must be given.").build();
+            return Response.status(Response.Status.BAD_REQUEST)
+                .entity("Repositories list must be given.")
+                .build();
         }
         RepositoryConfigurationManager.addRepositoryToFile(repositoriesList);
         return Response.ok().build();

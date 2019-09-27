@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,8 +36,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A NamespaceManager that manages the JsonBasedNamespaceManager of each Repository Manager of a manager.
- * What's his salary?
+ * A NamespaceManager that manages the JsonBasedNamespaceManager of each Repository Manager of a manager. What's his
+ * salary?
  */
 public class JsonBasedMultiNamespaceManager extends AbstractNamespaceManager {
 
@@ -92,7 +91,7 @@ public class JsonBasedMultiNamespaceManager extends AbstractNamespaceManager {
     @Override
     public void addAllPermanent(Collection<NamespaceProperties> properties) {
         properties.forEach(prop -> {
-            FilebasedRepository repository = this.repository.getRepositoryUtils().getRepositoryByNamespace(prop.getNamespace());
+            FilebasedRepository repository = RepositoryUtils.getRepositoryByNamespace(prop.getNamespace(), this.repository);
 
             if (prop.getUpstreamRepository().isEmpty() && repository instanceof GitBasedRepository) {
                 prop.setUpstreamRepository(((GitBasedRepository) repository).getRepositoryUrl());
@@ -106,7 +105,7 @@ public class JsonBasedMultiNamespaceManager extends AbstractNamespaceManager {
     @Override
     public void replaceAll(Map<String, NamespaceProperties> map) {
         map.forEach((namespace, properties) -> {
-            FilebasedRepository repository = this.repository.getRepositoryUtils().getRepositoryByNamespace(namespace);
+            FilebasedRepository repository = RepositoryUtils.getRepositoryByNamespace(namespace, this.repository);
             repository.getNamespaceManager().replaceAll(map);
         });
         this.repository.updateNamespaces();
@@ -130,47 +129,59 @@ public class JsonBasedMultiNamespaceManager extends AbstractNamespaceManager {
 
     @Override
     protected Set<String> getAllPrefixes(String namespace) {
-        Set<String> result = new HashSet<>();
-
-        FilebasedRepository nsRepository = repository.getRepositoryUtils().getRepositoryByNamespace(namespace);
-        result.addAll(this.namespaceProperties.get(nsRepository).entrySet().stream().map(entry -> entry.getValue().getPrefix()).collect(Collectors.toSet()));
-
-        return result;
+        FilebasedRepository nsRepository = RepositoryUtils.getRepositoryByNamespace(namespace, this.repository);
+        return this.namespaceProperties.get(nsRepository).values().stream()
+            .map(NamespaceProperties::getPrefix)
+            .collect(Collectors.toSet());
     }
 
     @Override
     public String getPrefix(String namespace) {
-        return this.repository.getRepositoryUtils().getRepositoryByNamespace(namespace).getNamespaceManager().getPrefix(namespace);
+        return RepositoryUtils.getRepositoryByNamespace(namespace, this.repository)
+            .getNamespaceManager()
+            .getPrefix(namespace);
     }
 
     @Override
     public boolean hasPermanentProperties(String namespace) {
-        return this.repository.getRepositoryUtils().getRepositoryByNamespace(namespace).getNamespaceManager().hasPermanentProperties(namespace);
+        return RepositoryUtils.getRepositoryByNamespace(namespace, this.repository)
+            .getNamespaceManager()
+            .hasPermanentProperties(namespace);
     }
 
     @Override
     public void removeNamespaceProperties(String namespace) {
-        this.repository.getRepositoryUtils().getRepositoryByNamespace(namespace).getNamespaceManager().removeNamespaceProperties(namespace);
+        RepositoryUtils.getRepositoryByNamespace(namespace, this.repository)
+            .getNamespaceManager()
+            .removeNamespaceProperties(namespace);
     }
 
     @Override
     public @NonNull NamespaceProperties getNamespaceProperties(String namespace) {
-        return this.repository.getRepositoryUtils().getRepositoryByNamespace(namespace).getNamespaceManager().getNamespaceProperties(namespace);
+        return RepositoryUtils.getRepositoryByNamespace(namespace, this.repository)
+            .getNamespaceManager()
+            .getNamespaceProperties(namespace);
     }
 
     @Override
     public void setNamespaceProperties(String namespace, NamespaceProperties properties) {
-        this.repository.getRepositoryUtils().getRepositoryByNamespace(namespace).getNamespaceManager().setNamespaceProperties(namespace, properties);
+        RepositoryUtils.getRepositoryByNamespace(namespace, this.repository)
+            .getNamespaceManager()
+            .setNamespaceProperties(namespace, properties);
     }
 
     @Override
     public boolean isPatternNamespace(String namespace) {
-        return this.repository.getRepositoryUtils().getRepositoryByNamespace(namespace).getNamespaceManager().isPatternNamespace(namespace);
+        return RepositoryUtils.getRepositoryByNamespace(namespace, this.repository)
+            .getNamespaceManager()
+            .isPatternNamespace(namespace);
     }
 
     @Override
     public boolean isSecureCollection(String namespace) {
-        return this.repository.getRepositoryUtils().getRepositoryByNamespace(namespace).getNamespaceManager().isSecureCollection(namespace);
+        return RepositoryUtils.getRepositoryByNamespace(namespace, this.repository)
+            .getNamespaceManager()
+            .isSecureCollection(namespace);
     }
 
     @Override
