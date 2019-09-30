@@ -14,13 +14,13 @@
 
 package org.eclipse.winery.repository.backend.filebased.management;
 
-public class GitHubResolver extends AbstractGitResolver {
+public class GitResolver extends AbstractGitResolver {
 
-    public GitHubResolver(String url) {
+    public GitResolver(String url) {
         super(url);
     }
 
-    public GitHubResolver(String url, String branch) {
+    public GitResolver(String url, String branch) {
         super(url, branch);
     }
 

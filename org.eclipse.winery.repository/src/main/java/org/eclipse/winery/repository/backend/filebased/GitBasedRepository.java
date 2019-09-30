@@ -22,16 +22,17 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.repository.Constants;
-import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
+import org.eclipse.winery.repository.backend.BackendUtils;
 
 import com.google.common.collect.Iterables;
 import com.google.common.eventbus.EventBus;
@@ -39,7 +40,6 @@ import org.apache.tika.mime.MediaType;
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.CleanCommand;
 import org.eclipse.jgit.api.CommitCommand;
-import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
@@ -297,10 +297,8 @@ public class GitBasedRepository extends FilebasedRepository {
     }
 
     private Git cloneRepository(String repoUrl, String branch) throws GitAPIException {
-        Git git = Git.cloneRepository().setURI(repoUrl).setDirectory(this.getRepositoryDep().toFile()).call();
-        if (!"master".equals(branch)) {
-            git.checkout().setCreateBranch(true).setName(branch).setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK).setStartPoint("origin/" + branch).call();
-        }
+        Git git = Git.cloneRepository().setURI(repoUrl).setDirectory(this.getRepositoryDep().toFile()).setBranchesToClone(Arrays.asList(branch))
+            .setBranch(branch).call();
 
         return git;
     }

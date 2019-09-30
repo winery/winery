@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.filebased.management.IRepositoryResolver;
@@ -41,22 +42,21 @@ public class RepositoryConfigurationManager {
     private static File repositoryConfiguration;
     private static List<RepositoryProperties> repositoriesList = new ArrayList<>();
 
-    public static void initRepositoryConfigurationManager(MultiRepository repository) throws IOException {
-        repositoryConfiguration = new File(repository.getRepositoryDep().toString(), Filename.FILENAME_JSON_REPOSITORIES);
-        readRepositoriesConfig();
-    }
-
     public static void addRepositoryToFile(List<RepositoryProperties> repositories) {
         repositoriesList = repositories;
         saveConfiguration();
-        loadRepositoriesByList();
+        IRepository repository = RepositoryFactory.getRepository();
+        if (repository instanceof MultiRepository) {
+            loadRepositoriesByList((MultiRepository) repository);
+        } else {
+            throw new UnsupportedOperationException("The addition of the repository was not successful!");
+        }
     }
 
-    public static List<RepositoryProperties> getRepositoriesFromFile() {
-        repositoriesList.clear();
+    public static List<RepositoryProperties> getRepositoriesFromFile(MultiRepository repo) {
         if (repoContainsConfigFile()) {
             try {
-                readRepositoriesConfig();
+                readRepositoriesConfig(repo);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -64,11 +64,11 @@ public class RepositoryConfigurationManager {
         return repositoriesList;
     }
 
-    private static void readRepositoriesConfig() throws IOException {
+    private static void readRepositoriesConfig(MultiRepository repo) throws IOException {
         if (repoContainsConfigFile()) {
             LOGGER.info("Found Repositories file");
             loadConfiguration(repositoryConfiguration);
-            loadRepositoriesByList();
+            loadRepositoriesByList(repo);
         } else {
             saveConfiguration();
         }
@@ -94,7 +94,7 @@ public class RepositoryConfigurationManager {
     }
 
     private static boolean repoContainsConfigFile() {
-        File repo = new File(FilebasedRepository.getDefaultRepositoryFilePath(), Filename.FILENAME_JSON_REPOSITORIES);
+        File repo = new File(FilebasedRepository.getActiveRepositoryFilePath(), Filename.FILENAME_JSON_REPOSITORIES);
 
         if (repo.exists()) {
             return true;
@@ -111,16 +111,15 @@ public class RepositoryConfigurationManager {
         repositoriesList = reader.readValue(configuration);
     }
 
-    private static void loadRepositoriesByList() {
-        for (RepositoryProperties repository : repositoriesList
-        ) {
-            createRepository(repository.getUrl(), repository.getBranch());
+    private static void loadRepositoriesByList(MultiRepository repo) {
+        for (RepositoryProperties repository : repositoriesList) {
+            createRepository(repository.getUrl(), repository.getBranch(), repo);
         }
     }
 
     private static void createRepositoryConfigurationFile() {
         ObjectMapper objectMapper = new ObjectMapper();
-        repositoryConfiguration = new File(FilebasedRepository.getDefaultRepositoryFilePath(), Filename.FILENAME_JSON_REPOSITORIES);
+        repositoryConfiguration = new File(FilebasedRepository.getActiveRepositoryFilePath(), Filename.FILENAME_JSON_REPOSITORIES);
         try {
             Files.createFile(repositoryConfiguration.toPath());
             objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -130,37 +129,41 @@ public class RepositoryConfigurationManager {
         }
     }
 
-    private static void createRepository(String url, String branch) {
+    private static void createRepository(String url, String branch, MultiRepository repo) {
         IRepositoryResolver resolver = null;
         if (RepositoryResolverFactory.getResolver(url, branch).isPresent()) {
             resolver = RepositoryResolverFactory.getResolver(url, branch).get();
         }
 
-        if (resolver != null && !RepositoryUtils.checkRepositoryDuplicate(url)) {
+        if (resolver != null && !RepositoryUtils.checkRepositoryDuplicate(url, repo)) {
             String ownerDirectory;
             File ownerRootFile;
             try {
                 ownerDirectory = URLEncoder.encode(resolver.getRepositoryMaintainerUrl(), "UTF-8");
-                ownerRootFile = new File(FilebasedRepository.getDefaultRepositoryFilePath(), ownerDirectory);
+                ownerRootFile = new File(FilebasedRepository.getActiveRepositoryFilePath(), ownerDirectory);
 
                 if (!ownerRootFile.exists()) {
                     Files.createDirectories(ownerRootFile.toPath());
                 }
 
                 File repositoryLocation = new File(ownerRootFile, resolver.getRepositoryName());
-                FilebasedRepository repository = resolver.createRepository(repositoryLocation);
+                FilebasedRepository newSubRepository = resolver.createRepository(repositoryLocation);
+                repo.addRepository(newSubRepository);
 
-                MultiRepository.addRepository(repository);
-
-                File configurationFile = new File(repository.getRepositoryDep().toString(), Filename.FILENAME_JSON_REPOSITORIES);
+                File configurationFile = new File(newSubRepository.getRepositoryDep().toString(), Filename.FILENAME_JSON_REPOSITORIES);
                 if (configurationFile.exists()) {
                     loadConfiguration(configurationFile);
-                    loadRepositoriesByList();
+                    loadRepositoriesByList(repo);
                 }
             } catch (IOException | GitAPIException e) {
                 LOGGER.error("Error while creating the repository structure");
                 e.printStackTrace();
             }
         }
+    }
+
+    public static void initialize(MultiRepository multiRepository) throws IOException {
+        repositoryConfiguration = new File(multiRepository.getRepositoryDep().toString(), Filename.FILENAME_JSON_REPOSITORIES);
+        readRepositoriesConfig(multiRepository);
     }
 }

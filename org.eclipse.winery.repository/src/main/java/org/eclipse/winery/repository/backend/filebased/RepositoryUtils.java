@@ -28,13 +28,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.admin.AdminId;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.elements.ToscaElementId;
-import org.eclipse.winery.repository.Constants;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,14 +41,8 @@ class RepositoryUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryUtils.class);
 
-    private final MultiRepository multiRepository;
-
-    public RepositoryUtils(MultiRepository repository) {
-        this.multiRepository = repository;
-    }
-
-    protected void checkGitIgnore() throws IOException {
-        File ignore = new File(this.multiRepository.getRepositoryDep().toFile(), Constants.FILE_GIT_IGNORE);
+    public static void checkGitIgnore(FilebasedRepository multiRepository) throws IOException {
+        File ignore = new File(multiRepository.getRepositoryDep().toFile(), Constants.FILE_GIT_IGNORE);
 
         if (!ignore.exists()) {
             if (ignore.createNewFile()) {
@@ -73,8 +65,8 @@ class RepositoryUtils {
         }
     }
 
-    protected static boolean checkRepositoryDuplicate(String url) {
-        for (FilebasedRepository frepo : MultiRepository.getRepositoriesMap().keySet()) {
+    public static boolean checkRepositoryDuplicate(String url, MultiRepository multiRepository) {
+        for (FilebasedRepository frepo : multiRepository.getRepositoriesMap().keySet()) {
             if ((frepo instanceof GitBasedRepository) && (((GitBasedRepository) frepo).getRepositoryUrl() != null)) {
                 if (((GitBasedRepository) frepo).getRepositoryUrl().equals(url)) {
                     return true;
@@ -84,24 +76,25 @@ class RepositoryUtils {
         return false;
     }
 
-    protected String getUrlSeparatorEncoded() throws UnsupportedEncodingException {
+    public static String getUrlSeparatorEncoded() throws UnsupportedEncodingException {
         return URLEncoder.encode(Constants.URL_SEPARATOR, StandardCharsets.UTF_8.name());
     }
 
-    protected Optional<Namespace> getNamespaceById(GenericId id) {
-
+    private static Optional<Namespace> getNamespaceById(GenericId id) {
         if (id instanceof DefinitionsChildId) {
             return Optional.of(((DefinitionsChildId) id).getNamespace());
+        } else if (id.getParent() != null) {
+            return getNamespaceById(id.getParent());
         }
 
         return Optional.empty();
     }
 
-    protected FilebasedRepository getRepositoryByNamespace(Namespace ns) {
+    private static FilebasedRepository getRepositoryByNamespace(Namespace ns, MultiRepository multiRepository) {
         List<FilebasedRepository> repositoryList = new ArrayList<>();
 
-        for (FilebasedRepository repo : this.multiRepository.getRepositoriesMap().keySet()) {
-            for (String namespace : this.multiRepository.getRepositoriesMap().get(repo)) {
+        for (FilebasedRepository repo : multiRepository.getRepositoriesMap().keySet()) {
+            for (String namespace : multiRepository.getRepositoriesMap().get(repo)) {
                 if (namespace.equals(ns.getDecoded())) {
                     repositoryList.add(repo);
                 }
@@ -112,8 +105,8 @@ class RepositoryUtils {
             return repositoryList.get(0);
         }
 
-        for (FilebasedRepository repo : this.multiRepository.getRepositoriesCommonNamespace().keySet()) {
-            for (Namespace preNamespace : this.multiRepository.getRepositoriesCommonNamespace().get(repo)) {
+        for (FilebasedRepository repo : multiRepository.getRepositoriesCommonNamespace().keySet()) {
+            for (Namespace preNamespace : multiRepository.getRepositoriesCommonNamespace().get(repo)) {
                 if (ns.getDecoded().contains(preNamespace.getDecoded())) {
                     repositoryList.add(repo);
                 }
@@ -121,13 +114,13 @@ class RepositoryUtils {
         }
 
         if (repositoryList.isEmpty()) {
-            return this.multiRepository.getLocalRepository();
+            return multiRepository.getLocalRepository();
         } else {
             return repositoryList.get(0);
         }
     }
 
-    protected FilebasedRepository getRepositoryByNamespace(String ns) {
+    public static FilebasedRepository getRepositoryByNamespace(String ns, MultiRepository multiRepository) {
         boolean containsUrlSeparator = false;
 
         try {
@@ -138,19 +131,18 @@ class RepositoryUtils {
         }
 
         if (containsUrlSeparator) {
-            return getRepositoryByNamespace(new Namespace(ns, true));
+            return getRepositoryByNamespace(new Namespace(ns, true), multiRepository);
         } else {
-            return getRepositoryByNamespace(new Namespace(ns, false));
+            return getRepositoryByNamespace(new Namespace(ns, false), multiRepository);
         }
     }
 
-    protected FilebasedRepository getRepositoryByRef(RepositoryFileReference ref) {
-        return getRepositoryById(ref.getParent());
+    public static FilebasedRepository getRepositoryByRef(RepositoryFileReference ref, MultiRepository multiRepository) {
+        return getRepositoryById(ref.getParent(), multiRepository);
     }
 
-    protected FilebasedRepository getRepositoryById(GenericId id) {
-
-        Optional<List<FilebasedRepository>> optRepositories = getRepositoriesById(id);
+    public static FilebasedRepository getRepositoryById(GenericId id, MultiRepository multiRepository) {
+        Optional<List<FilebasedRepository>> optRepositories = getRepositoriesById(id, multiRepository);
 
         if (optRepositories.isPresent()) {
             List<FilebasedRepository> repositories = optRepositories.get();
@@ -166,22 +158,16 @@ class RepositoryUtils {
             }
         }
 
-        return this.multiRepository.getLocalRepository();
+        return multiRepository.getLocalRepository();
     }
 
-    protected Optional<List<FilebasedRepository>> getRepositoriesById(GenericId id) {
+    private static Optional<List<FilebasedRepository>> getRepositoriesById(GenericId id, MultiRepository multiRepository) {
         List<FilebasedRepository> repositoryList = new ArrayList<>();
-
-        if (id instanceof AdminId || id instanceof ToscaElementId) {
-            return Optional.of(Collections.singletonList(this.multiRepository.getLocalRepository()));
-        }
-
         Optional<Namespace> optNamespace = getNamespaceById(id);
 
         if (optNamespace.isPresent()) {
-
-            for (FilebasedRepository repo : this.multiRepository.getRepositoriesMap().keySet()) {
-                for (String ns : this.multiRepository.getRepositoriesMap().get(repo)) {
+            for (FilebasedRepository repo : multiRepository.getRepositoriesMap().keySet()) {
+                for (String ns : multiRepository.getRepositoriesMap().get(repo)) {
                     String idNamespace = optNamespace.get().getDecoded();
                     if (idNamespace.equals(ns)) {
                         repositoryList.add(repo);
@@ -193,8 +179,8 @@ class RepositoryUtils {
                 return Optional.of(repositoryList);
             }
 
-            for (FilebasedRepository repo : this.multiRepository.getRepositoriesCommonNamespace().keySet()) {
-                for (Namespace ns : this.multiRepository.getRepositoriesCommonNamespace().get(repo)) {
+            for (FilebasedRepository repo : multiRepository.getRepositoriesCommonNamespace().keySet()) {
+                for (Namespace ns : multiRepository.getRepositoriesCommonNamespace().get(repo)) {
                     String idNamespace = optNamespace.get().getDecoded();
                     String repoNamespace = ns.getDecoded();
                     if (idNamespace.contains(repoNamespace)) {
@@ -204,23 +190,27 @@ class RepositoryUtils {
             }
         }
 
-        return repositoryList.isEmpty() ? Optional.of(Collections.singletonList(this.multiRepository.getLocalRepository())) : Optional.of(repositoryList);
+        return repositoryList.isEmpty()
+            ? Optional.of(Collections.singletonList(multiRepository.getLocalRepository()))
+            : Optional.of(repositoryList);
     }
 
-    protected Optional<List<FilebasedRepository>> getRepositoriesByRef(RepositoryFileReference ref) {
-        return getRepositoriesById(ref.getParent());
+    protected static Optional<List<FilebasedRepository>> getRepositoriesByRef(RepositoryFileReference ref, MultiRepository multiRepository) {
+        return getRepositoriesById(ref.getParent(), multiRepository);
     }
 
-    private Optional<List<FilebasedRepository>> searchRepositoriesById(GenericId id) {
+    private static Optional<List<FilebasedRepository>> searchRepositoriesById(GenericId id, MultiRepository multiRepository) {
         List<FilebasedRepository> repositoryList = new ArrayList<>();
-        for (FilebasedRepository repo : this.multiRepository.getRepositoriesMap().keySet()) {
+
+        for (FilebasedRepository repo : multiRepository.getRepositoriesMap().keySet()) {
             String relativePath = repo.id2RelativePath(id).toString();
-            for (String ns : this.multiRepository.getRepositoriesMap().get(repo)) {
+            for (String ns : multiRepository.getRepositoriesMap().get(repo)) {
                 if (relativePath.equals(ns)) {
                     repositoryList.add(repo);
                 }
             }
         }
+
         return Optional.of(repositoryList);
     }
 }

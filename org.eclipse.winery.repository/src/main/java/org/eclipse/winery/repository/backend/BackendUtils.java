@@ -62,6 +62,7 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.GenericId;
@@ -133,7 +134,6 @@ import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
 import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.GitInfo;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.constants.Filename;
@@ -1286,7 +1286,7 @@ public class BackendUtils {
             TPlan plan = new TPlan();
             plan.setId(planId.getXmlId().getDecoded());
             plan.setName(planId.getXmlId().getDecoded());
-            plan.setPlanType(org.eclipse.winery.repository.Constants.TOSCA_PLANTYPE_BUILD_PLAN);
+            plan.setPlanType(Constants.TOSCA_PLANTYPE_BUILD_PLAN);
             plan.setPlanLanguage(Namespaces.URI_BPEL20_EXECUTABLE);
 
             // create a PlanModelReferenceElement pointing to that file

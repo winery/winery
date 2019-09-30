@@ -18,7 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
 
-import org.eclipse.winery.repository.Constants;
+import org.eclipse.winery.common.Constants;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +33,8 @@ public class RepositoryResolverFactory {
 
     public static Optional<IRepositoryResolver> getResolver(String url, String branch) {
         try {
-            if (new URL(url).getHost().contains("github.com")) {
-                return Optional.of(new GitHubResolver(url, branch));
+            if (new URL(url).getHost().contains("github.com") || new URL(url).getHost().contains("gitlab")) {
+                return Optional.of(new GitResolver(url, branch));
             }
         } catch (MalformedURLException e) {
             LOGGER.error("The repository host could not be determined.", e);

@@ -22,11 +22,11 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.eclipse.winery.common.configuration.Environments;
+import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
+import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
-import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
-import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
 import org.eclipse.winery.repository.backend.filebased.MultiRepository;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -59,7 +59,7 @@ public class RepositoryFactory {
         }
     }
 
-    public static void reconfigure(FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
+    private static void reconfigure(FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
         RepositoryFactory.fileBasedRepositoryConfiguration = fileBasedRepositoryConfiguration;
         RepositoryFactory.gitBasedRepositoryConfiguration = null;
 
@@ -79,7 +79,7 @@ public class RepositoryFactory {
      */
     public static void reconfigure() throws Exception {
         final Optional<GitBasedRepositoryConfiguration> gitBasedRepositoryConfiguration = Environments.getGitBasedRepsitoryConfiguration();
-        final FileBasedRepositoryConfiguration filebasedRepositoryConfiguration = Environments.getFilebasedRepositoryConfiguration().orElse(new FileBasedRepositoryConfiguration());
+        final FileBasedRepositoryConfiguration filebasedRepositoryConfiguration = Environments.getFilebasedRepositoryConfiguration();
 
         // Determine whether the filebased repository could be git repository.
         // We do not use JGit's capabilities, but do it just by checking for the existance of a ".git" directory.

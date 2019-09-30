@@ -54,6 +54,7 @@ import org.eclipse.winery.accountability.AccountabilityManager;
 import org.eclipse.winery.accountability.AccountabilityManagerFactory;
 import org.eclipse.winery.accountability.exceptions.AccountabilityException;
 import org.eclipse.winery.accountability.model.ProvenanceVerification;
+import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.XmlId;
@@ -91,7 +92,6 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.NamespaceManager;
@@ -171,7 +171,7 @@ public class CsarImporter {
                     }
                 }
             }
-            
+
             return this.importFromDir(csarDir, options, fileMap);
         } catch (AccountabilityException e) {
             LOGGER.debug("Error while checking the accountability of the CSAR");
@@ -190,7 +190,8 @@ public class CsarImporter {
      *
      * @param path    the root path of an extracted CSAR file
      * @param options the set of options applicable while importing a CSAR
-     * @param fileMap Contains all files which were extracted from the CSAR and have to be validated using the accountability layer
+     * @param fileMap Contains all files which were extracted from the CSAR and have to be validated using the
+     *                accountability layer
      */
     private ImportMetaInformation importFromDir(final Path path, CsarImportOptions options,
                                                 Map<String, File> fileMap) throws IOException, AccountabilityException, ExecutionException, InterruptedException {
@@ -215,7 +216,7 @@ public class CsarImporter {
 
             // we assume that the entry definition identifies the provenance element
             if (Objects.nonNull(fileMap)) {
-                
+
                 if (!(importMetaInformation.valid = this.isValid(importMetaInformation, fileMap))) {
                     return importMetaInformation;
                 }

@@ -70,7 +70,7 @@ public class RepositoryResolverTest extends TestWithGitBackedRepository {
     @Test
     public void getRepository() throws GitAPIException {
         this.setRevisionTo("1f24de8867bf3df5d26b932abf4526c625d8502f");
-        Path resolverRepositoryPath = Paths.get(System.getProperty("java.io.tmpdir")).resolve("winery").resolve("test-repository");
+        Path resolverRepositoryPath = Paths.get(System.getProperty("java.io.tmpdir")).resolve("test-repository");
 
         try {
             FilebasedRepository resolverRepository = resolver.createRepository(resolverRepositoryPath.toFile());

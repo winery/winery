@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.common.configuration;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,6 +22,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.Properties;
+
+import org.eclipse.winery.common.Constants;
 
 import org.apache.commons.configuration2.YAMLConfiguration;
 import org.slf4j.Logger;
@@ -100,10 +103,11 @@ public final class Environments {
      * @return path to configuration
      */
     public static String getRepositoryRoot() {
-        if (Environment.getConfiguration().getString(repositoryPrefix + "repositoryRoot").equals("")) {
-            return null;
+        String repositoryRoot = Environment.getConfiguration().getString(repositoryPrefix + "repositoryRoot");
+        if (repositoryRoot == null || repositoryRoot.isEmpty()) {
+            return org.apache.commons.io.FileUtils.getUserDirectory().getAbsolutePath() + File.separator + Constants.DEFAULT_REPO_NAME;
         } else {
-            return Environment.getConfiguration().getString(repositoryPrefix + "repositoryRoot");
+            return repositoryRoot;
         }
     }
 
@@ -112,14 +116,9 @@ public final class Environments {
      *
      * @return an instance of FileBasedRepositoryConfiguration
      */
-    public static Optional<FileBasedRepositoryConfiguration> getFilebasedRepositoryConfiguration() {
-        String repositoryRoot = getRepositoryRoot();
-        if (repositoryRoot != null) {
-            final Path path = Paths.get(repositoryRoot);
-            return Optional.of(new FileBasedRepositoryConfiguration(path));
-        } else {
-            return Optional.empty();
-        }
+    public static FileBasedRepositoryConfiguration getFilebasedRepositoryConfiguration() {
+        Path path = Paths.get(getRepositoryRoot());
+        return new FileBasedRepositoryConfiguration(path);
     }
 
     /**
@@ -128,7 +127,7 @@ public final class Environments {
      * @return an instance of GitBasedRepositoryConfiguration
      */
     public static Optional<GitBasedRepositoryConfiguration> getGitBasedRepsitoryConfiguration() {
-        final FileBasedRepositoryConfiguration filebasedRepositoryConfiguration = getFilebasedRepositoryConfiguration().orElse(new FileBasedRepositoryConfiguration());
+        final FileBasedRepositoryConfiguration filebasedRepositoryConfiguration = getFilebasedRepositoryConfiguration();
         return Optional.of(new GitBasedRepositoryConfiguration(isAutoCommit(), filebasedRepositoryConfiguration));
     }
 

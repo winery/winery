@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
 import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
@@ -37,7 +38,6 @@ import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
-import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 
@@ -54,51 +54,42 @@ public class MultiRepository extends GitBasedRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MultiRepository.class);
 
-    private final static Map<FilebasedRepository, Set<String>> repositoryGlobal = new HashMap<>();
-    private final static Map<FilebasedRepository, Set<Namespace>> repositoryCommonNamespace = new HashMap<>();
+    private final Map<FilebasedRepository, Set<String>> repositoryGlobal = new HashMap<>();
+    private final Map<FilebasedRepository, Set<Namespace>> repositoryCommonNamespace = new HashMap<>();
 
-    private static GitBasedRepository localRepository;
-    private final RepositoryUtils repositoryUtils;
-
-    static {
-        try {
-            localRepository = new GitBasedRepository(new GitBasedRepositoryConfiguration(false, new FileBasedRepositoryConfiguration(new File(FilebasedRepository.getDefaultRepositoryFilePath(), Constants.DEFAULT_LOCAL_REPO_NAME).toPath())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (GitAPIException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    private final RepositoryConfigurationManager repositoryConfigurationManager = new RepositoryConfigurationManager();
+    private GitBasedRepository localRepository;
 
     public MultiRepository(GitBasedRepositoryConfiguration configuration) throws IOException, GitAPIException {
         super(configuration);
-        this.repositoryUtils = new RepositoryUtils(this);
+
+        try {
+            LOGGER.debug("Trying to initialize local repository...");
+            File localRepoPath = new File(FilebasedRepository.getActiveRepositoryFilePath(), Constants.DEFAULT_LOCAL_REPO_NAME);
+            FileBasedRepositoryConfiguration localRepoConfig = new FileBasedRepositoryConfiguration(localRepoPath.toPath());
+            GitBasedRepositoryConfiguration gitConfig = new GitBasedRepositoryConfiguration(false, localRepoConfig);
+            this.localRepository = new GitBasedRepository(gitConfig);
+            LOGGER.debug("Local repo has been initialized at {}", localRepoPath.getAbsolutePath());
+        } catch (IOException | GitAPIException e) {
+            LOGGER.error("Error while initializing local repository of the Multi Repository!", e);
+            throw e;
+        }
+
+        RepositoryConfigurationManager.initialize(this);
+        RepositoryUtils.checkGitIgnore(this);
         repositoryGlobal.put(localRepository, new HashSet<>());
-        repositoryCommonNamespace.put(localRepository, new HashSet<>());
-        repositoryUtils.checkGitIgnore();
-        repositoryConfigurationManager.initRepositoryConfigurationManager(this);
+        updateNamespaces();
     }
 
     @Override
     Path generateWorkingRepositoryRoot() {
-        return repositoryDep;
-    }
-
-    public RepositoryUtils getRepositoryUtils() {
-        return this.repositoryUtils;
-    }
-
-    public RepositoryConfigurationManager getRepositoryConfigurationManager() {
-        return this.repositoryConfigurationManager;
+        return this.repositoryDep;
     }
 
     protected FilebasedRepository getLocalRepository() {
         return localRepository;
     }
 
-    protected static Map<FilebasedRepository, Set<String>> getRepositoriesMap() {
+    protected Map<FilebasedRepository, Set<String>> getRepositoriesMap() {
         return repositoryGlobal;
     }
 
@@ -110,7 +101,7 @@ public class MultiRepository extends GitBasedRepository {
         return repositoryGlobal.keySet();
     }
 
-    protected static void addRepository(FilebasedRepository repository) {
+    protected void addRepository(FilebasedRepository repository) {
         registerRepository(repository);
     }
 
@@ -138,7 +129,8 @@ public class MultiRepository extends GitBasedRepository {
 
             String pns;
             try {
-                pns = namespace.getEncoded().substring(0, namespace.getEncoded().lastIndexOf(repositoryUtils.getUrlSeparatorEncoded()));
+                pns = namespace.getEncoded().substring(0, namespace.getEncoded()
+                    .lastIndexOf(RepositoryUtils.getUrlSeparatorEncoded()));
             } catch (UnsupportedEncodingException ex) {
                 LOGGER.error("Error when generating the namespace", ex);
                 return;
@@ -154,7 +146,7 @@ public class MultiRepository extends GitBasedRepository {
         addNamespacesToRepository(repository, ref.getParent());
     }
 
-    protected static void updateNamespaces() {
+    protected void updateNamespaces() {
         Map<FilebasedRepository, Set<String>> tempMap = new HashMap<>(repositoryGlobal);
         tempMap.keySet().forEach(repository -> {
             Collection<String> repositoryNamespaces = repository.getNamespaceManager().getAllNamespaces().keySet();
@@ -180,7 +172,7 @@ public class MultiRepository extends GitBasedRepository {
         return setNS;
     }
 
-    private static void registerRepository(FilebasedRepository repository) {
+    private void registerRepository(FilebasedRepository repository) {
         if (repositoryGlobal.get(repository) != null) {
             LOGGER.debug("The repository is probably already registered.");
             return;
@@ -197,61 +189,61 @@ public class MultiRepository extends GitBasedRepository {
 
     @Override
     public boolean exists(GenericId id) {
-        return this.repositoryUtils.getRepositoryById(id).exists(id);
+        return RepositoryUtils.getRepositoryById(id, this).exists(id);
     }
 
     @Override
     public boolean exists(RepositoryFileReference ref) {
-        return this.repositoryUtils.getRepositoryByRef(ref).exists(ref);
+        return RepositoryUtils.getRepositoryByRef(ref, this).exists(ref);
     }
 
     @Override
     public Configuration getConfiguration(RepositoryFileReference ref) {
-        return this.repositoryUtils.getRepositoryByRef(ref).getConfiguration(ref);
+        return RepositoryUtils.getRepositoryByRef(ref, this).getConfiguration(ref);
     }
 
     @Override
     public long getSize(RepositoryFileReference ref) throws IOException {
-        return this.repositoryUtils.getRepositoryByRef(ref).getSize(ref);
+        return RepositoryUtils.getRepositoryByRef(ref, this).getSize(ref);
     }
 
     @Override
     public FileTime getLastModifiedTime(RepositoryFileReference ref) throws IOException {
-        return this.repositoryUtils.getRepositoryByRef(ref).getLastModifiedTime(ref);
+        return RepositoryUtils.getRepositoryByRef(ref, this).getLastModifiedTime(ref);
     }
 
     @Override
     public InputStream newInputStream(RepositoryFileReference ref) throws IOException {
-        return this.repositoryUtils.getRepositoryByRef(ref).newInputStream(ref);
+        return RepositoryUtils.getRepositoryByRef(ref, this).newInputStream(ref);
     }
 
     @Override
     public boolean flagAsExisting(GenericId id) {
-        return this.repositoryUtils.getRepositoryById(id).flagAsExisting(id);
+        return RepositoryUtils.getRepositoryById(id, this).flagAsExisting(id);
     }
 
     @Override
     public Date getLastUpdate(RepositoryFileReference ref) {
-        return this.repositoryUtils.getRepositoryByRef(ref).getLastUpdate(ref);
+        return RepositoryUtils.getRepositoryByRef(ref, this).getLastUpdate(ref);
     }
 
     @Override
     public void putContentToFile(RepositoryFileReference ref, String content, MediaType mediaType) throws IOException {
-        FilebasedRepository repository = this.repositoryUtils.getRepositoryByRef(ref);
+        FilebasedRepository repository = RepositoryUtils.getRepositoryByRef(ref, this);
         repository.putContentToFile(ref, content, mediaType);
         addNamespacesToRepository(repository, ref);
     }
 
     @Override
     public void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException {
-        FilebasedRepository repository = this.repositoryUtils.getRepositoryByRef(ref);
+        FilebasedRepository repository = RepositoryUtils.getRepositoryByRef(ref, this);
         repository.putContentToFile(ref, inputStream, mediaType);
         addNamespacesToRepository(repository, ref);
     }
 
     @Override
     public SortedSet<RepositoryFileReference> getContainedFiles(GenericId id) {
-        return this.repositoryUtils.getRepositoryById(id).getContainedFiles(id);
+        return RepositoryUtils.getRepositoryById(id, this).getContainedFiles(id);
     }
 
     @Override
@@ -291,7 +283,7 @@ public class MultiRepository extends GitBasedRepository {
 
     @Override
     public <T extends ToscaElementId> SortedSet<T> getNestedIds(GenericId id, Class<T> idClass) {
-        return this.repositoryUtils.getRepositoryById(id).getNestedIds(id, idClass);
+        return RepositoryUtils.getRepositoryById(id, this).getNestedIds(id, idClass);
     }
 
     @Override
@@ -301,7 +293,7 @@ public class MultiRepository extends GitBasedRepository {
 
     @Override
     public void forceDelete(GenericId id) {
-        this.repositoryUtils.getRepositoryById(id).forceDelete(id);
+        RepositoryUtils.getRepositoryById(id, this).forceDelete(id);
     }
 
     @Override
@@ -311,7 +303,7 @@ public class MultiRepository extends GitBasedRepository {
 
     @Override
     public void getZippedContents(final GenericId id, OutputStream out) throws WineryRepositoryException {
-        this.repositoryUtils.getRepositoryById(id).getZippedContents(id, out);
+        RepositoryUtils.getRepositoryById(id, this).getZippedContents(id, out);
     }
 
     @Override
@@ -321,18 +313,16 @@ public class MultiRepository extends GitBasedRepository {
 
     @Override
     public void rename(DefinitionsChildId oldId, DefinitionsChildId newId) throws IOException {
-        this.repositoryUtils.getRepositoryById(oldId).rename(oldId, newId);
+        RepositoryUtils.getRepositoryById(oldId, this).rename(oldId, newId);
     }
 
     @Override
     public void duplicate(DefinitionsChildId from, DefinitionsChildId newId) throws IOException {
-        this.repositoryUtils.getRepositoryById(from).duplicate(from, newId);
+        RepositoryUtils.getRepositoryById(from, this).duplicate(from, newId);
     }
 
     @Override
     public void forceDelete(RepositoryFileReference ref) throws IOException {
-        this.repositoryUtils.getRepositoryByRef(ref).forceDelete(ref);
+        RepositoryUtils.getRepositoryByRef(ref, this).forceDelete(ref);
     }
 }
-
-
