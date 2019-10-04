@@ -121,7 +121,7 @@
         <dependency>
             <groupId>org.eclipse.jgit</groupId>
             <artifactId>org.eclipse.jgit</artifactId>
-            <version>4.11.0.201803080745-r</version>
+            <version>${org.eclipse.jgit.version}</version>
             <scope>compile</scope>
             <exclusions>
                 <!-- provided by jcl-over-slf4j to enable logging via logback -->
