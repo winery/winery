@@ -16,6 +16,7 @@ package org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttem
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -112,7 +113,7 @@ public class FilesResource {
         }
 
         String URL = RestUtils.getAbsoluteURL(this.fileDir) + Util.URLencode(fileName);
-        return Response.created(RestUtils.createURI(URL)).entity(this.getAllFileMetas()).build();
+        return Response.created(URI.create(URL)).entity(this.getAllFileMetas()).build();
     }
 
     /**

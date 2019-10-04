@@ -121,11 +121,11 @@ public class TopologyTemplateResource {
         if (edit == null) {
             // TODO: Render-only mode
             // currently also the edit mode
-            URI uri = RestUtils.createURI(location);
+            URI uri = URI.create(location);
             res = Response.seeOther(uri).build();
         } else {
             // edit mode
-            URI uri = RestUtils.createURI(location);
+            URI uri = URI.create(location);
             res = Response.seeOther(uri).build();
         }
         return res;
@@ -293,7 +293,7 @@ public class TopologyTemplateResource {
         URI url = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(parent.getId()));
         String location = url.toString();
         location = location + "topologytemplate?edit";
-        url = RestUtils.createURI(location);
+        url = URI.create(location);
         LOGGER.debug("URI of the composed Service Template {}", url.toString());
         return Response.created(url).build();
     }

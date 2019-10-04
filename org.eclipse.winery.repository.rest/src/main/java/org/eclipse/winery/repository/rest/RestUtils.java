@@ -152,10 +152,6 @@ public class RestUtils {
         }
     }
 
-    public static URI createURI(String uri) {
-        return URI.create(uri);
-    }
-
     /**
      * Creates a (valid) XML ID (NCName) based on the passed name
      * <p>
@@ -399,7 +395,7 @@ public class RestUtils {
     }
 
     public static URI getAbsoluteURI(GenericId id) {
-        return RestUtils.createURI(RestUtils.getAbsoluteURL(id));
+        return URI.create((RestUtils.getAbsoluteURL(id)));
     }
 
     /**
@@ -818,7 +814,7 @@ public class RestUtils {
                 }
                 // we have to encode it twice to get correct URIs
                 path = Util.getUrlPath(path);
-                URI uri = RestUtils.createURI(path);
+                URI uri = URI.create(path);
                 res.setUri(uri);
                 res.setId(id);
             } else {

@@ -15,6 +15,7 @@ package org.eclipse.winery.repository.rest.resources.servicetemplates.plans;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -94,7 +95,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 
         Response response = this.saveFile(newPlan, null, null, null);
         if (response.getStatus() == 204) {
-            return Response.created(RestUtils.createURI(Util.URLencode(xmlId))).entity(newPlan).build();
+            return Response.created(URI.create(Util.URLencode(xmlId))).entity(newPlan).build();
         }
 
         return response;

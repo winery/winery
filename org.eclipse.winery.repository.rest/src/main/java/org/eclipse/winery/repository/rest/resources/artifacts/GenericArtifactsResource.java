@@ -283,7 +283,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 
         if (StringUtils.isEmpty(apiData.autoGenerateIA)) {
             // No IA generation
-            return Response.created(RestUtils.createURI(Util.URLencode(apiData.artifactName))).entity(resultingArtifact).build();
+            return Response.created(URI.create(Util.URLencode(apiData.artifactName))).entity(resultingArtifact).build();
         } else {
             // after everything was created, we fire up the artifact generation
             return this.generateImplementationArtifact(apiData.interfaceName, apiData.javaPackage, uriInfo, artifactTemplateId);
