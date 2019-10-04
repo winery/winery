@@ -71,7 +71,7 @@ public class ToscaModelHelper {
     }
 
     public static ToscaEdge addEdge(ToscaGraph graph, ToscaNode source, ToscaNode target, String id, String name) {
-        ToscaEdge edge = graph.getEdgeFactory().createEdge(source, target);
+        ToscaEdge edge = graph.addEdge(source, target);
         edge.setId(id);
         graph.addEdge(source, target, edge);
         TRelationshipTemplate template = new TRelationshipTemplate();

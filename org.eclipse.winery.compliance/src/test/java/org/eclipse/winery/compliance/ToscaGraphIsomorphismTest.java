@@ -53,7 +53,6 @@ import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
 import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
 import org.eclipse.winery.topologygraph.matching.ToscaIsomorphismMatcher;
 import org.eclipse.winery.topologygraph.model.ToscaEdge;
-import org.eclipse.winery.topologygraph.model.ToscaEdgeFactory;
 import org.eclipse.winery.topologygraph.model.ToscaGraph;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
 
@@ -525,9 +524,8 @@ public class ToscaGraphIsomorphismTest {
 
     @Test
     public void testTOSCADefaultMatcher() {
-        ToscaEdgeFactory ef = new ToscaEdgeFactory();
-        ToscaGraph queryGraph = new ToscaGraph(ef);
-        ToscaGraph searchInGraph = new ToscaGraph(ef);
+        ToscaGraph queryGraph = new ToscaGraph();
+        ToscaGraph searchInGraph = new ToscaGraph();
 
         ToscaNode node1 = createTOSCANode("node_01", "A");
         ToscaNode node2 = createTOSCANode("node_02", "B");
@@ -597,9 +595,9 @@ public class ToscaGraphIsomorphismTest {
         ServiceTemplateComplianceRuleRuleChecker checker = new ServiceTemplateComplianceRuleRuleChecker(tServiceTemplate);
         List<ComplianceRuleId> ruleIds = checker.getRuleIds(tServiceTemplate);
 
-        assertTrue(ruleIds.stream().filter(id -> id.equals(crId1)).findFirst().isPresent());
-        assertTrue(ruleIds.stream().filter(id -> id.equals(crId2)).findFirst().isPresent());
-        assertTrue(ruleIds.stream().filter(id -> id.equals(crId3)).findFirst().isPresent());
-        assertFalse(ruleIds.stream().filter(id -> id.equals(crId4)).findFirst().isPresent());
+        assertTrue(ruleIds.stream().anyMatch(id -> id.equals(crId1)));
+        assertTrue(ruleIds.stream().anyMatch(id -> id.equals(crId2)));
+        assertTrue(ruleIds.stream().anyMatch(id -> id.equals(crId3)));
+        assertFalse(ruleIds.stream().anyMatch(id -> id.equals(crId4)));
     }
 }
