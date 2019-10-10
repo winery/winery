@@ -39,6 +39,7 @@ export interface TopologyRendererState {
         determineStatefulComponents?: boolean;
         determineFreezableComponentsButton?: boolean;
         cleanFreezableComponentsButton?: boolean;
+        placeComponentsButton?: boolean;
     };
     nodesToSelect?: string[];
 }
@@ -67,6 +68,7 @@ export const INITIAL_TOPOLOGY_RENDERER_STATE: TopologyRendererState = {
         determineStatefulComponents: false,
         determineFreezableComponentsButton: false,
         cleanFreezableComponentsButton: false,
+        placeComponentsButton: false,
     }
 };
 /**
@@ -189,6 +191,14 @@ export const TopologyRendererReducer =
                         matchTopologyButton: !lastState.buttonsState.matchTopologyButton
                     }
                 };
+            case TopologyRendererActions.MATCH_TOPOLOGY:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        matchTopologyButton: !lastState.buttonsState.matchTopologyButton
+                    }
+                };
             case TopologyRendererActions.DETECT_PROBLEMS:
                 return {
                     ...lastState,
@@ -262,6 +272,14 @@ export const TopologyRendererReducer =
                     buttonsState: {
                         ...lastState.buttonsState,
                         cleanFreezableComponentsButton: !lastState.buttonsState.cleanFreezableComponentsButton
+                    }
+                };
+            case TopologyRendererActions.PLACE_COMPONENTS:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        placeComponentsButton: !lastState.buttonsState.placeComponentsButton
                     }
                 };
         }

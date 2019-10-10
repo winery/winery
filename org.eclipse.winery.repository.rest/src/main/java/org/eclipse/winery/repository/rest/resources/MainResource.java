@@ -41,6 +41,7 @@ import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.API.APIResource;
 import org.eclipse.winery.repository.rest.resources.admin.AdminTopResource;
 import org.eclipse.winery.repository.rest.resources.compliancerules.ComplianceRulesResource;
+import org.eclipse.winery.repository.rest.resources.dataflowmodels.DataFlowResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.policytemplates.PolicyTemplatesResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationsResource;
@@ -161,6 +162,11 @@ public class MainResource {
     @Path("testrefinementmodels/")
     public TestRefinementModelsResource testRefinementModelsResource() {
         return new TestRefinementModelsResource();
+    }
+
+    @Path("dataflowmodels/")
+    public DataFlowResource dataFlowModels() {
+        return new DataFlowResource();
     }
 
     @Path("yaml/")

@@ -32,6 +32,7 @@ import { ConfigurationService } from '../instance/admin/accountability/configura
 import { AccountabilityService } from '../instance/admin/accountability/accountability.service';
 import { FileProvenanceElement } from '../model/provenance';
 import { WineryVersion } from '../model/wineryVersion';
+import { FeatureEnum } from '../wineryFeatureToggleModule/wineryRepository.feature.direct';
 
 const showAll = 'Show all Items';
 const showGrouped = 'Group by Namespace';
@@ -47,6 +48,8 @@ const showGrouped = 'Group by Namespace';
     ]
 })
 export class SectionComponent implements OnInit, OnDestroy {
+    readonly configEnum = FeatureEnum;
+
     loading = true;
     toscaType: ToscaTypes;
     toscaTypes = ToscaTypes;
@@ -310,7 +313,6 @@ export class SectionComponent implements OnInit, OnDestroy {
         const url = AccountabilityService.getDownloadURLForFile(fileAddress, fileName, provenanceId);
         window.open(url, '_blank');
     }
-
 
     openFileComparisonModal(modalTemplate: TemplateRef<any>, file: FileProvenanceElement) {
         this.selectedFile = file;

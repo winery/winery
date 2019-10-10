@@ -45,6 +45,7 @@ import { ImportTopologyModalData } from '../models/importTopologyModalData';
 import { ImportTopologyService } from '../services/import-topology.service';
 import { ReqCapService } from '../services/req-cap.service';
 import { SplitMatchTopologyService } from '../services/split-match-topology.service';
+import { PlaceComponentsService } from '../services/placement.service';
 import { DifferenceStates, VersionUtils } from '../models/ToscaDiff';
 import { ErrorHandlerService } from '../services/error-handler.service';
 import { DragSource } from '../models/DragSource';
@@ -157,6 +158,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 private importTopologyService: ImportTopologyService,
                 private existsService: ExistsService,
                 private splitMatchService: SplitMatchTopologyService,
+                private placementService: PlaceComponentsService,
                 private reqCapService: ReqCapService,
                 private errorHandler: ErrorHandlerService) {
         this.newJsPlumbInstance = this.jsPlumbService.getJsPlumbInstance();
@@ -997,6 +999,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 this.clearSelectedNodes();
                 this.topologyRendererState.nodesToSelect
                     .forEach(value => this.enhanceDragSelection(value));
+            } else if (this.topologyRendererState.buttonsState.placeComponentsButton) {
+                this.placementService.placeComponents(this.backendService, this.ngRedux, this.topologyRendererActions, this.errorHandler);
             }
 
             setTimeout(() => {

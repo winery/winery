@@ -15,6 +15,7 @@ package org.eclipse.winery.repository.rest.resources.servicetemplates.topologyte
 
 import java.io.IOException;
 import java.net.URI;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -45,6 +46,7 @@ import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.adaptation.enhance.EnhancementUtils;
 import org.eclipse.winery.model.adaptation.enhance.TopologyAndErrorList;
+import org.eclipse.winery.model.adaptation.placement.PlacementUtils;
 import org.eclipse.winery.model.adaptation.problemsolving.SolutionFactory;
 import org.eclipse.winery.model.adaptation.problemsolving.SolutionInputData;
 import org.eclipse.winery.model.adaptation.problemsolving.SolutionStrategy;
@@ -522,5 +524,23 @@ public class TopologyTemplateResource {
         return versionElements.entrySet().stream()
             .map(qNameListEntry -> new NewVersionListElement(qNameListEntry.getKey(), qNameListEntry.getValue()))
             .collect(Collectors.toList());
+    }
+
+    @POST
+    @Path("applyplacement")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response applyGroupingAndPlacement(@Context UriInfo uriInfo) {
+        try {
+            TTopologyTemplate topology =
+                PlacementUtils.groupAndPlaceComponents((ServiceTemplateId) this.parent.getId(), this.topologyTemplate);
+            this.parent.setTopology(topology, this.type);
+            RestUtils.persist(this.parent);
+            ServiceTemplateId thisServiceTemplateId = (ServiceTemplateId) this.parent.getId();
+            URI url = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(thisServiceTemplateId));
+            return Response.created(url).build();
+        } catch (InvalidParameterException e) {
+            LOGGER.debug("Error while grouping and placing: {}", e.getMessage());
+            return Response.serverError().entity(e.getMessage()).build();
+        }
     }
 }

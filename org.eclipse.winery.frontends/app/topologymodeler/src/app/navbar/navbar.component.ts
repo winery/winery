@@ -59,6 +59,7 @@ export class NavbarComponent implements OnDestroy {
     exportCsarUrl: string;
     splittingOngoing: boolean;
     matchingOngoing: boolean;
+    placingOngoing: boolean;
     configEnum = FeatureEnum;
 
     constructor(private alert: ToastrService,
@@ -96,6 +97,9 @@ export class NavbarComponent implements OnDestroy {
         }
         if (!this.navbarButtonsState.buttonsState.matchTopologyButton) {
             this.matchingOngoing = false;
+        }
+        if (!this.navbarButtonsState.buttonsState.placeComponentsButton) {
+            this.placingOngoing = false;
         }
     }
 
@@ -219,6 +223,10 @@ export class NavbarComponent implements OnDestroy {
                 break;
             case 'cleanFreezableComponents':
                 this.ngRedux.dispatch(this.actions.cleanFreezableComponents());
+                break;
+            case 'placement':
+                this.ngRedux.dispatch(this.actions.placeComponents());
+                this.placingOngoing = true;
                 break;
         }
     }

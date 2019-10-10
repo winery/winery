@@ -64,6 +64,10 @@
            [checked]="config.features.updateTemplates">
     <label for="updateTemplates">Show update Notifications</label>
     <br>
+    <input type="checkbox" [(ngModel)]="config.features.placement" id="componentPlacement" name="componentPlacement"
+           [checked]="config.features.placement">
+    <label for="componentPlacement">Component Placement</label>
+    <br>
 </div>
 <div>
     <button class="btn btn-primary" (click)="saveChanges()">Save Changes</button>

@@ -97,6 +97,11 @@ public class TRequirement extends RelationshipSourceOrTarget {
             this.name = id;
         }
 
+        public Builder(String id, String name, QName type) {
+            super(id, type);
+            this.name = name;
+        }
+
         @Override
         public Builder self() {
             return this;

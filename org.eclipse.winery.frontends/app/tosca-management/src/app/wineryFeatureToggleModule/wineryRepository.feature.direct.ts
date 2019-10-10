@@ -17,7 +17,7 @@ import { WineryRepositoryConfigurationService } from './WineryRepositoryConfigur
 export enum FeatureEnum {
     Accountability = 'accountability', Completion = 'completion', Compliance = 'compliance', FreezeAndDefrost = 'freezeAndDefrost',
     ManagementFeatureEnrichment = 'managementFeatureEnrichment', NFV = 'nfv', PatternRefinement = 'patternRefinement', ProblemDetection = 'problemDetection',
-    Splitting = 'splitting', TestRefinement = 'testRefinement', updateTemplates = 'updateTemplates'
+    Splitting = 'splitting', TestRefinement = 'testRefinement', Placement = 'placement', updateTemplates = 'updateTemplates'
 }
 
 @Directive({

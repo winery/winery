@@ -555,11 +555,25 @@ public class BackendUtils {
         nodeTemplateClone.setCapabilities(nodeTemplate.getCapabilities());
         nodeTemplateClone.setProperties(nodeTemplate.getProperties());
         nodeTemplateClone.setPropertyConstraints(nodeTemplate.getPropertyConstraints());
-        nodeTemplateClone.setX(nodeTemplate.getX());
-        nodeTemplateClone.setY(nodeTemplate.getY());
+        if (Objects.nonNull(nodeTemplate.getX())) {
+            nodeTemplateClone.setX(nodeTemplate.getX());
+        }
+        if (Objects.nonNull(nodeTemplate.getY())) {
+            nodeTemplateClone.setY(nodeTemplate.getY());
+        }
 
         if (ModelUtilities.getTargetLabel(nodeTemplate).isPresent()) {
             ModelUtilities.setTargetLabel(nodeTemplateClone, ModelUtilities.getTargetLabel(nodeTemplate).get());
+        }
+
+        String region = nodeTemplate.getOtherAttributes().get(ModelUtilities.NODE_TEMPLATE_REGION);
+        if (Objects.nonNull(region)) {
+            nodeTemplateClone.getOtherAttributes().put(ModelUtilities.NODE_TEMPLATE_REGION, region);
+        }
+
+        String provider = nodeTemplate.getOtherAttributes().get(ModelUtilities.NODE_TEMPLATE_PROVIDER);
+        if (Objects.nonNull(provider)) {
+            nodeTemplateClone.getOtherAttributes().put(ModelUtilities.NODE_TEMPLATE_PROVIDER, provider);
         }
 
         return nodeTemplateClone;
@@ -579,6 +593,12 @@ public class BackendUtils {
         relationshipTemplateClone.setProperties(relationshipTemplate.getProperties());
         relationshipTemplateClone.setName(relationshipTemplate.getName());
         relationshipTemplateClone.setRelationshipConstraints(relationshipTemplate.getRelationshipConstraints());
+
+        String transferType =
+            relationshipTemplate.getOtherAttributes().get(ModelUtilities.RELATIONSHIP_TEMPLATE_TRANSFER_TYPE);
+        if (Objects.nonNull(transferType)) {
+            relationshipTemplateClone.getOtherAttributes().put(ModelUtilities.RELATIONSHIP_TEMPLATE_TRANSFER_TYPE, transferType);
+        }
 
         return relationshipTemplateClone;
     }

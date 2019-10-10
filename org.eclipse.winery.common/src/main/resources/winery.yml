@@ -10,6 +10,7 @@ ui:
     problemDetection: true
     splitting: true
     testRefinement: true
+    placement: true
     edmmModeling: true
   endpoints:
     container: http://localhost:1337

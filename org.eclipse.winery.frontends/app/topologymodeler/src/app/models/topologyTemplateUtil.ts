@@ -33,6 +33,8 @@ export class TopologyTemplateUtil {
 
         let nameSpace: string;
         let targetLocationKey: string;
+        let providerKey: string;
+        let regionKey: string;
         let otherAttributes;
         for (const key in node.otherAttributes) {
             if (node.otherAttributes.hasOwnProperty(key)) {
@@ -41,12 +43,19 @@ export class TopologyTemplateUtil {
                     if (key.substring(key.indexOf('}') + 1) === 'location') {
                         targetLocationKey = key;
                     }
+                    if (key.substring(key.indexOf('}') + 1) === 'provider') {
+                        providerKey = key;
+                    }
+                    if (key.substring(key.indexOf('}') + 1) === 'region') {
+                        regionKey = key;
+                    }
                     otherAttributes = {
                         [nameSpace + 'location']: node.otherAttributes[targetLocationKey],
+                        [nameSpace + 'provider']: node.otherAttributes[providerKey],
+                        [nameSpace + 'region']: node.otherAttributes[regionKey],
                         [nameSpace + 'x']: node.x,
                         [nameSpace + 'y']: node.y
                     };
-                    break;
                 } else if (key === 'location') {
                     targetLocationKey = 'location';
                 }
