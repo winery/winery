@@ -59,7 +59,7 @@ public class RepositoryFactory {
         }
     }
 
-    private static void reconfigure(FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
+    public static void reconfigure(FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
         RepositoryFactory.fileBasedRepositoryConfiguration = fileBasedRepositoryConfiguration;
         RepositoryFactory.gitBasedRepositoryConfiguration = null;
 
