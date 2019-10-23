@@ -54,8 +54,7 @@ public class ConfigurationTestUtils {
      */
     public static void replaceFileWithTestFile() throws IOException {
         Environment.setConfiguration(null);
-        InputStream testConfigInputStream = ConfigurationTestUtils.class.getClassLoader()
-            .getResourceAsStream("wineryTest.yml");
+        InputStream testConfigInputStream = ConfigurationTestUtils.class.getClassLoader().getResourceAsStream("wineryTest.yml");
         if (testConfigInputStream == null) {
             throw new NullPointerException();
         }

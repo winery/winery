@@ -13,17 +13,18 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support.collections.withoutid;
 
-import com.sun.jersey.api.NotFoundException;
+import java.lang.reflect.Constructor;
+import java.util.List;
+import java.util.Objects;
+
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.EntityCollectionResource;
+
+import com.sun.jersey.api.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Constructor;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Class managing a list of entities. It is intended to manage subresources, where the TOSCA specification did not

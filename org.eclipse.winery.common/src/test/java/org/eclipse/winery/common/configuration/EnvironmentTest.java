@@ -74,6 +74,7 @@ public class EnvironmentTest {
 
     /**
      * This test checks whether changes made to the configuration are persisted correctly.
+     * and whenever the file is reloaded when a change occurs
      */
     @Test
     public void testSave() {
@@ -82,11 +83,24 @@ public class EnvironmentTest {
         configuration.setProperty("ui.features.bar", true);
         configuration.setProperty("ui.endpoints.quaz", "");
         Environment.save();
-        //This way the get() will load the configuration from file.
         Environment.setConfiguration(null);
         configuration = Environment.getConfiguration();
         assertFalse(configuration.getBoolean("ui.features.foo"));
         assertTrue(configuration.getBoolean("ui.features.bar"));
         assertEquals(configuration.getString("ui.endpoints.quaz"), "");
+    }
+
+    /**
+     * Tests whenever the configuration is loaded from backend if it was changed
+     */
+    @Test
+    public void testReload() {
+        assertTrue(Environment.checkConfigurationForUpdate());
+        YAMLConfiguration configuration = Environment.getConfiguration();
+        assertFalse(Environment.checkConfigurationForUpdate());
+        configuration.setProperty("ui.features.foo", false);
+        Environment.save();
+        configuration.setProperty("ui.features.foo", true);
+        assertFalse(Environment.getConfiguration().getBoolean("ui.features.foo"));
     }
 }

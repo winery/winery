@@ -8,8 +8,8 @@ repository:
   provider: file
   repositoryRoot: thisisatestroot
   git:
-    clientID: "id"
-    clientSecret: "secret"
-    username: "default"
-    password: "default"
+    clientID: id
+    clientSecret: secret
+    username: default
+    password: default
     autocommit: false

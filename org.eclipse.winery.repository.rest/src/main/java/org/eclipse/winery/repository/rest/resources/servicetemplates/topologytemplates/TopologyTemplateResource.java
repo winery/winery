@@ -107,7 +107,7 @@ public class TopologyTemplateResource {
         // @formatter:on
         Response res;
         String JSPName;
-        String location = Environments.get().getEndpoints().get("topologymodeler");
+        String location = Environments.getUiConfig().getEndpoints().get("topologymodeler");
         location = uriInfo.getBaseUri().resolve(location).toString();
         // at the topology modeler, jersey needs to have an absolute path
         URI repositoryURI = uriInfo.getBaseUri();

@@ -132,7 +132,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
             return makeAbsoluteAndCreateRepositoryPath(fileBasedRepositoryConfiguration.getRepositoryPath().get());
         } else {
             Path newPath = determineAndCreateRepositoryPath();
-            Environments.setRepositoryRoot(newPath.toString());
+            Environments.getRepositoryConfig().setRepositoryRoot(newPath.toString());
             return newPath;
         }
     }
@@ -220,7 +220,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
     }
 
     public static File getActiveRepositoryFilePath() {
-        return new File(Environments.getRepositoryRoot());
+        return new File(Environments.getRepositoryConfig().getRepositoryRoot());
     }
 
     private static Path createDefaultRepositoryPath() {

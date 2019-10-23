@@ -35,9 +35,22 @@ repository:
 ```
 **Figure 1: Adding new feature to the YAML Configuration.**
 
-If the feature has been added to the YAML Configuration the ```get()``` method of the Environments class will return a ConfigurationObject Instance
+If the feature has been added to the YAML Configuration the ```getUiConfig()``` method of the Environments class will return a UiConfigurationObject Instance
 which has the added feature as a map entry in the features map attribute. This can be accessed with the getFeatures() method.
 The key of the feature entry is the same name that was added to the winery.yml file.
+
+## Accessing the configuration in the backend
+
+The configuration is split into different objects. The `UiConfigurationObject`
+contains the feature flags and endpoints. 
+The `RepositoryConfigurationObject` contains all the repository settings including a 
+`GitConfigurationObject`.
+The `GitConfigurationObject` contains all settings associated with Git.
+Each of these configuration objects can be accessed through a getter in the 
+`Environments` class, e.g. `getGitConfig()`.
+When the changes to a configuration object shall be persisted, the
+`Environments` class offers a save method, in which the changed configuration object
+has to be passed as the parameter.
 
 ## Accessing the Configuration in the Frontend
 In the `org.eclipse.winery.repository.rest.resources.admin.AdminTopResource.java` are two methods implemented which
