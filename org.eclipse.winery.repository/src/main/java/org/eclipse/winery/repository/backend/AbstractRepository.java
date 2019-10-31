@@ -114,7 +114,7 @@ public abstract class AbstractRepository implements IRepository {
             return BackendUtils.createWrapperDefinitionsAndInitialEmptyElement(this, id);
         }
         try {
-            InputStream is = RepositoryFactory.getRepository().newInputStream(ref);
+            InputStream is = this.newInputStream(ref);
             Unmarshaller u = JAXBSupport.createUnmarshaller();
             return (Definitions) u.unmarshal(is);
         } catch (Exception e) {
