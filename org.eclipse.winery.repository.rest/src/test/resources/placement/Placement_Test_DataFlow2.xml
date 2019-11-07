@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataFlowModel xmlns:st="http://plain.winery.opentosca.org/placement/servicetemplates"
+               xmlns:nt="http://plain.winery.opentosca.org/placement/nodetypes" id="st:Placement_Test_DataFlow">
+    <Filters>
+        <Filter id="DS1" type="nt:DataSource_w1-wip1" location="Germany" provider="Provider1">
+            <Properties>
+                <entry>
+                    <key>DataSize</key>
+                    <value>10</value>
+                </entry>
+            </Properties>
+        </Filter>
+        <Filter id="DS2" type="nt:DataSource_w1-wip1" location="US-East" provider="Provider2">
+            <Properties>
+                <entry>
+                    <key>DataSize</key>
+                    <value>50</value>
+                </entry>
+            </Properties>
+        </Filter>
+        <Filter id="AnalyticsService" type="nt:DataProcessingComponent_w1-wip1">
+        </Filter>
+        <Filter id="Adapter-1" type="nt:DataProcessingComponent_w1-wip1">
+            <Properties>
+                <entry>
+                    <key>DataFactor</key>
+                    <value>1.0</value>
+                </entry>
+            </Properties>
+        </Filter>
+        <Filter id="Adapter-2" type="nt:DataProcessingComponent_w1-wip1">
+            <Properties>
+                <entry>
+                    <key>DataFactor</key>
+                    <value>0.1</value>
+                </entry>
+            </Properties>
+        </Filter>
+    </Filters>
+    <Pipes>
+        <Pipe dataTransferType="pull">
+            <Source>DS1</Source>
+            <Target>Adapter-1</Target>
+        </Pipe>
+        <Pipe dataTransferType="pull">
+            <Source>DS2</Source>
+            <Target>Adapter-2</Target>
+        </Pipe>
+        <Pipe dataTransferType="push">
+            <Source>Adapter-2</Source>
+            <Target>AnalyticsService</Target>
+        </Pipe>
+        <Pipe dataTransferType="push">
+            <Source>Adapter-1</Source>
+            <Target>AnalyticsService</Target>
+        </Pipe>
+    </Pipes>
+</DataFlowModel>

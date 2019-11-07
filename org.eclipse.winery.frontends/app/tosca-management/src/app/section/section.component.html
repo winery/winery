@@ -50,6 +50,11 @@
         <winery-xaas-packager *ngIf="toscaType === toscaTypes.ServiceTemplate"
                               class="sectionBtn"
                               id="sectionCreateFromArtifactBtn"></winery-xaas-packager>
+        <div *wineryRepositoryFeatureToggle="configEnum.Placement"
+             class="sectionBtn">
+            <winery-placement *ngIf="toscaType === toscaTypes.ServiceTemplate"
+                              id="sectionCreateFromDataFlowBtn"></winery-placement>
+        </div>
         <button class="btn btn-default sidebar-btn sectionBtn" id="sectionsGroupBtn" (click)="onChangeView()"
                 [disabled]="showSpecificNamespaceOnly()">
             {{ changeViewButtonTitle }}
@@ -111,7 +116,7 @@
 <winery-modal bsModal #validationModal="bs-modal" [modalRef]="validationModal">
     <winery-modal-header [title]="'Validation result'"></winery-modal-header>
     <winery-modal-body>
-        <div *ngIf="importMetadata"class="scroll">
+        <div *ngIf="importMetadata" class="scroll">
             <ul>
                 <li *ngFor="let file of importMetadata.verificationMap" class="noWrap">
                     <span [class]="getVerificationClass(file.value)">{{ file.value }}</span>
@@ -119,7 +124,8 @@
                     <ul *ngIf="fileProvenance[file.key]">
                         <li *ngFor="let item of fileProvenance[file.key]">
                             Author: <b>{{ item.authorName }}</b> ({{ item.authorAddress }})<br>
-                            Is authorized: <span [class]="getAuthorizedClass(item.authorized)">{{ item.authorized }}</span><br>
+                            Is authorized: <span
+                            [class]="getAuthorizedClass(item.authorized)">{{ item.authorized }}</span><br>
                             Transaction Id: {{ item.transactionHash }}<br>
                             <span *ngIf="item.fileHash">
                                 File hash: {{ item.fileHash }}<br>
@@ -130,7 +136,8 @@
                             Timestamp: {{ item.unixTimestamp * 1000 | date:'yyyy-MM-dd HH:mm:ss' }}<br>
                             <a *ngIf="item.addressInImmutableStorage" class="pointer"
                                (click)="downloadFileFromImmutableStorage(item.addressInImmutableStorage, item.fileName)">(download)</a>
-                            <a *ngIf="item.addressInImmutableStorage" (click)="openFileComparisonModal(fileComparer, item)">(compare)</a>
+                            <a *ngIf="item.addressInImmutableStorage"
+                               (click)="openFileComparisonModal(fileComparer, item)">(compare)</a>
                         </li>
                     </ul>
                 </li>

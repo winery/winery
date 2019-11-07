@@ -28,6 +28,7 @@ export interface WineryConfiguration {
         problemDetection: boolean;
         splitting: boolean;
         testRefinement: boolean;
+        placement: boolean;
         edmmModeling: boolean;
         updateTemplates: boolean;
     };

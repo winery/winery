@@ -140,6 +140,17 @@
                 {{matchingOngoing ? 'Matching...' : 'Match'}}
             </button>
         </div>
+        <div *wineryRepositoryFeatureToggle="configEnum.Placement" class="btn-group button-group" data-toggle="buttons">
+            <button
+                class="btn btn-sm align-middle dark-button-style"
+                type="button"
+                id="placement"
+                (click)="toggleButton($event)"
+                [style.background-color]="getStyle(navbarButtonsState.buttonsState.placeComponentsButton)"
+                [disabled]="placingOngoing">
+                {{placingOngoing ? 'Placing...' : 'Place Components'}}
+            </button>
+        </div>
         <div *wineryRepositoryFeatureToggle="configEnum.ProblemDetection" class="btn-group button-group"
              data-toggle="buttons">
             <button

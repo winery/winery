@@ -257,6 +257,13 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
             .statusCode(201);
     }
 
+    protected void assertPost(String restURL) {
+        start()
+            .post(callURL(restURL))
+            .then()
+            .statusCode(201);
+    }
+
     /**
      * Because some methods don't respond with a "created" status. TODO: fix all methods which return "noContent" status
      * so that this method can be deleted.

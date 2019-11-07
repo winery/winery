@@ -48,6 +48,7 @@ export class TopologyRendererActions {
     static DETERMINE_STATEFUL_COMPONENTS = 'DETERMINE_STATEFUL_COMPONENTS';
     static DETERMINE_FREEZABLE_COMPONENTS = 'DETERMINE_FREEZABLE_COMPONENTS';
     static CLEAN_FREEZABLE_COMPONENTS = 'CLEAN_FREEZABLE_COMPONENTS';
+    static PLACE_COMPONENTS = 'PLACE_COMPONENTS';
 
     togglePolicies(): Action {
         return { type: TopologyRendererActions.TOGGLE_POLICIES };
@@ -144,5 +145,9 @@ export class TopologyRendererActions {
 
     cleanFreezableComponents(): Action {
         return { type: TopologyRendererActions.CLEAN_FREEZABLE_COMPONENTS };
+    }
+
+    placeComponents(): Action {
+        return { type: TopologyRendererActions.PLACE_COMPONENTS };
     }
 }

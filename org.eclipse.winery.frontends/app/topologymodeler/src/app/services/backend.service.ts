@@ -353,6 +353,15 @@ export class BackendService {
     }
 
     /**
+     * Place the components of the topology.
+     */
+    placeComponents(): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders().set('Content-Type', 'application/json');
+        const url = this.serviceTemplateURL + urlElement.TopologyTemplate + 'applyplacement';
+        return this.http.post(url, {}, { headers: headers, observe: 'response', responseType: 'text' });
+    }
+
+    /**
      * Used for creating new artifactOrPolicy templates on the backend.
      */
     createNewArtifactOrPolicy(artifactOrPolicy: QNameWithTypeApiData, type: string): Observable<HttpResponse<string>> {
