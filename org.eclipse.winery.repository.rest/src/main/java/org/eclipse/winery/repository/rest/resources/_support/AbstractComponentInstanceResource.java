@@ -303,8 +303,8 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         if ((csar != null) || (yaml != null) || (xml != null) || (edmm != null)) {
             return this.getDefinitionsAsResponse(csar, yaml, edmm, addToProvenance, uriInfo);
         }
-        String repositoryUiUrl = Environments.get().getEndpoints().get("repositoryUiUrl");
-        String uiUrl = uriInfo.getAbsolutePath().toString().replaceAll(Environments.get().getEndpoints().get("repositoryApiUrl"), repositoryUiUrl);
+        String repositoryUiUrl = Environments.getUiConfig().getEndpoints().get("repositoryUiUrl");
+        String uiUrl = uriInfo.getAbsolutePath().toString().replaceAll(Environments.getUiConfig().getEndpoints().get("repositoryApiUrl"), repositoryUiUrl);
         return Response.temporaryRedirect(URI.create(uiUrl)).build();
     }
 

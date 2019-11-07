@@ -14,18 +14,12 @@
 
 package org.eclipse.winery.common.configuration;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Optional;
 import java.util.Properties;
 
-import org.eclipse.winery.common.Constants;
-
-import org.apache.commons.configuration2.YAMLConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,58 +29,67 @@ import org.slf4j.LoggerFactory;
  * properties that are not part of the configuration by default.
  */
 public final class Environments {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(Environments.class);
-    private final static String featurePrefix = "ui.features.";
-    private final static String endpointPrefix = "ui.endpoints.";
-    private final static String gitPrefix = "repository.git.";
-    private final static String repositoryPrefix = "repository.";
+    private static RepositoryConfigurationObject repositoryConfigurationObject;
+    private static GitConfigurationObject gitConfigurationObject;
+    private static UiConfigurationObject uiConfigurationObject;
 
     private Environments() {
     }
 
+    static void clearInstances() {
+        repositoryConfigurationObject = null;
+        gitConfigurationObject = null;
+        uiConfigurationObject = null;
+    }
+
     /**
-     * Returns an ConfigurationObject Instance representing the configuration of the configuration - class attribute of
-     * Environment.
+     * Returns an instance of the ui configuration.
      *
-     * @return Returns a configuration object which has the same structure as the winery.yml configuration file.
+     * @return Returns an UiConfigurationObject object which represtents the ui configuration of the winery.yml
+     * configuration file.
      */
-    public static ConfigurationObject get() {
-        YAMLConfiguration configuration = Environment.getConfiguration();
-        HashMap<String, Boolean> features = new HashMap<>();
-        HashMap<String, String> endpoints = new HashMap<>();
-        Iterator<String> featureIterator = configuration.getKeys(featurePrefix);
-        Iterator<String> endpointIterator = configuration.getKeys(endpointPrefix);
-        featureIterator.forEachRemaining(key -> features.put(key.replace(featurePrefix, ""), configuration.getBoolean((key))));
-        endpointIterator.forEachRemaining(key -> endpoints.put(key.replace(endpointPrefix, ""), configuration.getString(key)));
-        return new ConfigurationObject(features, endpoints);
+    public static UiConfigurationObject getUiConfig() {
+        checkForUpdateAndClear();
+        if (uiConfigurationObject == null) {
+            uiConfigurationObject = new UiConfigurationObject(Environment.getConfiguration());
+        }
+        return uiConfigurationObject;
     }
 
     /**
-     * This method returns a map containing the values set in the configuration for: clientID, clientSecret, username,
-     * password
-     */
-    public static HashMap<String, String> getGit() {
-        HashMap<String, String> git = new HashMap<>();
-        YAMLConfiguration configuration = Environment.getConfiguration();
-        configuration.getKeys(gitPrefix).forEachRemaining(key -> {
-            if (!key.equals(gitPrefix + "autocommit"))
-                git.put(key.replace(gitPrefix, ""), configuration.getString(key));
-        });
-        return git;
-    }
-
-    /**
-     * Returns the status of the AutoCommit flag
+     * Returns an instance of the git configuration.
      *
-     * @return status of auto commit flag, either true or false
+     * @return Returns a GitConfigurationObject object which represtents the git configuration of the winery.yml
+     * configuration file.
      */
-    public static boolean isAutoCommit() {
-        return Environment.getConfiguration().getBoolean(gitPrefix + "autocommit");
+    public static GitConfigurationObject getGitConfig() {
+        checkForUpdateAndClear();
+        if (gitConfigurationObject == null) {
+            gitConfigurationObject = new GitConfigurationObject(Environment.getConfiguration());
+        }
+        return gitConfigurationObject;
     }
 
     /**
-     * When no error occurs, this method returns the version specified in the pom file. Otherwise null is returned. If
-     * an error occurs the version 0.0.0 is returned.
+     * Returns an instance of the repository configuration. This includes the GitConfigurationObject
+     *
+     * @return Returns a RepositoryConfigurationObject object which represtents the repository configuration of the
+     * winery.yml configuration file.
+     */
+    public static RepositoryConfigurationObject getRepositoryConfig() {
+        checkForUpdateAndClear();
+        if (repositoryConfigurationObject == null) {
+            repositoryConfigurationObject = new RepositoryConfigurationObject(Environment.getConfiguration());
+        }
+        return repositoryConfigurationObject;
+    }
+
+    /**
+     * Method to retrieve the set version.
+     *
+     * @return the version declared in the pom file in case of an exception returns the version 0.0.0
      */
     public static String getVersion() {
         try {
@@ -98,16 +101,12 @@ public final class Environments {
     }
 
     /**
-     * Returns the path to the repositiory saved in the configuration file.
-     *
-     * @return path to configuration
+     * Checks the configuration file for an update and clears the configuration object instances, so that they will be
+     * reloaded from the changed configuration file when their corresponding getter is invoked.
      */
-    public static String getRepositoryRoot() {
-        String repositoryRoot = Environment.getConfiguration().getString(repositoryPrefix + "repositoryRoot");
-        if (repositoryRoot == null || repositoryRoot.isEmpty()) {
-            return org.apache.commons.io.FileUtils.getUserDirectory().getAbsolutePath() + File.separator + Constants.DEFAULT_REPO_NAME;
-        } else {
-            return repositoryRoot;
+    private static void checkForUpdateAndClear() {
+        if (Environment.checkConfigurationForUpdate()) {
+            Environments.clearInstances();
         }
     }
 
@@ -117,7 +116,7 @@ public final class Environments {
      * @return an instance of FileBasedRepositoryConfiguration
      */
     public static FileBasedRepositoryConfiguration getFilebasedRepositoryConfiguration() {
-        Path path = Paths.get(getRepositoryRoot());
+        Path path = Paths.get(getRepositoryConfig().getRepositoryRoot());
         return new FileBasedRepositoryConfiguration(path);
     }
 
@@ -128,42 +127,16 @@ public final class Environments {
      */
     public static Optional<GitBasedRepositoryConfiguration> getGitBasedRepsitoryConfiguration() {
         final FileBasedRepositoryConfiguration filebasedRepositoryConfiguration = getFilebasedRepositoryConfiguration();
-        return Optional.of(new GitBasedRepositoryConfiguration(isAutoCommit(), filebasedRepositoryConfiguration));
+        return Optional.of(new GitBasedRepositoryConfiguration(getGitConfig().isAutocommit(), filebasedRepositoryConfiguration));
     }
 
     /**
-     * This method propagates changes made to the feature flags to the config file.
+     * Changes the configuration accordingly to the given ConfigurationObject.
      *
-     * @param changedProperties a Map that contains the name of the changed properties as keys and the changed flags as
-     *                          values as
+     * @param configuration the changed configuration object
      */
-    public static void saveFeatures(final ConfigurationObject changedProperties) {
-        YAMLConfiguration config = Environment.getConfiguration();
-        changedProperties.getFeatures().keySet().forEach(property -> config.setProperty(featurePrefix + property, changedProperties.getFeatures().get(property)));
-        Environment.save();
-    }
-
-    /**
-     * Sets the repositoryRoot property to the value of the given path.
-     *
-     * @param repositoryRoot The path wich represents the new repositoryRoot
-     */
-    public static void setRepositoryRoot(String repositoryRoot) {
-        YAMLConfiguration config = Environment.getConfiguration();
-        config.setProperty(repositoryPrefix + "repositoryRoot", repositoryRoot);
-        Environment.save();
-    }
-
-    /**
-     * This methods propagates changes made to the endpoints to the config file.
-     *
-     * @param changedProperties a Map that contains the name of the changed properties as keys and the changed flags as
-     *                          values as
-     */
-    public static void saveEndpoints(final ConfigurationObject changedProperties) {
-        YAMLConfiguration config = Environment.getConfiguration();
-        changedProperties.getEndpoints().keySet().forEach(property -> config.setProperty(endpointPrefix + property, changedProperties.getEndpoints().get(property)));
-        Environment.save();
+    public static void save(final AbstractConfigurationObject configuration) {
+        configuration.save();
     }
 
     private String getVersionFromProperties() throws IOException {

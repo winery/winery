@@ -14,30 +14,7 @@
 
 package org.eclipse.winery.common.configuration;
 
-import java.util.HashMap;
+public abstract class AbstractConfigurationObject {
 
-/**
- * This Class is used to create a JSON Object that is structured like the winery.yaml file. Therefore this class is a
- * structural copy of that file.
- */
-public class ConfigurationObject {
-    private HashMap<String, Boolean> features;
-    private HashMap<String, String> endpoints;
-
-    ConfigurationObject(HashMap<String, Boolean> featureMap, HashMap<String, String> endpointsMap) {
-        this.features = featureMap;
-        this.endpoints = endpointsMap;
-    }
-
-    public ConfigurationObject() {
-    }
-
-    public HashMap<String, Boolean> getFeatures() {
-        return features;
-    }
-
-    public HashMap<String, String> getEndpoints() {
-        return endpoints;
-    }
-    
+    abstract void save();
 }

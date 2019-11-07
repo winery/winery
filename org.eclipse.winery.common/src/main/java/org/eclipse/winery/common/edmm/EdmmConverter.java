@@ -158,7 +158,7 @@ public class EdmmConverter {
                     artifact.getArtifactType().getLocalPart().toLowerCase()
                 );
                 entityGraph.addEntity(new ScalarEntity(
-                    path != null && this.useAbsolutePaths ? Environments.getRepositoryRoot() + "/" + path : path,
+                    path != null && this.useAbsolutePaths ? Environments.getRepositoryConfig().getRepositoryRoot() + "/" + path : path,
                     artifactEntityId,
                     entityGraph
                 ));
@@ -275,7 +275,7 @@ public class EdmmConverter {
 
                     EntityId operationId = operationsEntityId.extend(operation.getName());
                     entityGraph.addEntity(new ScalarEntity(
-                        path != null && this.useAbsolutePaths ? Environments.getRepositoryRoot() + "/" + path : path,
+                        path != null && this.useAbsolutePaths ? Environments.getRepositoryConfig().getRepositoryRoot() + "/" + path : path,
                         operationId,
                         entityGraph
                     ));

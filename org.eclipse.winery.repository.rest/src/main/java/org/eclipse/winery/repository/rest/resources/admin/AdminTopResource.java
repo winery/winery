@@ -27,8 +27,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.winery.common.configuration.ConfigurationObject;
 import org.eclipse.winery.common.configuration.Environments;
+import org.eclipse.winery.common.configuration.UiConfigurationObject;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyChecker;
@@ -91,23 +91,22 @@ public class AdminTopResource {
 
     /**
      * This method answers a get-request by the WineryRepositoryConfigurationService
-     *
      * @return the winery config file in json format.
      */
     @GET
     @Path("config")
     @Produces(MediaType.APPLICATION_JSON)
-    public ConfigurationObject getConfig() {
-        return Environments.get();
+    public UiConfigurationObject getConfig() {
+        return Environments.getUiConfig();
     }
 
     @PUT
     @Path("config")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ConfigurationObject setConfig(ConfigurationObject changedConfiguration) {
-        Environments.saveFeatures(changedConfiguration);
-        return Environments.get();
+    public UiConfigurationObject setConfig(UiConfigurationObject changedConfiguration) {
+        Environments.save(changedConfiguration);
+        return Environments.getUiConfig();
     }
 
     @POST
@@ -121,8 +120,8 @@ public class AdminTopResource {
 
         List<NameValuePair> params = new ArrayList<>(4);
 
-        params.add(new BasicNameValuePair("client_id", Environments.getGit().get("clientID")));
-        params.add(new BasicNameValuePair("client_secret", Environments.getGit().get("clientSecret")));
+        params.add(new BasicNameValuePair("client_id", Environments.getGitConfig().getClientID()));
+        params.add(new BasicNameValuePair("client_secret", Environments.getGitConfig().getClientSecret()));
         params.add(new BasicNameValuePair("code", codeApiData.code));
         params.add(new BasicNameValuePair("state", codeApiData.state));
         httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));

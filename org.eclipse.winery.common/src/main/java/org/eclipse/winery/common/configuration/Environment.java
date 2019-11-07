@@ -19,6 +19,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.attribute.FileTime;
 
 import org.apache.commons.configuration2.YAMLConfiguration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
@@ -32,6 +34,7 @@ import org.slf4j.LoggerFactory;
  * running.
  */
 final class Environment {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(Environment.class);
     //Path to the directory of the winery configuration file
     private static final File configDirectory = new File(System.getProperty("user.home") + "/.winery");
@@ -41,6 +44,7 @@ final class Environment {
     private static final InputStream defaultConfigInputStream = Environment.class.getClassLoader().getResourceAsStream("winery.yml");
     //Contains the configuration
     private static YAMLConfiguration configuration;
+    private static FileTime lastChange = null;
 
     /**
      * Getter for the configuration attribute, if class attribute is null, it is set to the configuration in the
@@ -49,10 +53,28 @@ final class Environment {
      * @return the configuration attribute of Environment
      */
     protected static YAMLConfiguration getConfiguration() {
-        if (Environment.configuration == null) {
+        if (Environment.configuration == null || checkConfigurationForUpdate()) {
             Environment.getConfigFromFile();
         }
         return Environment.configuration;
+    }
+
+    /**
+     * Checks for updates on the configuration. If the configuration wasn't loaded yet (lastChange == null) the check
+     * will return true;
+     *
+     * @return true if the configuration in the file is updated or not loaded yet
+     */
+    static boolean checkConfigurationForUpdate() {
+        try {
+            if (lastChange == null) {
+                return true;
+            } else
+                return !lastChange.equals(Files.getLastModifiedTime(configFile.toPath()));
+        } catch (IOException ioex) {
+            LOGGER.debug("Error while accessing the last changed time.", ioex);
+        }
+        return false;
     }
 
     /**
@@ -71,6 +93,11 @@ final class Environment {
     private static void getConfigFromFile() {
         if (!configFile.exists()) {
             copyDefaultConfigFile(configFile);
+        }
+        try {
+            lastChange = Files.getLastModifiedTime(configFile.toPath());
+        } catch (IOException ioex) {
+            LOGGER.debug("Error while accessing the last changed time.", ioex);
         }
         YAMLConfiguration config = null;
         try (FileReader reader = new FileReader(configFile)) {
