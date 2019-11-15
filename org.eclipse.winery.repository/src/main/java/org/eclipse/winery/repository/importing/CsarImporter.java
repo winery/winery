@@ -838,9 +838,6 @@ public class CsarImporter {
                 continue;
             }
 
-            // we remove the current element as it will be handled during the export
-            iterator.remove();
-
             Path path = rootPath.resolve(reference);
             if (!Files.exists(path)) {
                 errors.add(String.format("Reference %1$s not found", reference));
