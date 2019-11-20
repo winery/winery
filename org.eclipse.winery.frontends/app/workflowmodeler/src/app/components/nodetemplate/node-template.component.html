@@ -13,33 +13,31 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <div class="form-group row">
-    <label class="col-md-2 form-control-label text-md-right">Node</label>
+    <label class="col-md-2 form-control-label text-md-right" for="nodeTemplate">Node</label>
     <div class="col-md-10">
-        <ng-select [items]="nodeTemplates"
-                   [idField]="'id'" [textField]="'name'"
-                   (selected)="nodeTemplateChanged($event)" [active]="selectedNodeTemplate ? [selectedNodeTemplate] : null">
-        </ng-select>
+        <select class="form-control" id="nodeTemplate" (change)="nodeTemplateChanged($event)"
+                [(ngModel)]="selectedNodeTemplateId">
+            <option *ngFor="let node of nodeTemplates" value="{{node.id}}">{{node.id}}</option>
+        </select>
     </div>
 </div>
 
 <div class="form-group row">
     <label class="col-md-2 form-control-label text-md-right">Interface</label>
     <div class="col-md-10">
-        <ng-select [items]="nodeInterfaces"
-                   [idField]="'name'" [textField]="'name'"
-                   (selected)="nodeInterfaceChanged($event)" [active]="selectedInterface ? [selectedInterface] : null">
-        </ng-select>
+        <select class="form-control" id="nodeInterface" (change)="nodeInterfaceChanged($event)"
+                [(ngModel)]="selectedInterfaceName">
+            <option *ngFor="let t of nodeInterfaces" value="{{t.name}}">{{t.name}}</option>
+        </select>
     </div>
 </div>
 
 <div class="form-group row">
-    <label class="col-md-2 form-control-label text-md-right">Operation</label>
+    <label class="col-md-2 form-control-label text-md-right">Node</label>
     <div class="col-md-10">
-        <ng-select [items]="nodeOperations"
-                   [idField]="'name'" [textField]="'name'"
-                   (selected)="nodeOperationChanged($event)" [active]="selectedOperation ? [selectedOperation] : null">
-        </ng-select>
+        <select class="form-control" id="nodeOperation" (change)="nodeOperationChanged($event)"
+                [(ngModel)]="selectedOperationName">
+            <option *ngFor="let t of nodeOperations" value="{{t.name}}">{{t.name}}</option>
+        </select>
     </div>
 </div>
-<hr>
-

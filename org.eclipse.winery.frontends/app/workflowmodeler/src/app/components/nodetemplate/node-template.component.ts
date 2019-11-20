@@ -18,7 +18,6 @@ import { Node } from '../../model/workflow/node';
 import { WineryService } from '../../services/winery.service';
 import { NodeTemplate } from '../../model/nodetemplate';
 import { Template } from '../../model/workflow/Template';
-import { SelectItem } from 'ng2-select';
 
 /**
  * Enum to identify which fields have to be reset
@@ -31,7 +30,8 @@ enum ResetType {
 
 /**
  * node template component provides operations about tosca modules which saved in winery.
- * This component will be used in the property component while the corresponding workflow node is calling the node template's operation
+ * This component will be used in the property component while the corresponding workflow node is calling the node
+ * template's operation
  */
 @Component({
     selector: 'b4t-node-template',
@@ -45,8 +45,11 @@ export class WmNodeTemplateComponent implements OnInit {
     nodeOperations: Operation[];
 
     selectedNodeTemplate: NodeTemplate;
+    selectedNodeTemplateId: String = '';
     selectedInterface: ToscaInterface;
+    selectedInterfaceName: String = '';
     selectedOperation: Operation;
+    selectedOperationName: String = '';
 
     constructor(private wineryService: WineryService) {
     }
@@ -54,19 +57,23 @@ export class WmNodeTemplateComponent implements OnInit {
     public ngOnInit(): void {
         if (this.node && this.node.template) {
             this.selectedNodeTemplate = new NodeTemplate(this.node.template.id, this.node.template.id, this.node.template.type, this.node.template.namespace);
+            this.selectedNodeTemplateId = this.selectedNodeTemplate.id;
             this.selectedInterface = new ToscaInterface();
             this.selectedInterface.name = this.node.nodeInterface;
+            this.selectedInterfaceName = this.selectedInterface.name;
             this.selectedOperation = new Operation();
             this.selectedOperation.name = this.node.nodeOperation;
+            this.selectedOperationName = this.selectedOperation.name;
             this.loadInterfaces();
         }
+
         this.wineryService.loadNodeTemplates()
             .subscribe(nodeTemplates => this.nodeTemplates = nodeTemplates);
     }
 
-    public nodeTemplateChanged(event: SelectItem) {
-        this.selectedNodeTemplate = this.nodeTemplates.find(value => value.id === event.id);
-
+    public nodeTemplateChanged(nodeId: any) {
+        this.selectedNodeTemplate = this.nodeTemplates.find(value => value.id === nodeId.target.value);
+        this.selectedNodeTemplateId = this.selectedNodeTemplate.id;
         this.node.nodeTemplate = this.selectedNodeTemplate.name;
         this.node.template = new Template(this.selectedNodeTemplate.id, this.selectedNodeTemplate.namespace, this.selectedNodeTemplate.type);
 
@@ -74,17 +81,18 @@ export class WmNodeTemplateComponent implements OnInit {
         this.loadInterfaces();
     }
 
-    public nodeInterfaceChanged(event: SelectItem) {
-        this.selectedInterface = this.nodeInterfaces.find(value => value.name === event.id);
-
+    public nodeInterfaceChanged(nodeInterface: any) {
+        this.selectedInterface = this.nodeInterfaces.find(value => value.name === nodeInterface.target.value);
+        this.selectedInterfaceName = this.selectedInterface.name;
         this.node.nodeInterface = this.node.template.nodeInterface = this.selectedInterface.name;
         this.nodeOperations = this.selectedInterface.operation;
 
         this.resetNode(ResetType.Interface);
     }
 
-    public nodeOperationChanged(event: SelectItem) {
-        this.selectedOperation = this.nodeOperations.find(value => value.name === event.id);
+    public nodeOperationChanged(operation: any) {
+        this.selectedOperation = this.nodeOperations.find(value => value.name === operation.target.value);
+        this.selectedOperationName = this.selectedOperation.name;
         this.node.nodeOperation = this.node.template.operation = this.selectedOperation.name;
         this.node.input = this.selectedOperation.inputParameters ? this.selectedOperation.inputParameters.inputParameter : [];
         this.node.output = this.selectedOperation.outputParameters ? this.selectedOperation.outputParameters.outputParameter : [];

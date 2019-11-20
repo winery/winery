@@ -27,5 +27,6 @@ export class Node {
     public position = new Position();
     public template: Template;
     public type: string;
+    public instanceType: string;
 
 }
