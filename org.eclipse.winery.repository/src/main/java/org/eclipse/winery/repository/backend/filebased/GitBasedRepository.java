@@ -22,7 +22,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -297,10 +296,11 @@ public class GitBasedRepository extends FilebasedRepository {
     }
 
     private Git cloneRepository(String repoUrl, String branch) throws GitAPIException {
-        Git git = Git.cloneRepository().setURI(repoUrl).setDirectory(this.getRepositoryDep().toFile()).setBranchesToClone(Arrays.asList(branch))
-            .setBranch(branch).call();
-
-        return git;
+        return Git.cloneRepository()
+            .setURI(repoUrl)
+            .setDirectory(this.getRepositoryDep().toFile())
+            .setBranch(branch)
+            .call();
     }
 
     public String getRepositoryUrl() {
