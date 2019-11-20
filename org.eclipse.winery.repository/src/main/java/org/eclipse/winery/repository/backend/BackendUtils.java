@@ -712,19 +712,18 @@ public class BackendUtils {
     public static void persist(Object o, RepositoryFileReference ref, MediaType mediaType) throws IOException {
         // We assume that the object is not too large
         // Otherwise, http://io-tools.googlecode.com/svn/www/easystream/apidocs/index.html should be used
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Marshaller m;
-        try {
-            m = JAXBSupport.createMarshaller(true);
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            Marshaller m = JAXBSupport.createMarshaller(true);
             m.marshal(o, out);
+            byte[] data = out.toByteArray();
+            try (ByteArrayInputStream in = new ByteArrayInputStream(data)) {
+                // this may throw an IOException. We propagate this exception.
+                RepositoryFactory.getRepository().putContentToFile(ref, in, mediaType);
+            }
         } catch (JAXBException e) {
             BackendUtils.LOGGER.error("Could not put content to file", e);
             throw new IllegalStateException(e);
         }
-        byte[] data = out.toByteArray();
-        ByteArrayInputStream in = new ByteArrayInputStream(data);
-        // this may throw an IOException. We propagate this exception.
-        RepositoryFactory.getRepository().putContentToFile(ref, in, mediaType);
     }
 
     /**
@@ -732,100 +731,97 @@ public class BackendUtils {
      */
     public static Optional<XSModel> getXSModel(final RepositoryFileReference ref) {
         Objects.requireNonNull(ref);
-        final InputStream is;
-        try {
-            is = RepositoryFactory.getRepository().newInputStream(ref);
+        try (final InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
+            // we rely on xerces to parse the XSD
+            // idea based on http://stackoverflow.com/a/5165177/873282
+            XSImplementation impl = new XSImplementationImpl();
+            XSLoader schemaLoader = impl.createXSLoader(null);
+
+            // minimal LSInput implementation sufficient for XSLoader in Oracle's JRE7
+            LSInput input = new LSInput() {
+
+                @Override
+                public void setSystemId(String systemId) {
+                }
+
+                @Override
+                public void setStringData(String stringData) {
+                }
+
+                @Override
+                public void setPublicId(String publicId) {
+                }
+
+                @Override
+                public void setEncoding(String encoding) {
+                }
+
+                @Override
+                public void setCharacterStream(Reader characterStream) {
+                }
+
+                @Override
+                public void setCertifiedText(boolean certifiedText) {
+                }
+
+                @Override
+                public void setByteStream(InputStream byteStream) {
+                }
+
+                @Override
+                public void setBaseURI(String baseURI) {
+                }
+
+                @Override
+                public String getSystemId() {
+                    return null;
+                }
+
+                @Override
+                public String getStringData() {
+                    return null;
+                }
+
+                @Override
+                public String getPublicId() {
+                    return BackendUtils.getPathInsideRepo(ref);
+                }
+
+                @Override
+                public String getEncoding() {
+                    return "UTF-8";
+                }
+
+                @Override
+                public Reader getCharacterStream() {
+                    try {
+                        return new InputStreamReader(is, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        System.out.println("exeption");
+                        throw new IllegalStateException("UTF-8 is unkown", e);
+                    }
+                }
+
+                @Override
+                public boolean getCertifiedText() {
+                    return false;
+                }
+
+                @Override
+                public InputStream getByteStream() {
+                    return null;
+                }
+
+                @Override
+                public String getBaseURI() {
+                    return null;
+                }
+            };
+            return Optional.ofNullable(schemaLoader.load(input));
         } catch (IOException e) {
             BackendUtils.LOGGER.debug("Could not create input stream", e);
             return Optional.empty();
         }
-
-        // we rely on xerces to parse the XSD
-        // idea based on http://stackoverflow.com/a/5165177/873282
-        XSImplementation impl = new XSImplementationImpl();
-        XSLoader schemaLoader = impl.createXSLoader(null);
-
-        // minimal LSInput implementation sufficient for XSLoader in Oracle's JRE7
-        LSInput input = new LSInput() {
-
-            @Override
-            public void setSystemId(String systemId) {
-            }
-
-            @Override
-            public void setStringData(String stringData) {
-            }
-
-            @Override
-            public void setPublicId(String publicId) {
-            }
-
-            @Override
-            public void setEncoding(String encoding) {
-            }
-
-            @Override
-            public void setCharacterStream(Reader characterStream) {
-            }
-
-            @Override
-            public void setCertifiedText(boolean certifiedText) {
-            }
-
-            @Override
-            public void setByteStream(InputStream byteStream) {
-            }
-
-            @Override
-            public void setBaseURI(String baseURI) {
-            }
-
-            @Override
-            public String getSystemId() {
-                return null;
-            }
-
-            @Override
-            public String getStringData() {
-                return null;
-            }
-
-            @Override
-            public String getPublicId() {
-                return BackendUtils.getPathInsideRepo(ref);
-            }
-
-            @Override
-            public String getEncoding() {
-                return "UTF-8";
-            }
-
-            @Override
-            public Reader getCharacterStream() {
-                try {
-                    return new InputStreamReader(is, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    System.out.println("exeption");
-                    throw new IllegalStateException("UTF-8 is unkown", e);
-                }
-            }
-
-            @Override
-            public boolean getCertifiedText() {
-                return false;
-            }
-
-            @Override
-            public InputStream getByteStream() {
-                return null;
-            }
-
-            @Override
-            public String getBaseURI() {
-                return null;
-            }
-        };
-        return Optional.ofNullable(schemaLoader.load(input));
     }
 
     /**
@@ -1420,11 +1416,12 @@ public class BackendUtils {
         ToscaExportUtil exporter = new ToscaExportUtil();
         // we include everything related
         Map<String, Object> conf = new HashMap<>();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        exporter.writeTOSCA(repository, id, conf, bos);
-        String xmlRepresentation = bos.toString(StandardCharsets.UTF_8.toString());
-        Unmarshaller u = JAXBSupport.createUnmarshaller();
-        return ((Definitions) u.unmarshal(new StringReader(xmlRepresentation)));
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+            exporter.writeTOSCA(repository, id, conf, bos);
+            String xmlRepresentation = bos.toString(StandardCharsets.UTF_8.toString());
+            Unmarshaller u = JAXBSupport.createUnmarshaller();
+            return ((Definitions) u.unmarshal(new StringReader(xmlRepresentation)));
+        }
     }
 
     public static void mergeTopologyTemplateAinTopologyTemplateB(ServiceTemplateId serviceTemplateIdA, ServiceTemplateId serviceTemplateIdB) throws IOException {
