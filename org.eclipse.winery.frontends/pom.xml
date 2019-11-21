@@ -107,11 +107,10 @@
                             <goal>install-node-and-npm</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>v10.15.2</nodeVersion> <!-- LTS as of 2019-02-29 -->
-                            <npmVersion>6.4.1</npmVersion> <!-- defined as latest LTS version -->
+                            <nodeVersion>v12.13.1</nodeVersion> <!-- latest LTS version -->
+                            <npmVersion>6.12.1</npmVersion> <!-- defined as latest LTS version -->
                         </configuration>
                     </execution>
-
                     <execution>
                         <phase>compile</phase>
                         <id>install npm dependencies</id>
@@ -122,7 +121,6 @@
                             <arguments>install</arguments>
                         </configuration>
                     </execution>
-                    
                     <execution>
                         <phase>compile</phase>
                         <id>lint tosca-management app</id>
@@ -153,7 +151,6 @@
                             <arguments>run lint-workflowmodeler</arguments>
                         </configuration>
                     </execution>
-                    
                     <execution>
                         <phase>package</phase>
                         <id>build tosca-management</id>
