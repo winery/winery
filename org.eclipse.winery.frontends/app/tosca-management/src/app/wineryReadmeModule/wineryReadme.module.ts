@@ -18,12 +18,14 @@ import {FormsModule} from '@angular/forms';
 import {WineryLoaderModule} from '../wineryLoader/wineryLoader.module';
 import {TabsModule} from 'ngx-bootstrap';
 import {WineryPipesModule} from '../wineryPipes/wineryPipes.module';
+import {WineryMarkdownModule} from '../wineryMarkdownComponent/wineryMarkdown.module';
 
 @NgModule({
     imports: [
         CommonModule,
         WineryLoaderModule,
         FormsModule,
+        WineryMarkdownModule,
         TabsModule,
         WineryPipesModule
     ],
