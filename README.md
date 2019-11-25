@@ -17,18 +17,8 @@ The source for the documentation can be found at [docs/](docs).
 The branch `ustutt` differs from eclipse/winery in the following files:
 
 - [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md) - extended for USTUTT students
-- [README.md](README.md) - This text file
-- [.dockerignore](dockerignore) - Introduced because of Docker support
-- [.travis.settings.yml](.travis.settings.yml) - Different Travis settings
-- [.travis.yml](.travis.yml) - Different AWS S3 upload directory
-- [Dockerfile](Dockerfile) - Custom Docker build for the OpenTOSCA organization
-- [Dockerfile.winery-cli](Dockerfile.winery-cli) - Custom Docker build for the OpenTOSCA organization
-- [pom.xml](pom.xml) - Upload to opentosca/mvn-repo
-- [winery](winery) - Executable required to launch Winery CLI
-
-Further, following PRs have been merged into this repository:
-
-- https://github.com/OpenTOSCA/winery/pull/44 - not startet a PR on eclipse/winery, because Eclipse Orion offers an own markdown component
+- [README.md](README.md) - This text file + disclaimer
+- [LICENSE.spdx](LICENSE.spdx) - Update OpenTOSCA specifics
 
 One can find out the differences between the `ustutt` branch of OpenTOSCA/winery and the `master` branch of eclipse/winery by executing the following command:
 
