@@ -19,6 +19,7 @@ import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../../redux/store/winery.store';
 import { Subscription } from 'rxjs';
 import { CapabilityModel } from '../../models/capabilityModel';
+import { ToscaTypes } from '../../../../../tosca-management/src/app/model/enums';
 
 @Component({
     selector: 'winery-capabilities',
@@ -29,6 +30,8 @@ import { CapabilityModel } from '../../models/capabilityModel';
  * This Handles Information about the node capabilities
  */
 export class CapabilitiesComponent implements OnInit, OnChanges, OnDestroy {
+
+    readonly toscaTypes = ToscaTypes;
 
     @Output() toggleModalHandler: EventEmitter<any>;
     @Input() readonly: boolean;

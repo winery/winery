@@ -45,7 +45,9 @@ export const INITIAL_WINERY_STATE: WineryState = {
         type: '',
         minInstances: 1,
         maxInstances: 1,
-        properties: ''
+        properties: '',
+        source: '',
+        target: ''
     },
     currentJsonTopology: new TTopologyTemplate,
     currentNodeData: {

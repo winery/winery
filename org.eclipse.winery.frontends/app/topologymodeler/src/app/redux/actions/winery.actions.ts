@@ -36,7 +36,9 @@ export interface SidebarStateAction extends Action {
         type: string,
         minInstances: string,
         maxInstances: string,
-        properties: string
+        properties: string,
+        source: string,
+        target: string
     };
 }
 

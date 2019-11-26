@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -98,4 +98,9 @@ tr:nth-child(even) {
     -moz-user-select: all; /* Firefox all */
     -ms-user-select: all; /* IE 10+ */
     user-select: all;
+}
+
+.relation-button {
+    padding: .05rem .1rem;
+    border-radius: .2rem;
 }
