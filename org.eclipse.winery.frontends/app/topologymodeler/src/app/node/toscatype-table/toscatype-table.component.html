@@ -84,7 +84,7 @@
     <tbody>
     <tr *ngFor="let reqOrCap of currentToscaTypeData">
         <td *ngIf="toscaType === toscaTypes.CapabilityType" class="toscatype-table-td">
-            <button type="button" class="relation-button btn btn-sm btn-outline-secondary btn-block"
+            <button type="button" class="reqCap-button btn btn-sm btn-outline-secondary btn-block"
                     style="font-size: x-small;" id="{{currentNodeData.nodeTemplate.id +'.'+ reqOrCap.id}}">
                 <i class="fa fa-dot-circle-o" aria-hidden="true"></i> {{""}}
             </button>
@@ -108,9 +108,9 @@
             <div
                 (mousedown)="passCurrentType($event); reqCapRelationshipService.createSourceInfo(this.currentNodeData, reqOrCap);">
                 <div class="btn-group-vertical center-block" role="group" id={{dragSource}}>
-                    <button *ngFor="let rel of ['ConnectsTo','HostedOn']"
-                            type="button" class="relation-button btn btn-sm btn-outline-secondary btn-block"
-                            style="font-size: xx-small;">{{rel}}
+                    <button *ngFor="let rel of entityTypes.relationshipTypes"
+                            type="button" class="reqCap-button btn btn-sm btn-outline-secondary btn-block"
+                            style="font-size: xx-small;">{{rel.id}}
                     </button>
                 </div>
             </div>

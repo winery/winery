@@ -104,3 +104,11 @@ tr:nth-child(even) {
     padding: .05rem .1rem;
     border-radius: .2rem;
 }
+
+.reqCap-button {
+    padding: .05rem .1rem;
+    border-radius: .2rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
