@@ -1616,6 +1616,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 this.targetNodes = this.getAllCapabilities();
                 if (this.targetNodes.length > 0) {
                     this.newJsPlumbInstance.makeTarget(this.targetNodes);
+                    this.newJsPlumbInstance.targetEndpointDefinitions = {};
                     this.dragSourceActive = true;
                     this.bindReqCapConnection();
                 }
@@ -2141,7 +2142,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             if (node.capabilities) {
                 if (node.capabilities.capability) {
                     node.capabilities.capability.forEach(cap => {
-                        if (cap.name === targetElement) {
+                        if (cap.id === targetElement) {
                             capability = cap;
                         }
                     });
@@ -2160,7 +2161,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
         this.entityTypes.requirementTypes.some(req => {
             if (req.qName === this.dragSourceInfos.dragSource.type) {
-                requiredTargetType = req.properties.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].requiredCapabilityType;
+                requiredTargetType = req.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].requiredCapabilityType;
                 return true;
             }
         });
@@ -2179,7 +2180,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         } else {
             this.entityTypes.capabilityTypes.some(cap => {
                 if (cap.qName === targetOrParent.type) {
-                    parentCapType = cap.properties.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].derivedFrom;
+                    parentCapType = cap.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].derivedFrom;
                     return true;
                 }
             });

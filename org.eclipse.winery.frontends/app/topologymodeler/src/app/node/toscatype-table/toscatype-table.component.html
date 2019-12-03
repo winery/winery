@@ -105,8 +105,8 @@
             <span class="cell-comment">{{ reqOrCap.name }}</span>
         </td>
         <td *ngIf="toscaType === toscaTypes.RequirementType" class="toscatype-table-td">
-            <div
-                (mousedown)="passCurrentType($event); reqCapRelationshipService.createSourceInfo(this.currentNodeData, reqOrCap);">
+            <div (mousedown)="passCurrentType($event);
+            reqCapRelationshipService.createSourceInfo(this.currentNodeData, reqOrCap);">
                 <div class="btn-group-vertical center-block" role="group" id={{dragSource}}>
                     <button *ngFor="let rel of entityTypes.relationshipTypes"
                             type="button" class="reqCap-button btn btn-sm btn-outline-secondary btn-block"
