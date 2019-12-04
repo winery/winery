@@ -34,9 +34,11 @@ export enum urlElement {
     TopologyTemplate = '/topologytemplate/'
 }
 
-export enum toscaEntity {
+export enum TableType {
     Requirements = 'Requirements',
     Capabilities = 'Capabilities',
+    Policies = 'policies',
+    deploymentArtifacts = 'deploymentArtifacts'
 }
 
 export enum toggleModalType {

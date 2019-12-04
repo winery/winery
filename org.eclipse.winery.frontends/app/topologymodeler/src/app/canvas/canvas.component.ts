@@ -53,6 +53,7 @@ import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reduce
 import { ThreatModelingModalData } from '../models/threatModelingModalData';
 import { ThreatCreation } from '../models/threatCreation';
 import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
+import { ReqCapRelationshipService } from '../services/req-cap-relationship.service';
 import { TPolicy } from '../models/policiesModalData';
 
 @Component({
@@ -160,7 +161,9 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 private splitMatchService: SplitMatchTopologyService,
                 private placementService: PlaceComponentsService,
                 private reqCapService: ReqCapService,
-                private errorHandler: ErrorHandlerService) {
+                private errorHandler: ErrorHandlerService,
+                private reqCapRelationshipService: ReqCapRelationshipService,
+                private notify: ToastrService) {
         this.newJsPlumbInstance = this.jsPlumbService.getJsPlumbInstance();
         this.newJsPlumbInstance.setContainer('container');
 
@@ -1089,10 +1092,12 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * Revalidates the offsets and other data of the container in the DOM.
      */
     public revalidateContainer(): void {
-        setTimeout(() => {
-            this.newJsPlumbInstance.revalidate('container');
-            this.newJsPlumbInstance.repaintEverything();
-        }, 1);
+        if (this.newJsPlumbInstance) {
+            setTimeout(() => {
+                this.newJsPlumbInstance.revalidate('container');
+                this.newJsPlumbInstance.repaintEverything();
+            }, 1);
+        }
     }
 
     /**
@@ -1261,6 +1266,9 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 if (this.dragSourceInfos.dragSource) {
                     if (this.newJsPlumbInstance.isSource(this.dragSourceInfos.dragSource)) {
                         this.newJsPlumbInstance.unmakeSource(this.dragSourceInfos.dragSource);
+                    }
+                    if (this.newJsPlumbInstance.isSource(this.dragSourceInfos.nodeId)) {
+                        this.newJsPlumbInstance.unmakeSource(this.dragSourceInfos.nodeId);
                     }
                 }
                 const indexOfNode = this.nodeChildrenIdArray.indexOf(this.dragSourceInfos.nodeId);
@@ -1478,7 +1486,9 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 id: '',
                 nameTextFieldValue: '',
                 type: '',
-                properties: ''
+                properties: '',
+                source: '',
+                target: ''
             }
         }));
     }
@@ -1584,6 +1594,48 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             }
         });
         this.entityTypes.relationshipTypes.forEach(value => this.assignRelTypes(value));
+        this.reqCapRelationshipService.sourceSelectedEvent.subscribe(source => this.setSource(source));
+        this.reqCapRelationshipService.sendSelectedRelationshipTypeEvent.subscribe(relationship => this.setSelectedRelationshipType(relationship));
+    }
+
+    /**
+     * set source for Relationship between Requirement and a Capability
+     * @param dragSourceInfo
+     */
+    setSource(dragSourceInfo: DragSource) {
+        if (dragSourceInfo) {
+            const nodeArrayLength = this.allNodeTemplates.length;
+            const currentNodeIsSource = this.newJsPlumbInstance.isSource(dragSourceInfo.dragSource);
+            if (!this.dragSourceActive && !currentNodeIsSource && nodeArrayLength > 1) {
+                this.newJsPlumbInstance.makeSource(dragSourceInfo.nodeId, {
+                    connectorOverlays: [
+                        ['Arrow', { location: 1 }],
+                    ],
+                });
+                this.dragSourceInfos = dragSourceInfo;
+                this.targetNodes = this.getAllCapabilities();
+                if (this.targetNodes.length > 0) {
+                    this.newJsPlumbInstance.makeTarget(this.targetNodes);
+                    this.newJsPlumbInstance.targetEndpointDefinitions = {};
+                    this.dragSourceActive = true;
+                    this.bindReqCapConnection();
+                }
+            }
+        }
+    }
+
+    getAllCapabilities() {
+        const capIds: string[] = [];
+        this.allNodeTemplates.forEach(node => {
+            if (node.capabilities) {
+                if (node.capabilities.capability) {
+                    node.capabilities.capability.forEach(cap => {
+                        capIds.push(node.id + '.' + cap.id);
+                    });
+                }
+            }
+        });
+        return capIds;
     }
 
     /**
@@ -1639,12 +1691,14 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * @param $event  The HTML event.
      */
     trackTimeOfMouseDown(): void {
-        this.newJsPlumbInstance.select().removeType('marked');
-        this.revalidateContainer();
-        this.removeDragSource();
-        this.clearSelectedNodes();
-        this.unbindConnection();
-        this.startTime = new Date().getTime();
+        if (this.newJsPlumbInstance) {
+            this.newJsPlumbInstance.select().removeType('marked');
+            this.revalidateContainer();
+            this.removeDragSource();
+            this.clearSelectedNodes();
+            this.unbindConnection();
+            this.startTime = new Date().getTime();
+        }
     }
 
     /**
@@ -1851,7 +1905,9 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                     id: currentRel.id,
                     nameTextFieldValue: currentRel.name,
                     type: currentRel.type,
-                    properties: currentRel.properties
+                    properties: currentRel.properties,
+                    source: currentRel.sourceElement.ref,
+                    target: currentRel.targetElement.ref
                 }
             }));
             conn.addType('marked');
@@ -2028,6 +2084,111 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 this.unbindConnection();
                 this.revalidateContainer();
             });
+        }
+    }
+
+    bindReqCapConnection() {
+        if (this.jsPlumbBindConnection === false && this.selectedRelationshipType) {
+            this.newJsPlumbInstance.bind('connection', info => {
+                this.jsPlumbBindConnection = true;
+                if (this.dragSourceInfos) {
+                    const sourceNode = info.sourceId;
+                    const sourceElement = this.dragSourceInfos.dragSource.id;
+                    const targetElement = info.targetId.substring(info.targetId.indexOf('.') + 1);
+                    const currentTypeValid = this.entityTypes.relationshipTypes.some(relType => relType.qName === this.selectedRelationshipType.qName);
+                    const currentSourceIdValid = this.allNodeTemplates.some(node => node.id === sourceNode);
+                    if (sourceNode && currentTypeValid && currentSourceIdValid) {
+                        const prefix = this.backendService.configuration.relationshipPrefix;
+                        const relName = this.selectedRelationshipType.name;
+                        let relNumber = 0;
+                        let relationshipId: string;
+
+                        do {
+                            relationshipId = prefix + '_' + relName + '_' + relNumber++;
+                        } while (this.allRelationshipTemplates.find(value => value.id === relationshipId));
+                        if (this.searchTypeAndCheckForCompatibility(this.getCapability(targetElement))) {
+                            const newRelationship = new TRelationshipTemplate(
+                                { ref: sourceElement },
+                                { ref: targetElement },
+                                this.selectedRelationshipType.name,
+                                relationshipId,
+                                this.selectedRelationshipType.qName,
+                                TopologyTemplateUtil.getDefaultPropertiesFromEntityTypes(this.selectedRelationshipType.name,
+                                    this.entityTypes.relationshipTypes),
+                                [],
+                                [],
+                                {}
+                            );
+                            this.ngRedux.dispatch(this.actions.saveRelationship(newRelationship));
+                        }
+                        for (const rel of this.newJsPlumbInstance.getConnections()) {
+                            if (rel.targetId === info.targetId) {
+                                this.newJsPlumbInstance.deleteConnection(rel);
+                            }
+                        }
+                        this.dragSourceActive = false;
+                        this.resetDragSource(sourceElement);
+                    }
+                    this.unbindConnection();
+                    this.revalidateContainer();
+                }
+            });
+        }
+    }
+
+    getCapability(targetElement: string) {
+        let capability: any = null;
+        this.allNodeTemplates.forEach(node => {
+            if (node.capabilities) {
+                if (node.capabilities.capability) {
+                    node.capabilities.capability.forEach(cap => {
+                        if (cap.id === targetElement) {
+                            capability = cap;
+                        }
+                    });
+                }
+            }
+        });
+        return capability;
+    }
+
+    /**
+     * check for compatibility of Requirement and Capability
+     * @param dragTargetInfo
+     */
+    searchTypeAndCheckForCompatibility(capability: any) {
+        let requiredTargetType = '';
+
+        this.entityTypes.requirementTypes.some(req => {
+            if (req.qName === this.dragSourceInfos.dragSource.type) {
+                requiredTargetType = req.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].requiredCapabilityType;
+                return true;
+            }
+        });
+        return this.checkForCompatibility(requiredTargetType, capability);
+    }
+
+    /**
+     * check recursive if the target or a parent of its Capability matches
+     * @param requiredTargetType
+     * @param targetOrParent
+     */
+    checkForCompatibility(requiredTargetType: any, targetOrParent: any) {
+        let parentCapType: any;
+        if (requiredTargetType === targetOrParent.type) {
+            return true;
+        } else {
+            this.entityTypes.capabilityTypes.some(cap => {
+                if (cap.qName === targetOrParent.type) {
+                    parentCapType = cap.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].derivedFrom;
+                    return true;
+                }
+            });
+            if (parentCapType) {
+                return this.checkForCompatibility(requiredTargetType, parentCapType);
+            }
+            this.notify.warning('The selected Requirement and Capability are not Compatible');
+            return false;
         }
     }
 

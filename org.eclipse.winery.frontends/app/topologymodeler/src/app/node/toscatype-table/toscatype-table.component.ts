@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -16,8 +16,11 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { QName } from '../../models/qname';
 import { EntitiesModalService, OpenModalEvent } from '../../canvas/entities-modal/entities-modal.service';
 import { ModalVariant } from '../../canvas/entities-modal/modal-model';
-import { definitionType, toscaEntity, urlElement } from '../../models/enums';
+import { definitionType, TableType, urlElement } from '../../models/enums';
 import { BackendService } from '../../services/backend.service';
+import { EntityTypesModel } from '../../models/entityTypesModel';
+import { ReqCapRelationshipService } from '../../services/req-cap-relationship.service';
+import { ToscaTypes } from '../../../../../tosca-management/src/app/model/enums';
 
 @Component({
     selector: 'winery-toscatype-table',
@@ -26,9 +29,13 @@ import { BackendService } from '../../services/backend.service';
 })
 export class ToscatypeTableComponent implements OnInit, OnChanges {
 
+    readonly toscaTypes = ToscaTypes;
+    readonly tableType = TableType;
+
     @Input() toscaType: string;
     @Input() currentNodeData: any;
     @Input() toscaTypeData: any;
+    @Input() entityTypes: EntityTypesModel;
 
     // Event emitter for showing the modal of a clicked capability or requirement id
     @Output() showClickedReqOrCapModal: EventEmitter<any>;
@@ -38,7 +45,8 @@ export class ToscatypeTableComponent implements OnInit, OnChanges {
     latestNodeTemplate?: any = {};
 
     constructor(private entitiesModalService: EntitiesModalService,
-                private backendService: BackendService) {
+                private backendService: BackendService,
+                private reqCapRelationshipService: ReqCapRelationshipService) {
         this.showClickedReqOrCapModal = new EventEmitter();
     }
 
@@ -156,7 +164,7 @@ export class ToscatypeTableComponent implements OnInit, OnChanges {
      */
     clickReqOrCapRef(reqOrCapRef: string) {
         let clickedDefinition;
-        if (this.toscaType === toscaEntity.Requirements) {
+        if (this.toscaType === this.toscaTypes.RequirementType) {
             clickedDefinition = definitionType.RequirementDefinitions;
         } else {
             clickedDefinition = definitionType.CapabilityDefinitions;
@@ -175,7 +183,7 @@ export class ToscatypeTableComponent implements OnInit, OnChanges {
      */
     clickReqOrCapType(reqOrCapType: string) {
         let clickedType;
-        if (this.toscaType === toscaEntity.Requirements) {
+        if (this.toscaType === this.toscaTypes.RequirementType) {
             clickedType = urlElement.RequirementTypeURL;
         } else {
             clickedType = urlElement.CapabilityTypeURL;
@@ -187,4 +195,19 @@ export class ToscatypeTableComponent implements OnInit, OnChanges {
         window.open(url, '_blank');
     }
 
+    passCurrentType($event): void {
+        let currentType: string;
+
+        try {
+            currentType = $event.srcElement.innerText.replace(/\n/g, '').replace(/\s+/g, '');
+        } catch (e) {
+            currentType = $event.target.innerText.replace(/\n/g, '').replace(/\s+/g, '');
+        }
+        this.entityTypes.relationshipTypes.some(relType => {
+            if (relType.qName.includes(currentType)) {
+                this.reqCapRelationshipService.passCurrentType(relType);
+                return true;
+            }
+        });
+    }
 }

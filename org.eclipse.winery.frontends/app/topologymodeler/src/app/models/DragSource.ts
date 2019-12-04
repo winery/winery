@@ -16,6 +16,6 @@
  * Internal representation of drag source infos
  */
 export interface DragSource {
-    dragSource: string;
+    dragSource: any;
     nodeId: string;
 }
