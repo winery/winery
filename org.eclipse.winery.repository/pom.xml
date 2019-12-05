@@ -336,9 +336,6 @@
                     <excludePackageNames>org.eclipse.winery.repository.*</excludePackageNames>
                 </configuration>
             </plugin>
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-            </plugin>
         </plugins>
         <finalName>winery</finalName>
         <pluginManagement>
