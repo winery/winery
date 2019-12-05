@@ -101,7 +101,7 @@
                 <version>1.6</version>
                 <executions>
                     <execution>
-                        <phase>generate-resources</phase>
+                        <phase>initialize</phase>
                         <id>install node and npm</id>
                         <goals>
                             <goal>install-node-and-npm</goal>
@@ -112,7 +112,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <phase>compile</phase>
+                        <phase>generate-resources</phase>
                         <id>install npm dependencies</id>
                         <goals>
                             <goal>npm</goal>
@@ -152,7 +152,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <phase>package</phase>
+                        <phase>compile</phase>
                         <id>build tosca-management</id>
                         <goals>
                             <goal>npm</goal>
@@ -162,7 +162,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <phase>package</phase>
+                        <phase>compile</phase>
                         <id>build topologymodeler</id>
                         <goals>
                             <goal>npm</goal>
@@ -172,7 +172,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <phase>package</phase>
+                        <phase>compile</phase>
                         <id>build workflowmodeler</id>
                         <goals>
                             <goal>npm</goal>
