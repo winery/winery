@@ -13,9 +13,7 @@
  ********************************************************************************/
 
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
-import {
-    Entity, EntityType, TNodeTemplate, TRelationshipTemplate, TTopologyTemplate, VisualEntityType
-} from './models/ttopology-template';
+import { Entity, EntityType, TNodeTemplate, TRelationshipTemplate, TTopologyTemplate, VisualEntityType } from './models/ttopology-template';
 import { ILoaded, LoadedService } from './services/loaded.service';
 import { AppReadyEventService } from './services/app-ready-event.service';
 import { BackendService } from './services/backend.service';
@@ -171,6 +169,7 @@ export class WineryComponent implements OnInit, AfterViewInit {
                             capabilityType.qName,
                             capabilityType.name,
                             capabilityType.namespace,
+                            capabilityType.properties,
                             capabilityType.full
                         ));
                 });
@@ -185,6 +184,7 @@ export class WineryComponent implements OnInit, AfterViewInit {
                             requirementType.qName,
                             requirementType.name,
                             requirementType.namespace,
+                            requirementType.properties,
                             requirementType.full
                         ));
                 });
