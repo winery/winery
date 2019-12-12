@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -55,11 +55,11 @@
     <div class="subMenu">
         <a *ngFor="let item of subMenu"
            class="styledTabMenuButton styledTabMenuButton2ndlevel"
-           [routerLink]="['./' + item | lowercase | removeWhiteSpaces ]"
+           [routerLink]="['./' + item.urlFragment]"
            [routerLinkActive]="'selected'"
-           (click)="selectedTab = item">
+           (click)="selectedTab = item.displayName">
             <div class="left"></div>
-            <div class="center">{{ item }}</div>
+            <div class="center">{{ item.displayName }}</div>
             <div class="right"></div>
         </a>
     </div>
