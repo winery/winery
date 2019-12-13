@@ -34,6 +34,9 @@ import org.eclipse.jdt.annotation.NonNull;
 })
 public class TDataType extends TEntityType {
     private List<TConstraintClause> constraints;
+    
+    // metadata were added to all TEntityTypes, so no need to add these explicitly
+    // + key_schema, entry_schema
 
     public TDataType() {
     }

@@ -69,6 +69,9 @@ export class Utils {
             case ToscaTypes.PolicyTemplate:
             case ToscaTypes.PolicyTemplate.toString().slice(0, -1):
                 return ToscaTypes.PolicyTemplate;
+            case ToscaTypes.DataType:
+            case ToscaTypes.DataType.toString().slice(0, -1):
+                return ToscaTypes.DataType;
             case ToscaTypes.Imports:
             case ToscaTypes.Imports.toString().slice(0, -1):
                 return ToscaTypes.Imports;
@@ -121,6 +124,9 @@ export class Utils {
                 break;
             case ToscaTypes.PolicyTemplate:
                 type = 'Policy Template';
+                break;
+            case ToscaTypes.DataType:
+                type = 'YAML Custom Property Type';
                 break;
             case ToscaTypes.Imports:
                 type = 'XSD Import';
