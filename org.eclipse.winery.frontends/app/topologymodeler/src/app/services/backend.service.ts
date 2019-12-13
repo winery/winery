@@ -270,8 +270,22 @@ export class BackendService {
     /**
      * Saves the topologyTemplate back to the repository
      */
-    saveTopologyTemplate(topologyTemplate: any): Observable<HttpResponse<string>> {
+    saveTopologyTemplate(topologyTemplate: TTopologyTemplate): Observable<HttpResponse<string>> {
         if (this.configuration) {
+            // Prepare for saving by updating the existing topology with the current topology state inside the Redux store
+            const topologySkeleton = {
+                documentation: [],
+                any: [],
+                otherAttributes: {},
+                relationshipTemplates: topologyTemplate.relationshipTemplates.map(relationship => {
+                    delete relationship.state;
+                }),
+                // remove the 'Color' field from all nodeTemplates as the REST Api does not recognize it.
+                nodeTemplates: topologyTemplate.nodeTemplates.map(nodeTemplate => {
+                    nodeTemplate.deleteStateAndVisuals();
+                })
+            };
+
             const headers = new HttpHeaders().set('Content-Type', 'application/json');
             return this.http.put(this.configuration.elementUrl,
                 topologyTemplate,

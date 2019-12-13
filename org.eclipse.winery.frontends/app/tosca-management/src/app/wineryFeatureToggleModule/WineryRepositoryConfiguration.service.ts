@@ -33,9 +33,10 @@ export interface WineryConfiguration {
         updateTemplates: boolean;
     };
     endpoints: {
-        container: String;
-        topologymodeler: String;
-        workflowmodeler: String;
+        container: string;
+        topologymodeler: string;
+        workflowmodeler: string;
+        edmmTransformationTool: string;
     };
 }
 

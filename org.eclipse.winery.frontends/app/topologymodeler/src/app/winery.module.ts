@@ -52,6 +52,7 @@ import { EnricherComponent } from './enricher/enricher.component';
 import { WineryFeatureToggleModule } from '../../../tosca-management/src/app/wineryFeatureToggleModule/winery-feature-toggle.module';
 import { PlaceComponentsService } from './services/placement.service';
 import { ReqCapRelationshipService } from './services/req-cap-relationship.service';
+import { EdmmTransformationCheckComponent } from './edmmTransformationCheck/edmmTransformationCheck.component';
 
 @NgModule({
     declarations: [
@@ -61,7 +62,8 @@ import { ReqCapRelationshipService } from './services/req-cap-relationship.servi
         PrintViewComponent,
         RefinementSidebarComponent,
         ProblemDetectionComponent,
-        EnricherComponent
+        EnricherComponent,
+        EdmmTransformationCheckComponent,
     ],
     exports: [WineryComponent],
     imports: [

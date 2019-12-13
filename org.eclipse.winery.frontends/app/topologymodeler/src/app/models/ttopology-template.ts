@@ -116,6 +116,11 @@ export class TNodeTemplate extends AbstractTTemplate {
         this._state = value;
         this.visuals.color = VersionUtils.getElementColorByDiffState(value);
     }
+
+    public deleteStateAndVisuals() {
+        delete this._state;
+        delete this.visuals;
+    }
 }
 
 export class Entity {

@@ -15,8 +15,9 @@ import { Directive, Input, OnInit, TemplateRef, ViewContainerRef } from '@angula
 import { WineryRepositoryConfigurationService } from './WineryRepositoryConfiguration.service';
 
 export enum FeatureEnum {
-    Accountability = 'accountability', Completion = 'completion', Compliance = 'compliance', FreezeAndDefrost = 'freezeAndDefrost',
-    ManagementFeatureEnrichment = 'managementFeatureEnrichment', NFV = 'nfv', PatternRefinement = 'patternRefinement', ProblemDetection = 'problemDetection',
+    Accountability = 'accountability', Completion = 'completion', Compliance = 'compliance', EdmmModeling = 'edmmModeling',
+    FreezeAndDefrost = 'freezeAndDefrost', ManagementFeatureEnrichment = 'managementFeatureEnrichment', NFV = 'nfv',
+    PatternRefinement = 'patternRefinement', ProblemDetection = 'problemDetection',
     Splitting = 'splitting', TestRefinement = 'testRefinement', Placement = 'placement', updateTemplates = 'updateTemplates'
 }
 

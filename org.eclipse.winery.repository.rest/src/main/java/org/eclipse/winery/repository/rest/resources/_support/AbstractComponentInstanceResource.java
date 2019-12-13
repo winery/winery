@@ -253,7 +253,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
      * @param csar used because plan generator's GET request lands here
      */
     @GET
-    @Produces( {MimeTypes.MIMETYPE_TOSCA_DEFINITIONS, MediaType.APPLICATION_XML, MediaType.TEXT_XML})
+    @Produces( {MimeTypes.MIMETYPE_TOSCA_DEFINITIONS, MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.TEXT_PLAIN})
     public Response getDefinitionsAsResponse(
         @QueryParam(value = "csar") String csar,
         @QueryParam(value = "yaml") String yaml,
