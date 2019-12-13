@@ -38,7 +38,7 @@ export class EdmmTransformationCheckService {
 
         return this.backendService.saveTopologyTemplate(topologyTemplate)
             .flatMap(() =>
-                this.http.get(edmmUrl, { headers: new HttpHeaders('Accept: text/plain'), responseType: 'text' })
+                this.http.get(edmmUrl, { headers: new HttpHeaders('Accept: */*'), responseType: 'text' })
                     .flatMap(edmmText =>
                         this.http.post<EdmmTechnologyTransformationCheck[]>(
                             this.config.configuration.endpoints.edmmTransformationTool,
