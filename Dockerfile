@@ -30,6 +30,8 @@ ENV TOPOLOGYMODELER_PORT 8080
 ENV WINERY_REPOSITORY_PATH "/var/opentosca/repository"
 ENV WINERY_HOSTNAME localhost
 ENV WINERY_PORT 8080
+ENV EDMM_TRANSFORMATION_HOSTNAME localhost
+ENV EDMM_TRANSFORMATION_PORT 8082
 
 RUN rm /dev/random && ln -s /dev/urandom /dev/random \
     && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \

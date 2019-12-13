@@ -11,7 +11,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import 'rxjs/add/observable/of';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -39,48 +38,14 @@ export class EdmmTransformationCheckService {
 
         return this.backendService.saveTopologyTemplate(topologyTemplate)
             .flatMap(() =>
-                this.http.get(edmmUrl, { headers: new HttpHeaders('Accept: text/plain'), responseType: 'text'})
-                    .flatMap(edmmText => {
-                        // return this.http
-                        //     .post<EdmmTechnologyTransformationCheck[]>(
-                        //         this.config.configuration.endpoints.edmmTransformationTool,
-                        //         edmmText,
-                        //         { headers: new HttpHeaders('Content-Type: text/plain') }
-                        //     );
-                        return Observable.of([
-                            {
-                                id: 'cfn',
-                                name: 'AWS CloudFormation',
-                                supports: 0.87,
-                                unsupportedComponents: [
-                                    'Ubuntu-14_04-VM',
-                                    'MongoDB-Server_3_2'
-                                ]
-                            },
-                            {
-                                id: 'docker',
-                                name: 'Docker Compose',
-                                supports: 1,
-                                unsupportedComponents: null
-                            },
-                            {
-                                id: 'juju',
-                                name: 'Juju',
-                                supports: 0,
-                                unsupportedComponents: null
-                            },
-                            {
-                                id: 'chef',
-                                name: 'Chef Infra',
-                                supports: 0.6555,
-                                unsupportedComponents: [
-                                    'Ubuntu-14_04-VM',
-                                    'FIWARE-Orion_1_6',
-                                    'MongoDB-Server_3_2',
-                                ]
-                            }
-                        ]);
-                    })
+                this.http.get(edmmUrl, { headers: new HttpHeaders('Accept: text/plain'), responseType: 'text' })
+                    .flatMap(edmmText =>
+                        this.http.post<EdmmTechnologyTransformationCheck[]>(
+                            this.config.configuration.endpoints.edmmTransformationTool,
+                            edmmText,
+                            { headers: new HttpHeaders('Content-Type: text/plain') }
+                        )
+                    )
             );
     }
 }
