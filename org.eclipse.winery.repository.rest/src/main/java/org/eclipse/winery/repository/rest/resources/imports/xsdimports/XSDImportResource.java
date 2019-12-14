@@ -14,9 +14,9 @@
 package org.eclipse.winery.repository.rest.resources.imports.xsdimports;
 
 import io.swagger.annotations.ApiOperation;
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
-import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
+import org.eclipse.winery.model.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.repository.backend.ImportUtils;

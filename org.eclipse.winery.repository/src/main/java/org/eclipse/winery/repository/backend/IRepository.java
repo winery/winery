@@ -38,31 +38,29 @@ import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
-import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
-import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
-import org.eclipse.winery.common.ids.definitions.ComplianceRuleId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.HasInheritanceId;
-import org.eclipse.winery.common.ids.definitions.InterfaceTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.PatternRefinementModelId;
-import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
-import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.definitions.TestRefinementModelId;
-import org.eclipse.winery.common.ids.definitions.TopologyFragmentRefinementModelId;
-import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
-import org.eclipse.winery.common.ids.elements.ToscaElementId;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.model.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.model.ids.definitions.ComplianceRuleId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.HasInheritanceId;
+import org.eclipse.winery.model.ids.definitions.InterfaceTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.model.ids.definitions.PatternRefinementModelId;
+import org.eclipse.winery.model.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
+import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.definitions.TestRefinementModelId;
+import org.eclipse.winery.model.ids.definitions.TopologyFragmentRefinementModelId;
+import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
+import org.eclipse.winery.model.ids.elements.ToscaElementId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasInheritance;
 import org.eclipse.winery.model.tosca.HasType;
@@ -101,6 +99,8 @@ import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 import org.eclipse.winery.repository.export.entries.RemoteRefBasedCsarEntry;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.model.ids.GenericId;
 
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.io.FilenameUtils;
@@ -110,7 +110,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Enables access to the winery repository via Ids defined in package {@link org.eclipse.winery.common.ids}
+ * Enables access to the winery repository via Ids defined in package {@link org.eclipse.winery.model.ids}
  * <p>
  * In contrast to {@link org.eclipse.winery.repository.backend.IRepository}, this is NOT dependent on a particular
  * storage format for the properties. These two classes exist to make the need for reengineering explicit.
@@ -893,7 +893,7 @@ public interface IRepository extends IWineryRepositoryCommon {
                             }
                         }
                     } else {
-                        // Store all referenced artifact types 
+                        // Store all referenced artifact types
                         TArtifacts artifacts = n.getArtifacts();
                         if (Objects.nonNull(artifacts)) {
                             artifacts.getArtifact().forEach(a -> ids.add(new ArtifactTypeId(a.getType())));

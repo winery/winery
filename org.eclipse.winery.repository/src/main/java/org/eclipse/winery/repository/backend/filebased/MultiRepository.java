@@ -35,20 +35,20 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
 import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
 import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
-import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.admin.EdmmMappingsId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.elements.ToscaElementId;
+import org.eclipse.winery.model.ids.admin.EdmmMappingsId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.EdmmManager;
 import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.model.ids.GenericId;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.elements.ToscaElementId;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.Filename;
@@ -133,7 +133,7 @@ public class MultiRepository implements IRepository {
         }
     }
 
-    protected void removeRepository(XMLRepository repository) {
+    protected void removeRepository(AbstractFileBasedRepository repository) {
         unregisterRepository(repository);
     }
 

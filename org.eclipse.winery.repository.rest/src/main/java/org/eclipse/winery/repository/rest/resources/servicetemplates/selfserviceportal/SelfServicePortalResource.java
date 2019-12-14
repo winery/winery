@@ -27,9 +27,9 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.common.constants.MimeTypes;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.selfservice.Application.Options;
 import org.eclipse.winery.repository.backend.BackendUtils;

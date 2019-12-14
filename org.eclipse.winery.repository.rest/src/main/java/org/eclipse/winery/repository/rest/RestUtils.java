@@ -49,25 +49,24 @@ import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.Util;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.constants.MimeTypes;
-import org.eclipse.winery.common.edmm.EdmmConverter;
-import org.eclipse.winery.common.edmm.EdmmType;
-import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XmlId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.elements.ToscaElementId;
-import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.model.transformation.edmm.EdmmConverter;
+import org.eclipse.winery.model.transformation.edmm.EdmmType;
+import org.eclipse.winery.model.ids.GenericId;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.XmlId;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.model.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.elements.ToscaElementId;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.Definitions;
@@ -658,12 +657,12 @@ public class RestUtils {
     public static ResourceResult rename(DefinitionsChildId oldId, DefinitionsChildId newId) {
         ResourceResult result = new ResourceResult();
         IRepository repo = RepositoryFactory.getRepository();
-        WineryVersion version = VersionUtils.getVersion(oldId);
+        WineryVersion version = oldId.getVersion();
         DefinitionsChildId id = newId;
 
         if (version.toString().length() > 0) {
             // ensure that the version isn't changed by the user
-            String componentName = VersionUtils.getNameWithoutVersion(newId) + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
+            String componentName = oldId.getNameWithoutVersion() + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
             id = BackendUtils.getDefinitionsChildId(oldId.getClass(), newId.getNamespace().getDecoded(), componentName, false);
         }
 
@@ -986,7 +985,7 @@ public class RestUtils {
                     freezeVersion(releasableComponent);
 
                     version.setWorkInProgressVersion(0);
-                    String newId = VersionUtils.getNameWithoutVersion(releasableComponent) + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
+                    String newId = releasableComponent.getNameWithoutVersion() + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
                     DefinitionsChildId newComponent = BackendUtils.getDefinitionsChildId(releasableComponent.getClass(), releasableComponent.getNamespace().getDecoded(), newId, false);
                     result = duplicate(releasableComponent, newComponent);
 

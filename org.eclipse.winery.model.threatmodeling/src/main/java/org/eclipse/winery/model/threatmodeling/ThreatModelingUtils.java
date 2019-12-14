@@ -23,10 +23,10 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
-import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
+import org.eclipse.winery.repository.common.Util;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;

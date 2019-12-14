@@ -24,12 +24,10 @@ import java.util.Objects;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.model.tosca.yaml.TDataType;
-import org.eclipse.winery.model.tosca.yaml.TEntityType;
-import org.eclipse.winery.model.tosca.yaml.TImportDefinition;
-import org.eclipse.winery.model.tosca.yaml.TPropertyDefinition;
-import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
+import org.eclipse.jdt.annotation.NonNull;
+
+import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.model.tosca.yaml.*;
 import org.eclipse.winery.model.tosca.yaml.support.TMapImportDefinition;
 import org.eclipse.winery.repository.converter.support.Namespaces;
 import org.eclipse.winery.repository.converter.support.Parameter;
@@ -40,7 +38,6 @@ import org.eclipse.winery.repository.converter.support.validator.support.Result;
 import org.eclipse.winery.repository.converter.support.writer.WriterUtils;
 import org.eclipse.winery.repository.converter.support.yaml.SchemaBuilder;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.w3c.dom.Document;
 
 public class SchemaVisitor extends ExceptionVisitor<Result, Parameter> {
@@ -147,7 +144,7 @@ public class SchemaVisitor extends ExceptionVisitor<Result, Parameter> {
     }
 
     public String getRelativeFileName(String namespace) {
-        return Util.URLencode(namespace) + ".xsd";
+        return EncodingUtil.URLencode(namespace) + ".xsd";
     }
 
     @Override

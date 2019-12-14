@@ -27,7 +27,7 @@ import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
-import org.eclipse.winery.repository.backend.filebased.YamlRepository;
+import org.eclipse.winery.repository.backend.filebased.specific.YamlRepository;
 import org.eclipse.winery.repository.converter.X2YConverter;
 import org.eclipse.winery.repository.converter.support.writer.YamlWriter;
 import org.eclipse.winery.repository.exceptions.WineryRepositoryException;

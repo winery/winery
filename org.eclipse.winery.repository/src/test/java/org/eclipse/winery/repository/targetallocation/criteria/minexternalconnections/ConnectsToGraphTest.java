@@ -14,7 +14,7 @@
 
 package org.eclipse.winery.repository.targetallocation.criteria.minexternalconnections;
 
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.targetallocation.util.TopologyWrapper;
 

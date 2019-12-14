@@ -29,7 +29,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.winery.common.Util;
+import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TPropertyConstraint;
@@ -64,7 +64,7 @@ public class PropertyConstraintsResource {
     @Path("{id}")
     @DELETE
     public Response onDelete(@PathParam("id") String id) {
-        id = Util.URLdecode(id);
+        id = EncodingUtil.URLdecode(id);
         Iterator<TPropertyConstraint> iterator;
         if (isEntitytemplate) {
             iterator = this.entityPropertyConstraints.getPropertyConstraint().iterator();

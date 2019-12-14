@@ -84,7 +84,7 @@ public class TArtifact extends TEntityTemplate {
         setId(value);
     }
 
-    public static class Builder extends TEntityTemplate.Builder<TArtifact.Builder> {
+    public static class Builder extends TEntityTemplate.Builder<Builder> {
 
         private String description;
         private String file;
@@ -110,7 +110,7 @@ public class TArtifact extends TEntityTemplate {
         }
 
         @Override
-        public TArtifact.Builder self() {
+        public Builder self() {
             return this;
         }
     }

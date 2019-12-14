@@ -43,14 +43,14 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.common.ToscaDocumentBuilderFactory;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.EntityTemplateId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.IdUtil;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.EntityTemplateId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -412,7 +412,7 @@ public class ConsistencyChecker {
             // we have the issue that nodetypeimplementation also contains nodetype
             // we do the quick hack and check for plural s and /
             .flatMap(definitionsChildIdClass -> {
-                final String lowerCaseIdClass = Util.getTypeForComponentId(definitionsChildIdClass).toLowerCase();
+                final String lowerCaseIdClass = IdUtil.getTypeForComponentId(definitionsChildIdClass).toLowerCase();
                 return Stream.of(lowerCaseIdClass + "s", lowerCaseIdClass + "/");
             })
             .anyMatch(definitionsChildName -> uriStr.contains(definitionsChildName));

@@ -1,5 +1,9 @@
 /*******************************************************************************
+<<<<<<< HEAD
  * Copyright (c) 2020 Contributors to the Eclipse Foundation
+=======
+ * Copyright (c) 2019 Contributors to the Eclipse Foundation
+>>>>>>> ccb0204fc... Pull the Id system from winery.common into the canonical model
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.

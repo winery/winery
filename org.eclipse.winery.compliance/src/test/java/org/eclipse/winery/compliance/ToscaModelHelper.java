@@ -17,8 +17,8 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.ComplianceRuleId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.ComplianceRuleId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.topologygraph.model.ToscaEdge;
 import org.eclipse.winery.topologygraph.model.ToscaGraph;
 import org.eclipse.winery.topologygraph.model.ToscaNode;

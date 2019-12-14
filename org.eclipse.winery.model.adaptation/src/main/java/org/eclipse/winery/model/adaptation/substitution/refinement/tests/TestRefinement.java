@@ -17,7 +17,7 @@ package org.eclipse.winery.model.adaptation.substitution.refinement.tests;
 import java.util.Map;
 import java.util.Objects;
 
-import org.eclipse.winery.common.ids.definitions.TestRefinementModelId;
+import org.eclipse.winery.model.ids.definitions.TestRefinementModelId;
 import org.eclipse.winery.model.adaptation.substitution.refinement.AbstractRefinement;
 import org.eclipse.winery.model.adaptation.substitution.refinement.DefaultRefinementChooser;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;

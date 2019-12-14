@@ -14,7 +14,7 @@
 package org.eclipse.winery.repository.rest.resources.admin;
 
 import org.apache.commons.configuration2.Configuration;
-import org.eclipse.winery.common.ids.admin.AdminId;
+import org.eclipse.winery.model.ids.admin.AdminId;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
 

@@ -29,8 +29,8 @@ import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.filebased.AbstractFileBasedRepository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.backend.filebased.MultiRepository;
-import org.eclipse.winery.repository.backend.filebased.XMLRepository;
-import org.eclipse.winery.repository.backend.filebased.YamlRepository;
+import org.eclipse.winery.repository.backend.filebased.specific.XmlRepository;
+import org.eclipse.winery.repository.backend.filebased.specific.YamlRepository;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.slf4j.Logger;
@@ -57,7 +57,7 @@ public class RepositoryFactory {
         if (RepositoryConfigurationObject.RepositoryProvider.YAML.equals(configuration.getRepositoryProvider())) {
             return new YamlRepository(repositoryRoot);
         } else {
-            return new XMLRepository(repositoryRoot);
+            return new XmlRepository(repositoryRoot);
         }
     }
 
@@ -138,8 +138,9 @@ public class RepositoryFactory {
     }
 
     public static IRepository getRepository(FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
-        // FIXME: currently, the CSAR export does not reuse the repository instance returned here. Thus, we have to reconfigure the repository.
-        // This should be fixed by always passing IRepository when working with the repository
+        // FIXME: currently, the CSAR export does not reuse the repository instance returned here. 
+        //  Thus, we have to reconfigure the repository.
+        //  This should be fixed by always passing IRepository when working with the repository
         reconfigure(fileBasedRepositoryConfiguration);
         if (fileBasedRepositoryConfiguration.getRepositoryPath().isPresent()) {
             return createXmlOrYamlRepository(fileBasedRepositoryConfiguration, fileBasedRepositoryConfiguration.getRepositoryPath().get());

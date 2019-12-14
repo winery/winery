@@ -63,36 +63,38 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.IdNames;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XmlId;
-import org.eclipse.winery.common.ids.admin.AdminId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
-import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
-import org.eclipse.winery.common.ids.definitions.ComplianceRuleId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.EntityTypeId;
-import org.eclipse.winery.common.ids.definitions.InterfaceTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.PatternRefinementModelId;
-import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
-import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.definitions.TestRefinementModelId;
-import org.eclipse.winery.common.ids.definitions.TopologyFragmentRefinementModelId;
-import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
-import org.eclipse.winery.common.ids.elements.PlanId;
-import org.eclipse.winery.common.ids.elements.PlansId;
-import org.eclipse.winery.common.ids.elements.ToscaElementId;
-import org.eclipse.winery.common.version.ToscaDiff;
+import org.eclipse.winery.model.ids.IdNames;
+import org.eclipse.winery.model.version.VersionSupport;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.Util;
+import org.eclipse.winery.model.ids.GenericId;
+import org.eclipse.winery.model.ids.IdUtil;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.XmlId;
+import org.eclipse.winery.model.ids.admin.AdminId;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.model.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.model.ids.definitions.ComplianceRuleId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.EntityTypeId;
+import org.eclipse.winery.model.ids.definitions.InterfaceTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.model.ids.definitions.PatternRefinementModelId;
+import org.eclipse.winery.model.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
+import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.definitions.TestRefinementModelId;
+import org.eclipse.winery.model.ids.definitions.TopologyFragmentRefinementModelId;
+import org.eclipse.winery.model.ids.definitions.imports.XSDImportId;
+import org.eclipse.winery.model.ids.elements.PlanId;
+import org.eclipse.winery.model.ids.elements.PlansId;
+import org.eclipse.winery.model.ids.elements.ToscaElementId;
+import org.eclipse.winery.model.version.ToscaDiff;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.tosca.Definitions;
@@ -347,7 +349,7 @@ public class BackendUtils {
     }
 
     public static <T extends DefinitionsChildId> String getFileNameOfDefinitions(Class<T> id) {
-        String name = Util.getTypeForComponentId(id);
+        String name = IdUtil.getTypeForComponentId(id);
         name = name + Constants.SUFFIX_TOSCA_DEFINITIONS;
         return name;
     }
@@ -356,7 +358,7 @@ public class BackendUtils {
      * @return Singular type name for the given id. E.g., "ServiceTemplateId" gets "ServiceTemplate"
      */
     public static String getTypeForAdminId(Class<? extends AdminId> idClass) {
-        return Util.getEverythingBetweenTheLastDotAndBeforeId(idClass);
+        return IdUtil.getEverythingBetweenTheLastDotAndBeforeId(idClass);
     }
 
     /**
@@ -369,7 +371,7 @@ public class BackendUtils {
         String name;
         // Hack to determine file name
         if (id instanceof DefinitionsChildId) {
-            name = Util.getTypeForComponentId(((DefinitionsChildId) id).getClass());
+            name = IdUtil.getTypeForComponentId(((DefinitionsChildId) id).getClass());
             name = name + Constants.SUFFIX_PROPERTIES;
         } else if (id instanceof AdminId) {
             name = BackendUtils.getTypeForAdminId(((AdminId) id).getClass());
@@ -523,16 +525,6 @@ public class BackendUtils {
         List<TEntityTemplate> entityTemplate = topologyTemplate.getNodeTemplateOrRelationshipTemplate();
         topologyTemplateClone.getNodeTemplateOrRelationshipTemplate().addAll(entityTemplate);
         return topologyTemplateClone;
-
-        //Copy based on http://stackoverflow.com/a/3899882
-		/*try {
-			JAXBContext sourceJAXBContext = JAXBSupport.context.newInstance(element.getClass());
-			JAXBContext targetJAXBContext = JAXBSupport.context.newInstance(element.getClass());
-			return (T) targetJAXBContext.createUnmarshaller().unmarshal(new JAXBSource(sourceJAXBContext, element));
-		} catch (JAXBException e) {
-			logger.error("Cannot clone object", e);
-			return null;
-		}*/
     }
 
     /**
@@ -1624,7 +1616,7 @@ public class BackendUtils {
 
         allDefinitionsChildIds.removeIf(definition -> {
             if (definition.getNamespace().compareTo(id.getNamespace()) == 0) {
-                String name = VersionUtils.getNameWithoutVersion(definition);
+                String name = definition.getNameWithoutVersion();
                 return !name.equals(componentName);
             }
             return true;
@@ -1657,7 +1649,8 @@ public class BackendUtils {
         List<WineryVersion> versionList = getOtherVersionDefinitionsFromDefinition(id)
             .stream()
             .map(element -> {
-                WineryVersion version = VersionUtils.getVersionWithCurrentFlag(element, id);
+                // FIXME gotta do something about this
+                WineryVersion version = VersionUtils.getVersionWithCurrentFlag(((DefinitionsChildId) element).getXmlId().getDecoded(), id.getXmlId().getDecoded());
                 if (version.isCurrentVersion()) {
                     current[0] = version;
                 }
@@ -1723,11 +1716,11 @@ public class BackendUtils {
 
     public static ToscaDiff compare(DefinitionsChildId id, WineryVersion versionToCompareTo) {
         IRepository repository = RepositoryFactory.getRepository();
-        DefinitionsChildId versionToCompare = VersionUtils.getDefinitionInTheGivenVersion(id, versionToCompareTo);
+        DefinitionsChildId versionToCompare = VersionSupport.getDefinitionInTheGivenVersion(id, versionToCompareTo);
 
         TExtensibleElements workingVersion = repository.getDefinitions(id).getElement();
         TExtensibleElements baseVersion = repository.getDefinitions(versionToCompare).getElement();
-        return VersionUtils.calculateDifferences(baseVersion, workingVersion);
+        return VersionSupport.calculateDifferences(baseVersion, workingVersion);
     }
 
     public static void commit(DefinitionsChildId componentToCommit, String commitMessagePrefix) throws GitAPIException {

@@ -46,15 +46,16 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XmlId;
-import org.eclipse.winery.common.ids.admin.EdmmMappingsId;
-import org.eclipse.winery.common.ids.admin.NamespacesId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.elements.ToscaElementId;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.Util;
+import org.eclipse.winery.model.ids.GenericId;
+import org.eclipse.winery.model.ids.IdUtil;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.XmlId;
+import org.eclipse.winery.model.ids.admin.EdmmMappingsId;
+import org.eclipse.winery.model.ids.admin.NamespacesId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.elements.ToscaElementId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -78,6 +79,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractFileBasedRepository implements IRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractFileBasedRepository.class);
+
     boolean isLocal;
     FileSystem fileSystem;
     FileSystemProvider provider;
@@ -305,7 +307,6 @@ public abstract class AbstractFileBasedRepository implements IRepository {
     public void getZippedContents(final GenericId id, OutputStream out) throws WineryRepositoryException {
         Objects.requireNonNull(id);
         Objects.requireNonNull(out);
-
         SortedSet<RepositoryFileReference> containedFiles = this.getContainedFiles(id);
 
         try (final ZipOutputStream zos = new ZipOutputStream(out)) {
@@ -381,7 +382,7 @@ public abstract class AbstractFileBasedRepository implements IRepository {
         Collection<Namespace> res = new HashSet<>();
 
         for (Class<? extends DefinitionsChildId> id : definitionsChildIds) {
-            String rootPathFragment = Util.getRootPathFragment(id);
+            String rootPathFragment = IdUtil.getRootPathFragment(id);
             Path dir = this.getRepositoryRoot().resolve(rootPathFragment);
             if (!Files.exists(dir)) {
                 continue;
@@ -514,7 +515,7 @@ public abstract class AbstractFileBasedRepository implements IRepository {
     
     public Collection<? extends DefinitionsChildId> getAllIdsInNamespace(Class<? extends DefinitionsChildId> clazz, Namespace namespace) {
         Collection<DefinitionsChildId> result = new HashSet<>();
-        String rootPathFragment = Util.getRootPathFragment(clazz);
+        String rootPathFragment = IdUtil.getRootPathFragment(clazz);
         Path dir = this.getRepositoryRoot().resolve(rootPathFragment);
         dir = dir.resolve(namespace.getEncoded());
         if (Files.exists(dir) && Files.isDirectory(dir)) {

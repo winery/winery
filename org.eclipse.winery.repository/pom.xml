@@ -103,6 +103,11 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>org.eclipse.winery</groupId>
+            <artifactId>org.eclipse.winery.model.tosca.canonical</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-configuration2</artifactId>
             <version>${org.apache.commons.configuration}</version>

@@ -43,13 +43,13 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.beans.NamespaceIdOptionalName;
+import org.eclipse.winery.repository.common.Util;
+import org.eclipse.winery.repository.client.beans.NamespaceIdOptionalName;
 import org.eclipse.winery.common.exceptions.QNameAlreadyExistsException;
-import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.IdUtil;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.GenericId;
+import org.eclipse.winery.model.ids.IdUtil;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.interfaces.QNameWithName;
 import org.eclipse.winery.common.json.JsonFeature;
 import org.eclipse.winery.model.tosca.Definitions;
@@ -301,7 +301,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
     @Override
     public Collection<QNameWithName> getListOfAllInstances(Class<? extends DefinitionsChildId> clazz) {
         // inspired by getQNameListOfAllTypes
-        String path = Util.getRootPathFragment(clazz);
+        String path = IdUtil.getRootPathFragment(clazz);
         Map<WebTarget, List<NamespaceIdOptionalName>> wRtoNamespaceAndIdListMapOfAllTypes = this.getWRtoNamespaceAndIdListMapOfAllTypes(path);
         Collection<List<NamespaceIdOptionalName>> namespaceAndIdListCollection = wRtoNamespaceAndIdListMapOfAllTypes.values();
         List<QNameWithName> res = new ArrayList<QNameWithName>(namespaceAndIdListCollection.size());
@@ -462,7 +462,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 
     @Override
     public void createComponent(QName qname, Class<? extends DefinitionsChildId> idClass) throws QNameAlreadyExistsException {
-        WebTarget resource = this.primaryWebTarget.path(Util.getRootPathFragment(idClass));
+        WebTarget resource = this.primaryWebTarget.path(IdUtil.getRootPathFragment(idClass));
         MultivaluedMap<String, String> map = new MultivaluedStringMap();
         map.putSingle("namespace", qname.getNamespaceURI());
         map.putSingle("name", qname.getLocalPart());

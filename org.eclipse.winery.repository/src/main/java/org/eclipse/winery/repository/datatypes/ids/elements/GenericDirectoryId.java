@@ -14,7 +14,7 @@
 
 package org.eclipse.winery.repository.datatypes.ids.elements;
 
-import org.eclipse.winery.common.ids.GenericId;
+import org.eclipse.winery.model.ids.GenericId;
 
 public class GenericDirectoryId extends DirectoryId {
     public GenericDirectoryId(GenericId parent, String directoryId) {

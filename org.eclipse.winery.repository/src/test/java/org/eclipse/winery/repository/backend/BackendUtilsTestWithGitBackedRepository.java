@@ -19,13 +19,13 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.version.ToscaDiff;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.version.ToscaDiff;
 import org.eclipse.winery.common.version.VersionState;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.tosca.Definitions;
@@ -140,7 +140,7 @@ public class BackendUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         NodeTypeId id = new NodeTypeId("http://opentosca.org/nodetypes", "NodeTypeWith5Versions_0.3.4-w3", false);
 
         // Make some changes to an associated file
-        RepositoryFileReference ref = new RepositoryFileReference(id, Util.URLdecode("README.md"));
+        RepositoryFileReference ref = new RepositoryFileReference(id, EncodingUtil.URLdecode("README.md"));
         RepositoryFactory.getRepository().putContentToFile(ref, "someUnguessableContent", MediaType.TEXT_PLAIN);
 
         List<WineryVersion> versions = BackendUtils.getAllVersionsOfOneDefinition(id);

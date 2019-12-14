@@ -22,7 +22,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.eclipse.winery.common.edmm.EdmmMappingItem;
+import org.eclipse.winery.model.transformation.edmm.EdmmMappingItem;
 import org.eclipse.winery.repository.backend.EdmmManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 

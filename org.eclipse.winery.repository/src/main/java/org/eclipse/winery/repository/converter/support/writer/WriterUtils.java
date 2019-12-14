@@ -38,12 +38,13 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
-import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.Util;
+import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
+import org.eclipse.winery.model.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TDefinitions;
@@ -236,21 +237,21 @@ public class WriterUtils {
      * @param name      the local name of the file
      */
     private static Path getTypeFile(@NonNull Path path, @NonNull String namespace, @NonNull String name) {
-        String urlEncodedName = Util.URLencode(name);
+        String urlEncodedName = EncodingUtil.URLencode(name);
         return path.resolve(urlEncodedName)
-            .resolve(Util.URLencode(namespace))
+            .resolve(EncodingUtil.URLencode(namespace))
             .resolve("types")
             .resolve(urlEncodedName.concat(".xsd"));
     }
 
     private static Path getDefinitionsPath(Path path, String namespace, @NonNull String name) {
-        return path.resolve(Util.URLencode(namespace))
+        return path.resolve(EncodingUtil.URLencode(namespace))
             .resolve(name.concat(".tosca"));
     }
 
     public static String getDefinitionsLocation(String namespace, @NonNull String name) {
-        return Util.URLencode(namespace) + File.separator
-            + Util.URLencode(name) + ".tosca";
+        return EncodingUtil.URLencode(namespace) + File.separator
+            + EncodingUtil.URLencode(name) + ".tosca";
     }
 }
     

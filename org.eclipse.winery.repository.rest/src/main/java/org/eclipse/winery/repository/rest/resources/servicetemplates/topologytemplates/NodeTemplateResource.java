@@ -36,10 +36,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.IdNames;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.model.ids.IdNames;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
@@ -47,6 +47,7 @@ import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
+import org.eclipse.winery.model.version.VersionSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -220,7 +221,7 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
             newWineryVersion.setWorkInProgressVersion(0);
             newWineryVersion.setComponentVersion(componentVersion);
 
-            newArtifactTemplateId = (ArtifactTemplateId) VersionUtils.getDefinitionInTheGivenVersion(
+            newArtifactTemplateId = (ArtifactTemplateId) VersionSupport.getDefinitionInTheGivenVersion(
                 oldArtifactTemplateId,
                 newWineryVersion
             );

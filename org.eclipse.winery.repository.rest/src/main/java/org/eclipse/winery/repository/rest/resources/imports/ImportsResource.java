@@ -14,8 +14,9 @@
 package org.eclipse.winery.repository.rest.resources.imports;
 
 import io.swagger.annotations.Api;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.definitions.imports.WsdlImportId;
+
+import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.model.ids.definitions.imports.WsdlImportId;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsResource;
 import org.eclipse.winery.repository.rest.resources.imports.genericimports.GenericImportsResource;
 import org.eclipse.winery.repository.rest.resources.imports.wsdlimports.WsdlImportsResource;
@@ -37,9 +38,9 @@ public class ImportsResource {
     @Path("{id}/")
     public AbstractComponentsResource getXSDsResource(@PathParam("id") String id) {
         // once: decoding for browser locations
-        id = Util.URLdecode(id);
+        id = EncodingUtil.URLdecode(id);
         // once again: real URI
-        id = Util.URLdecode(id);
+        id = EncodingUtil.URLdecode(id);
         if (id.equals("http://www.w3.org/2001/XMLSchema")) {
             // Models http://www.w3.org/2001/XMLSchema. We do not use xsd instead of the
             // encoded namespace, because this induces special cases at many places

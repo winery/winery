@@ -29,10 +29,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.Util;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.common.configuration.Environments;
-import org.eclipse.winery.common.ids.elements.ToscaElementId;
+import org.eclipse.winery.model.ids.elements.ToscaElementId;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.VisualsApiData;

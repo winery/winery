@@ -22,11 +22,11 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.HasInheritance;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.repository.backend.filebased.YamlRepository;
+import org.eclipse.winery.repository.backend.filebased.specific.YamlRepository;
 
 import org.eclipse.jdt.annotation.NonNull;
 

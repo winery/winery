@@ -41,17 +41,18 @@ import org.eclipse.winery.accountability.AccountabilityManagerFactory;
 import org.eclipse.winery.accountability.exceptions.AccountabilityException;
 import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.HashingUtil;
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.Util;
+import org.eclipse.winery.model.version.VersionSupport;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.constants.MimeTypes;
-import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.IdNames;
-import org.eclipse.winery.common.ids.admin.NamespacesId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.model.ids.GenericId;
+import org.eclipse.winery.model.ids.IdNames;
+import org.eclipse.winery.model.ids.admin.NamespacesId;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.selfservice.Application.Options;
 import org.eclipse.winery.model.selfservice.ApplicationOption;
@@ -128,7 +129,7 @@ public class CsarExporter {
         exportConfiguration.put(CsarExportConfiguration.STORE_IMMUTABLY.name(), null);
 
         String manifestString = this.writeCsar(repository, entryId, out, exportConfiguration);
-        String qNameWithComponentVersionOnly = VersionUtils.getQNameWithComponentVersionOnly(entryId);
+        String qNameWithComponentVersionOnly = VersionSupport.getQNameWithComponentVersionOnly(entryId);
         LOGGER.debug("Preparing CSAR export (provenance) lasted {}", Duration.between(LocalDateTime.now(), start).toString());
 
         return accountabilityManager.storeFingerprint(qNameWithComponentVersionOnly, manifestString);
@@ -277,7 +278,7 @@ public class CsarExporter {
                 .call();
             git.checkout().setName(gitInfo.BRANCH).call();
             String path = "artifacttemplates/"
-                + Util.URLencode(((ArtifactTemplateId) csarEntry.getReference().getParent().getParent()).getQName().getNamespaceURI())
+                + EncodingUtil.URLencode(((ArtifactTemplateId) csarEntry.getReference().getParent().getParent()).getQName().getNamespaceURI())
                 + "/"
                 + ((ArtifactTemplateId) csarEntry.getReference().getParent().getParent()).getQName().getLocalPart()
                 + "/files/";

@@ -29,13 +29,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
-import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.filebased.specific.XmlRepository;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.model.ids.GenericId;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +47,7 @@ public class RepositoryUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryUtils.class);
 
-    public static void checkGitIgnore(XMLRepository multiRepository) throws IOException {
+    public static void checkGitIgnore(XmlRepository multiRepository) throws IOException {
         File ignore = new File(multiRepository.getRepositoryRoot().toFile(), Constants.FILE_GIT_IGNORE);
 
         if (!ignore.exists()) {

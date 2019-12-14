@@ -20,7 +20,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.SortedSet;
 
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 

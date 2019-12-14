@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypeimplementations.relationshiptypeimplementations;
 
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;

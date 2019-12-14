@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import org.apache.commons.io.IOUtils;

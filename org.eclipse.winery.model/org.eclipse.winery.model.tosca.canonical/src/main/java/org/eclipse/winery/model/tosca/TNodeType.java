@@ -116,8 +116,7 @@ public class TNodeType extends TEntityType {
     public void setInterfaces(@Nullable TInterfaces value) {
         this.interfaces = value;
     }
-
-
+    
     @Nullable
     public List<TInterfaceDefinition> getInterfaceDefinitions() {
         return interfaceDefinitions;

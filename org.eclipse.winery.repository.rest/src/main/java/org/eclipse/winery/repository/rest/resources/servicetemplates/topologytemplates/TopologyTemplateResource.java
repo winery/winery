@@ -38,11 +38,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.configuration.Environments;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.adaptation.enhance.EnhancementUtils;
 import org.eclipse.winery.model.adaptation.enhance.TopologyAndErrorList;
@@ -58,6 +57,7 @@ import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.model.version.VersionSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -114,7 +114,7 @@ public class TopologyTemplateResource {
         // at the topology modeler, jersey needs to have an absolute path
         URI repositoryURI = uriInfo.getBaseUri();
         location = location + "/?repositoryURL=";
-        location = location + Util.URLencode(repositoryURI.toString());
+        location = location + EncodingUtil.URLencode(repositoryURI.toString());
         ServiceTemplateId serviceTemplate = (ServiceTemplateId) this.parent.getId();
         location = location + "&ns=";
         location = location + serviceTemplate.getNamespace().getEncoded();
@@ -510,7 +510,7 @@ public class TopologyTemplateResource {
             if (!versionElements.containsKey(nodeTypeId.getQName())) {
                 List<WineryVersion> versionList = BackendUtils.getAllVersionsOfOneDefinition(nodeTypeId).stream()
                     .filter(wineryVersion -> {
-                        QName qName = VersionUtils.getDefinitionInTheGivenVersion(nodeTypeId, wineryVersion).getQName();
+                        QName qName = VersionSupport.getDefinitionInTheGivenVersion(nodeTypeId, wineryVersion).getQName();
                         NamespaceProperties namespaceProperties = repository.getNamespaceManager().getNamespaceProperties(qName.getNamespaceURI());
                         return !(namespaceProperties.isGeneratedNamespace()
                             || ModelUtilities.isFeatureType(qName, nodeTypes));

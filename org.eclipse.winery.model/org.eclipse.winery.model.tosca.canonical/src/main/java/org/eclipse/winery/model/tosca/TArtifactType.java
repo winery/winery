@@ -14,20 +14,51 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tArtifactType")
 public class TArtifactType extends TEntityType {
+    // the following two fields are added to support YAML mode
+    @XmlAttribute(name = "mimetype", required = false)
+    private String mimeType;
+    @XmlAttribute(name = "fileextensions", required = false)
+    private List<String> fileExtensions;
+    
     public TArtifactType() {
     }
 
     public TArtifactType(Builder builder) {
         super(builder);
+        this.mimeType = builder.mimeType;
+        this.fileExtensions = builder.fileExtensions;
+    }
+
+    @Nullable
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(@Nullable String mimeType) {
+        this.mimeType = mimeType;
+    }
+
+    @Nullable
+    public List<String> getFileExtensions() {
+        return fileExtensions;
+    }
+
+    public void setFileExtensions(@Nullable List<String> fileExtensions) {
+        this.fileExtensions = fileExtensions;
     }
 
     @Override
@@ -36,12 +67,25 @@ public class TArtifactType extends TEntityType {
     }
 
     public static class Builder extends TEntityType.Builder<Builder> {
+        private String mimeType;
+        private List<String> fileExtensions;
+
         public Builder(String name) {
             super(name);
         }
 
         public Builder(TEntityType entityType) {
             super(entityType);
+        }
+
+        public Builder setMimeType(String mimeType) {
+            this.mimeType = mimeType;
+            return self();
+        }
+
+        public Builder setFileExtensions(List<String> fileExtensions) {
+            this.fileExtensions = fileExtensions;
+            return self();
         }
 
         @Override

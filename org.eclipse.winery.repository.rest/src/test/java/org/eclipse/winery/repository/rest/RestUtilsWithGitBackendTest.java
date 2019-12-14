@@ -15,9 +15,9 @@ package org.eclipse.winery.repository.rest;
 
 import javax.ws.rs.core.Response;
 
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -42,7 +42,7 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         Response response = RestUtils.rename(oldId, newId).getResponse();
 
         String expectedEntity = "http://localhost:8080/winery/nodetypes/"
-            + Util.URLencode(Util.URLencode(namespace)) + "/" + newName + "/";
+            + EncodingUtil.URLencode(EncodingUtil.URLencode(namespace)) + "/" + newName + "/";
 
         assertEquals(201, response.getStatus());
         assertEquals(expectedEntity, response.getEntity());
@@ -60,7 +60,7 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         Response response = RestUtils.rename(oldId, newId).getResponse();
 
         String expectedEntity = "http://localhost:8080/winery/nodetypes/"
-            + Util.URLencode(Util.URLencode(newNamespace)) + "/" + name + "/";
+            + EncodingUtil.URLencode(EncodingUtil.URLencode(newNamespace)) + "/" + name + "/";
 
         assertEquals(201, response.getStatus());
         assertEquals(expectedEntity, response.getEntity());
@@ -79,7 +79,7 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         Response response = RestUtils.rename(oldId, newId).getResponse();
 
         String expectedEntity = "http://localhost:8080/winery/nodetypes/"
-            + Util.URLencode(Util.URLencode(namespace)) + "/" + newName + version + "/";
+            + EncodingUtil.URLencode(EncodingUtil.URLencode(namespace)) + "/" + newName + version + "/";
 
         assertEquals(201, response.getStatus());
         assertEquals(expectedEntity, response.getEntity());
@@ -100,7 +100,7 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         Response response = RestUtils.rename(oldId, newId).getResponse();
 
         String expectedEntity = "http://localhost:8080/winery/nodetypes/"
-            + Util.URLencode(Util.URLencode(newNamespace)) + "/" + name + version + "/";
+            + EncodingUtil.URLencode(EncodingUtil.URLencode(newNamespace)) + "/" + name + version + "/";
 
         assertEquals(201, response.getStatus());
         assertEquals(expectedEntity, response.getEntity());
@@ -125,7 +125,7 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         Response response = RestUtils.rename(oldId, newId).getResponse();
 
         String expectedEntity = "http://localhost:8080/winery/nodetypes/"
-            + Util.URLencode(Util.URLencode(namespace)) + "/" + newName + version + "/";
+            + EncodingUtil.URLencode(EncodingUtil.URLencode(namespace)) + "/" + newName + version + "/";
 
         assertEquals(201, response.getStatus());
         assertEquals(expectedEntity, response.getEntity());
@@ -146,7 +146,7 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         Response response = RestUtils.renameAllVersionsOfOneDefinition(oldId, newId);
 
         String expectedEntity = "http://localhost:8080/winery/nodetypes/"
-            + Util.URLencode(Util.URLencode(namespace)) + "/" + newName + version + "/";
+            + EncodingUtil.URLencode(EncodingUtil.URLencode(namespace)) + "/" + newName + version + "/";
 
         assertEquals(201, response.getStatus());
         assertEquals(expectedEntity, response.getEntity());
@@ -167,7 +167,7 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         Response response = RestUtils.renameAllVersionsOfOneDefinition(oldId, newId);
 
         String expectedEntity = "http://localhost:8080/winery/nodetypes/"
-            + Util.URLencode(Util.URLencode(newNamespace)) + "/" + name + version + "/";
+            + EncodingUtil.URLencode(EncodingUtil.URLencode(newNamespace)) + "/" + name + version + "/";
 
         assertEquals(201, response.getStatus());
         assertEquals(expectedEntity, response.getEntity());

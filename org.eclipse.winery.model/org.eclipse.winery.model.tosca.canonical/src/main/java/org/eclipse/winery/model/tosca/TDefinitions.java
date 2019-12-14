@@ -68,9 +68,9 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         @XmlElement(name = "NodeTypeImplementation", type = TNodeTypeImplementation.class),
         @XmlElement(name = "RequirementType", type = TRequirementType.class),
         @XmlElement(name = "PolicyType", type = TPolicyType.class),
-        @XmlElement(name = "ComplianceRule", type = TComplianceRule.class),
-        @XmlElement(name = "PatternRefinementModel", type = TPatternRefinementModel.class),
-        @XmlElement(name = "TestRefinementModel", type = TTestRefinementModel.class)
+        @XmlElement(name = "ComplianceRule", type = OTComplianceRule.class),
+        @XmlElement(name = "PatternRefinementModel", type = OTPatternRefinementModel.class),
+        @XmlElement(name = "TestRefinementModel", type = OTTestRefinementModel.class)
     })
     protected List<TExtensibleElements> serviceTemplateOrNodeTypeOrNodeTypeImplementation;
 
@@ -467,7 +467,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             this.policyTypes = policyTypes;
             return self();
         }
-
+        
         public T setInterfaceTypes(List<TInterfaceType> interfaceTypes) {
             this.interfaceTypes = interfaceTypes;
             return self();

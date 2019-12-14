@@ -29,12 +29,12 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.model.version.VersionSupport;
+import org.eclipse.winery.repository.common.Util;
+import org.eclipse.winery.model.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -84,7 +84,7 @@ public class Splitting {
         // create wrapper service template
         ServiceTemplateId splitServiceTemplateId = new ServiceTemplateId(
             id.getNamespace().getDecoded(),
-            VersionUtils.getNewComponentVersionId(id, "split"),
+            VersionSupport.getNewComponentVersionId(id, "split"),
             false);
 
         repository.forceDelete(splitServiceTemplateId);
@@ -103,7 +103,7 @@ public class Splitting {
         // create wrapper service template
         ServiceTemplateId matchedServiceTemplateId = new ServiceTemplateId(
             id.getNamespace().getDecoded(),
-            VersionUtils.getNewComponentVersionId(id, "split-matched"),
+            VersionSupport.getNewComponentVersionId(id, "split-matched"),
             false);
 
         repository.forceDelete(matchedServiceTemplateId);
@@ -187,7 +187,7 @@ public class Splitting {
         // create wrapper service template
         ServiceTemplateId matchedServiceTemplateId = new ServiceTemplateId(
             id.getNamespace().getDecoded(),
-            VersionUtils.getNewComponentVersionId(id, "matched"),
+            VersionSupport.getNewComponentVersionId(id, "matched"),
             false);
 
         RepositoryFactory.getRepository().forceDelete(matchedServiceTemplateId);

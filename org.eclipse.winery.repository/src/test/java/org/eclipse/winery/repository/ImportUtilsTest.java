@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.winery.repository;
 
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XmlId;
-import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.XmlId;
+import org.eclipse.winery.model.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.repository.backend.ImportUtils;
 
 import java.util.Optional;

@@ -26,8 +26,8 @@ import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasInheritance;
 import org.eclipse.winery.model.tosca.TAppliesTo;
@@ -1183,7 +1183,7 @@ public class Y2XConverter {
 
     public Object convert(org.eclipse.winery.model.tosca.yaml.TDataType node, String name) {
         TImport importDefinition = new TImport.Builder(Namespaces.XML_NS)
-            .setLocation(Util.URLencode(this.namespace) + ".xsd")
+            .setLocation(EncodingUtil.URLencode(this.namespace) + ".xsd")
             .build();
         if (!this.imports.contains(importDefinition)) {
             this.imports.add(importDefinition);

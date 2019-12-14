@@ -25,18 +25,20 @@ import java.util.SortedSet;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.EntityTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.definitions.TopologyGraphElementEntityTypeId;
-import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
-import org.eclipse.winery.common.ids.elements.PlanId;
-import org.eclipse.winery.common.ids.elements.PlansId;
+import org.eclipse.winery.model.ids.IdUtil;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.Util;
+import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.EntityTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.definitions.TopologyGraphElementEntityTypeId;
+import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
+import org.eclipse.winery.model.ids.elements.PlanId;
+import org.eclipse.winery.model.ids.elements.PlansId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition;
@@ -184,8 +186,8 @@ public class ToscaExportUtil {
             if (Util.isRelativeURI(loc)) {
                 // locally stored, add to CSAR
                 GenericImportId iid = new GenericImportId(i);
-                String fileName = Util.getLastURIPart(loc);
-                fileName = Util.URLdecode(fileName);
+                String fileName = IdUtil.getLastURIPart(loc);
+                fileName = EncodingUtil.URLdecode(fileName);
                 RepositoryFileReference ref = new RepositoryFileReference(iid, fileName);
                 putRefAsReferencedItemInCsar(ref);
             }
@@ -245,7 +247,7 @@ public class ToscaExportUtil {
                     Document document = ModelUtilities.getWinerysPropertiesDefinitionXsdAsDocument(wpd);
 
                     // loc in import is URLencoded, loc on filesystem isn't
-                    String locInCSAR = Util.URLdecode(loc);
+                    String locInCSAR = EncodingUtil.URLdecode(loc);
                     // furthermore, the path has to start from the root of the CSAR; currently, it starts from Definitions/
                     locInCSAR = locInCSAR.substring(3);
                     ToscaExportUtil.LOGGER.trace("Location in CSAR: {}", locInCSAR);
@@ -301,7 +303,7 @@ public class ToscaExportUtil {
             // all Definitions are contained in "Definitions" directory, therefore, we provide the filename only
             // references are resolved relatively from a definitions element (COS01, line 425)
             String fn = CsarExporter.getDefinitionsFileName(repository, id);
-            fn = Util.URLencode(fn);
+            fn = EncodingUtil.URLencode(fn);
             imp.setLocation(fn);
         } else {
             String path = Util.getUrlPath(id);

@@ -21,7 +21,7 @@ import java.util.SortedSet;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
+import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties;
 import org.eclipse.winery.model.tosca.TPlan;

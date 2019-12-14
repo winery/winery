@@ -35,6 +35,13 @@ public class TPolicies implements Serializable {
     @XmlElement(name = "Policy", required = true)
     protected List<TPolicy> policy;
 
+    public TPolicies() {
+    }
+
+    public TPolicies(List<TPolicy> policies) {
+        this.policy = policies;
+    }
+
     @NonNull
     public List<TPolicy> getPolicy() {
         if (policy == null) {

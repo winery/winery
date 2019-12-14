@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TImport;
 import org.slf4j.Logger;

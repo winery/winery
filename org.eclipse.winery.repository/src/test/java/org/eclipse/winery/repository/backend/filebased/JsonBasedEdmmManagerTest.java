@@ -18,8 +18,8 @@ import java.io.File;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.edmm.EdmmMappingItem;
-import org.eclipse.winery.common.edmm.EdmmType;
+import org.eclipse.winery.model.transformation.edmm.EdmmMappingItem;
+import org.eclipse.winery.model.transformation.edmm.EdmmType;
 
 import org.junit.jupiter.api.Test;
 

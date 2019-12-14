@@ -14,7 +14,7 @@
 
 package org.eclipse.winery.repository.driverspecificationandinjection;
 
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.tosca.*;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.RepositoryFactory;

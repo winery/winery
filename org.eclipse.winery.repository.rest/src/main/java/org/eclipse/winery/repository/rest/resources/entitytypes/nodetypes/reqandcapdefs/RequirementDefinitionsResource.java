@@ -22,7 +22,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
+import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;

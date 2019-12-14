@@ -22,6 +22,7 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.edmm.EdmmMappingItem;
 import org.eclipse.winery.common.edmm.EdmmType;
+import org.eclipse.winery.model.transformation.edmm.EdmmMappingItem;
 
 public interface EdmmManager {
 

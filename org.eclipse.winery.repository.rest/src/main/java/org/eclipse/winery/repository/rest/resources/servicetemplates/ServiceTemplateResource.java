@@ -39,8 +39,7 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.compliance.checking.ServiceTemplateCheckingResult;
 import org.eclipse.winery.compliance.checking.ServiceTemplateComplianceRuleRuleChecker;
@@ -359,7 +358,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     public Response createNewStatefulVersion() {
         LOGGER.debug("Creating new stateful version of Service Template {}...", this.getId());
         ServiceTemplateId id = (ServiceTemplateId) this.getId();
-        WineryVersion version = VersionUtils.getVersion(id);
+        WineryVersion version = id.getVersion();
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss");
         WineryVersion newVersion = new WineryVersion(
@@ -369,7 +368,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
         );
 
         ServiceTemplateId newId = new ServiceTemplateId(id.getNamespace().getDecoded(),
-            VersionUtils.getNameWithoutVersion(id) + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + newVersion.toString(),
+            id.getNameWithoutVersion() + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + newVersion.toString(),
             false);
         ResourceResult response = RestUtils.duplicate(id, newId);
 

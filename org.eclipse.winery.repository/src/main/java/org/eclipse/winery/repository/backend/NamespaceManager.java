@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
-import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.repository.backend.filebased.NamespaceProperties;
 
 import org.eclipse.jdt.annotation.NonNull;

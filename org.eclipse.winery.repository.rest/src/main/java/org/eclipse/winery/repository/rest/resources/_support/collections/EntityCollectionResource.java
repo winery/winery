@@ -26,7 +26,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.winery.common.Util;
+import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.common.json.JacksonProvider;
 
@@ -105,7 +105,7 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
     protected abstract EntityResourceT getEntityResourceFromDecodedId(String id);
 
     protected EntityResourceT getEntityResourceFromEncodedId(String id) {
-        return this.getEntityResourceFromDecodedId(Util.URLdecode(Objects.requireNonNull(id)));
+        return this.getEntityResourceFromDecodedId(EncodingUtil.URLdecode(Objects.requireNonNull(id)));
     }
 
     /**

@@ -46,6 +46,8 @@ public class TCapabilityDefinition extends TExtensibleElements {
     protected Integer lowerBound;
     @XmlAttribute(name = "upperBound")
     protected String upperBound;
+    @XmlAttribute(name = "validSourceTypes")
+    protected List<QName> validSourceTypes;
 
     public TCapabilityDefinition() {
     }
@@ -57,6 +59,7 @@ public class TCapabilityDefinition extends TExtensibleElements {
         this.capabilityType = builder.capabilityType;
         this.lowerBound = builder.lowerBound;
         this.upperBound = builder.upperBound;
+        this.validSourceTypes = builder.validSourceTypes;
     }
 
     @Override
@@ -68,12 +71,13 @@ public class TCapabilityDefinition extends TExtensibleElements {
             Objects.equals(name, that.name) &&
             Objects.equals(capabilityType, that.capabilityType) &&
             Objects.equals(lowerBound, that.lowerBound) &&
-            Objects.equals(upperBound, that.upperBound);
+            Objects.equals(upperBound, that.upperBound) &&
+            Objects.equals(validSourceTypes, that.validSourceTypes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(constraints, name, capabilityType, lowerBound, upperBound);
+        return Objects.hash(constraints, name, capabilityType, lowerBound, upperBound, validSourceTypes);
     }
 
     public TCapabilityDefinition.@Nullable Constraints getConstraints() {
@@ -129,6 +133,14 @@ public class TCapabilityDefinition extends TExtensibleElements {
         this.upperBound = value;
     }
 
+    public List<QName> getValidSourceTypes() {
+        return validSourceTypes;
+    }
+
+    public void setValidSourceTypes(List<QName> value) {
+        this.validSourceTypes = value;
+    }
+    
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
@@ -173,6 +185,8 @@ public class TCapabilityDefinition extends TExtensibleElements {
         private Integer lowerBound;
         private String upperBound;
 
+        private List<QName> validSourceTypes;
+        
         public Builder(String name, QName capabilityType) {
             this.name = name;
             this.capabilityType = capabilityType;
@@ -190,6 +204,11 @@ public class TCapabilityDefinition extends TExtensibleElements {
 
         public Builder setUpperBound(String upperBound) {
             this.upperBound = upperBound;
+            return this;
+        }
+
+        public Builder setValidSourceTypes(List<QName> validSourceTypes) {
+            this.validSourceTypes = validSourceTypes;
             return this;
         }
 

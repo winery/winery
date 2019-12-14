@@ -28,7 +28,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.eclipse.winery.common.Util;
+import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties.PropertyMappings;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TPropertyMapping;
@@ -61,7 +61,7 @@ public class PropertyMappingsResource {
     @Path("{serviceTemplatePropertyRef}")
     @DELETE
     public Response onDelete(@PathParam("serviceTemplatePropertyRef") String serviceTemplatePropertyRef) {
-        serviceTemplatePropertyRef = Util.URLdecode(serviceTemplatePropertyRef);
+        serviceTemplatePropertyRef = EncodingUtil.URLdecode(serviceTemplatePropertyRef);
         Iterator<TPropertyMapping> iterator = this.propertyMappings.getPropertyMapping().iterator();
         while (iterator.hasNext()) {
             TPropertyMapping propertyMapping = iterator.next();

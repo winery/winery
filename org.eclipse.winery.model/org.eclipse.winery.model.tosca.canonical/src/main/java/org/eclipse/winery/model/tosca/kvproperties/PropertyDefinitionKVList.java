@@ -17,15 +17,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement(name = "PropertyDefinitions")
 public class PropertyDefinitionKVList extends ArrayList<PropertyDefinitionKV> implements Serializable {
 
     private static final long serialVersionUID = -6442041855597987094L;
 
-    @XmlElement(name = "PropertyDefinition")
     public List<PropertyDefinitionKV> getPropertyDefinitionKVs() {
         return this;
     }

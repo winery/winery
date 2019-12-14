@@ -23,9 +23,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.ids.admin.NamespacesId;
 import org.eclipse.winery.common.json.JacksonProvider;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.model.ids.admin.NamespacesId;
 import org.eclipse.winery.repository.backend.AbstractNamespaceManager;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;

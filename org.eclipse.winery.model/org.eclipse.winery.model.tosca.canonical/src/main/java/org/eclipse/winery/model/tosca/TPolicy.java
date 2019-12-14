@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -43,6 +44,14 @@ public class TPolicy extends TExtensibleElements implements HasName {
     @Nullable
     protected QName policyRef;
 
+    //Added to support conversion to/from YAML Policies
+    protected TEntityTemplate.Properties properties;
+
+    //Added to support conversion to/from YAML Policies
+    @XmlAttribute(name = "targets")
+    @Nullable
+    protected List<QName> targets;
+
     public TPolicy() {
     }
 
@@ -51,6 +60,8 @@ public class TPolicy extends TExtensibleElements implements HasName {
         this.name = builder.name;
         this.policyType = builder.policyType;
         this.policyRef = builder.policyRef;
+        this.properties = builder.properties;
+        this.targets = builder.targets;
     }
 
     @Override
@@ -61,12 +72,14 @@ public class TPolicy extends TExtensibleElements implements HasName {
         TPolicy tPolicy = (TPolicy) o;
         return Objects.equals(name, tPolicy.name) &&
             Objects.equals(policyType, tPolicy.policyType) &&
-            Objects.equals(policyRef, tPolicy.policyRef);
+            Objects.equals(policyRef, tPolicy.policyRef) &&
+            Objects.equals(properties, tPolicy.properties) &&
+            Objects.equals(targets, tPolicy.targets);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), name, policyType, policyRef);
+        return Objects.hash(super.hashCode(), name, policyType, policyRef, properties, targets);
     }
 
     @Nullable
@@ -98,6 +111,23 @@ public class TPolicy extends TExtensibleElements implements HasName {
         this.policyRef = value;
     }
 
+    public TEntityTemplate.Properties getProperties() {
+        return properties;
+    }
+
+    public void setProperties(TEntityTemplate.Properties properties) {
+        this.properties = properties;
+    }
+
+    @Nullable
+    public List<QName> getTargets() {
+        return targets;
+    }
+
+    public void setTargets(List<QName> targets) {
+        this.targets = targets;
+    }
+    
     public void accept(Visitor visitor) {
         visitor.visit(this);
     }
@@ -106,6 +136,8 @@ public class TPolicy extends TExtensibleElements implements HasName {
         private final QName policyType;
         private String name;
         private QName policyRef;
+        private TEntityTemplate.Properties properties;
+        private List<QName> targets;
 
         public Builder(QName policyType) {
             this.policyType = policyType;
@@ -119,6 +151,16 @@ public class TPolicy extends TExtensibleElements implements HasName {
         public Builder setPolicyRef(QName policyRef) {
             this.policyRef = policyRef;
             return this;
+        }
+        
+        public Builder setProperties(TEntityTemplate.Properties properties) {
+            this.properties = properties;
+            return self();
+        }
+
+        public Builder setTargets(List<QName> targets) {
+            this.targets = targets;
+            return self();
         }
 
         @Override

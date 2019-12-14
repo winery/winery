@@ -198,10 +198,4 @@ public class FileUtils {
             e.printStackTrace();
         }
     }
-
-    // public static Response readContentFromFile(RepositoryFileReference ref) {
-    // try {
-    // RepositoryFactory.getRepository().readContentFromFile(ref);
-    // }
-    // }
 }

@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.adaptation.problemsolving.ComponentFinding;
 import org.eclipse.winery.model.adaptation.problemsolving.SolutionInputData;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;

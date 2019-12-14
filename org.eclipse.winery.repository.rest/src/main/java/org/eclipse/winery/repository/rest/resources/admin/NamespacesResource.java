@@ -29,8 +29,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.admin.NamespacesId;
+import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.model.ids.admin.NamespacesId;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -79,7 +79,7 @@ public class NamespacesResource extends AbstractAdminResource {
     @Path("{namespace}")
     public Response onDelete(@PathParam("namespace") String uri) {
         Response res;
-        uri = Util.URLdecode(uri);
+        uri = EncodingUtil.URLdecode(uri);
         if (this.namespaceManager.hasPermanentProperties(uri)) {
             this.namespaceManager.removeNamespaceProperties(uri);
             res = Response.noContent().build();
@@ -93,7 +93,7 @@ public class NamespacesResource extends AbstractAdminResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String getPrefixForEncodedNamespace(@PathParam("namespace") String uri) {
-        uri = Util.URLdecode(uri);
+        uri = EncodingUtil.URLdecode(uri);
         return this.namespaceManager.getPrefix(uri);
     }
 

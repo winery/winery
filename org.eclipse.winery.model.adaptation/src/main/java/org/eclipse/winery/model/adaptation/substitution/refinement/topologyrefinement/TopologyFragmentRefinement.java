@@ -27,7 +27,7 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.RefinementId;
-import org.eclipse.winery.common.ids.definitions.TopologyFragmentRefinementModelId;
+import org.eclipse.winery.model.ids.definitions.TopologyFragmentRefinementModelId;
 import org.eclipse.winery.model.adaptation.substitution.refinement.AbstractRefinement;
 import org.eclipse.winery.model.adaptation.substitution.refinement.DefaultRefinementChooser;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;

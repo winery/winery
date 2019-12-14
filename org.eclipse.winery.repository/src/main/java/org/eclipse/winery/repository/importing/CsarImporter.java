@@ -54,20 +54,21 @@ import org.eclipse.winery.accountability.AccountabilityManagerFactory;
 import org.eclipse.winery.accountability.exceptions.AccountabilityException;
 import org.eclipse.winery.accountability.model.ProvenanceVerification;
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.XmlId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.EntityTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
-import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
-import org.eclipse.winery.common.ids.elements.PlanId;
-import org.eclipse.winery.common.ids.elements.PlansId;
-import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.model.version.VersionSupport;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.Util;
+import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.model.ids.XmlId;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.EntityTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
+import org.eclipse.winery.model.ids.definitions.imports.XSDImportId;
+import org.eclipse.winery.model.ids.elements.PlanId;
+import org.eclipse.winery.model.ids.elements.PlansId;
 import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFile;
 import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileParser;
 import org.eclipse.winery.model.tosca.Definitions;
@@ -415,7 +416,7 @@ public class CsarImporter {
 
         if (Objects.nonNull(entryServiceTemplate)) {
             AccountabilityManager accountabilityManager = AccountabilityManagerFactory.getAccountabilityManager();
-            String provenanceIdentifier = VersionUtils.getQNameWithComponentVersionOnly(entryServiceTemplate);
+            String provenanceIdentifier = VersionSupport.getQNameWithComponentVersionOnly(entryServiceTemplate);
 
             metaInformation.verificationMap = accountabilityManager
                 .verify(provenanceIdentifier, "TOSCA-Metadata/TOSCA.meta", fileMap)
@@ -782,7 +783,7 @@ public class CsarImporter {
                     String ref = refContainer.getReference();
                     if (ref != null) {
                         // URLs are stored encoded -> undo the encoding
-                        ref = Util.URLdecode(ref);
+                        ref = EncodingUtil.URLdecode(ref);
                         URI refURI;
                         try {
                             refURI = new URI(ref);
@@ -885,7 +886,7 @@ public class CsarImporter {
             TArtifactReference ref = iterator.next();
             String reference = ref.getReference();
             // URLs are stored encoded -> undo the encoding
-            reference = Util.URLdecode(reference);
+            reference = EncodingUtil.URLdecode(reference);
 
             URI refURI;
             try {
@@ -1107,7 +1108,7 @@ public class CsarImporter {
                     }
 
                     // URIs are encoded
-                    loc = Util.URLdecode(loc);
+                    loc = EncodingUtil.URLdecode(loc);
 
                     Path defsPath = basePath.resolve(loc);
                     // fallback for older CSARs, where the location is given from the root
@@ -1143,7 +1144,7 @@ public class CsarImporter {
         }
 
         // location URLs are encoded: http://www.w3.org/TR/2001/WD-charmod-20010126/#sec-URIs, RFC http://www.ietf.org/rfc/rfc2396.txt
-        loc = Util.URLdecode(loc);
+        loc = EncodingUtil.URLdecode(loc);
         Path path;
         try {
             path = rootPath.resolve(loc);

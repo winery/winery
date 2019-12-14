@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
+import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TPolicyType;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;

@@ -45,15 +45,15 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.common.ToscaDocumentBuilderFactory;
-import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.constants.MimeTypes;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XmlId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.version.ToscaDiff;
+import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.XmlId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.version.ToscaDiff;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.tosca.Definitions;
@@ -211,7 +211,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         } else if (Objects.nonNull(release)) {
             return RestUtils.releaseVersion(this.id);
         } else {
-            String newId = VersionUtils.getNameWithoutVersion(this.id) + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + newVersionApiData.version.toString();
+            String newId = id.getNameWithoutVersion() + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + newVersionApiData.version.toString();
             DefinitionsChildId newComponent = BackendUtils.getDefinitionsChildId(this.id.getClass(), this.id.getNamespace().getDecoded(), newId, false);
             return RestUtils.addNewVersion(this.id, newComponent, newVersionApiData.componentsToUpdate);
         }
@@ -594,7 +594,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     @Path("LICENSE")
     @Produces(MediaType.TEXT_PLAIN)
     public Response getLicense() {
-        RepositoryFileReference ref = new RepositoryFileReference(this.id, Util.URLdecode("LICENSE"));
+        RepositoryFileReference ref = new RepositoryFileReference(this.id, EncodingUtil.URLdecode("LICENSE"));
         return RestUtils.returnRepoPath(ref, null);
     }
 
@@ -602,7 +602,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     @Path("LICENSE")
     @Consumes(MediaType.TEXT_PLAIN)
     public Response putLicense(String data) {
-        RepositoryFileReference ref = new RepositoryFileReference(this.id, Util.URLdecode("LICENSE"));
+        RepositoryFileReference ref = new RepositoryFileReference(this.id, EncodingUtil.URLdecode("LICENSE"));
         return RestUtils.putContentToFile(ref, data, MediaType.TEXT_PLAIN_TYPE);
     }
 
@@ -610,7 +610,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     @Path("README.md")
     @Produces(MediaType.TEXT_PLAIN)
     public Response getReadme() {
-        RepositoryFileReference ref = new RepositoryFileReference(this.id, Util.URLdecode("README.md"));
+        RepositoryFileReference ref = new RepositoryFileReference(this.id, EncodingUtil.URLdecode("README.md"));
         return RestUtils.returnRepoPath(ref, null);
     }
 
@@ -618,7 +618,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     @Path("README.md")
     @Consumes(MediaType.TEXT_PLAIN)
     public Response putFile(String data) {
-        RepositoryFileReference ref = new RepositoryFileReference(this.id, Util.URLdecode("README.md"));
+        RepositoryFileReference ref = new RepositoryFileReference(this.id, EncodingUtil.URLdecode("README.md"));
         return RestUtils.putContentToFile(ref, data, MediaType.TEXT_PLAIN_TYPE);
     }
 }
