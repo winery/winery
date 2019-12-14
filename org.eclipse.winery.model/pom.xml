@@ -28,4 +28,26 @@
         <module>org.eclipse.winery.model.tosca.xml</module>
         <module>org.eclipse.winery.model.tosca.yaml</module>
     </modules>
+    
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.eclipse.jdt/org.eclipse.jdt.annotation -->
+        <!--
+            Enable null-inference for all model implementations 
+        -->
+        <dependency>
+            <groupId>org.eclipse.jdt</groupId>
+            <artifactId>org.eclipse.jdt.annotation</artifactId>
+            <version>${org.eclipse.jdt.annotation}</version>
+        </dependency>
+        <!--
+            Enforce the same logging api across al model implementations
+            TODO to be affixed for all projects
+        -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${org.slf4j}</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 </project>

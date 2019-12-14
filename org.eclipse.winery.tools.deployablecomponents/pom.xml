@@ -36,7 +36,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.winery</groupId>
-            <artifactId>org.eclipse.winery.model.tosca</artifactId>
+            <artifactId>org.eclipse.winery.model.tosca.canonical</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
