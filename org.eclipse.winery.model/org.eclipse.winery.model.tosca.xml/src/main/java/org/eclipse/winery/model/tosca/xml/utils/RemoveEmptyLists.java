@@ -11,16 +11,15 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-package org.eclipse.winery.model.tosca.utils;
+package org.eclipse.winery.model.tosca.xml.utils;
 
-import org.eclipse.winery.model.tosca.TArtifacts;
-import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
-import org.eclipse.winery.model.tosca.TEntityTemplate;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TPolicies;
-import org.eclipse.winery.model.tosca.TRelationshipTemplate;
-import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.model.tosca.visitor.Visitor;
+import org.eclipse.winery.model.tosca.xml.TEntityTemplate;
+import org.eclipse.winery.model.tosca.xml.TNodeTemplate;
+import org.eclipse.winery.model.tosca.xml.TPolicies;
+import org.eclipse.winery.model.tosca.xml.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
+import org.eclipse.winery.model.tosca.xml.TDeploymentArtifacts;
+import org.eclipse.winery.model.tosca.xml.TTopologyTemplate;
 
 import io.github.adr.embedded.ADR;
 
@@ -66,10 +65,6 @@ public class RemoveEmptyLists extends Visitor {
         if ((policies != null) && policies.getPolicy().isEmpty()) {
             nodeTemplate.setPolicies(null);
         }
-        final TArtifacts artifacts = nodeTemplate.getArtifacts();
-        if ((artifacts != null) && artifacts.getArtifact().isEmpty()) {
-            nodeTemplate.setArtifacts(null);
-        }
         super.visit(nodeTemplate);
     }
 
@@ -88,10 +83,6 @@ public class RemoveEmptyLists extends Visitor {
      * @param topologyTemplate the topology template to modify
      */
     public void removeEmptyLists(TTopologyTemplate topologyTemplate) {
-        final TPolicies policies = topologyTemplate.getPolicies();
-        if ((policies != null) && policies.getPolicy().isEmpty()) {
-            topologyTemplate.setPolicies(null);
-        }
         this.visit(topologyTemplate);
     }
 }

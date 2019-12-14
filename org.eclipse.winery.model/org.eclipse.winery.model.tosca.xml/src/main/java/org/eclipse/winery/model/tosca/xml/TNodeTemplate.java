@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.model.tosca;
+package org.eclipse.winery.model.tosca.xml;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -28,10 +28,9 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.constants.Namespaces;
-import org.eclipse.winery.model.tosca.visitor.Visitor;
+import org.eclipse.winery.model.tosca.xml.constants.Namespaces;
+import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -41,10 +40,8 @@ import org.eclipse.jdt.annotation.Nullable;
     "requirements",
     "capabilities",
     "policies",
-    "deploymentArtifacts",
-    "artifacts"
+    "deploymentArtifacts"
 })
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonTypeInfo(
     defaultImpl = TNodeTemplate.class,
     use = JsonTypeInfo.Id.NAME,
@@ -66,9 +63,6 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
     protected Integer minInstances;
     @XmlAttribute(name = "maxInstances")
     protected String maxInstances;
-    // this element is added to support YAML mode
-    @XmlElement(name ="Artifacts")
-    protected TArtifacts artifacts;
 
     public TNodeTemplate() {
         super();
@@ -87,7 +81,6 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
         this.name = builder.name;
         this.minInstances = builder.minInstances;
         this.maxInstances = builder.maxInstances;
-        this.artifacts = builder.artifacts;
 
         if (Objects.nonNull(builder.x) && Objects.nonNull(builder.y)) {
             this.setX(builder.x);
@@ -236,14 +229,6 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
         visitor.visit(this);
     }
 
-    public TArtifacts getArtifacts() {
-        return artifacts;
-    }
-
-    public void setArtifacts(TArtifacts artifacts) {
-        this.artifacts = artifacts;
-    }
-
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
         "capability"
@@ -342,7 +327,6 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
         private String maxInstances;
         private String x;
         private String y;
-        private TArtifacts artifacts;
 
         public Builder(String id, QName type) {
             super(id, type);
@@ -494,11 +478,6 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
             TPolicies tmp = new TPolicies();
             tmp.getPolicy().add(policies);
             return addPolicies(tmp);
-        }
-
-        public Builder setArtifacts(List<TArtifact> artifacts) {
-            this.artifacts = new TArtifacts(artifacts);
-            return self();
         }
 
         @Override

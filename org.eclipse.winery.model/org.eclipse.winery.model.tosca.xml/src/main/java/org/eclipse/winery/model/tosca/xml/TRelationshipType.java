@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.model.tosca;
+package org.eclipse.winery.model.tosca.xml;
 
 import java.io.Serializable;
 import java.util.List;
@@ -25,8 +25,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.constants.Namespaces;
-import org.eclipse.winery.model.tosca.visitor.Visitor;
+import org.eclipse.winery.model.tosca.xml.constants.Namespaces;
+import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -37,7 +37,6 @@ import org.eclipse.jdt.annotation.Nullable;
     "interfaces",
     "sourceInterfaces",
     "targetInterfaces",
-    "interfaceDefinitions",
     "validSource",
     "validTarget"
 })
@@ -56,9 +55,6 @@ public class TRelationshipType extends TEntityType {
     @XmlElement(name = "ValidTarget")
     protected TRelationshipType.ValidTarget validTarget;
 
-    // added to support TOSCA YAML 
-    protected List<TInterfaceDefinition> interfaceDefinitions;
-
     public TRelationshipType() {
     }
 
@@ -68,7 +64,6 @@ public class TRelationshipType extends TEntityType {
         this.interfaces = builder.interfaces;
         this.sourceInterfaces = builder.sourceInterfaces;
         this.targetInterfaces = builder.targetInterfaces;
-        this.interfaceDefinitions = builder.interfaceDefinitions;
         this.validSource = builder.validSource;
         this.validTarget = builder.validTarget;
     }
@@ -83,14 +78,13 @@ public class TRelationshipType extends TEntityType {
             Objects.equals(interfaces, that.interfaces) &&
             Objects.equals(sourceInterfaces, that.sourceInterfaces) &&
             Objects.equals(targetInterfaces, that.targetInterfaces) &&
-            Objects.equals(interfaceDefinitions, that.interfaceDefinitions) &&
             Objects.equals(validSource, that.validSource) &&
             Objects.equals(validTarget, that.validTarget);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), instanceStates, interfaces, sourceInterfaces, targetInterfaces, interfaceDefinitions, validSource, validTarget);
+        return Objects.hash(super.hashCode(), instanceStates, interfaces, sourceInterfaces, targetInterfaces, validSource, validTarget);
     }
 
     @Nullable
@@ -125,15 +119,6 @@ public class TRelationshipType extends TEntityType {
 
     public void setTargetInterfaces(@Nullable TInterfaces value) {
         this.targetInterfaces = value;
-    }
-
-    @Nullable
-    public List<TInterfaceDefinition> getInterfaceDefinitions() {
-        return interfaceDefinitions;
-    }
-
-    public void setInterfaceDefinitions(List<TInterfaceDefinition> interfaceDefinitions) {
-        this.interfaceDefinitions = interfaceDefinitions;
     }
 
     public TRelationshipType.@Nullable ValidSource getValidSource() {
@@ -224,7 +209,6 @@ public class TRelationshipType extends TEntityType {
         private TInterfaces interfaces;
         private TInterfaces sourceInterfaces;
         private TInterfaces targetInterfaces;
-        private List<TInterfaceDefinition> interfaceDefinitions;
         private ValidSource validSource;
         private ValidTarget validTarget;
 
@@ -378,11 +362,6 @@ public class TRelationshipType extends TEntityType {
             TInterfaces tmp = new TInterfaces();
             tmp.getInterface().add(targetInterfaces);
             return addTargetInterfaces(tmp);
-        }
-
-        public TRelationshipType.Builder setInterfaceDefinitions(List<TInterfaceDefinition> interfaceDefinitions) {
-            this.interfaceDefinitions = interfaceDefinitions;
-            return self();
         }
 
         @Override
