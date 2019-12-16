@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,8 +23,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.SortedSet;
@@ -44,12 +46,14 @@ import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.HasInheritanceId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.common.ids.definitions.PatternRefinementModelId;
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.ids.definitions.TestRefinementModelId;
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
 import org.eclipse.winery.common.interfaces.IWineryRepositoryCommon;
@@ -73,6 +77,7 @@ import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
+import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TPolicyType;
@@ -216,8 +221,7 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
     <T extends DefinitionsChildId> SortedSet<T> getAllDefinitionsChildIds(Class<T> idClass);
 
     /**
-     * Returns all stable components available of the given id type.
-     * Components without a version are also included.
+     * Returns all stable components available of the given id type. Components without a version are also included.
      *
      * @param idClass class of the Ids to search for
      * @return empty set if no ids are available
@@ -236,13 +240,21 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
             .collect(Collectors.toCollection(() -> new TreeSet<>()));
     }
 
+    default <T extends DefinitionsChildId, S extends TExtensibleElements> Map<QName, S> getQNameToElementMapping(Class<T> idClass) {
+        Map<QName, S> elements = new HashMap<>();
+        getAllDefinitionsChildIds(idClass)
+            .forEach(id ->
+                elements.put(id.getQName(), getElement(id))
+            );
+        return elements;
+    }
+
     /**
      * Returns the set of <em>all</em> ids nested in the given reference
      * <p>
      * The generated Ids are linked as child to the id associated to the given reference
      * <p>
-     * Required for
-     * - getting plans nested in a service template: plans are nested below the PlansOfOneServiceTemplateId
+     * Required for - getting plans nested in a service template: plans are nested below the PlansOfOneServiceTemplateId
      * - exporting service templates
      *
      * @param ref     a reference to the TOSCA element to be checked. The path belonging to this element is checked.
@@ -290,20 +302,20 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
                 boolean referencesGivenQName = false;
 
                 if (element instanceof HasType) {
-                    referencesGivenQName = ((HasType) element).getTypeAsQName().equals(qNameOfTheType);
+                    referencesGivenQName = qNameOfTheType.equals(((HasType) element).getTypeAsQName());
                 }
 
                 if (!referencesGivenQName && element instanceof HasInheritance) {
                     HasType derivedFrom = ((HasInheritance) element).getDerivedFrom();
-                    referencesGivenQName = Objects.nonNull(derivedFrom) && derivedFrom.equals(qNameOfTheType);
+                    referencesGivenQName = Objects.nonNull(derivedFrom) && qNameOfTheType.equals(derivedFrom);
                 }
 
                 if (!referencesGivenQName && element instanceof TRelationshipType) {
                     TRelationshipType.ValidTarget validTarget = ((TRelationshipType) element).getValidTarget();
                     TRelationshipType.ValidSource validSource = ((TRelationshipType) element).getValidSource();
 
-                    referencesGivenQName = Objects.nonNull(validTarget) && validTarget.getTypeRef().equals(qNameOfTheType);
-                    referencesGivenQName = !referencesGivenQName && Objects.nonNull(validSource) && validSource.getTypeRef().equals(qNameOfTheType);
+                    referencesGivenQName = Objects.nonNull(validTarget) && qNameOfTheType.equals(validTarget.getTypeRef());
+                    referencesGivenQName = !referencesGivenQName && Objects.nonNull(validSource) && qNameOfTheType.equals(validSource.getTypeRef());
                 }
 
                 if (!referencesGivenQName && element instanceof TEntityTypeImplementation) {
@@ -312,8 +324,9 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
                         implementationArtifacts.getImplementationArtifact()
                             .stream()
                             .anyMatch(implementationArtifact ->
-                                implementationArtifact.getArtifactRef().equals(qNameOfTheType) ||
-                                    implementationArtifact.getArtifactType().equals(qNameOfTheType));
+                                qNameOfTheType.equals(implementationArtifact.getArtifactType()) ||
+                                    qNameOfTheType.equals(implementationArtifact.getArtifactRef())
+                            );
 
                     if (!referencesGivenQName && element instanceof TNodeTypeImplementation) {
                         TDeploymentArtifacts deploymentArtifacts = ((TNodeTypeImplementation) element).getDeploymentArtifacts();
@@ -321,8 +334,9 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
                             deploymentArtifacts.getDeploymentArtifact()
                                 .stream()
                                 .anyMatch(tDeploymentArtifact ->
-                                    tDeploymentArtifact.getArtifactRef().equals(qNameOfTheType) ||
-                                        tDeploymentArtifact.getArtifactType().equals(qNameOfTheType));
+                                    qNameOfTheType.equals(tDeploymentArtifact.getArtifactType()) ||
+                                        qNameOfTheType.equals(tDeploymentArtifact.getArtifactRef())
+                                );
                     }
                 }
 
@@ -330,7 +344,7 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
                     TAppliesTo appliesTo = ((TPolicyType) element).getAppliesTo();
                     referencesGivenQName = Objects.nonNull(appliesTo) && appliesTo.getNodeTypeReference()
                         .stream()
-                        .anyMatch(nodeTypeReference -> nodeTypeReference.getTypeRef().equals(qNameOfTheType));
+                        .anyMatch(nodeTypeReference -> qNameOfTheType.equals(nodeTypeReference.getTypeRef()));
                 }
 
                 if (!referencesGivenQName && element instanceof TNodeType) {
@@ -338,7 +352,7 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
                     referencesGivenQName = Objects.nonNull(requirementDefinitions) &&
                         requirementDefinitions.getRequirementDefinition()
                             .stream()
-                            .anyMatch(tRequirementDefinition -> tRequirementDefinition.getRequirementType().equals(qNameOfTheType));
+                            .anyMatch(tRequirementDefinition -> qNameOfTheType.equals(tRequirementDefinition.getRequirementType()));
 
                     if (!referencesGivenQName) {
                         TNodeType.CapabilityDefinitions capabilityDefinitions = ((TNodeType) element).getCapabilityDefinitions();
@@ -346,7 +360,7 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
                             capabilityDefinitions
                                 .getCapabilityDefinition()
                                 .stream()
-                                .anyMatch(tCapabilityDefinition -> tCapabilityDefinition.getCapabilityType().equals(qNameOfTheType));
+                                .anyMatch(tCapabilityDefinition -> qNameOfTheType.equals(tCapabilityDefinition.getCapabilityType()));
                     }
                 }
 
@@ -354,7 +368,7 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
                     TEntityType.PropertiesDefinition propertiesDefinition = ((TEntityType) element).getPropertiesDefinition();
                     if (Objects.nonNull(propertiesDefinition)) {
                         referencesGivenQName = Objects.nonNull(propertiesDefinition.getElement()) && propertiesDefinition.getElement().equals(qNameOfTheType)
-                            || Objects.nonNull(propertiesDefinition.getType()) && propertiesDefinition.getType().equals(qNameOfTheType);
+                            || Objects.nonNull(propertiesDefinition.getType()) && qNameOfTheType.equals(propertiesDefinition.getType());
                     }
                 }
 
@@ -593,7 +607,7 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
 
         TBoundaryDefinitions boundaryDefs;
         if ((boundaryDefs = serviceTemplate.getBoundaryDefinitions()) != null) {
-            TBoundaryDefinitions.Policies policies = boundaryDefs.getPolicies();
+            TPolicies policies = boundaryDefs.getPolicies();
             if (policies != null) {
                 for (TPolicy policy : policies.getPolicy()) {
                     PolicyTypeId policyTypeId = new PolicyTypeId(policy.getPolicyType());
@@ -644,7 +658,7 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
                     }
 
                     // crawl through policies
-                    org.eclipse.winery.model.tosca.TNodeTemplate.Policies policies = n.getPolicies();
+                    TPolicies policies = n.getPolicies();
                     if (policies != null) {
                         for (TPolicy pol : policies.getPolicy()) {
                             QName type = pol.getPolicyType();
@@ -666,6 +680,16 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
         }
 
         return ids;
+    }
+
+    default Collection<DefinitionsChildId> getReferencedDefinitionsChildIds(PatternRefinementModelId id) {
+        // TODO
+        return new HashSet<>();
+    }
+
+    default Collection<DefinitionsChildId> getReferencedDefinitionsChildIds(TestRefinementModelId id) {
+        // TODO
+        return new HashSet<>();
     }
 
     default Collection<DefinitionsChildId> getReferencedDefinitionsChildIds(ComplianceRuleId id) {
@@ -715,7 +739,7 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
                     }
 
                     // crawl through policies
-                    org.eclipse.winery.model.tosca.TNodeTemplate.Policies policies = n.getPolicies();
+                    TPolicies policies = n.getPolicies();
                     if (policies != null) {
                         for (TPolicy pol : policies.getPolicy()) {
                             QName type = pol.getPolicyType();
@@ -732,7 +756,7 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
 
         return ids;
     }
-    
+
     /**
      * Determines all referencedDefinitionsChildIds
      *
@@ -768,6 +792,10 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
             referencedDefinitionsChildIds = new ArrayList();
         } else if (id instanceof ComplianceRuleId) {
             referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((ComplianceRuleId) id);
+        } else if (id instanceof PatternRefinementModelId) {
+            referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((PatternRefinementModelId) id);
+        } else if (id instanceof TestRefinementModelId) {
+            referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((TestRefinementModelId) id);
         } else {
             throw new IllegalStateException("Unhandled id class " + id.getClass());
         }
@@ -873,7 +901,7 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
     }
 
     default Collection<DefinitionsChildId> getReferencingDefinitionsChildIds(PolicyTemplateId id) {
-        // ServiceTemplates > BoundaryDefinitions > Policies
+        // ServiceTemplates > BoundaryDefinitions > TPolicies
         return new HashSet<>(this.getAllElementsReferencingGivenType(ServiceTemplateId.class, id.getQName()));
     }
 
@@ -884,7 +912,7 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
         ids.addAll(this.getAllElementsReferencingGivenType(PolicyTemplateId.class, id.getQName()));
         // PolicyTypes
         ids.addAll(this.getAllElementsReferencingGivenType(PolicyTypeId.class, id.getQName()));
-        // ServiceTemplates > BoundaryDefinitions > Policies
+        // ServiceTemplates > BoundaryDefinitions > TPolicies
         // ids.addAll(this.getAllElementsReferencingGivenType(ServiceTemplateId.class, id.getQName()));
 
         return ids;
@@ -962,6 +990,10 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
     }
 
     NamespaceManager getNamespaceManager();
+
+    EdmmManager getEdmmManager();
+
+    AccountabilityConfigurationManager getAccountabilityConfigurationManager();
 
     XsdImportManager getXsdImportManager();
 

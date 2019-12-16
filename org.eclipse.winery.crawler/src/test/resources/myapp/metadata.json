@@ -1,0 +1,30 @@
+{
+"name":"myapp",
+"version":"1.0.0",
+"description":"Installs and configures MyApp",
+"long_description":"long description",
+"maintainer":"Markus",
+"maintainer_email":"Max.Mustermann@muster.de",
+"license":"Apache-2.0",
+"platforms":{
+	"ubuntu":">= 0.0.0",
+	"centos":">= 0.0.0",
+	"fedora":">= 0.0.0",
+	"smartos":">= 0.0.0",
+	"suse":">= 0.0.0",
+	"debian":">= 0.0.0"
+	}
+	,"dependencies":{
+	"java":">= 0.0.0"
+	},
+	"recommendations":{},
+	"suggestions":{},
+	"conflicting":{},
+	"providing":{},
+	"replacing":{},
+	"attributes":{},
+	"groupings":{},
+	"recipes":{},
+"source_url":"empty",
+"issues_url":"empty",
+"chef_version":[[">= 12.9"]],"ohai_version":[]}

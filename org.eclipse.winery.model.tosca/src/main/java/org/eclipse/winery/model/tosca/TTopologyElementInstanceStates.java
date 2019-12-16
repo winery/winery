@@ -14,13 +14,19 @@
 
 package org.eclipse.winery.model.tosca;
 
-import org.eclipse.jdt.annotation.NonNull;
-
-import javax.xml.bind.annotation.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * <p>Java class for tTopologyElementInstanceStates complex type.
@@ -51,7 +57,7 @@ import java.util.Objects;
 @XmlType(name = "tTopologyElementInstanceStates", propOrder = {
     "instanceState"
 })
-public class TTopologyElementInstanceStates {
+public class TTopologyElementInstanceStates implements Serializable {
 
     @XmlElement(name = "InstanceState", required = true)
     protected List<TTopologyElementInstanceStates.InstanceState> instanceState;
@@ -73,10 +79,9 @@ public class TTopologyElementInstanceStates {
      * Gets the value of the instanceState property.
      * <p>
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the instanceState property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to
+     * the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for
+     * the instanceState property.
      * <p>
      * <p>
      * For example, to add a new item, do as follows:
@@ -86,8 +91,7 @@ public class TTopologyElementInstanceStates {
      * <p>
      * <p>
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link TTopologyElementInstanceStates.InstanceState }
+     * Objects of the following type(s) are allowed in the list {@link TTopologyElementInstanceStates.InstanceState }
      */
     @NonNull
     public List<TTopologyElementInstanceStates.InstanceState> getInstanceState() {
@@ -96,7 +100,6 @@ public class TTopologyElementInstanceStates {
         }
         return this.instanceState;
     }
-
 
     /**
      * <p>Java class for anonymous complex type.
@@ -115,7 +118,7 @@ public class TTopologyElementInstanceStates {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    public static class InstanceState {
+    public static class InstanceState implements Serializable {
 
         @XmlAttribute(name = "state", required = true)
         @XmlSchemaType(name = "anyURI")

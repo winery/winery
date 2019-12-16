@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,13 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.reqandcapdefs;
 
-import org.apache.commons.lang.StringUtils;
-import org.eclipse.winery.model.tosca.TCapabilityDefinition;
-import org.eclipse.winery.model.tosca.TRequirementDefinition;
-import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
-import org.eclipse.winery.repository.rest.resources.apiData.CapabilityDefinitionPostData;
-import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
+import java.util.Collection;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -27,8 +22,15 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
-import java.util.Collection;
-import java.util.List;
+
+import org.eclipse.winery.model.tosca.TCapabilityDefinition;
+import org.eclipse.winery.model.tosca.TRequirementDefinition;
+import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
+import org.eclipse.winery.repository.rest.resources.apiData.CapabilityDefinitionPostData;
+import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * This superclass has only a few methods as we cannot easily abstract from the

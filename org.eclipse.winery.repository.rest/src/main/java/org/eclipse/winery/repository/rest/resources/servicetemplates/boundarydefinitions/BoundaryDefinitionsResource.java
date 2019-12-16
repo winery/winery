@@ -26,10 +26,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Capabilities;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Interfaces;
-import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Policies;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties.PropertyMappings;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Requirements;
@@ -124,9 +124,9 @@ public class BoundaryDefinitionsResource {
 
     @Path("policies/")
     public PoliciesResource getPoliciesResource() {
-        Policies policies = this.boundaryDefinitions.getPolicies();
+        TPolicies policies = this.boundaryDefinitions.getPolicies();
         if (policies == null) {
-            policies = new Policies();
+            policies = new TPolicies();
             this.boundaryDefinitions.setPolicies(policies);
         }
         return new PoliciesResource(policies.getPolicy(), this.serviceTemplateResource);

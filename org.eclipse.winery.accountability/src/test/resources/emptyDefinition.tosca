@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<tosca:Definitions id="winery-defs-for_ns1-Sensor" targetNamespace="http://example.org/nodetypes" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" 
+                   xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12">
+    <tosca:NodeType name="Test" targetNamespace="http://example.org/nodetypes" winery:bordercolor="#653fda"/>
+</tosca:Definitions>

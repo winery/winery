@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -62,6 +62,7 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.GenericId;
@@ -71,16 +72,19 @@ import org.eclipse.winery.common.ids.admin.AdminId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.common.ids.definitions.ComplianceRuleId;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.EntityTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.common.ids.definitions.PatternRefinementModelId;
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.ids.definitions.TestRefinementModelId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
@@ -92,11 +96,13 @@ import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.model.tosca.HasName;
 import org.eclipse.winery.model.tosca.HasTargetNamespace;
+import org.eclipse.winery.model.tosca.RelationshipSourceOrTarget;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityType;
+import org.eclipse.winery.model.tosca.TComplianceRule;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
@@ -110,6 +116,7 @@ import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
+import org.eclipse.winery.model.tosca.TPatternRefinementModel;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
@@ -120,17 +127,18 @@ import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTestRefinementModel;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
 import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.GitInfo;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
@@ -140,6 +148,7 @@ import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.export.ToscaExportUtil;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.tika.detect.Detector;
 import org.apache.tika.metadata.Metadata;
@@ -159,8 +168,8 @@ import org.apache.xerces.xs.XSTerm;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.slf4j.ext.XLogger;
-import org.slf4j.ext.XLoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.ls.LSInput;
@@ -182,7 +191,7 @@ public class BackendUtils {
      */
     public static final ObjectMapper mapper = getObjectMapper();
 
-    private static final XLogger LOGGER = XLoggerFactory.getXLogger(BackendUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BackendUtils.class);
 
     private static final MediaType MEDIATYPE_APPLICATION_OCTET_STREAM = MediaType.parse("application/octet-stream");
 
@@ -382,6 +391,17 @@ public class BackendUtils {
         return new RepositoryFileReference(id, name);
     }
 
+    public static RepositoryFileReference getRefOfJsonConfiguration(GenericId id) {
+        String name = "";
+
+        if (id instanceof AdminId) {
+            name = BackendUtils.getTypeForAdminId(((AdminId) id).getClass());
+            name += Constants.SUFFIX_JSON;
+        }
+
+        return new RepositoryFileReference(id, name);
+    }
+
     /**
      * Returns a list of the topology template nested in the given service template
      */
@@ -391,7 +411,7 @@ public class BackendUtils {
         if (topologyTemplate == null) {
             return Collections.emptyList();
         }
-        for (TEntityTemplate t: topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
+        for (TEntityTemplate t : topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
             if (t instanceof TNodeTemplate) {
                 l.add((TNodeTemplate) t);
             }
@@ -409,7 +429,7 @@ public class BackendUtils {
             return Collections.emptyList();
         }
         Collection<QName> res = new ArrayList<>();
-        for (TDeploymentArtifact da: deploymentArtifacts) {
+        for (TDeploymentArtifact da : deploymentArtifacts) {
             QName artifactRef = da.getArtifactRef();
             if (artifactRef != null) {
                 res.add(artifactRef);
@@ -427,7 +447,7 @@ public class BackendUtils {
             return Collections.emptyList();
         }
         Collection<QName> res = new ArrayList<>();
-        for (ImplementationArtifact ia: implementationArtifacts) {
+        for (ImplementationArtifact ia : implementationArtifacts) {
             QName artifactRef = ia.getArtifactRef();
             if (artifactRef != null) {
                 res.add(artifactRef);
@@ -446,7 +466,7 @@ public class BackendUtils {
         // DAs may be assigned via node type implementations
         QName nodeTypeQName = nodeTemplate.getType();
         Collection<NodeTypeImplementationId> allNodeTypeImplementations = RepositoryFactory.getRepository().getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
-        for (NodeTypeImplementationId nodeTypeImplementationId: allNodeTypeImplementations) {
+        for (NodeTypeImplementationId nodeTypeImplementationId : allNodeTypeImplementations) {
             TDeploymentArtifacts deploymentArtifacts = RepositoryFactory.getRepository().getElement(nodeTypeImplementationId).getDeploymentArtifacts();
             allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(deploymentArtifacts);
             l.addAll(allReferencedArtifactTemplates);
@@ -461,7 +481,7 @@ public class BackendUtils {
         // IAs may be assigned via node type implementations
         QName nodeTypeQName = nodeTemplate.getType();
         Collection<NodeTypeImplementationId> allNodeTypeImplementations = RepositoryFactory.getRepository().getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
-        for (NodeTypeImplementationId nodeTypeImplementationId: allNodeTypeImplementations) {
+        for (NodeTypeImplementationId nodeTypeImplementationId : allNodeTypeImplementations) {
             TImplementationArtifacts implementationArtifacts = RepositoryFactory.getRepository().getElement(nodeTypeImplementationId).getImplementationArtifacts();
             Collection<QName> allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(implementationArtifacts);
             l.addAll(allReferencedArtifactTemplates);
@@ -526,6 +546,7 @@ public class BackendUtils {
         nodeTemplateClone.setType(nodeTemplate.getType());
         nodeTemplateClone.setId(nodeTemplate.getId());
         nodeTemplateClone.setDeploymentArtifacts(nodeTemplate.getDeploymentArtifacts());
+        // returns 1 if null -> !original.equals(cloned)
         nodeTemplateClone.setMaxInstances(nodeTemplate.getMaxInstances());
         nodeTemplateClone.setMinInstances(nodeTemplate.getMinInstances());
         nodeTemplateClone.setName(nodeTemplate.getName());
@@ -534,9 +555,25 @@ public class BackendUtils {
         nodeTemplateClone.setCapabilities(nodeTemplate.getCapabilities());
         nodeTemplateClone.setProperties(nodeTemplate.getProperties());
         nodeTemplateClone.setPropertyConstraints(nodeTemplate.getPropertyConstraints());
+        if (Objects.nonNull(nodeTemplate.getX())) {
+            nodeTemplateClone.setX(nodeTemplate.getX());
+        }
+        if (Objects.nonNull(nodeTemplate.getY())) {
+            nodeTemplateClone.setY(nodeTemplate.getY());
+        }
 
         if (ModelUtilities.getTargetLabel(nodeTemplate).isPresent()) {
             ModelUtilities.setTargetLabel(nodeTemplateClone, ModelUtilities.getTargetLabel(nodeTemplate).get());
+        }
+
+        String region = nodeTemplate.getOtherAttributes().get(ModelUtilities.NODE_TEMPLATE_REGION);
+        if (Objects.nonNull(region)) {
+            nodeTemplateClone.getOtherAttributes().put(ModelUtilities.NODE_TEMPLATE_REGION, region);
+        }
+
+        String provider = nodeTemplate.getOtherAttributes().get(ModelUtilities.NODE_TEMPLATE_PROVIDER);
+        if (Objects.nonNull(provider)) {
+            nodeTemplateClone.getOtherAttributes().put(ModelUtilities.NODE_TEMPLATE_PROVIDER, provider);
         }
 
         return nodeTemplateClone;
@@ -556,6 +593,12 @@ public class BackendUtils {
         relationshipTemplateClone.setProperties(relationshipTemplate.getProperties());
         relationshipTemplateClone.setName(relationshipTemplate.getName());
         relationshipTemplateClone.setRelationshipConstraints(relationshipTemplate.getRelationshipConstraints());
+
+        String transferType =
+            relationshipTemplate.getOtherAttributes().get(ModelUtilities.RELATIONSHIP_TEMPLATE_TRANSFER_TYPE);
+        if (Objects.nonNull(transferType)) {
+            relationshipTemplateClone.getOtherAttributes().put(ModelUtilities.RELATIONSHIP_TEMPLATE_TRANSFER_TYPE, transferType);
+        }
 
         return relationshipTemplateClone;
     }
@@ -599,6 +642,12 @@ public class BackendUtils {
             element = new TServiceTemplate();
         } else if (id instanceof ArtifactTemplateId) {
             element = new TArtifactTemplate();
+        } else if (id instanceof ComplianceRuleId) {
+            element = new TComplianceRule();
+        } else if (id instanceof PatternRefinementModelId) {
+            element = new TPatternRefinementModel();
+        } else if (id instanceof TestRefinementModelId) {
+            element = new TTestRefinementModel();
         } else if (id instanceof XSDImportId) {
             // TImport has no id; thus directly generating it without setting an id
             TImport tImport = new TImport();
@@ -642,7 +691,7 @@ public class BackendUtils {
         document.appendChild(wrapperElement);
 
         // we produce the serialization in the same order the XSD would be generated (because of the usage of xsd:sequence)
-        for (PropertyDefinitionKV propertyDefinitionKV: winerysPropertiesDefinition.getPropertyDefinitionKVList()) {
+        for (PropertyDefinitionKV propertyDefinitionKV : winerysPropertiesDefinition.getPropertyDefinitionKVList()) {
             // we always write the element tag as the XSD forces that
             final Element valueElement = document.createElementNS(namespace, propertyDefinitionKV.getKey());
             wrapperElement.appendChild(valueElement);
@@ -671,6 +720,8 @@ public class BackendUtils {
      */
     public static void persist(DefinitionsChildId id, Definitions definitions) throws IOException {
         RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
+        NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
+        namespaceManager.addPermanentNamespace(id.getNamespace().getDecoded());
         BackendUtils.persist(definitions, ref, MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
     }
 
@@ -681,19 +732,18 @@ public class BackendUtils {
     public static void persist(Object o, RepositoryFileReference ref, MediaType mediaType) throws IOException {
         // We assume that the object is not too large
         // Otherwise, http://io-tools.googlecode.com/svn/www/easystream/apidocs/index.html should be used
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Marshaller m;
-        try {
-            m = JAXBSupport.createMarshaller(true);
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            Marshaller m = JAXBSupport.createMarshaller(true);
             m.marshal(o, out);
+            byte[] data = out.toByteArray();
+            try (ByteArrayInputStream in = new ByteArrayInputStream(data)) {
+                // this may throw an IOException. We propagate this exception.
+                RepositoryFactory.getRepository().putContentToFile(ref, in, mediaType);
+            }
         } catch (JAXBException e) {
             BackendUtils.LOGGER.error("Could not put content to file", e);
             throw new IllegalStateException(e);
         }
-        byte[] data = out.toByteArray();
-        ByteArrayInputStream in = new ByteArrayInputStream(data);
-        // this may throw an IOException. We propagate this exception.
-        RepositoryFactory.getRepository().putContentToFile(ref, in, mediaType);
     }
 
     /**
@@ -701,100 +751,97 @@ public class BackendUtils {
      */
     public static Optional<XSModel> getXSModel(final RepositoryFileReference ref) {
         Objects.requireNonNull(ref);
-        final InputStream is;
-        try {
-            is = RepositoryFactory.getRepository().newInputStream(ref);
+        try (final InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
+            // we rely on xerces to parse the XSD
+            // idea based on http://stackoverflow.com/a/5165177/873282
+            XSImplementation impl = new XSImplementationImpl();
+            XSLoader schemaLoader = impl.createXSLoader(null);
+
+            // minimal LSInput implementation sufficient for XSLoader in Oracle's JRE7
+            LSInput input = new LSInput() {
+
+                @Override
+                public void setSystemId(String systemId) {
+                }
+
+                @Override
+                public void setStringData(String stringData) {
+                }
+
+                @Override
+                public void setPublicId(String publicId) {
+                }
+
+                @Override
+                public void setEncoding(String encoding) {
+                }
+
+                @Override
+                public void setCharacterStream(Reader characterStream) {
+                }
+
+                @Override
+                public void setCertifiedText(boolean certifiedText) {
+                }
+
+                @Override
+                public void setByteStream(InputStream byteStream) {
+                }
+
+                @Override
+                public void setBaseURI(String baseURI) {
+                }
+
+                @Override
+                public String getSystemId() {
+                    return null;
+                }
+
+                @Override
+                public String getStringData() {
+                    return null;
+                }
+
+                @Override
+                public String getPublicId() {
+                    return BackendUtils.getPathInsideRepo(ref);
+                }
+
+                @Override
+                public String getEncoding() {
+                    return "UTF-8";
+                }
+
+                @Override
+                public Reader getCharacterStream() {
+                    try {
+                        return new InputStreamReader(is, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        System.out.println("exeption");
+                        throw new IllegalStateException("UTF-8 is unkown", e);
+                    }
+                }
+
+                @Override
+                public boolean getCertifiedText() {
+                    return false;
+                }
+
+                @Override
+                public InputStream getByteStream() {
+                    return null;
+                }
+
+                @Override
+                public String getBaseURI() {
+                    return null;
+                }
+            };
+            return Optional.ofNullable(schemaLoader.load(input));
         } catch (IOException e) {
             BackendUtils.LOGGER.debug("Could not create input stream", e);
             return Optional.empty();
         }
-
-        // we rely on xerces to parse the XSD
-        // idea based on http://stackoverflow.com/a/5165177/873282
-        XSImplementation impl = new XSImplementationImpl();
-        XSLoader schemaLoader = impl.createXSLoader(null);
-
-        // minimal LSInput implementation sufficient for XSLoader in Oracle's JRE7
-        LSInput input = new LSInput() {
-
-            @Override
-            public void setSystemId(String systemId) {
-            }
-
-            @Override
-            public void setStringData(String stringData) {
-            }
-
-            @Override
-            public void setPublicId(String publicId) {
-            }
-
-            @Override
-            public void setEncoding(String encoding) {
-            }
-
-            @Override
-            public void setCharacterStream(Reader characterStream) {
-            }
-
-            @Override
-            public void setCertifiedText(boolean certifiedText) {
-            }
-
-            @Override
-            public void setByteStream(InputStream byteStream) {
-            }
-
-            @Override
-            public void setBaseURI(String baseURI) {
-            }
-
-            @Override
-            public String getSystemId() {
-                return null;
-            }
-
-            @Override
-            public String getStringData() {
-                return null;
-            }
-
-            @Override
-            public String getPublicId() {
-                return BackendUtils.getPathInsideRepo(ref);
-            }
-
-            @Override
-            public String getEncoding() {
-                return "UTF-8";
-            }
-
-            @Override
-            public Reader getCharacterStream() {
-                try {
-                    return new InputStreamReader(is, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    System.out.println("exeption");
-                    throw new IllegalStateException("UTF-8 is unkown", e);
-                }
-            }
-
-            @Override
-            public boolean getCertifiedText() {
-                return false;
-            }
-
-            @Override
-            public InputStream getByteStream() {
-                return null;
-            }
-
-            @Override
-            public String getBaseURI() {
-                return null;
-            }
-        };
-        return Optional.ofNullable(schemaLoader.load(input));
     }
 
     /**
@@ -939,7 +986,7 @@ public class BackendUtils {
      */
     public static Collection<QName> convertDefinitionsChildIdCollectionToQNameCollection(Collection<? extends DefinitionsChildId> col) {
         Collection<QName> res = new ArrayList<>();
-        for (DefinitionsChildId id: col) {
+        for (DefinitionsChildId id : col) {
             res.add(id.getQName());
         }
         return res;
@@ -1042,7 +1089,7 @@ public class BackendUtils {
         try (InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
             Unmarshaller u = JAXBSupport.createUnmarshaller();
             Definitions defs = ((Definitions) u.unmarshal(is));
-            for (TExtensibleElements elem: defs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation()) {
+            for (TExtensibleElements elem : defs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation()) {
                 if (elem instanceof TArtifactTemplate) {
                     return (TArtifactTemplate) elem;
                 }
@@ -1094,76 +1141,95 @@ public class BackendUtils {
     }
 
     /**
-     * Removes only the relative URIs and URIs that are throwing exceptions
-     */
-    private static void removeFileBasedReferences(TArtifactTemplate template) {
-        if (template.getArtifactReferences() == null) {
-            // nothing there, so nothing to remove
-            return;
-        }
-
-        Iterator<TArtifactReference> fileReferenceIterator = template.getArtifactReferences().getArtifactReference().iterator();
-        while (fileReferenceIterator.hasNext()) {
-            TArtifactReference artifactRef = fileReferenceIterator.next();
-            try {
-                if (!(new URI(artifactRef.getReference()).isAbsolute())) {
-                    //remove if it is not absolute
-                    fileReferenceIterator.remove();
-                }
-            } catch (URISyntaxException e) {
-                // we remove these too as they are throwing exceptions
-                fileReferenceIterator.remove();
-            }
-        }
-    }
-
-    /**
-     * Synchronizes the list of files of the given artifact template with the list of files contained in the given repository. The repository is upddated after synchronization.
+     * Synchronizes the list of files of the given artifact template with the list of files contained in the given
+     * repository. The repository is updated after synchronization.
      *
-     * This was intended if a user manually added files in the "files" directory and expected winery to correctly export a CSAR
+     * This was intended if a user manually added files in the "files" directory and expected winery to correctly export
+     * a CSAR
      *
      * @param repository The repository to search for the files
      * @param id         the id of the artifact template
-     * @return The synchronized artifact template. Used for testing only, because mockito cannot mock static methods (https://github.com/mockito/mockito/issues/1013).
+     * @return The synchronized artifact template. Used for testing only, because mockito cannot mock static methods
+     * (https://github.com/mockito/mockito/issues/1013).
      */
     public static TArtifactTemplate synchronizeReferences(IGenericRepository repository, ArtifactTemplateId id) throws IOException {
         TArtifactTemplate template = repository.getElement(id);
-
-        // this straight-forwardly populates the list of contained files
-
-        removeFileBasedReferences(template);
-        // only absolute URLs are remaining
-
+        List<TArtifactReference> toRemove = new ArrayList<>();
+        List<RepositoryFileReference> toAdd = new ArrayList<>();
+        TArtifactTemplate.ArtifactReferences artifactReferences = template.getArtifactReferences();
         DirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(id);
         SortedSet<RepositoryFileReference> files = repository.getContainedFiles(fileDir);
-        if (!files.isEmpty()) {
-            TArtifactTemplate.ArtifactReferences artifactReferences = template.getArtifactReferences();
-            if (artifactReferences == null) {
-                artifactReferences = new TArtifactTemplate.ArtifactReferences();
-                template.setArtifactReferences(artifactReferences);
-            }
-            List<TArtifactReference> artRefList = artifactReferences.getArtifactReference();
-            for (RepositoryFileReference ref: files) {
-                // determine path
-                // path relative from the root of the CSAR is ok (COS01, line 2663)
-                // double encoded - see ADR-0003
-                String path = Util.getUrlPath(ref);
+
+        if (artifactReferences == null) {
+            artifactReferences = new TArtifactTemplate.ArtifactReferences();
+            template.setArtifactReferences(artifactReferences);
+        }
+
+        List<TArtifactReference> artRefList = artifactReferences.getArtifactReference();
+        determineChanges(artRefList, files, toRemove, toAdd);
+
+        if (toAdd.size() > 0 || toRemove.size() > 0) {
+            // apply removal list
+            toRemove.forEach(artRefList::remove);
+
+            // apply addition list
+            artRefList.addAll(toAdd.stream().map(fileRef -> {
+                String path = Util.getUrlPath(fileRef);
 
                 // put path into data structure
                 // we do not use Include/Exclude as we directly reference a concrete file
                 TArtifactReference artRef = new TArtifactReference();
                 artRef.setReference(path);
-                artRefList.add(artRef);
-            }
+
+                return artRef;
+            }).collect(Collectors.toList()));
+
+            // finally, persist only if something changed
+            BackendUtils.persist(repository, id, template);
         }
 
-        BackendUtils.persist(repository, id, template);
         return template;
     }
 
     /**
+     * determines the difference between the list of artifact references (derived from the template) and the actual
+     * files stored on disk
+     *
+     * @param artRefList  the list of artifact references derived from the corresponding artifact template
+     * @param filesOnDisk the list of files actually stored on disk
+     * @param toRemove    the items to remove from the artifact list (output)
+     * @param toAdd       the items to add to the artifact list (output)
+     */
+    private static void determineChanges(List<TArtifactReference> artRefList, SortedSet<RepositoryFileReference> filesOnDisk, List<TArtifactReference> toRemove, List<RepositoryFileReference> toAdd) {
+        // first find references to remove
+        for (TArtifactReference reference : artRefList) {
+            try {
+                String urlString = reference.getReference();
+
+                // we leave out the absolute paths
+                if (!(new URI(urlString)).isAbsolute()) {
+                    if (filesOnDisk.stream().noneMatch(file -> Util.getUrlPath(file).equals(urlString))) {
+                        // we remove references not pointing to a file
+                        toRemove.add(reference);
+                    }
+                }
+            } catch (URISyntaxException e) {
+                // we remove malformed references
+                toRemove.add(reference);
+            }
+        }
+
+        // second find references to add
+        for (RepositoryFileReference file : filesOnDisk) {
+            if (artRefList.stream().noneMatch(ref -> ref.getReference().equals(Util.getUrlPath(file)))) {
+                toAdd.add(file);
+            }
+        }
+    }
+
+    /**
      * Synchronizes the known plans with the data in the XML. When there is a stored file, but no known entry in the
-     * XML, we guess "BPEL" as language and "build plan" as type.
+     * XML, we guess "BPEL" as language and "buildProvenanceSmartContract plan" as type.
      */
     public static void synchronizeReferences(ServiceTemplateId id) throws IOException {
         final IRepository repository = RepositoryFactory.getRepository();
@@ -1226,7 +1292,7 @@ public class BackendUtils {
 
         // add all plans locally stored, but not contained in the XML, as plan element to the plans of the service template.
         List<TPlan> thePlans = plans.getPlan();
-        for (PlanId planId: plansToAdd) {
+        for (PlanId planId : plansToAdd) {
             SortedSet<RepositoryFileReference> files = repository.getContainedFiles(planId);
             if (files.size() != 1) {
                 throw new IllegalStateException("Currently, only one file per plan is supported.");
@@ -1236,7 +1302,7 @@ public class BackendUtils {
             TPlan plan = new TPlan();
             plan.setId(planId.getXmlId().getDecoded());
             plan.setName(planId.getXmlId().getDecoded());
-            plan.setPlanType(org.eclipse.winery.repository.Constants.TOSCA_PLANTYPE_BUILD_PLAN);
+            plan.setPlanType(Constants.TOSCA_PLANTYPE_BUILD_PLAN);
             plan.setPlanLanguage(Namespaces.URI_BPEL20_EXECUTABLE);
 
             // create a PlanModelReferenceElement pointing to that file
@@ -1370,14 +1436,15 @@ public class BackendUtils {
         ToscaExportUtil exporter = new ToscaExportUtil();
         // we include everything related
         Map<String, Object> conf = new HashMap<>();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        exporter.exportTOSCA(repository, id, bos, conf);
-        String xmlRepresentation = bos.toString(StandardCharsets.UTF_8.toString());
-        Unmarshaller u = JAXBSupport.createUnmarshaller();
-        return ((Definitions) u.unmarshal(new StringReader(xmlRepresentation)));
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+            exporter.writeTOSCA(repository, id, conf, bos);
+            String xmlRepresentation = bos.toString(StandardCharsets.UTF_8.toString());
+            Unmarshaller u = JAXBSupport.createUnmarshaller();
+            return ((Definitions) u.unmarshal(new StringReader(xmlRepresentation)));
+        }
     }
 
-    public static void mergeServiceTemplateAinServiceTemplateB(ServiceTemplateId serviceTemplateIdA, ServiceTemplateId serviceTemplateIdB) throws IOException {
+    public static void mergeTopologyTemplateAinTopologyTemplateB(ServiceTemplateId serviceTemplateIdA, ServiceTemplateId serviceTemplateIdB) throws IOException {
         Objects.requireNonNull(serviceTemplateIdA);
         Objects.requireNonNull(serviceTemplateIdB);
 
@@ -1385,119 +1452,155 @@ public class BackendUtils {
         TTopologyTemplate topologyTemplateA = repository.getElement(serviceTemplateIdA).getTopologyTemplate();
         TServiceTemplate serviceTemplateB = repository.getElement(serviceTemplateIdB);
         TTopologyTemplate topologyTemplateB = serviceTemplateB.getTopologyTemplate();
+
+        if (topologyTemplateB != null) {
+            mergeTopologyTemplateAinTopologyTemplateB(topologyTemplateA, topologyTemplateB);
+        } else {
+            serviceTemplateB.setTopologyTemplate(topologyTemplateA);
+        }
+
+        repository.setElement(serviceTemplateIdB, serviceTemplateB);
+    }
+
+    /**
+     * Merges two Topology Templates and returns the mapping between the topology elements from the original Topology
+     * Template and their respective clones inside the merged topology.
+     *
+     * @param topologyTemplateA the topology to merged into <code>topologyTemplateB</code>
+     * @param topologyTemplateB the target topology in which <dode>topologyTemplateA</dode> should be merged in
+     * @return A mapping between the ids in the <code>topologyTemplateA</code> and their corresponding ids in
+     * <code>topologyTemplateB</code>
+     */
+    public static Map<String, String> mergeTopologyTemplateAinTopologyTemplateB(TTopologyTemplate topologyTemplateA, TTopologyTemplate topologyTemplateB) {
+        return mergeTopologyTemplateAinTopologyTemplateB(topologyTemplateA, topologyTemplateB, null);
+    }
+
+    /**
+     * Merges two Topology Templates and returns the mapping between the topology elements from the original Topology
+     * Template and their respective clones inside the merged topology. Hereby, the staying elements must not be
+     * merged.
+     *
+     * @param topologyTemplateA the topology to merged into <code>topologyTemplateB</code>
+     * @param topologyTemplateB the target topology in which <dode>topologyTemplateA</dode> should be merged in
+     * @param stayingElements   the TEntityTemplates that must not be merged from A to B.
+     * @return A mapping between the ids in the <code>topologyTemplateA</code> and their corresponding ids in
+     * <code>topologyTemplateB</code>
+     */
+    public static Map<String, String> mergeTopologyTemplateAinTopologyTemplateB(TTopologyTemplate topologyTemplateA, TTopologyTemplate topologyTemplateB, List<TEntityTemplate> stayingElements) {
+        Objects.requireNonNull(topologyTemplateA);
+        Objects.requireNonNull(topologyTemplateB);
+
+        TTopologyTemplate topologyTemplateToBeMerged = new TTopologyTemplate();
+        Map<String, String> idMapping = new HashMap<>();
+
         Optional<Integer> shiftLeft = topologyTemplateB.getNodeTemplateOrRelationshipTemplate().stream()
             .filter(x -> x instanceof TNodeTemplate)
             .map(x -> (TNodeTemplate) x)
             .max(Comparator.comparingInt(n -> ModelUtilities.getLeft(n).orElse(0)))
             .map(n -> ModelUtilities.getLeft(n).orElse(0));
-        if (shiftLeft.isPresent()) {
-            Map<String, String> idMapping = new HashMap<>();
 
-            // collect existing node template ids
-            topologyTemplateB.getNodeTemplateOrRelationshipTemplate().stream()
-                .filter(x -> x instanceof TNodeTemplate)
-                .map(x -> (TNodeTemplate) x)
-                // the existing ids are left unchanged
-                .forEach(x -> idMapping.put(x.getId(), x.getId()));
-
-            // collect existing relationship template ids
-            topologyTemplateB.getNodeTemplateOrRelationshipTemplate().stream()
-                .filter(x -> x instanceof TRelationshipTemplate)
-                .map(x -> (TRelationshipTemplate) x)
-                // the existing ids are left unchanged
-                .forEach(x -> idMapping.put(x.getId(), x.getId()));
-
-            if (topologyTemplateB.getNodeTemplates() != null) {
-                // collect existing requirement ids
-                topologyTemplateB.getNodeTemplates().stream()
-                    .filter(nt -> nt.getRequirements() != null)
-                    .forEach(nt -> nt.getRequirements().getRequirement().stream()
-                        // the existing ids are left unchanged
-                        .forEach(x -> idMapping.put(x.getId(), x.getId())));
-
-                //collect existing capability ids
-                topologyTemplateB.getNodeTemplates().stream()
-                    .filter(nt -> nt.getCapabilities() != null)
-                    .forEach(nt -> nt.getCapabilities().getCapability().stream()
-                        // the existing ids are left unchanged
-                        .forEach(x -> idMapping.put(x.getId(), x.getId())));
-            }
-
-            if (topologyTemplateA.getNodeTemplates() != null) {
-                // patch ids of reqs change them if required
-                topologyTemplateA.getNodeTemplates().stream()
-                    .filter(nt -> nt.getRequirements() != null)
-                    .forEach(nt -> nt.getRequirements().getRequirement().forEach(req -> {
-                        String oldId = req.getId();
-                        String newId = req.getId();
-                        while (idMapping.containsKey(newId)) {
-                            newId = newId + "-new";
+        if (Objects.nonNull(stayingElements)) {
+            topologyTemplateA.getNodeTemplateOrRelationshipTemplate()
+                .forEach(entity -> {
+                    if (!stayingElements.contains(entity)) {
+                        if (entity instanceof TNodeTemplate) {
+                            topologyTemplateToBeMerged.addNodeTemplate((TNodeTemplate) entity);
+                        } else if (entity instanceof TRelationshipTemplate) {
+                            topologyTemplateToBeMerged.addRelationshipTemplate((TRelationshipTemplate) entity);
                         }
-                        idMapping.put(req.getId(), newId);
-                        req.setId(newId);
-                        topologyTemplateA.getRelationshipTemplates().stream()
-                            .filter(rt -> rt.getSourceElement().getRef() instanceof TRequirement)
-                            .forEach(rt -> {
-                                TRequirement sourceElement = (TRequirement) rt.getSourceElement().getRef();
-                                if (sourceElement.getId().equalsIgnoreCase(oldId)) {
-                                    sourceElement.setId(req.getId());
-                                }
-                            });
-                    }));
-                // patch ids of caps change them if required
-                topologyTemplateA.getNodeTemplates().stream()
-                    .filter(nt -> nt.getCapabilities() != null)
-                    .forEach(nt -> nt.getCapabilities().getCapability().forEach(cap -> {
-                        String oldId = cap.getId();
-                        String newId = cap.getId();
-                        while (idMapping.containsKey(newId)) {
-                            newId = newId + "-new";
-                        }
-                        idMapping.put(cap.getId(), newId);
-                        cap.setId(newId);
-                        topologyTemplateA.getRelationshipTemplates().stream()
-                            .filter(rt -> rt.getTargetElement().getRef() instanceof TCapability)
-                            .forEach(rt -> {
-                                TCapability targetElement = (TCapability) rt.getTargetElement().getRef();
-                                if (targetElement.getId().equalsIgnoreCase(oldId)) {
-                                    targetElement.setId(cap.getId());
-                                }
-                            });
-                    }));
-            }
-            // patch the ids of node templates and add them
-            topologyTemplateA.getNodeTemplateOrRelationshipTemplate().stream()
-                .filter(x -> x instanceof TNodeTemplate)
-                .map(x -> (TNodeTemplate) x)
-                .forEach(nt -> {
-                    String newId = nt.getId();
-                    while (idMapping.containsKey(newId)) {
-                        newId = newId + "-new";
                     }
-                    idMapping.put(nt.getId(), newId);
-                    nt.setId(newId);
-                    int newLeft = ModelUtilities.getLeft((TNodeTemplate) nt).orElse(0) + shiftLeft.get();
-                    ((TNodeTemplate) nt).setX(Integer.toString(newLeft));
-                    topologyTemplateB.getNodeTemplateOrRelationshipTemplate().add(nt);
-                });
-
-            // patch the ids of relationship templates and add them
-            topologyTemplateA.getNodeTemplateOrRelationshipTemplate().stream()
-                .filter(x -> x instanceof TRelationshipTemplate)
-                .map(x -> (TRelationshipTemplate) x)
-                .forEach(rt -> {
-                    String newId = rt.getId();
-                    while (idMapping.containsKey(newId)) {
-                        newId = newId + "-new";
-                    }
-                    idMapping.put(rt.getId(), newId);
-                    rt.setId(newId);
-                    topologyTemplateB.getNodeTemplateOrRelationshipTemplate().add(rt);
                 });
         } else {
-            topologyTemplateB.getNodeTemplateOrRelationshipTemplate().addAll(topologyTemplateA.getNodeTemplateOrRelationshipTemplate());
+            topologyTemplateToBeMerged.getNodeTemplateOrRelationshipTemplate()
+                .addAll(topologyTemplateA.getNodeTemplateOrRelationshipTemplate());
         }
-        repository.setElement(serviceTemplateIdB, serviceTemplateB);
+
+        if (shiftLeft.isPresent()) {
+            ModelUtilities.collectIdsOfExistingTopologyElements(topologyTemplateB, idMapping);
+
+            // patch ids of reqs change them if required
+            topologyTemplateToBeMerged.getNodeTemplates().stream()
+                .filter(nt -> nt.getRequirements() != null)
+                .forEach(nt -> nt.getRequirements().getRequirement().forEach(oldReq -> {
+                    TRequirement req = SerializationUtils.clone(oldReq);
+                    ModelUtilities.generateNewIdOfTemplate(req, idMapping);
+
+                    topologyTemplateToBeMerged.getRelationshipTemplates().stream()
+                        .filter(rt -> rt.getSourceElement().getRef() instanceof TRequirement)
+                        .forEach(rt -> {
+                            TRequirement sourceElement = (TRequirement) rt.getSourceElement().getRef();
+                            if (sourceElement.getId().equalsIgnoreCase(oldReq.getId())) {
+                                sourceElement.setId(req.getId());
+                            }
+                        });
+                }));
+
+            // patch ids of caps change them if required
+            topologyTemplateToBeMerged.getNodeTemplates().stream()
+                .filter(nt -> nt.getCapabilities() != null)
+                .forEach(nt -> nt.getCapabilities().getCapability().forEach(oldCap -> {
+                    TCapability cap = SerializationUtils.clone(oldCap);
+                    ModelUtilities.generateNewIdOfTemplate(cap, idMapping);
+
+                    topologyTemplateToBeMerged.getRelationshipTemplates().stream()
+                        .filter(rt -> rt.getTargetElement().getRef() instanceof TCapability)
+                        .forEach(rt -> {
+                            TCapability targetElement = (TCapability) rt.getTargetElement().getRef();
+                            if (targetElement.getId().equalsIgnoreCase(oldCap.getId())) {
+                                targetElement.setId(cap.getId());
+                            }
+                        });
+                }));
+
+            ArrayList<TRelationshipTemplate> newRelationships = new ArrayList<>();
+
+            // patch the ids of templates and add them
+            topologyTemplateToBeMerged.getNodeTemplateOrRelationshipTemplate()
+                .forEach(element -> {
+                    TEntityTemplate rtOrNt = SerializationUtils.clone(element);
+                    ModelUtilities.generateNewIdOfTemplate(rtOrNt, idMapping);
+
+                    if (rtOrNt instanceof TNodeTemplate) {
+                        int newLeft = ModelUtilities.getLeft((TNodeTemplate) rtOrNt).orElse(0) + shiftLeft.get();
+                        ((TNodeTemplate) rtOrNt).setX(Integer.toString(newLeft));
+                    } else if (rtOrNt instanceof TRelationshipTemplate) {
+                        newRelationships.add((TRelationshipTemplate) rtOrNt);
+                    }
+
+                    topologyTemplateB.getNodeTemplateOrRelationshipTemplate().add(rtOrNt);
+                });
+
+            // update references to the new elements
+            newRelationships.forEach(rel -> {
+                RelationshipSourceOrTarget source = rel.getSourceElement().getRef();
+                RelationshipSourceOrTarget target = rel.getTargetElement().getRef();
+
+                if (source instanceof TNodeTemplate && (stayingElements == null
+                    || stayingElements.stream().noneMatch(element -> element.getId().equals(source.getId())))) {
+                    TNodeTemplate newSource = topologyTemplateB.getNodeTemplate(idMapping.get(source.getId()));
+                    rel.setSourceNodeTemplate(newSource);
+                }
+
+                if (target instanceof TNodeTemplate && (stayingElements == null
+                    || stayingElements.stream().noneMatch(element -> element.getId().equals(target.getId())))) {
+                    TNodeTemplate newTarget = topologyTemplateB.getNodeTemplate(idMapping.get(target.getId()));
+                    rel.setTargetNodeTemplate(newTarget);
+                }
+            });
+        } else {
+            topologyTemplateB.getNodeTemplateOrRelationshipTemplate()
+                .addAll(topologyTemplateToBeMerged.getNodeTemplateOrRelationshipTemplate());
+        }
+
+        return idMapping;
+    }
+
+    public static TTopologyTemplate updateVersionOfNodeTemplate(TTopologyTemplate topologyTemplate, String nodeTemplateId, String newComponentType) {
+        topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream()
+            .filter(template -> template.getId().equals(nodeTemplateId))
+            .findFirst()
+            .ifPresent(template -> template.setType(newComponentType));
+        return topologyTemplate;
     }
 
     /**
@@ -1562,9 +1665,15 @@ public class BackendUtils {
         versionList.get(0).setReleasable(true);
 
         if (current[0].isVersionedInWinery() && RepositoryFactory.getRepository() instanceof GitBasedRepository) {
-            GitBasedRepository gitRepo = (GitBasedRepository) RepositoryFactory.getRepository();
-            boolean changesInFile = gitRepo.hasChangesInFile(BackendUtils.getRefOfDefinitions(id));
-
+            boolean changesInFile = false;
+            for (FilebasedRepository repo : RepositoryFactory.repositoryList) {
+                if (repo.getClass().equals(GitBasedRepository.class)) {
+                    GitBasedRepository gitRepo = (GitBasedRepository) repo;
+                    if (gitRepo.hasChangesInFile(BackendUtils.getRefOfDefinitions(id))) {
+                        changesInFile = true;
+                    }
+                }
+            }
             if (!current[0].isLatestVersion()) {
                 // The current version may still be releasable, if it's the latest WIP version of a component version.
                 List<WineryVersion> collect = versionList.stream()

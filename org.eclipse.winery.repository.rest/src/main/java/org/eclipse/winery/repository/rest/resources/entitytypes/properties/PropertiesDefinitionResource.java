@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,6 +12,21 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.properties;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition;
@@ -26,15 +41,9 @@ import org.eclipse.winery.repository.rest.datatypes.NamespaceAndDefinedLocalName
 import org.eclipse.winery.repository.rest.resources.apiData.PropertiesDefinitionEnum;
 import org.eclipse.winery.repository.rest.resources.apiData.PropertiesDefinitionResourceApiData;
 import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Models
@@ -138,7 +147,7 @@ public class PropertiesDefinitionResource {
             ModelUtilities.replaceWinerysPropertiesDefinition(et, data.winerysPropertiesDefinition);
             String namespace = data.winerysPropertiesDefinition.getNamespace();
             NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
-            if (!namespaceManager.hasPermanentPrefix(namespace)) {
+            if (!namespaceManager.hasPermanentProperties(namespace)) {
                 namespaceManager.addPermanentNamespace(namespace);
             }
             return RestUtils.persist(this.parentRes);

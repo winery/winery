@@ -13,16 +13,13 @@
  *******************************************************************************/
 package org.eclipse.winery.common;
 
-
 /**
- * Meta class to handle things, where a String (URI, NCName, ...) may be
- * URLencoded
+ * Meta class to handle things, where a String (URI, NCName, ...) may be URLencoded
  */
 public class StringEncodedAndDecoded implements Comparable<StringEncodedAndDecoded> {
 
     private String decoded = null;
     private String encoded = null;
-
 
     /**
      * @param uri        the URI to store
@@ -73,8 +70,7 @@ public class StringEncodedAndDecoded implements Comparable<StringEncodedAndDecod
     }
 
     /**
-     * Compares with the given object.
-     * Equality checking is made based on the decoded String
+     * Compares with the given object. Equality checking is made based on the decoded String
      */
     @Override
     public boolean equals(Object o) {

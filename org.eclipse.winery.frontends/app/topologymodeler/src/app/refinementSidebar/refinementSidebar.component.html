@@ -1,0 +1,48 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<div id="RefinementView" class="sidebar-root">
+    <div class="refinementContainer">
+        <div class="informationContainer" *ngIf="!refinementIsRunning; else showIsRunning">
+            <div *ngIf="refinementIsDone; else showStart">
+                <h5>Refinement successful!</h5>
+            </div>
+            <ng-template #showStart>
+                <button class="btn btn-primary" (click)="startRefinement($event)">Start Refinement</button>
+            </ng-template>
+        </div>
+        <ng-template #showIsRunning>
+            <div class="loader" *ngIf="refinementIsLoading; else showContent"></div>
+            <ng-template #showContent>
+                <ul>
+                    <li *ngFor="let candidate of prmCandidates" (mouseover)="onHoverOver(candidate)" (mouseleave)="hoverOut()">
+                        {{ candidate.refinementModel.name }}
+                        <br>
+                        <div class="btn-group">
+                            <button class="btn btn-sm btn-info"
+                                    (click)="openModeler($event, candidate.refinementModel.name, candidate.refinementModel.targetNamespace)">
+                                Show Refinement Structure
+                            </button>
+                            <br>
+                            <button class="btn btn-sm btn-primary" (click)="prmChosen($event, candidate)">Choose</button>
+                        </div>
+                    </li>
+                </ul>
+                <button class="btn btn-sm btn-danger" *ngIf="refinementType === 'tests'" (click)="stopRefinement()">
+                    Stop
+                </button>
+            </ng-template>
+        </ng-template>
+    </div>
+</div>

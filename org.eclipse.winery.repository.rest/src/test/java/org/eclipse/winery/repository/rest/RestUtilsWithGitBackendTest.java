@@ -213,7 +213,7 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         Assert.assertEquals(201, response.getStatus());
         Assert.assertEquals(formerVersionCount + 1, finalVersionCount);
         Assert.assertFalse(version.isReleasable());
-        Assert.assertTrue(version.getWorkInProgressVersion() == 0);
+        Assert.assertEquals(0, version.getWorkInProgressVersion());
     }
 
     @Test
@@ -235,6 +235,6 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         Assert.assertEquals(201, response.getStatus());
         Assert.assertEquals(formerVersionCount + 1, finalVersionCount);
         Assert.assertFalse(version.isReleasable());
-        Assert.assertTrue(version.getWorkInProgressVersion() == 0);
+        Assert.assertEquals(0, version.getWorkInProgressVersion());
     }
 }

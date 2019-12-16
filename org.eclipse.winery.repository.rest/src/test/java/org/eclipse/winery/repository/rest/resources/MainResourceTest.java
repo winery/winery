@@ -21,15 +21,6 @@ import java.nio.file.Path;
 
 public class MainResourceTest extends AbstractResourceTest {
 
-    protected void assertPostWithOverwrite(String restUrl, Path file, boolean overwrite) {
-        start()
-            .multiPart(file.toFile())
-            .formParam("overwrite", overwrite)
-            .post(callURL(restUrl))
-            .then()
-            .statusCode(201);
-    }
-
     @Test
     @Ignore("The NamespaceManager does not reload Namespaces.properties upon each change. Thus, this tests fails under certain conditions -- winery-defs-for_servicetemplates-ImportCsarWithOverwriteTest vs. winery-defs-for_servicetemplates1-ImportCsarWithOverwriteTest")
     public void importCSARTestWithOverwrite() throws Exception {

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<form #authenticationForm="ngForm">
+    <div *ngIf="!loading; else showAuthenticationLoader">
+        <div *ngIf="!error; else showError">
+            <div class="form-group">
+                <label for="provenanceSelect" class="control-label">Service Template (Process Id)</label>
+                <ng-select id="provenanceSelect" [items]="serviceTemplateList"
+                           (selected)="provenanceIdSelected($event)"
+                           [active]="[selectedProvenanceId]"></ng-select>
+                <br/>
+
+                <label for="blockchainAddress">Blockchain Address</label>
+                <input type="text" id="blockchainAddress" class="form-control" name="blockchainAddress"
+                       pattern="^0x[a-fA-F0-9]{40}$"
+                       [(ngModel)]="participant.address" required>
+                <br />
+
+
+                <button type="button" class="btn btn-primary" (click)="onOk()"
+                        [disabled]="!authenticationForm?.valid || loading">
+                    Authenticate
+                </button>
+            </div>
+        </div>
+        <ng-template #showError>
+            <alert [type]="'danger'">
+                <i class="fa fa-ban"></i>
+                <span>&nbsp;&nbsp;{{ error }}</span>
+            </alert>
+        </ng-template>
+    </div>
+    <ng-template #showAuthenticationLoader>
+        <winery-loader ></winery-loader>
+    </ng-template>
+</form>
+
+<!--<winery-modal bsModal #authenticationLineageModall="bs-modal" [modalRef]="authenticationLineageModal">-->
+    <!--<winery-modal-header [title]="'Authentication Lineage for ' + participant.identity + ' (' + participant.address + ')'">-->
+    <!--</winery-modal-header>-->
+    <!--<winery-modal-body>-->
+        <!--<div *ngIf="authenticationData">-->
+            <!--<ol *ngIf="authenticationData.length > 0; else showNoLineageError">-->
+                <!--<li *ngFor="let item of authenticationData" style="margin-top: 10px;">-->
+                    <!--Name: {{ item.identity }}<br>-->
+                    <!--Address: {{ item.address }}-->
+                <!--</li>-->
+            <!--</ol>-->
+            <!--<ng-template #showNoLineageError>-->
+                <!--<alert [type]="'danger'">-->
+                    <!--No authentication lineage available!-->
+                <!--</alert>-->
+            <!--</ng-template>-->
+        <!--</div>-->
+    <!--</winery-modal-body>-->
+    <!--<winery-modal-footer [showDefaultButtons]="false">-->
+        <!--<button class="btn btn-default" (click)="authenticationLineageModal.hide()">Close</button>-->
+    <!--</winery-modal-footer>-->
+<!--</winery-modal>-->
+
+
+<ng-template #authenticationLineageModal>
+    <winery-modal-header [modalRef]="modalRef" [title]="'Authentication Lineage for ' + participant.identity + ' (' + participant.address + ')'">-->
+    </winery-modal-header>
+
+    <winery-modal-body>
+        <div *ngIf="authenticationData">
+            <ol *ngIf="authenticationData.length > 0; else showNoLineageError">
+                <li *ngFor="let item of authenticationData" style="margin-top: 10px;">
+                    Name: {{ item.identity }}<br>
+                    Address: {{ item.address }}
+                </li>
+            </ol>
+            <ng-template #showNoLineageError>
+                <alert [type]="'danger'">
+                    No authentication lineage available!
+                </alert>
+            </ng-template>
+        </div>
+    </winery-modal-body>
+    <winery-modal-footer [modalRef]="modalRef" [showDefaultButtons]="true" [closeButtonLabel]="'Close'"  [hideOkButton]="true" ></winery-modal-footer>
+</ng-template>

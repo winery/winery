@@ -43,12 +43,12 @@
             <param-value>GET,PUT,POST,DELETE,HEAD,OPTIONS</param-value>
         </init-param>
         <init-param>
-            <param-name>cors.exposed.headers</param-name>
-            <param-value>Location, Access-Control-Allow-Origin</param-value>
+            <param-name>cors.allowed.headers</param-name>
+            <param-value>Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,DNT</param-value>
         </init-param>
         <init-param>
-            <param-name>cors.preflight.maxage</param-name>
-            <param-value>10</param-value>
+            <param-name>cors.exposed.headers</param-name>
+            <param-value>Location,Access-Control-Allow-Origin</param-value>
         </init-param>
     </filter>
 
@@ -88,6 +88,12 @@
         <init-param>
             <param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
             <param-value>com.sun.jersey.api.container.filter.LoggingFilter</param-value>
+        </init-param>
+
+        <!-- Disables the logging of the request body - could be enabled for debugging purposes -->
+        <init-param>
+            <param-name>com.sun.jersey.config.feature.logging.DisableEntitylogging</param-name>
+            <param-value>true</param-value>
         </init-param>
 
         <!-- enables @Consumes(MediaType.APPLICATION_JSON) and @Produces(MediaType.APPLICATION_JSON), see https://jersey.java.net/nonav/documentation/1.7/json.html -->

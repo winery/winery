@@ -1,0 +1,13 @@
+{
+    "extends": "../../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "../../../dist/workflowmodeler",
+        "module": "es2015"
+    },
+    "include": [
+        "**/*.ts"
+    ],
+    "exclude": [
+        "**/*.spec.ts"
+    ]
+}

@@ -19,6 +19,7 @@ import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TPolicyType;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.rest.datatypes.select2.Select2OptGroup;
+import org.eclipse.winery.repository.rest.resources._support.VisualAppearanceResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,4 +76,8 @@ public final class PolicyTypeResource extends EntityTypeResource {
         return new TemplatesOfOnePolicyTypeResource((PolicyTypeId) this.id);
     }
 
+    @Path("appearance")
+    public VisualAppearanceResource getVisualAppearanceResource() {
+        return new VisualAppearanceResource(this, this.getElement().getOtherAttributes(), this.id);
+    }
 }

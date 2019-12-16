@@ -1,0 +1,57 @@
+/*******************************************************************************
+ * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ *******************************************************************************/
+
+.palette-ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+ul {
+
+}
+
+.nav-item {
+    list-style-type: none;
+    /*background-color: #424242;*/
+    /*color: #fff;*/
+    color: #000;
+    width: 250px;
+    font-size: x-small !important;
+    padding-top: 0.4em;
+    padding-bottom: 0.6em;
+}
+
+.nav-item:hover {
+    overflow: visible;
+    white-space: normal;
+}
+
+.btn-light {
+    border: 1px solid #c0c0c0;
+    font-size: x-small;
+    background-color: #efefef;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    transition: box-shadow 0.3s cubic-bezier(.25, .8, .25, 1);
+}
+
+.btn-light:hover {
+    border: 1px solid #c0c0c0;
+    font-size: x-small;
+    background-color: #f6f5f4;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25), 0 3px 3px rgba(0, 0, 0, 0.22);
+}

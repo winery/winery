@@ -1,0 +1,88 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div *ngIf="!readmeAvailable">
+    <div class="flash">
+        Help people interested in this {{ toscaType | toscaTypeToReadableName }} understand this {{ toscaType |
+        toscaTypeToReadableName }} by adding a README.
+        <button class="btn btn-sm btn-primary flash-action" [disabled]="!sharedData?.currentVersion?.editable"
+                (click)="readmeAvailable=true;isEditable=true;">
+            Add a README
+        </button>
+    </div>
+</div>
+
+<div *ngIf="!isEditable && readmeAvailable">
+    <div class="right">
+        <button class="btn fa fa-pencil" aria-hidden="true" name="edit"
+                [disabled]="!sharedData?.currentVersion?.editable"
+                (click)="isEditable = true;"></button>
+    </div>
+    <winery-markdown [markdownContent]="readmeContent"></winery-markdown>
+
+</div>
+
+<div *ngIf="isEditable">
+    <div class="right">
+        <button class="btn fa fa-floppy-o" aria-hidden="true" name="save" (click)="saveReadmeFile()"> Save</button>
+        <button class="btn fa fa-ban" name="cancel" aria-hidden="true" (click)="cancelEdit()"> Cancel</button>
+    </div>
+
+    <div>
+        <tabset #markdownTabs>
+            <tab heading="Edit File" active="true">
+                <div>
+                    <form>
+                        <textarea name="readmeEdit" id="textbox" class="form-control pad-6px"
+                                  style="min-height: -webkit-fill-available; font-family: monospace"
+                                  [(ngModel)]="readmeContent"></textarea>
+                    </form>
+                </div>
+            </tab>
+
+            <tab heading="Preview Changes">
+                <div class="panel-body">
+                    <winery-markdown [markdownContent]="readmeContent"></winery-markdown>
+                </div>
+            </tab>
+
+            <tab heading="Both">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="padding-left: 0px">
+                            <div class="panel panel-default">
+                            <textarea name="readmeEditBoth" id="textbox_b" class="form-control pad-6px"
+                                      style="min-height: -webkit-fill-available; font-family: monospace"
+                                      [(ngModel)]="readmeContent"></textarea>
+                            </div>
+
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="padding-left: 0px">
+                            <div class="panel panel-default">
+                                <div class="panel-body pad-6px" style="min-height: -webkit-fill-available;
+                                     max-height: -webkit-fill-available; overflow-y: scroll;">
+                                    <winery-markdown [markdownContent]="readmeContent"></winery-markdown>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </tab>
+        </tabset>
+    </div>
+
+    <textarea style="width: 95%; height: 500px; resize: none; font-family: monospace" [(ngModel)]="readmeContent"></textarea>
+</div>
+
+
+

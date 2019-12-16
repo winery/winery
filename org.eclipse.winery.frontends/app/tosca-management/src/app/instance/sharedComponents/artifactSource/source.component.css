@@ -1,0 +1,115 @@
+/*******************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ *******************************************************************************/
+* {
+    box-sizing: border-box;
+}
+
+.fileContainer {
+}
+
+#fileGridHeader {
+    display: grid;
+    grid-column-gap: 10px;
+    grid-template-columns: 70px 120px 70px 70px 340px 120px 70px;
+    grid-template-rows: 30px;
+    margin-bottom: 10px;
+}
+
+#gridHeaderText {
+    grid-column: 1 / span 7;
+    grid-row: 1 / span 1;
+}
+
+#fileGridBody {
+    display: grid;
+    grid-template-columns: 300px auto;
+    grid-template-rows: 20px 480px;
+}
+
+#leftEditContent {
+    grid-column: 1 / span 1;
+    grid-row: 1 / span 2;
+    border-top: 1px solid #ddd;
+    display: grid;
+    grid-template-columns: 300px;
+}
+
+span {
+    cursor: hand;
+}
+
+.fileList {
+    display: grid;
+    grid-template-columns: 300px;
+    grid-template-rows: auto auto;
+}
+
+.fileListFolder {
+    background-color: #E4E4E4;
+    box-shadow: #1b6d85;
+    margin-bottom: 2px;
+    cursor: hand;
+    padding-left: 16px;
+    background-image: url("../../../../assets/img/entitytemplates/folderCollapsed.png");
+    background-repeat: no-repeat;
+}
+
+.fileListFolder.selected {
+    background-image: url("../../../../assets/img/entitytemplates/folderExpanded.png");
+}
+
+.fileListSubFiles {
+    display: grid;
+    grid-template-columns: 300px;
+    grid-template-rows: auto;
+}
+
+.fileListFile {
+    display: grid;
+    grid-template-columns: auto 1fr 60px;
+    grid-template-rows: auto;
+    margin-bottom: 3px;
+}
+
+.fileListFile:hover {
+    background-color: #aaaaaa;
+}
+
+.fileListFile.selected {
+    background-color: #8c8c8c;
+}
+
+.fileListSubFiles.indented {
+    padding-left: 5px;
+}
+
+#rightEditHeader {
+    padding-left: 5px;
+    border-top: 2px solid lightgray;
+    border-left: 2px solid lightgray;
+    border-right: 2px solid lightgray;
+    grid-column: 2 / span 1;
+    grid-row: 1 / span 1;
+}
+
+#rightEditContent {
+    grid-column: 2 / span 1;
+    grid-row: 2 / span 1;
+}
+
+.name {
+    display: block;
+    overflow: hidden;
+    overflow-wrap: break-word;
+}

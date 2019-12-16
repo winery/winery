@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -40,6 +40,7 @@ import javax.xml.parsers.DocumentBuilder;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ToscaDocumentBuilderFactory;
 import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
@@ -61,7 +62,7 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
-import org.eclipse.winery.repository.configuration.Environment;
+import org.eclipse.winery.repository.export.CsarExportOptions;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.NewVersionApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameWithTypeApiData;
@@ -130,8 +131,10 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         // the data file might not exist
         this.ref = BackendUtils.getRefOfDefinitions(id);
         if (RepositoryFactory.getRepository().exists(this.ref)) {
+            LOGGER.debug("data file exists");
             this.load();
         } else {
+            LOGGER.debug("Data file does not exist. Creating a new one.");
             this.createNew();
         }
     }
@@ -235,29 +238,36 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 
     @GET
     @Produces(MimeTypes.MIMETYPE_ZIP)
-    public final Response getCSAR() {
+    public final Response getCSAR(@QueryParam(value = "addToProvenance") String addToProvenance) {
         if (!RepositoryFactory.getRepository().exists(this.id)) {
             return Response.status(Status.NOT_FOUND).build();
         }
-        return RestUtils.getCSARofSelectedResource(this);
+        CsarExportOptions options = new CsarExportOptions();
+        options.setAddToProvenance(Objects.nonNull(addToProvenance));
+        return RestUtils.getCsarOfSelectedResource(this, options);
     }
 
     /**
-     * Returns the definitions of this resource. Includes required imports of other definitions.
-     * Also called by the UI
+     * Returns the definitions of this resource. Includes required imports of other definitions. Also called by the UI
      *
      * @param csar used because plan generator's GET request lands here
      */
     @GET
-    @Produces({MimeTypes.MIMETYPE_TOSCA_DEFINITIONS, MediaType.APPLICATION_XML, MediaType.TEXT_XML})
+    @Produces( {MimeTypes.MIMETYPE_TOSCA_DEFINITIONS, MediaType.APPLICATION_XML, MediaType.TEXT_XML})
     public Response getDefinitionsAsResponse(
         @QueryParam(value = "csar") String csar,
         @QueryParam(value = "yaml") String yaml,
+        @QueryParam(value = "edmm") String edmm,
+        @QueryParam(value = "addToProvenance") String addToProvenance,
         @Context UriInfo uriInfo
     ) {
         final IRepository repository = RepositoryFactory.getRepository();
         if (!repository.exists(this.id)) {
             return Response.status(Status.NOT_FOUND).build();
+        }
+
+        if (edmm != null && this.element instanceof TServiceTemplate) {
+            return RestUtils.getEdmmModel((TServiceTemplate) this.element);
         }
 
         // TODO: It should be possible to specify ?yaml&csar to retrieve a CSAR and ?yaml to retrieve the .yaml representation
@@ -271,7 +281,10 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
             // we cannot use this.definitions as that definitions is Winery's internal representation of the data and not the full blown definitions (including imports to referenced elements)
             return RestUtils.getDefinitionsOfSelectedResource(this, uriInfo.getBaseUri());
         } else {
-            return RestUtils.getCSARofSelectedResource(this);
+            CsarExportOptions options = new CsarExportOptions();
+            options.setAddToProvenance(Objects.nonNull(addToProvenance));
+
+            return RestUtils.getCsarOfSelectedResource(this, options);
         }
     }
 
@@ -280,16 +293,18 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     public Response redirectToAngularUi(
         @QueryParam(value = "csar") String csar,
         @QueryParam(value = "yaml") String yaml,
+        @QueryParam(value = "edmm") String edmm,
+        @QueryParam(value = "addToProvenance") String addToProvenance,
         @QueryParam(value = "xml") String xml,
         @Context UriInfo uriInfo) {
         // in case there is an URL requested directly via the browser UI, the accept cannot be put at the link.
         // thus, there is the hack with ?csar and ?yaml
         // the hack is implemented at getDefinitionsAsResponse
-        if ((csar != null) || (yaml != null) || (xml != null)) {
-            return this.getDefinitionsAsResponse(csar, yaml, uriInfo);
+        if ((csar != null) || (yaml != null) || (xml != null) || (edmm != null)) {
+            return this.getDefinitionsAsResponse(csar, yaml, edmm, addToProvenance, uriInfo);
         }
-        String repositoryUiUrl = Environment.getUrlConfiguration().getRepositoryUiUrl();
-        String uiUrl = uriInfo.getAbsolutePath().toString().replaceAll(Environment.getUrlConfiguration().getRepositoryApiUrl(), repositoryUiUrl);
+        String repositoryUiUrl = Environments.getUiConfig().getEndpoints().get("repositoryUiUrl");
+        String uiUrl = uriInfo.getAbsolutePath().toString().replaceAll(Environments.getUiConfig().getEndpoints().get("repositoryApiUrl"), repositoryUiUrl);
         return Response.temporaryRedirect(URI.create(uiUrl)).build();
     }
 
@@ -429,7 +444,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     }
 
     @PUT
-    @Consumes({MimeTypes.MIMETYPE_TOSCA_DEFINITIONS, MediaType.APPLICATION_XML, MediaType.TEXT_XML})
+    @Consumes( {MimeTypes.MIMETYPE_TOSCA_DEFINITIONS, MediaType.APPLICATION_XML, MediaType.TEXT_XML})
     public Response updateDefinitions(InputStream requestBodyStream) {
         Unmarshaller u;
         Definitions defs;
@@ -457,7 +472,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         // we allow changing the target namespace and the id
         // This allows for inserting arbitrary definitions XML
         //		if (!this.definitions.getTargetNamespace().equals(this.id.getNamespace().getDecoded())) {
-        //			return Response.status(Status.BAD_REQUEST).entity("Changing of the namespace is not supported").build();
+        //			return Response.status(Status.BAD_REQUEST).entity("Changing of the namespace is not supported").buildProvenanceSmartContract();
         //		}
         //		this.definitions.setTargetNamespace(this.id.getNamespace().getDecoded());
 

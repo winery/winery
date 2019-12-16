@@ -1,0 +1,144 @@
+<!--
+/********************************************************************************
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ ********************************************************************************/
+-->
+<div class="btn-group" dropdown *ngIf="versions?.length > 0 || sharedData?.currentVersion?.toString().length > 0">
+    <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split">
+        Versions <span class="caret"></span>
+    </button>
+    <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+        <li *ngFor="let version of versions" role="menuitem">
+            <a class="dropdown-item pointer" (click)="onVersionSelected(version)">
+                {{ version.toReadableString() }}
+            </a>
+        </li>
+        <li class="divider dropdown-divider"></li>
+        <li>
+            <a class="dropdow-item pointer" (click)="onAddNewVersion()">
+                <i class="fa fa-plus-circle flash-action" aria-hidden="true"
+                   style="color: #79D858"></i><span>&nbsp;&nbsp;Add a new version</span>
+            </a>
+            <a *ngIf="sharedData.currentVersion.releasable" class="pointer"
+               (click)="onReleaseVersion()">
+                <i class="fa fa-file-archive-o"
+                   aria-hidden="true"></i><span>&nbsp;&nbsp;Release management version</span>
+            </a>
+            <a *ngIf="(sharedData.currentVersion.editable && sharedData.currentVersion.wineryVersion > 0)" class="pointer"
+               (click)="onCommitVersion()">
+                <i class="fa fa-snowflake-o" aria-hidden="true"></i><span>&nbsp;&nbsp;Freeze beta version</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<winery-modal bsModal #modal="bs-modal" [modalRef]="modal">
+    <winery-modal-header [title]="modalConfig?.title">
+    </winery-modal-header>
+
+    <winery-modal-body>
+        <form #newVersionForm="ngForm">
+            <winery-loader *ngIf="modalConfig?.loading; else modalContent">
+            </winery-loader>
+            <ng-template #modalContent>
+                <div *ngIf="modalConfig?.action === versionActions.AddNewVersion">
+                    <h4>
+                        What kind of version do you want to add?
+                    </h4>
+                    <div class="form-group">
+                        <input id="componentVersion" type="radio" name="versionType" [checked]="currentSelected === versionTypes.ComponentVersion"
+                               (click)="componentVersionSelected()">
+                        <label for="componentVersion" (click)="componentVersionSelected()">Component version</label>
+                        <span class="versionExample">
+                            creates
+                            <code>
+                                {{ sharedData.toscaComponent.localNameWithoutVersion + '_' + newComponentVersion.toString() }}
+                            </code>
+                        </span>
+                        <br>
+                        <input id="wineryVersion" type="radio" name="versionType" [checked]="currentSelected === versionTypes.WineryVersion"
+                               (click)="wineryVersionSelected()">
+                        <label for="wineryVersion" (click)="wineryVersionSelected()">Winery version</label>
+                        <span class="versionExample">
+                            creates
+                            <code>
+                                {{ sharedData.toscaComponent.localNameWithoutVersion + '_' + newWineryVersion.toString() }}
+                            </code>
+                        </span>
+                        <br>
+                        <input id="wipVersion" type="radio" name="versionType" [checked]="currentSelected === versionTypes.WipVersion"
+                               (click)="wipVersionSelected()">
+                        <label for="wipVersion" (click)="wipVersionSelected()">WIP version</label>
+                        <span class="versionExample">
+                            creates
+                            <code>
+                                {{ sharedData.toscaComponent.localNameWithoutVersion + '_' + newWIPVersion.toString() }}
+                            </code>
+                        </span>
+                        <br><br>
+                    </div>
+                    <div *ngIf="currentSelected" class="form-group">
+                        <div *ngIf="currentSelected === versionTypes.ComponentVersion">
+                            <label for="newComponentVersion" class="control-label">New component version</label>
+                            <input class="form-control" id="newComponentVersion"
+                                   [(ngModel)]="newComponentVersion.componentVersion"
+                                   name="newComponentVersion"
+                                   [wineryDuplicateValidator]="validatorObject"
+                                   #newComponentVersionInput="ngModel"
+                                   type="text">
+                            <div *ngIf="newComponentVersionInput.errors"
+                                 class="alert alert-danger">
+                                <div [hidden]="!newComponentVersionInput.errors?.duplicateFound">
+                                    There is already a component with the specified version.
+                                </div>
+                                <div [hidden]="!newComponentVersionInput.errors?.componentVersionMustNotContainWhitespaces">
+                                    Version cannot contain whitespaces!
+                                </div>
+                                <div [hidden]="!newComponentVersionInput.errors?.noUnderscoresAllowed">
+                                    Underscores are not allowed in the version!<br>Please replace them with dashes.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="newVersion && newVersion.toString().length > 0">
+                        New definition's id:
+                        <code>{{ sharedData.toscaComponent.localNameWithoutVersion + '_' + newVersion.toString() }}</code>
+                    </div>
+                </div>
+
+                <div *ngIf="modalConfig?.action === versionActions.CommitVersion">
+                    <p>
+                        Do you want to commit
+                        <span style="font-weight:bold;">{{ sharedData.toscaComponent.localName }}</span>?
+                    </p>
+                </div>
+
+                <div *ngIf="modalConfig?.action === versionActions.ReleaseVersion">
+                    <p>
+                        Do you want to release
+                        <span style="font-weight:bold;">{{ sharedData.toscaComponent.localName }}</span>?<br><br>
+                        Released name: <code>{{ releasedName }}</code>
+                    </p>
+                </div>
+
+                <winery-referenced-definitions #referencedDefsComponent [referencedDefinitions]="referencedDefinitions">
+                </winery-referenced-definitions>
+            </ng-template>
+        </form>
+    </winery-modal-body>
+
+    <winery-modal-footer (onOk)="onConfirm()"
+                         [okButtonLabel]="modalConfig?.okButtonLabel"
+                         [disableOkButton]="!(newVersionForm.valid && modalConfig?.valid)">
+    </winery-modal-footer>
+</winery-modal>

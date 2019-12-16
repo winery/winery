@@ -1,0 +1,86 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div>
+    <div class="table-component-header">
+        <label>{{ title}}</label>
+        <ng-content></ng-content>
+        <div *ngIf="!disableFiltering">
+            <label>Search:</label>
+            <input *ngIf="config.filtering" placeholder="Filter all columns"
+                   [ngTableFiltering]="config.filtering"
+                   class="form-control"
+                   (tableChanged)="onChangeTable(config)"/>
+        </div>
+        <div *ngIf="!disableButtons" class="table-component-header-btn-wrap">
+            <button class="rightbutton btn btn-danger btn-xs"
+                    (click)="onRemoveClick($event);"
+                    [disabled]="rows.length === 0 || !currentSelected">
+                Remove
+            </button>
+            <button class="rightbutton btn btn-primary btn-xs"
+                    (click)="onAddClick($event);">
+                Add
+            </button>
+            <button *ngIf="enableIOButton"
+                    class="rightbutton btn btn-info btn-xs"
+                    (click)="onIOClick($event)"
+                    [disabled]="rows.length === 0 || !currentSelected">
+                I/O Parameters
+            </button>
+            <button *ngIf="enableEditButton"
+                    class="rightbutton btn btn-primary btn-xs"
+                    (click)="onEditClick($event);"
+                    [disabled]="rows.length === 0 || !currentSelected">
+                Edit
+            </button>
+        </div>
+    </div>
+</div>
+
+<div>
+    <div #tableContainer>
+        <ng-table [config]="config"
+                  (tableChanged)="onChangeTable(config)"
+                  (cellClicked)="onCellClick($event)"
+                  [rows]="rows"
+                  [columns]="columns">
+        </ng-table>
+    </div>
+    <div *ngIf="data.length > 10 || data.length > itemsPerPage">
+        <pagination *ngIf="config.paging"
+                    class="pagination-sm"
+                    [(ngModel)]="page"
+                    [totalItems]="length"
+                    [itemsPerPage]="itemsPerPage"
+                    [maxSize]="maxSize"
+                    [boundaryLinks]="true"
+                    [rotate]="false"
+                    (pageChanged)="onChangeTable(config, $event)"
+                    (numPages)="numPages = $event">
+        </pagination>
+        <div style="float: right; margin-top: 20px;">
+            <span>Show </span>
+            <div class="table-component-select-wrap">
+                <select #itemsPerPageSelect [value]="itemsPerPage"
+                        (change)="onItemsPerPageChange($event, itemsPerPageSelect);" class="form-control">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
+            <span> entries</span>
+        </div>
+    </div>
+</div>

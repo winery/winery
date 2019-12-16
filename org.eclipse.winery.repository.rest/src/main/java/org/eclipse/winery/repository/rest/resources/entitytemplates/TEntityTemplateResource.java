@@ -28,13 +28,11 @@ import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydef
 public class TEntityTemplateResource<E extends TEntityTemplate> extends EntityWithIdResource<E> implements IEntityTemplateResource<E> {
 
     /**
-     * This constructor is used for both entity templates nested in an component
-     * instance as well as for entity templates being component instances
-     * itself.
+     * This constructor is used for both entity templates nested in an component instance as well as for entity
+     * templates being component instances itself.
      * <p>
-     * As Java does not support multi-inheritance, we implemented a quick hack
-     * to re-use this class as inner implementation at templates extending
-     * AbstractComponentInstanceResourceDefinitionsBacked
+     * As Java does not support multi-inheritance, we implemented a quick hack to re-use this class as inner
+     * implementation at templates extending AbstractComponentInstanceResourceDefinitionsBacked
      */
     public TEntityTemplateResource(IIdDetermination<E> idDetermination, E o, int idx, List<E> list, IPersistable res) {
         super(idDetermination, o, idx, list, res);

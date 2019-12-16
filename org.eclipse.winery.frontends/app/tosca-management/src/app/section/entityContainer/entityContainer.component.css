@@ -1,0 +1,81 @@
+/*******************************************************************************
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ *******************************************************************************/
+.numberOfComponentInstances {
+    float: right;
+    margin-top: 33px;
+    text-shadow: none;
+}
+
+.nodeTypeImageIconInList {
+    position: absolute;
+    margin-top: 22px;
+    margin-left: 28px;
+    height: 40px;
+    width: 40px;
+}
+
+.rootContainer {
+    background: linear-gradient(#eaeaea, #aeaeae);
+    border: 7px solid grey;
+    margin-left: -11px;
+    padding-top: 8px;
+    padding-bottom: 2px;
+    margin-right: 13px;
+    padding-left: 4px;
+    display: inline-block;
+}
+
+.inlineRootContainer {
+    display: inline-block;
+}
+
+.largeContainer {
+    max-width: 274px;
+}
+
+.middleContainerSize {
+    max-width: 214px;
+}
+
+.smallContainer {
+    max-width: 154px;
+}
+
+.treeBranch {
+    width:  13px;
+    border-bottom: 2px solid;
+    height:  43px;
+    float:  left;
+    margin-right: -4px;
+}
+
+.tree {
+    border-left: 1px solid;
+    margin-left: 50px;
+}
+
+.differencesContainer {
+    margin-left: 50px;
+    margin-bottom: 10px;
+}
+
+.differences {
+    white-space: pre;
+    display: inline-block;
+    height: 200px;
+    overflow: scroll;
+    color: black;
+    background: none;
+    border: 2px solid darkgrey;
+}

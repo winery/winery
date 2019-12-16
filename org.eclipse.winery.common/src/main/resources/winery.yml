@@ -1,0 +1,29 @@
+ui:
+  features:
+    accountability: true
+    completion: true
+    compliance: true
+    freezeAndDefrost: true
+    managementFeatureEnrichment: true
+    nfv: true
+    patternRefinement: true
+    problemDetection: true
+    splitting: true
+    testRefinement: true
+    placement: true
+    edmmModeling: true
+  endpoints:
+    container: http://localhost:1337
+    workflowmodeler: http://localhost:9527
+    topologymodeler: http://localhost:4201
+    repositoryApiUrl: http://localhost:8080/winery
+    repositoryUiUrl: http://localhost:4200/#
+repository:
+  provider: file
+  repositoryRoot: ""
+  git:
+    clientSecret: secret
+    password: default
+    clientID: id
+    autocommit: false
+    username: default

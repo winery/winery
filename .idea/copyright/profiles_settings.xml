@@ -1,0 +1,12 @@
+<component name="CopyrightManager">
+  <settings default="Winery">
+    <module2copyright>
+      <element module="All" copyright="Winery" />
+    </module2copyright>
+    <LanguageOptions name="__TEMPLATE__">
+      <option name="separateBefore" value="true" />
+      <option name="separateAfter" value="true" />
+      <option name="lenAfter" value="81" />
+    </LanguageOptions>
+  </settings>
+</component>

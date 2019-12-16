@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,8 +13,16 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.requirementtypes;
 
-import com.sun.jersey.api.NotFoundException;
-import org.apache.commons.lang3.StringUtils;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -22,11 +30,8 @@ import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.AvailableSuperclassesApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.RequiredCapabilityTypeApiData;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.xml.namespace.QName;
+import com.sun.jersey.api.NotFoundException;
+import org.apache.commons.lang3.StringUtils;
 
 public class RequiredCapabilityTypeResource {
 

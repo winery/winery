@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,17 +14,18 @@
 
 package org.eclipse.winery.model.tosca;
 
-import org.eclipse.jdt.annotation.NonNull;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * <p>Java class for tImplementationArtifacts complex type.
@@ -55,7 +56,7 @@ import java.util.Objects;
 @XmlType(name = "tImplementationArtifacts", propOrder = {
     "implementationArtifact"
 })
-public class TImplementationArtifacts {
+public class TImplementationArtifacts implements Serializable {
 
     @XmlElement(name = "ImplementationArtifact", required = true)
     protected List<TImplementationArtifacts.ImplementationArtifact> implementationArtifact;
@@ -85,10 +86,9 @@ public class TImplementationArtifacts {
      * Gets the value of the implementationArtifact property.
      * <p>
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the implementationArtifact property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to
+     * the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for
+     * the implementationArtifact property.
      * <p>
      * <p>
      * For example, to add a new item, do as follows:
@@ -98,17 +98,16 @@ public class TImplementationArtifacts {
      * <p>
      * <p>
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link TImplementationArtifacts.ImplementationArtifact }
+     * Objects of the following type(s) are allowed in the list {@link TImplementationArtifacts.ImplementationArtifact
+     * }
      */
     @NonNull
     public List<TImplementationArtifacts.ImplementationArtifact> getImplementationArtifact() {
         if (implementationArtifact == null) {
-            implementationArtifact = new ArrayList<TImplementationArtifacts.ImplementationArtifact>();
+            implementationArtifact = new ArrayList<>();
         }
         return this.implementationArtifact;
     }
-
 
     /**
      * <p>Java class for anonymous complex type.

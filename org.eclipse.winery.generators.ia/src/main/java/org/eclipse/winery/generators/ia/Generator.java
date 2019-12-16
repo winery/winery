@@ -13,28 +13,37 @@
  *******************************************************************************/
 package org.eclipse.winery.generators.ia;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.OpenOption;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+
+import org.eclipse.winery.model.tosca.TBoolean;
+import org.eclipse.winery.model.tosca.TInterface;
+import org.eclipse.winery.model.tosca.TOperation;
+import org.eclipse.winery.model.tosca.TParameter;
+
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
-import org.eclipse.winery.model.tosca.TBoolean;
-import org.eclipse.winery.model.tosca.TInterface;
-import org.eclipse.winery.model.tosca.TOperation;
-import org.eclipse.winery.model.tosca.TParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.file.*;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 public class Generator {
 
@@ -63,7 +72,6 @@ public class Generator {
     private final String javaPackage;
     private final String namespace;
     private final URL iaArtifactTemplateUploadUrl;
-
 
     /**
      * Creates a new IA Generator instance for the given {@link TInterface}.
@@ -177,12 +185,6 @@ public class Generator {
             javaFolderString += File.separator + splitPkg[i];
         }
 
-        // Copy TEMPLATE_JAVA_ABSTRACT_IA_SERVICE
-        Path templateAbstractIAService = javaTemplateDir.resolve(Generator.TEMPLATE_JAVA_ABSTRACT_IA_SERVICE);
-        File javaAbstractIAService = new File(javaFolderString + File.separator + "AbstractIAService.java");
-        Files.createDirectories(javaAbstractIAService.toPath().getParent());
-        Files.copy(templateAbstractIAService, javaAbstractIAService.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
         // Copy and rename TEMPLATE_JAVA_TEMPLATE_SERVICE
         Path templateJavaService = javaTemplateDir.resolve(Generator.TEMPLATE_JAVA_TEMPLATE_SERVICE);
         File javaService = new File(javaFolderString + File.separator + this.name + ".java");
@@ -236,14 +238,7 @@ public class Generator {
                     // Generate @WebParam
                     sb.append("@WebParam(name=\"" + parameterName + "\", targetNamespace=\"" + this.namespace + "\") ");
 
-                    // Handle required and optional parameters using @XmlElement
-                    if (parameter.getRequired().equals(TBoolean.YES)) {
-                        sb.append("@XmlElement(required=true)");
-                    } else {
-                        sb.append("@XmlElement(required=false)");
-                    }
-
-                    sb.append(" String " + parameterName);
+                    sb.append("String " + parameterName);
                 }
             }
             sb.append("\n\t) {\n");

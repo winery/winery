@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,17 +13,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support;
 
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.model.tosca.*;
-import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources.apiData.AvailableSuperclassesApiData;
-import org.eclipse.winery.repository.rest.resources.apiData.InheritanceResourceApiData;
-import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
-import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
-import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.lang.reflect.Method;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -32,7 +22,24 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
-import java.lang.reflect.Method;
+
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.tosca.HasInheritance;
+import org.eclipse.winery.model.tosca.HasType;
+import org.eclipse.winery.model.tosca.TBoolean;
+import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
+import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.rest.resources.apiData.AvailableSuperclassesApiData;
+import org.eclipse.winery.repository.rest.resources.apiData.InheritanceResourceApiData;
+import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
+import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
+import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Models a component instance with name, derived from, abstract, and final Tags are provided by

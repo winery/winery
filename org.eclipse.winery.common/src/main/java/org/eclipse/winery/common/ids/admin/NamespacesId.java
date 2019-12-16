@@ -20,7 +20,6 @@ public class NamespacesId extends AdminId {
 
     private final static XmlId xmlId = new XmlId(IdNames.NAMESPACES, false);
 
-
     public NamespacesId() {
         super(NamespacesId.xmlId);
     }

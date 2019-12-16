@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -24,6 +25,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
+
+import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -75,67 +78,39 @@ public class TRequirementDefinition extends TExtensibleElements {
         return Objects.hash(super.hashCode(), constraints, name, requirementType, lowerBound, upperBound);
     }
 
-    /**
-     * Gets the value of the constraints property.
-     *
-     * @return possible object is {@link TRequirementDefinition.Constraints }
-     */
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
+
     public TRequirementDefinition.@Nullable Constraints getConstraints() {
         return constraints;
     }
 
-    /**
-     * Sets the value of the constraints property.
-     *
-     * @param value allowed object is {@link TRequirementDefinition.Constraints }
-     */
-    public void setConstraints(TRequirementDefinition.Constraints value) {
+    public void setConstraints(TRequirementDefinition.@Nullable Constraints value) {
         this.constraints = value;
     }
 
-    /**
-     * Gets the value of the name property.
-     *
-     * @return possible object is {@link String }
-     */
     @NonNull
     public String getName() {
         return name;
     }
 
-    /**
-     * Sets the value of the name property.
-     *
-     * @param value allowed object is {@link String }
-     */
-    public void setName(String value) {
+    public void setName(@NonNull String value) {
+        Objects.requireNonNull(value);
         this.name = value;
     }
 
-    /**
-     * Gets the value of the requirementType property.
-     *
-     * @return possible object is {@link QName }
-     */
     @NonNull
     public QName getRequirementType() {
         return requirementType;
     }
 
-    /**
-     * Sets the value of the requirementType property.
-     *
-     * @param value allowed object is {@link QName }
-     */
-    public void setRequirementType(QName value) {
+    public void setRequirementType(@NonNull QName value) {
+        Objects.requireNonNull(value);
         this.requirementType = value;
     }
 
-    /**
-     * Gets the value of the lowerBound property.
-     *
-     * @return possible object is {@link Integer }
-     */
     @NonNull
     public int getLowerBound() {
         if (lowerBound == null) {
@@ -145,20 +120,10 @@ public class TRequirementDefinition extends TExtensibleElements {
         }
     }
 
-    /**
-     * Sets the value of the lowerBound property.
-     *
-     * @param value allowed object is {@link Integer }
-     */
-    public void setLowerBound(Integer value) {
+    public void setLowerBound(@Nullable Integer value) {
         this.lowerBound = value;
     }
 
-    /**
-     * Gets the value of the upperBound property.
-     *
-     * @return possible object is {@link String }
-     */
     @NonNull
     public String getUpperBound() {
         if (upperBound == null) {
@@ -168,62 +133,19 @@ public class TRequirementDefinition extends TExtensibleElements {
         }
     }
 
-    /**
-     * Sets the value of the upperBound property.
-     *
-     * @param value allowed object is {@link String }
-     */
-    public void setUpperBound(String value) {
+    public void setUpperBound(@Nullable String value) {
         this.upperBound = value;
     }
 
-    /**
-     * <p>Java class for anonymous complex type.
-     * <p>
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     * <p>
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;sequence>
-     *         &lt;element name="Constraint" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tConstraint"
-     * maxOccurs="unbounded"/>
-     *       &lt;/sequence>
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
         "constraint"
     })
-    public static class Constraints {
+    public static class Constraints implements Serializable {
 
         @XmlElement(name = "Constraint", required = true)
         protected List<TConstraint> constraint;
 
-        /**
-         * Gets the value of the constraint property.
-         * <p>
-         * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the constraint property.
-         * <p>
-         * <p>
-         * For example, to add a new item, do as follows:
-         * <pre>
-         *    getConstraint().add(newItem);
-         * </pre>
-         * <p>
-         * <p>
-         * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link TConstraint }
-         */
         @NonNull
         public List<TConstraint> getConstraint() {
             if (constraint == null) {

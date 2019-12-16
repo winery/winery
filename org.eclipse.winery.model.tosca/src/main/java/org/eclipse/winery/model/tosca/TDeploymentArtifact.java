@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -22,12 +23,14 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.tosca.visitor.Visitor;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tDeploymentArtifact")
-public class TDeploymentArtifact extends TExtensibleElements implements HasName {
+public class TDeploymentArtifact extends TExtensibleElements implements HasName, Serializable {
 
     @XmlAttribute(name = "name", required = true)
     protected String name;
@@ -69,7 +72,7 @@ public class TDeploymentArtifact extends TExtensibleElements implements HasName 
 
     @Override
     public void setName(@NonNull String value) {
-        this.name = value;
+        this.name = Objects.requireNonNull(value);
     }
 
     @NonNull
@@ -78,7 +81,7 @@ public class TDeploymentArtifact extends TExtensibleElements implements HasName 
     }
 
     public void setArtifactType(@NonNull QName value) {
-        this.artifactType = value;
+        this.artifactType = Objects.requireNonNull(value);
     }
 
     @Nullable
@@ -88,6 +91,10 @@ public class TDeploymentArtifact extends TExtensibleElements implements HasName 
 
     public void setArtifactRef(@Nullable QName value) {
         this.artifactRef = value;
+    }
+
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
 
     public static class Builder extends TExtensibleElements.Builder<Builder> {

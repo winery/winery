@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -22,6 +22,7 @@ import org.eclipse.winery.common.Util;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.rest.server.WineryUsingHttpServer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.eclipse.jetty.server.Server;
@@ -224,6 +225,15 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
             .statusCode(204);
     }
 
+    public void assertPutWithResponse(String restURL, String fileName) {
+        start()
+            .body(readFromClasspath(fileName))
+            .contentType(getAccept(fileName))
+            .put(callURL(restURL))
+            .then()
+            .statusCode(200);
+    }
+
     /**
      * Maybe remove in order to force JSON.
      */
@@ -242,6 +252,13 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
             .body(contents)
             .contentType(getAccept(fileName))
             .accept(getAccept(fileName))
+            .post(callURL(restURL))
+            .then()
+            .statusCode(201);
+    }
+
+    protected void assertPost(String restURL) {
+        start()
             .post(callURL(restURL))
             .then()
             .statusCode(201);
@@ -269,6 +286,14 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
             .statusCode(201);
     }
 
+    protected void assertNoContentPost(String restUrl, Path file) {
+        start()
+            .multiPart(file.toFile())
+            .post(callURL(restUrl))
+            .then()
+            .statusCode(204);
+    }
+
     protected void assertDelete(String restURL) {
         try {
             start()
@@ -287,7 +312,45 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
             .statusCode(204);
     }
 
-    public static String replacePathStringEncoding(String toConvert) {
+    protected static String replacePathStringEncoding(String toConvert) {
         return toConvert.replace("%3A", "%253A").replace("%2F", "%252F");
+    }
+
+    protected void assertPostWithOverwrite(String restUrl, Path file, boolean overwrite) {
+        start()
+            .multiPart(file.toFile())
+            .formParam("overwrite", overwrite)
+            .post(callURL(restUrl))
+            .then()
+            .statusCode(201);
+    }
+
+    protected String assertPostWithNoContent(String restUrl, ContentType contentType) {
+        return start()
+            .accept(contentType)
+            .post(callURL(restUrl))
+            .then()
+            .statusCode(201)
+            .extract()
+            .response()
+            .body()
+            .asString();
+    }
+
+    protected <T> T getObjectFromGetRequest(String url, Class<T> clazz) throws Exception {
+        String s = start()
+            .accept(ContentType.JSON.toString())
+            .get(callURL(url))
+            .then()
+            .log()
+            .ifValidationFails()
+            .statusCode(200)
+            .extract()
+            .response()
+            .getBody()
+            .asString();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(s, clazz);
     }
 }

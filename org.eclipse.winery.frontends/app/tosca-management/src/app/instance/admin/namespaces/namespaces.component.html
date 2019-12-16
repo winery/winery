@@ -1,0 +1,114 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <winery-table title="Defined Prefixes for Namespaces"
+                  [columns]="columns"
+                  [data]="adminNamespaces"
+                  [enableEditButton]="true"
+                  (addBtnClicked)="onAddClick()"
+                  (editBtnClicked)="onEdit($event)"
+                  (removeBtnClicked)="onRemoveClick($event)">
+    </winery-table>
+
+    <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+        <winery-modal-header>
+            <h4 class="modal-title">Delete Property</h4>
+        </winery-modal-header>
+        <winery-modal-body>
+            <p *ngIf="elementToRemove != null" id="diagyesnomsg">
+                Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.namespace }}</span>?
+            </p>
+        </winery-modal-body>
+        <winery-modal-footer (onOk)="deleteNamespace();"
+                             [closeButtonLabel]="'No'"
+                             [okButtonLabel]="'Yes'">
+        </winery-modal-footer>
+    </winery-modal>
+
+    <winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
+        <winery-modal-header [title]="modalTitle">
+        </winery-modal-header>
+        <winery-modal-body>
+            <form #addNamespaceForm="ngForm" id="addPropertyForm">
+                <div *ngIf="newNamespace">
+                    <!-- pattern parameter is required to enable form validation -->
+                    <winery-namespace-selector
+                        #namespace
+                        name="namespaceSelector"
+                        [(ngModel)]="newNamespace.namespace"
+                        [isRequired]="true"
+                        [typeAheadListLimit]="20"
+                        required
+                        pattern="^\S*$"
+                        [useStartNamespace]="false">
+                    </winery-namespace-selector>
+                    <div class="form-group">
+                        <label class="control-label" for="prefixName">Prefix</label>
+                        <input #prefixName="ngModel"
+                               id="prefixName"
+                               class="form-control"
+                               type="text"
+                               name="prefix"
+                               required
+                               [(ngModel)]="newNamespace.prefix"
+                               [wineryDuplicateValidator]="validatorObjectPrefix"/>
+
+                        <div *ngIf="prefixName.errors && prefixName.dirty"
+                             class="alert alert-danger">
+                            <div [hidden]="!prefixName.errors.wineryDuplicateValidator">
+                                No duplicates allowed!
+                            </div>
+                            <div [hidden]="!prefixName.errors.required">
+                                Prefix is required
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label" for="namespaceDescription">Description</label>
+                        <input name="namespaceDescription"
+                               class="form-control"
+                               [(ngModel)]="newNamespace.readableName"
+                               id="namespaceDescription"/>
+                        <br>
+                        <label class="control-label" for="namespaceRepoUrl">Repository URL</label>
+                        <input name="namespaceRepoUrl"
+                               class="form-control"
+                               [(ngModel)]="newNamespace.upstreamRepository"
+                               id="namespaceRepoUrl"/>
+                        <br>
+                        <label>
+                            <input type="checkbox" name="patterns" [(ngModel)]="newNamespace.patternCollection">
+                            Is a pattern collection
+                        </label>
+                        <br>
+                        <label>
+                            <input type="checkbox" name="patterns" [(ngModel)]="newNamespace.secureCollection">
+                            Is a secure collection
+                        </label>
+                    </div>
+                </div>
+            </form>
+        </winery-modal-body>
+        <winery-modal-footer
+            (onOk)="addNamespace()"
+            [closeButtonLabel]="'Cancel'"
+            [okButtonLabel]="addButtonTitle"
+            [disableOkButton]="!addNamespaceForm?.form.valid">
+        </winery-modal-footer>
+    </winery-modal>
+</div>

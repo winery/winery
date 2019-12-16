@@ -1,0 +1,14 @@
+[
+    {
+        "pattern": false,
+        "typeId": "{http://plain.winery.opentosca.org/policytypes}PolicyTypeWithTwoKvProperties"
+    },
+    {
+        "pattern": false,
+        "typeId": "{http://plain.winery.opentosca.org/policytypes}PolicyTypeWithXmlElementProperty"
+    },
+    {
+        "pattern": false,
+        "typeId": "{http://plain.winery.opentosca.org/policytypes}PolicyTypeWithoutProperties"
+    }
+]

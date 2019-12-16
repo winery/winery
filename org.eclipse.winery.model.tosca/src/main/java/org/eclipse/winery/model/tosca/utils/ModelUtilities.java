@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,15 +14,57 @@
 
 package org.eclipse.winery.model.tosca.utils;
 
-import org.eclipse.winery.model.tosca.*;
+import java.io.IOException;
+import java.io.StringReader;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.eclipse.winery.model.tosca.HasId;
+import org.eclipse.winery.model.tosca.RelationshipSourceOrTarget;
+import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
+import org.eclipse.winery.model.tosca.TCapability;
+import org.eclipse.winery.model.tosca.TCapabilityDefinition;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate.Capabilities;
 import org.eclipse.winery.model.tosca.TNodeTemplate.Requirements;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TPlan;
+import org.eclipse.winery.model.tosca.TPlans;
+import org.eclipse.winery.model.tosca.TPolicies;
+import org.eclipse.winery.model.tosca.TPolicy;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate.SourceOrTargetElement;
+import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TRequirement;
+import org.eclipse.winery.model.tosca.TRequirementDefinition;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTag;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.constants.QNames;
+import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
 import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
+
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
@@ -30,28 +72,21 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.io.StringReader;
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.stream.Collectors;
-
 public class ModelUtilities {
 
     public static final QName QNAME_LOCATION = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "location");
+    public static final QName NODE_TEMPLATE_REGION = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "region");
+    public static final QName NODE_TEMPLATE_PROVIDER = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, 
+        "provider");
+    public static final QName RELATIONSHIP_TEMPLATE_TRANSFER_TYPE =
+        new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "dataTransferType");
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ModelUtilities.class);
 
     /**
-     * @deprecated Use {@link TEntityType#getWinerysPropertiesDefinition()}
-     * 
      * @param et the entity type to query
      * @return null if et == null
+     * @deprecated Use {@link TEntityType#getWinerysPropertiesDefinition()}
      */
     @Deprecated
     public static WinerysPropertiesDefinition getWinerysPropertiesDefinition(TEntityType et) {
@@ -208,7 +243,6 @@ public class ModelUtilities {
      * Special method to get the name of an extensible element as the TOSCA specification does not have a separate super
      * type for elements with a name
      * <p>
-     * @see Util#instanceSupportsNameAttribute(java.lang.Class) is related
      *
      * @param e the extensible element offering a name attribute (besides an id attribute)
      * @return the name of the extensible element
@@ -298,7 +332,7 @@ public class ModelUtilities {
             floatValue = Float.parseFloat(x);
         } catch (NumberFormatException e) {
             LOGGER.debug("Could not parse x value", e);
-            return Optional.empty();    
+            return Optional.empty();
         }
         return Optional.of(floatValue.intValue());
     }
@@ -533,20 +567,30 @@ public class ModelUtilities {
         return relationshipTemplate;
     }
 
+    /**
+     * Target label is not present if - empty string - undefined - null Target Label is not case sensitive -> always
+     * lower case.
+     */
     public static Optional<String> getTargetLabel(TNodeTemplate nodeTemplate) {
         if (nodeTemplate == null) {
             return Optional.empty();
         }
         Map<QName, String> otherAttributes = nodeTemplate.getOtherAttributes();
         String targetLabel = otherAttributes.get(QNAME_LOCATION);
-        return Optional.ofNullable(targetLabel);
+        if (targetLabel != null && (targetLabel.equals("undefined") || targetLabel.equals(""))) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(targetLabel).map(String::toLowerCase);
     }
 
+    /**
+     * Target Label is not case sensitive -> set to lowercase.
+     */
     public static void setTargetLabel(TNodeTemplate nodeTemplate, String targetLabel) {
         Objects.requireNonNull(nodeTemplate);
         Objects.requireNonNull(targetLabel);
         Map<QName, String> otherAttributes = nodeTemplate.getOtherAttributes();
-        otherAttributes.put(QNAME_LOCATION, targetLabel);
+        otherAttributes.put(QNAME_LOCATION, targetLabel.toLowerCase());
     }
 
     public static TNodeTemplate getSourceNodeTemplateOfRelationshipTemplate(TTopologyTemplate topologyTemplate, TRelationshipTemplate relationshipTemplate) {
@@ -689,5 +733,211 @@ public class ModelUtilities {
                 }
             }
         }
+    }
+
+    public static boolean isOfType(QName requiredType, QName givenType, Map<QName, ? extends TEntityType> elements) {
+        if (!givenType.equals(requiredType)) {
+            TEntityType entityType = elements.get(givenType);
+            if (Objects.isNull(entityType) || Objects.isNull(entityType.getDerivedFrom())) {
+                return false;
+            } else {
+                return isOfType(requiredType, entityType.getDerivedFrom().getTypeAsQName(), elements);
+            }
+        }
+        return true;
+    }
+
+    public static <T extends TEntityType> Map<QName, T> getChildrenOf(QName givenType, Map<QName, T> elements) {
+        HashMap<QName, T> children = new HashMap<>();
+        TEntityType entityType = elements.get(givenType);
+        if (Objects.nonNull(entityType)) {
+            elements.forEach((qName, type) -> {
+                if (!qName.equals(givenType) && isOfType(givenType, qName, elements)) {
+                    children.put(qName, type);
+                }
+            });
+        }
+        return children;
+    }
+
+    public static <T extends TEntityType> Map<T, String> getAvailableFeaturesOfType(QName givenType, Map<QName, T> elements) {
+        HashMap<T, String> features = new HashMap<>();
+        getChildrenOf(givenType, elements).forEach((qName, t) -> {
+            if (Objects.nonNull(t.getTags())) {
+                List<TTag> list = t.getTags().getTag();
+                list.stream()
+                    .filter(tag -> "feature".equals(tag.getName()))
+                    .findFirst()
+                    .ifPresent(tTag -> features.put(elements.get(qName), tTag.getValue()));
+            }
+        });
+        return features;
+    }
+
+    public static <T extends TEntityType> boolean isFeatureType(QName givenType, Map<QName, T> elements) {
+        return Objects.nonNull(elements.get(givenType))
+            && Objects.nonNull(elements.get(givenType).getTags())
+            && elements.get(givenType).getTags().getTag().stream()
+            .anyMatch(tag -> "feature".equals(tag.getName()));
+    }
+
+    public static void updateNodeTemplate(TTopologyTemplate topology, String oldComponentId, QName newType, TNodeType newComponentType) {
+        TNodeTemplate nodeTemplate = topology.getNodeTemplate(oldComponentId);
+        nodeTemplate.setType(newType);
+        nodeTemplate.setName(newType.getLocalPart());
+        // TODO: also make some more adjustments etc.
+    }
+
+    /**
+     * This is specific to the TOSCA hostedOn relationship type.
+     */
+    public static ArrayList<TNodeTemplate> getHostedOnSuccessors(TTopologyTemplate topologyTemplate, String nodeTemplate) {
+        return getHostedOnSuccessors(topologyTemplate, topologyTemplate.getNodeTemplate(nodeTemplate));
+    }
+
+    public static ArrayList<TNodeTemplate> getHostedOnSuccessors(TTopologyTemplate topologyTemplate, TNodeTemplate nodeTemplate) {
+        ArrayList<TNodeTemplate> hostedOnSuccessors = new ArrayList<>();
+
+        Optional<TRelationshipTemplate> hostedOn;
+
+        do {
+            List<TRelationshipTemplate> outgoingRelationshipTemplates = getOutgoingRelationshipTemplates(topologyTemplate, nodeTemplate);
+
+            hostedOn = outgoingRelationshipTemplates.stream()
+                .filter(relation -> relation.getType().equals(ToscaBaseTypes.hostedOnRelationshipType))
+                .findFirst();
+            if (hostedOn.isPresent()) {
+                nodeTemplate = getNodeTemplateFromRelationshipSourceOrTarget(topologyTemplate, hostedOn.get().getTargetElement().getRef());
+                hostedOnSuccessors.add(nodeTemplate);
+            }
+        } while (hostedOn.isPresent());
+
+        return hostedOnSuccessors;
+    }
+
+    /**
+     * Returns the referenced TNodeTemplate of a TRelationshipTemplate which internally uses a
+     * RelationshipSourceOrTarget element. to point to the respective TNodeTemplate. If the referenced TNodeTemplate
+     * cannot be found, a NullPointerException is thrown.
+     *
+     * @param topologyTemplate           the TTopologyTemplate the TNodeTemplate and TRelationshipTemplate are contained
+     *                                   in.
+     * @param relationshipSourceOrTarget the source or target element the relationship points to.
+     * @return the actual TNodeTemplate the TRelationshipTemplate is referring to.
+     */
+    public static TNodeTemplate getNodeTemplateFromRelationshipSourceOrTarget(TTopologyTemplate topologyTemplate, RelationshipSourceOrTarget relationshipSourceOrTarget) {
+        Optional<TNodeTemplate> nodeTemplate = Optional.empty();
+
+        if (relationshipSourceOrTarget instanceof TNodeTemplate) {
+            nodeTemplate = Optional.of((TNodeTemplate) relationshipSourceOrTarget);
+        } else if (relationshipSourceOrTarget instanceof TCapability) {
+            nodeTemplate = topologyTemplate.getNodeTemplates().stream()
+                .filter(node -> Objects.nonNull(node.getCapabilities()))
+                .filter(node ->
+                    node.getCapabilities()
+                        .getCapability().stream().anyMatch(capability -> capability.getId().equals(relationshipSourceOrTarget.getId())
+                    )
+                ).findFirst();
+        } else if (relationshipSourceOrTarget instanceof TRequirement) {
+            nodeTemplate = topologyTemplate.getNodeTemplates().stream()
+                .filter(node -> Objects.nonNull(node.getRequirements()))
+                .filter(node ->
+                    node.getRequirements()
+                        .getRequirement().stream().anyMatch(requirement -> requirement.getId().equals(relationshipSourceOrTarget.getId())
+                    )
+                ).findFirst();
+        }
+
+        return nodeTemplate.orElseThrow(NullPointerException::new);
+    }
+
+    public static void collectIdsOfExistingTopologyElements(TTopologyTemplate topologyTemplateB, Map<String, String> idMapping) {
+        // collect existing node & relationship template ids
+        topologyTemplateB.getNodeTemplateOrRelationshipTemplate()
+            // the existing ids are left unchanged
+            .forEach(x -> idMapping.put(x.getId(), x.getId()));
+
+        // collect existing requirement ids
+        topologyTemplateB.getNodeTemplates().stream()
+            .filter(nt -> nt.getRequirements() != null)
+            .forEach(nt -> nt.getRequirements().getRequirement()
+                // the existing ids are left unchanged
+                .forEach(x -> idMapping.put(x.getId(), x.getId())));
+
+        //collect existing capability ids
+        topologyTemplateB.getNodeTemplates().stream()
+            .filter(nt -> nt.getCapabilities() != null)
+            .forEach(nt -> nt.getCapabilities().getCapability()
+                // the existing ids are left unchanged
+                .forEach(x -> idMapping.put(x.getId(), x.getId())));
+    }
+
+    public static void generateNewIdOfTemplate(HasId element, TTopologyTemplate topologyTemplate) {
+        HashMap<String, String> map = new HashMap<>();
+        collectIdsOfExistingTopologyElements(topologyTemplate, map);
+        generateNewIdOfTemplate(element, map);
+    }
+
+    public static void generateNewIdOfTemplate(HasId element, Map<String, String> idMapping) {
+        String newId = element.getId();
+        while (idMapping.containsKey(newId)) {
+            newId = newId + "-new";
+        }
+        idMapping.put(element.getId(), newId);
+        element.setId(newId);
+    }
+
+    public static TRelationshipTemplate createRelationshipTemplate(TNodeTemplate sourceNode, TNodeTemplate targetNode, QName type) {
+        return createRelationshipTemplate(sourceNode, targetNode, type, "");
+    }
+
+    public static TRelationshipTemplate createRelationshipTemplate(TNodeTemplate sourceNode, TNodeTemplate targetNode, QName type, String connectionDescription) {
+        TRelationshipTemplate rel = new TRelationshipTemplate();
+        rel.setType(type);
+        rel.setName(type.getLocalPart());
+        rel.setId(sourceNode.getId() + "-" + connectionDescription + "-" + targetNode.getId());
+        rel.setSourceNodeTemplate(sourceNode);
+        rel.setTargetNodeTemplate(targetNode);
+        return rel;
+    }
+
+    public static TRelationshipTemplate createRelationshipTemplateAndAddToTopology(TNodeTemplate sourceNode, TNodeTemplate targetNode, QName type,
+                                                                                   TTopologyTemplate topology) {
+        return createRelationshipTemplateAndAddToTopology(sourceNode, targetNode, type, "", topology);
+    }
+
+    public static TRelationshipTemplate createRelationshipTemplateAndAddToTopology(TNodeTemplate sourceNode, TNodeTemplate targetNode, QName type,
+                                                                                   String connectionDescription, TTopologyTemplate topology) {
+        TRelationshipTemplate relationshipTemplate = createRelationshipTemplate(sourceNode, targetNode, type, connectionDescription);
+        generateNewIdOfTemplate(relationshipTemplate, topology);
+        topology.addRelationshipTemplate(relationshipTemplate);
+        return relationshipTemplate;
+    }
+
+    public static boolean nodeTypeHasInterface(TNodeType nodeType, String interfaceName) {
+        return Objects.nonNull(nodeType.getInterfaces()) && nodeType.getInterfaces().getInterface().stream()
+            .anyMatch(nodeInterface -> interfaceName.equals(nodeInterface.getName()));
+    }
+
+    public static void addPolicy(TNodeTemplate node, QName policyType, String name) {
+        TPolicies policies = node.getPolicies();
+        if (Objects.isNull(policies)) {
+            policies = new TPolicies();
+            node.setPolicies(policies);
+        }
+
+        TPolicy policy = new TPolicy();
+        policy.setPolicyType(policyType);
+        policy.setName(name);
+        policies.getPolicy()
+            .add(policy);
+    }
+
+    public static boolean containsPolicyType(TNodeTemplate node, QName policyType) {
+        return Objects.nonNull(node.getPolicies()) &&
+            node.getPolicies().getPolicy().stream()
+                .anyMatch(policy -> policy.getPolicyType()
+                    .equals(policyType)
+                );
     }
 }

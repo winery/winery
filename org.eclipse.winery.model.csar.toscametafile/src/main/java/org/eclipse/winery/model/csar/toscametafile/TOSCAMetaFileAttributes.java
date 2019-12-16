@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -29,7 +29,8 @@ public class TOSCAMetaFileAttributes {
     final public static String DESCRIPTION = "Description";
 
     // of blocks > 0 (file blocks)
-    final public static String NAME = "Name";
     final public static String CONTENT_TYPE = "Content-Type";
-
+    final public static String HASH = "SHA-256";
+    final public static String NAME = "Name";
+    final public static String IMMUTABLE_ADDRESS = "Swarm-address";
 }

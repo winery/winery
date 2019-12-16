@@ -1,1 +1,9 @@
 * text=auto eol=lf
+
+*.java eol=lf
+*.md eol=lf
+
+*.docx -text
+*.pptx -text
+*.png -text
+*.jpg -text

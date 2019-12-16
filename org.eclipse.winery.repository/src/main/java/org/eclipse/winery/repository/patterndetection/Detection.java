@@ -14,27 +14,52 @@
 
 package org.eclipse.winery.repository.patterndetection;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.patterndetection.keywords.*;
-import org.eclipse.winery.repository.patterndetection.model.*;
-import org.eclipse.winery.repository.patterndetection.model.patterns.*;
+import org.eclipse.winery.repository.patterndetection.keywords.Messaging;
+import org.eclipse.winery.repository.patterndetection.keywords.OperatingSystem;
+import org.eclipse.winery.repository.patterndetection.keywords.Server;
+import org.eclipse.winery.repository.patterndetection.keywords.Service;
+import org.eclipse.winery.repository.patterndetection.keywords.Storage;
+import org.eclipse.winery.repository.patterndetection.keywords.VirtualHardware;
+import org.eclipse.winery.repository.patterndetection.model.AbstractTopology;
+import org.eclipse.winery.repository.patterndetection.model.PatternComponent;
+import org.eclipse.winery.repository.patterndetection.model.PatternPosition;
+import org.eclipse.winery.repository.patterndetection.model.RelationshipEdge;
+import org.eclipse.winery.repository.patterndetection.model.TNodeTemplateExtended;
+import org.eclipse.winery.repository.patterndetection.model.patterns.ElasticLoadBalancerPattern;
+import org.eclipse.winery.repository.patterndetection.model.patterns.ElasticQueuePattern;
+import org.eclipse.winery.repository.patterndetection.model.patterns.ElasticityManagerPattern;
+import org.eclipse.winery.repository.patterndetection.model.patterns.EnvironmentBasedAvailabilityPattern;
+import org.eclipse.winery.repository.patterndetection.model.patterns.ExecutionEnvironmentPattern;
+import org.eclipse.winery.repository.patterndetection.model.patterns.ExecutionEnvironmentPattern2;
+import org.eclipse.winery.repository.patterndetection.model.patterns.KeyValueStoragePattern;
+import org.eclipse.winery.repository.patterndetection.model.patterns.MessageOrientedMiddlewarePattern;
+import org.eclipse.winery.repository.patterndetection.model.patterns.NodeBasedAvailabilityPattern;
+import org.eclipse.winery.repository.patterndetection.model.patterns.RelationalDatabasePattern;
 import org.eclipse.winery.repository.patterndetection.model.patterntaxonomies.IaaSTaxonomy;
 import org.eclipse.winery.repository.patterndetection.model.patterntaxonomies.PaaSTaxonomy;
+
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.alg.isomorphism.IsomorphicGraphMapping;
 import org.jgrapht.alg.isomorphism.VF2SubgraphIsomorphismInspector;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleDirectedGraph;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
 
 public class Detection {
 

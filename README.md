@@ -14,20 +14,51 @@ Winery is also part of the OpenTOSCA ecosystem where more information is availab
 Both development and user documentation is rendered at <https://eclipse.github.io/winery/>.
 The source for the documentation can be found at [docs/](docs).
 
+## Running Winery
+
+### Running via Docker
+
+1. `docker build -t winery .`.
+   In case, there are issues, you can also try `docker build --no-cache -t winery .`
+2. `docker run -p 8080:8080 winery` to run Winery on <http://localhost:8080>
+
+You can also use the pre-built image and bin it to a local repository:
+
+    docker run -it -p 8080:8080 -v $(pwd):/var/opentosca/repository opentosca/winery
+
+### Running Winery CLI via Docker
+
+1. `docker build -t winery-cli -f Dockerfile.cli .`
+2. `docker run -v $(pwd):/root/winery-repository -it winery-cli` to check `${pwd}` for consistency.
+
+You can also use the pre-built image:
+
+- Linux: `docker run -it -v $(pwd):/root/winery-repository opentosca/winery-cli`
+- Windows: `docker run -it -v ${PWD}:/root/winery-repository opentosca/winery-cli`
+
+In case you want to have verbose information, you can execute following:
+
+- Linux: `docker run -it -v $(pwd):/root/winery-repository opentosca/winery-cli winery -v`
+- Windows: `docker run -it -v ${PWD}:/root/winery-repository opentosca/winery-cli winery -v`
+
+Currently supported CLI arguments:
+
+```
+usage: winery
+ -h,--help         prints this help
+ -p,--path <arg>   use given path as repository path
+ -v,--verbose      be verbose: Output the checked elements
+```
+
 ## Next steps
+
 Winery currently is far from being a production ready modeling tool.
 The next steps are:
 
 * Add more usability features to the topology modeler
-* Remove non-required files from components/ directory to reduce the file size of the WAR file
-  * This has to be done by submitting patches to `bower.json` of the upstream libraries
+* Add support for multiple repositories
 * Develop a plugin-system for user-defined editors. For instance, a constraint has a type. If a type is known to Winery, it can present a specific plugin to edit the type content instead of a generic XML editor.
-* Rework file storage. Currently, files are stored along with their definitions. A new storage should store all files in one place and use an SHA1 id to uniquely identify the file. Then, it does not make any difference if storing a WAR, an XSD, or an WSDL.
 * Add a real DAO layer to enable querying the available TOSCA contents using SQL or similar query language
-
-Currently, `.jsp` files package HTML and JS.
-We plan to use frameworks such as [TerrificJS] to provide a better modularity.
-This follows Nicholas Zakas' "[Scalable JavaScript Application Architecture]".
 
 ## Known issues
 
@@ -35,19 +66,24 @@ This follows Nicholas Zakas' "[Scalable JavaScript Application Architecture]".
 ** Declared types are converted to imports during a CSAR Import
 ** Editing of XSDs is not possible
 * **The XSD of OASIS TOSCA v1.0 has been modified** - see https://github.com/eclipse/winery/issues/71
-** An Implementation Artifact may carry a `name` attribute
-** The contents of properties of Boundary Definitions are processed in `lax` mode
+  * An Implementation Artifact may carry a `name` attribute
+  * The contents of properties of Boundary Definitions are processed in `lax` mode
+  * New elements have been added:
+    * Pattern Refinement Models
+    * Compliance Rules
 * See https://github.com/eclipse/winery/issues
 
 
 ## Acknowledgements
 
 The initial code contribution has been supported by the [Federal Ministry for Economic Affairs and Energy] as part of the [CloudCycle] project (01MD11023).
-Current development is supported by the Federal Ministry for Economic Affairs and Energy as part of the projects [SmartOrchestra] (01MD16001F) and [SePiA.Pro] (01MD16013F).
+Current development is supported by the Federal Ministry for Economic Affairs and Energy as part of the projects
+[SmartOrchestra] (01MD16001F) and [SePiA.Pro] (01MD16013F), as well as by the [DFG] (Deutsche Forschungsgemeinschaft) projects [SustainLife] (641730) and [ADDCompliance] (636503).
+Further development is also funded by the European Union’s Horizon 2020 project [RADON].
 
 ## License
 
-Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
 
 See the NOTICE file(s) distributed with this work for additional
 information regarding copyright ownership.
@@ -64,4 +100,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   [Scalable JavaScript Application Architecture]: http://www.slideshare.net/nzakas/scalable-javascript-application-architecture-2012
   [SmartOrchestra]: http://smartorchestra.de/en/
   [SePiA.Pro]: http://projekt-sepiapro.de/en/
-  [TerrificJS]: http://terrifically.org/
+  [ADDCompliance]: http://addcompliance.cs.univie.ac.at/
+  [SustainLife]: http://www.iaas.uni-stuttgart.de/forschung/projects/SustainLife
+  [RADON]: http://radon-h2020.eu/
+  [DFG]: http://www.dfg.de/en/

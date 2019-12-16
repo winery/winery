@@ -1,0 +1,56 @@
+<!--
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+-->
+<div *ngIf="!currentNodeData.propertyDefinitionType"
+     style="display: flex; justify-content: center; align-items: center">
+    <i class="fa fa-3x fa-refresh fa-spin" style="max-width: 50%;"></i>
+</div>
+<table *ngIf="currentNodeData.propertyDefinitionType == 'KV'" class="table table-border--grey table-sm body-table">
+    <tr>
+        <th>
+            Key
+        </th>
+        <th>
+            Values
+        </th>
+    <tr *ngFor="let key of nodeProperties | keysPipe">
+        <td class="">{{key.key}}</td>
+        <td class="">
+                <textarea
+                    style="width:100%; overflow-y: scroll;"
+                    rows="1"
+                    placeholder="Edit your value here."
+                    required
+                    [disabled]="readonly"
+                    value="{{key.value}}"
+                    (keyup)="properties.next($event.target.value)"
+                    (keyup)="keyOfEditedKVProperty.next(key.key)">
+                </textarea>
+        </td>
+    </tr>
+</table>
+
+<div *ngIf="currentNodeData.propertyDefinitionType == 'XML'">
+    <textarea
+        style="width:100%; overflow-y: scroll;"
+        rows="6"
+        placeholder="Edit your XML here."
+        required
+        [disabled]="readonly"
+        value="{{nodeProperties}}"
+        (keyup)="properties.next($event.target.value)">
+    </textarea>
+</div>
+
+<div *ngIf="currentNodeData.propertyDefinitionType == 'NONE'" style="color: dimgray; text-align: center">
+    <span>No properties defined <br> for this Element.</span></div>

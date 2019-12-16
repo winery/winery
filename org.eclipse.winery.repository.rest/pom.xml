@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2013-2019 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -172,12 +172,6 @@
             <version>1.9.4</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.7</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.model.selfservice</artifactId>
             <version>2.0.0-SNAPSHOT</version>
@@ -188,11 +182,6 @@
             <artifactId>org.eclipse.winery.repository</artifactId>
             <version>2.0.0-SNAPSHOT</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.winery</groupId>
-            <artifactId>org.eclipse.winery.repository.configuration</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.winery</groupId>
@@ -216,28 +205,20 @@
             <version>2.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>org.eclipse.winery</groupId>
+            <artifactId>org.eclipse.winery.common</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>jstl</groupId>
             <artifactId>jstl</artifactId>
             <version>1.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-ext</artifactId>
-            <version>${org.slf4j}</version>
-            <scope>compile</scope>
-            <!-- not approved by Eclipse legal -->
-            <exclusions>
-                <exclusion>
-                    <groupId>ch.qos.cal10n</groupId>
-                    <artifactId>cal10n-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>commons-configuration</groupId>
-            <artifactId>commons-configuration</artifactId>
-            <version>1.9</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-configuration2</artifactId>
+            <version>${org.apache.commons.configuration}</version>
             <scope>compile</scope>
             <exclusions>
                 <!-- provided by jcl-over-slf4j to enable logging via logback -->
@@ -247,10 +228,17 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- previously included transitively through commons-configuration -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${org.apache.commons-lang3.version}</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>org.eclipse.jgit</groupId>
             <artifactId>org.eclipse.jgit</artifactId>
-            <version>4.10.0.201712302008-r</version>
+            <version>${org.eclipse.jgit.version}</version>
             <exclusions>
                 <!-- provided by jcl-over-slf4j to enable logging via logback -->
                 <exclusion>
@@ -324,6 +312,12 @@
             <artifactId>jetty-test-helper</artifactId>
             <version>4.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.winery</groupId>
+            <artifactId>org.eclipse.winery.model.threatmodeling</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
 
         <!-- no review, but approval is required for test-only dependencies: http://wiki.eclipse.org/Development_Resources/IP/Test_and_Build_Dependencies -->
         <dependency>
@@ -354,6 +348,18 @@
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <version>3.0.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.winery</groupId>
+            <artifactId>org.eclipse.winery.model.adaptation</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
         <!-- end of test-only dependencies. Add runtime dependencies ABOVE the test depdendencies -->
@@ -406,44 +412,6 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <minimizeJar>false</minimizeJar>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <finalName>${project.build.finalName}-rest-server</finalName>
-                            <transformers>
-                                <transformer
-                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>org.eclipse.winery.repository.rest.server.WineryUsingHttpServer
-                                    </mainClass>
-                                </transformer>
-                                <!-- hint by https://stackoverflow.com/a/33226176/873282 -->
-                                <transformer
-                                    implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                            </transformers>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
@@ -454,10 +422,6 @@
                             <directory>${basedir}/src/main/webapp/WEB-INF</directory>
                             <filtering>true</filtering>
                             <targetPath>WEB-INF</targetPath>
-                            <includes>
-                                <include>tags/about.tag</include>
-                                <include>tags/genericpage.tag</include>
-                            </includes>
                         </resource>
                     </webResources>
                 </configuration>
@@ -504,7 +468,17 @@
                 </configuration>
             </plugin>
             <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
+                <!-- Spring Boot Maven Plugin
+                     https://docs.spring.io/spring-boot/docs/current/reference/html/build-tool-plugins-maven-plugin.html
+                     $ mvn package spring-boot:repackage
+                  -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.0.3.RELEASE</version>
+                <configuration>
+                    <executable>true</executable>
+                    <mainClass>org.eclipse.winery.repository.rest.server.WineryUsingHttpServer</mainClass>
+                </configuration>
             </plugin>
         </plugins>
         <finalName>winery</finalName>
@@ -571,111 +545,6 @@
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
                     </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-antrun-plugin</artifactId>
-                    <version>1.7</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.codehaus.groovy</groupId>
-                            <artifactId>groovy-all</artifactId>
-                            <version>2.1.7</version>
-                        </dependency>
-                    </dependencies>
-                    <executions>
-                        <execution>
-                            <!-- still required, because the topology preview is in place -->
-                            <phase>generate-sources</phase>
-                            <id>default-cli</id>
-                            <configuration>
-                                <target>
-                                    <copy todir="${project.basedir}/src/main/webapp/WEB-INF/tags/common"
-                                          overwrite="true">
-                                        <fileset
-                                            dir="${project.basedir}/../org.eclipse.winery.topologymodeler/src/main/webapp/WEB-INF/tags/common"/>
-                                    </copy>
-                                    <copy todir="${project.basedir}/src/main/webapp/jsp/shared" overwrite="true">
-                                        <fileset
-                                            dir="${project.basedir}/../org.eclipse.winery.topologymodeler/src/main/webapp/jsp/shared"/>
-                                    </copy>
-                                    <copy todir="${project.basedir}/src/main/webapp/WEB-INF" overwrite="true"
-                                          file="${project.basedir}/../org.eclipse.winery.topologymodeler/src/main/webapp/WEB-INF/common-functions.tld"/>
-                                    <copy todir="${project.basedir}/src/main/webapp/js" overwrite="true"
-                                          file="${project.basedir}/../org.eclipse.winery.topologymodeler/src/main/webapp/js/winery-common-topologyrendering.js"/>
-                                    <copy todir="${project.basedir}/src/main/webapp/js" overwrite="true"
-                                          file="${project.basedir}/../org.eclipse.winery.topologymodeler/src/main/webapp/js/winery-support-common.js"/>
-                                </target>
-                            </configuration>
-                            <goals>
-                                <goal>run</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-clean-plugin</artifactId>
-                    <version>2.5</version>
-                    <configuration>
-                        <filesets>
-                            <fileset>
-                                <!-- delete the files copied by generate source / the ant-task above. This ensures that deleted files being deleted at the topology modeler are also deleted at the repository -->
-                                <directory>${project.basedir}/src/main/webapp/WEB-INF/tags/common</directory>
-                                <excludes>
-                                    <exclude>.gitignore</exclude>
-                                </excludes>
-                                <followSymlinks>false</followSymlinks>
-                            </fileset>
-                            <fileset>
-                                <!-- delete the files copied by generate source / the ant-task above. This ensures that deleted files being deleted at the topology modeler are also deleted at the repository -->
-                                <directory>${project.basedir}/src/main/webapp/jsp/shared</directory>
-                                <excludes>
-                                    <exclude>.gitignore</exclude>
-                                </excludes>
-                                <followSymlinks>false</followSymlinks>
-                            </fileset>
-                        </filesets>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>com.github.eirslett</groupId>
-                    <artifactId>frontend-maven-plugin</artifactId>
-                    <version>1.3</version>
-                    <executions>
-                        <execution>
-                            <id>install node and npm</id>
-                            <goals>
-                                <goal>install-node-and-npm</goal>
-                            </goals>
-                            <configuration>
-                                <nodeVersion>v4.5.0</nodeVersion>
-                                <npmVersion>3.10.6</npmVersion>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>npm install bower</id>
-                            <goals>
-                                <goal>npm</goal>
-                            </goals>
-                            <configuration>
-                                <arguments>install bower</arguments>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>run bower</id>
-                            <goals>
-                                <goal>bower</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-source-plugin</artifactId>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-deploy-plugin</artifactId>
                 </plugin>
             </plugins>
         </pluginManagement>

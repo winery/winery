@@ -13,13 +13,17 @@
  ********************************************************************************/
 package org.eclipse.winery.repository.backend.consistencycheck;
 
+import java.util.EnumSet;
+import java.util.Objects;
+
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
-import java.util.EnumSet;
+import org.eclipse.jdt.annotation.NonNull;
 
 public class ConsistencyCheckerConfiguration {
 
+    private final boolean testMode;
     private boolean serviceTemplatesOnly;
     private boolean checkDocumentation;
     private EnumSet<ConsistencyCheckerVerbosity> verbosity;
@@ -30,13 +34,36 @@ public class ConsistencyCheckerConfiguration {
         this.checkDocumentation = false;
         this.verbosity = EnumSet.of(ConsistencyCheckerVerbosity.NONE);
         this.repository = RepositoryFactory.getRepository();
+        this.testMode = false;
     }
 
-    public ConsistencyCheckerConfiguration(boolean serviceTemplatesOnly, boolean checkDocumentation, EnumSet<ConsistencyCheckerVerbosity> verbosity, IRepository repository) {
+    /**
+     * Constructor used for testing the ConsistencyChecker functionality. Otherwise: Must not be used
+     */
+    public ConsistencyCheckerConfiguration(boolean serviceTemplatesOnly, boolean checkDocumentation, @NonNull EnumSet<ConsistencyCheckerVerbosity> verbosity) {
         this.serviceTemplatesOnly = serviceTemplatesOnly;
         this.checkDocumentation = checkDocumentation;
-        this.verbosity = verbosity;
-        this.repository = repository;
+        this.verbosity = Objects.requireNonNull(verbosity);
+        this.testMode = false;
+    }
+
+    public ConsistencyCheckerConfiguration(boolean serviceTemplatesOnly, boolean checkDocumentation, @NonNull EnumSet<ConsistencyCheckerVerbosity> verbosity, @NonNull IRepository repository) {
+        this.serviceTemplatesOnly = serviceTemplatesOnly;
+        this.checkDocumentation = checkDocumentation;
+        this.verbosity = Objects.requireNonNull(verbosity);
+        this.repository = Objects.requireNonNull(repository);
+        this.testMode = false;
+    }
+
+    /**
+     * Constructor used for testing the ConsistencyChecker functionality. Otherwise: Must not be used
+     */
+    public ConsistencyCheckerConfiguration(boolean serviceTemplatesOnly, boolean checkDocumentation, @NonNull EnumSet<ConsistencyCheckerVerbosity> verbosity, @NonNull IRepository repository, boolean testMode) {
+        this.serviceTemplatesOnly = serviceTemplatesOnly;
+        this.checkDocumentation = checkDocumentation;
+        this.verbosity = Objects.requireNonNull(verbosity);
+        this.repository = Objects.requireNonNull(repository);
+        this.testMode = testMode;
     }
 
     public boolean isServiceTemplatesOnly() {
@@ -69,5 +96,9 @@ public class ConsistencyCheckerConfiguration {
 
     public void setRepository(IRepository repository) {
         this.repository = repository;
+    }
+
+    public boolean isTestMode() {
+        return this.testMode;
     }
 }

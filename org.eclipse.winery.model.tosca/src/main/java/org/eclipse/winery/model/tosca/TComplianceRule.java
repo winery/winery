@@ -20,6 +20,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.eclipse.winery.model.tosca.visitor.Visitor;
+
+import org.eclipse.jdt.annotation.Nullable;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tComplianceRule")
 public class TComplianceRule extends HasId implements HasName, HasTargetNamespace {
@@ -72,7 +76,7 @@ public class TComplianceRule extends HasId implements HasName, HasTargetNamespac
         return identifier;
     }
 
-    public void setIdentifier(TTopologyTemplate identifier) {
+    public void setIdentifier(@Nullable TTopologyTemplate identifier) {
         this.identifier = identifier;
     }
 
@@ -83,7 +87,7 @@ public class TComplianceRule extends HasId implements HasName, HasTargetNamespac
         return requiredStructure;
     }
 
-    public void setRequiredStructure(TTopologyTemplate requiredStructure) {
+    public void setRequiredStructure(@Nullable TTopologyTemplate requiredStructure) {
         this.requiredStructure = requiredStructure;
     }
 
@@ -93,5 +97,10 @@ public class TComplianceRule extends HasId implements HasName, HasTargetNamespac
 
     public void setTags(TTags tags) {
         this.tags = tags;
+    }
+
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
 }

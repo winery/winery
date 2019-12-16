@@ -1,4 +1,5 @@
 {
     "color": "#89ee01",
-    "nodeTypeId": "{http://winery.opentosca.org/test/nodetypes/fruits}baobab"
+    "pattern": false,
+    "typeId": "{http://winery.opentosca.org/test/nodetypes/fruits}baobab"
 }

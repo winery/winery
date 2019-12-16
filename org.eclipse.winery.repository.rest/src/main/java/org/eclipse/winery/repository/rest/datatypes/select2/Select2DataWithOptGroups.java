@@ -24,7 +24,6 @@ public class Select2DataWithOptGroups {
 
     Map<String, Select2OptGroup> idx = new HashMap<>();
 
-
     /**
      * Add an item to a group
      *
@@ -58,6 +57,5 @@ public class Select2DataWithOptGroups {
         }
 
         return res;
-
     }
 }

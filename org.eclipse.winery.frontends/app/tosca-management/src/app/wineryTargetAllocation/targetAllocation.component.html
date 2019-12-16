@@ -1,0 +1,85 @@
+<!--
+/********************************************************************************
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ ********************************************************************************/
+-->
+
+<winery-modal bsModal #targetAllocationModal="bs-modal" [modalRef]="targetAllocationModal">
+    <winery-modal-header [title]="'Allocate to cloud providers'"></winery-modal-header>
+
+    <winery-modal-body>
+        <form #allocateForm="ngForm">
+            <fieldset>
+                <div class="form-group">
+                    <label for="criteriaSelection" class="control-label">Criteria selection</label>
+                    <div style="display: flex;">
+                        <ng-select id="criteriaSelection" style="flex: 1"
+                                   [allowClear]="true"
+                                   [items]="criteria"
+                                   (data)="criteriaSelected($event)"
+                                   placeholder="Criteria">
+                        </ng-select>
+                        <button class="rightbutton btn btn-primary btn-xs"
+                                (click)="addSelectedCriteria();"
+                                [disabled]="isAddCriteriaButtonDisabled()">
+                            Add
+                        </button>
+                        <button class="rightbutton btn btn-primary btn-xs"
+                                (click)="assignTargetLabels();"
+                                [disabled]="isAssignOnlyButtonDisabled()">
+                            Assign target labels
+                        </button>
+                    </div>
+
+                    <div *ngIf="selectedCriteria === 'FulfillPolicies'">
+                        <br>
+                        <winery-target-allocation-policy-selection-component>
+                        </winery-target-allocation-policy-selection-component>
+                    </div>
+
+                    <hr>
+                    <label for="output-cap" class="control-label">Topology generation cap</label>
+                    <input type="number"
+                           class="form-control"
+                           id="output-cap"
+                           name="output-cap"
+                           #newName="ngModel"
+                           [(ngModel)]="request.outputCap">
+                    <br>
+                    <label class="control-label">Selected criteria</label>
+                    <div class="table-component-header-btn-wrap">
+                        <button class="rightbutton btn btn-danger btn-xs"
+                                (click)="removeCriteria();"
+                                [disabled]="data.length === 0">
+                            Remove
+                        </button>
+                    </div>
+                    <winery-table
+                        [data]="data"
+                        [columns]="columns"
+                        [disableFiltering]="true"
+                        (removeBtnClicked)="removeCriteria()"
+                        [disableButtons]="true">
+                    </winery-table>
+                </div>
+            </fieldset>
+        </form>
+    </winery-modal-body>
+
+    <winery-modal-footer
+        (onOk)="allocate()"
+        [closeButtonLabel]="'Cancel'"
+        [okButtonLabel]="'Allocate'"
+        [disableOkButton]="isAllocationButtonEnabled()">
+    </winery-modal-footer>
+</winery-modal>

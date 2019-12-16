@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -23,19 +24,21 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.eclipse.winery.model.tosca.visitor.Visitor;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tRequirementRef")
-public class TRequirementRef {
+public class TRequirementRef implements Serializable {
 
     @XmlAttribute(name = "name")
     protected String name;
     @XmlAttribute(name = "ref", required = true)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    protected Object ref;
+    protected TRequirement ref;
 
     @Override
     public boolean equals(Object o) {
@@ -56,16 +59,21 @@ public class TRequirementRef {
         return name;
     }
 
-    public void setName(String value) {
+    public void setName(@Nullable String value) {
         this.name = value;
     }
 
     @NonNull
-    public Object getRef() {
+    public TRequirement getRef() {
         return ref;
     }
 
-    public void setRef(@NonNull Object value) {
+    public void setRef(@NonNull TRequirement value) {
+        Objects.requireNonNull(value);
         this.ref = value;
+    }
+
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
 }

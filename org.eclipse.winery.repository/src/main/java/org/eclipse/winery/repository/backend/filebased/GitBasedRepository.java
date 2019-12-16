@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,29 +13,45 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.filebased;
 
-import com.google.common.collect.Iterables;
-import com.google.common.eventbus.EventBus;
-import org.apache.tika.mime.MediaType;
-import org.eclipse.jgit.api.*;
-import org.eclipse.jgit.api.ResetCommand.ResetType;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.diff.DiffEntry;
-import org.eclipse.jgit.errors.NoWorkTreeException;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.configuration.GitBasedRepositoryConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import org.eclipse.winery.common.Constants;
+import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
+import org.eclipse.winery.repository.backend.BackendUtils;
+
+import com.google.common.collect.Iterables;
+import com.google.common.eventbus.EventBus;
+import org.apache.tika.mime.MediaType;
+import org.eclipse.jgit.api.AddCommand;
+import org.eclipse.jgit.api.CleanCommand;
+import org.eclipse.jgit.api.CommitCommand;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ResetCommand;
+import org.eclipse.jgit.api.ResetCommand.ResetType;
+import org.eclipse.jgit.api.RmCommand;
+import org.eclipse.jgit.api.Status;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.JGitInternalException;
+import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.errors.NoWorkTreeException;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Allows to reset repository to a certain commit id
@@ -47,6 +63,8 @@ public class GitBasedRepository extends FilebasedRepository {
      */
     private static final Object COMMIT_LOCK = new Object();
     private static final Logger LOGGER = LoggerFactory.getLogger(GitBasedRepository.class);
+
+    protected final Path workingRepositoryRoot;
 
     private final Git git;
     private final EventBus eventBus;
@@ -61,22 +79,50 @@ public class GitBasedRepository extends FilebasedRepository {
     public GitBasedRepository(GitBasedRepositoryConfiguration gitBasedRepositoryConfiguration) throws IOException, NoWorkTreeException, GitAPIException {
         super(Objects.requireNonNull(gitBasedRepositoryConfiguration));
         this.gitBasedRepositoryConfiguration = gitBasedRepositoryConfiguration;
+
         FileRepositoryBuilder builder = new FileRepositoryBuilder();
         Repository gitRepo = builder.setWorkTree(this.repositoryRoot.toFile()).setMustExist(false).build();
 
+        String repoUrl = gitBasedRepositoryConfiguration.getRepositoryUrl();
+        String branch = gitBasedRepositoryConfiguration.getBranch();
+
         if (!Files.exists(this.repositoryRoot.resolve(".git"))) {
-            gitRepo.create();
+            if (repoUrl != null && !repoUrl.isEmpty()) {
+                this.git = cloneRepository(repoUrl, branch);
+            } else {
+                gitRepo.create();
+                this.git = new Git(gitRepo);
+            }
+        } else {
+            this.git = new Git(gitRepo);
         }
+
+        if (this.repositoryRoot.resolve(Constants.DEFAULT_LOCAL_REPO_NAME).toFile().exists()) {
+            if (!(this instanceof MultiRepository)) {
+                this.workingRepositoryRoot = this.repositoryRoot.resolve(Constants.DEFAULT_LOCAL_REPO_NAME);
+            } else {
+                this.workingRepositoryRoot = repositoryDep;
+            }
+        } else {
+            this.workingRepositoryRoot = repositoryDep;
+        }
+
+        this.eventBus = new EventBus();
 
         // explicitly enable longpaths to ensure proper handling of long pathss
         gitRepo.getConfig().setBoolean("core", null, "longpaths", true);
         gitRepo.getConfig().save();
 
-        this.eventBus = new EventBus();
-        this.git = new Git(gitRepo);
-
         if (gitBasedRepositoryConfiguration.isAutoCommit() && !this.git.status().call().isClean()) {
             this.addCommit("Files changed externally.");
+        }
+    }
+
+    Path generateWorkingRepositoryRoot() {
+        if (this.repositoryRoot.resolve(Constants.DEFAULT_LOCAL_REPO_NAME).toFile().exists()) {
+            return this.repositoryRoot.resolve(Constants.DEFAULT_LOCAL_REPO_NAME);
+        } else {
+            return repositoryDep;
         }
     }
 
@@ -107,7 +153,7 @@ public class GitBasedRepository extends FilebasedRepository {
      * @throws GitAPIException thrown when anything with adding or committing goes wrong.
      */
     public void addCommit(String message) throws GitAPIException {
-        addCommit(new String[]{"."}, message);
+        addCommit(new String[] {"."}, message);
     }
 
     public void addCommit(String[] patterns, String message) throws GitAPIException {
@@ -143,9 +189,8 @@ public class GitBasedRepository extends FilebasedRepository {
         try (OutputStream stream = new ByteArrayOutputStream()) {
             List<DiffEntry> list = this.git.diff().setOutputStream(stream).call();
             BufferedReader reader = new BufferedReader(new StringReader(stream.toString()));
-            String line = reader.readLine();
             for (DiffEntry entry : list) {
-                line = reader.readLine();
+                String line = reader.readLine();
                 StringWriter diff = new StringWriter();
                 while (line != null && !line.startsWith("diff")) {
                     diff.append(line);
@@ -156,6 +201,8 @@ public class GitBasedRepository extends FilebasedRepository {
             }
         } catch (IOException exc) {
             LOGGER.trace("Reading of git information failed!", exc);
+        } catch (JGitInternalException gitException) {
+            LOGGER.trace("Could not create Diff!", gitException);
         }
         this.eventBus.post(diffMap);
     }
@@ -246,5 +293,22 @@ public class GitBasedRepository extends FilebasedRepository {
             LOGGER.trace(e.getMessage(), e);
             return null;
         }
+    }
+
+    private Git cloneRepository(String repoUrl, String branch) throws GitAPIException {
+        return Git.cloneRepository()
+            .setURI(repoUrl)
+            .setDirectory(this.getRepositoryDep().toFile())
+            .setBranch(branch)
+            .call();
+    }
+
+    public String getRepositoryUrl() {
+        return this.gitBasedRepositoryConfiguration.getRepositoryUrl();
+    }
+
+    @Override
+    public Path getRepositoryRoot() {
+        return this.workingRepositoryRoot;
     }
 }

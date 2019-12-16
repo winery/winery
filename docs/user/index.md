@@ -5,33 +5,23 @@ It is an Eclipse project and thus support is available through its project page 
 Winery is also part of the OpenTOSCA ecosystem where more information is available at <http://www.opentosca.org>.
 For more information on TOSCA see [our TOSCA information page](../tosca/).
 
-![Winery Components](graphics/WineryComponents.png)
-
-Winery consists of four parts (1) the type and template management, (2) the topology modeler, (3) the BPMN4TOSCA plan modeler, and (4) the repository.
-
-The type, template and artifact management enables managing all TOSCA types, templates and related artifacts.
-This includes node types, relationship types, policy types, artifact types, artifact templates, and artifacts such as virtual machine images.
-
-The topology modeler enables to create service templates.
-Service templates consists of instances of node types (node templates) and instances of relationship types (relationship templates).
-They can be annotated with requirements and capabilities, properties, and policies.
-
-The BPMN4TOSCA plan modeler offers web based creation of BPMN models with the TOSCA extension BPMN4TOSCA.
-That means the modeler supports the BPMN elements and structures required by TOSCA plans and not the full set of BPMN [KBBL12].
-This part is currently in development and not part of the opensourced code of Winery.
-
-The repository stores TOSCA models and allows managing their content. For instance, node types, policy types, and artifact templates are managed by the repository.
-The repository is also responsible for importing and  exporting CSARs, the exchange format of TOSCA files and related artifacts.
-
+- [overview](overview.md) - overview on Winery
 - [FAQ](FAQ.md) - frequently asked questions
-- [Quickstart](quickstart.md)
-- [Modeling Guide](modeling-guide.md) - Guide how to use Winery
+- [Quick Setup](quicksetup.md) - shows how to setup the winery repository for TOSCA definitions
+- [Quickstart](quickstart.md) - shows how to use Winery to model a node type and a topology
 
 ## Features
 
 - [Splitting](Splitting) - splitting functionality
+- [Target Allocation](TargetAllocation) - select best suited Cloud Provider for topologies
 - [TopologyCompletion](TopologyCompletion) - topology completion with a [Tutorial](TopologyCompletionTutorial)
 - [XaaSPackager](XaaSPackager) - Enables reusing modeled topologies as templates for single applications
+- [Compliance Checking](ComplianceChecking.md) - Enables compliance checking of Topology Templates based on reusable Compliance Rules  
+- [Implementation Artifact Generation](generateIA.md) - Shows how to generate and update an implementation artifact of type .war
+- [Accountability](../../org.eclipse.winery.accountability/README.md) - Enables enforcing accountability in decentralized scenarios for collaborative development of CSARs
+- [Version Management](VersionManagement.md) - shows how to update the version of a node template in the topology modeler
+- [Threat Modeling For NFV](ThreatModelingNFV.md) - Enables threat modeling capabilities and NFV-based mitigation recommendation
+- [Pattern-based Deployment and Configuration Models](Pattern-basedDeploymentModelling.md) - describes how PbDCMs can be crated and refined to executable deployment models
 
 ## Background Literature
 
@@ -48,7 +38,7 @@ More readings at <https://www.opentosca.org>.
 
 ## License
 
-Copyright (c) 2017 Contributors to the Eclipse Foundation
+Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
 
 See the NOTICE file(s) distributed with this work for additional
 information regarding copyright ownership.

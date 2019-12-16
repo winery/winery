@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -18,27 +18,33 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.SortedSet;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
+import org.eclipse.winery.accountability.AccountabilityManager;
+import org.eclipse.winery.accountability.AccountabilityManagerFactory;
+import org.eclipse.winery.accountability.exceptions.AccountabilityException;
+import org.eclipse.winery.common.Constants;
+import org.eclipse.winery.common.HashingUtil;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.IdNames;
@@ -46,38 +52,41 @@ import org.eclipse.winery.common.ids.admin.NamespacesId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.selfservice.Application.Options;
 import org.eclipse.winery.model.selfservice.ApplicationOption;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
-import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.GitInfo;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IGenericRepository;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.SelfServiceMetaDataUtils;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
-import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ServiceTemplateSelfServiceFilesDirectoryId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
+import org.eclipse.winery.repository.export.entries.CsarEntry;
+import org.eclipse.winery.repository.export.entries.DefinitionsBasedCsarEntry;
+import org.eclipse.winery.repository.export.entries.DocumentBasedCsarEntry;
+import org.eclipse.winery.repository.export.entries.RepositoryRefBasedCsarEntry;
 
-import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.ArchiveException;
-import org.apache.commons.compress.archivers.ArchiveOutputStream;
-import org.apache.commons.compress.archivers.ArchiveStreamFactory;
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
+
+import static org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileAttributes.CONTENT_TYPE;
+import static org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileAttributes.CREATED_BY;
+import static org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileAttributes.CSAR_VERSION;
+import static org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileAttributes.ENTRY_DEFINITIONS;
+import static org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileAttributes.HASH;
+import static org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileAttributes.IMMUTABLE_ADDRESS;
+import static org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileAttributes.NAME;
+import static org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileAttributes.TOSCA_META_VERSION;
 
 /**
  * This class exports a CSAR crawling from the the given GenericId. Currently, only ServiceTemplates are supported.
@@ -87,6 +96,7 @@ import org.w3c.dom.Document;
 public class CsarExporter {
 
     public static final String PATH_TO_NAMESPACES_PROPERTIES = "winery/Namespaces.properties";
+    public static final String PATH_TO_NAMESPACES_JSON = "winery/Namespaces.json";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CsarExporter.class);
 
@@ -110,112 +120,158 @@ public class CsarExporter {
         return CsarExporter.DEFINITONS_PATH_PREFIX + CsarExporter.getDefinitionsFileName(repository, id);
     }
 
+    public CompletableFuture<String> writeCsarAndSaveManifestInProvenanceLayer(IRepository repository, DefinitionsChildId entryId, OutputStream out)
+        throws IOException, RepositoryCorruptException, AccountabilityException, InterruptedException, ExecutionException {
+        LocalDateTime start = LocalDateTime.now();
+        Properties props = repository.getAccountabilityConfigurationManager().properties;
+        AccountabilityManager accountabilityManager = AccountabilityManagerFactory.getAccountabilityManager(props);
+
+        Map<String, Object> exportConfiguration = new HashMap<>();
+        exportConfiguration.put(CsarExportConfiguration.INCLUDE_HASHES.name(), null);
+        exportConfiguration.put(CsarExportConfiguration.STORE_IMMUTABLY.name(), null);
+
+        String manifestString = this.writeCsar(repository, entryId, out, exportConfiguration);
+        String qNameWithComponentVersionOnly = VersionUtils.getQNameWithComponentVersionOnly(entryId);
+        LOGGER.debug("Preparing CSAR export (provenance) lasted {}", Duration.between(LocalDateTime.now(), start).toString());
+
+        return accountabilityManager.storeFingerprint(qNameWithComponentVersionOnly, manifestString);
+    }
+
     /**
      * Writes a complete CSAR containing all necessary things reachable from the given service template
      *
      * @param entryId the id of the service template to export
      * @param out     the output stream to write to
+     * @return the TOSCA meta file for the generated Csar
      */
-    public void writeCsar(IRepository repository, DefinitionsChildId entryId, OutputStream out) throws ArchiveException, IOException, JAXBException, RepositoryCorruptException {
+    public String writeCsar(IRepository repository, DefinitionsChildId entryId, OutputStream out, Map<String, Object> exportConfiguration)
+        throws IOException, RepositoryCorruptException, InterruptedException, AccountabilityException, ExecutionException {
         CsarExporter.LOGGER.trace("Starting CSAR export with {}", entryId.toString());
 
-        Map<RepositoryFileReference, String> refMap = new HashMap<>();
-        Collection<String> definitionNames = new ArrayList<>();
+        Map<CsarContentProperties, CsarEntry> refMap = new HashMap<>();
+        ToscaExportUtil exporter = new ToscaExportUtil();
+        ExportedState exportedState = new ExportedState();
+        DefinitionsChildId currentId = entryId;
+        Collection<DefinitionsChildId> referencedIds;
 
-        try (final ArchiveOutputStream zos = new ArchiveStreamFactory().createArchiveOutputStream("zip", out)) {
-            ToscaExportUtil exporter = new ToscaExportUtil();
-            Map<String, Object> conf = new HashMap<>();
+        // Process definitions and referenced files
+        do {
+            String definitionsPathInsideCSAR = CsarExporter.getDefinitionsPathInsideCSAR(repository, currentId);
+            CsarContentProperties definitionsFileProperties = new CsarContentProperties(definitionsPathInsideCSAR);
+            referencedIds = exporter.processTOSCA(repository, currentId, definitionsFileProperties, refMap, exportConfiguration);
 
-            ExportedState exportedState = new ExportedState();
+            // for each entryId add license and readme files (if they exist) to the refMap
+            addLicenseAndReadmeFiles(repository, currentId, refMap);
 
-            DefinitionsChildId currentId = entryId;
-            do {
-                String defName = CsarExporter.getDefinitionsPathInsideCSAR(repository, currentId);
-                definitionNames.add(defName);
+            exportedState.flagAsExported(currentId);
+            exportedState.flagAsExportRequired(referencedIds);
 
-                zos.putArchiveEntry(new ZipArchiveEntry(defName));
-                Collection<DefinitionsChildId> referencedIds;
-                referencedIds = exporter.exportTOSCA(repository, currentId, zos, refMap, conf);
-                zos.closeArchiveEntry();
+            currentId = exportedState.pop();
+        } while (currentId != null);
 
-                // for each entryId add license and readme files (if they exist) to the refMap
-                addLicenseAndReadmeFiles(repository, currentId, refMap);
+        // if we export a ServiceTemplate, data for the self-service portal might exist
+        if (entryId instanceof ServiceTemplateId) {
+            ServiceTemplateId serviceTemplateId = (ServiceTemplateId) entryId;
+            this.addSelfServiceMetaData(repository, serviceTemplateId, refMap);
+            this.addSelfServiceFiles(repository, serviceTemplateId, refMap);
+        }
 
-                exportedState.flagAsExported(currentId);
-                exportedState.flagAsExportRequired(referencedIds);
+        this.addNamespacePrefixes(repository, refMap);
 
-                currentId = exportedState.pop();
-            } while (currentId != null);
+        /* now, refMap contains all files to be added to the CSAR */
 
-            // if we export a ServiceTemplate, data for the self-service portal might exist
-            if (entryId instanceof ServiceTemplateId) {
-                ServiceTemplateId serviceTemplateId = (ServiceTemplateId) entryId;
-                this.addSelfServiceMetaData(repository, serviceTemplateId, refMap);
-                this.addSelfServiceFiles(repository, serviceTemplateId, refMap, zos);
-            }
+        // Calculate hashes for referenced files if necessary
+        if (exportConfiguration.containsKey(CsarExportConfiguration.INCLUDE_HASHES.name())) {
+            LOGGER.trace("Calculating checksum for {} files.", refMap.size());
+            calculateFileHashes(refMap);
+        }
 
-            // now, refMap contains all files to be added to the CSAR
-
-            // write manifest directly after the definitions to have it more at the beginning of the ZIP rather than having it at the very end
-            this.addManifest(repository, entryId, definitionNames, refMap, zos);
-
-            // used for generated XSD schemas
-            TransformerFactory tFactory = TransformerFactory.newInstance();
-            Transformer transformer;
+        // Store referenced files in immutable file storage if necessary
+        if (exportConfiguration.containsKey(CsarExportConfiguration.STORE_IMMUTABLY.name())) {
             try {
-                transformer = tFactory.newTransformer();
-            } catch (TransformerConfigurationException e1) {
-                CsarExporter.LOGGER.debug(e1.getMessage(), e1);
-                throw new IllegalStateException("Could not instantiate transformer", e1);
+                LOGGER.trace("Storing {} files in the immutable file storage", refMap.size());
+                immutablyStoreRefFiles(refMap, repository);
+            } catch (InterruptedException | ExecutionException | AccountabilityException e) {
+                LOGGER.error("Failed to store files in immutable storage. Reason: {}", e.getMessage());
+                throw e;
             }
+        }
 
+        // Archive creation
+        try (final ZipOutputStream zos = new ZipOutputStream(out)) {
             // write all referenced files
-            for (RepositoryFileReference ref : refMap.keySet()) {
-                String archivePath = refMap.get(ref);
-                CsarExporter.LOGGER.trace("Creating {}", archivePath);
-                if (ref instanceof DummyRepositoryFileReferenceForGeneratedXSD) {
-                    addDummyRepositoryFileReferenceForGeneratedXSD(zos, transformer, (DummyRepositoryFileReferenceForGeneratedXSD) ref, archivePath);
+            for (Map.Entry<CsarContentProperties, CsarEntry> entry : refMap.entrySet()) {
+                CsarContentProperties fileProperties = entry.getKey();
+                CsarEntry ref = entry.getValue();
+                CsarExporter.LOGGER.trace("Creating {}", fileProperties.getPathInsideCsar());
+
+                if (ref instanceof RepositoryRefBasedCsarEntry && ((RepositoryRefBasedCsarEntry) ref).getReference().getParent() instanceof DirectoryId) {
+                    addArtifactTemplateToZipFile(zos, (RepositoryRefBasedCsarEntry) ref, fileProperties);
                 } else {
-                    if (ref.getParent() instanceof DirectoryId) {
-                        // special handling for artifact template directories "source" and "files"
-                        addArtifactTemplateToZipFile(zos, repository, ref, archivePath);
-                    } else {
-                        addFileToZipArchive(zos, repository, ref, archivePath);
-                        zos.closeArchiveEntry();
-                    }
+                    addCsarEntryToArchive(zos, ref, fileProperties);
                 }
             }
 
-            this.addNamespacePrefixes(zos, repository);
+            // create manifest file and add it to archive
+            return this.addManifest(repository, entryId, refMap, zos, exportConfiguration);
         }
+    }
+
+    private void calculateFileHashes(Map<CsarContentProperties, CsarEntry> files) {
+        files.forEach((properties, entry) -> {
+            try (InputStream is = entry.getInputStream()) {
+                properties.setFileHash(HashingUtil.getChecksum(is, HASH));
+            } catch (IOException | NoSuchAlgorithmException e) {
+                LOGGER.error("Failed to calculate hash for {}. Reason: {}.", properties.getPathInsideCsar(), e.getMessage());
+            }
+        });
+    }
+
+    /**
+     * Stores all files listed in the map in the immutable file storage, and updates the CsarContentProperties of each
+     * file to contain its address in the aforementioned storage.
+     *
+     * @param filesToStore a map of the CsarContentProperties of all files to be stored in the CSAR and their contents.
+     */
+    private void immutablyStoreRefFiles(Map<CsarContentProperties, CsarEntry> filesToStore, IRepository repository)
+        throws AccountabilityException, ExecutionException, InterruptedException, IOException {
+        Properties props = repository.getAccountabilityConfigurationManager().properties;
+        AccountabilityManager manager = AccountabilityManagerFactory.getAccountabilityManager(props);
+        Map<String, InputStream> filesMap = new HashMap<>();
+
+        for (Map.Entry<CsarContentProperties, CsarEntry> entry : filesToStore.entrySet()) {
+            filesMap.put(entry.getKey().getPathInsideCsar(), entry.getValue().getInputStream());
+        }
+
+        // store all files in immutable storage (already stored files will get their same old address)
+        Map<String, String> addressMap = manager
+            .storeState(filesMap)
+            .get();
+
+        filesToStore.keySet().forEach((CsarContentProperties properties) -> {
+            properties.setImmutableAddress(addressMap.get(properties.getPathInsideCsar()));
+        });
     }
 
     /**
      * Special handling for artifact template directories source and files
      *
-     * @param zos         Output stream for the archive that should contain the file
-     * @param ref         Reference to the file that should be added to the archive
-     * @param archivePath Path to the file inside the archive
+     * @param zos            Output stream for the archive that should contain the file
+     * @param csarEntry      Reference to the file that should be added to the archive
+     * @param fileProperties Describing the path to the file inside the archive
      * @throws IOException thrown when the temporary directory can not be created
      */
-    private void addArtifactTemplateToZipFile(ArchiveOutputStream zos, IGenericRepository repository, RepositoryFileReference ref, String archivePath) throws IOException {
-        GitInfo gitInfo = BackendUtils.getGitInformation((DirectoryId) ref.getParent());
+    private void addArtifactTemplateToZipFile(ZipOutputStream zos, RepositoryRefBasedCsarEntry csarEntry,
+                                              CsarContentProperties fileProperties) throws IOException {
+        GitInfo gitInfo = BackendUtils.getGitInformation((DirectoryId) csarEntry.getReference().getParent());
 
         if (gitInfo == null) {
-            try (InputStream is = repository.newInputStream(ref)) {
-                if (is != null) {
-                    ArchiveEntry archiveEntry = new ZipArchiveEntry(archivePath);
-                    zos.putArchiveEntry(archiveEntry);
-                    IOUtils.copy(is, zos);
-                    zos.closeArchiveEntry();
-                }
-            } catch (Exception e) {
-                CsarExporter.LOGGER.error("Could not copy file to ZIP outputstream", e);
-            }
+            addCsarEntryToArchive(zos, csarEntry, fileProperties);
             return;
         }
 
         // TODO: This is not quite correct. The files should reside checked out at "source/"
+        // TODO: Hash all these git files (to be included in the provenance)
         Path tempDir = Files.createTempDirectory(WINERY_TEMP_DIR_PREFIX);
         try {
             Git git = Git
@@ -225,11 +281,11 @@ public class CsarExporter {
                 .call();
             git.checkout().setName(gitInfo.BRANCH).call();
             String path = "artifacttemplates/"
-                + Util.URLencode(((ArtifactTemplateId) ref.getParent().getParent()).getQName().getNamespaceURI())
+                + Util.URLencode(((ArtifactTemplateId) csarEntry.getReference().getParent().getParent()).getQName().getNamespaceURI())
                 + "/"
-                + ((ArtifactTemplateId) ref.getParent().getParent()).getQName().getLocalPart()
+                + ((ArtifactTemplateId) csarEntry.getReference().getParent().getParent()).getQName().getLocalPart()
                 + "/files/";
-            TArtifactTemplate template = BackendUtils.getTArtifactTemplate((DirectoryId) ref.getParent());
+            TArtifactTemplate template = BackendUtils.getTArtifactTemplate((DirectoryId) csarEntry.getReference().getParent());
             addWorkingTreeToArchive(zos, template, tempDir, path);
         } catch (GitAPIException e) {
             CsarExporter.LOGGER.error(String.format("Error while cloning repo: %s / %s", gitInfo.URL, gitInfo.BRANCH), e);
@@ -241,40 +297,18 @@ public class CsarExporter {
     /**
      * Adds a file to an archive
      *
-     * @param zos         Output stream of the archive
-     * @param ref         Reference to the file that should be added to the archive
-     * @param archivePath Path inside the archive to the file
+     * @param zos                   Output stream of the archive
+     * @param csarEntry             Reference to the file that should be added to the archive
+     * @param csarContentProperties Describing the path inside the archive to the file
      */
-    private void addFileToZipArchive(ArchiveOutputStream zos, IGenericRepository repository, RepositoryFileReference ref, String archivePath) {
-        try (InputStream is = repository.newInputStream(ref)) {
-            ArchiveEntry archiveEntry = new ZipArchiveEntry(archivePath);
-            zos.putArchiveEntry(archiveEntry);
+    private void addCsarEntryToArchive(ZipOutputStream zos, CsarEntry csarEntry,
+                                       CsarContentProperties csarContentProperties) {
+        try (InputStream is = csarEntry.getInputStream()) {
+            zos.putNextEntry(new ZipEntry(csarContentProperties.getPathInsideCsar()));
             IOUtils.copy(is, zos);
+            zos.closeEntry();
         } catch (Exception e) {
             CsarExporter.LOGGER.error("Could not copy file content to ZIP outputstream", e);
-        }
-    }
-
-    /**
-     * Adds a dummy file to the archive
-     *
-     * @param zos         Output stream of the archive
-     * @param transformer Given transformer to transform the {@link DummyRepositoryFileReferenceForGeneratedXSD} to a
-     *                    {@link ArchiveOutputStream}
-     * @param ref         The dummy document that should be exported as an archive
-     * @param archivePath The output path of the archive
-     */
-    private void addDummyRepositoryFileReferenceForGeneratedXSD(ArchiveOutputStream zos, Transformer transformer, DummyRepositoryFileReferenceForGeneratedXSD ref, String archivePath) throws IOException {
-        ArchiveEntry archiveEntry = new ZipArchiveEntry(archivePath);
-        zos.putArchiveEntry(archiveEntry);
-        CsarExporter.LOGGER.trace("Special treatment for generated XSDs");
-        Document document = ref.getDocument();
-        DOMSource source = new DOMSource(document);
-        StreamResult result = new StreamResult(zos);
-        try {
-            transformer.transform(source, result);
-        } catch (TransformerException e) {
-            CsarExporter.LOGGER.debug("Could not serialize generated xsd", e);
         }
     }
 
@@ -310,7 +344,7 @@ public class CsarExporter {
      * @param rootDir     The root of the working tree
      * @param archivePath The path inside the archive to the working tree
      */
-    private void addWorkingTreeToArchive(ArchiveOutputStream zos, TArtifactTemplate template, Path rootDir, String archivePath) {
+    private void addWorkingTreeToArchive(ZipOutputStream zos, TArtifactTemplate template, Path rootDir, String archivePath) {
         addWorkingTreeToArchive(rootDir.toFile(), zos, template, rootDir, archivePath);
     }
 
@@ -323,7 +357,7 @@ public class CsarExporter {
      * @param rootDir     The root of the working tree
      * @param archivePath The path inside the archive to the working tree
      */
-    private void addWorkingTreeToArchive(File file, ArchiveOutputStream zos, TArtifactTemplate template, Path rootDir, String archivePath) {
+    private void addWorkingTreeToArchive(File file, ZipOutputStream zos, TArtifactTemplate template, Path rootDir, String archivePath) {
         if (file.isDirectory()) {
             if (file.getName().equals(".git")) {
                 return;
@@ -367,10 +401,10 @@ public class CsarExporter {
 
             if ((!foundInclude || included) && !excluded) {
                 try (InputStream is = new FileInputStream(file)) {
-                    ArchiveEntry archiveEntry = new ZipArchiveEntry(archivePath + rootDir.relativize(Paths.get(file.getAbsolutePath())));
-                    zos.putArchiveEntry(archiveEntry);
+                    ZipEntry archiveEntry = new ZipEntry(archivePath + rootDir.relativize(Paths.get(file.getAbsolutePath())));
+                    zos.putNextEntry(archiveEntry);
                     IOUtils.copy(is, zos);
-                    zos.closeArchiveEntry();
+                    zos.closeEntry();
                 } catch (Exception e) {
                     CsarExporter.LOGGER.error("Could not copy file to ZIP outputstream", e);
                 }
@@ -384,22 +418,16 @@ public class CsarExporter {
      * This is kind of a quick hack. TODO: during the import, the prefixes should be extracted using JAXB and stored in
      * the NamespacesResource
      */
-    private void addNamespacePrefixes(ArchiveOutputStream zos, IRepository repository) throws IOException {
-        Configuration configuration = repository.getConfiguration(new NamespacesId());
-        if (configuration instanceof PropertiesConfiguration) {
-            // Quick hack: direct serialization only works for PropertiesConfiguration
-            PropertiesConfiguration pconf = (PropertiesConfiguration) configuration;
-            ArchiveEntry archiveEntry = new ZipArchiveEntry(CsarExporter.PATH_TO_NAMESPACES_PROPERTIES);
-            zos.putArchiveEntry(archiveEntry);
-            try {
-                pconf.save(zos);
-            } catch (ConfigurationException e) {
-                CsarExporter.LOGGER.debug(e.getMessage(), e);
-                zos.write("#Could not export properties".getBytes());
-                zos.write(("#" + e.getMessage()).getBytes());
+    private void addNamespacePrefixes(IRepository repository, Map<CsarContentProperties, CsarEntry> refMap) throws IOException {
+        // ensure that the namespaces are saved as json
+        SortedSet<RepositoryFileReference> references = repository.getContainedFiles(new NamespacesId());
+
+        references.forEach(repositoryFileReference -> {
+            if (repositoryFileReference.getFileName().toLowerCase().endsWith(Constants.SUFFIX_JSON)) {
+                CsarContentProperties csarContentProperties = new CsarContentProperties(CsarExporter.PATH_TO_NAMESPACES_JSON);
+                refMap.put(csarContentProperties, new RepositoryRefBasedCsarEntry(repositoryFileReference));
             }
-            zos.closeArchiveEntry();
-        }
+        });
     }
 
     /**
@@ -410,7 +438,7 @@ public class CsarExporter {
      * @param targetDir  the directory in the CSAR where to put the content to
      * @param refMap     is used later to create the CSAR
      */
-    private void addSelfServiceMetaData(IRepository repository, ServiceTemplateId entryId, String targetDir, Map<RepositoryFileReference, String> refMap) throws IOException {
+    private void addSelfServiceMetaData(IRepository repository, ServiceTemplateId entryId, String targetDir, Map<CsarContentProperties, CsarEntry> refMap) throws IOException {
         final SelfServiceMetaDataId selfServiceMetaDataId = new SelfServiceMetaDataId(entryId);
 
         // This method is also called if the directory SELFSERVICE-Metadata exists without content and even if the directory does not exist at all,
@@ -419,37 +447,51 @@ public class CsarExporter {
         // Thus, we have to take care of the case of an empty directory and add a default data.xml
         SelfServiceMetaDataUtils.ensureDataXmlExists(selfServiceMetaDataId);
 
-        refMap.put(SelfServiceMetaDataUtils.getDataXmlRef(selfServiceMetaDataId), targetDir + "data.xml");
+        CsarContentProperties csarContentProperties = new CsarContentProperties(targetDir + "data.xml");
+        refMap.put(csarContentProperties, new RepositoryRefBasedCsarEntry(SelfServiceMetaDataUtils.getDataXmlRef(selfServiceMetaDataId)));
 
         // The schema says that the images have to exist
         // However, at a quick modeling, there might be no images
         // Therefore, we check for existence
         final RepositoryFileReference iconJpgRef = SelfServiceMetaDataUtils.getIconJpgRef(selfServiceMetaDataId);
         if (repository.exists(iconJpgRef)) {
-            refMap.put(iconJpgRef, targetDir + "icon.jpg");
+            csarContentProperties = new CsarContentProperties(targetDir + "icon.jpg");
+            refMap.put(csarContentProperties, new RepositoryRefBasedCsarEntry(iconJpgRef));
         }
         final RepositoryFileReference imageJpgRef = SelfServiceMetaDataUtils.getImageJpgRef(selfServiceMetaDataId);
         if (repository.exists(imageJpgRef)) {
-            refMap.put(imageJpgRef, targetDir + "image.jpg");
+            csarContentProperties = new CsarContentProperties(targetDir + "image.jpg");
+            refMap.put(csarContentProperties, new RepositoryRefBasedCsarEntry(imageJpgRef));
         }
 
         Application application = SelfServiceMetaDataUtils.getApplication(selfServiceMetaDataId);
+        // set to true only if changes are applied to application
+        boolean isApplicationChanged = false;
 
-        // clear CSAR name as this may change.
-        application.setCsarName(null);
+        if (application.getCsarName() != null) {
+            // clear CSAR name as this may change.
+            application.setCsarName(null);
+            isApplicationChanged = true;
+        }
 
-        // hack for the OpenTOSCA container to display something
-        application.setVersion("1.0");
+        if (application.getVersion() == null || !application.getVersion().equals("1.0")) {
+            // hack for the OpenTOSCA container to display something
+            application.setVersion("1.0");
+            isApplicationChanged = true;
+        }
         List<String> authors = application.getAuthors();
         if (authors.isEmpty()) {
             authors.add("Winery");
+            isApplicationChanged = true;
         }
 
-        // make the patches to data.xml permanent
-        try {
-            BackendUtils.persist(application, SelfServiceMetaDataUtils.getDataXmlRef(selfServiceMetaDataId), MediaTypes.MEDIATYPE_TEXT_XML);
-        } catch (IOException e) {
-            LOGGER.error("Could not persist patches to data.xml", e);
+        if (isApplicationChanged) {
+            // make the patches to data.xml permanent
+            try {
+                BackendUtils.persist(application, SelfServiceMetaDataUtils.getDataXmlRef(selfServiceMetaDataId), MediaTypes.MEDIATYPE_TEXT_XML);
+            } catch (IOException e) {
+                LOGGER.error("Could not persist patches to data.xml", e);
+            }
         }
 
         Options options = application.getOptions();
@@ -468,80 +510,109 @@ public class CsarExporter {
         }
     }
 
-    private void putRefIntoRefMap(String targetDir, Map<RepositoryFileReference, String> refMap, IRepository repository, GenericId id, String fileName) {
+    private void putRefIntoRefMap(String targetDir, Map<CsarContentProperties, CsarEntry> refMap, IRepository repository, GenericId id, String fileName) {
         RepositoryFileReference ref = new RepositoryFileReference(id, fileName);
         if (repository.exists(ref)) {
-            refMap.put(ref, targetDir + fileName);
+            CsarContentProperties csarContentProperties = new CsarContentProperties(targetDir + fileName);
+            refMap.put(csarContentProperties, new RepositoryRefBasedCsarEntry(ref));
         } else {
             CsarExporter.LOGGER.error("Data corrupt: pointing to non-existent file " + ref);
         }
     }
 
-    private void addLicenseAndReadmeFiles(IRepository repository, DefinitionsChildId entryId, Map<RepositoryFileReference, String> refMap) {
+    private void addLicenseAndReadmeFiles(IRepository repository, DefinitionsChildId entryId, Map<CsarContentProperties, CsarEntry> refMap) {
         final RepositoryFileReference licenseRef = new RepositoryFileReference(entryId, Constants.LICENSE_FILE_NAME);
         if (repository.exists(licenseRef)) {
-            refMap.put(licenseRef, BackendUtils.getPathInsideRepo(licenseRef));
+            refMap.put(new CsarContentProperties(BackendUtils.getPathInsideRepo(licenseRef)), new RepositoryRefBasedCsarEntry(licenseRef));
         }
+
         final RepositoryFileReference readmeRef = new RepositoryFileReference(entryId, Constants.README_FILE_NAME);
         if (repository.exists(readmeRef)) {
-            refMap.put(readmeRef, BackendUtils.getPathInsideRepo(readmeRef));
+            refMap.put(new CsarContentProperties(BackendUtils.getPathInsideRepo(readmeRef)), new RepositoryRefBasedCsarEntry(readmeRef));
         }
     }
 
-    private void addSelfServiceMetaData(IRepository repository, ServiceTemplateId serviceTemplateId, Map<RepositoryFileReference, String> refMap) throws IOException {
+    private void addSelfServiceMetaData(IRepository repository, ServiceTemplateId serviceTemplateId, Map<CsarContentProperties, CsarEntry> refMap) throws IOException {
         SelfServiceMetaDataId id = new SelfServiceMetaDataId(serviceTemplateId);
-        // We add the selfservice information regardless of the existence. - i.e., no "if (repository.exists(id)) {"
+        // We add the self-service information regardless of the existence. - i.e., no "if (repository.exists(id)) {"
         // This ensures that the name of the application is
         // add everything in the root of the CSAR
         String targetDir = Constants.DIRNAME_SELF_SERVICE_METADATA + "/";
         addSelfServiceMetaData(repository, serviceTemplateId, targetDir, refMap);
     }
 
-    private void addSelfServiceFiles(IRepository repository, ServiceTemplateId serviceTemplateId, Map<RepositoryFileReference, String> refMap, ArchiveOutputStream zos) throws IOException {
+    private void addSelfServiceFiles(IRepository repository, ServiceTemplateId serviceTemplateId, Map<CsarContentProperties, CsarEntry> refMap) {
         ServiceTemplateSelfServiceFilesDirectoryId selfServiceFilesDirectoryId = new ServiceTemplateSelfServiceFilesDirectoryId(serviceTemplateId);
         repository.getContainedFiles(selfServiceFilesDirectoryId)
             .forEach(repositoryFileReference -> {
                 String file = IdNames.SELF_SERVICE_PORTAL + "/" + BackendUtils.getFilenameAndSubDirectory(repositoryFileReference);
-                refMap.put(repositoryFileReference, file);
+                CsarContentProperties csarContentProperties = new CsarContentProperties(file);
+                refMap.put(csarContentProperties, new RepositoryRefBasedCsarEntry(repositoryFileReference));
             });
     }
 
-    private void addManifest(IRepository repository, DefinitionsChildId id, Collection<String> definitionNames, Map<RepositoryFileReference, String> refMap, ArchiveOutputStream out) throws IOException {
+    private String addManifest(IRepository repository, DefinitionsChildId id, Map<CsarContentProperties, CsarEntry> refMap,
+                               ZipOutputStream out, Map<String, Object> exportConfiguration) throws IOException {
         String entryDefinitionsReference = CsarExporter.getDefinitionsPathInsideCSAR(repository, id);
 
-        out.putArchiveEntry(new ZipArchiveEntry("TOSCA-Metadata/TOSCA.meta"));
-        PrintWriter pw = new PrintWriter(out);
+        out.putNextEntry(new ZipEntry("TOSCA-Metadata/TOSCA.meta"));
+        StringBuilder stringBuilder = new StringBuilder();
+
         // Setting Versions
-        pw.println("TOSCA-Meta-Version: 1.0");
-        pw.println("CSAR-Version: 1.0");
-        String versionString = "Created-By: Winery " + Environment.getVersion();
-        pw.println(versionString);
+        stringBuilder.append(TOSCA_META_VERSION).append(": 1.0").append("\n");
+        stringBuilder.append(CSAR_VERSION).append(": 1.0").append("\n");
+        stringBuilder.append(CREATED_BY).append(": Winery ").append(Environments.getVersion()).append("\n");
+
         // Winery currently is unaware of tDefinitions, therefore, we use the
         // name of the service template
-        pw.println("Entry-Definitions: " + entryDefinitionsReference);
-        pw.println();
+        stringBuilder.append(ENTRY_DEFINITIONS).append(": ").append(entryDefinitionsReference).append("\n");
+        stringBuilder.append("\n");
 
-        assert (definitionNames.contains(entryDefinitionsReference));
-        for (String name : definitionNames) {
-            pw.println("Name: " + name);
-            pw.println("Content-Type: " + org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_TOSCA_DEFINITIONS);
-            pw.println();
-        }
+        assert (refMap.keySet()
+            .stream()
+            .anyMatch(
+                fileProperties -> fileProperties
+                    .getPathInsideCsar()
+                    .equals(entryDefinitionsReference)
+            )
+        );
 
         // Setting other files, mainly files belonging to artifacts
-        for (RepositoryFileReference ref : refMap.keySet()) {
-            String archivePath = refMap.get(ref);
-            pw.println("Name: " + archivePath);
-            String mimeType;
-            if (ref instanceof DummyRepositoryFileReferenceForGeneratedXSD) {
+        for (Map.Entry<CsarContentProperties, CsarEntry> item : refMap.entrySet()) {
+            final CsarEntry csarEntry = item.getValue();
+            final CsarContentProperties fileProperties = item.getKey();
+
+            stringBuilder.append(NAME).append(": ").append(fileProperties.getPathInsideCsar()).append("\n");
+
+            String mimeType = "";
+
+            if (csarEntry instanceof DocumentBasedCsarEntry) {
                 mimeType = MimeTypes.MIMETYPE_XSD;
+            } else if (csarEntry instanceof DefinitionsBasedCsarEntry) {
+                mimeType = MimeTypes.MIMETYPE_TOSCA_DEFINITIONS;
             } else {
-                mimeType = repository.getMimeType(ref);
+                mimeType = repository.getMimeType(((RepositoryRefBasedCsarEntry) csarEntry).getReference());
             }
-            pw.println("Content-Type: " + mimeType);
-            pw.println();
+
+            stringBuilder.append(CONTENT_TYPE).append(": ").append(mimeType).append("\n");
+
+            if (exportConfiguration.containsKey(CsarExportConfiguration.INCLUDE_HASHES.name())
+                && Objects.nonNull(fileProperties.getFileHash())) {
+                stringBuilder.append(HASH).append(": ").append(fileProperties.getFileHash()).append("\n");
+            }
+
+            if (exportConfiguration.containsKey(CsarExportConfiguration.STORE_IMMUTABLY.name())
+                && Objects.nonNull(fileProperties.getImmutableAddress())) {
+                stringBuilder.append(IMMUTABLE_ADDRESS).append(": ").append(fileProperties.getImmutableAddress()).append("\n");
+            }
+
+            stringBuilder.append("\n");
         }
-        pw.flush();
-        out.closeArchiveEntry();
+
+        String manifestString = stringBuilder.toString();
+        out.write(manifestString.getBytes());
+        out.closeEntry();
+
+        return manifestString;
     }
 }

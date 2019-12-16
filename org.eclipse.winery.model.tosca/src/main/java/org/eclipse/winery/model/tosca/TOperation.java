@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +27,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -71,108 +74,46 @@ public class TOperation extends TExtensibleElements {
         return Objects.hash(super.hashCode(), inputParameters, outputParameters, name);
     }
 
-    /**
-     * Gets the value of the inputParameters property.
-     *
-     * @return possible object is {@link TOperation.InputParameters }
-     */
     public TOperation.@Nullable InputParameters getInputParameters() {
         return inputParameters;
     }
 
-    /**
-     * Sets the value of the inputParameters property.
-     *
-     * @param value allowed object is {@link TOperation.InputParameters }
-     */
-    public void setInputParameters(TOperation.InputParameters value) {
+    public void setInputParameters(TOperation.@Nullable InputParameters value) {
         this.inputParameters = value;
     }
 
-    /**
-     * Gets the value of the outputParameters property.
-     *
-     * @return possible object is {@link TOperation.OutputParameters }
-     */
     public TOperation.@Nullable OutputParameters getOutputParameters() {
         return outputParameters;
     }
 
-    /**
-     * Sets the value of the outputParameters property.
-     *
-     * @param value allowed object is {@link TOperation.OutputParameters }
-     */
-    public void setOutputParameters(TOperation.OutputParameters value) {
+    public void setOutputParameters(TOperation.@Nullable OutputParameters value) {
         this.outputParameters = value;
     }
 
-    /**
-     * Gets the value of the name property.
-     *
-     * @return possible object is {@link String }
-     */
     @NonNull
     public String getName() {
         return name;
     }
 
-    /**
-     * Sets the value of the name property.
-     *
-     * @param value allowed object is {@link String }
-     */
-    public void setName(String value) {
+    public void setName(@NonNull String value) {
+        Objects.requireNonNull(value);
         this.name = value;
     }
 
-    /**
-     * <p>Java class for anonymous complex type.
-     * <p>
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     * <p>
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;sequence>
-     *         &lt;element name="InputParameter" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tParameter"
-     * maxOccurs="unbounded"/>
-     *       &lt;/sequence>
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
+
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
         "inputParameter"
     })
-    public static class InputParameters {
+    public static class InputParameters implements Serializable {
 
         @XmlElement(name = "InputParameter", required = true)
         protected List<TParameter> inputParameter;
 
-        /**
-         * Gets the value of the inputParameter property.
-         * <p>
-         * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the inputParameter property.
-         * <p>
-         * <p>
-         * For example, to add a new item, do as follows:
-         * <pre>
-         *    getInputParameter().add(newItem);
-         * </pre>
-         * <p>
-         * <p>
-         * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link TParameter }
-         */
         @NonNull
         public List<TParameter> getInputParameter() {
             if (inputParameter == null) {
@@ -195,53 +136,15 @@ public class TOperation extends TExtensibleElements {
         }
     }
 
-    /**
-     * <p>Java class for anonymous complex type.
-     * <p>
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     * <p>
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;sequence>
-     *         &lt;element name="OutputParameter" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tParameter"
-     * maxOccurs="unbounded"/>
-     *       &lt;/sequence>
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
         "outputParameter"
     })
-    public static class OutputParameters {
+    public static class OutputParameters implements Serializable {
 
         @XmlElement(name = "OutputParameter", required = true)
         protected List<TParameter> outputParameter;
 
-        /**
-         * Gets the value of the outputParameter property.
-         * <p>
-         * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the outputParameter property.
-         * <p>
-         * <p>
-         * For example, to add a new item, do as follows:
-         * <pre>
-         *    getOutputParameter().add(newItem);
-         * </pre>
-         * <p>
-         * <p>
-         * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link TParameter }
-         */
         @NonNull
         public List<TParameter> getOutputParameter() {
             if (outputParameter == null) {

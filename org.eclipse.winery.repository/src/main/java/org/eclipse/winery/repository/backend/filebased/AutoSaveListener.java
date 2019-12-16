@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,10 +13,10 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.filebased;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.configuration.event.ConfigurationEvent;
-import org.apache.commons.configuration.event.ConfigurationListener;
+import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.event.ConfigurationEvent;
+import org.apache.commons.configuration2.event.EventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +32,7 @@ import java.nio.file.StandardOpenOption;
  * {@link org.apache.commons.configuration.builder.AutoSaveListener}, because
  * ConfigurationListener is not aware of such things
  */
-class AutoSaveListener implements ConfigurationListener {
+class AutoSaveListener implements EventListener<ConfigurationEvent> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AutoSaveListener.class);
 
@@ -52,21 +52,21 @@ class AutoSaveListener implements ConfigurationListener {
     }
 
     @Override
-    public void configurationChanged(ConfigurationEvent event) {
+    public void onEvent(ConfigurationEvent event) {
         if (!event.isBeforeUpdate()) {
             try {
                 if (!Files.exists(this.path.getParent())) {
                     Files.createDirectories(this.path.getParent());
                 }
             } catch (IOException ce) {
-                AutoSaveListener.LOGGER.error("Could not update properties file", ce);
+                LOGGER.error("Could not update properties file", ce);
                 return;
             }
             try (OutputStream out = Files.newOutputStream(this.path, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
                 OutputStreamWriter writer = new OutputStreamWriter(out);
-                this.configuration.save(writer);
+                this.configuration.write(writer);
             } catch (ConfigurationException | IOException ce) {
-                AutoSaveListener.LOGGER.error("Could not update properties file", ce);
+                LOGGER.error("Could not update properties file", ce);
             }
         }
     }

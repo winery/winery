@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -31,11 +32,12 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import org.eclipse.winery.model.tosca.visitor.Visitor;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.w3c.dom.Element;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tDefinitions", propOrder = {
@@ -66,7 +68,9 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         @XmlElement(name = "NodeTypeImplementation", type = TNodeTypeImplementation.class),
         @XmlElement(name = "RequirementType", type = TRequirementType.class),
         @XmlElement(name = "PolicyType", type = TPolicyType.class),
-        @XmlElement(name = "Compliancerule", type = TComplianceRule.class)
+        @XmlElement(name = "ComplianceRule", type = TComplianceRule.class),
+        @XmlElement(name = "PatternRefinementModel", type = TPatternRefinementModel.class),
+        @XmlElement(name = "TestRefinementModel", type = TTestRefinementModel.class)
     })
     protected List<TExtensibleElements> serviceTemplateOrNodeTypeOrNodeTypeImplementation;
 
@@ -108,6 +112,11 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         return Objects.hash(super.hashCode(), extensions, _import, types, serviceTemplateOrNodeTypeOrNodeTypeImplementation, name, targetNamespace);
     }
 
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
+
     /**
      * Convenience method for <code>this.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0)</code>
      */
@@ -133,26 +142,6 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         this.extensions = value;
     }
 
-    /**
-     * Gets the value of the import property.
-     * <p>
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the import property.
-     * <p>
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getImport().add(newItem);
-     * </pre>
-     * <p>
-     * <p>
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link TImport }
-     */
     @NonNull
     public List<TImport> getImport() {
         if (_import == null) {
@@ -170,18 +159,6 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
     }
 
     /**
-     * Gets the value of the serviceTemplateOrNodeTypeOrNodeTypeImplementation property.
-     * <p>
-     * <p> This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you
-     * make to the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE>
-     * method for the serviceTemplateOrNodeTypeOrNodeTypeImplementation property.
-     * <p>
-     * <p> For example, to add a new item, do as follows:
-     * <pre>
-     *    getServiceTemplateOrNodeTypeOrNodeTypeImplementation().add(newItem);
-     * </pre>
-     * <p>
-     * <p>
      * <p> Objects of the following type(s) are allowed in the list {@link TRelationshipType } {@link
      * TRelationshipTypeImplementation } {@link TArtifactTemplate } {@link TPolicyTemplate } {@link TServiceTemplate }
      * {@link TArtifactType } {@link TCapabilityType } {@link TNodeType } {@link TNodeTypeImplementation } {@link
@@ -316,7 +293,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
     @XmlType(name = "", propOrder = {
         "extension"
     })
-    public static class Extensions {
+    public static class Extensions implements Serializable {
 
         @XmlElement(name = "Extension", required = true)
         protected List<TExtension> extension;
@@ -325,10 +302,9 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
          * Gets the value of the extension property.
          * <p>
          * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the extension property.
+         * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you
+         * make to the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE>
+         * method for the extension property.
          * <p>
          * <p>
          * For example, to add a new item, do as follows:
@@ -338,8 +314,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
          * <p>
          * <p>
          * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link TExtension }
+         * Objects of the following type(s) are allowed in the list {@link TExtension }
          */
         @NonNull
         public List<TExtension> getExtension() {
@@ -367,32 +342,11 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
     @XmlType(name = "", propOrder = {
         "any"
     })
-    public static class Types {
+    public static class Types implements Serializable {
 
         @XmlAnyElement(lax = true)
         protected List<Object> any;
 
-        /**
-         * Gets the value of the any property.
-         * <p>
-         * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the any property.
-         * <p>
-         * <p>
-         * For example, to add a new item, do as follows:
-         * <pre>
-         *    getAny().add(newItem);
-         * </pre>
-         * <p>
-         * <p>
-         * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link Element }
-         * {@link Object }
-         */
         @NonNull
         public List<Object> getAny() {
             if (any == null) {

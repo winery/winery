@@ -1,0 +1,74 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div *ngIf="data.hasChildren; else singleElement" [ngClass]="getContainerStyle()">
+    <div id="{{ data.namespace | urlEncode | urlEncode }}/{{ data.id }}"
+         class="entityContainer {{ (toscaType | toscaTypeToCamelCase) + 'Container'}}"
+         tooltip="Hold CTRL to directly get to the latest version."
+         (click)="onClick($event)">
+        <div class="left">
+            <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIconInList">
+        </div>
+        <div class="center" [style.width.px]="maxWidth">
+            <div *ngIf="maxWidth === 500 || !data?.version?.hasVersion('componentVersion')" class="informationContainer">
+                <div *ngIf="data.id" class="name">{{ data.name }}</div>
+                <div [ngClass]="{'name': !data.id, 'namespace': data.id}">{{ data.namespace }}</div>
+            </div>
+            <div *ngIf="maxWidth === 440 && data?.version?.hasVersion('componentVersion')" class="informationContainer">
+                <div *ngIf="data.id" class="nameWithVersion">{{ data.name }}</div>
+                <div class="version">Version: {{ data?.version?.getComponentVersion() }}</div>
+                <div [ngClass]="{'name': !data.id, 'namespace': data.id}">{{ data.namespace }}</div>
+            </div>
+        </div>
+        <div class="right"></div>
+    </div>
+
+    <div *ngIf="showVersions" class="tree" [style.height.px]="treeHeight">
+        <div *ngFor="let item of data.versionInstances">
+            <div class="treeBranch">
+            </div>
+            <winery-entity-container [data]="item"
+                                     [toscaType]="toscaType"
+                                     [maxWidth]="maxWidth - 60"
+                                     (showingChildren)="onShowingGrandChildren($event)"
+                                     (deleted)="deleted.emit($event)">
+            </winery-entity-container>
+            <div *ngIf="isLastElementInList(item)" class="differencesContainer">
+                <div *ngIf="hasDifferences(item); else showDiff">
+                    <div *ngIf="differences.diff; else showLoader">
+                        <div (click)="closeDiffView()" class="cursorpointer">
+                            <i class="fa fa-close"></i> Close diff view
+                        </div>
+                        <code class="differences" [style.width.px]="maxWidth">{{ differences.diff }}</code>
+                    </div>
+                    <ng-template #showLoader>
+                        <winery-loader></winery-loader>
+                    </ng-template>
+                </div>
+                <ng-template #showDiff>
+                    <div class="cursorpointer" (click)="showOrHideDifferences(item)">
+                        <i class="fa fa-plus-circle"></i>&nbsp;Differences
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #singleElement>
+    <winery-entity [data]="element"
+                   [toscaType]="toscaType"
+                   [xsdSchemaType]="xsdSchemaType"
+                   [maxWidth]="maxWidth"
+                   (deleted)="deleted.emit($event)">
+    </winery-entity>
+</ng-template>

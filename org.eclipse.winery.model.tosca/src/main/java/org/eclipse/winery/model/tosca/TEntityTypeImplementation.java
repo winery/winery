@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,16 +14,24 @@
 
 package org.eclipse.winery.model.tosca;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
+import java.util.List;
+import java.util.Objects;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
-import java.util.List;
-import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 @XmlTransient
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -95,6 +103,11 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
 
     public void setTargetNamespace(String value) {
         this.targetNamespace = value;
+    }
+
+    @JsonIgnore
+    public QName getQName() {
+        return QName.valueOf("{" + this.targetNamespace + "}" + this.name);
     }
 
     @Nullable
@@ -204,7 +217,8 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
         }
 
         public Builder(String name, QName implementedType) {
-            this(new TExtensibleElements(), name, implementedType);
+            this.name = name;
+            this.implementedType = implementedType;
         }
 
         public T setTargetNamespace(String targetNamespace) {

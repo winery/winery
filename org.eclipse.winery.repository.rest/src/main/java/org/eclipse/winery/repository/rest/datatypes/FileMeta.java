@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -18,10 +18,10 @@ import java.io.IOException;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
 
@@ -30,11 +30,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * based on
- * https://github.com/blueimp/jQuery-File-Upload/wiki/Google-App-Engine-Java
+ * based on https://github.com/blueimp/jQuery-File-Upload/wiki/Google-App-Engine-Java
  * <p>
- * The getters are named according to the requirements of the template in
- * jquery-file-upload-full.jsp
+ * The getters are named according to the requirements of the template in jquery-file-upload-full.jsp
  */
 @XmlRootElement
 public class FileMeta {
@@ -87,13 +85,12 @@ public class FileMeta {
         }
 
         this.deleteUrl = this.url;
-        this.thumbnailUrl = Environment.getUrlConfiguration().getRepositoryApiUrl() + Constants.PATH_MIMETYPEIMAGES + FilenameUtils.getExtension(this.name) + Constants.SUFFIX_MIMETYPEIMAGES;
+        this.thumbnailUrl = Environments.getUiConfig().getEndpoints().get("repositoryApiUrl") + Constants.PATH_MIMETYPEIMAGES + FilenameUtils.getExtension(this.name) + Constants.SUFFIX_MIMETYPEIMAGES;
     }
 
     /**
      * @param ref       the reference to get information from
-     * @param URLprefix the string which should be prepended the actual URL.
-     *                  Including the "/"
+     * @param URLprefix the string which should be prepended the actual URL. Including the "/"
      */
     public FileMeta(RepositoryFileReference ref, String URLprefix) {
         this(ref);
@@ -101,8 +98,7 @@ public class FileMeta {
     }
 
     /**
-     * The constructor is used for JAX-B only. Therefore, the warning "unused"
-     * is suppressed
+     * The constructor is used for JAX-B only. Therefore, the warning "unused" is suppressed
      */
     @SuppressWarnings("unused")
     private FileMeta() {

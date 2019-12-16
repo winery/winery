@@ -1,0 +1,46 @@
+[
+    {
+        "id": "http%3A%2F%2Fopentosca.org%2Fservicetemplates",
+        "text": "http://opentosca.org/servicetemplates",
+        "children": [
+            {
+                "id": "{http://opentosca.org/servicetemplates}StWithComponentVersion-1.0.0",
+                "text": "StWithComponentVersion-1.0.0"
+            }
+        ]
+    },
+    {
+        "id": "http%3A%2F%2Fplain.winery.opentosca.org%2Fservicetemplates",
+        "text": "http://plain.winery.opentosca.org/servicetemplates",
+        "children": [
+            {
+                "id": "{http://plain.winery.opentosca.org/servicetemplates}ImportCsarWithOverwriteTest",
+                "text": "ImportCsarWithOverwriteTest"
+            },
+            {
+                "id": "{http://plain.winery.opentosca.org/servicetemplates}ServiceTemplateMinimalExampleWithAllPropertyVariants",
+                "text": "ServiceTemplateMinimalExampleWithAllPropertyVariants"
+            },
+            {
+                "id": "{http://plain.winery.opentosca.org/servicetemplates}ServiceTemplateWithAllReqCapVariants",
+                "text": "ServiceTemplateWithAllReqCapVariants"
+            },
+            {
+                "id": "{http://plain.winery.opentosca.org/servicetemplates}ServiceTemplateWithFourPolicies",
+                "text": "ServiceTemplateWithFourPolicies"
+            },
+            {
+                "id": "{http://plain.winery.opentosca.org/servicetemplates}ServiceTemplateWithOneFileInSelfServicePortal",
+                "text": "ServiceTemplateWithOneFileInSelfServicePortal"
+            },
+            {
+                "id": "{http://plain.winery.opentosca.org/servicetemplates}ServiceTemplateWithOneNodeTemplate",
+                "text": "ServiceTemplateWithOneNodeTemplate"
+            },
+            {
+                "id": "{http://plain.winery.opentosca.org/servicetemplates}ServiceTemplateWithTwoNodeTemplates",
+                "text": "ServiceTemplateWithTwoNodeTemplates"
+            }
+        ]
+    }
+]

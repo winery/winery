@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,6 +13,33 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.admin;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.eclipse.winery.common.configuration.Environments;
+import org.eclipse.winery.common.configuration.UiConfigurationObject;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyChecker;
+import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerConfiguration;
+import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerVerbosity;
+import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyErrorCollector;
+import org.eclipse.winery.repository.rest.resources.admin.types.ConstraintTypesManager;
+import org.eclipse.winery.repository.rest.resources.admin.types.PlanLanguagesManager;
+import org.eclipse.winery.repository.rest.resources.admin.types.PlanTypesManager;
+import org.eclipse.winery.repository.rest.resources.apiData.OAuthStateAndCodeApiData;
+
 import io.swagger.annotations.Api;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -21,25 +48,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.eclipse.winery.repository.backend.IRepository;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyChecker;
-import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerConfiguration;
-import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerVerbosity;
-import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyErrorLogger;
-import org.eclipse.winery.repository.configuration.Environment;
-import org.eclipse.winery.repository.configuration.GitHubConfiguration;
-import org.eclipse.winery.repository.rest.resources.admin.types.ConstraintTypesManager;
-import org.eclipse.winery.repository.rest.resources.admin.types.PlanLanguagesManager;
-import org.eclipse.winery.repository.rest.resources.admin.types.PlanTypesManager;
-import org.eclipse.winery.repository.rest.resources.apiData.OAuthStateAndCodeApiData;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
 
 @Api(tags = "Admin")
 public class AdminTopResource {
@@ -72,11 +80,33 @@ public class AdminTopResource {
     @GET
     @Path("consistencycheck")
     @Produces(MediaType.APPLICATION_JSON)
-    public ConsistencyErrorLogger checkConsistency(@QueryParam("serviceTemplatesOnly") boolean serviceTemplatesOnly, @QueryParam("checkDocumentation") boolean checkDocumentation) {
+    public ConsistencyErrorCollector checkConsistency(@QueryParam("serviceTemplatesOnly") boolean serviceTemplatesOnly, @QueryParam("checkDocumentation") boolean checkDocumentation) {
         IRepository repo = RepositoryFactory.getRepository();
         EnumSet<ConsistencyCheckerVerbosity> verbosity = EnumSet.of(ConsistencyCheckerVerbosity.NONE);
         ConsistencyCheckerConfiguration config = new ConsistencyCheckerConfiguration(serviceTemplatesOnly, checkDocumentation, verbosity, repo);
-        return ConsistencyChecker.checkCorruption(config);
+        final ConsistencyChecker consistencyChecker = new ConsistencyChecker(config);
+        consistencyChecker.checkCorruption();
+        return consistencyChecker.getErrorCollector();
+    }
+
+    /**
+     * This method answers a get-request by the WineryRepositoryConfigurationService
+     * @return the winery config file in json format.
+     */
+    @GET
+    @Path("config")
+    @Produces(MediaType.APPLICATION_JSON)
+    public UiConfigurationObject getConfig() {
+        return Environments.getUiConfig();
+    }
+
+    @PUT
+    @Path("config")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public UiConfigurationObject setConfig(UiConfigurationObject changedConfiguration) {
+        Environments.save(changedConfiguration);
+        return Environments.getUiConfig();
     }
 
     @POST
@@ -90,11 +120,8 @@ public class AdminTopResource {
 
         List<NameValuePair> params = new ArrayList<>(4);
 
-        // get configuration and fill with default values if no configuration exists
-        final GitHubConfiguration gitHubConfiguration = Environment.getGitHubConfiguration().orElse(new GitHubConfiguration("id", "secreat"));
-
-        params.add(new BasicNameValuePair("client_id", gitHubConfiguration.getGitHubClientId()));
-        params.add(new BasicNameValuePair("client_secret", gitHubConfiguration.getGitHubClientSecret()));
+        params.add(new BasicNameValuePair("client_id", Environments.getGitConfig().getClientID()));
+        params.add(new BasicNameValuePair("client_secret", Environments.getGitConfig().getClientSecret()));
         params.add(new BasicNameValuePair("code", codeApiData.code));
         params.add(new BasicNameValuePair("state", codeApiData.state));
         httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
@@ -105,5 +132,15 @@ public class AdminTopResource {
             .status(response.getStatusLine().getStatusCode())
             .entity(response.getEntity().getContent())
             .build();
+    }
+
+    @Path("1to1edmmmappings")
+    public EdmmMappingsResource get1to1EdmmMappingsResource() {
+        return new EdmmMappingsResource(EdmmMappingsResource.Type.ONE_TO_ONE);
+    }
+
+    @Path("edmmtypemappings")
+    public EdmmMappingsResource getEdmmTypeMappingsResource() {
+        return new EdmmMappingsResource(EdmmMappingsResource.Type.EXTENDS);
     }
 }

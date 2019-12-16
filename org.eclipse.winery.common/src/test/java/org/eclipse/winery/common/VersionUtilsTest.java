@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.common;
 
+import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.version.VersionUtils;
@@ -22,6 +23,7 @@ import org.eclipse.winery.common.version.WineryVersion;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class VersionUtilsTest {
 
@@ -107,7 +109,7 @@ public class VersionUtilsTest {
     @Test
     public void getVersionWithCurrentFlag() {
         String name = getComponentName("myComponent", "12.54.3", 1, 0);
-        assertEquals(true, VersionUtils.getVersionWithCurrentFlag(name, name).isCurrentVersion());
+        assertTrue(VersionUtils.getVersionWithCurrentFlag(name, name).isCurrentVersion());
     }
 
     @Test
@@ -130,6 +132,38 @@ public class VersionUtilsTest {
         DefinitionsChildId id = getDefinitionChildId("http://example.org/tosca/versions", name, "1.2.3", 1, 1);
 
         assertEquals(name, VersionUtils.getNameWithoutVersion(id));
+    }
+
+    @Test
+    public void getQNameWithComponentVersionOnly() {
+        String name = "myElementTest";
+        String namespace = "http://example.org/tosca/versions";
+        String componentVersion = "1.2.3";
+
+        DefinitionsChildId id = getDefinitionChildId(namespace, name, componentVersion, 1, 1);
+
+        assertEquals("{" + namespace + "}" + name + WineryVersion.WINERY_VERSION_SEPARATOR + componentVersion,
+            VersionUtils.getQNameWithComponentVersionOnly(id));
+    }
+
+    @Test
+    public void getNewIdName() {
+        String id = "myId_w1-wip56";
+        String appendix = "test";
+        String expectedId = "myId_w1-wip56-" + appendix + "-w1-wip1";
+        ServiceTemplateId serviceTemplateId = new ServiceTemplateId("https://ex.org/tosca/sts", id, false);
+
+        assertEquals(expectedId, VersionUtils.getNewComponentVersionId(serviceTemplateId, appendix));
+    }
+
+    @Test
+    public void getNewIdIfComponentVersionIsAvailable() {
+        String id = "myId_component-version-w1";
+        String appendix = "test";
+        String expectedId = "myId_component-version-w1-" + appendix + "-w1-wip1";
+        ArtifactTypeId serviceTemplateId = new ArtifactTypeId("https://ex.org/tosca/sts", id, false);
+
+        assertEquals(expectedId, VersionUtils.getNewComponentVersionId(serviceTemplateId, appendix));
     }
 
     private DefinitionsChildId getDefinitionChildId(String namespace, String name, String componentVersion, int wineryVersion, int wipVersion) {

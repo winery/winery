@@ -43,6 +43,14 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>WEB-INF/beans.xml</param-value>
     </context-param>
+    <context-param>
+        <param-name>org.slf4j.simpleLogger.logFile</param-name>
+        <param-value>System.out</param-value>
+    </context-param>
+    <context-param>
+        <param-name>org.slf4j.simpleLogger.defaultLogLevel</param-name>
+        <param-value>debug</param-value>
+    </context-param>
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>

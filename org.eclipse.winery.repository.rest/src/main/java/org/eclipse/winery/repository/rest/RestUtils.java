@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -19,6 +19,8 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.nio.file.attribute.FileTime;
 import java.security.AccessControlException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -45,15 +47,23 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.constants.MimeTypes;
+import org.eclipse.winery.common.edmm.EdmmConverter;
+import org.eclipse.winery.common.edmm.EdmmType;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
 import org.eclipse.winery.common.version.VersionUtils;
@@ -61,21 +71,27 @@ import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasType;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TConstraint;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
+import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.EdmmManager;
 import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.backend.xsd.NamespaceAndDefinedLocalNames;
-import org.eclipse.winery.repository.configuration.Environment;
+import org.eclipse.winery.repository.export.CsarExportOptions;
 import org.eclipse.winery.repository.export.CsarExporter;
 import org.eclipse.winery.repository.export.ToscaExportUtil;
 import org.eclipse.winery.repository.rest.datatypes.LocalNameForAngular;
@@ -90,7 +106,6 @@ import org.eclipse.winery.repository.rest.resources.apiData.QNameWithTypeApiData
 import org.eclipse.winery.repository.rest.resources.apiData.converter.QNameConverter;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
-import org.eclipse.winery.repository.rest.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 import org.eclipse.winery.yaml.common.exception.MultiException;
 import org.eclipse.winery.yaml.converter.Converter;
@@ -101,9 +116,10 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.header.ContentDisposition;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
+import io.github.edmm.core.parser.EntityGraph;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.slf4j.ext.XLogger;
-import org.slf4j.ext.XLoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Contains utility functionality concerning with everything that is <em>not</em> related only to the repository, but
@@ -112,7 +128,7 @@ import org.slf4j.ext.XLoggerFactory;
  */
 public class RestUtils {
 
-    private static final XLogger LOGGER = XLoggerFactory.getXLogger(RestUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestUtils.class);
 
     // RegExp inspired by http://stackoverflow.com/a/5396246/873282
     // NameStartChar without ":"
@@ -134,10 +150,6 @@ public class RestUtils {
                 LOGGER.error("Could not switch locale to English", e);
             }
         }
-    }
-
-    public static URI createURI(String uri) {
-        return URI.create(uri);
     }
 
     /**
@@ -188,7 +200,7 @@ public class RestUtils {
             Map<String, Object> conf = new HashMap<>();
             conf.put(ToscaExportUtil.ExportProperties.REPOSITORY_URI.toString(), uri);
             try {
-                exporter.exportTOSCA(RepositoryFactory.getRepository(), resource.getId(), output, conf);
+                exporter.writeTOSCA(RepositoryFactory.getRepository(), resource.getId(), conf, output);
             } catch (Exception e) {
                 throw new WebApplicationException(e);
             }
@@ -204,26 +216,46 @@ public class RestUtils {
          * sb.append(resource.getNamespace().getEncoded()); sb.append(".xml");
          * sb.append("\""); return Response.ok().header("Content-Disposition",
          * sb
-         * .toString()).type(MediaType.APPLICATION_XML_TYPE).entity(so).build();
+         * .toString()).type(MediaType.APPLICATION_XML_TYPE).entity(so).buildProvenanceSmartContract();
          */
         return Response.ok().type(MediaType.APPLICATION_XML).entity(so).build();
     }
 
-    public static Response getCSARofSelectedResource(final AbstractComponentInstanceResource resource) {
+    /**
+     * @param options the set of options that are applicable for exporting a csar
+     */
+    public static Response getCsarOfSelectedResource(final AbstractComponentInstanceResource resource, CsarExportOptions options) {
+        LocalDateTime start = LocalDateTime.now();
         final CsarExporter exporter = new CsarExporter();
+        Map<String, Object> exportConfiguration = new HashMap<>();
+
         StreamingOutput so = output -> {
             try {
-                exporter.writeCsar(RepositoryFactory.getRepository(), resource.getId(), output);
+                // check which options are chosen
+                if (options.isAddToProvenance()) {
+                    // We wait for the accountability layer to confirm the transaction
+                    String result = exporter.writeCsarAndSaveManifestInProvenanceLayer(RepositoryFactory.getRepository(), resource.getId(), output)
+                        .get();
+                    LOGGER.debug("Stored state in accountability layer in transaction " + result);
+                    LOGGER.debug("CSAR export (provenance) lasted {}", Duration.between(LocalDateTime.now(), start).toString());
+                } else {
+                    exporter.writeCsar(RepositoryFactory.getRepository(), resource.getId(), output, exportConfiguration);
+                    LOGGER.debug("CSAR export lasted {}", Duration.between(LocalDateTime.now(), start).toString());
+                }
             } catch (Exception e) {
+                LOGGER.error("Error while exporting CSAR", e);
                 throw new WebApplicationException(e);
             }
         };
-        StringBuilder sb = new StringBuilder();
-        sb.append("attachment;filename=\"");
-        sb.append(resource.getXmlId().getEncoded());
-        sb.append(org.eclipse.winery.repository.Constants.SUFFIX_CSAR);
-        sb.append("\"");
-        return Response.ok().header("Content-Disposition", sb.toString()).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
+        String contentDisposition = String.format("attachment;filename=\"%s%s\"",
+            resource.getXmlId().getEncoded(),
+            Constants.SUFFIX_CSAR);
+
+        return Response.ok()
+            .header("Content-Disposition", contentDisposition)
+            .type(MimeTypes.MIMETYPE_ZIP)
+            .entity(so)
+            .build();
     }
 
     public static Response getYamlOfSelectedResource(DefinitionsChildId id) {
@@ -258,9 +290,41 @@ public class RestUtils {
         StringBuilder sb = new StringBuilder();
         sb.append("attachment;filename=\"");
         sb.append(resource.getXmlId().getEncoded());
-        sb.append(org.eclipse.winery.repository.Constants.SUFFIX_CSAR);
+        sb.append(Constants.SUFFIX_CSAR);
         sb.append("\"");
         return Response.ok().header("Content-Disposition", sb.toString()).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
+    }
+
+    public static Response getEdmmModel(TServiceTemplate element) {
+        IRepository repository = RepositoryFactory.getRepository();
+
+        Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
+        Map<QName, TRelationshipType> relationshipTypes = repository.getQNameToElementMapping(RelationshipTypeId.class);
+        Map<QName, TNodeTypeImplementation> nodeTypeImplementations = repository.getQNameToElementMapping(NodeTypeImplementationId.class);
+        Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations = repository.getQNameToElementMapping(RelationshipTypeImplementationId.class);
+        Map<QName, TArtifactTemplate> artifactTemplates = repository.getQNameToElementMapping(ArtifactTemplateId.class);
+        EdmmManager edmmManager = repository.getEdmmManager();
+        Map<QName, EdmmType> oneToOneMappings = new HashMap<>();
+        edmmManager.getOneToOneMappings().forEach(m -> oneToOneMappings.put(m.toscaType, m.edmmType));
+        Map<QName, EdmmType> typeMappings = new HashMap<>();
+        edmmManager.getTypeMappings().forEach(m -> typeMappings.put(m.toscaType, m.edmmType));
+
+        if (nodeTypes.isEmpty()) {
+            throw new IllegalStateException("No Node Types defined!");
+        } else if (relationshipTypes.isEmpty()) {
+            throw new IllegalStateException("No Relationship Types defined!");
+        }
+
+        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations,
+            artifactTemplates, typeMappings, oneToOneMappings);
+        EntityGraph transform = edmmConverter.transform(element);
+        StringWriter stringWriter = new StringWriter();
+        transform.generateYamlOutput(stringWriter);
+
+        return Response.ok()
+            .type(MimeTypes.MIMETYPE_YAML)
+            .entity(stringWriter.toString())
+            .build();
     }
 
     /**
@@ -320,19 +384,18 @@ public class RestUtils {
      * @return the absolute path for the given id
      */
     public static String getAbsoluteURL(GenericId id) {
-        return Environment.getUrlConfiguration().getRepositoryApiUrl() + "/" + Util.getUrlPath(id);
+        return Environments.getUiConfig().getEndpoints().get("repositoryApiUrl") + "/" + Util.getUrlPath(id);
     }
 
     /**
      * @return the absolute path for the given id
      */
     public static String getAbsoluteURL(RepositoryFileReference ref) {
-        // Code quality: Think of using https://docs.oracle.com/javaee/7/api/javax/ws/rs/core/Link.Builder.html.
-        return Environment.getUrlConfiguration().getRepositoryApiUrl() + "/" + Util.getUrlPath(ref);
+        return Environments.getUiConfig().getEndpoints().get("repositoryApiUrl") + "/" + Util.getUrlPath(ref);
     }
 
     public static URI getAbsoluteURI(GenericId id) {
-        return RestUtils.createURI(RestUtils.getAbsoluteURL(id));
+        return URI.create((RestUtils.getAbsoluteURL(id)));
     }
 
     /**
@@ -348,6 +411,10 @@ public class RestUtils {
             location = "servicetemplates";
         } else if (type.contains("ComplianceRule")) {
             location = "compliancerules";
+        } else if (type.contains("PatternRefinementModel")) {
+            location = "patternrefinementmodels";
+        } else if (type.contains("TestRefinementModel")) {
+            location = "testrefinementmodels";
         } else {
             if (type.contains("TypeImplementation")) {
                 location = "entitytypeimplementations";
@@ -588,6 +655,8 @@ public class RestUtils {
 
     public static Response.ResponseBuilder persistWithResponseBuilder(IPersistable res) {
         try {
+            NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
+            namespaceManager.addPermanentNamespace(res.getDefinitions().getTargetNamespace());
             BackendUtils.persist(res.getDefinitions(), res.getRepositoryFileReference(), MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
         } catch (IOException e) {
             LOGGER.debug("Could not persist resource", e);
@@ -745,7 +814,7 @@ public class RestUtils {
                 }
                 // we have to encode it twice to get correct URIs
                 path = Util.getUrlPath(path);
-                URI uri = RestUtils.createURI(path);
+                URI uri = URI.create(path);
                 res.setUri(uri);
                 res.setId(id);
             } else {
@@ -828,18 +897,14 @@ public class RestUtils {
      * @param content the data to write
      * @return a JAX-RS Response containing the result. NOCONTENT if successful, InternalSeverError otherwise
      */
-    public static Response putContentToFile(RepositoryFileReference ref, String content, @SuppressWarnings("SameParameterValue") org.apache.tika.mime.MediaType mediaType) {
+    public static Response putContentToFile(RepositoryFileReference ref, String content, MediaType mediaType) {
         try {
-            RepositoryFactory.getRepository().putContentToFile(ref, content, mediaType);
+            RepositoryFactory.getRepository().putContentToFile(ref, content, org.apache.tika.mime.MediaType.parse(mediaType.toString()));
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
             return Response.serverError().entity(e.getMessage()).build();
         }
         return Response.noContent().build();
-    }
-
-    public static Response putContentToFile(RepositoryFileReference ref, String content, @SuppressWarnings("SameParameterValue") MediaType mediaType) {
-        return putContentToFile(ref, content, org.apache.tika.mime.MediaType.parse(mediaType.toString()));
     }
 
     public static Response putContentToFile(RepositoryFileReference ref, InputStream inputStream, org.apache.tika.mime.MediaType mediaType) {
@@ -863,7 +928,7 @@ public class RestUtils {
      * @param qname           the QName of the color attribute
      * @param otherAttributes the plain "XML" attributes. They are used to check
      */
-    public static String getColor(String name, QName qname, Map<QName, String> otherAttributes, TopologyGraphElementEntityTypeResource res) {
+    public static String getColor(String name, QName qname, Map<QName, String> otherAttributes) {
         String colorStr = otherAttributes.get(qname);
         if (colorStr == null) {
             colorStr = ModelUtilities.getColor(name);

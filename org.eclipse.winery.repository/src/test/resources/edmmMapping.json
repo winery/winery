@@ -1,0 +1,26 @@
+{
+    "oneToOneMapping": [
+        {
+            "toscaType": "{https://ex.org/test/tosca}hostedOn",
+            "edmmType": "hosted_on"
+        },
+        {
+            "toscaType": "{https://ex.org/test/tosca}connectsTo",
+            "edmmType": "connects_to"
+        },
+        {
+            "toscaType": "{https://ex.org/test/tosca}tomcat_8.5",
+            "edmmType": "tomcat"
+        }
+    ],
+    "edmmTypeMapping": [
+        {
+            "toscaType": "{https://ex.org/test/tosca}ubuntu",
+            "edmmType": "compute"
+        },
+        {
+            "toscaType": "{https://ex.org/test/tosca}apache2.4",
+            "edmmType": "web_server"
+        }
+    ]
+}

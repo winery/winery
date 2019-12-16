@@ -19,9 +19,12 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.namespace.QName;
+
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
+import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 /**
  * <p>Java class for tNodeTypeImplementation complex type.
@@ -110,6 +113,11 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
         return Objects.hash(super.hashCode(), tags, derivedFrom, requiredContainerFeatures, implementationArtifacts, deploymentArtifacts, _abstract, _final);
     }
 
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
+
     @Nullable
     public TDeploymentArtifacts getDeploymentArtifacts() {
         return deploymentArtifacts;
@@ -159,7 +167,7 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    public static class DerivedFrom implements HasType {
+    public static class DerivedFrom implements HasType, Serializable {
 
         @XmlAttribute(name = "nodeTypeImplementationRef", required = true)
         protected QName nodeTypeImplementationRef;

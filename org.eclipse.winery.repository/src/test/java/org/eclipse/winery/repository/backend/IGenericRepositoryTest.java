@@ -22,6 +22,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
+
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,5 +43,16 @@ public class IGenericRepositoryTest extends TestWithGitBackedRepository {
 
         final Set<DefinitionsChildId> expected = new HashSet<>(Arrays.asList(nodeTypeWithoutPropertiesId, policyTemplateId, policyTypeId));
         assertEquals(expected, referencedDefinitionsChildIds);
+    }
+    
+    @Test
+    public void getReferencedDefinitionsChildIDsWithEmptyArtifactRefs() throws GitAPIException {
+        this.setRevisionTo("5fb45405cc983d157dc417142ad32b01880e48af");
+        
+        final NodeTypeId nodeTypeId = new NodeTypeId("http%3A%2F%2Fwinery.opentosca.org/test/ponyuniverse", "shetland_pony", true);
+        final QName qName = nodeTypeId.getQName();
+        Collection<NodeTypeImplementationId> allNodeTypeImplementations = this.repository.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeId.getQName());
+        assertEquals(0, allNodeTypeImplementations.size());
+        
     }
 }

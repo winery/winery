@@ -37,21 +37,30 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
     }
 
     @Test
-    public void baobabVisualAppearence() throws Exception {
+    public void baobabVisualAppearance() throws Exception {
         this.setRevisionTo("9c486269f6280e0eb14730d01554e7e4553a3d60");
-        this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/visualappearance/", "entitytypes/nodetypes/baobab_visual_appearance.json");
+        this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/appearance",
+            "entitytypes/nodetypes/baobab_visual_appearance.json");
+    }
+
+    @Test
+    public void patternNodeTypeVisualAppearance() throws Exception {
+        this.setRevisionTo("origin/plain");
+        this.assertGet("nodetypes/http%253A%252F%252Fplain.winery.opentosca.org%252Fpatterns/Infrastructure-As-A-Service_w1/appearance",
+            "entitytypes/nodetypes/Infrasctrucure_As-A-Service_visual_appearance.json");
     }
 
     @Test
     public void baobabAdd50x50Image() throws Exception {
         this.setRevisionTo("9c486269f6280e0eb14730d01554e7e4553a3d60");
-        this.assertUploadBinary("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/visualappearance/50x50", "entitytypes/nodetypes/bigIcon.png");
+        this.assertUploadBinary("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/appearance/50x50", "entitytypes/nodetypes/bigIcon.png");
     }
 
     @Test
     public void baobabAdd16x16Image() throws Exception {
         this.setRevisionTo("9c486269f6280e0eb14730d01554e7e4553a3d60");
-        this.assertUploadBinary("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/visualappearance/16x16", "entitytypes/nodetypes/bigIcon.png");
+        this.assertUploadBinary("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/appearance/16x16",
+            "entitytypes/nodetypes/bigIcon.png");
     }
 
     @Test
@@ -137,7 +146,7 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
     @Test
     public void baobabHasNoImage() throws Exception {
         this.setRevisionTo("5b5ad1106a3a428020b6bc5d2f154841acb5f779");
-        this.assertNotFound("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/visualappearance/50x50");
+        this.assertNotFound("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/appearance/50x50");
     }
 
     @Test

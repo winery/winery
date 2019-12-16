@@ -13,6 +13,7 @@
  ********************************************************************************/
 package org.eclipse.winery.common.version;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,11 +44,16 @@ import io.github.adr.embedded.ADR;
 /**
  * Utility class for working with versions.
  *
- * TODO: DefinitionsChildId specific parts should go into into the DefinitionsChildId to have a true object-oriented thinking
+ * TODO: DefinitionsChildId specific parts should go into into the DefinitionsChildId to have a true object-oriented
+ * thinking
  */
 public class VersionUtils {
 
     private static final Pattern VERSION_PATTERN = Pattern.compile("_(([^_]*)-)?w([0-9]+)(-wip([0-9]+))?$");
+    private static final int COMPONENT_VERSION_GROUP = 2;
+    private static final int WINERY_VERSION_GROUP = 3;
+    private static final int WIP_VERSION_GROUP_EXISTS = 4;
+    private static final int WIP_VERSION_GROUP = 5;
 
     private static String REFERENCING_OBJECT = "referencingObject";
 
@@ -81,14 +87,30 @@ public class VersionUtils {
         Matcher m = VERSION_PATTERN.matcher(id);
 
         if (m.find()) {
-            String componentVersion = Objects.nonNull(m.group(2)) ? m.group(2) : "";
-            int wineryVersion = Objects.nonNull(m.group(3)) ? Integer.parseInt(m.group(3)) : 0;
-            int workInProgressVersion = Objects.nonNull(m.group(4)) ? Integer.parseInt(m.group(5)) : 0;
+            String componentVersion = Objects.nonNull(m.group(COMPONENT_VERSION_GROUP)) ? m.group(COMPONENT_VERSION_GROUP) : "";
+            int wineryVersion = Objects.nonNull(m.group(WINERY_VERSION_GROUP)) ? Integer.parseInt(m.group(WINERY_VERSION_GROUP)) : 0;
+            int workInProgressVersion = Objects.nonNull(m.group(WIP_VERSION_GROUP_EXISTS)) ? Integer.parseInt(m.group(WIP_VERSION_GROUP)) : 0;
 
             return new WineryVersion(componentVersion, wineryVersion, workInProgressVersion);
         }
 
         return new WineryVersion();
+    }
+
+    public static String getQNameWithComponentVersionOnly(DefinitionsChildId id) {
+        Matcher m = VERSION_PATTERN.matcher(id.getXmlId().getDecoded());
+        String componentVersion = "";
+
+        if (m.find()) {
+            componentVersion = Objects.nonNull(m.group(COMPONENT_VERSION_GROUP)) ? m.group(COMPONENT_VERSION_GROUP) : "";
+        }
+
+        String nameWithoutVersion = getNameWithoutVersion(id.getQName().toString());
+        if (componentVersion.length() > 0) {
+            nameWithoutVersion += WineryVersion.WINERY_VERSION_SEPARATOR + componentVersion;
+        }
+
+        return nameWithoutVersion;
     }
 
     public static DefinitionsChildId getDefinitionInTheGivenVersion(DefinitionsChildId childId, WineryVersion otherVersion) {
@@ -173,5 +195,39 @@ public class VersionUtils {
             .compare(newVersion, oldVersion);
 
         return ToscaDiff.convertDiffToToscaDiff(diffNode, oldVersion, newVersion);
+    }
+
+    public static String getNewComponentVersionId(DefinitionsChildId oldId, String appendixName) {
+        WineryVersion version = VersionUtils.getVersion(oldId);
+        String oldVersion = version.toString();
+
+        if (Objects.nonNull(oldVersion) && !oldVersion.isEmpty()) {
+            version.setComponentVersion(oldVersion + "-" + appendixName);
+        } else {
+            version.setComponentVersion(appendixName);
+        }
+
+        version.setWineryVersion(1);
+        version.setWorkInProgressVersion(1);
+
+        return VersionUtils.getNameWithoutVersion(oldId) + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
+    }
+
+    public static WineryVersion getNewWineryVersion(List<WineryVersion> versions) {
+        WineryVersion[] version = new WineryVersion[1];
+        version[0] = versions.stream().filter(WineryVersion::isCurrentVersion)
+            .findFirst()
+            .orElseThrow(NullPointerException::new);
+
+        if (!version[0].isReleasable()) {
+            versions.forEach(wineryVersion -> {
+                if (Objects.nonNull(version[0].getComponentVersion()) && version[0].getComponentVersion().equals(wineryVersion.getComponentVersion())
+                    && wineryVersion.getWineryVersion() > version[0].getWineryVersion()) {
+                    version[0] = wineryVersion;
+                }
+            });
+        }
+
+        return new WineryVersion(version[0].getComponentVersion(), version[0].getWineryVersion() + 1, 1);
     }
 }

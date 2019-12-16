@@ -1,0 +1,65 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div id="{{ data.namespace | urlEncode | urlEncode }}/{{ data.id }}"
+     class="entityContainer {{ toscaType | toscaTypeToCamelCase }}"
+     (click)="onClick($event)">
+    <div class="left">
+        <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIconInList">
+    </div>
+    <div class="center" [style.width.px]="maxWidth">
+        <div *ngIf="data.id && data?.version?.hasVersion('wineryVersion')" class="{{ containerSizeClass + ' informationContainer '}}">
+            <div class="nameWithVersion">{{ data.name }}</div>
+            <div *ngIf="containerSizeClass === 'smallContainer'" class="version">Version: {{ data?.version?.getWineryAndWipVersion() }}</div>
+            <div *ngIf="containerSizeClass !== 'smallContainer'" class="version">Version: {{ data?.version?.toReadableString() }}</div>
+            <div [ngClass]="{'name': !data.id, 'namespace': data.id}">{{ data.namespace }}</div>
+        </div>
+        <div *ngIf="data.id && !data?.version?.hasVersion('wineryVersion')"
+             class="{{ containerSizeClass + ' informationContainer '}}">
+            <div class="name">{{ data.name }}</div>
+            <div [ngClass]="{'name': !data.id, 'namespace': data.id}">{{ data.namespace }}</div>
+        </div>
+        <div *ngIf="!data.id" class="{{ containerSizeClass + ' informationContainer '}}">
+            <div class="namespaceOnly">{{ data.name }}</div>
+            <div [ngClass]="{'name': !data.id, 'namespace': data.id}">{{ data.namespace }}</div>
+        </div>
+        <div *ngIf="!data.id" class="badge numberOfComponentInstances">{{ data.count }}</div>
+        <div *ngIf="data.id && showButtons" class="buttonContainer">
+            <a *ngIf="showTargetAllocationButton" class="targetAllocationButton" (click)="targetAllocation($event)"
+               tooltip="Allocate to cloud providers"></a>
+            <a class="exportButton" (click)="exportComponent($event)"
+               tooltip="Export CSAR. Hold CTRL to export XML."></a>
+            <a class="editButton" (click)="editComponent($event)"
+               tooltip="{{editButtonToolTip}}"></a>
+            <a class="deleteButton" (click)="showRemoveDialog($event)" tooltip="Delete"></a>
+        </div>
+    </div>
+    <div class="right">
+    </div>
+</div>
+
+<winery-target-allocation-component #targetAllocationModal></winery-target-allocation-component>
+
+<winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+    <winery-modal-header [title]="'Delete ' + (toscaType | toscaTypeToReadableName)">
+    </winery-modal-header>
+    <winery-modal-body>
+        <p>
+            Do you want to delete <span style="font-weight:bold;">{{ data.id }}</span>?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="deleteConfirmed()"
+                         [closeButtonLabel]="'Cancel'"
+                         [okButtonLabel]="'Delete'">
+    </winery-modal-footer>
+</winery-modal>

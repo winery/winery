@@ -13,21 +13,46 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.policytypes;
 
-import io.swagger.annotations.Api;
-import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithoutTypeReferenceResource;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.stream.Collectors;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsResource;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithoutTypeReferenceResource;
+import org.eclipse.winery.repository.rest.resources.apiData.VisualsApiData;
+
+import io.swagger.annotations.Api;
 
 /**
- * Manages all policy types in all available namespaces.
- * The actual implementation is done in the AbstractComponentsResource
+ * Manages all policy types in all available namespaces. The actual implementation is done in the
+ * AbstractComponentsResource
  */
 @Api(tags = "Policy Types")
 public class PolicyTypesResource extends AbstractComponentsWithoutTypeReferenceResource<PolicyTypeResource> {
+
     @Path("{namespace}/{id}/")
     public PolicyTypeResource getComponentInstanceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
         return this.getComponentInstanceResource(namespace, id, true);
     }
 
+    @GET
+    @Path("allvisualappearancedata")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<VisualsApiData> getVisualAppearanceList() {
+        SortedSet<PolicyTypeId> policyTypeIds = RepositoryFactory.getRepository().getAllDefinitionsChildIds(PolicyTypeId.class);
+        return policyTypeIds.stream()
+            .map(id -> {
+                PolicyTypeResource res = (PolicyTypeResource) AbstractComponentsResource.getComponentInstanceResource(id);
+                return res.getVisualAppearanceResource().getJsonData();
+            })
+            .collect(Collectors.toList());
+    }
 }

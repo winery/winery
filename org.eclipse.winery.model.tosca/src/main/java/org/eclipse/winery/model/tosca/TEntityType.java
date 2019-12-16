@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.adr.embedded.ADR;
@@ -50,7 +51,7 @@ import org.eclipse.jdt.annotation.Nullable;
     TArtifactType.class,
     TPolicyType.class
 })
-public class TEntityType extends TExtensibleElements implements HasName, HasInheritance, HasTargetNamespace {
+public abstract class TEntityType extends TExtensibleElements implements HasName, HasInheritance, HasTargetNamespace {
     public static final String NS_SUFFIX_PROPERTIESDEFINITION_WINERY = "propertiesdefinition/winery";
 
     @XmlElement(name = "Tags")
@@ -104,58 +105,28 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
         return Objects.hash(tags, derivedFrom, propertiesDefinition, name, _abstract, _final, targetNamespace);
     }
 
-    /**
-     * Gets the value of the tags property.
-     *
-     * @return possible object is {@link TTags }
-     */
     @Nullable
     public TTags getTags() {
         return tags;
     }
 
-    /**
-     * Sets the value of the tags property.
-     *
-     * @param value allowed object is {@link TTags }
-     */
-    public void setTags(TTags value) {
+    public void setTags(@Nullable TTags value) {
         this.tags = value;
     }
 
-    /**
-     * Gets the value of the derivedFrom property.
-     *
-     * @return possible object is {@link TEntityType.DerivedFrom }
-     */
     public TEntityType.@Nullable DerivedFrom getDerivedFrom() {
         return derivedFrom;
     }
 
-    /**
-     * Sets the value of the derivedFrom property.
-     *
-     * @param value allowed object is {@link TEntityType.DerivedFrom }
-     */
-    public void setDerivedFrom(HasType value) {
+    public void setDerivedFrom(@Nullable HasType value) {
         this.derivedFrom = (TEntityType.DerivedFrom) value;
     }
 
-    /**
-     * Gets the value of the propertiesDefinition property.
-     *
-     * @return possible object is {@link TEntityType.PropertiesDefinition }
-     */
     public TEntityType.@Nullable PropertiesDefinition getPropertiesDefinition() {
         return propertiesDefinition;
     }
 
-    /**
-     * Sets the value of the propertiesDefinition property.
-     *
-     * @param value allowed object is {@link TEntityType.PropertiesDefinition }
-     */
-    public void setPropertiesDefinition(TEntityType.PropertiesDefinition value) {
+    public void setPropertiesDefinition(TEntityType.@Nullable PropertiesDefinition value) {
         this.propertiesDefinition = value;
     }
 
@@ -172,6 +143,12 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
         this.name = value;
     }
 
+    @JsonIgnore
+    @NonNull
+    public QName getQName() {
+        return QName.valueOf("{" + this.targetNamespace + "}" + this.name);
+    }
+
     @NonNull
     public TBoolean getAbstract() {
         if (_abstract == null) {
@@ -181,20 +158,10 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
         }
     }
 
-    /**
-     * Sets the value of the abstract property.
-     *
-     * @param value allowed object is {@link TBoolean }
-     */
-    public void setAbstract(TBoolean value) {
+    public void setAbstract(@Nullable TBoolean value) {
         this._abstract = value;
     }
 
-    /**
-     * Gets the value of the final property.
-     *
-     * @return possible object is {@link TBoolean }
-     */
     @NonNull
     public TBoolean getFinal() {
         if (_final == null) {
@@ -204,31 +171,16 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
         }
     }
 
-    /**
-     * Sets the value of the final property.
-     *
-     * @param value allowed object is {@link TBoolean }
-     */
-    public void setFinal(TBoolean value) {
+    public void setFinal(@Nullable TBoolean value) {
         this._final = value;
     }
 
-    /**
-     * Gets the value of the targetNamespace property.
-     *
-     * @return possible object is {@link String }
-     */
     @Nullable
     public String getTargetNamespace() {
         return targetNamespace;
     }
 
-    /**
-     * Sets the value of the targetNamespace property.
-     *
-     * @param value allowed object is {@link String }
-     */
-    public void setTargetNamespace(String value) {
+    public void setTargetNamespace(@Nullable String value) {
         this.targetNamespace = value;
     }
 
@@ -273,21 +225,6 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
         return res;
     }
 
-    /**
-     * <p>Java class for anonymous complex type.
-     * <p>
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     * <p>
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;attribute name="typeRef" use="required" type="{http://www.w3.org/2001/XMLSchema}QName" />
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
     public static class DerivedFrom implements HasType {
@@ -295,35 +232,29 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
         @XmlAttribute(name = "typeRef", required = true)
         protected QName typeRef;
 
-        /**
-         * Gets the value of the typeRef property.
-         *
-         * @return possible object is {@link QName }
-         */
         @NonNull
         public QName getTypeRef() {
             return typeRef;
         }
 
-        /**
-         * Sets the value of the typeRef property.
-         *
-         * @param value allowed object is {@link QName }
-         */
-        public void setTypeRef(QName value) {
+        public void setTypeRef(@NonNull QName value) {
+            Objects.requireNonNull(value);
             this.typeRef = value;
         }
 
+        @NonNull
         public QName getType() {
             return this.getTypeRef();
         }
 
         @Override
-        public void setType(QName type) {
+        public void setType(@NonNull QName type) {
+            Objects.requireNonNull(type);
             this.setTypeRef(type);
         }
 
         @Override
+        @NonNull
         public QName getTypeAsQName() {
             return this.getType();
         }
@@ -342,22 +273,6 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
         }
     }
 
-    /**
-     * <p>Java class for anonymous complex type.
-     * <p>
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     * <p>
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;attribute name="element" type="{http://www.w3.org/2001/XMLSchema}QName" />
-     *       &lt;attribute name="type" type="{http://www.w3.org/2001/XMLSchema}QName" />
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
     public static class PropertiesDefinition {
@@ -367,41 +282,21 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
         @XmlAttribute(name = "type")
         protected QName type;
 
-        /**
-         * Gets the value of the element property.
-         *
-         * @return possible object is {@link QName }
-         */
         @Nullable
         public QName getElement() {
             return element;
         }
 
-        /**
-         * Sets the value of the element property.
-         *
-         * @param value allowed object is {@link QName }
-         */
-        public void setElement(QName value) {
+        public void setElement(@Nullable QName value) {
             this.element = value;
         }
 
-        /**
-         * Gets the value of the type property.
-         *
-         * @return possible object is {@link QName }
-         */
         @Nullable
         public QName getType() {
             return type;
         }
 
-        /**
-         * Sets the value of the type property.
-         *
-         * @param value allowed object is {@link QName }
-         */
-        public void setType(QName value) {
+        public void setType(@Nullable QName value) {
             this.type = value;
         }
 
@@ -417,6 +312,10 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
         @Override
         public int hashCode() {
             return Objects.hash(element, type);
+        }
+
+        public void accept(Visitor visitor) {
+            visitor.visit(this);
         }
     }
 
@@ -557,7 +456,7 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
         }
 
         public TEntityType build() {
-            return new TEntityType(this);
+            throw new IllegalStateException("Abstract types must never be build.");
         }
     }
 }

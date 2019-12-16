@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,4 +25,9 @@ public class NamespaceResourceTest extends AbstractResourceTest {
         this.assertGet("admin/namespaces/?all", "entitytypes/admin/namspacesList.json");
     }
 
+    @Test
+    public void getNamespaceListWithoutRestrictedNamespaces() throws Exception {
+        this.setRevisionTo("8b57ea031ea0786a46ef8338ed322db886a77cd6");
+        this.assertGet("admin/namespaces/", "entitytypes/admin/namespaces.json");
+    }
 }

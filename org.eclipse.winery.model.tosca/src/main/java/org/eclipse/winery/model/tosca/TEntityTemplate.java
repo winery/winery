@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,6 +34,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.winery.model.tosca.constants.Namespaces;
+import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -136,12 +138,14 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         return this.getType();
     }
 
+    public abstract void accept(Visitor visitor);
+
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
         "any"
     })
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class Properties {
+    public static class Properties implements Serializable {
 
         @XmlAnyElement(lax = true)
         protected Object any;
@@ -190,6 +194,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
          * @return null if not k/v, a map of k/v properties otherwise
          */
         @ADR(12)
+        @Nullable
         public LinkedHashMap<String, String> getKVProperties() {
             // we use the internal variable "any", because getAny() returns null, if we have KVProperties
             if (any == null) {
@@ -256,6 +261,11 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
 
         @ADR(12)
         public void setKVProperties(Map<String, String> properties) {
+            setKVProperties(Namespaces.EXAMPLE_NAMESPACE_URI, "Properties", properties);
+        }
+
+        @ADR(12)
+        public void setKVProperties(String namespace, String elementName, Map<String, String> properties) {
             Objects.requireNonNull(properties);
             Element el = (Element) any;
 
@@ -271,12 +281,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
                 }
                 Document doc = db.newDocument();
 
-                // We cannot access the wrapper definitions, because we don't have access to the type
-                // Element root = doc.createElementNS(wpd.getNamespace(), wpd.getElementName());
-                LOGGER.warn("Creating XML properties element with incorrect wrapper element. The resulting XML needs to be patched. This is currently not implemented.");
-                // Therefore, we create a dummy wrapper element:
-
-                Element root = doc.createElementNS(Namespaces.EXAMPLE_NAMESPACE_URI, "Properties");
+                Element root = doc.createElementNS(namespace, elementName);
                 doc.appendChild(root);
 
                 // No wpd - so this is not possible:
@@ -284,8 +289,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
                 // for (PropertyDefinitionKV prop : wpd.getPropertyDefinitionKVList()) {
 
                 for (String key : properties.keySet()) {
-                    // wpd.getNamespace()
-                    Element element = doc.createElementNS(Namespaces.EXAMPLE_NAMESPACE_URI, key);
+                    Element element = doc.createElementNS(namespace, key);
                     root.appendChild(element);
                     String value = properties.get(key);
                     if (value != null) {
@@ -296,6 +300,8 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
 
                 this.setAny(doc.getDocumentElement());
             } else {
+                //TODO: this implementation does not support adding a new property. However, I don't understand it yet so we need to fix it in future.
+
                 // straight-forward copy over to existing property structure
                 NodeList childNodes = el.getChildNodes();
 
@@ -329,13 +335,17 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         public int hashCode() {
             return Objects.hash(any);
         }
+
+        public void accept(Visitor visitor) {
+            visitor.visit(this);
+        }
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
         "propertyConstraint"
     })
-    public static class PropertyConstraints {
+    public static class PropertyConstraints implements Serializable {
 
         @XmlElement(name = "PropertyConstraint", required = true)
         protected List<TPropertyConstraint> propertyConstraint;
@@ -343,9 +353,9 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         /**
          * Gets the value of the propertyConstraint property.
          * <p>
-         * <p> This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you
-         * make to the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE>
-         * method for the propertyConstraint property.
+         * <p> This accessor method returns a reference to the live list, not a snapshot. Therefore any modification
+         * you make to the returned list will be present inside the JAXB object. This is why there is not a
+         * <CODE>set</CODE> method for the propertyConstraint property.
          * <p>
          * <p> For example, to add a new item, do as follows:
          * <pre>
@@ -374,6 +384,10 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         @Override
         public int hashCode() {
             return Objects.hash(propertyConstraint);
+        }
+
+        public void accept(Visitor visitor) {
+            visitor.visit(this);
         }
     }
 

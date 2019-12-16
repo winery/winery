@@ -1,0 +1,15 @@
+ui:
+  endpoints:
+    quaz: http://quaz:8080
+  features:
+    foo: true
+    bar: false
+repository:
+  provider: file
+  repositoryRoot: thisisatestroot
+  git:
+    clientID: id
+    clientSecret: secret
+    username: default
+    password: default
+    autocommit: false

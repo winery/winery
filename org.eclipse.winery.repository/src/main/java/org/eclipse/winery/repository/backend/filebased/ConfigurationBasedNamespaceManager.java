@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,13 +21,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
-import org.eclipse.winery.repository.backend.NamespaceManager;
+import org.eclipse.winery.repository.backend.AbstractNamespaceManager;
 
-import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration2.Configuration;
 
-public class ConfigurationBasedNamespaceManager implements NamespaceManager {
+@Deprecated
+public class ConfigurationBasedNamespaceManager extends AbstractNamespaceManager {
 
     private Configuration configuration;
     private Map<String, String> namespaceToPrefixMap = new HashMap<>();
@@ -71,172 +71,32 @@ public class ConfigurationBasedNamespaceManager implements NamespaceManager {
     }
 
     @Override
-    public boolean hasPermanentPrefix(String namespace) {
+    public boolean hasPermanentProperties(String namespace) {
         return this.configuration.containsKey(namespace);
     }
 
     @Override
-    public void removePermanentPrefix(String namespace) {
+    public void removeNamespaceProperties(String namespace) {
         this.configuration.clearProperty(namespace);
         // ensure that in-memory mapping also does not have the key any more
         this.namespaceToPrefixMap.remove(namespace);
     }
 
     @Override
-    public void setPermanentPrefix(String namespace, String prefix) {
-        if (Objects.isNull(namespace) || Objects.isNull(prefix)) {
+    public void setNamespaceProperties(String namespace, NamespaceProperties properties) {
+        if (Objects.isNull(namespace) || namespace.isEmpty() ||
+            Objects.isNull(properties) || Objects.isNull(properties.getPrefix()) || properties.getPrefix().isEmpty()) {
             return;
         }
-        if (namespace.isEmpty() || prefix.isEmpty()) {
-            return;
-        }
-        if (!this.getAllPermanentPrefixes().contains(prefix)) {
-            this.configuration.setProperty(namespace, prefix);
-            // ensure that in-memory mapping also does not have the key any more
+
+        if (!this.getAllPermanentPrefixes().contains(properties.getPrefix())) {
+            this.configuration.setProperty(namespace, properties.getPrefix());
+            // ensure that in-memory mapping does not have the key any more
             this.namespaceToPrefixMap.remove(namespace);
         }
     }
 
-    /**
-     * Generates a string indicating the kind of definitions children maintained by the namespace
-     *
-     * @return empty string if nothing could be matched
-     */
-    private String generateDefinitionsChildTypeAbbreviation(String namespace) {
-        Objects.requireNonNull(namespace);
-
-        String mid;
-        if (namespace.contains("servicetemplates/")) {
-            mid = "ste";
-        } else if (namespace.contains("nodetypes/")) {
-            mid = "nty";
-        } else if (namespace.contains("nodetypeimplementations/")) {
-            mid = "ntyi";
-        } else if (namespace.contains("relationshiptypes/")) {
-            mid = "nty";
-        } else if (namespace.contains("relationshiptypeimplementations/")) {
-            mid = "rtyi";
-        } else if (namespace.contains("artifacttypes/")) {
-            mid = "aty";
-        } else if (namespace.contains("artifacttemplates/")) {
-            mid = "ate";
-        } else if (namespace.contains("requirementtypes/")) {
-            mid = "rty";
-        } else if (namespace.contains("capabilitytypes/")) {
-            mid = "cty";
-        } else if (namespace.contains("policytypes/")) {
-            mid = "pty";
-        } else if (namespace.contains("policytemplates/")) {
-            mid = "pte";
-        } else if (namespace.contains("compliancerules/")) {
-            mid = "cr";
-        } else if (namespace.contains("types/")) {
-            mid = "ty";
-        } else if (namespace.contains("templates/")) {
-            mid = "te";
-        } else {
-            mid = "";
-        }
-        return mid;
-    }
-
-    /**
-     * Tries to generate a prefix based on the last part of the URL
-     */
-    public String generatePrefixProposal(String namespace, int round) {
-        Objects.requireNonNull(namespace);
-        String[] split = namespace.split("/");
-        if (split.length == 0) {
-            // Fallback if no slashes are in the namespace - just count from ns0 onwards
-            return String.format("ns%d", round);
-        } else {
-            boolean isWineryPropertiesDefinitionNamespace = namespace.endsWith(TEntityType.NS_SUFFIX_PROPERTIESDEFINITION_WINERY);
-            String suffix;
-            if (isWineryPropertiesDefinitionNamespace) {
-                suffix = "pd";
-            } else {
-                suffix = "";
-            }
-
-            String lastSignificantNamespacePart;
-            int shift;
-            if (isWineryPropertiesDefinitionNamespace) {
-                // the namespace ends with "/propertiesdefinition/winery", so the part before "propertiesdefinition" is interesting
-                shift = 3;
-            } else {
-                shift = 1;
-            }
-            lastSignificantNamespacePart = split[split.length - shift].replaceAll("[^A-Za-z]+", "");
-
-            String prefix;
-            // generate special prefixes for known namespace "groups"
-            if (namespace.startsWith(Namespaces.URI_START_OPENTOSCA)) {
-                prefix = "ot";
-            } else {
-                prefix = "";
-            }
-
-            String mid = this.generateDefinitionsChildTypeAbbreviation(namespace);
-
-            if (mid.isEmpty() && !namespace.endsWith("/")) {
-                // special handling for cases such as "http://opentosca.org/artifacttemplates" required?
-                mid = this.generateDefinitionsChildTypeAbbreviation(namespace + "/");
-                if (!mid.isEmpty()) {
-                    // The last part of the namespace was the type, so we do not have a "real" last significant namespace part
-                    // and thus replace it by "general"
-                    lastSignificantNamespacePart = "general";
-                }
-            }
-
-            final String SEPERATOR;
-            if (prefix.isEmpty() && mid.isEmpty() && suffix.isEmpty()) {
-                SEPERATOR = "";
-            } else {
-                // W3C allows for characters such as "-", "·", and "😜"
-                // (see https://www.w3.org/TR/REC-xml/#NT-NameChar),
-                // but the current java implementation cannot handle it
-                SEPERATOR = "I";
-            }
-
-            if (lastSignificantNamespacePart.isEmpty()) {
-                if (prefix.isEmpty()) {
-                    if ((round == 0) && namespace.isEmpty()) {
-                        // special treatment for empty namespaces
-                        return "null";
-                    }
-                    prefix = "ns";
-                }
-                return String.format("%s%s%s%s%d", prefix, mid, suffix, SEPERATOR, round);
-            } else {
-                if (round == 0) {
-                    return String.format("%s%s%s%s%s", prefix, mid, suffix, SEPERATOR, lastSignificantNamespacePart);
-                } else {
-                    return String.format("%s%s%s%s%s%d", prefix, mid, suffix, SEPERATOR, lastSignificantNamespacePart, round);
-                }
-            }
-        }
-    }
-
-    /**
-     * Generates a prefix for the given namespace. There must not be a prefix existing for the namespace.
-     */
-    private String generatePrefix(String namespace) {
-        Objects.requireNonNull(namespace);
-
-        String prefix;
-        Set<String> allPrefixes = new HashSet<>();
-        allPrefixes.addAll(this.getAllPermanentPrefixes());
-        allPrefixes.addAll(this.namespaceToPrefixMap.values());
-
-        int round = 0;
-        do {
-            prefix = generatePrefixProposal(namespace, round);
-            round++;
-        } while (allPrefixes.contains(prefix));
-        return prefix;
-    }
-
-    public Collection<String> getAllPermanentPrefixes() {
+    private Collection<String> getAllPermanentPrefixes() {
         Iterator<String> keys = this.configuration.getKeys();
         Set<String> res = new HashSet<>();
         while (keys.hasNext()) {
@@ -248,17 +108,62 @@ public class ConfigurationBasedNamespaceManager implements NamespaceManager {
     }
 
     @Override
-    public Collection<String> getAllPermanentNamespaces() {
+    public Map<String, NamespaceProperties> getAllNamespaces() {
         Iterator<String> keys = this.configuration.getKeys();
-        Set<String> res = new HashSet<>();
+        Map<String, NamespaceProperties> map = new HashMap<>();
         while (keys.hasNext()) {
-            res.add(keys.next());
+            String next = keys.next();
+            map.put(next, new NamespaceProperties(next, this.configuration.getString(next)));
         }
-        return res;
+        return map;
     }
 
     @Override
     public void clear() {
         this.configuration.clear();
+    }
+
+    @Override
+    protected Set<String> getAllPrefixes(String namespace) {
+        Set<String> allPrefixes = new HashSet<>();
+        allPrefixes.addAll(this.getAllPermanentPrefixes());
+        allPrefixes.addAll(this.namespaceToPrefixMap.values());
+
+        return allPrefixes;
+    }
+
+    @Override
+    public void addAllPermanent(Collection<NamespaceProperties> properties) {
+        this.clear();
+        for (NamespaceProperties nsp : properties) {
+            this.setNamespaceProperties(nsp.getNamespace(), nsp);
+        }
+    }
+
+    @Override
+    public void replaceAll(Map<String, NamespaceProperties> map) {
+        this.clear();
+        map.forEach(this::setNamespaceProperties);
+    }
+
+    @Override
+    public NamespaceProperties getNamespaceProperties(String namespace) {
+        String prefix = this.getPrefix(namespace);
+        return new NamespaceProperties(namespace, prefix);
+    }
+
+    @Override
+    public boolean isPatternNamespace(String namespace) {
+        return false;
+    }
+
+    @Override
+    public boolean isSecureCollection(String namespace) {
+        return false;
+    }
+
+    @Override
+    public boolean isGeneratedNamespace(String namespace) {
+        return false;
     }
 }

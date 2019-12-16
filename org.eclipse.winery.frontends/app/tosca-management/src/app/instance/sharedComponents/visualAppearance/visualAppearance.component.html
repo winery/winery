@@ -1,0 +1,118 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div class="content" *ngIf="!loading">
+    <h4 *ngIf="isNodeType || isRelationshipType">Colors</h4>
+    <div class="colorPickerArea" *ngIf="!loading && isNodeType">
+        <div class="floatContent">
+            <b>Bordercolor:</b><br>
+            <input class="colorInput" name="eventColor" type="color" [(ngModel)]="borderColorLocal" [disabled]="!sharedData?.currentVersion?.editable">
+            <br/>click on the area above to change border color<br/>
+        </div>
+    </div>
+    <div class="colorPickerArea" *ngIf="!loading && relationshipData != null">
+        <div class="floatContent">
+            <b>Line color:</b><br>
+            <input class="colorInput" name="eventColor" type="color" [(ngModel)]="colorLocal">
+            <br/> click on the area above to change line color<br/>
+        </div>
+        <div class="floatContent">
+            <b>Color when hovered:</b><br>
+            <input class="colorInput" name="eventColor" type="color" [(ngModel)]="hoverColorLocal">
+            <br/>click on the area above to change hover color<br/>
+        </div>
+    </div>
+    <div class="uploadImgArea">
+        <b>Icon (16x16) used in palette</b><br>
+        <div class="typeIcon"><img src="{{img16Path}}" height="16" width="16"></div>
+        <winery-uploader #uploader16 id="uploader16"
+                         [uploadUrl]="img16Path"
+                         [uploadMethod]="'PUT'"
+                         [isEditable]="sharedData?.currentVersion?.editable"
+                         (onSuccess)="onUploadSuccess()">
+        </winery-uploader>
+        <br/>
+        <div>
+            <b>Icon (50x50) used in the node template shapes</b><br/>
+            <div class="typeIcon"><img src="{{img50Path}}" height="50" width="50"></div>
+            <winery-uploader #uploader50 id="uploader50"
+                             [uploadUrl]="img50Path"
+                             [uploadMethod]="'PUT'"
+                             [isEditable]="sharedData?.currentVersion?.editable"
+                             (onSuccess)="onUploadSuccess()">
+            </winery-uploader>
+            <br/>
+        </div>
+    </div>
+
+    <div class="arrowSelectArea" *ngIf="relationshipData != null">
+        <h4>Line style:</h4>
+        choose the style used for the connection line between the node and the relationship in the topologymodeler<br/>
+        by <b>clicking on the different parts of the connection</b> shown below<p>
+        <div class="slot">
+            <b>Source:</b><br/>
+            <div>
+            <span class="header item"
+                  [ngClass]="{noneSource: relationshipData?.sourceArrowHead === 'none',
+                              PlainArrowSource: relationshipData?.sourceArrowHead === 'PlainArrow',
+                              DiamondSource: relationshipData?.sourceArrowHead === 'Diamond'}"
+                  (click)="selectArrowItem('sourceArrowHead');"></span>
+            </div>
+            <div class="list" *ngIf="relationshipData?.boolData.sourceArrowHeadSelected">
+                <span class="list item noneSource" (click)="selectArrowItem('sourceArrowHead','none');"></span>
+                <span class="list item PlainArrowSource"
+                      (click)="selectArrowItem('sourceArrowHead','PlainArrow');"></span>
+                <span class="list item DiamondSource"
+                      (click)="selectArrowItem('sourceArrowHead','Diamond');"></span>
+            </div>
+        </div>
+        <div class="slot">
+            <b>Line style:</b><br/>
+            <div>
+            <span class="header item middle"
+                  [ngClass]="{plainLine: relationshipData?.dash === 'plain',
+                              dottedLine: relationshipData?.dash === 'dotted',
+                              dotted2Line: relationshipData?.dash === 'dotted2'}"
+                  (click)="selectArrowItem('dash');"></span>
+            </div>
+            <div class="list" *ngIf="relationshipData?.boolData.dashSelected;">
+                <span class="list item middle plainLine" (click)="selectArrowItem('dash', 'plain');"></span>
+                <span class="list item middle dottedLine" (click)="selectArrowItem('dash', 'dotted');"></span>
+                <span class="list item middle dotted2Line" (click)="selectArrowItem('dash', 'dotted2');"></span>
+            </div>
+        </div>
+        <div class="slot">
+            <b>Target:</b><br/>
+            <div>
+            <span class="header item"
+                  [ngClass]="{noneTarget: relationshipData?.targetArrowHead === 'none',
+                              PlainArrowTarget: relationshipData?.targetArrowHead === 'PlainArrow',
+                              DiamondTarget: relationshipData?.targetArrowHead === 'Diamond'}"
+                  (click)="selectArrowItem('targetArrowHead');"></span>
+            </div>
+            <div class="list" *ngIf="relationshipData?.boolData.targetArrowHeadSelected">
+                <span class="list item noneTarget" (click)="selectArrowItem('targetArrowHead','none');"></span>
+                <span class="list item PlainArrowTarget"
+                      (click)="selectArrowItem('targetArrowHead','PlainArrow');"></span>
+                <span class="list item DiamondTarget"
+                      (click)="selectArrowItem('targetArrowHead','Diamond');"></span>
+            </div>
+        </div>
+        <br>
+        <button *ngIf="relationshipData" (click)="saveToServer()" [disabled]="!sharedData?.currentVersion?.editable" class="btn btn-primary btn-sm save">Save</button>
+    </div>
+</div>
+

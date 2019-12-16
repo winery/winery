@@ -18,46 +18,12 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.namespace.QName;
+
+import java.io.Serializable;
 import java.util.Objects;
 
+import org.eclipse.winery.model.tosca.visitor.Visitor;
 
-/**
- * <p>Java class for tRelationshipTypeImplementation complex type.
- * <p>
- * <p>The following schema fragment specifies the expected content contained within this class.
- * <p>
- * <pre>
- * &lt;complexType name="tRelationshipTypeImplementation">
- *   &lt;complexContent>
- *     &lt;extension base="{http://docs.oasis-open.org/tosca/ns/2011/12}tExtensibleElements">
- *       &lt;sequence>
- *         &lt;element name="Tags" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tTags" minOccurs="0"/>
- *         &lt;element name="DerivedFrom" minOccurs="0">
- *           &lt;complexType>
- *             &lt;complexContent>
- *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *                 &lt;attribute name="relationshipTypeImplementationRef" use="required"
- * type="{http://www.w3.org/2001/XMLSchema}QName" />
- *               &lt;/restriction>
- *             &lt;/complexContent>
- *           &lt;/complexType>
- *         &lt;/element>
- *         &lt;element name="RequiredContainerFeatures" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tRequiredContainerFeatures"
- * minOccurs="0"/>
- *         &lt;element name="ImplementationArtifacts" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tImplementationArtifacts"
- * minOccurs="0"/>
- *       &lt;/sequence>
- *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}NCName" />
- *       &lt;attribute name="targetNamespace" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
- *       &lt;attribute name="relationshipType" use="required" type="{http://www.w3.org/2001/XMLSchema}QName" />
- *       &lt;attribute name="abstract" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tBoolean" default="no" />
- *       &lt;attribute name="final" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tBoolean" default="no" />
- *       &lt;anyAttribute processContents='lax' namespace='##other'/>
- *     &lt;/extension>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 // by using @XmlTransient at TEntityTypeImplementation, this orders *all* elements, even if IntelliJ marks them in red
 // see https://stackoverflow.com/a/6790388/873282
@@ -95,6 +61,11 @@ public class TRelationshipTypeImplementation extends TEntityTypeImplementation {
         return Objects.hash(super.hashCode(), derivedFrom);
     }
 
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
+
     //@Nullable
     public TRelationshipTypeImplementation.DerivedFrom getDerivedFrom() {
         return derivedFrom;
@@ -114,25 +85,9 @@ public class TRelationshipTypeImplementation extends TEntityTypeImplementation {
         this.implementedType = value;
     }
 
-    /**
-     * <p>Java class for anonymous complex type.
-     * <p>
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     * <p>
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;attribute name="relationshipTypeImplementationRef" use="required" type="{http://www.w3.org/2001/XMLSchema}QName"
-     * />
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    public static class DerivedFrom implements HasType {
+    public static class DerivedFrom implements HasType, Serializable {
 
         @XmlAttribute(name = "relationshipTypeImplementationRef", required = true)
         protected QName relationshipTypeImplementationRef;

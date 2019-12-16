@@ -14,12 +14,6 @@
 
 package org.eclipse.winery.model.tosca;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-
-import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -27,26 +21,19 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlType;
 
-/**
- * <p>Java class for tTopologyTemplate complex type.
- * <p>
- * <p>The following schema fragment specifies the expected content contained within this class.
- * <p>
- * <pre>
- * &lt;complexType name="tTopologyTemplate">
- *   &lt;complexContent>
- *     &lt;extension base="{http://docs.oasis-open.org/tosca/ns/2011/12}tExtensibleElements">
- *       &lt;choice maxOccurs="unbounded">
- *         &lt;element name="NodeTemplate" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tNodeTemplate"/>
- *         &lt;element name="RelationshipTemplate" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tRelationshipTemplate"/>
- *       &lt;/choice>
- *       &lt;anyAttribute processContents='lax' namespace='##other'/>
- *     &lt;/extension>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- */
+import org.eclipse.winery.model.tosca.visitor.Visitor;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tTopologyTemplate", propOrder = {
     "nodeTemplateOrRelationshipTemplate"
@@ -81,32 +68,11 @@ public class TTopologyTemplate extends TExtensibleElements {
         return Objects.hash(super.hashCode(), nodeTemplateOrRelationshipTemplate);
     }
 
-    /**
-     * Gets the value of the nodeTemplateOrRelationshipTemplate property.
-     * <p>
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the nodeTemplateOrRelationshipTemplate property.
-     * <p>
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getNodeTemplateOrRelationshipTemplate().add(newItem);
-     * </pre>
-     * <p>
-     * <p>
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link TRelationshipTemplate }
-     * {@link TNodeTemplate }
-     */
     @JsonIgnore
     @NonNull
     public List<TEntityTemplate> getNodeTemplateOrRelationshipTemplate() {
         if (nodeTemplateOrRelationshipTemplate == null) {
-            nodeTemplateOrRelationshipTemplate = new ArrayList<TEntityTemplate>();
+            nodeTemplateOrRelationshipTemplate = new ArrayList<>();
         }
         return this.nodeTemplateOrRelationshipTemplate;
     }
@@ -181,12 +147,15 @@ public class TTopologyTemplate extends TExtensibleElements {
         this.getNodeTemplateOrRelationshipTemplate().add(rt);
     }
 
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
+
     public static class Builder extends TExtensibleElements.Builder<Builder> {
         private List<TNodeTemplate> nodeTemplates;
         private List<TRelationshipTemplate> relationshipTemplates;
 
         public Builder() {
-
         }
 
         @Override

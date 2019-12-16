@@ -13,8 +13,9 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.constants;
 
-import org.apache.tika.mime.MediaType;
 import org.eclipse.winery.common.constants.MimeTypes;
+
+import org.apache.tika.mime.MediaType;
 
 /**
  * see also {@link org.eclipse.winery.common.constants.MimeTypes}
@@ -25,5 +26,4 @@ public class MediaTypes {
     public static final MediaType MEDIATYPE_APPLICATION_JSON = MediaType.parse("application/json");
     public static final MediaType MEDIATYPE_TEXT_XML = MediaType.parse("text/xml");
     public static final MediaType MEDIATYPE_XSD = MediaType.parse(MimeTypes.MIMETYPE_XSD);
-
 }

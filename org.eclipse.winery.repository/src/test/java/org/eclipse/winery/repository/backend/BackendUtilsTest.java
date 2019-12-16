@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -36,6 +36,8 @@ import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateSour
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.xmlunit.matchers.CompareMatcher;
+
+import javax.xml.namespace.QName;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -242,5 +244,25 @@ public class BackendUtilsTest {
         TArtifactTemplate synchronizhedArtifactTemplate = BackendUtils.synchronizeReferences(repository, artifactTemplateId);
 
         assertEquals(createArtifactTemplateWithReferenceToAnUrlAndExistentFile(), synchronizhedArtifactTemplate);
+    }
+    
+    @Test
+    public void testUpdateVersionOfNodeTemplate() throws Exception {
+        TTopologyTemplate topologyTemplate = new TTopologyTemplate();
+
+        TNodeTemplate nt1 = new TNodeTemplate();
+        TNodeTemplate nt2 = new TNodeTemplate();
+        nt1.setId("java8_1.0-w1-wip1_3");
+        nt1.setType(new QName("namespace","java8_1.0-w1-wip1"));
+        nt2.setId("java8_1.0-w2-wip2");
+        nt2.setType(new QName("namespace","java8_1.0-w2-wip2"));
+
+        List<TEntityTemplate> entityTemplates = topologyTemplate.getNodeTemplateOrRelationshipTemplate();
+        entityTemplates.add(nt1);
+
+        TTopologyTemplate resultTopologyTemplate = BackendUtils.updateVersionOfNodeTemplate(topologyTemplate, "java8_1.0-w1-wip1_3", "{namespace}java8_1.0-w2-wip2");
+        List<TEntityTemplate> entityTemplatesClone = resultTopologyTemplate.getNodeTemplateOrRelationshipTemplate();
+        assertEquals(entityTemplates.get(0).getTypeAsQName().toString(), "{namespace}java8_1.0-w2-wip2");
+        
     }
 }
