@@ -114,7 +114,7 @@ export class InstanceService {
                     subMenu.push(SubMenuItems.accountability);
                 }
                 if (this.configurationService.configuration.features.edmmModeling) {
-                    subMenu.push(SubMenuItems.oneToOneEDMMMappings, SubMenuItems.eDMMTypeMappings);
+                    subMenu.push(SubMenuItems.oneToOneEDMMMappings, SubMenuItems.edmmTypeMappings);
                 }
         }
         return subMenu;
