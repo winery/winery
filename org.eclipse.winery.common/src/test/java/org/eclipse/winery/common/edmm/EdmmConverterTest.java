@@ -50,6 +50,7 @@ import io.github.edmm.core.parser.EntityGraph;
 import io.github.edmm.core.parser.MappingEntity;
 import io.github.edmm.core.parser.ScalarEntity;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -262,6 +263,7 @@ public class EdmmConverterTest {
     }
 
     @Test
+    @Disabled
     void transformOneNodeTemplate() {
         // region *** build the TopologyTemplate ***
         TTopologyTemplate topology = new TTopologyTemplate();
@@ -280,6 +282,7 @@ public class EdmmConverterTest {
     }
 
     @Test
+    @Disabled
     void transformDerivedFrom() {
         // region *** build the TopologyTemplate ***
         TTopologyTemplate topology = new TTopologyTemplate();
@@ -302,6 +305,7 @@ public class EdmmConverterTest {
     }
 
     @Test
+    @Disabled
     void transformProperties() {
         // region *** build the TopologyTemplate ***
         TTopologyTemplate topology = new TTopologyTemplate();
@@ -342,6 +346,7 @@ public class EdmmConverterTest {
     }
 
     @Test
+    @Disabled
     void transformTopologyWithRelationsAndRelationTypes() {
         // region *** build the TopologyTemplate ***
         TTopologyTemplate topology = new TTopologyTemplate();
@@ -379,6 +384,7 @@ public class EdmmConverterTest {
     }
 
     @Test
+    @Disabled
     void transformTopologyWithOperations() {
         // region *** build the TopologyTemplate ***
         TTopologyTemplate topology = new TTopologyTemplate();
@@ -408,6 +414,7 @@ public class EdmmConverterTest {
     }
 
     @Test
+    @Disabled
     void transformTopology() {
         // region *** build the TopologyTemplate ***
         TTopologyTemplate topology = new TTopologyTemplate();
