@@ -173,7 +173,7 @@ public class Util {
 
     @SuppressWarnings("unchecked")
     public static Class<? extends DefinitionsChildId> getComponentIdClass(String idClassName) {
-        String pkg = "org.eclipse.winery.common.ids.definitions.";
+        String pkg = "org.eclipse.winery.model.ids.definitions.";
         if (idClassName.contains("Import")) {
             // quick hack to handle imports, which reside in their own package
             pkg = pkg + "imports.";
@@ -184,7 +184,7 @@ public class Util {
         } catch (ClassNotFoundException e) {
             // quick hack for Ids local to winery repository
             try {
-                fullClassName = "org.eclipse.winery.repository.datatypes.ids.admin." + idClassName;
+                fullClassName = "org.eclipse.winery.model.ids.admin." + idClassName;
                 return (Class<? extends DefinitionsChildId>) Class.forName(fullClassName);
             } catch (ClassNotFoundException e2) {
                 String errorMsg = "Could not find id class for component container, " + fullClassName;
@@ -198,7 +198,7 @@ public class Util {
     public static Class<? extends GenericId> getGenericIdClassForType(String typeIdType) {
         Class<? extends GenericId> res;
         // quick hack - we only need definitions right now
-        String pkg = "org.eclipse.winery.common.ids.definitions.";
+        String pkg = "org.eclipse.winery.model.ids.definitions.";
         String className = typeIdType;
         className = pkg + className;
         try {
