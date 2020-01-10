@@ -17,10 +17,6 @@ package org.eclipse.winery.model.tosca;
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
@@ -28,15 +24,10 @@ import org.eclipse.winery.model.tosca.visitor.Visitor;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tDeploymentArtifact")
 public class TDeploymentArtifact extends TExtensibleElements implements HasName, Serializable {
 
-    @XmlAttribute(name = "name", required = true)
     protected String name;
-    @XmlAttribute(name = "artifactType", required = true)
     protected QName artifactType;
-    @XmlAttribute(name = "artifactRef")
     protected QName artifactRef;
 
     public TDeploymentArtifact() {

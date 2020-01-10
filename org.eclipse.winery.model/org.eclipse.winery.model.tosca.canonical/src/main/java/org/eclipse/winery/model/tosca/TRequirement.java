@@ -16,10 +16,6 @@ package org.eclipse.winery.model.tosca;
 
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
@@ -27,8 +23,6 @@ import org.eclipse.winery.model.tosca.visitor.Visitor;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.eclipse.jdt.annotation.NonNull;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tRequirement")
 @JsonTypeInfo(
     defaultImpl = TRequirement.class,
     use = JsonTypeInfo.Id.NAME,
@@ -36,16 +30,12 @@ import org.eclipse.jdt.annotation.NonNull;
     property = "fakeJacksonType")
 public class TRequirement extends RelationshipSourceOrTarget {
 
-    @XmlAttribute(name = "name", required = true)
     protected String name;
     
-    @XmlAttribute(name = "capability")
     protected String capability;
     
-    @XmlAttribute(name = "node")
     protected String node;
     
-    @XmlAttribute(name = "relationship")
     protected String relationship;
 
     public TRequirement() {

@@ -16,12 +16,10 @@ package org.eclipse.winery.model.tosca.kvproperties;
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-@XmlRootElement(name = "ParameterDefinition")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ParameterDefinition implements Serializable {
 

@@ -16,24 +16,13 @@ package org.eclipse.winery.model.tosca;
 
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tExtension")
 public class TExtension extends TExtensibleElements {
-    @XmlAttribute(name = "namespace", required = true)
-    @XmlSchemaType(name = "anyURI")
     protected String namespace;
-    @XmlAttribute(name = "mustUnderstand")
     protected TBoolean mustUnderstand;
 
     public TExtension() {

@@ -16,20 +16,13 @@ package org.eclipse.winery.model.tosca;
 
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tRequirementType")
 public class TRequirementType extends TEntityType {
-    @XmlAttribute(name = "requiredCapabilityType")
     protected QName requiredCapabilityType;
 
     public TRequirementType() {

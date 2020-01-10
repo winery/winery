@@ -17,16 +17,6 @@ package org.eclipse.winery.model.tosca;
 import java.util.List;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.kvproperties.AttributeDefinitionList;
@@ -56,22 +46,12 @@ import org.eclipse.jdt.annotation.Nullable;
 public abstract class TEntityType extends TExtensibleElements implements HasName, HasInheritance, HasTargetNamespace {
     public static final String NS_SUFFIX_PROPERTIESDEFINITION_WINERY = "propertiesdefinition/winery";
 
-    @XmlElement(name = "Tags")
     protected TTags tags;
-    @XmlElement(name = "DerivedFrom")
     protected TEntityType.DerivedFrom derivedFrom;
-    @XmlElement(name = "PropertiesDefinition")
     protected TEntityType.PropertiesDefinition propertiesDefinition;
-    @XmlAttribute(name = "name", required = true)
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @XmlSchemaType(name = "NCName")
     protected String name;
-    @XmlAttribute(name = "abstract")
     protected TBoolean _abstract;
-    @XmlAttribute(name = "final")
     protected TBoolean _final;
-    @XmlAttribute(name = "targetNamespace")
-    @XmlSchemaType(name = "anyURI")
     protected String targetNamespace;
 
     // added to support conversion from/to YAML
@@ -208,7 +188,6 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
      * property definitions. A default element name and namespace is added if it is not defined in the underlying XML.
      * null if no Winery specific KV properties are defined for the given entity type
      */
-    @XmlTransient
     @JsonIgnore
     public WinerysPropertiesDefinition getWinerysPropertiesDefinition() {
         // similar implementation as org.eclipse.winery.repository.resources.entitytypes.properties.PropertiesDefinitionResource.getListFromEntityType(TEntityType)
@@ -240,11 +219,8 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
         return res;
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "")
     public static class DerivedFrom implements HasType {
 
-        @XmlAttribute(name = "typeRef", required = true)
         protected QName typeRef;
 
         @NonNull
@@ -288,13 +264,9 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
         }
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "")
     public static class PropertiesDefinition {
 
-        @XmlAttribute(name = "element")
         protected QName element;
-        @XmlAttribute(name = "type")
         protected QName type;
 
         @Nullable

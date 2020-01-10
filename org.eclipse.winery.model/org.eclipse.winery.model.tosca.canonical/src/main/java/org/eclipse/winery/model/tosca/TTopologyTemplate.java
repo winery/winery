@@ -21,12 +21,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlType;
-
 import org.eclipse.winery.model.tosca.kvproperties.ParameterDefinitionList;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
@@ -35,19 +29,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tTopologyTemplate", propOrder = {
-    "nodeTemplateOrRelationshipTemplate",
-    "policies",
-    "inputs",
-    "outputs"
-})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TTopologyTemplate extends TExtensibleElements {
-    @XmlElements( {
-        @XmlElement(name = "RelationshipTemplate", type = TRelationshipTemplate.class),
-        @XmlElement(name = "NodeTemplate", type = TNodeTemplate.class)
-    })
     protected List<TEntityTemplate> nodeTemplateOrRelationshipTemplate;
 
     // added to support conversion from/to YAML policies

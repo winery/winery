@@ -16,16 +16,12 @@ package org.eclipse.winery.model.tosca;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlEnumValue;
-
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 public enum TRelationDirection implements Serializable {
 
-    @XmlEnumValue("ingoing")
     INGOING("ingoing"),
-    @XmlEnumValue("outgoing")
     OUTGOING("outgoing");
     private final String value;
 

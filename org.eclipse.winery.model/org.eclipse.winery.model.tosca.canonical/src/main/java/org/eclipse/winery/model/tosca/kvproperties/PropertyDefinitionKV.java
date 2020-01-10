@@ -16,9 +16,6 @@ package org.eclipse.winery.model.tosca.kvproperties;
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -104,12 +101,9 @@ public class PropertyDefinitionKV implements Serializable {
         this.description = description;
     }
 
-    @XmlElementWrapper(name = "constraints")
-    @XmlElement(name = "constraint")
     public ConstraintClauseKVList getConstraints() {
         return this.constraintList;
     }
-
     public void setConstraints(ConstraintClauseKVList constraintList) {
         this.constraintList = constraintList;
     }

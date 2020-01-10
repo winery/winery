@@ -22,13 +22,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement(name = "ConstraintDefinitions")
 public class ConstraintClauseKVList extends ArrayList<ConstraintClauseKV> implements Serializable {
     
-    @XmlElement(name = "ConstraintDefinition")
     public List<ConstraintClauseKV> getConstraintDefinitionKVs() {
         return this;
     }

@@ -16,14 +16,6 @@ package org.eclipse.winery.model.tosca;
 
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
@@ -32,25 +24,12 @@ import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tImplementationArtifact")
-@XmlSeeAlso( {
-    org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact.class
-})
 public class TImplementationArtifact extends TExtensibleElements implements HasName {
 
-    @XmlAttribute(name = "name")
     protected String name;
-    @XmlAttribute(name = "interfaceName")
-    @XmlSchemaType(name = "anyURI")
     protected String interfaceName;
-    @XmlAttribute(name = "operationName")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @XmlSchemaType(name = "NCName")
     protected String operationName;
-    @XmlAttribute(name = "artifactType", required = true)
     protected QName artifactType;
-    @XmlAttribute(name = "artifactRef")
     protected QName artifactRef;
 
     public TImplementationArtifact() {

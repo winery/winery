@@ -21,11 +21,4 @@
  * defined.
  *
  */
-@XmlSchema(namespace = Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, elementFormDefault = XmlNsForm.QUALIFIED)
 package org.eclipse.winery.model.tosca.kvproperties;
-
-import javax.xml.bind.annotation.XmlNsForm;
-import javax.xml.bind.annotation.XmlSchema;
-
-import org.eclipse.winery.model.tosca.constants.Namespaces;
-

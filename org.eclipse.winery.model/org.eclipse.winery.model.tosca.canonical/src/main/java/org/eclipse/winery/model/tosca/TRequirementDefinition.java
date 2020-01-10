@@ -19,11 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
@@ -31,27 +26,15 @@ import org.eclipse.winery.model.tosca.visitor.Visitor;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tRequirementDefinition", propOrder = {
-    "constraints"
-})
 public class TRequirementDefinition extends TExtensibleElements {
-    @XmlElement(name = "Constraints")
     protected TRequirementDefinition.Constraints constraints;
-    @XmlAttribute(name = "name", required = true)
     protected String name;
-    @XmlAttribute(name = "requirementType")
     protected QName requirementType;
-    @XmlAttribute(name = "lowerBound")
     protected Integer lowerBound;
-    @XmlAttribute(name = "upperBound")
     protected String upperBound;
     // the following attributes are introduced to support the YAML specs
-    @XmlAttribute(name = "capability")
     private QName capability;
-    @XmlAttribute(name = "node")
     private QName node;
-    @XmlAttribute(name = "relationship")
     private QName relationship;
 
     public TRequirementDefinition() {
@@ -171,13 +154,8 @@ public class TRequirementDefinition extends TExtensibleElements {
         this.relationship = relationship;
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "constraint"
-    })
     public static class Constraints implements Serializable {
 
-        @XmlElement(name = "Constraint", required = true)
         protected List<TConstraint> constraint;
 
         @NonNull

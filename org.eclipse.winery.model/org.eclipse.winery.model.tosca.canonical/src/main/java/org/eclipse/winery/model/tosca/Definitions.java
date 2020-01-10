@@ -17,20 +17,11 @@ package org.eclipse.winery.model.tosca;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "")
-@XmlRootElement(name = "Definitions")
 public class Definitions extends TDefinitions {
-    @XmlTransient
     @JsonIgnore
     protected Map<String, QName> importDefinitions = new HashMap<>();
 

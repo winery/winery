@@ -14,22 +14,17 @@
 
 package org.eclipse.winery.model.tosca;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.Nullable;
 
 public class AttributeMapping extends TPrmMapping {
 
-    @XmlAttribute(name = "type")
     private TAttributeMappingType type;
 
-    @XmlAttribute(name = "detectorProperty")
     @Nullable
     private String detectorProperty;
 
-    @XmlAttribute(name = "refinementProperty")
     @Nullable
     private String refinementProperty;
 

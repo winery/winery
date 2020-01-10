@@ -16,23 +16,11 @@ package org.eclipse.winery.model.tosca;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlType;
-
 import org.eclipse.winery.model.tosca.kvproperties.ParameterDefinition;
 
 /**
  * Class to represent an operations definition in TOSCA YAML.
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Operation", propOrder = {
-    "name",
-    "description",
-    "inputs",
-    "outputs",
-    "implementation",
-})
 public class TOperationDefinition implements HasName, Serializable {
 
     private String name;

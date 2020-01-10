@@ -16,10 +16,6 @@ package org.eclipse.winery.model.tosca;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlEnumValue;
-import javax.xml.bind.annotation.XmlType;
-
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -37,13 +33,9 @@ import org.eclipse.jdt.annotation.Nullable;
  * &lt;/simpleType>
  * </pre>
  */
-@XmlType(name = "tBoolean")
-@XmlEnum
 public enum TBoolean implements Serializable {
 
-    @XmlEnumValue("yes")
     YES("yes"),
-    @XmlEnumValue("no")
     NO("no");
     private final String value;
 

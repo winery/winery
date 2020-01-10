@@ -16,19 +16,12 @@ package org.eclipse.winery.model.tosca;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tCapabilityType")
 public class TCapabilityType extends TEntityType {
-    // this is added here to support the YAML model
-    // cannot be annotated as transient. Reason: org.eclipse.winery.repository.backend.BackendUtils.persist(
-    // java.lang.Object, org.eclipse.winery.repository.common.RepositoryFileReference, org.apache.tika.mime.MediaType)
+    // This is specific to the yaml model and is not supported in the XML standard
     private List<QName> validNodeTypes;
 
     public TCapabilityType() {

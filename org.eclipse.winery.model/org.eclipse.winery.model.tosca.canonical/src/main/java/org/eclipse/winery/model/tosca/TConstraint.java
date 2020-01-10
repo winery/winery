@@ -17,30 +17,12 @@ package org.eclipse.winery.model.tosca;
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlType;
-
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tConstraint", propOrder = {
-    "any"
-})
-@XmlSeeAlso( {
-    TPropertyConstraint.class
-})
 public class TConstraint implements Serializable {
 
-    @XmlAnyElement(lax = true)
     protected Object any;
-    @XmlAttribute(name = "constraintType", required = true)
-    @XmlSchemaType(name = "anyURI")
     protected String constraintType;
 
     @Override

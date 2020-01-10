@@ -17,9 +17,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.kvproperties.ParameterDefinition;
@@ -27,13 +24,6 @@ import org.eclipse.winery.model.tosca.kvproperties.ParameterDefinition;
 /**
  * Class to represent an interface definition in TOSCA YAML.
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Artifact", propOrder = {
-    "name",
-    "type",
-    "inputs",
-    "operations",
-})
 public class TInterfaceDefinition implements HasName, HasType, Serializable {
 
     private String name;

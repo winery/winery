@@ -16,26 +16,12 @@ package org.eclipse.winery.model.tosca;
 
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tPolicyType", propOrder = {
-    "appliesTo"
-})
 public class TPolicyType extends TEntityType {
-    @XmlElement(name = "AppliesTo")
     protected TAppliesTo appliesTo;
-    @XmlAttribute(name = "policyLanguage")
-    @XmlSchemaType(name = "anyURI")
     protected String policyLanguage;
 
     public TPolicyType() {

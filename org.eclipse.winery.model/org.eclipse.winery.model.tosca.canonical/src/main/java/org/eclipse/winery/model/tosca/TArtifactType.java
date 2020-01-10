@@ -16,22 +16,13 @@ package org.eclipse.winery.model.tosca;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
-
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tArtifactType")
 public class TArtifactType extends TEntityType {
     // the following two fields are added to support YAML mode
-    @XmlAttribute(name = "mimetype", required = false)
     private String mimeType;
-    @XmlAttribute(name = "fileextensions", required = false)
     private List<String> fileExtensions;
     
     public TArtifactType() {

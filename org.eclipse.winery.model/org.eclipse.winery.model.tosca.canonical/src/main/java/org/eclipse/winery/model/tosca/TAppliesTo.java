@@ -19,22 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tAppliesTo", propOrder = {
-    "nodeTypeReference"
-})
 public class TAppliesTo implements Serializable {
 
-    @XmlElement(name = "NodeTypeReference", required = true)
     protected List<NodeTypeReference> nodeTypeReference;
 
     public TAppliesTo() {
@@ -95,11 +85,8 @@ public class TAppliesTo implements Serializable {
      * &lt;/complexType>
      * </pre>
      */
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "")
     public static class NodeTypeReference implements Serializable {
 
-        @XmlAttribute(name = "typeRef", required = true)
         protected QName typeRef;
 
         /**

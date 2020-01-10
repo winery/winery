@@ -17,15 +17,6 @@ package org.eclipse.winery.model.tosca;
 import java.util.List;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -33,40 +24,23 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-@XmlTransient
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso( {
-    TNodeTypeImplementation.class,
-    TRelationshipTypeImplementation.class,
-})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class TEntityTypeImplementation extends TExtensibleElements implements HasName, HasType, HasInheritance, HasTargetNamespace {
 
-    @XmlElement(name = "Tags")
     protected TTags tags;
 
-    @XmlElement(name = "RequiredContainerFeatures")
     protected TRequiredContainerFeatures requiredContainerFeatures;
 
-    @XmlElement(name = "ImplementationArtifacts")
     protected TImplementationArtifacts implementationArtifacts;
 
-    @XmlAttribute(name = "targetNamespace")
-    @XmlSchemaType(name = "anyURI")
     protected String targetNamespace;
 
-    @XmlAttribute(name = "name", required = true)
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @XmlSchemaType(name = "NCName")
     protected String name;
 
-    @XmlAttribute(name = "abstract")
     protected TBoolean _abstract;
 
-    @XmlAttribute(name = "final")
     protected TBoolean _final;
 
-    @XmlTransient
     protected QName implementedType;
 
     public TEntityTypeImplementation() {

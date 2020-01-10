@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class TArtifacts implements Serializable {
 
-    @XmlElement(name = "Artifact", required = true)
+    @XmlElement(name = "artifact")
     List<TArtifact> artifact;
 
     public TArtifacts() {

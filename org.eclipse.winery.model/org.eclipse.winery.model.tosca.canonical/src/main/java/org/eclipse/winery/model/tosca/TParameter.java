@@ -17,28 +17,18 @@ package org.eclipse.winery.model.tosca;
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
-
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tParameter")
 public class TParameter implements Serializable {
 
-    @XmlAttribute(name = "name", required = true)
     @NonNull
     protected String name;
 
-    @XmlAttribute(name = "type", required = true)
     @NonNull
     protected String type;
 
-    @XmlAttribute(name = "required")
     protected TBoolean required;
 
     public TParameter() {

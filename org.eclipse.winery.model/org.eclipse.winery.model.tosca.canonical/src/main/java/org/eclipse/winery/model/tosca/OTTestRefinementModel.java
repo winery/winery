@@ -14,12 +14,6 @@
 
 package org.eclipse.winery.model.tosca;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -27,12 +21,10 @@ import org.eclipse.jdt.annotation.NonNull;
 @XmlType(name = "tTestRefinementModel")
 public class OTTestRefinementModel extends OTRefinementModel {
 
-    @XmlElement(name = "TestFragment")
     private TTopologyTemplate testFragment;
 
     @NonNull
     @JsonIgnore
-    @XmlTransient
     public TTopologyTemplate getRefinementTopology() {
         if (testFragment == null) {
             testFragment = new TTopologyTemplate();

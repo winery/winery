@@ -18,10 +18,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement(name = "ParameterDefinitions")
 public class ParameterDefinitionList extends ArrayList<ParameterDefinition> implements Serializable {
 
     public ParameterDefinitionList() {
@@ -31,7 +27,6 @@ public class ParameterDefinitionList extends ArrayList<ParameterDefinition> impl
         super(c);
     }
 
-    @XmlElement(name = "ParameterDefinition")
     public List<ParameterDefinition> getParameterDefinitions() {
         return this;
     }

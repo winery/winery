@@ -19,9 +19,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
@@ -31,12 +28,6 @@ import org.eclipse.jdt.annotation.NonNull;
 /**
  * Class to represent an interface type in TOSCA YAML.
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tInterfaceType", propOrder = {
-    "description",
-    "operations"
-//    "inputs"
-})
 public class TInterfaceType extends TEntityType {
     private String description;
     //private Map<String, TPropertyDefinition> inputs;

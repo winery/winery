@@ -19,11 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
@@ -31,15 +26,9 @@ import org.eclipse.winery.model.tosca.visitor.Visitor;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tArtifactTemplate", propOrder = {
-    "artifactReferences"
-})
 public class TArtifactTemplate extends TEntityTemplate {
 
-    @XmlElement(name = "ArtifactReferences")
     protected TArtifactTemplate.ArtifactReferences artifactReferences;
-    @XmlAttribute(name = "name")
     protected String name;
 
     public TArtifactTemplate() {
@@ -99,13 +88,8 @@ public class TArtifactTemplate extends TEntityTemplate {
             '}';
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "artifactReference"
-    })
     public static class ArtifactReferences implements Serializable {
 
-        @XmlElement(name = "ArtifactReference", required = true)
         protected List<TArtifactReference> artifactReference;
 
         @Override

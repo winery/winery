@@ -17,35 +17,21 @@ package org.eclipse.winery.model.tosca;
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import org.eclipse.jdt.annotation.NonNull;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tPropertyMapping")
 public class TPropertyMapping implements Serializable {
 
     @JsonIdentityReference(alwaysAsId = true)
-    @XmlAttribute(name = "serviceTemplatePropertyRef", required = true)
     @NonNull
     protected String serviceTemplatePropertyRef;
 
     @JsonIdentityReference(alwaysAsId = true)
-    @XmlAttribute(name = "targetObjectRef", required = true)
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
     @NonNull
     protected Object targetObjectRef;
 
-    @XmlAttribute(name = "targetPropertyRef", required = true)
     @NonNull
     protected String targetPropertyRef;
 

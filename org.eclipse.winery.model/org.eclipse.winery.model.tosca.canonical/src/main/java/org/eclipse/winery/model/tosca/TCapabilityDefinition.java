@@ -19,11 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
@@ -31,22 +26,12 @@ import org.eclipse.winery.model.tosca.visitor.Visitor;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tCapabilityDefinition", propOrder = {
-    "constraints"
-})
 public class TCapabilityDefinition extends TExtensibleElements {
-    @XmlElement(name = "Constraints")
     protected TCapabilityDefinition.Constraints constraints;
-    @XmlAttribute(name = "name", required = true)
     protected String name;
-    @XmlAttribute(name = "capabilityType", required = true)
     protected QName capabilityType;
-    @XmlAttribute(name = "lowerBound")
     protected Integer lowerBound;
-    @XmlAttribute(name = "upperBound")
     protected String upperBound;
-    @XmlAttribute(name = "validSourceTypes")
     protected List<QName> validSourceTypes;
 
     public TCapabilityDefinition() {
@@ -146,13 +131,8 @@ public class TCapabilityDefinition extends TExtensibleElements {
         visitor.visit(this);
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "constraint"
-    })
     public static class Constraints implements Serializable {
 
-        @XmlElement(name = "Constraint", required = true)
         protected List<TConstraint> constraint;
 
         @NonNull

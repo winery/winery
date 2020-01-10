@@ -19,39 +19,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tBoundaryDefinitions", propOrder = {
-    "properties",
-    "propertyConstraints",
-    "requirements",
-    "capabilities",
-    "policies",
-    "interfaces"
-})
 public class TBoundaryDefinitions implements Serializable {
 
-    @XmlElement(name = "Properties")
     protected TBoundaryDefinitions.Properties properties;
-    @XmlElement(name = "PropertyConstraints")
     protected TBoundaryDefinitions.PropertyConstraints propertyConstraints;
-    @XmlElement(name = "Requirements")
     protected TBoundaryDefinitions.Requirements requirements;
-    @XmlElement(name = "Capabilities")
     protected TBoundaryDefinitions.Capabilities capabilities;
-    @XmlElement(name = "Policies")
     protected TPolicies policies;
-    @XmlElement(name = "Interfaces")
     protected TBoundaryDefinitions.Interfaces interfaces;
 
     public TBoundaryDefinitions() {
@@ -137,13 +116,8 @@ public class TBoundaryDefinitions implements Serializable {
         visitor.visit(this);
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "capability"
-    })
     public static class Capabilities implements Serializable {
 
-        @XmlElement(name = "Capability", required = true)
         protected List<TCapabilityRef> capability;
 
         @NonNull
@@ -155,13 +129,8 @@ public class TBoundaryDefinitions implements Serializable {
         }
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "_interface"
-    })
     public static class Interfaces implements Serializable {
 
-        @XmlElement(name = "Interface", required = true)
         protected List<TExportedInterface> _interface;
 
         @NonNull
@@ -173,16 +142,9 @@ public class TBoundaryDefinitions implements Serializable {
         }
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "any",
-        "propertyMappings"
-    })
     public static class Properties implements Serializable {
 
-        @XmlAnyElement(lax = true)
         protected Object any;
-        @XmlElement(name = "PropertyMappings")
         protected TBoundaryDefinitions.Properties.PropertyMappings propertyMappings;
 
         @Nullable
@@ -206,13 +168,8 @@ public class TBoundaryDefinitions implements Serializable {
             visitor.visit(this);
         }
 
-        @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "propertyMapping"
-        })
         public static class PropertyMappings implements Serializable {
 
-            @XmlElement(name = "PropertyMapping", required = true)
             protected List<TPropertyMapping> propertyMapping;
 
             @Nullable
@@ -225,13 +182,8 @@ public class TBoundaryDefinitions implements Serializable {
         }
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "propertyConstraint"
-    })
     public static class PropertyConstraints implements Serializable {
 
-        @XmlElement(name = "PropertyConstraint", required = true)
         protected List<TPropertyConstraint> propertyConstraint;
 
         @NonNull
@@ -243,13 +195,8 @@ public class TBoundaryDefinitions implements Serializable {
         }
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "requirement"
-    })
     public static class Requirements implements Serializable {
 
-        @XmlElement(name = "Requirement", required = true)
         protected List<TRequirementRef> requirement;
 
         @NonNull

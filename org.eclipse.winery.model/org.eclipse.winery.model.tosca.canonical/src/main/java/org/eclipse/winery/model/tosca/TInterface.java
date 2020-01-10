@@ -19,13 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-
 import org.eclipse.jdt.annotation.NonNull;
 
 /**
@@ -47,15 +40,8 @@ import org.eclipse.jdt.annotation.NonNull;
  * &lt;/complexType>
  * </pre>
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tInterface", propOrder = {
-    "operation"
-})
 public class TInterface implements HasName, Serializable {
-    @XmlElement(name = "Operation", required = true)
     protected List<TOperation> operation;
-    @XmlAttribute(name = "name", required = true)
-    @XmlSchemaType(name = "anyURI")
     protected String name;
 
     public TInterface() {

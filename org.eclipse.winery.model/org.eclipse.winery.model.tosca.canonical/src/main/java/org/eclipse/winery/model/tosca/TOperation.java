@@ -19,33 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tOperation", propOrder = {
-    "inputParameters",
-    "outputParameters"
-})
 public class TOperation extends TExtensibleElements {
-    @XmlElement(name = "InputParameters")
     protected TOperation.InputParameters inputParameters;
-    @XmlElement(name = "OutputParameters")
     protected TOperation.OutputParameters outputParameters;
-    @XmlAttribute(name = "name", required = true)
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @XmlSchemaType(name = "NCName")
     protected String name;
 
     public TOperation() {
@@ -105,13 +86,8 @@ public class TOperation extends TExtensibleElements {
         visitor.visit(this);
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "inputParameter"
-    })
     public static class InputParameters implements Serializable {
 
-        @XmlElement(name = "InputParameter", required = true)
         protected List<TParameter> inputParameter;
 
         @NonNull
@@ -136,13 +112,8 @@ public class TOperation extends TExtensibleElements {
         }
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "outputParameter"
-    })
     public static class OutputParameters implements Serializable {
 
-        @XmlElement(name = "OutputParameter", required = true)
         protected List<TParameter> outputParameter;
 
         @NonNull

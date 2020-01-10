@@ -16,25 +16,16 @@ package org.eclipse.winery.model.tosca;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlSchemaType;
-
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.NonNull;
 
 public abstract class OTRefinementModel extends TExtensibleElements implements HasName, HasTargetNamespace {
 
-    @XmlAttribute
     protected String name;
 
-    @XmlAttribute(name = "targetNamespace")
-    @XmlSchemaType(name = "anyURI")
     protected String targetNamespace;
 
-    @XmlElement(name = "Detector")
     protected TTopologyTemplate detector;
 
     @XmlElementWrapper(name = "RelationMappings")

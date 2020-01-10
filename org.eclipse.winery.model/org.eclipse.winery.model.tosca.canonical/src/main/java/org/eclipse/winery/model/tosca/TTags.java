@@ -19,11 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 import org.eclipse.jdt.annotation.NonNull;
 
 /**
@@ -43,13 +38,8 @@ import org.eclipse.jdt.annotation.NonNull;
  * &lt;/complexType>
  * </pre>
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tTags", propOrder = {
-    "tag"
-})
 public class TTags implements Serializable {
 
-    @XmlElement(name = "Tag", required = true)
     protected List<TTag> tag;
 
     public TTags() {
