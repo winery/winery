@@ -86,7 +86,10 @@ export class EdmmTransformationCheckComponent {
     }
 
     onHoverOver(candidate: EdmmTechnologyTransformationCheck) {
-        this.ngRedux.dispatch(this.actions.highlightNodes(candidate.unsupportedComponents));
+        const idList = candidate.unsupportedComponents.map(component =>
+            this.topologyTemplate.nodeTemplates.find(node => node.name === component).id
+        );
+        this.ngRedux.dispatch(this.actions.highlightNodes(idList));
     }
 
     hoverOut() {

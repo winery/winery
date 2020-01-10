@@ -97,7 +97,7 @@ public class EdmmConverter {
     }
 
     private void createRelation(TRelationshipTemplate relationship, EntityGraph entityGraph) {
-        EntityId sourceComponentEntityId = EntityGraph.COMPONENTS.extend(relationship.getSourceElement().getRef().getId());
+        EntityId sourceComponentEntityId = EntityGraph.COMPONENTS.extend(relationship.getSourceElement().getRef().getName());
         // the entity will always be in the graph since we first transform the NodeTemplates 
         entityGraph.getEntity(sourceComponentEntityId).ifPresent(entity -> {
             EntityId relationTypeEntityId = createType(
@@ -117,7 +117,7 @@ public class EdmmConverter {
                 entityGraph.addEntity(new MappingEntity(relationEntityId, entityGraph));
                 createProperties(relationship, relationEntityId, entityGraph);
             } else {
-                String targetComponent = relationship.getTargetElement().getRef().getId();
+                String targetComponent = relationship.getTargetElement().getRef().getName();
                 entityGraph.addEntity(new ScalarEntity(targetComponent, relationEntityId, entityGraph));
             }
         });
@@ -125,7 +125,7 @@ public class EdmmConverter {
 
     private void createNode(TNodeTemplate nodeTemplate, EntityGraph entityGraph) {
         // create the component inside the topology.
-        EntityId componentNodeId = EntityGraph.COMPONENTS.extend(nodeTemplate.getId());
+        EntityId componentNodeId = EntityGraph.COMPONENTS.extend(nodeTemplate.getName());
         entityGraph.addEntity(new MappingEntity(componentNodeId, entityGraph));
 
         // add the type to the model
@@ -138,6 +138,7 @@ public class EdmmConverter {
 
         createProperties(nodeTemplate, componentNodeId, entityGraph);
         createArtifact(nodeTemplate, componentNodeId, entityGraph);
+        createOperations(nodeTypes.get(nodeTemplate.getType()), componentNodeId, entityGraph);
     }
 
     private void createArtifact(TNodeTemplate nodeTemplate, EntityId componentNodeId, EntityGraph entityGraph) {
@@ -193,7 +194,6 @@ public class EdmmConverter {
             EdmmTypeProperties.getDefaultConfiguration(edmmType, entityGraph);
 
             this.createPropertiesDefinition(toscaType, typeEntityId, entityGraph);
-            this.createOperations(toscaType, typeEntityId, entityGraph);
 
             if (Objects.nonNull(toscaType.getDerivedFrom())) {
                 QName inheritsFrom = toscaType.getDerivedFrom().getType();
@@ -235,7 +235,6 @@ public class EdmmConverter {
                 }
 
                 this.createPropertiesDefinition(toscaType, typeEntityId, entityGraph);
-                this.createOperations(toscaType, typeEntityId, entityGraph);
             }
         }
 

@@ -20,7 +20,7 @@
                     [id]="candidate.id" [ngClass]="getColorClass(candidate)">
                     <div>
                         <span>{{ candidate.name }} supports: {{ (candidate.supports * 100)  }}%</span><br>
-                        <span>Except for:</span>
+                        <span *ngIf="candidate.unsupportedComponents && candidate.unsupportedComponents.length > 0">Except for:</span>
                         <ul *ngIf="candidate.unsupportedComponents">
                             <li *ngFor="let component of candidate.unsupportedComponents">
                                 {{ component }}

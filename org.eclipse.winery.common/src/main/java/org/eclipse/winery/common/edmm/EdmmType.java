@@ -31,6 +31,13 @@ public enum EdmmType implements Serializable {
     TOMCAT("tomcat"),
     WEB_APPLICATION("web_application"),
     WEB_SERVER("web_server"),
+    PLATFORM("platform"),
+    PAAS("paas"),
+    DBAAS("dbaas"),
+    AWS_BEANSTALK("aws_beanstalk"),
+    AWS_AURORA("aws_aurora"),
+    SAAS("saas"),
+    AUTH0("auth0"),
 
     // relation types
     CONNECTS_TO("connects_to"),
