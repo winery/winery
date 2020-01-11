@@ -29,7 +29,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -66,7 +65,6 @@ public class TTopologyTemplate extends TExtensibleElements {
         return Objects.hash(super.hashCode(), nodeTemplateOrRelationshipTemplate);
     }
 
-    @JsonIgnore
     @NonNull
     public List<TEntityTemplate> getNodeTemplateOrRelationshipTemplate() {
         if (nodeTemplateOrRelationshipTemplate == null) {

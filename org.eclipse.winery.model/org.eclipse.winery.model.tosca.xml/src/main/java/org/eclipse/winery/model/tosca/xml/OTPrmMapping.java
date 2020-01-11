@@ -22,19 +22,16 @@ import javax.xml.bind.annotation.XmlSchemaType;
 
 import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import org.eclipse.jdt.annotation.NonNull;
 
 public abstract class OTPrmMapping extends HasId implements Serializable {
 
-    @JsonIdentityReference(alwaysAsId = true)
     @XmlAttribute(name = "detectorNode", required = true)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @NonNull
     private TEntityTemplate detectorNode;
 
-    @JsonIdentityReference(alwaysAsId = true)
     @XmlAttribute(name = "refinementNode", required = true)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")

@@ -20,10 +20,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 @XmlRootElement(name = "PropertyDefinition")
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PropertyDefinitionKV implements Serializable {
 
     private String key;

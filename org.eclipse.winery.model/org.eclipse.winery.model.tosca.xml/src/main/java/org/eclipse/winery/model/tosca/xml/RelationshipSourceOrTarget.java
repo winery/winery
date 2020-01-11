@@ -13,22 +13,10 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.xml;
 
-import com.fasterxml.jackson.annotation.*;
 import io.github.adr.embedded.ADR;
 
 import javax.xml.namespace.QName;
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-// see https://stackoverflow.com/q/44789227/873282 for an explanation for this solution
-@JsonTypeInfo(
-    use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.EXISTING_PROPERTY,
-    property = "fakeJacksonType")
-@JsonSubTypes( {
-    @JsonSubTypes.Type(value = TRequirement.class, name = "requirement"),
-    @JsonSubTypes.Type(value = TCapability.class, name = "capability"),
-    @JsonSubTypes.Type(value = TNodeTemplate.class, name = "nodetemplate")
-})
 public abstract class RelationshipSourceOrTarget extends TEntityTemplate {
 
     public RelationshipSourceOrTarget() {
@@ -43,7 +31,6 @@ public abstract class RelationshipSourceOrTarget extends TEntityTemplate {
         super(builder);
     }
 
-    @JsonIgnore
     public abstract String getFakeJacksonType();
 
     @ADR(11)

@@ -31,7 +31,6 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.model.tosca.xml.constants.Namespaces;
 import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -42,11 +41,6 @@ import org.eclipse.jdt.annotation.Nullable;
     "policies",
     "deploymentArtifacts"
 })
-@JsonTypeInfo(
-    defaultImpl = TNodeTemplate.class,
-    use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.EXISTING_PROPERTY,
-    property = "fakeJacksonType")
 public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPolicies {
 
     @XmlElement(name = "Requirements")

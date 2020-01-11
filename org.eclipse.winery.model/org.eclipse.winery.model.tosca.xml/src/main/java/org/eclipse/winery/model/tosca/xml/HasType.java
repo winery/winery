@@ -13,8 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.xml;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.namespace.QName;
 
@@ -27,7 +25,6 @@ public interface HasType {
      * @return the QName of the type with full namespace, never null (according to spec)
      */
     @XmlTransient
-    @JsonIgnore
     QName getTypeAsQName();
 
     /**

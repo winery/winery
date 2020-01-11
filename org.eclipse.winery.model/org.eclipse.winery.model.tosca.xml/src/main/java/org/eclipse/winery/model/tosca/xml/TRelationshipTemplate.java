@@ -31,9 +31,6 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.w3c.dom.Element;
@@ -45,7 +42,6 @@ import org.w3c.dom.Element;
     "relationshipConstraints",
     "policies"
 })
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class TRelationshipTemplate extends TEntityTemplate implements HasPolicies {
 
     // We remove the required attribute because of the YAML support
@@ -250,7 +246,6 @@ public class TRelationshipTemplate extends TEntityTemplate implements HasPolicie
         @XmlAttribute(name = "ref", required = true)
         @XmlIDREF
         @XmlSchemaType(name = "IDREF")
-        @JsonIdentityReference(alwaysAsId = true)
         @NonNull
         private RelationshipSourceOrTarget ref;
 

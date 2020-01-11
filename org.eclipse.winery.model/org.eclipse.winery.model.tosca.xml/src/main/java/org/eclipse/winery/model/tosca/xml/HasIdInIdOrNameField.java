@@ -13,8 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.xml;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.xml.bind.annotation.XmlTransient;
 
 public interface HasIdInIdOrNameField {
@@ -23,7 +21,6 @@ public interface HasIdInIdOrNameField {
      * Returns the id
      */
     @XmlTransient
-    @JsonIgnore
     default String getIdFromIdOrNameField() {
         if (this instanceof HasId) {
             return ((HasId) this).getId();

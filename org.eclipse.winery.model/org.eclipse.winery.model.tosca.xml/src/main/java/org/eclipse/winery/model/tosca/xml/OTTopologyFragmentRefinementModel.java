@@ -27,7 +27,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -51,7 +50,6 @@ public class OTTopologyFragmentRefinementModel extends OTRefinementModel {
     protected List<OTDeploymentArtifactMapping> deploymentArtifactMappings;
 
     @NonNull
-    @JsonIgnore
     @XmlTransient
     public TTopologyTemplate getRefinementTopology() {
         if (refinementStructure == null) {

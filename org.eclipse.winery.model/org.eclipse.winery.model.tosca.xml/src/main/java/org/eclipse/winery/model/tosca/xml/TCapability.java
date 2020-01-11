@@ -25,16 +25,10 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.eclipse.jdt.annotation.NonNull;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tCapability")
-@JsonTypeInfo(
-    defaultImpl = TCapability.class,
-    use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.EXISTING_PROPERTY,
-    property = "fakeJacksonType")
 public class TCapability extends RelationshipSourceOrTarget {
 
     @XmlAttribute(name = "name", required = true)

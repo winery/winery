@@ -27,7 +27,6 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -165,9 +164,8 @@ public class TExportedOperation implements HasName, Serializable {
         @XmlAttribute(name = "nodeRef", required = true)
         @XmlIDREF
         @XmlSchemaType(name = "IDREF")
-        @JsonIdentityReference(alwaysAsId = true)
         protected Object nodeRef;
-
+        
         @XmlAttribute(name = "interfaceName", required = true)
         @XmlSchemaType(name = "anyURI")
         protected String interfaceName;
@@ -257,7 +255,6 @@ public class TExportedOperation implements HasName, Serializable {
         @XmlAttribute(name = "planRef", required = true)
         @XmlIDREF
         @XmlSchemaType(name = "IDREF")
-        @JsonIdentityReference(alwaysAsId = true)
         protected Object planRef;
 
         /**
@@ -304,7 +301,6 @@ public class TExportedOperation implements HasName, Serializable {
         @XmlAttribute(name = "relationshipRef", required = true)
         @XmlIDREF
         @XmlSchemaType(name = "IDREF")
-        @JsonIdentityReference(alwaysAsId = true)
         protected Object relationshipRef;
 
         @XmlAttribute(name = "interfaceName", required = true)

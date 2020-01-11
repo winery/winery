@@ -36,7 +36,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.winery.model.tosca.xml.constants.Namespaces;
 import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -164,7 +163,6 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
          * Returns the internal any object without any K/V treatment. Required to patch JSON data received by clients
          */
         @Nullable
-        @JsonIgnore
         public Object getInternalAny() {
             return any;
         }
