@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -27,6 +27,7 @@ import { ToscaComponent } from '../model/toscaComponent';
 import { Utils } from '../wineryUtils/utils';
 import { WineryVersion } from '../model/wineryVersion';
 import { HttpErrorResponse } from '@angular/common/http';
+import { SubMenuItem } from '../model/subMenuItem';
 
 @Component({
     templateUrl: 'instance.component.html',
@@ -37,7 +38,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class InstanceComponent implements OnDestroy {
 
-    availableTabs: string[];
+    availableTabs: SubMenuItem[];
     toscaComponent: ToscaComponent;
     versions: WineryVersion[];
     typeUrl: string;
