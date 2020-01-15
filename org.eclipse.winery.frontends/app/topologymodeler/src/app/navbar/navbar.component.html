@@ -1,5 +1,5 @@
 <!--
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -204,6 +204,19 @@
                     (click)="toggleButton($event)"
                     [style.background-color]="getStyle(navbarButtonsState.buttonsState.refineTopologyWithTestsButton)">
                 Refine Topology with Tests
+            </button>
+        </div>
+
+        <div *wineryRepositoryFeatureToggle="configEnum.EdmmModeling" class="btn-group button-group"
+             data-toggle="buttons">
+            <button class="btn btn-sm align-middle dark-button-style" id="edmmTransformationCheck"
+                    (click)="toggleButton($event)"
+                    [style.background-color]="getStyle(navbarButtonsState.buttonsState.edmmTransformationCheck)">
+                Show EDMM Transformation Check
+            </button>
+            <button class="btn btn-sm align-middle dark-button-style" id="edmmExport"
+                    (click)="exportCsar($event, 'edmm')">
+                Export EDMM
             </button>
         </div>
 

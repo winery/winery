@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -32,6 +32,7 @@ export class TopologyRendererActions {
     static TOGGLE_DEPLOYMENT_ARTIFACTS = 'TOGGLE_DEPLOYMENT_ARTIFACTS';
     static TOGGLE_IDS = 'TOGGLE_IDS';
     static TOGGLE_TYPES = 'TOGGLE_TYPES';
+    static TOGGLE_EDMM_TRANSFORMATION_CHECK = 'TOGGLE_EDMM_TRANSFORMATION_CHECK';
     static EXECUTE_LAYOUT = 'EXECUTE_LAYOUT';
     static EXECUTE_ALIGN_H = 'EXECUTE_ALIGN_H';
     static EXECUTE_ALIGN_V = 'EXECUTE_ALIGN_V';
@@ -76,6 +77,10 @@ export class TopologyRendererActions {
 
     toggleTypes(): Action {
         return { type: TopologyRendererActions.TOGGLE_TYPES };
+    }
+
+    toggleEdmmTransformationCheck(): Action {
+        return { type: TopologyRendererActions.TOGGLE_EDMM_TRANSFORMATION_CHECK };
     }
 
     executeLayout(): Action {

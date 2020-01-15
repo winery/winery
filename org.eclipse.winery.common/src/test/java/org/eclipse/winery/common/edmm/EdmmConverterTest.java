@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -190,6 +190,7 @@ public class EdmmConverterTest {
         TNodeTemplate nt1 = new TNodeTemplate();
         nt1.setType(nodeType1QName);
         nt1.setId("test_node_1");
+        nt1.setName("test_node_1");
         TDeploymentArtifacts deploymentArtifacts = new TDeploymentArtifacts();
         TDeploymentArtifact artifact = new TDeploymentArtifact();
         artifact.setArtifactRef(deploymentArtifactIAQName);
@@ -201,11 +202,13 @@ public class EdmmConverterTest {
         TNodeTemplate nt2 = new TNodeTemplate();
         nt2.setType(nodeType2QName);
         nt2.setId("test_node_2");
+        nt2.setName("test_node_2");
         nodeTemplates.put(nt2.getId(), nt2);
 
         TNodeTemplate nt3 = new TNodeTemplate();
         nt3.setType(nodeType3QName);
         nt3.setId("test_node_3");
+        nt3.setName("test_node_3");
         TEntityTemplate.Properties properties = new TEntityTemplate.Properties();
         HashMap<String, String> nt3Properties = new HashMap<>();
         nt3Properties.put("os_family", "ubuntu");
@@ -218,6 +221,7 @@ public class EdmmConverterTest {
         TNodeTemplate nt4 = new TNodeTemplate();
         nt4.setType(nodeType4QName);
         nt4.setId("test_node_4");
+        nt4.setName("test_node_4");
         nodeTemplates.put(nt4.getId(), nt4);
         // endregion 
 
@@ -225,6 +229,7 @@ public class EdmmConverterTest {
         TRelationshipTemplate rt13 = new TRelationshipTemplate();
         rt13.setType(hostedOnQName);
         rt13.setId("1_hosted_on_3");
+        rt13.setName("1_hosted_on_3");
         rt13.setSourceNodeTemplate(nt1);
         rt13.setTargetNodeTemplate(nt3);
         relationshipTemplates.put(rt13.getId(), rt13);
@@ -232,6 +237,7 @@ public class EdmmConverterTest {
         TRelationshipTemplate rt23 = new TRelationshipTemplate();
         rt23.setType(hostedOnQName);
         rt23.setId("2_hosted_on_3");
+        rt23.setName("2_hosted_on_3");
         rt23.setSourceNodeTemplate(nt2);
         rt23.setTargetNodeTemplate(nt3);
         relationshipTemplates.put(rt23.getId(), rt23);
@@ -239,6 +245,7 @@ public class EdmmConverterTest {
         TRelationshipTemplate rt41 = new TRelationshipTemplate();
         rt41.setType(hostedOnQName);
         rt41.setId("4_hosted_on_1");
+        rt41.setName("4_hosted_on_1");
         rt41.setSourceNodeTemplate(nt4);
         rt41.setTargetNodeTemplate(nt1);
         relationshipTemplates.put(rt41.getId(), rt41);
@@ -246,6 +253,7 @@ public class EdmmConverterTest {
         TRelationshipTemplate rt12 = new TRelationshipTemplate();
         rt12.setType(connectsToQName);
         rt12.setId("1_connects_to_2");
+        rt12.setName("1_connects_to_2");
         rt12.setSourceNodeTemplate(nt1);
         rt12.setTargetNodeTemplate(nt2);
         relationshipTemplates.put(rt12.getId(), rt12);
@@ -395,13 +403,13 @@ public class EdmmConverterTest {
         assertNotNull(transform);
         assertEquals(12, transform.vertexSet().size());
 
-        Optional<Entity> operations = transform.getEntity(Arrays.asList("0", "component_types", "https_ex.orgtoscatoedmm__test_node_type_4", "operations"));
+        Optional<Entity> operations = transform.getEntity(Arrays.asList("0", "components", "test_node_4", "operations"));
         assertTrue(operations.isPresent());
-        Optional<Entity> start = transform.getEntity(Arrays.asList("0", "component_types", "https_ex.orgtoscatoedmm__test_node_type_4", "operations", "start"));
+        Optional<Entity> start = transform.getEntity(Arrays.asList("0", "components", "test_node_4", "operations", "start"));
         assertTrue(start.isPresent());
         assertTrue(start.get() instanceof ScalarEntity);
         assertEquals("/artifacttemplates/ns/startTestNode4/files/script.sh", ((ScalarEntity) start.get()).getValue());
-        Optional<Entity> stop = transform.getEntity(Arrays.asList("0", "component_types", "https_ex.orgtoscatoedmm__test_node_type_4", "operations", "stop"));
+        Optional<Entity> stop = transform.getEntity(Arrays.asList("0", "components", "test_node_4", "operations", "stop"));
         assertTrue(stop.isPresent());
         assertTrue(stop.get() instanceof ScalarEntity);
         assertEquals("/artifacttemplates/ns/startTestNode4/files/script.sh", ((ScalarEntity) stop.get()).getValue());
@@ -449,6 +457,9 @@ public class EdmmConverterTest {
             "    relations:\n" +
             "    - hosted_on: test_node_3\n" +
             "  test_node_4:\n" +
+            "    operations:\n" +
+            "      stop: /artifacttemplates/ns/startTestNode4/files/script.sh\n" +
+            "      start: /artifacttemplates/ns/startTestNode4/files/script.sh\n" +
             "    type: https_ex.orgtoscatoedmm__test_node_type_4\n" +
             "    relations:\n" +
             "    - hosted_on: test_node_1\n" +
@@ -476,9 +487,6 @@ public class EdmmConverterTest {
             "  web_application:\n" +
             "    extends: base\n" +
             "  https_ex.orgtoscatoedmm__test_node_type_4:\n" +
-            "    operations:\n" +
-            "      stop: /artifacttemplates/ns/startTestNode4/files/script.sh\n" +
-            "      start: /artifacttemplates/ns/startTestNode4/files/script.sh\n" +
             "    extends: web_application\n" +
             "  software_component:\n" +
             "    extends: base\n", stringWriter.toString());

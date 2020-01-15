@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -31,6 +31,13 @@ public enum EdmmType implements Serializable {
     TOMCAT("tomcat"),
     WEB_APPLICATION("web_application"),
     WEB_SERVER("web_server"),
+    PLATFORM("platform"),
+    PAAS("paas"),
+    DBAAS("dbaas"),
+    AWS_BEANSTALK("aws_beanstalk"),
+    AWS_AURORA("aws_aurora"),
+    SAAS("saas"),
+    AUTH0("auth0"),
 
     // relation types
     CONNECTS_TO("connects_to"),
