@@ -11,7 +11,7 @@ ui:
     splitting: true
     testRefinement: true
     placement: true
-    edmmModeling: true
+    edmmModeling: false
   endpoints:
     container: http://localhost:1337
     workflowmodeler: http://localhost:9527
