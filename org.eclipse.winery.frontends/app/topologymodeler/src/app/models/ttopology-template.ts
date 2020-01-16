@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -115,6 +115,11 @@ export class TNodeTemplate extends AbstractTTemplate {
     public set state(value: DifferenceStates) {
         this._state = value;
         this.visuals.color = VersionUtils.getElementColorByDiffState(value);
+    }
+
+    public deleteStateAndVisuals() {
+        delete this._state;
+        delete this.visuals;
     }
 }
 

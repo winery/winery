@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -33,9 +33,10 @@ export interface WineryConfiguration {
         updateTemplates: boolean;
     };
     endpoints: {
-        container: String;
-        topologymodeler: String;
-        workflowmodeler: String;
+        container: string;
+        topologymodeler: string;
+        workflowmodeler: string;
+        edmmTransformationTool: string;
     };
 }
 

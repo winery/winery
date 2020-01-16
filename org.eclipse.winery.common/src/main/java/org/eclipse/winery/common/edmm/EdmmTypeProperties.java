@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,6 +25,7 @@ public class EdmmTypeProperties {
     public static String BASE = "base";
 
     public static void getDefaultConfiguration(EdmmType edmmType, EntityGraph entityGraph) {
+        EntityId e;
         switch (edmmType) {
             case COMPUTE:
                 EntityId computeId = EntityGraph.COMPONENT_TYPES.extend(EdmmType.COMPUTE.getValue());
@@ -51,7 +52,7 @@ public class EdmmTypeProperties {
             case MYSQL_DBMS:
                 EntityId mySqlDbmsId = EntityGraph.COMPONENT_TYPES.extend(EdmmType.MYSQL_DBMS.getValue());
                 entityGraph.addEntity(new MappingEntity(mySqlDbmsId, entityGraph));
-                entityGraph.addEntity(new ScalarEntity(EdmmType.MYSQL_DBMS.getValue(), mySqlDbmsId.extend(DefaultKeys.EXTENDS), entityGraph));
+                entityGraph.addEntity(new ScalarEntity(EdmmType.DBMS.getValue(), mySqlDbmsId.extend(DefaultKeys.EXTENDS), entityGraph));
                 getDefaultConfiguration(EdmmType.DBMS, entityGraph);
                 break;
             case SOFTWARE_COMPONENT:
@@ -92,6 +93,47 @@ public class EdmmTypeProperties {
                 entityGraph.addEntity(new MappingEntity(hostedOnId, entityGraph));
                 entityGraph.addEntity(new ScalarEntity(EdmmType.DEPENDS_ON.getValue(), hostedOnId.extend(DefaultKeys.EXTENDS), entityGraph));
                 getDefaultConfiguration(EdmmType.DEPENDS_ON, entityGraph);
+                break;
+            case PLATFORM:
+                e = EntityGraph.COMPONENT_TYPES.extend(EdmmType.PLATFORM.getValue());
+                entityGraph.addEntity(new MappingEntity(e, entityGraph));
+                entityGraph.addEntity(new ScalarEntity(BASE, e.extend(DefaultKeys.EXTENDS), entityGraph));
+                break;
+            case PAAS:
+                e = EntityGraph.COMPONENT_TYPES.extend(EdmmType.PAAS.getValue());
+                entityGraph.addEntity(new MappingEntity(e, entityGraph));
+                entityGraph.addEntity(new ScalarEntity(EdmmType.PLATFORM.getValue(), e.extend(DefaultKeys.EXTENDS), entityGraph));
+                getDefaultConfiguration(EdmmType.PLATFORM, entityGraph);
+                break;
+            case DBAAS:
+                e = EntityGraph.COMPONENT_TYPES.extend(EdmmType.DBAAS.getValue());
+                entityGraph.addEntity(new MappingEntity(e, entityGraph));
+                entityGraph.addEntity(new ScalarEntity(EdmmType.PLATFORM.getValue(), e.extend(DefaultKeys.EXTENDS), entityGraph));
+                getDefaultConfiguration(EdmmType.PLATFORM, entityGraph);
+                break;
+            case SAAS:
+                e = EntityGraph.COMPONENT_TYPES.extend(EdmmType.SAAS.getValue());
+                entityGraph.addEntity(new MappingEntity(e, entityGraph));
+                entityGraph.addEntity(new ScalarEntity(EdmmType.PLATFORM.getValue(), e.extend(DefaultKeys.EXTENDS), entityGraph));
+                getDefaultConfiguration(EdmmType.PLATFORM, entityGraph);
+                break;
+            case AWS_BEANSTALK:
+                e = EntityGraph.COMPONENT_TYPES.extend(EdmmType.AWS_BEANSTALK.getValue());
+                entityGraph.addEntity(new MappingEntity(e, entityGraph));
+                entityGraph.addEntity(new ScalarEntity(EdmmType.PAAS.getValue(), e.extend(DefaultKeys.EXTENDS), entityGraph));
+                getDefaultConfiguration(EdmmType.PAAS, entityGraph);
+                break;
+            case AWS_AURORA:
+                e = EntityGraph.COMPONENT_TYPES.extend(EdmmType.AWS_AURORA.getValue());
+                entityGraph.addEntity(new MappingEntity(e, entityGraph));
+                entityGraph.addEntity(new ScalarEntity(EdmmType.DBAAS.getValue(), e.extend(DefaultKeys.EXTENDS), entityGraph));
+                getDefaultConfiguration(EdmmType.DBAAS, entityGraph);
+                break;
+            case AUTH0:
+                e = EntityGraph.COMPONENT_TYPES.extend(EdmmType.AUTH0.getValue());
+                entityGraph.addEntity(new MappingEntity(e, entityGraph));
+                entityGraph.addEntity(new ScalarEntity(EdmmType.SAAS.getValue(), e.extend(DefaultKeys.EXTENDS), entityGraph));
+                getDefaultConfiguration(EdmmType.SAAS, entityGraph);
                 break;
         }
     }
