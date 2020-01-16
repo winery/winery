@@ -34,7 +34,7 @@ import { SharedModule } from './shared/shared.module';
 import { HttpService } from './util/http.service';
 import { HttpClientModule } from '@angular/common/http';
 import { SelectModule } from 'ng2-select';
-import { WmInstnaceTypeComponent } from './components/instanceType/instanceType.component';
+import { WmInstanceTypeComponent } from './components/instanceType/instanceType.component';
 
 @NgModule({
     declarations: [
@@ -45,7 +45,7 @@ import { WmInstnaceTypeComponent } from './components/instanceType/instanceType.
         WmParameterComponent,
         WmPropertiesComponent,
         WmToolbarComponent,
-        WmInstnaceTypeComponent
+        WmInstanceTypeComponent
     ],
     providers: [
         BroadcastService,

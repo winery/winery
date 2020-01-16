@@ -27,6 +27,6 @@ import { Parameter } from '../../model/parameter';
 export class WmParameterComponent {
     @Input() public param: Parameter;
     selectedValueType: String;
-    valueTypes: String[] = ["string", "topology", "plan", "implementationArtifact", "concat"];
+    valueTypes: String[] = ['string', 'topology', 'plan', 'implementationArtifact', 'concat'];
 
 }

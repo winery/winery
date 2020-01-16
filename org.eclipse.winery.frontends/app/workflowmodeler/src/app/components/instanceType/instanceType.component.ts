@@ -19,7 +19,7 @@ import { Node } from '../../model/workflow/node';
     selector: 'b4t-instance-type',
     templateUrl: 'instanceType.component.html',
 })
-export class WmInstnaceTypeComponent implements OnInit {
+export class WmInstanceTypeComponent implements OnInit {
     @Input() public node: Node;
     types: String[];
     selectedType: String = '';
