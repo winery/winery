@@ -29,6 +29,7 @@ export enum ToscaTypes {
     RelationshipType = 'relationshiptypes',
     ArtifactType = 'artifacttypes',
     ArtifactTemplate = 'artifacttemplates',
+    DeploymentArtifacts = 'deploymentArtifacts',
     RequirementType = 'requirementtypes',
     CapabilityType = 'capabilitytypes',
     NodeTypeImplementation = 'nodetypeimplementations',

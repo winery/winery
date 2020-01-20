@@ -128,6 +128,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         this.saveNodeRequirements = new EventEmitter();
         this.sendPaletteStatus = new EventEmitter();
         this.sendNodeData = new EventEmitter();
+        this.$ngRedux.subscribe(() => this.setPolicyIcons());
     }
 
     /**
@@ -186,7 +187,27 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
             this.nodeClass = 'nodeTemplate';
         }
 
-        // todo: refactor to be updated upon addition of a policy
+        this.setPolicyIcons();
+        this.addNewVersions(new QName(this.nodeTemplate.type));
+
+    }
+
+    /**
+     * Angular lifecycle event.
+     */
+    ngDoCheck() {
+        const nodeTemplateChanges = this.differ.diff(this.entityTypes);
+        if (nodeTemplateChanges) {
+            if (this.entityTypes.groupedNodeTypes) {
+                this.findOutPropertyDefinitionTypeForProperties(this.nodeTemplate.type, this.entityTypes.groupedNodeTypes);
+            }
+        }
+    }
+
+    /**
+     * Get the icons of the policies.
+     */
+    setPolicyIcons() {
         if (this.nodeTemplate.policies && this.nodeTemplate.policies.policy) {
             this.policyIcons = [];
             const list: TPolicy[] = this.nodeTemplate.policies.policy;
@@ -211,21 +232,6 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
 
             if (this.policyIcons.length === 0) {
                 this.policyIcons = null;
-            }
-        }
-
-        this.addNewVersions(new QName(this.nodeTemplate.type));
-
-    }
-
-    /**
-     * Angular lifecycle event.
-     */
-    ngDoCheck() {
-        const nodeTemplateChanges = this.differ.diff(this.entityTypes);
-        if (nodeTemplateChanges) {
-            if (this.entityTypes.groupedNodeTypes) {
-                this.findOutPropertyDefinitionTypeForProperties(this.nodeTemplate.type, this.entityTypes.groupedNodeTypes);
             }
         }
     }

@@ -28,7 +28,7 @@ import { TableType } from '../../models/enums';
  */
 export class DeploymentArtifactsComponent implements OnInit {
 
-    readonly tableType = TableType;
+    readonly tableTypes = TableType;
 
     @Output() toggleModalHandler: EventEmitter<any>;
     @Input() readonly: boolean;
