@@ -37,8 +37,8 @@ export enum urlElement {
 export enum TableType {
     Requirements = 'Requirements',
     Capabilities = 'Capabilities',
-    Policies = 'policies',
-    deploymentArtifacts = 'deploymentArtifacts'
+    Policies = 'Policies',
+    DeploymentArtifacts = 'DeploymentArtifacts'
 }
 
 export enum toggleModalType {
