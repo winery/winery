@@ -27,7 +27,6 @@ import com.sun.jersey.api.client.ClientResponse;
 
 public class SwarmProvider implements ImmutableStorageProvider {
     private static ExecutorService executorService = null;
-    private static final int THREAD_POOL_SIZE = 10;
     private final String swarmUrl;
 
     public SwarmProvider(String swarmUrl) {
@@ -35,8 +34,8 @@ public class SwarmProvider implements ImmutableStorageProvider {
     }
 
     private static ExecutorService getExecutorService() {
-        if (executorService == null) {
-            executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+        if (executorService == null || executorService.isShutdown()) {
+            executorService = Executors.newFixedThreadPool(10);
         }
 
         return executorService;

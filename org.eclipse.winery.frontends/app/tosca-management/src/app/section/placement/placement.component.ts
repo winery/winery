@@ -14,7 +14,7 @@
 import { Component, DoCheck, OnInit, ViewChild } from '@angular/core';
 import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
 import { ModalDirective } from 'ngx-bootstrap';
-import { isNull, isNullOrUndefined } from 'util';
+import { isNullOrUndefined } from 'util';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PlacementService } from './placementService';
 import { AddComponentValidation } from '../../wineryAddComponentModule/addComponentValidation';

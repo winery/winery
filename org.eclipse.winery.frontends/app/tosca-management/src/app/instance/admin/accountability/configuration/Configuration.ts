@@ -14,8 +14,6 @@
 import { ConfigurationDTO } from './ConfigurationDTO';
 
 export class Configuration extends ConfigurationDTO {
-    // This entry is persisted in browser's local storage
-    private _enableAccountability: boolean;
 
     constructor(dto: ConfigurationDTO) {
         super();
@@ -37,13 +35,5 @@ export class Configuration extends ConfigurationDTO {
         dto.swarmGatewayUrl = this.swarmGatewayUrl;
 
         return dto;
-    }
-
-    get enableAccountability(): boolean {
-        return this._enableAccountability;
-    }
-
-    set enableAccountability(value: boolean) {
-        this._enableAccountability = value;
     }
 }

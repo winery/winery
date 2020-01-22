@@ -27,3 +27,11 @@ repository:
     clientID: id
     autocommit: false
     username: default
+accountability:
+  geth-url: http://129.69.214.244:8545
+  # Ethereum credentials
+  ethereum-password: winery
+  ethereum-provenance-smart-contract-address: 0x8414D5f1AF1749B349D9cE88dEB28E5aCB19E417
+  ethereum-authorization-smart-contract-address: 0x7a7286d6a5bc548234850821d57c649Eb71A8519
+  swarm-gateway-url: http://129.69.214.210
+  ethereum-credentials-file-name: ""

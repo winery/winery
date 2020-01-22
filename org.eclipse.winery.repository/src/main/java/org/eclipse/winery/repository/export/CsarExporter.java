@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Properties;
 import java.util.SortedSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -123,8 +122,7 @@ public class CsarExporter {
     public CompletableFuture<String> writeCsarAndSaveManifestInProvenanceLayer(IRepository repository, DefinitionsChildId entryId, OutputStream out)
         throws IOException, RepositoryCorruptException, AccountabilityException, InterruptedException, ExecutionException {
         LocalDateTime start = LocalDateTime.now();
-        Properties props = repository.getAccountabilityConfigurationManager().properties;
-        AccountabilityManager accountabilityManager = AccountabilityManagerFactory.getAccountabilityManager(props);
+        AccountabilityManager accountabilityManager = AccountabilityManagerFactory.getAccountabilityManager();
 
         Map<String, Object> exportConfiguration = new HashMap<>();
         exportConfiguration.put(CsarExportConfiguration.INCLUDE_HASHES.name(), null);
@@ -235,8 +233,7 @@ public class CsarExporter {
      */
     private void immutablyStoreRefFiles(Map<CsarContentProperties, CsarEntry> filesToStore, IRepository repository)
         throws AccountabilityException, ExecutionException, InterruptedException, IOException {
-        Properties props = repository.getAccountabilityConfigurationManager().properties;
-        AccountabilityManager manager = AccountabilityManagerFactory.getAccountabilityManager(props);
+        AccountabilityManager manager = AccountabilityManagerFactory.getAccountabilityManager();
         Map<String, InputStream> filesMap = new HashMap<>();
 
         for (Map.Entry<CsarContentProperties, CsarEntry> entry : filesToStore.entrySet()) {
@@ -561,7 +558,7 @@ public class CsarExporter {
         // Setting Versions
         stringBuilder.append(TOSCA_META_VERSION).append(": 1.0").append("\n");
         stringBuilder.append(CSAR_VERSION).append(": 1.0").append("\n");
-        stringBuilder.append(CREATED_BY).append(": Winery ").append(Environments.getVersion()).append("\n");
+        stringBuilder.append(CREATED_BY).append(": Winery ").append(Environments.getInstance().getVersion()).append("\n");
 
         // Winery currently is unaware of tDefinitions, therefore, we use the
         // name of the service template

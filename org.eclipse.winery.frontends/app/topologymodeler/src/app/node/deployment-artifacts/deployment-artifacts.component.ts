@@ -15,7 +15,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { IWineryState } from '../../redux/store/winery.store';
 import { NgRedux } from '@angular-redux/store';
-import { ToscaTypes } from '../../../../../tosca-management/src/app/model/enums';
 import { TableType } from '../../models/enums';
 
 @Component({

@@ -22,12 +22,14 @@ import org.eclipse.winery.accountability.model.ProvenanceVerification;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIf;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@EnabledIf("(new java.io.File(\"C:/Ethereum/keystore/UTC--2018-03-05T15-33-22.456000000Z--e4b51a3d4e77d2ce2a9d9ce107ec8ec7cff5571d.json\").exists())")
+// todo try to migrate to new accountability testing scheme (ganache with resets!)
+@Disabled
+//@EnabledIf("(new java.io.File(\"C:/Ethereum/keystore/UTC--2018-03-05T15-33-22.456000000Z--e4b51a3d4e77d2ce2a9d9ce107ec8ec7cff5571d.json\").exists())")
 class CsarImporterValidationTest extends TestWithGitBackedRepository {
 
     // Set explicitly to revision bbb39cdb32cbcf38bd691abe6a66ae62f4aba428 because the service template

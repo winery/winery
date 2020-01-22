@@ -15,10 +15,10 @@
 package org.eclipse.winery.model.adaptation.placement;
 
 public class Constants {
-    
+
     public static final String NODE_TEMPLATE_PROPERTY_DATA_SIZE = "DataSize";
     public static final String NODE_TEMPLATE_PROPERTY_DATA_FACTOR = "DataFactor";
-    
+
     public static final String RELATIONSHIP_TEMPLATE_TRANSFER_TYPE_PULL = "pull";
 
     public static final String TAG_NAME_LOCATION = "location";

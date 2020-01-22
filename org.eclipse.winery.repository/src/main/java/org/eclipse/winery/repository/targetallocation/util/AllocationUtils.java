@@ -114,8 +114,7 @@ public class AllocationUtils {
     }
 
     /**
-     * Still no complete copy of all TOSCA constructs.
-     * Cloned so that !original.equals(clone).
+     * Still no complete copy of all TOSCA constructs. Cloned so that !original.equals(clone).
      */
     public static TTopologyTemplate deepcopy(TTopologyTemplate topologyTemplate) {
         return deepcopy(topologyTemplate, true);
@@ -167,25 +166,26 @@ public class AllocationUtils {
      */
     public static TNodeTemplate clone(TNodeTemplate nodeTemplate, boolean changeNames) {
         TNodeTemplate cloned = BackendUtils.clone(nodeTemplate);
-        
+
         // name used in equals -> make unique to avoid equals bugs caused by cloning
         if (changeNames) {
             cloned.setName(cloned.getId() + idCounter++);
         }
         return cloned;
     }
-    
+
     /**
      * Clone the RelationshipTemplate and change the name of the clone if requested, so that !original.equals(clone).
-     * 
+     *
      * @param relationshipTemplate the RelationshipTemplate to clone
-     * @param changeNames <code>true</code> if name shall be changed by adding a number suffix, <code>false</code> 
-     *                    otherwise
+     * @param changeNames          <code>true</code> if name shall be changed by adding a number suffix,
+     *                             <code>false</code>
+     *                             otherwise
      * @return the cloned RelationshipTemplate
      */
     public static TRelationshipTemplate clone(TRelationshipTemplate relationshipTemplate, boolean changeNames) {
         TRelationshipTemplate cloned = BackendUtils.clone(relationshipTemplate);
-        
+
         // name used in equals -> make unique to avoid equals bugs caused by cloning
         if (changeNames) {
             cloned.setName(cloned.getId() + idCounter++);

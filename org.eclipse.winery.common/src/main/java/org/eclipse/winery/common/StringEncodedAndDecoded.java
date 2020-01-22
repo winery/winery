@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.common;
 
-
 /**
  * Meta class to handle things, where a String (URI, NCName, ...) may be
  * URLencoded
