@@ -14,6 +14,7 @@
 .toscatype-table {
     width: 210px;
     table-layout: fixed;
+    border: 1px solid #ddd;
 }
 
 table {
