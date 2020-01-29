@@ -30,7 +30,7 @@ public class GitConfigurationObject extends AbstractConfigurationObject {
         this.setPassword(configuration.getString(key + "password"));
         this.setClientID(configuration.getString(key + "clientID"));
         this.setUsername(configuration.getString(key + "username"));
-        this.setAutocommit(configuration.getBoolean(key + "autocommit"));
+        this.setAutocommit(configuration.getBoolean(key + "autocommit", false));
         this.configuration = configuration;
     }
 
