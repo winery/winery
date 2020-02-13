@@ -20,7 +20,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
 import javax.ws.rs.Consumes;
@@ -45,7 +44,6 @@ import org.eclipse.winery.accountability.model.authorization.AuthorizationNode;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.version.VersionUtils;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -63,9 +61,7 @@ public class AccountabilityResource {
     }
 
     private static AccountabilityManager getAccountabilityManager() throws AccountabilityException {
-        Properties props = RepositoryFactory.getRepository().getAccountabilityConfigurationManager().properties;
-
-        return AccountabilityManagerFactory.getAccountabilityManager(props);
+        return AccountabilityManagerFactory.getAccountabilityManager();
     }
 
     private static WebApplicationException createException(Exception cause) {

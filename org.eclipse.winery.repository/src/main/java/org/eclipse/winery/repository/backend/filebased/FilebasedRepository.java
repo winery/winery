@@ -53,7 +53,6 @@ import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
-import org.eclipse.winery.common.ids.admin.AccountabilityId;
 import org.eclipse.winery.common.ids.admin.EdmmMappingsId;
 import org.eclipse.winery.common.ids.admin.NamespacesId;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
@@ -63,7 +62,6 @@ import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.repository.backend.AbstractRepository;
-import org.eclipse.winery.repository.backend.AccountabilityConfigurationManager;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.EdmmManager;
 import org.eclipse.winery.repository.backend.IRepositoryAdministration;
@@ -132,7 +130,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
             return makeAbsoluteAndCreateRepositoryPath(fileBasedRepositoryConfiguration.getRepositoryPath().get());
         } else {
             Path newPath = determineAndCreateRepositoryPath();
-            Environments.getRepositoryConfig().setRepositoryRoot(newPath.toString());
+            Environments.getInstance().getRepositoryConfig().setRepositoryRoot(newPath.toString());
             return newPath;
         }
     }
@@ -220,7 +218,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
     }
 
     public static File getActiveRepositoryFilePath() {
-        return new File(Environments.getRepositoryConfig().getRepositoryRoot());
+        return new File(Environments.getInstance().getRepositoryConfig().getRepositoryRoot());
     }
 
     private static Path createDefaultRepositoryPath() {
@@ -622,16 +620,6 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
     public EdmmManager getEdmmManager() {
         RepositoryFileReference ref = BackendUtils.getRefOfJsonConfiguration(new EdmmMappingsId());
         return new JsonBasedEdmmManager(ref2AbsolutePath(ref).toFile());
-    }
-
-    @Override
-    public AccountabilityConfigurationManager getAccountabilityConfigurationManager() {
-        RepositoryFileReference repoRef = BackendUtils.getRefOfConfiguration(new AccountabilityId());
-        RepositoryFileReference keystoreRef = new RepositoryFileReference(new AccountabilityId(), "CustomKeystore.json");
-        RepositoryFileReference defaultKeystoreRef = new RepositoryFileReference(new AccountabilityId(), "DefaultKeystore.json");
-
-        return AccountabilityConfigurationManager.getInstance(ref2AbsolutePath(repoRef).toFile(),
-            ref2AbsolutePath(keystoreRef).toFile(), ref2AbsolutePath(defaultKeystoreRef).toFile());
     }
 
     @Override

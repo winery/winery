@@ -55,7 +55,7 @@ public class EnvironmentTest {
     @Test
     public void testDefaultConfigFileCreation() throws IOException {
         FileUtils.deleteDirectory(configDirectory);
-        Environment.getConfiguration();
+        Environment.getInstance().getConfiguration();
         assertTrue(configDirectory.exists());
         assertTrue(configFile.isFile());
     }
@@ -66,7 +66,7 @@ public class EnvironmentTest {
      */
     @Test
     public void testConfigValues() throws IOException {
-        YAMLConfiguration tested = Environment.getConfiguration();
+        YAMLConfiguration tested = Environment.getInstance().getConfiguration();
         assertTrue(tested.getBoolean("ui.features.foo"));
         assertFalse(tested.getBoolean("ui.features.bar"));
         assertEquals("http://quaz:8080", tested.getString("ui.endpoints.quaz"));
@@ -78,29 +78,38 @@ public class EnvironmentTest {
      */
     @Test
     public void testSave() {
-        YAMLConfiguration configuration = Environment.getConfiguration();
+        YAMLConfiguration configuration = Environment.getInstance().getConfiguration();
         configuration.setProperty("ui.features.foo", false);
         configuration.setProperty("ui.features.bar", true);
         configuration.setProperty("ui.endpoints.quaz", "");
-        Environment.save();
-        Environment.setConfiguration(null);
-        configuration = Environment.getConfiguration();
+        Environment.getInstance().save();
+        Environment.getInstance().setConfiguration(null);
+        configuration = Environment.getInstance().getConfiguration();
         assertFalse(configuration.getBoolean("ui.features.foo"));
         assertTrue(configuration.getBoolean("ui.features.bar"));
         assertEquals(configuration.getString("ui.endpoints.quaz"), "");
     }
 
     /**
-     * Tests whenever the configuration is loaded from backend if it was changed
+     * Tests whenever a change in the configuration file is detected.
      */
     @Test
     public void testReload() {
-        assertTrue(Environment.checkConfigurationForUpdate());
-        YAMLConfiguration configuration = Environment.getConfiguration();
-        assertFalse(Environment.checkConfigurationForUpdate());
+        YAMLConfiguration configuration = Environment.getInstance().getConfiguration();
+        assertFalse(Environment.getInstance().checkConfigurationForUpdate());
         configuration.setProperty("ui.features.foo", false);
-        Environment.save();
-        configuration.setProperty("ui.features.foo", true);
-        assertFalse(Environment.getConfiguration().getBoolean("ui.features.foo"));
+        Environment.getInstance().save();
+        assertTrue(Environment.getInstance().checkConfigurationForUpdate());
+    }
+
+    @Test
+    public void testReloadAccountabilityConfiguration() {
+        assertEquals("test.url", Environment.getInstance().getConfiguration().getString("accountability.geth-url"));
+        Environment.getInstance().getConfiguration().setProperty("accountability.geth-url", "test2.url");
+        assertEquals("test2.url", Environment.getInstance().getConfiguration().getString("accountability.geth-url"));
+        Environment.getInstance().save();
+        assertEquals("test2.url", Environment.getInstance().getConfiguration().getString("accountability.geth-url"));
+        Environment.getInstance().reloadAccountabilityConfiguration(Environment.getTestConfigInputStream());
+        assertEquals("test.url", Environment.getInstance().getConfiguration().getString("accountability.geth-url"));
     }
 }

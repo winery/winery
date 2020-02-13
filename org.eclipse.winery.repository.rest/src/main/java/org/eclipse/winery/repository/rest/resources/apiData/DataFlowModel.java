@@ -14,13 +14,14 @@
 
 package org.eclipse.winery.repository.rest.resources.apiData;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
-import java.util.List;
-import java.util.Map;
 
 @XmlRootElement(name = "DataFlowModel")
 public class DataFlowModel {
@@ -31,7 +32,7 @@ public class DataFlowModel {
     @XmlElementWrapper(name = "Pipes")
     @XmlElement(name = "Pipe")
     public List<Pipes> pipes;
-    
+
     @XmlElementWrapper(name = "Filters")
     @XmlElement(name = "Filter")
     public List<Filter> filters;
@@ -52,8 +53,7 @@ public class DataFlowModel {
     }
 
     /**
-     * Internal class to represent the filters of the extended Pipes and
-     * Filters pattern for data flow models.
+     * Internal class to represent the filters of the extended Pipes and Filters pattern for data flow models.
      */
     public static class Filter {
 
@@ -95,29 +95,32 @@ public class DataFlowModel {
             return provider;
         }
 
-        public Map<String, String> getProperties() { return properties; }
+        public Map<String, String> getProperties() {
+            return properties;
+        }
 
-        public List<QName> getArtifacts() { return artifacts; }
+        public List<QName> getArtifacts() {
+            return artifacts;
+        }
     }
 
     /**
-     * Internal class to represent the pipes of the extended Pipes and
-     * Filters pattern for data flow models.
+     * Internal class to represent the pipes of the extended Pipes and Filters pattern for data flow models.
      */
     public static class Pipes {
-        
+
         @XmlElement(name = "Source")
         public String source;
 
         @XmlElement(name = "Target")
         public String target;
-        
+
         @XmlAttribute
         private String dataTransferType;
 
         public Pipes() {
         }
-        
+
         public String getDataTransferType() {
             return dataTransferType;
         }

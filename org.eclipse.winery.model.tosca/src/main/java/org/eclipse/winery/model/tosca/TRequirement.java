@@ -14,17 +14,18 @@
 
 package org.eclipse.winery.model.tosca;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.eclipse.jdt.annotation.NonNull;
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
-import java.util.Objects;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
+
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.eclipse.jdt.annotation.NonNull;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tRequirement")

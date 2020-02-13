@@ -14,10 +14,9 @@
 
 package org.eclipse.winery.accountability;
 
-import java.util.Properties;
-
 import org.eclipse.winery.accountability.blockchain.ethereum.generated.Authorization;
 import org.eclipse.winery.accountability.blockchain.ethereum.generated.Provenance;
+import org.eclipse.winery.common.configuration.AccountabilityConfigurationObject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,11 +38,12 @@ public class ContractDeployer {
     /**
      * @param props The properties instance that allows to connect to a web3 provider and to unlock a credentials file
      */
-    public ContractDeployer(Properties props) throws Exception {
+    public ContractDeployer(AccountabilityConfigurationObject props) throws Exception {
         //loading configuration file
-        String url = props.getProperty("geth-url");
-        String password = props.getProperty("ethereum-password");
-        String credentialsFilePath = props.getProperty("ethereum-credentials-file-path");
+        String url = props.getGethUrl();
+        String password = props.getEthereumPassword();
+        //This used the file path attribute of the properties so this should be fine:
+        String credentialsFilePath = props.getEthereumCredentialsFile();
 
         //initialize Websocket
         web3j = Web3j.build(new HttpService(url));

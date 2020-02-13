@@ -13,3 +13,10 @@ repository:
     username: default
     password: default
     autocommit: false
+accountability:
+  geth-url: test.url
+  ethereum-password: 123456789
+  ethereum-provenance-smart-contract-address: provenancesmartcontracttestaddress
+  ethereum-authorization-smart-contract-address: authorizationsmartcontracttestaddress
+  swarm-gateway-url: swarmgatewaytesturl
+  ethereum-credentials-file-name: ""

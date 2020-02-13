@@ -13,11 +13,43 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.dataflowmodels;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.model.tosca.*;
+import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.model.tosca.TDeploymentArtifact;
+import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TRequirement;
+import org.eclipse.winery.model.tosca.TRequirementDefinition;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTag;
+import org.eclipse.winery.model.tosca.TTags;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
@@ -31,19 +63,12 @@ import org.eclipse.winery.repository.rest.resources.apiData.DataFlowModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.xml.namespace.QName;
-
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.eclipse.winery.model.adaptation.placement.Constants.*;
+import static org.eclipse.winery.model.adaptation.placement.Constants.ARTIFACT_TEMPLATE_GROUP;
+import static org.eclipse.winery.model.adaptation.placement.Constants.DATA_TRANSFER_TYPE_PULL;
+import static org.eclipse.winery.model.adaptation.placement.Constants.RELATIONSHIP_TEMPLATE_TRANSFER_TYPE_PULL;
+import static org.eclipse.winery.model.adaptation.placement.Constants.SERVICE_TEMPLATE_GROUP;
+import static org.eclipse.winery.model.adaptation.placement.Constants.TAG_NAME_LOCATION;
+import static org.eclipse.winery.model.adaptation.placement.Constants.TAG_NAME_PROVIDER;
 
 public class DataFlowResource {
 
@@ -52,13 +77,13 @@ public class DataFlowResource {
     private static int IdCounter = 1;
 
     @POST
-    @Consumes( {MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON} )
+    @Consumes( {MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response parseDataFlowToServiceTemplate(DataFlowModel dataFlowModel) {
 
         if (Objects.isNull(dataFlowModel)) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Passed data flow model is null!").build();
         }
-        
+
         if (Objects.isNull(dataFlowModel.getId().getNamespaceURI())) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Namespace must be defined for the data flow " +
                 "model ID!").build();
@@ -133,7 +158,7 @@ public class DataFlowResource {
                 return Response.serverError().entity("Unable to find NodeTemplates for relation with source: "
                     + pipe.getSource() + " and target: " + pipe.getTarget()).build();
             }
-            
+
             TRelationshipTemplate relationshipTemplate = createRelationshipTemplate(relationTypeId, source, target,
                 pipe.getDataTransferType());
             if (Objects.isNull(relationshipTemplate)) {
@@ -157,13 +182,13 @@ public class DataFlowResource {
     }
 
     /**
-     * Handle the filter with the given information as a data source if the location and provider are specified or as
-     * a data processing component otherwise.
+     * Handle the filter with the given information as a data source if the location and provider are specified or as a
+     * data processing component otherwise.
      */
     private TTopologyTemplate handleFilter(TTopologyTemplate topology, NodeTypeId nodeTypeId, String templateName,
-                                             Map<String, String> properties, List<QName> artifacts, String location,
-                                             String provider) {
-        
+                                           Map<String, String> properties, List<QName> artifacts, String location,
+                                           String provider) {
+
         if (Objects.nonNull(location) && Objects.nonNull(provider)) {
             return mergeTemplateForDataSource(topology, nodeTypeId, templateName, properties, location, provider);
         } else {
@@ -172,33 +197,33 @@ public class DataFlowResource {
     }
 
     /**
-     * Replace a filter corresponding to a running and placed data source by a ServiceTemplate with the same location 
+     * Replace a filter corresponding to a running and placed data source by a ServiceTemplate with the same location
      * and provider tag which contains a NodeTemplate of the NodeType specified for the data source filter.
      */
     private TTopologyTemplate mergeTemplateForDataSource(TTopologyTemplate topology, NodeTypeId nodeTypeId,
                                                          String templateName, Map<String, String> properties,
                                                          String location, String provider) {
-        
+
         // get all ServiceTemplates in the repo
         IRepository repo = RepositoryFactory.getRepository();
         List<ServiceTemplateId> serviceTemplateIds = repo.getAllDefinitionsChildIds().stream()
             .filter(id -> id.getGroup().equals(SERVICE_TEMPLATE_GROUP) && id instanceof ServiceTemplateId)
             .map(id -> (ServiceTemplateId) id).collect(Collectors.toList());
-        
+
         for (ServiceTemplateId id : serviceTemplateIds) {
             TServiceTemplate serviceTemplate = repo.getElement(id);
-            
+
             // only ServiceTemplates with location and provider tags are possible substitution candidates            
             if (containsMatchingTags(serviceTemplate, location, provider) && containsMatchingNodeType(serviceTemplate,
                 nodeTypeId)) {
                 LOGGER.debug("Found suited substitution candidate for filter {}: {}", templateName, id.getQName());
-                
+
                 TTopologyTemplate substitutionTopology = serviceTemplate.getTopologyTemplate();
                 TNodeTemplate filterCorrespondingNode = null;
                 LinkedHashMap<String, String> filterCorrespondingNodeProperties = null;
-                
+
                 Map<String, String> nameMap = new HashMap();
-                
+
                 // insert all NodeTemplates from the substitution candidate
                 for (TNodeTemplate node : substitutionTopology.getNodeTemplates()) {
 
@@ -206,7 +231,7 @@ public class DataFlowResource {
                     if (Objects.nonNull(node.getProperties()) && Objects.nonNull(node.getProperties().getKVProperties())) {
                         propertyList = node.getProperties().getKVProperties();
                     }
-                    
+
                     if (node.getType().equals(nodeTypeId.getQName())) {
                         // the NodeTemplate from the data flow model must be renamed to the given name
                         nameMap.put(node.getId(), templateName);
@@ -215,7 +240,7 @@ public class DataFlowResource {
                         filterCorrespondingNodeProperties = propertyList;
                     } else if (Objects.nonNull(topology.getNodeTemplate(node.getId()))) {
                         // all existing names must be changed too
-                        while (Objects.nonNull(topology.getNodeTemplate(node.getId() + "-" + IdCounter))) { 
+                        while (Objects.nonNull(topology.getNodeTemplate(node.getId() + "-" + IdCounter))) {
                             IdCounter++;
                         }
                         nameMap.put(node.getId(), node.getId() + "-" + IdCounter);
@@ -230,21 +255,21 @@ public class DataFlowResource {
                             properties.remove(propertyName);
                         }
                     }
-                    
+
                     // set the state of all components related to the data source to running
                     propertyList.put("State", "Running");
                     TEntityTemplate.Properties prop = new TEntityTemplate.Properties();
                     prop.setKVProperties(propertyList);
                     node.setProperties(prop);
-                    
+
                     topology.addNodeTemplate(node);
                 }
-                
+
                 // add all properties that are not defined in the NodeTypes to the node corresponding to the filter
                 if (Objects.nonNull(filterCorrespondingNode) && Objects.nonNull(filterCorrespondingNodeProperties)) {
                     LOGGER.debug("{} properties defined without property at a matching type. Adding to filter " +
                         "NodeTemplate!", properties.size());
-                    
+
                     for (String propertyName : properties.keySet()) {
                         filterCorrespondingNodeProperties.put(propertyName, properties.get(propertyName));
                     }
@@ -252,11 +277,11 @@ public class DataFlowResource {
                     prop.setKVProperties(filterCorrespondingNodeProperties);
                     filterCorrespondingNode.setProperties(prop);
                 }
-                
+
                 // add location and provider attribute to the NodeTemplate
                 filterCorrespondingNode.getOtherAttributes().put(ModelUtilities.NODE_TEMPLATE_REGION, location);
                 filterCorrespondingNode.getOtherAttributes().put(ModelUtilities.NODE_TEMPLATE_PROVIDER, provider);
-                
+
                 // add all relations from the substitution fragment to the incomplete topology
                 for (TRelationshipTemplate relation : substitutionTopology.getRelationshipTemplates()) {
                     // update source id if it was changed
@@ -268,7 +293,7 @@ public class DataFlowResource {
                     if (nameMap.containsKey(relation.getTargetElement().getRef().getId())) {
                         relation.setTargetNodeTemplate(topology.getNodeTemplate(nameMap.get(relation.getTargetElement().getRef().getId())));
                     }
-                    
+
                     // update id if RelationshipTemplate with same id exists
                     if (Objects.nonNull(topology.getRelationshipTemplate(relation.getId()))) {
                         while (Objects.nonNull(topology.getRelationshipTemplate(relation.getId() + "-" + IdCounter))) {
@@ -276,10 +301,10 @@ public class DataFlowResource {
                         }
                         relation.setId(relation.getId() + "-" + IdCounter);
                     }
-                    
+
                     topology.addRelationshipTemplate(relation);
                 }
-                
+
                 return topology;
             }
         }
@@ -289,7 +314,7 @@ public class DataFlowResource {
     }
 
     /**
-     * Checks if the ServiceTemplate contains a NodeTemplate with the given NodeType which has no incoming 
+     * Checks if the ServiceTemplate contains a NodeTemplate with the given NodeType which has no incoming
      * RelationshipTemplates and is therefore suited as a substitution candidate.
      */
     private boolean containsMatchingNodeType(TServiceTemplate serviceTemplate, NodeTypeId nodeTypeId) {
@@ -306,7 +331,7 @@ public class DataFlowResource {
         if (Objects.isNull(tags)) {
             return false;
         }
-        
+
         int tests = 0;
         for (TTag tag : tags.getTag()) {
             if (tag.getName().equalsIgnoreCase(TAG_NAME_LOCATION) && tag.getValue().equalsIgnoreCase(location)
@@ -318,11 +343,11 @@ public class DataFlowResource {
     }
 
     /**
-     * Create a NodeTemplate corresponding to the given filter with the given type, properties and artifacts and add 
-     * it to the topology of the incomplete deployment model.
+     * Create a NodeTemplate corresponding to the given filter with the given type, properties and artifacts and add it
+     * to the topology of the incomplete deployment model.
      */
     private TTopologyTemplate createNodeTemplate(TTopologyTemplate topology, NodeTypeId nodeTypeId, String templateName,
-                                             Map<String, String> properties, List<QName> artifacts) {
+                                                 Map<String, String> properties, List<QName> artifacts) {
 
         // get NodeType to access Requirements for the completion and available properties
         IRepository repo = RepositoryFactory.getRepository();
@@ -344,7 +369,7 @@ public class DataFlowResource {
                     propertyList.put(prop.getKey(), "");
                 }
             }
-            
+
             // add all properties which are defined at the filter
             for (Map.Entry<String, String> prop : properties.entrySet()) {
                 propertyList.put(prop.getKey(), prop.getValue());
@@ -396,11 +421,11 @@ public class DataFlowResource {
         topology.addNodeTemplate(templateBuilder.build());
         return topology;
     }
-    
+
     private TRelationshipTemplate createRelationshipTemplate(RelationshipTypeId relationshipTypeId,
                                                              TNodeTemplate source, TNodeTemplate target,
                                                              String dataTransferType) {
-        
+
         // get ConnectsTo RelationshipType to access available properties
         IRepository repo = RepositoryFactory.getRepository();
         TRelationshipType relationshipType = repo.getElement(relationshipTypeId);
@@ -416,7 +441,7 @@ public class DataFlowResource {
         sourceElement.setRef(source);
         targetElement.setRef(target);
 
-        TRelationshipTemplate.Builder builder = new TRelationshipTemplate.Builder(relationId, relationshipTypeId.getQName(), 
+        TRelationshipTemplate.Builder builder = new TRelationshipTemplate.Builder(relationId, relationshipTypeId.getQName(),
             sourceElement, targetElement);
         builder.setName(relationId);
 
@@ -433,9 +458,9 @@ public class DataFlowResource {
             relationProperties.setKVProperties(def.getNamespace(), def.getElementName(), propertyList);
             builder.setProperties(relationProperties);
         }
-        
+
         TRelationshipTemplate relation = builder.build();
-        
+
         // evaluate pipe attribute to determine connectsTo direction
         if (Objects.nonNull(dataTransferType) && dataTransferType.equalsIgnoreCase(DATA_TRANSFER_TYPE_PULL)) {
             // change connectsTo direction in case the corresponding target filter is pulling

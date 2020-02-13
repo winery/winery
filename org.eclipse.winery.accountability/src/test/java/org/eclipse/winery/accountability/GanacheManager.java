@@ -17,6 +17,7 @@ package org.eclipse.winery.accountability;
 public class GanacheManager {
     
     private static GanacheManager instance;
+    private final static int SLEEP_TIME_MILLIS = 20000;
     private final String privateKey;
     
     public static GanacheManager getInstance(final String privateKey) throws InterruptedException {
@@ -56,7 +57,7 @@ public class GanacheManager {
             processBuilder.command("bash", "-c", command);
         }
         this.process = processBuilder.start();
-        Thread.sleep(10000);
+        Thread.sleep(SLEEP_TIME_MILLIS);
     }
 
     /**

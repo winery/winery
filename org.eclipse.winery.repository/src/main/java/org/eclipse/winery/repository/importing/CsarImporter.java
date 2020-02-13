@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -275,8 +274,7 @@ public class CsarImporter {
         metaInformation.verificationMap = new HashMap<>();
 
         if (Objects.nonNull(entryServiceTemplate)) {
-            Properties props = RepositoryFactory.getRepository().getAccountabilityConfigurationManager().properties;
-            AccountabilityManager accountabilityManager = AccountabilityManagerFactory.getAccountabilityManager(props);
+            AccountabilityManager accountabilityManager = AccountabilityManagerFactory.getAccountabilityManager();
             String provenanceIdentifier = VersionUtils.getQNameWithComponentVersionOnly(entryServiceTemplate);
 
             metaInformation.verificationMap = accountabilityManager

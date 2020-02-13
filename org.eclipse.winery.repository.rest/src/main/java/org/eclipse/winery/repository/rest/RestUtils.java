@@ -384,14 +384,14 @@ public class RestUtils {
      * @return the absolute path for the given id
      */
     public static String getAbsoluteURL(GenericId id) {
-        return Environments.getUiConfig().getEndpoints().get("repositoryApiUrl") + "/" + Util.getUrlPath(id);
+        return Environments.getInstance().getUiConfig().getEndpoints().get("repositoryApiUrl") + "/" + Util.getUrlPath(id);
     }
 
     /**
      * @return the absolute path for the given id
      */
     public static String getAbsoluteURL(RepositoryFileReference ref) {
-        return Environments.getUiConfig().getEndpoints().get("repositoryApiUrl") + "/" + Util.getUrlPath(ref);
+        return Environments.getInstance().getUiConfig().getEndpoints().get("repositoryApiUrl") + "/" + Util.getUrlPath(ref);
     }
 
     public static URI getAbsoluteURI(GenericId id) {

@@ -22,25 +22,35 @@ import org.apache.commons.configuration2.YAMLConfiguration;
 import org.apache.commons.io.FileUtils;
 
 public class RepositoryConfigurationObject extends AbstractConfigurationObject {
+
     private final String key = "repository.";
-    private GitConfigurationObject gitConfiguration;
     private String repositoryRoot;
     private String provider;
-    private YAMLConfiguration configuration;
 
     RepositoryConfigurationObject(YAMLConfiguration configuration) {
         this.repositoryRoot = configuration.getString(key + "repositoryRoot");
         this.setProvider(configuration.getString(key + "provider"));
-        this.setGitConfiguration(Environments.getGitConfig());
         this.configuration = configuration;
+        initialize();
     }
 
     @Override
     void save() {
         configuration.setProperty(key + "provider", this.getProvider());
         configuration.setProperty(key + "repositoryRoot", this.repositoryRoot);
-        this.getGitConfiguration().save();
-        Environment.save();
+        Environment.getInstance().save();
+    }
+
+    @Override
+    void update(YAMLConfiguration updatedConfiguration) {
+        this.configuration = updatedConfiguration;
+        this.repositoryRoot = configuration.getString(key + "repositoryRoot");
+        this.setProvider(configuration.getString(key + "provider"));
+    }
+
+    @Override
+    void initialize() {
+
     }
 
     /**
@@ -60,14 +70,6 @@ public class RepositoryConfigurationObject extends AbstractConfigurationObject {
     public void setRepositoryRoot(String changedRepositoryRoot) {
         this.repositoryRoot = changedRepositoryRoot;
         this.save();
-    }
-
-    public GitConfigurationObject getGitConfiguration() {
-        return gitConfiguration;
-    }
-
-    public void setGitConfiguration(GitConfigurationObject gitConfiguration) {
-        this.gitConfiguration = gitConfiguration;
     }
 
     public String getProvider() {

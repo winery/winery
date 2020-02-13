@@ -14,19 +14,19 @@
 package org.eclipse.winery.accountability.storage;
 
 import java.util.Objects;
-import java.util.Properties;
 
 import org.eclipse.winery.accountability.storage.swarm.SwarmProvider;
+import org.eclipse.winery.common.configuration.AccountabilityConfigurationObject;
 
 public class ImmutableStorageProviderFactory {
     private static ImmutableStorageProvider storageProvider;
 
-    public static ImmutableStorageProvider getStorageProvider(ImmutableStorageProviderFactory.AvailableImmutableStorages desiredProvider, Properties configuration) {
+    public static ImmutableStorageProvider getStorageProvider(ImmutableStorageProviderFactory.AvailableImmutableStorages desiredProvider, AccountabilityConfigurationObject configuration) {
         // The requested blockchain technology could be retrieved from the configurations file
         if (Objects.isNull(storageProvider)) {
             switch (desiredProvider) {
                 case SWARM:
-                    storageProvider = new SwarmProvider(configuration.getProperty("swarm-gateway-url"));
+                    storageProvider = new SwarmProvider(configuration.getSwarmGatewayUrl());
                     break;
                 case TEST:
                 default:
@@ -42,7 +42,10 @@ public class ImmutableStorageProviderFactory {
      * Used to force the factory to re-instantiate storage provider implementation (because a configuration change is detected)
      */
     public static void reset() {
-        storageProvider = null;
+        if (storageProvider != null) {
+            storageProvider.close();
+            storageProvider = null;
+        }
     }
 
     public enum AvailableImmutableStorages {

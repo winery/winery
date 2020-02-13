@@ -47,7 +47,12 @@ import org.eclipse.winery.repository.splitting.Splitting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.eclipse.winery.model.adaptation.placement.Constants.*;
+import static org.eclipse.winery.model.adaptation.placement.Constants.NODE_TEMPLATE_PROPERTY_DATA_FACTOR;
+import static org.eclipse.winery.model.adaptation.placement.Constants.NODE_TEMPLATE_PROPERTY_DATA_SIZE;
+import static org.eclipse.winery.model.adaptation.placement.Constants.RELATIONSHIP_TEMPLATE_TRANSFER_TYPE_PULL;
+import static org.eclipse.winery.model.adaptation.placement.Constants.SERVICE_TEMPLATE_GROUP;
+import static org.eclipse.winery.model.adaptation.placement.Constants.TAG_NAME_LOCATION;
+import static org.eclipse.winery.model.adaptation.placement.Constants.TAG_NAME_PROVIDER;
 import static org.eclipse.winery.model.tosca.utils.ModelUtilities.QNAME_LOCATION;
 import static org.eclipse.winery.repository.targetallocation.util.AllocationUtils.deepcopy;
 
