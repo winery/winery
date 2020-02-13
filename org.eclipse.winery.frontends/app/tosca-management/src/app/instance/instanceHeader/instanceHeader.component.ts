@@ -19,7 +19,6 @@ import { ToscaComponent } from '../../model/toscaComponent';
 import { ToscaTypes } from '../../model/enums';
 import { WineryVersion } from '../../model/wineryVersion';
 import { InstanceService } from '../instance.service';
-import { ConfigurationService } from '../admin/accountability/configuration/configuration.service';
 import { WineryRepositoryConfigurationService } from '../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { SubMenuItem } from '../../model/subMenuItem';
 
@@ -53,13 +52,12 @@ export class InstanceHeaderComponent implements OnInit {
     accountabilityEnabled: boolean;
     showEdmmExport: boolean;
 
-    constructor(private router: Router, private accountabilityConfig: ConfigurationService,
-                public sharedData: InstanceService,
+    constructor(private router: Router, public sharedData: InstanceService,
                 private configurationService: WineryRepositoryConfigurationService) {
     }
 
     ngOnInit(): void {
-        this.accountabilityEnabled = this.accountabilityConfig.isAccountablilityCheckEnabled();
+        this.accountabilityEnabled = this.configurationService.configuration.features.accountability;
 
         if (this.subMenu.length > 7) {
             this.needTwoLines = true;

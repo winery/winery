@@ -16,6 +16,7 @@ package org.eclipse.winery.common.configuration;
 
 import java.io.IOException;
 
+import org.apache.commons.configuration2.YAMLConfiguration;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +40,6 @@ public class EnvironmentsTest {
     @BeforeEach
     public void replaceFileWithTestFile() throws IOException {
         ConfigurationTestUtils.replaceFileWithTestFile();
-        Environments.clearInstances();
     }
 
     /**
@@ -47,10 +47,22 @@ public class EnvironmentsTest {
      */
     @Test
     public void testGetUiConfig() {
-        UiConfigurationObject testObject = Environments.getUiConfig();
+        UiConfigurationObject testObject = Environments.getInstance().getUiConfig();
         assertTrue(testObject.getFeatures().get("foo"));
         assertFalse(testObject.getFeatures().get("bar"));
         assertEquals("http://quaz:8080", testObject.getEndpoints().get("quaz"));
+    }
+
+    /**
+     * Tests whenever the configuration is loaded from backend if it was changed
+     */
+    @Test
+    public void testReload() {
+        YAMLConfiguration configuration = Environment.getInstance().getConfiguration();
+        assertFalse(Environment.getInstance().checkConfigurationForUpdate());
+        configuration.setProperty("ui.features.foo", false);
+        Environment.getInstance().save();
+        assertFalse(Environments.getInstance().getUiConfig().features.get("foo"));
     }
 
     /**
@@ -58,7 +70,7 @@ public class EnvironmentsTest {
      */
     @Test
     public void testGetGitConfig() {
-        GitConfigurationObject gitInfo = Environments.getGitConfig();
+        GitConfigurationObject gitInfo = Environments.getInstance().getGitConfig();
         assertEquals("id", gitInfo.getClientID());
         assertEquals("secret", gitInfo.getClientSecret());
         assertEquals("default", gitInfo.getUsername());
@@ -68,9 +80,19 @@ public class EnvironmentsTest {
 
     @Test
     public void testGetRepositoryConfig() {
-        RepositoryConfigurationObject repositoryConfig = Environments.getRepositoryConfig();
+        RepositoryConfigurationObject repositoryConfig = Environments.getInstance().getRepositoryConfig();
         assertEquals("file", repositoryConfig.getProvider());
         assertEquals("thisisatestroot", repositoryConfig.getRepositoryRoot());
+    }
+
+    @Test
+    public void testGetAccountabilityConfig() {
+        AccountabilityConfigurationObject accountabilityConfig = Environments.getInstance().getAccountabilityConfig();
+        assertEquals("test.url", accountabilityConfig.getGethUrl());
+        assertEquals("123456789", accountabilityConfig.getEthereumPassword());
+        assertEquals("provenancesmartcontracttestaddress", accountabilityConfig.getEthereumProvenanceSmartContractAddress());
+        assertEquals("authorizationsmartcontracttestaddress", accountabilityConfig.getEthereumAuthorizationSmartContractAddress());
+        assertEquals("swarmgatewaytesturl", accountabilityConfig.getSwarmGatewayUrl());
     }
 
     /**
@@ -78,7 +100,7 @@ public class EnvironmentsTest {
      */
     @Test
     public void testGetRepositoryRoot() {
-        assertEquals("thisisatestroot", Environments.getRepositoryConfig().getRepositoryRoot());
+        assertEquals("thisisatestroot", Environments.getInstance().getRepositoryConfig().getRepositoryRoot());
     }
 
     /**
@@ -88,8 +110,8 @@ public class EnvironmentsTest {
     @Test
     public void testSetRepositoryRoot() {
         String changedRoot = "ThisIsTheChangedRoot";
-        Environments.getRepositoryConfig().setRepositoryRoot(changedRoot);
-        assertEquals(changedRoot, Environments.getRepositoryConfig().getRepositoryRoot());
+        Environments.getInstance().getRepositoryConfig().setRepositoryRoot(changedRoot);
+        assertEquals(changedRoot, Environments.getInstance().getRepositoryConfig().getRepositoryRoot());
     }
 
     /**
@@ -98,11 +120,11 @@ public class EnvironmentsTest {
      */
     @Test
     public void testSaveFeatures() {
-        UiConfigurationObject object = Environments.getUiConfig();
+        UiConfigurationObject object = Environments.getInstance().getUiConfig();
         object.getFeatures().put("foo", false);
         object.getFeatures().put("bar", true);
         object.save();
-        UiConfigurationObject result = Environments.getUiConfig();
+        UiConfigurationObject result = Environments.getInstance().getUiConfig();
         assertFalse(result.getFeatures().get("foo"));
         assertTrue(result.getFeatures().get("bar"));
     }
@@ -113,10 +135,10 @@ public class EnvironmentsTest {
      */
     @Test
     public void testSaveEndpoints() {
-        UiConfigurationObject object = Environments.getUiConfig();
+        UiConfigurationObject object = Environments.getInstance().getUiConfig();
         object.getEndpoints().put("quaz", "");
         object.save();
-        UiConfigurationObject result = Environments.getUiConfig();
+        UiConfigurationObject result = Environments.getInstance().getUiConfig();
         assertEquals("", result.getEndpoints().get("quaz"));
     }
 }

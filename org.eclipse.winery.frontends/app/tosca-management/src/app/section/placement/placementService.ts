@@ -19,16 +19,15 @@ import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 @Injectable()
 export class PlacementService {
 
-    private readonly headers = new HttpHeaders({ 'Accept': 'application/xml', 'Content-Type' : 'application/xml' });
+    private readonly headers = new HttpHeaders({ 'Accept': 'application/xml', 'Content-Type': 'application/xml' });
     private readonly path: string;
 
     constructor(private http: HttpClient) {
         this.path = backendBaseURL + '/dataflowmodels/';
     }
 
-
     createTemplateFromDataFlow(dataFlow: String): Observable<HttpResponse<string>> {
-        return this.http.post(this.path , dataFlow, { headers: this.headers, observe: 'response', responseType: 'text' });
+        return this.http.post(this.path, dataFlow, { headers: this.headers, observe: 'response', responseType: 'text' });
     }
 }
 

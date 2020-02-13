@@ -16,16 +16,7 @@
     <div *ngIf="!loading; else showLoader">
         <div *ngIf="!error; else showError">
             <div class="form-group">
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" id="enableAccountability" name="enableAccountability"
-                               [(ngModel)]="configuration.enableAccountability">
-                        Enable Accountability Tracking
-                    </label>
-                </div>
-                <br/>
-
-                <div *ngIf="configuration.enableAccountability">
+                <div *ngIf="accountabilityEnabled">
                     <label for="blockchainNodeUrl">Geth JSON-RPC API URL (with port number)</label>
                     <input type="text" id="blockchainNodeUrl" class="form-control" name="blockchainNodeUrl"
                            [(ngModel)]="configuration.blockchainNodeUrl" required>
@@ -67,12 +58,12 @@
                 </div>
 
                 <button type="button" class="btn btn-primary" (click)="onSave()"
-                        [disabled]="(!configurationForm?.valid && configuration.enableAccountability) || loading">
+                        [disabled]="(!configurationForm?.valid && accountabilityEnabled) || loading">
                     Save
                 </button>
 
                 <button type="button" class="btn btn-primary" (click)="onRestore()" style="margin-left: 10px;"
-                        [disabled]="(!configurationForm?.valid && configuration.enableAccountability) || loading">
+                        [disabled]="(!configurationForm?.valid && accountabilityEnabled) || loading">
                     Restore Defaults
                 </button>
             </div>

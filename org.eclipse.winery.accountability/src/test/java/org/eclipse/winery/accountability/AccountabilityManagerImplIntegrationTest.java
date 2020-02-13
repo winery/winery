@@ -15,9 +15,7 @@
 package org.eclipse.winery.accountability;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.winery.accountability.blockchain.BlockchainAccess;
@@ -27,13 +25,14 @@ import org.eclipse.winery.accountability.model.ModelProvenanceElement;
 import org.eclipse.winery.accountability.model.authorization.AuthorizationInfo;
 import org.eclipse.winery.accountability.storage.ImmutableStorageProvider;
 import org.eclipse.winery.accountability.storage.ImmutableStorageProviderFactory;
+import org.eclipse.winery.common.configuration.AccountabilityConfigurationManager;
+import org.eclipse.winery.common.configuration.Environments;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,50 +41,43 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@EnabledIf("(new java.io.File(\"./UTC--2019-01-23T10-48-04.632976800Z--44fb31577305b7b6ed8ff05ee7c0f07b3cc99306\").exists())")
 class AccountabilityManagerImplIntegrationTest {
     private static final Logger log = LoggerFactory.getLogger(AccountabilityManagerImplIntegrationTest.class);
-    private static final String CONFIGURATION_FILE_NAME = "defaultaccountabilityconfig.properties";
-    private static Properties props;
+    private static final String privateKey = "0xb1211de9fb36bc81c9e269e1f6b783d80e01f3709562bb78451d1a956b3c2038";
     private AccountabilityManagerImpl accountabilityManager;
 
     @BeforeAll
     static void startGanache() throws Exception {
-        try (InputStream propsStream = AccountabilityManagerImplIntegrationTest.class.getClassLoader().getResourceAsStream(CONFIGURATION_FILE_NAME)) {
-            props = new Properties();
-            props.load(propsStream);
-        }
-
-        final String privateKey = props.getProperty("ethereum-private-key");
         GanacheManager ganacheManager = GanacheManager.getInstance(privateKey);
         ganacheManager.startGanache();
-        long start = System.currentTimeMillis();
-
-        while (System.currentTimeMillis() < start + 10000) {
-        }
     }
 
     @AfterAll
     static void killGanache() throws InterruptedException {
-        final String privateKey = props.getProperty("ethereum-private-key");
         GanacheManager ganacheManager = GanacheManager.getInstance(privateKey);
         ganacheManager.stopGanache();
     }
 
     @BeforeEach
     public void setUp() throws Exception {
+        AccountabilityConfigurationManager.getInstance().setDefaultKeystore();
+        Environments.getInstance().getAccountabilityConfig().setEthereumPassword("winery");
+        Environments.getInstance().getAccountabilityConfig().setGethUrl("http://127.0.0.1:8545");
+        Environments.getInstance().getAccountabilityConfig().setSwarmGatewayUrl("https://swarm-gateways.net/");
         // deploy smart contracts to (a new address in) the blockchain
-        ContractDeployer deployer = new ContractDeployer(props);
-        props.setProperty("ethereum-provenance-smart-contract-address", deployer.deployProvenance());
-        props.setProperty("ethereum-authorization-smart-contract-address", deployer.deployAuthorization());
+        ContractDeployer deployer = new ContractDeployer(Environments.getInstance().getAccountabilityConfig());
+        Environments.getInstance().getAccountabilityConfig().setEthereumProvenanceSmartContractAddress(deployer.deployProvenance());
+        Environments.getInstance().getAccountabilityConfig().setEthereumAuthorizationSmartContractAddress(deployer.deployAuthorization());
         // reset the contents of the accountability layer so older, possibly incompatible instances are nullified.
         BlockchainFactory.reset();
         ImmutableStorageProviderFactory.reset();
         // create new instances
+
         BlockchainAccess blockchainAccess = BlockchainFactory
-            .getBlockchainAccess(BlockchainFactory.AvailableBlockchains.ETHEREUM, props);
+            .getBlockchainAccess(BlockchainFactory.AvailableBlockchains.ETHEREUM, Environments.getInstance().getAccountabilityConfig());
         ImmutableStorageProvider storageProvider = ImmutableStorageProviderFactory
-            .getStorageProvider(ImmutableStorageProviderFactory.AvailableImmutableStorages.SWARM, props);
+            .getStorageProvider(ImmutableStorageProviderFactory.AvailableImmutableStorages.SWARM, Environments.getInstance().getAccountabilityConfig());
+
         this.accountabilityManager = new AccountabilityManagerImpl(blockchainAccess, storageProvider);
     }
 
@@ -98,7 +90,7 @@ class AccountabilityManagerImplIntegrationTest {
         assertNotNull(authorize.get());
         CompletableFuture<AuthorizationInfo> authorization = this.accountabilityManager.getAuthorization(processId);
         AuthorizationInfo authorizationInfo = authorization.get();
-        
+
         assertTrue(authorizationInfo.isAuthorized(participantBlockchainId));
     }
 
@@ -120,7 +112,7 @@ class AccountabilityManagerImplIntegrationTest {
         // store two fingerprints (it doesn't matter that they are identical)
         this.accountabilityManager.storeFingerprint(processIdentifier, manifest).get();
         this.accountabilityManager.storeFingerprint(processIdentifier, manifest).get();
-        
+
         try (ByteArrayInputStream stream = new ByteArrayInputStream(manifest.getBytes())) {
             this.accountabilityManager.storeState(stream);
         }

@@ -15,10 +15,10 @@ import { HttpClient } from '@angular/common/http';
 import { Configuration } from './Configuration';
 import { Observable } from 'rxjs/Rx';
 import { backendBaseURL } from '../../../../configuration';
-import { catchError, map, mergeMap } from 'rxjs/internal/operators';
+import { map, mergeMap } from 'rxjs/internal/operators';
 import { Injectable } from '@angular/core';
-import { throwError } from 'rxjs/index';
 import { ConfigurationDTO } from './ConfigurationDTO';
+import { WineryRepositoryConfigurationService } from '../../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 /**
  * Manages accountability configurations. Configuration entries are divided into two groups: (i) a group that is managed
@@ -31,40 +31,20 @@ export class ConfigurationService {
     private readonly enableAccountabilityCheckDefaultValue = false;
     private readonly enableAccountabilityCheckKey = 'AccountabilityCheck';
 
-    constructor(private http: HttpClient) {
-    }
-
-    isAccountablilityCheckEnabled(): boolean {
-        const valueString = localStorage.getItem(this.enableAccountabilityCheckKey);
-
-        if (valueString === null || valueString === undefined) {
-            return this.enableAccountabilityCheckDefaultValue;
-        }
-
-        return valueString.toLowerCase() === 'true';
-    }
-
-    setAccountabilityCheckEnabled(isEnabled: boolean) {
-        localStorage.setItem(this.enableAccountabilityCheckKey, isEnabled.toString());
+    constructor(private http: HttpClient, private configurationService: WineryRepositoryConfigurationService) {
     }
 
     loadConfiguration(): Observable<Configuration> {
-
         return this.http.get<ConfigurationDTO>(this.accountabilityUrl).pipe(
             map(configuration => {
                 // create configuration object from received dto
                 const result: Configuration = new Configuration(configuration);
-                // enhance it with local configuration
-                result.enableAccountability = this.isAccountablilityCheckEnabled();
                 return result;
             })
         );
     }
 
     saveConfiguration(keyFile: File, config: Configuration): Observable<Object> {
-        // handle entries managed locally
-        this.setAccountabilityCheckEnabled(config.enableAccountability);
-
         // handle entries managed by the backend
         const formData: FormData = new FormData();
 

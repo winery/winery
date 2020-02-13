@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
+import java.util.Iterator;
+import java.util.Objects;
 
 import org.apache.commons.configuration2.YAMLConfiguration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
@@ -35,16 +37,42 @@ import org.slf4j.LoggerFactory;
  */
 final class Environment {
 
+    //InputStream that accesses the defaultConfiguration from the resources
+    private static final String defaultConfigName = "winery.yml";
+    private static final String testConfigName = "wineryTest.yml";
     private static final Logger LOGGER = LoggerFactory.getLogger(Environment.class);
     //Path to the directory of the winery configuration file
     private static final File configDirectory = new File(System.getProperty("user.home") + "/.winery");
     //Path of the winery configuration file
-    private static final File configFile = new File(configDirectory + "/winery.yml");
-    //InputStream that accesses the defaultConfiguration from the resources
-    private static final InputStream defaultConfigInputStream = Environment.class.getClassLoader().getResourceAsStream("winery.yml");
+    private static final File configFile = new File(configDirectory + "/" + defaultConfigName);
+    private static Environment instance;
     //Contains the configuration
-    private static YAMLConfiguration configuration;
-    private static FileTime lastChange = null;
+    private YAMLConfiguration configuration = null;
+    private FileTime lastChange = null;
+
+    private Environment() {
+    }
+
+    protected static Environment getInstance() {
+        if (Objects.isNull(instance)) {
+            instance = new Environment();
+        }
+        return instance;
+    }
+
+    /**
+     * Opens an input stream to the default configuration file.
+     */
+    static InputStream getDefaultConfigInputStream() {
+        return Environment.class.getClassLoader().getResourceAsStream(defaultConfigName);
+    }
+
+    /**
+     * Opens and returns an input stream to the test configuration file.
+     */
+    static InputStream getTestConfigInputStream() {
+        return Environment.class.getClassLoader().getResourceAsStream(testConfigName);
+    }
 
     /**
      * Getter for the configuration attribute, if class attribute is null, it is set to the configuration in the
@@ -52,11 +80,11 @@ final class Environment {
      *
      * @return the configuration attribute of Environment
      */
-    protected static YAMLConfiguration getConfiguration() {
-        if (Environment.configuration == null || checkConfigurationForUpdate()) {
-            Environment.getConfigFromFile();
+    protected YAMLConfiguration getConfiguration() {
+        if (Objects.isNull(this.configuration)) {
+            this.getConfigFromFile();
         }
-        return Environment.configuration;
+        return this.configuration;
     }
 
     /**
@@ -65,7 +93,7 @@ final class Environment {
      *
      * @return true if the configuration in the file is updated or not loaded yet
      */
-    static boolean checkConfigurationForUpdate() {
+    boolean checkConfigurationForUpdate() {
         try {
             if (lastChange == null) {
                 return true;
@@ -81,8 +109,8 @@ final class Environment {
      * Sets the Class attribute to the configuration parameter. This is only used in testing, to set the configuration
      * back to the original state, before the test.
      */
-    protected static void setConfiguration(YAMLConfiguration configuration) {
-        Environment.configuration = configuration;
+    protected void setConfiguration(YAMLConfiguration configuration) {
+        this.configuration = configuration;
     }
 
     /**
@@ -90,9 +118,9 @@ final class Environment {
      * Configuration Instance of the existing winery.yml file. Else it calls createDefaultConfigFile(). Is protected for
      * testing purposes.
      */
-    private static void getConfigFromFile() {
+    private void getConfigFromFile() {
         if (!configFile.exists()) {
-            copyDefaultConfigFile(configFile);
+            copyDefaultConfigFile();
         }
         try {
             lastChange = Files.getLastModifiedTime(configFile.toPath());
@@ -106,37 +134,72 @@ final class Environment {
         } catch (ConfigurationException | IOException ex) {
             LOGGER.debug("Error while reading configuration file.", ex);
         }
-        Environment.configuration = config;
+        this.configuration = config;
     }
 
     /**
      * Method copies the default winery.yml file (all flags are true) into the config directory of the winery in
      * HOME/.winery. If the directory doesn't exist it will be created.
-     *
-     * @param configFilePath Path where the configuration will be copied to
      */
-    private static void copyDefaultConfigFile(File configFilePath) {
-        try {
+    private void copyDefaultConfigFile() {
+        try (InputStream defaultConfigInputStream = getDefaultConfigInputStream()) {
             if (defaultConfigInputStream == null) {
                 throw new NullPointerException();
             }
-            FileUtils.copyInputStreamToFile(defaultConfigInputStream, configFilePath);
-            defaultConfigInputStream.close();
+            FileUtils.copyInputStreamToFile(defaultConfigInputStream, Environment.configFile);
         } catch (IOException | NullPointerException ex) {
             LOGGER.debug("Error while copying the default config file into the winery directory", ex);
         }
     }
 
     /**
+     * This method resets the accountability part of the configuration by copying the default configuration to a file
+     * and reading the accountability values and replacing them
+     */
+    void reloadAccountabilityConfiguration(InputStream defaultConfigInputStream) {
+        File tempFile = new File(configDirectory + "/wineryAccountability.yml");
+        if (!configFile.exists()) {
+            copyDefaultConfigFile();
+        } else {
+            try {
+                FileUtils.copyInputStreamToFile(defaultConfigInputStream, tempFile);
+            } catch (IOException e) {
+                LOGGER.debug("Error copying default file.", e);
+            }
+            YAMLConfiguration defaultAccountabilityConfiguration;
+            try (FileReader reader = new FileReader(tempFile)) {
+                String accountabilityPrefix = "accountability";
+                defaultAccountabilityConfiguration = new YAMLConfiguration();
+                defaultAccountabilityConfiguration.read(reader);
+                YAMLConfiguration currentConfiguration = this.getConfiguration();
+                Iterator<String> accountabilityAttributes = defaultAccountabilityConfiguration.getKeys(accountabilityPrefix);
+                accountabilityAttributes.forEachRemaining(key -> {
+                    currentConfiguration.setProperty(key,
+                        defaultAccountabilityConfiguration.getString(key));
+                });
+                this.save();
+            } catch (ConfigurationException | IOException ex) {
+                LOGGER.debug("Error while reading configuration file.", ex);
+            }
+            tempFile.delete();
+        }
+    }
+
+    /**
      * This method writes the current configuration of the configuration attribute into the winery.yml file.
      */
-    protected static void save() {
-        try {
-            FileWriter writer = new FileWriter(configFile);
-            configuration.write(writer);
-            writer.close();
+    protected void save() {
+        try (FileWriter writer = new FileWriter(configFile)) {
+            this.getConfiguration().write(writer);
         } catch (IOException | ConfigurationException ioex) {
             LOGGER.debug("Error while saving the config file.", ioex);
         }
+    }
+
+    /**
+     * Reloads configuration from file.
+     */
+    void updateConfig() {
+        this.getConfigFromFile();
     }
 }

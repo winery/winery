@@ -76,7 +76,7 @@ public class ModelUtilities {
 
     public static final QName QNAME_LOCATION = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "location");
     public static final QName NODE_TEMPLATE_REGION = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "region");
-    public static final QName NODE_TEMPLATE_PROVIDER = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, 
+    public static final QName NODE_TEMPLATE_PROVIDER = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE,
         "provider");
     public static final QName RELATIONSHIP_TEMPLATE_TRANSFER_TYPE =
         new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "dataTransferType");
