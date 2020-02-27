@@ -188,11 +188,6 @@ export class InstanceComponent implements OnDestroy {
     }
 
     private handleToscaLiteCompatibilityData(data: ToscaLiteCompatibilityData) {
-        // const map = new Map<string, string[]>();
-        // for (const key of Object.keys(data.errorList)) {
-        //     map.set(key, data.isToscaLiteCompatible[key]);
-        // }
-        // this.toscaLiteCompatibilityData = { ...data, errorList: map};
         this.toscaLiteCompatibilityData = data;
     }
 }

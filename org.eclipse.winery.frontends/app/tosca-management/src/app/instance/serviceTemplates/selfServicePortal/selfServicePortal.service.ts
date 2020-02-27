@@ -80,7 +80,7 @@ export class SelfServicePortalService {
         const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
         return this.http
             .put(
-                backendBaseURL + path,
+                path,
                 property,
                 { headers: headers, observe: 'response', responseType: 'text' }
             );
