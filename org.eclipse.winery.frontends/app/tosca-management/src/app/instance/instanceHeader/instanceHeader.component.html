@@ -13,6 +13,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <div class="top" [class.twolines]="needTwoLines">
     <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIcon">
+    <img *ngIf="toscaLiteCompatibilityData?.isToscaLiteCompatible" src="../../../assets/images/toscaLite.png" class="toscaLiteCompatible">
     <div class="informationContainer">
         <winery-property-rename [toscaComponent]="toscaComponent" [propertyName]="'localName'"
                                 [multipleVersionsAvailable]="versions?.length > 0"></winery-property-rename>
@@ -42,7 +43,7 @@
                 <li *ngIf="accountabilityEnabled">
                     <a target="_blank" href="{{ toscaComponent.provenanceCsarPath }}">Provenance CSAR (XML)</a>
                 </li>
-                <li *ngIf="showEdmmExport">
+                <li *ngIf="showEdmmExport && toscaLiteCompatibilityData?.isToscaLiteCompatible">
                     <a target="_blank" href="{{ toscaComponent.edmmExportPath }}">Export to EDMM</a>
                 </li>
             </ul>

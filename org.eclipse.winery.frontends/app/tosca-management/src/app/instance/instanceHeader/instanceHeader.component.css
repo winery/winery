@@ -23,3 +23,11 @@
     height: 40px;
     width: 40px;
 }
+
+.toscaLiteCompatible {
+    z-index: 2;
+    position: absolute;
+    margin-top: 26px;
+    margin-left: 21px;
+    max-height: 53px;
+}

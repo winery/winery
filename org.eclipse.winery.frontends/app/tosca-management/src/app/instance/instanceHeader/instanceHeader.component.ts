@@ -18,7 +18,7 @@ import { ModalDirective } from 'ngx-bootstrap';
 import { ToscaComponent } from '../../model/toscaComponent';
 import { ToscaTypes } from '../../model/enums';
 import { WineryVersion } from '../../model/wineryVersion';
-import { InstanceService } from '../instance.service';
+import { InstanceService, ToscaLiteCompatibilityData } from '../instance.service';
 import { WineryRepositoryConfigurationService } from '../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { SubMenuItem } from '../../model/subMenuItem';
 
@@ -42,6 +42,7 @@ export class InstanceHeaderComponent implements OnInit {
     @Input() typeOf: string;
     @Input() subMenu: SubMenuItem[];
     @Input() imageUrl: string;
+    @Input() toscaLiteCompatibilityData: ToscaLiteCompatibilityData;
     @Output() deleteConfirmed: EventEmitter<any> = new EventEmitter();
 
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
