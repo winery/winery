@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.common.toscalite;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,12 +35,6 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 
 public class ToscaLiteChecker {
 
-    private static final String LISTING_STRING = "- ";
-    private static final String INDENTATION_STRING = "  ";
-
-    private static final int TYPE_LEVEL = 0;
-    private static final int TEMPLATE_LEVEL = 1;
-
     private final Map<QName, TNodeType> nodeTypes;
     private final Map<QName, TRelationshipType> relationshipTypes;
     private final Map<QName, EdmmType> edmmTypeMappings;
@@ -47,7 +42,7 @@ public class ToscaLiteChecker {
     private QName hostedOn;
     private QName connectsTo;
     private QName dependsOn;
-    private Map<QName, StringBuilder> errorList;
+    private Map<QName, List<String>> errorList;
     private boolean foundError;
 
     public ToscaLiteChecker(Map<QName, TNodeType> nodeTypes,
@@ -73,7 +68,7 @@ public class ToscaLiteChecker {
             .ifPresent(entry -> this.hostedOn = entry.getKey());
     }
 
-    public Map<QName, StringBuilder> getErrorList() {
+    public Map<QName, List<String>> getErrorList() {
         return errorList;
     }
 
@@ -82,18 +77,18 @@ public class ToscaLiteChecker {
         return !this.foundError;
     }
 
-    public String checkToscaLiteCompatibility(TServiceTemplate serviceTemplate) {
+    public Map<QName, List<String>> checkToscaLiteCompatibility(TServiceTemplate serviceTemplate) {
         QName serviceTemplateQName = new QName(serviceTemplate.getTargetNamespace(), serviceTemplate.getName());
         this.errorList = new HashMap<>();
-        this.errorList.put(serviceTemplateQName, new StringBuilder());
+        this.errorList.put(serviceTemplateQName, new ArrayList<>());
 
         // Tags -> metadata
 
         if (serviceTemplate.getBoundaryDefinitions() != null) {
-            this.addErrorToList(serviceTemplateQName, TYPE_LEVEL, "specifies BOUNDARY DEFINITIONS which");
+            this.addErrorToList(serviceTemplateQName, "specifies BOUNDARY DEFINITIONS which");
         }
         if (serviceTemplate.getPlans() != null) {
-            this.addErrorToList(serviceTemplateQName, TYPE_LEVEL, "specifies PLANS which");
+            this.addErrorToList(serviceTemplateQName, "specifies PLANS which");
         }
 
         TTopologyTemplate topologyTemplate = serviceTemplate.getTopologyTemplate();
@@ -104,7 +99,7 @@ public class ToscaLiteChecker {
                 .forEach(tRelationshipTemplate -> checkToscaLiteCompatibility(tRelationshipTemplate, serviceTemplateQName));
         }
 
-        return this.errorList.toString();
+        return this.errorList;
     }
 
     private void checkToscaLiteCompatibility(TEntityTemplate template, QName parentElement) {
@@ -114,11 +109,11 @@ public class ToscaLiteChecker {
             this.checkType(template, parentElement);
         }
         if (template.getPropertyConstraints() != null) {
-            this.addErrorToList(parentElement, TEMPLATE_LEVEL, templateClass, template.getId(),
+            this.addErrorToList(parentElement, templateClass, template.getId(),
                 "specifies PROPERTY CONSTRAINTS which");
         }
         if (template instanceof HasPolicies && ((HasPolicies) template).getPolicies() != null) {
-            this.addErrorToList(parentElement, TEMPLATE_LEVEL, templateClass, template.getId(),
+            this.addErrorToList(parentElement, templateClass, template.getId(),
                 "specifies POLICIES which");
         }
     }
@@ -145,7 +140,7 @@ public class ToscaLiteChecker {
             if (interfaceList.size() > 1 || ToscaLiteUtils.isLifecycleInterface(interfaceList.get(0))) {
                 interfaceList.stream()
                     .filter(ToscaLiteUtils::isNotLifecycleInterface)
-                    .forEach(unsupportedInterface -> this.addErrorToList(type, TYPE_LEVEL,
+                    .forEach(unsupportedInterface -> this.addErrorToList(type,
                         "specifies the INTERFACE", unsupportedInterface.getName(), "which")
                     );
             }
@@ -157,7 +152,7 @@ public class ToscaLiteChecker {
         if (!(ModelUtilities.isOfType(this.hostedOn, type, this.relationshipTypes)
             || ModelUtilities.isOfType(this.connectsTo, type, this.relationshipTypes)
             || ModelUtilities.isOfType(this.dependsOn, type, this.relationshipTypes))) {
-            this.addErrorToList(type, TYPE_LEVEL, "Relation Type does not inherit from",
+            this.addErrorToList(type, "Relation Type does not inherit from",
                 EdmmType.DEPENDS_ON, EdmmType.HOSTED_ON, EdmmType.DEPENDS_ON, "or connectsTo and, thus,");
         }
 
@@ -167,10 +162,10 @@ public class ToscaLiteChecker {
     }
 
     private boolean isElementVisited(QName qName) {
-        StringBuilder stringBuilder = this.errorList.get(qName);
-        if (stringBuilder == null) {
-            stringBuilder = new StringBuilder();
-            this.errorList.put(qName, stringBuilder);
+        List<String> errors = this.errorList.get(qName);
+        if (errors == null) {
+            errors = new ArrayList<>();
+            this.errorList.put(qName, errors);
             return false;
         }
         return true;
@@ -184,16 +179,15 @@ public class ToscaLiteChecker {
         // todo: is there anything more?
     }
 
-    private void addErrorToList(QName qName, int level, Object... messageElements) {
-        StringBuilder stringBuilder = this.errorList.get(qName);
-        for (int index = 0; index < level; index++) {
-            stringBuilder.append(INDENTATION_STRING);
-        }
+    private void addErrorToList(QName qName, Object... messageElements) {
+        List<String> errorList = this.errorList.get(qName);
+        StringBuilder stringBuilder = new StringBuilder();
         for (Object error : messageElements) {
             stringBuilder.append(error)
                 .append(" ");
         }
-        stringBuilder.append("cannot be mapped to TOSCA Lite!\n");
+        stringBuilder.append("cannot be mapped to TOSCA Lite!");
+        errorList.add(stringBuilder.toString());
         this.foundError = true;
     }
 }

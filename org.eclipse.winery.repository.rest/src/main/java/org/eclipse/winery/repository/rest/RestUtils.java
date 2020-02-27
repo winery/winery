@@ -304,10 +304,8 @@ public class RestUtils {
         Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations = repository.getQNameToElementMapping(RelationshipTypeImplementationId.class);
         Map<QName, TArtifactTemplate> artifactTemplates = repository.getQNameToElementMapping(ArtifactTemplateId.class);
         EdmmManager edmmManager = repository.getEdmmManager();
-        Map<QName, EdmmType> oneToOneMappings = new HashMap<>();
-        edmmManager.getOneToOneMappings().forEach(m -> oneToOneMappings.put(m.toscaType, m.edmmType));
-        Map<QName, EdmmType> typeMappings = new HashMap<>();
-        edmmManager.getTypeMappings().forEach(m -> typeMappings.put(m.toscaType, m.edmmType));
+        Map<QName, EdmmType> oneToOneMappings = edmmManager.getOneToOneMap();
+        Map<QName, EdmmType> typeMappings = edmmManager.getTypeMap();
 
         if (nodeTypes.isEmpty()) {
             throw new IllegalStateException("No Node Types defined!");

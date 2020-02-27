@@ -54,6 +54,7 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.driverspecificationandinjection.DASpecification;
 import org.eclipse.winery.repository.driverspecificationandinjection.DriverInjection;
+import org.eclipse.winery.repository.export.EdmmUtils;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceContainingATopology;
 import org.eclipse.winery.repository.rest.resources._support.IHasName;
@@ -366,5 +367,12 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     @Override
     public void synchronizeReferences() throws IOException {
         BackendUtils.synchronizeReferences((ServiceTemplateId) this.id);
+    }
+
+    @Path("toscalite")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public Map<String, Object> getToscaLiteCompatibility() {
+        return EdmmUtils.checkToscaLiteCompatibility(this.getServiceTemplate());
     }
 }

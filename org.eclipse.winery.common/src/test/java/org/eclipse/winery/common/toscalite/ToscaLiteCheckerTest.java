@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.common.toscalite;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -24,7 +25,7 @@ import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ToscaLiteCheckerTest extends EdmmDependantTest {
@@ -50,8 +51,12 @@ class ToscaLiteCheckerTest extends EdmmDependantTest {
 
         ToscaLiteChecker toscaLiteChecker = new ToscaLiteChecker(this.nodeTypes, this.relationshipTypes, this.edmmTypeExtendsMapping, this.edmm1to1Mapping);
         boolean compliant = toscaLiteChecker.isToscaLiteCompliant(serviceTemplate);
-        Map<QName, StringBuilder> errorList = toscaLiteChecker.getErrorList();
+        Map<QName, List<String>> resultList = toscaLiteChecker.getErrorList();
 
         assertTrue(compliant);
+        // expect 7 instead of 9 as the hostedOn type is used 3 times
+        assertEquals(7, resultList.size());
+
+        resultList.forEach((qName, errorList) -> assertTrue(errorList.isEmpty()));
     }
 }
