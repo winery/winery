@@ -63,7 +63,7 @@ export class SelfServicePortalService {
     }
 
     getSelfServiceData(): Observable<SelfServiceApiData> {
-        const o = this.http.get<SelfServiceApiData>(backendBaseURL + this.path);
+        const o = this.http.get<SelfServiceApiData>(this.path);
         o.subscribe(data => this.selfServiceData = data);
         return o;
     }

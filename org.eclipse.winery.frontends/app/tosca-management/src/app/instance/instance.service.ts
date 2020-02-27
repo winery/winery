@@ -22,6 +22,11 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { WineryRepositoryConfigurationService } from '../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { SubMenuItem, SubMenuItems } from '../model/subMenuItem';
 
+export interface ToscaLiteCompatibilityData {
+    isToscaLiteCompatible: boolean;
+    errorList: Map<string, string[]>;
+}
+
 @Injectable()
 export class InstanceService {
 
@@ -127,7 +132,7 @@ export class InstanceService {
         this.toscaComponent = toscaComponent;
         // In order to have always the base path of this instance, create the path here
         // instead of getting it from the router, because there might be some child routes included.
-        this.path = '/' + this.toscaComponent.toscaType + '/'
+        this.path = backendBaseURL + '/' + this.toscaComponent.toscaType + '/'
             + encodeURIComponent(encodeURIComponent(this.toscaComponent.namespace)) + '/'
             + this.toscaComponent.localName;
 
@@ -142,20 +147,24 @@ export class InstanceService {
 
     public deleteComponent(): Observable<HttpResponse<string>> {
         return this.http.delete(
-            backendBaseURL + this.path + '/',
+            this.path + '/',
             { observe: 'response', responseType: 'text' }
         );
     }
 
     public getComponentData(): Observable<WineryInstance> {
-        return this.http.get<WineryInstance>(backendBaseURL + this.path + '/');
+        return this.http.get<WineryInstance>(this.path + '/');
     }
 
     public getTopologyTemplate(): Observable<WineryTopologyTemplate> {
-        return this.http.get<WineryTopologyTemplate>(backendBaseURL + this.path + '/topologytemplate/');
+        return this.http.get<WineryTopologyTemplate>(this.path + '/topologytemplate/');
     }
 
     public getVersions(): Observable<WineryVersion[]> {
-        return this.http.get<WineryVersion[]>(backendBaseURL + this.path + '/?versions');
+        return this.http.get<WineryVersion[]>(this.path + '/?versions');
+    }
+
+    public getToscaLiteCompatibility(): Observable<ToscaLiteCompatibilityData> {
+        return this.http.get<ToscaLiteCompatibilityData>(this.path + '/toscalite');
     }
 }

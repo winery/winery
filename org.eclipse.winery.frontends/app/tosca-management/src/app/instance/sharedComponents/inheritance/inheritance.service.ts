@@ -22,17 +22,14 @@ import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 @Injectable()
 export class InheritanceService {
 
-    private path: string;
-
     constructor(private http: HttpClient,
                 private sharedData: InstanceService) {
-        this.path = this.sharedData.path;
     }
 
     getInheritanceData(): Observable<InheritanceApiData> {
         return this.http
             .get<InheritanceApiData>(
-                backendBaseURL + this.path + '/inheritance/',
+                this.sharedData.path + '/inheritance/',
             );
     }
 
@@ -49,12 +46,10 @@ export class InheritanceService {
         inheritanceData.isFinal = 'no';
         inheritanceData.derivedFrom = inheritFrom;
 
-        this.path = url;
-
-        return this.saveInheritanceData(inheritanceData);
+        return this.saveInheritanceData(inheritanceData, url);
     }
 
-    saveInheritanceData(inheritanceData: InheritanceApiData): Observable<HttpResponse<string>> {
+    saveInheritanceData(inheritanceData: InheritanceApiData, url?: string): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
         // create a copy to not send unnecessary data to the server
         const copy = new InheritanceApiData();
@@ -64,7 +59,7 @@ export class InheritanceService {
 
         return this.http
             .put(
-                backendBaseURL + this.path + '/inheritance/',
+                (url ? url : this.sharedData.path) + '/inheritance/',
                 JSON.stringify(copy),
                 { headers: headers, observe: 'response', responseType: 'text' }
             );

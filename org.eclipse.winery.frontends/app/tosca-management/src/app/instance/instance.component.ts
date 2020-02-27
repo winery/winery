@@ -13,14 +13,12 @@
  *******************************************************************************/
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Response } from '@angular/http';
 import { Subscription } from 'rxjs';
-import { InstanceService } from './instance.service';
+import { InstanceService, ToscaLiteCompatibilityData } from './instance.service';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
 import { backendBaseURL } from '../configuration';
 import { RemoveWhiteSpacesPipe } from '../wineryPipes/removeWhiteSpaces.pipe';
 import { ExistService } from '../wineryUtils/existService';
-import { isNullOrUndefined } from 'util';
 import { WineryInstance } from '../model/wineryComponent';
 import { ToscaTypes } from '../model/enums';
 import { ToscaComponent } from '../model/toscaComponent';
@@ -51,6 +49,7 @@ export class InstanceComponent implements OnDestroy {
     loadingData = true;
 
     routeSub: Subscription;
+    toscaLiteCompatibilityData: ToscaLiteCompatibilityData;
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
@@ -66,11 +65,11 @@ export class InstanceComponent implements OnDestroy {
 
                     this.service.setSharedData(this.toscaComponent);
 
-                    if (!isNullOrUndefined(this.toscaComponent)
+                    if (this.toscaComponent
                         && this.toscaComponent.toscaType !== ToscaTypes.Imports
                         && this.toscaComponent.toscaType !== ToscaTypes.Admin) {
                         if (this.toscaComponent.toscaType === ToscaTypes.NodeType) {
-                            const img = backendBaseURL + this.service.path + '/appearance/50x50';
+                            const img = this.service.path + '/appearance/50x50';
                             this.existService.check(img)
                                 .subscribe(
                                     () => this.imageUrl = img,
@@ -82,6 +81,9 @@ export class InstanceComponent implements OnDestroy {
                                 compData => this.handleComponentData(compData)
                             );
                         this.getVersionInfo();
+                        if (this.toscaComponent.toscaType === ToscaTypes.ServiceTemplate) {
+                            this.getToscaLiteCompatibility();
+                        }
                     } else {
                         this.loadingVersions = false;
                         this.loadingData = false;
@@ -98,35 +100,32 @@ export class InstanceComponent implements OnDestroy {
         this.service.getVersions()
             .subscribe(
                 versions => this.handleVersions(versions),
-                (error: Response) => {
-                    if (error.status === 500) {
-                        // needed because the git client sometimes throws an exception reading the repository:
-                        // java.io.EOFException: Short read of block
-                        this.getVersionInfo();
-                    }
-                }
+                error => this.handleError(error)
             );
     }
 
     deleteComponent() {
-        this.service.deleteComponent().subscribe(data => this.handleDelete(), error => this.handleError(error));
+        this.service.deleteComponent().subscribe(
+            data => this.handleDelete(),
+            error => this.handleError(error)
+        );
     }
 
     private handleComponentData(data: WineryInstance) {
         this.typeUrl = Utils.getTypeOfTemplateOrImplementation(this.toscaComponent.toscaType);
 
-        if (!isNullOrUndefined(this.typeUrl)) {
+        if (this.typeUrl) {
             this.typeUrl = '/' + this.typeUrl;
             const tempOrImpl = data.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0];
             let qName: string[];
 
-            if (!isNullOrUndefined(tempOrImpl.type)) {
+            if (tempOrImpl.type) {
                 qName = tempOrImpl.type.slice(1).split('}');
                 this.typeOf = 'Type: ';
-            } else if (!isNullOrUndefined(tempOrImpl.nodeType)) {
+            } else if (tempOrImpl.nodeType) {
                 qName = tempOrImpl.nodeType.slice(1).split('}');
                 this.typeOf = 'Implementation for ';
-            } else if (!isNullOrUndefined(tempOrImpl.relationshipType)) {
+            } else if (tempOrImpl.relationshipType) {
                 qName = tempOrImpl.relationshipType.slice(1).split('}');
                 this.typeOf = 'Implementation for ';
             }
@@ -161,7 +160,7 @@ export class InstanceComponent implements OnDestroy {
         this.loadingVersions = false;
 
         const version = this.versions.find(v => v.currentVersion);
-        if (!isNullOrUndefined(version)) {
+        if (version) {
             this.service.currentVersion = version;
             this.newVersionAvailable = !version.latestVersion;
             this.editable = version.editable;
@@ -179,5 +178,18 @@ export class InstanceComponent implements OnDestroy {
 
     ngOnDestroy(): void {
         this.routeSub.unsubscribe();
+    }
+
+    private getToscaLiteCompatibility() {
+        this.service.getToscaLiteCompatibility()
+            .subscribe(
+                data => this.handleToscaLiteCompatibilityData(data),
+                error => this.handleError(error)
+            );
+    }
+
+    private handleToscaLiteCompatibilityData(data: ToscaLiteCompatibilityData) {
+        console.log(data);
+        this.toscaLiteCompatibilityData = data;
     }
 }

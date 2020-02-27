@@ -12,13 +12,11 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { InstanceService } from '../instance/instance.service';
-import { backendBaseURL } from '../configuration';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { WineryLicense } from './wineryLicense';
 import { map } from 'rxjs/internal/operators';
-import { forkJoin } from 'rxjs/index';
 
 @Injectable()
 export class WineryLicenseService {
@@ -35,14 +33,14 @@ export class WineryLicenseService {
     getData(): Observable<string> {
         const headers = new HttpHeaders({ 'Accept': 'text/plain' });
         return this.http.get(
-            backendBaseURL + this.sharedData.path + '/LICENSE',
+            this.sharedData.path + '/LICENSE',
             { headers: headers, responseType: 'text' }
         );
     }
 
     save(licenseFile: String): Observable<HttpResponse<string>> {
         return this.http.put(
-            backendBaseURL + this.sharedData.path + '/LICENSE',
+            this.sharedData.path + '/LICENSE',
             licenseFile,
             { observe: 'response', responseType: 'text' }
         );

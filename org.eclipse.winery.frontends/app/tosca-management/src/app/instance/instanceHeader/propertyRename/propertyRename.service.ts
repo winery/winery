@@ -13,7 +13,6 @@
  *******************************************************************************/
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { backendBaseURL } from '../../../configuration';
 import { ToscaComponent } from '../../../model/toscaComponent';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
