@@ -15,11 +15,15 @@
 package org.eclipse.winery.common.toscalite;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.edmm.EdmmType;
+import org.eclipse.winery.model.tosca.HasPolicies;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
@@ -48,7 +52,7 @@ public class ToscaLiteChecker {
 
     public ToscaLiteChecker(Map<QName, TNodeType> nodeTypes,
                             Map<QName, TRelationshipType> relationshipTypes,
-                            Map<QName, EdmmType> edmmTypeMappings, 
+                            Map<QName, EdmmType> edmmTypeMappings,
                             Map<QName, EdmmType> oneToOneMappings) {
         this.nodeTypes = nodeTypes;
         this.relationshipTypes = relationshipTypes;
@@ -69,9 +73,13 @@ public class ToscaLiteChecker {
             .ifPresent(entry -> this.hostedOn = entry.getKey());
     }
 
+    public Map<QName, StringBuilder> getErrorList() {
+        return errorList;
+    }
+
     public boolean isToscaLiteCompliant(TServiceTemplate serviceTemplate) {
         this.checkToscaLiteCompatibility(serviceTemplate);
-        return this.foundError;
+        return !this.foundError;
     }
 
     public String checkToscaLiteCompatibility(TServiceTemplate serviceTemplate) {
@@ -82,10 +90,10 @@ public class ToscaLiteChecker {
         // Tags -> metadata
 
         if (serviceTemplate.getBoundaryDefinitions() != null) {
-            this.addErrorToList(serviceTemplateQName, TYPE_LEVEL, "BOUNDARY DEFINITIONS");
+            this.addErrorToList(serviceTemplateQName, TYPE_LEVEL, "specifies BOUNDARY DEFINITIONS which");
         }
         if (serviceTemplate.getPlans() != null) {
-            this.addErrorToList(serviceTemplateQName, TYPE_LEVEL, "PLANS");
+            this.addErrorToList(serviceTemplateQName, TYPE_LEVEL, "specifies PLANS which");
         }
 
         TTopologyTemplate topologyTemplate = serviceTemplate.getTopologyTemplate();
@@ -99,30 +107,60 @@ public class ToscaLiteChecker {
         return this.errorList.toString();
     }
 
-    private void checkToscaLiteCompatibility(TRelationshipTemplate relation, QName serviceTemplateQName) {
-        QName type = relation.getType();
+    private void checkToscaLiteCompatibility(TEntityTemplate template, QName parentElement) {
+        String templateClass = template.getClass().getSimpleName().substring(1);
 
-        if (!this.isElementVisited(type)) {
+        if (!this.isElementVisited(template.getType())) {
+            this.checkType(template, parentElement);
+        }
+        if (template.getPropertyConstraints() != null) {
+            this.addErrorToList(parentElement, TEMPLATE_LEVEL, templateClass, template.getId(),
+                "specifies PROPERTY CONSTRAINTS which");
+        }
+        if (template instanceof HasPolicies && ((HasPolicies) template).getPolicies() != null) {
+            this.addErrorToList(parentElement, TEMPLATE_LEVEL, templateClass, template.getId(),
+                "specifies POLICIES which");
+        }
+    }
+
+    private void checkType(TEntityTemplate template, QName parentElement) {
+        QName type = template.getType();
+
+        if (template instanceof TRelationshipTemplate) {
             this.checkRelationType(type);
+            this.checkToscaLiteCompatibilityOfRelationshipTemplate((TRelationshipTemplate) template, parentElement);
+        } else if (template instanceof TNodeTemplate) {
+            this.checkNodeType(type);
+            this.checkToscaLiteCompatibilityOfNodeTemplate((TNodeTemplate) template, parentElement);
         }
+    }
 
-        if (relation.getPolicies() != null) {
-            this.addErrorToList(serviceTemplateQName, TEMPLATE_LEVEL, "relation", relation.getId(), "specifies POLICIES which");
-        }
-        if (relation.getPropertyConstraints() != null) {
-            this.addErrorToList(serviceTemplateQName, TEMPLATE_LEVEL, "relation", relation.getId(), "specifies PROPERTY CONSTRAINTS which");
+    private void checkNodeType(QName type) {
+        TNodeType nodeType = this.nodeTypes.get(type);
+
+        // todo: some inheritance or mapping check?
+
+        if (nodeType.getInterfaces() != null) {
+            List<TInterface> interfaceList = nodeType.getInterfaces().getInterface();
+            if (interfaceList.size() > 1 || ToscaLiteUtils.isLifecycleInterface(interfaceList.get(0))) {
+                interfaceList.stream()
+                    .filter(ToscaLiteUtils::isNotLifecycleInterface)
+                    .forEach(unsupportedInterface -> this.addErrorToList(type, TYPE_LEVEL,
+                        "specifies the INTERFACE", unsupportedInterface.getName(), "which")
+                    );
+            }
         }
     }
 
     private void checkRelationType(QName type) {
         TRelationshipType relType = this.relationshipTypes.get(type);
-        if (!ModelUtilities.isOfType(this.hostedOn, type, this.relationshipTypes)
-            || !ModelUtilities.isOfType(this.connectsTo, type, this.relationshipTypes)
-            || !ModelUtilities.isOfType(this.dependsOn, type, this.relationshipTypes)) {
+        if (!(ModelUtilities.isOfType(this.hostedOn, type, this.relationshipTypes)
+            || ModelUtilities.isOfType(this.connectsTo, type, this.relationshipTypes)
+            || ModelUtilities.isOfType(this.dependsOn, type, this.relationshipTypes))) {
             this.addErrorToList(type, TYPE_LEVEL, "Relation Type does not inherit from",
                 EdmmType.DEPENDS_ON, EdmmType.HOSTED_ON, EdmmType.DEPENDS_ON, "or connectsTo and, thus,");
         }
-        
+
         // todo ?
         relType.getSourceInterfaces();
         relType.getTargetInterfaces();
@@ -138,8 +176,12 @@ public class ToscaLiteChecker {
         return true;
     }
 
-    private void checkToscaLiteCompatibility(TNodeTemplate tNodeTemplate, QName serviceTemplateQName) {
+    private void checkToscaLiteCompatibilityOfNodeTemplate(TNodeTemplate node, QName serviceTemplateQName) {
+        // todo: is there anything more?
+    }
 
+    private void checkToscaLiteCompatibilityOfRelationshipTemplate(TRelationshipTemplate relation, QName serviceTemplateQName) {
+        // todo: is there anything more?
     }
 
     private void addErrorToList(QName qName, int level, Object... messageElements) {

@@ -14,12 +14,17 @@
 
 package org.eclipse.winery.common.toscalite;
 
+import java.util.Map;
+
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.edmm.EdmmDependantTest;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ToscaLiteCheckerTest extends EdmmDependantTest {
@@ -45,6 +50,7 @@ class ToscaLiteCheckerTest extends EdmmDependantTest {
 
         ToscaLiteChecker toscaLiteChecker = new ToscaLiteChecker(this.nodeTypes, this.relationshipTypes, this.edmmTypeExtendsMapping, this.edmm1to1Mapping);
         boolean compliant = toscaLiteChecker.isToscaLiteCompliant(serviceTemplate);
+        Map<QName, StringBuilder> errorList = toscaLiteChecker.getErrorList();
 
         assertTrue(compliant);
     }
