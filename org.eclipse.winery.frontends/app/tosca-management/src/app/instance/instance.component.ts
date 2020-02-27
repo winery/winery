@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -16,7 +16,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { InstanceService, ToscaLiteCompatibilityData } from './instance.service';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
-import { backendBaseURL } from '../configuration';
 import { RemoveWhiteSpacesPipe } from '../wineryPipes/removeWhiteSpaces.pipe';
 import { ExistService } from '../wineryUtils/existService';
 import { WineryInstance } from '../model/wineryComponent';
@@ -189,7 +188,11 @@ export class InstanceComponent implements OnDestroy {
     }
 
     private handleToscaLiteCompatibilityData(data: ToscaLiteCompatibilityData) {
-        console.log(data);
+        // const map = new Map<string, string[]>();
+        // for (const key of Object.keys(data.errorList)) {
+        //     map.set(key, data.isToscaLiteCompatible[key]);
+        // }
+        // this.toscaLiteCompatibilityData = { ...data, errorList: map};
         this.toscaLiteCompatibilityData = data;
     }
 }

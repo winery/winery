@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,10 +11,10 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { RemoveWhiteSpacesPipe } from '../../wineryPipes/removeWhiteSpaces.pipe';
-import { ModalDirective } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { ToscaComponent } from '../../model/toscaComponent';
 import { ToscaTypes } from '../../model/enums';
 import { WineryVersion } from '../../model/wineryVersion';
@@ -45,7 +45,8 @@ export class InstanceHeaderComponent implements OnInit {
     @Input() toscaLiteCompatibilityData: ToscaLiteCompatibilityData;
     @Output() deleteConfirmed: EventEmitter<any> = new EventEmitter();
 
-    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
+    @ViewChild('confirmDeleteModal') confirmDeleteModal: TemplateRef<any>;
+    @ViewChild('toscaLiteCompatibilityModal') toscaLiteCompatibilityModel: TemplateRef<any>;
 
     needTwoLines = false;
     selectedTab: string;
@@ -53,8 +54,13 @@ export class InstanceHeaderComponent implements OnInit {
     accountabilityEnabled: boolean;
     showEdmmExport: boolean;
 
+    toscaLiteCompatibilityErrorReportModalRef: BsModalRef;
+    toscaLiteErrorKeys: string[];
+    deleteConfirmationModalRef: BsModalRef;
+
     constructor(private router: Router, public sharedData: InstanceService,
-                private configurationService: WineryRepositoryConfigurationService) {
+                private configurationService: WineryRepositoryConfigurationService,
+                private modalService: BsModalService) {
     }
 
     ngOnInit(): void {
@@ -73,5 +79,14 @@ export class InstanceHeaderComponent implements OnInit {
 
     removeConfirmed() {
         this.deleteConfirmed.emit();
+    }
+
+    showErrorReport() {
+        this.toscaLiteErrorKeys = Object.keys(this.toscaLiteCompatibilityData.errorList);
+        this.toscaLiteCompatibilityErrorReportModalRef = this.modalService.show(this.toscaLiteCompatibilityModel);
+    }
+
+    openDeleteConfirmationModel() {
+        this.deleteConfirmationModalRef = this.modalService.show(this.confirmDeleteModal);
     }
 }
