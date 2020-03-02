@@ -50,6 +50,7 @@ import org.eclipse.winery.model.ids.IdUtil;
 import org.eclipse.winery.model.ids.admin.AdminId;
 import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.ids.definitions.ComplianceRuleId;
+import org.eclipse.winery.model.ids.definitions.DataTypeId;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.ids.definitions.EntityTemplateId;
 import org.eclipse.winery.model.ids.definitions.EntityTypeId;
@@ -460,7 +461,9 @@ public class Util {
             return true;
         } else if (TestRefinementModelId.class.isAssignableFrom(idClass)) {
             return true;
-        } else if ((EntityTypeId.class.isAssignableFrom(idClass)) || (EntityTypeImplementationId.class.isAssignableFrom(idClass))) {
+        } else if ((EntityTypeId.class.isAssignableFrom(idClass)) 
+            || (EntityTypeImplementationId.class.isAssignableFrom(idClass))
+            || (DataTypeId.class.isAssignableFrom(idClass))) {
             // name is available, but no id attribute
             return false;
         } else if (GenericImportId.class.isAssignableFrom(idClass)) {

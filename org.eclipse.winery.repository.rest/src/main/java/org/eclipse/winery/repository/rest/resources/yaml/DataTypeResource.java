@@ -16,19 +16,25 @@ package org.eclipse.winery.repository.rest.resources.yaml;
 
 import javax.ws.rs.Path;
 
+import org.eclipse.winery.model.ids.definitions.DataTypeId;
+import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.yaml.TDataType;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
 
-public class DataTypeResource {
+public class DataTypeResource extends AbstractComponentInstanceResource {
 
-    private final TDataType target;
-    
-    protected DataTypeResource(String namespace, String id) {
-        // FIXME 
-        target = null;
+    public DataTypeResource(DataTypeId id) {
+        super(id);
     }
     
     @Path("/")
-    public TDataType element() {
-        return target;
+    public TExtensibleElements element() {
+        return element;
+    }
+
+    @Override
+    protected TExtensibleElements createNewElement() {
+        // FIXME todo
+        return null;
     }
 }

@@ -114,6 +114,11 @@ public class MainResource {
     public CapabilityTypesResource capabilitytypes() {
         return new CapabilityTypesResource();
     }
+    
+    @Path("datatypes/")
+    public DataTypesResource datatypes() {
+        return new DataTypesResource();
+    }
 
     @Path("imports/")
     public ImportsResource imports() {
@@ -190,11 +195,6 @@ public class MainResource {
         return new YAMLParserResource();
     }
     
-    @Path("datatypes/")
-    public DataTypesResource datatypes() {
-        return new DataTypesResource();
-    }
-
     @Path("threats")
     public ThreatsResource threats() {
         return new ThreatsResource();

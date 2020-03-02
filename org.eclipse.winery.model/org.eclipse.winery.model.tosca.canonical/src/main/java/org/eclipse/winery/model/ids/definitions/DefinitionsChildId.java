@@ -46,6 +46,7 @@ public abstract class DefinitionsChildId extends GenericId {
         ArtifactTemplateId.class,
         ArtifactTypeId.class,
         CapabilityTypeId.class,
+        DataTypeId.class,
         NodeTypeId.class,
         NodeTypeImplementationId.class,
         PolicyTemplateId.class,
