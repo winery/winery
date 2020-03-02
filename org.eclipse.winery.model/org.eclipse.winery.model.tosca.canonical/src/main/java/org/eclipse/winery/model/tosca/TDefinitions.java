@@ -16,6 +16,7 @@ package org.eclipse.winery.model.tosca;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -139,7 +140,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
     @NonNull
     public List<TExtensibleElements> getServiceTemplateOrNodeTypeOrNodeTypeImplementation() {
         if (serviceTemplateOrNodeTypeOrNodeTypeImplementation == null) {
-            serviceTemplateOrNodeTypeOrNodeTypeImplementation = new ArrayList<TExtensibleElements>();
+            serviceTemplateOrNodeTypeOrNodeTypeImplementation = new ArrayList<>();
         }
         return this.serviceTemplateOrNodeTypeOrNodeTypeImplementation;
     }
@@ -234,6 +235,15 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             .collect(Collectors.toList());
     }
 
+    @JsonIgnore
+    @NonNull
+    public List<TDataType> getDataTypes() {
+        return getServiceTemplateOrNodeTypeOrNodeTypeImplementation().stream()
+            .filter(x -> x instanceof TDataType)
+            .map(TDataType.class::cast)
+            .collect(Collectors.toList());
+    }
+    
     @JsonIgnore
     @NonNull
     public List<TRequirementType> getRequirementTypes() {
@@ -352,6 +362,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         private List<TRelationshipType> relationshipTypes;
         private List<TRelationshipTypeImplementation> relationshipTypeImplementations;
         private List<TRequirementType> requirementTypes;
+        private List<TDataType> dataTypes;
         private List<TCapabilityType> capabilityTypes;
         private List<TArtifactType> artifactTypes;
         private List<TArtifactTemplate> artifactTemplates;
@@ -662,6 +673,29 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return addRequirementTypes(tmp);
         }
 
+        public T addDataTypes(List<TDataType> dataTypes) {
+            if (dataTypes == null || dataTypes.isEmpty()) {
+                return self();
+            }
+            
+            if (this.dataTypes == null) {
+                this.dataTypes = dataTypes;
+            } else {
+                this.dataTypes.addAll(dataTypes);
+            }
+            return self();
+        }
+        
+        public T addDataTypes(TDataType dataType) {
+            if (dataType == null) {
+                return self();
+            }
+            if (dataTypes == null) {
+                dataTypes = new ArrayList<>();
+            }
+            return addDataTypes(Collections.singletonList(dataType));
+        }
+        
         public T addCapabilityTypes(List<TCapabilityType> capabilityTypes) {
             if (capabilityTypes == null || capabilityTypes.isEmpty()) {
                 return self();
@@ -820,6 +854,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             Optional.ofNullable(relationshipTypeImplementations).ifPresent(tmp::addAll);
             Optional.ofNullable(requirementTypes).ifPresent(tmp::addAll);
             Optional.ofNullable(capabilityTypes).ifPresent(tmp::addAll);
+            Optional.ofNullable(dataTypes).ifPresent(tmp::addAll);
             Optional.ofNullable(artifactTypes).ifPresent(tmp::addAll);
             Optional.ofNullable(artifactTemplates).ifPresent(tmp::addAll);
             Optional.ofNullable(policyTypes).ifPresent(tmp::addAll);

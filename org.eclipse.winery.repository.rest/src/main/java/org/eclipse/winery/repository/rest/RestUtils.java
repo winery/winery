@@ -49,6 +49,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Constants;
+import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.common.configuration.Environments;
@@ -407,6 +408,9 @@ public class RestUtils {
             location = "compliancerules";
         } else if (type.contains("RefinementModel")) {
             location = "refinementmodels";
+        } else if (type.contains("DataType")) {
+            // FIXME Intermediate location, may be subject to change!
+            location = "yaml";
         } else {
             if (type.contains("TypeImplementation")) {
                 location = "entitytypeimplementations";

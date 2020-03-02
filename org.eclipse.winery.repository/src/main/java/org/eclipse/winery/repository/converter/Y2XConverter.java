@@ -39,6 +39,8 @@ import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
 import org.eclipse.winery.model.tosca.TCapabilityType;
+import org.eclipse.winery.model.tosca.TDataType;
+import org.eclipse.winery.model.tosca.TDataTypes;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
@@ -76,7 +78,6 @@ import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.yaml.TArtifactDefinition;
 import org.eclipse.winery.model.tosca.yaml.TAttributeDefinition;
 import org.eclipse.winery.model.tosca.yaml.TCapabilityAssignment;
-import org.eclipse.winery.model.tosca.yaml.TDataType;
 import org.eclipse.winery.model.tosca.yaml.TGroupType;
 import org.eclipse.winery.model.tosca.yaml.TImportDefinition;
 import org.eclipse.winery.model.tosca.yaml.TInterfaceDefinition;
@@ -169,7 +170,7 @@ public class Y2XConverter {
 
         Definitions definitions = new Definitions.Builder(id + "_Definitions", target_namespace)
             .setImport(convert(node.getImports()))
-            .addTypes(convert(node.getDataTypes()))
+            .addDataTypes(convert(node.getDataTypes()))
             .addTypes(convert(node.getGroupTypes()))
             .addServiceTemplates(convertServiceTemplate(node, id, target_namespace))
             .addNodeTypes(convert(node.getNodeTypes()))
@@ -1181,14 +1182,17 @@ public class Y2XConverter {
         return null;
     }
 
-    public Object convert(org.eclipse.winery.model.tosca.yaml.TDataType node, String name) {
+    public TDataType convert(org.eclipse.winery.model.tosca.yaml.TDataType node, String name) {
+        TDataType result = new TDataType.Builder(name)
+            .addConstraints(convertConstraints(node.getConstraints()))
+            .build();
         TImport importDefinition = new TImport.Builder(Namespaces.XML_NS)
             .setLocation(EncodingUtil.URLencode(this.namespace) + ".xsd")
             .build();
         if (!this.imports.contains(importDefinition)) {
             this.imports.add(importDefinition);
         }
-        return null;
+        return result;
     }
 
     @SuppressWarnings( {"unchecked"})
@@ -1248,8 +1252,8 @@ public class Y2XConverter {
                     return convert((TOperationDefinition) entry.getValue(), entry.getKey());
                 } else if (entry.getValue() instanceof org.eclipse.winery.model.tosca.yaml.TNodeTemplate) {
                     return convert((org.eclipse.winery.model.tosca.yaml.TNodeTemplate) entry.getValue(), entry.getKey());
-                } else if (entry.getValue() instanceof TDataType) {
-                    return convert((TDataType) entry.getValue(), entry.getKey());
+                } else if (entry.getValue() instanceof org.eclipse.winery.model.tosca.yaml.TDataType) {
+                    return convert((org.eclipse.winery.model.tosca.yaml.TDataType) entry.getValue(), entry.getKey());
                 } else if (entry.getValue() instanceof TGroupType) {
                     return convert((TGroupType) entry.getValue(), entry.getKey());
                 } else if (entry.getValue() instanceof org.eclipse.winery.model.tosca.yaml.TNodeType) {

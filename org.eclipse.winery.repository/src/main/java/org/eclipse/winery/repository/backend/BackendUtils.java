@@ -1430,7 +1430,7 @@ public class BackendUtils {
         // the conversion to JSON is made by Jersey automatically
         // TODO: future work: force TOSCAExportUtil to return TDefinitions directly
 
-        // Have to use TOScAExportUtil to have the imports correctly set
+        // Have to use TOSCAExportUtil to have the imports correctly set
 
         ToscaExportUtil exporter = new ToscaExportUtil();
         // we include everything related

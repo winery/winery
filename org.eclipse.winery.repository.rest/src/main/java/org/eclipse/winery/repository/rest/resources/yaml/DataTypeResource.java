@@ -14,11 +14,19 @@
 
 package org.eclipse.winery.repository.rest.resources.yaml;
 
+import java.util.List;
+
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import org.eclipse.winery.model.ids.definitions.DataTypeId;
+import org.eclipse.winery.model.tosca.TConstraintClause;
+import org.eclipse.winery.model.tosca.TDataType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.model.tosca.yaml.TDataType;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.kvproperties.ConstraintClauseKV;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
 
 public class DataTypeResource extends AbstractComponentInstanceResource {
@@ -27,14 +35,27 @@ public class DataTypeResource extends AbstractComponentInstanceResource {
         super(id);
     }
     
+    public TDataType getDataType() {
+        // Because DataTypes are serialized into their own ServiceTemplate, but mapped to a Definitions child directly
+        return getDefinitions().getDataTypes().get(0);
+    }
+    
     @Path("/")
-    public TExtensibleElements element() {
-        return element;
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public TDataType element() {
+        return getDataType();
+    }
+    
+    @GET
+    @Path("constraints/")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ConstraintClauseKV> constraints() {
+        return getDataType().getConstraints();
     }
 
     @Override
     protected TExtensibleElements createNewElement() {
-        // FIXME todo
-        return null;
+        return new TDataType();
     }
 }
