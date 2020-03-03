@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
@@ -20,6 +23,12 @@ import org.eclipse.winery.model.tosca.visitor.Visitor;
 /**
  * Class to represent an artifact in TOSCA YAML.
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "tArtifact", propOrder = {
+    "description",
+    "file",
+    "deployPath"
+})
 public class TArtifact extends TEntityTemplate {
 
     private String description;

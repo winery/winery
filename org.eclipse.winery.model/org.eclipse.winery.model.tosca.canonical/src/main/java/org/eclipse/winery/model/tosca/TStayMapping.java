@@ -14,10 +14,18 @@
 
 package org.eclipse.winery.model.tosca;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
+
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "tStayMapping")
 public class TStayMapping extends TPrmMapping {
 
+    @XmlAttribute(name = "modelElementType")
     private TPrmModelElementType modelElementType;
 
     @Override

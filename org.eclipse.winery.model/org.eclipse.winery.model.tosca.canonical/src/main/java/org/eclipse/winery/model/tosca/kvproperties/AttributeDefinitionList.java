@@ -18,6 +18,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "AttributeDefinitions")
 public class AttributeDefinitionList extends ArrayList<AttributeDefinition> implements Serializable {
 
     public AttributeDefinitionList() {
@@ -27,6 +31,7 @@ public class AttributeDefinitionList extends ArrayList<AttributeDefinition> impl
         super(c);
     }
 
+    @XmlElement(name = "AttributeDefinition")
     public List<AttributeDefinition> getAttributeDefinitions() {
         return this;
     }

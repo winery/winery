@@ -22,8 +22,11 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+@XmlRootElement(name = "ConstraintDefinition")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ConstraintClauseKV implements Serializable {
 

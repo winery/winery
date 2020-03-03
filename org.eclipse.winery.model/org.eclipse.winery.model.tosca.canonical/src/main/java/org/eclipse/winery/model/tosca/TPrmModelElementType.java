@@ -16,12 +16,16 @@ package org.eclipse.winery.model.tosca;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlEnumValue;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 public enum TPrmModelElementType implements Serializable {
 
+    @XmlEnumValue("node")
     NODE("node"),
+    @XmlEnumValue("relation")
     RELATION("relation");
 
     private final String value;

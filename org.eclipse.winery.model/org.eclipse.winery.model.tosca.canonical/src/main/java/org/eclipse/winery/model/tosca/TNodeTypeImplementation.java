@@ -18,6 +18,11 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
@@ -64,10 +69,22 @@ import org.eclipse.jdt.annotation.Nullable;
  * &lt;/complexType>
  * </pre>
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+// by using @XmlTransient at TEntityTypeImplementation, this orders *all* elements, even if IntelliJ marks them in red
+// see https://stackoverflow.com/a/6790388/873282
+@XmlType(name = "tNodeTypeImplementation", propOrder = {
+    "tags",
+    "derivedFrom",
+    "requiredContainerFeatures",
+    "implementationArtifacts",
+    "deploymentArtifacts"
+})
 public class TNodeTypeImplementation extends TEntityTypeImplementation {
 
+    @XmlElement(name = "DeploymentArtifacts")
     protected TDeploymentArtifacts deploymentArtifacts;
 
+    @XmlElement(name = "DerivedFrom")
     protected TNodeTypeImplementation.DerivedFrom derivedFrom;
 
     public TNodeTypeImplementation() {
@@ -127,6 +144,7 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
      * Returns the implemented type. We have to use different namings here as the XML Schema does not have
      * TEntityTypeImplementation
      */
+    @XmlAttribute(name = "nodeType", required = true)
     @NonNull
     public QName getNodeType() {
         return this.implementedType;
@@ -152,8 +170,11 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
      * &lt;/complexType>
      * </pre>
      */
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "")
     public static class DerivedFrom implements HasType, Serializable {
 
+        @XmlAttribute(name = "nodeTypeImplementationRef", required = true)
         protected QName nodeTypeImplementationRef;
 
         /**

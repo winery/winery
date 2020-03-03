@@ -20,6 +20,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.constants.Namespaces;
@@ -30,6 +36,14 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "tNodeTemplate", propOrder = {
+    "requirements",
+    "capabilities",
+    "policies",
+    "deploymentArtifacts",
+    "artifacts"
+})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonTypeInfo(
     defaultImpl = TNodeTemplate.class,
@@ -38,12 +52,19 @@ import org.eclipse.jdt.annotation.Nullable;
     property = "fakeJacksonType")
 public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPolicies {
 
+    @XmlElement(name = "Requirements")
     protected TNodeTemplate.Requirements requirements;
+    @XmlElement(name = "Capabilities")
     protected TNodeTemplate.Capabilities capabilities;
+    @XmlElement(name = "Policies")
     protected TPolicies policies;
+    @XmlElement(name = "DeploymentArtifacts")
     protected TDeploymentArtifacts deploymentArtifacts;
+    @XmlAttribute(name = "name")
     protected String name;
+    @XmlAttribute(name = "minInstances")
     protected Integer minInstances;
+    @XmlAttribute(name = "maxInstances")
     protected String maxInstances;
     // this element is added to support YAML mode
     @XmlElement(name ="Artifacts", required = false)
@@ -171,6 +192,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
     /**
      * In the JSON, also output this direct child of the node template object. Therefore, no JsonIgnore annotation.
      */
+    @XmlTransient
     @Nullable
     public String getX() {
         Map<QName, String> otherNodeTemplateAttributes = this.getOtherAttributes();
@@ -192,6 +214,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
     /**
      * In the JSON, also output this direct child of the node template object. Therefore, no JsonIgnore annotation.
      */
+    @XmlTransient
     @Nullable
     public String getY() {
         Map<QName, String> otherNodeTemplateAttributes = this.getOtherAttributes();
@@ -221,8 +244,13 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
         this.artifacts = artifacts;
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", propOrder = {
+        "capability"
+    })
     public static class Capabilities implements Serializable {
 
+        @XmlElement(name = "Capability", required = true)
         protected List<TCapability> capability;
 
         /**
@@ -269,8 +297,13 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
         }
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", propOrder = {
+        "requirement"
+    })
     public static class Requirements implements Serializable {
 
+        @XmlElement(name = "Requirement", required = true)
         protected List<TRequirement> requirement;
 
         @NonNull

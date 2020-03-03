@@ -14,18 +14,25 @@
 
 package org.eclipse.winery.model.tosca;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tRelationMapping")
+@XmlType(name = "otRelationMapping")
 public class OTRelationMapping extends TPrmMapping {
 
+    @XmlAttribute(name = "relationType")
     private QName relationType;
 
+    @XmlAttribute(name = "direction")
     private TRelationDirection direction;
 
+    @XmlAttribute(name = "validSourceOrTarget")
     private QName validSourceOrTarget;
 
     public QName getRelationType() {

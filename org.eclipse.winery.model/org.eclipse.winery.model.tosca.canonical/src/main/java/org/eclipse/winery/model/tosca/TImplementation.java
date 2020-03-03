@@ -16,9 +16,20 @@ package org.eclipse.winery.model.tosca;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
+
 /**
  * Class to represent an operations implementation in TOSCA YAML.
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "OperationImplementation", propOrder = {
+    "primary",
+    "dependencies",
+    "operationHost",
+    "timeout",
+})
 public class TImplementation implements Serializable {
 
     private String primary;

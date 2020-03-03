@@ -16,12 +16,16 @@ package org.eclipse.winery.model.tosca;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlEnumValue;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 public enum TAttributeMappingType implements Serializable {
 
+    @XmlEnumValue("all")
     ALL("all"),
+    @XmlEnumValue("selective")
     SELECTIVE("selective");
 
     private final String value;

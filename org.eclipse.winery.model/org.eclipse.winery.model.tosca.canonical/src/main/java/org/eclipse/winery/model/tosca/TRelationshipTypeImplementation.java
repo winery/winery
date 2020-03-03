@@ -17,14 +17,29 @@ package org.eclipse.winery.model.tosca;
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+// by using @XmlTransient at TEntityTypeImplementation, this orders *all* elements, even if IntelliJ marks them in red
+// see https://stackoverflow.com/a/6790388/873282
+@XmlType(name = "tRelationshipTypeImplementation", propOrder = {
+    "tags",
+    "derivedFrom",
+    "requiredContainerFeatures",
+    "implementationArtifacts"
+})
 public class TRelationshipTypeImplementation extends TEntityTypeImplementation {
 
+    @XmlElement(name = "DerivedFrom")
     protected TRelationshipTypeImplementation.DerivedFrom derivedFrom;
 
     public TRelationshipTypeImplementation() {
@@ -65,6 +80,7 @@ public class TRelationshipTypeImplementation extends TEntityTypeImplementation {
     }
 
     @NonNull
+    @XmlAttribute(name = "relationshipType", required = true)
     public QName getRelationshipType() {
         return this.implementedType;
     }
@@ -73,8 +89,11 @@ public class TRelationshipTypeImplementation extends TEntityTypeImplementation {
         this.implementedType = value;
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "")
     public static class DerivedFrom implements HasType, Serializable {
 
+        @XmlAttribute(name = "relationshipTypeImplementationRef", required = true)
         protected QName relationshipTypeImplementationRef;
 
         @NonNull

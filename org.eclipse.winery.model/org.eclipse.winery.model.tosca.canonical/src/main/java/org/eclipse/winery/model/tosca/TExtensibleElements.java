@@ -22,6 +22,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyAttribute;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
@@ -30,13 +36,38 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "tExtensibleElements", propOrder = {
+    "documentation",
+    "any"
+})
+@XmlSeeAlso( {
+    TImport.class,
+    TServiceTemplate.class,
+    TEntityTypeImplementation.class,
+    TOperation.class,
+    TRequirementDefinition.class,
+    TExtension.class,
+    TCapabilityDefinition.class,
+    TExtensions.class,
+    TDeploymentArtifact.class,
+    TPlan.class,
+    TEntityTemplate.class,
+    TEntityType.class,
+    TPolicy.class,
+    TImplementationArtifact.class,
+    TTopologyTemplate.class,
+    TDefinitions.class
+})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class TExtensibleElements implements Serializable {
 
     protected List<TDocumentation> documentation;
 
+    @XmlAnyElement(lax = true)
     protected List<Object> any;
 
+    @XmlAnyAttribute
     @NonNull
     private Map<QName, String> otherAttributes = new HashMap<>();
 

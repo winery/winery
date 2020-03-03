@@ -17,15 +17,24 @@ package org.eclipse.winery.model.tosca;
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
+
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "tTag")
 public class TTag implements Serializable {
 
+    @XmlAttribute(name = "name", required = true)
     @NonNull
     protected String name;
 
+    @XmlAttribute(name = "value", required = true)
     protected String value;
 
     public TTag() {

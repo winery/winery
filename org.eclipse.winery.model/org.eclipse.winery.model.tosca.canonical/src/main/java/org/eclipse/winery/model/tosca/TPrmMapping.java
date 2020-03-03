@@ -16,6 +16,10 @@ package org.eclipse.winery.model.tosca;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlSchemaType;
+
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
@@ -24,10 +28,16 @@ import org.eclipse.jdt.annotation.NonNull;
 public abstract class TPrmMapping extends HasId implements Serializable {
 
     @JsonIdentityReference(alwaysAsId = true)
+    @XmlAttribute(name = "detectorNode", required = true)
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
     @NonNull
     private TEntityTemplate detectorNode;
 
     @JsonIdentityReference(alwaysAsId = true)
+    @XmlAttribute(name = "refinementNode", required = true)
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
     @NonNull
     private TEntityTemplate refinementNode;
 

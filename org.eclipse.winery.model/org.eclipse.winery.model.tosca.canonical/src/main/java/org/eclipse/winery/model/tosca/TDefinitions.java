@@ -22,6 +22,17 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -29,9 +40,22 @@ import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "tDefinitions", propOrder = {
+    "extensions",
+    "_import",
+    "types",
+    "serviceTemplateOrNodeTypeOrNodeTypeImplementation"
+})
+@XmlSeeAlso( {
+    Definitions.class
+})
 public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
+    @XmlElement(name = "Extensions")
     protected TDefinitions.Extensions extensions;
+    @XmlElement(name = "Import")
     protected List<TImport> _import;
+    @XmlElement(name = "Types")
     protected TDefinitions.Types types;
     @XmlElements( {
         @XmlElement(name = "RelationshipType", type = TRelationshipType.class),
@@ -51,7 +75,10 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
     })
     protected List<TExtensibleElements> serviceTemplateOrNodeTypeOrNodeTypeImplementation;
 
+    @XmlAttribute(name = "name")
     protected String name;
+    @XmlAttribute(name = "targetNamespace", required = true)
+    @XmlSchemaType(name = "anyURI")
     protected String targetNamespace;
 
     public TDefinitions() {
@@ -94,6 +121,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
     /**
      * Convenience method for <code>this.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0)</code>
      */
+    @XmlTransient
     @JsonIgnore
     public TExtensibleElements getElement() {
         return this.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0);
@@ -280,8 +308,13 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         this.targetNamespace = value;
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", propOrder = {
+        "extension"
+    })
     public static class Extensions implements Serializable {
 
+        @XmlElement(name = "Extension", required = true)
         protected List<TExtension> extension;
 
         /**
@@ -324,8 +357,13 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         }
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", propOrder = {
+        "any"
+    })
     public static class Types implements Serializable {
 
+        @XmlAnyElement(lax = true)
         protected List<Object> any;
 
         @NonNull

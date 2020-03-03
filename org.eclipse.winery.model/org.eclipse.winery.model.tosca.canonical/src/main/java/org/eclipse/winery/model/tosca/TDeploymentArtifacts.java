@@ -19,6 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -40,8 +45,13 @@ import org.eclipse.jdt.annotation.Nullable;
  * &lt;/complexType>
  * </pre>
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "tDeploymentArtifacts", propOrder = {
+    "deploymentArtifact"
+})
 public class TDeploymentArtifacts implements Serializable {
 
+    @XmlElement(name = "DeploymentArtifact", required = true)
     protected List<TDeploymentArtifact> deploymentArtifact;
 
     public TDeploymentArtifacts() {

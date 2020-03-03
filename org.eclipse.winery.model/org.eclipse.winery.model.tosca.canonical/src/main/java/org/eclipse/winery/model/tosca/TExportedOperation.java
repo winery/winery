@@ -17,17 +17,39 @@ package org.eclipse.winery.model.tosca;
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "tExportedOperation", propOrder = {
+    "nodeOperation",
+    "relationshipOperation",
+    "plan"
+})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TExportedOperation implements HasName, Serializable {
 
+    @XmlElement(name = "NodeOperation")
     protected TExportedOperation.NodeOperation nodeOperation;
+    @XmlElement(name = "RelationshipOperation")
     protected TExportedOperation.RelationshipOperation relationshipOperation;
+    @XmlElement(name = "Plan")
     protected TExportedOperation.Plan plan;
+    @XmlAttribute(name = "name", required = true)
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    @XmlSchemaType(name = "NCName")
     protected String name;
 
     @Override
@@ -138,14 +160,24 @@ public class TExportedOperation implements HasName, Serializable {
      * &lt;/complexType>
      * </pre>
      */
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class NodeOperation implements Serializable {
 
+        @XmlAttribute(name = "nodeRef", required = true)
+        @XmlIDREF
+        @XmlSchemaType(name = "IDREF")
         @JsonIdentityReference(alwaysAsId = true)
         protected Object nodeRef;
 
+        @XmlAttribute(name = "interfaceName", required = true)
+        @XmlSchemaType(name = "anyURI")
         protected String interfaceName;
 
+        @XmlAttribute(name = "operationName", required = true)
+        @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+        @XmlSchemaType(name = "NCName")
         protected String operationName;
 
         /**
@@ -221,9 +253,14 @@ public class TExportedOperation implements HasName, Serializable {
      * &lt;/complexType>
      * </pre>
      */
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Plan implements Serializable {
 
+        @XmlAttribute(name = "planRef", required = true)
+        @XmlIDREF
+        @XmlSchemaType(name = "IDREF")
         @JsonIdentityReference(alwaysAsId = true)
         protected Object planRef;
 
@@ -264,14 +301,24 @@ public class TExportedOperation implements HasName, Serializable {
      * &lt;/complexType>
      * </pre>
      */
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RelationshipOperation implements Serializable {
 
+        @XmlAttribute(name = "relationshipRef", required = true)
+        @XmlIDREF
+        @XmlSchemaType(name = "IDREF")
         @JsonIdentityReference(alwaysAsId = true)
         protected Object relationshipRef;
 
+        @XmlAttribute(name = "interfaceName", required = true)
+        @XmlSchemaType(name = "anyURI")
         protected String interfaceName;
 
+        @XmlAttribute(name = "operationName", required = true)
+        @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+        @XmlSchemaType(name = "NCName")
         protected String operationName;
 
         /**

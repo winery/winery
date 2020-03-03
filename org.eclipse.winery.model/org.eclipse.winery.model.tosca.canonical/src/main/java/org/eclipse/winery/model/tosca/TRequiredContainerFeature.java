@@ -17,6 +17,12 @@ package org.eclipse.winery.model.tosca;
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
+
 import org.eclipse.jdt.annotation.NonNull;
 
 /**
@@ -34,8 +40,12 @@ import org.eclipse.jdt.annotation.NonNull;
  * &lt;/complexType>
  * </pre>
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "tRequiredContainerFeature")
 public class TRequiredContainerFeature implements Serializable {
 
+    @XmlAttribute(name = "feature", required = true)
+    @XmlSchemaType(name = "anyURI")
     protected String feature;
 
     @Override

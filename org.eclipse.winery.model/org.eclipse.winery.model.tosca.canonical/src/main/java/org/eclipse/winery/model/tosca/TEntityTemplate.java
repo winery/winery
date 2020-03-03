@@ -21,6 +21,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -43,15 +50,31 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "tEntityTemplate", propOrder = {
+    "properties",
+    "propertyConstraints"
+})
+@XmlSeeAlso( {
+    TArtifactTemplate.class,
+    TPolicyTemplate.class,
+    TCapability.class,
+    TRequirement.class,
+    TRelationshipTemplate.class,
+    TNodeTemplate.class
+})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class TEntityTemplate extends HasId implements HasType, HasName {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TEntityTemplate.class);
 
+    @XmlElement(name = "Properties")
     protected TEntityTemplate.Properties properties;
 
+    @XmlElement(name = "PropertyConstraints")
     protected TEntityTemplate.PropertyConstraints propertyConstraints;
 
+    @XmlAttribute(name = "type", required = true)
     protected QName type;
 
     public TEntityTemplate() {
@@ -117,9 +140,14 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
 
     public abstract void accept(Visitor visitor);
 
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", propOrder = {
+        "any"
+    })
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Properties implements Serializable {
 
+        @XmlAnyElement(lax = true)
         protected Object any;
 
         /**
@@ -313,8 +341,13 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         }
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", propOrder = {
+        "propertyConstraint"
+    })
     public static class PropertyConstraints implements Serializable {
 
+        @XmlElement(name = "PropertyConstraint", required = true)
         protected List<TPropertyConstraint> propertyConstraint;
 
         /**

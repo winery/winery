@@ -11,4 +11,5 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
+@javax.xml.bind.annotation.XmlSchema(namespace = "http://docs.oasis-open.org/tosca/ns/2011/12", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package org.eclipse.winery.model.tosca;

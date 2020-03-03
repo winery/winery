@@ -19,12 +19,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
+
 import org.eclipse.jdt.annotation.NonNull;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "tArtifactReference", propOrder = {
+    "includeOrExclude"
+})
 public class TArtifactReference implements Serializable {
 
+    @XmlElements( {
+        @XmlElement(name = "Exclude", type = TArtifactReference.Exclude.class),
+        @XmlElement(name = "Include", type = TArtifactReference.Include.class)
+    })
     protected List<Object> includeOrExclude;
 
+    @XmlAttribute(name = "reference", required = true)
+    @XmlSchemaType(name = "anyURI")
     protected String reference;
 
     public TArtifactReference() {
@@ -96,8 +114,11 @@ public class TArtifactReference implements Serializable {
         this.reference = value;
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "")
     public static class Exclude {
 
+        @XmlAttribute(name = "pattern", required = true)
         protected String pattern;
 
         @NonNull
@@ -110,8 +131,11 @@ public class TArtifactReference implements Serializable {
         }
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "")
     public static class Include implements Serializable {
 
+        @XmlAttribute(name = "pattern", required = true)
         protected String pattern;
 
         @NonNull

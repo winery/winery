@@ -15,11 +15,21 @@ package org.eclipse.winery.model.tosca;
 
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 
 public abstract class HasId extends TExtensibleElements implements HasIdInIdOrNameField {
 
+    @XmlAttribute(name = "id", required = true)
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    @XmlID
+    @XmlSchemaType(name = "ID")
     private String id;
 
     public HasId() {

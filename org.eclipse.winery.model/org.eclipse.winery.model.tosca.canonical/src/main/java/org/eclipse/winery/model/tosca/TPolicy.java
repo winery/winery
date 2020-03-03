@@ -17,6 +17,10 @@ package org.eclipse.winery.model.tosca;
 import java.util.List;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
@@ -24,14 +28,19 @@ import org.eclipse.winery.model.tosca.visitor.Visitor;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "tPolicy")
 public class TPolicy extends TExtensibleElements implements HasName {
 
+    @XmlAttribute(name = "name")
     @Nullable
     protected String name;
 
+    @XmlAttribute(name = "policyType", required = true)
     @NonNull
     protected QName policyType;
 
+    @XmlAttribute(name = "policyRef")
     @Nullable
     protected QName policyRef;
 
@@ -39,6 +48,7 @@ public class TPolicy extends TExtensibleElements implements HasName {
     protected TEntityTemplate.Properties properties;
 
     //Added to support conversion to/from YAML Policies
+    @XmlAttribute(name = "targets")
     @Nullable
     protected List<QName> targets;
 

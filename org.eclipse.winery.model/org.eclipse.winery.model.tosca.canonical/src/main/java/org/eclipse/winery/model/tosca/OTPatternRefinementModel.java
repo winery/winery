@@ -15,22 +15,35 @@ package org.eclipse.winery.model.tosca;
 
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tPatternRefinementModel")
+@XmlType(name = "otPatternRefinementModel")
 public class OTPatternRefinementModel extends OTRefinementModel {
 
+    @XmlElement(name = "RefinementStructure")
     private TTopologyTemplate refinementStructure;
 
+    @XmlElementWrapper(name = "AttributeMappings")
+    @XmlElement(name = "AttributeMapping")
     private List<AttributeMapping> attributeMappings;
 
+    @XmlElementWrapper(name = "StayMappings")
+    @XmlElement(name = "StayMapping")
     private List<TStayMapping> stayMappings;
 
     @NonNull
     @JsonIgnore
+    @XmlTransient
     public TTopologyTemplate getRefinementTopology() {
         if (refinementStructure == null) {
             refinementStructure = new TTopologyTemplate();

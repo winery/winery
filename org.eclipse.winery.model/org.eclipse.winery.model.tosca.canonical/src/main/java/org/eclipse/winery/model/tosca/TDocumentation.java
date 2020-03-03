@@ -19,19 +19,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlMixed;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
+
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "tDocumentation", propOrder = {
+    "content"
+})
 public class TDocumentation implements Serializable {
 
+    @XmlMixed
+    @XmlAnyElement(lax = true)
     protected List<Object> content;
 
+    @XmlAttribute(name = "source")
+    @XmlSchemaType(name = "anyURI")
     protected String source;
 
     @Nullable
+    @XmlAttribute(name = "lang", namespace = Namespaces.W3C_NAMESPACE_URI)
     protected String lang;
 
     @Override

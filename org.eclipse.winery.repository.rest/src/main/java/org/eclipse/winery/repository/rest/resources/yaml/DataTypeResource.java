@@ -41,8 +41,6 @@ public class DataTypeResource extends AbstractComponentInstanceResource {
     }
     
     @Path("/")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
     public TDataType element() {
         return getDataType();
     }

@@ -19,16 +19,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "tNodeType", propOrder = {
+    "requirementDefinitions",
+    "capabilityDefinitions",
+    "instanceStates",
+    "interfaces",
+    "interfaceDefinitions",
+    "artifacts"
+})
 public class TNodeType extends TEntityType {
+    @XmlElement(name = "RequirementDefinitions")
     protected TNodeType.RequirementDefinitions requirementDefinitions;
+    @XmlElement(name = "CapabilityDefinitions")
     protected TNodeType.CapabilityDefinitions capabilityDefinitions;
+    @XmlElement(name = "InstanceStates")
     protected TTopologyElementInstanceStates instanceStates;
+    @XmlElement(name = "Interfaces")
     protected TInterfaces interfaces;
+    @XmlElement(name = "Artifacts")
     protected TArtifacts artifacts;
 
     // added to support TOSCA YAML
@@ -120,8 +139,13 @@ public class TNodeType extends TEntityType {
         visitor.visit(this);
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", propOrder = {
+        "capabilityDefinition"
+    })
     public static class CapabilityDefinitions implements Serializable {
 
+        @XmlElement(name = "CapabilityDefinition", required = true)
         protected List<TCapabilityDefinition> capabilityDefinition;
 
         @NonNull
@@ -146,8 +170,13 @@ public class TNodeType extends TEntityType {
         }
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", propOrder = {
+        "requirementDefinition"
+    })
     public static class RequirementDefinitions implements Serializable {
 
+        @XmlElement(name = "RequirementDefinition", required = true)
         protected List<TRequirementDefinition> requirementDefinition;
 
         @NonNull

@@ -13,20 +13,35 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
+
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "otComplianceRule")
 public class OTComplianceRule extends HasId implements HasName, HasTargetNamespace {
 
+    @XmlAttribute
     protected String name;
 
+    @XmlAttribute(name = "targetNamespace")
+    @XmlSchemaType(name = "anyURI")
     protected String targetNamespace;
 
+    @XmlElement(name = "Identifier")
     protected TTopologyTemplate identifier;
 
+    @XmlElement(name = "RequiredStructure")
     protected TTopologyTemplate requiredStructure;
 
+    @XmlElement(name = "Tags")
     protected TTags tags;
 
     @Override

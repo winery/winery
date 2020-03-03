@@ -17,6 +17,12 @@ package org.eclipse.winery.model.tosca;
 import java.util.List;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.utils.RemoveEmptyLists;
@@ -24,20 +30,35 @@ import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "tServiceTemplate", propOrder = {
+    "tags",
+    "boundaryDefinitions",
+    "topologyTemplate",
+    "plans"
+})
 public class TServiceTemplate extends HasId implements HasName, HasTargetNamespace {
 
+    @XmlElement(name = "Tags")
     protected TTags tags;
 
+    @XmlElement(name = "BoundaryDefinitions")
     protected TBoundaryDefinitions boundaryDefinitions;
 
+    @XmlElement(name = "TopologyTemplate", required = true)
     protected TTopologyTemplate topologyTemplate;
 
+    @XmlElement(name = "Plans")
     protected TPlans plans;
 
+    @XmlAttribute(name = "name")
     protected String name;
 
+    @XmlAttribute(name = "targetNamespace")
+    @XmlSchemaType(name = "anyURI")
     protected String targetNamespace;
 
+    @XmlAttribute(name = "substitutableNodeType")
     protected QName substitutableNodeType;
 
     public TServiceTemplate() {

@@ -19,6 +19,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -27,16 +38,38 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.w3c.dom.Element;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "tPlan", propOrder = {
+    "precondition",
+    "inputParameters",
+    "outputParameters",
+    "planModel",
+    "planModelReference"
+})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class TPlan extends TExtensibleElements {
+    @XmlElement(name = "Precondition")
     protected TCondition precondition;
+    @XmlElement(name = "InputParameters")
     protected TPlan.InputParameters inputParameters;
+    @XmlElement(name = "OutputParameters")
     protected TPlan.OutputParameters outputParameters;
+    @XmlElement(name = "PlanModel")
     protected TPlan.PlanModel planModel;
+    @XmlElement(name = "PlanModelReference")
     protected TPlan.PlanModelReference planModelReference;
+    @XmlAttribute(name = "id", required = true)
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    @XmlID
+    @XmlSchemaType(name = "ID")
     protected String id;
+    @XmlAttribute(name = "name")
     protected String name;
+    @XmlAttribute(name = "planType", required = true)
+    @XmlSchemaType(name = "anyURI")
     protected String planType;
+    @XmlAttribute(name = "planLanguage", required = true)
+    @XmlSchemaType(name = "anyURI")
     protected String planLanguage;
 
     public TPlan() {
@@ -159,8 +192,13 @@ public class TPlan extends TExtensibleElements {
         visitor.visit(this);
    }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", propOrder = {
+        "inputParameter"
+    })
     public static class InputParameters implements Serializable {
 
+        @XmlElement(name = "InputParameter", required = true)
         protected List<TParameter> inputParameter;
 
         /**
@@ -205,8 +243,13 @@ public class TPlan extends TExtensibleElements {
         }
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", propOrder = {
+        "outputParameter"
+    })
     public static class OutputParameters implements Serializable {
 
+        @XmlElement(name = "OutputParameter", required = true)
         protected List<TParameter> outputParameter;
 
         /**
@@ -251,8 +294,13 @@ public class TPlan extends TExtensibleElements {
         }
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", propOrder = {
+        "any"
+    })
     public static class PlanModel implements Serializable {
 
+        @XmlAnyElement(lax = true)
         protected Object any;
 
         /**
@@ -289,8 +337,12 @@ public class TPlan extends TExtensibleElements {
         }
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "")
     public static class PlanModelReference implements Serializable {
 
+        @XmlAttribute(name = "reference", required = true)
+        @XmlSchemaType(name = "anyURI")
         protected String reference;
 
         /**
