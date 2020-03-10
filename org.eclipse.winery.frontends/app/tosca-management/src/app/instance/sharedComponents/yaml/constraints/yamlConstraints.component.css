@@ -11,27 +11,4 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { NgModule } from '@angular/core';
-import { YamlPropertiesComponent } from './yamlProperties.component';
-import { WineryLoaderModule } from '../../../../wineryLoader/wineryLoader.module';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { SelectModule } from 'ng2-select';
 
-@NgModule({
-    imports: [
-        WineryLoaderModule,
-        CommonModule,
-        RouterModule,
-        SelectModule,
-    ],
-    exports: [
-        YamlPropertiesComponent
-    ],
-    declarations: [
-        YamlPropertiesComponent
-    ],
-    providers: []
-})
-export class YamlPropertiesModule {
-}

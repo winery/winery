@@ -11,21 +11,21 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { QName } from '../../../../model/qName';
-import { KeyValueItem } from '../../../../model/keyValueItem';
 
-export class YamlProperty {
-    name: String;
-    type: QName;
-    description: String;
-    required: boolean;
-    defaultValue: any;
-    status: string;
-    constraints: YamlPropertyConstraint[];
-}
+import { Component, Input } from '@angular/core';
+import { InstanceService } from '../../../instance.service';
+import { YamlPropertyConstraint } from '../properties/yamlProperty';
 
-export class YamlPropertyConstraint implements KeyValueItem {
-    key: string;
-    value: any;
-    list: String[];
+@Component({
+    selector: 'winery-yaml-constraints',
+    templateUrl: 'yamlConstraints.component.html',
+    styleUrls: [
+        'yamlConstraints.component.css'
+    ]
+})
+export class YamlConstraintsComponent {
+    @Input() constraints: YamlPropertyConstraint[];
+
+    constructor(public sharedData: InstanceService) {
+    }
 }

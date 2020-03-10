@@ -13,8 +13,14 @@
  *******************************************************************************/
 
 
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { InstanceComponent } from '../../../instance.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { InstanceService } from '../../../instance.service';
+import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
+import { ExistService } from '../../../../wineryUtils/existService';
+import { WineryInstance, WineryTemplateOrImplementationComponent } from '../../../../model/wineryComponent';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'winery-datatype',
@@ -24,6 +30,35 @@ import { InstanceComponent } from '../../../instance.component';
     ],
     providers: []
 })
-export class DataTypeComponent extends InstanceComponent {
-// FIXME not sure whether that works even remotely as I want it to...
+export class DataTypeComponent implements OnInit {
+
+    component: object;
+    loadingData = true;
+
+    constructor(private notify: WineryNotificationService,
+                public sharedData: InstanceService) {
+    }
+
+    ngOnInit(): void {
+        this.loadDataType();
+    }
+
+    private loadDataType() {
+        this.sharedData.getComponentData()
+            .subscribe(
+                data => this.handleDataInput(data),
+                error => this.handleError(error)
+            );
+    }
+
+    private handleDataInput(componentData: WineryInstance) {
+        this.component = componentData.serviceTemplateOrNodeTypeOrNodeTypeImplementation[1];
+        this.loadingData = false;
+    }
+
+    private handleError(error: HttpErrorResponse) {
+        this.loadingData = false;
+        this.notify.error(error.message);
+    }
 }
+

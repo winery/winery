@@ -11,9 +11,16 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<div>
+<div *ngIf="!loadingData; else loadingIcon">
     <h4>Derived from</h4>
     <winery-instance-inheritance></winery-instance-inheritance>
     <h4>Properties</h4>
     <winery-yaml-properties></winery-yaml-properties>
+    <h4>Constraints</h4>
+    <winery-yaml-constraints [constraints]="component.constraints"></winery-yaml-constraints>
 </div>
+<ng-template #loadingIcon>
+    <div>
+        <winery-loader></winery-loader>
+    </div>
+</ng-template>

@@ -17,12 +17,12 @@ import { CommonModule } from '@angular/common';
 import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
 import { SelectModule } from 'ng2-select';
 import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
-import { YamlPropertiesModule } from '../../instance/sharedComponents/yaml/properties/yamlProperties.module';
 import { DataTypeComponent } from '../../instance/sharedComponents/yaml/datatypes/dataType.component';
-import { InstanceModule } from '../../instance/instance.module';
 import { InheritanceModule } from '../../instance/sharedComponents/inheritance/inheritance.module';
 import { WineryPipesModule } from '../../wineryPipes/wineryPipes.module';
 import { AlertModule } from 'ngx-bootstrap';
+import { YamlConstraintsComponent } from '../../instance/sharedComponents/yaml/constraints/yamlConstraints.component';
+import { YamlPropertiesComponent } from '../../instance/sharedComponents/yaml/properties/yamlProperties.component';
 
 @NgModule({
     imports: [
@@ -31,16 +31,19 @@ import { AlertModule } from 'ngx-bootstrap';
         WineryLoaderModule,
         SelectModule,
         WineryTableModule,
-        YamlPropertiesModule,
         InheritanceModule,
         WineryPipesModule,
         AlertModule,
     ],
     declarations: [
         DataTypeComponent,
+        YamlPropertiesComponent,
+        YamlConstraintsComponent,
     ],
     exports: [
-        DataTypeComponent
+        DataTypeComponent,
+        YamlPropertiesComponent,
+        YamlConstraintsComponent,
     ]
 })
 export class DataTypeModule {

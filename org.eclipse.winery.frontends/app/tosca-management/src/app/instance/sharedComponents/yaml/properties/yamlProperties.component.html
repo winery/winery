@@ -34,15 +34,21 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let prop of properties">
-                    <td>{{ prop.name }}</td>
-                    <td>{{ prop.type }}</td>
-                    <td>{{ prop.description}}</td>
-                    <td>{{ prop.required }}</td>
-                    <td>{{ prop.defaultValue }}</td>
-                    <td>{{ prop.status }}</td>
-                    <!-- show constraints of a property definition here? -->
-                </tr>
+                <ng-template ngFor let-prop [ngForOf]="properties">
+                    <tr>
+                        <td>{{ prop.name }}</td>
+                        <td>{{ prop.type }}</td>
+                        <td>{{ prop.description}}</td>
+                        <td>{{ prop.required }}</td>
+                        <td>{{ prop.defaultValue }}</td>
+                        <td>{{ prop.status }}</td>
+                    </tr>
+                    <tr *ngIf="prop.constraints.length">
+                        <td colspan="6">
+                            <winery-yaml-constraints [constraints]="prop.constraints"></winery-yaml-constraints>
+                        </td>
+                    </tr>
+                </ng-template>
             </tbody>
         </table>
     </div>
