@@ -18,15 +18,11 @@ import { SectionResolver } from '../../section/section.resolver';
 import { InstanceComponent } from '../../instance/instance.component';
 import { InstanceResolver } from '../../instance/instance.resolver';
 import { EditXMLComponent } from '../../instance/sharedComponents/editXML/editXML.component';
-import { DocumentationComponent } from '../../instance/sharedComponents/documentation/documentation.component';
 import { ToscaTypes } from '../../model/enums';
 import { InheritanceComponent } from '../../instance/sharedComponents/inheritance/inheritance.component';
-import { PropertiesDefinitionComponent } from '../../instance/sharedComponents/propertiesDefinition/propertiesDefinition.component';
-import { WineryReadmeComponent } from '../../wineryReadmeModule/wineryReadme.component';
-import { WineryLicenseComponent } from '../../wineryLicenseModule/wineryLicense.component';
-import { ImplementationsComponent } from '../../instance/sharedComponents/implementations/implementations.component';
-import { SubMenuItems } from '../../model/subMenuItem';
-import { SupportedFileTypesComponent } from '../../instance/artifactTypes/supportedFileTypes/supportedFileTypes.component';
+import { PropertyConstraintsComponent } from '../../instance/serviceTemplates/boundaryDefinitions/propertyConstraints/propertyConstraints.component';
+import { YamlPropertiesComponent } from '../../instance/sharedComponents/yaml/properties/yamlProperties.component';
+import { DataTypeComponent } from '../../instance/sharedComponents/yaml/datatypes/dataType.component';
 
 const toscaType = ToscaTypes.DataType;
 
@@ -38,15 +34,16 @@ const dataTypeRoutes: Routes = [
         component: InstanceComponent,
         resolve: { resolveData: InstanceResolver },
         children: [
-            { path: 'readme', component: WineryReadmeComponent },
-            { path: 'license', component: WineryLicenseComponent },
-            { path: 'propertiesdefinition', component: PropertiesDefinitionComponent },
-            { path: 'inheritance', component: InheritanceComponent },
-            { path: SubMenuItems.supportedFiles.urlFragment, component: SupportedFileTypesComponent },
-            { path: 'documentation', component: DocumentationComponent },
-            { path: 'xml', component: EditXMLComponent },
-            { path: 'templates', component: ImplementationsComponent },
-            { path: '', redirectTo: 'readme', pathMatch: 'full' }
+            // { path: 'readme', component: WineryReadmeComponent },
+            // { path: 'license', component: WineryLicenseComponent },
+            // { path: 'properties', component: YamlPropertiesComponent },
+            // { path: 'inheritance', component: InheritanceComponent },
+            // { path: 'constraints', component: PropertyConstraintsComponent },
+            // { path: SubMenuItems.supportedFiles.urlFragment, component: SupportedFileTypesComponent },
+            // { path: 'documentation', component: DocumentationComponent },
+            // { path: 'yaml', component: EditXMLComponent },
+            // { path: 'templates', component: ImplementationsComponent },
+            { path: '', component: DataTypeComponent }
         ]
     }
 ];

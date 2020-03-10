@@ -1,0 +1,60 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2020 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<div *ngIf="!loading; else loadingIcon">
+    <div class="right">
+        <button [disabled]="!sharedData?.currentVersion?.editable || properties === []"
+                class="btn btn-primary"
+                (click)="save()">
+            Save
+        </button>
+    </div>
+    <div *ngIf="properties.length > 0; else elseBlock">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Type</td>
+                    <td>Description</td>
+                    <td>Required</td>
+                    <td>Default</td>
+                    <td>Status</td>
+<!--                    <td>Actions</td>-->
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let prop of properties">
+                    <td>{{ prop.name }}</td>
+                    <td>{{ prop.type }}</td>
+                    <td>{{ prop.description}}</td>
+                    <td>{{ prop.required }}</td>
+                    <td>{{ prop.defaultValue }}</td>
+                    <td>{{ prop.status }}</td>
+                    <!-- show constraints of a property definition here? -->
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <ng-template #elseBlock>
+        <!-- *ngIf="properties === []" -->
+        <div>
+            The type does not have custom Properties.
+        </div>
+    </ng-template>
+</div>
+<ng-template #loadingIcon>
+    <div>
+        <winery-loader></winery-loader>
+    </div>
+</ng-template>

@@ -147,6 +147,13 @@ export class InstanceService {
                 subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.detector, SubMenuItems.testFragment, SubMenuItems.relationMappings,
                     SubMenuItems.xml];
                 break;
+            case ToscaTypes.DataType:
+                // if this tosca type is accessed we must be in yaml mode
+                // FIXME used to expose properties, xml and constraints, properties and constraints have been merged.
+                //  gotta check for a possible editing idea
+                // [SubMenuItems.properties, SubMenuItems.xml, SubMenuItems.constraints];
+                subMenu = [];
+                break;
             default: // assume Admin
                 if (this.configurationService.isYaml()) {
                     subMenu = [SubMenuItems.namespaces, SubMenuItems.repository, SubMenuItems.log, SubMenuItems.configuration];

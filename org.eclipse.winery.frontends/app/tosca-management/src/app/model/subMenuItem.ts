@@ -32,6 +32,7 @@ export class SubMenuItems {
     static readonly capabilityDefinitions: SubMenuItem = { displayName: 'Capability Definitions', urlFragment: 'capabilitydefinitions' };
     static readonly configuration: SubMenuItem = { displayName: 'Configuration', urlFragment: 'configuration' };
     static readonly consistencyCheck: SubMenuItem = { displayName: 'Consistency Check', urlFragment: 'consistencycheck' };
+    static readonly constraints: SubMenuItem = { displayName: 'Constraints', urlFragment: 'constraints' };
     static readonly constraintChecking: SubMenuItem = { displayName: 'Constraint Checking', urlFragment: 'constraintchecking' };
     static readonly constraintTypes: SubMenuItem = { displayName: 'Constraint Types', urlFragment: 'constrainttypes' };
     static readonly deploymentArtifacts: SubMenuItem = { displayName: 'Deployment Artifacts', urlFragment: 'deploymentartifacts' };
