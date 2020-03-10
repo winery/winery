@@ -40,7 +40,6 @@ import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
 import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.TDataType;
-import org.eclipse.winery.model.tosca.TDataTypes;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
@@ -156,24 +155,22 @@ public class Y2XConverter {
      * @return TOSCA XML Definitions
      */
     @NonNull
-    public Definitions convert(org.eclipse.winery.model.tosca.yaml.TServiceTemplate node, String id, String target_namespace) {
+    public Definitions  convert(org.eclipse.winery.model.tosca.yaml.TServiceTemplate node, String id, String target_namespace) {
         if (node == null) return new Definitions();
-        // LOGGER.debug("Converting TServiceTemplate");
         this.root = node;
 
         // Reset
         this.reset();
-//        this.referenceVisitor = new ReferenceVisitor(node, target_namespace);
         this.namespace = target_namespace;
 
         init(node);
 
         Definitions definitions = new Definitions.Builder(id + "_Definitions", target_namespace)
             .setImport(convert(node.getImports()))
-            .addDataTypes(convert(node.getDataTypes()))
             .addTypes(convert(node.getGroupTypes()))
             .addServiceTemplates(convertServiceTemplate(node, id, target_namespace))
             .addNodeTypes(convert(node.getNodeTypes()))
+            .addDataTypes(convert(node.getDataTypes()))
             .addNodeTypeImplementations(this.nodeTypeImplementations)
             .addRelationshipTypes(convert(node.getRelationshipTypes()))
             .addRelationshipTypeImplementations(this.relationshipTypeImplementations)
@@ -212,23 +209,6 @@ public class Y2XConverter {
     }
 
     /**
-     * Converts TPropertyDefinition and TAttributeDefinition to an xml schema
-     *
-     * @return TOSCA XML PropertyDefinition with referencing the schema of the Properties
-     */
-    private TEntityType.PropertiesDefinition convertPropertyDefinition(String name) {
-        this.imports.add(
-            new TImport.Builder(Namespaces.XML_NS)
-                .setNamespace(this.namespace)
-                .setLocation("types" + File.separator + name + ".xsd").build()
-        );
-
-        TEntityType.PropertiesDefinition propertiesDefinition = new TEntityType.PropertiesDefinition();
-        propertiesDefinition.setElement(new QName(name));
-        return propertiesDefinition;
-    }
-
-    /**
      * Converts TOSCA YAML EntityTypes to TOSCA XML EntityTypes
      * <p>
      * Additional element version added to tag. Missing elements abstract, final will not be set. Missing element
@@ -256,9 +236,9 @@ public class Y2XConverter {
             }
         }
 
-        // if (!node.getProperties().isEmpty()) {
-        //    builder.setPropertiesDefinition(convertPropertyDefinition(builder.build().getIdFromIdOrNameField() + "_Properties"));
-        // }
+        if (!node.getProperties().isEmpty()) {
+            builder.setProperties(convert(node.getProperties()));
+        }
 
         if (!node.getProperties().isEmpty()) {
             builder.addAny(convertWineryPropertiesDefinition(node.getProperties(), builder.build().getTargetNamespace(), builder.build().getIdFromIdOrNameField()));
@@ -446,31 +426,6 @@ public class Y2XConverter {
             .collect(Collectors.toList()))
             .build();
     }
-//
-//    /**
-//     * Converts TOSCA YAML ArtifactDefinitions to TOSCA XML ImplementationArtifacts
-//     *
-//     * @param artifactDefinitionMap map of TOSCA YAML ArtifactDefinitions
-//     * @return TOSCA XML ImplementationArtifacts
-//     */
-//    private TImplementationArtifacts convertImplementationArtifact(@NonNull Map<String, TArtifactDefinition> artifactDefinitionMap) {
-//        if (artifactDefinitionMap.isEmpty()) return null;
-//        TImplementationArtifacts output = new TImplementationArtifacts.Builder(artifactDefinitionMap.entrySet().stream()
-//            .filter(entry -> Objects.nonNull(entry) && Objects.nonNull(entry.getValue()))
-//            .map(entry -> {
-//                TArtifactTemplate artifactTemplate = convert(entry.getValue(), entry.getKey());
-//                this.artifactTemplates.put(artifactTemplate.getId(), artifactTemplate);
-//                return new TImplementationArtifacts.ImplementationArtifact.Builder(entry.getValue().getType())
-//                    .setName(entry.getKey())
-//                    .setArtifactRef(new QName(artifactTemplate.getId()))
-//                    .setInterfaceName(convertInterfaceName(entry.getValue()))
-//                    .setOperationName(convertOperationName(entry.getValue()))
-//                    .build();
-//            })
-//            .collect(Collectors.toList()))
-//            .build();
-//        return output;
-//    }
 
     /**
      * Converts TOSCA YAML ArtifactDefinitions to TOSCA XML ImplementationArtifacts
@@ -609,6 +564,7 @@ public class Y2XConverter {
      * @param node TOSCA YAML NodeType
      * @return TOSCA XML NodeType
      */
+    // FIXME this doesn't fill EntityType information
     private TNodeType convert(org.eclipse.winery.model.tosca.yaml.TNodeType node, String id) {
         if (Objects.isNull(node)) return null;
         String typeName = fixNamespaceDuplication(id, node.getMetadata().get("targetNamespace"));
@@ -1184,10 +1140,21 @@ public class Y2XConverter {
 
     public TDataType convert(org.eclipse.winery.model.tosca.yaml.TDataType node, String name) {
         TDataType result = new TDataType.Builder(name)
+            // set entity type fields
+            .setAttributeDefinitions(new AttributeDefinitionList(convert(node.getAttributes())))
+            .setProperties(convert(node.getProperties()))
+            .setDerivedFrom(node.getDerivedFrom())
+            .addDocumentation(node.getDescription())
+            .addDocumentation(node.getMetadata())
+            // set specific fields 
             .addConstraints(convertConstraints(node.getConstraints()))
             .build();
+        // FIXME need to actually transform the node.getProperties() to an xml schema
+        //  to be able to import it and add a PropertiesDefinition reference to that schema
         TImport importDefinition = new TImport.Builder(Namespaces.XML_NS)
             .setLocation(EncodingUtil.URLencode(this.namespace) + ".xsd")
+            // namespace must not be null
+            .setNamespace(namespace)
             .build();
         if (!this.imports.contains(importDefinition)) {
             this.imports.add(importDefinition);
@@ -1266,6 +1233,8 @@ public class Y2XConverter {
                     return convert((TCapabilityAssignment) entry.getValue(), entry.getKey());
                 } else if (entry.getValue() instanceof TParameterDefinition) {
                     return convert((TParameterDefinition) entry.getValue(), entry.getKey());
+                } else if (entry.getValue() instanceof TPropertyDefinition) {
+                    return convert((TPropertyDefinition) entry.getValue(), entry.getKey());
                 } else if (entry.getValue() instanceof TAttributeDefinition) {
                     return convert((TAttributeDefinition) entry.getValue(), entry.getKey());
                 } else {
@@ -1302,5 +1271,16 @@ public class Y2XConverter {
             })
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
+    }
+
+    private TEntityType.PropertyDefinition convert(TPropertyDefinition node, String name) {
+        return new TEntityType.PropertyDefinition.Builder(name)
+            .setType(node.getType())
+            .setDescription(node.getDescription())
+            .setRequired(node.getRequired())
+            .setDefaultValue(node.getDefault())
+            .setStatus(TEntityType.PropertyDefinition.Status.getStatus(node.getStatus().toString()))
+            .setConstraints(convertConstraints(node.getConstraints()))
+            .build();
     }
 }

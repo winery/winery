@@ -15,8 +15,6 @@ package org.eclipse.winery.model.tosca.kvproperties;
 
 import java.io.Serializable;
 
-import org.eclipse.winery.model.tosca.constants.Namespaces;
-
 /**
  * This is Winery's main extension element for a key/value based properties definition
  */

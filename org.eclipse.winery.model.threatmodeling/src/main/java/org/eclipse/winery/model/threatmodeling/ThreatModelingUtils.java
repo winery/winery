@@ -288,7 +288,7 @@ public class ThreatModelingUtils {
 
         threat.setTargetNamespace(ThreatModelingConstants.THREATMODELING_NAMESPACE);
 
-        threat.setPropertiesDefinition(null);
+        threat.setProperties(null);
 
         WinerysPropertiesDefinition threatProps = new WinerysPropertiesDefinition();
         PropertyDefinitionKVList threatPropList = new PropertyDefinitionKVList();
@@ -316,7 +316,7 @@ public class ThreatModelingUtils {
 
         mitigation.setTargetNamespace(ThreatModelingConstants.THREATMODELING_NAMESPACE);
 
-        mitigation.setPropertiesDefinition(null);
+        mitigation.setProperties(null);
 
         WinerysPropertiesDefinition mitigationProps = new WinerysPropertiesDefinition();
         PropertyDefinitionKVList mitigationPropList = new PropertyDefinitionKVList();

@@ -65,6 +65,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         @XmlElement(name = "ServiceTemplate", type = TServiceTemplate.class),
         @XmlElement(name = "ArtifactType", type = TArtifactType.class),
         @XmlElement(name = "CapabilityType", type = TCapabilityType.class),
+        @XmlElement(name = "DataType", type = TDataType.class),
         @XmlElement(name = "NodeType", type = TNodeType.class),
         @XmlElement(name = "NodeTypeImplementation", type = TNodeTypeImplementation.class),
         @XmlElement(name = "RequirementType", type = TRequirementType.class),

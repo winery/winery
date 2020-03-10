@@ -80,7 +80,6 @@ import org.eclipse.winery.model.tosca.TArtifactTemplate.ArtifactReferences;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDefinitions.Types;
 import org.eclipse.winery.model.tosca.TEntityType;
-import org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.model.tosca.TNodeType;

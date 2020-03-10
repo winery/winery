@@ -22,27 +22,24 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.winery.model.ids.definitions.DataTypeId;
-import org.eclipse.winery.model.tosca.TConstraintClause;
 import org.eclipse.winery.model.tosca.TDataType;
+import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.kvproperties.ConstraintClauseKV;
-import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal;
 
-public class DataTypeResource extends AbstractComponentInstanceResource {
+public class DataTypeResource extends AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal {
 
     public DataTypeResource(DataTypeId id) {
         super(id);
+        // readjust the cached "element" property to account for deserialization of 
+        //  YAML data into TServiceTemplate regardless of the actual type
+        element = getDataType();
     }
     
     public TDataType getDataType() {
         // Because DataTypes are serialized into their own ServiceTemplate, but mapped to a Definitions child directly
         return getDefinitions().getDataTypes().get(0);
-    }
-    
-    @Path("/")
-    public TDataType element() {
-        return getDataType();
     }
     
     @GET
@@ -52,6 +49,13 @@ public class DataTypeResource extends AbstractComponentInstanceResource {
         return getDataType().getConstraints();
     }
 
+    @GET
+    @Path("properties/")
+    @Produces(MediaType.APPLICATION_JSON) 
+    public List<TEntityType.PropertyDefinition> properties() {
+        return getDataType().getProperties();
+    }
+    
     @Override
     protected TExtensibleElements createNewElement() {
         return new TDataType();

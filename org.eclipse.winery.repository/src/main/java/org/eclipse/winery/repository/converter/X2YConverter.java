@@ -309,12 +309,13 @@ public class X2YConverter {
             .addMetadata("targetNamespace", node.getTargetNamespace())
             .addMetadata("abstract", isAbstract.equals(TBoolean.YES) ? "true" : "false")
             .addMetadata("final", isFinal.equals(TBoolean.YES) ? "true" : "false")
-            .setProperties(convert(node, node.getPropertiesDefinition()))
+            .setProperties(convert(node, node.getProperties()))
             .setAttributes(convert(node, node.getAttributeDefinitions()))
             .setDescription(convertDocumentation(node.getDocumentation()));
     }
 
-    public Map<String, TPropertyDefinition> convert(TEntityType type, TEntityType.PropertiesDefinition node) {
+    // FIXME properties are completely and utterly ignored!
+    public Map<String, TPropertyDefinition> convert(TEntityType type, List<TEntityType.PropertyDefinition> nodes) {
         // TODO convert properties beside simple winery properties
         WinerysPropertiesDefinition properties = type.getWinerysPropertiesDefinition();
         if (Objects.isNull(properties) ||

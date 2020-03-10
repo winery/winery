@@ -15,6 +15,7 @@
 package org.eclipse.winery.model.tosca.visitor;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -141,9 +142,9 @@ public abstract class Visitor {
     public void visit(TEntityType entityType) {
         Objects.requireNonNull(entityType);
         visit((TExtensibleElements) entityType);
-        final TEntityType.PropertiesDefinition propertiesDefinition = entityType.getPropertiesDefinition();
-        if (propertiesDefinition != null) {
-            propertiesDefinition.accept(this);
+        final List<TEntityType.PropertyDefinition> propertyDefinitions = entityType.getProperties();
+        if (propertyDefinitions != null) {
+            propertyDefinitions.forEach(this::visit);
         }
     }
 
@@ -355,7 +356,7 @@ public abstract class Visitor {
         // this is a leaf, so no action to take
     }
 
-    public void visit(TEntityType.PropertiesDefinition propertiesDefinition) {
+    public void visit(TEntityType.PropertyDefinition propertiesDefinition) {
         // this is a leaf, so no action to take
     }
 

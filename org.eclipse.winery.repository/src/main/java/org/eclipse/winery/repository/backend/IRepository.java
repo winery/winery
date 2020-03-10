@@ -45,6 +45,7 @@ import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.model.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.model.ids.definitions.ComplianceRuleId;
+import org.eclipse.winery.model.ids.definitions.DataTypeId;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.ids.definitions.HasInheritanceId;
 import org.eclipse.winery.model.ids.definitions.InterfaceTypeId;
@@ -555,12 +556,13 @@ public interface IRepository extends IWineryRepositoryCommon {
                     }
                 }
 
+                // FIXME this check is based on the XML model for EntityType properties
                 if (!referencesGivenQName && element instanceof TEntityType) {
-                    TEntityType.PropertiesDefinition propertiesDefinition = ((TEntityType) element).getPropertiesDefinition();
-                    if (Objects.nonNull(propertiesDefinition)) {
-                        referencesGivenQName = Objects.nonNull(propertiesDefinition.getElement()) && propertiesDefinition.getElement().equals(qNameOfTheType)
-                            || Objects.nonNull(propertiesDefinition.getType()) && qNameOfTheType.equals(propertiesDefinition.getType());
-                    }
+//                    TEntityType.PropertiesDefinition propertiesDefinition = ((TEntityType) element).getPropertiesDefinition();
+//                    if (Objects.nonNull(propertiesDefinition)) {
+//                        referencesGivenQName = Objects.nonNull(propertiesDefinition.getElement()) && propertiesDefinition.getElement().equals(qNameOfTheType)
+//                            || Objects.nonNull(propertiesDefinition.getType()) && qNameOfTheType.equals(propertiesDefinition.getType());
+//                    }
                 }
 
                 if (!referencesGivenQName && element instanceof TServiceTemplate) {
@@ -934,6 +936,11 @@ public interface IRepository extends IWineryRepositoryCommon {
         }
     }
 
+    default Collection<DefinitionsChildId> getReferencedDefinitionsChildIds(DataTypeId id) {
+        // FIXME this probably needs additional work
+        return new HashSet<>();
+    }
+
     default Collection<DefinitionsChildId> getReferencedDefinitionsChildIds(PatternRefinementModelId id) {
         // TODO
         return new HashSet<>();
@@ -1046,6 +1053,8 @@ public interface IRepository extends IWineryRepositoryCommon {
             referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((TopologyFragmentRefinementModelId) id);
         } else if (id instanceof TestRefinementModelId) {
             referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((TestRefinementModelId) id);
+        } else if (id instanceof DataTypeId) {
+            referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((DataTypeId) id);    
         } else {
             throw new IllegalStateException("Unhandled id class " + id.getClass());
         }
@@ -1053,7 +1062,9 @@ public interface IRepository extends IWineryRepositoryCommon {
         // Then, handle the super classes, which support inheritance
         // Currently, it is EntityType and EntityTypeImplementation only
         // Since the latter does not exist in the TOSCA MetaModel, we just handle EntityType here
-        if (id instanceof HasInheritanceId) {
+        // FIXME We currently explicitly exclude DataTypeId here,
+        //  because conversion from YAML model breaks assumptions about the structure of Definitions
+        if (id instanceof HasInheritanceId && !(id instanceof DataTypeId)) {
             Optional<DefinitionsChildId> parentId = this.getDefinitionsChildIdOfParent((HasInheritanceId) id);
             if (parentId.isPresent()) {
                 // add the parent id itself. The referenced definitions are included by recursion
@@ -1090,6 +1101,11 @@ public interface IRepository extends IWineryRepositoryCommon {
     default Collection<DefinitionsChildId> getReferencingDefinitionsChildIds(RelationshipTypeImplementationId id) {
         // RelationshipTypeImplementations
         return new HashSet<>(this.getAllElementsReferencingGivenType(RelationshipTypeImplementationId.class, id.getQName()));
+    }
+    
+    default Collection<DefinitionsChildId> getReferencingDefinitionsChildIds(DataTypeId id) {
+        // RelationshipTypeImplementations
+        return new HashSet<>(this.getAllElementsReferencingGivenType(DataTypeId.class, id.getQName()));
     }
 
     default Collection<DefinitionsChildId> getReferencingDefinitionsChildIds(RelationshipTypeId id) {
@@ -1222,6 +1238,8 @@ public interface IRepository extends IWineryRepositoryCommon {
             referencedDefinitionsChildIds = this.getReferencingDefinitionsChildIds((RelationshipTypeImplementationId) id);
         } else if (id instanceof RequirementTypeId) {
             referencedDefinitionsChildIds = this.getReferencingDefinitionsChildIds((RequirementTypeId) id);
+        } else if (id instanceof DataTypeId) {
+            referencedDefinitionsChildIds = this.getReferencingDefinitionsChildIds((DataTypeId) id);  
         } else if (id instanceof ArtifactTypeId) {
             referencedDefinitionsChildIds = this.getReferencingDefinitionsChildIds((ArtifactTypeId) id);
         } else if (id instanceof ArtifactTemplateId) {

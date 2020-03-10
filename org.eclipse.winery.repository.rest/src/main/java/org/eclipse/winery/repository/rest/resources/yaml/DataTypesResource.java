@@ -18,14 +18,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithTypeReferenceResource;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithoutTypeReferenceResource;
 
 import io.swagger.annotations.Api;
 
 @Api(tags = "Data Types")
-public class DataTypesResource extends AbstractComponentsWithTypeReferenceResource<DataTypeResource> {
+public class DataTypesResource extends AbstractComponentsWithoutTypeReferenceResource<DataTypeResource> {
         
-    @Path("{namespace}/{id}")
+    @Path("{namespace}/{id}/")
     public DataTypeResource getComponentInstanceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
-        return getComponentInstanceResource(namespace, id, true);    
+        return this.getComponentInstanceResource(namespace, id, true);    
     }
 }

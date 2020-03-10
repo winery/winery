@@ -14,6 +14,8 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,6 +23,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
@@ -30,8 +33,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.kvproperties.AttributeDefinitionList;
+import org.eclipse.winery.model.tosca.kvproperties.ConstraintClauseKVList;
 import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
-import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.adr.embedded.ADR;
@@ -42,7 +45,7 @@ import org.eclipse.jdt.annotation.Nullable;
 @XmlType(name = "tEntityType", propOrder = {
     "tags",
     "derivedFrom",
-    "propertiesDefinition",
+    "properties",
     "attributeDefinitions"
 })
 @XmlSeeAlso( {
@@ -60,8 +63,8 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     protected TTags tags;
     @XmlElement(name = "DerivedFrom")
     protected TEntityType.DerivedFrom derivedFrom;
-    @XmlElement(name = "PropertiesDefinition")
-    protected TEntityType.PropertiesDefinition propertiesDefinition;
+    @XmlElement(name = "Properties")
+    protected List<TEntityType.PropertyDefinition> properties;
     @XmlAttribute(name = "name", required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlSchemaType(name = "NCName")
@@ -84,7 +87,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
         super(builder);
         this.tags = builder.tags;
         this.derivedFrom = builder.derivedFrom;
-        this.propertiesDefinition = builder.propertiesDefinition;
+        this.properties = builder.properties;
         this.name = builder.name;
         this._abstract = builder.abstractValue;
         this._final = builder.finalValue;
@@ -99,7 +102,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
         TEntityType that = (TEntityType) o;
         return Objects.equals(tags, that.tags) &&
             Objects.equals(derivedFrom, that.derivedFrom) &&
-            Objects.equals(propertiesDefinition, that.propertiesDefinition) &&
+            Objects.equals(properties, that.properties) &&
             Objects.equals(name, that.name) &&
             _abstract == that._abstract &&
             _final == that._final &&
@@ -108,7 +111,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
 
     @Override
     public int hashCode() {
-        return Objects.hash(tags, derivedFrom, propertiesDefinition, name, _abstract, _final, targetNamespace);
+        return Objects.hash(tags, derivedFrom, properties, name, _abstract, _final, targetNamespace);
     }
 
     @Nullable
@@ -136,13 +139,15 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     public void setDerivedFrom(@Nullable HasType value) {
         this.derivedFrom = (TEntityType.DerivedFrom) value;
     }
-
-    public TEntityType.@Nullable PropertiesDefinition getPropertiesDefinition() {
-        return propertiesDefinition;
+    
+    // Must be nullable, because types are not required to define any properties if they inherit
+    @Nullable
+    public List<PropertyDefinition> getProperties() {
+        return properties;
     }
-
-    public void setPropertiesDefinition(TEntityType.@Nullable PropertiesDefinition value) {
-        this.propertiesDefinition = value;
+    
+    public void setProperties(@Nullable List<PropertyDefinition> properties) {
+        this.properties = properties;
     }
 
     @ADR(22)
@@ -287,60 +292,172 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             return Objects.hash(typeRef);
         }
     }
-
+    
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    public static class PropertiesDefinition {
+    public static class PropertyDefinition {
+        private String name;
+        @XmlAttribute(name = "type", required = true)
+        private QName type;
+        private String description;
+        private Boolean required;
+        @XmlElement(name = "default")
+        private Object defaultValue;
+        private PropertyDefinition.Status status;
+        @XmlElement
+        private ConstraintClauseKVList constraints;
 
-        @XmlAttribute(name = "element")
-        protected QName element;
-        @XmlAttribute(name = "type")
-        protected QName type;
+        public PropertyDefinition() {
+            // added for xml serialization!
+        }
+        
+        private PropertyDefinition(Builder builder) {
+            this.name = builder.name;
+            this.type = builder.type;
+            this.description = builder.description;
+            this.required = builder.required;
+            this.defaultValue = builder.defaultValue;
+            this.status = builder.status;
+            this.constraints = builder.constraints;
+        }
+        
+        @XmlEnum(String.class)
+        public enum Status {
+            supported,
+            unsupported,
+            experimental,
+            deprecated;
+            
+            @Nullable
+            public static Status getStatus(String status) {
+                // Could possibly be replaced by wrapping with Status.getValue(status)?
+                return Arrays.stream(Status.values())
+                    .filter(v -> status.equalsIgnoreCase(v.name()))
+                    .findFirst()
+                    .orElse(null);
+            }
+        }
+        // FIXME introduce this
+//        @XmlAttribute(name = "entry_schema")
+//        private TEntrySchema entrySchema;
 
-        @Nullable
-        public QName getElement() {
-            return element;
+        public static class Builder {
+            private String name;
+            private QName type;
+            private String description;
+            private Boolean required;
+            private Object defaultValue;
+            private PropertyDefinition.Status status;
+            private ConstraintClauseKVList constraints;
+            
+            public Builder(String name) {
+                this.name = name;
+            }
+
+            public Builder setName(String name) {
+                this.name = name;
+                return this;
+            }
+
+            public Builder setType(QName type) {
+                this.type = type;
+                return this;
+            }
+
+            public Builder setDescription(String description) {
+                this.description = description;
+                return this;
+            }
+
+            public Builder setRequired(Boolean required) {
+                this.required = required;
+                return this;
+            }
+
+            public Builder setDefaultValue(Object defaultValue) {
+                this.defaultValue = defaultValue;
+                return this;
+            }
+
+            public Builder setStatus(Status status) {
+                this.status = status;
+                return this;
+            }
+
+            public Builder setConstraints(ConstraintClauseKVList constraints) {
+                this.constraints = constraints;
+                return this;
+            }
+            
+            public PropertyDefinition build() {
+                return new PropertyDefinition(this);
+            }
+        }
+        
+        public String getName() {
+            return name;
         }
 
-        public void setElement(@Nullable QName value) {
-            this.element = value;
+        public void setName(String name) {
+            this.name = name;
         }
 
-        @Nullable
         public QName getType() {
             return type;
         }
 
-        public void setType(@Nullable QName value) {
-            this.type = value;
+        public void setType(QName type) {
+            this.type = type;
         }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            PropertiesDefinition that = (PropertiesDefinition) o;
-            return Objects.equals(element, that.element) &&
-                Objects.equals(type, that.type);
+        public String getDescription() {
+            return description;
         }
 
-        @Override
-        public int hashCode() {
-            return Objects.hash(element, type);
+        public void setDescription(String description) {
+            this.description = description;
         }
 
-        public void accept(Visitor visitor) {
-            visitor.visit(this);
+        public Boolean getRequired() {
+            return required;
+        }
+
+        public void setRequired(Boolean required) {
+            this.required = required;
+        }
+
+        public Object getDefaultValue() {
+            return defaultValue;
+        }
+
+        public void setDefaultValue(Object defaultValue) {
+            this.defaultValue = defaultValue;
+        }
+
+        public Status getStatus() {
+            return status;
+        }
+
+        public void setStatus(Status status) {
+            this.status = status;
+        }
+
+        public ConstraintClauseKVList getConstraints() {
+            return constraints;
+        }
+
+        public void setConstraints(ConstraintClauseKVList constraints) {
+            this.constraints = constraints;
         }
     }
-
+    
     @ADR(11)
     public abstract static class Builder<T extends Builder<T>> extends TExtensibleElements.Builder<T> {
         private final String name;
 
         private TTags tags;
         private TEntityType.DerivedFrom derivedFrom;
-        private TEntityType.PropertiesDefinition propertiesDefinition;
+        private List<TEntityType.PropertyDefinition> properties;
         private TBoolean abstractValue;
         private TBoolean finalValue;
         private String targetNamespace;
@@ -358,7 +475,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             this.abstractValue = entityType.getAbstract();
             this.finalValue = entityType.getFinal();
             this.targetNamespace = entityType.getTargetNamespace();
-            this.propertiesDefinition = entityType.getPropertiesDefinition();
+            this.properties = entityType.getProperties();
             this.attributeDefinitions = entityType.getAttributeDefinitions();
         }
 
@@ -392,9 +509,26 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             return setDerivedFrom(new QName(derivedFrom));
         }
 
-        public T setPropertiesDefinition(PropertiesDefinition propertiesDefinition) {
-            this.propertiesDefinition = propertiesDefinition;
+        public T setProperties(List<PropertyDefinition> properties) {
+            if (properties == null || properties.isEmpty()) {
+                return self();
+            }
+            
+            if (this.properties == null) {
+                this.properties = properties;
+                return self();
+            }
+            this.properties.addAll(properties);
             return self();
+        }
+        
+        public T setProperties(PropertyDefinition property) {
+            if (property == null) {
+                return self();
+            }
+            List<PropertyDefinition> tmp = new ArrayList<>();
+            tmp.add(property);
+            return setProperties(tmp);
         }
 
         public T setAbstract(TBoolean abstractValue) {

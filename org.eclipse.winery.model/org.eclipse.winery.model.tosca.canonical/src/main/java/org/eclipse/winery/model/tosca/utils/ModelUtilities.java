@@ -116,7 +116,7 @@ public class ModelUtilities {
      * Generates a XSD when Winery's K/V properties are used. This method is put here instead of
      * WinerysPropertiesDefinitionResource to avoid generating the subresource
      * <p>
-     * public because of the usage by TOSCAEXportUtil
+     * public because of the usage by TOSCAExportUtil
      *
      * @return empty Document, if Winery's Properties Definition is not fully filled (e.g., no wrapping element defined)
      */

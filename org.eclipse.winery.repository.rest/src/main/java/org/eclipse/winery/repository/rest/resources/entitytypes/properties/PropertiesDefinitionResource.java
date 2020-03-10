@@ -29,7 +29,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.model.tosca.TEntityType;
-import org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition;
 import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -50,10 +49,9 @@ import org.slf4j.LoggerFactory;
  * <ol>
  * <li>TOSCA conforming properties definition (XML element / XML schema / none)</li>
  * <li>Winery's KV properties (in the subresource "winery")</li>
+ * <li>YAML property definitions!</li>
  * </ol>
  * <p>
- * This class does not have "KV" in its name, because it models
- * {@link TEntityType.PropertiesDefinition}
  */
 public class PropertiesDefinitionResource {
 
@@ -75,8 +73,8 @@ public class PropertiesDefinitionResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public PropertiesDefinitionResourceApiData getJson() {
-        PropertiesDefinition definition = this.getEntityType().getPropertiesDefinition();
-        return new PropertiesDefinitionResourceApiData(definition, this.wpd);
+//        PropertiesDefinition definition = this.getEntityType().getPropertiesDefinition();
+        return new PropertiesDefinitionResourceApiData(null, this.wpd);
     }
 
     @GET
@@ -107,7 +105,7 @@ public class PropertiesDefinitionResource {
 
     @DELETE
     public Response clearPropertiesDefinition() {
-        this.getEntityType().setPropertiesDefinition(null);
+        this.getEntityType().setProperties(null);
         ModelUtilities.removeWinerysPropertiesDefinition(this.getEntityType());
         return RestUtils.persist(this.parentRes);
     }
@@ -119,7 +117,7 @@ public class PropertiesDefinitionResource {
             // first of all, remove Winery's Properties definition (if it exists)
             ModelUtilities.removeWinerysPropertiesDefinition(this.getEntityType());
             // replace old properties definition by new one
-            PropertiesDefinition def = new PropertiesDefinition();
+            /* PropertiesDefinition def = new PropertiesDefinition();
 
             if (data.propertiesDefinition.getElement() != null) {
                 def.setElement(data.propertiesDefinition.getElement());
@@ -129,7 +127,7 @@ public class PropertiesDefinitionResource {
                 return Response.status(Status.BAD_REQUEST).entity("Wrong data submitted!").build();
             }
 
-            this.getEntityType().setPropertiesDefinition(def);
+            this.getEntityType().setPropertiesDefinition(def);*/
             List<String> errors = new ArrayList<>();
             BackendUtils.deriveWPD(this.getEntityType(), errors);
             // currently the errors are just logged
@@ -141,7 +139,7 @@ public class PropertiesDefinitionResource {
             TEntityType et = this.parentRes.getEntityType();
 
             // clear current properties definition
-            et.setPropertiesDefinition(null);
+            et.setProperties(null);
 
             // create winery properties definition and persist it
             ModelUtilities.replaceWinerysPropertiesDefinition(et, data.winerysPropertiesDefinition);

@@ -306,8 +306,8 @@ public class ConsistencyChecker {
                 return;
             }
             final WinerysPropertiesDefinition winerysPropertiesDefinition = entityType.getWinerysPropertiesDefinition();
-            final TEntityType.PropertiesDefinition propertiesDefinition = entityType.getPropertiesDefinition();
-            if ((winerysPropertiesDefinition != null) || (propertiesDefinition != null)) {
+            final List<TEntityType.PropertyDefinition> propertyDefinitions = entityType.getProperties();
+            if ((winerysPropertiesDefinition != null) || (propertyDefinitions != null && !propertyDefinitions.isEmpty())) {
                 final TEntityTemplate.Properties properties = entityTemplate.getProperties();
                 if (properties == null) {
                     printAndAddError(id, "Properties required, but no properties defined");
@@ -333,24 +333,28 @@ public class ConsistencyChecker {
                     for (Object o : kvProperties.keySet()) {
                         printAndAddError(id, "Property " + o + " set, but not defined at schema.");
                     }
-                } else if (propertiesDefinition != null) {
-                    @Nullable final Object any = properties.getAny();
-                    if (any == null) {
-                        printAndAddError(id, "Properties required, but no properties defined (any case)");
-                        return;
-                    }
-
-                    @Nullable final QName element = propertiesDefinition.getElement();
-                    if (element != null) {
-                        final Map<String, RepositoryFileReference> mapFromLocalNameToXSD = configuration.getRepository().getXsdImportManager().getMapFromLocalNameToXSD(new Namespace(element.getNamespaceURI(), false), false);
-                        final RepositoryFileReference repositoryFileReference = mapFromLocalNameToXSD.get(element.getLocalPart());
-                        if (repositoryFileReference == null) {
-                            printAndAddError(id, "No Xml Schema definition found for " + element);
-                            return;
-                        }
-                        validate(repositoryFileReference, any, id);
-                    }
                 }
+                // FIXME this whole block is based on the XML model.
+                // FIXME consistency checks need to be on the specific repository implementations, because
+                //  XML consistency is different from YAML consistency
+//                } else if (propertyDefinitions != null && !propertyDefinitions.isEmpty()) {
+//                    @Nullable final Object any = properties.getAny();
+//                    if (any == null) {
+//                        printAndAddError(id, "Properties required, but no properties defined (any case)");
+//                        return;
+//                    }
+//
+//                    @Nullable final QName element = propertiesDefinition.getElement();
+//                    if (element != null) {
+//                        final Map<String, RepositoryFileReference> mapFromLocalNameToXSD = configuration.getRepository().getXsdImportManager().getMapFromLocalNameToXSD(new Namespace(element.getNamespaceURI(), false), false);
+//                        final RepositoryFileReference repositoryFileReference = mapFromLocalNameToXSD.get(element.getLocalPart());
+//                        if (repositoryFileReference == null) {
+//                            printAndAddError(id, "No Xml Schema definition found for " + element);
+//                            return;
+//                        }
+//                        validate(repositoryFileReference, any, id);
+//                    }
+//                }
             }
         }
     }

@@ -26,6 +26,7 @@ import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.ids.IdUtil;
+import org.eclipse.winery.model.ids.definitions.DataTypeId;
 import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.model.ids.EncodingUtil;
@@ -41,7 +42,6 @@ import org.eclipse.winery.model.ids.elements.PlanId;
 import org.eclipse.winery.model.ids.elements.PlansId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TEntityType;
-import org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition;
 import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.constants.QNames;
@@ -259,10 +259,10 @@ public class ToscaExportUtil {
                 // END: add import and put into CSAR
 
                 // BEGIN: generate TOSCA conforming PropertiesDefinition
-
-                PropertiesDefinition propertiesDefinition = new PropertiesDefinition();
-                propertiesDefinition.setType(new QName(wrapperElementNamespace, wrapperElementLocalName));
-                entityType.setPropertiesDefinition(propertiesDefinition);
+                // FIXME this broke when the "canonical model Definitions" became also responsible for YAML DataTypes 
+//                PropertiesDefinition propertiesDefinition = new PropertiesDefinition();
+//                propertiesDefinition.setType(new QName(wrapperElementNamespace, wrapperElementLocalName));
+//                entityType.setPropertiesDefinition(propertiesDefinition);
 
                 // END: generate TOSCA conforming PropertiesDefinition
             } else {
@@ -287,6 +287,8 @@ public class ToscaExportUtil {
             this.addVisualAppearanceToCSAR(repository, (NodeTypeId) id);
         } else if (id instanceof ArtifactTemplateId) {
             this.prepareForExport(repository, (ArtifactTemplateId) id);
+        } else if (id instanceof DataTypeId) {
+            this.prepareForExport(repository, (DataTypeId) id);
         }
     }
 
@@ -370,6 +372,10 @@ public class ToscaExportUtil {
 
             putRefAsReferencedItemInCsar(ref);
         }
+    }
+    
+    protected void prepareForExport(IRepository repository, DataTypeId id) throws RepositoryCorruptException, IOException {
+        // FIXME resolve all external references of the DataType definition to add them to the export
     }
 
     /**

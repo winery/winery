@@ -39,8 +39,8 @@ public class QNameValidator extends Visitor {
     }
 
     @Override
-    public void visit(TEntityType.PropertiesDefinition propertiesDefinition) {
-        final QName element = propertiesDefinition.getElement();
+    public void visit(TEntityType.PropertyDefinition propertiesDefinition) {
+        final QName element = propertiesDefinition.getType();
         validateQName(element);
         super.visit(propertiesDefinition);
     }
