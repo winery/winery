@@ -18,6 +18,7 @@ import { TArtifact, TNodeTemplate, TRelationshipTemplate } from '../../models/tt
 import { TDeploymentArtifact } from '../../models/artifactsModalData';
 import { TPolicy } from '../../models/policiesModalData';
 import { Visuals } from '../../models/visuals';
+import { NodeDetailsSidebarState } from '../../sidebars/node-details/node-details-sidebar';
 
 export interface SendPaletteOpenedAction extends Action {
     paletteOpened: boolean;
@@ -28,18 +29,7 @@ export interface HideNavBarAndPaletteAction extends Action {
 }
 
 export interface SidebarStateAction extends Action {
-    sidebarContents: {
-        sidebarVisible: boolean,
-        nodeClicked: boolean,
-        id: string,
-        nameTextFieldValue: string,
-        type: string,
-        minInstances: string,
-        maxInstances: string,
-        properties: string,
-        source: string,
-        target: string
-    };
+    sidebarContents: NodeDetailsSidebarState;
 }
 
 export interface SidebarNodeNamechange extends Action {

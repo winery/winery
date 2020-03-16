@@ -24,7 +24,6 @@ import { WineryComponent } from './winery.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { PaletteComponent } from './palette/palette.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
 import { TopologyRendererModule } from './topology-renderer/topology-renderer.module';
 import { PrintViewComponent } from './print-view/print-view.component';
 import { DevToolsExtension, NgRedux, NgReduxModule } from '@angular-redux/store';
@@ -42,7 +41,6 @@ import { ImportTopologyService } from './services/import-topology.service';
 import { SplitMatchTopologyService } from './services/split-match-topology.service';
 import { ErrorHandlerService } from './services/error-handler.service';
 import { PopoverModule } from 'ngx-bootstrap/popover';
-import { RefinementSidebarComponent } from './refinementSidebar/refinementSidebar.component';
 import { ProblemDetectionComponent } from './problemDetection/problemDetection.component';
 import { PropertiesModule } from './properties/properties.module';
 import { StatefulAnnotationsService } from './services/statefulAnnotations.service';
@@ -54,12 +52,15 @@ import { ReqCapRelationshipService } from './services/req-cap-relationship.servi
 import { WineryTableModule } from '../../../tosca-management/src/app/wineryTableModule/wineryTable.module';
 import { EdmmTransformationCheckComponent } from './edmmTransformationCheck/edmmTransformationCheck.component';
 import { PolicyService } from './services/policy.service';
+import { SidebarModule } from 'ng-sidebar';
+import { NodeDetailsSidebarComponent } from './sidebars/node-details/nodeDetailsSidebar.component';
+import { RefinementSidebarComponent } from './sidebars/refinement/refinementSidebar.component';
 
 @NgModule({
     declarations: [
         WineryComponent,
         PaletteComponent,
-        SidebarComponent,
+        NodeDetailsSidebarComponent,
         PrintViewComponent,
         RefinementSidebarComponent,
         ProblemDetectionComponent,
@@ -68,6 +69,7 @@ import { PolicyService } from './services/policy.service';
     ],
     exports: [WineryComponent],
     imports: [
+        SidebarModule.forRoot(),
         BrowserModule,
         FormsModule,
         HttpClientModule,

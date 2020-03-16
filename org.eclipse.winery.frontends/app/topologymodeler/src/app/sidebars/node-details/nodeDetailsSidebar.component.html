@@ -11,13 +11,13 @@
    *
    * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
    -->
-<div id="NTPropertiesView"
+<!--<ng-sidebar>-->
+    <div
+     id="NTPropertiesView"
      class="sidebar-root"
-     style="display: block;"
-     [@sidebarAnimationStatus]="sidebarAnimationStatus"
-     *ngIf="sidebarState.sidebarVisible">
+     style="display: block;">
     <div id="nodeTemplateInformationSection" style="margin: 8px">
-        <button type="button" class="close" style="color: #000000" aria-label="Close" (click)="closeSidebar()">
+        <button type="button" class="close" style="color: #000000" aria-label="Close" (click)="closeSidebar()" closeSidebar>
             <span aria-hidden="true">&times;</span>
         </button>
         <fieldset>
@@ -28,7 +28,7 @@
             <div class="form-group">
                 <label for="nodetemplatename" class="control-label">Name</label>
                 <input id="nodetemplatename" name="name" class="form-control"
-                       value="{{sidebarState.nameTextFieldValue}}"
+                       value="{{sidebarState.name}}"
                        (keyup)="nodeNameKeyUp.next($event.target.value)"
                        (focus)="onFocus($event)"
                        (blur)="onBlur($event)">
@@ -171,4 +171,5 @@
             </div>
         </fieldset>
     </div>
-</div>
+    </div>
+<!--</ng-sidebar>-->

@@ -15,6 +15,9 @@ package org.eclipse.winery.model.tosca.kvproperties;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "PropertiesDefinition")
 /**
  * This is Winery's main extension element for a key/value based properties definition
  */

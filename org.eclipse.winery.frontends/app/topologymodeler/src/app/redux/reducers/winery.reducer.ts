@@ -23,11 +23,12 @@ import {
 import { TArtifact, TNodeTemplate, TRelationshipTemplate, TTopologyTemplate } from '../../models/ttopology-template';
 import { TDeploymentArtifact } from '../../models/artifactsModalData';
 import { Visuals } from '../../models/visuals';
+import { NodeDetailsSidebarState } from '../../sidebars/node-details/node-details-sidebar';
 
 export interface WineryState {
     currentPaletteOpenedState: boolean;
     hideNavBarAndPaletteState: boolean;
-    sidebarContents: any;
+    sidebarContents: NodeDetailsSidebarState;
     currentJsonTopology: TTopologyTemplate;
     currentNodeData: any;
     nodeVisuals: Visuals[];
@@ -37,10 +38,10 @@ export const INITIAL_WINERY_STATE: WineryState = {
     currentPaletteOpenedState: true,
     hideNavBarAndPaletteState: false,
     sidebarContents: {
-        sidebarVisible: false,
+        visible: false,
         nodeClicked: false,
         id: '',
-        nameTextFieldValue: '',
+        name: '',
         type: '',
         minInstances: 1,
         maxInstances: 1,
@@ -77,7 +78,7 @@ export const WineryReducer =
                     hideNavBarAndPaletteState: hideNavBarAndPalette
                 };
             case WineryActions.OPEN_SIDEBAR:
-                const newSidebarData: any = (<SidebarStateAction>action).sidebarContents;
+                const newSidebarData: NodeDetailsSidebarState = (<SidebarStateAction>action).sidebarContents;
 
                 return <WineryState>{
                     ...lastState,

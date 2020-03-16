@@ -10,52 +10,39 @@
  * which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- ********************************************************************************/
+ *******************************************************************************/
 
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { NgRedux } from '@angular-redux/store';
-import { IWineryState } from '../redux/store/winery.store';
-import { WineryActions } from '../redux/actions/winery.actions';
+import { IWineryState } from '../../redux/store/winery.store';
+import { WineryActions } from '../../redux/actions/winery.actions';
 import { Subject, Subscription } from 'rxjs';
 
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { QName } from '../models/qname';
-import { PropertyDefinitionType, urlElement } from '../models/enums';
-import { BackendService } from '../services/backend.service';
+import { QName } from '../../models/qname';
+import { PropertyDefinitionType, urlElement } from '../../models/enums';
+import { BackendService } from '../../services/backend.service';
 import { isNullOrUndefined } from 'util';
-import { PolicyService } from '../services/policy.service';
+import { PolicyService } from '../../services/policy.service';
+import { NodeDetailsSidebarState } from './node-details-sidebar';
+import { Sidebar } from 'ng-sidebar';
 
 /**
  * This is the right sidebar, where attributes of nodes and relationships get displayed.
  */
 @Component({
-    selector: 'winery-sidebar',
-    templateUrl: './sidebar.component.html',
-    styleUrls: ['./sidebar.component.css'],
-    animations: [
-        trigger('sidebarAnimationStatus', [
-            state('in', style({ transform: 'translateX(0)' })),
-            transition('void => *', [
-                style({ transform: 'translateX(100%)' }),
-                animate('100ms cubic-bezier(0.86, 0, 0.07, 1)')
-            ]),
-            transition('* => void', [
-                animate('200ms cubic-bezier(0.86, 0, 0.07, 1)', style({
-                    opacity: 0,
-                    transform: 'translateX(100%)'
-                }))
-            ])
-        ])
-    ]
+    selector: 'winery-node-details-sidebar',
+    templateUrl: './nodeDetailsSidebar.component.html',
+    styleUrls: ['./nodeDetailsSidebar.component.css'],
 })
-export class SidebarComponent implements OnInit, OnDestroy {
+export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
     // ngRedux sidebarSubscription
     sidebarSubscription;
-    sidebarState: any;
-    sidebarAnimationStatus: string;
+    sidebarState: NodeDetailsSidebarState;
     maxInputEnabled = true;
     propertyDefinitionType: string;
+
+    // @ViewChild(Sidebar) sidebar: Sidebar;
 
     @Output() sidebarDeleteButtonClicked: EventEmitter<any> = new EventEmitter<any>();
     public nodeNameKeyUp: Subject<string> = new Subject<string>();
@@ -82,10 +69,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
     closeSidebar() {
         this.$ngRedux.dispatch(this.actions.openSidebar({
             sidebarContents: {
-                sidebarVisible: false,
+                visible: false,
                 nodeClicked: false,
                 id: '',
-                nameTextFieldValue: '',
+                name: '',
                 type: '',
                 minInstances: -1,
                 maxInstances: -1,
@@ -122,15 +109,18 @@ export class SidebarComponent implements OnInit, OnDestroy {
      * initializes the sidebar with the correct data, also implements debounce time for a smooth user experience
      */
     ngOnInit() {
-        this.sidebarSubscription = this.$ngRedux.select(wineryState => wineryState.wineryState.sidebarContents)
-            .subscribe(sidebarContents => {
+        this.sidebarSubscription = this.$ngRedux.select<NodeDetailsSidebarState>(
+                wineryState => wineryState.wineryState.sidebarContents
+            ).subscribe(sidebarContents => {
                     this.sidebarState = sidebarContents;
-                    if (!this.sidebarState.nameTextFieldValue) {
-                        this.sidebarState.nameTextFieldValue = this.sidebarState.id;
+                    if (!this.sidebarState.name) {
+                        this.sidebarState.name = this.sidebarState.id;
                     }
-                    if (sidebarContents.sidebarVisible) {
-                        this.sidebarAnimationStatus = 'in';
-                    }
+                    // if (this.sidebarState.visible) {
+                    //     this.sidebar.open();
+                    // } else {
+                    //     this.sidebar.close();
+                    // }
                 }
             );
         // apply changes to the node name <input> field with a debounceTime of 300ms
@@ -159,10 +149,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
                 // refresh
                 this.$ngRedux.dispatch(this.actions.openSidebar({
                     sidebarContents: {
-                        sidebarVisible: true,
+                        visible: true,
                         nodeClicked: this.sidebarState.nodeClicked,
                         id: this.sidebarState.id,
-                        nameTextFieldValue: data,
+                        name: data,
                         type: this.sidebarState.type,
                         minInstances: Number(this.sidebarState.minInstances),
                         maxInstances: Number(this.sidebarState.maxInstances),
@@ -190,10 +180,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
                 // refresh
                 this.$ngRedux.dispatch(this.actions.openSidebar({
                     sidebarContents: {
-                        sidebarVisible: true,
+                        visible: true,
                         nodeClicked: this.sidebarState.nodeClicked,
                         id: this.sidebarState.id,
-                        nameTextFieldValue: this.sidebarState.name,
+                        name: this.sidebarState.name,
                         type: this.sidebarState.type,
                         minInstances: Number(data),
                         maxInstances: this.sidebarState.maxInstances,
@@ -220,10 +210,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
                 // refresh
                 this.$ngRedux.dispatch(this.actions.openSidebar({
                     sidebarContents: {
-                        sidebarVisible: true,
+                        visible: true,
                         nodeClicked: this.sidebarState.nodeClicked,
                         id: this.sidebarState.id,
-                        nameTextFieldValue: this.sidebarState.name,
+                        name: this.sidebarState.name,
                         type: this.sidebarState.type,
                         minInstances: this.sidebarState.minInstances,
                         maxInstances: Number(data),
@@ -241,6 +231,18 @@ export class SidebarComponent implements OnInit, OnDestroy {
      * @param $event
      */
     minInstancesChanged($event) {
+        // don't deal with infinity?
+        if (this.sidebarState.minInstances === '\u221E') {
+            // this.$ngRedux.dispatch(this.actions.changeMinInstances({
+            //     minInstances: {
+            //         id: this.sidebarState.id,
+            //         count: 0
+            //     }
+            // }));
+            // this.sidebarState.minInstances = 0;
+            // this.minInputEnabled = true;
+            return;
+        }
         if ($event === 'inc') {
             this.$ngRedux.dispatch(this.actions.incMinInstances({
                 minInstances: {
@@ -265,10 +267,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
         // refresh
         this.$ngRedux.dispatch(this.actions.openSidebar({
             sidebarContents: {
-                sidebarVisible: true,
+                visible: true,
                 nodeClicked: this.sidebarState.nodeClicked,
                 id: this.sidebarState.id,
-                nameTextFieldValue: this.sidebarState.name,
+                name: this.sidebarState.name,
                 type: this.sidebarState.type,
                 minInstances: this.sidebarState.minInstances,
                 maxInstances: this.sidebarState.maxInstances,
@@ -292,7 +294,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
                         id: this.sidebarState.id
                     }
                 }));
-                this.sidebarState.maxInstances = Number.parseInt(this.sidebarState.maxInstances, 10) + 1;
+                this.sidebarState.maxInstances += 1;
             } else if ($event === 'dec') {
                 if (this.sidebarState.maxInstances === 0) {
                     this.sidebarState.maxInstances = 0;
@@ -328,10 +330,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
         // refresh
         this.$ngRedux.dispatch(this.actions.openSidebar({
             sidebarContents: {
-                sidebarVisible: true,
+                visible: true,
                 nodeClicked: this.sidebarState.nodeClicked,
                 id: this.sidebarState.id,
-                nameTextFieldValue: this.sidebarState.name,
+                name: this.sidebarState.name,
                 type: this.sidebarState.type,
                 minInstances: this.sidebarState.minInstances,
                 maxInstances: this.sidebarState.maxInstances,

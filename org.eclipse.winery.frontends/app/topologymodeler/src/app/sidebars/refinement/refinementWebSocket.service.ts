@@ -13,8 +13,8 @@
  *******************************************************************************/
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { BackendService } from '../services/backend.service';
-import { TTopologyTemplate } from '../models/ttopology-template';
+import { BackendService } from '../../services/backend.service';
+import { TTopologyTemplate } from '../../models/ttopology-template';
 
 export enum RefinementTasks {
     START = 'START',

@@ -11,42 +11,57 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
 -->
-<hotkeys-cheatsheet></hotkeys-cheatsheet>
-<router-outlet *ngIf="!readonly"></router-outlet>
-
-<winery-topology-renderer *ngIf="loaded?.loadedData"
-                          [readonly]="backendService.configuration.isReadonly"
-                          [entityTypes]="entityTypes"
-                          [differencesData]="topologyDifferences"
-                          [nodeTemplates]="nodeTemplates"
-                          [relationshipTemplates]="relationshipTemplates"
-                          [sidebarDeleteButtonClickEvent]="sidebarDeleteButtonClickEvent"
-                          (generatedReduxState)="onReduxReady()">
-</winery-topology-renderer>
-
-<div *ngIf="loaded?.generatedReduxState">
-    <div *ngIf="!hideNavBarState">
-        <winery-palette-component *ngIf="!topologyDifferences && !readonly"
-                                  style="width:300px;float:left;margin-top:50px;"
-                                  [entityTypes]="this.entityTypes">
-        </winery-palette-component>
+<ng-sidebar-container style="height: 100vh;">
+    <hotkeys-cheatsheet ng-sidebar-content></hotkeys-cheatsheet>
+    <router-outlet *ngIf="!readonly"></router-outlet>
+    
+    <winery-topology-renderer *ngIf="loaded?.loadedData"
+                              [readonly]="backendService.configuration.isReadonly"
+                              [entityTypes]="entityTypes"
+                              [differencesData]="topologyDifferences"
+                              [nodeTemplates]="nodeTemplates"
+                              [relationshipTemplates]="relationshipTemplates"
+                              [sidebarDeleteButtonClickEvent]="sidebarDeleteButtonClickEvent"
+                              (generatedReduxState)="onReduxReady()"
+                              ng-sidebar-content>
+    </winery-topology-renderer>
+    
+    <div *ngIf="loaded?.generatedReduxState" ng-sidebar-content>
+        <div *ngIf="!hideNavBarState">
+            <winery-palette-component *ngIf="!topologyDifferences && !readonly"
+                                      style="width:300px;float:left;margin-top:50px;"
+                                      [entityTypes]="this.entityTypes">
+            </winery-palette-component>
+        </div>
+    
+        <winery-refinement *ngIf="refiningType" [refinementType]="refiningType" class="sidebar">
+        </winery-refinement>
+    
+    
+    <!--    <ng-sidebar>-->
+        <!-- FIXME these need to be converted to ng-sidebar -->
+            <winery-problem-detection class="sidebar">
+            </winery-problem-detection>
+    <!--    </ng-sidebar>-->
+        
+    <!--    <ng-sidebar>-->
+        <!-- FIXME these need to be converted to ng-sidebar -->
+            <winery-enricher class="sidebar">
+            </winery-enricher>
+    <!--    </ng-sidebar>-->
+        
+        <!-- FIXME these need to be converted to ng-sidebar -->
+        <winery-edmm-transformation-check class="sidebar">
+        </winery-edmm-transformation-check>
     </div>
+    <!-- the node-details sidebar already contains an ng-sidebar -->
+    <ng-sidebar [(opened)]="detailsSidebarVisible"
+        [position]="'right'"
+        [mode]="'push'">
+        <winery-node-details-sidebar (sidebarDeleteButtonClicked)="sidebarDeleteButtonClicked($event)" class="sidebar">
+        </winery-node-details-sidebar>
+    </ng-sidebar>
+        
+</ng-sidebar-container>
 
-    <winery-refinement *ngIf="refiningType" [refinementType]="refiningType" class="sidebar">
-    </winery-refinement>
-
-    <winery-problem-detection class="sidebar">
-    </winery-problem-detection>
     
-    <winery-enricher class="sidebar">
-    </winery-enricher>
-
-    <winery-sidebar (sidebarDeleteButtonClicked)="sidebarDeleteButtonClicked($event)" class="sidebar">
-    </winery-sidebar>
-    
-    <winery-edmm-transformation-check class="sidebar">
-    </winery-edmm-transformation-check>
-</div>
-<!--
-<app-sidebar style="width : 300px; float:right"></app-sidebar>
--->

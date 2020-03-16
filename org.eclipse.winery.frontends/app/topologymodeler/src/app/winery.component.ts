@@ -64,6 +64,8 @@ export class WineryComponent implements OnInit, AfterViewInit {
 
     topologyDifferences: [ToscaDiff, TTopologyTemplate];
 
+    detailsSidebarVisible: boolean;
+
     public loaded: ILoaded;
     private loadedRelationshipVisuals = 0;
     private requiredRelationshipVisuals: number;
@@ -80,6 +82,8 @@ export class WineryComponent implements OnInit, AfterViewInit {
             .subscribe(hideNavBar => this.hideNavBarState = hideNavBar));
         this.subscriptions.push(this.ngRedux.select(state => state.topologyRendererState)
             .subscribe(currentButtonsState => this.setButtonsState(currentButtonsState)));
+        this.subscriptions.push(this.ngRedux.select(state => state.wineryState.sidebarContents.visible)
+            .subscribe(detailsSidebarVisible => this.detailsSidebarVisible = detailsSidebarVisible));
     }
 
     /**

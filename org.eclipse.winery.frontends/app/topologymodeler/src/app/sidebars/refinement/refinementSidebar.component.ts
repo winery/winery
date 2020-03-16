@@ -13,13 +13,13 @@
  *******************************************************************************/
 import { Component, Input, OnDestroy } from '@angular/core';
 import { PatternRefinementModel, RefinementElement, RefinementWebSocketService } from './refinementWebSocket.service';
-import { BackendService } from '../services/backend.service';
+import { BackendService } from '../../services/backend.service';
 import { NgRedux } from '@angular-redux/store';
-import { IWineryState } from '../redux/store/winery.store';
-import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
-import { WineryActions } from '../redux/actions/winery.actions';
-import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
-import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { IWineryState } from '../../redux/store/winery.store';
+import { TopologyRendererActions } from '../../redux/actions/topologyRenderer.actions';
+import { WineryActions } from '../../redux/actions/winery.actions';
+import { TopologyTemplateUtil } from '../../models/topologyTemplateUtil';
+import { WineryRepositoryConfigurationService } from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 @Component({
     selector: 'winery-refinement',

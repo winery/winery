@@ -464,12 +464,13 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         // close sidebar when longpressing a node template
         if (this.longpress) {
             this.sendPaletteStatus.emit('close Sidebar');
+            console.log('close node sidebar');
             this.$ngRedux.dispatch(this.actions.openSidebar({
                 sidebarContents: {
-                    sidebarVisible: false,
+                    visible: false,
                     nodeClicked: true,
                     id: '',
-                    nameTextFieldValue: '',
+                    name: '',
                     type: '',
                     minInstances: -1,
                     maxInstances: -1
@@ -478,10 +479,10 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         } else {
             this.$ngRedux.dispatch(this.actions.openSidebar({
                 sidebarContents: {
-                    sidebarVisible: true,
+                    visible: true,
                     nodeClicked: true,
                     id: this.nodeTemplate.id,
-                    nameTextFieldValue: this.nodeTemplate.name,
+                    name: this.nodeTemplate.name,
                     type: this.nodeTemplate.type,
                     minInstances: this.nodeTemplate.minInstances,
                     maxInstances: this.nodeTemplate.maxInstances
