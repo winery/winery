@@ -188,15 +188,15 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                 if (nodeTypeVar.id === type) {
                     const node = nodeTypeVar.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0];
                     // if PropertiesDefinition doesn't exist then it must be of type NONE
-                    if (!node.propertiesDefinition && node.derivedFrom) {
+                    if (!node.properties && node.derivedFrom) {
                         // check all parents; property definition types
                         propertyDefinitionTypeAssigned = this.checkParentPropertyDefinitions(node.derivedFrom.typeRef);
-                    } else if (!node.propertiesDefinition) {
+                    } else if (!node.properties) {
                         this.propertyDefinitionType = PropertyDefinitionType.NONE;
                         propertyDefinitionTypeAssigned = true;
                     } else {
                         // if no XML element inside PropertiesDefinition then it must be of type Key Value
-                        if (!node.propertiesDefinition.element) {
+                        if (!node.properties.element) {
                             this.propertyDefinitionType = PropertyDefinitionType.KV;
                             propertyDefinitionTypeAssigned = true;
                         } else {
@@ -220,13 +220,13 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
             if (entry.qName === parentType) {
                 parentFound = true;
                 const node = entry.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0];
-                if (!node.propertiesDefinition && node.derivedFrom) {
+                if (!node.properties && node.derivedFrom) {
                     this.checkParentPropertyDefinitions(node.derivedFrom.typeRef);
-                } else if (!node.propertiesDefinition) {
+                } else if (!node.properties) {
                     this.propertyDefinitionType = PropertyDefinitionType.NONE;
                     return true;
                 } else {
-                    if (!node.propertiesDefinition.element) {
+                    if (!node.properties.element) {
                         this.propertyDefinitionType = PropertyDefinitionType.KV;
                     } else {
                         this.propertyDefinitionType = PropertyDefinitionType.XML;

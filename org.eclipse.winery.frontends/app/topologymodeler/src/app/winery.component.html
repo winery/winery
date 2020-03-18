@@ -13,7 +13,7 @@
 -->
 <ng-sidebar-container style="height: 100vh;">
     <hotkeys-cheatsheet ng-sidebar-content></hotkeys-cheatsheet>
-    <router-outlet *ngIf="!readonly"></router-outlet>
+    <router-outlet *ngIf="!readonly" ng-sidebar-content></router-outlet>
     
     <winery-topology-renderer *ngIf="loaded?.loadedData"
                               [readonly]="backendService.configuration.isReadonly"
@@ -38,23 +38,26 @@
         </winery-refinement>
     
     
-    <!--    <ng-sidebar>-->
-        <!-- FIXME these need to be converted to ng-sidebar -->
-            <winery-problem-detection class="sidebar">
-            </winery-problem-detection>
-    <!--    </ng-sidebar>-->
-        
-    <!--    <ng-sidebar>-->
-        <!-- FIXME these need to be converted to ng-sidebar -->
-            <winery-enricher class="sidebar">
-            </winery-enricher>
-    <!--    </ng-sidebar>-->
-        
-        <!-- FIXME these need to be converted to ng-sidebar -->
+    </div>
+<!--    <ng-sidebar>-->
+    <!-- FIXME these need to be converted to ng-sidebar -->
+        <winery-problem-detection class="sidebar">
+        </winery-problem-detection>
+<!--    </ng-sidebar>-->
+    
+<!--    <ng-sidebar>-->
+    <!-- FIXME these need to be converted to ng-sidebar -->
+        <winery-enricher class="sidebar">
+        </winery-enricher>
+<!--    </ng-sidebar>-->
+    
+    
+    <!-- FIXME these need to be converted to ng-sidebar -->
+<!--    <ng-sidebar>-->
         <winery-edmm-transformation-check class="sidebar">
         </winery-edmm-transformation-check>
-    </div>
-    <!-- the node-details sidebar already contains an ng-sidebar -->
+<!--    </ng-sidebar>-->
+    
     <ng-sidebar [(opened)]="detailsSidebarVisible"
         [position]="'right'"
         [mode]="'push'">

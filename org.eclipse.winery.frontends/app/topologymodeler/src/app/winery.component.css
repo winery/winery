@@ -11,9 +11,3 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-
-.sidebar {
-    float:right;
-    z-index: 400;
-    width: 300px;
-}

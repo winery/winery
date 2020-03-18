@@ -12,16 +12,15 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
-input {
-    /*background-color: #303030 !important;
-    color: #fafafa !important;  */
-    overflow-y: auto;
+/* need specific selector here to overwrite .sidebar-root max-width */
+#NTPropertiesView.sidebar-root {
+    width: 40vw;
+    min-width: 300px;
+    max-width: 600px;
 }
 
-input:active, input:focus, input:hover {
-    /*background-color: #303030 !important;
-    color: #fafafa !important;
-    border-color: #000000 !important;*/
+input {
+    overflow-y: auto;
 }
 
 input[type='number'] {
@@ -34,12 +33,5 @@ input::-webkit-inner-spin-button {
 }
 
 a {
-    /*background-color: #303030 !important;
-    color: #fafafa !important;*/
     overflow-y: auto;
-}
-
-a:hover {
-    /*background-color: #303030 !important;
-    color: #03A9F4 !important;*/
 }
