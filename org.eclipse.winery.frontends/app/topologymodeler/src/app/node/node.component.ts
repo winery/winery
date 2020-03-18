@@ -485,7 +485,8 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                     name: this.nodeTemplate.name,
                     type: this.nodeTemplate.type,
                     minInstances: this.nodeTemplate.minInstances,
-                    maxInstances: this.nodeTemplate.maxInstances
+                    maxInstances: this.nodeTemplate.maxInstances,
+                    properties: this.nodeTemplate.properties,
                 }
             }));
         }

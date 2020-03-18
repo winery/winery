@@ -59,6 +59,7 @@
                 <div class="form-group">
                     <label>Properties</label>
                     <winery-properties
+                        (toggleModalHandler)="sendToggleAction($event)"
                         [currentNodeData]="{
                                     nodeTemplate: sidebarState,
                                     propertyDefinitionType:findOutPropertyDefinitionTypeForProperties()}">

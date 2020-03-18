@@ -116,11 +116,6 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
                     if (!this.sidebarState.name) {
                         this.sidebarState.name = this.sidebarState.id;
                     }
-                    // if (this.sidebarState.visible) {
-                    //     this.sidebar.open();
-                    // } else {
-                    //     this.sidebar.close();
-                    // }
                 }
             );
         // apply changes to the node name <input> field with a debounceTime of 300ms
