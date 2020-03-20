@@ -42,8 +42,6 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
     maxInputEnabled = true;
     propertyDefinitionType: string;
 
-    // @ViewChild(Sidebar) sidebar: Sidebar;
-
     @Output() sidebarDeleteButtonClicked: EventEmitter<any> = new EventEmitter<any>();
     public nodeNameKeyUp: Subject<string> = new Subject<string>();
     public nodeMinInstancesKeyUp: Subject<string> = new Subject<string>();

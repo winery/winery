@@ -170,7 +170,6 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
      */
     get nodeTypeLocalName() {
         return this.nodeTemplate.type.split('}').pop();
-        // return this.nodeTemplate.type ? new QName(this.nodeTemplate.type).localName : JSON.stringify({});
     }
 
     public addItem(): void {

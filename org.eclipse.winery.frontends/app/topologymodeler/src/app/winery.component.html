@@ -60,7 +60,9 @@
     
     <ng-sidebar [(opened)]="detailsSidebarVisible"
         [position]="'right'"
-        [closeOnClickOutside]="true">
+        [mode]="'slide'"
+        [closeOnClickOutside]="true"
+        (onClosed)="close('node-details')">
         <winery-node-details-sidebar (sidebarDeleteButtonClicked)="sidebarDeleteButtonClicked($event)" class="sidebar">
         </winery-node-details-sidebar>
     </ng-sidebar>
