@@ -1,0 +1,38 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2020 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<table class="table table-border--grey table-sm body-table">
+    <tr>
+        <th>
+            Key
+        </th>
+        <th>
+            Values
+        </th>
+    <tr *ngFor="let key of nodeProperties | keysPipe">
+        <td class="">{{key.key}}</td>
+        <td class="">
+                <textarea
+                    style="width:100%; overflow-y: scroll;"
+                    rows="1"
+                    placeholder="Edit your value here."
+                    required
+                    [disabled]="readonly"
+                    value="{{key.value}}"
+                    (keyup)="properties.next($event.target.value)"
+                    (keyup)="keySubject.next(key.key)">
+                </textarea>
+        </td>
+    </tr>
+</table>

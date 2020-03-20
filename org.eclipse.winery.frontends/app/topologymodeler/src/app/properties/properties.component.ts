@@ -20,6 +20,7 @@ import { IWineryState } from '../redux/store/winery.store';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { JsPlumbService } from '../services/jsPlumb.service';
 import { PropertyDefinitionType } from '../models/enums';
+import { KeyValueItem } from '../../../../tosca-management/src/app/model/keyValueItem';
 
 @Component({
     selector: 'winery-properties',
@@ -76,34 +77,29 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
             } catch (e) {
             }
         }
-        // find out which row was edited by key
-        this.subscriptions.push(this.keyOfEditedKVProperty.pipe(
-            debounceTime(200),
-            distinctUntilChanged(), )
-            .subscribe(key => {
-                this.key = key;
-            }));
-        // set key value property with a debounceTime of 300ms
-        this.subscriptions.push(this.properties.pipe(
-            debounceTime(300),
-            distinctUntilChanged(), )
-            .subscribe(value => {
-                if (this.currentNodeData.propertyDefinitionType === PropertyDefinitionType.KV) {
-                    this.nodeProperties[this.key] = value;
-                } else {
-                    this.nodeProperties = value;
-                }
-                this.$ngRedux.dispatch(this.actions.setProperty({
-                    nodeProperty: {
-                        newProperty: this.nodeProperties,
-                        propertyType: this.currentNodeData.propertyDefinitionType,
-                        nodeId: this.currentNodeData.nodeTemplate.id
-                    }
-                }));
-            }));
     }
 
     ngOnDestroy() {
         this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    }
+
+    xmlPropertyEdit($event: string) {
+        this.nodeProperties = $event;
+        this.dispatchRedux();
+    }
+
+    kvPropertyEdit($event: KeyValueItem) {
+        this.nodeProperties[$event.key] = $event.value;
+        this.dispatchRedux();
+    }
+
+    private dispatchRedux(): void {
+        this.$ngRedux.dispatch(this.actions.setProperty({
+            nodeProperty: {
+                newProperty: this.nodeProperties,
+                propertyType: this.currentNodeData.propertyDefinitionType,
+                nodeId: this.currentNodeData.nodeTemplate.id
+            }
+        }));
     }
 }

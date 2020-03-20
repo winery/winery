@@ -24,6 +24,8 @@ import { RouterModule } from '@angular/router';
 import { PropertiesComponent } from './properties.component';
 import { KeysPipe } from '../pipes/keys.pipe';
 import { WineryModalModule } from '../../../../tosca-management/src/app/wineryModalModule/winery.modal.module';
+import { KvPropertiesComponent } from './kv-properties/kv-properties.component';
+import { XmlPropertiesComponent } from './xml-properties/xml-properties.component';
 
 @NgModule({
     imports: [
@@ -41,7 +43,10 @@ import { WineryModalModule } from '../../../../tosca-management/src/app/wineryMo
     ],
     declarations: [
         PropertiesComponent,
-        KeysPipe
+        KvPropertiesComponent,
+        XmlPropertiesComponent,
+        // YamlPropertiesComponent
+        KeysPipe,
     ],
     exports: [
         PropertiesComponent,
