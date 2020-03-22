@@ -287,8 +287,13 @@ export class WineryComponent implements OnInit, AfterViewInit {
         this.appReadyEvent.trigger();
     }
 
-    close(key: string): void {
-        console.log('closing sidebar through event handler');
+    /**
+     * notifies the redux store of the sidebar with a given key being closed
+     * @param key The identifier for the sidebar that has been closed
+     */
+    notifyClose(key: string): void {
+        // FIXME this currently basically only supports the node-details sidebar
+        //  because none of the other sidebars are based off ng-sidebar
         this.ngRedux.dispatch(this.uiActions.openSidebar({
             sidebarContents: {
                 visible: false,

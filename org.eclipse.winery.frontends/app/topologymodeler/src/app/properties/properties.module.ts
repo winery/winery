@@ -26,6 +26,7 @@ import { KeysPipe } from '../pipes/keys.pipe';
 import { WineryModalModule } from '../../../../tosca-management/src/app/wineryModalModule/winery.modal.module';
 import { KvPropertiesComponent } from './kv-properties/kv-properties.component';
 import { XmlPropertiesComponent } from './xml-properties/xml-properties.component';
+import { YamlPropertiesComponent } from './yaml-properties/yaml-properties.component';
 
 @NgModule({
     imports: [
@@ -45,7 +46,7 @@ import { XmlPropertiesComponent } from './xml-properties/xml-properties.componen
         PropertiesComponent,
         KvPropertiesComponent,
         XmlPropertiesComponent,
-        // YamlPropertiesComponent
+        YamlPropertiesComponent,
         KeysPipe,
     ],
     exports: [

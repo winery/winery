@@ -147,10 +147,8 @@
             </div>
             <winery-properties
                 [readonly]="readonly"
-                (toggleModalHandler)="sendToggleAction($event)"
-                [currentNodeData]="{entityTypes: entityTypes,
-                                    nodeTemplate: nodeTemplate,
-                                    propertyDefinitionType: propertyDefinitionType}">
+                [currentNodeData]="{ nodeTemplate: nodeTemplate,
+                                     propertyDefinitionType: propertyDefinitionType}">
             </winery-properties>
         </accordion-group>
 

@@ -33,7 +33,6 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
     @Input() currentNodeData: any;
 
     properties: Subject<string> = new Subject<string>();
-    keyOfEditedKVProperty: Subject<string> = new Subject<string>();
     key: string;
     nodeProperties: any;
     subscriptions: Array<Subscription> = [];
@@ -54,6 +53,9 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
                     this.nodeProperties = currentProperties.kvproperties;
                 } else if (this.currentNodeData.propertyDefinitionType === PropertyDefinitionType.XML) {
                     this.nodeProperties = currentProperties.any;
+                } else if (this.currentNodeData.propertyDefinitionType === PropertyDefinitionType.YAML) {
+                    // FIXME this is not really useful, actually
+                    this.nodeProperties = currentProperties.kvproperties;
                 }
             } catch (e) {
             }
@@ -73,6 +75,9 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
                     this.nodeProperties = currentProperties.kvproperties;
                 } else if (this.currentNodeData.propertyDefinitionType === PropertyDefinitionType.XML) {
                     this.nodeProperties = currentProperties.any;
+                } else if (this.currentNodeData.propertyDefinitionType === PropertyDefinitionType.YAML) {
+                    // FIXME this is not really useful, actually
+                    this.nodeProperties = currentProperties.kvproperties;
                 }
             } catch (e) {
             }
@@ -93,6 +98,12 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
         this.dispatchRedux();
     }
 
+    yamlPropertyEdit($event: KeyValueItem) {
+        // FIXME deal with the fact that yaml properties support complex datatypes, implying nesting
+        this.nodeProperties[$event.key] = $event.value;
+        this.dispatchRedux();
+    }
+
     private dispatchRedux(): void {
         this.$ngRedux.dispatch(this.actions.setProperty({
             nodeProperty: {
@@ -102,4 +113,5 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
             }
         }));
     }
+
 }

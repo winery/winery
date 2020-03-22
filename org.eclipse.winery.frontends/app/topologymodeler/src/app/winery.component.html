@@ -62,8 +62,13 @@
         [position]="'right'"
         [mode]="'slide'"
         [closeOnClickOutside]="true"
-        (onClosed)="close('node-details')">
-        <winery-node-details-sidebar (sidebarDeleteButtonClicked)="sidebarDeleteButtonClicked($event)" class="sidebar">
+        (onClosed)="notifyClose('node-details')"
+        *ngIf="loaded?.loadedData">
+        <!-- need to wait for loading to know about repo configuration's yaml state -->
+        <winery-node-details-sidebar 
+            [readonly]="readonly"
+            (sidebarDeleteButtonClicked)="sidebarDeleteButtonClicked($event)"
+            class="sidebar">
         </winery-node-details-sidebar>
     </ng-sidebar>
         

@@ -21,9 +21,11 @@
     (propertyEdited)="kvPropertyEdit($event)">
 </winery-kv-properties>
 
-<div *ngIf="currentNodeData.propertyDefinitionType == 'YAML'">
-    <span>Yaml Properties are currently <br> <b>not</b> supported</span>
-</div>
+<winery-yaml-properties *ngIf="currentNodeData.propertyDefinitionType == 'YAML'"
+    [readonly]="readonly"
+    [nodeProperties]="nodeProperties"
+    (propertyEdited)="yamlPropertyEdit($event)">
+</winery-yaml-properties>
 
 <winery-xml-properties *ngIf="currentNodeData.propertyDefinitionType == 'XML'"
     [readonly]="readonly"

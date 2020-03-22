@@ -178,7 +178,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
 
     /**
      * This function determines which kind of properties the nodeType embodies.
-     * We have 3 possibilities: none, XML element, or Key value pairs.
+     * We have 4 possibilities: none, XML element, Key value pairs or yaml-datatypes.
      */
     findOutPropertyDefinitionTypeForProperties(type: string, groupedNodeTypes: Array<GroupedNodeTypeModel>): void {
         let propertyDefinitionTypeAssigned: boolean;
@@ -196,7 +196,8 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                     } else {
                         // if no XML element inside PropertiesDefinition then it must be of type Key Value
                         if (!node.properties.element) {
-                            this.propertyDefinitionType = PropertyDefinitionType.KV;
+                            this.propertyDefinitionType = this.configurationService.isYaml() ?
+                                PropertyDefinitionType.YAML : PropertyDefinitionType.KV;
                             propertyDefinitionTypeAssigned = true;
                         } else {
                             // else we have XML
@@ -463,7 +464,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         // close sidebar when longpressing a node template
         if (this.longpress) {
             this.sendPaletteStatus.emit('close Sidebar');
-            console.log('close node sidebar');
+            console.log('closing sidebar from node');
             this.$ngRedux.dispatch(this.actions.openSidebar({
                 sidebarContents: {
                     visible: false,

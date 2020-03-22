@@ -11,9 +11,7 @@
    *
    * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
    -->
-<!--<ng-sidebar>-->
-    <div
-     id="NTPropertiesView"
+<div id="NTPropertiesView"
      class="sidebar-root"
      style="display: block;">
     <div id="nodeTemplateInformationSection" style="margin: 8px">
@@ -29,6 +27,7 @@
                 <label for="nodetemplatename" class="control-label">Name</label>
                 <input id="nodetemplatename" name="name" class="form-control"
                        value="{{sidebarState.name}}"
+                       [disabled]="readonly"
                        (keyup)="nodeNameKeyUp.next($event.target.value)"
                        (focus)="onFocus($event)"
                        (blur)="onBlur($event)">
@@ -59,10 +58,9 @@
                 <div class="form-group">
                     <label>Properties</label>
                     <winery-properties
-                        (toggleModalHandler)="sendToggleAction($event)"
-                        [currentNodeData]="{
-                                    nodeTemplate: sidebarState,
-                                    propertyDefinitionType:findOutPropertyDefinitionTypeForProperties()}">
+                        [readonly]="readonly"
+                        [currentNodeData]="{ nodeTemplate: sidebarState,
+                                         propertyDefinitionType: findOutPropertyDefinitionTypeForProperties()}">
                     </winery-properties>
                 </div>
                 <div class="form-group" *wineryRepositoryHideOnFeature="'yaml'">
@@ -95,7 +93,7 @@
                                            type="number"
                                            name="maxInstances"
                                            class="form-control"
-                                           [readonly]="!maxInputEnabled"
+                                           [readonly]="!maxInputEnabled || readonly"
                                            placeholder="∞"
                                            style="display: block; border-radius: 0.25rem; margin-right: 3px">
                                     <span class="input-group-addon bootstrap-touchspin-postfix"
@@ -104,17 +102,20 @@
                         <button class="btn btn-default"
                                 type="button"
                                 style="box-shadow: none; border: 2px solid #dddddd; height: 38px"
+                                [disabled]="readonly"
                                 [style.background-color]="getInfinityButtonStyle()"
                                 (click)="maxInstancesChanged('inf');">
                         <span class="h6" style="font-weight: bolder;">∞</span>
                         </button>
                         <button class="btn btn-default bootstrap-touchspin-up"
                                 type="button"
+                                [disabled]="readonly"
                                 (click)="maxInstancesChanged('inc');">
                         <i class="fa fa-chevron-up"></i>
                         </button>
                         <button class="btn btn-default bootstrap-touchspin-down"
                                 type="button"
+                                [disabled]="readonly"
                                 (click)="maxInstancesChanged('dec');">
                         <i class="fa fa-chevron-down"></i>
                         </button>
@@ -133,6 +134,7 @@
                                     </span>
                                     <input id="minInstances"
                                            (keyup)="nodeMinInstancesKeyUp.next($event.target.value)"
+                                           [disabled]="readonly"
                                            value="{{sidebarState.minInstances}}"
                                            min="0"
                                            max="9999999"
@@ -145,11 +147,13 @@
                                     <span class="input-group-btn-vertical">
                                         <button class="btn btn-default bootstrap-touchspin-up"
                                                 type="button"
+                                                [disabled]="readonly"
                                                 (click)="minInstancesChanged('inc');">
                                         <i class="fa fa-chevron-up"></i>
                                         </button>
                                         <button class="btn btn-default bootstrap-touchspin-down"
                                                 type="button"
+                                                [disabled]="readonly"
                                                 (click)="minInstancesChanged('dec');">
                                         <i class="fa fa-chevron-down"></i>
                                         </button>
@@ -172,5 +176,4 @@
             </div>
         </fieldset>
     </div>
-    </div>
-<!--</ng-sidebar>-->
+</div>

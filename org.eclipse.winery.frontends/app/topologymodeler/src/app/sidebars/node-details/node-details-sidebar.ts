@@ -18,8 +18,8 @@ export class NodeDetailsSidebarState {
     id: string;
     name: string;
     type: string;
+    minInstances: number;
     // this shoehorns the possibility of unicode infinity into the type
-    minInstances: number | '\u221E';
     maxInstances: number | '\u221E';
     properties: any;
     relationshipTemplate: any;

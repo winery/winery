@@ -209,7 +209,7 @@ export const WineryReducer =
                         nodeTemplates: lastState.currentJsonTopology.nodeTemplates
                             .map(nodeTemplate => nodeTemplate.id === newProperty.nodeId ?
                                 nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('properties',
-                                    newProperty.propertyType === 'KV' ?
+                                    newProperty.propertyType === 'KV' || newProperty.propertyType === 'YAML' ?
                                         { kvproperties: newProperty.newProperty } : { any: newProperty.newProperty }) : nodeTemplate
                             )
                     }
