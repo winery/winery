@@ -289,11 +289,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         if (this.nodeChildrenArray) {
             this.nodeChildrenArray.forEach(node => {
                 if (node.nodeTemplate.id === currentNodeData.id) {
-                    if (currentNodeData.focus === true) {
-                        node.makeSelectionVisible = true;
-                    } else {
-                        node.makeSelectionVisible = false;
-                    }
+                    node.makeSelectionVisible = currentNodeData.focus;
                 }
             });
         }
@@ -1178,13 +1174,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * @param nodeTemplate  Node Element (DOM).
      */
     setNewCoordinates(nodeTemplate: any): void {
-        let nodeIndex;
-        this.allNodeTemplates.some((node, index) => {
-            if (node.id === nodeTemplate.firstChild.id) {
-                nodeIndex = index;
-                return true;
-            }
-        });
+        const nodeIndex = this.allNodeTemplates.findIndex(node => node.id === nodeTemplate.firstChild.id);
         const nodeCoordinates = {
             id: nodeTemplate.firstChild.id,
             x: nodeTemplate.firstChild.offsetLeft,
@@ -1919,48 +1909,29 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     }
 
     /**
-     * Gets called if node is updated, implements some checks.
+     * Gets called if node is updated
      * @param currentNodes  List of all displayed nodes.
      */
     private updateNodeAttributes(currentNodes: Array<TNodeTemplate>): void {
-        this.allNodeTemplates.some(nodeTemplate => {
+        this.allNodeTemplates = this.allNodeTemplates.map(nodeTemplate => {
             const node = currentNodes.find(el => el.id === nodeTemplate.id);
             if (node) {
+                const nodeIndex = this.nodeChildrenIdArray.indexOf(nodeTemplate.id);
+                const nodeComponent = this.nodeChildrenArray[nodeIndex];
                 if (nodeTemplate.name !== node.name) {
-                    const nodeId = this.nodeChildrenIdArray.indexOf(nodeTemplate.id);
-                    this.nodeChildrenArray[nodeId].nodeTemplate.name = node.name;
-                    this.nodeChildrenArray[nodeId].flash('name');
-                    nodeTemplate.name = node.name;
-                    return true;
+                    nodeComponent.flash('name');
                 } else if (nodeTemplate.minInstances !== node.minInstances) {
-                    const nodeId = this.nodeChildrenIdArray.indexOf(nodeTemplate.id);
-                    nodeTemplate.minInstances = node.minInstances;
-                    this.nodeChildrenArray[nodeId].flash('min');
-                    return true;
+                    nodeComponent.flash('min');
                 } else if (nodeTemplate.maxInstances !== node.maxInstances) {
-                    const nodeId = this.nodeChildrenIdArray.indexOf(nodeTemplate.id);
-                    nodeTemplate.maxInstances = node.maxInstances;
-                    this.nodeChildrenArray[nodeId].flash('max');
-                    return true;
-                } else if (nodeTemplate.properties !== node.properties) {
-                    nodeTemplate.properties = node.properties;
-                    return true;
-                } else if (nodeTemplate.capabilities !== node.capabilities) {
-                    nodeTemplate.capabilities = node.capabilities;
-                    return true;
-                } else if (nodeTemplate.requirements !== node.requirements) {
-                    nodeTemplate.requirements = node.requirements;
-                    return true;
-                } else if (nodeTemplate.deploymentArtifacts !== node.deploymentArtifacts) {
-                    nodeTemplate.deploymentArtifacts = node.deploymentArtifacts;
-                    return true;
-                } else if (nodeTemplate.policies !== node.policies) {
-                    nodeTemplate.policies = node.policies;
-                    return true;
-                } else if (nodeTemplate.otherAttributes !== node.otherAttributes) {
-                    nodeTemplate.otherAttributes = node.otherAttributes;
-                    return true;
+                    nodeComponent.flash('max');
                 }
+                // update exposed keys
+                for (const key of ['name', 'minInstances', 'maxInstances', 'properties',
+                                   'capabilities', 'requirements', 'deploymentArtifacts',
+                                   'policies', 'otherAttributes']) {
+                    nodeTemplate[key] = node[key];
+                }
+                return nodeTemplate;
             }
         });
     }
