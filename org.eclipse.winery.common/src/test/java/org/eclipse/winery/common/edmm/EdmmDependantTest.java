@@ -14,6 +14,8 @@
 
 package org.eclipse.winery.common.edmm;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 
 import javax.xml.namespace.QName;
@@ -44,6 +46,7 @@ import org.junit.jupiter.api.BeforeEach;
 public abstract class EdmmDependantTest {
 
     protected final String NAMESPACE = "https://ex.org/tosca/to/edmm";
+    protected final String NAMESPACE_DOUBLE_ENCODED = URLEncoder.encode(URLEncoder.encode(NAMESPACE, "UTF-8"), "UTF-8");
     protected final HashMap<QName, TNodeType> nodeTypes = new HashMap<>();
     protected final HashMap<QName, TRelationshipType> relationshipTypes = new HashMap<>();
     protected final HashMap<String, TNodeTemplate> nodeTemplates = new HashMap<>();
@@ -53,6 +56,9 @@ public abstract class EdmmDependantTest {
     protected final HashMap<QName, TArtifactTemplate> artifactTemplates = new HashMap<>();
     protected final HashMap<QName, EdmmType> edmmTypeExtendsMapping = new HashMap<>();
     protected final HashMap<QName, EdmmType> edmm1to1Mapping = new HashMap<>();
+
+    protected EdmmDependantTest() throws UnsupportedEncodingException {
+    }
 
     @BeforeEach
     void setup() {
@@ -105,7 +111,7 @@ public abstract class EdmmDependantTest {
 
         // region *** ArtifactTemplates setup ***
         TArtifactReference startArtifactReference = new TArtifactReference();
-        startArtifactReference.setReference("/artifacttemplates/ns/startTestNode4/files/script.sh");
+        startArtifactReference.setReference("/artifacttemplates/" + NAMESPACE_DOUBLE_ENCODED + "/startTestNode4/files/script.sh");
         TArtifactTemplate.ArtifactReferences startArtifactReferences = new TArtifactTemplate.ArtifactReferences();
         startArtifactReferences.getArtifactReference().add(startArtifactReference);
         TArtifactTemplate startArtifactIA = new TArtifactTemplate();
@@ -115,7 +121,7 @@ public abstract class EdmmDependantTest {
         artifactTemplates.put(startArtifactIAQName, startArtifactIA);
 
         TArtifactReference stopArtifactReference = new TArtifactReference();
-        stopArtifactReference.setReference("/artifacttemplates/ns/stopTestNode4/files/script.sh");
+        stopArtifactReference.setReference("/artifacttemplates/" + NAMESPACE_DOUBLE_ENCODED + "/stopTestNode4/files/script.sh");
         TArtifactTemplate.ArtifactReferences stopArtifactReferences = new TArtifactTemplate.ArtifactReferences();
         stopArtifactReferences.getArtifactReference().add(startArtifactReference);
         TArtifactTemplate stopArtifactIA = new TArtifactTemplate();
@@ -125,7 +131,7 @@ public abstract class EdmmDependantTest {
         artifactTemplates.put(stopArtifactIAQName, stopArtifactIA);
 
         TArtifactReference deploymentArtifactArtifactReference = new TArtifactReference();
-        deploymentArtifactArtifactReference.setReference("/artifacttemplates/ns/testNode1-DA/files/da.war");
+        deploymentArtifactArtifactReference.setReference("/artifacttemplates/" + NAMESPACE_DOUBLE_ENCODED + "/testNode1-DA/files/da.war");
         TArtifactTemplate deploymentArtifactTemplate = new TArtifactTemplate();
         TArtifactTemplate.ArtifactReferences dploymentArtifactArtifactReferences = new TArtifactTemplate.ArtifactReferences();
         dploymentArtifactArtifactReferences.getArtifactReference().add(startArtifactReference);

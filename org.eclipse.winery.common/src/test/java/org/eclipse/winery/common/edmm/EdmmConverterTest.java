@@ -15,6 +15,7 @@
 package org.eclipse.winery.common.edmm;
 
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -33,6 +34,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EdmmConverterTest extends EdmmDependantTest {
+
+    protected EdmmConverterTest() throws UnsupportedEncodingException {
+    }
 
     @Test
     void transformOneNodeTemplate() {
@@ -173,11 +177,11 @@ public class EdmmConverterTest extends EdmmDependantTest {
         Optional<Entity> start = transform.getEntity(Arrays.asList("0", "components", "test_node_4", "operations", "start"));
         assertTrue(start.isPresent());
         assertTrue(start.get() instanceof ScalarEntity);
-        assertEquals("/artifacttemplates/ns/startTestNode4/files/script.sh", ((ScalarEntity) start.get()).getValue());
+        assertEquals("/artifacttemplates/https%3A%2F%2Fex.org%2Ftosca%2Fto%2Fedmm/startTestNode4/files/script.sh", ((ScalarEntity) start.get()).getValue());
         Optional<Entity> stop = transform.getEntity(Arrays.asList("0", "components", "test_node_4", "operations", "stop"));
         assertTrue(stop.isPresent());
         assertTrue(stop.get() instanceof ScalarEntity);
-        assertEquals("/artifacttemplates/ns/startTestNode4/files/script.sh", ((ScalarEntity) stop.get()).getValue());
+        assertEquals("/artifacttemplates/https%3A%2F%2Fex.org%2Ftosca%2Fto%2Fedmm/startTestNode4/files/script.sh", ((ScalarEntity) stop.get()).getValue());
     }
 
     @Test
@@ -210,7 +214,7 @@ public class EdmmConverterTest extends EdmmDependantTest {
             "    - hosted_on: test_node_3\n" +
             "    - connects_to: test_node_2\n" +
             "    artifacts:\n" +
-            "    - war: /artifacttemplates/ns/startTestNode4/files/script.sh\n" +
+            "    - war: /artifacttemplates/https%3A%2F%2Fex.org%2Ftosca%2Fto%2Fedmm/startTestNode4/files/script.sh\n" +
             "  test_node_3:\n" +
             "    type: https_ex.orgtoscatoedmm__test_node_type_3\n" +
             "    properties:\n" +
@@ -223,8 +227,8 @@ public class EdmmConverterTest extends EdmmDependantTest {
             "    - hosted_on: test_node_3\n" +
             "  test_node_4:\n" +
             "    operations:\n" +
-            "      stop: /artifacttemplates/ns/startTestNode4/files/script.sh\n" +
-            "      start: /artifacttemplates/ns/startTestNode4/files/script.sh\n" +
+            "      stop: /artifacttemplates/https%3A%2F%2Fex.org%2Ftosca%2Fto%2Fedmm/startTestNode4/files/script.sh\n" +
+            "      start: /artifacttemplates/https%3A%2F%2Fex.org%2Ftosca%2Fto%2Fedmm/startTestNode4/files/script.sh\n" +
             "    type: https_ex.orgtoscatoedmm__test_node_type_4\n" +
             "    relations:\n" +
             "    - hosted_on: test_node_1\n" +
