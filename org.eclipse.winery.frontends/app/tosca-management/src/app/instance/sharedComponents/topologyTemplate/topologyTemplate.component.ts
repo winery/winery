@@ -47,7 +47,7 @@ export class TopologyTemplateComponent implements OnInit {
 
     ngOnInit() {
         this.templateUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-            backendBaseURL + this.sharedData.path + '/topologytemplate/?view&uiURL=' + this.uiURL
+            this.sharedData.path + '/topologytemplate/?view&uiURL=' + this.uiURL
         );
 
         let editorConfig = '?repositoryURL=' + encodeURIComponent(backendBaseURL)

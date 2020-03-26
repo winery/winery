@@ -14,9 +14,14 @@
 
 package org.eclipse.winery.repository.backend;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.edmm.EdmmMappingItem;
+import org.eclipse.winery.common.edmm.EdmmType;
 
 public interface EdmmManager {
 
@@ -27,4 +32,16 @@ public interface EdmmManager {
     List<EdmmMappingItem> getTypeMappings();
 
     void setTypeMappings(List<EdmmMappingItem> list);
+
+    default Map<QName, EdmmType> getTypeMap() {
+        Map<QName, EdmmType> typeMappings = new HashMap<>();
+        this.getTypeMappings().forEach(m -> typeMappings.put(m.toscaType, m.edmmType));
+        return typeMappings;
+    }
+
+    default Map<QName, EdmmType> getOneToOneMap() {
+        Map<QName, EdmmType> typeMappings = new HashMap<>();
+        this.getOneToOneMappings().forEach(m -> typeMappings.put(m.toscaType, m.edmmType));
+        return typeMappings;
+    }
 }

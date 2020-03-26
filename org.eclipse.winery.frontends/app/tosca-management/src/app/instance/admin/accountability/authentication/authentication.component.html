@@ -47,30 +47,6 @@
     </ng-template>
 </form>
 
-<!--<winery-modal bsModal #authenticationLineageModall="bs-modal" [modalRef]="authenticationLineageModal">-->
-    <!--<winery-modal-header [title]="'Authentication Lineage for ' + participant.identity + ' (' + participant.address + ')'">-->
-    <!--</winery-modal-header>-->
-    <!--<winery-modal-body>-->
-        <!--<div *ngIf="authenticationData">-->
-            <!--<ol *ngIf="authenticationData.length > 0; else showNoLineageError">-->
-                <!--<li *ngFor="let item of authenticationData" style="margin-top: 10px;">-->
-                    <!--Name: {{ item.identity }}<br>-->
-                    <!--Address: {{ item.address }}-->
-                <!--</li>-->
-            <!--</ol>-->
-            <!--<ng-template #showNoLineageError>-->
-                <!--<alert [type]="'danger'">-->
-                    <!--No authentication lineage available!-->
-                <!--</alert>-->
-            <!--</ng-template>-->
-        <!--</div>-->
-    <!--</winery-modal-body>-->
-    <!--<winery-modal-footer [showDefaultButtons]="false">-->
-        <!--<button class="btn btn-default" (click)="authenticationLineageModal.hide()">Close</button>-->
-    <!--</winery-modal-footer>-->
-<!--</winery-modal>-->
-
-
 <ng-template #authenticationLineageModal>
     <winery-modal-header [modalRef]="modalRef" [title]="'Authentication Lineage for ' + participant.identity + ' (' + participant.address + ')'">-->
     </winery-modal-header>

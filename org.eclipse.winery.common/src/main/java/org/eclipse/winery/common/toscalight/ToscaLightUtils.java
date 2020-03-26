@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,23 +11,19 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-:host {
-    height: 200px;
-}
 
-.nodeTypeImageIcon {
-    z-index: 2;
-    position: absolute;
-    margin-top: 32px;
-    margin-left: 27px;
-    height: 40px;
-    width: 40px;
-}
+package org.eclipse.winery.common.toscalight;
 
-.toscaLightCompatible {
-    z-index: 2;
-    position: absolute;
-    margin-top: 26px;
-    margin-left: 21px;
-    max-height: 53px;
+import org.eclipse.winery.model.tosca.TInterface;
+
+public class ToscaLightUtils {
+
+    public static boolean isLifecycleInterface(TInterface tInterface) {
+        return tInterface.getName().endsWith("interfaces/lifecycle")
+            || tInterface.getName().endsWith("lifecycle_interface");
+    }
+
+    public static boolean isNotLifecycleInterface(TInterface tInterface) {
+        return !isLifecycleInterface(tInterface);
+    }
 }

@@ -30,7 +30,7 @@ export class SourceService {
     constructor(private http: HttpClient,
                 private route: Router,
                 private sharedData: InstanceService) {
-        this.parentPath = backendBaseURL + this.sharedData.path;
+        this.parentPath = this.sharedData.path;
 
         if (this.sharedData.toscaComponent.toscaType === ToscaTypes.ServiceTemplate) {
             this.path = this.pathToFiles = backendBaseURL + this.route.url;
