@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.common.toscalight;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +30,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ToscaLightCheckerTest extends EdmmDependantTest {
+
+    protected ToscaLightCheckerTest() throws UnsupportedEncodingException {
+    }
 
     @Test
     void checkValidServiceTemplate() throws Exception {
