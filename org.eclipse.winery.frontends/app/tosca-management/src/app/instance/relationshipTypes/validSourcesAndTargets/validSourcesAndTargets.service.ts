@@ -28,7 +28,7 @@ export class ValidService {
 
     constructor(private http: HttpClient,
                 private sharedData: InstanceService) {
-        this.path = backendBaseURL + this.sharedData.path + '/validsourcesandtargets/';
+        this.path = this.sharedData.path + '/validsourcesandtargets/';
     }
 
     getValidEndingsData(): Observable<ValidEndingsData> {
@@ -36,7 +36,7 @@ export class ValidService {
     }
 
     getSelectorData(resourceType?: string): Observable<SelectData[]> {
-        if (isNullOrUndefined(resourceType)) {
+        if (!resourceType) {
             resourceType = this.path;
         }
         return this.http.get<SelectData[]>(backendBaseURL + resourceType + '/');

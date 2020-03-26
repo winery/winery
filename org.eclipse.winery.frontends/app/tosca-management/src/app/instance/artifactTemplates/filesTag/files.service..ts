@@ -14,7 +14,7 @@
 import { Injectable } from '@angular/core';
 import { InstanceService } from '../../instance.service';
 import { Observable } from 'rxjs';
-import { backendBaseURL, hostURL } from '../../../configuration';
+import { hostURL } from '../../../configuration';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
 @Injectable()
@@ -24,7 +24,7 @@ export class FilesService {
 
     constructor(private http: HttpClient,
                 private sharedData: InstanceService) {
-        this.path = backendBaseURL + this.sharedData.path + '/files';
+        this.path = this.sharedData.path + '/files';
     }
 
     getFiles(): Observable<{ files: FilesApiData[], paths: string[] }> {

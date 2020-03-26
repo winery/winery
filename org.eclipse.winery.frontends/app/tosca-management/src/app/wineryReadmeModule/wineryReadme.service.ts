@@ -14,7 +14,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { InstanceService } from '../instance/instance.service';
-import { backendBaseURL } from '../configuration';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()
@@ -27,14 +26,14 @@ export class ReadmeService {
     getData(): Observable<string> {
         const headers = new HttpHeaders({ 'Accept': 'text/plain' });
         return this.http.get(
-            backendBaseURL + this.sharedData.path + '/README.md',
+            this.sharedData.path + '/README.md',
             { headers: headers, responseType: 'text' }
         );
     }
 
     save(readmeFile: String): Observable<HttpResponse<string>> {
         return this.http.put<string>(
-            backendBaseURL + this.sharedData.path + '/README.md',
+            this.sharedData.path + '/README.md',
             readmeFile,
             { observe: 'response' });
     }

@@ -25,7 +25,7 @@ export class PropertiesService {
 
     constructor(private http: HttpClient,
                 private sharedData: InstanceService) {
-        this.path = backendBaseURL + this.sharedData.path + '/properties/';
+        this.path = this.sharedData.path + '/properties/';
     }
 
     /**

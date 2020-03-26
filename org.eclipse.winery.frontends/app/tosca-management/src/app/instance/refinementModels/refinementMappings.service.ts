@@ -31,7 +31,7 @@ export class RefinementMappingsService {
     private readonly path: string;
 
     constructor(private http: HttpClient, private sharedData: InstanceService) {
-        this.path = backendBaseURL + this.sharedData.path;
+        this.path = this.sharedData.path;
     }
 
     public getDetectorNodeTemplates(): Observable<NodeTemplate[]> {

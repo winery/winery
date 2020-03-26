@@ -194,7 +194,7 @@ export class WineryAddComponent {
             + encodeURIComponent(encodeURIComponent(this.newComponentNamespace)) + '/'
             + this.newComponentFinalName;
 
-        if (isNullOrUndefined(this.inheritFrom)) {
+        if (!this.inheritFrom) {
             this.notify.success('Successfully saved component ' + this.newComponentName);
             this.router.navigateByUrl(url);
         } else {

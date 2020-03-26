@@ -54,8 +54,8 @@ export class WineryComponentExistsComponent implements OnInit {
     }
 
     checkImplementationExists(): void {
-        if (!isNullOrUndefined(this.generateData) && !isNullOrUndefined(this.generateData.toscaType)
-            && !isNullOrUndefined(this.generateData.name) && this.generateData.name.length > 0) {
+        if (this.generateData && this.generateData.toscaType
+            && this.generateData.name && this.generateData.name.length > 0) {
             this.generateData.url = backendBaseURL + '/'
                 + this.generateData.toscaType + '/'
                 + encodeURIComponent(encodeURIComponent(this.generateData.namespace)) + '/'
