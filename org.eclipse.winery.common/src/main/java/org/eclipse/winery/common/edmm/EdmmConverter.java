@@ -14,6 +14,8 @@
 
 package org.eclipse.winery.common.edmm;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -158,6 +160,9 @@ public class EdmmConverter {
                 EntityId artifactEntityId = artifactsEntityId.extend(
                     artifact.getArtifactType().getLocalPart().toLowerCase()
                 );
+                
+                createPathReferenceEntity(entityGraph, path, artifactEntityId);
+                
                 entityGraph.addEntity(new ScalarEntity(
                     path != null && this.useAbsolutePaths ? Environments.getInstance().getRepositoryConfig().getRepositoryRoot() + "/" + path : path,
                     artifactEntityId,
@@ -165,6 +170,24 @@ public class EdmmConverter {
                 ));
             }
         }
+    }
+
+    private void createPathReferenceEntity(EntityGraph entityGraph, String givenPath, EntityId entityId) {
+        String path = givenPath;
+        if (givenPath != null) {
+            try {
+                path = URLDecoder.decode(this.useAbsolutePaths
+                        ? Environments.getInstance().getRepositoryConfig().getRepositoryRoot() + "/" + givenPath
+                        : givenPath,
+                    "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+
+        entityGraph.addEntity(
+            new ScalarEntity(path, entityId, entityGraph)
+        );
     }
 
     private void createProperties(TEntityTemplate toscaTemplate, EntityId componentNodeId, EntityGraph entityGraph) {
@@ -273,11 +296,7 @@ public class EdmmConverter {
                     String path = getImplementationForOperation(implementation, anInterface.getName(), operation.getName());
 
                     EntityId operationId = operationsEntityId.extend(operation.getName());
-                    entityGraph.addEntity(new ScalarEntity(
-                        path != null && this.useAbsolutePaths ? Environments.getInstance().getRepositoryConfig().getRepositoryRoot() + "/" + path : path,
-                        operationId,
-                        entityGraph
-                    ));
+                    createPathReferenceEntity(entityGraph, path, operationId);
                 });
             });
         }

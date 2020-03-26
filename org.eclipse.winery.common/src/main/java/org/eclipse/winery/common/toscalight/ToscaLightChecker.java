@@ -137,7 +137,7 @@ public class ToscaLightChecker {
 
         if (nodeType.getInterfaces() != null) {
             List<TInterface> interfaceList = nodeType.getInterfaces().getInterface();
-            if (interfaceList.size() > 1 || ToscaLightUtils.isLifecycleInterface(interfaceList.get(0))) {
+            if (interfaceList.size() > 0) {
                 interfaceList.stream()
                     .filter(ToscaLightUtils::isNotLifecycleInterface)
                     .forEach(unsupportedInterface -> this.addErrorToList(type,
