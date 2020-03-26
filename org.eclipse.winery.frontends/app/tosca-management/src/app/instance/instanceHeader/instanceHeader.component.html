@@ -13,8 +13,8 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <div class="top" [class.twolines]="needTwoLines">
     <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIcon">
-    <img *ngIf="toscaLiteCompatibilityData?.isToscaLiteCompatible" src="../../../assets/images/toscaLite.png"
-         class="toscaLiteCompatible">
+    <img *ngIf="toscaLightCompatibilityData?.isToscaLightCompatible" src="../../../assets/images/toscaLight.png"
+         class="toscaLightCompatible">
     <div class="informationContainer">
         <winery-property-rename [toscaComponent]="toscaComponent" [propertyName]="'localName'"
                                 [multipleVersionsAvailable]="versions?.length > 0"></winery-property-rename>
@@ -46,9 +46,9 @@
                 </li>
                 <li *ngIf="showEdmmExport">
                     <a target="_blank" href="{{ toscaComponent.edmmExportPath }}"
-                       *ngIf="toscaLiteCompatibilityData?.isToscaLiteCompatible; else errorReport">Export to EDMM</a>
+                       *ngIf="toscaLightCompatibilityData?.isToscaLightCompatible; else errorReport">Export to EDMM</a>
                     <ng-template #errorReport>
-                        <a (click)="showErrorReport()">Show TOSCA Lite Error Report</a>
+                        <a (click)="showErrorReport()">Show TOSCA Light Error Report</a>
                     </ng-template>
                 </li>
             </ul>
@@ -86,24 +86,24 @@
     </winery-modal-footer>
 </ng-template>
 
-<ng-template #toscaLiteCompatibilityModal>
-    <winery-modal-header [modalRef]="toscaLiteCompatibilityErrorReportModalRef"
-                         [title]="'TOSCA Lite Compatibility Error Log'">
+<ng-template #toscaLightCompatibilityModal>
+    <winery-modal-header [modalRef]="toscaLightCompatibilityErrorReportModalRef"
+                         [title]="'TOSCA Light Compatibility Error Log'">
     </winery-modal-header>
-    <winery-modal-body *ngIf="toscaLiteCompatibilityData?.errorList">
-        <h4>TOSCA Lite Incompatibilities:</h4>
+    <winery-modal-body *ngIf="toscaLightCompatibilityData?.errorList">
+        <h4>TOSCA Light Incompatibilities:</h4>
         <ul>
-            <li *ngFor="let qName of toscaLiteErrorKeys">
+            <li *ngFor="let qName of toscaLightErrorKeys">
                 <span>{{ qName }}</span>
                 <ul>
-                    <li *ngFor="let error of toscaLiteCompatibilityData.errorList[qName]">
+                    <li *ngFor="let error of toscaLightCompatibilityData.errorList[qName]">
                         {{ error }}
                     </li>
                 </ul>
             </li>
         </ul>
     </winery-modal-body>
-    <winery-modal-footer [modalRef]="toscaLiteCompatibilityErrorReportModalRef" [showDefaultButtons]="true"
+    <winery-modal-footer [modalRef]="toscaLightCompatibilityErrorReportModalRef" [showDefaultButtons]="true"
                          [closeButtonLabel]="'Close'"
                          [hideOkButton]="true"></winery-modal-footer>
 </ng-template>

@@ -22,8 +22,8 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { WineryRepositoryConfigurationService } from '../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { SubMenuItem, SubMenuItems } from '../model/subMenuItem';
 
-export interface ToscaLiteCompatibilityData {
-    isToscaLiteCompatible: boolean;
+export interface ToscaLightCompatibilityData {
+    isToscaLightCompatible: boolean;
     errorList: Map<string, string[]>;
 }
 
@@ -164,7 +164,7 @@ export class InstanceService {
         return this.http.get<WineryVersion[]>(this.path + '/?versions');
     }
 
-    public getToscaLiteCompatibility(): Observable<ToscaLiteCompatibilityData> {
-        return this.http.get<ToscaLiteCompatibilityData>(this.path + '/toscalite');
+    public getToscaLightCompatibility(): Observable<ToscaLightCompatibilityData> {
+        return this.http.get<ToscaLightCompatibilityData>(this.path + '/toscalight');
     }
 }

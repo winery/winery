@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.common.toscalite;
+package org.eclipse.winery.common.toscalight;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ToscaLiteCheckerTest extends EdmmDependantTest {
+class ToscaLightCheckerTest extends EdmmDependantTest {
 
     @Test
     void checkValidServiceTemplate() throws Exception {
@@ -49,9 +49,9 @@ class ToscaLiteCheckerTest extends EdmmDependantTest {
         serviceTemplate.setTargetNamespace(this.NAMESPACE);
         // endregion
 
-        ToscaLiteChecker toscaLiteChecker = new ToscaLiteChecker(this.nodeTypes, this.relationshipTypes, this.edmmTypeExtendsMapping, this.edmm1to1Mapping);
-        boolean compliant = toscaLiteChecker.isToscaLiteCompliant(serviceTemplate);
-        Map<QName, List<String>> resultList = toscaLiteChecker.getErrorList();
+        ToscaLightChecker toscaLightChecker = new ToscaLightChecker(this.nodeTypes, this.relationshipTypes, this.edmmTypeExtendsMapping, this.edmm1to1Mapping);
+        boolean compliant = toscaLightChecker.isToscaLightCompliant(serviceTemplate);
+        Map<QName, List<String>> resultList = toscaLightChecker.getErrorList();
 
         assertTrue(compliant);
         // expect 7 instead of 9 as the hostedOn type is used 3 times

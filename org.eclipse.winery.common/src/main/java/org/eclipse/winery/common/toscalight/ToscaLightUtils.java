@@ -12,11 +12,11 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.common.toscalite;
+package org.eclipse.winery.common.toscalight;
 
 import org.eclipse.winery.model.tosca.TInterface;
 
-public class ToscaLiteUtils {
+public class ToscaLightUtils {
 
     public static boolean isLifecycleInterface(TInterface tInterface) {
         return tInterface.getName().endsWith("interfaces/lifecycle")

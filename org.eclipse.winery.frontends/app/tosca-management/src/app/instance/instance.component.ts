@@ -14,7 +14,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { InstanceService, ToscaLiteCompatibilityData } from './instance.service';
+import { InstanceService, ToscaLightCompatibilityData } from './instance.service';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
 import { RemoveWhiteSpacesPipe } from '../wineryPipes/removeWhiteSpaces.pipe';
 import { ExistService } from '../wineryUtils/existService';
@@ -48,7 +48,7 @@ export class InstanceComponent implements OnDestroy {
     loadingData = true;
 
     routeSub: Subscription;
-    toscaLiteCompatibilityData: ToscaLiteCompatibilityData;
+    toscaLightCompatibilityData: ToscaLightCompatibilityData;
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
@@ -81,7 +81,7 @@ export class InstanceComponent implements OnDestroy {
                             );
                         this.getVersionInfo();
                         if (this.toscaComponent.toscaType === ToscaTypes.ServiceTemplate) {
-                            this.getToscaLiteCompatibility();
+                            this.getToscaLightCompatibility();
                         }
                     } else {
                         this.loadingVersions = false;
@@ -179,15 +179,15 @@ export class InstanceComponent implements OnDestroy {
         this.routeSub.unsubscribe();
     }
 
-    private getToscaLiteCompatibility() {
-        this.service.getToscaLiteCompatibility()
+    private getToscaLightCompatibility() {
+        this.service.getToscaLightCompatibility()
             .subscribe(
-                data => this.handleToscaLiteCompatibilityData(data),
+                data => this.handleToscaLightCompatibilityData(data),
                 error => this.handleError(error)
             );
     }
 
-    private handleToscaLiteCompatibilityData(data: ToscaLiteCompatibilityData) {
-        this.toscaLiteCompatibilityData = data;
+    private handleToscaLightCompatibilityData(data: ToscaLightCompatibilityData) {
+        this.toscaLightCompatibilityData = data;
     }
 }

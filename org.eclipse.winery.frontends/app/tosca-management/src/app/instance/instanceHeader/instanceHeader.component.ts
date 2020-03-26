@@ -18,7 +18,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { ToscaComponent } from '../../model/toscaComponent';
 import { ToscaTypes } from '../../model/enums';
 import { WineryVersion } from '../../model/wineryVersion';
-import { InstanceService, ToscaLiteCompatibilityData } from '../instance.service';
+import { InstanceService, ToscaLightCompatibilityData } from '../instance.service';
 import { WineryRepositoryConfigurationService } from '../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { SubMenuItem } from '../../model/subMenuItem';
 
@@ -42,11 +42,11 @@ export class InstanceHeaderComponent implements OnInit {
     @Input() typeOf: string;
     @Input() subMenu: SubMenuItem[];
     @Input() imageUrl: string;
-    @Input() toscaLiteCompatibilityData: ToscaLiteCompatibilityData;
+    @Input() toscaLightCompatibilityData: ToscaLightCompatibilityData;
     @Output() deleteConfirmed: EventEmitter<any> = new EventEmitter();
 
     @ViewChild('confirmDeleteModal') confirmDeleteModal: TemplateRef<any>;
-    @ViewChild('toscaLiteCompatibilityModal') toscaLiteCompatibilityModel: TemplateRef<any>;
+    @ViewChild('toscaLightCompatibilityModal') toscaLightCompatibilityModel: TemplateRef<any>;
 
     needTwoLines = false;
     selectedTab: string;
@@ -54,8 +54,8 @@ export class InstanceHeaderComponent implements OnInit {
     accountabilityEnabled: boolean;
     showEdmmExport: boolean;
 
-    toscaLiteCompatibilityErrorReportModalRef: BsModalRef;
-    toscaLiteErrorKeys: string[];
+    toscaLightCompatibilityErrorReportModalRef: BsModalRef;
+    toscaLightErrorKeys: string[];
     deleteConfirmationModalRef: BsModalRef;
 
     constructor(private router: Router, public sharedData: InstanceService,
@@ -82,8 +82,8 @@ export class InstanceHeaderComponent implements OnInit {
     }
 
     showErrorReport() {
-        this.toscaLiteErrorKeys = Object.keys(this.toscaLiteCompatibilityData.errorList);
-        this.toscaLiteCompatibilityErrorReportModalRef = this.modalService.show(this.toscaLiteCompatibilityModel);
+        this.toscaLightErrorKeys = Object.keys(this.toscaLightCompatibilityData.errorList);
+        this.toscaLightCompatibilityErrorReportModalRef = this.modalService.show(this.toscaLightCompatibilityModel);
     }
 
     openDeleteConfirmationModel() {

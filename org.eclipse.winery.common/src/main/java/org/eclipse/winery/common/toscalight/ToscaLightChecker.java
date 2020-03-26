@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.common.toscalite;
+package org.eclipse.winery.common.toscalight;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +33,7 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 
-public class ToscaLiteChecker {
+public class ToscaLightChecker {
 
     private final Map<QName, TNodeType> nodeTypes;
     private final Map<QName, TRelationshipType> relationshipTypes;
@@ -45,10 +45,10 @@ public class ToscaLiteChecker {
     private Map<QName, List<String>> errorList;
     private boolean foundError;
 
-    public ToscaLiteChecker(Map<QName, TNodeType> nodeTypes,
-                            Map<QName, TRelationshipType> relationshipTypes,
-                            Map<QName, EdmmType> edmmTypeMappings,
-                            Map<QName, EdmmType> oneToOneMappings) {
+    public ToscaLightChecker(Map<QName, TNodeType> nodeTypes,
+                             Map<QName, TRelationshipType> relationshipTypes,
+                             Map<QName, EdmmType> edmmTypeMappings,
+                             Map<QName, EdmmType> oneToOneMappings) {
         this.nodeTypes = nodeTypes;
         this.relationshipTypes = relationshipTypes;
         this.edmmTypeMappings = edmmTypeMappings;
@@ -72,12 +72,12 @@ public class ToscaLiteChecker {
         return errorList;
     }
 
-    public boolean isToscaLiteCompliant(TServiceTemplate serviceTemplate) {
-        this.checkToscaLiteCompatibility(serviceTemplate);
+    public boolean isToscaLightCompliant(TServiceTemplate serviceTemplate) {
+        this.checkToscaLightCompatibility(serviceTemplate);
         return !this.foundError;
     }
 
-    public Map<QName, List<String>> checkToscaLiteCompatibility(TServiceTemplate serviceTemplate) {
+    public Map<QName, List<String>> checkToscaLightCompatibility(TServiceTemplate serviceTemplate) {
         QName serviceTemplateQName = new QName(serviceTemplate.getTargetNamespace(), serviceTemplate.getName());
         this.errorList = new HashMap<>();
         this.errorList.put(serviceTemplateQName, new ArrayList<>());
@@ -94,15 +94,15 @@ public class ToscaLiteChecker {
         TTopologyTemplate topologyTemplate = serviceTemplate.getTopologyTemplate();
         if (topologyTemplate != null) {
             topologyTemplate.getNodeTemplates()
-                .forEach(tNodeTemplate -> checkToscaLiteCompatibility(tNodeTemplate, serviceTemplateQName));
+                .forEach(tNodeTemplate -> checkToscaLightCompatibility(tNodeTemplate, serviceTemplateQName));
             topologyTemplate.getRelationshipTemplates()
-                .forEach(tRelationshipTemplate -> checkToscaLiteCompatibility(tRelationshipTemplate, serviceTemplateQName));
+                .forEach(tRelationshipTemplate -> checkToscaLightCompatibility(tRelationshipTemplate, serviceTemplateQName));
         }
 
         return this.errorList;
     }
 
-    private void checkToscaLiteCompatibility(TEntityTemplate template, QName parentElement) {
+    private void checkToscaLightCompatibility(TEntityTemplate template, QName parentElement) {
         String templateClass = template.getClass().getSimpleName().substring(1);
 
         if (!this.isElementVisited(template.getType())) {
@@ -123,10 +123,10 @@ public class ToscaLiteChecker {
 
         if (template instanceof TRelationshipTemplate) {
             this.checkRelationType(type);
-            this.checkToscaLiteCompatibilityOfRelationshipTemplate((TRelationshipTemplate) template, parentElement);
+            this.checkToscaLightCompatibilityOfRelationshipTemplate((TRelationshipTemplate) template, parentElement);
         } else if (template instanceof TNodeTemplate) {
             this.checkNodeType(type);
-            this.checkToscaLiteCompatibilityOfNodeTemplate((TNodeTemplate) template, parentElement);
+            this.checkToscaLightCompatibilityOfNodeTemplate((TNodeTemplate) template, parentElement);
         }
     }
 
@@ -137,9 +137,9 @@ public class ToscaLiteChecker {
 
         if (nodeType.getInterfaces() != null) {
             List<TInterface> interfaceList = nodeType.getInterfaces().getInterface();
-            if (interfaceList.size() > 1 || ToscaLiteUtils.isLifecycleInterface(interfaceList.get(0))) {
+            if (interfaceList.size() > 1 || ToscaLightUtils.isLifecycleInterface(interfaceList.get(0))) {
                 interfaceList.stream()
-                    .filter(ToscaLiteUtils::isNotLifecycleInterface)
+                    .filter(ToscaLightUtils::isNotLifecycleInterface)
                     .forEach(unsupportedInterface -> this.addErrorToList(type,
                         "specifies the INTERFACE", unsupportedInterface.getName(), "which")
                     );
@@ -171,11 +171,11 @@ public class ToscaLiteChecker {
         return true;
     }
 
-    private void checkToscaLiteCompatibilityOfNodeTemplate(TNodeTemplate node, QName serviceTemplateQName) {
+    private void checkToscaLightCompatibilityOfNodeTemplate(TNodeTemplate node, QName serviceTemplateQName) {
         // todo: is there anything more?
     }
 
-    private void checkToscaLiteCompatibilityOfRelationshipTemplate(TRelationshipTemplate relation, QName serviceTemplateQName) {
+    private void checkToscaLightCompatibilityOfRelationshipTemplate(TRelationshipTemplate relation, QName serviceTemplateQName) {
         // todo: is there anything more?
     }
 
@@ -186,7 +186,7 @@ public class ToscaLiteChecker {
             stringBuilder.append(error)
                 .append(" ");
         }
-        stringBuilder.append("cannot be mapped to TOSCA Lite!");
+        stringBuilder.append("cannot be mapped to TOSCA Light!");
         errorList.add(stringBuilder.toString());
         this.foundError = true;
     }

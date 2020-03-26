@@ -369,10 +369,10 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
         BackendUtils.synchronizeReferences((ServiceTemplateId) this.id);
     }
 
-    @Path("toscalite")
+    @Path("toscalight")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
-    public Map<String, Object> getToscaLiteCompatibility() {
-        return EdmmUtils.checkToscaLiteCompatibility(this.getServiceTemplate());
+    public Map<String, Object> getToscaLightCompatibility() {
+        return EdmmUtils.checkToscaLightCompatibility(this.getServiceTemplate());
     }
 }

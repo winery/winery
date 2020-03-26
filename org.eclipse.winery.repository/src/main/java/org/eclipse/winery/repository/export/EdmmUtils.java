@@ -23,7 +23,7 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.common.edmm.EdmmType;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.toscalite.ToscaLiteChecker;
+import org.eclipse.winery.common.toscalight.ToscaLightChecker;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
@@ -32,7 +32,7 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 public class EdmmUtils {
 
-    public static Map<String, Object> checkToscaLiteCompatibility(TServiceTemplate serviceTemplate) {
+    public static Map<String, Object> checkToscaLightCompatibility(TServiceTemplate serviceTemplate) {
         IRepository repository = RepositoryFactory.getRepository();
 
         Map<QName, TRelationshipType> relationshipTypes = repository.getQNameToElementMapping(RelationshipTypeId.class);
@@ -40,14 +40,14 @@ public class EdmmUtils {
         Map<QName, EdmmType> typeMap = repository.getEdmmManager().getTypeMap();
         Map<QName, EdmmType> oneToOneMap = repository.getEdmmManager().getOneToOneMap();
 
-        ToscaLiteChecker toscaLiteChecker = new ToscaLiteChecker(nodeTypes, relationshipTypes, typeMap, oneToOneMap);
+        ToscaLightChecker toscaLightChecker = new ToscaLightChecker(nodeTypes, relationshipTypes, typeMap, oneToOneMap);
 
-        boolean toscaLiteCompliant = toscaLiteChecker.isToscaLiteCompliant(serviceTemplate);
-        Map<QName, List<String>> errorList = toscaLiteChecker.getErrorList();
+        boolean toscaLightCompliant = toscaLightChecker.isToscaLightCompliant(serviceTemplate);
+        Map<QName, List<String>> errorList = toscaLightChecker.getErrorList();
         errorList.entrySet().removeIf(entry -> entry.getValue().isEmpty());
 
         HashMap<String, Object> map = new HashMap<>();
-        map.put("isToscaLiteCompatible", toscaLiteCompliant);
+        map.put("isToscaLightCompatible", toscaLightCompliant);
         map.put("errorList", errorList);
 
         return map;
