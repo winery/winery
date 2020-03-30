@@ -50,6 +50,7 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.repository.backend.WineryVersionUtils;
 import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.common.configuration.Environments;
@@ -95,8 +96,8 @@ import org.eclipse.winery.repository.backend.xsd.NamespaceAndDefinedLocalNames;
 import org.eclipse.winery.repository.export.CsarExportOptions;
 import org.eclipse.winery.repository.export.CsarExporter;
 import org.eclipse.winery.repository.export.ToscaExportUtil;
-import org.eclipse.winery.repository.export.YamlExporter;
 import org.eclipse.winery.repository.rest.datatypes.ComponentId;
+import org.eclipse.winery.repository.yaml.export.YamlExporter;
 import org.eclipse.winery.repository.rest.datatypes.LocalNameForAngular;
 import org.eclipse.winery.repository.rest.datatypes.NamespaceAndDefinedLocalNamesForAngular;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
@@ -224,7 +225,7 @@ public class RestUtils {
      */
     public static Response getCsarOfSelectedResource(final AbstractComponentInstanceResource resource, CsarExportOptions options) {
         LocalDateTime start = LocalDateTime.now();
-        final CsarExporter exporter = new CsarExporter();
+        final CsarExporter exporter = new CsarExporter(RepositoryFactory.getRepository());
         Map<String, Object> exportConfiguration = new HashMap<>();
 
         StreamingOutput so = output -> {
@@ -232,12 +233,12 @@ public class RestUtils {
                 // check which options are chosen
                 if (options.isAddToProvenance()) {
                     // We wait for the accountability layer to confirm the transaction
-                    String result = exporter.writeCsarAndSaveManifestInProvenanceLayer(RepositoryFactory.getRepository(), resource.getId(), output)
+                    String result = exporter.writeCsarAndSaveManifestInProvenanceLayer(resource.getId(), output)
                         .get();
                     LOGGER.debug("Stored state in accountability layer in transaction " + result);
                     LOGGER.debug("CSAR export (provenance) lasted {}", Duration.between(LocalDateTime.now(), start).toString());
                 } else {
-                    exporter.writeCsar(RepositoryFactory.getRepository(), resource.getId(), output, exportConfiguration);
+                    exporter.writeCsar(resource.getId(), output, exportConfiguration);
                     LOGGER.debug("CSAR export lasted {}", Duration.between(LocalDateTime.now(), start).toString());
                 }
             } catch (Exception e) {
@@ -270,12 +271,12 @@ public class RestUtils {
 
     public static Response getYamlCSARofSelectedResource(final AbstractComponentInstanceResource resource) {
         LocalDateTime start = LocalDateTime.now();
-        final YamlExporter exporter = new YamlExporter();
+        final YamlExporter exporter = new YamlExporter(RepositoryFactory.getRepository());
         Map<String, Object> exportConfiguration = new HashMap<>();
 
         StreamingOutput so = output -> {
             try {
-                exporter.writeCsar(RepositoryFactory.getRepository(), resource.getId(), output, exportConfiguration);
+                exporter.writeCsar(resource.getId(), output, exportConfiguration);
                 LOGGER.debug("CSAR export lasted {}", Duration.between(LocalDateTime.now(), start).toString());
             } catch (Exception e) {
                 LOGGER.error("Error while exporting CSAR", e);
@@ -435,16 +436,16 @@ public class RestUtils {
      * <p>
      * We cannot use {@literal Class<? extends TExtensibleElements>} as, for instance, {@link TConstraint} does not
      * inherit from {@link TExtensibleElements}
-     *
-     * @param clazz the Class of the passed object, required if obj is null
+     *  @param clazz the Class of the passed object, required if obj is null
      * @param obj   the object to serialize
+     * @param repository
      */
-    public static <T> Response getXML(Class<T> clazz, T obj) {
+    public static <T> Response getXML(Class<T> clazz, T obj, IRepository repository) {
         // see commit ab4b5c547619c058990 for an implementation using getJAXBElement,
         // which can be directly passed as entity
         // the issue is that we want to have a *formatted* XML
         // Therefore, we serialize "by hand".
-        String xml = BackendUtils.getXMLAsString(clazz, obj, false);
+        String xml = BackendUtils.getXMLAsString(clazz, obj, false, repository);
 
         return Response.ok().type(MediaType.TEXT_XML).entity(xml).build();
     }
@@ -638,7 +639,7 @@ public class RestUtils {
      */
     public static Response persist(Application application, RepositoryFileReference data_xml_ref, String mimeType) {
         try {
-            BackendUtils.persist(application, data_xml_ref, org.apache.tika.mime.MediaType.parse(mimeType));
+            BackendUtils.persist(application, data_xml_ref, org.apache.tika.mime.MediaType.parse(mimeType), RepositoryFactory.getRepository());
         } catch (IOException e) {
             LOGGER.debug("Could not persist resource", e);
             throw new WebApplicationException(e);
@@ -650,7 +651,7 @@ public class RestUtils {
         try {
             NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
             namespaceManager.addPermanentNamespace(res.getDefinitions().getTargetNamespace());
-            BackendUtils.persist(res.getDefinitions(), res.getRepositoryFileReference(), MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
+            BackendUtils.persist(res.getDefinitions(), res.getRepositoryFileReference(), MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS, RepositoryFactory.getRepository());
         } catch (IOException e) {
             LOGGER.debug("Could not persist resource", e);
             throw new WebApplicationException(e);
@@ -695,7 +696,7 @@ public class RestUtils {
     }
 
     public static Response renameAllVersionsOfOneDefinition(DefinitionsChildId oldId, DefinitionsChildId newId) {
-        SortedSet<? extends DefinitionsChildId> definitions = BackendUtils.getOtherVersionDefinitionsFromDefinition(oldId);
+        SortedSet<? extends DefinitionsChildId> definitions = WineryVersionUtils.getOtherVersionDefinitionsFromDefinition(oldId, RepositoryFactory.getRepository());
         Response finalResponse = null;
 
         for (DefinitionsChildId definition : definitions) {
@@ -981,10 +982,11 @@ public class RestUtils {
 
     public static Response releaseVersion(DefinitionsChildId releasableComponent) {
         ResourceResult result = new ResourceResult();
-        WineryVersion version = BackendUtils.getCurrentVersionWithAllFlags(releasableComponent);
+        final IRepository repository = RepositoryFactory.getRepository();
+        WineryVersion version = WineryVersionUtils.getCurrentVersionWithAllFlags(releasableComponent, repository);
 
         if (version.isReleasable()) {
-            if (RepositoryFactory.getRepository() instanceof GitBasedRepository) {
+            if (repository instanceof GitBasedRepository) {
                 try {
                     freezeVersion(releasableComponent);
 
@@ -993,7 +995,7 @@ public class RestUtils {
                     DefinitionsChildId newComponent = BackendUtils.getDefinitionsChildId(releasableComponent.getClass(), releasableComponent.getNamespace().getDecoded(), newId, false);
                     result = duplicate(releasableComponent, newComponent);
 
-                    BackendUtils.commit(newComponent, "Release");
+                    BackendUtils.commit(newComponent, "Release", repository);
                 } catch (GitAPIException e) {
                     result.setStatus(Status.INTERNAL_SERVER_ERROR);
                 }
@@ -1011,7 +1013,7 @@ public class RestUtils {
         ResourceResult result = new ResourceResult();
 
         try {
-            BackendUtils.commit(componentToCommit, "Freeze");
+            BackendUtils.commit(componentToCommit, "Freeze", RepositoryFactory.getRepository());
             result.setStatus(Status.OK);
         } catch (Exception e) {
             LOGGER.error("Error freezing component", e);

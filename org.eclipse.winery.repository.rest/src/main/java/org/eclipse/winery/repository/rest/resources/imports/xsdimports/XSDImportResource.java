@@ -44,7 +44,6 @@ public class XSDImportResource extends GenericImportResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XSDImportResource.class);
 
-
     public XSDImportResource(XSDImportId id) {
         super(id);
     }
@@ -61,7 +60,7 @@ public class XSDImportResource extends GenericImportResource {
     // we cannot use "MimeTypes.MIMETYPE_XSD" here as the latter is "text/xml" and org.eclipse.winery.repository.resources.AbstractComponentInstanceResource.getDefinitionsAsResponse() also produces text/xml
     @Produces("text/xsd")
     public Response getXSD() {
-        final Optional<String> location = ImportUtils.getLocation((GenericImportId) id);
+        final Optional<String> location = ImportUtils.getLocation(RepositoryFactory.getRepository(), (GenericImportId) id);
         if (!location.isPresent()) {
             return Response.status(Status.NOT_FOUND).build();
         }

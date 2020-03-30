@@ -41,6 +41,7 @@ import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.repository.export.EdmmUtils;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.importing.CsarImportOptions;
 import org.eclipse.winery.repository.importing.CsarImporter;
 import org.eclipse.winery.repository.importing.ImportMetaInformation;
@@ -244,9 +245,10 @@ public class MainResource {
 
         CsarImporter importer;
         if (Environments.getInstance().getUiConfig().getFeatures().get(RepositoryConfigurationObject.RepositoryProvider.YAML.toString())) {
+            // FIXME deal with YamlCsarImporter existing
             importer = new YamlCsarImporter();
         } else {
-            importer = new CsarImporter();
+            importer = new CsarImporter(RepositoryFactory.getRepository());
         }
 
         CsarImportOptions options = new CsarImportOptions();
@@ -285,7 +287,7 @@ public class MainResource {
         File toscaFile;
         toscaFile = File.createTempFile("TOSCA", ".tosca");
         FileUtils.copyInputStreamToFile(is, toscaFile);
-        CsarImporter importer = new CsarImporter();
+        CsarImporter importer = new CsarImporter(RepositoryFactory.getRepository());
         List<String> errors = new ArrayList<>();
         CsarImportOptions options = new CsarImportOptions();
         options.setOverwrite(false);

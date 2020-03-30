@@ -15,6 +15,8 @@ package org.eclipse.winery.repository.rest.resources.imports.genericimports;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
@@ -51,7 +53,7 @@ public class GenericImportResource extends AbstractComponentInstanceResource {
     @Path("{filename}")
     public Response getFile(@PathParam("filename") @NonNull final String encodedFileName) {
         Objects.requireNonNull(encodedFileName);
-        final Optional<TImport> theImport = ImportUtils.getTheImport((GenericImportId) id);
+        final Optional<TImport> theImport = ImportUtils.getTheImport(RepositoryFactory.getRepository(), (GenericImportId) id);
         if (!theImport.isPresent()) {
             return Response.status(Status.NOT_FOUND).build();
         }

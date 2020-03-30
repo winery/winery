@@ -28,6 +28,7 @@ import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
@@ -44,6 +45,7 @@ public class PropertiesResource {
 
     private AbstractComponentInstanceResource res;
     private TEntityTemplate template;
+    private IRepository requestRepository;
 
     /**
      * @param template the template to store the definitions at
@@ -52,6 +54,7 @@ public class PropertiesResource {
     public PropertiesResource(TEntityTemplate template, AbstractComponentInstanceResource res) {
         this.template = template;
         this.res = res;
+        this.requestRepository = RepositoryFactory.getRepository();
     }
 
     @PUT
@@ -94,7 +97,7 @@ public class PropertiesResource {
                 }
                 try {
                     @ADR(6)
-                    String xmlAsString = BackendUtils.getXMLAsString(TEntityTemplate.Properties.class, props, true);
+                    String xmlAsString = BackendUtils.getXMLAsString(TEntityTemplate.Properties.class, props, true, requestRepository);
                     return Response
                         .ok()
                         .entity(xmlAsString)

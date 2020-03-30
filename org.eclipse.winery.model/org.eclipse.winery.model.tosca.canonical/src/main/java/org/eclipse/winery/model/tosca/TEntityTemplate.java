@@ -74,7 +74,8 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
     @XmlElement(name = "PropertyConstraints")
     protected TEntityTemplate.PropertyConstraints propertyConstraints;
 
-    @XmlAttribute(name = "type", required = true)
+    // allow empty types to support YAML capability assignments
+    @XmlAttribute(name = "type")
     protected QName type;
 
     public TEntityTemplate() {

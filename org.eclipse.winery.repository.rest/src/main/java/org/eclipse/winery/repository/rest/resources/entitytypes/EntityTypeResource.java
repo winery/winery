@@ -27,6 +27,7 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.rest.datatypes.select2.Select2DataWithOptGroups;
@@ -66,11 +67,12 @@ public abstract class EntityTypeResource extends AbstractComponentInstanceResour
     protected SortedSet<Select2OptGroup> getListOfAllInstances(Class<? extends DefinitionsChildId> clazz) throws RepositoryCorruptException {
         Select2DataWithOptGroups data = new Select2DataWithOptGroups();
 
-        Collection<? extends DefinitionsChildId> instanceIds = RepositoryFactory.getRepository().getAllElementsReferencingGivenType(clazz, this.id.getQName());
+        IRepository repo = RepositoryFactory.getRepository();
+        Collection<? extends DefinitionsChildId> instanceIds = repo.getAllElementsReferencingGivenType(clazz, this.id.getQName());
 
         for (DefinitionsChildId instanceId : instanceIds) {
             String groupText = instanceId.getNamespace().getDecoded();
-            String text = BackendUtils.getName(instanceId);
+            String text = BackendUtils.getName(instanceId, repo);
             data.add(groupText, instanceId.getQName().toString(), text);
         }
 

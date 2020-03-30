@@ -129,7 +129,7 @@ public class PropertiesDefinitionResource {
 
             this.getEntityType().setPropertiesDefinition(def);*/
             List<String> errors = new ArrayList<>();
-            BackendUtils.deriveWPD(this.getEntityType(), errors);
+            BackendUtils.deriveWPD(this.getEntityType(), errors, RepositoryFactory.getRepository());
             // currently the errors are just logged
             for (String error : errors) {
                 PropertiesDefinitionResource.LOGGER.debug(error);

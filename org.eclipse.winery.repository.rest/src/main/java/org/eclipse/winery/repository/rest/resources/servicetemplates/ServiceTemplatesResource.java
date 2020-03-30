@@ -168,7 +168,7 @@ public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeRefer
         if (RestUtils.hasDA(serviceTemplateId, RestUtils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageNode"), RestUtils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageDeploymentArtifact"))) {
 
             // inject artifact as DA into cloned ServiceTemplate
-            BackendUtils.injectArtifactTemplateIntoDeploymentArtifact(serviceTemplateId, RestUtils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageNode"), RestUtils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageDeploymentArtifact"), artifactTemplateId);
+            BackendUtils.injectArtifactTemplateIntoDeploymentArtifact(serviceTemplateId, RestUtils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageNode"), RestUtils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageDeploymentArtifact"), artifactTemplateId, requestRepository);
         } else {
             return Response.serverError().entity("Tagged DeploymentArtifact could not be found on given specified NodeTemplate").build();
         }

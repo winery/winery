@@ -171,7 +171,7 @@ public class DataFlowResource {
         serviceTemplate.setTopologyTemplate(topology);
 
         try {
-            BackendUtils.persist(templateId, definitions);
+            BackendUtils.persist(repo, templateId, definitions);
             return Response.created(new URI(RestUtils.getAbsoluteURL(templateId))).build();
         } catch (IOException e) {
             return Response.serverError().entity("IOException while persisting ServiceTemplate for data flow model!")

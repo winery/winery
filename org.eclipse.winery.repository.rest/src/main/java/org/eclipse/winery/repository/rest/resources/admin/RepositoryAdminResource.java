@@ -42,7 +42,7 @@ import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.filebased.MultiRepositoryManager;
+import org.eclipse.winery.repository.filebased.MultiRepositoryManager;
 import org.eclipse.winery.repository.backend.filebased.RepositoryProperties;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;

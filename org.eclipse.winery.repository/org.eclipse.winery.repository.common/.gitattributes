@@ -1,0 +1,6 @@
+.gitattributes -crlf
+.gitmodules -crlf
+*.pdf binary
+*.vsd binary
+*.ppt* binary
+bower.json eol=lf

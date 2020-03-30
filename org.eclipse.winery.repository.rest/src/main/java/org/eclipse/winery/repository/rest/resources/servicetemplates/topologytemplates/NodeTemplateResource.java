@@ -48,9 +48,9 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.model.version.VersionSupport;
-import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.WineryVersionUtils;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.GenericDirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
@@ -216,7 +216,7 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
 
             // create new ArtifactTemplate version
             ArtifactTemplateId oldArtifactTemplateId = new ArtifactTemplateId(deploymentArtifact.getArtifactRef());
-            List<WineryVersion> versions = BackendUtils.getAllVersionsOfOneDefinition(oldArtifactTemplateId);
+            List<WineryVersion> versions = WineryVersionUtils.getAllVersionsOfOneDefinition(oldArtifactTemplateId, repo);
             WineryVersion newWineryVersion = VersionUtils.getNewWineryVersion(versions);
             newWineryVersion.setWorkInProgressVersion(0);
             newWineryVersion.setComponentVersion(componentVersion);

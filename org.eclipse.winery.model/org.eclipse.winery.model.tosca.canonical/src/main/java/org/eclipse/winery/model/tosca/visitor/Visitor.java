@@ -142,7 +142,7 @@ public abstract class Visitor {
     public void visit(TEntityType entityType) {
         Objects.requireNonNull(entityType);
         visit((TExtensibleElements) entityType);
-        final List<TEntityType.PropertyDefinition> propertyDefinitions = entityType.getProperties();
+        final List<TEntityType.YamlPropertyDefinition> propertyDefinitions = entityType.getProperties();
         if (propertyDefinitions != null) {
             propertyDefinitions.forEach(this::visit);
         }
@@ -356,7 +356,7 @@ public abstract class Visitor {
         // this is a leaf, so no action to take
     }
 
-    public void visit(TEntityType.PropertyDefinition propertiesDefinition) {
+    public void visit(TEntityType.YamlPropertyDefinition propertiesDefinition) {
         // this is a leaf, so no action to take
     }
 

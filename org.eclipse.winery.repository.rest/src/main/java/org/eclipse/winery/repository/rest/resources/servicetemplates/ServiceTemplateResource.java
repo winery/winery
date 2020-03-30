@@ -55,6 +55,7 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.YamlArtifactsSynchronizer;
 import org.eclipse.winery.repository.driverspecificationandinjection.DASpecification;
 import org.eclipse.winery.repository.driverspecificationandinjection.DriverInjection;
@@ -98,7 +99,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
         if (Environments.getInstance().getRepositoryConfig().getProvider() == RepositoryConfigurationObject.RepositoryProvider.YAML) {
             try {
                 YamlArtifactsSynchronizer synchronizer = new YamlArtifactsSynchronizer
-                    .Builder()
+                    .Builder(RepositoryFactory.getRepository())
                     .setOriginalTemplate(this.getServiceTemplate().getTopologyTemplate())
                     .setNewTemplate(topologyTemplate)
                     .setServiceTemplateId((ServiceTemplateId) this.getId())
@@ -152,7 +153,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
 
     @Path("selfserviceportal/")
     public SelfServicePortalResource getSelfServicePortalResource() {
-        return new SelfServicePortalResource(this);
+        return new SelfServicePortalResource(this, requestRepository);
     }
 
     @Path("boundarydefinitions/")
@@ -397,7 +398,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
 
     @Override
     public void synchronizeReferences() throws IOException {
-        BackendUtils.synchronizeReferences((ServiceTemplateId) this.id);
+        BackendUtils.synchronizeReferences((ServiceTemplateId) this.id, RepositoryFactory.getRepository());
     }
 
     @Path("parameters")

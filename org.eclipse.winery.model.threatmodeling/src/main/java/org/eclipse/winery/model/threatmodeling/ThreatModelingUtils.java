@@ -216,11 +216,11 @@ public class ThreatModelingUtils {
         threatProps.setKVProperties(propMap);
         threat.setProperties(threatProps);
 
-        Definitions threatDefinitions = BackendUtils.createWrapperDefinitions(threatID);
+        Definitions threatDefinitions = BackendUtils.createWrapperDefinitions(threatID, repository);
         threatDefinitions.setElement(threat);
 
         try {
-            BackendUtils.persist(threatID, threatDefinitions);
+            BackendUtils.persist(repository, threatID, threatDefinitions);
         } catch (IOException i) {
             LOGGER.debug("Could not save new threat", i);
             return "Could not save new threat";
@@ -243,11 +243,11 @@ public class ThreatModelingUtils {
         mitigationProps.setKVProperties(mitigationPropMap);
         mitigation.setProperties(mitigationProps);
 
-        Definitions mitigationDefinitions = BackendUtils.createWrapperDefinitions(threatID);
+        Definitions mitigationDefinitions = BackendUtils.createWrapperDefinitions(threatID, repository);
         mitigationDefinitions.setElement(mitigation);
 
         try {
-            BackendUtils.persist(mitigationID, mitigationDefinitions);
+            BackendUtils.persist(repository, mitigationID, mitigationDefinitions);
         } catch (IOException i) {
             LOGGER.debug("Could not save new threat", i);
             return "Could not save new mitigation";
@@ -303,7 +303,7 @@ public class ThreatModelingUtils {
         ModelUtilities.replaceWinerysPropertiesDefinition(threat, threatProps);
 
         PolicyTypeId threatID = BackendUtils.getDefinitionsChildId(PolicyTypeId.class, ThreatModelingConstants.THREATMODELING_NAMESPACE, ThreatModelingConstants.THREAT_POLICY_NAME, false);
-        Definitions threatDefinitions = BackendUtils.createWrapperDefinitions(threatID);
+        Definitions threatDefinitions = BackendUtils.createWrapperDefinitions(threatID, repository);
 
         threatDefinitions.setElement(threat);
 
@@ -329,7 +329,7 @@ public class ThreatModelingUtils {
         ModelUtilities.replaceWinerysPropertiesDefinition(mitigation, mitigationProps);
 
         PolicyTypeId mitigationID = BackendUtils.getDefinitionsChildId(PolicyTypeId.class, ThreatModelingConstants.THREATMODELING_NAMESPACE, ThreatModelingConstants.MITIGATION_POLICY_NAME, false);
-        Definitions mitigationDefinitions = BackendUtils.createWrapperDefinitions(mitigationID);
+        Definitions mitigationDefinitions = BackendUtils.createWrapperDefinitions(mitigationID, repository);
 
         mitigationDefinitions.setElement(mitigation);
 
@@ -339,13 +339,13 @@ public class ThreatModelingUtils {
             .build();
 
         NodeTypeId svnfID = new NodeTypeId(QName.valueOf(ThreatModelingConstants.SVNF_NODE_TYPE));
-        Definitions svnfDefinitions = BackendUtils.createWrapperDefinitions(svnfID);
+        Definitions svnfDefinitions = BackendUtils.createWrapperDefinitions(svnfID, repository);
         svnfDefinitions.setElement(svnf);
 
         try {
-            BackendUtils.persist(threatID, threatDefinitions);
-            BackendUtils.persist(mitigationID, mitigationDefinitions);
-            BackendUtils.persist(svnfID, svnfDefinitions);
+            BackendUtils.persist(repository, threatID, threatDefinitions);
+            BackendUtils.persist(repository, mitigationID, mitigationDefinitions);
+            BackendUtils.persist(repository, svnfID, svnfDefinitions);
         } catch (IOException i) {
             LOGGER.debug("Could not set up threat modeling", i);
         }

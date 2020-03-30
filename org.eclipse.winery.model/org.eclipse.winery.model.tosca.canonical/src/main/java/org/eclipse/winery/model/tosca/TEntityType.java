@@ -46,6 +46,7 @@ import org.eclipse.jdt.annotation.Nullable;
     "tags",
     "derivedFrom",
     "properties",
+    "propertiesDefinition",
     "attributeDefinitions"
 })
 @XmlSeeAlso( {
@@ -54,7 +55,8 @@ import org.eclipse.jdt.annotation.Nullable;
     TRequirementType.class,
     TCapabilityType.class,
     TArtifactType.class,
-    TPolicyType.class
+    TPolicyType.class,
+    TDataType.class,
 })
 public abstract class TEntityType extends TExtensibleElements implements HasName, HasInheritance, HasTargetNamespace {
     public static final String NS_SUFFIX_PROPERTIESDEFINITION_WINERY = "propertiesdefinition/winery";
@@ -64,7 +66,9 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     @XmlElement(name = "DerivedFrom")
     protected TEntityType.DerivedFrom derivedFrom;
     @XmlElement(name = "Properties")
-    protected List<TEntityType.PropertyDefinition> properties;
+    protected List<YamlPropertyDefinition> properties;
+    @XmlElement(name = "PropertiesDefinition")
+    protected XmlPropertiesDefinition propertiesDefinition;
     @XmlAttribute(name = "name", required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlSchemaType(name = "NCName")
@@ -139,14 +143,24 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     public void setDerivedFrom(@Nullable HasType value) {
         this.derivedFrom = (TEntityType.DerivedFrom) value;
     }
+
+    // FIXME this is a bit of a mess, because we also have {@link #getProperties}
+    @Nullable
+    public XmlPropertiesDefinition getPropertiesDefinition() {
+        return propertiesDefinition;
+    }
     
+    public void setPropertiesDefinition(@Nullable XmlPropertiesDefinition propertiesDefinition) {
+        this.propertiesDefinition = propertiesDefinition;
+    }
+                                        
     // Must be nullable, because types are not required to define any properties if they inherit
     @Nullable
-    public List<PropertyDefinition> getProperties() {
+    public List<YamlPropertyDefinition> getProperties() {
         return properties;
     }
     
-    public void setProperties(@Nullable List<PropertyDefinition> properties) {
+    public void setProperties(@Nullable List<YamlPropertyDefinition> properties) {
         this.properties = properties;
     }
 
@@ -292,10 +306,51 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             return Objects.hash(typeRef);
         }
     }
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "")
+    public static class XmlPropertiesDefinition {
+        @XmlAttribute(name = "element")
+        protected QName element;
+        @XmlAttribute(name = "type")
+        protected QName type;
+
+        @Nullable
+        public QName getElement() {
+            return element;
+        }
+
+        public void setElement(@Nullable QName value) {
+            this.element = value;
+        }
+
+        @Nullable
+        public QName getType() {
+            return type;
+        }
+
+        public void setType(@Nullable QName value) {
+            this.type = value;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            XmlPropertiesDefinition that = (XmlPropertiesDefinition) o;
+            return Objects.equals(element, that.element) &&
+                Objects.equals(type, that.type);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(element, type);
+        }
+    }
     
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    public static class PropertyDefinition {
+    public static class YamlPropertyDefinition {
         private String name;
         @XmlAttribute(name = "type", required = true)
         private QName type;
@@ -303,15 +358,15 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
         private Boolean required;
         @XmlElement(name = "default")
         private Object defaultValue;
-        private PropertyDefinition.Status status;
+        private YamlPropertyDefinition.Status status;
         @XmlElement
         private ConstraintClauseKVList constraints;
 
-        public PropertyDefinition() {
+        public YamlPropertyDefinition() {
             // added for xml serialization!
         }
         
-        private PropertyDefinition(Builder builder) {
+        private YamlPropertyDefinition(Builder builder) {
             this.name = builder.name;
             this.type = builder.type;
             this.description = builder.description;
@@ -347,7 +402,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             private String description;
             private Boolean required;
             private Object defaultValue;
-            private PropertyDefinition.Status status;
+            private YamlPropertyDefinition.Status status;
             private ConstraintClauseKVList constraints;
             
             public Builder(String name) {
@@ -389,8 +444,8 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
                 return this;
             }
             
-            public PropertyDefinition build() {
-                return new PropertyDefinition(this);
+            public YamlPropertyDefinition build() {
+                return new YamlPropertyDefinition(this);
             }
         }
         
@@ -457,7 +512,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
 
         private TTags tags;
         private TEntityType.DerivedFrom derivedFrom;
-        private List<TEntityType.PropertyDefinition> properties;
+        private List<YamlPropertyDefinition> properties;
         private TBoolean abstractValue;
         private TBoolean finalValue;
         private String targetNamespace;
@@ -509,7 +564,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             return setDerivedFrom(new QName(derivedFrom));
         }
 
-        public T setProperties(List<PropertyDefinition> properties) {
+        public T setProperties(List<YamlPropertyDefinition> properties) {
             if (properties == null || properties.isEmpty()) {
                 return self();
             }
@@ -522,11 +577,11 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             return self();
         }
         
-        public T setProperties(PropertyDefinition property) {
+        public T setProperties(YamlPropertyDefinition property) {
             if (property == null) {
                 return self();
             }
-            List<PropertyDefinition> tmp = new ArrayList<>();
+            List<YamlPropertyDefinition> tmp = new ArrayList<>();
             tmp.add(property);
             return setProperties(tmp);
         }

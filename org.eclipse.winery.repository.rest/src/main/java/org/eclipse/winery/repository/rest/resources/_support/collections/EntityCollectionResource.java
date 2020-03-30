@@ -27,6 +27,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.common.json.JacksonProvider;
 
@@ -55,6 +57,8 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
     protected final Class<EntityT> entityTClazz;
 
     protected final Class<EntityResourceT> entityResourceTClazz;
+    
+    protected final IRepository requestRepository = RepositoryFactory.getRepository();
 
     /**
      * @param entityTClazz the class of EntityT. Required as it is not possible to call new EntityT (see

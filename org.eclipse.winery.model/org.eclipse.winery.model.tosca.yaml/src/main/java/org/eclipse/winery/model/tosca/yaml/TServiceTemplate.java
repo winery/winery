@@ -327,7 +327,6 @@ public class TServiceTemplate implements VisitorNode {
         this.policyTypes = policyTypes;
     }
 
-    @Nullable
     public TTopologyTemplateDefinition getTopologyTemplate() {
         return topologyTemplate;
     }

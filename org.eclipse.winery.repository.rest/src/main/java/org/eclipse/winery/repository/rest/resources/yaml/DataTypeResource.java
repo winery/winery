@@ -52,7 +52,7 @@ public class DataTypeResource extends AbstractComponentInstanceResourceWithNameD
     @GET
     @Path("properties/")
     @Produces(MediaType.APPLICATION_JSON) 
-    public List<TEntityType.PropertyDefinition> properties() {
+    public List<TEntityType.YamlPropertyDefinition> properties() {
         return getDataType().getProperties();
     }
     

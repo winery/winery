@@ -64,6 +64,8 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractComponentsResource<R extends AbstractComponentInstanceResource> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractComponentsResource.class);
+    
+    protected final IRepository requestRepository = RepositoryFactory.getRepository();
 
     @Path("{namespace}/")
     public ComponentsOfOneNamespaceResource getAllResourcesInNamespaceResource(@PathParam("namespace") String namespace) {

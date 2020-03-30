@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support.collections.withoutid;
 
-import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 
 public class IdDeterminationWithHashCode implements IIdDetermination<Object> {
@@ -23,7 +22,9 @@ public class IdDeterminationWithHashCode implements IIdDetermination<Object> {
     @Override
     public String getId(Object entity) {
         // We assume that different Object serializations *always* have different hashCodes
-        int hash = BackendUtils.getXMLAsString(entity).hashCode();
+//        int hash = BackendUtils.getXMLAsString(entity, repository).hashCode();
+        // assume that an entity knows how to hashCode itself
+        int hash = entity.hashCode();
         return Integer.toString(hash);
     }
 

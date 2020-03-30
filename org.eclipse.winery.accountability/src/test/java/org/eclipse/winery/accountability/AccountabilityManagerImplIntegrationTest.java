@@ -34,6 +34,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.util.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,12 +62,13 @@ class AccountabilityManagerImplIntegrationTest {
     }
 
     @BeforeEach
-    public void setUp() throws Exception {
+    public void setUp() {
         AccountabilityConfigurationManager.getInstance().setDefaultKeystore();
         Environments.getInstance().getAccountabilityConfig().setEthereumPassword("winery");
         Environments.getInstance().getAccountabilityConfig().setGethUrl("http://127.0.0.1:8545");
         Environments.getInstance().getAccountabilityConfig().setSwarmGatewayUrl("https://swarm-gateways.net/");
         // deploy smart contracts to (a new address in) the blockchain
+        try {
         ContractDeployer deployer = new ContractDeployer(Environments.getInstance().getAccountabilityConfig());
         Environments.getInstance().getAccountabilityConfig().setEthereumProvenanceSmartContractAddress(deployer.deployProvenance());
         Environments.getInstance().getAccountabilityConfig().setEthereumAuthorizationSmartContractAddress(deployer.deployAuthorization());
@@ -81,6 +83,9 @@ class AccountabilityManagerImplIntegrationTest {
             .getStorageProvider(ImmutableStorageProviderFactory.AvailableImmutableStorages.SWARM, Environments.getInstance().getAccountabilityConfig());
 
         this.accountabilityManager = new AccountabilityManagerImpl(blockchainAccess, storageProvider);
+        } catch (Exception e) {
+            Preconditions.condition(false, e.getMessage());
+        }
     }
 
     @Test

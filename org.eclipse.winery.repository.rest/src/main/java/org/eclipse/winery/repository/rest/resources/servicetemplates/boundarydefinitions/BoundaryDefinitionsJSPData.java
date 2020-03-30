@@ -29,6 +29,7 @@ import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.datatypes.TypeWithShortName;
 import org.eclipse.winery.repository.rest.datatypes.select2.Select2DataItem;
@@ -42,15 +43,18 @@ public class BoundaryDefinitionsJSPData {
     private final TServiceTemplate ste;
     private final TBoundaryDefinitions defs;
     private final URI baseURI;
+    private final IRepository repository;
 
     /**
      * @param ste     the service template of the boundary definitions. Required to get a list of all plans
      * @param baseURI the base URI of the service. Requried for rendering the topology template for the selections
+     * @param repository
      */
-    public BoundaryDefinitionsJSPData(TServiceTemplate ste, URI baseURI) {
+    public BoundaryDefinitionsJSPData(TServiceTemplate ste, URI baseURI, IRepository repository) {
         this.ste = ste;
         this.defs = ste.getBoundaryDefinitions();
         this.baseURI = baseURI;
+        this.repository = repository;
     }
 
     private String getDefinedProperties() {
@@ -61,7 +65,8 @@ public class BoundaryDefinitionsJSPData {
             return "";
         } else {
             // something stored --> return that
-            return BackendUtils.getXMLAsString(p.getAny());
+            assert o instanceof org.w3c.dom.Element;
+            return BackendUtils.getXMLAsString(p.getAny(), repository);
         }
     }
 
@@ -90,12 +95,12 @@ public class BoundaryDefinitionsJSPData {
     }
 
     public String getBoundaryDefinitionsAsXMLStringEncoded() {
-        String res = BackendUtils.getXMLAsString(this.defs);
+        String res = BackendUtils.getXMLAsString(this.defs, repository);
         return Functions.escapeXml(res);
     }
 
     public String getBoundaryDefinitionsAsXMLString() {
-        String res = BackendUtils.getXMLAsString(this.defs);
+        String res = BackendUtils.getXMLAsString(this.defs, repository);
         return res;
     }
 

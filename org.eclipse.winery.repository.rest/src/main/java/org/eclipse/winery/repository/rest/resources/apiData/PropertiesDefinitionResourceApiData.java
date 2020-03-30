@@ -17,10 +17,10 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 
-// FIXME this is XML model specific, because PropertiesDefinition is XML specific
+// FIXME unify properties exposition on the API
 public class PropertiesDefinitionResourceApiData {
 
-//    public TEntityType.PropertiesDefinition propertiesDefinition;
+    public TEntityType.XmlPropertiesDefinition propertiesDefinition;
     public WinerysPropertiesDefinition winerysPropertiesDefinition;
     public PropertiesDefinitionEnum selectedValue;
 
@@ -28,18 +28,18 @@ public class PropertiesDefinitionResourceApiData {
     }
 
     public PropertiesDefinitionResourceApiData(
-        /*TEntityType.PropertiesDefinition*/ Object propertiesDefinition,
+        TEntityType.XmlPropertiesDefinition propertiesDefinition,
         WinerysPropertiesDefinition winerysPropertiesDefinition
     ) {
-//        this.propertiesDefinition = propertiesDefinition;
+        this.propertiesDefinition = propertiesDefinition;
         this.winerysPropertiesDefinition = winerysPropertiesDefinition;
 
         if ((winerysPropertiesDefinition != null) && (winerysPropertiesDefinition.getIsDerivedFromXSD() == null)) {
             this.selectedValue = PropertiesDefinitionEnum.Custom;
-//        } else if ((this.propertiesDefinition != null) && (this.propertiesDefinition.getElement() != null)) {
-//            this.selectedValue = PropertiesDefinitionEnum.Element;
-//        } else if ((this.propertiesDefinition != null) && (this.propertiesDefinition.getType() != null)) {
-//            this.selectedValue = PropertiesDefinitionEnum.Type;
+        } else if ((this.propertiesDefinition != null) && (this.propertiesDefinition.getElement() != null)) {
+            this.selectedValue = PropertiesDefinitionEnum.Element;
+        } else if ((this.propertiesDefinition != null) && (this.propertiesDefinition.getType() != null)) {
+            this.selectedValue = PropertiesDefinitionEnum.Type;
         } else {
             this.selectedValue = PropertiesDefinitionEnum.None;
         }

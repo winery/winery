@@ -61,6 +61,7 @@ import org.eclipse.winery.model.version.VersionSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.WineryVersionUtils;
 import org.eclipse.winery.repository.backend.filebased.NamespaceProperties;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceContainingATopology;
@@ -86,6 +87,8 @@ public class TopologyTemplateResource {
 
     private final AbstractComponentInstanceResourceContainingATopology parent;
     private final String type;
+    
+    private final IRepository requestRepository = RepositoryFactory.getRepository();
 
     /**
      * A topology template is always nested in a service template
@@ -156,7 +159,7 @@ public class TopologyTemplateResource {
         ServiceTemplateId otherServiceTemplateId = new ServiceTemplateId(otherServiceTemplateQName);
         ServiceTemplateId thisServiceTemplateId = (ServiceTemplateId) this.parent.getId();
         try {
-            BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(otherServiceTemplateId, thisServiceTemplateId);
+            BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(otherServiceTemplateId, thisServiceTemplateId, RepositoryFactory.getRepository());
         } catch (IOException e) {
             LOGGER.debug("Could not merge", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
@@ -215,7 +218,7 @@ public class TopologyTemplateResource {
     @Produces( {MediaType.APPLICATION_XML, MediaType.TEXT_XML})
     // @formatter:on
     public Response getComponentInstanceXML() {
-        return RestUtils.getXML(TTopologyTemplate.class, this.topologyTemplate);
+        return RestUtils.getXML(TTopologyTemplate.class, this.topologyTemplate, requestRepository);
     }
 
     @Path("split/")
@@ -508,7 +511,7 @@ public class TopologyTemplateResource {
         for (TNodeTemplate node : this.topologyTemplate.getNodeTemplates()) {
             NodeTypeId nodeTypeId = new NodeTypeId(node.getType());
             if (!versionElements.containsKey(nodeTypeId.getQName())) {
-                List<WineryVersion> versionList = BackendUtils.getAllVersionsOfOneDefinition(nodeTypeId).stream()
+                List<WineryVersion> versionList = WineryVersionUtils.getAllVersionsOfOneDefinition(nodeTypeId, repository).stream()
                     .filter(wineryVersion -> {
                         QName qName = VersionSupport.getDefinitionInTheGivenVersion(nodeTypeId, wineryVersion).getQName();
                         NamespaceProperties namespaceProperties = repository.getNamespaceManager().getNamespaceProperties(qName.getNamespaceURI());

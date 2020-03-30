@@ -98,9 +98,13 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.winery</groupId>
-            <artifactId>org.eclipse.winery.repository</artifactId>
+            <artifactId>org.eclipse.winery.repository.visible</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.winery</groupId>
+            <artifactId>org.eclipse.winery.repository.common</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
     </dependencies>
