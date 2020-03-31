@@ -28,7 +28,6 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
-import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasInheritance;
 import org.eclipse.winery.model.tosca.TAppliesTo;
 import org.eclipse.winery.model.tosca.TArtifact;
@@ -40,6 +39,7 @@ import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
 import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.TDataType;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
@@ -154,13 +154,13 @@ public class ToCanonical {
     }
 
     /**
-     * Converts TOSCA YAML ServiceTemplates to TOSCA XML Definitions
+     * Converts TOSCA YAML ServiceTemplates to Canonical TOSCA Definitions
      *
-     * @return TOSCA XML Definitions
+     * @return Canonical TOSCA Definitions
      */
     @NonNull
-    public Definitions  convert(org.eclipse.winery.model.tosca.yaml.TServiceTemplate node, String id, String target_namespace) {
-        if (node == null) return new Definitions();
+    public TDefinitions convert(org.eclipse.winery.model.tosca.yaml.TServiceTemplate node, String id, String target_namespace) {
+        if (node == null) return new TDefinitions();
         this.root = node;
 
         // Reset
@@ -169,7 +169,7 @@ public class ToCanonical {
 
         init(node);
 
-        Definitions definitions = new Definitions.Builder(id + "_Definitions", target_namespace)
+        TDefinitions definitions = new TDefinitions.Builder(id + "_Definitions", target_namespace)
             .setImport(convert(node.getImports()))
             .addTypes(convert(node.getGroupTypes()))
             .addServiceTemplates(convertServiceTemplate(node, id, target_namespace))

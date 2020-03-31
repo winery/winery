@@ -34,7 +34,7 @@ import org.eclipse.winery.model.ids.IdUtil;
 import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.XmlId;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.filebased.AbstractFileBasedRepository;
 import org.eclipse.winery.repository.backend.filebased.OnlyNonHiddenDirectories;
@@ -48,6 +48,7 @@ import org.slf4j.LoggerFactory;
  * When it comes to a storage of plain files, we use Java 7's nio internally. Therefore, we intend to expose the stream
  * types offered by java.nio.Files: BufferedReader/BufferedWriter
  */
+// FIXME this needs to start conversions between the canonical and the xml model
 public class XmlRepository extends AbstractFileBasedRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(XmlRepository.class);
 
@@ -59,11 +60,11 @@ public class XmlRepository extends AbstractFileBasedRepository {
     }
 
     @Override
-    public Definitions definitionsFromRef(RepositoryFileReference ref) throws IOException {
+    public TDefinitions definitionsFromRef(RepositoryFileReference ref) throws IOException {
         try {
             InputStream is = newInputStream(ref);
             Unmarshaller unmarshaller = JAXBSupport.createUnmarshaller();
-            return (Definitions) unmarshaller.unmarshal(is);
+            return (TDefinitions) unmarshaller.unmarshal(is);
         } catch (Exception e) {
             return null;
         }

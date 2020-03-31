@@ -62,7 +62,7 @@ import org.eclipse.winery.model.ids.definitions.TestRefinementModelId;
 import org.eclipse.winery.model.ids.definitions.TopologyFragmentRefinementModelId;
 import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.model.ids.elements.ToscaElementId;
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
 import org.eclipse.winery.model.tosca.HasInheritance;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.OTComplianceRule;
@@ -72,6 +72,7 @@ import org.eclipse.winery.model.tosca.TArtifacts;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
@@ -188,13 +189,13 @@ public interface IRepository extends IWineryRepositoryCommon {
     InputStream newInputStream(RepositoryFileReference ref) throws IOException;
 
     /**
-     * Creates {@link Definitions} object from a {@link RepositoryFileReference}.
+     * Creates {@link TDefinitions} object from a {@link RepositoryFileReference}.
      *
      * @param ref the {@link RepositoryFileReference} to use
-     * @return the {@link Definitions} object
+     * @return the {@link TDefinitions} object
      * @throws IOException if something goes wrong
      */
-    Definitions definitionsFromRef(RepositoryFileReference ref) throws IOException;
+    TDefinitions definitionsFromRef(RepositoryFileReference ref) throws IOException;
 
     /**
      * Creates a stream of a ZIP file containing all files contained in the given id
@@ -421,13 +422,13 @@ public interface IRepository extends IWineryRepositoryCommon {
      * @return the definitions belonging to the id
      * @throws IllegalStateException if repository cannot provide the content (e.g., due to file reading errors)
      */
-    default Definitions getDefinitions(DefinitionsChildId id) {
+    default TDefinitions getDefinitions(DefinitionsChildId id) {
         RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
         if (!exists(ref)) {
             return BackendUtils.createWrapperDefinitionsAndInitialEmptyElement(this, id);
         }
         try {
-            Definitions output = this.definitionsFromRef(ref);
+            TDefinitions output = this.definitionsFromRef(ref);
             if (output != null) {
                 return output;
             } else {
@@ -1277,7 +1278,7 @@ public interface IRepository extends IWineryRepositoryCommon {
     default void setElement(DefinitionsChildId id, TExtensibleElements element) throws IOException {
         // default implementation on the server side
         // the client side has to use the REST method
-        Definitions definitions = BackendUtils.createWrapperDefinitions(id, this);
+        TDefinitions definitions = BackendUtils.createWrapperDefinitions(id, this);
         definitions.setElement(element);
         BackendUtils.persist(id, definitions, this);
     }

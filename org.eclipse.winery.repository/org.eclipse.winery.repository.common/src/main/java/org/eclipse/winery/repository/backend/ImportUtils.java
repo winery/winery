@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
-import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TImport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +38,7 @@ public class ImportUtils {
         TImport theImport;
         boolean needsPersistence = false;
 
-        final Definitions definitions = repository.getDefinitions(id);
+        final TDefinitions definitions = repository.getDefinitions(id);
 
         if (!repository.exists(id)) {
             return Optional.empty();

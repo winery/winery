@@ -56,7 +56,7 @@ import org.eclipse.winery.model.ids.admin.EdmmMappingsId;
 import org.eclipse.winery.model.ids.admin.NamespacesId;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.ids.elements.ToscaElementId;
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.EdmmManager;
@@ -177,7 +177,7 @@ public abstract class AbstractFileBasedRepository implements IRepository {
             return;
         }
 
-        Definitions definitions = this.getDefinitions(oldId);
+        TDefinitions definitions = this.getDefinitions(oldId);
 
         RepositoryFileReference oldRef = BackendUtils.getRefOfDefinitions(oldId);
         RepositoryFileReference newRef = BackendUtils.getRefOfDefinitions(newId);

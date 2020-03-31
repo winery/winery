@@ -24,7 +24,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.ids.definitions.EntityTemplateId;
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
@@ -52,7 +52,7 @@ public abstract class AbstractComponentsWithTypeReferenceResource<T extends Abst
         }
         if (creationResult.getStatus().equals(Status.CREATED)) {
             final DefinitionsChildId id = (DefinitionsChildId) creationResult.getId();
-            final Definitions definitions = requestRepository.getDefinitions(id);
+            final TDefinitions definitions = requestRepository.getDefinitions(id);
             final TExtensibleElements element = definitions.getElement();
             ((HasType) element).setType(jsonData.type);
 

@@ -17,7 +17,9 @@ package org.eclipse.winery.model.tosca;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,10 +30,12 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
@@ -47,9 +51,18 @@ import org.eclipse.jdt.annotation.Nullable;
     "types",
     "serviceTemplateOrNodeTypeOrNodeTypeImplementation"
 })
-@XmlSeeAlso( {
-    Definitions.class
-})
+@XmlRootElement(name = "Definitions")
+/**
+ * This is the canonical model's TDefinitions type. It's a combination of the tDefinitions type from the XML-1.0 standard
+ * and the Definitions type from the YAML standard and acts as a superset to both of them.
+ *
+ * This means instead of the XML-1.0 standard's definition of Definitions having a complex type inheriting from tDefinitions,
+ * the Definitions are <b>of type</b> tDefinitions.
+ *
+ * This could cause issues when deserializing XML-standard conform Definitions as TDefinitions.
+ * Therefor all deserialization of user-input that doesn't use winery Definitions as basis needs to be performed by the standard-specific repository implementations
+ * to correctly handle the discrepancies between the standards.
+ */
 public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
     @XmlElement(name = "Extensions")
     protected TDefinitions.Extensions extensions;
@@ -82,6 +95,10 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
     @XmlSchemaType(name = "anyURI")
     protected String targetNamespace;
 
+    @JsonIgnore
+    @XmlTransient
+    protected Map<String, QName> importDefinitions = new HashMap<>();
+
     public TDefinitions() {
     }
 
@@ -93,6 +110,14 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         this.serviceTemplateOrNodeTypeOrNodeTypeImplementation = builder.getServiceTemplateOrNodeTypeOrNodeTypeImplementation();
         this.name = builder.name;
         this.targetNamespace = builder.target_namespace;
+    }
+
+    public Map<String, QName> getImportDefinitions() {
+        return importDefinitions;
+    }
+
+    public void setImportDefinitions(Map<String, QName> importDefinitions) {
+        this.importDefinitions = importDefinitions;
     }
 
     @Override
@@ -875,6 +900,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
 
         @ADR(11)
         @Override
+        @SuppressWarnings("unchecked") // we assume the cast is safe here
         public T self() {
             return (T) this;
         }

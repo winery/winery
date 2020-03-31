@@ -48,9 +48,8 @@ import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.model.ids.definitions.imports.XSDImportId;
-import org.eclipse.winery.model.tosca.Definitions;
-import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TDefinitions;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -68,7 +67,8 @@ public class WriterUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WriterUtils.class);
 
-    public static void storeDefinitions(IRepository repository, Definitions definitions, boolean overwrite, Path dir) {
+    // FIXME this used to be targeting Definitions, check whether that was necessary
+    public static void storeDefinitions(IRepository repository, TDefinitions definitions, boolean overwrite, Path dir) {
         Path path = null;
         try {
             path = Files.createTempDirectory("winery");
@@ -77,7 +77,7 @@ public class WriterUtils {
         }
         LOGGER.debug("Store definition: {}", definitions.getId());
         saveDefinitions(definitions, path, definitions.getTargetNamespace(), definitions.getId());
-        Definitions cleanDefinitions = loadDefinitions(path, definitions.getTargetNamespace(), definitions.getId());
+        TDefinitions cleanDefinitions = loadDefinitions(path, definitions.getTargetNamespace(), definitions.getId());
 
         CsarImporter csarImporter = new CsarImporter(repository);
         List<Exception> exceptions = new ArrayList<>();
@@ -138,7 +138,7 @@ public class WriterUtils {
                     });
             }
 
-            final Definitions part = BackendUtils.createWrapperDefinitions(wid, repository);
+            final TDefinitions part = BackendUtils.createWrapperDefinitions(wid, repository);
             part.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().add(entry);
 
             RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(wid);
@@ -183,11 +183,11 @@ public class WriterUtils {
         }
     }
 
-    public static void saveDefinitions(Definitions definitions, Path path, String namespace, String name) {
+    public static void saveDefinitions(TDefinitions definitions, Path path, String namespace, String name) {
         saveDefinitions(definitions, getDefinitionsPath(path, namespace, name));
     }
 
-    public static void saveDefinitions(Definitions definitions, Path filePath) {
+    public static void saveDefinitions(TDefinitions definitions, Path filePath) {
         XmlWriter writer = new XmlWriter();
         try {
             writer.writeXML(definitions, filePath);
@@ -196,7 +196,7 @@ public class WriterUtils {
         }
     }
 
-    public static Definitions loadDefinitions(Path path, String namespace, String name) {
+    public static TDefinitions loadDefinitions(Path path, String namespace, String name) {
         Path filePath = getDefinitionsPath(path, namespace, name);
         XmlReader reader = new XmlReader();
         try {
@@ -204,7 +204,7 @@ public class WriterUtils {
         } catch (JAXBException | FileNotFoundException e) {
             e.printStackTrace();
         }
-        return new Definitions();
+        return new TDefinitions();
     }
 
     public static void saveType(Document document, Path path, String namespace, String name) {

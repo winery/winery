@@ -38,7 +38,6 @@ import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
-import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TAppliesTo;
 import org.eclipse.winery.model.tosca.TArtifact;
 import org.eclipse.winery.model.tosca.TArtifactReference;
@@ -47,6 +46,7 @@ import org.eclipse.winery.model.tosca.TArtifacts;
 import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TCapability;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TDocumentation;
@@ -126,7 +126,7 @@ public class FromCanonical {
 //    private final Path path;
 
     private HashBiMap<String, String> prefixNamespace;
-    private Map<DefinitionsChildId, Definitions> importDefinitions;
+    private Map<DefinitionsChildId, TDefinitions> importDefinitions;
 
     public FromCanonical(YamlRepository repository) {
         this.repository = repository;
@@ -135,7 +135,7 @@ public class FromCanonical {
     }
 
     @NonNull
-    public TServiceTemplate convert(Definitions node) {
+    public TServiceTemplate convert(TDefinitions node) {
         return convert(node, false);
     }
 
@@ -143,7 +143,7 @@ public class FromCanonical {
      * Converts TOSCA XML Definitions to TOSCA YAML ServiceTemplates
      */
     @NonNull
-    public TServiceTemplate convert(Definitions node, boolean convertImports) {
+    public TServiceTemplate convert(TDefinitions node, boolean convertImports) {
         LOGGER.debug("Convert TServiceTemplate: {}", node.getIdFromIdOrNameField());
 
         TServiceTemplate.Builder builder = new TServiceTemplate.Builder(Defaults.TOSCA_DEFINITIONS_VERSION)
@@ -192,7 +192,7 @@ public class FromCanonical {
     public List<TMapImportDefinition> convertImports() {
         List<TMapImportDefinition> imports = new ArrayList<>();
         TMapImportDefinition tMapImportDefinition = new TMapImportDefinition();
-        for (Map.Entry<DefinitionsChildId, Definitions> importDefinition : importDefinitions.entrySet()) {
+        for (Map.Entry<DefinitionsChildId, TDefinitions> importDefinition : importDefinitions.entrySet()) {
             TImportDefinition tImportDefinition =
                 new TImportDefinition.Builder(YamlExporter.getDefinitionsName(repository, importDefinition.getKey())
                     .concat(Constants.SUFFIX_TOSCA_DEFINITIONS))

@@ -31,7 +31,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
@@ -96,7 +100,7 @@ public class DataFlowResource {
                 .entity("ServiceTemplate with name of the data flow model already exists!").build();
         }
 
-        Definitions definitions = BackendUtils.createWrapperDefinitionsAndInitialEmptyElement(repo, templateId);
+        TDefinitions definitions = BackendUtils.createWrapperDefinitionsAndInitialEmptyElement(repo, templateId);
         TServiceTemplate serviceTemplate =
             definitions.getServiceTemplates().stream()
                 .filter(template -> template.getId().equals(templateId.getQName().getLocalPart()) && template

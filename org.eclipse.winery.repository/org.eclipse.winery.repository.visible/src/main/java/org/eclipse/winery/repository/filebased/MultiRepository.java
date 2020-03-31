@@ -40,7 +40,7 @@ import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
 import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
 import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
 import org.eclipse.winery.model.ids.admin.EdmmMappingsId;
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.EdmmManager;
 import org.eclipse.winery.repository.backend.IRepository;
@@ -394,7 +394,7 @@ public class MultiRepository implements IRepository {
     }
 
     @Override
-    public Definitions definitionsFromRef(RepositoryFileReference ref) throws IOException {
+    public TDefinitions definitionsFromRef(RepositoryFileReference ref) throws IOException {
         return RepositoryUtils.getRepositoryByRef(ref, this).definitionsFromRef(ref);
     }
 

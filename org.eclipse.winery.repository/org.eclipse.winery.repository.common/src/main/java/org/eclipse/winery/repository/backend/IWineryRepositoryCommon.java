@@ -36,7 +36,6 @@ import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.ids.definitions.TestRefinementModelId;
 import org.eclipse.winery.model.ids.definitions.TopologyFragmentRefinementModelId;
-import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.OTTopologyFragmentRefinementModel;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
@@ -44,6 +43,7 @@ import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.OTComplianceRule;
 import org.eclipse.winery.model.tosca.TDataType;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
@@ -82,7 +82,7 @@ public interface IWineryRepositoryCommon {
      * @return the definitions belonging to the id
      * @throws IllegalStateException if repository cannot provide the content (e.g., due to file reading errors)
      */
-    Definitions getDefinitions(DefinitionsChildId id);
+    TDefinitions getDefinitions(DefinitionsChildId id);
 
     // in case one needs a new element, just copy and paste one of the following methods and adapt it.
 

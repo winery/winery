@@ -71,7 +71,7 @@ import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.ids.elements.ToscaElementId;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.selfservice.Application;
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TConstraint;
@@ -505,7 +505,7 @@ public class RestUtils {
 
         RepositoryFileReference fileRef = new RepositoryFileReference(newServiceTemplateId, "ServiceTemplate.tosca");
 
-        Definitions defs = new ServiceTemplateResource(serviceTemplate).getDefinitions();
+        TDefinitions defs = new ServiceTemplateResource(serviceTemplate).getDefinitions();
 
         defs.setId(newName + "Definitions");
         defs.setName(newName + "Definitions generated from Artifact " + artifactName);
@@ -540,7 +540,7 @@ public class RestUtils {
             oldSTModel.getTags().getTag().removeAll(toRemove);
         }
 
-        JAXBContext context = JAXBContext.newInstance(Definitions.class);
+        JAXBContext context = JAXBContext.newInstance(TDefinitions.class);
         Marshaller m = context.createMarshaller();
         StringWriter sw = new StringWriter();
         m.marshal(defs, sw);

@@ -98,7 +98,6 @@ import org.eclipse.winery.model.ids.elements.PlansId;
 import org.eclipse.winery.model.ids.elements.ToscaElementId;
 import org.eclipse.winery.model.version.ToscaDiff;
 import org.eclipse.winery.common.version.WineryVersion;
-import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.model.tosca.HasName;
 import org.eclipse.winery.model.tosca.HasTargetNamespace;
@@ -496,7 +495,7 @@ public class BackendUtils {
      * @param defs the definitions to update
      * @return a definitions element prepared for wrapping a definition child
      */
-    public static Definitions updateWrapperDefinitions(DefinitionsChildId tcId, Definitions defs, IRepository repo) {
+    public static TDefinitions updateWrapperDefinitions(DefinitionsChildId tcId, TDefinitions defs, IRepository repo) {
         // set target namespace
         // an internal namespace is not possible
         //   a) tPolicyTemplate and tArtfactTemplate do NOT support the "targetNamespace" attribute
@@ -599,13 +598,13 @@ public class BackendUtils {
      * @param tcId the id of the element the wrapper is used for
      * @return a definitions element prepared for wrapping a definition child instance
      */
-    public static Definitions createWrapperDefinitions(DefinitionsChildId tcId, IRepository repo) {
-        Definitions defs = new Definitions();
+    public static TDefinitions createWrapperDefinitions(DefinitionsChildId tcId, IRepository repo) {
+        TDefinitions defs = new TDefinitions();
         return updateWrapperDefinitions(tcId, defs, repo);
     }
 
-    public static Definitions createWrapperDefinitionsAndInitialEmptyElement(IRepository repository, DefinitionsChildId id) {
-        final Definitions definitions = createWrapperDefinitions(id, repository);
+    public static TDefinitions createWrapperDefinitionsAndInitialEmptyElement(IRepository repository, DefinitionsChildId id) {
+        final TDefinitions definitions = createWrapperDefinitions(id, repository);
         HasIdInIdOrNameField element;
         if (id instanceof RelationshipTypeImplementationId) {
             element = new TRelationshipTypeImplementation();
@@ -709,11 +708,8 @@ public class BackendUtils {
      * @param id          the id of the definition child to persist
      * @param definitions the definitions to persist
      */
-    public static void persist(DefinitionsChildId id, Definitions definitions, IRepository repo) throws IOException {
-        RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
-        NamespaceManager namespaceManager = repo.getNamespaceManager();
-        namespaceManager.addPermanentNamespace(id.getNamespace().getDecoded());
-        BackendUtils.persist(definitions, ref, MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS, repo);
+    public static void persist(DefinitionsChildId id, TDefinitions definitions, IRepository repo) throws IOException {
+        repo.putDefinition(id, definitions);
     }
 
     // todo this should not depend on JAXB !
@@ -1060,7 +1056,7 @@ public class BackendUtils {
         RepositoryFileReference ref = BackendUtils.getRefOfDefinitions((ArtifactTemplateId) directoryId.getParent());
         try (InputStream is = repo.newInputStream(ref)) {
             Unmarshaller u = JAXBSupport.createUnmarshaller();
-            Definitions defs = ((Definitions) u.unmarshal(is));
+            TDefinitions defs = ((TDefinitions) u.unmarshal(is));
             Map<QName, String> atts = defs.getOtherAttributes();
             String src = atts.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "gitsrc"));
             String branch = atts.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "gitbranch"));
@@ -1088,7 +1084,7 @@ public class BackendUtils {
         RepositoryFileReference ref = BackendUtils.getRefOfDefinitions((ArtifactTemplateId) directoryId.getParent());
         try (InputStream is = repo.newInputStream(ref)) {
             Unmarshaller u = JAXBSupport.createUnmarshaller();
-            Definitions defs = ((Definitions) u.unmarshal(is));
+            TDefinitions defs = ((TDefinitions) u.unmarshal(is));
             for (TExtensibleElements elem : defs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation()) {
                 if (elem instanceof TArtifactTemplate) {
                     return (TArtifactTemplate) elem;
@@ -1426,7 +1422,7 @@ public class BackendUtils {
         });
     }
 
-    public static Definitions getDefinitionsHavingCorrectImports(IRepository repository, DefinitionsChildId id) throws Exception {
+    public static TDefinitions getDefinitionsHavingCorrectImports(IRepository repository, DefinitionsChildId id) throws Exception {
         // idea: get the XML, parse it, return it
         // the conversion to JSON is made by Jersey automatically
         // TODO: future work: force TOSCAExportUtil to return TDefinitions directly
@@ -1440,7 +1436,7 @@ public class BackendUtils {
             exporter.writeTOSCA(repository, id, conf, bos);
             String xmlRepresentation = bos.toString(StandardCharsets.UTF_8.toString());
             Unmarshaller u = JAXBSupport.createUnmarshaller();
-            return ((Definitions) u.unmarshal(new StringReader(xmlRepresentation)));
+            return ((TDefinitions) u.unmarshal(new StringReader(xmlRepresentation)));
         }
     }
 

@@ -40,7 +40,7 @@ import org.eclipse.winery.model.ids.definitions.TopologyGraphElementEntityTypeId
 import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.model.ids.elements.PlanId;
 import org.eclipse.winery.model.ids.elements.PlansId;
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
@@ -157,7 +157,7 @@ public class ToscaExportUtil {
 
         this.getPrepareForExport(repository, tcId);
 
-        Definitions entryDefinitions = repository.getDefinitions(tcId);
+        TDefinitions entryDefinitions = repository.getDefinitions(tcId);
 
         // BEGIN: Definitions modification
         // the "imports" collection contains the imports of Definitions, not of other definitions
@@ -215,7 +215,7 @@ public class ToscaExportUtil {
         return referencedDefinitionsChildIds;
     }
 
-    protected void exportEntityType(Definitions entryDefinitions, URI uri, DefinitionsChildId tcId) {
+    protected void exportEntityType(TDefinitions entryDefinitions, URI uri, DefinitionsChildId tcId) {
         TEntityType entityType = (TEntityType) entryDefinitions.getElement();
 
         // we have an entity type with a possible properties definition

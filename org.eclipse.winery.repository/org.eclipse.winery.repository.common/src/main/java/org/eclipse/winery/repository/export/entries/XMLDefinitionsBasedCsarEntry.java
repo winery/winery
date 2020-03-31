@@ -22,20 +22,22 @@ import java.util.Objects;
 
 import javax.xml.bind.JAXBException;
 
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.IRepository;
 
 /**
  * Provides access to an entry that represents a TOSCA definition.
  */
+// FIXME this needs to be moved to the xml repository module.
+//  CSAR Entries are inherently dependent on the Standard to which the CSAR is serialized
 public class XMLDefinitionsBasedCsarEntry implements CsarEntry {
     private static final boolean INCLUDE_PROCESSING = true;
     
-    private Definitions definitions;
+    private TDefinitions definitions;
     private IRepository repository;
 
-    public XMLDefinitionsBasedCsarEntry(Definitions definitions, IRepository repository) {
+    public XMLDefinitionsBasedCsarEntry(TDefinitions definitions, IRepository repository) {
         this.repository = Objects.requireNonNull(repository);
         this.definitions = Objects.requireNonNull(definitions);
     }

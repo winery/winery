@@ -33,8 +33,9 @@ import java.util.regex.Pattern;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.repository.backend.filebased.AbstractFileBasedRepository;
-import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.common.version.WineryVersion;
+import org.eclipse.winery.model.converter.support.exception.MultiException;
 import org.eclipse.winery.model.ids.GenericId;
 import org.eclipse.winery.model.ids.IdUtil;
 import org.eclipse.winery.model.ids.Namespace;
@@ -50,9 +51,7 @@ import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
-import org.eclipse.winery.common.version.VersionUtils;
-import org.eclipse.winery.common.version.WineryVersion;
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.yaml.TArtifactDefinition;
@@ -69,12 +68,13 @@ import org.eclipse.winery.model.tosca.yaml.support.TMapImportDefinition;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
-import org.eclipse.winery.repository.yaml.converter.FromCanonical;
-import org.eclipse.winery.repository.yaml.converter.ToCanonical;
-import org.eclipse.winery.model.converter.support.exception.MultiException;
+import org.eclipse.winery.repository.backend.filebased.AbstractFileBasedRepository;
+import org.eclipse.winery.repository.backend.filebased.OnlyNonHiddenDirectories;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.repository.converter.reader.YamlReader;
 import org.eclipse.winery.repository.converter.writer.YamlWriter;
-import org.eclipse.winery.repository.backend.filebased.OnlyNonHiddenDirectories;
+import org.eclipse.winery.repository.yaml.converter.FromCanonical;
+import org.eclipse.winery.repository.yaml.converter.ToCanonical;
 
 import org.apache.tika.mime.MediaType;
 import org.slf4j.Logger;
@@ -446,12 +446,12 @@ public class YamlRepository extends AbstractFileBasedRepository {
      * @return xml definitions
      **/
     @Override
-    public Definitions definitionsFromRef(RepositoryFileReference ref) throws IOException {
+    public TDefinitions definitionsFromRef(RepositoryFileReference ref) throws IOException {
         Path targetPath = this.ref2AbsolutePath(ref);
         if (ref.getParent() instanceof DefinitionsChildId) {
             try {
                 QName name = ((DefinitionsChildId) ref.getParent()).getQName();
-                Definitions definitions = convertToDefinitions(targetPath, name.getLocalPart(), name.getNamespaceURI());
+                TDefinitions definitions = convertToDefinitions(targetPath, name.getLocalPart(), name.getNamespaceURI());
                 return getRequestedDefinition((DefinitionsChildId) ref.getParent(), definitions);
             } catch (MultiException e) {
                 LOGGER.debug("Internal error", e);
@@ -467,7 +467,7 @@ public class YamlRepository extends AbstractFileBasedRepository {
      * @param definitions converted definitions
      * @return requested definitions
      **/
-    private Definitions getRequestedDefinition(DefinitionsChildId id, Definitions definitions) {
+    private TDefinitions getRequestedDefinition(DefinitionsChildId id, TDefinitions definitions) {
         if (id instanceof ArtifactTemplateId) {
             String artifactName = getNameOfArtifactFromArtifactName(id.getQName().getLocalPart());
             List<TArtifactTemplate> artifactTemplates = definitions.getArtifactTemplates();
@@ -475,7 +475,7 @@ public class YamlRepository extends AbstractFileBasedRepository {
             for (TArtifactTemplate artifactTemplate : artifactTemplates) {
                 if (artifactTemplate.getId().equalsIgnoreCase(artifactName)) {
                     requestedArtifactTemplates.add(artifactTemplate);
-                    Definitions.Builder requestedDefinitions = getEmptyDefinition(definitions);
+                    TDefinitions.Builder requestedDefinitions = getEmptyDefinition(definitions);
                     requestedDefinitions.addArtifactTemplates(requestedArtifactTemplates);
                     return requestedDefinitions.build();
                 }
@@ -484,7 +484,7 @@ public class YamlRepository extends AbstractFileBasedRepository {
             LOGGER.error("requested artifact template id (" + id.toReadableString() + ") cannot be extracted from definitions object!");
             return definitions;
         } else {
-            Definitions.Builder requestedDefinitions = getEmptyDefinition(definitions);
+            TDefinitions.Builder requestedDefinitions = getEmptyDefinition(definitions);
 
             if (id instanceof NodeTypeId) {
                 requestedDefinitions.addNodeTypes(definitions.getNodeTypes());
@@ -519,8 +519,8 @@ public class YamlRepository extends AbstractFileBasedRepository {
      * @param definitions converted definitions
      * @return empty definition builder
      **/
-    private Definitions.Builder getEmptyDefinition(Definitions definitions) {
-        return (new Definitions.Builder(definitions.getId(), definitions.getTargetNamespace()
+    private TDefinitions.Builder getEmptyDefinition(TDefinitions definitions) {
+        return (new TDefinitions.Builder(definitions.getId(), definitions.getTargetNamespace()
         ));
     }
 
@@ -533,7 +533,7 @@ public class YamlRepository extends AbstractFileBasedRepository {
      **/
     private boolean artifactTemplateExistsInType(Path targetPath, QName qName) {
         try {
-            Definitions xmlDefinitions = convertToDefinitions(targetPath, getNameOfTypeFromArtifactName(qName.getLocalPart()), qName.getNamespaceURI());
+            TDefinitions xmlDefinitions = convertToDefinitions(targetPath, getNameOfTypeFromArtifactName(qName.getLocalPart()), qName.getNamespaceURI());
             List<TArtifactTemplate> artifacts = xmlDefinitions.getArtifactTemplates();
             if (artifacts != null) {
                 for (TArtifactTemplate artifact : artifacts) {
@@ -556,7 +556,7 @@ public class YamlRepository extends AbstractFileBasedRepository {
      * @param targetNamespace targetNamespace of requested Definition
      * @return xml definitions
      **/
-    private Definitions convertToDefinitions(Path targetPath, String id, String targetNamespace) throws IOException, MultiException {
+    private TDefinitions convertToDefinitions(Path targetPath, String id, String targetNamespace) throws IOException, MultiException {
         TServiceTemplate serviceTemplate = readServiceTemplate(targetPath);
         ToCanonical converter = new ToCanonical(this);
         return converter.convert(serviceTemplate, id, targetNamespace);
@@ -591,8 +591,8 @@ public class YamlRepository extends AbstractFileBasedRepository {
      * @param inputStream xml input stream
      * @return xml definitions
      **/
-    private Definitions readInputStream(InputStream inputStream) throws JAXBException {
-        return (Definitions) JAXBSupport.createUnmarshaller().unmarshal(inputStream);
+    private TDefinitions readInputStream(InputStream inputStream) throws JAXBException {
+        return (TDefinitions) JAXBSupport.createUnmarshaller().unmarshal(inputStream);
     }
 
     /**
@@ -609,7 +609,7 @@ public class YamlRepository extends AbstractFileBasedRepository {
             String fileName = BackendUtils.getFileNameOfDefinitions(idClass);
             String id = target.getFileName().toString();
             target = target.resolve(fileName);
-            Definitions definitions = convertToDefinitions(target, id, targetNamespace);
+            TDefinitions definitions = convertToDefinitions(target, id, targetNamespace);
             List<TArtifactTemplate> artifactTemplates = definitions.getArtifactTemplates();
             if (artifactTemplates != null) {
                 for (TArtifactTemplate artifactTemplate : artifactTemplates) {
@@ -647,81 +647,81 @@ public class YamlRepository extends AbstractFileBasedRepository {
      * @return yaml service template input stream
      **/
     private InputStream convertToServiceTemplate(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) {
+        if (!mediaType.equals(MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS)) {
+            // do not modify content that's not a TOSCA_DEFINITIONS file
+            return inputStream;
+        }
         //ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        if (mediaType.equals(MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS)) {
-            try {
-                //IOUtils.copy(inputStream, outputStream);
-                //Definitions definitions = readInputStream(new ByteArrayInputStream(outputStream.toByteArray()));
-                Definitions definitions = (Definitions) JAXBSupport.createUnmarshaller().unmarshal(inputStream);
-                FromCanonical converter = new FromCanonical(this);
-                TServiceTemplate serviceTemplate;
-                if (ref.getParent() instanceof NodeTypeImplementationId) {
-                    serviceTemplate = readServiceTemplate(ref);
-                    serviceTemplate = converter.convertNodeTypeImplementation(serviceTemplate, definitions.getNodeTypeImplementations().get(0));
-                } else if (ref.getParent() instanceof RelationshipTypeImplementationId) {
-                    serviceTemplate = readServiceTemplate(ref);
-                    serviceTemplate = converter.convertRelationshipTypeImplementation(serviceTemplate, definitions.getRelationshipTypeImplementations().get(0));
-                } else if (ref.getParent() instanceof NodeTypeId) {
-                    serviceTemplate = converter.convert(definitions);
-                    if (exists(ref)) {
-                        TServiceTemplate oldServiceTemplate = readServiceTemplate(ref);
-                        serviceTemplate = replaceOldWithNewData(serviceTemplate, oldServiceTemplate);
-                    }
-                } else if (ref.getParent() instanceof RelationshipTypeId) {
-                    serviceTemplate = converter.convert(definitions);
-                    if (exists(ref)) {
-                        TServiceTemplate oldServiceTemplate = readServiceTemplate(ref);
-                        serviceTemplate = replaceOldRelationshipTypeWithNewData(serviceTemplate, oldServiceTemplate);
-                    }
-                } else if (ref.getParent() instanceof ArtifactTemplateId) {
-                    ArtifactTemplateId id = (ArtifactTemplateId) ref.getParent();
-                    TArtifactTemplate artifactTemplate = definitions.getArtifactTemplates().get(0);
-                    TArtifactDefinition artifact = converter.convertArtifactTemplate(artifactTemplate);
-                    List<TMapImportDefinition> imports = converter.convertImports();
-                    Path targetPath = ref2AbsolutePath(ref);
-                    if (Files.exists(targetPath)) {
-                        serviceTemplate = readServiceTemplate(targetPath);
-                        if (serviceTemplate == null) {
-                            serviceTemplate = createNewCacheNodeTypeWithArtifact(ref, artifactTemplate, artifact, imports);
-                        } else if (getTypeFromArtifactName(id.getQName().getLocalPart()).equalsIgnoreCase("nodetypes")) {
-                            TNodeType nodeType = serviceTemplate.getNodeTypes().entrySet().iterator().next().getValue();
-                            Map<String, TArtifactDefinition> artifacts = nodeType.getArtifacts();
-                            if (artifacts.containsKey(artifactTemplate.getIdFromIdOrNameField())) {
-                                artifacts.replace(artifactTemplate.getIdFromIdOrNameField(), artifact);
-                            } else {
-                                artifacts.put(artifactTemplate.getIdFromIdOrNameField(), artifact);
-                            }
-                            nodeType.setArtifacts(artifacts);
-                            serviceTemplate.getNodeTypes().entrySet().iterator().next().setValue(nodeType);
-                            serviceTemplate.setImports(addImports(serviceTemplate.getImports(), imports));
-                        } else {
-                            TRelationshipType relationshipType = serviceTemplate.getRelationshipTypes().entrySet().iterator().next().getValue();
-                            Map<String, TInterfaceDefinition> interfaceDefinitionMap = relationshipType.getInterfaces();
-                            relationshipType.setInterfaces(addArtifactToInterfaces(interfaceDefinitionMap, artifact, artifactTemplate.getIdFromIdOrNameField()));
-                        }
+        try {
+            //IOUtils.copy(inputStream, outputStream);
+            //Definitions definitions = readInputStream(new ByteArrayInputStream(outputStream.toByteArray()));
+            TDefinitions definitions = (TDefinitions) JAXBSupport.createUnmarshaller().unmarshal(inputStream);
+            TServiceTemplate serviceTemplate = convertToYamlModel(ref, definitions);
+            YamlWriter writer = new YamlWriter();
+            return writer.writeToInputStream(serviceTemplate);
+        } catch (Exception e) {
+            LOGGER.error("Error converting service template. Reason: {}", e.getMessage(), e);
+        }
+        return null;
+    }
+
+    private TServiceTemplate convertToYamlModel(RepositoryFileReference existing, TDefinitions definitions) throws IOException, MultiException {
+        FromCanonical converter = new FromCanonical(this);
+        TServiceTemplate serviceTemplate;
+        if (existing.getParent() instanceof NodeTypeImplementationId) {
+            serviceTemplate = readServiceTemplate(existing);
+            serviceTemplate = converter.convertNodeTypeImplementation(serviceTemplate, definitions.getNodeTypeImplementations().get(0));
+        } else if (existing.getParent() instanceof RelationshipTypeImplementationId) {
+            serviceTemplate = readServiceTemplate(existing);
+            serviceTemplate = converter.convertRelationshipTypeImplementation(serviceTemplate, definitions.getRelationshipTypeImplementations().get(0));
+        } else if (existing.getParent() instanceof NodeTypeId) {
+            serviceTemplate = converter.convert(definitions);
+            if (exists(existing)) {
+                TServiceTemplate oldServiceTemplate = readServiceTemplate(existing);
+                serviceTemplate = replaceOldWithNewData(serviceTemplate, oldServiceTemplate);
+            }
+        } else if (existing.getParent() instanceof RelationshipTypeId) {
+            serviceTemplate = converter.convert(definitions);
+            if (exists(existing)) {
+                TServiceTemplate oldServiceTemplate = readServiceTemplate(existing);
+                serviceTemplate = replaceOldRelationshipTypeWithNewData(serviceTemplate, oldServiceTemplate);
+            }
+        } else if (existing.getParent() instanceof ArtifactTemplateId) {
+            ArtifactTemplateId id = (ArtifactTemplateId) existing.getParent();
+            TArtifactTemplate artifactTemplate = definitions.getArtifactTemplates().get(0);
+            TArtifactDefinition artifact = converter.convertArtifactTemplate(artifactTemplate);
+            List<TMapImportDefinition> imports = converter.convertImports();
+            Path targetPath = ref2AbsolutePath(existing);
+            if (Files.exists(targetPath)) {
+                serviceTemplate = readServiceTemplate(targetPath);
+                if (serviceTemplate == null) {
+                    serviceTemplate = createNewCacheNodeTypeWithArtifact(existing, artifactTemplate, artifact, imports);
+                } else if (getTypeFromArtifactName(id.getQName().getLocalPart()).equalsIgnoreCase("nodetypes")) {
+                    TNodeType nodeType = serviceTemplate.getNodeTypes().entrySet().iterator().next().getValue();
+                    Map<String, TArtifactDefinition> artifacts = nodeType.getArtifacts();
+                    if (artifacts.containsKey(artifactTemplate.getIdFromIdOrNameField())) {
+                        artifacts.replace(artifactTemplate.getIdFromIdOrNameField(), artifact);
                     } else {
-                        serviceTemplate = createNewCacheNodeTypeWithArtifact(ref, artifactTemplate, artifact, imports);
+                        artifacts.put(artifactTemplate.getIdFromIdOrNameField(), artifact);
                     }
-                } else if (ref.getParent() instanceof PolicyTypeId
-                    || ref.getParent() instanceof CapabilityTypeId) {
+                } else if (existing.getParent() instanceof PolicyTypeId
+                    || existing.getParent() instanceof CapabilityTypeId) {
                     // we simply take the new definition as is
                     serviceTemplate = converter.convert(definitions);
                 } else {
                     serviceTemplate = converter.convert(definitions);
-                    if (exists(ref)) {
-                        TServiceTemplate existingServiceTemplate = readServiceTemplate(ref);
+                    if (exists(existing)) {
+                        TServiceTemplate existingServiceTemplate = readServiceTemplate(existing);
                         serviceTemplate = replaceTopologyTemplate(serviceTemplate, existingServiceTemplate);
                     }
                 }
-                YamlWriter writer = new YamlWriter();
-                return writer.writeToInputStream(serviceTemplate);
-            } catch (Exception e) {
-                LOGGER.error("Error converting service template. Reason: {}", e.getMessage(), e);
+            } else {
+                serviceTemplate = createNewCacheNodeTypeWithArtifact(existing, artifactTemplate, artifact, imports);
             }
-            return null;
         } else {
-            return inputStream;
+            serviceTemplate = converter.convert(definitions);
         }
+        return serviceTemplate;
     }
 
     private TServiceTemplate replaceTopologyTemplate(TServiceTemplate newServiceTemplate, TServiceTemplate existingServiceTemplate) {

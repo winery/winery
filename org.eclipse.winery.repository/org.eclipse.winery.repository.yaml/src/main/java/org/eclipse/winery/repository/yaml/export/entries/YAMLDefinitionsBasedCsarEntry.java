@@ -19,7 +19,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Objects;
 
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
@@ -29,10 +29,11 @@ import org.eclipse.winery.repository.yaml.converter.FromCanonical;
 import org.eclipse.winery.repository.converter.writer.YamlWriter;
 import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 
+// FIXME a YAML CSAR entry does not need to conform to the canonical model!
 public class YAMLDefinitionsBasedCsarEntry implements CsarEntry {
     private TServiceTemplate definitions;
 
-    public YAMLDefinitionsBasedCsarEntry(IRepository repo, Definitions definitions) {
+    public YAMLDefinitionsBasedCsarEntry(IRepository repo, TDefinitions definitions) {
         assert (definitions != null);
         try {
             FromCanonical c;

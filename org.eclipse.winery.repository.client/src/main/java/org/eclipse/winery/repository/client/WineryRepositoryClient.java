@@ -52,7 +52,6 @@ import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.interfaces.QNameWithName;
 import org.eclipse.winery.common.json.JsonFeature;
-import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
@@ -172,11 +171,11 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
         return WineryRepositoryClient.getDefinitions(componentListResource, ns, localPart);
     }
 
-    private static Definitions getDefinitions(WebTarget instanceResource) {
+    private static TDefinitions getDefinitions(WebTarget instanceResource) {
         Response response = instanceResource.request(MediaType.APPLICATION_XML).get();
         if (response.getStatusInfo().equals(Response.Status.OK)) {
             // also handles 404
-            return response.readEntity(Definitions.class);
+            return response.readEntity(TDefinitions.class);
         }
         return null;
     }
@@ -357,10 +356,10 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
     }
 
     @Override
-    public Definitions getDefinitions(DefinitionsChildId id) {
+    public TDefinitions getDefinitions(DefinitionsChildId id) {
         for (WebTarget wr : this.repositoryResources) {
             String path = Util.getUrlPath(id);
-            Definitions definitions = WineryRepositoryClient.getDefinitions(wr.path(path));
+            TDefinitions definitions = WineryRepositoryClient.getDefinitions(wr.path(path));
             if (definitions == null) {
                 // in case of an error, just try the next one
                 continue;
@@ -371,7 +370,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
                 return definitions;
             }
         }
-        return new Definitions();
+        return new TDefinitions();
     }
 
     @Override

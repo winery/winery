@@ -22,26 +22,27 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TDefinitions;
 
+// FIXME this implementation is specific to the XML-1.0 standard and therefore should not be dealing with the canonical model
 public class XmlReader {
 
     private Unmarshaller unmarshaller;
 
     public XmlReader() {
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(Definitions.class);
+            JAXBContext jaxbContext = JAXBContext.newInstance(TDefinitions.class);
             unmarshaller = jaxbContext.createUnmarshaller();
         } catch (JAXBException e) {
             e.printStackTrace();
         }
     }
 
-    public Definitions parse(InputStream inputStream) throws JAXBException {
-        return (Definitions) unmarshaller.unmarshal(inputStream);
+    public TDefinitions parse(InputStream inputStream) throws JAXBException {
+        return (TDefinitions) unmarshaller.unmarshal(inputStream);
     }
 
-    public Definitions parse(Path fileName) throws JAXBException {
+    public TDefinitions parse(Path fileName) throws JAXBException {
         File file = fileName.toFile();
         try {
             return parse(new FileInputStream(file));
@@ -51,7 +52,7 @@ public class XmlReader {
         return null;
     }
 
-    public Definitions parse(Path path, Path name) throws Exception {
+    public TDefinitions parse(Path path, Path name) throws Exception {
         return parse(path.resolve(name));
     }
 }

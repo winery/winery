@@ -35,8 +35,8 @@ import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TArtifact;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TArtifacts;
 import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -72,7 +72,7 @@ public class YamlToscaExportUtil extends ToscaExportUtil {
             throw new RepositoryCorruptException(error);
         }
 
-        Definitions entryDefinitions = repository.getDefinitions(tcId);
+        TDefinitions entryDefinitions = repository.getDefinitions(tcId);
         this.getPrepareForExport(repository, tcId, entryDefinitions);
 
         Collection<DefinitionsChildId> referencedDefinitionsChildIds = repository.getReferencedDefinitionsChildIds(tcId);
@@ -113,7 +113,7 @@ public class YamlToscaExportUtil extends ToscaExportUtil {
     /**
      * Prepares the given id for export. Mostly, the contained files are added to the CSAR.
      */
-    private void getPrepareForExport(IRepository repository, DefinitionsChildId id, Definitions entryDefinitions) throws IOException {
+    private void getPrepareForExport(IRepository repository, DefinitionsChildId id, TDefinitions entryDefinitions) throws IOException {
         if (id instanceof ServiceTemplateId) {
             this.prepareServiceTemplateForExport(repository, (ServiceTemplateId) id, entryDefinitions);
         } else if (id instanceof RelationshipTypeId) {
@@ -125,7 +125,7 @@ public class YamlToscaExportUtil extends ToscaExportUtil {
         }
     }
 
-    private void prepareRelationshipTypeForExport(IRepository repository, RelationshipTypeId id, Definitions entryDefinitions) throws IOException {
+    private void prepareRelationshipTypeForExport(IRepository repository, RelationshipTypeId id, TDefinitions entryDefinitions) throws IOException {
         TRelationshipType node = repository.getElement(id);
 
         // convert locations of files in dependencies
@@ -175,7 +175,7 @@ public class YamlToscaExportUtil extends ToscaExportUtil {
             });
     }
 
-    private void prepareNodeTypeForExport(IRepository repository, NodeTypeId id, Definitions entryDefinitions) {
+    private void prepareNodeTypeForExport(IRepository repository, NodeTypeId id, TDefinitions entryDefinitions) {
         //refMap.put(new CsarContentProperties(BackendUtils.getPathInsideRepo(licenseRef)), new RepositoryRefBasedCsarEntry(licenseRef));
         String nodeTypePath = BackendUtils.getPathInsideRepo(id);
         TNodeType node = repository.getElement(id);
@@ -205,7 +205,7 @@ public class YamlToscaExportUtil extends ToscaExportUtil {
         }
     }
 
-    private void updatePathsInNodeArtifacts(Definitions entryDefinitions, TNodeType node, TArtifact artifact, String pathInsideRepo) {
+    private void updatePathsInNodeArtifacts(TDefinitions entryDefinitions, TNodeType node, TArtifact artifact, String pathInsideRepo) {
         // update file paths in "artifacts" the exported service template
         entryDefinitions.getNodeTypes()
             .stream()
@@ -251,7 +251,7 @@ public class YamlToscaExportUtil extends ToscaExportUtil {
     /**
      * Prepares artifacts in Service Template
      */
-    private void prepareServiceTemplateForExport(IRepository repository, ServiceTemplateId id, Definitions entryDefinitions) throws IOException {
+    private void prepareServiceTemplateForExport(IRepository repository, ServiceTemplateId id, TDefinitions entryDefinitions) throws IOException {
         BackendUtils.synchronizeReferences(id, repository);
         TServiceTemplate st = repository.getElement(id);
         String serviceTemplatePath = BackendUtils.getPathInsideRepo(id);
@@ -290,7 +290,7 @@ public class YamlToscaExportUtil extends ToscaExportUtil {
         }
     }
 
-    private void updatePathsInTopologyTemplateArtifacts(Definitions entryDefinitions, TNodeTemplate nodeTemplate, TArtifact artifact, String pathInsideRepo){
+    private void updatePathsInTopologyTemplateArtifacts(TDefinitions entryDefinitions, TNodeTemplate nodeTemplate, TArtifact artifact, String pathInsideRepo){
         entryDefinitions.getServiceTemplates()
             .stream().filter(Objects::nonNull)
             .findFirst()

@@ -28,7 +28,7 @@ import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.version.ToscaDiff;
 import org.eclipse.winery.common.version.VersionState;
 import org.eclipse.winery.common.version.WineryVersion;
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 
@@ -50,7 +50,7 @@ public class BackendUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         PolicyTemplateId policyTemplateId = new PolicyTemplateId("http://www.example.org", "policytemplate", false);
 
         // create prepared policy template
-        final Definitions definitions = BackendUtils.createWrapperDefinitionsAndInitialEmptyElement(repository, policyTemplateId);
+        final TDefinitions definitions = BackendUtils.createWrapperDefinitionsAndInitialEmptyElement(repository, policyTemplateId);
         final TPolicyTemplate policyTemplate = (TPolicyTemplate) definitions.getElement();
         QName policyTypeQName = new QName("http://plain.winery.opentosca.org/policytypes", "PolicyTypeWithTwoKvProperties");
         policyTemplate.setType(policyTypeQName);
@@ -73,7 +73,7 @@ public class BackendUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         PolicyTemplateId policyTemplateId = new PolicyTemplateId("http://www.example.org", "policytemplate", false);
 
         // create prepared policy template
-        final Definitions definitions = BackendUtils.createWrapperDefinitionsAndInitialEmptyElement(repository, policyTemplateId);
+        final TDefinitions definitions = BackendUtils.createWrapperDefinitionsAndInitialEmptyElement(repository, policyTemplateId);
         final TPolicyTemplate policyTemplate = (TPolicyTemplate) definitions.getElement();
         QName policyTypeQName = new QName("http://plain.winery.opentosca.org/policytypes", "PolicyTypeWithXmlElementProperty");
         policyTemplate.setType(policyTypeQName);

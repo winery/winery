@@ -29,6 +29,13 @@ import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFile;
+import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileParser;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.tosca.TDefinitions;
+import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.converter.writer.YamlWriter;
 import org.eclipse.winery.repository.export.CsarContentProperties;
 import org.eclipse.winery.repository.export.CsarExporter;
 import org.eclipse.winery.repository.export.ExportedState;
@@ -40,6 +47,7 @@ import org.eclipse.winery.repository.export.entries.DocumentBasedCsarEntry;
 import org.eclipse.winery.repository.export.entries.RemoteRefBasedCsarEntry;
 import org.eclipse.winery.repository.export.entries.RepositoryRefBasedCsarEntry;
 import org.eclipse.winery.repository.export.entries.XMLDefinitionsBasedCsarEntry;
+import org.eclipse.winery.repository.yaml.converter.FromCanonical;
 import org.eclipse.winery.repository.yaml.export.entries.YAMLDefinitionsBasedCsarEntry;
 
 import org.apache.commons.io.IOUtils;
@@ -151,7 +159,7 @@ public class YamlExporter extends CsarExporter {
             LOGGER.error("Could not copy file content to ZIP outputstream", e);
         }
     }
-
+    
     private String addManifest(IRepository repository, DefinitionsChildId id, Map<CsarContentProperties, CsarEntry> refMap,
                                ZipOutputStream out, Map<String, Object> exportConfiguration) throws IOException {
         String entryDefinitionsReference = getDefinitionsPathInsideCSAR(repository, id);

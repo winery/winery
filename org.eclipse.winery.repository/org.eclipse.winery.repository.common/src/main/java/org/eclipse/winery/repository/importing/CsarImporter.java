@@ -72,7 +72,6 @@ import org.eclipse.winery.model.ids.elements.PlanId;
 import org.eclipse.winery.model.ids.elements.PlansId;
 import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFile;
 import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileParser;
-import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactReference.Exclude;
 import org.eclipse.winery.model.tosca.TArtifactReference.Include;
@@ -130,6 +129,10 @@ import static java.nio.file.FileVisitResult.SKIP_SUBTREE;
  * <p>
  * One instance for each import
  */
+// FIXME the Importer needs to become standard-aware. CSARs can be built to differing standards, which are mutually incompatible.
+//  As such the importing process needs to be aware of the standard to which an imported CSAR is built and, if necessary, convert the imported CSAR to the underlying storage.
+// FIXME consider using an XMLRepository and a YAMLRepository encapsulated in a MultiRepository to store Definitions of arbitrary standards.
+//  Conversions between the standards should be held to a minimum, since there are mutual incompatibilities
 public class CsarImporter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CsarImporter.class);
@@ -635,7 +638,7 @@ public class CsarImporter {
             }
 
             // Create a fresh definitions object without the other data.
-            final Definitions newDefs = BackendUtils.createWrapperDefinitions(wid, targetRepository);
+            final TDefinitions newDefs = BackendUtils.createWrapperDefinitions(wid, targetRepository);
 
             // copy over the inputs determined by this.importImports
             newDefs.getImport().addAll(imports);

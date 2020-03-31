@@ -34,12 +34,12 @@ import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.version.VersionSupport;
-import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.model.ids.IdUtil;
 import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.version.VersionUtils;
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.common.version.WineryVersion;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -231,7 +231,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
             .map(namespace -> {
                 List<LocalNameForAngular> names = groupedIds.get(namespace).stream()
                     .map(definition -> {
-                        Definitions fullDefinition = null;
+                        TDefinitions fullDefinition = null;
                         if (Objects.nonNull(full)) {
                             fullDefinition = RestUtils.getFullComponentData(definition);
                         }

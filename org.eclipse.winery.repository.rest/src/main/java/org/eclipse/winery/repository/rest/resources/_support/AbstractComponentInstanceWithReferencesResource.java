@@ -14,7 +14,7 @@
 package org.eclipse.winery.repository.rest.resources._support;
 
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TDefinitions;
 
 import javax.ws.rs.WebApplicationException;
 import java.io.IOException;
@@ -36,7 +36,7 @@ public abstract class AbstractComponentInstanceWithReferencesResource extends Ab
     }
 
     @Override
-    public Definitions getDefinitions() {
+    public TDefinitions getDefinitions() {
         try {
             this.synchronizeReferences();
         } catch (IOException e) {

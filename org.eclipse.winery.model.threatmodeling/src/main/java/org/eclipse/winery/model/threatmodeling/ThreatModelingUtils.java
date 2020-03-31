@@ -27,7 +27,7 @@ import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -216,7 +216,7 @@ public class ThreatModelingUtils {
         threatProps.setKVProperties(propMap);
         threat.setProperties(threatProps);
 
-        Definitions threatDefinitions = BackendUtils.createWrapperDefinitions(threatID, repository);
+        TDefinitions threatDefinitions = BackendUtils.createWrapperDefinitions(threatID, repository);
         threatDefinitions.setElement(threat);
 
         try {
@@ -243,7 +243,7 @@ public class ThreatModelingUtils {
         mitigationProps.setKVProperties(mitigationPropMap);
         mitigation.setProperties(mitigationProps);
 
-        Definitions mitigationDefinitions = BackendUtils.createWrapperDefinitions(threatID, repository);
+        TDefinitions mitigationDefinitions = BackendUtils.createWrapperDefinitions(threatID, repository);
         mitigationDefinitions.setElement(mitigation);
 
         try {
@@ -303,7 +303,7 @@ public class ThreatModelingUtils {
         ModelUtilities.replaceWinerysPropertiesDefinition(threat, threatProps);
 
         PolicyTypeId threatID = BackendUtils.getDefinitionsChildId(PolicyTypeId.class, ThreatModelingConstants.THREATMODELING_NAMESPACE, ThreatModelingConstants.THREAT_POLICY_NAME, false);
-        Definitions threatDefinitions = BackendUtils.createWrapperDefinitions(threatID, repository);
+        TDefinitions threatDefinitions = BackendUtils.createWrapperDefinitions(threatID, repository);
 
         threatDefinitions.setElement(threat);
 
@@ -329,7 +329,7 @@ public class ThreatModelingUtils {
         ModelUtilities.replaceWinerysPropertiesDefinition(mitigation, mitigationProps);
 
         PolicyTypeId mitigationID = BackendUtils.getDefinitionsChildId(PolicyTypeId.class, ThreatModelingConstants.THREATMODELING_NAMESPACE, ThreatModelingConstants.MITIGATION_POLICY_NAME, false);
-        Definitions mitigationDefinitions = BackendUtils.createWrapperDefinitions(mitigationID, repository);
+        TDefinitions mitigationDefinitions = BackendUtils.createWrapperDefinitions(mitigationID, repository);
 
         mitigationDefinitions.setElement(mitigation);
 
@@ -339,7 +339,7 @@ public class ThreatModelingUtils {
             .build();
 
         NodeTypeId svnfID = new NodeTypeId(QName.valueOf(ThreatModelingConstants.SVNF_NODE_TYPE));
-        Definitions svnfDefinitions = BackendUtils.createWrapperDefinitions(svnfID, repository);
+        TDefinitions svnfDefinitions = BackendUtils.createWrapperDefinitions(svnfID, repository);
         svnfDefinitions.setElement(svnf);
 
         try {

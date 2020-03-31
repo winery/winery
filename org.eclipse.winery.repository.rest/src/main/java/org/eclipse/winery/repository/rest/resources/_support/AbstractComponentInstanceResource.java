@@ -57,7 +57,7 @@ import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.version.ToscaDiff;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.model.tosca.OTComplianceRule;
 import org.eclipse.winery.model.tosca.TEntityType;
@@ -123,7 +123,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     private final RepositoryFileReference ref;
 
     // the object representing the data of this resource
-    private Definitions definitions = null;
+    private TDefinitions definitions = null;
 
     /**
      * Instantiates the resource. Assumes that the resource should exist (assured by the caller)
@@ -466,7 +466,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     /**
      * @return the reference to the internal Definitions object
      */
-    public Definitions getDefinitions() {
+    public TDefinitions getDefinitions() {
         return this.definitions;
     }
 
@@ -478,7 +478,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     @Consumes( {MimeTypes.MIMETYPE_TOSCA_DEFINITIONS, MediaType.APPLICATION_XML, MediaType.TEXT_XML})
     public Response updateDefinitions(InputStream requestBodyStream) {
         Unmarshaller u;
-        Definitions defs;
+        TDefinitions defs;
         Document doc;
         final StringBuilder sb = new StringBuilder();
         try {
@@ -492,7 +492,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         }
         try {
             u = JAXBSupport.createUnmarshaller();
-            defs = (Definitions) u.unmarshal(doc);
+            defs = (TDefinitions) u.unmarshal(doc);
         } catch (JAXBException e) {
             AbstractComponentInstanceResource.LOGGER.debug("Could not unmarshal from request body stream", e);
             return RestUtils.getResponseForException(e);
