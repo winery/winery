@@ -47,6 +47,7 @@ import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.filebased.AbstractFileBasedRepository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.backend.filebased.JsonBasedEdmmManager;
+import org.eclipse.winery.repository.backend.filebased.NamespaceProperties;
 import org.eclipse.winery.repository.backend.filebased.RepositoryProperties;
 import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.model.ids.GenericId;
