@@ -43,7 +43,7 @@ export class ToscaComponent {
                 this.xmlCsarPath = this.backendPath + '/?csar';
                 this.provenanceCsarPath = this.xmlCsarPath + '&addToProvenance';
                 this.yamlCsarPath = this.backendPath + '/?yaml&csar';
-                this.edmmExportPath = this.backendPath + '/?edmm';
+                this.edmmExportPath = this.backendPath + '/?edmm&edmmUseAbsolutePaths';
             }
         }
         if (this.localName) {

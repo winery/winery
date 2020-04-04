@@ -36,13 +36,11 @@ import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.version.VersionUtils;
-import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.datatypes.ComponentId;
 import org.eclipse.winery.repository.rest.datatypes.LocalNameForAngular;
 import org.eclipse.winery.repository.rest.datatypes.NamespaceAndDefinedLocalNamesForAngular;
 
@@ -197,8 +195,8 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
      * "name" field is used there at the UI
      *
      * @param grouped if given, the JSON output is grouped by namespace
-     * @return A list of all ids of all instances of this component type. Format: <code>[({"namespace":
-     * "[namespace]", "id": "[id]"},)* ]</code>.
+     * @return A list of all ids of all instances of this component type. Format: <code>[({"namespace": "[namespace]",
+     * "id": "[id]"},)* ]</code>.
      * <p>
      * If grouped is set, the list will be grouped by namespace.
      * <code>[{"id": "[namsepace encoded]", "test": "[namespace decoded]", "children":[{"id": "[qName]", "text":
@@ -211,16 +209,13 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
         @QueryParam("includeVersions") String includeVersions,
         @QueryParam("full") @ApiParam("If set, the full information of the definition's child is returned. E.g., in the case of node types, the same result as a GET on {ns}/{id] is returned. Works only in the case of grouped.") String full) {
         Class<? extends DefinitionsChildId> idClass = RestUtils.getComponentIdClassForComponentContainer(this.getClass());
-        boolean supportsNameAttribute = Util.instanceSupportsNameAttribute(idClass);
         final IRepository repository = RepositoryFactory.getRepository();
-        SortedSet<? extends DefinitionsChildId> allDefinitionsChildIds = null;
-
-        allDefinitionsChildIds = repository.getAllDefinitionsChildIds(idClass);
+        SortedSet<? extends DefinitionsChildId> allDefinitionsChildIds = repository.getAllDefinitionsChildIds(idClass);
 
         if (Objects.nonNull(grouped)) {
             return getGroupedListOfIds(allDefinitionsChildIds, full, includeVersions);
         } else {
-            return getListOfIds(allDefinitionsChildIds, supportsNameAttribute, full, includeVersions);
+            return RestUtils.getListOfIds(allDefinitionsChildIds, Objects.nonNull(full), Objects.nonNull(includeVersions));
         }
     }
 
@@ -233,7 +228,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
                     .map(definition -> {
                         Definitions fullDefinition = null;
                         if (Objects.nonNull(full)) {
-                            fullDefinition = getFullComponentData(definition);
+                            fullDefinition = RestUtils.getFullComponentData(definition);
                         }
 
                         String qName = definition.getQName().toString();
@@ -252,37 +247,5 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
                 return new NamespaceAndDefinedLocalNamesForAngular(namespace, names);
             })
             .collect(Collectors.toList());
-    }
-
-    private List<ComponentId> getListOfIds(SortedSet<? extends DefinitionsChildId> allDefinitionsChildIds, boolean supportsNameAttribute, String full, String includeVersions) {
-        return allDefinitionsChildIds.stream()
-            .sorted()
-            .map(id -> {
-                String name = id.getXmlId().getDecoded();
-                Definitions definitions = null;
-                WineryVersion version = null;
-                if (supportsNameAttribute) {
-                    AbstractComponentInstanceResource componentInstanceResource = AbstractComponentsResource.getComponentInstanceResource(id);
-                    name = ((IHasName) componentInstanceResource).getName();
-                }
-                if (Objects.nonNull(full)) {
-                    definitions = getFullComponentData(id);
-                }
-                if (Objects.nonNull(includeVersions)) {
-                    version = VersionUtils.getVersion(id.getXmlId().getDecoded());
-                }
-                return new ComponentId(id.getXmlId().getDecoded(), name, id.getNamespace().getDecoded(), id.getQName(), definitions, version);
-            })
-            .collect(Collectors.toList());
-    }
-
-    private Definitions getFullComponentData(DefinitionsChildId id) {
-        try {
-            return BackendUtils.getDefinitionsHavingCorrectImports(RepositoryFactory.getRepository(), id);
-        } catch (Exception e) {
-            AbstractComponentsResource.LOGGER.error(e.getMessage(), e);
-        }
-
-        return null;
     }
 }

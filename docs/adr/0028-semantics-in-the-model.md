@@ -1,4 +1,4 @@
-# Sematntics in the Model
+# Semantics in the Model
 
 * Status: [accepted ] <!-- optional -->
 * Deciders: Karoline Saatkamp, Lukas Harznetter, <!-- optional -->

@@ -94,6 +94,7 @@ import org.eclipse.winery.repository.backend.xsd.NamespaceAndDefinedLocalNames;
 import org.eclipse.winery.repository.export.CsarExportOptions;
 import org.eclipse.winery.repository.export.CsarExporter;
 import org.eclipse.winery.repository.export.ToscaExportUtil;
+import org.eclipse.winery.repository.rest.datatypes.ComponentId;
 import org.eclipse.winery.repository.rest.datatypes.LocalNameForAngular;
 import org.eclipse.winery.repository.rest.datatypes.NamespaceAndDefinedLocalNamesForAngular;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
@@ -287,15 +288,14 @@ public class RestUtils {
                 throw new WebApplicationException(e);
             }
         };
-        StringBuilder sb = new StringBuilder();
-        sb.append("attachment;filename=\"");
-        sb.append(resource.getXmlId().getEncoded());
-        sb.append(Constants.SUFFIX_CSAR);
-        sb.append("\"");
-        return Response.ok().header("Content-Disposition", sb.toString()).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
+        String sb = "attachment;filename=\"" +
+            resource.getXmlId().getEncoded() +
+            Constants.SUFFIX_CSAR +
+            "\"";
+        return Response.ok().header("Content-Disposition", sb).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
     }
 
-    public static Response getEdmmModel(TServiceTemplate element) {
+    public static Response getEdmmModel(TServiceTemplate element, boolean useAbsolutPaths) {
         IRepository repository = RepositoryFactory.getRepository();
 
         Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
@@ -314,7 +314,7 @@ public class RestUtils {
         }
 
         EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations,
-            artifactTemplates, typeMappings, oneToOneMappings);
+            artifactTemplates, typeMappings, oneToOneMappings, useAbsolutPaths);
         EntityGraph transform = edmmConverter.transform(element);
         StringWriter stringWriter = new StringWriter();
         transform.generateYamlOutput(stringWriter);
@@ -349,11 +349,10 @@ public class RestUtils {
                 throw new WebApplicationException(e);
             }
         };
-        StringBuilder sb = new StringBuilder();
-        sb.append("attachment;filename=\"");
-        sb.append(name);
-        sb.append("\"");
-        return Response.ok().header("Content-Disposition", sb.toString()).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
+        String sb = "attachment;filename=\"" +
+            name +
+            "\"";
+        return Response.ok().header("Content-Disposition", sb).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
     }
 
     /**
@@ -483,7 +482,7 @@ public class RestUtils {
     }
 
     public static Set<String> clean(Set<String> set) {
-        Set<String> newSet = new HashSet<String>();
+        Set<String> newSet = new HashSet<>();
 
         for (String setItem : set) {
             if (setItem != null && !setItem.trim().isEmpty() && !setItem.equals("null")) {
@@ -495,7 +494,7 @@ public class RestUtils {
     }
 
     public static Set<QName> cleanQNameSet(Set<QName> set) {
-        Set<QName> newSet = new HashSet<QName>();
+        Set<QName> newSet = new HashSet<>();
 
         for (QName setItem : set) {
             if (setItem != null && !setItem.getLocalPart().equals("null")) {
@@ -524,25 +523,27 @@ public class RestUtils {
             }
         }
 
-        oldSTModel.setId(newName);
-        oldSTModel.setName(newName + " generated from Artifact " + artifactName);
+        if (oldSTModel != null) {
+            oldSTModel.setId(newName);
+            oldSTModel.setName(newName + " generated from Artifact " + artifactName);
 
-        // remove xaaspackager tags
-        Collection<TTag> toRemove = new ArrayList<TTag>();
+            // remove xaaspackager tags
+            Collection<TTag> toRemove = new ArrayList<>();
 
-        for (TTag tag : oldSTModel.getTags().getTag()) {
-            switch (tag.getName()) {
-                case "xaasPackageNode":
-                case "xaasPackageArtifactType":
-                case "xaasPackageDeploymentArtifact":
-                    toRemove.add(tag);
-                    break;
-                default:
-                    break;
+            for (TTag tag : oldSTModel.getTags().getTag()) {
+                switch (tag.getName()) {
+                    case "xaasPackageNode":
+                    case "xaasPackageArtifactType":
+                    case "xaasPackageDeploymentArtifact":
+                        toRemove.add(tag);
+                        break;
+                    default:
+                        break;
+                }
             }
-        }
 
-        oldSTModel.getTags().getTag().removeAll(toRemove);
+            oldSTModel.getTags().getTag().removeAll(toRemove);
+        }
 
         JAXBContext context = JAXBContext.newInstance(Definitions.class);
         Marshaller m = context.createMarshaller();
@@ -1030,5 +1031,40 @@ public class RestUtils {
             .stream()
             .map(id -> adapter.marshal(id.getQName()))
             .collect(Collectors.toList());
+    }
+
+    public static List<ComponentId> getListOfIds(Set<? extends DefinitionsChildId> allDefinitionsChildIds,
+                                                 boolean includeFullDefinitions, boolean includeVersions) {
+        return allDefinitionsChildIds.stream()
+            .sorted()
+            .map(id -> {
+                String name = id.getXmlId().getDecoded();
+                Definitions definitions = null;
+                WineryVersion version = null;
+                if (Util.instanceSupportsNameAttribute(id.getClass())) {
+                    TExtensibleElements element = RepositoryFactory.getRepository().getElement(id);
+                    if (element instanceof IHasName) {
+                        name = ((IHasName) element).getName();
+                    }
+                }
+                if (includeFullDefinitions) {
+                    definitions = getFullComponentData(id);
+                }
+                if (includeVersions) {
+                    version = VersionUtils.getVersion(id.getXmlId().getDecoded());
+                }
+                return new ComponentId(id.getXmlId().getDecoded(), name, id.getNamespace().getDecoded(), id.getQName(), definitions, version);
+            })
+            .collect(Collectors.toList());
+    }
+
+    public static Definitions getFullComponentData(DefinitionsChildId id) {
+        try {
+            return BackendUtils.getDefinitionsHavingCorrectImports(RepositoryFactory.getRepository(), id);
+        } catch (Exception e) {
+            RestUtils.LOGGER.error(e.getMessage(), e);
+        }
+
+        return null;
     }
 }
