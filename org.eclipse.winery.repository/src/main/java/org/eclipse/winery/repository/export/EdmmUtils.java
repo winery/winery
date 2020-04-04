@@ -17,12 +17,14 @@ package org.eclipse.winery.repository.export;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.edmm.EdmmType;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.toscalight.ToscaLightChecker;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipType;
@@ -33,14 +35,7 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 public class EdmmUtils {
 
     public static Map<String, Object> checkToscaLightCompatibility(TServiceTemplate serviceTemplate) {
-        IRepository repository = RepositoryFactory.getRepository();
-
-        Map<QName, TRelationshipType> relationshipTypes = repository.getQNameToElementMapping(RelationshipTypeId.class);
-        Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
-        Map<QName, EdmmType> typeMap = repository.getEdmmManager().getTypeMap();
-        Map<QName, EdmmType> oneToOneMap = repository.getEdmmManager().getOneToOneMap();
-
-        ToscaLightChecker toscaLightChecker = new ToscaLightChecker(nodeTypes, relationshipTypes, typeMap, oneToOneMap);
+        ToscaLightChecker toscaLightChecker = getToscaLightChecker();
 
         boolean toscaLightCompliant = toscaLightChecker.isToscaLightCompliant(serviceTemplate);
         Map<QName, List<String>> errorList = toscaLightChecker.getErrorList();
@@ -51,5 +46,28 @@ public class EdmmUtils {
         map.put("errorList", errorList);
 
         return map;
+    }
+
+    public static ToscaLightChecker getToscaLightChecker() {
+        IRepository repository = RepositoryFactory.getRepository();
+
+        Map<QName, TRelationshipType> relationshipTypes = repository.getQNameToElementMapping(RelationshipTypeId.class);
+        Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
+        Map<QName, EdmmType> typeMap = repository.getEdmmManager().getTypeMap();
+        Map<QName, EdmmType> oneToOneMap = repository.getEdmmManager().getOneToOneMap();
+
+        return new ToscaLightChecker(nodeTypes, relationshipTypes, typeMap, oneToOneMap);
+    }
+
+    public static Map<QName, TServiceTemplate> getAllToscaLightCompliantModels() {
+        Map<QName, TServiceTemplate> serviceTemplates = RepositoryFactory.getRepository()
+            .getQNameToElementMapping(ServiceTemplateId.class);
+
+        ToscaLightChecker toscaLightChecker = EdmmUtils.getToscaLightChecker();
+
+        return serviceTemplates.entrySet()
+            .stream()
+            .filter(entry -> toscaLightChecker.isToscaLightCompliant(entry.getValue()))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }

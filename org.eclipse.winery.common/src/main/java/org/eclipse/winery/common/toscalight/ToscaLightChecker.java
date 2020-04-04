@@ -81,6 +81,7 @@ public class ToscaLightChecker {
         QName serviceTemplateQName = new QName(serviceTemplate.getTargetNamespace(), serviceTemplate.getName());
         this.errorList = new HashMap<>();
         this.errorList.put(serviceTemplateQName, new ArrayList<>());
+        this.foundError = false;
 
         // Tags -> metadata
 
