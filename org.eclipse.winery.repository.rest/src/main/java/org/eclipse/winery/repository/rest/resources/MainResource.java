@@ -284,7 +284,6 @@ public class MainResource {
     public List<ComponentId> getToscaLightModels() {
         return EdmmUtils.getAllToscaLightCompliantModels().entrySet()
             .stream()
-            .sorted()
             .map(entry -> {
                 QName qName = entry.getKey();
                 TServiceTemplate serviceTemplate = entry.getValue();
