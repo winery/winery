@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -48,6 +48,11 @@ import { ProblemDetectionComponent } from './problemDetection/problemDetection.c
 import { PropertiesModule } from './properties/properties.module';
 import { StatefulAnnotationsService } from './services/statefulAnnotations.service';
 import { WineryModalModule } from '../../../tosca-management/src/app/wineryModalModule/winery.modal.module';
+import { EnricherComponent } from './enricher/enricher.component';
+import { WineryFeatureToggleModule } from '../../../tosca-management/src/app/wineryFeatureToggleModule/winery-feature-toggle.module';
+import { PlaceComponentsService } from './services/placement.service';
+import { ReqCapRelationshipService } from './services/req-cap-relationship.service';
+import { EdmmTransformationCheckComponent } from './edmmTransformationCheck/edmmTransformationCheck.component';
 
 @NgModule({
     declarations: [
@@ -56,7 +61,9 @@ import { WineryModalModule } from '../../../tosca-management/src/app/wineryModal
         SidebarComponent,
         PrintViewComponent,
         RefinementSidebarComponent,
-        ProblemDetectionComponent
+        ProblemDetectionComponent,
+        EnricherComponent,
+        EdmmTransformationCheckComponent,
     ],
     exports: [WineryComponent],
     imports: [
@@ -82,7 +89,8 @@ import { WineryModalModule } from '../../../tosca-management/src/app/wineryModal
         WineryModalModule,
         TypeaheadModule.forRoot(),
         PopoverModule.forRoot(),
-        PropertiesModule
+        PropertiesModule,
+        WineryFeatureToggleModule
     ],
     providers: [
         // { provide: ToastOptions, useClass: WineryCustomOption },
@@ -99,6 +107,8 @@ import { WineryModalModule } from '../../../tosca-management/src/app/wineryModal
         SplitMatchTopologyService,
         ErrorHandlerService,
         StatefulAnnotationsService,
+        PlaceComponentsService,
+        ReqCapRelationshipService
     ],
     bootstrap: [WineryComponent]
 })

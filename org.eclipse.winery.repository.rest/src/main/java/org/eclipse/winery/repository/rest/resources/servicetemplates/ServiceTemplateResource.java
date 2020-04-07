@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,13 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-
 package org.eclipse.winery.repository.rest.resources.servicetemplates;
 
 import java.io.IOException;
 import java.net.URI;
-import java.time.Instant;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +42,8 @@ import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.compliance.checking.ServiceTemplateCheckingResult;
 import org.eclipse.winery.compliance.checking.ServiceTemplateComplianceRuleRuleChecker;
 import org.eclipse.winery.model.adaptation.substitution.Substitution;
+import org.eclipse.winery.model.threatmodeling.ThreatAssessment;
+import org.eclipse.winery.model.threatmodeling.ThreatModeling;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TPlans;
@@ -52,6 +54,7 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.driverspecificationandinjection.DASpecification;
 import org.eclipse.winery.repository.driverspecificationandinjection.DriverInjection;
+import org.eclipse.winery.repository.export.EdmmUtils;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceContainingATopology;
 import org.eclipse.winery.repository.rest.resources._support.IHasName;
@@ -322,9 +325,16 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     @Path("createnewstatefulversion")
     @Produces( {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response createNewStatefulVersion() {
+        LOGGER.debug("Creating new stateful version of Service Template {}...", this.getId());
         ServiceTemplateId id = (ServiceTemplateId) this.getId();
         WineryVersion version = VersionUtils.getVersion(id);
-        WineryVersion newVersion = new WineryVersion("stateful-" + version.toString() + "-" + Instant.now().toString(), 1, 0);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss");
+        WineryVersion newVersion = new WineryVersion(
+            "stateful-" + version.toString() + "-" + dateFormat.format(new Date()),
+            1,
+            0
+        );
 
         ServiceTemplateId newId = new ServiceTemplateId(id.getNamespace().getDecoded(),
             VersionUtils.getNameWithoutVersion(id) + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + newVersion.toString(),
@@ -336,7 +346,17 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
             response.setMessage(new QNameApiData(newId));
         }
 
+        LOGGER.debug("Created Service Template {}", newId.getQName());
+
         return response.getResponse();
+    }
+
+    @Path("threatmodeling")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public ThreatAssessment threatModeling() {
+        ThreatModeling threatModeling = new ThreatModeling((ServiceTemplateId) this.id);
+        return threatModeling.getServiceTemplateThreats();
     }
 
     @Override
@@ -347,5 +367,12 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     @Override
     public void synchronizeReferences() throws IOException {
         BackendUtils.synchronizeReferences((ServiceTemplateId) this.id);
+    }
+
+    @Path("toscalight")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public Map<String, Object> getToscaLightCompatibility() {
+        return EdmmUtils.checkToscaLightCompatibility(this.getServiceTemplate());
     }
 }

@@ -261,6 +261,11 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
 
         @ADR(12)
         public void setKVProperties(Map<String, String> properties) {
+            setKVProperties(Namespaces.EXAMPLE_NAMESPACE_URI, "Properties", properties);
+        }
+
+        @ADR(12)
+        public void setKVProperties(String namespace, String elementName, Map<String, String> properties) {
             Objects.requireNonNull(properties);
             Element el = (Element) any;
 
@@ -276,12 +281,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
                 }
                 Document doc = db.newDocument();
 
-                // We cannot access the wrapper definitions, because we don't have access to the type
-                // Element root = doc.createElementNS(wpd.getNamespace(), wpd.getElementName());
-                LOGGER.warn("Creating XML properties element with incorrect wrapper element. The resulting XML needs to be patched. This is currently not implemented.");
-                // Therefore, we create a dummy wrapper element:
-
-                Element root = doc.createElementNS(Namespaces.EXAMPLE_NAMESPACE_URI, "Properties");
+                Element root = doc.createElementNS(namespace, elementName);
                 doc.appendChild(root);
 
                 // No wpd - so this is not possible:
@@ -289,8 +289,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
                 // for (PropertyDefinitionKV prop : wpd.getPropertyDefinitionKVList()) {
 
                 for (String key : properties.keySet()) {
-                    // wpd.getNamespace()
-                    Element element = doc.createElementNS(Namespaces.EXAMPLE_NAMESPACE_URI, key);
+                    Element element = doc.createElementNS(namespace, key);
                     root.appendChild(element);
                     String value = properties.get(key);
                     if (value != null) {
@@ -301,6 +300,8 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
 
                 this.setAny(doc.getDocumentElement());
             } else {
+                //TODO: this implementation does not support adding a new property. However, I don't understand it yet so we need to fix it in future.
+
                 // straight-forward copy over to existing property structure
                 NodeList childNodes = el.getChildNodes();
 
@@ -352,9 +353,9 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         /**
          * Gets the value of the propertyConstraint property.
          * <p>
-         * <p> This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you
-         * make to the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE>
-         * method for the propertyConstraint property.
+         * <p> This accessor method returns a reference to the live list, not a snapshot. Therefore any modification
+         * you make to the returned list will be present inside the JAXB object. This is why there is not a
+         * <CODE>set</CODE> method for the propertyConstraint property.
          * <p>
          * <p> For example, to add a new item, do as follows:
          * <pre>

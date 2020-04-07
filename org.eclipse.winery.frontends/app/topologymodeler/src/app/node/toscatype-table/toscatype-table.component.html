@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2018 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -11,8 +11,7 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-
-<table *ngIf="toscaType==='deploymentArtifacts'" class="toscatype-table" border="1" style="">
+<table *ngIf="tableType === tableTypes.DeploymentArtifacts" class="toscatype-table" style="">
     <thead>
     <tr>
         <th>Name</th>
@@ -41,7 +40,7 @@
     </tbody>
 </table>
 
-<table *ngIf="toscaType==='policies'" class="toscatype-table" border="1">
+<table *ngIf="tableType === tableTypes.Policies" class="toscatype-table">
     <thead>
     <tr>
         <th>Name</th>
@@ -71,16 +70,30 @@
     </tbody>
 </table>
 
-<table *ngIf="toscaType==='Capabilities' || toscaType==='Requirements'" class="toscatype-table">
+<table *ngIf="tableType === tableTypes.Capabilities || tableType === tableTypes.Requirements"
+       class="toscatype-table">
     <thead>
     <tr>
+        <th *ngIf="tableType === tableTypes.Capabilities" width="25px"></th>
+        <th>Endpoint</th>
         <th>Id</th>
         <th>Name</th>
-        <th>Type</th>
+        <th *ngIf="tableType === tableTypes.Requirements"></th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let reqOrCap of currentToscaTypeData">
+        <td *ngIf="tableType === tableTypes.Capabilities" class="toscatype-table-td">
+            <button type="button" class="reqCap-button btn btn-sm btn-outline-secondary btn-block"
+                    style="font-size: x-small;" id="{{currentNodeData.nodeTemplate.id +'.'+ reqOrCap.id}}">
+                <i class="fa fa-dot-circle-o" aria-hidden="true"></i> {{""}}
+            </button>
+        </td>
+        <td class="toscatype-table-td"
+            [class.cell-with-comment]="isEllipsisActive(reqOrCapType)">
+            <div #reqOrCapType (click)="clickReqOrCapType(reqOrCap.type)">{{ reqOrCap.type | localname }}</div>
+            <span class="cell-comment">{{ reqOrCap.type | localname }}</span>
+        </td>
         <td class="toscatype-table-td"
             [class.cell-with-comment]="isEllipsisActive(reqOrCapName)">
             <div #reqOrCapName (click)="showExistingReqOrCapModal($event)">{{ reqOrCap.id }}</div>
@@ -91,10 +104,16 @@
             <div #reqOrCapRef (click)="clickReqOrCapRef(reqOrCap.name)">{{ reqOrCap.name }}</div>
             <span class="cell-comment">{{ reqOrCap.name }}</span>
         </td>
-        <td class="toscatype-table-td"
-            [class.cell-with-comment]="isEllipsisActive(reqOrCapType)">
-            <div #reqOrCapType (click)="clickReqOrCapType(reqOrCap.type)">{{ reqOrCap.type | localname }}</div>
-            <span class="cell-comment">{{ reqOrCap.type | localname }}</span>
+        <td *ngIf="tableType === tableTypes.Requirements" class="toscatype-table-td">
+            <div (mousedown)="passCurrentType($event);
+            reqCapRelationshipService.createSourceInfo(this.currentNodeData, reqOrCap);">
+                <div class="btn-group-vertical center-block" role="group" id={{dragSource}}>
+                    <button *ngFor="let rel of entityTypes.relationshipTypes"
+                            type="button" class="reqCap-button btn btn-sm btn-outline-secondary btn-block"
+                            style="font-size: xx-small;">{{rel.id}}
+                    </button>
+                </div>
+            </div>
         </td>
     </tr>
     </tbody>

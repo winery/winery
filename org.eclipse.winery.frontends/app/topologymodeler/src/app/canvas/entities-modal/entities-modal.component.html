@@ -44,11 +44,13 @@
                     </label>
                     <p *ngIf="modalVariantAndState.modalVariant === 'deployment_artifacts'"
                        class="help-block">If you want to add files to this deployment artifact you can do so via <a
-                        target="_blank" href="{{getHostUrl()+'#/artifacttemplates'}}">Winery's management UI</a>,
+                        target="_blank" href="{{backendService.configuration.uiURL + '/artifacttemplates'}}">Winery's
+                        management UI</a>,
                         after creating it.</p>
                     <p *ngIf="modalVariantAndState.modalVariant === 'policies'"
                        class="help-block">You can manage this policy template via <a
-                        target="_blank" href="{{getHostUrl()+'#/policytemplates'}}">Winery's management UI</a>,
+                        target="_blank" href="{{backendService.configuration.uiURL + '/policytemplates'}}">Winery's
+                        management UI</a>,
                         after creating it.</p>
                 </div>
                 <div class="radio" *ngIf="modalVariantForEditDeleteTasks === '(none)'">

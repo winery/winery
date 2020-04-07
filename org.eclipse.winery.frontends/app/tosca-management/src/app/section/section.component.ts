@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -28,9 +28,11 @@ import { Utils } from '../wineryUtils/utils';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ImportMetaInformation } from '../model/importMetaInformation';
 import { KeyValueItem } from '../model/keyValueItem';
-import { ConfigurationService } from '../instance/admin/accountability/configuration/configuration.service';
 import { AccountabilityService } from '../instance/admin/accountability/accountability.service';
 import { FileProvenanceElement } from '../model/provenance';
+import { WineryVersion } from '../model/wineryVersion';
+import { WineryRepositoryConfigurationService } from '../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { FeatureEnum } from '../wineryFeatureToggleModule/wineryRepository.feature.direct';
 
 const showAll = 'Show all Items';
 const showGrouped = 'Group by Namespace';
@@ -46,6 +48,8 @@ const showGrouped = 'Group by Namespace';
     ]
 })
 export class SectionComponent implements OnInit, OnDestroy {
+    readonly configEnum = FeatureEnum;
+
     loading = true;
     toscaType: ToscaTypes;
     toscaTypes = ToscaTypes;
@@ -86,7 +90,7 @@ export class SectionComponent implements OnInit, OnDestroy {
                 private router: Router,
                 private service: SectionService,
                 private notify: WineryNotificationService,
-                private accountabilityConfig: ConfigurationService,
+                private configurationService: WineryRepositoryConfigurationService,
                 protected accountability: AccountabilityService,
                 private modalService: BsModalService) {
     }
@@ -97,7 +101,7 @@ export class SectionComponent implements OnInit, OnDestroy {
      * Subscribe to the url on initialisation in order to get the corresponding resource type.
      */
     ngOnInit(): void {
-        this.isAccountabilityCheckEnabled = this.accountabilityConfig.isAccountablilityCheckEnabled();
+        this.isAccountabilityCheckEnabled = this.configurationService.configuration.features.accountability;
         this.loading = true;
         this.routeSub = this.route
             .data
@@ -212,6 +216,10 @@ export class SectionComponent implements OnInit, OnDestroy {
 
         resources.forEach(item => {
             const container = new SectionData();
+            item.version = new WineryVersion(item.version.componentVersion,
+                item.version.wineryVersion, item.version.workInProgressVersion, item.version.currentVersion,
+                item.version.latestVersion, item.version.releasable, item.version.editable);
+            item.name = Utils.getNameWithoutVersion(item.name);
             container.createContainerCopy(item);
 
             if (this.componentData.length === 0) {
@@ -305,7 +313,6 @@ export class SectionComponent implements OnInit, OnDestroy {
         const url = AccountabilityService.getDownloadURLForFile(fileAddress, fileName, provenanceId);
         window.open(url, '_blank');
     }
-
 
     openFileComparisonModal(modalTemplate: TemplateRef<any>, file: FileProvenanceElement) {
         this.selectedFile = file;

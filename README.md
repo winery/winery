@@ -14,7 +14,44 @@ Winery is also part of the OpenTOSCA ecosystem where more information is availab
 Both development and user documentation is rendered at <https://eclipse.github.io/winery/>.
 The source for the documentation can be found at [docs/](docs).
 
+## Running Winery
+
+### Running via Docker
+
+1. `docker build -t winery .`.
+   In case, there are issues, you can also try `docker build --no-cache -t winery .`
+2. `docker run -p 8080:8080 winery` to run Winery on <http://localhost:8080>
+
+You can also use the pre-built image and bin it to a local repository:
+
+    docker run -it -p 8080:8080 -v $(pwd):/var/opentosca/repository opentosca/winery
+
+### Running Winery CLI via Docker
+
+1. `docker build -t winery-cli -f Dockerfile.cli .`
+2. `docker run -v $(pwd):/root/winery-repository -it winery-cli` to check `${pwd}` for consistency.
+
+You can also use the pre-built image:
+
+- Linux: `docker run -it -v $(pwd):/root/winery-repository opentosca/winery-cli`
+- Windows: `docker run -it -v ${PWD}:/root/winery-repository opentosca/winery-cli`
+
+In case you want to have verbose information, you can execute following:
+
+- Linux: `docker run -it -v $(pwd):/root/winery-repository opentosca/winery-cli winery -v`
+- Windows: `docker run -it -v ${PWD}:/root/winery-repository opentosca/winery-cli winery -v`
+
+Currently supported CLI arguments:
+
+```
+usage: winery
+ -h,--help         prints this help
+ -p,--path <arg>   use given path as repository path
+ -v,--verbose      be verbose: Output the checked elements
+```
+
 ## Next steps
+
 Winery currently is far from being a production ready modeling tool.
 The next steps are:
 
@@ -46,7 +83,7 @@ Further development is also funded by the European Union’s Horizon 2020 projec
 
 ## License
 
-Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
+Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
 
 See the NOTICE file(s) distributed with this work for additional
 information regarding copyright ownership.

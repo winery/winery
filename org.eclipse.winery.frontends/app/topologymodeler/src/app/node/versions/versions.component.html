@@ -1,0 +1,114 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2019 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<ng-template #updateVersionModal>
+    <winery-modal-header [modalRef]="updateVersionModalRef" [title]="'Select new version'">
+
+    </winery-modal-header>
+    <winery-modal-body>
+        <div *ngFor="let wineryVersion of versions">
+            <input type="radio" name="wineryVersion" (click)="selectedVersion(wineryVersion)" id="{{ wineryVersion }}">
+            <label for="{{ wineryVersion }}">{{ wineryVersion.toReadableString() }}</label>
+            <br>
+        </div>
+        <br>
+
+    </winery-modal-body>
+    <winery-modal-footer [modalRef]="updateVersionModalRef" [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Continue'"
+                         [disableOkButton]="!chosenVersion"
+                         (onOk)="openProperty()">
+    </winery-modal-footer>
+</ng-template>
+<ng-template #updatePropertyModal>
+    <winery-modal-header [modalRef]="updatePropertyModalRef" [title]="'Map Properties'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <div *ngIf="readProperties().length > 0; else noPropMapping">
+            <p>Click continue when you finished mapping. Click save to finish updating the Node Template.</p>
+            <table>
+                <tr>
+                    <th class="propertiesMappingData">
+                        NEW
+                    </th>
+                    <th class="propertiesMappingData">
+                        REMOVED
+                    </th>
+                    <th class="propertiesMappingData">
+                        RESOLVED
+                    </th>
+                    <th class="propertiesMappingData" *ngIf="matchedProperties?.length > 0">
+                        MAPPED
+                    </th>
+                </tr>
+
+                <tr *ngFor="let iterations of readProperties(); index as i">
+                    <td class="propertiesMappingData">
+                        <div *ngIf="propertyDiff.newProperties[i] != null">
+                            <input type="radio" name="newProperties"
+                                   [checked]="chosenNewProperty === propertyDiff.newProperties[i]"
+                                   id="{{ 'new' +  i.toString() }}"
+                                   (click)="selectedNewProperty(propertyDiff.newProperties[i])">
+                            <label for="{{ 'new' +  i.toString() }}">
+                                {{ propertyDiff.newProperties[i] }}
+                            </label>
+                        </div>
+                    </td>
+                    <td class="propertiesMappingData">
+                        <div *ngIf="propertyDiff.removedProperties[i] != null">
+                            <input type="radio" name="removedProperties"
+                                   [checked]="chosenRemovedProperty === propertyDiff.removedProperties[i]"
+                                   id="{{ 'removed' +  i.toString() }}"
+                                   (click)="selectedRemovedProperty(propertyDiff.removedProperties[i])">
+                            <label for="{{ 'removed' +  i.toString() }}">
+                                {{ propertyDiff.removedProperties[i] }}
+                            </label>
+                        </div>
+                    </td>
+                    <td class="propertiesMappingData">
+                        <div *ngIf="propertyDiff.resolvedProperties[i] != null">
+                            <input type="checkbox" name="resolvedProperties" checked disabled
+                                   id="{{ 'resolved' +  i.toString() }}"
+                                   (click)="selectedNewProperty(propertyDiff.resolvedProperties[i])">
+                            <label for="{{ 'resolved' +  i.toString() }}">
+                                {{ propertyDiff.resolvedProperties[i] }}
+                            </label>
+                        </div>
+                    </td>
+                    <td *ngIf="matchedProperties">
+                        <div *ngIf="matchedProperties[i] != null">
+                            <code>{{ matchedProperties[i].oldKey }}</code>
+                            will be mapped to
+                            <code>{{ matchedProperties[i].newKey }}</code>.
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <button *ngIf="chosenNewProperty || chosenRemovedProperty" class="btn btn-default" (click)="resetChosen()">
+                Reset chosen Properties
+            </button>
+        </div>
+        <ng-template #noPropMapping>
+            <p>There are no properties to map!</p>
+        </ng-template>
+        <div style="margin-top: 10px">
+            <input type="checkbox" [(ngModel)]="saveAfterUpdate" id="saveAfterUpdate" name="saveAfterUpdate">
+            <label for="saveAfterUpdate">Save the topology after update.</label>
+        </div>
+    </winery-modal-body>
+    <winery-modal-footer [modalRef]="updatePropertyModalRef"
+                         [closeButtonLabel]="'Back'"
+                         [okButtonLabel]="continueOrMap" [disableOkButton]="disableMapButton()"
+                         (onOk)="triggerUpdateOrMatchProperties(this.nodeTemplateId)" (onCancel)="open()">
+    </winery-modal-footer>
+</ng-template>

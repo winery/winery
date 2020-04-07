@@ -23,6 +23,8 @@ export enum definitionType {
 }
 
 export enum urlElement {
+    PolicyTemplateURL = '/policytemplates/',
+    ArtifactTemplateURL = '/artifacttemplates/',
     NodeTypeURL = '/nodetypes/',
     RequirementTypeURL = '/requirementtypes/',
     CapabilityTypeURL = '/capabilitytypes/',
@@ -32,9 +34,11 @@ export enum urlElement {
     TopologyTemplate = '/topologytemplate/'
 }
 
-export enum toscaEntity {
+export enum TableType {
     Requirements = 'Requirements',
     Capabilities = 'Capabilities',
+    Policies = 'Policies',
+    DeploymentArtifacts = 'DeploymentArtifacts'
 }
 
 export enum toggleModalType {

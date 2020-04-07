@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,6 +15,7 @@ package org.eclipse.winery.repository.rest.resources.servicetemplates.plans;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -28,8 +29,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.elements.PlanId;
@@ -37,9 +40,7 @@ import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlan.PlanModelReference;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
-import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.collections.EntityCollectionResource;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
@@ -94,7 +95,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 
         Response response = this.saveFile(newPlan, null, null, null);
         if (response.getStatus() == 204) {
-            return Response.created(RestUtils.createURI(Util.URLencode(xmlId))).entity(newPlan).build();
+            return Response.created(URI.create(Util.URLencode(xmlId))).entity(newPlan).build();
         }
 
         return response;
@@ -183,7 +184,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
         LOGGER.info("Generating plans for Service Template...");
         // Only if plan builder endpoint is available
         String planBuilderBaseUrl =
-            Environment.getUrlConfiguration().getContainerApiUrl() + "/containerapi/planbuilder";
+            Environments.getInstance().getUiConfig().getEndpoints().get("container") + "/containerapi/planbuilder";
         if (RestUtils.isResourceAvailable(planBuilderBaseUrl)) {
             // Determine URIs
             String plansURI = uriInfo.getAbsolutePath().resolve("../plans").toString();

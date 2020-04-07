@@ -30,8 +30,15 @@
         {{ nodeTemplate.state }}
     </div>
 
-    <div *ngIf="policyIcons">
+    <div *ngIf="policyIcons" class="policyIconsAnnotation">
         <img *ngFor="let policyIcon of policyIcons" [src]="policyIcon" class="policyAnnotation">
+    </div>
+
+    <div *ngIf="newerVersions?.length !== 0">
+        <i *wineryRepositoryFeatureToggle="configEnum.updateTemplates"
+           class="fas fa-exclamation-triangle newVersionTriangle" (click)="openVersionModal()"></i>
+        <winery-versions #versionModal [aVersionElement]="newVersionElement" [nodeTemplateId]="nodeTemplate.id"
+                         [nodeType]="nodeTemplate.type"></winery-versions>
     </div>
 
     <div *ngIf="nodeClass !== 'pattern'; else showPattern"
@@ -57,7 +64,7 @@
         <div class="col-sm-3">
             <img *ngIf="!nodeTemplate.visuals?.imageUrl" src="http://via.placeholder.com/50x50"
                  style="border-radius: 10%; margin-top: 1px; width: 50px; height: auto">
-            <img *ngIf="nodeTemplate.visuals?.imageUrl" src="{{hostURL}}{{nodeTemplate.visuals?.imageUrl}}">
+            <img *ngIf="nodeTemplate.visuals?.imageUrl" src="{{nodeTemplate.visuals?.imageUrl}}">
         </div>
         <div id="specifierDiv" class="col-sm-8" style="padding-left: 0; padding-right: 0;">
             <table class="header-table" style="margin-left: 6px">
@@ -103,7 +110,7 @@
                 <img *ngIf="!nodeTemplate.visuals.imageUrl" class="patternImage" src="http://via.placeholder.com/50x50"
                      style="border-radius: 10%; width: 50px; height: auto">
                 <img *ngIf="nodeTemplate.visuals.imageUrl" class="patternImage"
-                     src="{{hostURL}}{{nodeTemplate.visuals.imageUrl}}">
+                     src="{{nodeTemplate.visuals.imageUrl}}">
             </div>
         </div>
     </ng-template>

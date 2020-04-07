@@ -62,6 +62,7 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.GenericId;
@@ -133,11 +134,11 @@ import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
 import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.GitInfo;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
@@ -554,11 +555,25 @@ public class BackendUtils {
         nodeTemplateClone.setCapabilities(nodeTemplate.getCapabilities());
         nodeTemplateClone.setProperties(nodeTemplate.getProperties());
         nodeTemplateClone.setPropertyConstraints(nodeTemplate.getPropertyConstraints());
-        nodeTemplateClone.setX(nodeTemplate.getX());
-        nodeTemplateClone.setY(nodeTemplate.getY());
+        if (Objects.nonNull(nodeTemplate.getX())) {
+            nodeTemplateClone.setX(nodeTemplate.getX());
+        }
+        if (Objects.nonNull(nodeTemplate.getY())) {
+            nodeTemplateClone.setY(nodeTemplate.getY());
+        }
 
         if (ModelUtilities.getTargetLabel(nodeTemplate).isPresent()) {
             ModelUtilities.setTargetLabel(nodeTemplateClone, ModelUtilities.getTargetLabel(nodeTemplate).get());
+        }
+
+        String region = nodeTemplate.getOtherAttributes().get(ModelUtilities.NODE_TEMPLATE_REGION);
+        if (Objects.nonNull(region)) {
+            nodeTemplateClone.getOtherAttributes().put(ModelUtilities.NODE_TEMPLATE_REGION, region);
+        }
+
+        String provider = nodeTemplate.getOtherAttributes().get(ModelUtilities.NODE_TEMPLATE_PROVIDER);
+        if (Objects.nonNull(provider)) {
+            nodeTemplateClone.getOtherAttributes().put(ModelUtilities.NODE_TEMPLATE_PROVIDER, provider);
         }
 
         return nodeTemplateClone;
@@ -578,6 +593,12 @@ public class BackendUtils {
         relationshipTemplateClone.setProperties(relationshipTemplate.getProperties());
         relationshipTemplateClone.setName(relationshipTemplate.getName());
         relationshipTemplateClone.setRelationshipConstraints(relationshipTemplate.getRelationshipConstraints());
+
+        String transferType =
+            relationshipTemplate.getOtherAttributes().get(ModelUtilities.RELATIONSHIP_TEMPLATE_TRANSFER_TYPE);
+        if (Objects.nonNull(transferType)) {
+            relationshipTemplateClone.getOtherAttributes().put(ModelUtilities.RELATIONSHIP_TEMPLATE_TRANSFER_TYPE, transferType);
+        }
 
         return relationshipTemplateClone;
     }
@@ -711,19 +732,18 @@ public class BackendUtils {
     public static void persist(Object o, RepositoryFileReference ref, MediaType mediaType) throws IOException {
         // We assume that the object is not too large
         // Otherwise, http://io-tools.googlecode.com/svn/www/easystream/apidocs/index.html should be used
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Marshaller m;
-        try {
-            m = JAXBSupport.createMarshaller(true);
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            Marshaller m = JAXBSupport.createMarshaller(true);
             m.marshal(o, out);
+            byte[] data = out.toByteArray();
+            try (ByteArrayInputStream in = new ByteArrayInputStream(data)) {
+                // this may throw an IOException. We propagate this exception.
+                RepositoryFactory.getRepository().putContentToFile(ref, in, mediaType);
+            }
         } catch (JAXBException e) {
             BackendUtils.LOGGER.error("Could not put content to file", e);
             throw new IllegalStateException(e);
         }
-        byte[] data = out.toByteArray();
-        ByteArrayInputStream in = new ByteArrayInputStream(data);
-        // this may throw an IOException. We propagate this exception.
-        RepositoryFactory.getRepository().putContentToFile(ref, in, mediaType);
     }
 
     /**
@@ -731,100 +751,97 @@ public class BackendUtils {
      */
     public static Optional<XSModel> getXSModel(final RepositoryFileReference ref) {
         Objects.requireNonNull(ref);
-        final InputStream is;
-        try {
-            is = RepositoryFactory.getRepository().newInputStream(ref);
+        try (final InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
+            // we rely on xerces to parse the XSD
+            // idea based on http://stackoverflow.com/a/5165177/873282
+            XSImplementation impl = new XSImplementationImpl();
+            XSLoader schemaLoader = impl.createXSLoader(null);
+
+            // minimal LSInput implementation sufficient for XSLoader in Oracle's JRE7
+            LSInput input = new LSInput() {
+
+                @Override
+                public void setSystemId(String systemId) {
+                }
+
+                @Override
+                public void setStringData(String stringData) {
+                }
+
+                @Override
+                public void setPublicId(String publicId) {
+                }
+
+                @Override
+                public void setEncoding(String encoding) {
+                }
+
+                @Override
+                public void setCharacterStream(Reader characterStream) {
+                }
+
+                @Override
+                public void setCertifiedText(boolean certifiedText) {
+                }
+
+                @Override
+                public void setByteStream(InputStream byteStream) {
+                }
+
+                @Override
+                public void setBaseURI(String baseURI) {
+                }
+
+                @Override
+                public String getSystemId() {
+                    return null;
+                }
+
+                @Override
+                public String getStringData() {
+                    return null;
+                }
+
+                @Override
+                public String getPublicId() {
+                    return BackendUtils.getPathInsideRepo(ref);
+                }
+
+                @Override
+                public String getEncoding() {
+                    return "UTF-8";
+                }
+
+                @Override
+                public Reader getCharacterStream() {
+                    try {
+                        return new InputStreamReader(is, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        System.out.println("exeption");
+                        throw new IllegalStateException("UTF-8 is unkown", e);
+                    }
+                }
+
+                @Override
+                public boolean getCertifiedText() {
+                    return false;
+                }
+
+                @Override
+                public InputStream getByteStream() {
+                    return null;
+                }
+
+                @Override
+                public String getBaseURI() {
+                    return null;
+                }
+            };
+            return Optional.ofNullable(schemaLoader.load(input));
         } catch (IOException e) {
             BackendUtils.LOGGER.debug("Could not create input stream", e);
             return Optional.empty();
         }
-
-        // we rely on xerces to parse the XSD
-        // idea based on http://stackoverflow.com/a/5165177/873282
-        XSImplementation impl = new XSImplementationImpl();
-        XSLoader schemaLoader = impl.createXSLoader(null);
-
-        // minimal LSInput implementation sufficient for XSLoader in Oracle's JRE7
-        LSInput input = new LSInput() {
-
-            @Override
-            public void setSystemId(String systemId) {
-            }
-
-            @Override
-            public void setStringData(String stringData) {
-            }
-
-            @Override
-            public void setPublicId(String publicId) {
-            }
-
-            @Override
-            public void setEncoding(String encoding) {
-            }
-
-            @Override
-            public void setCharacterStream(Reader characterStream) {
-            }
-
-            @Override
-            public void setCertifiedText(boolean certifiedText) {
-            }
-
-            @Override
-            public void setByteStream(InputStream byteStream) {
-            }
-
-            @Override
-            public void setBaseURI(String baseURI) {
-            }
-
-            @Override
-            public String getSystemId() {
-                return null;
-            }
-
-            @Override
-            public String getStringData() {
-                return null;
-            }
-
-            @Override
-            public String getPublicId() {
-                return BackendUtils.getPathInsideRepo(ref);
-            }
-
-            @Override
-            public String getEncoding() {
-                return "UTF-8";
-            }
-
-            @Override
-            public Reader getCharacterStream() {
-                try {
-                    return new InputStreamReader(is, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    System.out.println("exeption");
-                    throw new IllegalStateException("UTF-8 is unkown", e);
-                }
-            }
-
-            @Override
-            public boolean getCertifiedText() {
-                return false;
-            }
-
-            @Override
-            public InputStream getByteStream() {
-                return null;
-            }
-
-            @Override
-            public String getBaseURI() {
-                return null;
-            }
-        };
-        return Optional.ofNullable(schemaLoader.load(input));
     }
 
     /**
@@ -1285,7 +1302,7 @@ public class BackendUtils {
             TPlan plan = new TPlan();
             plan.setId(planId.getXmlId().getDecoded());
             plan.setName(planId.getXmlId().getDecoded());
-            plan.setPlanType(org.eclipse.winery.repository.Constants.TOSCA_PLANTYPE_BUILD_PLAN);
+            plan.setPlanType(Constants.TOSCA_PLANTYPE_BUILD_PLAN);
             plan.setPlanLanguage(Namespaces.URI_BPEL20_EXECUTABLE);
 
             // create a PlanModelReferenceElement pointing to that file
@@ -1419,11 +1436,12 @@ public class BackendUtils {
         ToscaExportUtil exporter = new ToscaExportUtil();
         // we include everything related
         Map<String, Object> conf = new HashMap<>();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        exporter.writeTOSCA(repository, id, conf, bos);
-        String xmlRepresentation = bos.toString(StandardCharsets.UTF_8.toString());
-        Unmarshaller u = JAXBSupport.createUnmarshaller();
-        return ((Definitions) u.unmarshal(new StringReader(xmlRepresentation)));
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+            exporter.writeTOSCA(repository, id, conf, bos);
+            String xmlRepresentation = bos.toString(StandardCharsets.UTF_8.toString());
+            Unmarshaller u = JAXBSupport.createUnmarshaller();
+            return ((Definitions) u.unmarshal(new StringReader(xmlRepresentation)));
+        }
     }
 
     public static void mergeTopologyTemplateAinTopologyTemplateB(ServiceTemplateId serviceTemplateIdA, ServiceTemplateId serviceTemplateIdB) throws IOException {
@@ -1454,9 +1472,25 @@ public class BackendUtils {
      * <code>topologyTemplateB</code>
      */
     public static Map<String, String> mergeTopologyTemplateAinTopologyTemplateB(TTopologyTemplate topologyTemplateA, TTopologyTemplate topologyTemplateB) {
+        return mergeTopologyTemplateAinTopologyTemplateB(topologyTemplateA, topologyTemplateB, null);
+    }
+
+    /**
+     * Merges two Topology Templates and returns the mapping between the topology elements from the original Topology
+     * Template and their respective clones inside the merged topology. Hereby, the staying elements must not be
+     * merged.
+     *
+     * @param topologyTemplateA the topology to merged into <code>topologyTemplateB</code>
+     * @param topologyTemplateB the target topology in which <dode>topologyTemplateA</dode> should be merged in
+     * @param stayingElements   the TEntityTemplates that must not be merged from A to B.
+     * @return A mapping between the ids in the <code>topologyTemplateA</code> and their corresponding ids in
+     * <code>topologyTemplateB</code>
+     */
+    public static Map<String, String> mergeTopologyTemplateAinTopologyTemplateB(TTopologyTemplate topologyTemplateA, TTopologyTemplate topologyTemplateB, List<TEntityTemplate> stayingElements) {
         Objects.requireNonNull(topologyTemplateA);
         Objects.requireNonNull(topologyTemplateB);
 
+        TTopologyTemplate topologyTemplateToBeMerged = new TTopologyTemplate();
         Map<String, String> idMapping = new HashMap<>();
 
         Optional<Integer> shiftLeft = topologyTemplateB.getNodeTemplateOrRelationshipTemplate().stream()
@@ -1465,17 +1499,33 @@ public class BackendUtils {
             .max(Comparator.comparingInt(n -> ModelUtilities.getLeft(n).orElse(0)))
             .map(n -> ModelUtilities.getLeft(n).orElse(0));
 
+        if (Objects.nonNull(stayingElements)) {
+            topologyTemplateA.getNodeTemplateOrRelationshipTemplate()
+                .forEach(entity -> {
+                    if (!stayingElements.contains(entity)) {
+                        if (entity instanceof TNodeTemplate) {
+                            topologyTemplateToBeMerged.addNodeTemplate((TNodeTemplate) entity);
+                        } else if (entity instanceof TRelationshipTemplate) {
+                            topologyTemplateToBeMerged.addRelationshipTemplate((TRelationshipTemplate) entity);
+                        }
+                    }
+                });
+        } else {
+            topologyTemplateToBeMerged.getNodeTemplateOrRelationshipTemplate()
+                .addAll(topologyTemplateA.getNodeTemplateOrRelationshipTemplate());
+        }
+
         if (shiftLeft.isPresent()) {
             ModelUtilities.collectIdsOfExistingTopologyElements(topologyTemplateB, idMapping);
 
             // patch ids of reqs change them if required
-            topologyTemplateA.getNodeTemplates().stream()
+            topologyTemplateToBeMerged.getNodeTemplates().stream()
                 .filter(nt -> nt.getRequirements() != null)
                 .forEach(nt -> nt.getRequirements().getRequirement().forEach(oldReq -> {
                     TRequirement req = SerializationUtils.clone(oldReq);
                     ModelUtilities.generateNewIdOfTemplate(req, idMapping);
 
-                    topologyTemplateA.getRelationshipTemplates().stream()
+                    topologyTemplateToBeMerged.getRelationshipTemplates().stream()
                         .filter(rt -> rt.getSourceElement().getRef() instanceof TRequirement)
                         .forEach(rt -> {
                             TRequirement sourceElement = (TRequirement) rt.getSourceElement().getRef();
@@ -1486,13 +1536,13 @@ public class BackendUtils {
                 }));
 
             // patch ids of caps change them if required
-            topologyTemplateA.getNodeTemplates().stream()
+            topologyTemplateToBeMerged.getNodeTemplates().stream()
                 .filter(nt -> nt.getCapabilities() != null)
                 .forEach(nt -> nt.getCapabilities().getCapability().forEach(oldCap -> {
                     TCapability cap = SerializationUtils.clone(oldCap);
                     ModelUtilities.generateNewIdOfTemplate(cap, idMapping);
 
-                    topologyTemplateA.getRelationshipTemplates().stream()
+                    topologyTemplateToBeMerged.getRelationshipTemplates().stream()
                         .filter(rt -> rt.getTargetElement().getRef() instanceof TCapability)
                         .forEach(rt -> {
                             TCapability targetElement = (TCapability) rt.getTargetElement().getRef();
@@ -1505,7 +1555,7 @@ public class BackendUtils {
             ArrayList<TRelationshipTemplate> newRelationships = new ArrayList<>();
 
             // patch the ids of templates and add them
-            topologyTemplateA.getNodeTemplateOrRelationshipTemplate()
+            topologyTemplateToBeMerged.getNodeTemplateOrRelationshipTemplate()
                 .forEach(element -> {
                     TEntityTemplate rtOrNt = SerializationUtils.clone(element);
                     ModelUtilities.generateNewIdOfTemplate(rtOrNt, idMapping);
@@ -1525,22 +1575,32 @@ public class BackendUtils {
                 RelationshipSourceOrTarget source = rel.getSourceElement().getRef();
                 RelationshipSourceOrTarget target = rel.getTargetElement().getRef();
 
-                if (source instanceof TNodeTemplate) {
+                if (source instanceof TNodeTemplate && (stayingElements == null
+                    || stayingElements.stream().noneMatch(element -> element.getId().equals(source.getId())))) {
                     TNodeTemplate newSource = topologyTemplateB.getNodeTemplate(idMapping.get(source.getId()));
                     rel.setSourceNodeTemplate(newSource);
                 }
 
-                if (target instanceof TNodeTemplate) {
+                if (target instanceof TNodeTemplate && (stayingElements == null
+                    || stayingElements.stream().noneMatch(element -> element.getId().equals(target.getId())))) {
                     TNodeTemplate newTarget = topologyTemplateB.getNodeTemplate(idMapping.get(target.getId()));
                     rel.setTargetNodeTemplate(newTarget);
                 }
             });
         } else {
             topologyTemplateB.getNodeTemplateOrRelationshipTemplate()
-                .addAll(topologyTemplateA.getNodeTemplateOrRelationshipTemplate());
+                .addAll(topologyTemplateToBeMerged.getNodeTemplateOrRelationshipTemplate());
         }
 
         return idMapping;
+    }
+
+    public static TTopologyTemplate updateVersionOfNodeTemplate(TTopologyTemplate topologyTemplate, String nodeTemplateId, String newComponentType) {
+        topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream()
+            .filter(template -> template.getId().equals(nodeTemplateId))
+            .findFirst()
+            .ifPresent(template -> template.setType(newComponentType));
+        return topologyTemplate;
     }
 
     /**
@@ -1605,9 +1665,15 @@ public class BackendUtils {
         versionList.get(0).setReleasable(true);
 
         if (current[0].isVersionedInWinery() && RepositoryFactory.getRepository() instanceof GitBasedRepository) {
-            GitBasedRepository gitRepo = (GitBasedRepository) RepositoryFactory.getRepository();
-            boolean changesInFile = gitRepo.hasChangesInFile(BackendUtils.getRefOfDefinitions(id));
-
+            boolean changesInFile = false;
+            for (FilebasedRepository repo : RepositoryFactory.repositoryList) {
+                if (repo.getClass().equals(GitBasedRepository.class)) {
+                    GitBasedRepository gitRepo = (GitBasedRepository) repo;
+                    if (gitRepo.hasChangesInFile(BackendUtils.getRefOfDefinitions(id))) {
+                        changesInFile = true;
+                    }
+                }
+            }
             if (!current[0].isLatestVersion()) {
                 // The current version may still be releasable, if it's the latest WIP version of a component version.
                 List<WineryVersion> collect = versionList.stream()

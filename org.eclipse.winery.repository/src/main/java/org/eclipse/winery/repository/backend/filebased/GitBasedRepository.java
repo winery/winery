@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,15 +21,17 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.configuration.GitBasedRepositoryConfiguration;
 
 import com.google.common.collect.Iterables;
 import com.google.common.eventbus.EventBus;
@@ -62,6 +64,8 @@ public class GitBasedRepository extends FilebasedRepository {
     private static final Object COMMIT_LOCK = new Object();
     private static final Logger LOGGER = LoggerFactory.getLogger(GitBasedRepository.class);
 
+    protected final Path workingRepositoryRoot;
+
     private final Git git;
     private final EventBus eventBus;
     private final GitBasedRepositoryConfiguration gitBasedRepositoryConfiguration;
@@ -75,22 +79,50 @@ public class GitBasedRepository extends FilebasedRepository {
     public GitBasedRepository(GitBasedRepositoryConfiguration gitBasedRepositoryConfiguration) throws IOException, NoWorkTreeException, GitAPIException {
         super(Objects.requireNonNull(gitBasedRepositoryConfiguration));
         this.gitBasedRepositoryConfiguration = gitBasedRepositoryConfiguration;
+
         FileRepositoryBuilder builder = new FileRepositoryBuilder();
         Repository gitRepo = builder.setWorkTree(this.repositoryRoot.toFile()).setMustExist(false).build();
 
+        String repoUrl = gitBasedRepositoryConfiguration.getRepositoryUrl();
+        String branch = gitBasedRepositoryConfiguration.getBranch();
+
         if (!Files.exists(this.repositoryRoot.resolve(".git"))) {
-            gitRepo.create();
+            if (repoUrl != null && !repoUrl.isEmpty()) {
+                this.git = cloneRepository(repoUrl, branch);
+            } else {
+                gitRepo.create();
+                this.git = new Git(gitRepo);
+            }
+        } else {
+            this.git = new Git(gitRepo);
         }
+
+        if (this.repositoryRoot.resolve(Constants.DEFAULT_LOCAL_REPO_NAME).toFile().exists()) {
+            if (!(this instanceof MultiRepository)) {
+                this.workingRepositoryRoot = this.repositoryRoot.resolve(Constants.DEFAULT_LOCAL_REPO_NAME);
+            } else {
+                this.workingRepositoryRoot = repositoryDep;
+            }
+        } else {
+            this.workingRepositoryRoot = repositoryDep;
+        }
+
+        this.eventBus = new EventBus();
 
         // explicitly enable longpaths to ensure proper handling of long pathss
         gitRepo.getConfig().setBoolean("core", null, "longpaths", true);
         gitRepo.getConfig().save();
 
-        this.eventBus = new EventBus();
-        this.git = new Git(gitRepo);
-
         if (gitBasedRepositoryConfiguration.isAutoCommit() && !this.git.status().call().isClean()) {
             this.addCommit("Files changed externally.");
+        }
+    }
+
+    Path generateWorkingRepositoryRoot() {
+        if (this.repositoryRoot.resolve(Constants.DEFAULT_LOCAL_REPO_NAME).toFile().exists()) {
+            return this.repositoryRoot.resolve(Constants.DEFAULT_LOCAL_REPO_NAME);
+        } else {
+            return repositoryDep;
         }
     }
 
@@ -261,5 +293,22 @@ public class GitBasedRepository extends FilebasedRepository {
             LOGGER.trace(e.getMessage(), e);
             return null;
         }
+    }
+
+    private Git cloneRepository(String repoUrl, String branch) throws GitAPIException {
+        return Git.cloneRepository()
+            .setURI(repoUrl)
+            .setDirectory(this.getRepositoryDep().toFile())
+            .setBranch(branch)
+            .call();
+    }
+
+    public String getRepositoryUrl() {
+        return this.gitBasedRepositoryConfiguration.getRepositoryUrl();
+    }
+
+    @Override
+    public Path getRepositoryRoot() {
+        return this.workingRepositoryRoot;
     }
 }

@@ -22,7 +22,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
 import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
 import { SelectModule } from 'ng2-select';
-import { PrmPropertyMappingsComponent } from './propertyMappings/prmPropertyMappings.component';
+import { StayMappingsComponent } from './stayMappings/stayMappings.component';
+import { AttributeMappingsComponent } from './attributeMappings/attributeMappings.component';
 
 @NgModule({
     imports: [
@@ -38,11 +39,13 @@ import { PrmPropertyMappingsComponent } from './propertyMappings/prmPropertyMapp
     ],
     exports: [
         RelationMappingsComponent,
-        PrmPropertyMappingsComponent
+        AttributeMappingsComponent,
+        StayMappingsComponent,
     ],
     declarations: [
         RelationMappingsComponent,
-        PrmPropertyMappingsComponent
+        AttributeMappingsComponent,
+        StayMappingsComponent,
     ]
 })
 export class RefinementModelsModule {

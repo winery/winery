@@ -1,5 +1,5 @@
 <!--
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -16,7 +16,7 @@
 
 <winery-topology-renderer *ngIf="loaded?.loadedData"
                           [readonly]="backendService.configuration.isReadonly"
-                          [entityTypes]="this.entityTypes"
+                          [entityTypes]="entityTypes"
                           [differencesData]="topologyDifferences"
                           [nodeTemplates]="nodeTemplates"
                           [relationshipTemplates]="relationshipTemplates"
@@ -27,7 +27,7 @@
 <div *ngIf="loaded?.generatedReduxState">
     <div *ngIf="!hideNavBarState">
         <winery-palette-component *ngIf="!topologyDifferences && !readonly"
-                                  style="width:200px;float:left;margin-top:50px"
+                                  style="width:300px;float:left;margin-top:50px;"
                                   [entityTypes]="this.entityTypes">
         </winery-palette-component>
     </div>
@@ -37,9 +37,15 @@
 
     <winery-problem-detection class="sidebar">
     </winery-problem-detection>
+    
+    <winery-enricher class="sidebar">
+    </winery-enricher>
 
     <winery-sidebar (sidebarDeleteButtonClicked)="sidebarDeleteButtonClicked($event)" class="sidebar">
     </winery-sidebar>
+    
+    <winery-edmm-transformation-check class="sidebar">
+    </winery-edmm-transformation-check>
 </div>
 <!--
 <app-sidebar style="width : 300px; float:right"></app-sidebar>

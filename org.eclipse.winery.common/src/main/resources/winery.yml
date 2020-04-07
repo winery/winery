@@ -1,0 +1,38 @@
+ui:
+  features:
+    accountability: true
+    completion: true
+    compliance: true
+    freezeAndDefrost: true
+    managementFeatureEnrichment: true
+    nfv: true
+    patternRefinement: true
+    problemDetection: true
+    splitting: true
+    testRefinement: true
+    placement: true
+    edmmModeling: false
+  endpoints:
+    container: http://localhost:1337
+    workflowmodeler: http://localhost:9527
+    topologymodeler: http://localhost:4201
+    repositoryApiUrl: http://localhost:8080/winery
+    repositoryUiUrl: http://localhost:4200/#
+    edmmTransformationTool: http://localhost:5000/plugins/check-model-support
+repository:
+  provider: file
+  repositoryRoot: ""
+  git:
+    clientSecret: secret
+    password: default
+    clientID: id
+    autocommit: false
+    username: default
+#accountability:
+#  geth-url: http://localhost:8545
+#  # Ethereum credentials
+#  ethereum-password: winery
+#  ethereum-provenance-smart-contract-address: 0x8414D5f1AF1749B349D9cE88dEB28E5aCB19E417
+#  ethereum-authorization-smart-contract-address: 0x7a7286d6a5bc548234850821d57c649Eb71A8519
+#  swarm-gateway-url: http://localhost
+#  ethereum-credentials-file-name: ""

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,20 +23,24 @@ export interface TopologyRendererState {
         deploymentArtifactsButton?: boolean;
         propertiesButton?: boolean;
         typesButton?: boolean;
+        edmmTransformationCheck?: boolean;
         idsButton?: boolean;
         layoutButton?: boolean;
         alignHButton?: boolean;
         alignVButton?: boolean;
         importTopologyButton?: boolean;
+        threatModelingButton?: boolean;
         splitTopologyButton?: boolean;
         matchTopologyButton?: boolean;
         problemDetectionButton?: boolean;
+        enrichmentButton?: boolean;
         substituteTopologyButton?: boolean;
         refineTopologyButton?: boolean;
         refineTopologyWithTestsButton?: boolean;
         determineStatefulComponents?: boolean;
         determineFreezableComponentsButton?: boolean;
         cleanFreezableComponentsButton?: boolean;
+        placeComponentsButton?: boolean;
     };
     nodesToSelect?: string[];
 }
@@ -49,20 +53,24 @@ export const INITIAL_TOPOLOGY_RENDERER_STATE: TopologyRendererState = {
         deploymentArtifactsButton: false,
         propertiesButton: false,
         typesButton: true,
+        edmmTransformationCheck: false,
         idsButton: false,
         layoutButton: false,
         alignHButton: false,
         alignVButton: false,
         importTopologyButton: false,
+        threatModelingButton: false,
         splitTopologyButton: false,
         matchTopologyButton: false,
         problemDetectionButton: false,
+        enrichmentButton: false,
         substituteTopologyButton: false,
         refineTopologyButton: false,
         refineTopologyWithTestsButton: false,
         determineStatefulComponents: false,
         determineFreezableComponentsButton: false,
         cleanFreezableComponentsButton: false,
+        placeComponentsButton: false,
     }
 };
 /**
@@ -72,8 +80,6 @@ export const TopologyRendererReducer =
     function (lastState: TopologyRendererState = INITIAL_TOPOLOGY_RENDERER_STATE, action: Action): TopologyRendererState {
         switch (action.type) {
             case TopologyRendererActions.TOGGLE_POLICIES:
-                // console.log({...lastState, buttonsState: { ...lastState.buttonsState, policiesButton:
-                // !lastState.buttonsState.policiesButton}});
                 return {
                     ...lastState,
                     buttonsState: {
@@ -129,6 +135,14 @@ export const TopologyRendererReducer =
                         typesButton: !lastState.buttonsState.typesButton
                     }
                 };
+            case TopologyRendererActions.TOGGLE_EDMM_TRANSFORMATION_CHECK:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        edmmTransformationCheck: !lastState.buttonsState.edmmTransformationCheck
+                    }
+                };
             case TopologyRendererActions.EXECUTE_LAYOUT:
                 return {
                     ...lastState,
@@ -161,6 +175,14 @@ export const TopologyRendererReducer =
                         importTopologyButton: !lastState.buttonsState.importTopologyButton
                     }
                 };
+            case TopologyRendererActions.THREATMODEL_TOPOLOGY:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        threatModelingButton: !lastState.buttonsState.threatModelingButton
+                    }
+                };
             case TopologyRendererActions.SPLIT_TOPOLOGY:
                 return {
                     ...lastState,
@@ -183,6 +205,14 @@ export const TopologyRendererReducer =
                     buttonsState: {
                         ...lastState.buttonsState,
                         problemDetectionButton: !lastState.buttonsState.problemDetectionButton
+                    }
+                };
+            case TopologyRendererActions.ENRICH_NODE_TEMPLATES:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        enrichmentButton: !lastState.buttonsState.enrichmentButton
                     }
                 };
             case TopologyRendererActions.SUBSTITUTE_TOPOLOGY:
@@ -242,6 +272,14 @@ export const TopologyRendererReducer =
                     buttonsState: {
                         ...lastState.buttonsState,
                         cleanFreezableComponentsButton: !lastState.buttonsState.cleanFreezableComponentsButton
+                    }
+                };
+            case TopologyRendererActions.PLACE_COMPONENTS:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        placeComponentsButton: !lastState.buttonsState.placeComponentsButton
                     }
                 };
         }

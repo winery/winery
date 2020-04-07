@@ -1,5 +1,5 @@
 <!--
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -110,7 +110,7 @@
                     class="btn btn-sm align-middle dark-button-style" type="button" style="margin-left: 4px">Print View
             </button>-->
         </div>
-        <div class="btn-group button-group" data-toggle="buttons">
+        <div *wineryRepositoryFeatureToggle="configEnum.Splitting" class="btn-group button-group" data-toggle="buttons">
             <button
                 class="btn btn-sm align-middle dark-button-style"
                 type="button"
@@ -128,6 +128,8 @@
                 [disabled]="splittingOngoing">
                 {{splittingOngoing ? 'Splitting...' : 'Split'}}
             </button>
+        </div>
+        <div *wineryRepositoryFeatureToggle="configEnum.Splitting" class="btn-group button-group" data-toggle="buttons">
             <button
                 class="btn btn-sm align-middle dark-button-style"
                 type="button"
@@ -137,6 +139,20 @@
                 [disabled]="matchingOngoing">
                 {{matchingOngoing ? 'Matching...' : 'Match'}}
             </button>
+        </div>
+        <div *wineryRepositoryFeatureToggle="configEnum.Placement" class="btn-group button-group" data-toggle="buttons">
+            <button
+                class="btn btn-sm align-middle dark-button-style"
+                type="button"
+                id="placement"
+                (click)="toggleButton($event)"
+                [style.background-color]="getStyle(navbarButtonsState.buttonsState.placeComponentsButton)"
+                [disabled]="placingOngoing">
+                {{placingOngoing ? 'Placing...' : 'Place Components'}}
+            </button>
+        </div>
+        <div *wineryRepositoryFeatureToggle="configEnum.ProblemDetection" class="btn-group button-group"
+             data-toggle="buttons">
             <button
                 class="btn btn-sm align-middle dark-button-style"
                 type="button"
@@ -146,8 +162,20 @@
                 Detect Problems
             </button>
         </div>
+        <div *wineryRepositoryFeatureToggle="configEnum.ManagementFeatureEnrichment" class="btn-group button-group"
+             data-toggle="buttons">
+            <button
+                class="btn btn-sm align-middle dark-button-style"
+                type="button"
+                id="enrichment"
+                (click)="toggleButton($event)"
+                [style.background-color]="getStyle(navbarButtonsState.buttonsState.enrichmentButton)">
+                Management Feature Enrichment
+            </button>
+        </div>
 
-        <div class="btn-group button-group" data-toggle="buttons">
+        <div *wineryRepositoryFeatureToggle="configEnum.FreezeAndDefrost" class="btn-group button-group"
+             data-toggle="buttons">
             <button class="btn btn-sm align-middle dark-button-style" id="determineStatefulComponents"
                     (click)="toggleButton($event)">
                 Determine Stateful Components
@@ -162,16 +190,33 @@
             </button>
         </div>
 
-        <div class="btn-group button-group" data-toggle="buttons">
+        <div *wineryRepositoryFeatureToggle="configEnum.PatternRefinement" class="btn-group button-group"
+             data-toggle="buttons">
             <button class="btn btn-sm align-middle dark-button-style" id="refineTopology"
                     (click)="toggleButton($event)"
                     [style.background-color]="getStyle(navbarButtonsState.buttonsState.refineTopologyButton)">
                 Refine Patterns
             </button>
+        </div>
+        <div *wineryRepositoryFeatureToggle="configEnum.TestRefinement" class="btn-group button-group"
+             data-toggle="buttons">
             <button class="btn btn-sm align-middle dark-button-style" id="refineTopologyWithTests"
                     (click)="toggleButton($event)"
                     [style.background-color]="getStyle(navbarButtonsState.buttonsState.refineTopologyWithTestsButton)">
                 Refine Topology with Tests
+            </button>
+        </div>
+
+        <div *wineryRepositoryFeatureToggle="configEnum.EdmmModeling" class="btn-group button-group"
+             data-toggle="buttons">
+            <button class="btn btn-sm align-middle dark-button-style" id="edmmTransformationCheck"
+                    (click)="toggleButton($event)"
+                    [style.background-color]="getStyle(navbarButtonsState.buttonsState.edmmTransformationCheck)">
+                Show EDMM Transformation Check
+            </button>
+            <button class="btn btn-sm align-middle dark-button-style" id="edmmExport"
+                    (click)="exportCsar($event, 'edmm')">
+                Export EDMM
             </button>
         </div>
 
@@ -185,6 +230,11 @@
                     <button style="cursor: pointer" #exportCsarButton target="_blank"
                             tooltip="Hold CTRL key to export XML only."
                             placement="left" class="dropdown-item" (click)="exportCsar($event)">Export CSAR
+                    </button>
+                </li>
+                <li role="menuitem">
+                    <button style="cursor: pointer" id="threatModeling" target="_blank"
+                            class="dropdown-item" (click)="toggleButton($event)">Threat Modeling
                     </button>
                 </li>
                 <li role="menuitem">

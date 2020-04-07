@@ -26,13 +26,13 @@ export class WineryAddVersionService {
     }
 
     public getReferencedDefinitions(): Observable<QNameWithTypeApiData[]> {
-        return this.http.get<QNameWithTypeApiData[]>(backendBaseURL + this.sharedData.path + '?subComponents');
+        return this.http.get<QNameWithTypeApiData[]>(this.sharedData.path + '?subComponents');
     }
 
     addNewVersion(newVersion: WineryVersion, updateReferencedDefinitions: QNameWithTypeApiData[]): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
         return this.http.post(
-            backendBaseURL + this.sharedData.path,
+            this.sharedData.path,
             JSON.stringify({
                 version: newVersion,
                 componentsToUpdate: updateReferencedDefinitions
@@ -44,7 +44,7 @@ export class WineryAddVersionService {
         const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
         return this.http.post(
-            backendBaseURL + this.sharedData.path + '?' + type + '=true',
+            this.sharedData.path + '?' + type + '=true',
             '{}',
             { headers: headers, observe: 'response', responseType: 'text' }
         );

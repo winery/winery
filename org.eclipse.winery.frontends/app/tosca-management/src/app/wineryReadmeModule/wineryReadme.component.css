@@ -25,3 +25,7 @@
     background-image: linear-gradient(#79d858, #569e3d);
     border-color: #569e3d;
 }
+
+.pad-6px {
+    padding: 6px;
+}

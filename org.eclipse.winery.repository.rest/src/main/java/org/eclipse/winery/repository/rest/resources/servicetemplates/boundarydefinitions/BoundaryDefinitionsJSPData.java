@@ -13,8 +13,14 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.taglibs.standard.functions.Functions;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.SortedSet;
+
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties;
@@ -28,12 +34,8 @@ import org.eclipse.winery.repository.rest.datatypes.TypeWithShortName;
 import org.eclipse.winery.repository.rest.datatypes.select2.Select2DataItem;
 import org.eclipse.winery.repository.rest.resources.admin.types.ConstraintTypesManager;
 
-import javax.xml.namespace.QName;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.SortedSet;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.taglibs.standard.functions.Functions;
 
 public class BoundaryDefinitionsJSPData {
 

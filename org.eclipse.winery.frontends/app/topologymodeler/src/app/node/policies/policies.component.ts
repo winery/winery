@@ -13,6 +13,7 @@
  ********************************************************************************/
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { TableType } from '../../models/enums';
 
 @Component({
     selector: 'winery-policies',
@@ -23,6 +24,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
  * This Handles Information about the nodes policies
  */
 export class PoliciesComponent implements OnInit {
+
+    readonly tableTypes = TableType;
+
     @Output() toggleModalHandler: EventEmitter<any>;
     @Input() readonly: boolean;
     @Input() currentNodeData: any;

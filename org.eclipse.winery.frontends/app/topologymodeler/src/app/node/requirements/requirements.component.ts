@@ -19,6 +19,8 @@ import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../../redux/store/winery.store';
 import { Subscription } from 'rxjs';
 import { RequirementModel } from '../../models/requirementModel';
+import { ToscaTypes } from '../../../../../tosca-management/src/app/model/enums';
+import { TableType } from '../../models/enums';
 
 @Component({
     selector: 'winery-requirements',
@@ -29,6 +31,9 @@ import { RequirementModel } from '../../models/requirementModel';
  * This Handles Information about the nodes requirements
  */
 export class RequirementsComponent implements OnInit, OnChanges, OnDestroy {
+
+    readonly tableTypes = TableType;
+
     @Output() toggleModalHandler: EventEmitter<any>;
     @Input() readonly: boolean;
     @Input() currentNodeData: any;

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-import {isNullOrUndefined} from 'util';
+import { isNullOrUndefined } from 'util';
 
 export class WineryVersion {
 
@@ -47,12 +47,46 @@ export class WineryVersion {
 
     toReadableString(): string {
         let versionString = this.toString();
-
         if (versionString.length === 0) {
             versionString = WineryVersion.EMPTY_STRING;
         }
-
         return versionString;
+    }
+
+    hasVersion(version: string): boolean {
+        switch (version) {
+            case 'wineryVersion':
+                if (!this.wineryVersion) {
+                    return false;
+                } else {
+                    return true;
+                }
+                break;
+            case 'componentVersion':
+                if (!this.componentVersion) {
+                    return false;
+                } else {
+                    return true;
+                }
+                break;
+        }
+    }
+
+    getComponentVersion(): string {
+        const versionString = isNullOrUndefined(this.componentVersion) ? '' : this.componentVersion;
+        return versionString;
+    }
+
+    getWineryAndWipVersion(): string {
+        let version: string;
+        if (!isNullOrUndefined(this.wineryVersion) && this.wineryVersion > 0) {
+            version = WineryVersion.WINERY_VERSION_PREFIX + this.wineryVersion;
+
+            if (!isNullOrUndefined(this.workInProgressVersion) && this.workInProgressVersion > 0) {
+                version += WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_WORK_IN_PROGRESS_PREFIX + this.workInProgressVersion;
+            }
+        }
+        return version;
     }
 
     equals(item: WineryVersion) {

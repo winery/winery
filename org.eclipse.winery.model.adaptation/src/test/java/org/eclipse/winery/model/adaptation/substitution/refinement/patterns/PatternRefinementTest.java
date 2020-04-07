@@ -15,6 +15,7 @@
 package org.eclipse.winery.model.adaptation.substitution.refinement.patterns;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -27,15 +28,16 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.adaptation.substitution.refinement.DefaultRefinementChooser;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
+import org.eclipse.winery.model.tosca.AttributeMapping;
+import org.eclipse.winery.model.tosca.TAttributeMappingType;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPatternRefinementModel;
-import org.eclipse.winery.model.tosca.TPrmPropertyMapping;
-import org.eclipse.winery.model.tosca.TPrmPropertyMappingType;
-import org.eclipse.winery.model.tosca.TRefinementModel;
+import org.eclipse.winery.model.tosca.TPrmModelElementType;
 import org.eclipse.winery.model.tosca.TRelationDirection;
 import org.eclipse.winery.model.tosca.TRelationMapping;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TStayMapping;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.topologygraph.matching.ToscaIsomorphismMatcher;
@@ -53,6 +55,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -274,9 +277,9 @@ class PatternRefinementTest {
         Iterator<GraphMapping<ToscaNode, ToscaEdge>> mappings = matcher.findMatches(detectorGraph, topologyGraph, new ToscaTypeMatcher());
         GraphMapping<ToscaNode, ToscaEdge> mapping = mappings.next();
 
-        TRefinementModel.TRelationMappings relationMappings = new TRefinementModel.TRelationMappings();
-        relationMappings.getRelationMapping().add(rm1);
-        relationMappings.getRelationMapping().add(rm2);
+        List<TRelationMapping> relationMappings = new ArrayList<TRelationMapping>();
+        relationMappings.add(rm1);
+        relationMappings.add(rm2);
         matchingPrm.setRelationMappings(relationMappings);
 
         candidate = new RefinementCandidate(matchingPrm, mapping, detectorGraph, 1);
@@ -286,8 +289,8 @@ class PatternRefinementTest {
         TPatternRefinementModel nonMatchingPrm = new TPatternRefinementModel();
         nonMatchingPrm.setDetector(detector);
 
-        TRefinementModel.TRelationMappings relationMappings1 = new TRefinementModel.TRelationMappings();
-        relationMappings1.getRelationMapping().add(rm2);
+        List<TRelationMapping> relationMappings1 = new ArrayList<>();
+        relationMappings1.add(rm2);
         nonMatchingPrm.setRelationMappings(relationMappings1);
 
         invalidCandidate = new RefinementCandidate(nonMatchingPrm, mapping, detectorGraph, 2);
@@ -549,31 +552,31 @@ class PatternRefinementTest {
         nt11Props.setKVProperties(nt11PropsMap);
         nt11.setProperties(nt11Props);
 
-        TPrmPropertyMapping allOn4to13 = new TPrmPropertyMapping();
-        allOn4to13.setType(TPrmPropertyMappingType.ALL);
+        AttributeMapping allOn4to13 = new AttributeMapping();
+        allOn4to13.setType(TAttributeMappingType.ALL);
         allOn4to13.setDetectorNode(candidate.getRefinementModel().getDetector().getNodeTemplate("8"));
         allOn4to13.setRefinementNode(nt13);
 
-        TPrmPropertyMapping pIn2_to_jIn12 = new TPrmPropertyMapping();
-        pIn2_to_jIn12.setType(TPrmPropertyMappingType.SELECTIVE);
+        AttributeMapping pIn2_to_jIn12 = new AttributeMapping();
+        pIn2_to_jIn12.setType(TAttributeMappingType.SELECTIVE);
         pIn2_to_jIn12.setDetectorNode(candidate.getRefinementModel().getDetector().getNodeTemplate("7"));
         pIn2_to_jIn12.setRefinementNode(nt12);
         pIn2_to_jIn12.setDetectorProperty("p");
         pIn2_to_jIn12.setRefinementProperty("j");
 
-        TPrmPropertyMapping xIn2_to_kIn11 = new TPrmPropertyMapping();
-        xIn2_to_kIn11.setType(TPrmPropertyMappingType.SELECTIVE);
+        AttributeMapping xIn2_to_kIn11 = new AttributeMapping();
+        xIn2_to_kIn11.setType(TAttributeMappingType.SELECTIVE);
         xIn2_to_kIn11.setDetectorNode(candidate.getRefinementModel().getDetector().getNodeTemplate("7"));
         xIn2_to_kIn11.setRefinementNode(nt11);
         xIn2_to_kIn11.setDetectorProperty("x");
         xIn2_to_kIn11.setRefinementProperty("k");
 
-        TPatternRefinementModel.TPrmPropertyMappings relationMappings = new TPatternRefinementModel.TPrmPropertyMappings();
-        relationMappings.getPropertyMapping().add(allOn4to13);
-        relationMappings.getPropertyMapping().add(pIn2_to_jIn12);
-        relationMappings.getPropertyMapping().add(xIn2_to_kIn11);
+        List<AttributeMapping> relationMappings = new ArrayList<>();
+        relationMappings.add(allOn4to13);
+        relationMappings.add(pIn2_to_jIn12);
+        relationMappings.add(xIn2_to_kIn11);
 
-        ((TPatternRefinementModel) candidate.getRefinementModel()).setPropertyMappings(relationMappings);
+        ((TPatternRefinementModel) candidate.getRefinementModel()).setAttributeMappings(relationMappings);
         // endregion
 
         // region *** setup the topology ***
@@ -614,5 +617,86 @@ class PatternRefinementTest {
         assertEquals("1", topology.getNodeTemplate("12").getProperties().getKVProperties().get("j"));
         assertNull(topology.getNodeTemplate("10").getProperties());
     }
+    // endregion
+
+    // region ********** redirectStayMappings **********
+    @Test
+    void redirectStayMappings() {
+        setUp();
+
+         /*
+        input:
+        #######   (1)  #######
+        # (1) # <----- # (2) #
+        #######        #######
+                          | (2)
+                         \/
+                       #######
+                       # (4) #
+                       #######
+
+        expected output:
+        #######   (1)  ########        ########
+        # (1) # <----- # (10) #        # (11) #
+        #######        ########        ########
+                           | (2)          | (2)
+                           +-------|------+
+                                  \/
+                                #######
+                                # (4) #
+                                #######
+         */
+
+        // region *** add stay mapping to PRM ***
+        TTopologyTemplate refinementTopology = candidate.getRefinementModel().getRefinementTopology();
+        TTopologyTemplate detector = candidate.getRefinementModel().getDetector();
+
+        refinementTopology.getNodeTemplateOrRelationshipTemplate()
+            .removeIf(template -> {
+                if (template.getId().equals("13") || template.getId().equals("1213")) {
+                    return true;
+                }
+                return false;
+            });
+
+        TNodeTemplate nt12 = refinementTopology.getNodeTemplate("12");
+        nt12.setType("{http://ex.org}nodeType_4");
+        TNodeTemplate nt4 = detector.getNodeTemplate("8");
+
+        TStayMapping nt4staysAsNt12 = new TStayMapping();
+        nt4staysAsNt12.setModelElementType(TPrmModelElementType.NODE);
+        nt4staysAsNt12.setId("stay1");
+        nt4staysAsNt12.setDetectorNode(nt4);
+        nt4staysAsNt12.setRefinementNode(nt12);
+        ((TPatternRefinementModel) candidate.getRefinementModel())
+            .setStayMappings(Collections.singletonList(nt4staysAsNt12));
+        // endregion
+
+        // recreate the candidate
+        ToscaGraph topologyGraph = ToscaTransformer.createTOSCAGraph(topology2);
+        ToscaGraph detectorGraph = ToscaTransformer.createTOSCAGraph(detector);
+
+        GraphMapping<ToscaNode, ToscaEdge> mapping = new ToscaIsomorphismMatcher()
+            .findMatches(detectorGraph, topologyGraph, new ToscaTypeMatcher())
+            .next();
+
+        candidate = new RefinementCandidate(candidate.getRefinementModel(), mapping, detectorGraph, 1);
+
+        PatternRefinement patternRefinement = new PatternRefinement();
+        patternRefinement.applyRefinement(candidate, topology2);
+
+        // region *** assertions ***
+        assertNotNull(topology2.getNodeTemplate("4"));
+        assertEquals(topology2.getRelationshipTemplate("1012").getTargetElement().getRef().getId(), "4");
+        assertEquals(topology2.getRelationshipTemplate("1012").getSourceElement().getRef().getId(), "10");
+
+        assertEquals(topology2.getRelationshipTemplate("1112").getTargetElement().getRef().getId(), "4");
+        assertEquals(topology2.getRelationshipTemplate("1112").getSourceElement().getRef().getId(), "11");
+
+        assertEquals(topology2.getRelationshipTemplate("21").getTargetElement().getRef().getId(), "1");
+        assertEquals(topology2.getRelationshipTemplate("21").getSourceElement().getRef().getId(), "10");
+        // endregion
+    }
+
     // endregion
 }

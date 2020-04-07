@@ -17,17 +17,20 @@ import { WineryNotificationService } from '../../../../wineryNotificationModule/
 import { Configuration } from './Configuration';
 import { ConfigurationService } from './configuration.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { WineryRepositoryConfigurationService } from '../../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 @Component({
     templateUrl: 'configuration.component.html'
 })
 export class ConfigurationComponent implements OnInit {
     configuration: Configuration;
+    accountabilityEnabled: Boolean;
     loading = true;
     error: string;
     selectedKeystoreFile: File = undefined;
 
-    constructor(protected service: ConfigurationService, protected notify: WineryNotificationService) {
+    constructor(protected service: ConfigurationService, protected notify: WineryNotificationService,
+                private configData: WineryRepositoryConfigurationService) {
     }
 
     ngOnInit(): void {
@@ -37,6 +40,7 @@ export class ConfigurationComponent implements OnInit {
                     this.handleDataLoaded(result);
                 },
                 e => this.handleError(e));
+        this.accountabilityEnabled = this.configData.configuration.features.accountability;
     }
 
     handleDataLoaded(data: Configuration) {

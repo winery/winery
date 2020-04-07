@@ -22,7 +22,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TPatternRefinementModel;
 import org.eclipse.winery.model.tosca.TRelationMapping;
 import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelMappingsResource;
 import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelResource;
@@ -30,9 +29,9 @@ import org.eclipse.winery.repository.rest.resources.apiData.RelationMappingApiDa
 
 public class RelationMappingsResource extends AbstractRefinementModelMappingsResource {
 
-    public RelationMappingsResource(AbstractRefinementModelResource res, TPatternRefinementModel.TRelationMappings relationMappings) {
+    public RelationMappingsResource(AbstractRefinementModelResource res, List<TRelationMapping> relationMappings) {
         super(res);
-        this.mappings = relationMappings.getRelationMapping();
+        this.mappings = relationMappings;
     }
 
     @PUT
@@ -43,8 +42,8 @@ public class RelationMappingsResource extends AbstractRefinementModelMappingsRes
       Therefore, we do it manually.
      */
     public List<TRelationMapping> addRelationMappingFromApi(RelationMappingApiData mapping) {
-        TNodeTemplate detectorNode = this.getDetectorNodeTemplate(mapping.detectorNode);
-        TNodeTemplate refinementNode = this.getRefinementNodeTemplate(mapping.refinementNode);
+        TNodeTemplate detectorNode = this.res.getDetector().getComponentInstanceJSON().getNodeTemplate(mapping.detectorNode);
+        TNodeTemplate refinementNode = this.res.getRefinementTopology().getComponentInstanceJSON().getNodeTemplate(mapping.refinementNode);
         return (List<TRelationMapping>) this.addMapping(mapping.createTRelationMapping(detectorNode, refinementNode));
     }
 }

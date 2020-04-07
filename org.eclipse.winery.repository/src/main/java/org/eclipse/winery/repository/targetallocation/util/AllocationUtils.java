@@ -114,21 +114,27 @@ public class AllocationUtils {
     }
 
     /**
-     * Still no complete copy of all TOSCA constructs.
-     * Cloned so that !original.equals(clone).
+     * Still no complete copy of all TOSCA constructs. Cloned so that !original.equals(clone).
      */
     public static TTopologyTemplate deepcopy(TTopologyTemplate topologyTemplate) {
+        return deepcopy(topologyTemplate, true);
+    }
+
+    /**
+     * Still no complete copy of all TOSCA constructs.
+     */
+    public static TTopologyTemplate deepcopy(TTopologyTemplate topologyTemplate, boolean changeNames) {
         TTopologyTemplate clone = new TTopologyTemplate();
         Map<String, TNodeTemplate> clonedNTsByIds = new HashMap<>();
 
         for (TNodeTemplate nodeTemplate : topologyTemplate.getNodeTemplates()) {
-            TNodeTemplate clonedNT = cloneNotEqual(nodeTemplate);
+            TNodeTemplate clonedNT = clone(nodeTemplate, changeNames);
             clone.addNodeTemplate(clonedNT);
             clonedNTsByIds.put(clonedNT.getId(), clonedNT);
         }
 
         for (TRelationshipTemplate relationshipTemplate : topologyTemplate.getRelationshipTemplates()) {
-            TRelationshipTemplate clonedRT = cloneNotEqual(relationshipTemplate);
+            TRelationshipTemplate clonedRT = clone(relationshipTemplate, changeNames);
             // source
             if (relationshipTemplate.getSourceElement().getRef() instanceof TNodeTemplate) {
                 clonedRT.setSourceNodeTemplate(clonedNTsByIds.get(relationshipTemplate.getSourceElement().getRef().getId()));
@@ -151,24 +157,39 @@ public class AllocationUtils {
     }
 
     /**
-     * Clone so that !original.equals(clone).
-     * This is done by changing the name of the clone.
+     * Clone the NodeTemplate and change the name of the clone if requested, so that !original.equals(clone).
+     *
+     * @param nodeTemplate the NodeTemplate to clone
+     * @param changeNames <code>true</code> if name shall be changed by adding a number suffix, <code>false</code> 
+     *                    otherwise
+     * @return the cloned NodeTemplate
      */
-    public static TNodeTemplate cloneNotEqual(TNodeTemplate nodeTemplate) {
+    public static TNodeTemplate clone(TNodeTemplate nodeTemplate, boolean changeNames) {
         TNodeTemplate cloned = BackendUtils.clone(nodeTemplate);
+
         // name used in equals -> make unique to avoid equals bugs caused by cloning
-        cloned.setName(cloned.getId() + idCounter++);
+        if (changeNames) {
+            cloned.setName(cloned.getId() + idCounter++);
+        }
         return cloned;
     }
 
     /**
-     * Clone so that !original.equals(clone).
-     * This is done by changing the name of the clone.
+     * Clone the RelationshipTemplate and change the name of the clone if requested, so that !original.equals(clone).
+     *
+     * @param relationshipTemplate the RelationshipTemplate to clone
+     * @param changeNames          <code>true</code> if name shall be changed by adding a number suffix,
+     *                             <code>false</code>
+     *                             otherwise
+     * @return the cloned RelationshipTemplate
      */
-    public static TRelationshipTemplate cloneNotEqual(TRelationshipTemplate relationshipTemplate) {
+    public static TRelationshipTemplate clone(TRelationshipTemplate relationshipTemplate, boolean changeNames) {
         TRelationshipTemplate cloned = BackendUtils.clone(relationshipTemplate);
+
         // name used in equals -> make unique to avoid equals bugs caused by cloning
-        cloned.setName(cloned.getId() + idCounter++);
+        if (changeNames) {
+            cloned.setName(cloned.getId() + idCounter++);
+        }
         return cloned;
     }
 }

@@ -101,28 +101,26 @@
                 <version>1.6</version>
                 <executions>
                     <execution>
-                        <phase>generate-resources</phase>
+                        <phase>initialize</phase>
                         <id>install node and npm</id>
                         <goals>
                             <goal>install-node-and-npm</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>v10.15.2</nodeVersion> <!-- LTS as of 2019-02-29 -->
-                            <npmVersion>6.4.1</npmVersion> <!-- defined as latest LTS version -->
+                            <nodeVersion>v12.13.1</nodeVersion> <!-- latest LTS version -->
+                            <npmVersion>6.12.1</npmVersion> <!-- defined as latest LTS version -->
                         </configuration>
                     </execution>
-
                     <execution>
-                        <phase>compile</phase>
+                        <phase>generate-resources</phase>
                         <id>install npm dependencies</id>
                         <goals>
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>install</arguments>
+                            <arguments>ci</arguments>
                         </configuration>
                     </execution>
-                    
                     <execution>
                         <phase>compile</phase>
                         <id>lint tosca-management app</id>
@@ -153,9 +151,8 @@
                             <arguments>run lint-workflowmodeler</arguments>
                         </configuration>
                     </execution>
-                    
                     <execution>
-                        <phase>package</phase>
+                        <phase>compile</phase>
                         <id>build tosca-management</id>
                         <goals>
                             <goal>npm</goal>
@@ -165,7 +162,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <phase>package</phase>
+                        <phase>compile</phase>
                         <id>build topologymodeler</id>
                         <goals>
                             <goal>npm</goal>
@@ -175,7 +172,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <phase>package</phase>
+                        <phase>compile</phase>
                         <id>build workflowmodeler</id>
                         <goals>
                             <goal>npm</goal>

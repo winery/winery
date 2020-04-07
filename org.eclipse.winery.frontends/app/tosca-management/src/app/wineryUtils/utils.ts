@@ -13,6 +13,7 @@
  ********************************************************************************/
 import { ServiceTemplateTemplateTypes, ToscaTypes } from '../model/enums';
 import { isNullOrUndefined } from 'util';
+import { QName } from '../model/qName';
 
 export class Utils {
 
@@ -236,6 +237,18 @@ export class Utils {
         } else {
             return name.substr(0, res.index);
         }
+    }
+
+    public static nodeTypeUrlForQName(nodeType: QName): string {
+        const url = `/#/nodetypes/${encodeURIComponent(encodeURIComponent(nodeType.namespace))}/${nodeType.localPart}/readme`;
+        return url;
+    }
+
+    public static nodeTypeURL(nodeTypeName: string): string {
+        const qname = QName.stringToQName(nodeTypeName);
+        const url = `/#/nodetypes/${encodeURIComponent(encodeURIComponent(qname.namespace))}/${qname.localPart}/readme`;
+        return url;
+
     }
 }
 

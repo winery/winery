@@ -39,8 +39,10 @@ import { EntitiesModalComponent } from '../canvas/entities-modal/entities-modal.
 import { LocalnamePipe } from '../pipes/localname.pipe';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { PopoverModule } from 'ngx-bootstrap/popover';
+import { VersionsComponent } from '../node/versions/versions.component';
 import { PropertiesModule } from '../properties/properties.module';
 import { WineryModalModule } from '../../../../tosca-management/src/app/wineryModalModule/winery.modal.module';
+import { WineryFeatureToggleModule } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/winery-feature-toggle.module';
 
 @NgModule({
     imports: [
@@ -57,7 +59,8 @@ import { WineryModalModule } from '../../../../tosca-management/src/app/wineryMo
         TypeaheadModule.forRoot(),
         TooltipModule.forRoot(),
         PopoverModule.forRoot(),
-        PropertiesModule
+        PropertiesModule,
+        WineryFeatureToggleModule,
     ],
     declarations: [
         NavbarComponent,
@@ -72,7 +75,8 @@ import { WineryModalModule } from '../../../../tosca-management/src/app/wineryMo
         CapabilitiesComponent,
         ToscatypeTableComponent,
         EntitiesModalComponent,
-        LocalnamePipe
+        LocalnamePipe,
+        VersionsComponent
     ],
     exports: [
         TopologyRendererComponent,

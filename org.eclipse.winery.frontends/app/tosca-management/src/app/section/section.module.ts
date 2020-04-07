@@ -35,6 +35,8 @@ import { EntityComponent } from './entityContainer/entity.component';
 import { TagInputModule } from 'ngx-chips';
 import { AdminModule } from '../wineryMainModules/admin/admin.module';
 import { WineryFileComparisonModule } from '../wineryFileComparisonModule/wineryFileComparison.module';
+import { PlacementComponent } from './placement/placement.component';
+import { WineryFeatureToggleModule } from '../wineryFeatureToggleModule/winery-feature-toggle.module';
 
 @NgModule({
     imports: [
@@ -51,6 +53,7 @@ import { WineryFileComparisonModule } from '../wineryFileComparisonModule/winery
         WineryUploaderModule,
         TooltipModule,
         WineryPipesModule,
+        WineryFeatureToggleModule,
         TagInputModule,
         WineryAddModule,
         AdminModule, // to be able to access the ConfigurationService and AccountabilitySerrvice
@@ -64,7 +67,8 @@ import { WineryFileComparisonModule } from '../wineryFileComparisonModule/winery
         EntityComponent,
         EntityContainerComponent,
         SectionPipe,
-        XaasPackagerComponent
+        XaasPackagerComponent,
+        PlacementComponent
     ],
 })
 export class SectionModule {

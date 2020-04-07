@@ -19,6 +19,9 @@ For more information on TOSCA see [our TOSCA information page](../tosca/).
 - [Compliance Checking](ComplianceChecking.md) - Enables compliance checking of Topology Templates based on reusable Compliance Rules  
 - [Implementation Artifact Generation](generateIA.md) - Shows how to generate and update an implementation artifact of type .war
 - [Accountability](../../org.eclipse.winery.accountability/README.md) - Enables enforcing accountability in decentralized scenarios for collaborative development of CSARs
+- [Version Management](VersionManagement.md) - shows how to update the version of a node template in the topology modeler
+- [Threat Modeling For NFV](ThreatModelingNFV.md) - Enables threat modeling capabilities and NFV-based mitigation recommendation
+- [Pattern-based Deployment and Configuration Models](Pattern-basedDeploymentModelling.md) - describes how PbDCMs can be crated and refined to executable deployment models
 
 ## Background Literature
 
@@ -35,7 +38,7 @@ More readings at <https://www.opentosca.org>.
 
 ## License
 
-Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
 
 See the NOTICE file(s) distributed with this work for additional
 information regarding copyright ownership.

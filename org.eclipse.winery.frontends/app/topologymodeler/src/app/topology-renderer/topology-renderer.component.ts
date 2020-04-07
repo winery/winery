@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -22,7 +22,7 @@ import { WineryActions } from '../redux/actions/winery.actions';
 import { IWineryState } from '../redux/store/winery.store';
 import { ILoaded } from '../services/loaded.service';
 import { Subscription } from 'rxjs';
-import { Utils } from '../models/utils';
+import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 import { EntityTypesModel } from '../models/entityTypesModel';
 
 /**
@@ -96,7 +96,7 @@ export class TopologyRendererComponent implements OnInit, OnDestroy {
 
                 if (node.state === DifferenceStates.REMOVED) {
                     current = this.oldTopology.nodeTemplates.find(item => item.id === node.element);
-                    current = Utils.createTNodeTemplateFromObject(current, this.entityTypes.nodeVisuals, node.state);
+                    current = TopologyTemplateUtil.createTNodeTemplateFromObject(current, this.entityTypes.nodeVisuals, node.state);
                     this.nodeTemplates.push(current);
                 } else {
                     current.state = node.state;

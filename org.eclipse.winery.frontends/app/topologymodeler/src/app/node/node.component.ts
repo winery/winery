@@ -13,14 +13,12 @@
  ********************************************************************************/
 
 import {
-    AfterViewInit, Component, ComponentRef, DoCheck, ElementRef, EventEmitter, Input, KeyValueDiffers, NgZone,
-    OnDestroy, OnInit, Output, Renderer2
+    AfterViewInit, Component, ComponentRef, DoCheck, ElementRef, EventEmitter, Input, KeyValueDiffers, NgZone, OnDestroy, OnInit, Output, Renderer2, ViewChild
 } from '@angular/core';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { WineryActions } from '../redux/actions/winery.actions';
-import { hostURL } from '../models/configuration';
 import { EntityType, TNodeTemplate } from '../models/ttopology-template';
 import { QName } from '../models/qname';
 import { PropertyDefinitionType, urlElement } from '../models/enums';
@@ -31,6 +29,11 @@ import { EntityTypesModel } from '../models/entityTypesModel';
 import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reducer';
 import { TPolicy } from '../models/policiesModalData';
 import { Visuals } from '../models/visuals';
+
+import { VersionElement } from '../models/versionElement';
+import { VersionsComponent } from './versions/versions.component';
+import { WineryVersion } from '../../../../tosca-management/src/app/model/wineryVersion';
+import { FeatureEnum } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/wineryRepository.feature.direct';
 
 /**
  * Every node has its own component and gets created dynamically.
@@ -69,6 +72,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     removeZIndex: any;
     propertyDefinitionType: string;
     policyIcons: string[];
+    configEnum = FeatureEnum;
 
     @Input() readonly: boolean;
     @Input() entityTypes: EntityTypesModel;
@@ -89,17 +93,21 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     @Output() sendPaletteStatus: EventEmitter<any>;
     @Output() sendNodeData: EventEmitter<any>;
 
+    @ViewChild('versionModal') versionModal: VersionsComponent;
     previousPosition: any;
     currentPosition: any;
     nodeRef: ComponentRef<Component>;
     unbindMouseMove: Function;
     currentNodeId: string;
-    hostURL = hostURL;
     flashTimer = 300;
     parentEl: string;
     popoverHtml = `<div class="">Open NodeType in a separate tab</div>`;
     // differ object for detecting changes made to the nodeTemplate object for DoCheck
     differ: any;
+
+    newerVersions: WineryVersion[];
+    newerVersionExist: boolean;
+    newVersionElement: VersionElement;
 
     constructor(private zone: NgZone,
                 private $ngRedux: NgRedux<IWineryState>,
@@ -120,6 +128,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         this.saveNodeRequirements = new EventEmitter();
         this.sendPaletteStatus = new EventEmitter();
         this.sendNodeData = new EventEmitter();
+        this.$ngRedux.subscribe(() => this.setPolicyIcons());
     }
 
     /**
@@ -178,7 +187,27 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
             this.nodeClass = 'nodeTemplate';
         }
 
-        // todo: refactor to be updated upon addition of a policy
+        this.setPolicyIcons();
+        this.addNewVersions(new QName(this.nodeTemplate.type));
+
+    }
+
+    /**
+     * Angular lifecycle event.
+     */
+    ngDoCheck() {
+        const nodeTemplateChanges = this.differ.diff(this.entityTypes);
+        if (nodeTemplateChanges) {
+            if (this.entityTypes.groupedNodeTypes) {
+                this.findOutPropertyDefinitionTypeForProperties(this.nodeTemplate.type, this.entityTypes.groupedNodeTypes);
+            }
+        }
+    }
+
+    /**
+     * Get the icons of the policies.
+     */
+    setPolicyIcons() {
         if (this.nodeTemplate.policies && this.nodeTemplate.policies.policy) {
             this.policyIcons = [];
             const list: TPolicy[] = this.nodeTemplate.policies.policy;
@@ -197,24 +226,12 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                 }
 
                 if (visual && visual.imageUrl) {
-                    this.policyIcons.push(this.hostURL + visual.imageUrl);
+                    this.policyIcons.push(visual.imageUrl);
                 }
             }
 
             if (this.policyIcons.length === 0) {
                 this.policyIcons = null;
-            }
-        }
-    }
-
-    /**
-     * Angular lifecycle event.
-     */
-    ngDoCheck() {
-        const nodeTemplateChanges = this.differ.diff(this.entityTypes);
-        if (nodeTemplateChanges) {
-            if (this.entityTypes.groupedNodeTypes) {
-                this.findOutPropertyDefinitionTypeForProperties(this.nodeTemplate.type, this.entityTypes.groupedNodeTypes);
             }
         }
     }
@@ -436,5 +453,35 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         } else if (this.endTime - this.startTime >= 200) {
             this.longpress = true;
         }
+    }
+
+    /**
+     * Adding all newer Versions of Node Type
+     */
+    private addNewVersions(currentQname: QName): void {
+        this.newerVersions = new Array<WineryVersion>();
+        this.newerVersionExist = true;
+        let index: number;
+        const currentVersionElement = this.entityTypes.versionElements.find(versionElement => {
+
+            return versionElement.qName === currentQname.qName;
+        });
+
+        if (currentVersionElement) {
+            currentVersionElement.versions.find((version, indexNumber) => {
+                if (version.currentVersion) {
+                    index = indexNumber;
+                }
+                return version.currentVersion;
+            });
+
+            this.newerVersions = currentVersionElement.versions.slice(0, index);
+            this.newVersionElement = new VersionElement(currentQname.qName, this.newerVersions);
+        }
+
+    }
+
+    public openVersionModal() {
+        this.versionModal.open();
     }
 }

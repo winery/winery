@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -30,9 +30,9 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
 import org.eclipse.winery.repository.backend.constants.Filename;
-import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.VisualsApiData;
 
@@ -73,9 +73,9 @@ public abstract class GenericVisualAppearanceResource {
      * Used for GUI when accessing the resource as data E.g., for topology template
      */
     public URI getAbsoluteURL() {
-        String URI = Environment.getUrlConfiguration().getRepositoryApiUrl();
-        URI = URI + "/" + Util.getUrlPath(this.id);
-        return RestUtils.createURI(URI);
+        String uri = Environments.getInstance().getUiConfig().getEndpoints().get("repositoryApiUrl");
+        uri = uri + "/" + Util.getUrlPath(this.id);
+        return URI.create(uri);
     }
 
     public ToscaElementId getId() {

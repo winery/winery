@@ -223,6 +223,8 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         assertEquals("## Changes from version 0.3.0-w2 to 0.3.4-w1\n" +
                 "\n" +
                 "### Changed\n" +
+                "- QName/localPart\n" +
+                "  changed from \"NodeTypeWith5Versions_0.3.0-w2\" to \"NodeTypeWith5Versions_0.3.4-w1\"\n" +
                 "- name\n" +
                 "  changed from \"NodeTypeWith5Versions_0.3.0-w2\" to \"NodeTypeWith5Versions_0.3.4-w1\"",
             toscaDiff.getChangeLog());

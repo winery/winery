@@ -37,8 +37,8 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.virgo.util.parser.manifest.ManifestContents;
 import org.eclipse.virgo.util.parser.manifest.RecoveringManifestParser;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIf;
 
 import static org.eclipse.winery.repository.export.CsarExportConfiguration.INCLUDE_HASHES;
 import static org.eclipse.winery.repository.export.CsarExportConfiguration.STORE_IMMUTABLY;
@@ -191,7 +191,8 @@ public class CsarExporterTest extends TestWithGitBackedRepository {
     }
 
     @Test
-    @EnabledIf("(new java.io.File(\"C:/Ethereum/keystore/UTC--2018-03-05T15-33-22.456000000Z--e4b51a3d4e77d2ce2a9d9ce107ec8ec7cff5571d.json\")).exists()")
+    // todo check how to enable
+    @Disabled
     public void csarFilesHaveImmutableStorageAddresses() throws Exception {
         Map<String, Object> exportConfiguration = new HashMap<>();
         exportConfiguration.put(STORE_IMMUTABLY.name(), null);
@@ -213,7 +214,8 @@ public class CsarExporterTest extends TestWithGitBackedRepository {
     }
 
     @Test
-    @EnabledIf("(new java.io.File(\"C:/Ethereum/keystore/UTC--2018-03-05T15-33-22.456000000Z--e4b51a3d4e77d2ce2a9d9ce107ec8ec7cff5571d.json\")).exists()")
+    @Disabled
+    // todo check how to enable
     public void testPutCsarInBlockchainAndImmutableStorage() throws Exception {
         setRevisionTo("origin/plain");
         CsarExporter exporter = new CsarExporter();

@@ -33,7 +33,6 @@ import { NodeIdAndFocusModel } from '../models/nodeIdAndFocusModel';
 import { ToggleModalDataModel } from '../models/toggleModalDataModel';
 import { ToastrService } from 'ngx-toastr';
 import { BackendService } from '../services/backend.service';
-import { hostURL } from '../models/configuration';
 import { CapabilityModel } from '../models/capabilityModel';
 import { isNullOrUndefined } from 'util';
 import { RequirementModel } from '../models/requirementModel';
@@ -46,11 +45,16 @@ import { ImportTopologyModalData } from '../models/importTopologyModalData';
 import { ImportTopologyService } from '../services/import-topology.service';
 import { ReqCapService } from '../services/req-cap.service';
 import { SplitMatchTopologyService } from '../services/split-match-topology.service';
+import { PlaceComponentsService } from '../services/placement.service';
 import { DifferenceStates, VersionUtils } from '../models/ToscaDiff';
 import { ErrorHandlerService } from '../services/error-handler.service';
 import { DragSource } from '../models/DragSource';
 import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reducer';
-import { Utils } from '../models/utils';
+import { ThreatModelingModalData } from '../models/threatModelingModalData';
+import { ThreatCreation } from '../models/threatCreation';
+import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
+import { ReqCapRelationshipService } from '../services/req-cap-relationship.service';
+import { TPolicy } from '../models/policiesModalData';
 
 @Component({
     selector: 'winery-canvas',
@@ -68,6 +72,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     @ViewChild('capabilitiesModal') capabilitiesModal: ModalDirective;
     @ViewChild('requirementsModal') requirementsModal: ModalDirective;
     @ViewChild('importTopologyModal') importTopologyModal: ModalDirective;
+    @ViewChild('threatModelingModal') threatModelingModal: ModalDirective;
     @Input() readonly: boolean;
     @Input() entityTypes: EntityTypesModel;
     @Input() diffMode = false;
@@ -106,6 +111,10 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     capabilities: CapabilitiesModalData;
     requirements: RequirementsModalData;
     importTopologyData: ImportTopologyModalData;
+    threatModelingData: ThreatModelingModalData;
+
+    // threatmodeling accordion state
+    threatModalTab = 'create';
 
     indexOfNewNode: number;
     targetNodes: Array<string> = [];
@@ -150,8 +159,11 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 private importTopologyService: ImportTopologyService,
                 private existsService: ExistsService,
                 private splitMatchService: SplitMatchTopologyService,
+                private placementService: PlaceComponentsService,
                 private reqCapService: ReqCapService,
-                private errorHandler: ErrorHandlerService) {
+                private errorHandler: ErrorHandlerService,
+                private reqCapRelationshipService: ReqCapRelationshipService,
+                private notify: ToastrService) {
         this.newJsPlumbInstance = this.jsPlumbService.getJsPlumbInstance();
         this.newJsPlumbInstance.setContainer('container');
 
@@ -178,6 +190,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         this.capabilities = new CapabilitiesModalData();
         this.requirements = new RequirementsModalData();
         this.importTopologyData = new ImportTopologyModalData();
+        this.threatModelingData = new ThreatModelingModalData();
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -316,12 +329,12 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                                         this.requirements.properties = currentNodeData.currentRequirement.properties.kvproperties;
                                         return true;
                                     } else {
-                                        this.requirements.properties = Utils.setKVProperties(reqType);
+                                        this.requirements.properties = TopologyTemplateUtil.setKVProperties(reqType);
                                         this.setDefaultReqKVProperties();
                                         return true;
                                     }
                                 } else {
-                                    this.requirements.properties = Utils.setKVProperties(reqType);
+                                    this.requirements.properties = TopologyTemplateUtil.setKVProperties(reqType);
                                     this.setDefaultReqKVProperties();
                                     return true;
                                 }
@@ -398,12 +411,12 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                                         this.capabilities.properties = currentNodeData.currentCapability.properties.kvproperties;
                                         return true;
                                     } else {
-                                        this.capabilities.properties = Utils.setKVProperties(capType);
+                                        this.capabilities.properties = TopologyTemplateUtil.setKVProperties(capType);
                                         this.setDefaultCapKVProperties();
                                         return true;
                                     }
                                 } else {
-                                    this.capabilities.properties = Utils.setKVProperties(capType);
+                                    this.capabilities.properties = TopologyTemplateUtil.setKVProperties(capType);
                                     this.setDefaultCapKVProperties();
                                     return true;
                                 }
@@ -572,10 +585,6 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         this.requirementsModal.hide();
     }
 
-    getHostUrl(): string {
-        return hostURL;
-    }
-
     /**
      * Saves a capability template to the model and gets pushed into the Redux store of the application
      */
@@ -639,7 +648,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 if (cap.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any.length > 0) {
                     this.capabilities.propertyType = 'KV';
                     this.showDefaultProperties = true;
-                    this.capabilities.properties = Utils.setKVProperties(cap);
+                    this.capabilities.properties = TopologyTemplateUtil.setKVProperties(cap);
                     // if propertiesDefinition is defined it's a XML property
                 } else if (cap.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition) {
                     if (cap.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element) {
@@ -745,7 +754,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 if (req.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any.length > 0) {
                     this.requirements.propertyType = 'KV';
                     this.showDefaultProperties = true;
-                    this.requirements.properties = Utils.setKVProperties(req);
+                    this.requirements.properties = TopologyTemplateUtil.setKVProperties(req);
                     return true;
                     // if propertiesDefinition is defined it's a XML property
                 } else if (req.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition) {
@@ -962,6 +971,28 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 this.importTopologyModal.show();
             } else if (this.topologyRendererState.buttonsState.splitTopologyButton) {
                 this.splitMatchService.splitTopology(this.backendService, this.ngRedux, this.topologyRendererActions, this.errorHandler);
+            } else if (this.topologyRendererState.buttonsState.threatModelingButton) {
+
+                // don't cache data, always refetch.
+                this.threatModelingData = new ThreatModelingModalData();
+                this.ngRedux.dispatch(this.topologyRendererActions.threatModeling());
+                // show modal
+                this.threatModelingModal.show();
+
+                this.backendService.threatCatalogue().subscribe(
+                    threats => threats.forEach(threat => this.threatModelingData.threatCatalog.push(threat))
+                );
+
+                this.backendService.threatAssessment().subscribe(
+                    assessment => {
+                        Object.keys(assessment.threats)
+                            .map(key => assessment.threats[key])
+                            .map(threat => threat.mitigations
+                                .filter(mitigation => assessment.svnfs.includes(mitigation))
+                                .map(mitigation => this.threatModelingData.mitigations.add(new QName(mitigation)))
+                            );
+                    }
+                );
             } else if (this.topologyRendererState.buttonsState.matchTopologyButton) {
                 this.splitMatchService.matchTopology(this.backendService, this.ngRedux, this.topologyRendererActions, this.errorHandler);
             } else if (this.topologyRendererState.buttonsState.substituteTopologyButton) {
@@ -971,6 +1002,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 this.clearSelectedNodes();
                 this.topologyRendererState.nodesToSelect
                     .forEach(value => this.enhanceDragSelection(value));
+            } else if (this.topologyRendererState.buttonsState.placeComponentsButton) {
+                this.placementService.placeComponents(this.backendService, this.ngRedux, this.topologyRendererActions, this.errorHandler);
             }
 
             setTimeout(() => {
@@ -1018,13 +1051,53 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     }
 
     /**
+     * Closes the threat modeling modal
+     */
+    closeThreatModeling(): void {
+        this.threatModelingModal.hide();
+    }
+
+    createNewThreat(): void {
+        this.backendService.threatCreation(this.threatModelingData.threatCreation).subscribe(res => {
+            this.threatModelingData.threatCreation = new ThreatCreation();
+            this.alert.info(res);
+        });
+    }
+
+    addMitigationToTopology(mitigation): void {
+        this.closeThreatModeling();
+        const newNode: TNodeTemplate = new TNodeTemplate(
+            {},
+            mitigation.localName + '_' + Math.floor(Math.random() * 10),
+            mitigation.qName,
+            mitigation.localName,
+            1,
+            1,
+            TopologyTemplateUtil.getNodeVisualsForNodeTemplate(mitigation.qName, this.entityTypes.nodeVisuals),
+            [],
+            [],
+            {},
+            1,
+            1,
+            null,
+            null,
+            null,
+            null
+        );
+
+        this.ngRedux.dispatch(this.actions.saveNodeTemplate(newNode));
+    }
+
+    /**
      * Revalidates the offsets and other data of the container in the DOM.
      */
     public revalidateContainer(): void {
-        setTimeout(() => {
-            this.newJsPlumbInstance.revalidate('container');
-            this.newJsPlumbInstance.repaintEverything();
-        }, 1);
+        if (this.newJsPlumbInstance) {
+            setTimeout(() => {
+                this.newJsPlumbInstance.revalidate('container');
+                this.newJsPlumbInstance.repaintEverything();
+            }, 1);
+        }
     }
 
     /**
@@ -1089,12 +1162,54 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 labelString = newRelationship.type.substring(newRelationship.type.indexOf('}') + 1);
             }
 
+            let relationSource = newRelationship.sourceElement.ref;
+            let relationTarget = newRelationship.targetElement.ref;
+
+            if (newRelationship.policies && newRelationship.policies.policy) {
+                const list: TPolicy[] = newRelationship.policies.policy;
+                labelString += '<br>';
+                for (const value of list) {
+                    const visual = this.entityTypes.policyTypeVisuals.find(
+                        policyTypeVisual => policyTypeVisual.typeId === value.policyType
+                    );
+
+                    if (visual && visual.imageUrl) {
+                        labelString += '<img style="display: block; margin-left: auto; margin-right: auto; margin-top: 5px;' +
+                            ' max-width: 40px; max-height: 40px;" src="' + visual.imageUrl + '" />';
+                    }
+                }
+            }
+
+            // check if source reference is not a node template
+            {
+                if (!this.allNodesIds.includes(relationSource)) {
+                    // check if source reference is a requirement of a node template
+                    const findNode = this.allNodeTemplates
+                        .find(node => node.requirements && node.requirements.requirement
+                            && node.requirements.requirement.find(req => req.id === relationSource)
+                        );
+                    if (findNode) {
+                        relationSource = findNode.id;
+                    }
+                }
+            }
+
+            // check if target reference is a node template
+            if (!this.allNodesIds.includes(relationTarget)) {
+                // check if target reference is a capability of a node template
+                const findNode = this.allNodeTemplates
+                    .find(node => node.capabilities && node.capabilities.capability && node.capabilities.capability.find(cap => cap.id === relationTarget));
+                if (findNode) {
+                    relationTarget = findNode.id;
+                }
+            }
+
             const border = isNullOrUndefined(newRelationship.state)
                 ? '#fafafa' : VersionUtils.getElementColorByDiffState(newRelationship.state);
             const me = this;
             const conn = this.newJsPlumbInstance.connect({
-                source: newRelationship.sourceElement.ref,
-                target: newRelationship.targetElement.ref,
+                source: relationSource,
+                target: relationTarget,
                 overlays: [['Arrow', { width: 15, length: 15, location: 1, id: 'arrow', direction: 1 }],
                     ['Label', {
                         label: labelString,
@@ -1151,6 +1266,9 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 if (this.dragSourceInfos.dragSource) {
                     if (this.newJsPlumbInstance.isSource(this.dragSourceInfos.dragSource)) {
                         this.newJsPlumbInstance.unmakeSource(this.dragSourceInfos.dragSource);
+                    }
+                    if (this.newJsPlumbInstance.isSource(this.dragSourceInfos.nodeId)) {
+                        this.newJsPlumbInstance.unmakeSource(this.dragSourceInfos.nodeId);
                     }
                 }
                 const indexOfNode = this.nodeChildrenIdArray.indexOf(this.dragSourceInfos.nodeId);
@@ -1368,7 +1486,9 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 id: '',
                 nameTextFieldValue: '',
                 type: '',
-                properties: ''
+                properties: '',
+                source: '',
+                target: ''
             }
         }));
     }
@@ -1474,6 +1594,48 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             }
         });
         this.entityTypes.relationshipTypes.forEach(value => this.assignRelTypes(value));
+        this.reqCapRelationshipService.sourceSelectedEvent.subscribe(source => this.setSource(source));
+        this.reqCapRelationshipService.sendSelectedRelationshipTypeEvent.subscribe(relationship => this.setSelectedRelationshipType(relationship));
+    }
+
+    /**
+     * set source for Relationship between Requirement and a Capability
+     * @param dragSourceInfo
+     */
+    setSource(dragSourceInfo: DragSource) {
+        if (dragSourceInfo) {
+            const nodeArrayLength = this.allNodeTemplates.length;
+            const currentNodeIsSource = this.newJsPlumbInstance.isSource(dragSourceInfo.dragSource);
+            if (!this.dragSourceActive && !currentNodeIsSource && nodeArrayLength > 1) {
+                this.newJsPlumbInstance.makeSource(dragSourceInfo.nodeId, {
+                    connectorOverlays: [
+                        ['Arrow', { location: 1 }],
+                    ],
+                });
+                this.dragSourceInfos = dragSourceInfo;
+                this.targetNodes = this.getAllCapabilities();
+                if (this.targetNodes.length > 0) {
+                    this.newJsPlumbInstance.makeTarget(this.targetNodes);
+                    this.newJsPlumbInstance.targetEndpointDefinitions = {};
+                    this.dragSourceActive = true;
+                    this.bindReqCapConnection();
+                }
+            }
+        }
+    }
+
+    getAllCapabilities() {
+        const capIds: string[] = [];
+        this.allNodeTemplates.forEach(node => {
+            if (node.capabilities) {
+                if (node.capabilities.capability) {
+                    node.capabilities.capability.forEach(cap => {
+                        capIds.push(node.id + '.' + cap.id);
+                    });
+                }
+            }
+        });
+        return capIds;
     }
 
     /**
@@ -1529,12 +1691,14 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * @param $event  The HTML event.
      */
     trackTimeOfMouseDown(): void {
-        this.newJsPlumbInstance.select().removeType('marked');
-        this.revalidateContainer();
-        this.removeDragSource();
-        this.clearSelectedNodes();
-        this.unbindConnection();
-        this.startTime = new Date().getTime();
+        if (this.newJsPlumbInstance) {
+            this.newJsPlumbInstance.select().removeType('marked');
+            this.revalidateContainer();
+            this.removeDragSource();
+            this.clearSelectedNodes();
+            this.unbindConnection();
+            this.startTime = new Date().getTime();
+        }
     }
 
     /**
@@ -1741,7 +1905,9 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                     id: currentRel.id,
                     nameTextFieldValue: currentRel.name,
                     type: currentRel.type,
-                    properties: currentRel.properties
+                    properties: currentRel.properties,
+                    source: currentRel.sourceElement.ref,
+                    target: currentRel.targetElement.ref
                 }
             }));
             conn.addType('marked');
@@ -1906,7 +2072,11 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                             { ref: info.targetId },
                             this.selectedRelationshipType.name,
                             relationshipId,
-                            this.selectedRelationshipType.qName
+                            this.selectedRelationshipType.qName,
+                            TopologyTemplateUtil.getDefaultPropertiesFromEntityTypes(this.selectedRelationshipType.name, this.entityTypes.relationshipTypes),
+                            [],
+                            [],
+                            {}
                         );
                         this.ngRedux.dispatch(this.actions.saveRelationship(newRelationship));
                     }
@@ -1914,6 +2084,111 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 this.unbindConnection();
                 this.revalidateContainer();
             });
+        }
+    }
+
+    bindReqCapConnection() {
+        if (this.jsPlumbBindConnection === false && this.selectedRelationshipType) {
+            this.newJsPlumbInstance.bind('connection', info => {
+                this.jsPlumbBindConnection = true;
+                if (this.dragSourceInfos) {
+                    const sourceNode = info.sourceId;
+                    const sourceElement = this.dragSourceInfos.dragSource.id;
+                    const targetElement = info.targetId.substring(info.targetId.indexOf('.') + 1);
+                    const currentTypeValid = this.entityTypes.relationshipTypes.some(relType => relType.qName === this.selectedRelationshipType.qName);
+                    const currentSourceIdValid = this.allNodeTemplates.some(node => node.id === sourceNode);
+                    if (sourceNode && currentTypeValid && currentSourceIdValid) {
+                        const prefix = this.backendService.configuration.relationshipPrefix;
+                        const relName = this.selectedRelationshipType.name;
+                        let relNumber = 0;
+                        let relationshipId: string;
+
+                        do {
+                            relationshipId = prefix + '_' + relName + '_' + relNumber++;
+                        } while (this.allRelationshipTemplates.find(value => value.id === relationshipId));
+                        if (this.searchTypeAndCheckForCompatibility(this.getCapability(targetElement))) {
+                            const newRelationship = new TRelationshipTemplate(
+                                { ref: sourceElement },
+                                { ref: targetElement },
+                                this.selectedRelationshipType.name,
+                                relationshipId,
+                                this.selectedRelationshipType.qName,
+                                TopologyTemplateUtil.getDefaultPropertiesFromEntityTypes(this.selectedRelationshipType.name,
+                                    this.entityTypes.relationshipTypes),
+                                [],
+                                [],
+                                {}
+                            );
+                            this.ngRedux.dispatch(this.actions.saveRelationship(newRelationship));
+                        }
+                        for (const rel of this.newJsPlumbInstance.getConnections()) {
+                            if (rel.targetId === info.targetId) {
+                                this.newJsPlumbInstance.deleteConnection(rel);
+                            }
+                        }
+                        this.dragSourceActive = false;
+                        this.resetDragSource(sourceElement);
+                    }
+                    this.unbindConnection();
+                    this.revalidateContainer();
+                }
+            });
+        }
+    }
+
+    getCapability(targetElement: string) {
+        let capability: any = null;
+        this.allNodeTemplates.forEach(node => {
+            if (node.capabilities) {
+                if (node.capabilities.capability) {
+                    node.capabilities.capability.forEach(cap => {
+                        if (cap.id === targetElement) {
+                            capability = cap;
+                        }
+                    });
+                }
+            }
+        });
+        return capability;
+    }
+
+    /**
+     * check for compatibility of Requirement and Capability
+     * @param dragTargetInfo
+     */
+    searchTypeAndCheckForCompatibility(capability: any) {
+        let requiredTargetType = '';
+
+        this.entityTypes.requirementTypes.some(req => {
+            if (req.qName === this.dragSourceInfos.dragSource.type) {
+                requiredTargetType = req.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].requiredCapabilityType;
+                return true;
+            }
+        });
+        return this.checkForCompatibility(requiredTargetType, capability);
+    }
+
+    /**
+     * check recursive if the target or a parent of its Capability matches
+     * @param requiredTargetType
+     * @param targetOrParent
+     */
+    checkForCompatibility(requiredTargetType: any, targetOrParent: any) {
+        let parentCapType: any;
+        if (requiredTargetType === targetOrParent.type) {
+            return true;
+        } else {
+            this.entityTypes.capabilityTypes.some(cap => {
+                if (cap.qName === targetOrParent.type) {
+                    parentCapType = cap.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].derivedFrom;
+                    return true;
+                }
+            });
+            if (parentCapType) {
+                return this.checkForCompatibility(requiredTargetType, parentCapType);
+            }
+            this.notify.warning('The selected Requirement and Capability are not Compatible');
+            return false;
         }
     }
 

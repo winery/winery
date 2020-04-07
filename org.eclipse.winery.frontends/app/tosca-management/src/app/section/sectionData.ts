@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -22,6 +22,7 @@ export class SectionData {
     name?: string;
     namespace: string;
     count?: number;
+    qName?: string;
     version?: WineryVersion;
     versionInstances?: SectionData[];
     hasChildren?: boolean;
@@ -30,7 +31,9 @@ export class SectionData {
         this.id = Utils.getNameWithoutVersion(original.id);
         this.name = Utils.getNameWithoutVersion(original.name);
         this.namespace = original.namespace;
-        this.version = original.version;
+        this.version = new WineryVersion(original.version.componentVersion,
+            original.version.wineryVersion, original.version.workInProgressVersion, original.version.currentVersion,
+            original.version.latestVersion, original.version.releasable, original.version.editable);
         this.versionInstances = [original];
 
         return this;
@@ -41,6 +44,7 @@ export class SectionData {
         this.name = original.name;
         this.namespace = original.namespace;
         this.version = original.version;
+        this.qName = original.name;
 
         return this;
     }

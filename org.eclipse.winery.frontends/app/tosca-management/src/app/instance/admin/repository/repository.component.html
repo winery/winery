@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -11,13 +11,109 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<h4>Manage Git Repositories</h4>
+<div>
+    <winery-table [columns]="columns"
+                  [data]="repositories"
+                  (addBtnClicked)="onAddClick()"
+                  (removeBtnClicked)="onRemoveClick($event)">
+    </winery-table>
+    <div *ngIf="cloning">
+        <div class="smallLoader"></div>
+    </div>
+
+    <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+        <winery-modal-header [title]="'Remove Git Repository'"></winery-modal-header>
+        <winery-modal-body>
+            <!--
+                The following lines are used to Delete a Repository, but because of untreated dependencies in Topologies it's not ready to use
+            -->
+            <!--<p *ngIf="elementToRemove != null" id="diagyesnomsg">
+                Do you want to delete this Repository: <span
+                style="font-weight:bold;">{{ elementToRemove.name }}</span>?
+            </p>-->
+            Not working yet!
+        </winery-modal-body>
+        <!--<winery-modal-footer (onOk)="deleteRepository();"
+                             [closeButtonLabel]="'OK'"
+                             [okButtonLabel]="'Yes'">
+        </winery-modal-footer>-->
+    </winery-modal>
+
+    <winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
+        <winery-modal-header [title]="'Add Git Repository'"></winery-modal-header>
+        <winery-modal-body>
+            <form #addTypeForm="ngForm" id="addRepositoryForm">
+                <div *ngIf="newRepository">
+                    <div class="form-group">
+                        <label class="control-label" for="name">Name</label>
+                        <input #name="ngModel"
+                               id="name"
+                               class="form-control"
+                               type="text"
+                               name="name"
+                               autocomplete=off
+                               required
+                               [(ngModel)]="newRepository.name"/>
+                        <div *ngIf="name.errors && (name.dirty || name.touched)" class="alert alert-danger">
+                            <div [hidden]="!name.errors.wineryDuplicateValidator">
+                                No duplicates allowed!
+                            </div>
+                            <div [hidden]="!name.errors.required">
+                                Name is required
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="url">URL</label>
+                        <input #url="ngModel"
+                               id="url"
+                               class="form-control"
+                               type="text"
+                               name="url"
+                               autocomplete=off
+                               required
+                               [(ngModel)]="newRepository.url"/>
+                        <div *ngIf="url.errors && (url.dirty || url.touched)" class="alert alert-danger">
+                            <div [hidden]="!url.errors.required">
+                                URL is required
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="branch">Branch</label>
+                        <input #branch="ngModel"
+                               id="branch"
+                               class="form-control"
+                               type="text"
+                               name="branch"
+                               autocomplete=off
+                               required
+                               [(ngModel)]="newRepository.branch"/>
+                        <div *ngIf="url.errors && (branch.dirty || url.touched)" class="alert alert-danger">
+                            <div [hidden]="!branch.errors.required">
+                                Branch is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </winery-modal-body>
+        <winery-modal-footer (onOk)="addRepository(); addTypeForm.reset();"
+                             [closeButtonLabel]="'Cancel'"
+                             [okButtonLabel]="'Add'"
+                             [disableOkButton]="!addTypeForm?.form.valid">
+        </winery-modal-footer>
+    </winery-modal>
+</div>
+<hr>
 <h4>General Repository Commands</h4>
 <div>
     <a [attr.href]=" path + '/?dump'" class="btn btn-primary">Dump Repository</a>
     <button class="btn btn-danger" (click)="clearRepository();" id="btnclearrepository" data-loading-text="Deleting...">
         Clear Repository
     </button>
-    <button class="btn btn-default" (click)="uploaderModal.show()">Import Repository</button>
+    <button class="btn btn-default" (click)="uploaderModal.show()">Import Zip Repository</button>
 </div>
 
 <winery-modal bsModal #uploaderModal="bs-modal" [modalRef]="uploaderModal">

@@ -19,6 +19,13 @@ import { ToscaComponent } from '../model/toscaComponent';
 import { ToscaTypes } from '../model/enums';
 import { WineryVersion } from '../model/wineryVersion';
 import { HttpClient, HttpResponse } from '@angular/common/http';
+import { WineryRepositoryConfigurationService } from '../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { SubMenuItem, SubMenuItems } from '../model/subMenuItem';
+
+export interface ToscaLightCompatibilityData {
+    isToscaLightCompatible: boolean;
+    errorList: Map<string, string[]>;
+}
 
 @Injectable()
 export class InstanceService {
@@ -29,7 +36,7 @@ export class InstanceService {
     currentVersion: WineryVersion;
     path: string;
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private configurationService: WineryRepositoryConfigurationService) {
     }
 
     /**
@@ -38,65 +45,83 @@ export class InstanceService {
      *
      * @returns string[] containing all menus for each resource type.
      */
-    public getSubMenuByResource(): string[] {
-        let subMenu: string[];
-
+    public getSubMenuByResource(): SubMenuItem[] {
+        let subMenu: SubMenuItem[];
         switch (this.toscaComponent.toscaType) {
             case ToscaTypes.NodeType:
-                subMenu = ['README', 'LICENSE', 'Appearance', 'Instance States', 'Interfaces', 'Implementations', 'Tags',
-                    'Requirement Definitions', 'Capability Definitions', 'Properties Definition',
-                    'Inheritance', 'Documentation', 'XML'];
+                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.appearance, SubMenuItems.instanceStates, SubMenuItems.interfaces,
+                    SubMenuItems.implementations, SubMenuItems.tags, SubMenuItems.requirementDefinitions, SubMenuItems.capabilityDefinitions,
+                    SubMenuItems.propertiesDefinition, SubMenuItems.inheritance, SubMenuItems.documentation, SubMenuItems.xml];
                 break;
             case ToscaTypes.ServiceTemplate:
-                subMenu = ['README', 'LICENSE', 'Topology Template', 'Plans', 'Selfservice Portal',
-                    'Boundary Definitions', 'Tags', 'Constraint Checking', 'Documentation', 'XML'];
+                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.topologyTemplate, SubMenuItems.plans, SubMenuItems.selfServicePortal,
+                    SubMenuItems.boundaryDefinitions, SubMenuItems.tags, SubMenuItems.constraintChecking, SubMenuItems.documentation, SubMenuItems.xml];
+                if (this.configurationService.configuration.features.nfv) {
+                    subMenu.push(SubMenuItems.threatModeling);
+                }
                 break;
             case ToscaTypes.RelationshipType:
-                subMenu = ['README', 'LICENSE', 'Appearance', 'Instance States', 'Source Interfaces', 'Interfaces',
-                    'Target Interfaces', 'Valid Sources and Targets', 'Implementations', 'Properties Definition',
-                    'Inheritance', 'Documentation', 'XML'];
+                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.appearance, SubMenuItems.instanceStates, SubMenuItems.sourceInterfaces,
+                    SubMenuItems.interfaces, SubMenuItems.targetInterfaces, SubMenuItems.validSourcesAndTargets, SubMenuItems.implementations,
+                    SubMenuItems.propertiesDefinition, SubMenuItems.inheritance, SubMenuItems.documentation, SubMenuItems.xml];
                 break;
             case ToscaTypes.ArtifactType:
-                subMenu = ['README', 'LICENSE', 'Properties Definition', 'Inheritance', 'Templates', 'Documentation', 'XML'];
+                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.propertiesDefinition, SubMenuItems.inheritance, SubMenuItems.templates,
+                    SubMenuItems.documentation, SubMenuItems.xml];
                 break;
             case ToscaTypes.ArtifactTemplate:
-                subMenu = ['README', 'LICENSE', 'Files', 'Source', 'Properties', 'Property Constraints', 'Documentation', 'XML'];
+                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.files, SubMenuItems.source, SubMenuItems.properties,
+                    SubMenuItems.propertyConstraints, SubMenuItems.documentation, SubMenuItems.xml];
                 break;
             case ToscaTypes.RequirementType:
-                subMenu = ['README', 'LICENSE', 'Required Capability Type', 'Properties Definition', 'Inheritance', 'Documentation', 'XML'];
+                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.requiredCapabilityType, SubMenuItems.propertiesDefinition,
+                    SubMenuItems.inheritance, SubMenuItems.documentation, SubMenuItems.xml];
                 break;
             case ToscaTypes.CapabilityType:
-                subMenu = ['README', 'LICENSE', 'Properties Definition', 'Inheritance', 'Documentation', 'XML'];
+                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.propertiesDefinition, SubMenuItems.inheritance, SubMenuItems.documentation,
+                    SubMenuItems.xml];
                 break;
             case ToscaTypes.NodeTypeImplementation:
-                subMenu = ['README', 'LICENSE', 'Implementation Artifacts', 'Deployment Artifacts', 'Inheritance', 'Documentation', 'XML'];
+                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.implementationArtifacts, SubMenuItems.deploymentArtifacts,
+                    SubMenuItems.inheritance, SubMenuItems.documentation, SubMenuItems.xml];
                 break;
             case ToscaTypes.RelationshipTypeImplementation:
-                subMenu = ['README', 'LICENSE', 'Implementation Artifacts', 'Inheritance', 'Documentation', 'XML'];
+                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.implementationArtifacts, SubMenuItems.inheritance,
+                    SubMenuItems.documentation, SubMenuItems.xml];
                 break;
             case ToscaTypes.PolicyType:
-                subMenu = ['README', 'LICENSE', 'Language', 'Applies To', 'Properties Definition', 'Inheritance',
-                    'Templates', 'Appearance', 'Documentation', 'XML'];
+                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.language, SubMenuItems.appliesTo, SubMenuItems.propertiesDefinition,
+                    SubMenuItems.inheritance, SubMenuItems.templates, SubMenuItems.appearance, SubMenuItems.documentation, SubMenuItems.xml];
                 break;
             case ToscaTypes.PolicyTemplate:
-                subMenu = ['README', 'LICENSE', 'Properties', 'Property Constraints', 'Appearance', 'Documentation', 'XML'];
+                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.properties, SubMenuItems.propertyConstraints, SubMenuItems.appearance,
+                    SubMenuItems.documentation, SubMenuItems.xml];
                 break;
             case ToscaTypes.Imports:
-                subMenu = ['All Declared Elements Local Names', 'All Defined Types Local Names'];
+                subMenu = [SubMenuItems.allDeclaredElementsLocalNames, SubMenuItems.allDefinedTypesLocalNames];
                 break;
             case ToscaTypes.ComplianceRule:
-                subMenu = ['README', 'LICENSE', 'Identifier', 'Required Structure', 'Tags', 'Documentation', 'XML'];
+                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.identifier, SubMenuItems.requiredStructure, SubMenuItems.tags,
+                    SubMenuItems.documentation, SubMenuItems.xml];
                 break;
             case ToscaTypes.PatternRefinementModel:
-                subMenu = ['README', 'LICENSE', 'Detector', 'Refinement Structure', 'Relation Mappings', 'Property Mappings', 'XML'];
+                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.detector, SubMenuItems.refinementStructure, SubMenuItems.relationMappings,
+                    SubMenuItems.attributeMappings, SubMenuItems.stayMappings, SubMenuItems.xml];
                 break;
             case ToscaTypes.TestRefinementModel:
-                subMenu = ['README', 'LICENSE', 'Detector', 'Test Fragment', 'Relation Mappings', 'XML'];
+                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.detector, SubMenuItems.testFragment, SubMenuItems.relationMappings,
+                    SubMenuItems.xml];
                 break;
             default: // assume Admin
-                subMenu = ['Namespaces', 'Repository', 'Plan Languages', 'Plan Types', 'Constraint Types', 'Consistency Check', 'Accountability', 'Log'];
+                subMenu = [SubMenuItems.namespaces, SubMenuItems.repository, SubMenuItems.planLanguages, SubMenuItems.planTypes,
+                    SubMenuItems.constraintTypes, SubMenuItems.consistencyCheck, SubMenuItems.log, SubMenuItems.configuration];
+                if (this.configurationService.configuration.features.accountability) {
+                    subMenu.push(SubMenuItems.accountability);
+                }
+                if (this.configurationService.configuration.features.edmmModeling) {
+                    subMenu.push(SubMenuItems.oneToOneEDMMMappings, SubMenuItems.edmmTypeMappings);
+                }
         }
-
         return subMenu;
     }
 
@@ -107,7 +132,7 @@ export class InstanceService {
         this.toscaComponent = toscaComponent;
         // In order to have always the base path of this instance, create the path here
         // instead of getting it from the router, because there might be some child routes included.
-        this.path = '/' + this.toscaComponent.toscaType + '/'
+        this.path = backendBaseURL + '/' + this.toscaComponent.toscaType + '/'
             + encodeURIComponent(encodeURIComponent(this.toscaComponent.namespace)) + '/'
             + this.toscaComponent.localName;
 
@@ -122,20 +147,24 @@ export class InstanceService {
 
     public deleteComponent(): Observable<HttpResponse<string>> {
         return this.http.delete(
-            backendBaseURL + this.path + '/',
+            this.path + '/',
             { observe: 'response', responseType: 'text' }
         );
     }
 
     public getComponentData(): Observable<WineryInstance> {
-        return this.http.get<WineryInstance>(backendBaseURL + this.path + '/');
+        return this.http.get<WineryInstance>(this.path + '/');
     }
 
     public getTopologyTemplate(): Observable<WineryTopologyTemplate> {
-        return this.http.get<WineryTopologyTemplate>(backendBaseURL + this.path + '/topologytemplate/');
+        return this.http.get<WineryTopologyTemplate>(this.path + '/topologytemplate/');
     }
 
     public getVersions(): Observable<WineryVersion[]> {
-        return this.http.get<WineryVersion[]>(backendBaseURL + this.path + '/?versions');
+        return this.http.get<WineryVersion[]>(this.path + '/?versions');
+    }
+
+    public getToscaLightCompatibility(): Observable<ToscaLightCompatibilityData> {
+        return this.http.get<ToscaLightCompatibilityData>(this.path + '/toscalight');
     }
 }

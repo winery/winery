@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -27,6 +27,8 @@ import { AuthorizationComponent } from '../../instance/admin/accountability/auth
 import { AuthenticationComponent } from '../../instance/admin/accountability/authentication/authentication.component';
 import { ConfigurationComponent } from '../../instance/admin/accountability/configuration/configuration.component';
 import { ProvenanceComponent } from '../../instance/admin/accountability/provenance/provenance.component';
+import { FeatureConfigurationComponent } from '../../instance/admin/configuration/configuration.component';
+import { EdmmMappingsComponent } from '../../instance/admin/edmmMappings/edmmMappings.component';
 
 const toscaType = ToscaTypes.Admin;
 
@@ -46,13 +48,16 @@ const adminRoutes: Routes = [
                 component: AccountabilityComponent,
                 children: [
                     { path: 'authorization', component: AuthorizationComponent },
-                    { path: 'authentication', component: AuthenticationComponent},
-                    { path: 'provenance', component: ProvenanceComponent},
-                    { path: 'configuration', component: ConfigurationComponent},
+                    { path: 'authentication', component: AuthenticationComponent },
+                    { path: 'provenance', component: ProvenanceComponent },
+                    { path: 'configuration', component: ConfigurationComponent },
                     { path: '', redirectTo: 'authorization', pathMatch: 'full' }
                 ]
             },
             { path: 'log', component: LoggerComponent },
+            { path: 'configuration', component: FeatureConfigurationComponent },
+            { path: '1to1edmmmappings', component: EdmmMappingsComponent },
+            { path: 'edmmtypemappings', component: EdmmMappingsComponent },
             { path: '', redirectTo: 'namespaces', pathMatch: 'full' }
         ]
     },

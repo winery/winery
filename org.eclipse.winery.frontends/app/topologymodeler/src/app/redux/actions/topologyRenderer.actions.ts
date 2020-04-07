@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -32,10 +32,12 @@ export class TopologyRendererActions {
     static TOGGLE_DEPLOYMENT_ARTIFACTS = 'TOGGLE_DEPLOYMENT_ARTIFACTS';
     static TOGGLE_IDS = 'TOGGLE_IDS';
     static TOGGLE_TYPES = 'TOGGLE_TYPES';
+    static TOGGLE_EDMM_TRANSFORMATION_CHECK = 'TOGGLE_EDMM_TRANSFORMATION_CHECK';
     static EXECUTE_LAYOUT = 'EXECUTE_LAYOUT';
     static EXECUTE_ALIGN_H = 'EXECUTE_ALIGN_H';
     static EXECUTE_ALIGN_V = 'EXECUTE_ALIGN_V';
     static IMPORT_TOPOLOGY = 'IMPORT_TOPOLOGY';
+    static THREATMODEL_TOPOLOGY = 'THREATMODEL_TOPOLOGY';
     static SPLIT_TOPOLOGY = 'SPLIT_TOPOLOGY';
     static MATCH_TOPOLOGY = 'MATCH_TOPOLOGY';
     static SUBSTITUTE_TOPOLOGY = 'SUBSTITUTE_TOPOLOGY';
@@ -43,9 +45,11 @@ export class TopologyRendererActions {
     static REFINE_TOPOLOGY_WITH_TESTS = 'REFINE_TOPOLOGY_WITH_TESTS';
     static HIGHLIGHT_NODES = 'HIGHLIGHT_NODES';
     static DETECT_PROBLEMS = 'DETECT_PROBLEMS';
+    static ENRICH_NODE_TEMPLATES = 'ENRICH_NODE_TEMPLATES';
     static DETERMINE_STATEFUL_COMPONENTS = 'DETERMINE_STATEFUL_COMPONENTS';
     static DETERMINE_FREEZABLE_COMPONENTS = 'DETERMINE_FREEZABLE_COMPONENTS';
     static CLEAN_FREEZABLE_COMPONENTS = 'CLEAN_FREEZABLE_COMPONENTS';
+    static PLACE_COMPONENTS = 'PLACE_COMPONENTS';
 
     togglePolicies(): Action {
         return { type: TopologyRendererActions.TOGGLE_POLICIES };
@@ -75,6 +79,10 @@ export class TopologyRendererActions {
         return { type: TopologyRendererActions.TOGGLE_TYPES };
     }
 
+    toggleEdmmTransformationCheck(): Action {
+        return { type: TopologyRendererActions.TOGGLE_EDMM_TRANSFORMATION_CHECK };
+    }
+
     executeLayout(): Action {
         return { type: TopologyRendererActions.EXECUTE_LAYOUT };
     }
@@ -91,6 +99,10 @@ export class TopologyRendererActions {
         return { type: TopologyRendererActions.IMPORT_TOPOLOGY };
     }
 
+    threatModeling(): Action {
+        return { type: TopologyRendererActions.THREATMODEL_TOPOLOGY };
+    }
+
     splitTopology(): Action {
         return { type: TopologyRendererActions.SPLIT_TOPOLOGY };
     }
@@ -101,6 +113,10 @@ export class TopologyRendererActions {
 
     detectProblems(): Action {
         return { type: TopologyRendererActions.DETECT_PROBLEMS };
+    }
+
+    enrichNodeTemplates(): Action {
+        return { type: TopologyRendererActions.ENRICH_NODE_TEMPLATES };
     }
 
     substituteTopology(): Action {
@@ -134,5 +150,9 @@ export class TopologyRendererActions {
 
     cleanFreezableComponents(): Action {
         return { type: TopologyRendererActions.CLEAN_FREEZABLE_COMPONENTS };
+    }
+
+    placeComponents(): Action {
+        return { type: TopologyRendererActions.PLACE_COMPONENTS };
     }
 }

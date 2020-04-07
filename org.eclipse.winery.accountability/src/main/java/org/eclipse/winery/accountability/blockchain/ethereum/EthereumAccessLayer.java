@@ -15,7 +15,6 @@ package org.eclipse.winery.accountability.blockchain.ethereum;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.winery.accountability.blockchain.BlockchainAccess;
@@ -23,6 +22,7 @@ import org.eclipse.winery.accountability.exceptions.BlockchainException;
 import org.eclipse.winery.accountability.exceptions.EthereumException;
 import org.eclipse.winery.accountability.model.ModelProvenanceElement;
 import org.eclipse.winery.accountability.model.authorization.AuthorizationInfo;
+import org.eclipse.winery.common.configuration.AccountabilityConfigurationObject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,13 +50,13 @@ public class EthereumAccessLayer implements BlockchainAccess {
             SmartContractProvider.buildAuthorizationSmartContract(web3j, this.credentials, authorizationSmartContractAddress));
     }
 
-    public EthereumAccessLayer(Properties configuration) throws BlockchainException {
+    public EthereumAccessLayer(AccountabilityConfigurationObject configuration) throws BlockchainException {
         this(
-            configuration.getProperty("geth-url"),
-            configuration.getProperty("ethereum-credentials-file-path"),
-            configuration.getProperty("ethereum-password"),
-            configuration.getProperty("ethereum-provenance-smart-contract-address"),
-            configuration.getProperty("ethereum-authorization-smart-contract-address")
+            configuration.getGethUrl(),
+            configuration.getEthereumCredentialsFile(),
+            configuration.getEthereumPassword(),
+            configuration.getEthereumProvenanceSmartContractAddress(),
+            configuration.getEthereumAuthorizationSmartContractAddress()
         );
     }
     

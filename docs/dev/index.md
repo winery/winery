@@ -5,6 +5,7 @@ This document provides an index to all development guidelines and background inf
 - [ADR](../adr) - list of [architectural decision records](https://adr.github.io) showing which design decisions were taken during development of Winery
 - [Branches](branches.md) - information on branches
 - [CodeHeaders](CodeHeaders.md) - documentation about required code headers
+- [UI Configuration](Configurationmanagment.md) - documentation how to configure the frontends 
 - IDE Setup
     - IntelliJ Ultimate setup: [config/IntelliJ IDEA/README.md](config/IntelliJ%20IDEA/)
     - Eclipse setup: [config/Eclipse/README.md](config/Eclipse/)
@@ -21,10 +22,21 @@ This document provides an index to all development guidelines and background inf
 - [ToolChain](ToolChain) - GitHub workflow
 - [Trouble Shooting](troubleshootings.md)
 - [TOSCA](../tosca/) - notes on OASIS TOSCA
+- [Extract Deployable Components from Chef Cookbooks](../user/CrawlerAndComponentExtractionForChefCookbooks.md) - Notes on crawler and extraction of components from chef cookbooks
+- [DeployableComponents](../user/DeployableComponentsUsage.md) - Explanations on dockerfile component extraction tool
 
 To get started, go on at [ToolChain](ToolChain.md).
 
 As a user, continue at our [quick Start](../user/quickstart.md), which shows how to start how to work with Winery.
+
+## Quick Develop
+
+1. Clone the repository `git clone https://github.com/eclipse/winery && cd winery`.
+2. If you are a Mac user, [install solidity natively](https://solidity.readthedocs.io/en/latest/installing-solidity.html#binary-packages).
+3. Build the repository `mvn package -DskipTests` (skiping the tests for a faster build).
+4. Continue your IDE setup:
+    - [IntelliJ Ultimate](config/IntelliJ%20IDEA/)
+    - [Eclipse](config/Eclipse/)
 
 ## License
 

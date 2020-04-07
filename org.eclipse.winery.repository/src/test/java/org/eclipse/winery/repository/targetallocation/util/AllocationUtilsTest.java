@@ -95,7 +95,7 @@ public class AllocationUtilsTest extends TestWithGitBackedRepository {
         original.setMaxInstances("1");
         TNodeTemplate clone = BackendUtils.clone(original);
         assertEquals(original, clone);
-        TNodeTemplate cloneNotEquals = AllocationUtils.cloneNotEqual(original);
+        TNodeTemplate cloneNotEquals = AllocationUtils.clone(original, true);
         assertNotEquals(original, cloneNotEquals);
     }
 
@@ -104,7 +104,7 @@ public class AllocationUtilsTest extends TestWithGitBackedRepository {
         TRelationshipTemplate original = topology.getRelationshipTemplates().get(0);
         TRelationshipTemplate clone = BackendUtils.clone(original);
         assertEquals(original, clone);
-        TRelationshipTemplate cloneNotEquals = AllocationUtils.cloneNotEqual(original);
+        TRelationshipTemplate cloneNotEquals = AllocationUtils.clone(original, true);
         assertNotEquals(original, cloneNotEquals);
     }
 }

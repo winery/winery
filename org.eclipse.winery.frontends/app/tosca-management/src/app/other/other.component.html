@@ -28,18 +28,27 @@
     <h4>Policies</h4>
     <a class="btn btn-default" [routerLink]="['/policytypes']">Policy Types</a>
     <a class="btn btn-default" [routerLink]="['/policytemplates']">Policy Templates</a>
-
     <hr>
     <h4>Imports</h4>
     <a class="btn btn-default" [routerLink]="['/imports/http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema/']">XML Schema
         Definitions</a>
-    <a class="btn btn-default" [routerLink]="['/imports/http%3A%2F%2Fschemas.xmlsoap.org%2Fwsdl%2F']">WSDLs</a>
-
+    <a class="btn btn-default"
+       [routerLink]="['/imports/http%3A%2F%2Fschemas.xmlsoap.org%2Fwsdl%2F']">WSDLs</a>
     <hr>
-    <h4>Refinement Models</h4>
-    <a class="btn btn-default" [routerLink]="['/patternrefinementmodels']">Pattern Refinement Models</a>
-    <a class="btn btn-default" [routerLink]="['/testrefinementmodels']">Test Refinement Models</a>
-    <h4>Compliance Rules</h4>
-    <a class="btn btn-default" [routerLink]="['/compliancerules']">Compliance Rules</a>
+    <div *wineryRepositoryFeatureToggle="configEnum.PatternRefinement">
+        <h4>Refinement Models</h4>
+        <a class="btn btn-default" [routerLink]="['/patternrefinementmodels']"
+           *wineryRepositoryFeatureToggle="configEnum.PatternRefinement">
+            Pattern Refinement Models
+        </a>
+        <a class="btn btn-default" [routerLink]="['/testrefinementmodels']"
+           *wineryRepositoryFeatureToggle="configEnum.TestRefinement">
+            Test Refinement Models
+        </a>
+    </div>
+    <div *wineryRepositoryFeatureToggle="configEnum.Compliance">
+        <h4>Compliance Rules</h4>
+        <a class="btn btn-default" [routerLink]="['/compliancerules']">Compliance Rules</a>
+    </div>
 </div>
 

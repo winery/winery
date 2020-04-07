@@ -14,15 +14,14 @@
 package org.eclipse.winery.topologygraph.model;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jgrapht.EdgeFactory;
 import org.jgrapht.graph.DefaultDirectedGraph;
 
 public class ToscaGraph extends DefaultDirectedGraph<ToscaNode, ToscaEdge> {
 
     private static final long serialVersionUID = 1L;
 
-    public ToscaGraph(EdgeFactory<ToscaNode, ToscaEdge> ef) {
-        super(ef);
+    public ToscaGraph() {
+        super(ToscaEdge.class);
     }
 
     public ToscaNode getNode(String id) {

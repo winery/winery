@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,6 +24,7 @@ import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reducer';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { StatefulAnnotationsService } from '../services/statefulAnnotations.service';
+import { FeatureEnum } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/wineryRepository.feature.direct';
 
 /**
  * The navbar of the topologymodeler.
@@ -58,6 +59,8 @@ export class NavbarComponent implements OnDestroy {
     exportCsarUrl: string;
     splittingOngoing: boolean;
     matchingOngoing: boolean;
+    placingOngoing: boolean;
+    configEnum = FeatureEnum;
 
     constructor(private alert: ToastrService,
                 private ngRedux: NgRedux<IWineryState>,
@@ -95,6 +98,9 @@ export class NavbarComponent implements OnDestroy {
         if (!this.navbarButtonsState.buttonsState.matchTopologyButton) {
             this.matchingOngoing = false;
         }
+        if (!this.navbarButtonsState.buttonsState.placeComponentsButton) {
+            this.placingOngoing = false;
+        }
     }
 
     /**
@@ -110,14 +116,16 @@ export class NavbarComponent implements OnDestroy {
     /**
      * Exports the service template as a CSAR file
      * @param event
+     * @param edmm indicates whether EDMM should be exported.
      */
-    exportCsar(event) {
+    exportCsar(event, edmm?: string) {
         let url = this.exportCsarUrl;
-        if (event.ctrlKey) {
-            url = url.replace(/csar$/, 'definitions');
-            console.log(url);
+        if (edmm) {
+            url = this.backendService.serviceTemplateURL + '/?edmm';
+        } else if (event.ctrlKey) {
+            url = this.backendService.serviceTemplateURL + '?definitions';
         }
-        window.open(url);
+        window.open(url, '_blank');
     }
 
     /**
@@ -154,6 +162,10 @@ export class NavbarComponent implements OnDestroy {
                 this.ngRedux.dispatch(this.actions.toggleTypes());
                 break;
             }
+            case 'edmmTransformationCheck': {
+                this.ngRedux.dispatch(this.actions.toggleEdmmTransformationCheck());
+                break;
+            }
             case 'ids': {
                 this.ngRedux.dispatch(this.actions.toggleIds());
                 break;
@@ -174,6 +186,10 @@ export class NavbarComponent implements OnDestroy {
                 this.ngRedux.dispatch(this.actions.importTopology());
                 break;
             }
+            case 'threatModeling': {
+                this.ngRedux.dispatch(this.actions.threatModeling());
+                break;
+            }
             case 'split': {
                 this.ngRedux.dispatch(this.actions.splitTopology());
                 this.splittingOngoing = true;
@@ -186,6 +202,10 @@ export class NavbarComponent implements OnDestroy {
             }
             case 'problemdetection': {
                 this.ngRedux.dispatch(this.actions.detectProblems());
+                break;
+            }
+            case 'enrichment': {
+                this.ngRedux.dispatch(this.actions.enrichNodeTemplates());
                 break;
             }
             case 'substituteTopology':
@@ -210,6 +230,10 @@ export class NavbarComponent implements OnDestroy {
             case 'cleanFreezableComponents':
                 this.ngRedux.dispatch(this.actions.cleanFreezableComponents());
                 break;
+            case 'placement':
+                this.ngRedux.dispatch(this.actions.placeComponents());
+                this.placingOngoing = true;
+                break;
         }
     }
 
@@ -217,29 +241,7 @@ export class NavbarComponent implements OnDestroy {
      * Calls the BackendService's saveTopologyTemplate method and displays a success message if successful.
      */
     saveTopologyTemplateToRepository() {
-        // Initialization
-        const topologySkeleton = {
-            documentation: [],
-            any: [],
-            otherAttributes: {},
-            relationshipTemplates: [],
-            nodeTemplates: []
-        };
-        // Prepare for saving by updating the existing topology with the current topology state inside the Redux store
-        topologySkeleton.nodeTemplates = this.unformattedTopologyTemplate.nodeTemplates;
-        topologySkeleton.relationshipTemplates = this.unformattedTopologyTemplate.relationshipTemplates;
-        topologySkeleton.relationshipTemplates.map(relationship => {
-            delete relationship.state;
-        });
-        // remove the 'Color' field from all nodeTemplates as the REST Api does not recognize it.
-        topologySkeleton.nodeTemplates.map(nodeTemplate => {
-            delete nodeTemplate.visuals;
-            delete nodeTemplate.state;
-        });
-        const topologyToBeSaved = topologySkeleton;
-        console.log(topologyToBeSaved);
-        // The topology gets saved here.
-        this.backendService.saveTopologyTemplate(topologyToBeSaved)
+        this.backendService.saveTopologyTemplate(this.unformattedTopologyTemplate)
             .subscribe(res => {
                 res.ok === true ? this.alert.success('<p>Saved the topology!<br>' + 'Response Status: '
                     + res.statusText + ' ' + res.status + '</p>')

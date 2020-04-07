@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -20,10 +20,9 @@ import { IWineryState } from '../redux/store/winery.store';
 import { TNodeTemplate } from '../models/ttopology-template';
 import { NewNodeIdTypeColorPropertiesModel } from '../models/newNodeIdTypeColorModel';
 import { Subscription } from 'rxjs';
-import { Utils } from '../models/utils';
+import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 import { EntityTypesModel } from '../models/entityTypesModel';
 import { GroupedNodeTypeModel } from '../models/groupedNodeTypeModel';
-import { hostURL } from '../models/configuration';
 import { Visuals } from '../models/visuals';
 import { BackendService } from '../services/backend.service';
 
@@ -139,7 +138,7 @@ export class PaletteComponent implements OnDestroy {
         const y = $event.pageY - this.newNodePositionOffsetY;
 
         const newIdTypeColorProperties = this.generateIdTypeAndProperties(child.text);
-        const nodeVisuals: Visuals = Utils.getNodeVisualsForNodeTemplate(newIdTypeColorProperties.type, this.entityTypes.nodeVisuals);
+        const nodeVisuals: Visuals = TopologyTemplateUtil.getNodeVisualsForNodeTemplate(newIdTypeColorProperties.type, this.entityTypes.nodeVisuals);
         const newNode: TNodeTemplate = new TNodeTemplate(
             newIdTypeColorProperties.properties,
             newIdTypeColorProperties.id,
@@ -190,7 +189,7 @@ export class PaletteComponent implements OnDestroy {
                     return {
                         id: this.backendService.configuration.idPrefix + newId,
                         type: type,
-                        properties: this.getDefaultPropertiesFromNodeTypes(name)
+                        properties: TopologyTemplateUtil.getDefaultPropertiesFromEntityTypes(name, this.entityTypes.unGroupedNodeTypes)
                     };
                 }
             }
@@ -214,46 +213,12 @@ export class PaletteComponent implements OnDestroy {
                     const result = {
                         id: this.backendService.configuration.idPrefix + node.id,
                         type: node.qName,
-                        properties: this.getDefaultPropertiesFromNodeTypes(name)
+                        properties: TopologyTemplateUtil.getDefaultPropertiesFromEntityTypes(name, this.entityTypes.unGroupedNodeTypes)
                     };
                     return result;
                 }
             }
         } catch (e) {
-        }
-    }
-
-    /**
-     * Generates default properties from node types
-     * @param name
-     * @return result
-     */
-    private getDefaultPropertiesFromNodeTypes(name: string): any {
-        for (const nodeType of this.entityTypes.unGroupedNodeTypes) {
-            if (nodeType.name === name) {
-                // if any is defined with at least one element it's a KV property, sets default values if there aren't
-                // any in the node template
-                if (nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any) {
-                    if (nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any.length > 0 &&
-                        nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any[0].propertyDefinitionKVList) {
-                        const properties = {
-                            kvproperties: Utils.setKVProperties(nodeType)
-                        };
-                        return properties;
-                    }
-                    // if propertiesDefinition is defined it's a XML property
-                } else if (nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition
-                    && nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element) {
-                    const properties = {
-                        any: nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element
-                    };
-                    return properties;
-
-                } else {
-                    // else no properties
-                    return null;
-                }
-            }
         }
     }
 
@@ -265,12 +230,12 @@ export class PaletteComponent implements OnDestroy {
     }
 
     getImageUrl(child: GroupedNodeTypeModel): string {
-        const visuals = Utils.getNodeVisualsForNodeTemplate(child.id,
+        const visuals = TopologyTemplateUtil.getNodeVisualsForNodeTemplate(child.id,
             this.entityTypes.nodeVisuals);
 
         // if the node doesn't have a picture the URL is "null"
         if (visuals.imageUrl !== 'null') {
-            return hostURL + visuals.imageUrl;
+            return visuals.imageUrl;
         }
     }
 }

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,6 +14,7 @@
 
 import { Entity, EntityType, TTopologyTemplate, VisualEntityType } from './ttopology-template';
 import { TopologyModelerConfiguration } from './topologyModelerConfiguration';
+import { VersionElement } from './versionElement';
 import { Visuals } from './visuals';
 
 /**
@@ -24,6 +25,7 @@ export class EntityTypesModel {
     artifactTypes: EntityType[];
     capabilityTypes: EntityType[];
     groupedNodeTypes: any[];
+    versionElements: VersionElement[];
     nodeVisuals: Visuals[];
     relationshipVisuals: Visuals[];
     policyTemplates: Entity[];

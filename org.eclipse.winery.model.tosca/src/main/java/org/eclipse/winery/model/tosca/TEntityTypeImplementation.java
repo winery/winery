@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -102,6 +103,11 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
 
     public void setTargetNamespace(String value) {
         this.targetNamespace = value;
+    }
+
+    @JsonIgnore
+    public QName getQName() {
+        return QName.valueOf("{" + this.targetNamespace + "}" + this.name);
     }
 
     @Nullable

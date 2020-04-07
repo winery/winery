@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -37,6 +37,9 @@ import { ConfigurationService } from '../../instance/admin/accountability/config
 import { AccountabilityService } from '../../instance/admin/accountability/accountability.service';
 import { WineryFileComparisonModule } from '../../wineryFileComparisonModule/wineryFileComparison.module';
 import { ProvenanceComponent } from '../../instance/admin/accountability/provenance/provenance.component';
+import { FeatureConfigurationComponent } from '../../instance/admin/configuration/configuration.component';
+import { WineryFeatureToggleModule } from '../../wineryFeatureToggleModule/winery-feature-toggle.module';
+import { EdmmMappingsComponent } from '../../instance/admin/edmmMappings/edmmMappings.component';
 
 @NgModule({
     imports: [
@@ -56,7 +59,8 @@ import { ProvenanceComponent } from '../../instance/admin/accountability/provena
         AccordionModule.forRoot(),
         CollapseModule.forRoot(),
         ModalModule.forRoot(),
-        AdminRouterModule
+        AdminRouterModule,
+        WineryFeatureToggleModule
     ],
     declarations: [
         NamespacesComponent,
@@ -68,7 +72,9 @@ import { ProvenanceComponent } from '../../instance/admin/accountability/provena
         AuthorizationComponent,
         AuthenticationComponent,
         ConfigurationComponent,
-        ProvenanceComponent
+        FeatureConfigurationComponent,
+        ProvenanceComponent,
+        EdmmMappingsComponent,
     ],
     providers: [ConfigurationService, AccountabilityService]
 

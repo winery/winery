@@ -14,10 +14,9 @@
 import { Injectable } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
-import { debug, isNullOrUndefined } from 'util';
+import { isNullOrUndefined } from 'util';
 import { backendBaseURL } from '../configuration';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { FileProvenanceElement } from '../model/provenance';
 
 @Injectable()
 export class SectionService {

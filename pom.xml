@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2013-2019 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -79,9 +79,12 @@
         <io.github.adr.e-adr.version>1.0.0</io.github.adr.e-adr.version>
         <org.apache.commons.configuration>2.3</org.apache.commons.configuration>
         <org.eclipse.jdt.annotation>2.1.0</org.eclipse.jdt.annotation>
+        <org.eclipse.jgit.version>5.5.1.201910021850-r</org.eclipse.jgit.version>
         <org.mockito.moickito-core.version>2.19.0</org.mockito.moickito-core.version>
         <de.danielbechler.java-object-diff>0.95</de.danielbechler.java-object-diff>
-        <org.jgrapht.jgrapht-core.version>1.0.1</org.jgrapht.jgrapht-core.version>
+        <org.jgrapht.jgrapht-core.version>1.3.1</org.jgrapht.jgrapht-core.version>
+        <org.web3j>4.2.0</org.web3j>
+        <org.apache.commons-lang3.version>3.7</org.apache.commons-lang3.version>
 
         <!-- grouped libraries -->
         <org.apache.cxf.version>2.7.6</org.apache.cxf.version>
@@ -89,30 +92,74 @@
         <junit.jupiter.version>5.2.0</junit.jupiter.version>
         <junit.platform.version>1.2.0</junit.platform.version>
     </properties>
-    <modules>
-        <module>org.eclipse.winery.model.bpmn4tosca</module>
-        <module>org.eclipse.winery.model.csar.toscametafile</module>
-        <module>org.eclipse.winery.model.selfservice</module>
-        <module>org.eclipse.winery.model.tosca</module>
-        <module>org.eclipse.winery.model.tosca.yaml</module>
-        <module>org.eclipse.winery.accountability</module>
-        <module>org.eclipse.winery.common</module>
-        <module>org.eclipse.winery.yaml.common</module>
-        <module>org.eclipse.winery.yaml.converter</module>
-        <module>org.eclipse.winery.cli</module>
-        <module>org.eclipse.winery.bpmn4tosca.converter.tobpel</module>
-        <module>org.eclipse.winery.repository</module>
-        <module>org.eclipse.winery.repository.client</module>
-        <module>org.eclipse.winery.repository.configuration</module>
-        <module>org.eclipse.winery.repository.rest</module>
-        <module>org.eclipse.winery.topologygraph</module>
-        <module>org.eclipse.winery.compliance</module>
-        <module>org.eclipse.winery.generators.ia</module>
-        <module>org.eclipse.winery.highlevelrestapi</module>
-        <module>org.eclipse.winery.tools.copybaragenerator</module>
-        <module>org.eclipse.winery.model.adaptation</module>
-        <module>org.eclipse.winery.frontends</module>
-    </modules>
+    <profiles>
+        <profile>
+            <id>all</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>org.eclipse.winery.model.bpmn4tosca</module>
+                <module>org.eclipse.winery.model.csar.toscametafile</module>
+                <module>org.eclipse.winery.model.selfservice</module>
+                <module>org.eclipse.winery.model.tosca</module>
+                <module>org.eclipse.winery.model.tosca.yaml</module>
+                <module>org.eclipse.winery.accountability</module>
+                <module>org.eclipse.winery.common</module>
+                <module>org.eclipse.winery.yaml.common</module>
+                <module>org.eclipse.winery.yaml.converter</module>
+                <module>org.eclipse.winery.cli</module>
+                <module>org.eclipse.winery.bpmn4tosca.converter.tobpel</module>
+                <module>org.eclipse.winery.repository</module>
+                <module>org.eclipse.winery.repository.client</module>
+                <module>org.eclipse.winery.repository.rest</module>
+                <module>org.eclipse.winery.topologygraph</module>
+                <module>org.eclipse.winery.compliance</module>
+                <module>org.eclipse.winery.generators.ia</module>
+                <module>org.eclipse.winery.highlevelrestapi</module>
+                <module>org.eclipse.winery.tools.copybaragenerator</module>
+                <module>org.eclipse.winery.model.adaptation</module>
+                <module>org.eclipse.winery.frontends</module>
+                <module>org.eclipse.winery.crawler</module>
+                <module>org.eclipse.winery.tools.deployablecomponents</module>
+                <module>org.eclipse.winery.model.threatmodeling</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>frontend</id>
+            <modules>
+                <module>org.eclipse.winery.frontends</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>java</id>
+            <modules>
+                <module>org.eclipse.winery.model.bpmn4tosca</module>
+                <module>org.eclipse.winery.model.csar.toscametafile</module>
+                <module>org.eclipse.winery.model.selfservice</module>
+                <module>org.eclipse.winery.model.tosca</module>
+                <module>org.eclipse.winery.model.tosca.yaml</module>
+                <module>org.eclipse.winery.accountability</module>
+                <module>org.eclipse.winery.common</module>
+                <module>org.eclipse.winery.yaml.common</module>
+                <module>org.eclipse.winery.yaml.converter</module>
+                <module>org.eclipse.winery.cli</module>
+                <module>org.eclipse.winery.bpmn4tosca.converter.tobpel</module>
+                <module>org.eclipse.winery.repository</module>
+                <module>org.eclipse.winery.repository.client</module>
+                <module>org.eclipse.winery.repository.rest</module>
+                <module>org.eclipse.winery.topologygraph</module>
+                <module>org.eclipse.winery.compliance</module>
+                <module>org.eclipse.winery.generators.ia</module>
+                <module>org.eclipse.winery.highlevelrestapi</module>
+                <module>org.eclipse.winery.tools.copybaragenerator</module>
+                <module>org.eclipse.winery.model.adaptation</module>
+                <module>org.eclipse.winery.crawler</module>
+                <module>org.eclipse.winery.tools.deployablecomponents</module>
+                <module>org.eclipse.winery.model.threatmodeling</module>
+            </modules>
+        </profile>
+    </profiles>
     <build>
         <plugins>
             <plugin>
@@ -166,413 +213,6 @@
                         </execution>
                     </executions>
                 </plugin>
-                <plugin>
-                    <artifactId>maven-deploy-plugin</artifactId>
-                    <version>2.8.1</version>
-                    <configuration>
-                        <!--
-                          Note that all child projects that are supposed to be deployed need to
-                          define the property main.basedir themselves. If it's not defined, the
-                          child artifact will not be included for deployment to mvn-repo
-                        -->
-                        <altDeploymentRepository>
-                            internal.repo::default::file://${main.basedir}/target/mvn-repo
-                        </altDeploymentRepository>
-                    </configuration>
-                </plugin>
-                <!--
-                    Plugin to auto-generate an Eclipse update-site. The plugin can be run with:
-
-                        mvn org.reficio:p2-maven-plugin:site -N
-
-                    This generates the update-site to 'target/repository'. Afterwards, one can upload this bundle to
-                     a public location.
-                -->
-                <plugin>
-                    <groupId>org.reficio</groupId>
-                    <artifactId>p2-maven-plugin</artifactId>
-                    <version>1.3.0</version>
-                    <executions>
-                        <execution>
-                            <id>default-cli</id>
-                            <configuration>
-                                <featureDefinitions>
-                                    <feature>
-                                        <id>winery</id>
-                                        <version>2.0.0</version>
-                                        <label>Winery Feature</label>
-                                        <providerName>${project.groupId}</providerName>
-                                        <description>${project.description}</description>
-                                        <generateSourceFeature>true</generateSourceFeature>
-                                        <artifacts>
-                                            <artifact>
-                                                <id>
-                                                    org.eclipse.winery:org.eclipse.winery.model.bpmn4tosca:${project.version}
-                                                </id>
-                                                <source>true</source>
-                                                <transitive>true</transitive>
-                                                <excludes>
-                                                    <exclude>org.eclipse.winery*</exclude>
-                                                    <exclude>com.github.jnr:*:::</exclude>
-                                                    <exclude>org.web3j:*</exclude>
-                                                    <exclude>org.bouncycastle</exclude>
-                                                </excludes>
-                                                <instructions>
-                                                    <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>
-                                                        org.eclipse.winery.bpmn2bpel.model.*;-noimport:=true;version:=${project.version.osgi}
-                                                    </Export-Package>
-                                                </instructions>
-                                            </artifact>
-                                            <artifact>
-                                                <id>
-                                                    org.eclipse.winery:org.eclipse.winery.model.csar.toscametafile:${project.version}
-                                                </id>
-                                                <source>true</source>
-                                                <transitive>true</transitive>
-                                                <excludes>
-                                                    <exclude>org.eclipse.winery*</exclude>
-                                                    <exclude>com.github.jnr:*:::</exclude>
-                                                    <exclude>org.web3j:*</exclude>
-                                                    <exclude>org.bouncycastle</exclude>
-                                                </excludes>
-                                                <instructions>
-                                                    <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>
-                                                        org.eclipse.winery.model.csar.toscametafile.*;-noimport:=true;version:=${project.version.osgi}
-                                                    </Export-Package>
-                                                </instructions>
-                                            </artifact>
-                                            <artifact>
-                                                <id>
-                                                    org.eclipse.winery:org.eclipse.winery.model.selfservice:${project.version}
-                                                </id>
-                                                <source>true</source>
-                                                <transitive>true</transitive>
-                                                <excludes>
-                                                    <exclude>org.eclipse.winery*</exclude>
-                                                    <exclude>com.github.jnr:*:::</exclude>
-                                                    <exclude>org.web3j:*</exclude>
-                                                    <exclude>org.bouncycastle</exclude>
-                                                </excludes>
-                                                <instructions>
-                                                    <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>
-                                                        org.eclipse.winery.model.selfservice.*;-noimport:=true;version:=${project.version.osgi}
-                                                    </Export-Package>
-                                                </instructions>
-                                            </artifact>
-                                            <artifact>
-                                                <id>org.eclipse.winery:org.eclipse.winery.model.tosca:${project.version}
-                                                </id>
-                                                <source>true</source>
-                                                <transitive>true</transitive>
-                                                <excludes>
-                                                    <exclude>org.eclipse.winery*</exclude>
-                                                    <exclude>com.github.jnr:*:::</exclude>
-                                                    <exclude>org.web3j:*</exclude>
-                                                    <exclude>org.bouncycastle</exclude>
-                                                </excludes>
-                                                <instructions>
-                                                    <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>
-                                                        org.eclipse.winery.model.tosca.*;-noimport:=true;version:=${project.version.osgi}
-                                                    </Export-Package>
-                                                </instructions>
-                                            </artifact>
-                                            <artifact>
-                                                <id>
-                                                    org.eclipse.winery:org.eclipse.winery.model.tosca.yaml:${project.version}
-                                                </id>
-                                                <source>true</source>
-                                                <transitive>true</transitive>
-                                                <excludes>
-                                                    <exclude>org.eclipse.winery*</exclude>
-                                                    <exclude>com.github.jnr:*:::</exclude>
-                                                    <exclude>org.web3j:*</exclude>
-                                                    <exclude>org.bouncycastle</exclude>
-                                                </excludes>
-                                                <instructions>
-                                                    <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>
-                                                        org.eclipse.winery.model.tosca.yaml.*;-noimport:=true;version:=${project.version.osgi}
-                                                    </Export-Package>
-                                                </instructions>
-                                            </artifact>
-                                            <artifact>
-                                                <id>org.eclipse.winery:org.eclipse.winery.common:${project.version}</id>
-                                                <source>true</source>
-                                                <transitive>true</transitive>
-                                                <excludes>
-                                                    <exclude>org.eclipse.winery*</exclude>
-                                                    <!-- Export-Package specification is incorrect, 
-                                                         see https://github.com/SQiShER/java-object-diff/issues/205 -->
-                                                    <exclude>
-                                                        de.danielbechler:java-object-diff:${de.danielbechler.java-object-diff}
-                                                    </exclude>
-                                                    <exclude>com.github.jnr:*:::</exclude>
-                                                </excludes>
-                                                <instructions>
-                                                    <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>
-                                                        org.eclipse.winery.common.*;-noimport:=true;version:=${project.version.osgi}
-                                                    </Export-Package>
-                                                </instructions>
-                                            </artifact>
-                                            <artifact>
-                                                <id>org.eclipse.winery:org.eclipse.winery.yaml.common:${project.version}
-                                                </id>
-                                                <source>true</source>
-                                                <transitive>true</transitive>
-                                                <excludes>
-                                                    <exclude>org.eclipse.winery*</exclude>
-                                                    <exclude>com.github.jnr:*:::</exclude>
-                                                    <exclude>org.web3j:*</exclude>
-                                                    <exclude>org.bouncycastle</exclude>
-                                                </excludes>
-                                                <instructions>
-                                                    <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>
-                                                        org.eclipse.winery.yaml.common.*;-noimport:=true;version:=${project.version.osgi}
-                                                    </Export-Package>
-                                                </instructions>
-                                            </artifact>
-                                            <artifact>
-                                                <id>
-                                                    org.eclipse.winery:org.eclipse.winery.yaml.converter:${project.version}
-                                                </id>
-                                                <source>true</source>
-                                                <transitive>true</transitive>
-                                                <excludes>
-                                                    <exclude>org.eclipse.winery*</exclude>
-                                                    <exclude>com.github.jnr:*:::</exclude>
-                                                    <exclude>org.web3j:*</exclude>
-                                                    <exclude>org.bouncycastle</exclude>
-                                                </excludes>
-                                                <instructions>
-                                                    <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>
-                                                        org.eclipse.winery.yaml.converter.*;-noimport:=true;version:=${project.version.osgi}
-                                                    </Export-Package>
-                                                </instructions>
-                                            </artifact>
-                                            <artifact>
-                                                <id>
-                                                    org.eclipse.winery:org.eclipse.winery.bpmn4tosca.converter.tobpel:${project.version}
-                                                </id>
-                                                <source>true</source>
-                                                <transitive>true</transitive>
-                                                <excludes>
-                                                    <exclude>org.eclipse.winery*</exclude>
-                                                    <exclude>com.github.jnr:*:::</exclude>
-                                                </excludes>
-                                                <instructions>
-                                                    <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>
-                                                        org.eclipse.winery.bpmn2bpel.*;-noimport:=true;version:=${project.version.osgi}
-                                                    </Export-Package>
-                                                </instructions>
-                                            </artifact>
-                                            <artifact>
-                                                <id>
-                                                    org.eclipse.winery:org.eclipse.winery.repository:${project.version}
-                                                </id>
-                                                <source>true</source>
-                                                <excludes>
-                                                    <exclude>org.eclipse.winery*</exclude>
-                                                    <exclude>com.github.jnr:*:::</exclude>
-                                                    <exclude>org.web3j:*</exclude>
-                                                    <exclude>org.bouncycastle</exclude>
-                                                </excludes>
-                                                <transitive>true</transitive>
-                                                <instructions>
-                                                    <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>
-                                                        org.eclipse.winery.repository.*;-noimport:=true;version:=${project.version.osgi}
-                                                    </Export-Package>
-                                                </instructions>
-                                            </artifact>
-                                            <artifact>
-                                                <id>
-                                                    org.eclipse.winery:org.eclipse.winery.repository.client:${project.version}
-                                                </id>
-                                                <source>true</source>
-                                                <transitive>true</transitive>
-                                                <excludes>
-                                                    <exclude>org.eclipse.winery*</exclude>
-                                                    <exclude>com.github.jnr:*:::</exclude>
-                                                    <exclude>org.web3j:*</exclude>
-                                                    <exclude>org.bouncycastle</exclude>
-                                                </excludes>
-                                                <instructions>
-                                                    <Import-Package>
-                                                        !com.sun.org.apache.xalan.*,
-                                                        *;resolution:=optional
-                                                    </Import-Package>
-                                                    <Export-Package>
-                                                        org.eclipse.winery.repository.client.*;-noimport:=true;version:=${project.version.osgi}
-                                                    </Export-Package>
-                                                </instructions>
-                                            </artifact>
-                                            <artifact>
-                                                <id>
-                                                    org.eclipse.winery:org.eclipse.winery.repository.configuration:${project.version}
-                                                </id>
-                                                <source>true</source>
-                                                <transitive>true</transitive>
-                                                <excludes>
-                                                    <exclude>org.eclipse.winery*</exclude>
-                                                    <exclude>com.github.jnr:*:::</exclude>
-                                                    <exclude>org.web3j:*</exclude>
-                                                    <exclude>org.bouncycastle</exclude>
-                                                </excludes>
-                                                <instructions>
-                                                    <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>
-                                                        org.eclipse.winery.repository.configuration.*;-noimport:=true;version:=${project.version.osgi}
-                                                    </Export-Package>
-                                                </instructions>
-                                            </artifact>
-                                            <artifact>
-                                                <id>
-                                                    org.eclipse.winery:org.eclipse.winery.compliance:${project.version}
-                                                </id>
-                                                <source>true</source>
-                                                <transitive>true</transitive>
-                                                <excludes>
-                                                    <exclude>org.eclipse.winery*</exclude>
-                                                    <exclude>com.github.jnr:*:::</exclude>
-                                                    <exclude>org.web3j:*</exclude>
-                                                    <exclude>org.bouncycastle</exclude>
-                                                </excludes>
-                                                <instructions>
-                                                    <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>
-                                                        org.eclipse.winery.compliance.*;-noimport:=true;version:=${project.version.osgi}
-                                                    </Export-Package>
-                                                </instructions>
-                                            </artifact>
-                                            <artifact>
-                                                <id>
-                                                    org.eclipse.winery:org.eclipse.winery.topologygraph:${project.version}
-                                                </id>
-                                                <source>true</source>
-                                                <transitive>true</transitive>
-                                                <excludes>
-                                                    <exclude>org.eclipse.winery*</exclude>
-                                                    <exclude>com.github.jnr:*:::</exclude>
-                                                    <exclude>org.web3j:*</exclude>
-                                                    <exclude>org.bouncycastle</exclude>
-                                                </excludes>
-                                                <instructions>
-                                                    <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>
-                                                        org.eclipse.winery.topologygraph.*;-noimport:=true;version:=${project.version.osgi}
-                                                    </Export-Package>
-                                                </instructions>
-                                            </artifact>
-                                            <artifact>
-                                                <id>
-                                                    org.eclipse.winery:org.eclipse.winery.generators.ia:${project.version}
-                                                </id>
-                                                <source>true</source>
-                                                <transitive>true</transitive>
-                                                <excludes>
-                                                    <exclude>org.eclipse.winery*</exclude>
-                                                    <exclude>com.github.jnr:*:::</exclude>
-                                                    <exclude>org.web3j:*</exclude>
-                                                    <exclude>org.bouncycastle</exclude>
-                                                </excludes>
-                                                <instructions>
-                                                    <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>
-                                                        org.eclipse.winery.generators.ia.*;-noimport:=true;version:=${project.version.osgi}
-                                                    </Export-Package>
-                                                </instructions>
-                                            </artifact>
-                                            <artifact>
-                                                <id>
-                                                    org.eclipse.winery:org.eclipse.winery.highlevelrestapi:${project.version}
-                                                </id>
-                                                <source>true</source>
-                                                <transitive>true</transitive>
-                                                <excludes>
-                                                    <exclude>org.eclipse.winery*</exclude>
-                                                    <exclude>com.github.jnr:*:::</exclude>
-                                                    <exclude>org.web3j:*</exclude>
-                                                    <exclude>org.bouncycastle</exclude>
-                                                </excludes>
-                                                <instructions>
-                                                    <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>
-                                                        org.eclipse.winery.highlevelrestapi.*;-noimport:=true;version:=${project.version.osgi}
-                                                    </Export-Package>
-                                                </instructions>
-                                            </artifact>
-                                            <artifact>
-                                                <id>
-                                                    org.eclipse.winery:org.eclipse.winery.accountability:${project.version}
-                                                </id>
-                                                <source>true</source>
-                                                <transitive>false</transitive>
-                                                <excludes>
-                                                    <exclude>org.eclipse.winery*</exclude>
-                                                    <exclude>com.github.jnr:*:::</exclude>
-                                                    <exclude>org.web3j:*</exclude>
-                                                    <exclude>org.bouncycastle</exclude>
-                                                </excludes>
-                                                <instructions>
-                                                    <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>
-                                                        org.eclipse.winery.accountability.*;-noimport:=true;version:=${project.version.osgi}
-                                                    </Export-Package>
-                                                </instructions>
-                                            </artifact>
-                                            <!-- 
-                                                SECTION: Special artifact imports that fix some failed dependency chains
-                                             -->
-                                            <!-- fixes missing sun misc provision on linux hosts -->
-                                            <artifact>
-                                                <id>com.diffplug.osgi:com.diffplug.osgi.extension.sun.misc:0.0.0</id>
-                                            </artifact>
-                                            <!-- 
-                                                is only included in certain configurations of cxf-rt-frontent-jaxws
-                                                Accordingly we add it explicitly here
-                                             -->
-                                            <artifact>
-                                                <id>org.apache.cxf:cxf-rt-transports-http:${org.apache.cxf.version}</id>
-                                            </artifact>
-                                            <!-- Sidesteps the incorrect export, should be fixed with 0.96 -->
-                                            <artifact>
-                                                <id>
-                                                    de.danielbechler:java-object-diff:${de.danielbechler.java-object-diff}
-                                                </id>
-                                                <source>true</source>
-                                                <transitive>true</transitive>
-                                                <override>true</override>
-                                                <instructions>
-                                                    <!-- BundleVendor and BundleDocs are copied from official github repo -->
-                                                    <Bundle-Vendor>Daniel Bechler</Bundle-Vendor>
-                                                    <Bundle-DocURL>https://github.com/SQiShER/java-object-diff
-                                                    </Bundle-DocURL>
-                                                    <Import-Package>*;resolution:=optional</Import-Package>
-                                                    <Export-Package>de.danielbechler.diff.*;-noimport:=true
-                                                    </Export-Package>
-                                                </instructions>
-                                            </artifact>
-                                            <artifact>
-                                                <id>org.slf4j:jul-to-slf4j:${org.slf4j}</id>
-                                                <source>true</source>
-                                                <transitive>true</transitive>
-                                            </artifact>
-                                        </artifacts>
-                                    </feature>
-                                </featureDefinitions>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-
                 <!--
                     This plugin allows generating java code that represents a given ethereum smart contract written in
                     Solidity. The actual configuration of the plugin is found the pom file accountability module. 
@@ -580,7 +220,7 @@
                 <plugin>
                     <groupId>org.web3j</groupId>
                     <artifactId>web3j-maven-plugin</artifactId>
-                    <version>0.3.1</version>
+                    <version>${org.web3j}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

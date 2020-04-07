@@ -44,6 +44,18 @@
                 </a>
             </div>
             <div *ngIf="sidebarState.nodeClicked == false">
+                <label for="connectionSource"> Source </label>
+                <a id="connectionSource"
+                   target="_blank"
+                   class="form-control">
+                    {{sidebarState.source}}
+                </a>
+                <label for="connectionTarget"> Target </label>
+                <a id="connectionTarget"
+                   target="_blank"
+                   class="form-control">
+                    {{sidebarState.target}}
+                </a>
                 <div class="form-group">
                     <label>Properties</label>
                     <winery-properties

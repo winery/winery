@@ -18,7 +18,8 @@
 </div>
 
 <div>
-    <winery-uploader (onSuccess)="loadFiles()" [uploadUrl]="uploadUrl" [allowMultipleFiles]="true" [isEditable]="sharedData?.currentVersion?.editable">
+    <winery-uploader (onSuccess)="loadFiles()" [uploadUrl]="uploadUrl" [allowMultipleFiles]="true"
+                     [isEditable]="sharedData?.currentVersion?.editable">
     </winery-uploader>
 </div>
 <br>
@@ -28,15 +29,15 @@
         <tbody class="files">
         <tr *ngFor="let file of filesList">
             <td>
-                <span class="preview"><a href="{{baseUrl + file.url}}" download="{{file.name}}"
+                <span class="preview"><a href="{{file.url}}" download="{{file.name}}"
                                          title="{{file.name}}"><img src="{{file.thumbnailUrl}}"></a></span>
             </td>
             <td>
-                <p class="name"><a href="{{baseUrl + file.url}}" download="{{file.name}}" title="{{file.name}}">{{file.name}}</a>
+                <p class="name"><a href="{{file.url}}" download="{{file.name}}" title="{{file.name}}">{{file.name}}</a>
                 </p>
             </td>
             <td>
-                <span class="size">{{file.size / 1024 | number: '1.2-2'}} KB</span>
+                <span class="size">{{file.silze / 1024 | number: '1.2-2'}} KB</span>
             </td>
             <td>
                 <button class="btn btn-sm btn-danger" (click)="deleteFile(file)">Delete</button>

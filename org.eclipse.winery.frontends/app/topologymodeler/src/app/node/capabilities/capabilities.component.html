@@ -14,7 +14,7 @@
 
 <div *ngIf="capabilitiesExist">
     <winery-toscatype-table
-        [toscaType]="'Capabilities'"
+        [tableType]="tableTypes.Capabilities"
         [currentNodeData]="currentNodeData"
         [toscaTypeData]="capabilities"
         (showClickedReqOrCapModal)="toggleModal($event)">

@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {PlansApiData} from '../instance/serviceTemplates/plans/plansApiData';
+import { PlansApiData } from '../instance/serviceTemplates/plans/plansApiData';
 
 export class WineryComponent {
     documentation: Array<any> = null;
@@ -62,7 +62,7 @@ export class ArtifactApiData extends WineryComponent {
 
 export class WineryTopologyTemplate extends WineryComponent {
     nodeTemplates: NodeTemplate[];
-    relationshipTemplates: RelationshipTemplates[];
+    relationshipTemplates: RelationshipTemplate[];
 }
 
 export class NodeTemplate extends WineryTemplate {
@@ -74,7 +74,7 @@ export class NodeTemplate extends WineryTemplate {
     maxInstances: string;
 }
 
-export class RelationshipTemplates extends WineryTemplate {
+export class RelationshipTemplate extends WineryTemplate {
     relationshipConstraing: Object = null;
     sourceElement: RelationshipElement;
     targetElement: RelationshipElement;

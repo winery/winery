@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -132,7 +132,7 @@ export class EntityContainerComponent implements OnInit {
         if (!isNullOrUndefined(this.differences)) {
             offset += 205;
         }
-        this.treeHeight = (childrenCount * 126) + offset;
+        this.treeHeight += (childrenCount * 126) + offset;
     }
 
     isLastElementInList(item: SectionData) {

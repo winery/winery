@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -40,6 +40,7 @@ import javax.xml.parsers.DocumentBuilder;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ToscaDocumentBuilderFactory;
 import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
@@ -61,7 +62,6 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
-import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.export.CsarExportOptions;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.NewVersionApiData;
@@ -248,8 +248,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     }
 
     /**
-     * Returns the definitions of this resource. Includes required imports of other definitions.
-     * Also called by the UI
+     * Returns the definitions of this resource. Includes required imports of other definitions. Also called by the UI
      *
      * @param csar used because plan generator's GET request lands here
      */
@@ -258,12 +257,18 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     public Response getDefinitionsAsResponse(
         @QueryParam(value = "csar") String csar,
         @QueryParam(value = "yaml") String yaml,
+        @QueryParam(value = "edmm") String edmm,
+        @QueryParam(value = "edmmUseAbsolutePaths") String edmmUseAbsolutePaths,
         @QueryParam(value = "addToProvenance") String addToProvenance,
         @Context UriInfo uriInfo
     ) {
         final IRepository repository = RepositoryFactory.getRepository();
         if (!repository.exists(this.id)) {
             return Response.status(Status.NOT_FOUND).build();
+        }
+
+        if (edmm != null && this.element instanceof TServiceTemplate) {
+            return RestUtils.getEdmmModel((TServiceTemplate) this.element, edmmUseAbsolutePaths != null);
         }
 
         // TODO: It should be possible to specify ?yaml&csar to retrieve a CSAR and ?yaml to retrieve the .yaml representation
@@ -279,7 +284,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         } else {
             CsarExportOptions options = new CsarExportOptions();
             options.setAddToProvenance(Objects.nonNull(addToProvenance));
-            
+
             return RestUtils.getCsarOfSelectedResource(this, options);
         }
     }
@@ -289,17 +294,19 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     public Response redirectToAngularUi(
         @QueryParam(value = "csar") String csar,
         @QueryParam(value = "yaml") String yaml,
+        @QueryParam(value = "edmm") String edmm,
         @QueryParam(value = "addToProvenance") String addToProvenance,
+        @QueryParam(value = "edmmUseAbsolutePaths") String edmmUseAbsolutePaths,
         @QueryParam(value = "xml") String xml,
         @Context UriInfo uriInfo) {
         // in case there is an URL requested directly via the browser UI, the accept cannot be put at the link.
         // thus, there is the hack with ?csar and ?yaml
         // the hack is implemented at getDefinitionsAsResponse
-        if ((csar != null) || (yaml != null) || (xml != null)) {
-            return this.getDefinitionsAsResponse(csar, yaml, addToProvenance, uriInfo);
+        if ((csar != null) || (yaml != null) || (xml != null) || (edmm != null)) {
+            return this.getDefinitionsAsResponse(csar, yaml, edmm, edmmUseAbsolutePaths, addToProvenance, uriInfo);
         }
-        String repositoryUiUrl = Environment.getUrlConfiguration().getRepositoryUiUrl();
-        String uiUrl = uriInfo.getAbsolutePath().toString().replaceAll(Environment.getUrlConfiguration().getRepositoryApiUrl(), repositoryUiUrl);
+        String repositoryUiUrl = Environments.getInstance().getUiConfig().getEndpoints().get("repositoryUiUrl");
+        String uiUrl = uriInfo.getAbsolutePath().toString().replaceAll(Environments.getInstance().getUiConfig().getEndpoints().get("repositoryApiUrl"), repositoryUiUrl);
         return Response.temporaryRedirect(URI.create(uiUrl)).build();
     }
 
@@ -358,14 +365,12 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         try {
             this.element = this.definitions.getElement();
         } catch (IndexOutOfBoundsException e) {
-            if (this instanceof GenericImportResource) {
-                //noinspection StatementWithEmptyBody
                 // everything allright:
                 // ImportResource is a quick hack using 99% of the functionality offered here
                 // As only 1% has to be "quick hacked", we do that instead of a clean design
                 // Clean design: Introduce a class between this and AbstractComponentInstanceResource, where this class and ImportResource inhertis from
                 // A clean design introducing a super class AbstractDefinitionsBackedResource does not work, as we currently also support PropertiesBackedResources and such a super class would required multi-inheritance
-            } else {
+            if (!(this instanceof GenericImportResource)) {
                 throw new IllegalStateException("Wrong storage format: No ServiceTemplateOrNodeTypeOrNodeTypeImplementation found.");
             }
         }
@@ -516,7 +521,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 
     @Path("tags/")
     public final TagsResource getTags() {
-        TTags tags = null;
+        TTags tags;
         if (this.element instanceof TServiceTemplate) {
             tags = ((TServiceTemplate) this.element).getTags();
             if (tags == null) {

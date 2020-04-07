@@ -1,0 +1,37 @@
+[
+    {
+        "nodeTemplateId": "MySQL-Database_w2-2",
+        "features": [
+            {
+                "type": "{http://opentosca.org/add/management/to/instances/nodetypes}MySQL-Database_freezable-w2",
+                "featureName": "Freeze and defrost"
+            }
+        ]
+    },
+    {
+        "nodeTemplateId": "Ubuntu_16.04-w1",
+        "features": [
+            {
+                "type": "{http://opentosca.org/add/management/to/instances/nodetypes}Ubuntu_16.04-testable-w1",
+                "featureName": "Testing"
+            },
+            {
+                "type": "{http://opentosca.org/add/management/to/instances/nodetypes}Ubuntu_16.04-freezable-w1",
+                "featureName": "Freeze and Defrost"
+            }
+        ]
+    },
+    {
+        "nodeTemplateId": "MySQL-Database_w2",
+        "features": [
+            {
+                "type": "{http://opentosca.org/add/management/to/instances/nodetypes}MySQL-Database_freezable-w2",
+                "featureName": "Freeze and defrost"
+            },
+            {
+                "type": "{http://opentosca.org/add/management/to/instances/nodetypes}MySQL-Database_testable-w1",
+                "featureName": "Testing"
+            }
+        ]
+    }
+]

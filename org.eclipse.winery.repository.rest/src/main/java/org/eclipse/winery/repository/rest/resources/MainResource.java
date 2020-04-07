@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -33,14 +34,20 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.namespace.QName;
 
+import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.repository.export.EdmmUtils;
 import org.eclipse.winery.repository.importing.CsarImportOptions;
 import org.eclipse.winery.repository.importing.CsarImporter;
 import org.eclipse.winery.repository.importing.ImportMetaInformation;
 import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.rest.datatypes.ComponentId;
 import org.eclipse.winery.repository.rest.resources.API.APIResource;
 import org.eclipse.winery.repository.rest.resources.admin.AdminTopResource;
 import org.eclipse.winery.repository.rest.resources.compliancerules.ComplianceRulesResource;
+import org.eclipse.winery.repository.rest.resources.dataflowmodels.DataFlowResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.policytemplates.PolicyTemplatesResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationsResource;
@@ -55,6 +62,7 @@ import org.eclipse.winery.repository.rest.resources.imports.ImportsResource;
 import org.eclipse.winery.repository.rest.resources.patternrefinementmodels.PatternRefinementModelsResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplatesResource;
 import org.eclipse.winery.repository.rest.resources.testrefinementmodels.TestRefinementModelsResource;
+import org.eclipse.winery.repository.rest.resources.threats.ThreatsResource;
 import org.eclipse.winery.repository.rest.resources.yaml.YAMLParserResource;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
@@ -162,9 +170,19 @@ public class MainResource {
         return new TestRefinementModelsResource();
     }
 
+    @Path("dataflowmodels/")
+    public DataFlowResource dataFlowModels() {
+        return new DataFlowResource();
+    }
+
     @Path("yaml/")
     public YAMLParserResource yamlParser() {
         return new YAMLParserResource();
+    }
+
+    @Path("threats")
+    public ThreatsResource threats() {
+        return new ThreatsResource();
     }
 
     /**
@@ -258,5 +276,21 @@ public class MainResource {
         } else {
             return Response.status(Status.BAD_REQUEST).entity(errors).build();
         }
+    }
+
+    @GET
+    @Path("toscaLightModels")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ComponentId> getToscaLightModels() {
+        return EdmmUtils.getAllToscaLightCompliantModels().entrySet()
+            .stream()
+            .map(entry -> {
+                QName qName = entry.getKey();
+                TServiceTemplate serviceTemplate = entry.getValue();
+                return new ComponentId(qName.getLocalPart(), serviceTemplate.getName(), qName.getNamespaceURI(),
+                    qName, null, VersionUtils.getVersion(qName.getLocalPart())
+                );
+            })
+            .collect(Collectors.toList());
     }
 }

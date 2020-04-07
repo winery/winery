@@ -15,7 +15,6 @@ package org.eclipse.winery.repository.rest.resources.admin;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -25,8 +24,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.winery.repository.backend.AccountabilityConfigurationManager;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.common.configuration.AccountabilityConfigurationManager;
+import org.eclipse.winery.common.configuration.AccountabilityConfigurationObject;
+import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.repository.rest.resources.apiData.AccountabilityConfigurationData;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
@@ -37,15 +37,14 @@ public class AccountabilityConfigurationResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAccountabilityConfiguration() {
-        Properties props = RepositoryFactory.getRepository().getAccountabilityConfigurationManager().properties;
+        AccountabilityConfigurationObject props = Environments.getInstance().getAccountabilityConfig();
         AccountabilityConfigurationData result = new AccountabilityConfigurationData();
-        result.setAuthorizationSmartContractAddress(props.getProperty("ethereum-authorization-smart-contract-address"));
-        result.setProvenanceSmartContractAddress(props.getProperty("ethereum-provenance-smart-contract-address"));
-        result.setBlockchainNodeUrl(props.getProperty("geth-url"));
-        result.setActiveKeystore(props.getProperty("ethereum-credentials-file-name"));
-        result.setKeystorePassword(props.getProperty("ethereum-password"));
-        result.setSwarmGatewayUrl(props.getProperty("swarm-gateway-url"));
-
+        result.setAuthorizationSmartContractAddress(props.getEthereumAuthorizationSmartContractAddress());
+        result.setProvenanceSmartContractAddress(props.getEthereumProvenanceSmartContractAddress());
+        result.setBlockchainNodeUrl(props.getGethUrl());
+        result.setActiveKeystore(props.getEthereumCredentialsFileName());
+        result.setKeystorePassword(props.getEthereumPassword());
+        result.setSwarmGatewayUrl(props.getSwarmGatewayUrl());
         return Response.ok(result).build();
     }
 
@@ -60,21 +59,19 @@ public class AccountabilityConfigurationResource {
         @FormDataParam("provenanceSmartContractAddress") String provenanceSmartContractAddress,
         @FormDataParam("swarmGatewayUrl") String swarmGatewayUrl
     ) {
-        AccountabilityConfigurationManager manager = RepositoryFactory.getRepository().getAccountabilityConfigurationManager();
+        AccountabilityConfigurationManager manager = AccountabilityConfigurationManager.getInstance();
         try {
-
             // sending a new keystore file is optional
             if (keystoreFileStream != null && disposition != null) {
                 manager.setNewKeystoreFile(keystoreFileStream, disposition.getFileName());
             }
-            Properties props = manager.properties;
-            props.setProperty("ethereum-authorization-smart-contract-address", authorizationSmartContractAddress);
-            props.setProperty("ethereum-provenance-smart-contract-address", provenanceSmartContractAddress);
-            props.setProperty("geth-url", blockchainNodeUrl);
-            props.setProperty("ethereum-password", keystorePassword);
-            props.setProperty("swarm-gateway-url", swarmGatewayUrl);
-
-            manager.saveProperties();
+            AccountabilityConfigurationObject props = Environments.getInstance().getAccountabilityConfig();
+            props.setEthereumAuthorizationSmartContractAddress(authorizationSmartContractAddress);
+            props.setEthereumProvenanceSmartContractAddress(provenanceSmartContractAddress);
+            props.setGethUrl(blockchainNodeUrl);
+            props.setEthereumPassword(keystorePassword);
+            props.setSwarmGatewayUrl(swarmGatewayUrl);
+            Environments.save(props);
             return Response.noContent().build();
         } catch (IOException e) {
             return Response.serverError().entity(e.getMessage()).build();
@@ -82,14 +79,10 @@ public class AccountabilityConfigurationResource {
     }
 
     @DELETE
-    public Response restoreDefaults() {
-        AccountabilityConfigurationManager manager = RepositoryFactory.getRepository().getAccountabilityConfigurationManager();
-        try {
-            manager.restoreDefaults();
-
-            return Response.noContent().build();
-        } catch (IOException e) {
-            return Response.serverError().entity(e.getMessage()).build();
-        }
+    public Response restoreDefaults() throws IOException {
+        //Refactor this when the manager is moved to accountability
+        AccountabilityConfigurationManager manager = AccountabilityConfigurationManager.getInstance();
+        manager.restoreDefaults();
+        return Response.noContent().build();
     }
 }

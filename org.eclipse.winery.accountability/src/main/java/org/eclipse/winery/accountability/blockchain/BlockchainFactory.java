@@ -15,17 +15,17 @@
 package org.eclipse.winery.accountability.blockchain;
 
 import java.util.Objects;
-import java.util.Properties;
 
 import org.eclipse.winery.accountability.blockchain.ethereum.EthereumAccessLayer;
 import org.eclipse.winery.accountability.exceptions.BlockchainException;
+import org.eclipse.winery.common.configuration.AccountabilityConfigurationObject;
 
 public class BlockchainFactory {
 
     private static BlockchainAccess blockchain;
-    
-    public static BlockchainAccess getBlockchainAccess(AvailableBlockchains desiredBlockchain, Properties configuration) throws BlockchainException {
-        
+
+    public static BlockchainAccess getBlockchainAccess(AvailableBlockchains desiredBlockchain, AccountabilityConfigurationObject configuration) throws BlockchainException {
+
         // The requested blockchain technology could be retrieved from the configurations file
         if (Objects.isNull(blockchain)) {
             switch (desiredBlockchain) {
@@ -46,7 +46,10 @@ public class BlockchainFactory {
      * Used to force the factory to re-instantiate blockchain implementation (because a configuration change is detected)
      */
     public static void reset() {
-        blockchain = null;
+        if (blockchain != null) {
+            blockchain.close();
+            blockchain = null;
+        }
     }
 
     public enum AvailableBlockchains {

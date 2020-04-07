@@ -5,7 +5,8 @@
         "readableName": "",
         "upstreamRepository": "",
         "patternCollection": false,
-        "secureCollection": false
+        "secureCollection": false,
+        "generatedNamespace": false
     },
     {
         "namespace": "http://www.eclipse.org/winery/model/selfservice",
@@ -13,7 +14,8 @@
         "readableName": "",
         "upstreamRepository": "",
         "patternCollection": false,
-        "secureCollection": false
+        "secureCollection": false,
+        "generatedNamespace": false
     },
     {
         "namespace": "http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes",
@@ -21,7 +23,8 @@
         "readableName": "",
         "upstreamRepository": "",
         "patternCollection": false,
-        "secureCollection": false
+        "secureCollection": false,
+        "generatedNamespace": false
     },
     {
         "namespace": "http://docs.oasis-open.org/tosca/ns/2011/12",
@@ -29,7 +32,8 @@
         "readableName": "",
         "upstreamRepository": "",
         "patternCollection": false,
-        "secureCollection": false
+        "secureCollection": false,
+        "generatedNamespace": false
     },
     {
         "namespace": "http://docs.oasis-open.org/tosca/ns/2011/12/ToscaSpecificTypes",
@@ -37,7 +41,8 @@
         "readableName": "",
         "upstreamRepository": "",
         "patternCollection": false,
-        "secureCollection": false
+        "secureCollection": false,
+        "generatedNamespace": false
     },
     {
         "namespace": "http://winery.opentosca.org/test/capabilitytypes/fruits",
@@ -45,7 +50,8 @@
         "readableName": "",
         "upstreamRepository": "",
         "patternCollection": false,
-        "secureCollection": false
+        "secureCollection": false,
+        "generatedNamespace": false
     },
     {
         "namespace": "http://winery.opentosca.org/test/nodetypes/fruits",
@@ -53,7 +59,8 @@
         "readableName": "",
         "upstreamRepository": "",
         "patternCollection": false,
-        "secureCollection": false
+        "secureCollection": false,
+        "generatedNamespace": false
     },
     {
         "namespace": "http://winery.opentosca.org/test/nodetypeimplementations/fruits",
@@ -61,7 +68,8 @@
         "readableName": "",
         "upstreamRepository": "",
         "patternCollection": false,
-        "secureCollection": false
+        "secureCollection": false,
+        "generatedNamespace": false
     },
     {
         "namespace": "http://winery.opentosca.org/test/relationshiptypes/fruits",
@@ -69,7 +77,8 @@
         "readableName": "",
         "upstreamRepository": "",
         "patternCollection": false,
-        "secureCollection": false
+        "secureCollection": false,
+        "generatedNamespace": false
     },
     {
         "namespace": "http://www.opentosca.org/winery/extensions/tosca/2013/02/12",
@@ -77,7 +86,8 @@
         "readableName": "",
         "upstreamRepository": "",
         "patternCollection": false,
-        "secureCollection": false
+        "secureCollection": false,
+        "generatedNamespace": false
     },
     {
         "namespace": "http://www.w3.org/XML/1998/namespace",
@@ -85,7 +95,8 @@
         "readableName": "",
         "upstreamRepository": "",
         "patternCollection": false,
-        "secureCollection": false
+        "secureCollection": false,
+        "generatedNamespace": false
     },
     {
         "namespace": "http://www.w3.org/2001/XMLSchema",
@@ -93,6 +104,7 @@
         "readableName": "",
         "upstreamRepository": "",
         "patternCollection": false,
-        "secureCollection": false
+        "secureCollection": false,
+        "generatedNamespace": false
     }
 ]

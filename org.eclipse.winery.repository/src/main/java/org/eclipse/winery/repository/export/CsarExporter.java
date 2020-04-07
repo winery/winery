@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Properties;
 import java.util.SortedSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -40,9 +39,11 @@ import java.util.zip.ZipOutputStream;
 import org.eclipse.winery.accountability.AccountabilityManager;
 import org.eclipse.winery.accountability.AccountabilityManagerFactory;
 import org.eclipse.winery.accountability.exceptions.AccountabilityException;
+import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.HashingUtil;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.IdNames;
@@ -56,14 +57,12 @@ import org.eclipse.winery.model.selfservice.Application.Options;
 import org.eclipse.winery.model.selfservice.ApplicationOption;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
-import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.GitInfo;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IGenericRepository;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.SelfServiceMetaDataUtils;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
-import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ServiceTemplateSelfServiceFilesDirectoryId;
@@ -123,8 +122,7 @@ public class CsarExporter {
     public CompletableFuture<String> writeCsarAndSaveManifestInProvenanceLayer(IRepository repository, DefinitionsChildId entryId, OutputStream out)
         throws IOException, RepositoryCorruptException, AccountabilityException, InterruptedException, ExecutionException {
         LocalDateTime start = LocalDateTime.now();
-        Properties props = repository.getAccountabilityConfigurationManager().properties;
-        AccountabilityManager accountabilityManager = AccountabilityManagerFactory.getAccountabilityManager(props);
+        AccountabilityManager accountabilityManager = AccountabilityManagerFactory.getAccountabilityManager();
 
         Map<String, Object> exportConfiguration = new HashMap<>();
         exportConfiguration.put(CsarExportConfiguration.INCLUDE_HASHES.name(), null);
@@ -235,8 +233,7 @@ public class CsarExporter {
      */
     private void immutablyStoreRefFiles(Map<CsarContentProperties, CsarEntry> filesToStore, IRepository repository)
         throws AccountabilityException, ExecutionException, InterruptedException, IOException {
-        Properties props = repository.getAccountabilityConfigurationManager().properties;
-        AccountabilityManager manager = AccountabilityManagerFactory.getAccountabilityManager(props);
+        AccountabilityManager manager = AccountabilityManagerFactory.getAccountabilityManager();
         Map<String, InputStream> filesMap = new HashMap<>();
 
         for (Map.Entry<CsarContentProperties, CsarEntry> entry : filesToStore.entrySet()) {
@@ -520,7 +517,7 @@ public class CsarExporter {
         }
     }
 
-    private void addLicenseAndReadmeFiles(IRepository repository, DefinitionsChildId entryId, Map< CsarContentProperties, CsarEntry> refMap) {
+    private void addLicenseAndReadmeFiles(IRepository repository, DefinitionsChildId entryId, Map<CsarContentProperties, CsarEntry> refMap) {
         final RepositoryFileReference licenseRef = new RepositoryFileReference(entryId, Constants.LICENSE_FILE_NAME);
         if (repository.exists(licenseRef)) {
             refMap.put(new CsarContentProperties(BackendUtils.getPathInsideRepo(licenseRef)), new RepositoryRefBasedCsarEntry(licenseRef));
@@ -561,7 +558,7 @@ public class CsarExporter {
         // Setting Versions
         stringBuilder.append(TOSCA_META_VERSION).append(": 1.0").append("\n");
         stringBuilder.append(CSAR_VERSION).append(": 1.0").append("\n");
-        stringBuilder.append(CREATED_BY).append(": Winery ").append(Environment.getVersion()).append("\n");
+        stringBuilder.append(CREATED_BY).append(": Winery ").append(Environments.getInstance().getVersion()).append("\n");
 
         // Winery currently is unaware of tDefinitions, therefore, we use the
         // name of the service template

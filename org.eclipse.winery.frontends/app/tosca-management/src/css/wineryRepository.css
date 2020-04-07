@@ -295,6 +295,7 @@ div.serviceTemplate div.bottom {
 div.mainContentContainer.relationshipType div.top {
     background: url('../assets/img/containers/rt/rt-FrameTopLarge.jpg');
 }
+
 div.mainContentContainer.relationshipType div.top.twolines {
     height: 208px;
 }
@@ -344,8 +345,8 @@ div.mainContentContainer.xSDImport div.bottom {
 }
 
 div.mainContentContainer.patternRefinementModel div.top {
-     background: url('../assets/img/containers/admin/FrameTop.jpg');
- }
+    background: url('../assets/img/containers/admin/FrameTopLarge.jpg');
+}
 
 div.mainContentContainer.patternRefinementModel div.middle {
     background: url('../assets/img/containers/admin/FrameMiddle.jpg');
@@ -553,7 +554,6 @@ div.entityContainer > div.right {
 }
 
 div.entityContainer > div.center > div.informationContainer {
-    margin-top: 25px;
     height: 45px;
     color: #787878;
     font-family: arial, sans-serif;
@@ -564,14 +564,36 @@ div.entityContainer > div.center > div.informationContainer {
     float: left;
 }
 
-div.entityContainer > div.center > div.informationContainer > div.name {
+div.entityContainer > div.center > div.informationContainer > div.nameWithVersion {
+    margin-top: 15px;
     font-size: 14px;
     font-weight: bold;
     height: 18px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    direction: rtl;
+    direction: ltr;
+    text-align: left;
+}
+
+div.entityContainer > div.center > div.informationContainer > div.name {
+    margin-top: 25px;
+    font-size: 14px;
+    font-weight: bold;
+    height: 18px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    direction: ltr;
+    text-align: left;
+}
+
+div.entityContainer > div.center > div.informationContainer > div.version {
+    font-size: 14px;
+    height: 18px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    direction: ltr;
     text-align: left;
 }
 
@@ -582,6 +604,7 @@ div.entityContainer > div.center > div.informationContainer > div.namespace {
 }
 
 div.entityContainer > div.center > div.informationContainer > div.namespace > div.namespaceOnly {
+    margin-top: 25px;
     font-size: 14px;
     font-weight: bold;
     height: 18px;
@@ -803,51 +826,51 @@ div.entityContainer.serviceTemplate > div.right {
 }
 
 div.entityContainer.nodeType > div.left {
-    background: url('../assets/img/entityBox/nodeType/left.png');
+    background: url('../assets/img/entityBox/nodeType/nt-left.png');
 }
 
 div.entityContainer.nodeType > div.center {
-    background: url('../assets/img/entityBox/nodeType/center.jpg');
+    background: url('../assets/img/entityBox/nodeType/nt-center.jpg');
 }
 
 div.entityContainer.nodeType > div.right {
-    background: url('../assets/img/entityBox/nodeType/right.png');
+    background: url('../assets/img/entityBox/nodeType/nt-right.png');
 }
 
 div.entityContainer.relationshipType > div.left {
-    background: url('../assets/img/entityBox/relationshipType/left.png');
+    background: url('../assets/img/entityBox/relationshipType/rt-left.png');
 }
 
 div.entityContainer.relationshipType > div.center {
-    background: url('../assets/img/entityBox/relationshipType/center.jpg');
+    background: url('../assets/img/entityBox/relationshipType/rt-center.jpg');
 }
 
 div.entityContainer.relationshipType > div.right {
-    background: url('../assets/img/entityBox/relationshipType/right.png');
+    background: url('../assets/img/entityBox/relationshipType/rt-right.png');
 }
 
 div.entityContainer.admin > div.left {
-    background: url('../assets/img/entityBox/admin/left.png');
+    background: url('../assets/img/entityBox/admin/a-left.png');
 }
 
 div.entityContainer.admin > div.center {
-    background: url('../assets/img/entityBox/admin/center.jpg');
+    background: url('../assets/img/entityBox/admin/a-center.jpg');
 }
 
 div.entityContainer.admin > div.right {
-    background: url('../assets/img/entityBox/admin/right.png');
+    background: url('../assets/img/entityBox/admin/a-right.png');
 }
 
 div.entityContainer.complianceRule > div.left {
-    background: url('../assets/img/entityBox/admin/left.png');
+    background: url('../assets/img/entityBox/admin/a-left.png');
 }
 
 div.entityContainer.complianceRule > div.center {
-    background: url('../assets/img/entityBox/admin/center.jpg');
+    background: url('../assets/img/entityBox/admin/a-center.jpg');
 }
 
 div.entityContainer.complianceRule > div.right {
-    background: url('../assets/img/entityBox/admin/right.png');
+    background: url('../assets/img/entityBox/admin/a-right.png');
 }
 
 div.mainContentContainer.complianceRule div.top {
@@ -863,135 +886,135 @@ div.mainContentContainer.complianceRule div.bottom {
 }
 
 div.entityContainer.artifactTemplate > div.left {
-    background: url('../assets/img/entityBox/admin/left.png');
+    background: url('../assets/img/entityBox/admin/a-left.png');
 }
 
 div.entityContainer.artifactTemplate > div.center {
-    background: url('../assets/img/entityBox/admin/center.jpg');
+    background: url('../assets/img/entityBox/admin/a-center.jpg');
 }
 
 div.entityContainer.artifactTemplate > div.right {
-    background: url('../assets/img/entityBox/admin/right.png');
+    background: url('../assets/img/entityBox/admin/a-right.png');
 }
 
 div.entityContainer.artifactType > div.left {
-    background: url('../assets/img/entityBox/admin/left.png');
+    background: url('../assets/img/entityBox/admin/a-left.png');
 }
 
 div.entityContainer.artifactType > div.center {
-    background: url('../assets/img/entityBox/admin/center.jpg');
+    background: url('../assets/img/entityBox/admin/a-center.jpg');
 }
 
 div.entityContainer.artifactType > div.right {
-    background: url('../assets/img/entityBox/admin/right.png');
+    background: url('../assets/img/entityBox/admin/a-right.png');
 }
 
 div.entityContainer.nodeTypeImplementation > div.left {
-    background: url('../assets/img/entityBox/admin/left.png');
+    background: url('../assets/img/entityBox/admin/a-left.png');
 }
 
 div.entityContainer.nodeTypeImplementation > div.center {
-    background: url('../assets/img/entityBox/admin/center.jpg');
+    background: url('../assets/img/entityBox/admin/a-center.jpg');
 }
 
 div.entityContainer.nodeTypeImplementation > div.right {
-    background: url('../assets/img/entityBox/admin/right.png');
+    background: url('../assets/img/entityBox/admin/a-right.png');
 }
 
 div.entityContainer.relationshipTypeImplementation > div.left {
-    background: url('../assets/img/entityBox/admin/left.png');
+    background: url('../assets/img/entityBox/admin/a-left.png');
 }
 
 div.entityContainer.relationshipTypeImplementation > div.center {
-    background: url('../assets/img/entityBox/admin/center.jpg');
+    background: url('../assets/img/entityBox/admin/a-center.jpg');
 }
 
 div.entityContainer.relationshipTypeImplementation > div.right {
-    background: url('../assets/img/entityBox/admin/right.png');
+    background: url('../assets/img/entityBox/admin/a-right.png');
 }
 
 div.entityContainer.requirementType > div.left {
-    background: url('../assets/img/entityBox/admin/left.png');
+    background: url('../assets/img/entityBox/admin/a-left.png');
 }
 
 div.entityContainer.requirementType > div.center {
-    background: url('../assets/img/entityBox/admin/center.jpg');
+    background: url('../assets/img/entityBox/admin/a-center.jpg');
 }
 
 div.entityContainer.requirementType > div.right {
-    background: url('../assets/img/entityBox/admin/right.png');
+    background: url('../assets/img/entityBox/admin/a-right.png');
 }
 
 div.entityContainer.capabilityType > div.left {
-    background: url('../assets/img/entityBox/admin/left.png');
+    background: url('../assets/img/entityBox/admin/a-left.png');
 }
 
 div.entityContainer.capabilityType > div.center {
-    background: url('../assets/img/entityBox/admin/center.jpg');
+    background: url('../assets/img/entityBox/admin/a-center.jpg');
 }
 
 div.entityContainer.capabilityType > div.right {
-    background: url('../assets/img/entityBox/admin/right.png');
+    background: url('../assets/img/entityBox/admin/a-right.png');
 }
 
 div.entityContainer.policyTemplate > div.left {
-    background: url('../assets/img/entityBox/admin/left.png');
+    background: url('../assets/img/entityBox/admin/a-left.png');
 }
 
 div.entityContainer.policyTemplate > div.center {
-    background: url('../assets/img/entityBox/admin/center.jpg');
+    background: url('../assets/img/entityBox/admin/a-center.jpg');
 }
 
 div.entityContainer.policyTemplate > div.right {
-    background: url('../assets/img/entityBox/admin/right.png');
+    background: url('../assets/img/entityBox/admin/a-right.png');
 }
 
 div.entityContainer.policyType > div.left {
-    background: url('../assets/img/entityBox/admin/left.png');
+    background: url('../assets/img/entityBox/admin/a-left.png');
 }
 
 div.entityContainer.policyType > div.center {
-    background: url('../assets/img/entityBox/admin/center.jpg');
+    background: url('../assets/img/entityBox/admin/a-center.jpg');
 }
 
 div.entityContainer.policyType > div.right {
-    background: url('../assets/img/entityBox/admin/right.png');
+    background: url('../assets/img/entityBox/admin/a-right.png');
 }
 
 div.entityContainer.xSDImport > div.left {
-    background: url('../assets/img/entityBox/admin/left.png');
+    background: url('../assets/img/entityBox/admin/a-left.png');
 }
 
 div.entityContainer.xSDImport > div.center {
-    background: url('../assets/img/entityBox/admin/center.jpg');
+    background: url('../assets/img/entityBox/admin/a-center.jpg');
 }
 
 div.entityContainer.xSDImport > div.right {
-    background: url('../assets/img/entityBox/admin/right.png');
+    background: url('../assets/img/entityBox/admin/a-right.png');
 }
 
 div.entityContainer.patternRefinementModel > div.left {
-    background: url('../assets/img/entityBox/admin/left.png');
+    background: url('../assets/img/entityBox/admin/a-left.png');
 }
 
 div.entityContainer.patternRefinementModel > div.center {
-    background: url('../assets/img/entityBox/admin/center.jpg');
+    background: url('../assets/img/entityBox/admin/a-center.jpg');
 }
 
 div.entityContainer.patternRefinementModel > div.right {
-    background: url('../assets/img/entityBox/admin/right.png');
+    background: url('../assets/img/entityBox/admin/a-right.png');
 }
 
 div.entityContainer.testRefinementModel > div.left {
-    background: url('../assets/img/entityBox/admin/left.png');
+    background: url('../assets/img/entityBox/admin/a-left.png');
 }
 
 div.entityContainer.testRefinementModel > div.center {
-    background: url('../assets/img/entityBox/admin/center.jpg');
+    background: url('../assets/img/entityBox/admin/a-center.jpg');
 }
 
 div.entityContainer.testRefinementModel > div.right {
-    background: url('../assets/img/entityBox/admin/right.png');
+    background: url('../assets/img/entityBox/admin/a-right.png');
 }
 
 /* buttons */

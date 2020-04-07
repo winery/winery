@@ -15,6 +15,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { IWineryState } from '../../redux/store/winery.store';
 import { NgRedux } from '@angular-redux/store';
+import { TableType } from '../../models/enums';
 
 @Component({
     selector: 'winery-deployment-artifacts',
@@ -25,6 +26,9 @@ import { NgRedux } from '@angular-redux/store';
  * This Handles Information about the deployment artifacts
  */
 export class DeploymentArtifactsComponent implements OnInit {
+
+    readonly tableTypes = TableType;
+
     @Output() toggleModalHandler: EventEmitter<any>;
     @Input() readonly: boolean;
     @Input() currentNodeData: any;

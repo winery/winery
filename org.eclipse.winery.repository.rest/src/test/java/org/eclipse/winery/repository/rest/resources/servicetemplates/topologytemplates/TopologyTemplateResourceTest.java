@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -134,5 +134,43 @@ public class TopologyTemplateResourceTest extends AbstractResourceTest {
         // for testing an arbitrary existing service template is used
         this.assertPut("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants/topologytemplate/", "entitytypes/servicetemplates/topologytemplates/empty-xml-test--topology-with-empty-policy.json");
         this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants/topologytemplate/", "entitytypes/servicetemplates/topologytemplates/empty-xml-test--topology-without-empty-elements.xml");
+    }
+
+    @Test
+    public void getAvailableFeatures() throws Exception {
+        this.setRevisionTo("origin/plain");
+
+        this.assertGet("servicetemplates/http%253A%252F%252Fopentosca.org%252Fadd%252Fmanagement%252Fto%252Finstances%252Fservicetemplates/STWithBasicManagementOnly_w1-wip1/topologytemplate/availablefeatures",
+            "entitytypes/servicetemplates/topologytemplates/availableFeaturesForBasicManagementST.json");
+    }
+
+    @Test
+    public void getAvailableFeaturesWithDifferentFeaturesForSameType() throws Exception {
+        this.setRevisionTo("origin/plain");
+
+        this.assertGet("servicetemplates/http%253A%252F%252Fopentosca.org%252Fadd%252Fmanagement%252Fto%252Finstances%252Fservicetemplates/STWithBasicManagementOnly_w1-wip4/topologytemplate/availablefeatures",
+            "entitytypes/servicetemplates/topologytemplates/availableFeaturesForBasicManagementSTWithDifferentFeaturesForSameType.json");
+    }
+
+    @Test
+    public void applyAvailableFeatures() throws Exception {
+        this.setRevisionTo("origin/plain");
+
+        this.assertPutWithResponse("servicetemplates/http%253A%252F%252Fopentosca.org%252Fadd%252Fmanagement%252Fto%252Finstances%252Fservicetemplates/STWithBasicManagementOnly_w1-wip1/topologytemplate/availablefeatures",
+            "entitytypes/servicetemplates/topologytemplates/availableFeaturesForBasicManagementST.json");
+    }
+
+    @Test
+    public void getNewVersionList() throws Exception {
+        this.setRevisionTo("origin/plain");
+        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithTwoNodeTemplates_oldVersions-w1-wip1/topologytemplate/newversions",
+            "servicetemplates/newVersionList.json");
+    }
+
+    @Test
+    public void getNewVersionListWithoutFeaturesAndGeneratedTypes() throws Exception {
+        this.setRevisionTo("origin/plain");
+        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/STWithUpdateableComponent_w1-wip1/topologytemplate/newversions",
+            "servicetemplates/nodeTemplateVersionListWithoutFeatures.json");
     }
 }
