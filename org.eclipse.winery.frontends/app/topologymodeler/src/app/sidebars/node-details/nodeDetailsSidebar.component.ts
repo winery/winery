@@ -90,24 +90,6 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
         return !this.maxInputEnabled ? '#ffc0c0' : 'rgb(240, 240, 240)';
     }
 
-    findOutPropertyDefinitionTypeForProperties(): string {
-        // if PropertiesDefinition doesn't exist then it must be of type NONE
-        if (isNullOrUndefined(this.sidebarState.nodeTemplate.properties)) {
-            return PropertyDefinitionType.NONE;
-        }
-        // All properties are of type YAML if the repo is a YAML repo
-        if (this.repoConfiguration.isYaml()) {
-            return PropertyDefinitionType.YAML;
-        }
-        // if no XML element inside PropertiesDefinition then it must be of type Key Value
-        if (!this.sidebarState.nodeTemplate.properties.element) {
-            return PropertyDefinitionType.KV;
-        } else {
-            // else we have XML
-            return PropertyDefinitionType.XML;
-        }
-    }
-
     /**
      * Angular lifecycle event.
      * initializes the sidebar with the correct data, also implements debounce time for a smooth user experience

@@ -12,8 +12,8 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import { ChangeDetectorRef, Component, Input, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { WineryActions } from '../redux/actions/winery.actions';
@@ -23,7 +23,6 @@ import { KeyValueItem } from '../../../../tosca-management/src/app/model/keyValu
 import { TNodeTemplate } from '../models/ttopology-template';
 import { isNullOrUndefined } from 'util';
 import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
     selector: 'winery-properties',
@@ -77,8 +76,6 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
         }
     }
 
-    // FIXME need to deal with losing focus on the newly generated form.
-    //  Consider having some way to instead update the form only if necessary?
     private loadData(nodeTemplate: TNodeTemplate): void {
         if (this.skipUpdate) {
             this.skipUpdate = false;
