@@ -15,14 +15,20 @@
 export class NodeDetailsSidebarState {
     visible: boolean;
     nodeClicked: boolean;
-    id: string;
-    name: string;
-    type: string;
+    nodeTemplate: SidebarNodeTemplate;
     minInstances: number;
     // this shoehorns the possibility of unicode infinity into the type
     maxInstances: number | '\u221E';
     properties: any;
+    // relationship editing information
     relationshipTemplate: any;
     source: any;
     target: any;
+}
+
+export class SidebarNodeTemplate {
+    id: string;
+    name: string;
+    type: string;
+    properties: any;
 }

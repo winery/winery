@@ -72,7 +72,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     policyTemplates: any;
     artifactTypes: any;
     removeZIndex: any;
-    propertyDefinitionType: string;
+    propertyDefinitionType: PropertyDefinitionType;
     policyIcons: string[];
     configEnum = FeatureEnum;
     policiesOfNode: TPolicy[];
@@ -469,9 +469,12 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                 sidebarContents: {
                     visible: false,
                     nodeClicked: true,
-                    id: '',
-                    name: '',
-                    type: '',
+                    nodeTemplate: {
+                        id: '',
+                        name: '',
+                        type: '',
+                        properties: {},
+                    },
                     minInstances: -1,
                     maxInstances: -1
                 }
@@ -481,12 +484,10 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                 sidebarContents: {
                     visible: true,
                     nodeClicked: true,
-                    id: this.nodeTemplate.id,
-                    name: this.nodeTemplate.name,
-                    type: this.nodeTemplate.type,
+                    nodeTemplate: this.nodeTemplate,
+                    // special handling for instance restrictions due to infinity
                     minInstances: this.nodeTemplate.minInstances,
                     maxInstances: this.nodeTemplate.maxInstances,
-                    properties: this.nodeTemplate.properties,
                 }
             }));
         }

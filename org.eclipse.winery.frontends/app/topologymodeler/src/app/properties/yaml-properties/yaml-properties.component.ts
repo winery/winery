@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { KeyValueItem } from '../../../../../tosca-management/src/app/model/keyValueItem';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -22,18 +22,19 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
     templateUrl: './yaml-properties.component.html',
     // styleUrls: ['./yaml-properties.component.css'],
 })
-export class YamlPropertiesComponent implements OnInit, OnDestroy {
+export class YamlPropertiesComponent implements OnInit, OnChanges, OnDestroy {
     @Input() readonly: boolean;
     @Input() nodeProperties: object;
 
     @Output() propertyEdited: EventEmitter<KeyValueItem> = new EventEmitter<KeyValueItem>();
 
-    properties: Subject<string> = new Subject<string>();
+    properties: Array<KeyValueItem>;
+    valueSubject: Subject<string> = new Subject<string>();
     keySubject: Subject<string> = new Subject<string>();
 
     // local storage of the edited key for outgoing events
-    key: string;
-    subscriptions: Array<Subscription> = [];
+    private key: string;
+    private subscriptions: Array<Subscription> = [];
 
     ngOnInit(): void {
         // find out which row was edited by key
@@ -43,15 +44,33 @@ export class YamlPropertiesComponent implements OnInit, OnDestroy {
             .subscribe(key => {
                 this.key = key;
             }));
-        this.subscriptions.push(this.properties.pipe(
+        this.subscriptions.push(this.valueSubject.pipe(
             debounceTime(300),
             distinctUntilChanged(), )
-            .subscribe(propertyValue => {
+            .subscribe(value => {
                 this.propertyEdited.emit({
                     key: this.key,
-                    value: propertyValue,
+                    value: value,
                 });
             }));
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes.nodeProperties) {
+            // TODO flattening the object graph for yaml properties is a more involved operation than we can leave to the keysPipe
+            // this.properties = this.flatten(changes.nodeProperties.currentValue);
+            this.properties = changes.nodeProperties.currentValue;
+        }
+    }
+
+    private flatten(properties: any): Array<KeyValueItem> {
+        const result = [];
+        for (const key in properties) {
+            if (properties.hasOwnProperty(key)) {
+                result.push({key: key, value: properties[key]});
+            }
+        }
+        return result;
     }
 
     ngOnDestroy(): void {

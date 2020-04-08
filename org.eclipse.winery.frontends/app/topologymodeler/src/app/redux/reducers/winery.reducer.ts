@@ -40,12 +40,14 @@ export const INITIAL_WINERY_STATE: WineryState = {
     sidebarContents: {
         visible: false,
         nodeClicked: false,
-        id: '',
-        name: '',
-        type: '',
+        nodeTemplate: {
+            id: '',
+            name: '',
+            type: '',
+            properties: '',
+        },
         minInstances: 1,
         maxInstances: 1,
-        properties: '',
         source: '',
         target: ''
     },

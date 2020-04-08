@@ -30,7 +30,7 @@ export class YamlPropertiesService {
                 private sharedData: InstanceService) {
         this.path = backendBaseURL + this.sharedData.path + '/properties/';
     }
-    
+
     public getProperties(): Observable<YamlProperty[]> {
         return this.http.get(this.path, { observe: 'response', responseType: 'text' })
             .pipe(map(res => {

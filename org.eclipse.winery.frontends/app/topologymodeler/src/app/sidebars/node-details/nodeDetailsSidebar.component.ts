@@ -71,12 +71,14 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
             sidebarContents: {
                 visible: false,
                 nodeClicked: false,
-                id: '',
-                name: '',
-                type: '',
+                nodeTemplate: {
+                    id: '',
+                    name: '',
+                    type: '',
+                    properties: {}
+                },
                 minInstances: -1,
                 maxInstances: -1,
-                properties: ''
             }
         }));
     }
@@ -90,7 +92,7 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
 
     findOutPropertyDefinitionTypeForProperties(): string {
         // if PropertiesDefinition doesn't exist then it must be of type NONE
-        if (isNullOrUndefined(this.sidebarState.properties)) {
+        if (isNullOrUndefined(this.sidebarState.nodeTemplate.properties)) {
             return PropertyDefinitionType.NONE;
         }
         // All properties are of type YAML if the repo is a YAML repo
@@ -98,7 +100,7 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
             return PropertyDefinitionType.YAML;
         }
         // if no XML element inside PropertiesDefinition then it must be of type Key Value
-        if (!this.sidebarState.properties.element) {
+        if (!this.sidebarState.nodeTemplate.properties.element) {
             return PropertyDefinitionType.KV;
         } else {
             // else we have XML
@@ -115,8 +117,8 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
                 wineryState => wineryState.wineryState.sidebarContents
             ).subscribe(sidebarContents => {
                     this.sidebarState = sidebarContents;
-                    if (!this.sidebarState.name) {
-                        this.sidebarState.name = this.sidebarState.id;
+                    if (!this.sidebarState.nodeTemplate.name) {
+                        this.sidebarState.nodeTemplate.name = this.sidebarState.nodeTemplate.id;
                     }
                 }
             );
@@ -129,15 +131,15 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
                     this.$ngRedux.dispatch(this.actions.changeNodeName({
                         nodeNames: {
                             newNodeName: data,
-                            id: this.sidebarState.id
+                            id: this.sidebarState.nodeTemplate.id
                         }
                     }));
                 } else {
                     this.$ngRedux.dispatch(this.actions.updateRelationshipName({
                         relData: {
                             newRelName: data,
-                            id: this.sidebarState.id,
-                            properties: this.sidebarState.properties,
+                            id: this.sidebarState.nodeTemplate.id,
+                            properties: this.sidebarState.nodeTemplate.properties,
                             source: this.sidebarState.source,
                             target: this.sidebarState.target
                         }
@@ -148,12 +150,14 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
                     sidebarContents: {
                         visible: true,
                         nodeClicked: this.sidebarState.nodeClicked,
-                        id: this.sidebarState.id,
-                        name: data,
-                        type: this.sidebarState.type,
+                        nodeTemplate: {
+                            id: this.sidebarState.nodeTemplate.id,
+                            name: data,
+                            type: this.sidebarState.nodeTemplate.type,
+                            properties: this.sidebarState.nodeTemplate.properties,
+                        },
                         minInstances: Number(this.sidebarState.minInstances),
                         maxInstances: Number(this.sidebarState.maxInstances),
-                        properties: this.sidebarState.properties,
                         relationshipTemplate : this.sidebarState.relationshipTemplate,
                         source: this.sidebarState.source,
                         target: this.sidebarState.target
@@ -169,7 +173,7 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
                 if (this.sidebarState.nodeClicked) {
                     this.$ngRedux.dispatch(this.actions.changeMinInstances({
                         minInstances: {
-                            id: this.sidebarState.id,
+                            id: this.sidebarState.nodeTemplate.id,
                             count: data
                         }
                     }));
@@ -179,13 +183,9 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
                     sidebarContents: {
                         visible: true,
                         nodeClicked: this.sidebarState.nodeClicked,
-                        id: this.sidebarState.id,
-                        name: this.sidebarState.name,
-                        type: this.sidebarState.type,
+                        nodeTemplate: this.sidebarState.nodeTemplate,
                         minInstances: Number(data),
                         maxInstances: this.sidebarState.maxInstances,
-                        properties: this.sidebarState.properties,
-                        relationshipTemplate : this.sidebarState.relationshipTemplate,
                         source: this.sidebarState.source,
                         target: this.sidebarState.target
                     }
@@ -199,7 +199,7 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
                 if (this.sidebarState.nodeClicked) {
                     this.$ngRedux.dispatch(this.actions.changeMaxInstances({
                         maxInstances: {
-                            id: this.sidebarState.id,
+                            id: this.sidebarState.nodeTemplate.id,
                             count: data
                         }
                     }));
@@ -209,12 +209,9 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
                     sidebarContents: {
                         visible: true,
                         nodeClicked: this.sidebarState.nodeClicked,
-                        id: this.sidebarState.id,
-                        name: this.sidebarState.name,
-                        type: this.sidebarState.type,
+                        nodeTemplate: this.sidebarState.nodeTemplate,
                         minInstances: this.sidebarState.minInstances,
                         maxInstances: Number(data),
-                        properties: this.sidebarState.properties,
                         relationshipTemplate : this.sidebarState.relationshipTemplate,
                         source: this.sidebarState.source,
                         target: this.sidebarState.target
@@ -231,7 +228,7 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
         if ($event === 'inc') {
             this.$ngRedux.dispatch(this.actions.incMinInstances({
                 minInstances: {
-                    id: this.sidebarState.id
+                    id: this.sidebarState.nodeTemplate.id
                 }
             }));
             let number: number = this.sidebarState.minInstances;
@@ -243,7 +240,7 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
             } else {
                 this.$ngRedux.dispatch(this.actions.decMinInstances({
                     minInstances: {
-                        id: this.sidebarState.id
+                        id: this.sidebarState.nodeTemplate.id
                     }
                 }));
                 this.sidebarState.minInstances -= 1;
@@ -254,12 +251,9 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
             sidebarContents: {
                 visible: true,
                 nodeClicked: this.sidebarState.nodeClicked,
-                id: this.sidebarState.id,
-                name: this.sidebarState.name,
-                type: this.sidebarState.type,
+                nodeTemplate: this.sidebarState.nodeTemplate,
                 minInstances: this.sidebarState.minInstances,
                 maxInstances: this.sidebarState.maxInstances,
-                properties: this.sidebarState.properties,
                 relationshipTemplate : this.sidebarState.relationshipTemplate,
                 source: this.sidebarState.source,
                 target: this.sidebarState.target
@@ -276,7 +270,7 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
             if ($event === 'inc') {
                 this.$ngRedux.dispatch(this.actions.incMaxInstances({
                     maxInstances: {
-                        id: this.sidebarState.id
+                        id: this.sidebarState.nodeTemplate.id
                     }
                 }));
                 this.sidebarState.maxInstances += 1;
@@ -286,7 +280,7 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
                 } else {
                     this.$ngRedux.dispatch(this.actions.decMaxInstances({
                         maxInstances: {
-                            id: this.sidebarState.id
+                            id: this.sidebarState.nodeTemplate.id
                         }
                     }));
                     this.sidebarState.maxInstances -= 1;
@@ -297,7 +291,7 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
                 this.sidebarState.maxInstances = '\u221E';
                 this.$ngRedux.dispatch(this.actions.changeMaxInstances({
                     maxInstances: {
-                        id: this.sidebarState.id,
+                        id: this.sidebarState.nodeTemplate.id,
                         count: '\u221E'
                     }
                 }));
@@ -305,7 +299,7 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
         } else {
             this.$ngRedux.dispatch(this.actions.changeMaxInstances({
                 maxInstances: {
-                    id: this.sidebarState.id,
+                    id: this.sidebarState.nodeTemplate.id,
                     count: 0
                 }
             }));
@@ -317,12 +311,9 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
             sidebarContents: {
                 visible: true,
                 nodeClicked: this.sidebarState.nodeClicked,
-                id: this.sidebarState.id,
-                name: this.sidebarState.name,
-                type: this.sidebarState.type,
+                nodeTemplate: this.sidebarState.nodeTemplate,
                 minInstances: this.sidebarState.minInstances,
                 maxInstances: this.sidebarState.maxInstances,
-                properties: this.sidebarState.properties,
                 relationshipTemplate : this.sidebarState.relationshipTemplate,
                 source: this.sidebarState.source,
                 target: this.sidebarState.target
@@ -338,7 +329,7 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
      */
     onFocus($event): void {
         this.$ngRedux.dispatch(this.actions.sendCurrentNodeId({
-            id: this.sidebarState.id,
+            id: this.sidebarState.nodeTemplate.id,
             focus: false
         }));
     }
@@ -351,7 +342,7 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
      */
     onBlur($event): void {
         this.$ngRedux.dispatch(this.actions.sendCurrentNodeId({
-            id: this.sidebarState.id,
+            id: this.sidebarState.nodeTemplate.id,
             focus: true
         }));
     }
@@ -362,7 +353,7 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
      */
     linkType($event: any): void {
         let typeURL;
-        const qName = new QName(this.sidebarState.type);
+        const qName = new QName(this.sidebarState.nodeTemplate.type);
         if (this.sidebarState.nodeClicked) {
             typeURL = this.backendService.configuration.uiURL + '#' + urlElement.NodeTypeURL +
                 encodeURIComponent(encodeURIComponent(qName.nameSpace)) + '/' + qName.localName
