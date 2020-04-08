@@ -39,12 +39,14 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
     nodeProperties: any = {};
 
     private subscriptions: Array<Subscription> = [];
+    // flag to allow skipping an update when this instance is the instigator of said update
+    //  this way we avoid recreating the input form during the editing process
+    private skipUpdate = false;
 
     constructor(private $ngRedux: NgRedux<IWineryState>,
                 private actions: WineryActions,
                 private jsPlumbService: JsPlumbService,
-                private repoConfiguration: WineryRepositoryConfigurationService,
-                private change: ChangeDetectorRef) {
+                private repoConfiguration: WineryRepositoryConfigurationService) {
     }
 
     /**
@@ -78,6 +80,10 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
     // FIXME need to deal with losing focus on the newly generated form.
     //  Consider having some way to instead update the form only if necessary?
     private loadData(nodeTemplate: TNodeTemplate): void {
+        if (this.skipUpdate) {
+            this.skipUpdate = false;
+            return;
+        }
         const propertyData = nodeTemplate.properties;
         this.propertyDefinitionType = this.determinePropertyDefinitionType(nodeTemplate);
         // reset nodeProperties to empty object to change it's pointer for change detection to work
@@ -124,6 +130,7 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     private dispatchRedux(): void {
+        this.skipUpdate = true;
         this.$ngRedux.dispatch(this.actions.setProperty({
             nodeProperty: {
                 newProperty: this.nodeProperties,
