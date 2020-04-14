@@ -43,6 +43,7 @@ import org.eclipse.winery.model.ids.XmlId;
 import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.model.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.model.ids.definitions.DataTypeId;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.ids.definitions.InterfaceTypeId;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
@@ -454,7 +455,7 @@ public class YamlRepository extends AbstractFileBasedRepository {
                 TDefinitions definitions = convertToDefinitions(targetPath, name.getLocalPart(), name.getNamespaceURI());
                 return getRequestedDefinition((DefinitionsChildId) ref.getParent(), definitions);
             } catch (MultiException e) {
-                LOGGER.debug("Internal error", e);
+                LOGGER.warn("Internal error", e);
             }
         }
         return null;
@@ -498,6 +499,8 @@ public class YamlRepository extends AbstractFileBasedRepository {
                 requestedDefinitions.addArtifactTypes(definitions.getArtifactTypes());
             } else if (id instanceof CapabilityTypeId) {
                 requestedDefinitions.addCapabilityTypes(definitions.getCapabilityTypes());
+            } else if (id instanceof DataTypeId) {
+                requestedDefinitions.addDataTypes(definitions.getDataTypes());
             } else if (id instanceof RequirementTypeId) {
                 requestedDefinitions.addRequirementTypes(definitions.getRequirementTypes());
             } else if (id instanceof PolicyTypeId) {
@@ -570,6 +573,7 @@ public class YamlRepository extends AbstractFileBasedRepository {
      **/
     private TServiceTemplate readServiceTemplate(Path targetPath) throws IOException, MultiException {
         InputStream in = newInputStream(targetPath);
+        LOGGER.debug("Reading service template from  {}", targetPath);
         return new YamlReader().parse(in);
     }
 
@@ -582,6 +586,7 @@ public class YamlRepository extends AbstractFileBasedRepository {
     private TServiceTemplate readServiceTemplate(RepositoryFileReference ref) throws IOException, MultiException {
         Path targetPath = ref2AbsolutePath(ref);
         InputStream in = newInputStream(targetPath);
+        LOGGER.debug("Reading service template from reference {} resolved as {}", ref, targetPath);
         return new YamlReader().parse(in);
     }
 

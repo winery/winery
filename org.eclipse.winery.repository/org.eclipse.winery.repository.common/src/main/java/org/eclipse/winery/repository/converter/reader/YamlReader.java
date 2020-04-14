@@ -207,7 +207,6 @@ public class YamlReader {
 
     private TServiceTemplate readServiceTemplate(InputStream inputStream, String namespace) throws MultiException {
         Object object = null;
-        logger.debug("Read Service Template: {}", inputStream);
         // pre parse checking
         try {
             object = readObjectFromInputStream(inputStream);

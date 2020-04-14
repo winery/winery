@@ -64,6 +64,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.model.ids.IdNames;
+import org.eclipse.winery.model.ids.definitions.DataTypeId;
+import org.eclipse.winery.model.tosca.TDataType;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
 import org.eclipse.winery.model.version.VersionSupport;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
@@ -618,6 +620,8 @@ public class BackendUtils {
             element = new TRelationshipType();
         } else if (id instanceof CapabilityTypeId) {
             element = new TCapabilityType();
+        } else if (id instanceof DataTypeId) { 
+            element = new TDataType();
         } else if (id instanceof ArtifactTypeId) {
             element = new TArtifactType();
         } else if (id instanceof PolicyTypeId) {

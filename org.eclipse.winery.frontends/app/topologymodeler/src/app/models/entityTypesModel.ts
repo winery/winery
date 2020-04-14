@@ -22,6 +22,7 @@ import { GroupedNodeTypeModel } from './groupedNodeTypeModel';
 /**
  * Internal representation of entity Types
  */
+// TODO reconsider bundling the visuals with the entity types
 export class EntityTypesModel {
     artifactTemplates: any;
     artifactTypes: TArtifactType[];
@@ -38,6 +39,7 @@ export class EntityTypesModel {
     requirementTypes: EntityType[];
     unGroupedNodeTypes: EntityType[];
     yamlPolicies: TPolicy[];
+    dataTypes: EntityType[];
 }
 
 /**

@@ -832,6 +832,10 @@ public class ToCanonical {
                 for (Map.Entry<String, org.eclipse.winery.model.tosca.yaml.TRequirementAssignment> data : map.getMap().entrySet()) {
                     final org.eclipse.winery.model.tosca.yaml.TRequirementAssignment req = data.getValue();
                     TRelationshipTemplate relationship = topology.getRelationshipTemplate(req.getRelationship().getType().toString());
+                    if (relationship == null) {
+                        // requirement with a type that is not a RelationshipTemplate in the topology
+                        continue;
+                    }
                     relationship.setTargetNodeTemplate(topology.getNodeTemplate(id));
                     relationship.setSourceNodeTemplate(topology.getNodeTemplate(req.getNode().toString()));
                 }
