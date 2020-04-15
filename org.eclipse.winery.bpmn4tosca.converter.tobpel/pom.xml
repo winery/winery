@@ -94,23 +94,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<url>http://www.eclipse.org/winery</url>
-	<organization>
-		<name>Eclipse.org - Winery Project</name>
-		<url>http://www.eclipse.org/winery</url>
-	</organization>
-	<issueManagement>
-		<system>GitHub</system>
-		<url>https://github.com/eclipse/winery/issues</url>
-	</issueManagement>
-	<inceptionYear>2012</inceptionYear>
-	<mailingLists>
-		<mailingList>
-			<name>Winery Developer List</name>
-			<post>winery-dev@eclipse.org</post>
-			<archive>http://dev.eclipse.org/mhonarc/lists/winery-dev</archive>
-		</mailingList>
-	</mailingLists>
+
 	<licenses>
 		<license>
 			<name>Eclipse Public License v2.0</name>
@@ -131,6 +115,16 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven.surefire.version}</version>
+				<configuration>
+					<argLine>
+						--illegal-access=permit
+					</argLine>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
