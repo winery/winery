@@ -58,12 +58,13 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
 
     ngOnChanges(changes: SimpleChanges): void {
         // TODO flattening the object graph for yaml properties is a more involved operation than we can leave to the keysPipe
-        if (changes.nodeProperties) {
-            this.propertyValues = changes.nodeProperties.currentValue;
-        }
         if (changes.nodeType) {
             this.nodeType = changes.nodeType.currentValue;
             this.determineProperties();
+        }
+        if (changes.nodeProperties) {
+            this.propertyValues = changes.nodeProperties.currentValue;
+            this.backfillPropertyDefaults();
         }
     }
 
@@ -96,5 +97,13 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
             }
         }
         this.properties = definedProperties;
+    }
+
+    private backfillPropertyDefaults() {
+        for (const propDefinition of this.properties) {
+            if (this.propertyValues[propDefinition.name] === undefined) {
+                this.propertyValues[propDefinition.name] = propDefinition.defaultValue || '';
+            }
+        }
     }
 }
