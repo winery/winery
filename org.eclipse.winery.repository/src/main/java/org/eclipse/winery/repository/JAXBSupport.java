@@ -26,8 +26,8 @@ import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.repository.backend.MockXMLElement;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
-import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.persistence.oxm.NamespacePrefixMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,8 +95,6 @@ public class JAXBSupport {
                 MockXMLElement.class);
             // @formatter:on
         } catch (JAXBException e) {
-            System.out.println("HALLO");
-            System.out.println(e);
             LOGGER.error("Could not initialize JAXBContext", e);
             throw new IllegalStateException(e);
         }
@@ -105,7 +103,7 @@ public class JAXBSupport {
 
     /**
      * Creates a marshaller.
-     *
+     * <p>
      * IMPORTANT: always create a new instance and do not reuse the marhaller, otherwise the input-stream will throw a
      * NullPointerException! see https://stackoverflow.com/questions/11114665/org-xml-sax-saxparseexception-premature-end-of-file-for-valid-xml
      *

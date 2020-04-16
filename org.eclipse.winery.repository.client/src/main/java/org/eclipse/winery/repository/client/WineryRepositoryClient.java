@@ -31,8 +31,13 @@ import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -64,14 +69,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.client.urlconnection.HttpURLConnectionFactory;
-import com.sun.jersey.client.urlconnection.URLConnectionClientHandler;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientResponse;
+import org.glassfish.jersey.internal.util.collection.MultivaluedStringMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -91,7 +91,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 
     private static final int MAX_NAME_CACHE_SIZE = 1000;
 
-    private final Collection<WebResource> repositoryResources = new HashSet<WebResource>();
+    private final Collection<WebTarget> repositoryResources = new HashSet<WebTarget>();
     private final Collection<String> knownURIs = new HashSet<String>();
 
     private final Client client;
@@ -102,13 +102,13 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
     private final Map<GenericId, String> nameCache;
     private String primaryRepository = null;
 
-    private WebResource primaryWebResource = null;
+    private WebTarget primaryWebTarget = null;
 
     // schema aware document builder
     private final DocumentBuilder toscaDocumentBuilder;
 
     // taken from http://stackoverflow.com/a/15253142/873282
-    private static class ConnectionFactory implements HttpURLConnectionFactory {
+    private static class ConnectionFactory {
 
         Proxy proxy;
 
@@ -116,7 +116,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
             this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 8888));
         }
 
-        @Override
         public HttpURLConnection getHttpURLConnection(URL url) throws IOException {
             this.initializeProxy();
             return (HttpURLConnection) url.openConnection(this.proxy);
@@ -135,14 +134,13 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
      * @throws IllegalStateException if DOM parser could not be created
      */
     public WineryRepositoryClient(boolean useProxy) {
-        ClientConfig clientConfig = new DefaultClientConfig();
-        clientConfig.getClasses().add(JacksonJsonProvider.class);
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.register(JacksonJsonProvider.class);
+
         if (useProxy) {
-            URLConnectionClientHandler ch = new URLConnectionClientHandler(new ConnectionFactory());
-            this.client = new Client(ch, clientConfig);
-        } else {
-            this.client = Client.create(clientConfig);
+            // todo
         }
+        this.client = ClientBuilder.newClient(clientConfig);
 
         this.entityTypeDataCache = new HashMap<>();
         this.nameCache = new HashMap<>();
@@ -230,11 +228,11 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
     public void addRepository(String uri) {
         if (this.knownURIs.add(uri)) {
             // URI is not already known, add a new resource
-            WebResource wr = this.client.resource(uri);
+            WebTarget wr = this.client.target(uri);
             this.repositoryResources.add(wr);
             if (this.primaryRepository == null) {
                 this.primaryRepository = uri;
-                this.primaryWebResource = wr;
+                this.primaryWebTarget = wr;
             }
         }
     }
@@ -249,16 +247,16 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
         this.addRepository(uri);
         // now we are sure that a web resource for the uri exists
         this.primaryRepository = uri;
-        // Update the reference to the primaryWebResource
+        // Update the reference to the primaryWebTarget
         // The appropriate resource has been created via
         // this.addRepository(uri);
-        for (WebResource wr: this.repositoryResources) {
-            if (wr.getURI().equals(uri)) {
-                this.primaryWebResource = wr;
+        for (WebTarget wr : this.repositoryResources) {
+            if (wr.getUri().equals(uri)) {
+                this.primaryWebTarget = wr;
                 break;
             }
         }
-        assert (this.primaryWebResource != null);
+        assert (this.primaryWebTarget != null);
     }
 
     /*** methods directly from IWineryRepository ***/
@@ -266,15 +264,17 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
     @Override
     public SortedSet<String> getNamespaces() {
         SortedSet<String> res = new TreeSet<String>();
-        for (WebResource wr: this.repositoryResources) {
-            WebResource namespacesResource = wr.path("admin").path("namespaces");
+        for (WebTarget wr : this.repositoryResources) {
+            WebTarget namespacesResource = wr.path("admin").path("namespaces");
 
             // this could be parsed using JAXB
             // (http://jersey.java.net/nonav/documentation/latest/json.html),
             // ~but we are short in time~ but this module will be removed in near future, so we do a quick hack
-            TopologyNamespace[] nsList = namespacesResource.accept(MediaType.APPLICATION_JSON).get(TopologyNamespace[].class);
+            TopologyNamespace[] nsList = namespacesResource.request()
+                .accept(MediaType.APPLICATION_JSON)
+                .get(TopologyNamespace[].class);
 
-            for (TopologyNamespace ns: nsList) {
+            for (TopologyNamespace ns : nsList) {
                 res.add(ns.namespace);
             }
         }
@@ -284,16 +284,18 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
     /**
      * Base method for getQNameListOfAllTypes and getAllTypes.
      */
-    private <T extends TExtensibleElements> Map<WebResource, List<NamespaceIdOptionalName>> getWRtoNamespaceAndIdListMapOfAllTypes(String path) {
-        Map<WebResource, List<NamespaceIdOptionalName>> res = new HashMap<WebResource, List<NamespaceIdOptionalName>>();
-        for (WebResource wr: this.repositoryResources) {
-            WebResource componentListResource = wr.path(path);
+    private <T extends TExtensibleElements> Map<WebTarget, List<NamespaceIdOptionalName>> getWRtoNamespaceAndIdListMapOfAllTypes(String path) {
+        Map<WebTarget, List<NamespaceIdOptionalName>> res = new HashMap<WebTarget, List<NamespaceIdOptionalName>>();
+        for (WebTarget wr : this.repositoryResources) {
+            WebTarget componentListResource = wr.path(path);
 
             // this could be parsed using JAXB
             // (http://jersey.java.net/nonav/documentation/latest/json.html),
             // but we are short in time, so we do a quick hack
             // The result also contains the optional name
-            String idList = componentListResource.accept(MediaType.APPLICATION_JSON).get(String.class);
+            String idList = componentListResource.request()
+                .accept(MediaType.APPLICATION_JSON)
+                .get(String.class);
             LOGGER.trace(idList);
             List<NamespaceIdOptionalName> nsAndIdList;
             try {
@@ -315,12 +317,12 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
         }
 
         String name = null;
-        for (WebResource wr: this.repositoryResources) {
+        for (WebTarget wr : this.repositoryResources) {
             String pathFragment = IdUtil.getURLPathFragment(id);
-            WebResource resource = wr.path(pathFragment).path("name");
-            ClientResponse response = resource.accept(MediaType.TEXT_PLAIN_TYPE).get(ClientResponse.class);
-            if (response.getClientResponseStatus() == ClientResponse.Status.OK) {
-                name = response.getEntity(String.class);
+            WebTarget resource = wr.path(pathFragment).path("name");
+            ClientResponse response = resource.request().accept(MediaType.TEXT_PLAIN_TYPE).get(ClientResponse.class);
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                name = response.readEntity(String.class);
                 // break loop as the first match is the final result
                 break;
             }
@@ -341,11 +343,11 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
     @Override
     public <T extends TExtensibleElements> List<QName> getQNameListOfAllTypes(Class<T> className) {
         String path = Util.getURLpathFragmentForCollection(className);
-        Map<WebResource, List<NamespaceIdOptionalName>> wRtoNamespaceAndIdListMapOfAllTypes = this.getWRtoNamespaceAndIdListMapOfAllTypes(path);
+        Map<WebTarget, List<NamespaceIdOptionalName>> wRtoNamespaceAndIdListMapOfAllTypes = this.getWRtoNamespaceAndIdListMapOfAllTypes(path);
         Collection<List<NamespaceIdOptionalName>> namespaceAndIdListCollection = wRtoNamespaceAndIdListMapOfAllTypes.values();
         List<QName> res = new ArrayList<QName>(namespaceAndIdListCollection.size());
-        for (List<NamespaceIdOptionalName> namespaceAndIdList: namespaceAndIdListCollection) {
-            for (NamespaceIdOptionalName namespaceAndId: namespaceAndIdList) {
+        for (List<NamespaceIdOptionalName> namespaceAndIdList : namespaceAndIdListCollection) {
+            for (NamespaceIdOptionalName namespaceAndId : namespaceAndIdList) {
                 QName qname = new QName(namespaceAndId.getNamespace(), namespaceAndId.getId());
                 res.add(qname);
             }
@@ -365,17 +367,17 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
     // does not work without compiler error
     @SuppressWarnings("unchecked")
     private <T extends TExtensibleElements> Collection<T> getAllTypes(String path, Class<T> className) {
-        Map<WebResource, List<NamespaceIdOptionalName>> wrToNamespaceAndIdListMapOfAllTypes = this.getWRtoNamespaceAndIdListMapOfAllTypes(path);
+        Map<WebTarget, List<NamespaceIdOptionalName>> wrToNamespaceAndIdListMapOfAllTypes = this.getWRtoNamespaceAndIdListMapOfAllTypes(path);
         // now we now all QNames. We have to fetch the full content now
 
         Collection<T> res = new LinkedList<T>();
-        for (WebResource wr: wrToNamespaceAndIdListMapOfAllTypes.keySet()) {
-            WebResource componentListResource = wr.path(path);
+        for (WebTarget wr : wrToNamespaceAndIdListMapOfAllTypes.keySet()) {
+            WebTarget componentListResource = wr.path(path);
 
             // go through all ids and fetch detailed information on each
             // type
 
-            for (NamespaceIdOptionalName nsAndId: wrToNamespaceAndIdListMapOfAllTypes.get(wr)) {
+            for (NamespaceIdOptionalName nsAndId : wrToNamespaceAndIdListMapOfAllTypes.get(wr)) {
                 TDefinitions definitions = WineryRepositoryClient.getDefinitions(componentListResource, nsAndId.getNamespace(), nsAndId.getId());
                 if (definitions == null) {
                     // try next one
@@ -434,20 +436,20 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
         map.put(qName, et);
     }
 
-    private static WebResource getTopologyTemplateWebResource(WebResource base, QName serviceTemplate) {
+    private static WebTarget getTopologyTemplateWebTarget(WebTarget base, QName serviceTemplate) {
         Objects.requireNonNull(base);
         Objects.requireNonNull(serviceTemplate);
-        return getTopologyTemplateWebResource(base, serviceTemplate, "/servicetemplates/", "topologytemplate");
+        return getTopologyTemplateWebTarget(base, serviceTemplate, "/servicetemplates/", "topologytemplate");
     }
 
-    private static WebResource getTopologyTemplateWebResource(WebResource base, QName serviceTemplate, String parentPath, String elementPath) {
+    private static WebTarget getTopologyTemplateWebTarget(WebTarget base, QName serviceTemplate, String parentPath, String elementPath) {
         Objects.requireNonNull(base);
         Objects.requireNonNull(serviceTemplate);
         Objects.requireNonNull(parentPath);
         Objects.requireNonNull(elementPath);
         String nsEncoded = Util.DoubleURLencode(serviceTemplate.getNamespaceURI());
         String idEncoded = Util.DoubleURLencode(serviceTemplate.getLocalPart());
-        WebResource res = base.path(parentPath).path(nsEncoded).path(idEncoded).path(elementPath);
+        WebTarget res = base.path(parentPath).path(nsEncoded).path(idEncoded).path(elementPath);
         return res;
     }
 
@@ -455,12 +457,12 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
     public Collection<QNameWithName> getListOfAllInstances(Class<? extends DefinitionsChildId> clazz) {
         // inspired by getQNameListOfAllTypes
         String path = Util.getRootPathFragment(clazz);
-        Map<WebResource, List<NamespaceIdOptionalName>> wRtoNamespaceAndIdListMapOfAllTypes = this.getWRtoNamespaceAndIdListMapOfAllTypes(path);
+        Map<WebTarget, List<NamespaceIdOptionalName>> wRtoNamespaceAndIdListMapOfAllTypes = this.getWRtoNamespaceAndIdListMapOfAllTypes(path);
         Collection<List<NamespaceIdOptionalName>> namespaceAndIdListCollection = wRtoNamespaceAndIdListMapOfAllTypes.values();
         List<QNameWithName> res = new ArrayList<QNameWithName>(namespaceAndIdListCollection.size());
 
-        for (List<NamespaceIdOptionalName> namespaceAndIdList: namespaceAndIdListCollection) {
-            for (NamespaceIdOptionalName namespaceAndId: namespaceAndIdList) {
+        for (List<NamespaceIdOptionalName> namespaceAndIdList : namespaceAndIdListCollection) {
+            for (NamespaceIdOptionalName namespaceAndId : namespaceAndIdList) {
                 QNameWithName qn = new QNameWithName();
                 qn.qname = new QName(namespaceAndId.getNamespace(), namespaceAndId.getId());
                 qn.name = namespaceAndId.getName();
@@ -491,7 +493,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
         if (res == null) {
             // not yet seen, try to fetch resource
 
-            for (WebResource wr: this.repositoryResources) {
+            for (WebTarget wr : this.repositoryResources) {
                 String path = Util.getURLpathFragmentForCollection(type);
 
                 TDefinitions definitions = WineryRepositoryClient.getDefinitions(wr, path, qname.getNamespaceURI(), qname.getLocalPart());
@@ -512,7 +514,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 
     @Override
     public Definitions getDefinitions(DefinitionsChildId id) {
-        for (WebResource wr: this.repositoryResources) {
+        for (WebTarget wr : this.repositoryResources) {
             String path = Util.getUrlPath(id);
             Definitions definitions = WineryRepositoryClient.getDefinitions(wr.path(path));
             if (definitions == null) {
@@ -529,21 +531,20 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
     }
 
     /**
-     * Tries to retrieve a TDefinitions from the given resource / encoded(ns) /
-     * encoded(localPart)
+     * Tries to retrieve a TDefinitions from the given resource / encoded(ns) / encoded(localPart)
      *
      * @return null if 404 or other error
      */
-    private static TDefinitions getDefinitions(WebResource wr, String path, String ns, String localPart) {
-        WebResource componentListResource = wr.path(path);
+    private static TDefinitions getDefinitions(WebTarget wr, String path, String ns, String localPart) {
+        WebTarget componentListResource = wr.path(path);
         return WineryRepositoryClient.getDefinitions(componentListResource, ns, localPart);
     }
 
-    private static Definitions getDefinitions(WebResource instanceResource) {
+    private static Definitions getDefinitions(WebTarget instanceResource) {
         // TODO: org.eclipse.winery.repository.resources.AbstractComponentInstanceResource.getDefinitionsWithAssociatedThings() could be used to do the resolving at the server
 
-        ClientResponse response = instanceResource.accept(MimeTypes.MIMETYPE_TOSCA_DEFINITIONS).get(ClientResponse.class);
-        if (response.getStatus() != 200) {
+        ClientResponse response = instanceResource.request().accept(MimeTypes.MIMETYPE_TOSCA_DEFINITIONS).get(ClientResponse.class);
+        if (response.getStatus() != Response.Status.OK.getStatusCode()) {
             // also handles 404
             return null;
         }
@@ -551,7 +552,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
         Definitions definitions;
         try {
             Unmarshaller um = WineryRepositoryClient.createUnmarshaller();
-            definitions = (Definitions) um.unmarshal(response.getEntityInputStream());
+            definitions = (Definitions) um.unmarshal(response.getEntityStream());
         } catch (JAXBException e) {
             LOGGER.error("Could not unmarshal Definitions", e);
             // try next service
@@ -561,17 +562,16 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
     }
 
     /**
-     * Tries to retrieve a TDefinitions from the given resource / encoded(ns) /
-     * encoded(localPart)
+     * Tries to retrieve a TDefinitions from the given resource / encoded(ns) / encoded(localPart)
      *
      * @return null if 404 or other error
      */
-    private static TDefinitions getDefinitions(WebResource componentListResource, String ns, String localPart) {
+    private static TDefinitions getDefinitions(WebTarget componentListResource, String ns, String localPart) {
         // we need double encoding as the client decodes the URL once
         String nsEncoded = Util.DoubleURLencode(ns);
         String idEncoded = Util.DoubleURLencode(localPart);
 
-        WebResource instanceResource = componentListResource.path(nsEncoded).path(idEncoded);
+        WebTarget instanceResource = componentListResource.path(nsEncoded).path(idEncoded);
         return getDefinitions(instanceResource);
     }
 
@@ -600,12 +600,13 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
     @Override
     public TTopologyTemplate getTopologyTemplate(QName serviceTemplate) {
         // we try all repositories until the first hit
-        for (WebResource wr: this.repositoryResources) {
-            WebResource r = WineryRepositoryClient.getTopologyTemplateWebResource(wr, serviceTemplate);
-            ClientResponse response = r.accept(MediaType.TEXT_XML).get(ClientResponse.class);
-            if (response.getClientResponseStatus() == ClientResponse.Status.OK) {
+        for (WebTarget wr : this.repositoryResources) {
+            WebTarget r = WineryRepositoryClient.getTopologyTemplateWebTarget(wr, serviceTemplate);
+            ClientResponse response = r.request()
+                .accept(MediaType.TEXT_XML).get(ClientResponse.class);
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
                 TTopologyTemplate topologyTemplate;
-                Document doc = this.parseAndValidateTOSCAXML(response.getEntityInputStream());
+                Document doc = this.parseAndValidateTOSCAXML(response.getEntityStream());
                 if (doc == null) {
                     // no valid document
                     return null;
@@ -631,12 +632,12 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
         Objects.requireNonNull(elementPath);
 
         // we try all repositories until the first hit
-        for (WebResource wr: this.repositoryResources) {
-            WebResource r = WineryRepositoryClient.getTopologyTemplateWebResource(wr, serviceTemplate, parentPath, elementPath);
-            ClientResponse response = r.accept(MediaType.TEXT_XML).get(ClientResponse.class);
-            if (response.getClientResponseStatus() == ClientResponse.Status.OK) {
+        for (WebTarget wr : this.repositoryResources) {
+            WebTarget r = WineryRepositoryClient.getTopologyTemplateWebTarget(wr, serviceTemplate, parentPath, elementPath);
+            ClientResponse response = r.request().accept(MediaType.TEXT_XML).get(ClientResponse.class);
+            if (response.getStatus() == Response.Status.OK.getStatusCode()){
                 TTopologyTemplate topologyTemplate;
-                Document doc = this.parseAndValidateTOSCAXML(response.getEntityInputStream());
+                Document doc = this.parseAndValidateTOSCAXML(response.getEntityStream());
                 if (doc == null) {
                     // no valid document
                     return null;
@@ -657,9 +658,9 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 
     @Override
     public void setTopologyTemplate(QName serviceTemplate, TTopologyTemplate topologyTemplate) throws Exception {
-        WebResource r = WineryRepositoryClient.getTopologyTemplateWebResource(this.primaryWebResource, serviceTemplate);
-        String xmlAsString = Util.getXMLAsString(TTopologyTemplate.class, topologyTemplate);
-        ClientResponse response = r.type(MediaType.TEXT_XML).put(ClientResponse.class, xmlAsString);
+        WebTarget r = WineryRepositoryClient.getTopologyTemplateWebTarget(this.primaryWebTarget, serviceTemplate);
+//        String xmlAsString = Util.getXMLAsString(TTopologyTemplate.class, topologyTemplate);
+        ClientResponse response = r.request().put(Entity.xml(topologyTemplate), ClientResponse.class);
         LOGGER.debug(response.toString());
         int status = response.getStatus();
         if ((status < 200) || (status >= 300)) {
@@ -670,24 +671,22 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
     @Override
     public QName getArtifactTypeQNameForExtension(String extension) {
         // we try all repositories until the first hit
-        for (WebResource wr: this.repositoryResources) {
-            WebResource artifactTypesResource = wr.path("artifacttypes").queryParam("extension", extension);
-            ClientResponse response = artifactTypesResource.accept(MediaType.TEXT_PLAIN).get(ClientResponse.class);
-            if (response.getClientResponseStatus() == ClientResponse.Status.OK) {
-                QName res = QName.valueOf(response.getEntity(String.class));
-                return res;
+        for (WebTarget wr : this.repositoryResources) {
+            WebTarget artifactTypesResource = wr.path("artifacttypes").queryParam("extension", extension);
+            ClientResponse response = artifactTypesResource.request().accept(MediaType.TEXT_PLAIN).get(ClientResponse.class);
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                return QName.valueOf(response.readEntity(String.class));
             }
         }
         return null;
     }
 
     /**
-     * Does NOT check for global QName uniqueness, only in the scope of all
-     * artifact templates
+     * Does NOT check for global QName uniqueness, only in the scope of all artifact templates
      */
     @Override
     public void createArtifactTemplate(QName qname, QName artifactType) throws QNameAlreadyExistsException {
-        WebResource artifactTemplates = this.primaryWebResource.path("artifacttemplates");
+        WebTarget artifactTemplates = this.primaryWebTarget.path("artifacttemplates");
 
         // manually creating org.eclipse.winery.repository.rest.resources.apiData.QNameWithTypeApiData, because this class is not available in this context
         ObjectMapper mapper = new ObjectMapper();
@@ -696,14 +695,14 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
         root.put("localname", qname.getLocalPart());
         root.put("type", artifactType.toString());
 
-        ClientResponse response = artifactTemplates.type(MediaType.APPLICATION_JSON).accept(MediaType.TEXT_PLAIN).post(ClientResponse.class, root.toString());
+        ClientResponse response = artifactTemplates.request().accept(MediaType.TEXT_PLAIN).post(Entity.json(root.toString()), ClientResponse.class);
 
-        if (response.getClientResponseStatus() != ClientResponse.Status.CREATED) {
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             // TODO: pass ClientResponse.Status somehow
             // TODO: more fine grained checking for error message. Not all
             // failures are that the QName already exists
-            LOGGER.debug(String.format("Error %d when creating id %s from URI %s", response.getStatus(), qname.toString(), this.primaryWebResource.getURI().toString()));
-            String entity = response.getEntity(String.class);
+            LOGGER.debug(String.format("Error %d when creating id %s from URI %s", response.getStatus(), qname.toString(), this.primaryWebTarget.getUri().toString()));
+            String entity = response.readEntity(String.class);
             if (entity != null) {
                 LOGGER.debug("Entity: {}", entity);
             }
@@ -714,15 +713,15 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 
     @Override
     public void createComponent(QName qname, Class<? extends DefinitionsChildId> idClass) throws QNameAlreadyExistsException {
-        WebResource resource = this.primaryWebResource.path(Util.getRootPathFragment(idClass));
-        MultivaluedMap<String, String> map = new MultivaluedMapImpl();
+        WebTarget resource = this.primaryWebTarget.path(Util.getRootPathFragment(idClass));
+        MultivaluedMap<String, String> map = new MultivaluedStringMap();
         map.putSingle("namespace", qname.getNamespaceURI());
         map.putSingle("name", qname.getLocalPart());
-        ClientResponse response = resource.type(MediaType.APPLICATION_FORM_URLENCODED).accept(MediaType.TEXT_PLAIN).post(ClientResponse.class, map);
-        if (response.getClientResponseStatus() != ClientResponse.Status.CREATED) {
+        ClientResponse response = resource.request().accept(MediaType.TEXT_PLAIN).post(Entity.form(map), ClientResponse.class);
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             // TODO: pass ClientResponse.Status somehow
             // TODO: more fine grained checking for error message. Not all failures are that the QName already exists
-            LOGGER.debug(String.format("Error %d when creating id %s from URI %s", response.getStatus(), qname.toString(), this.primaryWebResource.getURI().toString()));
+            LOGGER.debug(String.format("Error %d when creating id %s from URI %s", response.getStatus(), qname.toString(), this.primaryWebTarget.getUri().toString()));
             throw new QNameAlreadyExistsException();
         }
         // no further return is made
@@ -731,10 +730,10 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
     @Override
     public void forceDelete(GenericId id) throws IOException {
         String pathFragment = IdUtil.getURLPathFragment(id);
-        for (WebResource wr: this.repositoryResources) {
-            ClientResponse response = wr.path(pathFragment).delete(ClientResponse.class);
-            if ((response.getClientResponseStatus() != ClientResponse.Status.NO_CONTENT) || (response.getClientResponseStatus() != ClientResponse.Status.NOT_FOUND)) {
-                LOGGER.debug(String.format("Error %d when deleting id %s from URI %s", response.getStatus(), id.toString(), wr.getURI().toString()));
+        for (WebTarget wr : this.repositoryResources) {
+            ClientResponse response = wr.path(pathFragment).request().delete(ClientResponse.class);
+            if ((response.getStatus() == Response.Status.NO_CONTENT.getStatusCode()) || (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode())) {
+                LOGGER.debug(String.format("Error %d when deleting id %s from URI %s", response.getStatus(), id.toString(), wr.getUri().toString()));
             }
         }
     }
@@ -754,11 +753,11 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
         NamespaceAndIdAsString namespaceAndIdAsString = new NamespaceAndIdAsString();
         namespaceAndIdAsString.namespace = newId.getNamespace().getDecoded();
         namespaceAndIdAsString.id = newId.getXmlId().getDecoded();
-        for (WebResource wr: this.repositoryResources) {
+        for (WebTarget wr : this.repositoryResources) {
             // TODO: Check whether namespaceAndIdAsString is the correct data type expected at the resource
-            ClientResponse response = wr.path(pathFragment).path("id").post(ClientResponse.class, namespaceAndIdAsString);
-            if ((response.getClientResponseStatus() != ClientResponse.Status.NO_CONTENT) || (response.getClientResponseStatus() != ClientResponse.Status.NOT_FOUND)) {
-                LOGGER.debug(String.format("Error %d when renaming DefinitionsChildId %s to %s at %s", response.getStatus(), oldId.toString(), newId.toString(), wr.getURI().toString()));
+            ClientResponse response = wr.path(pathFragment).path("id").request().post(Entity.json(namespaceAndIdAsString), ClientResponse.class);
+            if ((response.getStatus() == Response.Status.NO_CONTENT.getStatusCode()) || (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode())) {
+                LOGGER.debug(String.format("Error %d when renaming DefinitionsChildId %s to %s at %s", response.getStatus(), oldId.toString(), newId.toString(), wr.getUri().toString()));
             }
         }
     }
@@ -775,12 +774,11 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 
     @Override
     public boolean primaryRepositoryAvailable() {
-        if (this.primaryWebResource == null) {
+        if (this.primaryWebTarget == null) {
             return false;
         }
 
-        ClientResponse response = this.primaryWebResource.get(ClientResponse.class);
-        boolean res = (response.getClientResponseStatus() == ClientResponse.Status.OK);
-        return res;
+        ClientResponse response = this.primaryWebTarget.request().get(ClientResponse.class);
+        return response.getStatus() == Response.Status.OK.getStatusCode();
     }
 }

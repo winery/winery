@@ -28,6 +28,7 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +61,7 @@ public class WineryUsingHttpServer {
         cors.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, "X-Requested-With,Content-Type,Accept,Origin");
 
         // this mirrors org.eclipse.winery.repository.rest\src\main\webapp\WEB-INF\web.xml
-        ServletHolder h = context.addServlet(com.sun.jersey.spi.container.servlet.ServletContainer.class, "/*");
+        ServletHolder h = context.addServlet(ServletContainer.class, "/*");
         h.setInitParameter("com.sun.jersey.config.feature.FilterForwardOn404", "false");
         h.setInitParameter("com.sun.jersey.config.feature.CanonicalizeURIPath", "true");
         h.setInitParameter("com.sun.jersey.config.feature.DisableWADL", "true");

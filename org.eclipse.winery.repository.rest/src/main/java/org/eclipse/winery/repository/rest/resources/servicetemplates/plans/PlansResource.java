@@ -23,6 +23,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -46,8 +48,6 @@ import org.eclipse.winery.repository.rest.resources._support.collections.EntityC
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import org.apache.commons.lang3.StringUtils;
@@ -196,16 +196,11 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
             request += plansURI;
             request += "</PLANPOSTURL></generatePlanForTopology>";
             // Create client and execute request (handle exceptions generally)
-            WebResource.Builder wr = Client.create()
-                .resource(planBuilderBaseUrl + "/sync")
-                .type(MediaType.APPLICATION_XML);
-            try {
-                wr.post(String.class, request);
-                LOGGER.info("Plans successfully generated");
-            } catch (Exception e) {
-                LOGGER.error("Could not create plans: {}", e.getMessage(), e);
-                return Response.serverError().entity(e.getMessage()).build();
-            }
+            ClientBuilder.newClient()
+                .target(planBuilderBaseUrl + "/sync")
+                .request()
+                .post(Entity.xml(request), String.class);
+            LOGGER.info("Plans successfully generated");
         } else {
             String message = "Plan Builder service is not available. No plans were generated.";
             LOGGER.warn(message);

@@ -19,13 +19,13 @@ import java.util.Set;
 
 import javax.ws.rs.Path;
 
-import com.sun.jersey.api.core.DefaultResourceConfig;
+import org.glassfish.jersey.server.ResourceConfig;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("unused")
-public class WineryResourceConfig extends DefaultResourceConfig {
+public class WineryResourceConfig extends ResourceConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WineryResourceConfig.class);
 
