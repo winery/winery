@@ -16,64 +16,85 @@ import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, S
 import { Subject, Subscription } from 'rxjs';
 import { KeyValueItem } from '../../../../../tosca-management/src/app/model/keyValueItem';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { BackendService } from '../../services/backend.service';
+import { EntityType, TDataType } from '../../models/ttopology-template';
+import { QName } from '../../models/qname';
+import { InheritanceUtils } from '../../models/InheritanceUtils';
 
 @Component({
     selector: 'winery-yaml-properties',
     templateUrl: './yaml-properties.component.html',
     // styleUrls: ['./yaml-properties.component.css'],
 })
-export class YamlPropertiesComponent implements OnInit, OnChanges, OnDestroy {
+export class YamlPropertiesComponent implements OnChanges, OnDestroy {
     @Input() readonly: boolean;
     @Input() nodeProperties: object;
+    @Input() nodeType: string;
 
     @Output() propertyEdited: EventEmitter<KeyValueItem> = new EventEmitter<KeyValueItem>();
 
-    properties: Array<KeyValueItem>;
-    valueSubject: Subject<string> = new Subject<string>();
-    keySubject: Subject<string> = new Subject<string>();
+    propertyValues: any;
+    properties: Array<any>;
 
-    // local storage of the edited key for outgoing events
-    private key: string;
+    // subject allows for debouncing
+    private outputSubject: Subject<KeyValueItem> = new Subject<KeyValueItem>();
+    private nodeTypes: Array<EntityType> = [];
+    private dataTypes: Array<TDataType> = [];
     private subscriptions: Array<Subscription> = [];
 
-    ngOnInit(): void {
-        // find out which row was edited by key
-        this.subscriptions.push(this.keySubject.pipe(
-            debounceTime(200),
-            distinctUntilChanged(), )
-            .subscribe(key => {
-                this.key = key;
-            }));
-        this.subscriptions.push(this.valueSubject.pipe(
+    constructor(private backend: BackendService) {
+        this.subscriptions.push(this.backend.model$.subscribe(
+            model => {
+                this.nodeTypes = model.unGroupedNodeTypes;
+                this.dataTypes = model.dataTypes;
+            }
+        ));
+        this.subscriptions.push(this.outputSubject.pipe(
             debounceTime(300),
             distinctUntilChanged(), )
-            .subscribe(value => {
-                this.propertyEdited.emit({
-                    key: this.key,
-                    value: value,
-                });
-            }));
+            .subscribe(kv => this.propertyEdited.emit(kv)
+        ));
     }
 
     ngOnChanges(changes: SimpleChanges): void {
+        // TODO flattening the object graph for yaml properties is a more involved operation than we can leave to the keysPipe
         if (changes.nodeProperties) {
-            // TODO flattening the object graph for yaml properties is a more involved operation than we can leave to the keysPipe
-            // this.properties = this.flatten(changes.nodeProperties.currentValue);
-            this.properties = changes.nodeProperties.currentValue;
+            this.propertyValues = changes.nodeProperties.currentValue;
         }
-    }
-
-    private flatten(properties: any): Array<KeyValueItem> {
-        const result = [];
-        for (const key in properties) {
-            if (properties.hasOwnProperty(key)) {
-                result.push({key: key, value: properties[key]});
-            }
+        if (changes.nodeType) {
+            this.nodeType = changes.nodeType.currentValue;
+            this.determineProperties();
         }
-        return result;
     }
 
     ngOnDestroy(): void {
         this.subscriptions.forEach(s => s.unsubscribe());
+    }
+
+    propertyChangeRequest(target: EventTarget, definition: any) {
+        if (this.isValid(target.value, definition.constraints)) {
+            this.outputSubject.next({
+                key: definition.name,
+                value: target.value,
+            });
+        }
+    }
+
+    private isValid(value: any, constraints: any): boolean {
+        if (constraints === null) { return true; }
+        return true;
+    }
+
+    private determineProperties(): void {
+        const inheritance = InheritanceUtils.getInheritanceAncestry(this.nodeType, this.nodeTypes);
+        const definedProperties = [];
+        for (const type of inheritance) {
+            const definition = type.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0];
+            for (const propertyDefinition of definition.properties || []) {
+                // FIXME deal with constraints coming from datatypes
+                definedProperties.push(propertyDefinition);
+            }
+        }
+        this.properties = definedProperties;
     }
 }

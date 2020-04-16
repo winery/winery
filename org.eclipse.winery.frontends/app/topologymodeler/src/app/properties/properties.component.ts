@@ -41,11 +41,13 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
     // flag to allow skipping an update when this instance is the instigator of said update
     //  this way we avoid recreating the input form during the editing process
     private skipUpdate = false;
+    private nodeType: string;
 
     constructor(private $ngRedux: NgRedux<IWineryState>,
                 private actions: WineryActions,
                 private jsPlumbService: JsPlumbService,
-                private repoConfiguration: WineryRepositoryConfigurationService) {
+                private repoConfiguration: WineryRepositoryConfigurationService,
+                ) {
     }
 
     /**
@@ -83,6 +85,7 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
         }
         const propertyData = nodeTemplate.properties;
         this.propertyDefinitionType = this.determinePropertyDefinitionType(nodeTemplate);
+        this.nodeType = nodeTemplate.type;
         // reset nodeProperties to empty object to change it's pointer for change detection to work
         this.nodeProperties = {};
         try {

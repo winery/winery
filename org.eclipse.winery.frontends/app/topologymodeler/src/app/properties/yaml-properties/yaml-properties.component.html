@@ -21,8 +21,8 @@
             Values
         </th>
     <!-- FIXME deal with nesting to enable complex property types? -->
-    <tr *ngFor="let pair of properties | keysPipe">
-        <td class="">{{pair.key}}</td>
+    <tr *ngFor="let definition of properties">
+        <td class="">{{definition.name}}</td>
         <td class="">
                 <textarea
                     style="width:100%; overflow-y: scroll;"
@@ -30,9 +30,8 @@
                     placeholder="Edit your value here."
                     required
                     [disabled]="readonly"
-                    [value]="pair.value"
-                    (keyup)="valueSubject.next($event.target.value)"
-                    (keyup)="keySubject.next(pair.key)">
+                    [value]="propertyValues[definition.name]"
+                    (keyup)="propertyChangeRequest($event.target, definition)">
                 </textarea>
         </td>
     </tr>

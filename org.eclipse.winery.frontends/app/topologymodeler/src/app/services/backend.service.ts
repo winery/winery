@@ -23,7 +23,7 @@ import { ServiceTemplateId } from '../models/serviceTemplateId';
 import { ToscaDiff } from '../models/ToscaDiff';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs/Observable';
-import { concat, forkJoin, of } from 'rxjs';
+import { BehaviorSubject, concat, forkJoin, of } from 'rxjs';
 import { TopologyModelerConfiguration } from '../models/topologyModelerConfiguration';
 import { ErrorHandlerService } from './error-handler.service';
 import { ThreatCreation } from '../models/threatCreation';
@@ -53,8 +53,8 @@ export class BackendService {
 
     // use stored model to aggregate data
     private storedModel: EntityTypesModel = new EntityTypesModel();
-    private modelSubject = new Subject<EntityTypesModel>();
-    model$ = this.modelSubject.asObservable();
+    // BehaviourSubject allows caching the latest value for subscribers
+    model$ = new BehaviorSubject<EntityTypesModel>(this.storedModel);
 
     // TODO avoid splitting the stored data into four different subjects including a loaded state
     private topologyTemplate: TTopologyTemplate;
@@ -136,7 +136,7 @@ export class BackendService {
             this.initEntityType([], 'yamlPolicies');
         }
 
-        this.modelSubject.next(this.storedModel);
+        this.model$.next(this.storedModel);
         // FIXME there is currently some temporal coupling in winery component that requires us to push the model before the topologyTemplate
         this.topTemplate.next(this.topologyTemplate);
         this.loaded.next(true);

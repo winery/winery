@@ -24,6 +24,7 @@
 <winery-yaml-properties *ngIf="propertyDefinitionType == 'YAML'"
     [readonly]="readonly"
     [nodeProperties]="nodeProperties"
+    [nodeType]="nodeType"
     (propertyEdited)="yamlPropertyEdit($event)">
 </winery-yaml-properties>
 
