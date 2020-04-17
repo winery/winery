@@ -27,6 +27,7 @@ import { WineryModalModule } from '../../../../tosca-management/src/app/wineryMo
 import { KvPropertiesComponent } from './kv-properties/kv-properties.component';
 import { XmlPropertiesComponent } from './xml-properties/xml-properties.component';
 import { YamlPropertiesComponent } from './yaml-properties/yaml-properties.component';
+import { ConstraintChecking, ConstraintClause } from './property-constraints';
 
 @NgModule({
     imports: [

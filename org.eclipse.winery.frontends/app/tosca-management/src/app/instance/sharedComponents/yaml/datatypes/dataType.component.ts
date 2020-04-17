@@ -52,7 +52,7 @@ export class DataTypeComponent implements OnInit {
     }
 
     private handleDataInput(componentData: WineryInstance) {
-        this.component = componentData.serviceTemplateOrNodeTypeOrNodeTypeImplementation[1];
+        this.component = componentData.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0];
         this.loadingData = false;
     }
 
