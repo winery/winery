@@ -40,13 +40,6 @@
             <version>${org.slf4j}</version>
             <scope>compile</scope>
         </dependency>
-        <!--        <dependency>-->
-        <!--            &lt;!&ndash; jersey 1.x uses java.util.logging - we want to take care about these outputs, too &ndash;&gt;-->
-        <!--            <groupId>org.slf4j</groupId>-->
-        <!--            <artifactId>jul-to-slf4j</artifactId>-->
-        <!--            <version>${org.slf4j}</version>-->
-        <!--            <scope>compile</scope>-->
-        <!--        </dependency>-->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>

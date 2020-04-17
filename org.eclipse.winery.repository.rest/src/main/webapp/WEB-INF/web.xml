@@ -73,7 +73,8 @@
             <param-name>jersey.config.server.provider.classnames</param-name>
             <param-value>
                 org.glassfish.jersey.filter.LoggingFilter,
-                org.glassfish.jersey.media.multipart.MultiPartFeature
+                org.glassfish.jersey.media.multipart.MultiPartFeature,
+                org.glassfish.jersey.jackson.JacksonFeature
             </param-value>
         </init-param>
 
@@ -96,13 +97,7 @@
         <!--            <param-name>com.sun.jersey.config.feature.DisableWADL</param-name>-->
         <!--            <param-value>true</param-value>-->
         <!--        </init-param>-->
-
-        <!--        &lt;!&ndash; tweak logging - see https://stackoverflow.com/a/32436909/873282 &ndash;&gt;-->
-        <!--        <init-param>-->
-        <!--            <param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>-->
-        <!--            <param-value>com.sun.jersey.api.container.filter.LoggingFilter</param-value>-->
-        <!--        </init-param>-->
-
+        
         <!--        &lt;!&ndash; Disables the logging of the request body - could be enabled for debugging purposes &ndash;&gt;-->
         <!--        <init-param>-->
         <!--            <param-name>com.sun.jersey.config.feature.logging.DisableEntitylogging</param-name>-->

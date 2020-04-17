@@ -98,6 +98,11 @@
             <version>${jersey.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.model.csar.toscametafile</artifactId>
             <version>2.0.0-SNAPSHOT</version>
@@ -157,7 +162,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
-            
+
             <!-- This plugin compiles the Solidity Ethereum smart contracts and provides Java wrapper classes for them
             (that allow communicating with them and deploying them on the blockchain)-->
             <plugin>

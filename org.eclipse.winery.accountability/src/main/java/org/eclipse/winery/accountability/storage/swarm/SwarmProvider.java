@@ -25,8 +25,6 @@ import javax.ws.rs.core.MediaType;
 
 import org.eclipse.winery.accountability.storage.ImmutableStorageProvider;
 
-import org.glassfish.jersey.client.ClientResponse;
-
 public class SwarmProvider implements ImmutableStorageProvider {
     private static ExecutorService executorService = null;
     private final String swarmUrl;
@@ -64,8 +62,7 @@ public class SwarmProvider implements ImmutableStorageProvider {
             () -> client.target(swarmUrl + address + "/")
                 .request()
                 .accept(MediaType.APPLICATION_OCTET_STREAM)
-                .get(ClientResponse.class)
-                .getEntityStream(),
+                .get(InputStream.class),
             getExecutorService()
         );
     }

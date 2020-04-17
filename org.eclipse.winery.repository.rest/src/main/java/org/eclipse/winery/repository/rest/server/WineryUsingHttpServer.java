@@ -39,7 +39,7 @@ public class WineryUsingHttpServer {
     public static Server createHttpServer(int port) {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/winery");
-        addServlet(context, "");
+        addServlet(context);
         Server server = new Server(port);
         server.setHandler(context);
         return server;
@@ -52,7 +52,7 @@ public class WineryUsingHttpServer {
         return createHttpServer(8080);
     }
 
-    private static void addServlet(ServletContextHandler context, String s) {
+    private static void addServlet(ServletContextHandler context) {
         // Add the filter, and then use the provided FilterHolder to configure it
         FilterHolder cors = context.addFilter(CrossOriginFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         cors.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*");
@@ -62,13 +62,12 @@ public class WineryUsingHttpServer {
 
         // this mirrors org.eclipse.winery.repository.rest\src\main\webapp\WEB-INF\web.xml
         ServletHolder h = context.addServlet(ServletContainer.class, "/*");
-        h.setInitParameter("com.sun.jersey.config.feature.FilterForwardOn404", "false");
-        h.setInitParameter("com.sun.jersey.config.feature.CanonicalizeURIPath", "true");
-        h.setInitParameter("com.sun.jersey.config.feature.DisableWADL", "true");
-        h.setInitParameter("com.sun.jersey.config.feature.NormalizeURI", "true");
-        h.setInitParameter("com.sun.jersey.config.feature.Redirect", "true");
-        h.setInitParameter("com.sun.jersey.api.json.POJOMappingFeature", "true");
-        h.setInitParameter("com.sun.jersey.config.property.resourceConfigClass", "org.eclipse.winery.repository.rest.server.WineryResourceConfig");
+        h.setInitParameter("jersey.config.server.provider.packages", "org.eclipse.winery.repository.rest.resources");
+        h.setInitParameter("jersey.config.server.provider.classnames",
+            "org.glassfish.jersey.filter.LoggingFilter," +
+                "org.glassfish.jersey.media.multipart.MultiPartFeature," +
+                "org.glassfish.jersey.jackson.JacksonFeature"
+        );
 
         //context.addFilter(RequestLoggingFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         context.addServlet(DefaultServlet.class, "/");
