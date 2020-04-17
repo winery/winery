@@ -68,7 +68,7 @@
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.11</version>
+            <version>${commons-codec}</version>
         </dependency>
         <dependency>
             <!-- NOTE: "The Commons HttpClient project is now end of life, and is no longer being developed."

@@ -40,29 +40,29 @@
             <version>${org.slf4j}</version>
             <scope>compile</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            &lt;!&ndash; jersey 1.x uses java.util.logging - we want to take care about these outputs, too &ndash;&gt;-->
-<!--            <groupId>org.slf4j</groupId>-->
-<!--            <artifactId>jul-to-slf4j</artifactId>-->
-<!--            <version>${org.slf4j}</version>-->
-<!--            <scope>compile</scope>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            &lt;!&ndash; jersey 1.x uses java.util.logging - we want to take care about these outputs, too &ndash;&gt;-->
+        <!--            <groupId>org.slf4j</groupId>-->
+        <!--            <artifactId>jul-to-slf4j</artifactId>-->
+        <!--            <version>${org.slf4j}</version>-->
+        <!--            <scope>compile</scope>-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.8.6</version>
+            <version>${com.fasterxml.jackson.core}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.8.6</version>
+            <version>${com.fasterxml.jackson.core}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>${com.fasterxml.jackson.core.jackson-annotations}</version>
+            <version>${com.fasterxml.jackson.core}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -83,6 +83,16 @@
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-common</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
             <version>${jersey.version}</version>
         </dependency>
         <!--  use jackson-jaxrs-json-provider instead of jersey-json as suggested by http://stackoverflow.com/a/17006866/873282 -->
@@ -242,12 +252,12 @@
             <!-- Required for com.sun.xml.bind.namespacePrefixMapper -->
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
-            <version>2.2.11</version>
+            <version>${com.sun.xml.bind}</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.11</version>
+            <version>${commons-codec}</version>
         </dependency>
         <dependency>
             <groupId>javax.annotation</groupId>

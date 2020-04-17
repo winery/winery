@@ -79,13 +79,12 @@ import org.xml.sax.SAXException;
 
 public final class WineryRepositoryClient implements IWineryRepositoryClient {
 
+    public static final JAXBContext context = WineryRepositoryClient.initContext();
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(WineryRepositoryClient.class);
     // thread-safe JAXB as inspired by https://jaxb.java.net/guide/Performance_and_thread_safety.html
     // The other possibility: Each subclass sets JAXBContext.newInstance(theSubClass.class); in its static {} part.
     // This seems to be more complicated than listing all subclasses in initContext
-    public final static JAXBContext context = WineryRepositoryClient.initContext();
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(WineryRepositoryClient.class);
-
     // switch off validation, currently causes more trouble than it brings
     private static final boolean VALIDATING = false;
 
@@ -100,27 +99,10 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
     private final Map<Class<? extends TEntityType>, Map<QName, TEntityType>> entityTypeDataCache;
 
     private final Map<GenericId, String> nameCache;
-    private String primaryRepository = null;
-
-    private WebTarget primaryWebTarget = null;
-
     // schema aware document builder
     private final DocumentBuilder toscaDocumentBuilder;
-
-    // taken from http://stackoverflow.com/a/15253142/873282
-    private static class ConnectionFactory {
-
-        Proxy proxy;
-
-        private void initializeProxy() {
-            this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 8888));
-        }
-
-        public HttpURLConnection getHttpURLConnection(URL url) throws IOException {
-            this.initializeProxy();
-            return (HttpURLConnection) url.openConnection(this.proxy);
-        }
-    }
+    private String primaryRepository = null;
+    private WebTarget primaryWebTarget = null;
 
     /**
      * Creates the client without the use of any proxy
@@ -194,11 +176,10 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
         JAXBContext context;
         try {
             // For winery classes, eventually the package+jaxb.index method could be better. See http://stackoverflow.com/a/3628525/873282
-            // @formatter:off
             context = JAXBContext.newInstance(
                 TDefinitions.class,
-                WinerysPropertiesDefinition.class);
-            // @formatter:on
+                WinerysPropertiesDefinition.class
+            );
         } catch (JAXBException e) {
             LOGGER.error("Could not initialize JAXBContext", e);
             throw new IllegalStateException(e);
@@ -220,6 +201,68 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
             throw new IllegalStateException(e);
         }
         return um;
+    }
+
+    private static WebTarget getTopologyTemplateWebTarget(WebTarget base, QName serviceTemplate) {
+        Objects.requireNonNull(base);
+        Objects.requireNonNull(serviceTemplate);
+        return getTopologyTemplateWebTarget(base, serviceTemplate, "/servicetemplates/", "topologytemplate");
+    }
+
+    private static WebTarget getTopologyTemplateWebTarget(WebTarget base, QName serviceTemplate, String parentPath, String elementPath) {
+        Objects.requireNonNull(base);
+        Objects.requireNonNull(serviceTemplate);
+        Objects.requireNonNull(parentPath);
+        Objects.requireNonNull(elementPath);
+        String nsEncoded = Util.DoubleURLencode(serviceTemplate.getNamespaceURI());
+        String idEncoded = Util.DoubleURLencode(serviceTemplate.getLocalPart());
+        WebTarget res = base.path(parentPath).path(nsEncoded).path(idEncoded).path(elementPath);
+        return res;
+    }
+
+    /**
+     * Tries to retrieve a TDefinitions from the given resource / encoded(ns) / encoded(localPart)
+     *
+     * @return null if 404 or other error
+     */
+    private static TDefinitions getDefinitions(WebTarget wr, String path, String ns, String localPart) {
+        WebTarget componentListResource = wr.path(path);
+        return WineryRepositoryClient.getDefinitions(componentListResource, ns, localPart);
+    }
+
+    private static Definitions getDefinitions(WebTarget instanceResource) {
+        // TODO: org.eclipse.winery.repository.resources.AbstractComponentInstanceResource.getDefinitionsWithAssociatedThings() could be used to do the resolving at the server
+
+        ClientResponse response = instanceResource.request().accept(MimeTypes.MIMETYPE_TOSCA_DEFINITIONS).get(ClientResponse.class);
+        if (response.getStatus() != Response.Status.OK.getStatusCode()) {
+            // also handles 404
+            return null;
+        }
+
+        Definitions definitions;
+        try {
+            Unmarshaller um = WineryRepositoryClient.createUnmarshaller();
+            definitions = (Definitions) um.unmarshal(response.getEntityStream());
+        } catch (JAXBException e) {
+            LOGGER.error("Could not unmarshal Definitions", e);
+            // try next service
+            return null;
+        }
+        return definitions;
+    }
+
+    /**
+     * Tries to retrieve a TDefinitions from the given resource / encoded(ns) / encoded(localPart)
+     *
+     * @return null if 404 or other error
+     */
+    private static TDefinitions getDefinitions(WebTarget componentListResource, String ns, String localPart) {
+        // we need double encoding as the client decodes the URL once
+        String nsEncoded = Util.DoubleURLencode(ns);
+        String idEncoded = Util.DoubleURLencode(localPart);
+
+        WebTarget instanceResource = componentListResource.path(nsEncoded).path(idEncoded);
+        return getDefinitions(instanceResource);
     }
 
     /*** methods directly from IWineryRepositoryClient ***/
@@ -436,23 +479,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
         map.put(qName, et);
     }
 
-    private static WebTarget getTopologyTemplateWebTarget(WebTarget base, QName serviceTemplate) {
-        Objects.requireNonNull(base);
-        Objects.requireNonNull(serviceTemplate);
-        return getTopologyTemplateWebTarget(base, serviceTemplate, "/servicetemplates/", "topologytemplate");
-    }
-
-    private static WebTarget getTopologyTemplateWebTarget(WebTarget base, QName serviceTemplate, String parentPath, String elementPath) {
-        Objects.requireNonNull(base);
-        Objects.requireNonNull(serviceTemplate);
-        Objects.requireNonNull(parentPath);
-        Objects.requireNonNull(elementPath);
-        String nsEncoded = Util.DoubleURLencode(serviceTemplate.getNamespaceURI());
-        String idEncoded = Util.DoubleURLencode(serviceTemplate.getLocalPart());
-        WebTarget res = base.path(parentPath).path(nsEncoded).path(idEncoded).path(elementPath);
-        return res;
-    }
-
     @Override
     public Collection<QNameWithName> getListOfAllInstances(Class<? extends DefinitionsChildId> clazz) {
         // inspired by getQNameListOfAllTypes
@@ -530,51 +556,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
         return new Definitions();
     }
 
-    /**
-     * Tries to retrieve a TDefinitions from the given resource / encoded(ns) / encoded(localPart)
-     *
-     * @return null if 404 or other error
-     */
-    private static TDefinitions getDefinitions(WebTarget wr, String path, String ns, String localPart) {
-        WebTarget componentListResource = wr.path(path);
-        return WineryRepositoryClient.getDefinitions(componentListResource, ns, localPart);
-    }
-
-    private static Definitions getDefinitions(WebTarget instanceResource) {
-        // TODO: org.eclipse.winery.repository.resources.AbstractComponentInstanceResource.getDefinitionsWithAssociatedThings() could be used to do the resolving at the server
-
-        ClientResponse response = instanceResource.request().accept(MimeTypes.MIMETYPE_TOSCA_DEFINITIONS).get(ClientResponse.class);
-        if (response.getStatus() != Response.Status.OK.getStatusCode()) {
-            // also handles 404
-            return null;
-        }
-
-        Definitions definitions;
-        try {
-            Unmarshaller um = WineryRepositoryClient.createUnmarshaller();
-            definitions = (Definitions) um.unmarshal(response.getEntityStream());
-        } catch (JAXBException e) {
-            LOGGER.error("Could not unmarshal Definitions", e);
-            // try next service
-            return null;
-        }
-        return definitions;
-    }
-
-    /**
-     * Tries to retrieve a TDefinitions from the given resource / encoded(ns) / encoded(localPart)
-     *
-     * @return null if 404 or other error
-     */
-    private static TDefinitions getDefinitions(WebTarget componentListResource, String ns, String localPart) {
-        // we need double encoding as the client decodes the URL once
-        String nsEncoded = Util.DoubleURLencode(ns);
-        String idEncoded = Util.DoubleURLencode(localPart);
-
-        WebTarget instanceResource = componentListResource.path(nsEncoded).path(idEncoded);
-        return getDefinitions(instanceResource);
-    }
-
     @Override
     public <T extends TEntityType> Collection<TDefinitions> getAllTypesWithAssociatedElements(Class<T> c) {
         String urlPathFragment = Util.getURLpathFragmentForCollection(c);
@@ -635,7 +616,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
         for (WebTarget wr : this.repositoryResources) {
             WebTarget r = WineryRepositoryClient.getTopologyTemplateWebTarget(wr, serviceTemplate, parentPath, elementPath);
             ClientResponse response = r.request().accept(MediaType.TEXT_XML).get(ClientResponse.class);
-            if (response.getStatus() == Response.Status.OK.getStatusCode()){
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
                 TTopologyTemplate topologyTemplate;
                 Document doc = this.parseAndValidateTOSCAXML(response.getEntityStream());
                 if (doc == null) {
@@ -738,11 +719,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
         }
     }
 
-    private class NamespaceAndIdAsString {
-        String namespace;
-        String id;
-    }
-
     /**
      * @param oldId the old id
      * @param newId the new id
@@ -780,5 +756,25 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 
         ClientResponse response = this.primaryWebTarget.request().get(ClientResponse.class);
         return response.getStatus() == Response.Status.OK.getStatusCode();
+    }
+
+    // taken from http://stackoverflow.com/a/15253142/873282
+    private static class ConnectionFactory {
+
+        Proxy proxy;
+
+        private void initializeProxy() {
+            this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 8888));
+        }
+
+        public HttpURLConnection getHttpURLConnection(URL url) throws IOException {
+            this.initializeProxy();
+            return (HttpURLConnection) url.openConnection(this.proxy);
+        }
+    }
+
+    private class NamespaceAndIdAsString {
+        String namespace;
+        String id;
     }
 }

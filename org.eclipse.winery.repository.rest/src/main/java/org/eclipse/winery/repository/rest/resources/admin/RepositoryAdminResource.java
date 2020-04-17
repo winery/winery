@@ -34,8 +34,8 @@ import org.eclipse.winery.repository.backend.filebased.MultiRepository;
 import org.eclipse.winery.repository.backend.filebased.RepositoryConfigurationManager;
 import org.eclipse.winery.repository.backend.filebased.RepositoryProperties;
 
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataParam;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 public class RepositoryAdminResource {
 
@@ -44,7 +44,8 @@ public class RepositoryAdminResource {
      */
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response importRepositoryDump(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail) {
+    public Response importRepositoryDump(@FormDataParam("file") InputStream uploadedInputStream,
+                                         @FormDataParam("file") FormDataContentDisposition fileDetail) {
         ((IRepositoryAdministration) RepositoryFactory.getRepository()).doImport(uploadedInputStream);
         return Response.noContent().build();
     }

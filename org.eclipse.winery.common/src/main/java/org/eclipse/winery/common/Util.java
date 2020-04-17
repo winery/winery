@@ -325,8 +325,8 @@ public class Util {
     /**
      * Just calls @link{qname2href}
      * <p>
-     * Introduced because of JSP error "The method qname2href(String, Class&lt;? extends TExtensibleElements&gt;, QName) in
-     * the type Util is not applicable for the arguments (String, Class&lt;TNodeType&gt;, QName, String)"
+     * Introduced because of JSP error "The method qname2href(String, Class&lt;? extends TExtensibleElements&gt;, QName)
+     * in the type Util is not applicable for the arguments (String, Class&lt;TNodeType&gt;, QName, String)"
      */
     public static String qname2hrefWithName(String repositoryUiUrl, Class<? extends TExtensibleElements> element, QName qname, String name) {
         return Util.qname2href(repositoryUiUrl, element, qname, name);
@@ -452,7 +452,8 @@ public class Util {
     }
 
     /**
-     * Method similar to @see org.eclipse.winery.repository.Utils#getXMLAsString(java.lang.Class, java.lang.Object, boolean)}.
+     * Method similar to @see org.eclipse.winery.repository.Utils#getXMLAsString(java.lang.Class, java.lang.Object,
+     * boolean)}.
      * <p>
      * Differences: <ul> <li>XML processing instruction is not included in the header</li> <li>JAXBcontext is created at
      * each call</li> </ul>
@@ -464,10 +465,9 @@ public class Util {
         JAXBContext context;
         try {
             // For winery classes, eventually the package+jaxb.index method could be better. See http://stackoverflow.com/a/3628525/873282
-            // @formatter:off
             context = JAXBContext.newInstance(
-                TEntityType.class);
-            // @formatter:on
+                TEntityType.class
+            );
         } catch (JAXBException e) {
             throw new IllegalStateException(e);
         }
@@ -512,7 +512,8 @@ public class Util {
      * Determines whether the instance belonging to the given id supports the "name" attribute. This cannot be done
      * using the super class as the TOSCA specification treats that differently in the case of EntityTemplates
      * <p>
-     * NOTE: The respective subclasses of AbstractComponentInstanceResource have to implement @see org.eclipse.winery.repository.resources.IHasName
+     * NOTE: The respective subclasses of AbstractComponentInstanceResource have to implement @see
+     * org.eclipse.winery.repository.resources.IHasName
      *
      * @param idClass the class of the to test
      * @return true if the TOSCA model class belonging to the given id supports the method "getName()" in addition to
@@ -623,8 +624,8 @@ public class Util {
      * <p>
      * This function should be consistent with org.eclipse.winery.common.Util.cleanName(String)
      * <p>
-     * TODO: This method seems to be equal to org.eclipse.winery.repository.Utils.createXMLidAsString(String).
-     * These methods should be merged.
+     * TODO: This method seems to be equal to org.eclipse.winery.repository.Utils.createXMLidAsString(String). These
+     * methods should be merged.
      */
     public static String makeNCName(String text) {
         if (StringUtils.isEmpty(text)) {

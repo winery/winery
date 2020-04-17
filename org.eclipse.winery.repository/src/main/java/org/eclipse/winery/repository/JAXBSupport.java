@@ -84,7 +84,6 @@ public class JAXBSupport {
         JAXBContext context;
         try {
             // For winery classes, eventually the package+jaxb.index method could be better. See http://stackoverflow.com/a/3628525/873282
-            // @formatter:off
             context = JAXBContext.newInstance(
                 //InjectorReplaceData.class,
                 TDefinitions.class, // all other elements are referred by "@XmlSeeAlso"
@@ -92,8 +91,8 @@ public class JAXBSupport {
                 // for the self-service portal
                 Application.class,
                 // MockXMLElement is added for testing purposes only.
-                MockXMLElement.class);
-            // @formatter:on
+                MockXMLElement.class
+            );
         } catch (JAXBException e) {
             LOGGER.error("Could not initialize JAXBContext", e);
             throw new IllegalStateException(e);

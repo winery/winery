@@ -48,9 +48,9 @@ import org.eclipse.winery.repository.rest.resources._support.collections.EntityC
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataBodyPart;
 import org.apache.commons.lang3.StringUtils;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,7 +123,8 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
         return plan[0];
     }
 
-    private Response saveFile(TPlan tPlan, InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FormDataBodyPart body) {
+    private Response saveFile(TPlan tPlan, InputStream uploadedInputStream, FormDataContentDisposition fileDetail,
+                              FormDataBodyPart body) {
         boolean bpmn4toscaMode = Namespaces.URI_BPMN4TOSCA_20.equals(tPlan.getPlanLanguage());
 
         if (uploadedInputStream != null || bpmn4toscaMode) {

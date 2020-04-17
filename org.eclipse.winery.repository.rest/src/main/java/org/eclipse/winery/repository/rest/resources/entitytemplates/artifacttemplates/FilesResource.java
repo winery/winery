@@ -51,11 +51,11 @@ import org.eclipse.winery.repository.rest.datatypes.FileMeta;
 import org.eclipse.winery.repository.rest.resources.apiData.ArtifactResourceApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.ArtifactResourcesApiData;
 
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataBodyPart;
-import com.sun.jersey.multipart.FormDataParam;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,11 +84,13 @@ public class FilesResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response onPost(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("file") FormDataBodyPart body, @Context UriInfo uriInfo) {
+    public Response onPost(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail,
+                           @FormDataParam("file") FormDataBodyPart body, @Context UriInfo uriInfo) {
         return onPost(uploadedInputStream, fileDetail, body, uriInfo, fileDetail.getFileName());
     }
 
-    public Response onPost(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("file") FormDataBodyPart body, @Context UriInfo uriInfo, String fileName) {
+    public Response onPost(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail,
+                           @FormDataParam("file") FormDataBodyPart body, @Context UriInfo uriInfo, String fileName) {
         // existence check not required as instantiation of the resource ensures that the object only exists if the resource exists
         FilesResource.LOGGER.debug("Beginning with file upload");
 
