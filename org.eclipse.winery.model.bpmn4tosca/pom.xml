@@ -23,9 +23,9 @@
     <artifactId>org.eclipse.winery.model.bpmn4tosca</artifactId>
     <dependencies>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>${com.fasterxml.jackson.core}</version>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>${org.glassfish.jxb}</version>
         </dependency>
         <dependency>
             <groupId>org.jgrapht</groupId>

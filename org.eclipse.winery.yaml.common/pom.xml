@@ -53,14 +53,9 @@
             <version>2.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>${com.sun.xml.bind}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-core</artifactId>
-            <version>${com.sun.xml.bind}</version>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>${org.glassfish.jxb}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.winery</groupId>

@@ -54,24 +54,6 @@
             <version>1.17</version>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>${com.fasterxml.jackson.core}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>${com.fasterxml.jackson.core}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${com.fasterxml.jackson.core}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.model.tosca</artifactId>
             <version>2.0.0-SNAPSHOT</version>

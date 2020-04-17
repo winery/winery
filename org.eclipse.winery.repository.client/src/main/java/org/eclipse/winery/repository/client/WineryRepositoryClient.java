@@ -68,10 +68,11 @@ import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientResponse;
 import org.glassfish.jersey.internal.util.collection.MultivaluedStringMap;
+import org.glassfish.jersey.jackson.JacksonFeature;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -117,7 +118,8 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
      */
     public WineryRepositoryClient(boolean useProxy) {
         ClientConfig clientConfig = new ClientConfig();
-        clientConfig.register(JacksonJsonProvider.class);
+        clientConfig.register(JacksonFeature.class);
+        clientConfig.register(MultiPartFeature.class);
 
         if (useProxy) {
             // todo
