@@ -159,7 +159,7 @@ public class ToCanonical {
      * @return Canonical TOSCA Definitions
      */
     @NonNull
-    public TDefinitions convert(org.eclipse.winery.model.tosca.yaml.TServiceTemplate node, String id, String target_namespace) {
+    public TDefinitions convert(org.eclipse.winery.model.tosca.yaml.TServiceTemplate node, String id, String target_namespace, boolean isServiceTemplate) {
         if (node == null) return new TDefinitions();
         this.root = node;
 
@@ -169,11 +169,13 @@ public class ToCanonical {
 
         init(node);
 
-        TDefinitions definitions = new TDefinitions.Builder(id + "_Definitions", target_namespace)
-            .setImport(convert(node.getImports()))
-            .addTypes(convert(node.getGroupTypes()))
-            .addServiceTemplates(convertServiceTemplate(node, id, target_namespace))
-            .addNodeTypes(convert(node.getNodeTypes()))
+        TDefinitions.Builder builder= new TDefinitions.Builder(id + "_Definitions", target_namespace);
+        builder.setImport(convert(node.getImports()))
+            .addTypes(convert(node.getGroupTypes()));
+        if (isServiceTemplate) {
+            builder.addServiceTemplates(convertServiceTemplate(node, id, target_namespace));
+        }
+        builder.addNodeTypes(convert(node.getNodeTypes()))
             .addDataTypes(convert(node.getDataTypes()))
             .addNodeTypeImplementations(this.nodeTypeImplementations)
             .addRelationshipTypes(convert(node.getRelationshipTypes()))
@@ -185,10 +187,9 @@ public class ToCanonical {
             .addInterfaceTypes(convert(node.getInterfaceTypes()))
             .setName(id)
             .addImports(this.imports)
-            .addRequirementTypes(this.requirementTypes)
-            .build();
+            .addRequirementTypes(this.requirementTypes);
 //        WriterUtils.storeDefinitions(definitions, true, path);
-        return definitions;
+        return builder.build();
     }
 
     /**

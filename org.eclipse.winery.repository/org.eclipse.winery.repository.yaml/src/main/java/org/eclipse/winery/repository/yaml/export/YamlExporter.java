@@ -159,7 +159,7 @@ public class YamlExporter extends CsarExporter {
             LOGGER.error("Could not copy file content to ZIP outputstream", e);
         }
     }
-    
+
     private String addManifest(IRepository repository, DefinitionsChildId id, Map<CsarContentProperties, CsarEntry> refMap,
                                ZipOutputStream out, Map<String, Object> exportConfiguration) throws IOException {
         String entryDefinitionsReference = getDefinitionsPathInsideCSAR(repository, id);

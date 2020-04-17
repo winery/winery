@@ -562,7 +562,7 @@ public class YamlRepository extends AbstractFileBasedRepository {
     private TDefinitions convertToDefinitions(Path targetPath, String id, String targetNamespace) throws IOException, MultiException {
         TServiceTemplate serviceTemplate = readServiceTemplate(targetPath);
         ToCanonical converter = new ToCanonical(this);
-        return converter.convert(serviceTemplate, id, targetNamespace);
+        return converter.convert(serviceTemplate, id, targetNamespace, targetPath.endsWith("ServiceTemplate.tosca"));
     }
 
     /**
