@@ -43,8 +43,9 @@
                         <td>{{ prop.defaultValue }}</td>
                         <td>{{ prop.status }}</td>
                     </tr>
-                    <tr *ngIf="prop.constraints.length">
-                        <td colspan="6">
+                    <tr *ngIf="prop.constraints.length" class="constraints-row">
+                        <td>Constraints:</td>
+                        <td colspan="5">
                             <winery-yaml-constraints [constraints]="prop.constraints"></winery-yaml-constraints>
                         </td>
                     </tr>
