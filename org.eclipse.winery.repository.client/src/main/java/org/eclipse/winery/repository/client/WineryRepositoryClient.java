@@ -91,7 +91,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 
     private static final int MAX_NAME_CACHE_SIZE = 1000;
 
-    private final Collection<WebTarget> repositoryResources = new HashSet<WebTarget>();
+    private final Collection<WebTarget> repositoryResources = new HashSet<>();
     private final Collection<String> knownURIs = new HashSet<String>();
 
     private final Client client;
@@ -586,7 +586,8 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
         for (WebTarget wr : this.repositoryResources) {
             WebTarget r = WineryRepositoryClient.getTopologyTemplateWebTarget(wr, serviceTemplate);
             ClientResponse response = r.request()
-                .accept(MediaType.TEXT_XML).get(ClientResponse.class);
+                .accept(MediaType.TEXT_XML)
+                .get(ClientResponse.class);
             if (response.getStatus() == Response.Status.OK.getStatusCode()) {
                 TTopologyTemplate topologyTemplate;
                 Document doc = this.parseAndValidateTOSCAXML(response.getEntityStream());
