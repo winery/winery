@@ -27,7 +27,7 @@ import org.eclipse.winery.repository.backend.MockXMLElement;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.persistence.oxm.NamespacePrefixMapper;
+import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,8 +116,10 @@ public class JAXBSupport {
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             try {
                 m.setProperty("com.sun.xml.bind.namespacePrefixMapper", JAXBSupport.prefixMapper);
+                LOGGER.debug("NamespacePrefixMapper initialized!");
             } catch (PropertyException e) {
                 // Namespace-Prefixing is not supported by the used Provider. Nothing we can do about that
+                LOGGER.debug("NamespacePrefixMapper could not be initialized!");
             }
             if (!includeProcessingInstruction) {
                 // side effect of JAXB_FRAGMENT property (when true): processing instruction is not included

@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.glassfish.jersey.jackson.internal.jackson.jaxrs.cfg.Annotations;
 import org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,10 +47,13 @@ public class JacksonProvider extends JacksonJaxbJsonProvider {
         logger.info("Initialized Mapper with VisibilityChecker {}", mapper.getVisibilityChecker());
     }
 
+    /**
+     * Custom Jackson json provider to configure the output by our own.
+     * 
+     * See also https://stackoverflow.com/a/30082203/6592788.
+     */
     public JacksonProvider() {
-//        super(Annotations.JACKSON);
-        super();
-        
+        super(Annotations.JACKSON);
         setMapper(mapper);
     }
 }
