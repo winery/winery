@@ -63,7 +63,6 @@ import org.w3c.dom.Text;
     TRelationshipTemplate.class,
     TNodeTemplate.class
 })
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class TEntityTemplate extends HasId implements HasType, HasName {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TEntityTemplate.class);

@@ -91,7 +91,7 @@ public class TopologyTemplateResourceTest extends AbstractResourceTest {
     public void farmTopologyTemplateCanBeCreatedAsJson() throws Exception {
         this.setRevisionTo("1e2054315f18e80c466c26e6918d6506ce53f7f7");
 
-        // Quick hack to ensure that the service template containing the tpology template exists
+        // Quick hack to ensure that the service template containing the topology template exists
         ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/fruits", "farm", false);
         RepositoryFactory.getRepository().flagAsExisting(id);
 

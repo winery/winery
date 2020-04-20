@@ -72,11 +72,6 @@
             <version>${org.slf4j}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>${javax.xml.bind}</version>
-        </dependency>
     </dependencies>
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
