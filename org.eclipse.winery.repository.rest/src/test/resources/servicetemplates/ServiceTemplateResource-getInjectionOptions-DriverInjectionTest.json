@@ -124,9 +124,7 @@
                     {
                         "content": [
                             "Stack of Node Template dressageequipment from Provider Repository equipmentprovider"
-                        ],
-                        "source": null,
-                        "lang": null
+                        ]
                     }
                 ],
                 "any": [
@@ -198,6 +196,5 @@
                 ]
             }
         ]
-    },
-    "connectionInjections": null
+    }
 }

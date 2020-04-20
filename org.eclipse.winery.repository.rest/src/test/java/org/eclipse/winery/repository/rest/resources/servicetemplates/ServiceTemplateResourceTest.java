@@ -39,8 +39,10 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
     @Test
     public void addTopologyTemplate() throws Exception {
         this.setRevisionTo("84d064a2f7390b3274ca8b3641a5902ba4c822d7");
-        this.assertPut("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Finjector/FoodandHouseInjectionTest/topologytemplate/", "entitytypes/servicetemplates/straw-stall.json");
-        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Finjector/FoodandHouseInjectionTest/topologytemplate/", "entitytypes/servicetemplates/straw-stall.json");
+        this.assertPut("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Finjector/FoodandHouseInjectionTest/topologytemplate/",
+            "entitytypes/servicetemplates/straw-stall.json");
+        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Finjector/FoodandHouseInjectionTest/topologytemplate/",
+            "entitytypes/servicetemplates/straw-stall.json");
     }
 
     @Test
@@ -78,7 +80,8 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
     @Test
     public void getInjectorOptions() throws Exception {
         this.setRevisionTo("84d064a2f7390b3274ca8b3641a5902ba4c822d7");
-        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Finjector/FoodandHouseInjectionTest/injector/options", "servicetemplates/ServiceTemplateResource-getInjectionOptions.json");
+        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Finjector/FoodandHouseInjectionTest/injector/options",
+            "servicetemplates/ServiceTemplateResource-getInjectionOptions.json");
     }
 
     @Test
@@ -91,7 +94,8 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
     @Test
     public void getInjectOptionsForDriverInjection() throws Exception {
         this.setRevisionTo("f647f86f43b2cb7cc4f40a9b01f24cbc67e12d34");
-        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Fdriverinjection/DriverInjectionTest/injector/options", "servicetemplates/ServiceTemplateResource-getInjectionOptions-DriverInjectionTest.json");
+        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Fdriverinjection/DriverInjectionTest/injector/options",
+            "servicetemplates/ServiceTemplateResource-getInjectionOptions-DriverInjectionTest.json");
     }
 
     @Test
