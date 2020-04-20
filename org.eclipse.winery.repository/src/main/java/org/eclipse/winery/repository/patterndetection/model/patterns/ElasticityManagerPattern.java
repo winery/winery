@@ -14,14 +14,14 @@
 
 package org.eclipse.winery.repository.patterndetection.model.patterns;
 
-import org.eclipse.winery.repository.patterndetection.model.PatternComponent;
-import org.eclipse.winery.repository.patterndetection.model.RelationshipEdge;
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.graph.DefaultDirectedGraph;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+
+import org.eclipse.winery.repository.patterndetection.model.PatternComponent;
+import org.eclipse.winery.repository.patterndetection.model.RelationshipEdge;
+
+import org.jgrapht.graph.SimpleDirectedGraph;
 
 public class ElasticityManagerPattern {
 
@@ -34,7 +34,7 @@ public class ElasticityManagerPattern {
 
     private String connectsTo;
 
-    private DirectedGraph<PatternComponent, RelationshipEdge> pattern;
+    private SimpleDirectedGraph<PatternComponent, RelationshipEdge> pattern;
 
     public ElasticityManagerPattern() {
         properties = new Properties();
@@ -49,7 +49,7 @@ public class ElasticityManagerPattern {
 
         connectsTo = properties.getProperty("relationConnectsTo");
 
-        pattern = new DefaultDirectedGraph<>(RelationshipEdge.class);
+        pattern = new SimpleDirectedGraph<>(RelationshipEdge.class);
 
         PatternComponent virtualHardwareComponent = new PatternComponent(virtualHardware, 1, 1);
         PatternComponent serviceComponent = new PatternComponent(service, 1, 1);
@@ -61,7 +61,7 @@ public class ElasticityManagerPattern {
 
     }
 
-    public DirectedGraph<PatternComponent, RelationshipEdge> getPatternGraph() {
+    public SimpleDirectedGraph<PatternComponent, RelationshipEdge> getPatternGraph() {
         return pattern;
     }
 }

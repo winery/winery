@@ -14,14 +14,14 @@
 
 package org.eclipse.winery.repository.patterndetection.model.patterns;
 
-import org.eclipse.winery.repository.patterndetection.model.PatternComponent;
-import org.eclipse.winery.repository.patterndetection.model.RelationshipEdge;
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.graph.DefaultDirectedGraph;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+
+import org.eclipse.winery.repository.patterndetection.model.PatternComponent;
+import org.eclipse.winery.repository.patterndetection.model.RelationshipEdge;
+
+import org.jgrapht.graph.SimpleDirectedGraph;
 
 public class ElasticLoadBalancerPattern {
 
@@ -38,7 +38,7 @@ public class ElasticLoadBalancerPattern {
     private String connectsTo;
     private String deployedOn;
 
-    private DirectedGraph<PatternComponent, RelationshipEdge> pattern;
+    private SimpleDirectedGraph<PatternComponent, RelationshipEdge> pattern;
 
     public ElasticLoadBalancerPattern() {
         properties = new Properties();
@@ -58,7 +58,7 @@ public class ElasticLoadBalancerPattern {
         connectsTo = properties.getProperty("relationConnectsTo");
         deployedOn = properties.getProperty("relationDeployedOn");
 
-        pattern = new DefaultDirectedGraph<>(RelationshipEdge.class);
+        pattern = new SimpleDirectedGraph<>(RelationshipEdge.class);
 
         PatternComponent virtualHardwareComponent = new PatternComponent(virtualHardware, 1, 1);
         PatternComponent operatingSystem = new PatternComponent(os, 1, 1);
@@ -67,7 +67,6 @@ public class ElasticLoadBalancerPattern {
         PatternComponent appComponent2 = new PatternComponent(application, 1, 1);
         PatternComponent serviceComponent1 = new PatternComponent(service, 1, 1);
         PatternComponent serviceComponent2 = new PatternComponent(service, 1, 1);
-
 
         pattern.addVertex(operatingSystem);
         pattern.addVertex(serviceComponent1);
@@ -87,10 +86,9 @@ public class ElasticLoadBalancerPattern {
 
         pattern.addEdge(serviceComponent2, appComponent1, new RelationshipEdge(serviceComponent2, appComponent1, connectsTo));
         pattern.addEdge(serviceComponent2, appComponent2, new RelationshipEdge(serviceComponent2, appComponent2, connectsTo));
-
     }
 
-    public DirectedGraph<PatternComponent, RelationshipEdge> getPatternGraph() {
+    public SimpleDirectedGraph<PatternComponent, RelationshipEdge> getPatternGraph() {
         return pattern;
     }
 }

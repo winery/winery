@@ -14,16 +14,28 @@
 
 package org.eclipse.winery.repository.rest.server;
 
+import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
+
+import org.glassfish.jersey.internal.util.PropertiesHelper;
+
+import static org.glassfish.jersey.internal.InternalProperties.JSON_FEATURE;
 
 public class JsonFeature implements Feature {
 
     @Override
     public boolean configure(FeatureContext featureContext) {
         featureContext.register(JacksonProvider.class, MessageBodyReader.class, MessageBodyWriter.class);
+
+        final Configuration config = featureContext.getConfiguration();
+        // Disables discoverability of org.glassfish.jersey.jackson.JacksonFeature
+        featureContext.property(
+            PropertiesHelper.getPropertyNameForRuntime(JSON_FEATURE,
+                config.getRuntimeType()), JSON_FEATURE);
+        
         return true;
     }
 }

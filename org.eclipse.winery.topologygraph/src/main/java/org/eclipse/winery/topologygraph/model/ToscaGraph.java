@@ -14,9 +14,9 @@
 package org.eclipse.winery.topologygraph.model;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.SimpleDirectedGraph;
 
-public class ToscaGraph extends DefaultDirectedGraph<ToscaNode, ToscaEdge> {
+public class ToscaGraph extends SimpleDirectedGraph<ToscaNode, ToscaEdge> {
 
     private static final long serialVersionUID = 1L;
 

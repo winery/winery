@@ -14,14 +14,14 @@
 
 package org.eclipse.winery.repository.patterndetection.model.patterns;
 
-import org.eclipse.winery.repository.patterndetection.model.PatternComponent;
-import org.eclipse.winery.repository.patterndetection.model.RelationshipEdge;
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.graph.DefaultDirectedGraph;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+
+import org.eclipse.winery.repository.patterndetection.model.PatternComponent;
+import org.eclipse.winery.repository.patterndetection.model.RelationshipEdge;
+
+import org.jgrapht.graph.SimpleDirectedGraph;
 
 public class ExecutionEnvironmentPattern2 {
 
@@ -35,7 +35,7 @@ public class ExecutionEnvironmentPattern2 {
     private String hostedOn;
     private String deployedOn;
 
-    private DirectedGraph<PatternComponent, RelationshipEdge> pattern;
+    private SimpleDirectedGraph<PatternComponent, RelationshipEdge> pattern;
 
     public ExecutionEnvironmentPattern2() {
         properties = new Properties();
@@ -52,7 +52,7 @@ public class ExecutionEnvironmentPattern2 {
         hostedOn = properties.getProperty("relationHostedOn");
         deployedOn = properties.getProperty("relationDeployedOn");
 
-        pattern = new DefaultDirectedGraph<>(RelationshipEdge.class);
+        pattern = new SimpleDirectedGraph<>(RelationshipEdge.class);
 
         PatternComponent operatingSystem = new PatternComponent(os, 1, 1);
         PatternComponent serverComponent = new PatternComponent(server, 1, Integer.MAX_VALUE);
@@ -69,7 +69,7 @@ public class ExecutionEnvironmentPattern2 {
         pattern.addEdge(appComponent2, serverComponent, new RelationshipEdge(appComponent2, serverComponent, deployedOn));
     }
 
-    public DirectedGraph<PatternComponent, RelationshipEdge> getPatternGraph() {
+    public SimpleDirectedGraph<PatternComponent, RelationshipEdge> getPatternGraph() {
         return pattern;
     }
 }

@@ -97,7 +97,7 @@
         <!--            <param-name>com.sun.jersey.config.feature.DisableWADL</param-name>-->
         <!--            <param-value>true</param-value>-->
         <!--        </init-param>-->
-        
+
         <!--        &lt;!&ndash; Disables the logging of the request body - could be enabled for debugging purposes &ndash;&gt;-->
         <!--        <init-param>-->
         <!--            <param-name>com.sun.jersey.config.feature.logging.DisableEntitylogging</param-name>-->
