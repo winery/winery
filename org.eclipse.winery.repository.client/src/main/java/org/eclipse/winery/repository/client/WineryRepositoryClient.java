@@ -38,16 +38,10 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.beans.NamespaceIdOptionalName;
@@ -63,14 +57,13 @@ import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
-import org.eclipse.winery.common.server.JsonFeature;
+import org.eclipse.winery.repository.rest.server.JsonFeature;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.internal.util.collection.MultivaluedStringMap;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
 
 public final class WineryRepositoryClient implements IWineryRepositoryClient {
 
@@ -93,8 +86,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
     private final Map<Class<? extends TEntityType>, Map<QName, TEntityType>> entityTypeDataCache;
 
     private final Map<GenericId, String> nameCache;
-    // schema aware document builder
-    private final DocumentBuilder toscaDocumentBuilder;
     private String primaryRepository = null;
     private WebTarget primaryWebTarget = null;
 
@@ -121,26 +112,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 
         this.entityTypeDataCache = new HashMap<>();
         this.nameCache = new HashMap<>();
-
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
-        if (WineryRepositoryClient.VALIDATING) {
-            factory.setValidating(true);
-            SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            Schema schema;
-            URL resource = this.getClass().getResource("/TOSCA-v1.0.xsd");
-            try {
-                schema = schemaFactory.newSchema(resource);
-            } catch (SAXException e) {
-                throw new IllegalStateException("Schema could not be initalized", e);
-            }
-            factory.setSchema(schema);
-        }
-        try {
-            this.toscaDocumentBuilder = factory.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            throw new IllegalStateException("document builder could not be initalized", e);
-        }
     }
 
     private static JAXBContext initContext() {

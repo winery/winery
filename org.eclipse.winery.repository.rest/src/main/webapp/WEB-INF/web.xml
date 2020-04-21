@@ -74,7 +74,7 @@
             <param-value>
                 org.glassfish.jersey.filter.LoggingFilter,
                 org.glassfish.jersey.media.multipart.MultiPartFeature,
-                org.eclipse.winery.common.server.JsonFeature
+                org.eclipse.winery.repository.rest.server.JsonFeature
             </param-value>
         </init-param>
 
