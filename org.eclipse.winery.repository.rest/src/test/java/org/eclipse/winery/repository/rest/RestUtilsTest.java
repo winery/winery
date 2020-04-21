@@ -13,15 +13,16 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RestUtilsTest {
 
     @Test
     public void testCreateID() {
-        Assert.assertEquals("Frank-s-test", RestUtils.createXMLid("Frank's test").getDecoded());
-        Assert.assertEquals("MyNodeType", RestUtils.createXMLid("MyNodeType").getDecoded());
-        Assert.assertEquals("A-Node-Type", RestUtils.createXMLid("A Node Type").getDecoded());
+        assertEquals("Frank-s-test", RestUtils.createXMLid("Frank's test").getDecoded());
+        assertEquals("MyNodeType", RestUtils.createXMLid("MyNodeType").getDecoded());
+        assertEquals("A-Node-Type", RestUtils.createXMLid("A Node Type").getDecoded());
     }
 }

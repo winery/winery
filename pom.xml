@@ -84,6 +84,9 @@
         <org.web3j>4.2.0</org.web3j>
         <org.apache.commons-lang3.version>3.7</org.apache.commons-lang3.version>
         <commons-codec>1.11</commons-codec>
+        <org.xmlunit>2.6.4</org.xmlunit>
+        <org.skyscreamer.jsonassert>1.5.0</org.skyscreamer.jsonassert>
+        <io.rest-assured>3.0.2</io.rest-assured>
 
         <!-- grouped libraries -->
         <org.apache.cxf.version>2.7.6</org.apache.cxf.version>

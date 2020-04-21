@@ -19,8 +19,9 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class TopologyTemplateResourceTest extends AbstractResourceTest {
 
@@ -102,7 +103,7 @@ public class TopologyTemplateResourceTest extends AbstractResourceTest {
     public void farmTopologyTemplateJsonCanBeParsed() throws Exception {
         final String jsonStr = AbstractResourceTest.readFromClasspath("servicetemplates/farm_topologytemplate.json");
         final TTopologyTemplate topologyTemplate = BackendUtils.mapper.readValue(jsonStr, TTopologyTemplate.class);
-        Assert.assertNotNull(topologyTemplate);
+        assertNotNull(topologyTemplate);
     }
 
     @Test

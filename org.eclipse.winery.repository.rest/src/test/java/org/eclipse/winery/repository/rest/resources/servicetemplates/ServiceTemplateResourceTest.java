@@ -21,11 +21,11 @@ import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.ContentType;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.eclipse.jdt.annotation.Checks.assertNonNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ServiceTemplateResourceTest extends AbstractResourceTest {
 
@@ -74,7 +74,7 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
         this.setRevisionTo("8cf0ce80c2c40c6ec178ef8e5bdc4e2fcdecc7f9");
         ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/fruits", "farm", false);
         ServiceTemplateResource serviceTemplateResource = new ServiceTemplateResource(id);
-        Assert.assertNotNull(serviceTemplateResource);
+        assertNotNull(serviceTemplateResource);
     }
 
     @Test

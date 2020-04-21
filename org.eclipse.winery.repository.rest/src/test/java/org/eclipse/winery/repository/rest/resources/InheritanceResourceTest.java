@@ -14,7 +14,7 @@
 
 package org.eclipse.winery.repository.rest.resources;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class InheritanceResourceTest extends AbstractResourceTest {
 
