@@ -32,7 +32,7 @@ enum ConstraintOperator {
 
 export class ConstraintClause {
     operator: ConstraintOperator;
-    value: string | number | [number, number] | any[] | Object;
+    value: any; // string | number | [number, number] | any[] | Object;
 }
 
 /**
@@ -72,6 +72,7 @@ export class ConstraintChecking {
             case ConstraintOperator.max_length:
                 return checked.length <= constraint.value;
             case ConstraintOperator.pattern:
+                // we assume that the constraint is valid and therefore the value is a string
                 return new RegExp(constraint.value).test(checked);
             case ConstraintOperator.schema:
                 // schema validation is only performed on the Orchestrator

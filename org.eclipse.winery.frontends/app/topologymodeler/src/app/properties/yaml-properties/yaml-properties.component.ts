@@ -43,6 +43,7 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
     private nodeTypes: Array<EntityType> = [];
     private dataTypes: Array<TDataType> = [];
     private subscriptions: Array<Subscription> = [];
+    private JSON: JSON;
 
     constructor(private backend: BackendService) {
         this.subscriptions.push(this.backend.model$.subscribe(
@@ -54,8 +55,8 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
         this.subscriptions.push(this.outputSubject.pipe(
             debounceTime(300),
             distinctUntilChanged(), )
-            .subscribe(kv => this.propertyEdited.emit(kv)
-        ));
+            .subscribe(kv => this.propertyEdited.emit(kv)));
+        this.JSON = JSON;
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -74,11 +75,22 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
         this.subscriptions.forEach(s => s.unsubscribe());
     }
 
-    propertyChangeRequest(target: EventTarget, definition: any) {
-        if (this.isValid(target.value, definition.constraints)) {
+    propertyChangeRequest(target: any, definition: any) {
+        let result;
+        if (definition.complex) {
+            try {
+                result = JSON.parse(target.value);
+            } catch (e) {
+                console.log('failed to parse value', target.value);
+                return;
+            }
+        } else {
+            result = target.value;
+        }
+        if (this.isValid(result, definition.constraints)) {
             this.outputSubject.next({
                 key: definition.name,
-                value: target.value,
+                value: result,
             });
         }
     }
@@ -131,8 +143,9 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
     private handleComplexDataType(dataTypeInheritance: EntityType[], propertyDefinition: any, definedProperties: any[]) {
         // FIXME need to find some way to represent hierarchical data types
         // TODO the inheritance hierarchy resolution for a type may need to be namespace-aware
+        propertyDefinition.complex = true;
         definedProperties.push(propertyDefinition);
-        console.warn('pushing complex typed property to definedProperties without flattening!')
+        console.warn('pushing complex typed property to definedProperties without flattening!');
     }
 
     private backfillPropertyDefaults() {

@@ -24,15 +24,15 @@
     <tr *ngFor="let definition of properties">
         <td class="">{{definition.name}}</td>
         <td class="">
-                <textarea
-                    style="width:100%; overflow-y: scroll;"
-                    rows="1"
-                    placeholder="Edit your value here."
-                    required
-                    [disabled]="readonly"
-                    [value]="propertyValues[definition.name]"
-                    (keyup)="propertyChangeRequest($event.target, definition)">
-                </textarea>
+            <textarea
+                style="width:100%; overflow-y: scroll;"
+                [rows]="definition.complex ? 5 : 1"
+                placeholder="Edit your value here."
+                required
+                [disabled]="readonly"
+                [value]="definition.complex ? JSON.stringify(propertyValues[definition.name]) : propertyValues[definition.name]"
+                (keyup)="propertyChangeRequest($event.target, definition)">
+            </textarea>
         </td>
     </tr>
 </table>
