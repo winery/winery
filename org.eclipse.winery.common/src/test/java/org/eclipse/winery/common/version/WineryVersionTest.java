@@ -13,66 +13,67 @@
  ********************************************************************************/
 package org.eclipse.winery.common.version;
 
-import io.github.adr.embedded.ADR;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class WineryVersionTest {
+    
     @Test
     public void testCompareToSmallerComponentVersion() {
         WineryVersion smaller = new WineryVersion("1.0.0", 1, 1);
         WineryVersion greater = new WineryVersion("1.0.1", 1, 1);
-        Assert.assertEquals(1, greater.compareTo(smaller));
+        assertEquals(1, greater.compareTo(smaller));
     }
 
     @Test
     public void testCompareToSmallerWineryVersion() {
         WineryVersion smaller = new WineryVersion("1.0.0", 1, 1);
         WineryVersion greater = new WineryVersion("1.0.0", 2, 1);
-        Assert.assertEquals(1, greater.compareTo(smaller));
+        assertEquals(1, greater.compareTo(smaller));
     }
 
     @Test
     public void testCompareToSmallerWipVersion() {
         WineryVersion smaller = new WineryVersion("1.0.0", 1, 1);
         WineryVersion greater = new WineryVersion("1.0.0", 1, 5);
-        Assert.assertEquals(1, greater.compareTo(smaller));
+        assertEquals(1, greater.compareTo(smaller));
     }
 
     @Test
     public void testCompareToGreaterComponentVersion() {
         WineryVersion smaller = new WineryVersion("1.0.0", 7, 1);
         WineryVersion greater = new WineryVersion("1.0.1", 1, 6);
-        Assert.assertEquals(-1, smaller.compareTo(greater));
+        assertEquals(-1, smaller.compareTo(greater));
     }
 
     @Test
     public void testCompareToGreaterWineryVersion() {
         WineryVersion smaller = new WineryVersion("1.0.0", 1, 1);
         WineryVersion greater = new WineryVersion("1.0.0", 9, 5);
-        Assert.assertEquals(-1, smaller.compareTo(greater));
+        assertEquals(-1, smaller.compareTo(greater));
     }
 
     @Test
     public void testCompareToGreaterWipVersion() {
         WineryVersion smaller = new WineryVersion("1.0.0", 1, 1);
         WineryVersion greater = new WineryVersion("1.0.0", 6, 6);
-        Assert.assertEquals(-1, smaller.compareTo(greater));
+        assertEquals(-1, smaller.compareTo(greater));
     }
 
     @Test
     public void testCompareToEqualVersion() {
         WineryVersion smaller = new WineryVersion("1.6.3", 4, 8);
         WineryVersion greater = new WineryVersion("1.6.3", 4, 8);
-        Assert.assertEquals(0, smaller.compareTo(greater));
+        assertEquals(0, smaller.compareTo(greater));
     }
 
     @Test
     public void testCompareToWipVersionShouldBeLessThanActualWineryRelease() {
         WineryVersion smaller = new WineryVersion("1.0.0", 6, 6);
         WineryVersion greater = new WineryVersion("1.0.0", 6, 0);
-        Assert.assertEquals(-1, smaller.compareTo(greater));
-        Assert.assertEquals(1, greater.compareTo(smaller));
+        assertEquals(-1, smaller.compareTo(greater));
+        assertEquals(1, greater.compareTo(smaller));
     }
 
     @Test
@@ -86,7 +87,7 @@ public class WineryVersionTest {
             + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_VERSION_PREFIX + wineryVersion
             + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_WIP_VERSION_PREFIX + wipVersion;
 
-        Assert.assertEquals(expected, v.toString());
+        assertEquals(expected, v.toString());
     }
 
     @Test
@@ -99,7 +100,7 @@ public class WineryVersionTest {
         String expected = componentVersion
             + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_VERSION_PREFIX + wineryVersion;
 
-        Assert.assertEquals(expected, v.toString());
+        assertEquals(expected, v.toString());
     }
 
     @Test
@@ -109,9 +110,7 @@ public class WineryVersionTest {
         int wipVersion = 0;
         WineryVersion v = new WineryVersion(componentVersion, wineryVersion, wipVersion);
 
-        String expected = componentVersion;
-
-        Assert.assertEquals(expected, v.toString());
+        assertEquals(componentVersion, v.toString());
     }
 
     @Test
@@ -123,6 +122,6 @@ public class WineryVersionTest {
 
         String expected = componentVersion + WineryVersion.WINERY_VERSION_PREFIX + wineryVersion;
 
-        Assert.assertEquals(expected, v.toString());
+        assertEquals(expected, v.toString());
     }
 }

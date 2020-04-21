@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EnvironmentsTest {
+
     @BeforeAll
     public static void saveCurrentConfiguration() {
         ConfigurationTestUtils.saveCurrentConfiguration();
@@ -115,8 +116,8 @@ public class EnvironmentsTest {
     }
 
     /**
-     * This test checks if the configuration changes which are made in an UiConfigurationObject instance are persisted to
-     * file, when the saveFeatures method is called.
+     * This test checks if the configuration changes which are made in an UiConfigurationObject instance are persisted
+     * to file, when the saveFeatures method is called.
      */
     @Test
     public void testSaveFeatures() {
