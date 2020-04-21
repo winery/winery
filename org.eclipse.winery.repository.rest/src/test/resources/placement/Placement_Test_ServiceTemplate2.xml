@@ -10,9 +10,9 @@
                           type="ntyIgeneral1:CloudProvider1_w1-wip1" id="CloudProvider1_w1-wip1" winery:x="712"
                           winery:y="475" xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
                 <Properties>
-                    <ex:Properties xmlns="http://www.example.org" xmlns:ex="http://www.example.org">
+                    <Properties xmlns="http://www.example.org">
                         <State>Running</State>
-                    </ex:Properties>
+                    </Properties>
                 </Properties>
             </NodeTemplate>
             <NodeTemplate name="DataSource_w1-wip1" minInstances="1" maxInstances="1"
@@ -20,10 +20,10 @@
                           winery:y="265" winery:region="Germany"
                           xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
                 <Properties>
-                    <ex:Properties xmlns="http://www.example.org" xmlns:ex="http://www.example.org">
+                    <Properties xmlns="http://www.example.org">
                         <State>Running</State>
                         <DataSize>10</DataSize>
-                    </ex:Properties>
+                    </Properties>
                 </Properties>
             </NodeTemplate>
             <RelationshipTemplate name="HostedOn" type="ToscaBaseTypes:HostedOn" id="con_HostedOn_0"
@@ -35,9 +35,9 @@
                           type="ntyIgeneral1:CloudProvider2_w1-wip1" id="CloudProvider2_w1-wip1" winery:x="680"
                           winery:y="450" xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
                 <Properties>
-                    <ex:Properties xmlns="http://www.example.org" xmlns:ex="http://www.example.org">
+                    <Properties xmlns="http://www.example.org">
                         <State>Running</State>
-                    </ex:Properties>
+                    </Properties>
                 </Properties>
             </NodeTemplate>
             <NodeTemplate name="DataSource_w1-wip1" minInstances="1" maxInstances="1"
@@ -45,10 +45,10 @@
                           winery:y="284" winery:region="US-East"
                           xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
                 <Properties>
-                    <ex:Properties xmlns="http://www.example.org" xmlns:ex="http://www.example.org">
+                    <Properties xmlns="http://www.example.org">
                         <State>Running</State>
                         <DataSize>50</DataSize>
-                    </ex:Properties>
+                    </Properties>
                 </Properties>
             </NodeTemplate>
             <RelationshipTemplate name="HostedOn" type="ToscaBaseTypes:HostedOn" id="con_HostedOn_0-1"
@@ -67,9 +67,9 @@
             <NodeTemplate type="ntyIgeneral1:DataProcessingComponent_w1-wip1" id="Adapter-1"
                           xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
                 <Properties>
-                    <ex:Properties xmlns="http://www.example.org" xmlns:ex="http://www.example.org">
+                    <Properties xmlns="http://www.example.org">
                         <DataFactor>1.0</DataFactor>
-                    </ex:Properties>
+                    </Properties>
                 </Properties>
                 <Requirements>
                     <Requirement name="ReqCanHostProcessingComponent" type="rtyIgeneral:ReqCanHostProcessingComponent"
@@ -80,9 +80,9 @@
             <NodeTemplate type="ntyIgeneral1:DataProcessingComponent_w1-wip1" id="Adapter-2"
                           xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
                 <Properties>
-                    <ex:Properties xmlns="http://www.example.org" xmlns:ex="http://www.example.org">
+                    <Properties xmlns="http://www.example.org">
                         <DataFactor>0.1</DataFactor>
-                    </ex:Properties>
+                    </Properties>
                 </Properties>
                 <Requirements>
                     <Requirement name="ReqCanHostProcessingComponent" type="rtyIgeneral:ReqCanHostProcessingComponent"
