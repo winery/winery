@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.rest.server;
+package org.eclipse.winery.common.server;
 
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Feature;
