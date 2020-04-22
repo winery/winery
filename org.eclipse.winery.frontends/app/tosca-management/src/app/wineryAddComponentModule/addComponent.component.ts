@@ -28,6 +28,7 @@ import { WineryVersion } from '../model/wineryVersion';
 import { AddComponentValidation } from './addComponentValidation';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { ExistService } from '../wineryUtils/existService';
+import { backendBaseURL } from '../configuration';
 
 export function getToolTip(): TooltipConfig {
     return Object.assign(new TooltipConfig(), { placement: 'right' });
@@ -99,7 +100,7 @@ export class WineryAddComponent {
             this.types = [componentType];
         }
 
-        if (!isNullOrUndefined(typesUrl) && !componentType) {
+        if (typesUrl && !componentType) {
             this.loading = true;
             this.typeRequired = true;
             this.sectionService.getSectionData('/' + typesUrl + '?grouped=angularSelect')
@@ -190,7 +191,7 @@ export class WineryAddComponent {
 
     private handleSaveSuccess(data: HttpResponse<any>) {
         this.newComponentName = this.newComponentName.replace(/\s/g, '-');
-        const url = '/' + this.toscaType + '/'
+        const url = this.toscaType + '/'
             + encodeURIComponent(encodeURIComponent(this.newComponentNamespace)) + '/'
             + this.newComponentFinalName;
 
@@ -198,7 +199,7 @@ export class WineryAddComponent {
             this.notify.success('Successfully saved component ' + this.newComponentName);
             this.router.navigateByUrl(url);
         } else {
-            this.inheritanceService.saveInheritanceFromString(url, this.inheritFrom)
+            this.inheritanceService.saveInheritanceFromString(backendBaseURL + '/' + url, this.inheritFrom)
                 .subscribe(
                     inheritanceData => this.handleSaveSuccess(inheritanceData),
                     error => this.handleError(error)

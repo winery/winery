@@ -65,7 +65,7 @@ public class WineryUsingHttpServer {
         h.setInitParameter("jersey.config.server.provider.packages",
             "org.eclipse.winery.repository.rest.resources");
         h.setInitParameter("jersey.config.server.provider.classnames",
-            "org.glassfish.jersey.filter.LoggingFilter," +
+            "org.glassfish.jersey.logging.LoggingFeature," +
                 "org.glassfish.jersey.media.multipart.MultiPartFeature," +
                 "org.eclipse.winery.repository.rest.server.JsonFeature"
         );

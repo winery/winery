@@ -116,7 +116,6 @@ public class JAXBSupport {
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             try {
                 m.setProperty("com.sun.xml.bind.namespacePrefixMapper", JAXBSupport.prefixMapper);
-                LOGGER.debug("NamespacePrefixMapper initialized!");
             } catch (PropertyException e) {
                 // Namespace-Prefixing is not supported by the used Provider. Nothing we can do about that
                 LOGGER.debug("NamespacePrefixMapper could not be initialized!");

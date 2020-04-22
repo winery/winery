@@ -2,7 +2,7 @@
 
 All resources are implemented in classes in the package `org.eclipse.winery.repository.rest.resources`.
 We call all elements directly nested in the definitions element "components".
-They are implemented using JAX RS 1.1 using [Jersey 1.x](https://jersey.github.io/documentation/1.19.1/index.html).
+They are implemented using JAX RS using [Jersey](https://eclipse-ee4j.github.io/jersey/).
 
 The full set the API is used by the Type, Template, and Artifact Management UI (see [User Documentation](../user/)).
 A subset of the API is used at [IWineryRepository](#iwineryrepository).

@@ -46,7 +46,7 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
 
     private static Server server;
 
-    // Required for jersey 1.x, which uses java.util.logging. See https://stackoverflow.com/a/43242620/873282
+    // Required for jersey which uses java.util.logging.
     static {
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();

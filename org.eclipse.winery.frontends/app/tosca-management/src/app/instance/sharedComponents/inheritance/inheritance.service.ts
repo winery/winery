@@ -29,14 +29,14 @@ export class InheritanceService {
     getInheritanceData(): Observable<InheritanceApiData> {
         return this.http
             .get<InheritanceApiData>(
-                this.sharedData.path + '/inheritance/',
+                this.sharedData.path + '/inheritance',
             );
     }
 
     getAvailableSuperClasses(): Observable<SelectData[]> {
         return this.http
             .get<SelectData[]>(
-                backendBaseURL + '/' + this.sharedData.toscaComponent.toscaType + '?grouped=angularSelect&dev=true/'
+                backendBaseURL + '/' + this.sharedData.toscaComponent.toscaType + '?grouped=angularSelect&dev=true'
             );
     }
 
@@ -59,7 +59,7 @@ export class InheritanceService {
 
         return this.http
             .put(
-                (url ? url : this.sharedData.path) + '/inheritance/',
+                (url ? url : this.sharedData.path) + '/inheritance',
                 JSON.stringify(copy),
                 { headers: headers, observe: 'response', responseType: 'text' }
             );

@@ -72,43 +72,23 @@
         <init-param>
             <param-name>jersey.config.server.provider.classnames</param-name>
             <param-value>
-                org.glassfish.jersey.filter.LoggingFilter,
+                org.glassfish.jersey.logging.LoggingFeature,
                 org.glassfish.jersey.media.multipart.MultiPartFeature,
                 org.eclipse.winery.repository.rest.server.JsonFeature
             </param-value>
         </init-param>
-
-        <!--        &lt;!&ndash; this ensures that / are always at the end of URLs - deprecated - we should change our URL scheme not to end with / &ndash;&gt;-->
-        <!--        <init-param>-->
-        <!--            <param-name>com.sun.jersey.config.feature.CanonicalizeURIPath</param-name>-->
-        <!--            <param-value>true</param-value>-->
-        <!--        </init-param>-->
-        <!--        <init-param>-->
-        <!--            <param-name>com.sun.jersey.config.feature.NormalizeURI</param-name>-->
-        <!--            <param-value>true</param-value>-->
-        <!--        </init-param>-->
-        <!--        <init-param>-->
-        <!--            <param-name>com.sun.jersey.config.feature.Redirect</param-name>-->
-        <!--            <param-value>true</param-value>-->
-        <!--        </init-param>-->
-
-        <!--        &lt;!&ndash; performance boost at startup by disabling WADL generation &ndash;&gt;-->
-        <!--        <init-param>-->
-        <!--            <param-name>com.sun.jersey.config.feature.DisableWADL</param-name>-->
-        <!--            <param-value>true</param-value>-->
-        <!--        </init-param>-->
-
-        <!--        &lt;!&ndash; Disables the logging of the request body - could be enabled for debugging purposes &ndash;&gt;-->
-        <!--        <init-param>-->
-        <!--            <param-name>com.sun.jersey.config.feature.logging.DisableEntitylogging</param-name>-->
-        <!--            <param-value>true</param-value>-->
-        <!--        </init-param>-->
-
-        <!--        &lt;!&ndash; enables @Consumes(MediaType.APPLICATION_JSON) and @Produces(MediaType.APPLICATION_JSON), see https://jersey.java.net/nonav/documentation/1.7/json.html &ndash;&gt;-->
-        <!--        <init-param>-->
-        <!--            <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>-->
-        <!--            <param-value>true</param-value>-->
-        <!--        </init-param>-->
+        <init-param>
+            <param-name>jersey.config.server.wadl.disableWadl</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>jersey.config.logging.logger.level</param-name>
+            <param-value>INFO</param-value>
+        </init-param>
+        <init-param>
+            <param-name>jersey.config.server.logging.entity.maxSize</param-name>
+            <param-value>512</param-value>
+        </init-param>
     </servlet>
 
     <filter-mapping>

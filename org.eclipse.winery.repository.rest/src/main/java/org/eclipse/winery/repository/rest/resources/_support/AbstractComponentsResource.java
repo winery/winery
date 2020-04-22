@@ -84,6 +84,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
             try {
                 tcId = this.getDefinitionsChildId(namespace, id, false);
                 res = RestUtils.create(tcId, name);
+                res.setMessage(getComponentInstanceResource(tcId).getElement());
             } catch (Exception e) {
                 AbstractComponentsResource.LOGGER.debug("Could not create id instance", e);
                 res = new ResourceResult(Status.INTERNAL_SERVER_ERROR);
