@@ -60,23 +60,25 @@ public class ToscaPrmPropertyMatcher extends ToscaTypeMatcher {
         if (Objects.nonNull(detectorElement.getProperties()) && Objects.nonNull(candidate.getProperties()) &&
             // the implementation (currently) works for KV properties only
             Objects.nonNull(detectorElement.getProperties().getKVProperties()) && Objects.nonNull(candidate.getProperties().getKVProperties())) {
-            Map<String, String> detectorProperties = detectorElement.getProperties().getKVProperties();
-            Map<String, String> candidateProperties = candidate.getProperties().getKVProperties();
+            Map<String, Object> detectorProperties = detectorElement.getProperties().getKVProperties();
+            Map<String, Object> candidateProperties = candidate.getProperties().getKVProperties();
 
             propertiesCompatible = detectorProperties.entrySet().stream()
                 .allMatch(entry -> {
-                    if (Objects.nonNull(entry.getValue()) && !entry.getValue().isEmpty()) {
-                        String refProp = candidateProperties.get(entry.getKey());
-                        if (entry.getValue().equalsIgnoreCase("*")) {
-                            // if the detector defines a wildcard, the property must be set in the candidate
-                            return !refProp.isEmpty();
-                        } else {
-                            // if the detector defines a specific value, the candidate's property must match
-                            return entry.getValue().equalsIgnoreCase(refProp);
-                        }
+                    if (entry.getValue() == null || !(entry.getValue() instanceof String)) {
+                        return true;
                     }
-
-                    return true;
+                    String val = (String) entry.getValue();
+                    if (val.isEmpty()) { return true; }
+                    // Assumption: properties are simple KV Properties
+                    String refProp = (String)candidateProperties.get(entry.getKey());
+                    if (val.equalsIgnoreCase("*")) {
+                        // if the detector defines a wildcard, the property must be set in the candidate
+                        return !refProp.isEmpty();
+                    } else {
+                        // if the detector defines a specific value, the candidate's property must match
+                        return val.equalsIgnoreCase(refProp);
+                    }
                 });
         }
 

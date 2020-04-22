@@ -29,7 +29,7 @@ public class PatternRefinement extends TopologyFragmentRefinement {
     public PatternRefinement() {
         this(new DefaultRefinementChooser());
     }
-
+    
     @Override
     public boolean getLoopCondition(TTopologyTemplate topology) {
         return SubstitutionUtils.containsPatterns(topology.getNodeTemplates(), this.nodeTypes);

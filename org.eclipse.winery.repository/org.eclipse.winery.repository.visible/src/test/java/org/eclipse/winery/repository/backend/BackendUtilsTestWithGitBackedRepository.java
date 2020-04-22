@@ -59,8 +59,8 @@ public class BackendUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
 
         assertNotNull(policyTemplate.getProperties());
 
-        LinkedHashMap<String, String> kvProperties = policyTemplate.getProperties().getKVProperties();
-        LinkedHashMap<String, String> expectedPropertyKVS = new LinkedHashMap<>();
+        LinkedHashMap<String, Object> kvProperties = policyTemplate.getProperties().getKVProperties();
+        LinkedHashMap<String, Object> expectedPropertyKVS = new LinkedHashMap<>();
         expectedPropertyKVS.put("key1", "");
         expectedPropertyKVS.put("key2", "");
         assertEquals(expectedPropertyKVS, kvProperties);

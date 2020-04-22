@@ -224,14 +224,14 @@ public class DataFlowResource {
 
                 TTopologyTemplate substitutionTopology = serviceTemplate.getTopologyTemplate();
                 TNodeTemplate filterCorrespondingNode = null;
-                LinkedHashMap<String, String> filterCorrespondingNodeProperties = null;
+                LinkedHashMap<String, Object> filterCorrespondingNodeProperties = null;
 
                 Map<String, String> nameMap = new HashMap();
 
                 // insert all NodeTemplates from the substitution candidate
                 for (TNodeTemplate node : substitutionTopology.getNodeTemplates()) {
 
-                    LinkedHashMap<String, String> propertyList = new LinkedHashMap<>();
+                    LinkedHashMap<String, Object> propertyList = new LinkedHashMap<>();
                     if (Objects.nonNull(node.getProperties()) && Objects.nonNull(node.getProperties().getKVProperties())) {
                         propertyList = node.getProperties().getKVProperties();
                     }
@@ -364,7 +364,7 @@ public class DataFlowResource {
 
         // add the defined properties to the NodeTemplate
         if (Objects.nonNull(properties)) {
-            LinkedHashMap<String, String> propertyList = new LinkedHashMap<>();
+            LinkedHashMap<String, Object> propertyList = new LinkedHashMap<>();
 
             if (Objects.nonNull(nodeType.getWinerysPropertiesDefinition())) {
                 // add empty property for NodeType properties to avoid errors due to missing properties
@@ -375,9 +375,7 @@ public class DataFlowResource {
             }
 
             // add all properties which are defined at the filter
-            for (Map.Entry<String, String> prop : properties.entrySet()) {
-                propertyList.put(prop.getKey(), prop.getValue());
-            }
+            propertyList.putAll(properties);
 
             TEntityTemplate.Properties nodeProperties = new TEntityTemplate.Properties();
             nodeProperties.setKVProperties(propertyList);
@@ -451,7 +449,7 @@ public class DataFlowResource {
 
         // add empty properties to avoid errors due to missing properties
         if (Objects.nonNull(relationshipType.getWinerysPropertiesDefinition())) {
-            LinkedHashMap<String, String> propertyList = new LinkedHashMap<>();
+            LinkedHashMap<String, Object> propertyList = new LinkedHashMap<>();
 
             WinerysPropertiesDefinition def = relationshipType.getWinerysPropertiesDefinition();
             for (PropertyDefinitionKV prop : def.getPropertyDefinitionKVList().getPropertyDefinitionKVs()) {

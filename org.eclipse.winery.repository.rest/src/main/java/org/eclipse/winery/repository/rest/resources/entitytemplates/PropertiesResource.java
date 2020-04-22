@@ -66,7 +66,7 @@ public class PropertiesResource {
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response setProperties(Map<String, String> properties) {
+    public Response setProperties(Map<String, Object> properties) {
         this.template.getProperties().setKVProperties(properties);
         return RestUtils.persist(this.res);
     }
@@ -109,7 +109,7 @@ public class PropertiesResource {
             }
         } else {
             if (props == null) {
-                HashMap<String, String> emptyProps = new HashMap<>();
+                HashMap<String, Object> emptyProps = new HashMap<>();
                 wpd.getPropertyDefinitionKVList().getPropertyDefinitionKVs()
                     .forEach(propDef -> emptyProps.put(propDef.getKey(), ""));
 
@@ -118,7 +118,7 @@ public class PropertiesResource {
                 this.template.setProperties(props);
                 RestUtils.persist(this.res);
             }
-            Map<String, String> kvProperties = this.template.getProperties().getKVProperties();
+            Map<String, Object> kvProperties = this.template.getProperties().getKVProperties();
             return Response.ok().entity(kvProperties).type(MediaType.APPLICATION_JSON).build();
         }
     }

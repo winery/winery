@@ -209,7 +209,7 @@ public class ThreatModelingUtils {
         threat.setType(threatTypeQName);
 
         TPolicyTemplate.Properties threatProps = new TPolicyTemplate.Properties();
-        Map<String, String> propMap = new HashMap<>();
+        Map<String, Object> propMap = new HashMap<>();
         propMap.put(ThreatModelingProperties.description.toString(), data.getDescription());
         propMap.put(ThreatModelingProperties.strideClassification.toString(), data.getStride());
         propMap.put(ThreatModelingProperties.severity.toString(), data.getSeverity());
@@ -236,7 +236,7 @@ public class ThreatModelingUtils {
         mitigation.setType(mitigationTypeQName);
 
         TPolicyTemplate.Properties mitigationProps = new TPolicyTemplate.Properties();
-        Map<String, String> mitigationPropMap = new HashMap<>();
+        Map<String, Object> mitigationPropMap = new HashMap<>();
 
         mitigationPropMap.put(ThreatModelingProperties.ThreatReference.toString(), threatID.getQName().toString());
 

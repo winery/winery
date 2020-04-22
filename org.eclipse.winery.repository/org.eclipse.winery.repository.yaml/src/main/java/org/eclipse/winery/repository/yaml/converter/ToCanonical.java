@@ -963,14 +963,14 @@ public class ToCanonical {
     }
 
     private TEntityTemplate.Properties convertPropertyAssignments(Map<String, TPropertyAssignment> originalProperties) {
-        Map<String, String> properties = originalProperties
+        Map<String, Object> properties = originalProperties
             .entrySet()
             .stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
                 entry -> Objects.requireNonNull(ValueHelper.toString(entry.getValue().getValue()))));
         TEntityTemplate.Properties toscaProperties = new TEntityTemplate.Properties();
-        toscaProperties.setKVProperties(properties);
+        toscaProperties.setAny(properties);
         return toscaProperties;
     }
 

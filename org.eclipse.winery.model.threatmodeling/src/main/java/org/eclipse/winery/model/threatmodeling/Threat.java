@@ -27,7 +27,7 @@ public class Threat {
     private String templateName;
     private List<QName> mitigations = new ArrayList<>();
     private String namespace;
-    private LinkedHashMap<String, String> properties = new LinkedHashMap<>();
+    private LinkedHashMap<String, Object> properties = new LinkedHashMap<>();
     private List<ThreatTarget> targets = new ArrayList<>();
 
     public String getNamespace() {
@@ -66,11 +66,11 @@ public class Threat {
         this.mitigations.add(mitigation);
     }
 
-    public LinkedHashMap<String, String> getProperties() {
+    public LinkedHashMap<String, Object> getProperties() {
         return properties;
     }
 
-    public void setProperties(LinkedHashMap<String, String> properties) {
+    public void setProperties(LinkedHashMap<String, Object> properties) {
         this.properties = properties;
     }
 }

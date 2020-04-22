@@ -215,7 +215,7 @@ public class ConsistencyChecker {
                             continue;
                         }
                         // assign value, but change "null" to "" if no property is defined
-                        final Map<String, String> propertiesKV = ModelUtilities.getPropertiesKV(nodeTemplate);
+                        final Map<String, Object> propertiesKV = ModelUtilities.getPropertiesKV(nodeTemplate);
                         if (propertiesKV == null) {
                             printAndAddError(id, "propertiesKV of node template " + nodeTemplate.getId() + " is null");
                         }
@@ -317,7 +317,7 @@ public class ConsistencyChecker {
                     return;
                 }
                 if (winerysPropertiesDefinition != null) {
-                    Map<String, String> kvProperties = entityTemplate.getProperties().getKVProperties();
+                    Map<String, Object> kvProperties = entityTemplate.getProperties().getKVProperties();
                     if (kvProperties.isEmpty()) {
                         printAndAddError(id, "Properties required, but no properties set (any case)");
                         return;

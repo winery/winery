@@ -109,7 +109,6 @@ import org.eclipse.winery.model.tosca.yaml.support.TMapRequirementAssignment;
 import org.eclipse.winery.model.tosca.yaml.support.TMapRequirementDefinition;
 import org.eclipse.winery.repository.yaml.YamlRepository;
 import org.eclipse.winery.model.converter.support.Namespaces;
-import org.eclipse.winery.model.converter.support.ValueConverter;
 import org.eclipse.winery.model.converter.support.xml.TypeConverter;
 import org.eclipse.winery.repository.yaml.export.YamlExporter;
 
@@ -211,15 +210,13 @@ public class FromCanonical {
 
     public Map<String, TPropertyAssignment> convert(TEntityTemplate.Properties node) {
         if (Objects.isNull(node)) return null;
-        Map<String, String> propertiesKV = node.getKVProperties();
+        Map<String, Object> propertiesKV = node.getKVProperties();
         if (Objects.isNull(propertiesKV)) return null;
         return propertiesKV.entrySet().stream()
             .map(entry ->
                 new LinkedHashMap.SimpleEntry<>(
                     String.valueOf(entry.getKey()),
-                    new TPropertyAssignment.Builder()
-                        .setValue(ValueConverter.INSTANCE.convert(entry.getValue()))
-                        .build()
+                    PropertyConverter.convert(entry.getValue())
                 )
             )
             .collect(Collectors.toMap(
@@ -1152,5 +1149,40 @@ public class FromCanonical {
             nodeFullName = node.getTargetNamespace().concat(".").concat(node.getIdFromIdOrNameField());
         }
         return nodeFullName;
+    }
+    
+    private static class PropertyConverter {
+        private static Object convert(String value) {
+            if (value.startsWith("get_input")) {
+                return String.format("{ %s }", value.trim());
+            }
+            return value;
+        }
+        
+        public static TPropertyAssignment convert(Object value) {
+            TPropertyAssignment.Builder builder = new TPropertyAssignment.Builder();
+            if (value instanceof String) {
+                builder.setValue(convert((String) value));
+                return builder.build();
+            }
+            if (value instanceof Map) {
+                builder.setValue(
+                    ((Map<String, Object>)value).entrySet().stream()
+                    .map(entry ->
+                        new LinkedHashMap.SimpleEntry<>(
+                            String.valueOf(entry.getKey()),
+                            convert(entry.getValue()))
+                    )
+                    .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue
+                    ))
+                );
+                return builder.build();
+            }
+            // value is some kind of object
+            builder.setValue(String.valueOf(value));
+            return builder.build();
+        }
     }
 }

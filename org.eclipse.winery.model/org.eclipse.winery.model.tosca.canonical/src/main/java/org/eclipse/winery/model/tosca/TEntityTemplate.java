@@ -196,15 +196,20 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
          */
         @ADR(12)
         @Nullable
-        public LinkedHashMap<String, String> getKVProperties() {
+        public LinkedHashMap<String, Object> getKVProperties() {
             // we use the internal variable "any", because getAny() returns null, if we have KVProperties
             if (any == null) {
                 return null;
             }
 
             if (!(any instanceof Element)) {
-                LOGGER.error("Corrupt storage - any should be null or instanceof Element");
-                return null;
+                LinkedHashMap<String, Object> proxy = new LinkedHashMap<>();
+                if (any instanceof Map) {
+                    proxy.putAll((Map<String, Object>) any);
+                } else {
+                    proxy.put("value", any);
+                }
+                return proxy;
             }
 
             Element el = (Element) any;
@@ -218,7 +223,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
 
             boolean isKv = true;
 
-            LinkedHashMap<String, String> properties = new LinkedHashMap<>();
+            LinkedHashMap<String, Object> properties = new LinkedHashMap<>();
 
             NodeList childNodes = el.getChildNodes();
 
@@ -238,6 +243,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
                     if (kvElementChildNodes.getLength() == 0) {
                         value = "";
                     } else if (kvElementChildNodes.getLength() > 1) {
+                        // FIXME deserialize complex types to Objects?
                         // This is a wrong guess if comments are used, but this is prototype
                         isKv = false;
                         break;
@@ -261,16 +267,21 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         }
 
         @ADR(12)
-        public void setKVProperties(Map<String, String> properties) {
+        public void setKVProperties(Map<String, Object> properties) {
             setKVProperties(Namespaces.EXAMPLE_NAMESPACE_URI, "Properties", properties);
         }
 
         @ADR(12)
-        public void setKVProperties(String namespace, String elementName, Map<String, String> properties) {
+        public void setKVProperties(String namespace, String elementName, Map<String, Object> properties) {
             Objects.requireNonNull(properties);
-            Element el = (Element) any;
-
-            if (el == null) {
+            
+            // properties are a complex map, so we must be reading a YAML assignment
+            if (properties.values().stream().anyMatch(v -> !(v instanceof String))) {
+                this.any = properties;
+                return;
+            }
+            
+            if (any == null) {
                 // special case if JSON is parsed without updating an existing element
                 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
                 DocumentBuilder db;
@@ -292,17 +303,23 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
                 for (String key : properties.keySet()) {
                     Element element = doc.createElementNS(namespace, key);
                     root.appendChild(element);
-                    String value = properties.get(key);
-                    if (value != null) {
-                        Text text = doc.createTextNode(value);
+                    
+                    Object value = properties.get(key);
+                    if (value == null) { continue; }
+                    if (value instanceof String) {
+                        Text text = doc.createTextNode((String)value);
                         element.appendChild(text);
+                    } else {
+                        // FIXME value is complex type
                     }
                 }
 
                 this.setAny(doc.getDocumentElement());
-            } else {
-                //TODO: this implementation does not support adding a new property. However, I don't understand it yet so we need to fix it in future.
+            } else if (any instanceof Element){
+                // TODO: this implementation does not support adding a new property.
+                //  However, I don't understand it yet so we need to fix it in future.
 
+                Element el = (Element) any;
                 // straight-forward copy over to existing property structure
                 NodeList childNodes = el.getChildNodes();
 
@@ -311,9 +328,11 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
                     if (item instanceof Element) {
                         final Element element = (Element) item;
                         final String key = element.getLocalName();
-                        final String value = properties.get(key);
-                        if (value != null) {
-                            element.setTextContent(value);
+                        final Object value = properties.get(key);
+                        if (value instanceof String) {
+                            element.setTextContent((String)value);
+                        } else {
+                            // FIXME Value is complex type
                         }
                     } else if (item instanceof Text || item instanceof Comment) {
                         // these kinds of nodes are OK
@@ -321,6 +340,8 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
                         LOGGER.warn("Trying to read k/v property from a template which does not follow the k/v scheme.");
                     }
                 }
+            } else {
+                LOGGER.warn("Failed to set properties on stored yaml properties??");
             }
         }
 

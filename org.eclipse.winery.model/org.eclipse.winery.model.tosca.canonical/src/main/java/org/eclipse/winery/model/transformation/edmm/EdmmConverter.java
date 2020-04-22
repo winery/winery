@@ -198,7 +198,8 @@ public class EdmmConverter {
             toscaTemplate.getProperties().getKVProperties()
                 .forEach((key, value) -> {
                     EntityId propertyEntityId = propertiesEntityId.extend(key);
-                    entityGraph.addEntity(new ScalarEntity(value, propertyEntityId, entityGraph));
+                    // FIXME assumption that properties are strings here!
+                    entityGraph.addEntity(new ScalarEntity((String)value, propertyEntityId, entityGraph));
                 });
         }
     }

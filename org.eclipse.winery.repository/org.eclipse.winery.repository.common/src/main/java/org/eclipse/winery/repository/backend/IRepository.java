@@ -14,6 +14,8 @@
 package org.eclipse.winery.repository.backend;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -35,6 +37,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Constants;
@@ -96,6 +100,8 @@ import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.repository.JAXBSupport;
+import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.xsd.RepositoryBasedXsdImportManager;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
@@ -178,6 +184,35 @@ public interface IRepository extends IWineryRepositoryCommon {
      * @throws IOException if something goes wrong
      */
     void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException;
+
+    /**
+     * Serializes the given content at a location that the repository makes as belonging to the given id. This acts as a
+     * replacement for all invocations of {@link #putContentToFile} for the media type {@link
+     * org.eclipse.winery.repository.backend.constants.MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS}.
+     *
+     * @param id      The id of the definitions child encapsulated in the content to be put into the repository
+     * @param content The content to be put into the repository at the given id.
+     * @throws IOException if something goes wrong
+     */
+    default void putDefinition(DefinitionsChildId id, TDefinitions content) throws IOException {
+        // implementation is partially copied from BackendUtils.persist
+        RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
+        // We assume that the object is not too large
+        // Otherwise, http://io-tools.googlecode.com/svn/www/easystream/apidocs/index.html should be used
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            Marshaller m = JAXBSupport.createMarshaller(true, this.getNamespaceManager().asPrefixMapper());
+            m.marshal(content, out);
+            byte[] data = out.toByteArray();
+            try (ByteArrayInputStream in = new ByteArrayInputStream(data)) {
+                // String xml = IOUtils.toString(in);
+                // this may throw an IOException. We propagate this exception.
+                this.putContentToFile(ref, in, MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
+            }
+        } catch (JAXBException e) {
+            LOGGER.error("Could not put content to file", e);
+            throw new IllegalStateException(e);
+        }
+    }
 
     /**
      * Creates an opened inputStream of the contents referenced by ref. The stream has to be closed by the caller.

@@ -23,9 +23,9 @@ import io.swagger.annotations.Api;
 
 @Api(tags = "Data Types")
 public class DataTypesResource extends AbstractComponentsWithoutTypeReferenceResource<DataTypeResource> {
-        
+
     @Path("{namespace}/{id}/")
     public DataTypeResource getComponentInstanceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
-        return this.getComponentInstanceResource(namespace, id, true);    
+        return this.getComponentInstanceResource(namespace, id, true);
     }
 }

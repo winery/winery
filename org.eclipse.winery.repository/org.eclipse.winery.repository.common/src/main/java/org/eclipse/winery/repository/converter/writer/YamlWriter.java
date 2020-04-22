@@ -406,8 +406,14 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
     }
 
     public YamlPrinter visit(TPropertyAssignment node, Parameter parameter) {
-        return new YamlPrinter(parameter.getIndent())
-            .printYamlValue(parameter.getKey(), node.getValue(), true);
+        // FIXME visit nested assignments
+        YamlPrinter printer = new YamlPrinter(parameter.getIndent());
+        if (node.getValue() instanceof Map) {
+            printer.print(printMap(parameter.getKey(), (Map<String, ?>) node.getValue(), parameter));
+        } else {
+            printer.printKeyObject(parameter.getKey(), node.getValue());
+        }
+        return printer;
     }
 
     public YamlPrinter visit(TAttributeAssignment node, Parameter parameter) {

@@ -418,6 +418,11 @@ public class GitBasedRepository extends AbstractFileBasedRepository {
     public void putContentToFile(RepositoryFileReference ref, String content, MediaType mediaType) throws IOException {
         repository.putContentToFile(ref, content, mediaType);
     }
+    
+    @Override
+    public void putDefinition(DefinitionsChildId id, TDefinitions definitions) throws IOException {
+        repository.putDefinition(id, definitions);
+    }
 
     @Override
     public InputStream newInputStream(RepositoryFileReference ref) throws IOException {

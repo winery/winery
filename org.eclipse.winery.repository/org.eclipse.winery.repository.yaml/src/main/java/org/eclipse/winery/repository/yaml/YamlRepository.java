@@ -644,6 +644,18 @@ public class YamlRepository extends AbstractFileBasedRepository {
         }
     }
 
+    @Override
+    public void putDefinition(DefinitionsChildId id, TDefinitions content) throws IOException {
+        RepositoryFileReference existing = BackendUtils.getRefOfDefinitions(id);
+        try {
+            TServiceTemplate yaml = convertToYamlModel(existing, content);
+            YamlWriter writer = new YamlWriter();
+            writer.write(yaml, ref2AbsolutePath(existing));
+        } catch (Exception e) {
+            LOGGER.error("Error converting service template. Reason: {}", e.getMessage(), e);
+        }
+    }
+    
     /**
      * Reads xml definition input stream converts it to yaml service template and writes it to input stream
      *

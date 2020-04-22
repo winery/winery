@@ -967,16 +967,17 @@ public class Splitting {
             relationshipTypes.add(RepositoryFactory.getRepository().getElement(id));
         }
 
-        Map<String, String> requirementProperties = ModelUtilities.getPropertiesKV(requirement);
-        Map<String, String> capabilityProperties = ModelUtilities.getPropertiesKV(capability);
+        Map<String, Object> requirementProperties = ModelUtilities.getPropertiesKV(requirement);
+        Map<String, Object> capabilityProperties = ModelUtilities.getPropertiesKV(capability);
 
-		/* If the property "requiredRelationshipType" is defined for the requirement and the capability this relationship type
+        /* If the property "requiredRelationshipType" is defined for the requirement and the capability this relationship type
            has to be taken - if the specified relationship type is not available, no relationship type is chosen */
         if (requirementProperties != null && capabilityProperties != null &&
             requirementProperties.containsKey("requiredRelationshipType") && capabilityProperties.containsKey("requiredRelationshipType")
             && requirementProperties.get("requiredRelationshipType").equals(capabilityProperties.get("requiredRelationshipType"))
             && requirementProperties.get("requiredRelationshipType") != null) {
-            QName referencedRelationshipType = QName.valueOf(requirementProperties.get("requiredRelationshipType"));
+            // Assumption: We work on basic KV properties here
+            QName referencedRelationshipType = QName.valueOf((String)requirementProperties.get("requiredRelationshipType"));
             RelationshipTypeId relTypeId = new RelationshipTypeId(referencedRelationshipType);
             if (relTypeIds.stream().anyMatch(rti -> rti.equals(relTypeId))) {
                 return RepositoryFactory.getRepository().getElement(relTypeId);
@@ -1429,8 +1430,8 @@ public class Splitting {
         if (Objects.nonNull(node1.getProperties()) && Objects.nonNull(node2.getProperties())
             && Objects.nonNull(node1.getProperties().getKVProperties())
             && Objects.nonNull(node2.getProperties().getKVProperties())) {
-            LinkedHashMap<String, String> properties1 = node1.getProperties().getKVProperties();
-            LinkedHashMap<String, String> properties2 = node1.getProperties().getKVProperties();
+            LinkedHashMap<String, Object> properties1 = node1.getProperties().getKVProperties();
+            LinkedHashMap<String, Object> properties2 = node1.getProperties().getKVProperties();
             if (!properties1.equals(properties2)) {
                 return false;
             }

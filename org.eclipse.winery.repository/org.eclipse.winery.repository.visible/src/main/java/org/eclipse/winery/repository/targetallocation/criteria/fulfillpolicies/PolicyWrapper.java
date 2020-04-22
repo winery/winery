@@ -62,8 +62,8 @@ public class PolicyWrapper {
         PolicyTypeId policyTypeId = new PolicyTypeId(policy.getType());
         TPolicyType policyType = repository.getElement(policyTypeId);
 
-        LinkedHashMap<String, String> properties = policy.getProperties().getKVProperties();
-        for (Map.Entry<String, String> property : properties.entrySet()) {
+        LinkedHashMap<String, Object> properties = policy.getProperties().getKVProperties();
+        for (Map.Entry<String, Object> property : properties.entrySet()) {
             if (property.getKey().equals(propertyKey)) {
                 String type = getType(policyType, propertyKey);
                 return cast(property.getValue(), type);
@@ -73,16 +73,17 @@ public class PolicyWrapper {
     }
 
     // TODO: find library for casting/change when Winery supports typed properties
-    private Object cast(String property, String type) {
+    // FIXME Assumption here is that the property only comes from a KVProperty and therefore the value is a String
+    private Object cast(Object property, String type) {
         switch (type) {
             case "xsd:boolean":
-                return Boolean.parseBoolean(property);
+                return Boolean.parseBoolean((String)property);
             case "xsd:double":
-                return Double.valueOf(property);
+                return Double.valueOf((String)property);
             case "xsd:string":
                 return property;
             case "xsd:float":
-                return Float.parseFloat(property);
+                return Float.parseFloat((String)property);
             case "xsd:decimal":
                 return NumberFormat.getInstance().format(property);
             default:

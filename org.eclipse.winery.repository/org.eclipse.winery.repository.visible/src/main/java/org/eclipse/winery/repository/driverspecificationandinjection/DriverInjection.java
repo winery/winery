@@ -59,8 +59,8 @@ public class DriverInjection {
         ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId(DAArtifactTemplateQName);
         TArtifactTemplate artifactTemplate = RepositoryFactory.getRepository().getElement(artifactTemplateId);
 
-        Map<String, String> artifactProperties = ModelUtilities.getPropertiesKV(artifactTemplate);
-        Map<String, String> relationshipProperties = ModelUtilities.getPropertiesKV(relationshipTemplate);
+        Map<String, Object> artifactProperties = ModelUtilities.getPropertiesKV(artifactTemplate);
+        Map<String, Object> relationshipProperties = ModelUtilities.getPropertiesKV(relationshipTemplate);
 
         if ((artifactProperties != null) && (relationshipProperties != null) && artifactProperties.containsKey("Driver") && relationshipProperties.containsKey("Driver")) {
             relationshipProperties.put("Driver", artifactProperties.get("Driver"));

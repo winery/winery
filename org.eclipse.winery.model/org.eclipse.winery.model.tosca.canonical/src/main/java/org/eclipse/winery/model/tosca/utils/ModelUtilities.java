@@ -104,7 +104,7 @@ public class ModelUtilities {
      *
      * @param template the node template to get the associated properties
      */
-    public static Map<String, String> getPropertiesKV(TEntityTemplate template) {
+    public static Map<String, Object> getPropertiesKV(TEntityTemplate template) {
         if (template.getProperties() != null) {
             return template.getProperties().getKVProperties();
         } else {

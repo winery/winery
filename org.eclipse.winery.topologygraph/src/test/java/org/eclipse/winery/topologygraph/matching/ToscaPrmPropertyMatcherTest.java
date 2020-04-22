@@ -75,7 +75,7 @@ public class ToscaPrmPropertyMatcherTest {
 
     @ParameterizedTest(name = "{index} => ''{3}''")
     @MethodSource("compatiblePropertiesArguments")
-    public void compatibleProperties(Map<String, String> leftProperties, Map<String, String> rightProperties, boolean expected, String description) {
+    public void compatibleProperties(Map<String, Object> leftProperties, Map<String, Object> rightProperties, boolean expected, String description) {
         // region ***** left *****
         TNodeTemplate left = new TNodeTemplate();
         if (Objects.nonNull(leftProperties)) {

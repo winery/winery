@@ -203,7 +203,8 @@ public class TopologyTemplateResource {
         ModelUtilities.patchAnyAttributes(topologyTemplate.getRelationshipTemplates());
         // the following method includes patching of the topology template (removing empty lists, ..)
         this.parent.setTopology(topologyTemplate, this.type);
-        return RestUtils.persist(this.parent);
+        requestRepository.putDefinition(parent.getId(), this.parent.getDefinitions());
+        return Response.noContent().build();
     }
 
     // @formatter:off
@@ -331,7 +332,7 @@ public class TopologyTemplateResource {
             .findFirst();
 
         if (foundTemplate.isPresent() && Objects.nonNull(foundTemplate.get().getProperties().getKVProperties())) {
-            HashMap<String, String> oldKvs = foundTemplate.get().getProperties().getKVProperties();
+            HashMap<String, Object> oldKvs = foundTemplate.get().getProperties().getKVProperties();
 
             QName qNameType = QName.valueOf(updateInfo.getNewComponentType());
             IRepository repository = RepositoryFactory.getRepository();
@@ -385,14 +386,14 @@ public class TopologyTemplateResource {
                 propertyMatching -> propertyMappings.put(propertyMatching.getOldKey(), propertyMatching.getNewKey())
             );
 
-            LinkedHashMap<String, String> resultKvs = new LinkedHashMap<>();
+            LinkedHashMap<String, Object> resultKvs = new LinkedHashMap<>();
 
             topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream()
                 .filter(template -> template.getId().equals(updateInfo.getNodeTemplateId()))
                 .filter(template -> template.getProperties() != null)
                 .findFirst()
                 .ifPresent(nodeTemplate -> {
-                    Map<String, String> oldKvs = nodeTemplate.getProperties().getKVProperties();
+                    Map<String, Object> oldKvs = nodeTemplate.getProperties().getKVProperties();
                     oldKvs.forEach((key, value) -> {
                         if (propertyMappings.containsKey(key)) {
                             resultKvs.put(propertyMappings.get(key), value);

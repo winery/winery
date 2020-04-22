@@ -278,7 +278,7 @@ public class EnhancementUtils {
                     PropertyDefinitionKVList definedProperties = generatedNodeType.getWinerysPropertiesDefinition().getPropertyDefinitionKVList();
 
                     // todo: think about moving this code to a separate ModelUtilities method.
-                    Map<String, String> kvProperties = Objects.nonNull(nodeTemplate.getProperties())
+                    Map<String, Object> kvProperties = Objects.nonNull(nodeTemplate.getProperties())
                         && Objects.nonNull(nodeTemplate.getProperties().getKVProperties())
                         ? nodeTemplate.getProperties().getKVProperties()
                         : new HashMap<>();

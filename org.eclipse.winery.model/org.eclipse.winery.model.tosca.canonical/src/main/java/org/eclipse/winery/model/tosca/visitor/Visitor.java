@@ -202,14 +202,14 @@ public abstract class Visitor {
     }
 
     public void visit(TEntityTemplate.Properties properties) {
-        final LinkedHashMap<String, String> kvProperties = properties.getKVProperties();
+        final LinkedHashMap<String, Object> kvProperties = properties.getKVProperties();
         if (kvProperties != null) {
             this.visitKvProperties(kvProperties);
         }
         // meta model does not offer more children
     }
 
-    public void visitKvProperties(LinkedHashMap<String, String> kvProperties) {
+    public void visitKvProperties(LinkedHashMap<String, Object> kvProperties) {
         // this is a leaf, so no action to take
     }
 

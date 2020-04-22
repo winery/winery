@@ -63,7 +63,7 @@ public class ToscaComplianceRuleMatcher implements IToscaMatcher {
     public boolean isPropertiesCompatible(ToscaNode left, ToscaNode right) {
         if (left.getTemplate().getProperties() != null) {
             if (right.getTemplate().getProperties() != null) {
-                for (Entry<String, String> leftEntry : left.getTemplate().getProperties().getKVProperties().entrySet()) {
+                for (Entry<String, Object> leftEntry : left.getTemplate().getProperties().getKVProperties().entrySet()) {
                     if (!isPropertyCompatible(leftEntry, right.getTemplate().getProperties().getKVProperties())) {
                         return false;
                     }
@@ -75,7 +75,7 @@ public class ToscaComplianceRuleMatcher implements IToscaMatcher {
         return true;
     }
 
-    public boolean isPropertyCompatible(Entry<String, String> leftEntry, @ADR(12) LinkedHashMap<String, String> rightProperties) {
+    public boolean isPropertyCompatible(Entry<String, Object> leftEntry, @ADR(12) LinkedHashMap<String, Object> rightProperties) {
         return rightProperties.containsKey(leftEntry.getKey()) &&
             rightProperties.get(leftEntry.getKey()) != null &&
             isPropertyValueCompatible(leftEntry.getValue(), rightProperties.get(leftEntry.getKey()));

@@ -105,8 +105,9 @@ public class ThreatModeling {
                 TPolicyTemplate mitigationTemplate = repository.getElement(mitigationTemplateId);
 
                 if (Objects.nonNull(mitigationTemplate.getProperties())) {
-                    LinkedHashMap<String, String> properties = mitigationTemplate.getProperties().getKVProperties();
-                    String threatReferenceString = properties.get("ThreatReference");
+                    LinkedHashMap<String, Object> properties = mitigationTemplate.getProperties().getKVProperties();
+                    // FIXME Assumption that we're dealing with simple KV Properties
+                    String threatReferenceString = (String)properties.get("ThreatReference");
 
                     QName threatReference = QName.valueOf(threatReferenceString);
                     // check if the threat, the mitigation references is present.
