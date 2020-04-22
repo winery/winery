@@ -67,11 +67,6 @@
         <option name="VM_PARAMETERS" value="" />
         <option name="PROGRAM_PARAMETERS" value="" />
       </SHUTDOWN>
-      <EnvironmentVariables>
-        <option name="NAME" value="JDK_JAVA_OPTIONS" />
-        <option name="VALUE" value="--illegal-access=permit" />
-        <option name="IS_PREDEFINED" value="false" />
-      </EnvironmentVariables>
     </ConfigurationWrapper>
     <method v="2">
       <option name="Make" enabled="true" />
