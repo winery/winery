@@ -29,7 +29,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -39,7 +38,6 @@ import org.eclipse.jdt.annotation.Nullable;
     TNodeTypeImplementation.class,
     TRelationshipTypeImplementation.class,
 })
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class TEntityTypeImplementation extends TExtensibleElements implements HasName, HasType, HasInheritance, HasTargetNamespace {
 
     @XmlElement(name = "Tags")

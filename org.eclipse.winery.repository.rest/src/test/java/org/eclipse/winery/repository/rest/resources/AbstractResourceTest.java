@@ -70,7 +70,7 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
         if (inputStream == null) {
             throw new IllegalStateException("Could not find " + fileName + " on classpath");
         }
-        return new Scanner(inputStream, StandardCharsets.UTF_8).useDelimiter("\\A").next();
+        return new Scanner(inputStream, StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
     }
 
     protected RequestSpecification start() {

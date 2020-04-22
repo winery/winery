@@ -29,8 +29,8 @@ import org.slf4j.LoggerFactory;
 @Provider
 public class JacksonProvider extends JacksonJaxbJsonProvider {
 
+    public static final ObjectMapper mapper = new ObjectMapper();
     private static final Logger logger = LoggerFactory.getLogger(JacksonProvider.class);
-    private static final ObjectMapper mapper = new ObjectMapper();
 
     static {
         logger.info("Initializing json mapper...");
@@ -44,12 +44,12 @@ public class JacksonProvider extends JacksonJaxbJsonProvider {
         );
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
 
-        logger.info("Initialized Mapper with VisibilityChecker {}", mapper.getVisibilityChecker());
+        logger.info("Initialized JasonMapper with VisibilityChecker {}", mapper.getVisibilityChecker());
     }
 
     /**
      * Custom Jackson json provider to configure the output by our own.
-     * 
+     * <p>
      * See also https://stackoverflow.com/a/30082203/6592788.
      */
     public JacksonProvider() {

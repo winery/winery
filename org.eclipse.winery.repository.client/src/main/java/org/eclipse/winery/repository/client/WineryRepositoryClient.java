@@ -541,7 +541,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
         for (WebTarget wr : this.repositoryResources) {
             List<NamespaceIdOptionalName> nsAndIdList = wr.path(path)
                 .request(MediaType.APPLICATION_JSON)
-                .get(new GenericType<>() {
+                .get(new GenericType<List<NamespaceIdOptionalName>>() {
                 });
             LOGGER.debug("Repository {} contains the following ServiceTemplates {}", wr.getUri(), nsAndIdList);
             res.put(wr, nsAndIdList);

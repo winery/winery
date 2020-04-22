@@ -1,3 +1,4 @@
+#FROM maven:3-jdk-11 as builder
 FROM maven:3-jdk-8 as builder
 
 RUN rm /dev/random && ln -s /dev/urandom /dev/random \
@@ -10,10 +11,12 @@ RUN rm /dev/random && ln -s /dev/urandom /dev/random \
 
 COPY . /tmp/winery
 WORKDIR /tmp/winery
-RUN mvn package -DskipTests
+RUN mvn package -DskipTests=true -Dmaven.javadoc.skip=true -Djava.version=1.8
 
 
 FROM tomcat:8.5.31
+#FROM tomcat:9.0.34
+
 LABEL maintainer = "Oliver Kopp <kopp.dev@gmail.com>, Michael Wurster <miwurster@gmail.com>, Lukas Harzenetter <lharzenetter@gmx.de>"
 
 ARG DOCKERIZE_VERSION=v0.3.0

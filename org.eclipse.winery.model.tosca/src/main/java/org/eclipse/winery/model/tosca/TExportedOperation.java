@@ -28,7 +28,6 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -38,7 +37,6 @@ import org.eclipse.jdt.annotation.Nullable;
     "relationshipOperation",
     "plan"
 })
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TExportedOperation implements HasName, Serializable {
 
     @XmlElement(name = "NodeOperation")
@@ -162,7 +160,6 @@ public class TExportedOperation implements HasName, Serializable {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class NodeOperation implements Serializable {
 
         @XmlAttribute(name = "nodeRef", required = true)
@@ -255,7 +252,6 @@ public class TExportedOperation implements HasName, Serializable {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Plan implements Serializable {
 
         @XmlAttribute(name = "planRef", required = true)
@@ -303,7 +299,6 @@ public class TExportedOperation implements HasName, Serializable {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RelationshipOperation implements Serializable {
 
         @XmlAttribute(name = "relationshipRef", required = true)

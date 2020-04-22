@@ -147,7 +147,9 @@ public class JsonBasedNamespaceManager extends AbstractNamespaceManager {
 
         try {
             if (this.file.exists()) {
-                TypeReference<HashMap<String, NamespaceProperties>> hashMapTypeReference = new TypeReference<>() { };
+                TypeReference<HashMap<String, NamespaceProperties>> hashMapTypeReference =
+                    new TypeReference<HashMap<String, NamespaceProperties>>() {
+                    };
                 nsProps = objectMapper.readValue(file, hashMapTypeReference);
             }
         } catch (IOException e) {
