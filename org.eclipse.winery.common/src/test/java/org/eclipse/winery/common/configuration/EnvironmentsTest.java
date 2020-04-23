@@ -100,7 +100,9 @@ public class EnvironmentsTest {
      * This test checks for the correct repositoryRoot, which is set in the config file.
      */
     @Test
-    public void testGetRepositoryRoot() {
+    public void testGetRepositoryRoot() throws IOException {
+        // explicitly reset the test file
+        ConfigurationTestUtils.replaceFileWithTestFile();
         assertEquals("thisisatestroot", Environments.getInstance().getRepositoryConfig().getRepositoryRoot());
     }
 
