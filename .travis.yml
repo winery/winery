@@ -10,7 +10,7 @@ env:
 jobs:
   exclude:
     - jdk: openjdk8
-      env: PROFILE=frontend
+      env: BUILD_PROFILE=frontend
 cache:
   directories:
     - $HOME/.m2
