@@ -2,7 +2,7 @@ dist: bionic
 sudo: required
 language: java
 jdk:
-  # use jdk12 because of compiler errors in jdk11: https://bugs.openjdk.java.net/browse/JDK-8222754
+  - openjdk8
   - openjdk12
 cache:
   directories:

@@ -20,7 +20,6 @@ import org.apache.commons.configuration2.YAMLConfiguration;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -59,7 +58,6 @@ public class EnvironmentsTest {
      * Tests whenever the configuration is loaded from backend if it was changed
      */
     @Test
-    @Disabled
     public void testReload() {
         YAMLConfiguration configuration = Environment.getInstance().getConfiguration();
         assertFalse(Environment.getInstance().checkConfigurationForUpdate());
