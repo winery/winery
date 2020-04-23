@@ -11,7 +11,7 @@ RUN rm /dev/random && ln -s /dev/urandom /dev/random \
 
 COPY . /tmp/winery
 WORKDIR /tmp/winery
-RUN mvn package -DskipTests=true -Dmaven.javadoc.skip=true 
+RUN mvn package -DskipTests=true -Dmaven.javadoc.skip=true -P java
 
 
 
@@ -62,9 +62,9 @@ RUN rm /dev/random && ln -s /dev/urandom /dev/random \
     && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
 COPY --from=builder /tmp/winery/org.eclipse.winery.repository.rest/target/winery.war ${CATALINA_HOME}/webapps/winery.war
-COPY --from=builder /tmp/winery/org.eclipse.winery.frontends/target/tosca-management.war ${CATALINA_HOME}/webapps/ROOT.war
-COPY --from=builder /tmp/winery/org.eclipse.winery.frontends/target/topologymodeler.war ${CATALINA_HOME}/webapps/winery-topologymodeler.war
-COPY --from=builder /tmp/winery/org.eclipse.winery.frontends/target/workflowmodeler.war ${CATALINA_HOME}/webapps/winery-workflowmodeler.war
+#COPY --from=builder /tmp/winery/org.eclipse.winery.frontends/target/tosca-management.war ${CATALINA_HOME}/webapps/ROOT.war
+#COPY --from=builder /tmp/winery/org.eclipse.winery.frontends/target/topologymodeler.war ${CATALINA_HOME}/webapps/winery-topologymodeler.war
+#COPY --from=builder /tmp/winery/org.eclipse.winery.frontends/target/workflowmodeler.war ${CATALINA_HOME}/webapps/winery-workflowmodeler.war
 
 ADD docker/winery.yml.tpl /root/.winery/winery.yml.tpl
 

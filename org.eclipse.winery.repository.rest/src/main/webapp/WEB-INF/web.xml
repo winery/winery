@@ -17,20 +17,6 @@
          id="winery" version="3.0">
     <display-name>Winery Repository</display-name>
 
-    <servlet>
-        <servlet-name>SwaggerJerseyConfig</servlet-name>
-        <servlet-class>io.swagger.jaxrs.config.DefaultJaxrsConfig</servlet-class>
-        <init-param>
-            <param-name>api.version</param-name>
-            <param-value>1.0.0</param-value>
-        </init-param>
-        <init-param>
-            <param-name>swagger.api.basepath</param-name>
-            <param-value>http://localhost:8080/winery</param-value>
-        </init-param>
-        <load-on-startup>2</load-on-startup>
-    </servlet>
-
     <filter>
         <filter-name>CorsFilter</filter-name>
         <filter-class>org.apache.catalina.filters.CorsFilter</filter-class>
