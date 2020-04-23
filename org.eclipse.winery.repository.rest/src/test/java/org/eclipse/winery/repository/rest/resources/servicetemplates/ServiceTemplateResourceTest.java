@@ -14,12 +14,12 @@
 package org.eclipse.winery.repository.rest.resources.servicetemplates;
 
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.json.JacksonProvider;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 
@@ -150,7 +150,7 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
         this.setRevisionTo("eb37f5cfec50c046985eac308e46482ce8bea8e3");
         String response = this.assertPostWithNoContent("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithOneNodeTemplate_w1-wip1/createnewstatefulversion", ContentType.JSON);
 
-        QNameApiData newId = new ObjectMapper().readValue(response, QNameApiData.class);
+        QNameApiData newId = JacksonProvider.mapper.readValue(response, QNameApiData.class);
 
         assertNonNull(newId);
         WineryVersion version = VersionUtils.getVersion(newId.localname);

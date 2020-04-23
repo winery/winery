@@ -22,8 +22,11 @@ import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.common.json.JacksonProvider;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
@@ -36,8 +39,6 @@ import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateSour
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.xmlunit.matchers.CompareMatcher;
-
-import javax.xml.namespace.QName;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -111,7 +112,7 @@ public class BackendUtilsTest {
 
         JSONAssert.assertEquals(
             minimalTopologyTemplateAsJsonString,
-            BackendUtils.Object2JSON(minimalTopologyTemplate),
+            JacksonProvider.mapper.writeValueAsString(minimalTopologyTemplate),
             true);
     }
 

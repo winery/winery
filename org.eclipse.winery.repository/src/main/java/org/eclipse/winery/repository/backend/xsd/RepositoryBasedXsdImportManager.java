@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
+import org.eclipse.winery.common.json.JacksonProvider;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.ImportUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -112,7 +113,7 @@ public class RepositoryBasedXsdImportManager implements XsdImportManager {
 
             String cacheContent = null;
             try {
-                cacheContent = BackendUtils.mapper.writeValueAsString(result);
+                cacheContent = JacksonProvider.mapper.writeValueAsString(result);
             } catch (JsonProcessingException e) {
                 LOGGER.error("Could not generate cache content", e);
             }
@@ -125,7 +126,7 @@ public class RepositoryBasedXsdImportManager implements XsdImportManager {
             // read content from cache
             // cache should contain most recent information
             try (InputStream is = RepositoryFactory.getRepository().newInputStream(cacheRef)) {
-                result = BackendUtils.mapper.readValue(is, java.util.List.class);
+                result = JacksonProvider.mapper.readValue(is, java.util.List.class);
             } catch (IOException e) {
                 LOGGER.error("Could not read from cache", e);
                 result = Collections.emptyList();

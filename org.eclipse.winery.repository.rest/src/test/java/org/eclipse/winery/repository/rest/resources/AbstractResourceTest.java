@@ -20,10 +20,10 @@ import java.nio.file.Path;
 import java.util.Scanner;
 
 import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.json.JacksonProvider;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.rest.server.WineryUsingHttpServer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.eclipse.jetty.server.Server;
@@ -352,7 +352,6 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
             .getBody()
             .asString();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(s, clazz);
+        return JacksonProvider.mapper.readValue(s, clazz);
     }
 }

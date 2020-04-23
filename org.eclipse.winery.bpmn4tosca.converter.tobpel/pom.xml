@@ -91,6 +91,12 @@
             <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.winery</groupId>
+            <artifactId>org.eclipse.winery.common</artifactId>
+            <version>5.5.1.201910021850-r</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>

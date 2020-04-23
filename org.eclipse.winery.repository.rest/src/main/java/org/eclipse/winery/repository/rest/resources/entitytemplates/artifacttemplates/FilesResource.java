@@ -50,6 +50,7 @@ import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.datatypes.FileMeta;
 import org.eclipse.winery.repository.rest.resources.apiData.ArtifactResourceApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.ArtifactResourcesApiData;
+import org.eclipse.winery.repository.rest.resources.apiData.MetaDataApiData;
 
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
@@ -123,12 +124,8 @@ public class FilesResource {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String getJSON() {
-        String json = BackendUtils.Object2JSON(this.getAllFileMetas());
-        String pathsJson = BackendUtils.Object2JSON(this.getAllFilePaths());
-        json = "{\"files\":" + json + "," +
-            "\"paths\":" + pathsJson + "}";
-        return json;
+    public MetaDataApiData getJSON() {
+        return new MetaDataApiData(this.getAllFileMetas(), this.getAllFilePaths());
     }
 
     private List<FileMeta> getAllFileMetas() {

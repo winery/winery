@@ -11,7 +11,8 @@ RUN rm /dev/random && ln -s /dev/urandom /dev/random \
 
 COPY . /tmp/winery
 WORKDIR /tmp/winery
-RUN mvn package -DskipTests=true -Dmaven.javadoc.skip=true -Djava.version=1.8
+RUN mvn package -DskipTests=true -Dmaven.javadoc.skip=true 
+
 
 
 FROM tomcat:8.5.31

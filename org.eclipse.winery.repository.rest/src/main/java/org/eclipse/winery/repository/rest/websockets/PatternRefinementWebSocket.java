@@ -30,6 +30,7 @@ import javax.websocket.server.ServerEndpoint;
 import javax.ws.rs.NotFoundException;
 
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.json.JacksonProvider;
 import org.eclipse.winery.model.adaptation.substitution.refinement.AbstractRefinement;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementChooser;
@@ -40,7 +41,6 @@ import org.eclipse.winery.repository.rest.resources.apiData.RefinementElementApi
 import org.eclipse.winery.repository.rest.resources.apiData.RefinementWebSocketApiData;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +50,6 @@ public class PatternRefinementWebSocket implements RefinementChooser {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsistencyCheckWebSocket.class);
 
     private Session session;
-    private ObjectMapper mapper = new ObjectMapper();
     private AbstractRefinement patternRefinement;
     private CompletableFuture<Integer> future;
     private boolean running = false;
@@ -93,7 +92,7 @@ public class PatternRefinementWebSocket implements RefinementChooser {
 
     @OnMessage
     public void onMessage(String message) throws IOException {
-        RefinementWebSocketApiData data = this.mapper.readValue(message, RefinementWebSocketApiData.class);
+        RefinementWebSocketApiData data = JacksonProvider.mapper.readValue(message, RefinementWebSocketApiData.class);
 
         switch (data.task) {
             case START:
@@ -155,6 +154,6 @@ public class PatternRefinementWebSocket implements RefinementChooser {
     }
 
     private void send(RefinementElementApiData element) throws JsonProcessingException {
-        this.session.getAsyncRemote().sendText(mapper.writeValueAsString(element));
+        this.session.getAsyncRemote().sendText(JacksonProvider.mapper.writeValueAsString(element));
     }
 }

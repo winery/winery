@@ -25,12 +25,11 @@ import java.util.stream.Collectors;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.admin.NamespacesId;
+import org.eclipse.winery.common.json.JacksonProvider;
 import org.eclipse.winery.repository.backend.AbstractNamespaceManager;
 import org.eclipse.winery.repository.backend.BackendUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,14 +44,10 @@ public class JsonBasedMultiNamespaceManager extends AbstractNamespaceManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonBasedNamespaceManager.class);
 
     private final MultiRepository repository;
-    private final ObjectMapper objectMapper;
-
-    private Map<FilebasedRepository, Map<String, NamespaceProperties>> namespaceProperties;
+    private final Map<FilebasedRepository, Map<String, NamespaceProperties>> namespaceProperties;
 
     private JsonBasedMultiNamespaceManager(MultiRepository repository) {
-        this.objectMapper = new ObjectMapper();
         this.repository = repository;
-        this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         this.namespaceProperties = this.loadNamespacePropertiesFromFile();
     }
 
@@ -76,7 +71,7 @@ public class JsonBasedMultiNamespaceManager extends AbstractNamespaceManager {
                     TypeReference<HashMap<String, NamespaceProperties>> hashMapTypeReference =
                         new TypeReference<HashMap<String, NamespaceProperties>>() {
                         };
-                    nsProps = objectMapper.readValue(file, hashMapTypeReference);
+                    nsProps = JacksonProvider.mapper.readValue(file, hashMapTypeReference);
                 }
             } catch (IOException e) {
                 LOGGER.debug("Error while loading the namespace file.", e);

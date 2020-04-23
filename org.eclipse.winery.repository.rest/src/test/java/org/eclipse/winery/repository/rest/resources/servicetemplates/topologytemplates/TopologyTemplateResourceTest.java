@@ -14,8 +14,8 @@
 package org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates;
 
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.json.JacksonProvider;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 
@@ -102,14 +102,14 @@ public class TopologyTemplateResourceTest extends AbstractResourceTest {
     @Test
     public void farmTopologyTemplateJsonCanBeParsed() throws Exception {
         final String jsonStr = AbstractResourceTest.readFromClasspath("servicetemplates/farm_topologytemplate.json");
-        final TTopologyTemplate topologyTemplate = BackendUtils.mapper.readValue(jsonStr, TTopologyTemplate.class);
+        final TTopologyTemplate topologyTemplate = JacksonProvider.mapper.readValue(jsonStr, TTopologyTemplate.class);
         assertNotNull(topologyTemplate);
     }
 
     @Test
     public void strawStallTopologyTemplateJsonCanBeParsed() throws Exception {
         final String jsonStr = AbstractResourceTest.readFromClasspath("entitytypes/servicetemplates/straw-stall.json");
-        final TTopologyTemplate topologyTemplate = BackendUtils.mapper.readValue(jsonStr, TTopologyTemplate.class);
+        final TTopologyTemplate topologyTemplate = JacksonProvider.mapper.readValue(jsonStr, TTopologyTemplate.class);
     }
 
     @Test

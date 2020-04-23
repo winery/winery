@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.json.JacksonProvider;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
@@ -28,7 +29,6 @@ import org.eclipse.winery.repository.targetallocation.criteria.minexternalconnec
 import org.eclipse.winery.repository.targetallocation.util.TopologyWrapper;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,7 +43,6 @@ public class FulfillPoliciesTest extends TestWithGitBackedRepository {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(FulfillPoliciesTest.class);
 
     private TopologyWrapper topology;
-    private ObjectMapper mapper = new ObjectMapper();
 
     @BeforeEach
     public void setUp() throws GitAPIException {
@@ -55,7 +54,7 @@ public class FulfillPoliciesTest extends TestWithGitBackedRepository {
 
     @Test
     public void testSimpleOperators() throws Exception {
-        JsonNode params = mapper.readTree("{\"policySelection\":[" +
+        JsonNode params = JacksonProvider.mapper.readTree("{\"policySelection\":[" +
             "{\"policy\":\"floorwarmth10\",\"property\":\"warmth\",\"operator\":\">\"}," +
             "{\"policy\":\"floorwarmth30\",\"property\":\"warmth\",\"operator\":\"<\"}]}");
         Criteria fulfillPolicies = new FulfillPolicies(params, Integer.MAX_VALUE);
@@ -100,7 +99,7 @@ public class FulfillPoliciesTest extends TestWithGitBackedRepository {
 
     @Test
     public void testMinMax() throws Exception {
-        JsonNode params = mapper.readTree("{\"policySelection\":[" +
+        JsonNode params = JacksonProvider.mapper.readTree("{\"policySelection\":[" +
             "{\"policy\":\"floorwarmth10\",\"property\":\"warmth\",\"operator\":\"min\"}," +
             "{\"policy\":\"floorwarmth30\",\"property\":\"warmth\",\"operator\":\"max\"}]}");
         Criteria fulfillPolicies = new FulfillPolicies(params, Integer.MAX_VALUE);
@@ -125,7 +124,7 @@ public class FulfillPoliciesTest extends TestWithGitBackedRepository {
 
     @Test
     public void testNotPossible() throws Exception {
-        JsonNode params = mapper.readTree("{\"policySelection\":[" +
+        JsonNode params = JacksonProvider.mapper.readTree("{\"policySelection\":[" +
             "{\"policy\":\"floorwarmth10\",\"property\":\"warmth\",\"operator\":\"=\"}," +
             "{\"policy\":\"floorwarmth30\",\"property\":\"warmth\",\"operator\":\"=\"}]}");
         Criteria fulfillPolicies = new FulfillPolicies(params, Integer.MAX_VALUE);
@@ -135,7 +134,7 @@ public class FulfillPoliciesTest extends TestWithGitBackedRepository {
 
     @Test
     public void testApprox() throws Exception {
-        JsonNode params = mapper.readTree("{\"policySelection\":[" +
+        JsonNode params = JacksonProvider.mapper.readTree("{\"policySelection\":[" +
             "{\"policy\":\"floorwarmth10\",\"property\":\"warmth\",\"operator\":\"approx\"}," +
             "{\"policy\":\"floorwarmth30\",\"property\":\"warmth\",\"operator\":\"approx\"}]}");
         Criteria fulfillPolicies = new FulfillPolicies(params, Integer.MAX_VALUE);
@@ -183,7 +182,7 @@ public class FulfillPoliciesTest extends TestWithGitBackedRepository {
             return;
         }
 
-        JsonNode params = mapper.readTree("{\"policySelection\":[" +
+        JsonNode params = JacksonProvider.mapper.readTree("{\"policySelection\":[" +
             "{\"policy\":\"floorwarmth10\",\"property\":\"warmth\",\"operator\":\"min\"}," +
             "{\"policy\":\"floorwarmth30\",\"property\":\"warmth\",\"operator\":\"max\"}]}");
         Criteria fulfillPolicies = new FulfillPolicies(params, Integer.MAX_VALUE);

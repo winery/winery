@@ -28,7 +28,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
-import org.eclipse.winery.repository.rest.server.JacksonProvider;
+import org.eclipse.winery.common.json.JacksonProvider;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;

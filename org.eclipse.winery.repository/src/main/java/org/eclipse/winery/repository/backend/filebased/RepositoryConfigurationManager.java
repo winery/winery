@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.winery.common.json.JacksonProvider;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.Filename;
@@ -28,9 +29,6 @@ import org.eclipse.winery.repository.backend.filebased.management.IRepositoryRes
 import org.eclipse.winery.repository.backend.filebased.management.RepositoryResolverFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,10 +81,8 @@ public class RepositoryConfigurationManager {
                 e.printStackTrace();
             }
         } else {
-            ObjectMapper objectMapper = new ObjectMapper();
             try {
-                objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-                objectMapper.writeValue(repositoryConfiguration, repositoriesList);
+                JacksonProvider.mapper.writeValue(repositoryConfiguration, repositoriesList);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -104,11 +100,8 @@ public class RepositoryConfigurationManager {
     }
 
     private static void loadConfiguration(File configuration) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectReader reader = objectMapper.readerFor(new TypeReference<List<RepositoryProperties>>() {
+        repositoriesList = JacksonProvider.mapper.readValue(configuration, new TypeReference<List<RepositoryProperties>>() {
         });
-
-        repositoriesList = reader.readValue(configuration);
     }
 
     private static void loadRepositoriesByList(MultiRepository repo) {
@@ -118,12 +111,10 @@ public class RepositoryConfigurationManager {
     }
 
     private static void createRepositoryConfigurationFile() {
-        ObjectMapper objectMapper = new ObjectMapper();
         repositoryConfiguration = new File(FilebasedRepository.getActiveRepositoryFilePath(), Filename.FILENAME_JSON_REPOSITORIES);
         try {
             Files.createFile(repositoryConfiguration.toPath());
-            objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-            objectMapper.writeValue(repositoryConfiguration, repositoriesList);
+            JacksonProvider.mapper.writeValue(repositoryConfiguration, repositoriesList);
         } catch (IOException exception) {
             exception.printStackTrace();
         }
