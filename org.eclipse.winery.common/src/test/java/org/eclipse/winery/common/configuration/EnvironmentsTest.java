@@ -122,7 +122,9 @@ public class EnvironmentsTest {
      * to file, when the saveFeatures method is called.
      */
     @Test
-    public void testSaveFeatures() {
+    public void testSaveFeatures() throws Exception {
+        // Explicitly reset the test file 
+        ConfigurationTestUtils.replaceFileWithTestFile();
         UiConfigurationObject object = Environments.getInstance().getUiConfig();
         object.getFeatures().put("foo", false);
         object.getFeatures().put("bar", true);
