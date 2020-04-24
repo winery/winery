@@ -13,8 +13,9 @@
  ********************************************************************************/
 package org.eclipse.winery.common.ids.definitions;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DefinitionsChildIdTest {
 
@@ -25,7 +26,7 @@ public class DefinitionsChildIdTest {
         DefinitionsChildId serviceTemplate = new ServiceTemplateId("http://example.org/tosca/serviceTemplates", stId, false);
         DefinitionsChildId otherServiceTemplate = new ServiceTemplateId("http://example.org/tosca/serviceTemplates", otherStId, false);
 
-        Assert.assertEquals(stId.compareTo(otherStId), serviceTemplate.compareTo(otherServiceTemplate));
+        assertEquals(stId.compareTo(otherStId), serviceTemplate.compareTo(otherServiceTemplate));
     }
 
     @Test
@@ -35,7 +36,7 @@ public class DefinitionsChildIdTest {
         DefinitionsChildId serviceTemplate = new ServiceTemplateId(stNamespace, "myDefinition", false);
         DefinitionsChildId otherServiceTemplate = new ServiceTemplateId(otherNamespace, "myDefinition", false);
 
-        Assert.assertEquals(stNamespace.compareTo(otherNamespace), serviceTemplate.compareTo(otherServiceTemplate));
+        assertEquals(stNamespace.compareTo(otherNamespace), serviceTemplate.compareTo(otherServiceTemplate));
     }
 
     @Test
@@ -43,7 +44,7 @@ public class DefinitionsChildIdTest {
         DefinitionsChildId serviceTemplate = new ServiceTemplateId("http://example.org/tosca/serviceTemplates", "myDefinition", false);
         DefinitionsChildId nodeType = new NodeTypeId("http://example.org/tosca/nodeTypes", "myDefinition", false);
 
-        Assert.assertEquals("ServiceTemplate".compareTo("NodeType"), serviceTemplate.compareTo(nodeType));
+        assertEquals("ServiceTemplate".compareTo("NodeType"), serviceTemplate.compareTo(nodeType));
     }
 
     @Test
@@ -51,7 +52,7 @@ public class DefinitionsChildIdTest {
         DefinitionsChildId policyTemplate = new PolicyTemplateId("http://example.org/tosca/policyTemplates", "myPolicyTemplate", false);
         DefinitionsChildId secondPolicyTemplate = new PolicyTemplateId("http://example.org/tosca/policyTemplates", "myPolicyTemplate", false);
 
-        Assert.assertEquals(0, policyTemplate.compareTo(secondPolicyTemplate));
+        assertEquals(0, policyTemplate.compareTo(secondPolicyTemplate));
     }
 
     @Test
@@ -59,7 +60,7 @@ public class DefinitionsChildIdTest {
         DefinitionsChildId newerVersion = new NodeTypeId("http://example.org/tosca/nodeTypes", "myNodeType_3.2.4-w7", false);
         DefinitionsChildId olderVersion = new NodeTypeId("http://example.org/tosca/nodeTypes", "myNodeType_3.2.4-w7-wip40", false);
 
-        Assert.assertEquals(-1, olderVersion.compareTo(newerVersion));
-        Assert.assertEquals(1, newerVersion.compareTo(olderVersion));
+        assertEquals(-1, olderVersion.compareTo(newerVersion));
+        assertEquals(1, newerVersion.compareTo(olderVersion));
     }
 }

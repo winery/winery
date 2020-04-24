@@ -17,9 +17,6 @@ import java.util.Objects;
 
 import org.eclipse.winery.model.tosca.Definitions;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LocalNameForAngular {
 
     private final String id;

@@ -20,10 +20,10 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class VersionUtilsTest {
 

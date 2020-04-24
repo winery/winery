@@ -23,15 +23,13 @@
                             "key": "key2",
                             "type": "xsd:string"
                         }
-                    ],
-                    "isDerivedFromXSD": null
+                    ]
                 }
             ],
             "otherAttributes": {
                 "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}bordercolor": "#081588"
             },
             "propertiesDefinition": {
-                "element": null,
                 "type": "{http://plain.winery.opentosca.org/nodetypes/propertiesdefinition/winery}properties"
             },
             "name": "NodeTypeWithTwoKVProperties",

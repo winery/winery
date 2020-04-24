@@ -16,7 +16,7 @@ package org.eclipse.winery.repository.rest.resources.entitytypes.policytypes;
 
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PolicyTypesResourceTest extends AbstractResourceTest {
 

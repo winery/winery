@@ -13,8 +13,10 @@
  *******************************************************************************/
 package org.eclipse.winery.common.ids.definitions;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class NodeTypeIdTest {
 
@@ -22,14 +24,14 @@ public class NodeTypeIdTest {
     public void equalityOfNodeTypeIds() {
         NodeTypeId id1 = new NodeTypeId("ns1", "id1", false);
         NodeTypeId id2 = new NodeTypeId("ns1", "id1", false);
-        Assert.assertEquals(id1, id2);
+        assertEquals(id1, id2);
     }
 
     @Test
     public void twoDifferentIdTypesAreNotEqual() {
         NodeTypeId id1 = new NodeTypeId("ns1", "id1", false);
         RelationshipTypeId id2 = new RelationshipTypeId("ns1", "id1", false);
-        Assert.assertNotEquals(id1, id2);
+        assertNotEquals(id1, id2);
     }
 
 }

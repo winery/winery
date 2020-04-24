@@ -16,9 +16,6 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 
 import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes.VisualAppearanceResource;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RelationshipTypesVisualsApiData extends VisualsApiData {
 
     public String sourceArrowHead;

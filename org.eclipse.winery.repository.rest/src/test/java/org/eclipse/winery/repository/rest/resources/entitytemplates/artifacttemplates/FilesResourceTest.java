@@ -14,7 +14,7 @@
 package org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates;
 
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FilesResourceTest extends AbstractResourceTest {
 

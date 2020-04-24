@@ -16,8 +16,8 @@ package org.eclipse.winery.repository.rest.resources.patternrefinementmodels;
 
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class PatternRefinementModelResourceTest extends AbstractResourceTest {
 
@@ -36,7 +36,7 @@ public class PatternRefinementModelResourceTest extends AbstractResourceTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void getPrmWithPropertyMapping() throws Exception {
         this.setRevisionTo("origin/plain");
         this.assertGet("patternrefinementmodels/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fpatternrefinementmodels/PropertyMappingsTest_w1-wip1/attributemappings",

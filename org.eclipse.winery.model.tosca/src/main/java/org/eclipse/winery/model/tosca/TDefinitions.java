@@ -50,6 +50,7 @@ import org.eclipse.jdt.annotation.Nullable;
     Definitions.class
 })
 public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
+
     @XmlElement(name = "Extensions")
     protected TDefinitions.Extensions extensions;
     @XmlElement(name = "Import")

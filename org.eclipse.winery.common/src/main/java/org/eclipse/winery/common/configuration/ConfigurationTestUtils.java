@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ConfigurationTestUtils {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationTestUtils.class);
     private static final File configDirectory = new File(System.getProperty("user.home") + "/.winery");
     private static final File configFile = new File(configDirectory + "/winery.yml");

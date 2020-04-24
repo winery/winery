@@ -32,7 +32,7 @@ public class Prefs implements ServletContextListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Prefs.class);
 
-    // Required for jersey 1.x, which uses java.util.logging. See https://stackoverflow.com/a/43242620/873282
+    // Required for jersey which uses java.util.logging. See https://stackoverflow.com/a/43242620/873282
     static {
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
@@ -81,12 +81,12 @@ public class Prefs implements ServletContextListener {
      */
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        ServletContext ctx = servletContextEvent.getServletContext();
-        Objects.requireNonNull(ctx);
+        ServletContext context = servletContextEvent.getServletContext();
+        Objects.requireNonNull(context);
 
         // first set default URLs
         // they will be overwritten with the configuration later
-        initializeUrlConfigurationWithDefaultValues(ctx);
+        initializeUrlConfigurationWithDefaultValues(context);
 
         try {
             this.doRepositoryInitialization();
@@ -96,10 +96,10 @@ public class Prefs implements ServletContextListener {
 
         // Initialize XSD validation in the background. Takes up a few seconds.
         // If we do not do it here, the first save by a user takes a few seconds, which is inconvenient
-        Prefs.LOGGER.debug("Initializing XML validation");
+        LOGGER.debug("Initializing XML validation");
         @SuppressWarnings("unused")
         ToscaDocumentBuilderFactory tdbf = ToscaDocumentBuilderFactory.INSTANCE;
-        Prefs.LOGGER.debug("Initialized XML validation");
+        LOGGER.debug("Initialized XML validation");
     }
 
     private void initializeUrlConfigurationWithDefaultValues(ServletContext ctx) {

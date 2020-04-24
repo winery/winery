@@ -45,10 +45,10 @@ import org.eclipse.winery.repository.rest.resources._support.AbstractComponentIn
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithoutTypeReferenceResource;
 import org.eclipse.winery.repository.rest.resources._support.CreateFromArtifactApiData;
 
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataBodyPart;
-import com.sun.jersey.multipart.FormDataParam;
 import io.swagger.annotations.Api;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 @Api(tags = "Service Templates")
 public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeReferenceResource<ServiceTemplateResource> {
@@ -97,8 +97,14 @@ public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeRefer
 
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response createFromArtifact(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("file") FormDataBodyPart body, @FormDataParam("artifactType") QName artifactType, @FormDataParam("nodeTypes") List<FormDataBodyPart> nodeTypesList, @FormDataParam("infrastructureNodeType") QName infrastructureNodeType, @FormDataParam("tags") List<FormDataBodyPart> sentTagsList, @Context UriInfo uriInfo) throws IllegalArgumentException, JAXBException, IOException {
-
+    public Response createFromArtifact(@FormDataParam("file") InputStream uploadedInputStream,
+                                       @FormDataParam("file") FormDataContentDisposition fileDetail,
+                                       @FormDataParam("file") FormDataBodyPart body, 
+                                       @FormDataParam("artifactType") QName artifactType,
+                                       @FormDataParam("nodeTypes") List<FormDataBodyPart> nodeTypesList,
+                                       @FormDataParam("infrastructureNodeType") QName infrastructureNodeType,
+                                       @FormDataParam("tags") List<FormDataBodyPart> sentTagsList,
+                                       @Context UriInfo uriInfo) throws IllegalArgumentException, JAXBException, IOException {
         Set<String> sentTags = new HashSet<>();
 
         if (sentTagsList != null) {
@@ -130,7 +136,6 @@ public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeRefer
             if (infrastructureNodeType != null && !infrastructureNodeType.getLocalPart().equals("undefined")) {
                 if (RestUtils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageInfrastructure") == null) {
                     toRemove.add(serviceTemplate);
-                    continue;
                 } else {
                     String value = RestUtils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageInfrastructure");
                     String localName = value.split("}")[1];

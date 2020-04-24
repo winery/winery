@@ -122,7 +122,7 @@ public interface IWineryRepository extends IWineryRepositoryCommon {
      * @return null if nothing is found
      */
     default TTopologyTemplate getTopologyTemplate(QName serviceTemplate) {
-        return this.getTopologyTemplate(serviceTemplate, "/servicetemplates/", "/topologytemplate");
+        return this.getTopologyTemplate(serviceTemplate, "servicetemplates", "topologytemplate");
     }
 
     /**

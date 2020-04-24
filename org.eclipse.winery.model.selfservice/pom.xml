@@ -44,6 +44,11 @@
             <version>${org.slf4j}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.4.0-b180725.0427</version>
+        </dependency>
     </dependencies>
     <build>
         <extensions>
@@ -74,12 +79,6 @@
             </plugin>
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <excludePackageNames>org.eclipse.winery.model.selfservice*</excludePackageNames>
-                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -17,20 +17,6 @@
          id="winery" version="3.0">
     <display-name>Winery Repository</display-name>
 
-    <servlet>
-        <servlet-name>SwaggerJerseyConfig</servlet-name>
-        <servlet-class>io.swagger.jaxrs.config.DefaultJaxrsConfig</servlet-class>
-        <init-param>
-            <param-name>api.version</param-name>
-            <param-value>1.0.0</param-value>
-        </init-param>
-        <init-param>
-            <param-name>swagger.api.basepath</param-name>
-            <param-value>http://localhost:8080/winery</param-value>
-        </init-param>
-        <load-on-startup>2</load-on-startup>
-    </servlet>
-
     <filter>
         <filter-name>CorsFilter</filter-name>
         <filter-class>org.apache.catalina.filters.CorsFilter</filter-class>
@@ -56,52 +42,38 @@
 
     <servlet>
         <servlet-name>WineryResources</servlet-name>
-        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
-            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-name>jersey.config.server.provider.packages</param-name>
             <param-value>
                 io.swagger.jaxrs.json,
                 io.swagger.jaxrs.listing,
                 org.eclipse.winery.repository.rest.resources
             </param-value>
         </init-param>
-
-        <!-- this ensures that / are always at the end of URLs - deprecated - we should change our URL scheme not to end with / -->
         <init-param>
-            <param-name>com.sun.jersey.config.feature.CanonicalizeURIPath</param-name>
+            <param-name>jersey.config.server.provider.scanning.recursive</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>jersey.config.server.provider.classnames</param-name>
+            <param-value>
+                org.glassfish.jersey.logging.LoggingFeature,
+                org.glassfish.jersey.media.multipart.MultiPartFeature,
+                org.eclipse.winery.common.json.JsonFeature
+            </param-value>
+        </init-param>
+        <init-param>
+            <param-name>jersey.config.server.wadl.disableWadl</param-name>
             <param-value>true</param-value>
         </init-param>
         <init-param>
-            <param-name>com.sun.jersey.config.feature.NormalizeURI</param-name>
-            <param-value>true</param-value>
+            <param-name>jersey.config.logging.logger.level</param-name>
+            <param-value>INFO</param-value>
         </init-param>
         <init-param>
-            <param-name>com.sun.jersey.config.feature.Redirect</param-name>
-            <param-value>true</param-value>
-        </init-param>
-
-        <!-- performance boost at startup by disabling WADL generation -->
-        <init-param>
-            <param-name>com.sun.jersey.config.feature.DisableWADL</param-name>
-            <param-value>true</param-value>
-        </init-param>
-
-        <!-- tweak logging - see https://stackoverflow.com/a/32436909/873282 -->
-        <init-param>
-            <param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
-            <param-value>com.sun.jersey.api.container.filter.LoggingFilter</param-value>
-        </init-param>
-
-        <!-- Disables the logging of the request body - could be enabled for debugging purposes -->
-        <init-param>
-            <param-name>com.sun.jersey.config.feature.logging.DisableEntitylogging</param-name>
-            <param-value>true</param-value>
-        </init-param>
-
-        <!-- enables @Consumes(MediaType.APPLICATION_JSON) and @Produces(MediaType.APPLICATION_JSON), see https://jersey.java.net/nonav/documentation/1.7/json.html -->
-        <init-param>
-            <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
-            <param-value>true</param-value>
+            <param-name>jersey.config.server.logging.entity.maxSize</param-name>
+            <param-value>512</param-value>
         </init-param>
     </servlet>
 

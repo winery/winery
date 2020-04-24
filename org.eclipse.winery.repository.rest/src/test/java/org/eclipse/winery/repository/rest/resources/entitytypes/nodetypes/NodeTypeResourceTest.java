@@ -16,7 +16,7 @@ package org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 import org.eclipse.winery.repository.rest.resources.TestIds;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xmlunit.matchers.CompareMatcher;
 
 public class NodeTypeResourceTest extends AbstractResourceTest {
@@ -26,7 +26,7 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
         this.setRevisionTo("5b5ad1106a3a428020b6bc5d2f154841acb5f779"); // repository containing boabab fruit only
         NodeTypeResource nodeTypeResource = (NodeTypeResource) NodeTypesResource.getComponentInstanceResource(TestIds.ID_FRUIT_BAOBAB);
         String testXml = BackendUtils.getXMLAsString(nodeTypeResource.getNodeType());
-        String controlXml = this.readFromClasspath("entitytypes/nodetypes/baobab_initial.xml");
+        String controlXml = readFromClasspath("entitytypes/nodetypes/baobab_initial.xml");
         org.hamcrest.MatcherAssert.assertThat(testXml, CompareMatcher.isIdenticalTo(controlXml).ignoreWhitespace());
     }
 

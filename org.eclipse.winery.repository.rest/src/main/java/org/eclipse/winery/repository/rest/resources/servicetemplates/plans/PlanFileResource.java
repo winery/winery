@@ -31,11 +31,11 @@ import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataBodyPart;
-import com.sun.jersey.multipart.FormDataParam;
 import io.swagger.annotations.ApiOperation;
 import org.eclipse.jdt.annotation.Nullable;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 public class PlanFileResource {
 

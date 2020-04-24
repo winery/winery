@@ -23,12 +23,11 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.eclipse.winery.common.json.JacksonProvider;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.repository.backend.AbstractNamespaceManager;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +36,6 @@ public class JsonBasedNamespaceManager extends AbstractNamespaceManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonBasedNamespaceManager.class);
     private final File file;
-    private final ObjectMapper objectMapper;
 
     private Map<String, NamespaceProperties> namespaceProperties;
 
@@ -48,8 +46,6 @@ public class JsonBasedNamespaceManager extends AbstractNamespaceManager {
     public JsonBasedNamespaceManager(File file, boolean local) {
         Objects.requireNonNull(file);
         this.file = file;
-        this.objectMapper = new ObjectMapper();
-        this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         this.namespaceProperties = this.loadNamespacePropertiesFromFile();
 
         if (local) {
@@ -104,7 +100,7 @@ public class JsonBasedNamespaceManager extends AbstractNamespaceManager {
                 }
             }
 
-            this.objectMapper.writeValue(this.file, this.namespaceProperties);
+            JacksonProvider.mapper.writeValue(this.file, this.namespaceProperties);
         } catch (IOException e) {
             LOGGER.debug("Could not save namespace to json file!", e);
         }
@@ -150,7 +146,7 @@ public class JsonBasedNamespaceManager extends AbstractNamespaceManager {
                 TypeReference<HashMap<String, NamespaceProperties>> hashMapTypeReference =
                     new TypeReference<HashMap<String, NamespaceProperties>>() {
                     };
-                nsProps = objectMapper.readValue(file, hashMapTypeReference);
+                nsProps = JacksonProvider.mapper.readValue(file, hashMapTypeReference);
             }
         } catch (IOException e) {
             LOGGER.debug("Error while loading the namespace file.", e);

@@ -26,8 +26,8 @@ import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.repository.backend.MockXMLElement;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
-import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import org.apache.commons.lang3.StringUtils;
+import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,7 +84,6 @@ public class JAXBSupport {
         JAXBContext context;
         try {
             // For winery classes, eventually the package+jaxb.index method could be better. See http://stackoverflow.com/a/3628525/873282
-            // @formatter:off
             context = JAXBContext.newInstance(
                 //InjectorReplaceData.class,
                 TDefinitions.class, // all other elements are referred by "@XmlSeeAlso"
@@ -92,11 +91,9 @@ public class JAXBSupport {
                 // for the self-service portal
                 Application.class,
                 // MockXMLElement is added for testing purposes only.
-                MockXMLElement.class);
-            // @formatter:on
+                MockXMLElement.class
+            );
         } catch (JAXBException e) {
-            System.out.println("HALLO");
-            System.out.println(e);
             LOGGER.error("Could not initialize JAXBContext", e);
             throw new IllegalStateException(e);
         }
@@ -105,7 +102,7 @@ public class JAXBSupport {
 
     /**
      * Creates a marshaller.
-     *
+     * <p>
      * IMPORTANT: always create a new instance and do not reuse the marhaller, otherwise the input-stream will throw a
      * NullPointerException! see https://stackoverflow.com/questions/11114665/org-xml-sax-saxparseexception-premature-end-of-file-for-valid-xml
      *
@@ -121,6 +118,7 @@ public class JAXBSupport {
                 m.setProperty("com.sun.xml.bind.namespacePrefixMapper", JAXBSupport.prefixMapper);
             } catch (PropertyException e) {
                 // Namespace-Prefixing is not supported by the used Provider. Nothing we can do about that
+                LOGGER.debug("NamespacePrefixMapper could not be initialized!");
             }
             if (!includeProcessingInstruction) {
                 // side effect of JAXB_FRAGMENT property (when true): processing instruction is not included

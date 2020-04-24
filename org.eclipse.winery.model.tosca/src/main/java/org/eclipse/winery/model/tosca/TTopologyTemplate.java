@@ -30,7 +30,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -38,7 +37,6 @@ import org.eclipse.jdt.annotation.Nullable;
 @XmlType(name = "tTopologyTemplate", propOrder = {
     "nodeTemplateOrRelationshipTemplate"
 })
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TTopologyTemplate extends TExtensibleElements {
     @XmlElements( {
         @XmlElement(name = "RelationshipTemplate", type = TRelationshipTemplate.class),

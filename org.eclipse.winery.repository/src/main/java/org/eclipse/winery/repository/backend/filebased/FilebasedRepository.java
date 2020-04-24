@@ -154,6 +154,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
     public boolean flagAsExisting(GenericId id) {
         Path path = this.id2AbsolutePath(id);
         try {
+            LOGGER.debug("Creating path {}", path);
             FileUtils.createDirectory(path);
         } catch (IOException e) {
             FilebasedRepository.LOGGER.debug(e.toString());

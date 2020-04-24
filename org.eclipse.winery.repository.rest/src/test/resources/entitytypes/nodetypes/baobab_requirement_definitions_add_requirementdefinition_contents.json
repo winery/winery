@@ -9,7 +9,6 @@
         "constraints": {
             "constraint": [
                 {
-                    "any": null,
                     "constraintType": "http://winery.opentosca.org/test/constrainttypes/fruits/healthy"
                 }
             ]

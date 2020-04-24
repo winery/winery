@@ -14,16 +14,18 @@
 
 package org.eclipse.winery.common;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import javax.xml.parsers.DocumentBuilder;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import javax.xml.parsers.DocumentBuilder;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ToscaDocumentBuilderFactoryTest {
 
@@ -53,8 +55,8 @@ public class ToscaDocumentBuilderFactoryTest {
             }
         };
     }
-    
-    @Before
+
+    @BeforeEach
     public void init() {
         documentBuilder = ToscaDocumentBuilderFactory.INSTANCE.getSchemaAwareToscaDocumentBuilder();
         errorStringBuilder = new StringBuilder();
@@ -64,19 +66,17 @@ public class ToscaDocumentBuilderFactoryTest {
     @Test
     public void apacheWebServerXmlIsValid() throws Exception {
         final Document document = documentBuilder.parse(this.getClass().getResource("apachewebserver.xml").toString());
-        Assert.assertEquals("", errorStringBuilder.toString());
+        assertEquals("", errorStringBuilder.toString());
     }
 
     @Test
     public void invalidToscaXmlIsInvalid() throws Exception {
         final Document document = documentBuilder.parse(this.getClass().getResource("invalidTosca.xml").toString());
-        Assert.assertNotEquals("", errorStringBuilder.toString());
+        assertNotEquals("", errorStringBuilder.toString());
     }
 
     @Test
-    @Ignore("TODO: Rewrite in JUnit5 to expect org.xml.sax.SAXParseException")
     public void invalidXmlIsInvalid() throws Exception {
-        final Document document = documentBuilder.parse(this.getClass().getResource("invalid.xml").toString());
-        Assert.assertNotEquals("", errorStringBuilder.toString());
+        assertThrows(SAXParseException.class, () -> documentBuilder.parse(this.getClass().getResource("invalid.xml").toString()));
     }
 }

@@ -28,6 +28,7 @@ import org.eclipse.winery.tools.deployablecomponents.fileanalyzer.Fileanalyzer;
 import org.eclipse.winery.tools.deployablecomponents.fileanalyzer.Filesplitter;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,6 +39,7 @@ class CrawlerTest {
     // integration test
     // needs internet access
     @Test
+    @Disabled("Disabled to speed up travis build")
     void TestGithubCrawler() {
         Crawler crawler = new Crawler(CrawlerType.GITHUB, "", "", "");
         crawler.setStartPoint(114777405);

@@ -26,7 +26,6 @@ public class Dockerfile {
         this.repoName = repoName;
     }
 
-
     public String getPath() {
         return path;
     }

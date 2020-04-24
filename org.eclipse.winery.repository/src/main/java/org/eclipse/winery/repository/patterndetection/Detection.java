@@ -54,7 +54,6 @@ import org.eclipse.winery.repository.patterndetection.model.patterns.RelationalD
 import org.eclipse.winery.repository.patterndetection.model.patterntaxonomies.IaaSTaxonomy;
 import org.eclipse.winery.repository.patterndetection.model.patterntaxonomies.PaaSTaxonomy;
 
-import org.jgrapht.DirectedGraph;
 import org.jgrapht.alg.isomorphism.IsomorphicGraphMapping;
 import org.jgrapht.alg.isomorphism.VF2SubgraphIsomorphismInspector;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -384,7 +383,7 @@ public class Detection {
         abstractTopology.map(baseNodeExtended);
 
         // in the patternList all graphs of the pattern objects are added
-        List<DirectedGraph<PatternComponent, RelationshipEdge>> patternList = new ArrayList<>();
+        List<SimpleDirectedGraph<PatternComponent, RelationshipEdge>> patternList = new ArrayList<>();
         HashMap<Integer, String> patternNames = new HashMap<>();
 
         // create objects of all known patterns
@@ -425,7 +424,7 @@ public class Detection {
 
         int countIndex = 0;
         // abstractTopology represents the base graph, for each pattern graph search for a subgraph isomorphism between base graph & pattern graph
-        for (DirectedGraph<PatternComponent, RelationshipEdge> pattern : patternList) {
+        for (SimpleDirectedGraph<PatternComponent, RelationshipEdge> pattern : patternList) {
             VF2SubgraphIsomorphismInspector<TNodeTemplateExtended, RelationshipEdge> inspector = new VF2SubgraphIsomorphismInspector(abstractTopology.getGraph(), pattern);
             if (inspector.isomorphismExists()) {
                 Iterator it = inspector.getMappings();
@@ -436,7 +435,7 @@ public class Detection {
                     List<Boolean> matched = new ArrayList<>();
 
                     // this graph holds the nodes of the base graph in which the pattern occurs
-                    DirectedGraph<TNodeTemplateExtended, RelationshipEdge> originGraph = new SimpleDirectedGraph<>(RelationshipEdge.class);
+                    SimpleDirectedGraph<TNodeTemplateExtended, RelationshipEdge> originGraph = new SimpleDirectedGraph<>(RelationshipEdge.class);
 
                     // each node of the pattern graph is compared to the according node in the GraphMapping
                     for (PatternComponent p : pattern.vertexSet()) {
@@ -447,7 +446,6 @@ public class Detection {
                         if (p.getName().equals(v.getLabel())) {
                             matched.add(true);
                             originGraph.addVertex(v);
-
                         } else {
                             matched.add(false);
                         }

@@ -15,20 +15,20 @@ package org.eclipse.winery.repository.rest.resources;
 
 import java.io.File;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Scanner;
 
 import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.json.JacksonProvider;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.rest.server.WineryUsingHttpServer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.eclipse.jetty.server.Server;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -36,6 +36,8 @@ import org.xmlunit.matchers.CompareMatcher;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
 
@@ -44,20 +46,20 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
 
     private static Server server;
 
-    // Required for jersey 1.x, which uses java.util.logging. See https://stackoverflow.com/a/43242620/873282
+    // Required for jersey which uses java.util.logging.
     static {
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         server = WineryUsingHttpServer.createHttpServer(9080);
         server.start();
         LOGGER.debug("Winery server started");
     }
 
-    @AfterClass
+    @AfterAll
     public static void shutdown() throws Exception {
         server.stop();
         LOGGER.debug("Winery server stopped");
@@ -68,7 +70,7 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
         if (inputStream == null) {
             throw new IllegalStateException("Could not find " + fileName + " on classpath");
         }
-        return new Scanner(inputStream, "UTF-8").useDelimiter("\\A").next();
+        return new Scanner(inputStream, StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
     }
 
     protected RequestSpecification start() {
@@ -135,7 +137,7 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
                 org.hamcrest.MatcherAssert.assertThat(receivedStr, CompareMatcher.isIdenticalTo(expectedStr).ignoreWhitespace());
             } else if (isZip(fileName)) {
                 // TODO  @pmeyer: Cool ZIP equal test
-                Assert.assertNotNull(receivedStr);
+                assertNotNull(receivedStr);
             } else {
                 JSONAssert.assertEquals(
                     expectedStr,
@@ -174,7 +176,7 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
             if (isXml(fileName)) {
                 org.hamcrest.MatcherAssert.assertThat(receivedStr, CompareMatcher.isIdenticalTo(expectedStr).ignoreWhitespace());
             } else if (isTxt(fileName)) {
-                Assert.assertEquals(expectedStr, receivedStr);
+                assertEquals(expectedStr, receivedStr);
             } else {
                 JSONAssert.assertEquals(
                     expectedStr,
@@ -350,7 +352,6 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
             .getBody()
             .asString();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(s, clazz);
+        return JacksonProvider.mapper.readValue(s, clazz);
     }
 }

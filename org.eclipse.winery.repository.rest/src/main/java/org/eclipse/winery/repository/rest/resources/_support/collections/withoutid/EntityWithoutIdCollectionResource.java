@@ -17,12 +17,13 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Objects;
 
+import javax.ws.rs.NotFoundException;
+
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.EntityCollectionResource;
 
-import com.sun.jersey.api.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

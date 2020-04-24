@@ -71,13 +71,13 @@ public abstract class AbstractService {
         builder.append("   <soapenv:Header/>");
         builder.append("   <soapenv:Body>");
         builder.append("      <sch:invokeResponse>");
-        builder.append("         <sch:MessageID>" + messageID + "</sch:MessageID>");
+        builder.append("         <sch:MessageID>").append(messageID).append("</sch:MessageID>");
 
         // Insert return parameters into asynchronous SOAP Response Message
         for (Entry<String, String> paramIter : returnParameters.entrySet()) {
             String key = paramIter.getKey();
             String value = paramIter.getValue();
-            builder.append("         <" + key + ">" + value + "</" + key + ">");
+            builder.append("         <").append(key).append(">").append(value).append("</").append(key).append(">");
         }
 
         builder.append("      </sch:invokeResponse>");

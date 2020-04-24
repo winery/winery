@@ -24,6 +24,7 @@ import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -44,7 +45,6 @@ import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.datatypes.LocalNameForAngular;
 import org.eclipse.winery.repository.rest.datatypes.NamespaceAndDefinedLocalNamesForAngular;
 
-import com.sun.jersey.api.NotFoundException;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -84,6 +84,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
             try {
                 tcId = this.getDefinitionsChildId(namespace, id, false);
                 res = RestUtils.create(tcId, name);
+                res.setMessage(getComponentInstanceResource(tcId).getElement());
             } catch (Exception e) {
                 AbstractComponentsResource.LOGGER.debug("Could not create id instance", e);
                 res = new ResourceResult(Status.INTERNAL_SERVER_ERROR);

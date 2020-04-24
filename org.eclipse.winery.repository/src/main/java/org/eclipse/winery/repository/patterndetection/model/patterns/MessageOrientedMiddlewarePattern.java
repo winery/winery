@@ -14,14 +14,14 @@
 
 package org.eclipse.winery.repository.patterndetection.model.patterns;
 
-import org.eclipse.winery.repository.patterndetection.model.PatternComponent;
-import org.eclipse.winery.repository.patterndetection.model.RelationshipEdge;
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.graph.DefaultDirectedGraph;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+
+import org.eclipse.winery.repository.patterndetection.model.PatternComponent;
+import org.eclipse.winery.repository.patterndetection.model.RelationshipEdge;
+
+import org.jgrapht.graph.SimpleDirectedGraph;
 
 public class MessageOrientedMiddlewarePattern {
 
@@ -36,7 +36,7 @@ public class MessageOrientedMiddlewarePattern {
     private String hostedOn;
     private String connectsTo;
 
-    private DirectedGraph<PatternComponent, RelationshipEdge> pattern;
+    private SimpleDirectedGraph<PatternComponent, RelationshipEdge> pattern;
 
     public MessageOrientedMiddlewarePattern() {
         properties = new Properties();
@@ -53,7 +53,7 @@ public class MessageOrientedMiddlewarePattern {
         hostedOn = properties.getProperty("relationHostedOn");
         connectsTo = properties.getProperty("relationConnectsTo");
 
-        pattern = new DefaultDirectedGraph<>(RelationshipEdge.class);
+        pattern = new SimpleDirectedGraph<>(RelationshipEdge.class);
 
         PatternComponent operatingSystem = new PatternComponent(os, 1, 1);
         PatternComponent appComponent = new PatternComponent(application, 1, 1);
@@ -69,10 +69,9 @@ public class MessageOrientedMiddlewarePattern {
         pattern.addEdge(messagingComponent2, messagingComponent1, new RelationshipEdge(messagingComponent2, messagingComponent1, hostedOn));
 
         pattern.addEdge(appComponent, messagingComponent2, new RelationshipEdge(appComponent, messagingComponent2, connectsTo));
-
     }
 
-    public DirectedGraph<PatternComponent, RelationshipEdge> getPatternGraph() {
+    public SimpleDirectedGraph<PatternComponent, RelationshipEdge> getPatternGraph() {
         return pattern;
     }
 }

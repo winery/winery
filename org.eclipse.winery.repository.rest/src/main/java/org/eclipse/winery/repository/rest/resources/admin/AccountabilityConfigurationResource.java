@@ -29,8 +29,8 @@ import org.eclipse.winery.common.configuration.AccountabilityConfigurationObject
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.repository.rest.resources.apiData.AccountabilityConfigurationData;
 
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataParam;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 public class AccountabilityConfigurationResource {
 

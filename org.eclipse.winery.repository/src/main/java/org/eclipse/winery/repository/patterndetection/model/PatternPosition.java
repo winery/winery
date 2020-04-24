@@ -14,14 +14,14 @@
 
 package org.eclipse.winery.repository.patterndetection.model;
 
-import org.jgrapht.DirectedGraph;
+import org.jgrapht.graph.SimpleDirectedGraph;
 
 public class PatternPosition {
 
     private String patternName;
-    private DirectedGraph<TNodeTemplateExtended, RelationshipEdge> nodesOfOriginGraph;
+    private SimpleDirectedGraph<TNodeTemplateExtended, RelationshipEdge> nodesOfOriginGraph;
 
-    public PatternPosition(String patternName, DirectedGraph<TNodeTemplateExtended, RelationshipEdge> nodesOfOriginGraph) {
+    public PatternPosition(String patternName, SimpleDirectedGraph<TNodeTemplateExtended, RelationshipEdge> nodesOfOriginGraph) {
         this.patternName = patternName;
         this.nodesOfOriginGraph = nodesOfOriginGraph;
     }
@@ -30,7 +30,7 @@ public class PatternPosition {
         return patternName;
     }
 
-    public DirectedGraph<TNodeTemplateExtended, RelationshipEdge> getNodesOfOriginGraph() {
+    public SimpleDirectedGraph<TNodeTemplateExtended, RelationshipEdge> getNodesOfOriginGraph() {
         return nodesOfOriginGraph;
     }
 }

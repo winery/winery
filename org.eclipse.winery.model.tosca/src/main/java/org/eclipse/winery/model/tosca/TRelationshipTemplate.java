@@ -33,7 +33,6 @@ import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -46,7 +45,6 @@ import org.w3c.dom.Element;
     "relationshipConstraints",
     "policies"
 })
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class TRelationshipTemplate extends TEntityTemplate implements HasPolicies {
 

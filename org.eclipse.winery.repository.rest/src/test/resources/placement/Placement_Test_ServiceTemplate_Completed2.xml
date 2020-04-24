@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Definitions targetNamespace="http://plain.winery.opentosca.org/placement/servicetemplates"
              id="winery-defs-for_steIgeneral3-Placement_Test_DataFlow"
              xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"

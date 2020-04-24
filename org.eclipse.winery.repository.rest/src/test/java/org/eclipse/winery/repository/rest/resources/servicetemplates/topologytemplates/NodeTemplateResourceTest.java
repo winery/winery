@@ -23,10 +23,10 @@ import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 
 import org.eclipse.jetty.toolchain.test.MavenTestingUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.eclipse.jdt.annotation.Checks.assertNonNull;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class NodeTemplateResourceTest extends AbstractResourceTest {
 

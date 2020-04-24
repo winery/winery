@@ -10,10 +10,11 @@ RUN rm /dev/random && ln -s /dev/urandom /dev/random \
 
 COPY . /tmp/winery
 WORKDIR /tmp/winery
-RUN mvn package -DskipTests
+RUN mvn package -DskipTests=true -Dmaven.javadoc.skip=true -B
 
 
 FROM tomcat:8.5.31
+
 LABEL maintainer = "Oliver Kopp <kopp.dev@gmail.com>, Michael Wurster <miwurster@gmail.com>, Lukas Harzenetter <lharzenetter@gmx.de>"
 
 ARG DOCKERIZE_VERSION=v0.3.0

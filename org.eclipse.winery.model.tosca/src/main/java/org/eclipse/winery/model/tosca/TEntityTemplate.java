@@ -37,7 +37,6 @@ import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -63,7 +62,6 @@ import org.w3c.dom.Text;
     TRelationshipTemplate.class,
     TNodeTemplate.class
 })
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class TEntityTemplate extends HasId implements HasType, HasName {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TEntityTemplate.class);
@@ -144,7 +142,6 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
     @XmlType(name = "", propOrder = {
         "any"
     })
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Properties implements Serializable {
 
         @XmlAnyElement(lax = true)

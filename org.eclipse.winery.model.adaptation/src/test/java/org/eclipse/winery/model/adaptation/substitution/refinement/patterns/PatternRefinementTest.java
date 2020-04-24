@@ -318,7 +318,7 @@ class PatternRefinementTest {
 
     // region ********** applyRefinement() **********
     @Test
-    void testApplyRefinementToTopology() {
+    public void testApplyRefinementToTopology() {
         setUp();
 
          /*
@@ -378,7 +378,7 @@ class PatternRefinementTest {
     }
 
     @Test
-    void testApplyRefinementToTopology2() {
+    public void testApplyRefinementToTopology2() {
         setUp();
 
          /*
@@ -438,7 +438,7 @@ class PatternRefinementTest {
     // region ********** getExternalRelations **********
 
     @Test
-    void getExternalRelations() {
+    public void getExternalRelations() {
         setUp();
 
          /*
@@ -475,7 +475,7 @@ class PatternRefinementTest {
 
     // region ********** applyPropertyMappings **********
     @Test
-    void applyPropertyMappings() {
+    public void applyPropertyMappings() {
         setUp();
 
         // region *** Graphical description ***

@@ -18,9 +18,6 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.common.version.WineryVersion;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ComponentId {
 
     private String id;

@@ -14,7 +14,6 @@
 package org.eclipse.winery.common.version;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import de.danielbechler.diff.node.DiffNode;
 import de.danielbechler.diff.selector.ElementSelector;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
@@ -23,7 +22,6 @@ import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
 
 import java.util.*;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ToscaDiff {
 
     private String element;

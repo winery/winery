@@ -50,7 +50,7 @@ public class ModelUtilitiesTest extends TestWithGitBackedRepository {
     // region ********** isOfType **********
 
     @Test
-    void isOfType() {
+    public void isOfType() {
         TEntityType.DerivedFrom derivedFrom = new TEntityType.DerivedFrom();
         derivedFrom.setType(QName.valueOf("{https://ex.org/nt}parent"));
 

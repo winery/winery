@@ -19,7 +19,7 @@ import java.lang.reflect.Field;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 import org.eclipse.winery.repository.splitting.Splitting;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PlacementModelsResourceTest extends AbstractResourceTest {
 

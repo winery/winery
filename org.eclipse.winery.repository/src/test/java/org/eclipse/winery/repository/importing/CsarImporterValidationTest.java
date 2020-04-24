@@ -46,7 +46,7 @@ class CsarImporterValidationTest extends TestWithGitBackedRepository {
     }
 
     @Test
-    void testImportAndValidation() throws Exception {
+    public void testImportAndValidation() throws Exception {
         try (InputStream input = new FileInputStream("src/test/resources/csar/ServiceTemplateWithAllReqCapVariants.csar")) {
 
             CsarImportOptions options = new CsarImportOptions();
@@ -64,7 +64,7 @@ class CsarImporterValidationTest extends TestWithGitBackedRepository {
     }
 
     @Test
-    void testImportAndInvalidValidation() throws Exception {
+    public void testImportAndInvalidValidation() throws Exception {
         try (InputStream inputStream = new FileInputStream("src/test/resources/csar/ServiceTemplateWithAllReqCapVariants-Invalid.csar")) {
 
             CsarImportOptions options = new CsarImportOptions();
@@ -84,7 +84,7 @@ class CsarImporterValidationTest extends TestWithGitBackedRepository {
     }
 
     @Test
-    void testImportOfCsarWithoutAuthorship() throws Exception {
+    public void testImportOfCsarWithoutAuthorship() throws Exception {
         try (InputStream inputStream = new FileInputStream("src/test/resources/csar/ProvenanceCsarWithoutAuthorizedAuthors_w1-wip1.csar")) {
 
             CsarImportOptions options = new CsarImportOptions();

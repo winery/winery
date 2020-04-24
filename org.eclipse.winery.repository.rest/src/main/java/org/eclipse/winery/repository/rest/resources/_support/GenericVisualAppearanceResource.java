@@ -36,8 +36,8 @@ import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.VisualsApiData;
 
-import com.sun.jersey.multipart.FormDataBodyPart;
-import com.sun.jersey.multipart.FormDataParam;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 //import com.fasterxml.jackson.annotation.JsonIgnore; // currently not required
 

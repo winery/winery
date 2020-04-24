@@ -35,23 +35,16 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.8.6</version>
-            <scope>compile</scope>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>${org.glassfish.jxb}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.8.6</version>
-            <scope>compile</scope>
+            <version>2.10.1</version>
         </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>${com.fasterxml.jackson.core.jackson-annotations}</version>
-            <scope>compile</scope>
-        </dependency>
+
         <dependency>
             <!-- Version 1.3 is approved by Eclipse, Version 1.4 is not -->
             <groupId>org.tukaani</groupId>
@@ -93,12 +86,6 @@
             <artifactId>org.eclipse.winery.model.csar.toscametafile</artifactId>
             <version>2.0.0-SNAPSHOT</version>
         </dependency>
-        <!--  use jackson-jaxrs-json-provider instead of jersey-json as suggested by http://stackoverflow.com/a/17006866/873282 -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.jaxrs</groupId>
-            <artifactId>jackson-jaxrs-json-provider</artifactId>
-            <version>2.7.7</version>
-        </dependency>
         <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.common</artifactId>
@@ -136,13 +123,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <!-- Required for com.sun.xml.bind.namespacePrefixMapper -->
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>2.2.5</version>
-            <!--if updated to 2.2.11, java.lang.NoClassDefFoundError: com/sun/xml/bind/v2/model/annotation/AnnotationReader-->
-        </dependency>
+
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -169,7 +150,7 @@
         <dependency>
             <groupId>org.xmlunit</groupId>
             <artifactId>xmlunit-core</artifactId>
-            <version>2.3.0</version>
+            <version>${org.xmlunit}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -181,7 +162,7 @@
         <dependency>
             <groupId>org.skyscreamer</groupId>
             <artifactId>jsonassert</artifactId>
-            <version>1.4.0</version>
+            <version>${org.skyscreamer.jsonassert}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -192,7 +173,7 @@
         <dependency>
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-core</artifactId>
-            <version>1.0.1</version>
+            <version>${org.jgrapht.jgrapht-core.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
@@ -246,7 +227,8 @@
                     <include>winery.properties</include>
                     <include>patterndetection.properties</include>
                     <include>defaultaccountabilityconfig.properties</include>
-                    <include>UTC--2018-03-05T15-33-22.456000000Z--e4b51a3d4e77d2ce2a9d9ce107ec8ec7cff5571d.json</include>
+                    <include>UTC--2018-03-05T15-33-22.456000000Z--e4b51a3d4e77d2ce2a9d9ce107ec8ec7cff5571d.json
+                    </include>
                     <include>logback.xml</include>
                     <include>logback-test.xml</include>
                 </includes>
@@ -289,22 +271,12 @@
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.21.0</version>
+                <version>${maven.surefire.version}</version>
                 <dependencies>
                     <dependency>
-                        <groupId>org.junit.platform</groupId>
-                        <artifactId>junit-platform-surefire-provider</artifactId>
-                        <version>${junit.platform.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.junit.jupiter</groupId>
-                        <artifactId>junit-jupiter-engine</artifactId>
-                        <version>${junit.jupiter.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.junit.jupiter</groupId>
-                        <artifactId>junit-jupiter-params</artifactId>
-                        <version>${junit.jupiter.version}</version>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>maven-surefire-common</artifactId>
+                        <version>${maven.surefire.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
