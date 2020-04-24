@@ -13,88 +13,70 @@
  *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel;
 
-import org.eclipse.winery.bpmn2bpel.parser.ParseException;
-import org.eclipse.winery.bpmn2bpel.planwriter.PlanWriterException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 
+import org.eclipse.winery.bpmn2bpel.parser.ParseException;
+import org.eclipse.winery.bpmn2bpel.planwriter.PlanWriterException;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BPMN4Tosca2BpelTest {
 
-	protected static String RESOURCES_DIR = "src/test/resources/bpmn4tosca";
+    protected static String RESOURCES_DIR = "src/test/resources/bpmn4tosca";
 
+    @Test
+    public void testTransform() throws ParseException, PlanWriterException, MalformedURLException, URISyntaxException {
+        URI srcUri = Paths.get(RESOURCES_DIR, "bpmn4tosca.json").toUri();
+        URI targetUri = Paths.get(RESOURCES_DIR, "managementplan.zip").toUri();
+        BPMN4Tosca2BpelTest.class.getResource(".");
+        Bpmn4Tosca2Bpel transformer = new Bpmn4Tosca2Bpel();
+        transformer.transform(srcUri, targetUri);
+    }
 
-	@Before
-	public void setUp() throws Exception {
+    @Test
+    public void testTransformGateway()
+        throws ParseException, PlanWriterException, MalformedURLException, URISyntaxException {
+        URI srcUri = Paths.get(RESOURCES_DIR, "bpmn4tosca.exclusivegateway.json").toUri();
+        URI targetUri = Paths.get(RESOURCES_DIR, "managementplan.exclusivegateway.zip").toUri();
+        BPMN4Tosca2BpelTest.class.getResource(".");
+        Bpmn4Tosca2Bpel transformer = new Bpmn4Tosca2Bpel();
+        transformer.transform(srcUri, targetUri);
+    }
 
-	}
+    @Test
+    public void testNoEndpointGateway()
+        throws ParseException, PlanWriterException, MalformedURLException, URISyntaxException {
+        URI srcUri = Paths.get(RESOURCES_DIR, "bpmn4tosca.noEndpoint.json").toUri();
+        URI targetUri = Paths.get(RESOURCES_DIR, "managementplan.noEndpoint.zip").toUri();
+        BPMN4Tosca2BpelTest.class.getResource(".");
+        Bpmn4Tosca2Bpel transformer = new Bpmn4Tosca2Bpel();
+        transformer.transform(srcUri, targetUri);
+    }
 
-	@After
-	public void tearDown() throws Exception {
-	}
+    @Test
+    public void testUndefinedEndpointGateway()
+        throws ParseException, PlanWriterException, MalformedURLException, URISyntaxException {
+        URI srcUri = Paths.get(RESOURCES_DIR, "bpmn4tosca.undefinedEndpoint.json").toUri();
+        URI targetUri = Paths.get(RESOURCES_DIR, "managementplan.undefinedEndpoint.zip").toUri();
+        BPMN4Tosca2BpelTest.class.getResource(".");
+        Bpmn4Tosca2Bpel transformer = new Bpmn4Tosca2Bpel();
+        transformer.transform(srcUri, targetUri);
+    }
 
-	@Test
-	public void testTransform() throws ParseException, PlanWriterException, MalformedURLException, URISyntaxException {
-		URI srcUri = Paths.get(RESOURCES_DIR, "bpmn4tosca.json").toUri();
-		URI targetUri = Paths.get(RESOURCES_DIR, "managementplan.zip").toUri();
-		BPMN4Tosca2BpelTest.class.getResource(".");
-		Bpmn4Tosca2Bpel transformer = new Bpmn4Tosca2Bpel();
-		transformer.transform(srcUri, targetUri);
-	}
+    @Test
+    public void testNonExistingEndpointGateway()
+        throws ParseException, PlanWriterException, MalformedURLException, URISyntaxException {
+        URI srcUri = Paths.get(RESOURCES_DIR, "bpmn4tosca.nonExistingEndpoint.json").toUri();
+        URI targetUri = Paths.get(RESOURCES_DIR, "managementplan.nonExistingEndpoint.zip").toUri();
 
-	@Test
-	public void testTransformGateway()
-			throws ParseException, PlanWriterException, MalformedURLException, URISyntaxException {
-		URI srcUri = Paths.get(RESOURCES_DIR, "bpmn4tosca.exclusivegateway.json").toUri();
-		URI targetUri = Paths.get(RESOURCES_DIR, "managementplan.exclusivegateway.zip").toUri();
-		BPMN4Tosca2BpelTest.class.getResource(".");
-		Bpmn4Tosca2Bpel transformer = new Bpmn4Tosca2Bpel();
-		transformer.transform(srcUri, targetUri);
-	}
+        BPMN4Tosca2BpelTest.class.getResource(".");
 
-
-	@Test
-	public void testNoEndpointGateway()
-			throws ParseException, PlanWriterException, MalformedURLException, URISyntaxException {
-		URI srcUri = Paths.get(RESOURCES_DIR, "bpmn4tosca.noEndpoint.json").toUri();
-		URI targetUri = Paths.get(RESOURCES_DIR, "managementplan.noEndpoint.zip").toUri();
-		BPMN4Tosca2BpelTest.class.getResource(".");
-		Bpmn4Tosca2Bpel transformer = new Bpmn4Tosca2Bpel();
-		transformer.transform(srcUri, targetUri);
-	}
-
-
-	@Test
-	public void testUndefinedEndpointGateway()
-			throws ParseException, PlanWriterException, MalformedURLException, URISyntaxException {
-		URI srcUri = Paths.get(RESOURCES_DIR, "bpmn4tosca.undefinedEndpoint.json").toUri();
-		URI targetUri = Paths.get(RESOURCES_DIR, "managementplan.undefinedEndpoint.zip").toUri();
-		BPMN4Tosca2BpelTest.class.getResource(".");
-		Bpmn4Tosca2Bpel transformer = new Bpmn4Tosca2Bpel();
-		transformer.transform(srcUri, targetUri);
-	}
-
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
-
-	@Test
-	public void testNonExistingEndpointGateway()
-			throws ParseException, PlanWriterException, MalformedURLException, URISyntaxException {
-		URI srcUri = Paths.get(RESOURCES_DIR, "bpmn4tosca.nonExistingEndpoint.json").toUri();
-		URI targetUri = Paths.get(RESOURCES_DIR, "managementplan.nonExistingEndpoint.zip").toUri();
-
-		BPMN4Tosca2BpelTest.class.getResource(".");
-		thrown.expect(ParseException.class);
-		Bpmn4Tosca2Bpel transformer = new Bpmn4Tosca2Bpel();
-		transformer.transform(srcUri, targetUri);
-	}
-
+        Bpmn4Tosca2Bpel transformer = new Bpmn4Tosca2Bpel();
+        assertThrows(ParseException.class, () -> transformer.transform(srcUri, targetUri));
+    }
 }

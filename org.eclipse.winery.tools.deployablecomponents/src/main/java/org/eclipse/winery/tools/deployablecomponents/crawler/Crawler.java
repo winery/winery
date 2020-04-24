@@ -14,10 +14,6 @@
 
 package org.eclipse.winery.tools.deployablecomponents.crawler;
 
-import org.eclipse.winery.tools.deployablecomponents.commons.Dockerfile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,16 +21,19 @@ import java.util.Deque;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
+import org.eclipse.winery.tools.deployablecomponents.commons.Dockerfile;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Crawler {
 
-    private ICrawlerImplementation crawlerInstance;
-
+    public final static Logger LOGGER = LoggerFactory.getLogger(Crawler.class);
     // contains dockerfile, which are crawled but not yet retrieved
     private final Deque<Dockerfile> crawledDockerfiles = new ConcurrentLinkedDeque<>();
-    
-    private final String localCopyPath;
 
-    public final static Logger LOGGER = LoggerFactory.getLogger(Crawler.class);
+    private final String localCopyPath;
+    private ICrawlerImplementation crawlerInstance;
 
     public Crawler(CrawlerType type, String serviceName, String serviceToken, String localCopyPath) {
         switch (type) {
@@ -58,9 +57,8 @@ public class Crawler {
     }
 
     /**
-     * crawls at least the given number of dockerfiles
-     * one crawling-step (e.g. a repository) is always finished before the number is checked
-     * returns the actual crawled number of dockerfiles
+     * crawls at least the given number of dockerfiles one crawling-step (e.g. a repository) is always finished before
+     * the number is checked returns the actual crawled number of dockerfiles
      *
      * @param number how many dockerfiles should be crawled
      * @return actual number of crawled dockerfiles

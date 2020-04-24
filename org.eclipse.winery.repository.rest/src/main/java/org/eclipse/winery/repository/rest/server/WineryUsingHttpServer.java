@@ -28,6 +28,7 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,7 @@ public class WineryUsingHttpServer {
     public static Server createHttpServer(int port) {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/winery");
-        addServlet(context, "");
+        addServlet(context);
         Server server = new Server(port);
         server.setHandler(context);
         return server;
@@ -51,7 +52,7 @@ public class WineryUsingHttpServer {
         return createHttpServer(8080);
     }
 
-    private static void addServlet(ServletContextHandler context, String s) {
+    private static void addServlet(ServletContextHandler context) {
         // Add the filter, and then use the provided FilterHolder to configure it
         FilterHolder cors = context.addFilter(CrossOriginFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         cors.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*");
@@ -60,14 +61,14 @@ public class WineryUsingHttpServer {
         cors.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, "X-Requested-With,Content-Type,Accept,Origin");
 
         // this mirrors org.eclipse.winery.repository.rest\src\main\webapp\WEB-INF\web.xml
-        ServletHolder h = context.addServlet(com.sun.jersey.spi.container.servlet.ServletContainer.class, "/*");
-        h.setInitParameter("com.sun.jersey.config.feature.FilterForwardOn404", "false");
-        h.setInitParameter("com.sun.jersey.config.feature.CanonicalizeURIPath", "true");
-        h.setInitParameter("com.sun.jersey.config.feature.DisableWADL", "true");
-        h.setInitParameter("com.sun.jersey.config.feature.NormalizeURI", "true");
-        h.setInitParameter("com.sun.jersey.config.feature.Redirect", "true");
-        h.setInitParameter("com.sun.jersey.api.json.POJOMappingFeature", "true");
-        h.setInitParameter("com.sun.jersey.config.property.resourceConfigClass", "org.eclipse.winery.repository.rest.server.WineryResourceConfig");
+        ServletHolder h = context.addServlet(ServletContainer.class, "/*");
+        h.setInitParameter("jersey.config.server.provider.packages",
+            "org.eclipse.winery.repository.rest.resources");
+        h.setInitParameter("jersey.config.server.provider.classnames",
+            "org.glassfish.jersey.logging.LoggingFeature," +
+                "org.glassfish.jersey.media.multipart.MultiPartFeature," +
+                "org.eclipse.winery.common.json.JsonFeature"
+        );
 
         //context.addFilter(RequestLoggingFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         context.addServlet(DefaultServlet.class, "/");

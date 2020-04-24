@@ -13,8 +13,18 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <div class="form-group row">
-    <label class="col-md-2 form-control-label text-md-right">{{param.name}}</label>
-    <div class="col-md-10">
-        <input class="form-control" type="text" [(ngModel)]="param.value">
+    <label class="col-md-4 form-control-label text-md-left">{{param.name}}</label>
+    <div class="col-md-5">
+        <div *ngIf="param.required.includes('YES')">
+            <input class="form-control" type="text" style="border-color: #00FE00" [(ngModel)]="param.value">
+        </div>
+        <div *ngIf="param.required.includes('NO')">
+            <input class="form-control" type="text" style="border-color: #990000" [(ngModel)]="param.value">
+        </div>
+    </div>
+    <div class="col-md-3">
+        <select class="form-control" id="valueType" [(ngModel)]="param.type">
+            <option *ngFor="let t of valueTypes" value="{{t}}">{{t}}</option>
+        </select>
     </div>
 </div>

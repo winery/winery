@@ -65,8 +65,6 @@ import org.eclipse.winery.repository.rest.resources.testrefinementmodels.TestRef
 import org.eclipse.winery.repository.rest.resources.threats.ThreatsResource;
 import org.eclipse.winery.repository.rest.resources.yaml.YAMLParserResource;
 
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataParam;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -74,6 +72,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.ResponseHeader;
 import org.apache.commons.io.FileUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -221,8 +221,8 @@ public class MainResource {
     // @formatter:off
     public Response importCSAR(
         @FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail,
-        @FormDataParam("overwrite") @ApiParam(value = "true: content of CSAR overwrites existing content. false (default): existing content is kept") Boolean overwrite,
-        @FormDataParam("validate") @ApiParam(value = "true: validates the hash of the manifest file with the one stored in the accountability layer") Boolean validate,
+        @ApiParam(value = "true: content of CSAR overwrites existing content. false (default): existing content is kept") @FormDataParam("overwrite") Boolean overwrite,
+        @ApiParam(value = "true: validates the hash of the manifest file with the one stored in the accountability layer") @FormDataParam("validate") Boolean validate,
         @Context UriInfo uriInfo) {
         LocalDateTime start = LocalDateTime.now();
         // @formatter:on

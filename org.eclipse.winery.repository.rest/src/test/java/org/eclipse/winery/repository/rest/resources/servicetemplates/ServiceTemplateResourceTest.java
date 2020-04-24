@@ -14,18 +14,18 @@
 package org.eclipse.winery.repository.rest.resources.servicetemplates;
 
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.json.JacksonProvider;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.ContentType;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.eclipse.jdt.annotation.Checks.assertNonNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ServiceTemplateResourceTest extends AbstractResourceTest {
 
@@ -39,8 +39,10 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
     @Test
     public void addTopologyTemplate() throws Exception {
         this.setRevisionTo("84d064a2f7390b3274ca8b3641a5902ba4c822d7");
-        this.assertPut("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Finjector/FoodandHouseInjectionTest/topologytemplate/", "entitytypes/servicetemplates/straw-stall.json");
-        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Finjector/FoodandHouseInjectionTest/topologytemplate/", "entitytypes/servicetemplates/straw-stall.json");
+        this.assertPut("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Finjector/FoodandHouseInjectionTest/topologytemplate/",
+            "entitytypes/servicetemplates/straw-stall.json");
+        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Finjector/FoodandHouseInjectionTest/topologytemplate/",
+            "entitytypes/servicetemplates/straw-stall.json");
     }
 
     @Test
@@ -72,13 +74,14 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
         this.setRevisionTo("8cf0ce80c2c40c6ec178ef8e5bdc4e2fcdecc7f9");
         ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/fruits", "farm", false);
         ServiceTemplateResource serviceTemplateResource = new ServiceTemplateResource(id);
-        Assert.assertNotNull(serviceTemplateResource);
+        assertNotNull(serviceTemplateResource);
     }
 
     @Test
     public void getInjectorOptions() throws Exception {
         this.setRevisionTo("84d064a2f7390b3274ca8b3641a5902ba4c822d7");
-        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Finjector/FoodandHouseInjectionTest/injector/options", "servicetemplates/ServiceTemplateResource-getInjectionOptions.json");
+        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Finjector/FoodandHouseInjectionTest/injector/options",
+            "servicetemplates/ServiceTemplateResource-getInjectionOptions.json");
     }
 
     @Test
@@ -91,7 +94,8 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
     @Test
     public void getInjectOptionsForDriverInjection() throws Exception {
         this.setRevisionTo("f647f86f43b2cb7cc4f40a9b01f24cbc67e12d34");
-        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Fdriverinjection/DriverInjectionTest/injector/options", "servicetemplates/ServiceTemplateResource-getInjectionOptions-DriverInjectionTest.json");
+        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Fdriverinjection/DriverInjectionTest/injector/options",
+            "servicetemplates/ServiceTemplateResource-getInjectionOptions-DriverInjectionTest.json");
     }
 
     @Test
@@ -146,7 +150,7 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
         this.setRevisionTo("eb37f5cfec50c046985eac308e46482ce8bea8e3");
         String response = this.assertPostWithNoContent("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithOneNodeTemplate_w1-wip1/createnewstatefulversion", ContentType.JSON);
 
-        QNameApiData newId = new ObjectMapper().readValue(response, QNameApiData.class);
+        QNameApiData newId = JacksonProvider.mapper.readValue(response, QNameApiData.class);
 
         assertNonNull(newId);
         WineryVersion version = VersionUtils.getVersion(newId.localname);

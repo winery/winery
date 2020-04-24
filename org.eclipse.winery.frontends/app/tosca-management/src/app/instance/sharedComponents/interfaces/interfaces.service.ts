@@ -13,7 +13,7 @@
  *******************************************************************************/
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, forkJoin } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { GenerateArtifactApiData } from './generateArtifactApiData';
 import { InterfacesApiData } from './interfacesApiData';
 import { InstanceService } from '../../instance.service';
@@ -37,8 +37,8 @@ export class InterfacesService {
     }
 
     getInterfaces(url?: string, relationshipInterfaces = false): Observable<InterfacesApiData[]> {
-        if (isNullOrUndefined(url)) {
-            return this.get<InterfacesApiData[]>(this.path + '/?noId=true');
+        if (!url) {
+            return this.get<InterfacesApiData[]>(this.path + '?noId=true');
         } else if (relationshipInterfaces) {
             return this.getRelationshipInterfaces(url);
         } else {
@@ -84,15 +84,15 @@ export class InterfacesService {
 
     getRelationshipInterfaces(url: string): Observable<InterfacesApiData[]> {
         return forkJoin(
-                this.get<InterfacesApiData[]>(backendBaseURL + url + '/interfaces/'),
-                this.get<InterfacesApiData[]>(backendBaseURL + url + '/targetinterfaces/'),
-                this.get<InterfacesApiData[]>(backendBaseURL + url + '/sourceinterfaces/')
-            ).pipe(map(res => {
-                for (const i of res[1]) {
-                    res[0].push(i);
-                }
-                return res[0];
-            }));
+            this.get<InterfacesApiData[]>(backendBaseURL + url + '/interfaces/'),
+            this.get<InterfacesApiData[]>(backendBaseURL + url + '/targetinterfaces/'),
+            this.get<InterfacesApiData[]>(backendBaseURL + url + '/sourceinterfaces/')
+        ).pipe(map(res => {
+            for (const i of res[1]) {
+                res[0].push(i);
+            }
+            return res[0];
+        }));
     }
 
     private get<T>(url: string): Observable<T> {

@@ -14,6 +14,9 @@
 
 package org.eclipse.winery.repository.rest.resources.apiData;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.ALWAYS)
 public class ValidEndingsApiData {
     public ValidEndingsApiDataSet validSource;
     public ValidEndingsApiDataSet validTarget;

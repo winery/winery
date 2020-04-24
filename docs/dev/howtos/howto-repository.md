@@ -65,7 +65,7 @@ object out of a QName.
 "IWineryRepositoryClient" offers methods to add repository URLs.
 
 "WineryRepositoryClient" is a real client to the repository.
-It implements "IWineryRepositoryClient" using the Jersey 1.1. web client.
+It implements "IWineryRepositoryClient" using the Jersey web client.
 It uses a subset of the REST API to communicate with the repository.
 Currently, the client has features required by the topology modeler.
 

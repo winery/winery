@@ -26,8 +26,7 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.SimpleDirectedGraph;
 
 public class AbstractTopology {
 
@@ -46,7 +45,7 @@ public class AbstractTopology {
     private String relationDependsOn;
     private String relationConnectsTo;
 
-    private DirectedGraph<TNodeTemplateExtended, RelationshipEdge> abstractTopology;
+    private SimpleDirectedGraph<TNodeTemplateExtended, RelationshipEdge> abstractTopology;
     private List<TNodeTemplateExtended> allNodes;
 
     private Properties properties;
@@ -73,7 +72,7 @@ public class AbstractTopology {
         relationDependsOn = properties.getProperty("relationDependsOn");
         relationConnectsTo = properties.getProperty("relationConnectsTo");
 
-        abstractTopology = new DefaultDirectedGraph<>((RelationshipEdge.class));
+        abstractTopology = new SimpleDirectedGraph<>((RelationshipEdge.class));
 
         // necessary list to avoid duplicate adding of node templates
         allNodes = new ArrayList<>();
@@ -230,8 +229,7 @@ public class AbstractTopology {
         }
     }
 
-    public DirectedGraph<TNodeTemplateExtended, RelationshipEdge> getGraph() {
+    public SimpleDirectedGraph<TNodeTemplateExtended, RelationshipEdge> getGraph() {
         return abstractTopology;
     }
-
 }

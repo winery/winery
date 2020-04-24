@@ -47,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepository {
 
     @Test
-    void determineStatefulComponentsTest() throws Exception {
+    public void determineStatefulComponentsTest() throws Exception {
         this.setRevisionTo("origin/plain");
 
         TServiceTemplate element = RepositoryFactory.getRepository()
@@ -69,7 +69,7 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
     }
 
     @Test
-    void determineFreezableComponents() throws Exception {
+    public void determineFreezableComponents() throws Exception {
         this.setRevisionTo("origin/plain");
 
         TServiceTemplate element = RepositoryFactory.getRepository()
@@ -108,7 +108,7 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
     }
 
     @Test
-    void cleanFreezableComponents() throws Exception {
+    public void cleanFreezableComponents() throws Exception {
         this.setRevisionTo("origin/plain");
 
         TServiceTemplate element = RepositoryFactory.getRepository()

@@ -15,11 +15,15 @@ package org.eclipse.winery.repository.client;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.tosca.HasName;
 import org.eclipse.winery.model.tosca.TDefinitions;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipType;
@@ -31,13 +35,18 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
 import org.eclipse.winery.repository.rest.server.WineryUsingHttpServer;
 
-import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.server.Server;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests client methods with a pre-configured client stored in a local static field.
@@ -67,7 +76,7 @@ public class TestWineryRepositoryClient extends TestWithGitBackedRepository {
     /**
      * Code adapted from {@link org.eclipse.winery.repository.rest.server.WineryUsingHttpServer#main(java.lang.String[])}
      */
-    @BeforeClass
+    @BeforeAll
     public static void startWineryServer() throws Exception {
         server = WineryUsingHttpServer.createHttpServer();
         server.start();
@@ -80,54 +89,45 @@ public class TestWineryRepositoryClient extends TestWithGitBackedRepository {
         }
     }
 
-    @AfterClass
+    @AfterAll
     public static void stopWineryServer() throws Exception {
         server.stop();
     }
 
-    @Test
-    public void getAllNodeTypes() throws Exception {
-        this.setRevisionTo("origin/plain");
-        Collection<TNodeType> allTypes = TestWineryRepositoryClient.client.getAllTypes(TNodeType.class);
-        for (TNodeType type: allTypes) {
-            Assert.assertNotNull("name is null", type.getName());
-            Assert.assertNotNull("target namespace is null", type.getTargetNamespace());
-        }
+    private static Stream<Arguments> getAllTypes() {
+        return Stream.of(
+            Arguments.of(TNodeType.class, 51, "NodeTypes"),
+            Arguments.of(TRelationshipType.class, 9, "RelationshipTypes"),
+            Arguments.of(TServiceTemplate.class, 44, "ServiceTemplates")
+        );
     }
 
-    @Test
-    public void getAllRelationshipTypes() throws Exception {
+    @ParameterizedTest(name = "{index} => {2}")
+    @MethodSource("getAllTypes")
+    public void getAllNodeTypes(Class<? extends TExtensibleElements> clazz, int expectedSize, String description) throws Exception {
         this.setRevisionTo("origin/plain");
-        Collection<TRelationshipType> allTypes = TestWineryRepositoryClient.client.getAllTypes(TRelationshipType.class);
-        for (TRelationshipType type: allTypes) {
-            Assert.assertNotNull("name is null", type.getName());
-            Assert.assertNotNull("target namespace is null", type.getTargetNamespace());
-        }
+
+        Collection<? extends TExtensibleElements> allTypes = TestWineryRepositoryClient.client.getAllTypes(clazz);
+        // We assert greater than, to avoid breaking the test if the test repository changes.
+        assertTrue(allTypes.size() >= expectedSize);
+
+        allTypes.stream()
+            .filter(element -> element instanceof HasName)
+            .forEach(element -> assertNotNull(((HasName) element).getName()));
     }
 
     @Test
     public void getAllNodeTypesWithAssociatedElements() throws Exception {
         this.setRevisionTo("origin/plain");
         Collection<TDefinitions> allTypes = TestWineryRepositoryClient.client.getAllTypesWithAssociatedElements(TNodeType.class);
-        Assert.assertNotNull(allTypes);
+        assertNotNull(allTypes);
     }
 
     @Test
     public void getAllRelationshipTypesWithAssociatedElements() throws Exception {
         this.setRevisionTo("origin/plain");
         Collection<TDefinitions> allTypes = TestWineryRepositoryClient.client.getAllTypesWithAssociatedElements(TRelationshipType.class);
-        Assert.assertNotNull(allTypes);
-    }
-
-    @Test
-    public void getAllServiceTemplates() throws Exception {
-        this.setRevisionTo("origin/plain");
-        Collection<TServiceTemplate> allTypes = TestWineryRepositoryClient.client.getAllTypes(TServiceTemplate.class);
-        Assert.assertNotEquals(0, allTypes.size());
-        for (TServiceTemplate type: allTypes) {
-            Assert.assertNotNull("name is null", type.getName());
-            Assert.assertNotNull("target namespace is null", type.getTargetNamespace());
-        }
+        assertNotNull(allTypes);
     }
 
     @Test
@@ -135,7 +135,7 @@ public class TestWineryRepositoryClient extends TestWithGitBackedRepository {
         this.setRevisionTo("origin/plain");
         QName serviceTemplate = new QName("http://plain.winery.opentosca.org/servicetemplates", "ServiceTemplateWithFourPolicies");
         TTopologyTemplate topologyTemplate = TestWineryRepositoryClient.client.getTopologyTemplate(serviceTemplate);
-        Assert.assertNotNull(topologyTemplate);
+        assertNotNull(topologyTemplate);
     }
 
     @Test
@@ -143,18 +143,22 @@ public class TestWineryRepositoryClient extends TestWithGitBackedRepository {
         this.setRevisionTo("origin/plain");
         QName serviceTemplate = new QName("http://plain.winery.opentosca.org/servicetemplates", "ServiceTemplateMinimalExampleWithAllPropertyVariants");
         TTopologyTemplate topologyTemplate = TestWineryRepositoryClient.client.getTopologyTemplate(serviceTemplate);
-        Assert.assertNotNull(topologyTemplate);
-        @Nullable final TNodeTemplate nodeTemplateWithTwoKVProperties = topologyTemplate.getNodeTemplate("NodeTypeWithTwoKVProperties");
-        final LinkedHashMap<String, String> kvProperties = nodeTemplateWithTwoKVProperties.getProperties().getKVProperties();
+        assertNotNull(topologyTemplate);
+        final TNodeTemplate nodeTemplateWithTwoKVProperties = topologyTemplate.getNodeTemplate("NodeTypeWithTwoKVProperties");
+        assertNotNull(nodeTemplateWithTwoKVProperties);
+        TEntityTemplate.Properties properties = nodeTemplateWithTwoKVProperties.getProperties();
+        assertNotNull(properties);
+        final LinkedHashMap<String, String> kvProperties = properties.getKVProperties();
+        assertNotNull(kvProperties);
         final String value = kvProperties.get("key1");
-        Assert.assertEquals("value", value);
+        assertEquals("value", value);
     }
 
     @Test
-    public void artifactTypeForWarfiles() throws Exception {
+    public void artifactTypeForWarFiles() throws Exception {
         this.setRevisionTo("origin/plain");
         QName artifactType = TestWineryRepositoryClient.client.getArtifactTypeQNameForExtension("war");
-        Assert.assertNotNull("Artifact Type for .war does not exist", artifactType);
+        assertNotNull(artifactType, "Artifact Type for .war does not exist");
     }
 
     @Test
@@ -163,7 +167,7 @@ public class TestWineryRepositoryClient extends TestWithGitBackedRepository {
 
         // assure that the artifact type exists
         QName artifactTypeQName = TestWineryRepositoryClient.client.getArtifactTypeQNameForExtension("war");
-        Assert.assertNotNull("Artifact Type for .war does not exist", artifactTypeQName);
+        assertNotNull(artifactTypeQName, "Artifact Type for .war does not exist");
 
         // assure that the artifact template does not yet exist
         // one possibility is to delete the artifact template, the other

@@ -21,11 +21,9 @@ import java.util.List;
 import java.util.Objects;
 
 import org.eclipse.winery.common.edmm.EdmmMappingItem;
+import org.eclipse.winery.common.json.JacksonProvider;
 import org.eclipse.winery.repository.backend.EdmmManager;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,15 +32,11 @@ public class JsonBasedEdmmManager implements EdmmManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonBasedEdmmManager.class);
 
     private final File file;
-    private final ObjectMapper objectMapper;
     private final MappingsWrapper edmmMappings;
 
     public JsonBasedEdmmManager(File file) {
         Objects.requireNonNull(file);
         this.file = file;
-        this.objectMapper = new ObjectMapper();
-        this.objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         this.edmmMappings = this.loadMappingsFromFile();
     }
 
@@ -73,7 +67,7 @@ public class JsonBasedEdmmManager implements EdmmManager {
 
         try {
             if (this.file.exists()) {
-                edmmMappings = objectMapper.readValue(file, MappingsWrapper.class);
+                edmmMappings = JacksonProvider.mapper.readValue(file, MappingsWrapper.class);
             }
         } catch (IOException e) {
             LOGGER.debug("Error while loading the namespace file.", e);
@@ -93,7 +87,7 @@ public class JsonBasedEdmmManager implements EdmmManager {
                 }
             }
 
-            this.objectMapper.writeValue(this.file, this.edmmMappings);
+            JacksonProvider.mapper.writeValue(this.file, this.edmmMappings);
         } catch (IOException e) {
             LOGGER.debug("Could not save EDMM Mappings to json file!", e);
         }

@@ -23,14 +23,14 @@
     <artifactId>org.eclipse.winery.model.bpmn4tosca</artifactId>
     <dependencies>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>${com.fasterxml.jackson.core.jackson-annotations}</version>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>${org.glassfish.jxb}</version>
         </dependency>
         <dependency>
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-core</artifactId>
-            <version>0.9.1</version>
+            <version>${org.jgrapht.jgrapht-core.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -49,23 +49,6 @@
         <checkstyle.config.location>../checkstyle.xml</checkstyle.config.location>
         <main.basedir>${project.parent.basedir}</main.basedir>
     </properties>
-    <url>http://www.eclipse.org/winery</url>
-    <organization>
-        <name>Eclipse.org - Winery Project</name>
-        <url>http://www.eclipse.org/winery</url>
-    </organization>
-    <issueManagement>
-        <system>GitHub</system>
-        <url>https://github.com/eclipse/winery/issues</url>
-    </issueManagement>
-    <inceptionYear>2015</inceptionYear>
-    <mailingLists>
-        <mailingList>
-            <name>Winery Developer List</name>
-            <post>winery-dev@eclipse.org</post>
-            <archive>http://dev.eclipse.org/mhonarc/lists/winery-dev</archive>
-        </mailingList>
-    </mailingLists>
     <licenses>
         <license>
             <name>Eclipse Public License v2.0</name>

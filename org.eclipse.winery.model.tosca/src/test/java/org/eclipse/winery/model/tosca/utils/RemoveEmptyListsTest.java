@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class RemoveEmptyListsTest {
 
     @Test
-    void emptyPropertiesAndPoliciesListsRemovedFromNodeTemplate() {
+    public void emptyPropertiesAndPoliciesListsRemovedFromNodeTemplate() {
         TTopologyTemplate topologyTemplate = new TTopologyTemplate();
         TNodeTemplate nodeTemplate = new TNodeTemplate();
         topologyTemplate.getNodeTemplateOrRelationshipTemplate().add(nodeTemplate);

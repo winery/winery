@@ -35,6 +35,7 @@ import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -111,14 +112,11 @@ import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemp
 import org.eclipse.winery.yaml.common.exception.MultiException;
 import org.eclipse.winery.yaml.converter.Converter;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.core.header.ContentDisposition;
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataBodyPart;
 import io.github.edmm.core.parser.EntityGraph;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.glassfish.jersey.media.multipart.ContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -468,17 +466,12 @@ public class RestUtils {
      * Checks whether a given resource (with absolute URL!) is available with a HEAD request on it.
      */
     public static boolean isResourceAvailable(String path) {
-        Client client = Client.create();
-        WebResource wr = client.resource(path);
-        boolean res;
-        try {
-            ClientResponse response = wr.head();
-            res = (response.getStatusInfo().getFamily().equals(Family.SUCCESSFUL));
-        } catch (com.sun.jersey.api.client.ClientHandlerException ex) {
-            // In the case of a java.net.ConnectException, return false
-            res = false;
-        }
-        return res;
+        Response response = ClientBuilder.newClient()
+            .target(path)
+            .request()
+            .head();
+
+        return response.getStatusInfo().getFamily().equals(Family.SUCCESSFUL);
     }
 
     public static Set<String> clean(Set<String> set) {
@@ -883,7 +876,10 @@ public class RestUtils {
             return Response.serverError();
         }
         // set filename
-        ContentDisposition contentDisposition = ContentDisposition.type("attachment").fileName(ref.getFileName()).modificationDate(new Date(lastModified.toMillis())).build();
+        ContentDisposition contentDisposition = ContentDisposition.type("attachment")
+            .fileName(ref.getFileName())
+            .modificationDate(new Date(lastModified.toMillis()))
+            .build();
         res.header("Content-Disposition", contentDisposition);
         res.header("Cache-Control", "max-age=0");
         return res;

@@ -15,7 +15,7 @@
 package org.eclipse.winery.repository.rest.resources.entitytypeimplementations.relationshiptypeimplementations;
 
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RelationshipTypeImplementationResourceTest extends AbstractResourceTest {
     private static final String FOLDERPATH = "http%3A%2F%2Fwinery.opentosca.org%2Ftest%2Frelationshiptypeimplementations%2Ffruits/kiwi_implementation";

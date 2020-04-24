@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -76,7 +77,6 @@ import org.eclipse.winery.repository.rest.resources.imports.genericimports.Gener
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 import org.eclipse.winery.repository.rest.resources.tags.TagsResource;
 
-import com.sun.jersey.api.NotFoundException;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

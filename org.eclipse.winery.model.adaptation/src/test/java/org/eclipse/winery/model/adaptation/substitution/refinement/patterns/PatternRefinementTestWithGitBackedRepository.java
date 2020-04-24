@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class PatternRefinementTestWithGitBackedRepository extends TestWithGitBackedRepository {
 
     @Test
-    void refineTopologyWithMultipleSameSubGraphs() throws Exception {
+    public void refineTopologyWithMultipleSameSubGraphs() throws Exception {
         this.setRevisionTo("origin/plain");
 
         List<RefinementCandidate> myCandidates = new ArrayList<>();

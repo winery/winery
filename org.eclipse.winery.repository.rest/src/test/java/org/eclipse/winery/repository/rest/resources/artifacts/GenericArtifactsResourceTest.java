@@ -14,7 +14,7 @@
 package org.eclipse.winery.repository.rest.resources.artifacts;
 
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class GenericArtifactsResourceTest extends AbstractResourceTest {
 

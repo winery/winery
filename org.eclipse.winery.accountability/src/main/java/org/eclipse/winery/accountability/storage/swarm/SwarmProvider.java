@@ -18,12 +18,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.winery.accountability.storage.ImmutableStorageProvider;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
 
 public class SwarmProvider implements ImmutableStorageProvider {
     private static ExecutorService executorService = null;
@@ -43,28 +43,28 @@ public class SwarmProvider implements ImmutableStorageProvider {
 
     @Override
     public CompletableFuture<String> store(InputStream input) {
-        Client client = Client.create();
+        Client client = ClientBuilder.newClient();
 
-        return CompletableFuture.supplyAsync(() ->
-            client
-                .resource(swarmUrl)
-                .type(MediaType.APPLICATION_OCTET_STREAM_TYPE)
+        return CompletableFuture.supplyAsync(
+            () -> client.target(swarmUrl)
+                .request()
                 .accept(MediaType.TEXT_PLAIN)
-                .post(String.class, input), getExecutorService());
+                .post(Entity.entity(input, MediaType.APPLICATION_OCTET_STREAM_TYPE), String.class),
+            getExecutorService()
+        );
     }
 
     @Override
     public CompletableFuture<InputStream> retrieve(String address) {
-        Client client = Client.create();
+        Client client = ClientBuilder.newClient();
 
-        return CompletableFuture.supplyAsync(() -> {
-            ClientResponse response = client.resource(swarmUrl + address + "/")
-                .type(MediaType.TEXT_PLAIN)
+        return CompletableFuture.supplyAsync(
+            () -> client.target(swarmUrl + address + "/")
+                .request()
                 .accept(MediaType.APPLICATION_OCTET_STREAM)
-                .get(ClientResponse.class);
-
-            return response.getEntityInputStream();
-        }, getExecutorService());
+                .get(InputStream.class),
+            getExecutorService()
+        );
     }
 
     @Override

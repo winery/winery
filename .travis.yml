@@ -1,12 +1,22 @@
-dist: xenial
+dist: bionic
 sudo: required
 language: java
 jdk:
   - openjdk8
+  - openjdk12
+env:
+  - BUILD_PROFILE=java
+  - BUILD_PROFILE=frontend
+jobs:
+  exclude:
+    - jdk: openjdk8
+      env: BUILD_PROFILE=frontend
 cache:
   directories:
     - $HOME/.m2
 before_install:
   - npm install -g ganache-cli
 install:
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -P java
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -P $BUILD_PROFILE
+script:
+  - mvn package -B -P $BUILD_PROFILE

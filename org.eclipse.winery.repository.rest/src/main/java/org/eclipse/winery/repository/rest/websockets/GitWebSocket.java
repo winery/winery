@@ -34,6 +34,7 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
 import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.json.JacksonProvider;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.rest.datatypes.GitData;
@@ -41,7 +42,6 @@ import org.eclipse.winery.repository.rest.resources.apiData.QNameWithTypeApiData
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Iterables;
 import com.google.common.eventbus.Subscribe;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -51,6 +51,7 @@ import org.slf4j.LoggerFactory;
 
 @ServerEndpoint(value = "/git")
 public class GitWebSocket {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(GitWebSocket.class);
     private static final Set<GitWebSocket> connections = new CopyOnWriteArraySet<>();
     private Session session;
@@ -79,9 +80,8 @@ public class GitWebSocket {
 
     @OnMessage
     public void onMessage(String message, Session session) {
-        ObjectMapper mapper = new ObjectMapper();
         try {
-            GitData data = mapper.readValue(message, GitData.class);
+            GitData data = JacksonProvider.mapper.readValue(message, GitData.class);
             if (RepositoryFactory.getRepository() instanceof GitBasedRepository) {
                 if (data.reset) {
                     try {

@@ -16,10 +16,12 @@ package org.eclipse.winery.tools.copybaragenerator;
 
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Disabled
 class CopybaraGeneratorTest extends TestWithGitBackedRepository {
 
     @Test

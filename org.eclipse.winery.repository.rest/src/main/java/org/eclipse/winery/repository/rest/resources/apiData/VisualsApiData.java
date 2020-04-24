@@ -23,9 +23,6 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.rest.resources._support.GenericVisualAppearanceResource;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class VisualsApiData {
 
     public String iconUrl;

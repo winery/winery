@@ -88,21 +88,19 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-core</artifactId>
-            <version>1.19.3</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
+            <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>1.19.3</version>
-            <scope>compile</scope>
+            <version>${jersey.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.sun.jersey.contribs</groupId>
-            <artifactId>jersey-multipart</artifactId>
-            <version>1.19.3</version>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>${jersey.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.winery</groupId>
@@ -139,32 +137,17 @@
                 </dependencies>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
-            </plugin>
-            <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.21.0</version>
+                <version>${maven.surefire.version}</version>
                 <dependencies>
                     <dependency>
-                        <groupId>org.junit.platform</groupId>
-                        <artifactId>junit-platform-surefire-provider</artifactId>
-                        <version>${junit.platform.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.junit.jupiter</groupId>
-                        <artifactId>junit-jupiter-engine</artifactId>
-                        <version>${junit.jupiter.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.junit.jupiter</groupId>
-                        <artifactId>junit-jupiter-params</artifactId>
-                        <version>${junit.jupiter.version}</version>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>maven-surefire-common</artifactId>
+                        <version>${maven.surefire.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
-            
+
             <!-- This plugin compiles the Solidity Ethereum smart contracts and provides Java wrapper classes for them
             (that allow communicating with them and deploying them on the blockchain)-->
             <plugin>

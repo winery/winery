@@ -17,7 +17,7 @@ body, html {
 }
 
 .canvas svg path {
-    fill: #000;
+    /*fill: #000;*/
     stroke: #000;
     stroke-width: 1;
 }

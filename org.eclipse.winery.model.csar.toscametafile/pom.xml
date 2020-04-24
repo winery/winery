@@ -22,41 +22,17 @@
     <artifactId>org.eclipse.winery.model.csar.toscametafile</artifactId>
     <packaging>jar</packaging>
     <description>This project offers a data model and parsing facility for TOSCA meta files.</description>
-    <url>http://www.eclipse.org/winery</url>
-    <organization>
-        <name>Eclipse.org - Winery Project</name>
-        <url>http://www.eclipse.org/winery</url>
-    </organization>
-    <inceptionYear>2012</inceptionYear>
-    <mailingLists>
-        <mailingList>
-            <name>Winery Developer List</name>
-            <post>winery-dev@eclipse.org</post>
-            <archive>http://dev.eclipse.org/mhonarc/lists/winery-dev</archive>
-        </mailingList>
-    </mailingLists>
-    <licenses>
-        <license>
-            <name>Eclipse Public License v2.0</name>
-            <url>http://www.eclipse.org/legal/epl-v20.html</url>
-            <distribution>repo</distribution>
-            <comments>Standard Eclipse Licence</comments>
-        </license>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
     </properties>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.3.1</version>
+                <version>3.0.0</version>
             </plugin>
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
@@ -66,12 +42,7 @@
             </plugin>
         </plugins>
     </build>
-    <repositories>
-        <repository>
-            <id>springsource</id>
-            <url>http://repository.springsource.com/maven/bundles/release/</url>
-        </repository>
-    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>

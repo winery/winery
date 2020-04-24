@@ -14,14 +14,14 @@
 
 package org.eclipse.winery.repository.patterndetection.model.patterns;
 
-import org.eclipse.winery.repository.patterndetection.model.PatternComponent;
-import org.eclipse.winery.repository.patterndetection.model.RelationshipEdge;
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.graph.DefaultDirectedGraph;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+
+import org.eclipse.winery.repository.patterndetection.model.PatternComponent;
+import org.eclipse.winery.repository.patterndetection.model.RelationshipEdge;
+
+import org.jgrapht.graph.SimpleDirectedGraph;
 
 public class EnvironmentBasedAvailabilityPattern {
     private static final String propertiesFilename = "patterndetection.properties";
@@ -32,7 +32,7 @@ public class EnvironmentBasedAvailabilityPattern {
     private String os;
     private String hostedOn;
 
-    private DirectedGraph<PatternComponent, RelationshipEdge> pattern;
+    private SimpleDirectedGraph<PatternComponent, RelationshipEdge> pattern;
 
     public EnvironmentBasedAvailabilityPattern() {
         properties = new Properties();
@@ -46,7 +46,7 @@ public class EnvironmentBasedAvailabilityPattern {
         virtualHardware = properties.getProperty("labelVirtualHardware");
         hostedOn = properties.getProperty("relationHostedOn");
 
-        pattern = new DefaultDirectedGraph<>(RelationshipEdge.class);
+        pattern = new SimpleDirectedGraph<>(RelationshipEdge.class);
 
         PatternComponent virtualHardwareComponent = new PatternComponent(virtualHardware, 1, 1);
         PatternComponent operatingSystem = new PatternComponent(os, 1, 1);
@@ -57,7 +57,7 @@ public class EnvironmentBasedAvailabilityPattern {
         pattern.addEdge(operatingSystem, virtualHardwareComponent, new RelationshipEdge(operatingSystem, virtualHardwareComponent, hostedOn));
     }
 
-    public DirectedGraph<PatternComponent, RelationshipEdge> getPatternGraph() {
+    public SimpleDirectedGraph<PatternComponent, RelationshipEdge> getPatternGraph() {
         return pattern;
     }
 }

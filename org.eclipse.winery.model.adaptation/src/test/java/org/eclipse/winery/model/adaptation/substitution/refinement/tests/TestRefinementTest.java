@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TestRefinementTest {
 
     @Test
-    void applyRefinementTest() {
+    public void applyRefinementTest() {
         // region *** topology ***
         TNodeTemplate tomcat = new TNodeTemplate();
         tomcat.setId("tomcat");

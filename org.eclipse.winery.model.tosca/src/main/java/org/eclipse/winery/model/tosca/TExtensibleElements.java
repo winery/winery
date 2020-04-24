@@ -32,7 +32,6 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -59,7 +58,6 @@ import org.eclipse.jdt.annotation.NonNull;
     TTopologyTemplate.class,
     TDefinitions.class
 })
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class TExtensibleElements implements Serializable {
 
     protected List<TDocumentation> documentation;

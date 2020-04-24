@@ -62,9 +62,7 @@
                     {
                         "content": [
                             "Stack of Node Template pasture from Provider Repository pastureprovider"
-                        ],
-                        "source": null,
-                        "lang": null
+                        ]
                     }
                 ],
                 "any": [
@@ -114,9 +112,7 @@
                     {
                         "content": [
                             "Stack of Node Template straw from Provider Repository stallprovider"
-                        ],
-                        "source": null,
-                        "lang": null
+                        ]
                     }
                 ],
                 "any": [
@@ -235,9 +231,7 @@
                     {
                         "content": [
                             "Stack of Node Template oat from Provider Repository foodprovider"
-                        ],
-                        "source": null,
-                        "lang": null
+                        ]
                     }
                 ],
                 "any": [

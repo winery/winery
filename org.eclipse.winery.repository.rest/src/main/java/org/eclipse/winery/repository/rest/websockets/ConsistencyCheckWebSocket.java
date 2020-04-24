@@ -22,12 +22,12 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+import org.eclipse.winery.common.json.JacksonProvider;
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyChecker;
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerConfiguration;
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerProgressListener;
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyErrorCollector;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,16 +57,14 @@ public class ConsistencyCheckWebSocket implements ConsistencyCheckerProgressList
 
     @OnMessage
     public void onMessage(String message, Session session) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-
-        ConsistencyCheckerConfiguration config = mapper.readValue(message, ConsistencyCheckerConfiguration.class);
+        ConsistencyCheckerConfiguration config = JacksonProvider.mapper.readValue(message, ConsistencyCheckerConfiguration.class);
 
         final ConsistencyChecker consistencyChecker = new ConsistencyChecker(config, this);
         consistencyChecker.checkCorruption();
         ConsistencyErrorCollector errorList = consistencyChecker.getErrorCollector();
 
         // Transform object to JSON and send it.
-        this.session.getBasicRemote().sendText(mapper.writeValueAsString(errorList));
+        this.session.getBasicRemote().sendText(JacksonProvider.mapper.writeValueAsString(errorList));
 
         // Close the connection after the check has passed.
         onClose(session);

@@ -14,11 +14,12 @@
 package org.eclipse.winery.common;
 
 import java.io.File;
+import java.util.Objects;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestUtil {
 
@@ -61,7 +62,7 @@ public class TestUtil {
 
     @Test
     public void testGetChecksumOfFile() throws Exception {
-        File file = new File(ClassLoader.getSystemClassLoader().getResource("org/eclipse/winery/common/invalid.xml").getFile());
+        File file = new File(Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResource("org/eclipse/winery/common/invalid.xml")).getFile());
         assertEquals("4406bff97249955ef46ea3ae590f9813fd44dcd769b8204cbb702ee6767173b0",
             HashingUtil.getChecksum(file, "SHA-256"));
     }

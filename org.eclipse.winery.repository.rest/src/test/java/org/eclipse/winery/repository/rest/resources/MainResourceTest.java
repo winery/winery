@@ -13,16 +13,16 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources;
 
-import org.eclipse.jetty.toolchain.test.MavenTestingUtils;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import java.nio.file.Path;
+
+import org.eclipse.jetty.toolchain.test.MavenTestingUtils;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class MainResourceTest extends AbstractResourceTest {
 
     @Test
-    @Ignore("The NamespaceManager does not reload Namespaces.properties upon each change. Thus, this tests fails under certain conditions -- winery-defs-for_servicetemplates-ImportCsarWithOverwriteTest vs. winery-defs-for_servicetemplates1-ImportCsarWithOverwriteTest")
+    @Disabled("The NamespaceManager does not/ reload Namespaces.properties upon each change. Thus, this tests fails under certain conditions -- winery-defs-for_servicetemplates-ImportCsarWithOverwriteTest vs. winery-defs-for_servicetemplates1-ImportCsarWithOverwriteTest")
     public void importCSARTestWithOverwrite() throws Exception {
         setRevisionTo("dc30db8f6086a8bcf6b39881d124f15fb05168f4");
         this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ImportCsarWithOverwriteTest/", "entitytypes/servicetemplates/importCsarWithOverwriteTest_initial.json");

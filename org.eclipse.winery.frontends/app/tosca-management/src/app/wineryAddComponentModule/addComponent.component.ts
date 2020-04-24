@@ -19,7 +19,6 @@ import { ToscaTypes } from '../model/enums';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { Utils } from '../wineryUtils/utils';
-import { isNullOrUndefined } from 'util';
 import { SectionData } from '../section/sectionData';
 import { ModalDirective, TooltipConfig } from 'ngx-bootstrap';
 import { WineryNamespaceSelectorComponent } from '../wineryNamespaceSelector/wineryNamespaceSelector.component';
@@ -28,6 +27,7 @@ import { WineryVersion } from '../model/wineryVersion';
 import { AddComponentValidation } from './addComponentValidation';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { ExistService } from '../wineryUtils/existService';
+import { backendBaseURL } from '../configuration';
 
 export function getToolTip(): TooltipConfig {
     return Object.assign(new TooltipConfig(), { placement: 'right' });
@@ -90,7 +90,7 @@ export class WineryAddComponent {
     onAdd(componentType?: SelectData) {
         const typesUrl = Utils.getTypeOfTemplateOrImplementation(this.toscaType);
         this.addModalType = Utils.getToscaTypeNameFromToscaType(this.toscaType);
-        this.useStartNamespace = !(!isNullOrUndefined(this.namespace) && this.namespace.length > 0);
+        this.useStartNamespace = !(this.namespace && this.namespace.length > 0);
 
         this.sectionService.setPath(this.toscaType);
 
@@ -99,7 +99,7 @@ export class WineryAddComponent {
             this.types = [componentType];
         }
 
-        if (!isNullOrUndefined(typesUrl) && !componentType) {
+        if (typesUrl && !componentType) {
             this.loading = true;
             this.typeRequired = true;
             this.sectionService.getSectionData('/' + typesUrl + '?grouped=angularSelect')
@@ -174,7 +174,7 @@ export class WineryAddComponent {
         } else {
             this.newComponentNamespace = '';
 
-            if (!isNullOrUndefined(this.addComponentForm)) {
+            if (this.addComponentForm) {
                 this.addComponentForm.reset();
             }
         }
@@ -190,7 +190,7 @@ export class WineryAddComponent {
 
     private handleSaveSuccess(data: HttpResponse<any>) {
         this.newComponentName = this.newComponentName.replace(/\s/g, '-');
-        const url = '/' + this.toscaType + '/'
+        const url = this.toscaType + '/'
             + encodeURIComponent(encodeURIComponent(this.newComponentNamespace)) + '/'
             + this.newComponentFinalName;
 
@@ -198,7 +198,7 @@ export class WineryAddComponent {
             this.notify.success('Successfully saved component ' + this.newComponentName);
             this.router.navigateByUrl(url);
         } else {
-            this.inheritanceService.saveInheritanceFromString(url, this.inheritFrom)
+            this.inheritanceService.saveInheritanceFromString(backendBaseURL + '/' + url, this.inheritFrom)
                 .subscribe(
                     inheritanceData => this.handleSaveSuccess(inheritanceData),
                     error => this.handleError(error)
@@ -218,16 +218,16 @@ export class WineryAddComponent {
         this.validation = new AddComponentValidation();
         this.newComponentFinalName = this.newComponentName;
 
-        if (this.typeRequired && isNullOrUndefined(this.newComponentSelectedType)) {
+        if (this.typeRequired && !this.newComponentSelectedType) {
             this.validation.noTypeAvailable = true;
             return { noTypeAvailable: true };
         }
 
-        if (!isNullOrUndefined(this.newComponentFinalName) && this.newComponentFinalName.length > 0) {
+        if (this.newComponentFinalName && this.newComponentFinalName.length > 0) {
             this.newComponentFinalName += WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + this.newComponentVersion.toString();
             const duplicate = this.componentData.find((component) => component.name.toLowerCase() === this.newComponentFinalName.toLowerCase());
 
-            if (!isNullOrUndefined(duplicate)) {
+            if (duplicate) {
                 const namespace = this.newComponentNamespace.endsWith('/') ? this.newComponentNamespace.slice(0, -1) : this.newComponentNamespace;
 
                 if (duplicate.namespace === namespace) {
@@ -250,7 +250,7 @@ export class WineryAddComponent {
             }
         }
 
-        this.validation.noVersionProvidedWarning = isNullOrUndefined(this.newComponentVersion.componentVersion)
+        this.validation.noVersionProvidedWarning = !this.newComponentVersion.componentVersion
             || this.newComponentVersion.componentVersion.length === 0;
     }
 

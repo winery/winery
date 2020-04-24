@@ -147,7 +147,6 @@ import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.export.ToscaExportUtil;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.tika.detect.Detector;
@@ -186,23 +185,9 @@ import static java.nio.file.FileVisitResult.CONTINUE;
  */
 public class BackendUtils {
 
-    /**
-     * Shared object to map JSONs
-     */
-    public static final ObjectMapper mapper = getObjectMapper();
-
     private static final Logger LOGGER = LoggerFactory.getLogger(BackendUtils.class);
 
     private static final MediaType MEDIATYPE_APPLICATION_OCTET_STREAM = MediaType.parse("application/octet-stream");
-
-    private static ObjectMapper getObjectMapper() {
-        final ObjectMapper objectMapper = new ObjectMapper();
-        // DO NOT ACTIVE the following - JSON is serialized differently and thus, the JAX-B annotations must not be used
-        // For instance, "nodeTemplateOrRelationshipTemplate" is a bad thing for JSON as it cannot distinguish whether a child is a node template or a relationship template
-        // final JaxbAnnotationModule module = new JaxbAnnotationModule();
-        // objectMapper.registerModule(module);
-        return objectMapper;
-    }
 
     /**
      * @return true if given fileDate is newer then the modified date (or modified is null)
@@ -304,8 +289,8 @@ public class BackendUtils {
     }
 
     /**
-     * Do <em>not</em> use this for creating URLs. Use  {@link Utils#getURLforPathInsideRepo(java.lang.String)} or
-     * {@link Utils#getAbsoluteURL(org.eclipse.winery.common.ids.GenericId) instead.
+     * Do <em>not</em> use this for creating URLs. Use {@link Util#getUrlPath(java.lang.String)} or
+     * RestUtils#getAbsoluteURL(org.eclipse.winery.common.ids.GenericId instead.
      *
      * @return the path starting from the root element to the current element. Separated by "/", URLencoded, but
      * <b>not</b> double encoded. With trailing slash if sub-resources can exist
@@ -316,8 +301,8 @@ public class BackendUtils {
     }
 
     /**
-     * Do <em>not</em> use this for creating URLs. Use {@link Utils#getURLforPathInsideRepo(java.lang.String)} or {@link
-     * Utils#getAbsoluteURL(org.eclipse.winery.common.ids.GenericId) instead.
+     * Do <em>not</em> use this for creating URLs. Use {@link Util#getUrlPath(java.lang.String)} or
+     * RestUtils#getAbsoluteURL(org.eclipse.winery.common.ids.GenericId) instead.
      *
      * @return the path starting from the root element to the current element. Separated by "/", parent URLencoded.
      * Without trailing slash.
@@ -1143,7 +1128,7 @@ public class BackendUtils {
     /**
      * Synchronizes the list of files of the given artifact template with the list of files contained in the given
      * repository. The repository is updated after synchronization.
-     *
+     * <p>
      * This was intended if a user manually added files in the "files" directory and expected winery to correctly export
      * a CSAR
      *
@@ -1321,17 +1306,6 @@ public class BackendUtils {
         }
 
         RepositoryFactory.getRepository().setElement(id, serviceTemplate);
-    }
-
-    public static String Object2JSON(Object o) {
-        String res;
-        try {
-            res = BackendUtils.mapper.writeValueAsString(o);
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return null;
-        }
-        return res;
     }
 
     public static String getXMLAsString(Object obj) {

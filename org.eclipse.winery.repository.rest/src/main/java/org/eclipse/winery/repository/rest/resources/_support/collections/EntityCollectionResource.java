@@ -28,11 +28,10 @@ import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
+import org.eclipse.winery.common.json.JacksonProvider;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +55,6 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
     protected final Class<EntityT> entityTClazz;
 
     protected final Class<EntityResourceT> entityResourceTClazz;
-
 
     /**
      * @param entityTClazz the class of EntityT. Required as it is not possible to call new EntityT (see
@@ -84,27 +82,24 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
     @Produces(MediaType.APPLICATION_JSON)
     public String getAllEntityResources(@QueryParam(value = "noId") boolean noId) {
         return this.getListOfAllEntityIdsAsList().stream()
-            .map(id -> this.getEntityResourceFromDecodedId(id))
+            .map(this::getEntityResourceFromDecodedId)
             .map((EntityResourceT res) -> {
                 String id = this.getId(res.o);
                 // some objects already have an id field
                 // we set it nevertheless, because it might happen that the name of the id field is not "id", but something else (such as "name")
 
                 // general method, same as with data binding
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.enable(SerializationFeature.INDENT_OUTPUT);
-                // (note: can also use more specific type, like ArrayNode or
-                // ObjectNode!)
-                JsonNode jsonNode = mapper.valueToTree(res.o);
+                JsonNode jsonNode = JacksonProvider.mapper.valueToTree(res.o);
                 if (!noId) {
                     ((ObjectNode) jsonNode).put("id", id);
                 }
                 try {
-                    return mapper.writeValueAsString(jsonNode);
+                    return JacksonProvider.mapper.writeValueAsString(jsonNode);
                 } catch (JsonProcessingException e) {
                     throw new WebApplicationException(e);
                 }
-            }).collect(Collectors.joining(",", "[", "]"));
+            })
+            .collect(Collectors.joining(",", "[", "]"));
     }
 
     protected abstract EntityResourceT getEntityResourceFromDecodedId(String id);

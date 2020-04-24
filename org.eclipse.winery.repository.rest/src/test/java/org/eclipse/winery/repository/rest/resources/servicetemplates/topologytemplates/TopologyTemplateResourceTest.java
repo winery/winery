@@ -14,13 +14,14 @@
 package org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates;
 
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.json.JacksonProvider;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class TopologyTemplateResourceTest extends AbstractResourceTest {
 
@@ -91,7 +92,7 @@ public class TopologyTemplateResourceTest extends AbstractResourceTest {
     public void farmTopologyTemplateCanBeCreatedAsJson() throws Exception {
         this.setRevisionTo("1e2054315f18e80c466c26e6918d6506ce53f7f7");
 
-        // Quick hack to ensure that the service template containing the tpology template exists
+        // Quick hack to ensure that the service template containing the topology template exists
         ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/fruits", "farm", false);
         RepositoryFactory.getRepository().flagAsExisting(id);
 
@@ -101,22 +102,25 @@ public class TopologyTemplateResourceTest extends AbstractResourceTest {
     @Test
     public void farmTopologyTemplateJsonCanBeParsed() throws Exception {
         final String jsonStr = AbstractResourceTest.readFromClasspath("servicetemplates/farm_topologytemplate.json");
-        final TTopologyTemplate topologyTemplate = BackendUtils.mapper.readValue(jsonStr, TTopologyTemplate.class);
-        Assert.assertNotNull(topologyTemplate);
+        final TTopologyTemplate topologyTemplate = JacksonProvider.mapper.readValue(jsonStr, TTopologyTemplate.class);
+        assertNotNull(topologyTemplate);
     }
 
     @Test
     public void strawStallTopologyTemplateJsonCanBeParsed() throws Exception {
         final String jsonStr = AbstractResourceTest.readFromClasspath("entitytypes/servicetemplates/straw-stall.json");
-        final TTopologyTemplate topologyTemplate = BackendUtils.mapper.readValue(jsonStr, TTopologyTemplate.class);
+        final TTopologyTemplate topologyTemplate = JacksonProvider.mapper.readValue(jsonStr, TTopologyTemplate.class);
     }
 
     @Test
     public void checkJsonOfTopologyTemplateMinimalExampleWithAllPropertyVariants() throws Exception {
         this.setRevisionTo("origin/plain");
-        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants/topologytemplate/", "servicetemplates/topologytemplates/plain-TopologyTemplateMinimalExampleWithAllPropertyVariants.json");
-        this.assertPut("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants/topologytemplate/", "servicetemplates/topologytemplates/plain-TopologyTemplateMinimalExampleWithAllPropertyVariants.json");
-        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants/topologytemplate/", "servicetemplates/topologytemplates/plain-TopologyTemplateMinimalExampleWithAllPropertyVariants.json");
+        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants/topologytemplate/",
+            "servicetemplates/topologytemplates/plain-TopologyTemplateMinimalExampleWithAllPropertyVariants.json");
+        this.assertPut("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants/topologytemplate/",
+            "servicetemplates/topologytemplates/plain-TopologyTemplateMinimalExampleWithAllPropertyVariants.json");
+        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants/topologytemplate/",
+            "servicetemplates/topologytemplates/plain-TopologyTemplateMinimalExampleWithAllPropertyVariants.json");
     }
 
     @Test

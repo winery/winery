@@ -34,15 +34,13 @@
                             "key": "HarvestedAt",
                             "type": "xsd:anyURI"
                         }
-                    ],
-                    "isDerivedFromXSD": null
+                    ]
                 }
             ],
             "otherAttributes": {
                 "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}bordercolor": "#89ee01"
             },
             "propertiesDefinition": {
-                "element": null,
                 "type": "{http://winery.opentosca.org/test/nodetypes/fruits}BaobabProperties"
             },
             "name": "baobab",
@@ -59,7 +57,6 @@
                         "constraints": {
                             "constraint": [
                                 {
-                                    "any": null,
                                     "constraintType": "http://winery.opentosca.org/test/constrainttypes/fruits/healthy"
                                 }
                             ]

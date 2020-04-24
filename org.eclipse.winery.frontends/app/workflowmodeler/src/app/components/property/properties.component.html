@@ -23,7 +23,7 @@
 
         <div class="col-md-2">
             <button (click)="deleteNode()" type="button" class="btn btn-danger">
-                <i class="fa fa-trash" style="margin-right: 5px;"></i>
+                <i class="fa fa-trash" style="margin-right: 5px;">Delete</i>
             </button>
         </div>
 
@@ -41,8 +41,11 @@
 
     <hr>
     <b4t-node-template *ngIf="node.type == 'ToscaNodeManagementTask'" [node]="node"></b4t-node-template>
+    <hr>
     <b4t-parameter *ngFor="let param of node.input" [param]="param"></b4t-parameter>
     <hr>
     <b4t-parameter *ngFor="let param of node.output" [param]="param"></b4t-parameter>
+    <hr>
+    <b4t-instance-type *ngIf="node.type == 'StartEvent'" [node]="node"></b4t-instance-type>
 
 </div>

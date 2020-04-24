@@ -14,14 +14,14 @@
 
 package org.eclipse.winery.repository.patterndetection.model.patterns;
 
-import org.eclipse.winery.repository.patterndetection.model.PatternComponent;
-import org.eclipse.winery.repository.patterndetection.model.RelationshipEdge;
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.graph.DefaultDirectedGraph;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+
+import org.eclipse.winery.repository.patterndetection.model.PatternComponent;
+import org.eclipse.winery.repository.patterndetection.model.RelationshipEdge;
+
+import org.jgrapht.graph.SimpleDirectedGraph;
 
 public class ElasticQueuePattern {
 
@@ -39,7 +39,7 @@ public class ElasticQueuePattern {
     private String connectsTo;
     private String deployedOn;
 
-    private DirectedGraph<PatternComponent, RelationshipEdge> pattern;
+    private SimpleDirectedGraph<PatternComponent, RelationshipEdge> pattern;
 
     public ElasticQueuePattern() {
         properties = new Properties();
@@ -60,7 +60,7 @@ public class ElasticQueuePattern {
         connectsTo = properties.getProperty("relationConnectsTo");
         deployedOn = properties.getProperty("relationDeployedOn");
 
-        pattern = new DefaultDirectedGraph<>(RelationshipEdge.class);
+        pattern = new SimpleDirectedGraph<>(RelationshipEdge.class);
 
         PatternComponent virtualHardwareComponent = new PatternComponent(virtualHardware, 1, 1);
         PatternComponent operatingSystem = new PatternComponent(os, 1, Integer.MAX_VALUE);
@@ -92,7 +92,7 @@ public class ElasticQueuePattern {
 
     }
 
-    public DirectedGraph<PatternComponent, RelationshipEdge> getPatternGraph() {
+    public SimpleDirectedGraph<PatternComponent, RelationshipEdge> getPatternGraph() {
         return pattern;
     }
 }
