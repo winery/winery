@@ -166,6 +166,12 @@ public interface IRepository extends IWineryRepositoryCommon {
      * Puts the given content to the given file. Replaces existing content.
      * <p>
      * If the parent of the reference does not exist, it is created.
+     * <p>
+     * This method should not be used to write Definitions, calling it with the well-known
+     * Media Type {@link MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS} will result in a warning.
+     * For such cases use {@link #putDefinition(DefinitionsChildId, TDefinitions)} instead.
+     * 
+     * @see #putDefinition(DefinitionsChildId, TDefinitions) 
      *
      * @param ref       the reference to the file. Must not be null.
      * @param content   the content to put into the file. Must not be null.
@@ -178,6 +184,12 @@ public interface IRepository extends IWineryRepositoryCommon {
      * Puts the given content to the given file. Replaces existing content.
      * <p>
      * If the parent of the reference does not exist, it is created.
+     * <p>
+     * This method should not be used to write Definitions, calling it with the well-known
+     * Media Type {@link MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS} will result in a warning.
+     * For such cases use {@link #putDefinition(DefinitionsChildId, TDefinitions)} instead.
+     * 
+     * @see #putDefinition(DefinitionsChildId, TDefinitions) 
      *
      * @param ref         the reference to the file
      * @param inputStream the content to put into the file
@@ -186,33 +198,18 @@ public interface IRepository extends IWineryRepositoryCommon {
     void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException;
 
     /**
-     * Serializes the given content at a location that the repository makes as belonging to the given id. This acts as a
-     * replacement for all invocations of {@link #putContentToFile} for the media type {@link
-     * org.eclipse.winery.repository.backend.constants.MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS}.
+     * Serializes the given content at a location that the repository makes as belonging to the given id. 
+     * This acts as a replacement for all invocations of {@link #putContentToFile} for the media type 
+     * {@link org.eclipse.winery.repository.backend.constants.MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS}.
+     * 
+     * @see #putContentToFile(RepositoryFileReference, String, MediaType)
+     * @see #putContentToFile(RepositoryFileReference, InputStream, MediaType)
      *
      * @param id      The id of the definitions child encapsulated in the content to be put into the repository
      * @param content The content to be put into the repository at the given id.
      * @throws IOException if something goes wrong
      */
-    default void putDefinition(DefinitionsChildId id, TDefinitions content) throws IOException {
-        // implementation is partially copied from BackendUtils.persist
-        RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
-        // We assume that the object is not too large
-        // Otherwise, http://io-tools.googlecode.com/svn/www/easystream/apidocs/index.html should be used
-        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            Marshaller m = JAXBSupport.createMarshaller(true, this.getNamespaceManager().asPrefixMapper());
-            m.marshal(content, out);
-            byte[] data = out.toByteArray();
-            try (ByteArrayInputStream in = new ByteArrayInputStream(data)) {
-                // String xml = IOUtils.toString(in);
-                // this may throw an IOException. We propagate this exception.
-                this.putContentToFile(ref, in, MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
-            }
-        } catch (JAXBException e) {
-            LOGGER.error("Could not put content to file", e);
-            throw new IllegalStateException(e);
-        }
-    }
+    void putDefinition(DefinitionsChildId id, TDefinitions content) throws IOException;
 
     /**
      * Creates an opened inputStream of the contents referenced by ref. The stream has to be closed by the caller.

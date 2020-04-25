@@ -13,17 +13,23 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.xml;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.winery.common.Constants;
@@ -34,11 +40,16 @@ import org.eclipse.winery.model.ids.IdUtil;
 import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.XmlId;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.model.tosca.TDefinitions;
+import org.eclipse.winery.model.tosca.xml.TDefinitions;
 import org.eclipse.winery.repository.JAXBSupport;
+import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.filebased.AbstractFileBasedRepository;
 import org.eclipse.winery.repository.backend.filebased.OnlyNonHiddenDirectories;
 import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.xml.converter.FromCanonical;
+import org.eclipse.winery.repository.xml.converter.ToCanonical;
+import org.eclipse.winery.repository.xml.export.XmlModelJAXBSupport;
 
 import org.apache.tika.mime.MediaType;
 import org.slf4j.Logger;
@@ -60,11 +71,12 @@ public class XmlRepository extends AbstractFileBasedRepository {
     }
 
     @Override
-    public TDefinitions definitionsFromRef(RepositoryFileReference ref) throws IOException {
+    public org.eclipse.winery.model.tosca.TDefinitions definitionsFromRef(RepositoryFileReference ref) throws IOException {
         try {
             InputStream is = newInputStream(ref);
-            Unmarshaller unmarshaller = JAXBSupport.createUnmarshaller();
-            return (TDefinitions) unmarshaller.unmarshal(is);
+            Unmarshaller unmarshaller = XmlModelJAXBSupport.createUnmarshaller();
+            ToCanonical converter = new ToCanonical(this);
+            return converter.convert((TDefinitions) unmarshaller.unmarshal(is));
         } catch (Exception e) {
             return null;
         }
@@ -82,11 +94,39 @@ public class XmlRepository extends AbstractFileBasedRepository {
             // quick hack for storing mime type called this method
             assert (ref.getFileName().endsWith(Constants.SUFFIX_MIMETYPE));
             // we do not need to store the mime type of the file containing the mime type information
+        } else if (mediaType == MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS) {
+            LOGGER.warn("Attempting to write definitions with putContentToFile. Redirecting call to putDefinitions");
+            try {
+                // convert the InputStream to an object that we can throw at putDefinitions
+                org.eclipse.winery.model.tosca.TDefinitions canonical = (org.eclipse.winery.model.tosca.TDefinitions) 
+                    JAXBSupport.createUnmarshaller().unmarshal(inputStream);
+                putDefinition(BackendUtils.getIdForRef(ref), canonical);
+            } catch (JAXBException e) {
+                LOGGER.error("Could not deserialize given input stream as a canonical TDefinitions instance", e);
+                throw new IllegalStateException(e);
+            }
         } else {
             this.setMimeType(ref, mediaType);
+            Path targetPath = this.ref2AbsolutePath(ref);
+            writeInputStreamToPath(targetPath, inputStream);
         }
-        Path targetPath = this.ref2AbsolutePath(ref);
-        writeInputStreamToPath(targetPath, inputStream);
+    }
+
+    @Override
+    public void putDefinition(DefinitionsChildId id, org.eclipse.winery.model.tosca.TDefinitions content) throws IOException {
+        // implementation is partially copied from BackendUtils.persist
+        RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
+        FromCanonical converter = new FromCanonical(this);
+        TDefinitions definitions = converter.convert(content);
+        Path serializationTarget = ref2AbsolutePath(ref);
+        Files.createDirectories(serializationTarget.getParent());
+        try (OutputStream out = Files.newOutputStream(serializationTarget, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE)) {
+            Marshaller m = XmlModelJAXBSupport.createMarshaller(true, this.getNamespaceManager().asPrefixMapper());
+            m.marshal(definitions, out);
+        } catch (JAXBException e) {
+            LOGGER.error("Could not put content to file", e);
+            throw new IllegalStateException(e);
+        }
     }
 
     @Override

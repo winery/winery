@@ -139,7 +139,7 @@ public class FromCanonical {
     }
 
     /**
-     * Converts TOSCA XML Definitions to TOSCA YAML ServiceTemplates
+     * Converts canonical TDefinitions to a TOSCA YAML ServiceTemplate
      */
     @NonNull
     public TServiceTemplate convert(TDefinitions node, boolean convertImports) {

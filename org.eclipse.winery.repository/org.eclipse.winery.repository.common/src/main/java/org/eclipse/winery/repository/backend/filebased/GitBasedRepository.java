@@ -417,11 +417,29 @@ public class GitBasedRepository extends AbstractFileBasedRepository {
     @Override
     public void putContentToFile(RepositoryFileReference ref, String content, MediaType mediaType) throws IOException {
         repository.putContentToFile(ref, content, mediaType);
+        try {
+            if (configuration.isAutoCommit()) {
+                this.addCommit(ref);
+            } else {
+                postEventMap();
+            }
+        } catch (GitAPIException e) {
+            LOGGER.trace(e.getMessage(), e);
+        }
     }
     
     @Override
     public void putDefinition(DefinitionsChildId id, TDefinitions definitions) throws IOException {
         repository.putDefinition(id, definitions);
+        try {
+            if (configuration.isAutoCommit()) {
+                this.addCommit(BackendUtils.getRefOfDefinitions(id));
+            } else {
+                postEventMap();
+            }
+        } catch (GitAPIException e) {
+            LOGGER.trace(e.getMessage(), e);
+        }
     }
 
     @Override

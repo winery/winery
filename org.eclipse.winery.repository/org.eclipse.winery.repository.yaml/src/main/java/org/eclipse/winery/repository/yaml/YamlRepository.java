@@ -636,6 +636,10 @@ public class YamlRepository extends AbstractFileBasedRepository {
      **/
     @Override
     public void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException {
+        if (mediaType.equals(MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS)) {
+            // use throwable as way to track the callgraph
+            LOGGER.error("Use of InputStream overload to write definitions with callpath", new Throwable());
+        }
         Path targetPath = this.ref2AbsolutePath(ref);
         inputStream = convertToServiceTemplate(ref, inputStream, mediaType);
         writeInputStreamToPath(targetPath, inputStream);
@@ -663,6 +667,7 @@ public class YamlRepository extends AbstractFileBasedRepository {
      * @param inputStream Input Stream
      * @return yaml service template input stream
      **/
+    @Deprecated
     private InputStream convertToServiceTemplate(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) {
         if (!mediaType.equals(MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS)) {
             // do not modify content that's not a TOSCA_DEFINITIONS file

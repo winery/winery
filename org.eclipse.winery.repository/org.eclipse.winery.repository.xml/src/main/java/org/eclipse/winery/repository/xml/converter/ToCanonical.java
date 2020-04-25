@@ -14,5 +14,44 @@
 
 package org.eclipse.winery.repository.xml.converter;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+
+import org.eclipse.winery.model.tosca.TDefinitions;
+import org.eclipse.winery.repository.JAXBSupport;
+import org.eclipse.winery.repository.xml.XmlRepository;
+import org.eclipse.winery.repository.xml.export.XmlModelJAXBSupport;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ToCanonical {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ToCanonical.class);
+    private final XmlRepository repository;
+
+    public ToCanonical(XmlRepository repository) {
+        this.repository = repository;
+    }
+    
+    public TDefinitions convert(org.eclipse.winery.model.tosca.xml.TDefinitions node) {
+        // NOTE This only works if the canonical model is a binary-compatible deserialization of the xml model.
+        //  If that is no longer the case through modifications, this WILL fail!
+        Marshaller m = XmlModelJAXBSupport.createMarshaller(true, repository.getNamespaceManager().asPrefixMapper());
+        Unmarshaller u = JAXBSupport.createUnmarshaller();
+        try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
+            m.marshal(node, buffer);
+            try (ByteArrayInputStream in = new ByteArrayInputStream(buffer.toByteArray())) {
+                return (TDefinitions) u.unmarshal(in);
+            } 
+        } catch (JAXBException | IOException e) {
+            LOGGER.error("Could not convert XML model to canonical model due to underlying exception", e);
+            return null;
+        }
+    }
 }

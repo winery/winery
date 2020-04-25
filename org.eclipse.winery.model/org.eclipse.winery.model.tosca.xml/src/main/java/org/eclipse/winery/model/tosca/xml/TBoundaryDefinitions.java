@@ -215,7 +215,7 @@ public class TBoundaryDefinitions implements Serializable {
             @XmlElement(name = "PropertyMapping", required = true)
             protected List<TPropertyMapping> propertyMapping;
 
-            @Nullable
+            @NonNull
             public List<TPropertyMapping> getPropertyMapping() {
                 if (propertyMapping == null) {
                     propertyMapping = new ArrayList<TPropertyMapping>();
