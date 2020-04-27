@@ -87,6 +87,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         @XmlElement(name = "PatternRefinementModel", type = OTPatternRefinementModel.class),
         @XmlElement(name = "TestRefinementModel", type = OTTestRefinementModel.class)
     })
+    @Deprecated // removing this type information is not helpful, because this class does no longer need to conform to the TOSCA XML XSD
     protected List<TExtensibleElements> serviceTemplateOrNodeTypeOrNodeTypeImplementation;
 
     @XmlAttribute(name = "name")
@@ -414,7 +415,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         }
     }
 
-    public static class Builder<T extends Builder<T>> extends HasId.Builder<T> {
+    public static class Builder extends HasId.Builder<Builder> {
         private final String target_namespace;
 
         private TDefinitions.Extensions extensions;
@@ -445,82 +446,82 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return self();
         }
 
-        public T setImport(List<TImport> imports) {
+        public Builder setImport(List<TImport> imports) {
             this.imports = imports;
             return self();
         }
 
-        public T setTypes(TDefinitions.Types types) {
+        public Builder setTypes(TDefinitions.Types types) {
             this.types = types;
             return self();
         }
 
-        public T setServiceTemplates(List<TServiceTemplate> serviceTemplates) {
+        public Builder setServiceTemplates(List<TServiceTemplate> serviceTemplates) {
             this.serviceTemplates = serviceTemplates;
             return self();
         }
 
-        public T setNodeTypes(List<TNodeType> nodeTypes) {
+        public Builder setNodeTypes(List<TNodeType> nodeTypes) {
             this.nodeTypes = nodeTypes;
             return self();
         }
 
-        public T setNodeTypeImplementations(List<TNodeTypeImplementation> nodeTypeImplementations) {
+        public Builder setNodeTypeImplementations(List<TNodeTypeImplementation> nodeTypeImplementations) {
             this.nodeTypeImplementations = nodeTypeImplementations;
             return self();
         }
 
-        public T setRelationshipTypes(List<TRelationshipType> relationshipTypes) {
+        public Builder setRelationshipTypes(List<TRelationshipType> relationshipTypes) {
             this.relationshipTypes = relationshipTypes;
             return self();
         }
 
-        public T setRelationshipTypeImplementations(List<TRelationshipTypeImplementation> relationshipTypeImplementations) {
+        public Builder setRelationshipTypeImplementations(List<TRelationshipTypeImplementation> relationshipTypeImplementations) {
             this.relationshipTypeImplementations = relationshipTypeImplementations;
             return self();
         }
 
-        public T setRequirementTypes(List<TRequirementType> requirementTypes) {
+        public Builder setRequirementTypes(List<TRequirementType> requirementTypes) {
             this.requirementTypes = requirementTypes;
             return self();
         }
 
-        public T setCapabilityTypes(List<TCapabilityType> capabilityTypes) {
+        public Builder setCapabilityTypes(List<TCapabilityType> capabilityTypes) {
             this.capabilityTypes = capabilityTypes;
             return self();
         }
 
-        public T setArtifactTypes(List<TArtifactType> artifactTypes) {
+        public Builder setArtifactTypes(List<TArtifactType> artifactTypes) {
             this.artifactTypes = artifactTypes;
             return self();
         }
 
-        public T setArtifactTemplates(List<TArtifactTemplate> artifactTemplates) {
+        public Builder setArtifactTemplates(List<TArtifactTemplate> artifactTemplates) {
             this.artifactTemplates = artifactTemplates;
             return self();
         }
 
-        public T setPolicyTypes(List<TPolicyType> policyTypes) {
+        public Builder setPolicyTypes(List<TPolicyType> policyTypes) {
             this.policyTypes = policyTypes;
             return self();
         }
         
-        public T setInterfaceTypes(List<TInterfaceType> interfaceTypes) {
+        public Builder setInterfaceTypes(List<TInterfaceType> interfaceTypes) {
             this.interfaceTypes = interfaceTypes;
             return self();
         }
 
-        public T setPolicyTemplate(List<TPolicyTemplate> policyTemplate) {
+        public Builder setPolicyTemplate(List<TPolicyTemplate> policyTemplate) {
             this.policyTemplate = policyTemplate;
             return self();
         }
 
-        public T setName(String name) {
+        public Builder setName(String name) {
             this.name = name;
             return self();
         }
 
-        public T addExtensions(TDefinitions.Extensions extensions) {
+        public Builder addExtensions(TDefinitions.Extensions extensions) {
             if (extensions == null || extensions.getExtension().isEmpty()) {
                 return self();
             }
@@ -533,7 +534,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return self();
         }
 
-        public T addExtensions(List<TExtension> extensions) {
+        public Builder addExtensions(List<TExtension> extensions) {
             if (extensions == null) {
                 return self();
             }
@@ -543,7 +544,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return addExtensions(tmp);
         }
 
-        public T addExtensions(TExtension extensions) {
+        public Builder addExtensions(TExtension extensions) {
             if (extensions == null) {
                 return self();
             }
@@ -553,7 +554,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return addExtensions(tmp);
         }
 
-        public T addImports(List<TImport> _import) {
+        public Builder addImports(List<TImport> _import) {
             if (_import == null || _import.isEmpty()) {
                 return self();
             }
@@ -566,7 +567,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return self();
         }
 
-        public T addImports(TImport _import) {
+        public Builder addImports(TImport _import) {
             if (_import == null) {
                 return self();
             }
@@ -576,7 +577,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return addImports(tmp);
         }
 
-        public T addTypes(TDefinitions.Types types) {
+        public Builder addTypes(TDefinitions.Types types) {
             if (types == null || types.getAny().isEmpty()) {
                 return self();
             }
@@ -589,7 +590,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return self();
         }
 
-        public T addTypes(List<Object> types) {
+        public Builder addTypes(List<Object> types) {
             if (types == null) {
                 return self();
             }
@@ -599,7 +600,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return addTypes(tmp);
         }
 
-        public T addServiceTemplates(List<TServiceTemplate> serviceTemplates) {
+        public Builder addServiceTemplates(List<TServiceTemplate> serviceTemplates) {
             if (serviceTemplates == null || serviceTemplates.isEmpty()) {
                 return self();
             }
@@ -612,7 +613,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return self();
         }
 
-        public T addServiceTemplates(TServiceTemplate serviceTemplate) {
+        public Builder addServiceTemplates(TServiceTemplate serviceTemplate) {
             if (serviceTemplate == null) {
                 return self();
             }
@@ -622,7 +623,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return addServiceTemplates(tmp);
         }
 
-        public T addNodeTypes(List<TNodeType> nodeTypes) {
+        public Builder addNodeTypes(List<TNodeType> nodeTypes) {
             if (nodeTypes == null || nodeTypes.isEmpty()) {
                 return self();
             }
@@ -635,7 +636,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return self();
         }
 
-        public T addNodeTypes(TNodeType nodeTypes) {
+        public Builder addNodeTypes(TNodeType nodeTypes) {
             if (nodeTypes == null) {
                 return self();
             }
@@ -645,7 +646,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return addNodeTypes(tmp);
         }
 
-        public T addNodeTypeImplementations(List<TNodeTypeImplementation> nodeTypeImplementations) {
+        public Builder addNodeTypeImplementations(List<TNodeTypeImplementation> nodeTypeImplementations) {
             if (nodeTypeImplementations == null || nodeTypeImplementations.isEmpty()) {
                 return self();
             }
@@ -658,7 +659,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return self();
         }
 
-        public T addNodeTypeImplementations(TNodeTypeImplementation relationshipTypes) {
+        public Builder addNodeTypeImplementations(TNodeTypeImplementation relationshipTypes) {
             if (relationshipTypes == null) {
                 return self();
             }
@@ -668,7 +669,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return addNodeTypeImplementations(tmp);
         }
 
-        public T addRelationshipTypes(List<TRelationshipType> relationshipTypes) {
+        public Builder addRelationshipTypes(List<TRelationshipType> relationshipTypes) {
             if (relationshipTypes == null || relationshipTypes.isEmpty()) {
                 return self();
             }
@@ -681,7 +682,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return self();
         }
 
-        public T addRelationshipTypes(TRelationshipType relationshipTypes) {
+        public Builder addRelationshipTypes(TRelationshipType relationshipTypes) {
             if (relationshipTypes == null) {
                 return self();
             }
@@ -691,7 +692,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return addRelationshipTypes(tmp);
         }
 
-        public T addRelationshipTypeImplementations(List<TRelationshipTypeImplementation> relationshipTypeImplementations) {
+        public Builder addRelationshipTypeImplementations(List<TRelationshipTypeImplementation> relationshipTypeImplementations) {
             if (relationshipTypeImplementations == null || relationshipTypeImplementations.isEmpty()) {
                 return self();
             }
@@ -704,7 +705,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return self();
         }
 
-        public T addRelationshipTypeImplementations(TRelationshipTypeImplementation relationshipTypeImplementations) {
+        public Builder addRelationshipTypeImplementations(TRelationshipTypeImplementation relationshipTypeImplementations) {
             if (relationshipTypeImplementations == null) {
                 return self();
             }
@@ -714,7 +715,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return addRelationshipTypeImplementations(tmp);
         }
 
-        public T addRequirementTypes(List<TRequirementType> requirementTypes) {
+        public Builder addRequirementTypes(List<TRequirementType> requirementTypes) {
             if (requirementTypes == null || requirementTypes.isEmpty()) {
                 return self();
             }
@@ -727,7 +728,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return self();
         }
 
-        public T addRequirementTypes(TRequirementType requirementTypes) {
+        public Builder addRequirementTypes(TRequirementType requirementTypes) {
             if (requirementTypes == null) {
                 return self();
             }
@@ -737,7 +738,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return addRequirementTypes(tmp);
         }
 
-        public T addDataTypes(List<TDataType> dataTypes) {
+        public Builder addDataTypes(List<TDataType> dataTypes) {
             if (dataTypes == null || dataTypes.isEmpty()) {
                 return self();
             }
@@ -750,7 +751,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return self();
         }
         
-        public T addDataTypes(TDataType dataType) {
+        public Builder addDataTypes(TDataType dataType) {
             if (dataType == null) {
                 return self();
             }
@@ -760,7 +761,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return addDataTypes(Collections.singletonList(dataType));
         }
         
-        public T addCapabilityTypes(List<TCapabilityType> capabilityTypes) {
+        public Builder addCapabilityTypes(List<TCapabilityType> capabilityTypes) {
             if (capabilityTypes == null || capabilityTypes.isEmpty()) {
                 return self();
             }
@@ -773,7 +774,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return self();
         }
 
-        public T addCapabilityTypes(TCapabilityType capabilityTypes) {
+        public Builder addCapabilityTypes(TCapabilityType capabilityTypes) {
             if (capabilityTypes == null) {
                 return self();
             }
@@ -783,7 +784,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return addCapabilityTypes(tmp);
         }
 
-        public T addArtifactTypes(List<TArtifactType> artifactTypes) {
+        public Builder addArtifactTypes(List<TArtifactType> artifactTypes) {
             if (artifactTypes == null || artifactTypes.isEmpty()) {
                 return self();
             }
@@ -796,7 +797,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return self();
         }
 
-        public T addArtifactTypes(TArtifactType artifactTypes) {
+        public Builder addArtifactTypes(TArtifactType artifactTypes) {
             if (artifactTypes == null) {
                 return self();
             }
@@ -806,7 +807,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return addArtifactTypes(tmp);
         }
 
-        public T addArtifactTemplates(List<TArtifactTemplate> artifactTemplates) {
+        public Builder addArtifactTemplates(List<TArtifactTemplate> artifactTemplates) {
             if (artifactTemplates == null || artifactTemplates.isEmpty()) {
                 return self();
             }
@@ -819,7 +820,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return self();
         }
 
-        public T addArtifactTemplates(TArtifactTemplate artifactTemplates) {
+        public Builder addArtifactTemplates(TArtifactTemplate artifactTemplates) {
             if (artifactTemplates == null) {
                 return self();
             }
@@ -829,7 +830,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return addArtifactTemplates(tmp);
         }
 
-        public T addPolicyTypes(List<TPolicyType> policyTypes) {
+        public Builder addPolicyTypes(List<TPolicyType> policyTypes) {
             if (policyTypes == null || policyTypes.isEmpty()) {
                 return self();
             }
@@ -842,7 +843,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return self();
         }
 
-        public T addPolicyTypes(TPolicyType policyTypes) {
+        public Builder addPolicyTypes(TPolicyType policyTypes) {
             if (policyTypes == null) {
                 return self();
             }
@@ -852,7 +853,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return addPolicyTypes(tmp);
         }
 
-        public T addInterfaceTypes(List<TInterfaceType> interfaceTypes) {
+        public Builder addInterfaceTypes(List<TInterfaceType> interfaceTypes) {
             if (interfaceTypes == null || interfaceTypes.isEmpty()) {
                 return self();
             }
@@ -865,7 +866,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return self();
         }
 
-        public T addInterfaceTypes(TInterfaceType interfaceTypes) {
+        public Builder addInterfaceTypes(TInterfaceType interfaceTypes) {
             if (interfaceTypes == null) {
                 return self();
             }
@@ -875,7 +876,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return addInterfaceTypes(tmp);
         }
 
-        public T addPolicyTemplates(List<TPolicyTemplate> policyTemplate) {
+        public Builder addPolicyTemplates(List<TPolicyTemplate> policyTemplate) {
             if (policyTemplate == null || policyTemplate.isEmpty()) {
                 return self();
             }
@@ -888,7 +889,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return self();
         }
 
-        public T addPolicyTemplates(TPolicyTemplate policyTemplate) {
+        public Builder addPolicyTemplates(TPolicyTemplate policyTemplate) {
             if (policyTemplate == null) {
                 return self();
             }
@@ -900,15 +901,19 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
 
         @ADR(11)
         @Override
-        @SuppressWarnings("unchecked") // we assume the cast is safe here
-        public T self() {
-            return (T) this;
+        public Builder self() {
+            return this;
         }
 
         public TDefinitions build() {
             return new TDefinitions(this);
         }
 
+        /**
+         * @deprecated there is no good reason for the canonical model to conform to the TOSCA xml xsd any longer
+         *              As such this total removal of type information could be removed for ease of use in the frontend
+         */
+        @Deprecated
         public List<TExtensibleElements> getServiceTemplateOrNodeTypeOrNodeTypeImplementation() {
             List<TExtensibleElements> tmp = new ArrayList<>();
 

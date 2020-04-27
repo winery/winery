@@ -115,13 +115,9 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
             Set<String> usedRelationshipTemplateIds = topologyTemplate.getRelationshipTemplates()
                 .stream().map(HasId::getId).collect(Collectors.toSet());
             topologyTemplate.getNodeTemplates().forEach(node -> {
-                if (node.getRequirements() != null) {
-                    List<TRequirement> requirements = node.getRequirements().getRequirement().stream()
-                        .filter(r -> usedRelationshipTemplateIds.contains(r.getRelationship()))
-                        .collect(Collectors.toList());
-                    node.getRequirements().getRequirement().clear();
-                    node.getRequirements().getRequirement().addAll(requirements);
-                }
+                if (node.getRequirements() == null) return;
+                node.getRequirements().getRequirement()
+                    .removeIf(r -> !usedRelationshipTemplateIds.contains(r.getRelationship()));
             });
         }
         this.getServiceTemplate().setTopologyTemplate(topologyTemplate);

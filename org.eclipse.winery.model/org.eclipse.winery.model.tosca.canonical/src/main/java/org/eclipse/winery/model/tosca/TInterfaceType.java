@@ -46,13 +46,10 @@ public class TInterfaceType extends TEntityType {
     }
 
     public TInterfaceType(Builder builder) {
-        TEntityType.DerivedFrom parent = new TEntityType.DerivedFrom();
-        parent.setType(builder.derivedFrom);
+        super(builder);
         this.setOperations(builder.operations);
         //this.setInputs(builder.inputs);
         this.setDescription(builder.description);
-        this.setName(builder.name);
-        this.setDerivedFrom(parent);
     }
 
     @Override
@@ -117,15 +114,14 @@ public class TInterfaceType extends TEntityType {
         this.description = description;
     }
 
-    public static class Builder {
+    public static class Builder extends TEntityType.Builder<Builder> {
         public String description;
-        public String name;
         public QName derivedFrom;
         private Map<String, TOperationDefinition> operations;
         private Map<String, TPropertyDefinition> inputs;
 
         public Builder(String name) {
-            this.name = name;
+            super(name);
         }
 
         public Builder setDescription(String description) {
@@ -190,6 +186,11 @@ public class TInterfaceType extends TEntityType {
             }
 
             return addInputs(Collections.singletonMap(name, input));
+        }
+        
+        @Override
+        public Builder self() {
+            return this;
         }
 
         public TInterfaceType build() {

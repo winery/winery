@@ -113,5 +113,9 @@ public class TArtifact extends TEntityTemplate {
         public Builder self() {
             return this;
         }
+        
+        public TArtifact build() {
+            return new TArtifact(this);
+        }
     }
 }

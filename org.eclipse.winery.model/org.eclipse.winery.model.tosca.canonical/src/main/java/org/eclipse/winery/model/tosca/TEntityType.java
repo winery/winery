@@ -513,6 +513,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
         private TTags tags;
         private TEntityType.DerivedFrom derivedFrom;
         private List<YamlPropertyDefinition> properties;
+        private XmlPropertiesDefinition propertiesDefinition;
         private TBoolean abstractValue;
         private TBoolean finalValue;
         private String targetNamespace;
@@ -584,6 +585,11 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             List<YamlPropertyDefinition> tmp = new ArrayList<>();
             tmp.add(property);
             return setProperties(tmp);
+        }
+        
+        public T setPropertiesDefinition(XmlPropertiesDefinition propertiesDefinition) {
+            this.propertiesDefinition = propertiesDefinition;
+            return self();
         }
 
         public T setAbstract(TBoolean abstractValue) {

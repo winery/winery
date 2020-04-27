@@ -84,6 +84,10 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
             return;
         }
         const propertyData = nodeTemplate.properties;
+        // TODO get nodeTemplate's type and grab the propertiesDefinition for the NodeType.
+        //  That definition can be a List<YamlPropertiesDefinition> or an XmlPropertiesDefinition.
+        //  This way we can obtain the constraints required for input form generation.
+        
         this.propertyDefinitionType = this.determinePropertyDefinitionType(nodeTemplate);
         this.nodeType = nodeTemplate.type;
         // reset nodeProperties to empty object to change it's pointer for change detection to work
@@ -123,6 +127,7 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
         this.dispatchRedux();
     }
 
+    // TODO? rewrite to have a "PathValueItem"
     yamlPropertyEdit($event: KeyValueItem) {
         // FIXME deal with the fact that yaml properties support complex datatypes, implying nesting
         this.nodeProperties[$event.key] = $event.value;
