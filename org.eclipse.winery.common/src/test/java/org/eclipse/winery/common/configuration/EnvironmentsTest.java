@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Disabled("This test seems to fail transiently on test infrastructure")
 public class EnvironmentsTest {
 
     @BeforeAll
@@ -59,7 +60,6 @@ public class EnvironmentsTest {
      * Tests whenever the configuration is loaded from backend if it was changed
      */
     @Test
-    @Disabled("This test seems to fail transiently on Travis.")
     public void testReload() {
         YAMLConfiguration configuration = Environment.getInstance().getConfiguration();
         assertFalse(Environment.getInstance().checkConfigurationForUpdate());
@@ -82,7 +82,6 @@ public class EnvironmentsTest {
     }
 
     @Test
-    @Disabled("This test seems to fail transiently on Travis.")
     public void testGetRepositoryConfig() {
         RepositoryConfigurationObject repositoryConfig = Environments.getInstance().getRepositoryConfig();
         assertEquals("file", repositoryConfig.getProvider());
