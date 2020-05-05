@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -68,18 +68,24 @@
 
             <div *ngIf="isImplementationArtifact">
                 <label class="control-label" for="interfaces">Interface Name</label>
-                <select [(ngModel)]="selectedInterface" id="interfaces" name="interfaces" class="form-control">
+                <select [(ngModel)]="selectedInterface" id="interfaces" name="interfaces" class="form-control"
+                        (change)="interfaceAndOperation()">
                     <option *ngFor="let interfaceItem of interfacesList" [ngValue]="interfaceItem">
                         {{interfaceItem.text}}
                     </option>
                 </select>
 
-                <label class="control-label" for="operations">Operations</label>
-                <select [(ngModel)]="selectedOperation" id="operations" name="operations" class="form-control">
+                <label class="control-label" for="operations">Operation Name&nbsp;</label>
+                <i class="fa fa-question-circle" tooltip="If no operation is selected, the IA must implement all operations of the selected interface."></i>
+                <select [(ngModel)]="selectedOperation" id="operations" name="operations" class="form-control"
+                        (change)="interfaceAndOperation()">
                     <option *ngFor="let operation of selectedInterface?.operations" [ngValue]="operation">
                         {{operation}}
                     </option>
                 </select>
+                <button *ngIf="selectedOperation" [textContent]="'clear Operation Name'" type="button"
+                        class="btn btn-default btn-xs" (click)="clearOperation()">
+                </button>
             </div>
             <fieldset>
                 <h4>Artifact Template Creation</h4>
@@ -112,7 +118,7 @@
                 </div>
             </fieldset>
             <winery-qname-selector
-                *ngIf="selectedRadioButton === 'createArtifactTemplate' || selectedRadioButton === 'skipArtifactTemplate' "
+                *ngIf="selectedRadioButton === 'skipArtifactTemplate' "
                 [title]="'Artifact Type'"
                 [displayList]="artifactTypesList"
                 [width]="'none'"
@@ -123,19 +129,29 @@
                 *ngIf="selectedRadioButton === 'linkArtifactTemplate'"
                 [title]="'Artifact Template'"
                 [displayList]="artifactTemplatesList"
+                [width]="'none'"
                 (selectedValueChanged)="onSelectedArtifactTemplateChanged($event.value)">
             </winery-qname-selector>
-            <winery-component-exists
-                *ngIf="selectedRadioButton === 'createArtifactTemplate'"
-                [generateData]=artifact
-                [modalRef]="addArtifactModal">
-            </winery-component-exists>
+            <div class="form-group-grouping typeimplementation">
+                <winery-add-component-data-component *ngIf="selectedRadioButton === 'createArtifactTemplate'"
+                                                     #addComponentData
+                                                     [toscaType]="toscaType"
+                                                     [types]="types"
+                                                     [typeRequired]="typeRequired"
+                                                     [newComponentName]="artifact.name"
+                                                     [validation]="validation"
+                                                     (typeChanged)="onSelectedArtifactTypeChanged($event)"
+                                                     (newComponentNameEvent)="setNewArtifactName($event)"
+                                                     (newComponentNamespaceEvent)="setNewArtifactNamespace($event)"
+                                                     (validFormEvent)="setValid($event)">
+                </winery-add-component-data-component>
+            </div>
         </form>
     </winery-modal-body>
     <winery-modal-footer [showDefaultButtons]="false">
         <button type="button" class="btn btn-default" data-dismiss="modal" (click)="addArtifactModal.hide()">Cancel
         </button>
-        <button type="button" [disabled]="!addArtifactForm?.form.valid || noneSelected"
+        <button type="button" [disabled]="!addArtifactForm?.form.valid || noneSelected || valid"
                 class="btn btn-primary"
                 (click)="addConfirmed()">Add
         </button>
@@ -164,7 +180,8 @@
                                                  title="{{file.name}}"><img src="{{file.thumbnailUrl}}"></a></span>
                     </td>
                     <td>
-                        <p class="name"><a href="{{baseUrl + file.url}}" download="{{file.name}}" title="{{file.name}}">{{file.name}}</a>
+                        <p class="name"><a href="{{baseUrl + file.url}}" download="{{file.name}}"
+                                           title="{{file.name}}">{{file.name}}</a>
                         </p>
                     </td>
                     <td>

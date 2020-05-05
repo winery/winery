@@ -22,6 +22,8 @@ import {FormsModule} from '@angular/forms';
 import {WineryQNameSelectorModule} from '../../../wineryQNameSelector/wineryQNameSelector.module';
 import {WineryComponentExistsModule} from '../../../wineryComponentExists/wineryComponentExists.module';
 import {WineryUploaderModule} from '../../../wineryUploader/wineryUploader.module';
+import { WineryAddDataModule } from '../../../wineryAddComponentDataModule/addComponentData.module';
+import { TooltipModule } from 'ngx-bootstrap';
 
 @NgModule({
     imports: [
@@ -34,6 +36,8 @@ import {WineryUploaderModule} from '../../../wineryUploader/wineryUploader.modul
         WineryQNameSelectorModule,
         WineryUploaderModule,
         FormsModule,
+        WineryAddDataModule,
+        TooltipModule,
     ],
     exports: [WineryArtifactComponent],
     declarations: [
