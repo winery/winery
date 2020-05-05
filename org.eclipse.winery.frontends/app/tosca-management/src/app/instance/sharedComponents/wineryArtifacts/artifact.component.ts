@@ -375,11 +375,10 @@ export class WineryArtifactComponent implements OnInit {
 
     private getNamespaceAndLocalNameFromQName(qname: string): { namespace: string; localname: string; } {
         const i = qname.indexOf('}');
-        const res = {
+        return {
             namespace: qname.substr(1, i - 1),
             localname: qname.substr(i + 1)
         };
-        return res;
     }
 
     private createArtifactTemplateUrl(qname: string): string {
@@ -444,11 +443,7 @@ export class WineryArtifactComponent implements OnInit {
     private validate(create: boolean) {
         this.validation = new AddComponentValidation();
         this.createComponent = create;
-        if (!this.createComponent) {
-            this.validation.noDuplicatesAllowed = true;
-        } else {
-            this.validation.noDuplicatesAllowed = false;
-        }
+        this.validation.noDuplicatesAllowed = !this.createComponent;
     }
 
     interfaceAndOperation() {
@@ -459,10 +454,6 @@ export class WineryArtifactComponent implements OnInit {
     private handleComponentData(compData: WineryInstance) {
         const node = compData.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].nodeType;
         this.nodetype = node.substring(node.indexOf('}') + 1, node.indexOf('_'));
-    }
-
-    showHelp() {
-        this.hideHelp = !this.hideHelp;
     }
 
     clearOperation() {

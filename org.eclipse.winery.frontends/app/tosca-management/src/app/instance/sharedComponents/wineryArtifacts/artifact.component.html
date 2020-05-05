@@ -75,17 +75,14 @@
                     </option>
                 </select>
 
-                <label class="control-label" for="operations">Operation Name</label>
-                <i class="fa fa-question-circle" tooltip="click me" (click)="showHelp()"></i>
+                <label class="control-label" for="operations">Operation Name&nbsp;</label>
+                <i class="fa fa-question-circle" tooltip="If no operation is selected, the IA must implement all operations of the selected interface."></i>
                 <select [(ngModel)]="selectedOperation" id="operations" name="operations" class="form-control"
                         (change)="interfaceAndOperation()">
                     <option *ngFor="let operation of selectedInterface?.operations" [ngValue]="operation">
                         {{operation}}
                     </option>
                 </select>
-                <p *ngIf="!hideHelp" class="help-block">
-                    If no operation is selected, the IA must implement all operations of the selected interface.
-                </p>
                 <button *ngIf="selectedOperation" [textContent]="'clear Operation Name'" type="button"
                         class="btn btn-default btn-xs" (click)="clearOperation()">
                 </button>
