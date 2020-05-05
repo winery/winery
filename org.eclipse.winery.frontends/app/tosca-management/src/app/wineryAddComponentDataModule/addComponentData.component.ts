@@ -157,17 +157,22 @@ export class WineryAddComponentDataComponent {
 
     createArtifactName(toscaComponent: ToscaComponent, wineryVersion: WineryVersion, operation: string,
                        isImplementationArtifact: boolean, nodeType: string) {
-        const implementation = isImplementationArtifact ? 'IA' : 'DA';
+        const artifactType = isImplementationArtifact ? 'IA' : 'DA';
         const newVersion = wineryVersion.getWineryAndWipVersion();
         this.newComponentFinalName = nodeType;
         if (operation) {
-            this.newComponentVersion.componentVersion = operation + '-' + wineryVersion.getComponentVersion()
-                + WineryVersion.WINERY_VERSION_SEPARATOR + implementation;
+            this.newComponentVersion.componentVersion = operation + WineryVersion.WINERY_VERSION_SEPARATOR
+                + (wineryVersion.componentVersion
+                    ? wineryVersion.componentVersion + WineryVersion.WINERY_VERSION_SEPARATOR
+                    : '')
+                + artifactType;
             this.newComponentFinalName += WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR
                 + this.newComponentVersion.componentVersion + WineryVersion.WINERY_VERSION_SEPARATOR + newVersion;
         } else {
-            this.newComponentVersion.componentVersion = wineryVersion.getComponentVersion()
-                + WineryVersion.WINERY_VERSION_SEPARATOR + implementation;
+            this.newComponentVersion.componentVersion = (wineryVersion.getComponentVersion()
+                ? wineryVersion.componentVersion + WineryVersion.WINERY_VERSION_SEPARATOR
+                : '')
+                + artifactType;
             this.newComponentFinalName += WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR
                 + this.newComponentVersion.componentVersion + WineryVersion.WINERY_VERSION_SEPARATOR + newVersion;
         }
