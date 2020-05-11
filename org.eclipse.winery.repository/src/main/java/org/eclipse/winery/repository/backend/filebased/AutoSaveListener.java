@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,13 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.filebased;
 
-import org.apache.commons.configuration2.ex.ConfigurationException;
-import org.apache.commons.configuration2.PropertiesConfiguration;
-import org.apache.commons.configuration2.event.ConfigurationEvent;
-import org.apache.commons.configuration2.event.EventListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -27,9 +20,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.event.ConfigurationEvent;
+import org.apache.commons.configuration2.event.EventListener;
+import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * We do not count loads and saves as in
- * {@link org.apache.commons.configuration.builder.AutoSaveListener}, because
+ * We do not count loads and saves as in {@link org.apache.commons.configuration.builder.AutoSaveListener}, because
  * ConfigurationListener is not aware of such things
  */
 class AutoSaveListener implements EventListener<ConfigurationEvent> {
@@ -39,12 +38,10 @@ class AutoSaveListener implements EventListener<ConfigurationEvent> {
     private final Path path;
     private final PropertiesConfiguration configuration;
 
-
     /**
      * @param path          the file path to write to
-     * @param configuration the configuration, where the change events come
-     *                      from. This is needed as <code>event.getSource()</code> does
-     *                      not work
+     * @param configuration the configuration, where the change events come from. This is needed as
+     *                      <code>event.getSource()</code> does not work
      */
     public AutoSaveListener(Path path, PropertiesConfiguration configuration) {
         this.path = path;

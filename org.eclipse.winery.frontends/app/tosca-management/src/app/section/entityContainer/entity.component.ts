@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -77,7 +77,7 @@ export class EntityComponent implements OnInit {
         }
 
         this.showButtons = this.toscaType !== ToscaTypes.Imports;
-        this.showTargetAllocationButton = this.toscaType === ToscaTypes.ServiceTemplate;
+        this.showTargetAllocationButton = !this.configurationService.isYaml() && this.toscaType === ToscaTypes.ServiceTemplate;
 
         if (this.maxWidth === 380) {
             this.containerSizeClass = 'smallContainer';
@@ -116,9 +116,17 @@ export class EntityComponent implements OnInit {
     exportComponent(event: MouseEvent) {
         event.stopPropagation();
         if (event.ctrlKey) {
-            window.open(this.backendLink + '?xml', '_blank');
+            if (!this.configurationService.isYaml()) {
+                window.open(this.backendLink + '?xml', '_blank');
+            } else {
+                window.open(this.backendLink + '?yaml', '_blank');
+            }
         } else {
-            window.open(this.backendLink + '?csar', '_blank');
+            if (!this.configurationService.isYaml()) {
+                window.open(this.backendLink + '?csar', '_blank');
+            } else {
+                window.open(this.backendLink + '?yaml&csar', '_blank');
+            }
         }
     }
 

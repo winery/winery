@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -41,33 +41,57 @@ export class InstanceService {
 
     /**
      * Get the submenu for the given resource type for displaying a component instance.
-     * TODO: instead of string[], use objects which contain displayName and url fragment
      *
-     * @returns string[] containing all menus for each resource type.
+     * @returns SubMenuItem[] containing all menus for each resource type.
      */
     public getSubMenuByResource(): SubMenuItem[] {
         let subMenu: SubMenuItem[];
         switch (this.toscaComponent.toscaType) {
             case ToscaTypes.NodeType:
-                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.appearance, SubMenuItems.instanceStates, SubMenuItems.interfaces,
-                    SubMenuItems.implementations, SubMenuItems.tags, SubMenuItems.requirementDefinitions, SubMenuItems.capabilityDefinitions,
-                    SubMenuItems.propertiesDefinition, SubMenuItems.inheritance, SubMenuItems.documentation, SubMenuItems.xml];
+                if (this.configurationService.isYaml()) {
+                    subMenu = [SubMenuItems.readme, SubMenuItems.documentation, SubMenuItems.license, SubMenuItems.appearance, SubMenuItems.inheritance,
+                        SubMenuItems.artifacts, SubMenuItems.interfacedefinitions, SubMenuItems.requirementDefinitionsYaml, SubMenuItems.capabilityDefinitions,
+                        SubMenuItems.propertiesDefinition, SubMenuItems.attributes];
+                } else {
+                    subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.appearance, SubMenuItems.instanceStates, SubMenuItems.interfaces,
+                        SubMenuItems.implementations, SubMenuItems.inheritance, SubMenuItems.requirementDefinitions, SubMenuItems.capabilityDefinitions,
+                        SubMenuItems.propertiesDefinition, SubMenuItems.tags, SubMenuItems.documentation, SubMenuItems.xml];
+                }
                 break;
             case ToscaTypes.ServiceTemplate:
-                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.topologyTemplate, SubMenuItems.plans, SubMenuItems.selfServicePortal,
-                    SubMenuItems.boundaryDefinitions, SubMenuItems.tags, SubMenuItems.constraintChecking, SubMenuItems.documentation, SubMenuItems.xml];
-                if (this.configurationService.configuration.features.nfv) {
-                    subMenu.push(SubMenuItems.threatModeling);
+                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.topologyTemplate];
+                if (this.configurationService.isYaml()) {
+                    subMenu.push(SubMenuItems.parameters);
+                }
+                if (!this.configurationService.isYaml()) {
+                    subMenu.push(SubMenuItems.documentation, SubMenuItems.plans, SubMenuItems.selfServicePortal,
+                        SubMenuItems.boundaryDefinitions, SubMenuItems.tags, SubMenuItems.constraintChecking,
+                        SubMenuItems.xml);
+                    if (this.configurationService.configuration.features.nfv) {
+                        subMenu.push(SubMenuItems.threatModeling);
+                    }
                 }
                 break;
             case ToscaTypes.RelationshipType:
-                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.appearance, SubMenuItems.instanceStates, SubMenuItems.sourceInterfaces,
-                    SubMenuItems.interfaces, SubMenuItems.targetInterfaces, SubMenuItems.validSourcesAndTargets, SubMenuItems.implementations,
-                    SubMenuItems.propertiesDefinition, SubMenuItems.inheritance, SubMenuItems.documentation, SubMenuItems.xml];
+                if (this.configurationService.isYaml()) {
+                    subMenu = [SubMenuItems.readme, SubMenuItems.documentation, SubMenuItems.license, SubMenuItems.appearance, SubMenuItems.instanceStates,
+                        SubMenuItems.interfacedefinitions, SubMenuItems.validSourcesAndTargets, SubMenuItems.implementations, SubMenuItems.propertiesDefinition,
+                        SubMenuItems.inheritance];
+                } else {
+                    subMenu = [SubMenuItems.readme, SubMenuItems.documentation, SubMenuItems.license, SubMenuItems.appearance, SubMenuItems.instanceStates,
+                        SubMenuItems.sourceInterfaces, SubMenuItems.interfaces, SubMenuItems.targetInterfaces, SubMenuItems.validSourcesAndTargets,
+                        SubMenuItems.implementations,
+                        SubMenuItems.propertiesDefinition, SubMenuItems.inheritance, SubMenuItems.xml];
+                }
                 break;
             case ToscaTypes.ArtifactType:
-                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.propertiesDefinition, SubMenuItems.inheritance, SubMenuItems.templates,
-                    SubMenuItems.documentation, SubMenuItems.xml];
+                if (this.configurationService.isYaml()) {
+                    subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.propertiesDefinition, SubMenuItems.inheritance,
+                        SubMenuItems.supportedFiles, SubMenuItems.documentation];
+                } else {
+                    subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.propertiesDefinition, SubMenuItems.inheritance, SubMenuItems.templates,
+                        SubMenuItems.documentation, SubMenuItems.xml];
+                }
                 break;
             case ToscaTypes.ArtifactTemplate:
                 subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.files, SubMenuItems.source, SubMenuItems.properties,
@@ -78,8 +102,13 @@ export class InstanceService {
                     SubMenuItems.inheritance, SubMenuItems.documentation, SubMenuItems.xml];
                 break;
             case ToscaTypes.CapabilityType:
-                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.propertiesDefinition, SubMenuItems.inheritance, SubMenuItems.documentation,
-                    SubMenuItems.xml];
+                if (this.configurationService.isYaml()) {
+                    subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.propertiesDefinition, SubMenuItems.inheritance,
+                        SubMenuItems.capabilityTypeConstraints, SubMenuItems.documentation];
+                } else {
+                    subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.propertiesDefinition, SubMenuItems.inheritance,
+                        SubMenuItems.documentation, SubMenuItems.xml];
+                }
                 break;
             case ToscaTypes.NodeTypeImplementation:
                 subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.implementationArtifacts, SubMenuItems.deploymentArtifacts,
@@ -90,8 +119,13 @@ export class InstanceService {
                     SubMenuItems.documentation, SubMenuItems.xml];
                 break;
             case ToscaTypes.PolicyType:
-                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.language, SubMenuItems.appliesTo, SubMenuItems.propertiesDefinition,
-                    SubMenuItems.inheritance, SubMenuItems.templates, SubMenuItems.appearance, SubMenuItems.documentation, SubMenuItems.xml];
+                if (this.configurationService.isYaml()) {
+                    subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.appliesTo, SubMenuItems.propertiesDefinition,
+                        SubMenuItems.inheritance, SubMenuItems.appearance, SubMenuItems.documentation];
+                } else {
+                    subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.language, SubMenuItems.appliesTo, SubMenuItems.propertiesDefinition,
+                        SubMenuItems.inheritance, SubMenuItems.templates, SubMenuItems.appearance, SubMenuItems.documentation, SubMenuItems.xml];
+                }
                 break;
             case ToscaTypes.PolicyTemplate:
                 subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.properties, SubMenuItems.propertyConstraints, SubMenuItems.appearance,
@@ -113,8 +147,13 @@ export class InstanceService {
                     SubMenuItems.xml];
                 break;
             default: // assume Admin
-                subMenu = [SubMenuItems.namespaces, SubMenuItems.repository, SubMenuItems.planLanguages, SubMenuItems.planTypes,
-                    SubMenuItems.constraintTypes, SubMenuItems.consistencyCheck, SubMenuItems.log, SubMenuItems.configuration];
+                if (this.configurationService.isYaml()) {
+                    subMenu = [SubMenuItems.namespaces, SubMenuItems.repository, SubMenuItems.log, SubMenuItems.configuration];
+                } else {
+                    // YAML 1.2 does not contain Constraint Types
+                    subMenu = [SubMenuItems.namespaces, SubMenuItems.repository, SubMenuItems.planLanguages, SubMenuItems.planTypes,
+                        SubMenuItems.constraintTypes, SubMenuItems.consistencyCheck, SubMenuItems.log, SubMenuItems.configuration];
+                }
                 if (this.configurationService.configuration.features.accountability) {
                     subMenu.push(SubMenuItems.accountability);
                 }
@@ -122,6 +161,11 @@ export class InstanceService {
                     subMenu.push(SubMenuItems.oneToOneEDMMMappings, SubMenuItems.edmmTypeMappings);
                 }
         }
+
+        if (this.configurationService.isYaml()) {
+            subMenu = subMenu.filter(item => item !== SubMenuItems.xml);
+        }
+
         return subMenu;
     }
 
@@ -166,5 +210,10 @@ export class InstanceService {
 
     public getToscaLightCompatibility(): Observable<ToscaLightCompatibilityData> {
         return this.http.get<ToscaLightCompatibilityData>(this.path + '/toscalight');
+    }
+
+    public exportToFilesystem(): Observable<HttpResponse<string>> {
+        return this.http.post(this.path + '/exportToFilesystem', {},
+            { observe: 'response', responseType: 'text' });
     }
 }

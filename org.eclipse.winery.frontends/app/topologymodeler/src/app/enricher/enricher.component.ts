@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,6 +23,7 @@ import { TTopologyTemplate } from '../models/ttopology-template';
 import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 import { EnricherService } from './enricher.service';
 import { Enrichment, FeatureEntity } from './enrichmentEntity';
+import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 @Component({
     selector: 'winery-enricher',
@@ -40,6 +41,7 @@ export class EnricherComponent {
                 private actions: TopologyRendererActions,
                 private wineryActions: WineryActions,
                 private alert: ToastrService,
+                private configurationService: WineryRepositoryConfigurationService,
                 private enricherService: EnricherService) {
         this.ngRedux.select(state => state.topologyRendererState)
             .subscribe(currentButtonsState => this.checkButtonsState(currentButtonsState));
@@ -205,7 +207,7 @@ export class EnricherComponent {
      * @param data: topology template that was updated
      */
     private enrichmentApplied(data: TTopologyTemplate) {
-        TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, data);
+        TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, data, this.configurationService.isYaml());
         // reset available features since they are no longer valid
         this.availableFeatures = null;
         this.alert.success('Updated Topology Template!');

@@ -1,0 +1,58 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <div class="right">
+        <button class="btn btn-primary" name="save" (click)="saveToServer()"
+                [disabled]="!sharedData?.currentVersion?.editable">
+            Save
+        </button>
+    </div>
+
+    <winery-table [title]="title"
+                  [columns]="columns"
+                  [data]="validSourceTypes?.nodes"
+                  (addBtnClicked)="onAddClick()"
+                  (removeBtnClicked)="onRemoveClicked($event)">
+    </winery-table>
+
+</div>
+
+
+<ng-template #addModal>
+    <winery-modal-header title="Add {{title}}" [modalRef]="addModalRef">
+    </winery-modal-header>
+    <winery-modal-body>
+        <form>
+            <div class="form-group">
+                <label for="validNodeTypes" class="control-label">Node Types</label>
+                <ng-select id="validNodeTypes"
+                           [disabled]="!sharedData?.currentVersion?.editable"
+                           [items]="currentNodeTypes"
+                           (selected)="onSelectedValueChanged($event)"
+                           [active]="initialActiveItem"
+                >
+                </ng-select>
+            </div>
+
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer [modalRef]="addModalRef"
+                         [okButtonLabel]="'Add'"
+                         [disableOkButton]="!initialActiveItem"
+                         (onOk)="onAddValidSourceType()">
+    </winery-modal-footer>
+</ng-template>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -39,8 +39,7 @@ public class TOSCAMetaFileParser {
      *
      * @param toscaMetaFile path to the metadata file to process
      * @return <code>TOSCAMetaFile</code> that gives access to the content of
-     * the TOSCA meta file. If the given file doesn't exist or is
-     * invalid <code>null</code>.
+     * the TOSCA meta file. If the given file doesn't exist or is invalid <code>null</code>.
      */
     public TOSCAMetaFile parse(Path toscaMetaFile) {
         FileReader reader = null;
@@ -84,11 +83,10 @@ public class TOSCAMetaFileParser {
     /**
      * Parses and validates the <code>toscaMetaFile</code>.
      *
-     * @param manifestContent       generically parsed manifest file
+     * @param manifestContent  generically parsed manifest file
      * @param parseErrorsCount number of errors found during the generic parsing of the meta file.
      * @return <code>TOSCAMetaFile</code> that gives access to the content of
-     * the TOSCA meta file. If the given file doesn't exist or is
-     * invalid <code>null</code>.
+     * the TOSCA meta file. If the given file doesn't exist or is invalid <code>null</code>.
      */
     public TOSCAMetaFile parse(ManifestContents manifestContent, int parseErrorsCount) {
         // counts the errors during parsing
@@ -129,70 +127,85 @@ public class TOSCAMetaFileParser {
      * @param mf to validate
      * @return Number of errors occurred during validation.
      */
-    private int validateBlock0(ManifestContents mf) {
+    protected int validateBlock0(ManifestContents mf) {
         int numErrors = 0;
-
-        String metaFileVersion = null;
-        String csarVersion = null;
-        String createdBy = null;
-        String entryDefinitions = null;
-        String description = null;
-        String topology = null;
-
         Map<String, String> mainAttr = mf.getMainAttributes();
 
-        metaFileVersion = mainAttr.get(TOSCAMetaFileAttributes.TOSCA_META_VERSION);
+        numErrors += validateMetaVersion(mainAttr.get(TOSCAMetaFileAttributes.TOSCA_META_VERSION));
+        numErrors += validateCsarVersion(mainAttr.get(TOSCAMetaFileAttributes.CSAR_VERSION));
+        numErrors += validateCreatedBy(mainAttr.get(TOSCAMetaFileAttributes.CREATED_BY));
+        numErrors += validateEntryDefinitions(mainAttr.get(TOSCAMetaFileAttributes.ENTRY_DEFINITIONS));
+        numErrors += validateDescription(mainAttr.get(TOSCAMetaFileAttributes.DESCRIPTION));
+        numErrors += validateTopology(mainAttr.get(TOSCAMetaFileAttributes.TOPOLOGY));
 
+        return numErrors;
+    }
+
+    protected int validateMetaVersion(String metaFileVersion) {
+        int errors = 0;
         if (metaFileVersion == null) {
             this.logAttrMissing(TOSCAMetaFileAttributes.TOSCA_META_VERSION, 0);
-            numErrors++;
-        } else if (!(metaFileVersion = metaFileVersion.trim()).equals(TOSCAMetaFileAttributes.TOSCA_META_VERSION_VALUE)) {
+            errors++;
+        } else if (!metaFileVersion.trim().equals(TOSCAMetaFileAttributes.TOSCA_META_VERSION_VALUE)) {
             this.logAttrWrongVal(TOSCAMetaFileAttributes.TOSCA_META_VERSION, 0, TOSCAMetaFileAttributes.TOSCA_META_VERSION_VALUE);
-            numErrors++;
+            errors++;
         }
+        return errors;
+    }
 
-        csarVersion = mainAttr.get(TOSCAMetaFileAttributes.CSAR_VERSION);
+    protected int validateCsarVersion(String csarVersion) {
+        int errors = 0;
 
         if (csarVersion == null) {
             this.logAttrMissing(TOSCAMetaFileAttributes.CSAR_VERSION, 0);
-            numErrors++;
-        } else if (!(csarVersion = csarVersion.trim()).equals(TOSCAMetaFileAttributes.TOSCA_META_VERSION_VALUE)) {
+            errors++;
+        } else if (!csarVersion.trim().equals(TOSCAMetaFileAttributes.CSAR_VERSION_VALUE)) {
             this.logAttrWrongVal(TOSCAMetaFileAttributes.CSAR_VERSION, 0, TOSCAMetaFileAttributes.CSAR_VERSION_VALUE);
-            numErrors++;
+            errors++;
         }
+        return errors;
+    }
 
-        createdBy = mainAttr.get(TOSCAMetaFileAttributes.CREATED_BY);
-
+    protected int validateCreatedBy(String createdBy) {
+        int errors = 0;
         if (createdBy == null) {
             this.logAttrMissing(TOSCAMetaFileAttributes.CREATED_BY, 0);
-            numErrors++;
-        } else if ((createdBy = createdBy.trim()).isEmpty()) {
+            errors++;
+        } else if (createdBy.trim().isEmpty()) {
             this.logAttrValEmpty(TOSCAMetaFileAttributes.CREATED_BY, 0);
-            numErrors++;
+            errors++;
         }
 
-        entryDefinitions = mainAttr.get(TOSCAMetaFileAttributes.ENTRY_DEFINITIONS);
+        return errors;
+    }
 
+    protected int validateEntryDefinitions(String entryDefinitions) {
+        int errors = 0;
         if ((entryDefinitions != null) && entryDefinitions.trim().isEmpty()) {
             this.logAttrValEmpty(TOSCAMetaFileAttributes.ENTRY_DEFINITIONS, 0);
-            numErrors++;
+            errors++;
         }
 
-        description = mainAttr.get(TOSCAMetaFileAttributes.DESCRIPTION);
+        return errors;
+    }
 
+    protected int validateDescription(String description) {
+        int errors = 0;
         if ((description != null) && description.trim().isEmpty()) {
             this.logAttrValEmpty(TOSCAMetaFileAttributes.DESCRIPTION, 0);
-            numErrors++;
+            errors++;
         }
 
-        topology = mainAttr.get(TOSCAMetaFileAttributes.TOPOLOGY);
+        return errors;
+    }
 
+    protected int validateTopology(String topology) {
+        int errors = 0;
         if ((topology != null) && topology.trim().isEmpty()) {
             this.logAttrValEmpty(TOSCAMetaFileAttributes.TOPOLOGY, 0);
-            numErrors++;
+            errors++;
         }
-
-        return numErrors;
+        return errors;
     }
 
     /**
@@ -245,7 +258,7 @@ public class TOSCAMetaFileParser {
      * Logs that attribute <code>attributeName</code> in block
      * <code>blockNr</code> is missing.
      */
-    private void logAttrMissing(String attributeName, int blockNr) {
+    void logAttrMissing(String attributeName, int blockNr) {
         TOSCAMetaFileParser.LOGGER.warn("Required attribute {} in block {} is missing.", attributeName, blockNr);
     }
 
@@ -254,7 +267,7 @@ public class TOSCAMetaFileParser {
      * <code>blockNr</code> has an invalid value. Correct is
      * <code>correctValue</code>.
      */
-    private void logAttrWrongVal(String attributeName, int blockNr, String correctValue) {
+    void logAttrWrongVal(String attributeName, int blockNr, String correctValue) {
         TOSCAMetaFileParser.LOGGER.warn("Attribute {} in block {} has an invalid value. Must be {}.", attributeName, blockNr, correctValue);
     }
 
@@ -270,7 +283,7 @@ public class TOSCAMetaFileParser {
      * Logs that attribute <code>attributeName</code> in block
      * <code>blockNr</code> has an empty value.
      */
-    private void logAttrValEmpty(String attributeName, int blockNr) {
+    void logAttrValEmpty(String attributeName, int blockNr) {
         TOSCAMetaFileParser.LOGGER.warn("Attribute {} in block {} has a empty value.", attributeName, blockNr);
     }
 

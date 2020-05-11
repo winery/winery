@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2013-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,12 +15,16 @@
 package org.eclipse.winery.common;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import java.util.SortedMap;
@@ -69,7 +73,9 @@ import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.taglibs.standard.functions.Functions;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -315,10 +321,15 @@ public class Util {
         } else {
             res = "";
         }
-        res = res + Util.getTypeForComponentId(idClass);
+        res = res + getFolderName(idClass);
+        res = res + "/";
+        return res;
+    }
+
+    public static String getFolderName(Class<? extends DefinitionsChildId> idClass) {
+        String res = Util.getTypeForComponentId(idClass);
         res = res.toLowerCase();
         res = res + "s";
-        res = res + "/";
         return res;
     }
 
@@ -678,18 +689,60 @@ public class Util {
         }
     }
 
-    /**
-     * Bridge to client.getType(). Just calls client getType(), used by functions.tld.
-     * <p>
-     * We suppress compiler warnings as JSP 2.0 do not offer support for generics, but we're using JSP 2.0...
-     *
-     * @param client the repository client to use
-     * @param qname  the QName to resolve
-     * @param clazz  the class the QName is describing
-     * @return {@inheritDoc}
-     */
-    @SuppressWarnings( {"rawtypes", "unchecked"})
-    public static org.eclipse.winery.model.tosca.TEntityType getType(org.eclipse.winery.common.interfaces.IWineryRepository client, javax.xml.namespace.QName qname, java.lang.Class clazz) {
-        return client.getType(qname, clazz);
+    public static Path determineAndCreateRepositoryPath() {
+        Path repositoryPath;
+        if (SystemUtils.IS_OS_WINDOWS) {
+            if (Files.exists(Constants.GLOBAL_REPO_PATH_WINDOWS)) {
+                repositoryPath = Constants.GLOBAL_REPO_PATH_WINDOWS;
+            } else {
+                repositoryPath = createDefaultRepositoryPath();
+            }
+        } else {
+            repositoryPath = createDefaultRepositoryPath();
+        }
+        return repositoryPath;
+    }
+
+    private static Path createDefaultRepositoryPath() {
+        File repo = null;
+        boolean operationalFileSystemAccess;
+        try {
+            repo = new File(FileUtils.getUserDirectory(), Constants.DEFAULT_REPO_NAME);
+            operationalFileSystemAccess = true;
+        } catch (NullPointerException e) {
+            // it seems, we run at a system, where we do not have any filesystem
+            // access
+            operationalFileSystemAccess = false;
+        }
+
+        // operationalFileSystemAccess = false;
+
+        Path repositoryPath;
+        if (operationalFileSystemAccess) {
+            try {
+                org.apache.commons.io.FileUtils.forceMkdir(repo);
+            } catch (IOException e) {
+                LOGGER.debug("Error while creating directory.", e);
+            }
+            repositoryPath = repo.toPath();
+        } else {
+            // we do not have access to the file system
+            throw new IllegalStateException("No write access to file system");
+        }
+
+        return repositoryPath;
+    }
+
+    public static void createCsarOutputPath(String csarOutputPath) {
+        File outputPath = new File(csarOutputPath);
+        if (outputPath.exists() && outputPath.isDirectory()) {
+            return;
+        }
+        try {
+            org.apache.commons.io.FileUtils.forceMkdir(outputPath);
+        } catch (IOException e) {
+            LOGGER.error("Error while creating directory: {}", e.getMessage(), e);
+            throw new IllegalStateException(e);
+        }
     }
 }

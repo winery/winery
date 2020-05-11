@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -43,6 +43,8 @@ import { VersionsComponent } from '../node/versions/versions.component';
 import { PropertiesModule } from '../properties/properties.module';
 import { WineryModalModule } from '../../../../tosca-management/src/app/wineryModalModule/winery.modal.module';
 import { WineryFeatureToggleModule } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/winery-feature-toggle.module';
+import { WineryTableModule } from '../../../../tosca-management/src/app/wineryTableModule/wineryTable.module';
+import { Ng2TableModule } from 'ng2-table';
 
 @NgModule({
     imports: [
@@ -61,6 +63,8 @@ import { WineryFeatureToggleModule } from '../../../../tosca-management/src/app/
         PopoverModule.forRoot(),
         PropertiesModule,
         WineryFeatureToggleModule,
+        WineryTableModule,
+        Ng2TableModule,
     ],
     declarations: [
         NavbarComponent,

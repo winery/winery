@@ -1,0 +1,49 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2020 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<winery-table [title]="'Dependencies'"
+              [data]="dependenciesTableModel"
+              [columns]="columns"
+              [disableFiltering]="true"
+              [disableButtons]="!instanceService?.currentVersion?.editable"
+              (addBtnClicked)="openModal()"
+              (removeBtnClicked)="openConfirmRemoveModal($event)">
+</winery-table>
+
+<winery-modal bsModal #modal="bs-modal" [modalRef]="modal" (onHide)="form.reset()">
+    <winery-modal-header [title]="'Add Dependency'"></winery-modal-header>
+    <winery-modal-body>
+        <form #form="ngForm">
+            <div class="form-group">
+                <label class="control-label" for="name-{{uuid}}">Artifact</label>
+                <ng-select id="name-{{uuid}}" [items]="selectableArtifacts" (selected)="onArtifactSelected($event)"
+                           [disabled]="!instanceService?.currentVersion?.editable">
+                </ng-select>
+            </div>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer
+        [disableOkButton]="!form?.form.valid"
+        (onOk)="add(); form.reset()"
+        [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Add'">
+    </winery-modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #confirmRemoveModal="bs-modal" [modalRef]="confirmRemoveModal">
+    <winery-modal-header [title]="'Delete Dependency'"></winery-modal-header>
+    <winery-modal-body>
+        <p>Do you want to delete the dependency?</p>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="removeObject(object)" [closeButtonLabel]="'Cancel'"
+                         [okButtonLabel]="'Delete'"></winery-modal-footer>
+</winery-modal>

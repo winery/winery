@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -57,7 +57,11 @@ export class DeploymentArtifactOrPolicyModalData {
         // the selected namespace inside the modal
         public modalTemplateNameSpace?: any,
         // all namespaces
-        public namespaces?: string[]
+        public namespaces?: string[],
+        // the file path of a yaml artifact
+        public modalFileName?: string,
+        // the deployment path of a yaml artifact
+        public modalTargetLocation?: string
     ) {
     }
 }

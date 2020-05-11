@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright(c) 2017 Contributors to the Eclipse Foundation
+ * Copyright(c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -55,6 +55,8 @@ export class OpenModalEvent {
                 public modalName: string,
                 public modalTemplateName: string,
                 public modalTemplateNameSpace: string,
-                public modalType: string) {
+                public modalType: string,
+                public modalFilePath?: string,
+                public modalTargetLocation?: string) {
     }
 }

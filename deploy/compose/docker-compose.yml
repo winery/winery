@@ -1,0 +1,16 @@
+version: '3'
+services:
+  winery:
+    build:
+      context: ../..
+      # args:
+      #   USER_ID: 1000
+    image: opentosca/radon-gmt
+    environment:
+      WINERY_FEATURE_RADON: "true"
+      WINERY_REPOSITORY_PROVIDER: "yaml"
+      WINERY_REPOSITORY_URL: "https://github.com/radon-h2020/radon-particles"
+    # volumes:
+    #   - <absolute_path_on_host>:/var/repository
+    ports:
+      - '8080:8080'

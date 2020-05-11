@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,50 +11,53 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {isNullOrUndefined} from 'util';
-import {CapabilityOrRequirementDefinitionsService} from './capOrReqDef.service';
-import {
-    CapabilityOrRequirementDefinition,
-    CapOrRegDefinitionsResourceApiData,
-    CapOrReqDefinition,
-    Constraint
-} from './capOrReqDefResourceApiData';
-import {CapOrRegDefinitionsTableData} from './CapOrReqDefTableData';
-import {NameAndQNameApiData, NameAndQNameApiDataList} from '../../../wineryQNameSelector/wineryNameAndQNameApiData';
-import {Router} from '@angular/router';
-import {WineryTableColumn} from '../../../wineryTableModule/wineryTable.component';
-import {TypeWithShortName} from '../../admin/typesWithShortName/typeWithShortName.service';
-import {SelectData} from '../../../model/selectData';
-import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
-import {ModalDirective} from 'ngx-bootstrap';
-import {SpinnerWithInfinityComponent} from '../../../winerySpinnerWithInfinityModule/winerySpinnerWithInfinity.component';
-import {InstanceService} from '../../instance.service';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { isNullOrUndefined } from 'util';
+import { CapabilityOrRequirementDefinitionsService } from './capOrReqDef.service';
+import { CapabilityOrRequirementDefinition, CapOrRegDefinitionsResourceApiData, CapOrReqDefinition, Constraint } from './capOrReqDefResourceApiData';
+import { CapOrRegDefinitionsTableData } from './CapOrReqDefTableData';
+import { NameAndQNameApiData, NameAndQNameApiDataList } from '../../../wineryQNameSelector/wineryNameAndQNameApiData';
+import { Router } from '@angular/router';
+import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
+import { TypeWithShortName } from '../../admin/typesWithShortName/typeWithShortName.service';
+import { SelectData } from '../../../model/selectData';
+import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
+import { SpinnerWithInfinityComponent } from '../../../winerySpinnerWithInfinityModule/winerySpinnerWithInfinity.component';
+import { InstanceService } from '../../instance.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { QName } from '../../../model/qName';
+import { WineryRepositoryConfigurationService } from '../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { ValidSourceTypesService } from '../../sharedComponents/validSourceTypes/validSourceTypes.service';
 
 @Component({
     selector: 'winery-instance-cap-or-req-definitions',
     templateUrl: 'capOrReqDef.html',
     styleUrls: ['capOrReqDef.style.css'],
     providers: [
-        CapabilityOrRequirementDefinitionsService
+        CapabilityOrRequirementDefinitionsService, ValidSourceTypesService
     ]
 })
 export class CapOrReqDefComponent implements OnInit {
-
     columns: Array<WineryTableColumn> = [
-        {title: 'Name', name: 'name'},
-        {title: 'Type', name: 'type'},
-        {title: 'Lower Bound', name: 'lowerBound'},
-        {title: 'Upper Bound', name: 'upperBound'},
-        {title: 'Constraints', name: 'constraints', sort: false},
+        { title: 'Name', name: 'name' },
+        { title: 'Type', name: 'type' },
+        { title: 'Lower Bound', name: 'lowerBound' },
+        { title: 'Upper Bound', name: 'upperBound' },
+        { title: 'Constraints', name: 'constraints', sort: false },
+    ];
+
+    addCapabilityColumns: Array<WineryTableColumn> = [
+        { title: 'Name', name: 'localPart', sort: true },
+        { title: 'Namespace', name: 'namespace', sort: true }
     ];
 
     elementToRemove: CapOrRegDefinitionsTableData = null;
     loading = true;
     resourceApiData: CapOrRegDefinitionsResourceApiData = null;
     tableData: Array<CapOrRegDefinitionsTableData> = [];
-    capabilityTypesList: NameAndQNameApiDataList = {classes: null};
+    validSourceTypesTableData: QName[] = [];
+    capabilityTypesList: NameAndQNameApiDataList = { classes: null };
     capOrReqDefToBeAdded: CapOrReqDefinition = null;
     noneSelected = true;
 
@@ -78,21 +81,29 @@ export class CapOrReqDefComponent implements OnInit {
     activeCapOrRegDefinition: CapabilityOrRequirementDefinition;
     activeConstraint: Constraint;
     constraintTypes: Array<TypeWithShortName> = null;
+    addModalRef: BsModalRef;
 
     @Input() types = '';
     addCapOrRegModalTitle = '';
 
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
     @ViewChild('addModal') addModal: ModalDirective;
+    @ViewChild('addValidNodeTypeModal') addValidNodeTypeModal: ModalDirective;
     @ViewChild('editConModal') editConModal: ModalDirective;
+    @ViewChild('showYAMLConModal') showYAMLConModal: ModalDirective;
     @ViewChild('editNewConModal') editNewConModal: ModalDirective;
     @ViewChild('lowerBoundSpinner') lowerBoundSpinner: SpinnerWithInfinityComponent;
     @ViewChild('upperBoundSpinner') upperBoundSpinner: SpinnerWithInfinityComponent;
     @ViewChild('editor') editor: any;
+    private currentNodeTypes: SelectData[];
+    private selectedNodeType: QName;
 
     constructor(public sharedData: InstanceService,
                 private service: CapabilityOrRequirementDefinitionsService,
+                private validSourceTypesService: ValidSourceTypesService,
                 private notify: WineryNotificationService,
+                private modalService: BsModalService,
+                public configurationService: WineryRepositoryConfigurationService,
                 private router: Router) {
         this.capOrReqDefToBeAdded = new CapOrReqDefinition();
 
@@ -124,6 +135,24 @@ export class CapOrReqDefComponent implements OnInit {
     onSelectedValueChanged(value: string) {
         this.capOrReqDefToBeAdded.type = value;
         this.noneSelected = this.capOrReqDefToBeAdded.type === '(none)';
+        this.getConstraintsOfType(value);
+    }
+
+    getConstraintsOfType(value: string) {
+        this.capOrReqDefToBeAdded.validSourceTypes = [];
+        this.validSourceTypesTableData = [];
+        if (!this.noneSelected) {
+            this.validSourceTypesService.getValidSourceTypesForCapabilityDefinition(value.replace('{', '/').replace('}', '/'), 'capabilitydefinitions')
+                .subscribe(
+                    (current) => {
+                        current.nodes.forEach(value1 => {
+                            this.validSourceTypesTableData.push(new QName(value1.namespace, value1.localname));
+                            this.capOrReqDefToBeAdded.validSourceTypes.push('{' + value1.namespace + '}' + value1.localname);
+                        });
+                    },
+                    error => this.handleError(error)
+                );
+        }
     }
 
     /**
@@ -135,9 +164,13 @@ export class CapOrReqDefComponent implements OnInit {
             case 'constraints': {
                 for (const capOrRegDefinition of this.resourceApiData.capOrRegDefinitionsList) {
                     if (data.row.name === capOrRegDefinition.name) {
-                        this.getConstraints(capOrRegDefinition);
-                        this.getConstraintTypes();
-                        this.editConstraints(capOrRegDefinition);
+                        if (this.configurationService.isYaml()) {
+                            this.showConstraints(capOrRegDefinition);
+                        } else {
+                            this.getConstraints(capOrRegDefinition);
+                            this.getConstraintTypes();
+                            this.editConstraints(capOrRegDefinition);
+                        }
                     }
                 }
                 break;
@@ -146,6 +179,15 @@ export class CapOrReqDefComponent implements OnInit {
                 for (const entry of this.tableData) {
                     if (data.row.name === entry.name) {
                         this.router.navigate([entry.typeUri]);
+                    }
+                }
+                break;
+            }
+            case 'localPart': {
+                for (const entry of this.validSourceTypesTableData) {
+                    if (data.row.localPart === entry.localPart) {
+                        const url = '/nodetypes/' + entry.namespace + '/' + entry.localPart;
+                        this.router.navigate([url]);
                     }
                 }
                 break;
@@ -231,6 +273,7 @@ export class CapOrReqDefComponent implements OnInit {
      * handler for clicks on the add button
      */
     onAddClick() {
+        this.capOrReqDefToBeAdded = new CapOrReqDefinition();
         this.addModal.show();
     }
 
@@ -518,4 +561,47 @@ export class CapOrReqDefComponent implements OnInit {
 
     // endregion
 
+    onAddSourceTypeClick() {
+        this.addModalRef = this.modalService.show(this.addValidNodeTypeModal);
+        this.validSourceTypesService.getAvailableValidSourceTypes().subscribe(available => this.handleNodeTypesData(available));
+
+    }
+
+    handleNodeTypesData(nodeTypes: SelectData[]) {
+        this.currentNodeTypes = nodeTypes;
+    }
+
+    onRemoveClicked(selected: QName) {
+        const toDelete: String = '{' + selected.namespace + '}' + selected.localPart;
+        if (selected) {
+            this.capOrReqDefToBeAdded.validSourceTypes = this.capOrReqDefToBeAdded.validSourceTypes.filter(item => item !== toDelete);
+            this.validSourceTypesTableData = this.validSourceTypesTableData.filter(item => item !== selected);
+            this.notify.success('Saved changes.');
+        }
+    }
+
+    onAddValidSourceType() {
+        this.capOrReqDefToBeAdded.validSourceTypes.push('{' + this.selectedNodeType.namespace + '}' + this.selectedNodeType.localPart);
+        this.validSourceTypesTableData.push(this.selectedNodeType);
+        this.notify.success('Saved changes.');
+    }
+
+    onSelectedNodeTypeChanged(value: SelectData) {
+        if (value.id !== null && value.id !== undefined) {
+            this.selectedNodeType = QName.stringToQName(value.id);
+        } else {
+            this.selectedNodeType = null;
+        }
+    }
+
+    showConstraints(capOrRegDefinition: CapabilityOrRequirementDefinition) {
+        this.validSourceTypesTableData = [];
+        const self = this;
+        if (capOrRegDefinition.validSourceTypes) {
+            capOrRegDefinition.validSourceTypes.forEach(function (value) {
+                self.validSourceTypesTableData.push(QName.stringToQName(value));
+            });
+        }
+        this.showYAMLConModal.show();
+    }
 }

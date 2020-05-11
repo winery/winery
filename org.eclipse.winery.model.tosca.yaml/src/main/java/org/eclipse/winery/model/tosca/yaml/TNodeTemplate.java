@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,8 +13,19 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.yaml;
 
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.model.tosca.yaml.support.Metadata;
 import org.eclipse.winery.model.tosca.yaml.support.TMapRequirementAssignment;
 import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
@@ -22,15 +33,11 @@ import org.eclipse.winery.model.tosca.yaml.visitor.AbstractResult;
 import org.eclipse.winery.model.tosca.yaml.visitor.IVisitor;
 import org.eclipse.winery.model.tosca.yaml.visitor.VisitorNode;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
-import java.util.*;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tNodeTemplate", namespace = " http://docs.oasis-open.org/tosca/ns/simple/yaml/1.0", propOrder = {
+@XmlType(name = "tNodeTemplate", namespace = " http://docs.oasis-open.org/tosca/ns/simple/yaml/1.3", propOrder = {
     "type",
     "description",
     "directives",
@@ -45,6 +52,7 @@ import java.util.*;
     "metadata"
 })
 public class TNodeTemplate implements VisitorNode {
+
     @XmlAttribute(name = "type", required = true)
     private QName type;
     private String description;
@@ -54,7 +62,7 @@ public class TNodeTemplate implements VisitorNode {
     private Map<String, TAttributeAssignment> attributes;
     private List<TMapRequirementAssignment> requirements;
     private Map<String, TCapabilityAssignment> capabilities;
-    private Map<String, TInterfaceDefinition> interfaces;
+    private Map<String, TInterfaceAssignment> interfaces;
     private Map<String, TArtifactDefinition> artifacts;
     @XmlAttribute(name = "node_filter")
     private TNodeFilterDefinition nodeFilter;
@@ -218,7 +226,7 @@ public class TNodeTemplate implements VisitorNode {
     }
 
     @NonNull
-    public Map<String, TInterfaceDefinition> getInterfaces() {
+    public Map<String, TInterfaceAssignment> getInterfaces() {
         if (this.interfaces == null) {
             this.interfaces = new LinkedHashMap<>();
         }
@@ -226,7 +234,7 @@ public class TNodeTemplate implements VisitorNode {
         return interfaces;
     }
 
-    public void setInterfaces(Map<String, TInterfaceDefinition> interfaces) {
+    public void setInterfaces(Map<String, TInterfaceAssignment> interfaces) {
         this.interfaces = interfaces;
     }
 
@@ -274,7 +282,7 @@ public class TNodeTemplate implements VisitorNode {
         private Map<String, TAttributeAssignment> attributes;
         private List<TMapRequirementAssignment> requirements;
         private Map<String, TCapabilityAssignment> capabilities;
-        private Map<String, TInterfaceDefinition> interfaces;
+        private Map<String, TInterfaceAssignment> interfaces;
         private Map<String, TArtifactDefinition> artifacts;
         private TNodeFilterDefinition nodeFilter;
         private QName copy;
@@ -289,7 +297,9 @@ public class TNodeTemplate implements VisitorNode {
         }
 
         public Builder setMetadata(Metadata metadata) {
-            this.metadata = metadata;
+            if (Objects.nonNull(metadata) && !metadata.isEmpty()) {
+                this.metadata = metadata;
+            }
             return this;
         }
 
@@ -318,7 +328,7 @@ public class TNodeTemplate implements VisitorNode {
             return this;
         }
 
-        public Builder setInterfaces(Map<String, TInterfaceDefinition> interfaces) {
+        public Builder setInterfaces(Map<String, TInterfaceAssignment> interfaces) {
             this.interfaces = interfaces;
             return this;
         }
@@ -470,7 +480,7 @@ public class TNodeTemplate implements VisitorNode {
             return addCapabilities(Collections.singletonMap(name, capability));
         }
 
-        public Builder addInterfaces(Map<String, TInterfaceDefinition> interfaces) {
+        public Builder addInterfaces(Map<String, TInterfaceAssignment> interfaces) {
             if (interfaces == null || interfaces.isEmpty()) {
                 return this;
             }
@@ -484,12 +494,12 @@ public class TNodeTemplate implements VisitorNode {
             return this;
         }
 
-        public Builder addInterfaces(String name, TInterfaceDefinition interfaceDefinition) {
+        public Builder addInterface(String name, TInterfaceAssignment interfaceAssignment) {
             if (name == null || name.isEmpty()) {
                 return this;
             }
 
-            return addInterfaces(Collections.singletonMap(name, interfaceDefinition));
+            return addInterfaces(Collections.singletonMap(name, interfaceAssignment));
         }
 
         public Builder addArtifacts(Map<String, TArtifactDefinition> artifacts) {

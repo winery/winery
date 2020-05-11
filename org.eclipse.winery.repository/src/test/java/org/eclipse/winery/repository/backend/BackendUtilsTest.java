@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -81,7 +81,11 @@ public class BackendUtilsTest {
         rt.setSourceNodeTemplate(nt1);
         rt.setTargetNodeTemplate(nt2);
 
-        String minimalTopologyTemplateAsXmlString = "<TopologyTemplate xmlns=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ns3=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:ns4=\"http://test.winery.opentosca.org\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\">\n" +
+        String minimalTopologyTemplateAsXmlString = "" +
+            "<TopologyTemplate xmlns=\"http://docs.oasis-open.org/tosca/ns/2011/12\" " +
+            "                  xmlns:ns3=\"http://www.eclipse.org/winery/model/selfservice\" " +
+            "                  xmlns:ns4=\"http://test.winery.opentosca.org\" " +
+            "                  xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\">\n" +
             "  <NodeTemplate id=\"nt1\"/>\n" +
             "  <NodeTemplate id=\"nt2\"/>\n" +
             "  <RelationshipTemplate id=\"rt\">\n" +
@@ -195,7 +199,7 @@ public class BackendUtilsTest {
         // alternative test implementation: Use git-based repository
         // this test at hand is closer to the implementation, but easier to write
 
-        IGenericRepository repository = mock(IGenericRepository.class);
+        IRepository repository = mock(IRepository.class);
         ArtifactTemplateFilesDirectoryId artifactTemplateFilesDirectoryId = new ArtifactTemplateFilesDirectoryId(artifactTemplateId);
         when(repository.getContainedFiles(artifactTemplateFilesDirectoryId)).thenReturn(Collections.emptySortedSet());
 
@@ -213,7 +217,7 @@ public class BackendUtilsTest {
         // alternative test implementation: Use git-based repository
         // this test at hand is closer to the implementation, but easier to write
 
-        IGenericRepository repository = mock(IGenericRepository.class);
+        IRepository repository = mock(IRepository.class);
         ArtifactTemplateFilesDirectoryId artifactTemplateFilesDirectoryId = new ArtifactTemplateFilesDirectoryId(artifactTemplateId);
         when(repository.getContainedFiles(artifactTemplateFilesDirectoryId)).thenReturn(Collections.emptySortedSet());
 
@@ -231,7 +235,7 @@ public class BackendUtilsTest {
         // alternative test implementation: Use git-based repository
         // this test at hand is closer to the implementation, but easier to write
 
-        IGenericRepository repository = mock(IGenericRepository.class);
+        IRepository repository = mock(IRepository.class);
         ArtifactTemplateFilesDirectoryId artifactTemplateFilesDirectoryId = new ArtifactTemplateFilesDirectoryId(artifactTemplateId);
 
         SortedSet<RepositoryFileReference> containedReferences = new TreeSet<>();
@@ -246,7 +250,7 @@ public class BackendUtilsTest {
 
         assertEquals(createArtifactTemplateWithReferenceToAnUrlAndExistentFile(), synchronizhedArtifactTemplate);
     }
-    
+
     @Test
     public void testUpdateVersionOfNodeTemplate() throws Exception {
         TTopologyTemplate topologyTemplate = new TTopologyTemplate();
@@ -254,9 +258,9 @@ public class BackendUtilsTest {
         TNodeTemplate nt1 = new TNodeTemplate();
         TNodeTemplate nt2 = new TNodeTemplate();
         nt1.setId("java8_1.0-w1-wip1_3");
-        nt1.setType(new QName("namespace","java8_1.0-w1-wip1"));
+        nt1.setType(new QName("namespace", "java8_1.0-w1-wip1"));
         nt2.setId("java8_1.0-w2-wip2");
-        nt2.setType(new QName("namespace","java8_1.0-w2-wip2"));
+        nt2.setType(new QName("namespace", "java8_1.0-w2-wip2"));
 
         List<TEntityTemplate> entityTemplates = topologyTemplate.getNodeTemplateOrRelationshipTemplate();
         entityTemplates.add(nt1);
@@ -264,6 +268,5 @@ public class BackendUtilsTest {
         TTopologyTemplate resultTopologyTemplate = BackendUtils.updateVersionOfNodeTemplate(topologyTemplate, "java8_1.0-w1-wip1_3", "{namespace}java8_1.0-w2-wip2");
         List<TEntityTemplate> entityTemplatesClone = resultTopologyTemplate.getNodeTemplateOrRelationshipTemplate();
         assertEquals(entityTemplates.get(0).getTypeAsQName().toString(), "{namespace}java8_1.0-w2-wip2");
-        
     }
 }

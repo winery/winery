@@ -1,0 +1,65 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+metadata:
+  description: This test contains a valid group definition.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.3/test
+  tosca.version: 1.1
+  reference: 3.7.5
+  exception: None
+  keyname: 
+  assert: |
+    metadata.description = This test contains a valid group definition.
+    metadata.targetNamespace = http://www.example.org/ns/simple/yaml/1.3/test
+    metadata.tosca.version = 1.1
+    metadata.reference = 3.7.5
+    metadata.exception = None
+    interface_types.ift1.derived_from = tosca.interfaces.Root
+    interface_types.ift1.inputs.ift1.ipt1.type = string
+    interface_types.ift1.operations.op1.description = Interface operation description
+    group_types.gt1.derived_from = tosca.groups.Root
+    topology_template.node_templates.ndt1.type = tosca.nodes.Root
+    topology_template.groups.gtd1.type = gt1
+    topology_template.groups.gtd1.description = Topology template group description
+    topology_template.groups.gtd1.metadata.md1 = Metadata value
+    topology_template.groups.gtd1.properties.gt1.prt1 = Property value
+    topology_template.groups.gtd1.members = [ ndt1 ]
+    topology_template.groups.gtd1.interfaces.intf1.inputs.ift1.ipt1 = interface value
+    topology_template.groups.gtd1.interfaces.intf1.operations.op1.description = Interface operation description     
+    
+   
+interface_types:
+  ift1:
+    derived_from: tosca.interfaces.Root
+    inputs: 
+      ift1.ipt1:
+        type: string
+    op1: 
+      description: Interface operation description
+          
+group_types:
+  gt1:
+    derived_from: tosca.groups.Root
+    properties:
+      gt1.prt:
+        type: string        
+
+topology_template:
+  node_templates:
+    ndt1:
+      type: tosca.nodes.Root
+  groups:
+    gtd1:
+      type: gt1
+      description: Topology template group description
+      metadata:
+        md1: Metadata value
+      properties:
+        gt1.prt1: Property value
+      members: [ ndt1 ]
+      interfaces:
+        intf1:
+          inputs:
+            ift1.ipt1: interface value
+          op1: 
+            description: Interface operation description     
+    

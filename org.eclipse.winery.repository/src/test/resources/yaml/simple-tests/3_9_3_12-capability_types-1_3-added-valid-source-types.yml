@@ -1,0 +1,17 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+capability_types:
+  DFEndpoint:
+    derived_from: tosca.capabilities.Endpoint
+    properties:
+    valid_source_types: [ Compute ]
+    
+  DFFeatures:
+    derived_from: tosca.capabilities.Attachment
+    description: a custom feature
+    properties:
+      feature_setting: 
+        type: string
+      feature_value:
+        type: string
+      

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -94,8 +94,8 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
     }
 
     @Path("files")
-    public FilesResource getFilesResource() {
-        return new FilesResource(this.filesDirectoryId);
+    public ArtifactTemplateFilesResource getFilesResource() {
+        return new ArtifactTemplateFilesResource(this.filesDirectoryId);
     }
 
     @GET
@@ -106,8 +106,8 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
     }
 
     @Path("source")
-    public FilesResource getSrcResource() {
-        return new FilesResource(this.sourceDirectoryId, getFilesResource());
+    public ArtifactTemplateFilesResource getSrcResource() {
+        return new ArtifactTemplateFilesResource(this.sourceDirectoryId, getFilesResource());
     }
 
     @GET

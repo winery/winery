@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,6 +14,6 @@
 package org.eclipse.winery.model.tosca.yaml.support;
 
 public class Defaults {
-    public static final String DEFAULT_NS = "http://www.eclipse.org/winery/ns/simple/yaml/1.1/default";
-    public static final String TOSCA_DEFINITIONS_VERSION = "tosca_simple_yaml_1_1";
+    public static final String DEFAULT_NS = "http://www.eclipse.org/winery/ns/simple/yaml/1.3/default";
+    public static final String TOSCA_DEFINITIONS_VERSION = "tosca_simple_yaml_1_3";
 }

@@ -1,9 +1,0 @@
-tosca_definitions_version: tosca_simple_yaml_1_1
-
-metadata:
-  description: Valid tosca_definitions_version.
-  targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
-  exception: None
-  reference: 3.9.3.1.1
-  assert: |
-    tosca_definitions_version = tosca_simple_yaml_1_1

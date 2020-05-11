@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -18,10 +18,13 @@
         <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIconInList">
     </div>
     <div class="center" [style.width.px]="maxWidth">
-        <div *ngIf="data.id && data?.version?.hasVersion('wineryVersion')" class="{{ containerSizeClass + ' informationContainer '}}">
+        <div *ngIf="data.id && data?.version?.hasVersion('wineryVersion')"
+             class="{{ containerSizeClass + ' informationContainer '}}">
             <div class="nameWithVersion">{{ data.name }}</div>
-            <div *ngIf="containerSizeClass === 'smallContainer'" class="version">Version: {{ data?.version?.getWineryAndWipVersion() }}</div>
-            <div *ngIf="containerSizeClass !== 'smallContainer'" class="version">Version: {{ data?.version?.toReadableString() }}</div>
+            <div *ngIf="containerSizeClass === 'smallContainer'" class="version">
+                Version: {{ data?.version?.getWineryAndWipVersion() }}</div>
+            <div *ngIf="containerSizeClass !== 'smallContainer'" class="version">
+                Version: {{ data?.version?.toReadableString() }}</div>
             <div [ngClass]="{'name': !data.id, 'namespace': data.id}">{{ data.namespace }}</div>
         </div>
         <div *ngIf="data.id && !data?.version?.hasVersion('wineryVersion')"
@@ -37,8 +40,13 @@
         <div *ngIf="data.id && showButtons" class="buttonContainer">
             <a *ngIf="showTargetAllocationButton" class="targetAllocationButton" (click)="targetAllocation($event)"
                tooltip="Allocate to cloud providers"></a>
-            <a class="exportButton" (click)="exportComponent($event)"
+            <a *ngIf="!this.configurationService.isYaml(); else yamlExport" class="exportButton"
+               (click)="exportComponent($event)"
                tooltip="Export CSAR. Hold CTRL to export XML."></a>
+            <ng-template #yamlExport>
+                <a class="exportButton" (click)="exportComponent($event)"
+                   tooltip="Export CSAR. Hold CTRL to export YAML."></a>
+            </ng-template>
             <a class="editButton" (click)="editComponent($event)"
                tooltip="{{editButtonToolTip}}"></a>
             <a class="deleteButton" (click)="showRemoveDialog($event)" tooltip="Delete"></a>

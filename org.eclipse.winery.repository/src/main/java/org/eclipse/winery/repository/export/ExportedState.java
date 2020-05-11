@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -34,7 +34,9 @@ public class ExportedState {
     private final Queue<DefinitionsChildId> exportRequired = new ArrayDeque<>();
 
     /**
-     * @return the first definition child id to be exported, null if no more elements are in the queue
+     * Get the first definition child id to be exported, null if no more elements are in the queue.
+     *
+     * @return DefinitionsChildId
      */
     public DefinitionsChildId pop() {
         return this.exportRequired.poll();

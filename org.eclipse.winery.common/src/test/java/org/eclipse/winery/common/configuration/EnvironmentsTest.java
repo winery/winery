@@ -65,7 +65,7 @@ public class EnvironmentsTest {
         assertFalse(Environment.getInstance().checkConfigurationForUpdate());
         configuration.setProperty("ui.features.foo", false);
         Environment.getInstance().save();
-        assertFalse(Environments.getInstance().getUiConfig().features.get("foo"));
+        assertFalse(Environments.getInstance().getUiConfig().getFeatures().get("foo"));
     }
 
     /**
@@ -84,7 +84,7 @@ public class EnvironmentsTest {
     @Test
     public void testGetRepositoryConfig() {
         RepositoryConfigurationObject repositoryConfig = Environments.getInstance().getRepositoryConfig();
-        assertEquals("file", repositoryConfig.getProvider());
+        assertEquals("file", repositoryConfig.getProvider().toString());
         assertEquals("thisisatestroot", repositoryConfig.getRepositoryRoot());
     }
 

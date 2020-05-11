@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -22,6 +22,8 @@ import javax.xml.bind.Unmarshaller;
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
+import org.eclipse.winery.model.tosca.kvproperties.AttributeDefinitionList;
+import org.eclipse.winery.model.tosca.kvproperties.ParameterDefinitionList;
 import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.repository.backend.MockXMLElement;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -43,14 +45,14 @@ import org.slf4j.LoggerFactory;
  */
 public class JAXBSupport {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(JAXBSupport.class);
+
     // thread-safe JAXB as inspired by https://jaxb.java.net/guide/Performance_and_thread_safety.html
     // The other possibility: Each subclass sets JAXBContext.newInstance(theSubClass.class); in its static {} part.
     // This seems to be more complicated than listing all subclasses in initContext
-    public final static JAXBContext context = JAXBSupport.initContext();
+    private static final JAXBContext CONTEXT = JAXBSupport.initContext();
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JAXBSupport.class);
-
-    private final static PrefixMapper prefixMapper = new PrefixMapper();
+    private static final PrefixMapper PREFIX_MAPPER = new PrefixMapper();
 
     /**
      * Follows https://jaxb.java.net/2.2.5/docs/release-documentation.html#marshalling -changing-prefixes
@@ -83,21 +85,25 @@ public class JAXBSupport {
     private static JAXBContext initContext() {
         JAXBContext context;
         try {
-            // For winery classes, eventually the package+jaxb.index method could be better. See http://stackoverflow.com/a/3628525/873282
+            // For winery classes, eventually the package+jaxb.index method could be better.
+            // See http://stackoverflow.com/a/3628525/873282
             context = JAXBContext.newInstance(
-                //InjectorReplaceData.class,
                 TDefinitions.class, // all other elements are referred by "@XmlSeeAlso"
                 WinerysPropertiesDefinition.class,
-                // for the self-service portal
+                ParameterDefinitionList.class,
+                AttributeDefinitionList.class,
                 Application.class,
-                // MockXMLElement is added for testing purposes only.
-                MockXMLElement.class
+                MockXMLElement.class // MockXMLElement is added for testing purposes only.
             );
         } catch (JAXBException e) {
             LOGGER.error("Could not initialize JAXBContext", e);
             throw new IllegalStateException(e);
         }
         return context;
+    }
+
+    public static JAXBContext getContext() {
+        return CONTEXT;
     }
 
     /**
@@ -111,11 +117,11 @@ public class JAXBSupport {
     public static Marshaller createMarshaller(boolean includeProcessingInstruction) {
         Marshaller m;
         try {
-            m = JAXBSupport.context.createMarshaller();
+            m = CONTEXT.createMarshaller();
             // pretty printed output is required as the XML is sent 1:1 to the browser for editing
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             try {
-                m.setProperty("com.sun.xml.bind.namespacePrefixMapper", JAXBSupport.prefixMapper);
+                m.setProperty("com.sun.xml.bind.namespacePrefixMapper", PREFIX_MAPPER);
             } catch (PropertyException e) {
                 // Namespace-Prefixing is not supported by the used Provider. Nothing we can do about that
                 LOGGER.debug("NamespacePrefixMapper could not be initialized!");
@@ -125,7 +131,7 @@ public class JAXBSupport {
                 m.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
             }
         } catch (JAXBException e) {
-            JAXBSupport.LOGGER.error("Could not instantiate marshaller", e);
+            LOGGER.error("Could not instantiate marshaller", e);
             throw new IllegalStateException(e);
         }
 
@@ -139,9 +145,9 @@ public class JAXBSupport {
      */
     public static Unmarshaller createUnmarshaller() {
         try {
-            return JAXBSupport.context.createUnmarshaller();
+            return CONTEXT.createUnmarshaller();
         } catch (JAXBException e) {
-            JAXBSupport.LOGGER.error("Could not instantiate unmarshaller", e);
+            LOGGER.error("Could not instantiate unmarshaller", e);
             throw new IllegalStateException(e);
         }
     }

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -42,6 +42,8 @@ export class TPolicy {
                 public policyType?: string,
                 public any?: any[],
                 public documentation?: any[],
-                public otherAttributes?: any) {
+                public otherAttributes?: any,
+                public properties?: any,
+                public targets?: string[]) {
     }
 }

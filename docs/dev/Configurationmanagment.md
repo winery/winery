@@ -5,7 +5,7 @@ The configuration is YAML based and called "winery.yml". The default Configurati
 the resource folder.
 
 ## Adding new Features
-To add a new feature to the configuration one has to simply add it hierarchically under the features tab in the winery.yml file.
+To add a new feature to the configuration one has to simply add it hierarchically under the features tab in the winery.yml file cf. Figure 1.
 This has to be done both in the winery.yml file in the filesystem and in the default configuration winery.yml file in the resources folder.
 
 ```yaml
@@ -57,7 +57,7 @@ In the `org.eclipse.winery.repository.rest.resources.admin.AdminTopResource.java
 are used to send the configuration to the frontend ```getConfig()``` and get updates to the configuration from the frontend ```setConfig()```.
 In the frontend the `WineryRepositoryConfigurationService` manages those resources. Injecting the service where the configuration
 is needed provides the configuration as the configuration attribute of the WineryRepositoryConfigurationService. Therefore the feature
-has to be added as a boolean attribute to the WineryConfiguration interface.
+has to be added as a boolean attribute to the WineryConfiguration interface cf. Figure 2.
 ```typescript
 export interface WineryConfiguration {
     features: {
@@ -67,6 +67,7 @@ export interface WineryConfiguration {
         patternRefinement: boolean;
         accountability: boolean;
         nfv: boolean;
+        newFeature: boolean;
     };
     endpoints: {
         container: String;
@@ -80,7 +81,11 @@ export interface WineryConfiguration {
 
 ### Using feature toggles
 The `FeatureToggleDirective` offers a way to use the configuration to toggle features on or off dynamically.
-Before using the directive in any html file it has to be imported first into the corresponding module. Additionally an enum in the component where the feature toggle will be used has to be created and declared with the FeatureEnum. 
+Before using the directive in any html file it has to be imported first into the corresponding module. 
+Additionally an enum in the component where the feature toggle will be used has to be created and assigned 
+the FeatureEnum which is part of the `wineryRepository.feature.direct.ts`.
+If a new feature is added, it also has to be added to the FeatureEnum cf. Figure 3. The string value for each feature has to be the
+same name as defined in the `WineryConfiguration` interface.
 ```typescript
 export enum FeatureEnum {
     Splitting = 'splitting', Completion = 'completion', Compliance = 'compliance',
@@ -90,7 +95,7 @@ export enum FeatureEnum {
 ```
 **Figure 3: Adding new feature to the Enum.**
 
-Finally the directive can be used to toggle the feature according to the set configuration.
+Finally the directive can be used to toggle the feature according to the set configuration cf. Figure 4.
 ```html
 <div *wineryRepositoryFeatureToggle="configEnum.Compliance">
 ```

@@ -1,5 +1,5 @@
 <!--
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,11 +15,14 @@
 <winery-toscatype-table
     [tableType]="tableTypes.Policies"
     [currentNodeData]="currentNodeData"
-    [toscaTypeData]="policies">
+    [toscaTypeData]="policies"
+    (showYamlPolicyManagementModal)="handleShowYamlPolicyModalEvent()">
 </winery-toscatype-table>
 
-<div *ngIf="!readonly" (click)="toggleModal($event);" class="btn btn-sm btn-modal" style="display: block;">
-    Add new Policy
+<div *wineryRepositoryHideOnFeature="features.Yaml">
+    <div *ngIf="!readonly" (click)="toggleModal($event);" class="btn btn-sm btn-modal" style="display: block;">
+        Add new Policy
+    </div>
 </div>
 
 

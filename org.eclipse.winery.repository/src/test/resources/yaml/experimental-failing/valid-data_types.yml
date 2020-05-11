@@ -1,0 +1,22 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+metadata:
+  description: This test contains a valid derived data_type
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.3/test
+  tosca.version: 1.1
+  reference: 3.6.6
+  exception: None
+  keyname: data_types
+  assert: |
+    dt1.properties.prop1.type = string
+    dt2.derived_from = dt1
+    dt2.properties.prop1.type = string
+    
+data_types:
+  dt1:
+    properties:
+      prop1:
+        type: string     
+
+  dt2:
+    derived_from: dt1

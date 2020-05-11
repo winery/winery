@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -32,6 +32,7 @@ import org.eclipse.jdt.annotation.Nullable;
     "appliesTo"
 })
 public class TPolicyType extends TEntityType {
+    
     @XmlElement(name = "AppliesTo")
     protected TAppliesTo appliesTo;
     @XmlAttribute(name = "policyLanguage")

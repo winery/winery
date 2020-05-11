@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -30,19 +30,24 @@ import java.util.Optional;
 
 import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.common.configuration.Environments;
+import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.repository.backend.IRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class RepositoryUtils {
+import static org.eclipse.winery.common.configuration.RepositoryConfigurationObject.RepositoryProvider.YAML;
+
+public class RepositoryUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryUtils.class);
 
-    public static void checkGitIgnore(FilebasedRepository multiRepository) throws IOException {
-        File ignore = new File(multiRepository.getRepositoryDep().toFile(), Constants.FILE_GIT_IGNORE);
+    public static void checkGitIgnore(XMLRepository multiRepository) throws IOException {
+        File ignore = new File(multiRepository.getRepositoryRoot().toFile(), Constants.FILE_GIT_IGNORE);
 
         if (!ignore.exists()) {
             if (ignore.createNewFile()) {
@@ -66,7 +71,7 @@ class RepositoryUtils {
     }
 
     public static boolean checkRepositoryDuplicate(String url, MultiRepository multiRepository) {
-        for (FilebasedRepository frepo : multiRepository.getRepositoriesMap().keySet()) {
+        for (IRepository frepo : multiRepository.getRepositoriesMap().keySet()) {
             if ((frepo instanceof GitBasedRepository) && (((GitBasedRepository) frepo).getRepositoryUrl() != null)) {
                 if (((GitBasedRepository) frepo).getRepositoryUrl().equals(url)) {
                     return true;
@@ -90,10 +95,10 @@ class RepositoryUtils {
         return Optional.empty();
     }
 
-    private static FilebasedRepository getRepositoryByNamespace(Namespace ns, MultiRepository multiRepository) {
-        List<FilebasedRepository> repositoryList = new ArrayList<>();
+    private static IRepository getRepositoryByNamespace(Namespace ns, MultiRepository multiRepository) {
+        List<IRepository> repositoryList = new ArrayList<>();
 
-        for (FilebasedRepository repo : multiRepository.getRepositoriesMap().keySet()) {
+        for (IRepository repo : multiRepository.getRepositoriesMap().keySet()) {
             for (String namespace : multiRepository.getRepositoriesMap().get(repo)) {
                 if (namespace.equals(ns.getDecoded())) {
                     repositoryList.add(repo);
@@ -105,7 +110,7 @@ class RepositoryUtils {
             return repositoryList.get(0);
         }
 
-        for (FilebasedRepository repo : multiRepository.getRepositoriesCommonNamespace().keySet()) {
+        for (IRepository repo : multiRepository.getRepositoriesCommonNamespace().keySet()) {
             for (Namespace preNamespace : multiRepository.getRepositoriesCommonNamespace().get(repo)) {
                 if (ns.getDecoded().contains(preNamespace.getDecoded())) {
                     repositoryList.add(repo);
@@ -120,7 +125,7 @@ class RepositoryUtils {
         }
     }
 
-    public static FilebasedRepository getRepositoryByNamespace(String ns, MultiRepository multiRepository) {
+    public static IRepository getRepositoryByNamespace(String ns, MultiRepository multiRepository) {
         boolean containsUrlSeparator = false;
 
         try {
@@ -137,20 +142,20 @@ class RepositoryUtils {
         }
     }
 
-    public static FilebasedRepository getRepositoryByRef(RepositoryFileReference ref, MultiRepository multiRepository) {
+    public static IRepository getRepositoryByRef(RepositoryFileReference ref, MultiRepository multiRepository) {
         return getRepositoryById(ref.getParent(), multiRepository);
     }
 
-    public static FilebasedRepository getRepositoryById(GenericId id, MultiRepository multiRepository) {
-        Optional<List<FilebasedRepository>> optRepositories = getRepositoriesById(id, multiRepository);
+    public static IRepository getRepositoryById(GenericId id, MultiRepository multiRepository) {
+        Optional<List<IRepository>> optRepositories = getRepositoriesById(id, multiRepository);
 
         if (optRepositories.isPresent()) {
-            List<FilebasedRepository> repositories = optRepositories.get();
+            List<IRepository> repositories = optRepositories.get();
 
             if (repositories.size() == 1) {
                 return repositories.get(0);
             } else {
-                for (FilebasedRepository repository : repositories) {
+                for (IRepository repository : repositories) {
                     if (repository.exists(id)) {
                         return repository;
                     }
@@ -161,12 +166,12 @@ class RepositoryUtils {
         return multiRepository.getLocalRepository();
     }
 
-    private static Optional<List<FilebasedRepository>> getRepositoriesById(GenericId id, MultiRepository multiRepository) {
-        List<FilebasedRepository> repositoryList = new ArrayList<>();
+    private static Optional<List<IRepository>> getRepositoriesById(GenericId id, MultiRepository multiRepository) {
+        List<IRepository> repositoryList = new ArrayList<>();
         Optional<Namespace> optNamespace = getNamespaceById(id);
 
         if (optNamespace.isPresent()) {
-            for (FilebasedRepository repo : multiRepository.getRepositoriesMap().keySet()) {
+            for (IRepository repo : multiRepository.getRepositoriesMap().keySet()) {
                 for (String ns : multiRepository.getRepositoriesMap().get(repo)) {
                     String idNamespace = optNamespace.get().getDecoded();
                     if (idNamespace.equals(ns)) {
@@ -179,7 +184,7 @@ class RepositoryUtils {
                 return Optional.of(repositoryList);
             }
 
-            for (FilebasedRepository repo : multiRepository.getRepositoriesCommonNamespace().keySet()) {
+            for (IRepository repo : multiRepository.getRepositoriesCommonNamespace().keySet()) {
                 for (Namespace ns : multiRepository.getRepositoriesCommonNamespace().get(repo)) {
                     String idNamespace = optNamespace.get().getDecoded();
                     String repoNamespace = ns.getDecoded();
@@ -195,22 +200,12 @@ class RepositoryUtils {
             : Optional.of(repositoryList);
     }
 
-    protected static Optional<List<FilebasedRepository>> getRepositoriesByRef(RepositoryFileReference ref, MultiRepository multiRepository) {
+    protected static Optional<List<IRepository>> getRepositoriesByRef(RepositoryFileReference ref, MultiRepository multiRepository) {
         return getRepositoriesById(ref.getParent(), multiRepository);
     }
 
-    private static Optional<List<FilebasedRepository>> searchRepositoriesById(GenericId id, MultiRepository multiRepository) {
-        List<FilebasedRepository> repositoryList = new ArrayList<>();
-
-        for (FilebasedRepository repo : multiRepository.getRepositoriesMap().keySet()) {
-            String relativePath = repo.id2RelativePath(id).toString();
-            for (String ns : multiRepository.getRepositoriesMap().get(repo)) {
-                if (relativePath.equals(ns)) {
-                    repositoryList.add(repo);
-                }
-            }
-        }
-
-        return Optional.of(repositoryList);
+    public static boolean isYamlRepository() {
+        RepositoryConfigurationObject config = Environments.getInstance().getRepositoryConfig();
+        return YAML == config.getProvider();
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -91,6 +91,7 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
         super(builder);
         this.derivedFrom = builder.derivedFrom;
         this.deploymentArtifacts = builder.deploymentArtifacts;
+        this.implementationArtifacts = builder.implementationArtifacts;
     }
 
     @Override

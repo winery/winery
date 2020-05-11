@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,6 +13,7 @@
  *******************************************************************************/
 import { Component } from '@angular/core';
 import { FeatureEnum } from '../wineryFeatureToggleModule/wineryRepository.feature.direct';
+import { WineryRepositoryConfigurationService } from '../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 @Component({
     templateUrl: './other.component.html',
@@ -20,4 +21,7 @@ import { FeatureEnum } from '../wineryFeatureToggleModule/wineryRepository.featu
 })
 export class OtherComponent {
     configEnum = FeatureEnum;
+
+    constructor(public configurationService: WineryRepositoryConfigurationService) {
+    }
 }

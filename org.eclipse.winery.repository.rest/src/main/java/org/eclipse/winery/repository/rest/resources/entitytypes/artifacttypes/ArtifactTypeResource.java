@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.artifacttypes;
 
+import java.util.List;
 import java.util.SortedSet;
 
 import javax.ws.rs.GET;
@@ -41,7 +42,9 @@ public class ArtifactTypeResource extends EntityTypeResource {
     }
 
     /**
-     * @return the file extension associated with this artifact type. May be null
+     * Returns the file extension associated with this TOSCA XML artifact type.
+     *
+     * @return the file extension or null
      */
     @GET
     @Path("/fileextension")
@@ -49,10 +52,50 @@ public class ArtifactTypeResource extends EntityTypeResource {
         return this.getDefinitions().getElement().getOtherAttributes().get(this.qnameFileExtension);
     }
 
+    /**
+     * Updates the file extension associated with this TOSCA XML artifact type.
+     */
     @PUT
     @Path("/fileextension")
     public Response setAssociatedFileExtension(String fileExtension) {
         this.getDefinitions().getOtherAttributes().put(this.qnameFileExtension, fileExtension);
+        return RestUtils.persist(this);
+    }
+
+    /**
+     * Returns the file extensions associated with this TOSCA YAML artifact type.
+     *
+     * @return the file extensions or null
+     */
+    @GET
+    @Path("/fileextensions")
+    public List<String> getAssociatedFileExtensions() {
+        return ((TArtifactType) this.getDefinitions().getElement()).getFileExtensions();
+    }
+
+    /**
+     * Updates the file extensions associated with this TOSCA YAML artifact type.
+     */
+    @PUT
+    @Path("/fileextensions")
+    public Response setAssociatedFileExtensions(List<String> fileExtensions) {
+        ((TArtifactType) this.getDefinitions().getElement()).setFileExtensions(fileExtensions);
+        return RestUtils.persist(this);
+    }
+
+    /**
+     * @return the file mime type associated with this artifact type. May be null (used in YAML mode)
+     */
+    @GET
+    @Path("/mimetype")
+    public String getAssociatedMimeType() {
+        return ((TArtifactType) this.getDefinitions().getElement()).getMimeType();
+    }
+
+    @PUT
+    @Path("/mimetype")
+    public Response setAssociatedMimeType(String mimeType) {
+        ((TArtifactType) this.getDefinitions().getElement()).setMimeType(mimeType);
         return RestUtils.persist(this);
     }
 

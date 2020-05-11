@@ -1,5 +1,5 @@
 <!--
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,15 +12,30 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
 -->
 
-<winery-toscatype-table
-    [tableType]="tableTypes.DeploymentArtifacts"
-    [currentNodeData]="currentNodeData"
-    [toscaTypeData]="deploymentArtifacts">
-</winery-toscatype-table>
+<div *wineryRepositoryHideOnFeature="'yaml'">
+    <winery-toscatype-table *ngIf="deploymentArtifacts && deploymentArtifacts.length > 0"
+                            [tableType]="tableTypes.DeploymentArtifacts"
+                            [currentNodeData]="currentNodeData"
+                            [toscaTypeData]="deploymentArtifacts">
+    </winery-toscatype-table>
+    <div *ngIf="!deploymentArtifacts || deploymentArtifacts.length === 0" style="color: dimgray; text-align: center">
+        <span>No deployment artifacts defined <br> for this Node Template.</span>
+    </div>
+</div>
 
+<div *wineryRepositoryShowOnFeature="'yaml'">
+    <winery-toscatype-table *ngIf="yamlArtifacts && yamlArtifacts.length > 0"
+                            [tableType]="tableTypes.YamlArtifacts"
+                            [currentNodeData]="currentNodeData"
+                            [toscaTypeData]="yamlArtifacts">
+    </winery-toscatype-table>
+    <div *ngIf="!yamlArtifacts || yamlArtifacts.length === 0" style="color: dimgray; text-align: center">
+        <span>No artifacts defined for <br> this Node Template.</span>
+    </div>
+</div>
 <div *ngIf="!readonly" class="button-wrapper">
     <div (click)="toggleModal($event);" class="btn btn-sm btn-modal" style="display: block;">
-        Add new Deployment Artifact
+        Add new {{this.configurationService.isYaml() ? 'Artifact' : 'Deployment Artifact'}}
     </div>
 </div>
 

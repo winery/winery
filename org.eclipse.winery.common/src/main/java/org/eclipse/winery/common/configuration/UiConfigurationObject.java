@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,12 +25,13 @@ import org.apache.commons.configuration2.YAMLConfiguration;
  */
 public class UiConfigurationObject extends AbstractConfigurationObject {
 
-    HashMap<String, Boolean> features;
-    HashMap<String, String> endpoints;
-    private final String key = "ui";
-    private final String featurePrefix = key + ".features.";
-    private final String endpointPrefix = key + ".endpoints.";
-
+    private static final String key = "ui";
+    private static final String featurePrefix = key + ".features.";
+    private static final String endpointPrefix = key + ".endpoints.";
+    
+    private HashMap<String, Boolean> features;
+    private HashMap<String, String> endpoints;
+    
     /**
      * Required for REST API
      */
@@ -42,15 +43,7 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
     }
 
     UiConfigurationObject(YAMLConfiguration configuration) {
-        HashMap<String, Boolean> features = new HashMap<>();
-        HashMap<String, String> endpoints = new HashMap<>();
-        Iterator<String> featureIterator = configuration.getKeys(featurePrefix);
-        Iterator<String> endpointIterator = configuration.getKeys(endpointPrefix);
-        featureIterator.forEachRemaining(key -> features.put(key.replace(featurePrefix, ""), configuration.getBoolean((key))));
-        endpointIterator.forEachRemaining(key -> endpoints.put(key.replace(endpointPrefix, ""), configuration.getString(key)));
-        this.features = features;
-        this.endpoints = endpoints;
-        this.configuration = configuration;
+        this.update(configuration);
         initialize();
     }
 
@@ -64,8 +57,11 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
 
     @Override
     void save() {
-        this.features.keySet().forEach(property -> configuration.setProperty(featurePrefix + property, this.features.get(property)));
-        this.endpoints.keySet().forEach(property -> configuration.setProperty(endpointPrefix + property, this.endpoints.get(property)));
+        this.features.keySet().stream()
+            .filter(p -> !RepositoryConfigurationObject.RepositoryProvider.YAML.toString().equals(p)
+            ).forEach(property -> configuration.setProperty(featurePrefix + property, this.features.get(property)));
+        this.endpoints.keySet()
+            .forEach(property -> configuration.setProperty(endpointPrefix + property, this.endpoints.get(property)));
         Environment.getInstance().save();
     }
 
@@ -74,10 +70,19 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
         this.configuration = configuration;
         HashMap<String, Boolean> features = new HashMap<>();
         HashMap<String, String> endpoints = new HashMap<>();
-        Iterator<String> featureIterator = configuration.getKeys(featurePrefix);
-        Iterator<String> endpointIterator = configuration.getKeys(endpointPrefix);
-        featureIterator.forEachRemaining(key -> features.put(key.replace(featurePrefix, ""), configuration.getBoolean((key))));
-        endpointIterator.forEachRemaining(key -> endpoints.put(key.replace(endpointPrefix, ""), configuration.getString(key)));
+        Iterator<String> featureIterator = this.configuration.getKeys(featurePrefix);
+        Iterator<String> endpointIterator = this.configuration.getKeys(endpointPrefix);
+        featureIterator.forEachRemaining(key -> features.put(key.replace(featurePrefix, ""), this.configuration.getBoolean((key))));
+        endpointIterator.forEachRemaining(key -> endpoints.put(key.replace(endpointPrefix, ""), this.configuration.getString(key)));
+        final String providerAsString = this.configuration.getString(RepositoryConfigurationObject.getProviderConfigurationKey());
+
+        if (RepositoryConfigurationObject.RepositoryProvider.YAML.toString().equals(providerAsString)) {
+            features.put(RepositoryConfigurationObject.RepositoryProvider.YAML.toString(), true);
+        } else {
+            // closed-world assumption. Apparently..
+            features.put(RepositoryConfigurationObject.RepositoryProvider.YAML.toString(), false);
+        }
+
         this.features = features;
         this.endpoints = endpoints;
     }

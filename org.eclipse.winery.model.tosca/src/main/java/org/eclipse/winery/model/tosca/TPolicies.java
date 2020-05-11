@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -34,6 +34,13 @@ public class TPolicies implements Serializable {
 
     @XmlElement(name = "Policy", required = true)
     protected List<TPolicy> policy;
+
+    public TPolicies() {
+    }
+
+    public TPolicies(List<TPolicy> policies) {
+        this.policy = policies;
+    }
 
     @NonNull
     public List<TPolicy> getPolicy() {

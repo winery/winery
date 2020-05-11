@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -30,7 +30,7 @@
     </div>
     <ng-template #showName>
         <span (click)="onClickEdit()">{{propertyValue}}</span>
-        <i *ngIf="!disableEditing" class="fa fa-pencil-square-o" (click)="onClickEdit()"></i>
+        <i *ngIf="!disableEditing" class="fa fa-pencil-square-o" style="margin-left: 4px; margin-right: 4px;" (click)="onClickEdit()"></i>
         <span *ngIf="propertyName === 'localName' &&  sharedData.currentVersion?.toString().length > 0">
             Version: {{ sharedData.currentVersion.toReadableString() }}
         </span>

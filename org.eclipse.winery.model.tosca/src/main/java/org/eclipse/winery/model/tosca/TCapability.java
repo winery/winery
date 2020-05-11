@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -38,6 +39,8 @@ public class TCapability extends RelationshipSourceOrTarget {
 
     @XmlAttribute(name = "name", required = true)
     protected String name;
+    @XmlAttribute(name = "validSourceTypes")
+    protected List<QName> validSourceTypes;
 
     public TCapability() {
     }
@@ -78,6 +81,15 @@ public class TCapability extends RelationshipSourceOrTarget {
      */
     public void setName(String value) {
         this.name = value;
+    }
+
+    @NonNull
+    public List<QName> getValidSourceTypes() {
+        return validSourceTypes;
+    }
+
+    public void setValidSourceTypes(List<QName> value) {
+        this.validSourceTypes = value;
     }
 
     @Override

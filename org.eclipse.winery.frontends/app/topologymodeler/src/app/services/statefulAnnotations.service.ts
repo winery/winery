@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -22,6 +22,7 @@ import { ErrorHandlerService } from './error-handler.service';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
 import { ToastrService } from 'ngx-toastr';
+import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 interface TopologyAndErrorList {
     errorList: string[];
@@ -36,6 +37,7 @@ export class StatefulAnnotationsService {
                 private http: HttpClient,
                 private actions: WineryActions,
                 private rendererActions: TopologyRendererActions,
+                private configurationService: WineryRepositoryConfigurationService,
                 private alert: ToastrService,
                 private errorHandler: ErrorHandlerService) {
         this.ngRedux.select(state => state.topologyRendererState.buttonsState.determineStatefulComponents)
@@ -71,7 +73,8 @@ export class StatefulAnnotationsService {
 
         this.http.get<TTopologyTemplate>(url)
             .subscribe(
-                data => TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.actions, data),
+                data =>
+                    TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.actions, data, this.configurationService.isYaml()),
                 error => this.errorHandler.handleError(error)
             );
     }
@@ -87,7 +90,7 @@ export class StatefulAnnotationsService {
         this.http.get<TopologyAndErrorList>(url)
             .subscribe(
                 data => {
-                    TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.actions, data.topologyTemplate);
+                    TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.actions, data.topologyTemplate, this.configurationService.isYaml());
                     if (data.errorList && data.errorList.length > 0) {
                         this.alert.warning(
                             'There were no freeze operations found for some stateful components!',

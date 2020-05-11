@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,16 +15,23 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { InstanceService } from '../../instance.service';
 import { PropertiesDefinitionService } from './propertiesDefinition.service';
 import {
-    PropertiesDefinition, PropertiesDefinitionEnum, PropertiesDefinitionKVElement, PropertiesDefinitionsResourceApiData,
-    WinerysPropertiesDefinition
+    PropertiesDefinition, PropertiesDefinitionEnum, PropertiesDefinitionKVElement, PropertiesDefinitionsResourceApiData, WinerysPropertiesDefinition
 } from './propertiesDefinitionsResourceApiData';
 import { SelectData } from '../../../model/selectData';
-import { isNullOrUndefined } from 'util';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import { WineryRowData, WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
-import { ModalDirective } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { WineryRepositoryConfigurationService } from '../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { FeatureEnum } from '../../../wineryFeatureToggleModule/wineryRepository.feature.direct';
+import { PropertiesTableData } from './PropertiesTableData';
+import { Constraint } from '../../../model/constraint';
+
+const valid_constraint_keys = ['equal', 'greater_than', 'greater_or_equal', 'less_than', 'less_or_equal', 'in_range',
+    'valid_values', 'length', 'min_length', 'max_length', 'pattern', 'schema'];
+const list_constraint_keys = ['valid_values', 'in_range'];
+const range_constraint_keys = ['in_range'];
 
 @Component({
     templateUrl: 'propertiesDefinition.component.html',
@@ -33,8 +40,9 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
     ],
     providers: [
         PropertiesDefinitionService
-    ]
+    ],
 })
+
 export class PropertiesDefinitionComponent implements OnInit {
 
     propertiesEnum = PropertiesDefinitionEnum;
@@ -48,16 +56,27 @@ export class PropertiesDefinitionComponent implements OnInit {
     columns: Array<WineryTableColumn> = [
         { title: 'Name', name: 'key', sort: true },
         { title: 'Type', name: 'type', sort: true },
+        { title: 'Required', name: 'required' },
+        { title: 'Default Value', name: 'defaultValue' },
+        { title: 'Description', name: 'description' },
+        { title: 'Constraints', name: 'constraints' },
     ];
+    tableData: Array<PropertiesTableData> = [];
     newProperty: PropertiesDefinitionKVElement = new PropertiesDefinitionKVElement();
+    configEnum = FeatureEnum;
 
     validatorObject: WineryValidatorObject;
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
+    confirmDeleteModalRef: BsModalRef;
+
     @ViewChild('addModal') addModal: ModalDirective;
+    addModalRef: BsModalRef;
+
     @ViewChild('nameInputForm') nameInputForm: ElementRef;
 
     constructor(public sharedData: InstanceService, private service: PropertiesDefinitionService,
-                private notify: WineryNotificationService) {
+                private modalService: BsModalService,
+                private notify: WineryNotificationService, private configurationService: WineryRepositoryConfigurationService) {
     }
 
     // region ########## Angular Callbacks ##########
@@ -66,6 +85,33 @@ export class PropertiesDefinitionComponent implements OnInit {
      */
     ngOnInit() {
         this.getPropertiesDefinitionsResourceApiData();
+    }
+
+    copyToTable() {
+        this.tableData = [];
+        for (const property of this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList) {
+            let constraintsString = '';
+            for (const constraint of property.constraints) {
+                if (constraint.value == null) {
+                    constraintsString += constraint.key + ':' + constraint.list.toString();
+                } else if (constraint.list == null) {
+                    constraintsString += constraint.key + ':' + constraint.value;
+                } else {
+                    constraintsString += constraint.key;
+                }
+                if (property.constraints.indexOf(constraint) !== property.constraints.length - 1) {
+                    constraintsString += ', ';
+                }
+            }
+            if (!property.defaultValue) {
+                property.defaultValue = '';
+            }
+            if (!property.description) {
+                property.description = '';
+            }
+            this.tableData.push(new PropertiesTableData(property.key, property.type, property.required, property.defaultValue, property.description
+                , constraintsString));
+        }
     }
 
     // endregion
@@ -83,7 +129,7 @@ export class PropertiesDefinitionComponent implements OnInit {
     onXmlElementSelected(): void {
         this.resourceApiData.selectedValue = PropertiesDefinitionEnum.Element;
 
-        if (isNullOrUndefined(this.resourceApiData.propertiesDefinition)) {
+        if (!this.resourceApiData.propertiesDefinition) {
             this.resourceApiData.propertiesDefinition = new PropertiesDefinition();
         }
 
@@ -104,7 +150,7 @@ export class PropertiesDefinitionComponent implements OnInit {
     onXmlTypeSelected(): void {
         this.resourceApiData.selectedValue = PropertiesDefinitionEnum.Type;
 
-        if (isNullOrUndefined(this.resourceApiData.propertiesDefinition)) {
+        if (!this.resourceApiData.propertiesDefinition) {
             this.resourceApiData.propertiesDefinition = new PropertiesDefinition();
         }
 
@@ -125,30 +171,30 @@ export class PropertiesDefinitionComponent implements OnInit {
     onCustomKeyValuePairSelected(): void {
         this.resourceApiData.selectedValue = PropertiesDefinitionEnum.Custom;
 
-        if (isNullOrUndefined(this.resourceApiData.propertiesDefinition)) {
+        if (!this.resourceApiData.propertiesDefinition) {
             this.resourceApiData.propertiesDefinition = new PropertiesDefinition();
         }
         this.resourceApiData.propertiesDefinition.element = null;
         this.resourceApiData.propertiesDefinition.type = null;
 
-        if (isNullOrUndefined(this.resourceApiData.propertiesDefinition)) {
+        if (this.resourceApiData.propertiesDefinition) {
             this.resourceApiData.propertiesDefinition = new PropertiesDefinition();
         }
         this.resourceApiData.propertiesDefinition.element = null;
         this.resourceApiData.propertiesDefinition.type = null;
 
-        if (isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition)) {
+        if (!this.resourceApiData.winerysPropertiesDefinition) {
             this.resourceApiData.winerysPropertiesDefinition = new WinerysPropertiesDefinition();
         }
         // The key/value pair list may be null
-        if (isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList)) {
+        if (!this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList) {
             this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList = [];
         }
 
-        if (isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition.namespace)) {
+        if (!this.resourceApiData.winerysPropertiesDefinition.namespace) {
             this.resourceApiData.winerysPropertiesDefinition.namespace = this.sharedData.toscaComponent.namespace + '/propertiesdefinition/winery';
         }
-        if (isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition.elementName)) {
+        if (!this.resourceApiData.winerysPropertiesDefinition.elementName) {
             this.resourceApiData.winerysPropertiesDefinition.elementName = 'properties';
         }
 
@@ -181,11 +227,9 @@ export class PropertiesDefinitionComponent implements OnInit {
      * @param data
      */
     onRemoveClick(data: PropertiesDefinitionKVElement) {
-        if (isNullOrUndefined(data)) {
-            return;
-        } else {
+        if (data) {
             this.elementToRemove = data;
-            this.confirmDeleteModal.show();
+            this.confirmDeleteModalRef = this.modalService.show(this.confirmDeleteModal);
         }
     }
 
@@ -195,7 +239,7 @@ export class PropertiesDefinitionComponent implements OnInit {
     onAddClick() {
         this.newProperty = new PropertiesDefinitionKVElement();
         this.validatorObject = new WineryValidatorObject(this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList, 'key');
-        this.addModal.show();
+        this.addModalRef = this.modalService.show(this.addModal);
     }
 
     // endregion
@@ -213,9 +257,7 @@ export class PropertiesDefinitionComponent implements OnInit {
     }
 
     onCellSelected(data: WineryRowData) {
-        if (isNullOrUndefined(data)) {
-            this.selectedCell = data;
-        }
+        this.selectedCell = data;
     }
 
     // endregion
@@ -225,23 +267,39 @@ export class PropertiesDefinitionComponent implements OnInit {
      * Adds a property to the table and model
      * @param propType
      * @param propName
+     * @param required
+     * @param defaultValue
+     * @param description
      */
-    addProperty(propType: string, propName: string) {
+    addProperty(propType: string, propName: string, required: boolean, defaultValue: string, description: string) {
         this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList.push({
             key: propName,
-            type: propType
+            type: propType,
+            defaultValue: defaultValue,
+            required: required,
+            description: description,
+            constraints: this.newProperty.constraints.slice(),
         });
-        this.addModal.hide();
+        this.addModalRef.hide();
+        this.copyToTable();
+        this.save();
+    }
+
+    addConstraint(selectedConstraintKey: string, constraintValue: string) {
+        // lists have to be separated by ','
+        if (list_constraint_keys.indexOf(selectedConstraintKey) > -1) {
+            this.newProperty.constraints.push(new Constraint(selectedConstraintKey, null, constraintValue.split(',')));
+        } else {
+            this.newProperty.constraints.push(new Constraint(selectedConstraintKey, constraintValue, null));
+        }
     }
 
     removeConfirmed() {
-        this.confirmDeleteModal.hide();
+        this.confirmDeleteModalRef.hide();
         this.deleteItemFromPropertyDefinitionKvList(this.elementToRemove);
         this.elementToRemove = null;
-    }
-
-    onAddModalShown() {
-        this.nameInputForm.nativeElement.focus();
+        this.copyToTable();
+        this.save();
     }
 
     // endregion
@@ -266,10 +324,10 @@ export class PropertiesDefinitionComponent implements OnInit {
                 }
                 return item.id === this.resourceApiData.propertiesDefinition.element;
             });
-            return !isNullOrUndefined(this.activeElement);
+            return !!this.activeElement;
         });
 
-        if (isNullOrUndefined(this.activeElement)) {
+        if (!this.activeElement) {
             this.activeElement = new SelectData();
         }
     }
@@ -282,6 +340,7 @@ export class PropertiesDefinitionComponent implements OnInit {
      */
     private handleSuccess(data: any, actionType?: string): void {
         this.loading = false;
+        this.copyToTable();
         switch (actionType) {
             case 'delete':
                 this.notify.success('Deleted PropertiesDefinition', 'Success');
@@ -308,7 +367,7 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.resourceApiData = data;
 
         // because the selectedValue doesn't get set correctly do it here
-        switch (isNullOrUndefined(this.resourceApiData.selectedValue) ? '' : this.resourceApiData.selectedValue.toString()) {
+        switch (!this.resourceApiData.selectedValue ? '' : this.resourceApiData.selectedValue.toString()) {
             case PropertiesDefinitionEnum.Element:
                 this.onXmlElementSelected();
                 break;
@@ -319,7 +378,11 @@ export class PropertiesDefinitionComponent implements OnInit {
                 this.onCustomKeyValuePairSelected();
                 break;
             default:
-                this.resourceApiData.selectedValue = PropertiesDefinitionEnum.None;
+                if (this.configurationService.configuration.features.yaml) {
+                    this.onCustomKeyValuePairSelected();
+                } else {
+                    this.resourceApiData.selectedValue = PropertiesDefinitionEnum.None;
+                }
         }
 
         this.handleSuccess(data);
@@ -344,6 +407,17 @@ export class PropertiesDefinitionComponent implements OnInit {
     }
 
     /**
+     * removes item from constraint list
+     * @param constraintClause
+     */
+    removeConstraint(constraintClause: Constraint) {
+        const index = this.newProperty.constraints.indexOf(constraintClause);
+        if (index > -1) {
+            this.newProperty.constraints.splice(index, 1);
+        }
+    }
+
+    /**
      * Sets loading to false and shows error notification.
      *
      * @param error
@@ -351,6 +425,18 @@ export class PropertiesDefinitionComponent implements OnInit {
     private handleError(error: HttpErrorResponse): void {
         this.loading = false;
         this.notify.error(error.message, 'Error');
+    }
+
+    get valid_constraint_keys() {
+        return valid_constraint_keys;
+    }
+
+    get list_constraint_keys() {
+        return list_constraint_keys;
+    }
+
+    get range_constraint_keys() {
+        return range_constraint_keys;
     }
 
     // endregion

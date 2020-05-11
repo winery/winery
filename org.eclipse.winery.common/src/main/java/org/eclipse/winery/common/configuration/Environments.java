@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 public final class Environments {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Environments.class);
+
     private static RepositoryConfigurationObject repositoryConfigurationObject;
     private static GitConfigurationObject gitConfigurationObject;
     private static UiConfigurationObject uiConfigurationObject;
@@ -44,9 +45,9 @@ public final class Environments {
 
     private Environments() {
         accountabilityConfigurationObject = new AccountabilityConfigurationObject(Environment.getInstance().getConfiguration());
-        uiConfigurationObject = new UiConfigurationObject(Environment.getInstance().getConfiguration());
-        repositoryConfigurationObject = new RepositoryConfigurationObject(Environment.getInstance().getConfiguration());
         gitConfigurationObject = new GitConfigurationObject(Environment.getInstance().getConfiguration());
+        repositoryConfigurationObject = new RepositoryConfigurationObject(Environment.getInstance().getConfiguration(), gitConfigurationObject);
+        uiConfigurationObject = new UiConfigurationObject(Environment.getInstance().getConfiguration());
     }
 
     public static Environments getInstance() {
@@ -108,7 +109,8 @@ public final class Environments {
     public RepositoryConfigurationObject getRepositoryConfig() {
         checkForUpdateAndUpdateInstances();
         if (repositoryConfigurationObject == null) {
-            repositoryConfigurationObject = new RepositoryConfigurationObject(Environment.getInstance().getConfiguration());
+            repositoryConfigurationObject = new RepositoryConfigurationObject(Environment.getInstance().getConfiguration(),
+                getGitConfig());
         }
         return repositoryConfigurationObject;
     }
@@ -134,7 +136,7 @@ public final class Environments {
      */
     public String getVersion() {
         try {
-            return new Environments().getVersionFromProperties();
+            return this.getVersionFromProperties();
         } catch (IOException e) {
             LOGGER.debug("Error while retrieving version from pom.", e);
         }
@@ -171,7 +173,7 @@ public final class Environments {
      * @return an instance of FileBasedRepositoryConfiguration
      */
     public FileBasedRepositoryConfiguration getFilebasedRepositoryConfiguration() {
-        Path path = Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot());
+        Path path = Paths.get(this.getRepositoryConfig().getRepositoryRoot());
         return new FileBasedRepositoryConfiguration(path);
     }
 
@@ -182,7 +184,7 @@ public final class Environments {
      */
     public Optional<GitBasedRepositoryConfiguration> getGitBasedRepsitoryConfiguration() {
         final FileBasedRepositoryConfiguration filebasedRepositoryConfiguration = getFilebasedRepositoryConfiguration();
-        return Optional.of(new GitBasedRepositoryConfiguration(Environments.getInstance().getGitConfig().isAutocommit(), filebasedRepositoryConfiguration));
+        return Optional.of(new GitBasedRepositoryConfiguration(this.getGitConfig().isAutocommit(), filebasedRepositoryConfiguration));
     }
 
     /**

@@ -1,0 +1,152 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2020 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div *ngIf="loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <div class="row" style="margin-bottom: 12px">
+        <div class="col-sm-12">
+            <button class="btn btn-primary" [disabled]="!instanceService?.currentVersion?.editable" name="save"
+                    (click)="save()">Save
+            </button>
+            <br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <winery-selectable-list #interfacesList
+                                    [title]="'Interfaces'"
+                                    [rows]="interfaces"
+                                    (addButtonClicked)="onAddInterface()"
+                                    (selectionChanged)="onInterfaceSelected($event)"
+                                    (removeButtonClicked)="onRemoveInterface()">
+            </winery-selectable-list>
+        </div>
+        <div class="col-sm-9" *ngIf="selectedInterface">
+            <div class="form-group">
+                <label class="control-label" for="selectedInterface.name">Name</label>
+                <input type="text" id="selectedInterface.name" name="name" autocomplete=off class="form-control"
+                       [(ngModel)]="selectedInterface.name"/>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="selectedInterface.type">Type</label>
+                <input type="text" id="selectedInterface.type" name="type" class="form-control"
+                       [(ngModel)]="selectedInterface.type" disabled/>
+            </div>
+            <winery-parameters [tableTitle]="'Inputs'" [modalTitle]="'Input'"
+                               [parameters]="selectedInterface.inputs"
+                               [columns]="columnsInputParameters"></winery-parameters>
+        </div>
+    </div>
+    <div class="row" *ngIf="selectedInterface">
+        <hr>
+        <div class="col-sm-3">
+            <winery-selectable-list #operationsList
+                                    [title]="'Operations'"
+                                    [rows]="selectedInterface.operations"
+                                    (addButtonClicked)="onAddOperation()"
+                                    (selectionChanged)="onOperationSelected($event)"
+                                    (removeButtonClicked)="onRemoveOperation()">
+            </winery-selectable-list>
+        </div>
+        <div class="col-sm-9" *ngIf="selectedOperation">
+            <div class="form-group">
+                <label class="control-label" for="selectedOperation.name">Name</label>
+                <input type="text" id="selectedOperation.name" name="name" autocomplete=off class="form-control"
+                       [(ngModel)]="selectedOperation.name"/>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="selectedOperation.description">Description</label>
+                <input type="text" id="selectedOperation.description" name="name" autocomplete=off class="form-control"
+                       [(ngModel)]="selectedOperation.description"/>
+            </div>
+            <div class="form-group">
+                <label for="artifact" class="control-label">Artifact</label>
+                <ng-select id="artifact" [items]="selectableArtifacts" (selected)="onArtifactSelected($event)"
+                           [active]="selectedArtifact" [disabled]="!instanceService?.currentVersion?.editable">
+                </ng-select>
+            </div>
+            <winery-parameters [tableTitle]="'Input Parameters'" [modalTitle]="'Input Parameter'"
+                               [parameters]="selectedOperation.inputs" [columns]="columnsInputParameters">
+            </winery-parameters>
+            <winery-parameters [tableTitle]="'Output Parameters'" [modalTitle]="'Output Parameter'"
+                               [parameters]="selectedOperation.outputs" [columns]="columnsOutputParameters">
+            </winery-parameters>
+            <winery-dependencies [dependencies]="selectedOperation.implementation?.dependencies"
+                                 [selectableArtifacts]="selectableArtifacts">
+            </winery-dependencies>
+        </div>
+    </div>
+</div>
+
+<winery-modal bsModal #addInterfaceModal="bs-modal" [modalRef]="addInterfaceModal"
+              (onShow)="form.reset(); type.reset()">
+    <winery-modal-header [title]="'Interface'"></winery-modal-header>
+    <winery-modal-body>
+        <form #form="ngForm">
+            <div class="form-group">
+                <label for="type" class="control-label">Type</label>
+                <ng-select id="type" name="type" #type="ngModel" ngModel required
+                           [disabled]="!instanceService?.currentVersion?.editable"
+                           [items]="interfaceTypes">
+                </ng-select>
+            </div>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="addInterface(type.value[0])"
+                         [closeButtonLabel]="'Cancel'"
+                         [okButtonLabel]="'Add'"
+                         [disableOkButton]="type.invalid">
+    </winery-modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #addOperationModal="bs-modal" [modalRef]="addOperationModal"
+              (onShow)="form.reset()">
+    <winery-modal-header [title]="'Operation'"></winery-modal-header>
+    <winery-modal-body>
+        <form #form="ngForm">
+            <div class="form-group">
+                <label for="name" class="control-label">Name</label>
+                <input type="text" id="name" name="name" #name="ngModel" ngModel required class="form-control"
+                       [wineryDuplicateValidator]="validatorObject">
+                <div *ngIf="name.errors && (name.dirty || name.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!name.errors.wineryDuplicateValidator">
+                        No duplicates allowed!
+                    </div>
+                    <div [hidden]="!name.errors.required">
+                        Name is required!
+                    </div>
+                </div>
+            </div>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="addOperation(name.value)"
+                         [closeButtonLabel]="'Cancel'"
+                         [okButtonLabel]="'Add'"
+                         [disableOkButton]="!form?.form.valid">
+    </winery-modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #removeModal="bs-modal" [modalRef]="removeModal">
+    <winery-modal-header [title]="'Remove ' + modalTitle"></winery-modal-header>
+    <winery-modal-body>
+        <p>
+            Are you sure you want to remove <span style="font-weight: bold;">{{ removeModalElement }}</span>?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Delete'"
+                         (onOk)="modalTitle === 'Interface' ? removeInterface() : removeOperation();">
+    </winery-modal-footer>
+</winery-modal>

@@ -1,0 +1,27 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+metadata:
+  description: This test contains an invalid node_template with a missing 'selectable' value in the directives keyname.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.3/test
+  tosca.version: 1.1
+  reference: 3.7.3
+  exception: 
+
+node_types:
+  ntp1:
+    derived_from: tosca.nodes.Root
+    properties:
+      prp1:
+        type: integer
+
+topology_template:
+  node_templates:
+    ndt1:
+      type: ntp1
+      description: Node template description
+      metadata: 
+      directives: [drt1]
+      node_filter:
+        properties:
+          - ndt1.prp1: { equal: 2 }
+             

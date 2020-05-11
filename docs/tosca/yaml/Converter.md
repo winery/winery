@@ -69,7 +69,7 @@ node_types:
         type: imp1:example.com.Compose
 ...
 ################ data_types.yml #################
-tosca_definitions_version: tosca_simple_yaml_1_1
+tosca_definitions_version: tosca_simple_yaml_1_3
 
 data_types:
   example.com.Number:

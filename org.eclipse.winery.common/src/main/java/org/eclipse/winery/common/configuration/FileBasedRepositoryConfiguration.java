@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -22,8 +22,8 @@ import org.eclipse.jdt.annotation.NonNull;
 
 public class FileBasedRepositoryConfiguration {
 
-    // may be null, because org.eclipse.winery.repository.backend.filebased.FilebasedRepository() determines the location automatically if no path exists
     private Path repositoryPath = null;
+    private RepositoryConfigurationObject.RepositoryProvider repositoryProvider;
 
     /**
      * There are no required values for the configuration
@@ -32,11 +32,18 @@ public class FileBasedRepositoryConfiguration {
     }
 
     public FileBasedRepositoryConfiguration(@NonNull Path repositoryPath) {
-        this.repositoryPath = Objects.requireNonNull(repositoryPath);
+        this(repositoryPath, Environments.getInstance().getRepositoryConfig().getProvider());
     }
 
-    public FileBasedRepositoryConfiguration(@NonNull FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
-        this.repositoryPath = Objects.requireNonNull(fileBasedRepositoryConfiguration).repositoryPath;
+    private FileBasedRepositoryConfiguration(@NonNull Path repositoryPath, RepositoryConfigurationObject.RepositoryProvider repositoryProvider) {
+        this.repositoryPath = Objects.requireNonNull(repositoryPath);
+        this.repositoryProvider = Objects.requireNonNull(repositoryProvider);
+    }
+
+    public FileBasedRepositoryConfiguration(@NonNull FileBasedRepositoryConfiguration configuration) {
+        Objects.requireNonNull(configuration);
+        this.repositoryPath = Objects.requireNonNull(configuration.repositoryPath);
+        this.repositoryProvider = Objects.requireNonNull(configuration.repositoryProvider);
     }
 
     public Optional<Path> getRepositoryPath() {
@@ -45,5 +52,13 @@ public class FileBasedRepositoryConfiguration {
 
     public void setRepositoryPath(@NonNull Path repositoryPath) {
         this.repositoryPath = Objects.requireNonNull(repositoryPath);
+    }
+
+    public RepositoryConfigurationObject.RepositoryProvider getRepositoryProvider() {
+        return repositoryProvider;
+    }
+
+    public void setRepositoryProvider(RepositoryConfigurationObject.RepositoryProvider repositoryProvider) {
+        this.repositoryProvider = repositoryProvider;
     }
 }

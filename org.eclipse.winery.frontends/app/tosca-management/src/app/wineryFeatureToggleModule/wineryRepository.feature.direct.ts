@@ -11,47 +11,24 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Directive, Input, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
-import { WineryRepositoryConfigurationService } from './WineryRepositoryConfiguration.service';
+import { Directive, Input, OnInit } from '@angular/core';
+import { ShowOnFeatureDirective } from './wineryRepository.showOnFeature.direct';
 
 export enum FeatureEnum {
-    Accountability = 'accountability', Completion = 'completion', Compliance = 'compliance', EdmmModeling = 'edmmModeling',
-    FreezeAndDefrost = 'freezeAndDefrost', ManagementFeatureEnrichment = 'managementFeatureEnrichment', NFV = 'nfv',
-    PatternRefinement = 'patternRefinement', ProblemDetection = 'problemDetection',
-    Splitting = 'splitting', TestRefinement = 'testRefinement', Placement = 'placement', updateTemplates = 'updateTemplates'
+    Accountability = 'accountability', Completion = 'completion', Compliance = 'compliance', FreezeAndDefrost = 'freezeAndDefrost',
+    ManagementFeatureEnrichment = 'managementFeatureEnrichment', NFV = 'nfv', PatternRefinement = 'patternRefinement', ProblemDetection = 'problemDetection',
+    Radon = 'radon', Splitting = 'splitting', TestRefinement = 'testRefinement', Placement = 'placement', updateTemplates = 'updateTemplates', Yaml = 'yaml'
 }
 
 @Directive({
     selector: '[wineryRepositoryFeatureToggle]'
 })
-export class FeatureToggleDirective implements OnInit {
-    @Input() wineryRepositoryFeatureToggle: string | string[];
+export class FeatureToggleDirective extends ShowOnFeatureDirective implements OnInit {
 
-    constructor(
-        private templateRef: TemplateRef<any>,
-        private viewContainer: ViewContainerRef,
-        private configService: WineryRepositoryConfigurationService
-    ) {
-    }
+    @Input('wineryRepositoryFeatureToggle') data: string | string[];
 
     ngOnInit() {
-        if (Array.isArray(this.wineryRepositoryFeatureToggle)) {
-            let found = false;
-            for (const feature of this.wineryRepositoryFeatureToggle) {
-                if (this.configService.configuration.features[feature]) {
-                    this.viewContainer.createEmbeddedView(this.templateRef);
-                    found = true;
-                }
-            }
-            if (!found) {
-                this.viewContainer.clear();
-            }
-        } else if (typeof this.wineryRepositoryFeatureToggle === 'string') {
-            if (this.configService.configuration.features[this.wineryRepositoryFeatureToggle]) {
-                this.viewContainer.createEmbeddedView(this.templateRef);
-            } else {
-                this.viewContainer.clear();
-            }
-        }
+        this.featuresToShow = this.data;
+        super.ngOnInit();
     }
 }

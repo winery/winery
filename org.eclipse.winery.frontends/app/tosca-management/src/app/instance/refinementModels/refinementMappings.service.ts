@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -84,7 +84,7 @@ export class RefinementMappingsService {
 
     public getTypeProperties(type: string, nodeTemplate: boolean): Observable<PropertiesDefinitionsResourceApiData> {
         const qName = Utils.getNamespaceAndLocalNameFromQName(type);
-        const toscaType = nodeTemplate ? '/nodetypes/' : '/relationshiptypes/';
+        const toscaType = nodeTemplate ? 'nodetypes' : 'relationshiptypes';
         const url = backendBaseURL + `/${toscaType}/${encodeURIComponent(encodeURIComponent(qName.namespace))}/${qName.localName}/propertiesdefinition/`;
         return this.http.get<PropertiesDefinitionsResourceApiData>(url);
     }

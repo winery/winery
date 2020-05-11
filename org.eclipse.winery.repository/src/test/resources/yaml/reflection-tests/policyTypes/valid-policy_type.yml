@@ -1,0 +1,41 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+metadata:
+  description: Valid policy type definition.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.3/test
+  tosca.version: 1.1
+  reference: 3.6.12.1
+  exception: None
+  keyname: policy_types.test.policytypes.pt1
+  assert-typeof: |
+    properties.prop1 = TPropertyDefinition
+  assert: |
+    derived_from = tosca.policies.Root
+    version = 1.0.0
+    metadata.metaData1 = Metadata value
+    description = Policy type description
+    properties.prop1.type = string
+    targets = [nt1]
+    triggers.trig1.event.type = event1
+    triggers.trig1.action = action1
+
+policy_types:
+  test.policytypes.pt1:
+    derived_from: tosca.policies.Root
+    version: 1.0.0
+    metadata:
+      metaData1: Metadata value
+    description: Policy type description
+    properties:
+      prop1:
+        type: string
+    targets: [nt1]
+    triggers:
+      trig1:
+        event:
+          type: event1
+        action: action1
+
+node_types:
+  nt1:
+    derived_from: tosca.nodes.Root

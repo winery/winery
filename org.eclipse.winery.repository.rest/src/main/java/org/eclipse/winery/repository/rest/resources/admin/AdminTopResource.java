@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -106,6 +106,7 @@ public class AdminTopResource {
     @Produces(MediaType.APPLICATION_JSON)
     public UiConfigurationObject setConfig(UiConfigurationObject changedConfiguration) {
         Environments.save(changedConfiguration);
+        Environments.save(Environments.getInstance().getRepositoryConfig());
         return Environments.getInstance().getUiConfig();
     }
 

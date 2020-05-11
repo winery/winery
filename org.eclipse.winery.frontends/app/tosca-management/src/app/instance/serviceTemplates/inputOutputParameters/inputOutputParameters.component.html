@@ -1,0 +1,29 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2020 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div *ngIf="loading" style="margin-top: 179px">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <winery-parameters tableTitle="Input Parameters" modalTitle="Input Parameter"
+                       [parameters]="inputParameters" [columns]="columnsInputParameters"
+                       (onParameterAdded)="save(modeType.INPUT)"
+                       (onParameterRemoved)="save(modeType.INPUT)">
+    </winery-parameters>
+    <hr>
+    <winery-parameters tableTitle="Output Parameters" modalTitle="Output Parameter"
+                       [parameters]="outputParameters" [columns]="columnsOutputParameters"
+                       (onParameterAdded)="save(modeType.OUTPUT)"
+                       (onParameterRemoved)="save(modeType.OUTPUT)">
+    </winery-parameters>
+</div>

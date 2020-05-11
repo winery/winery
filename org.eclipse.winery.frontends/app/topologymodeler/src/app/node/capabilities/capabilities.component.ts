@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -20,6 +20,8 @@ import { IWineryState } from '../../redux/store/winery.store';
 import { Subscription } from 'rxjs';
 import { CapabilityModel } from '../../models/capabilityModel';
 import { TableType } from '../../models/enums';
+import { ReqCapModalType, ShowReqCapModalEventData } from '../toscatype-table/showReqCapModalEventData';
+import { WineryRepositoryConfigurationService } from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 @Component({
     selector: 'winery-capabilities',
@@ -44,7 +46,7 @@ export class CapabilitiesComponent implements OnInit, OnChanges, OnDestroy {
     subscription: Subscription;
     currentCapability: CapabilityModel;
 
-    constructor(private ngRedux: NgRedux<IWineryState>) {
+    constructor(private ngRedux: NgRedux<IWineryState>, private configuration: WineryRepositoryConfigurationService) {
         this.toggleModalHandler = new EventEmitter();
         this.subscription = this.ngRedux.select(state => state.wineryState.currentJsonTopology.nodeTemplates)
             .subscribe(currentNodes => this.updateCaps());
@@ -74,15 +76,14 @@ export class CapabilitiesComponent implements OnInit, OnChanges, OnDestroy {
 
     /**
      * Propagates the click event to node.component, where the capabilities modal gets opened.
-     * @param $event
+     * @param event the id of the capability that was clicked.
      */
-    public toggleModal($event) {
+    public toggleModal(event: ShowReqCapModalEventData) {
         this.currentCapability = null;
-        const currentCapId = $event.srcElement.textContent;
 
         if (this.capabilities) {
             this.capabilities.some(cap => {
-                if (cap.id === currentCapId) {
+                if (cap.id === event.id) {
                     this.currentCapability = cap;
                     return true;
                 }
@@ -91,7 +92,7 @@ export class CapabilitiesComponent implements OnInit, OnChanges, OnDestroy {
             this.capabilities = [];
         }
 
-        if ($event.srcElement.innerText === 'Add new') {
+        if (event.operation === ReqCapModalType.AddNew) {
             this.currentNodeData.currentCapability = null;
         } else {
             this.currentNodeData.currentCapability = this.currentCapability;

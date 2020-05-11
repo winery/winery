@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -44,15 +44,13 @@
             Import CSAR
         </button>
         <button class="btn btn-default sidebar-btn sectionBtn" id="sectionsImportYamlBtn"
-                (click)="addYamlModal.show();">
+                (click)="addYamlModal.show();" *wineryRepositoryHideOnFeature="'yaml'">
             Import YAML
         </button>
-        <winery-xaas-packager *ngIf="toscaType === toscaTypes.ServiceTemplate"
-                              class="sectionBtn"
-                              id="sectionCreateFromArtifactBtn"></winery-xaas-packager>
-        <div *wineryRepositoryFeatureToggle="configEnum.Placement"
-             class="sectionBtn">
-            <winery-placement *ngIf="toscaType === toscaTypes.ServiceTemplate"
+        <div *ngIf="toscaType === toscaTypes.ServiceTemplate" class="sectionBtn">
+            <winery-xaas-packager *wineryRepositoryHideOnFeature="'yaml'"
+                                  id="sectionCreateFromArtifactBtn"></winery-xaas-packager>
+            <winery-placement *wineryRepositoryFeatureToggle="configEnum.Placement"
                               id="sectionCreateFromDataFlowBtn"></winery-placement>
         </div>
         <button class="btn btn-default sidebar-btn sectionBtn" id="sectionsGroupBtn" (click)="onChangeView()"

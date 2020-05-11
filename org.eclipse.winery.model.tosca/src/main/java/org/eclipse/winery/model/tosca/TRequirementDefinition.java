@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -40,12 +40,19 @@ public class TRequirementDefinition extends TExtensibleElements {
     protected TRequirementDefinition.Constraints constraints;
     @XmlAttribute(name = "name", required = true)
     protected String name;
-    @XmlAttribute(name = "requirementType", required = true)
+    @XmlAttribute(name = "requirementType")
     protected QName requirementType;
     @XmlAttribute(name = "lowerBound")
     protected Integer lowerBound;
     @XmlAttribute(name = "upperBound")
     protected String upperBound;
+    // the following attributes are introduced to support the YAML specs
+    @XmlAttribute(name = "capability")
+    private QName capability;
+    @XmlAttribute(name = "node")
+    private QName node;
+    @XmlAttribute(name = "relationship")
+    private QName relationship;
 
     public TRequirementDefinition() {
 
@@ -58,6 +65,9 @@ public class TRequirementDefinition extends TExtensibleElements {
         this.requirementType = builder.requirementType;
         this.lowerBound = builder.lowerBound;
         this.upperBound = builder.upperBound;
+        this.capability = builder.capability;
+        this.node = builder.node;
+        this.relationship = builder.relationship;
     }
 
     @Override
@@ -101,7 +111,7 @@ public class TRequirementDefinition extends TExtensibleElements {
         this.name = value;
     }
 
-    @NonNull
+    // removed the @NonNull annotation since this field is not present in YAML mode
     public QName getRequirementType() {
         return requirementType;
     }
@@ -135,6 +145,30 @@ public class TRequirementDefinition extends TExtensibleElements {
 
     public void setUpperBound(@Nullable String value) {
         this.upperBound = value;
+    }
+
+    public QName getCapability() {
+        return capability;
+    }
+
+    public void setCapability(QName capability) {
+        this.capability = capability;
+    }
+
+    public QName getNode() {
+        return node;
+    }
+
+    public void setNode(QName node) {
+        this.node = node;
+    }
+
+    public QName getRelationship() {
+        return relationship;
+    }
+
+    public void setRelationship(QName relationship) {
+        this.relationship = relationship;
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -171,10 +205,19 @@ public class TRequirementDefinition extends TExtensibleElements {
     public static class Builder extends TExtensibleElements.Builder<Builder> {
         private final String name;
         private final QName requirementType;
-
         private Constraints constraints;
         private Integer lowerBound;
         private String upperBound;
+        private QName capability;
+        private QName node;
+        private QName relationship;
+
+        /**
+         * This constructor is used when in YAML mode.
+         */
+        public Builder(String name) {
+            this(name, null);
+        }
 
         public Builder(String name, QName requirementType) {
             this.name = name;
@@ -194,6 +237,21 @@ public class TRequirementDefinition extends TExtensibleElements {
         public Builder setUpperBound(String upperBound) {
             this.upperBound = upperBound;
             return this;
+        }
+
+        public Builder setCapability(QName capability) {
+            this.capability = capability;
+            return self();
+        }
+
+        public Builder setNode(QName node) {
+            this.node = node;
+            return self();
+        }
+
+        public Builder setRelationship(QName relationship) {
+            this.relationship = relationship;
+            return self();
         }
 
         public Builder addConstraints(TRequirementDefinition.Constraints constraints) {

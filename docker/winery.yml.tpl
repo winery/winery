@@ -8,6 +8,7 @@ ui:
     nfv: {{ .Env.WINERY_FEATURE_NFV }}
     patternRefinement: {{ .Env.WINERY_FEATURE_PATTERN_REFINEMENT }}
     problemDetection: {{ .Env.WINERY_FEATURE_PROBLEM_DETECTION }}
+    radon: {{ .Env.WINERY_FEATURE_RADON }}
     splitting: {{ .Env.WINERY_FEATURE_SPLITTING }}
     testRefinement: {{ .Env.WINERY_FEATURE_TEST_REFINEMENT }}
     edmmModeling: {{ .Env.WINERY_FEATURE_EDMM_MODELING }}
@@ -19,8 +20,9 @@ ui:
     repositoryUiUrl: http://{{ .Env.WINERY_HOSTNAME }}:{{ .Env.WINERY_PORT }}/#
     edmmTransformationTool: http://{{ .Env.EDMM_TRANSFORMATION_HOSTNAME }}:{{ .Env.EDMM_TRANSFORMATION_PORT }}/plugins/check-model-support
 repository:
-  provider: file
+  provider: {{ .Env.WINERY_REPOSITORY_PROVIDER }}
   repositoryRoot: {{ .Env.WINERY_REPOSITORY_PATH }}
+  csarOutputPath: {{ .Env.WINERY_CSAR_OUTPUT_PATH }}
   git:
     clientSecret: secret
     password: default

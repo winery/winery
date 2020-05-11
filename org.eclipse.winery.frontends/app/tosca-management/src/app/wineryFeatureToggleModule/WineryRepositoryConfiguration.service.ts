@@ -26,11 +26,13 @@ export interface WineryConfiguration {
         nfv: boolean;
         patternRefinement: boolean;
         problemDetection: boolean;
+        radon: boolean;
         splitting: boolean;
         testRefinement: boolean;
         placement: boolean;
         edmmModeling: boolean;
         updateTemplates: boolean;
+        yaml: boolean;
     };
     endpoints: {
         container: string;
@@ -66,5 +68,9 @@ export class WineryRepositoryConfigurationService {
                 }
             );
         return subject.asObservable();
+    }
+
+    isYaml(): boolean {
+        return this.configuration.features.yaml;
     }
 }

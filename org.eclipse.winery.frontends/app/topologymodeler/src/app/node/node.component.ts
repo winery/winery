@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,7 +23,6 @@ import { EntityType, TNodeTemplate } from '../models/ttopology-template';
 import { QName } from '../models/qname';
 import { PropertyDefinitionType, urlElement } from '../models/enums';
 import { BackendService } from '../services/backend.service';
-import { isNullOrUndefined } from 'util';
 import { GroupedNodeTypeModel } from '../models/groupedNodeTypeModel';
 import { EntityTypesModel } from '../models/entityTypesModel';
 import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reducer';
@@ -34,6 +33,9 @@ import { VersionElement } from '../models/versionElement';
 import { VersionsComponent } from './versions/versions.component';
 import { WineryVersion } from '../../../../tosca-management/src/app/model/wineryVersion';
 import { FeatureEnum } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/wineryRepository.feature.direct';
+import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { Subscription } from 'rxjs';
+import { InheritanceUtils } from '../models/InheritanceUtils';
 
 /**
  * Every node has its own component and gets created dynamically.
@@ -73,6 +75,9 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     propertyDefinitionType: string;
     policyIcons: string[];
     configEnum = FeatureEnum;
+    policiesOfNode: TPolicy[];
+    private policyChangeSubscription: Subscription;
+    private artifactsChangedSubscription: Subscription;
 
     @Input() readonly: boolean;
     @Input() entityTypes: EntityTypesModel;
@@ -92,6 +97,8 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     @Output() saveNodeRequirements: EventEmitter<any>;
     @Output() sendPaletteStatus: EventEmitter<any>;
     @Output() sendNodeData: EventEmitter<any>;
+    @Output() relationshipTemplateIdClicked: EventEmitter<string>;
+    @Output() showYamlPolicyManagementModal: EventEmitter<void>;
 
     @ViewChild('versionModal') versionModal: VersionsComponent;
     previousPosition: any;
@@ -115,6 +122,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                 public elRef: ElementRef,
                 private backendService: BackendService,
                 private renderer: Renderer2,
+                private configurationService: WineryRepositoryConfigurationService,
                 private differs: KeyValueDiffers) {
         this.sendId = new EventEmitter();
         this.askForRepaint = new EventEmitter();
@@ -128,6 +136,32 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         this.saveNodeRequirements = new EventEmitter();
         this.sendPaletteStatus = new EventEmitter();
         this.sendNodeData = new EventEmitter();
+        this.relationshipTemplateIdClicked = new EventEmitter<string>();
+        this.showYamlPolicyManagementModal = new EventEmitter<void>();
+
+        // update node's policies if the list is changed
+        if (configurationService.isYaml()) {
+            this.policyChangeSubscription = $ngRedux.select(wineryState => wineryState.wineryState.currentJsonTopology.policies)
+                .subscribe(policies => {
+                    if (this.entityTypes) {
+                        this.entityTypes.yamlPolicies = policies.policy;
+                        this.policiesOfNode = this.getAllowedPolicies();
+                    }
+                });
+
+            this.artifactsChangedSubscription = $ngRedux.select(wineryState => wineryState
+                .wineryState
+                .currentJsonTopology
+                .nodeTemplates
+                .find(nt => {
+                    return this.nodeTemplate && nt.id === this.nodeTemplate.id;
+                })
+            ).subscribe(nodeTemplate => {
+                if (this.nodeTemplate && nodeTemplate) {
+                    this.nodeTemplate.artifacts = nodeTemplate.artifacts;
+                }
+            });
+        }
         this.$ngRedux.subscribe(() => this.setPolicyIcons());
     }
 
@@ -152,13 +186,17 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         groupedNodeTypes.some(nameSpace => {
             nameSpace.children.some(nodeTypeVar => {
                 if (nodeTypeVar.id === type) {
+                    const node = nodeTypeVar.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0];
                     // if PropertiesDefinition doesn't exist then it must be of type NONE
-                    if (isNullOrUndefined(nodeTypeVar.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition)) {
+                    if (!node.propertiesDefinition && node.derivedFrom) {
+                        // check all parents; property definition types
+                        propertyDefinitionTypeAssigned = this.checkParentPropertyDefinitions(node.derivedFrom.typeRef);
+                    } else if (!node.propertiesDefinition) {
                         this.propertyDefinitionType = PropertyDefinitionType.NONE;
                         propertyDefinitionTypeAssigned = true;
                     } else {
                         // if no XML element inside PropertiesDefinition then it must be of type Key Value
-                        if (!nodeTypeVar.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element) {
+                        if (!node.propertiesDefinition.element) {
                             this.propertyDefinitionType = PropertyDefinitionType.KV;
                             propertyDefinitionTypeAssigned = true;
                         } else {
@@ -176,6 +214,36 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         });
     }
 
+    checkParentPropertyDefinitions(parentType: string): boolean {
+        let parentFound = false;
+        this.entityTypes.unGroupedNodeTypes.forEach(entry => {
+            if (entry.qName === parentType) {
+                parentFound = true;
+                const node = entry.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0];
+                if (!node.propertiesDefinition && node.derivedFrom) {
+                    this.checkParentPropertyDefinitions(node.derivedFrom.typeRef);
+                } else if (!node.propertiesDefinition) {
+                    this.propertyDefinitionType = PropertyDefinitionType.NONE;
+                    return true;
+                } else {
+                    if (!node.propertiesDefinition.element) {
+                        this.propertyDefinitionType = PropertyDefinitionType.KV;
+                    } else {
+                        this.propertyDefinitionType = PropertyDefinitionType.XML;
+                    }
+                    return true;
+                }
+            }
+        });
+
+        if (!parentFound) {
+            this.propertyDefinitionType = PropertyDefinitionType.NONE;
+            return true;
+        }
+
+        return true;
+    }
+
     /**
      * Angular lifecycle event.
      */
@@ -187,9 +255,13 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
             this.nodeClass = 'nodeTemplate';
         }
 
-        this.setPolicyIcons();
-        this.addNewVersions(new QName(this.nodeTemplate.type));
+        if (this.configurationService.isYaml()) {
+            this.policiesOfNode = this.getAllowedPolicies();
+        } else {
+            this.setPolicyIcons();
+        }
 
+        this.addNewVersions(new QName(this.nodeTemplate.type));
     }
 
     /**
@@ -234,6 +306,10 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                 this.policyIcons = null;
             }
         }
+    }
+
+    onRelationshipTemplateIdClicked(id: string) {
+        this.relationshipTemplateIdClicked.emit(id);
     }
 
     /**
@@ -441,6 +517,14 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         if (this.nodeRef) {
             this.nodeRef.destroy();
         }
+
+        if (this.policyChangeSubscription) {
+            this.policyChangeSubscription.unsubscribe();
+        }
+
+        if (this.artifactsChangedSubscription) {
+            this.artifactsChangedSubscription.unsubscribe();
+        }
     }
 
     /**
@@ -483,5 +567,32 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
 
     public openVersionModal() {
         this.versionModal.open();
+    }
+
+    private getAllowedPolicies() {
+        // get the ancestry of the node type
+        const nodeTypeAncestry = InheritanceUtils.getInheritanceAncestry(this.nodeTemplate.type, this.entityTypes.unGroupedNodeTypes);
+        const result = [];
+        // check each potential yaml policy
+        this.entityTypes.yamlPolicies.forEach(policy => {
+            // get the node types allowed as targets to this current policy
+            const allowedNodeTypes = InheritanceUtils.getEffectiveTargetsOfYamlPolicyType(policy.policyType, this.entityTypes.policyTypes);
+
+            if (allowedNodeTypes.length > 0) {
+                // if the two sets of node types intersect, the current policy is allowed.
+                if (allowedNodeTypes.some(nodeTypeQName => nodeTypeAncestry.some(ntAncestor => ntAncestor.qName === nodeTypeQName))) {
+                    result.push(policy);
+                }
+            } else {
+                // also, if the allowedNodeTypes array is empty, then all node types are allowed!
+                result.push(policy);
+            }
+        });
+
+        return result;
+    }
+
+    handleShowYamlPolicyManagementModal() {
+        this.showYamlPolicyManagementModal.emit();
     }
 }

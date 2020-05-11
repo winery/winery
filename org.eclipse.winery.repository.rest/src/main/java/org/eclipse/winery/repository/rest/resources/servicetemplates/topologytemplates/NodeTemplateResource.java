@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2014 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -28,6 +28,7 @@ import javax.ws.rs.HEAD;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -35,6 +36,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.common.ids.IdNames;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
@@ -48,7 +50,10 @@ import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.GenericDirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.rest.resources._support.GenericFileResource;
 import org.eclipse.winery.repository.rest.resources._support.INodeTemplateResourceOrNodeTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
@@ -82,6 +87,18 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
     @Path("deploymentartifacts/")
     public DeploymentArtifactsResource getDeploymentArtifacts() {
         return new DeploymentArtifactsResource(this.o, this);
+    }
+
+    @Path("yamlartifacts/{artifactId}")
+    public GenericFileResource postYamlArtifactFile(@PathParam("artifactId") String id) {
+        DirectoryId serviceTemplateYamlArtifactsDir =
+            new GenericDirectoryId(getServiceTemplateResource().getId(), IdNames.FILES_DIRECTORY);
+        DirectoryId nodeTemplateYamlArtifactsDir =
+            new GenericDirectoryId(serviceTemplateYamlArtifactsDir, nodeTemplate.getId());
+        DirectoryId yamlArtifactFilesDirectoryId =
+            new GenericDirectoryId(nodeTemplateYamlArtifactsDir, id);
+
+        return new GenericFileResource(yamlArtifactFilesDirectoryId);
     }
 
     // The following methods are currently *not* used by the topology modeler. The modeler is using the repository client to interact with the repository

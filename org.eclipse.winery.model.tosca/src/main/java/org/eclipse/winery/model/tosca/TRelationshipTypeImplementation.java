@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -135,6 +135,10 @@ public class TRelationshipTypeImplementation extends TEntityTypeImplementation {
 
         public Builder(Builder builder, String name, QName implementedType) {
             super(builder, name, implementedType);
+        }
+
+        public Builder(String name, QName implementedRelationshipType) {
+            super(name, implementedRelationshipType);
         }
 
         public Builder setDerivedFrom(DerivedFrom derivedFrom) {

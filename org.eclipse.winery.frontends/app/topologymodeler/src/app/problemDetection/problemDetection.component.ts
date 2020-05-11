@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,6 +25,7 @@ import { SolutionInputData } from './solutionEntity';
 import { TTopologyTemplate } from '../models/ttopology-template';
 import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 import { WineryActions } from '../redux/actions/winery.actions';
+import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 @Component({
     selector: 'winery-problem-detection',
@@ -47,6 +48,7 @@ export class ProblemDetectionComponent {
                 private wineryActions: WineryActions,
                 private problemDetectionService: ProblemDetectionService,
                 private alert: ToastrService,
+                private configurationService: WineryRepositoryConfigurationService,
                 private backendService: BackendService) {
         this.ngRedux.select(state => state.topologyRendererState)
             .subscribe(currentButtonsState => this.checkButtonsState(currentButtonsState));
@@ -131,7 +133,7 @@ export class ProblemDetectionComponent {
     }
 
     private solutionApplied(data: TTopologyTemplate) {
-        TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, data);
+        TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, data, this.configurationService.isYaml());
         this.loading = false;
     }
 }

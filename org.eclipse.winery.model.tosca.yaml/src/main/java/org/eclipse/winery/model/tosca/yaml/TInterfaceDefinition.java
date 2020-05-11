@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,38 +13,41 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.yaml;
 
-import io.github.adr.embedded.ADR;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
-import org.eclipse.winery.model.tosca.yaml.visitor.AbstractResult;
-import org.eclipse.winery.model.tosca.yaml.visitor.IVisitor;
-import org.eclipse.winery.model.tosca.yaml.visitor.VisitorNode;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
+import org.eclipse.winery.model.tosca.yaml.visitor.AbstractResult;
+import org.eclipse.winery.model.tosca.yaml.visitor.IVisitor;
+import org.eclipse.winery.model.tosca.yaml.visitor.VisitorNode;
+
+import io.github.adr.embedded.ADR;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tInterfaceDefinition", namespace = " http://docs.oasis-open.org/tosca/ns/simple/yaml/1.0", propOrder = {
+@XmlType(name = "tInterfaceDefinition", namespace = " http://docs.oasis-open.org/tosca/ns/simple/yaml/1.3", propOrder = {
     "type",
     "inputs",
     "operations"
 })
 public class TInterfaceDefinition implements VisitorNode {
+
     private QName type;
-    private Map<String, TPropertyAssignmentOrDefinition> inputs;
+    private Map<String, TParameterDefinition> inputs;
     private Map<String, TOperationDefinition> operations;
 
     public TInterfaceDefinition() {
     }
 
-    public TInterfaceDefinition(Builder builder) {
+    public TInterfaceDefinition(Builder<?> builder) {
         this.setType(builder.type);
         this.setInputs(builder.inputs);
         this.setOperations(builder.operations);
@@ -65,15 +68,6 @@ public class TInterfaceDefinition implements VisitorNode {
         return Objects.hash(getType(), getInputs(), getOperations());
     }
 
-    @Override
-    public String toString() {
-        return "TInterfaceDefinition{" +
-            "type=" + getType() +
-            ", inputs=" + getInputs() +
-            ", operations=" + getOperations() +
-            '}';
-    }
-
     @Nullable
     public QName getType() {
         return type;
@@ -84,15 +78,14 @@ public class TInterfaceDefinition implements VisitorNode {
     }
 
     @NonNull
-    public Map<String, TPropertyAssignmentOrDefinition> getInputs() {
+    public Map<String, TParameterDefinition> getInputs() {
         if (this.inputs == null) {
             this.inputs = new LinkedHashMap<>();
         }
-
         return inputs;
     }
 
-    public void setInputs(Map<String, TPropertyAssignmentOrDefinition> inputs) {
+    public void setInputs(Map<String, TParameterDefinition> inputs) {
         this.inputs = inputs;
     }
 
@@ -101,7 +94,6 @@ public class TInterfaceDefinition implements VisitorNode {
         if (this.operations == null) {
             this.operations = new LinkedHashMap<>();
         }
-
         return operations;
     }
 
@@ -114,11 +106,13 @@ public class TInterfaceDefinition implements VisitorNode {
     }
 
     public static class Builder<T extends Builder<T>> {
+
         private QName type;
-        private Map<String, TPropertyAssignmentOrDefinition> inputs;
+        private Map<String, TParameterDefinition> inputs;
         private Map<String, TOperationDefinition> operations;
 
         @ADR(11)
+        @SuppressWarnings("unchecked")
         public T self() {
             return (T) this;
         }
@@ -128,7 +122,7 @@ public class TInterfaceDefinition implements VisitorNode {
             return self();
         }
 
-        public T setInputs(Map<String, TPropertyAssignmentOrDefinition> inputs) {
+        public T setInputs(Map<String, TParameterDefinition> inputs) {
             this.inputs = inputs;
             return self();
         }
@@ -138,7 +132,7 @@ public class TInterfaceDefinition implements VisitorNode {
             return self();
         }
 
-        public T addInputs(Map<String, TPropertyAssignmentOrDefinition> inputs) {
+        public T addInputs(Map<String, TParameterDefinition> inputs) {
             if (inputs == null || inputs.isEmpty()) {
                 return self();
             }
@@ -152,7 +146,7 @@ public class TInterfaceDefinition implements VisitorNode {
             return self();
         }
 
-        public T addInputs(String name, TPropertyAssignmentOrDefinition input) {
+        public T addInput(String name, TParameterDefinition input) {
             if (name == null || name.isEmpty()) {
                 return self();
             }
@@ -174,7 +168,7 @@ public class TInterfaceDefinition implements VisitorNode {
             return self();
         }
 
-        public T addOperations(String name, TOperationDefinition operation) {
+        public T addOperation(String name, TOperationDefinition operation) {
             if (name == null || name.isEmpty()) {
                 return self();
             }
