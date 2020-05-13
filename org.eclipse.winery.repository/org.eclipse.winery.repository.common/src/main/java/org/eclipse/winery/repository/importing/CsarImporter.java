@@ -160,8 +160,8 @@ public class CsarImporter {
      * @param newDefs the definitions, the entiy type is contained in. The imports might be adjusted here
      * @param errors  Used to collect the errors
      */
-    private static void adjustEntityType(TEntityType ci, EntityTypeId wid, Definitions newDefs, final List<String> errors) {
-        PropertiesDefinition propertiesDefinition = ci.getPropertiesDefinition();
+    private void adjustEntityType(TEntityType ci, EntityTypeId wid, TDefinitions newDefs, final List<String> errors) {
+        TEntityType.XmlPropertiesDefinition propertiesDefinition = ci.getPropertiesDefinition();
         if (propertiesDefinition != null) {
             WinerysPropertiesDefinition winerysPropertiesDefinition = ModelUtilities.getWinerysPropertiesDefinition(ci);
             boolean deriveWPD;
@@ -202,7 +202,7 @@ public class CsarImporter {
                             // it was too difficult to do the location check there, therefore we just remove the XSD from the repository here
                             XSDImportId importId = new XSDImportId(winerysPropertiesDefinition.getNamespace(), elementName, false);
                             try {
-                                RepositoryFactory.getRepository().forceDelete(importId);
+                                this.targetRepository.forceDelete(importId);
                             } catch (IOException e) {
                                 CsarImporter.LOGGER.debug("Could not delete Winery's generated XSD definition", e);
                                 errors.add("Could not delete Winery's generated XSD definition");
@@ -221,7 +221,7 @@ public class CsarImporter {
                 }
             }
             if (deriveWPD) {
-                BackendUtils.deriveWPD(ci, errors);
+                BackendUtils.deriveWPD(ci, errors, targetRepository);
             }
         }
     }
@@ -235,7 +235,7 @@ public class CsarImporter {
      * @param rootPath                used to make the path p relative in order to determine the mime type
      * @param errors                  list where import errors should be stored to
      */
-    protected static void importFile(Path p, RepositoryFileReference repositoryFileReference, TOSCAMetaFile tmf, Path rootPath, final List<String> errors) {
+    protected void importFile(Path p, RepositoryFileReference repositoryFileReference, TOSCAMetaFile tmf, Path rootPath, final List<String> errors) {
         Objects.requireNonNull(p);
         Objects.requireNonNull(repositoryFileReference);
         Objects.requireNonNull(tmf);
@@ -257,7 +257,7 @@ public class CsarImporter {
                 }
             }
             try {
-                RepositoryFactory.getRepository().putContentToFile(repositoryFileReference, bis, mediaType);
+                targetRepository.putContentToFile(repositoryFileReference, bis, mediaType);
             } catch (IllegalArgumentException | IOException e) {
                 throw new IllegalStateException(e);
             }
@@ -266,11 +266,11 @@ public class CsarImporter {
         }
     }
 
-    public static void storeDefinitions(DefinitionsChildId id, TDefinitions defs) {
+    public static void storeDefinitions(IRepository repository, DefinitionsChildId id, TDefinitions defs) {
         RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
-        String s = BackendUtils.getXMLAsString(defs, true);
+        String s = BackendUtils.getXMLAsString(defs, true, repository);
         try {
-            RepositoryFactory.getRepository().putContentToFile(ref, s, MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
+            repository.putContentToFile(ref, s, MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
         } catch (IllegalArgumentException | IOException e) {
             throw new IllegalStateException(e);
         }

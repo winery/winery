@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.backend.filebased;
+package org.eclipse.winery.edmm;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,8 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.eclipse.winery.common.json.JacksonProvider;
-import org.eclipse.winery.model.transformation.edmm.EdmmMappingItem;
-import org.eclipse.winery.repository.backend.EdmmManager;
+import org.eclipse.winery.edmm.model.EdmmMappingItem;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

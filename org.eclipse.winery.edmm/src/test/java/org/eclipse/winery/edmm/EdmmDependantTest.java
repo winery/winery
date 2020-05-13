@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.common.edmm;
+package org.eclipse.winery.edmm;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -20,6 +20,7 @@ import java.util.HashMap;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.edmm.model.EdmmType;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
@@ -201,7 +202,7 @@ public abstract class EdmmDependantTest {
         nt3.setId("test_node_3");
         nt3.setName("test_node_3");
         TEntityTemplate.Properties properties = new TEntityTemplate.Properties();
-        HashMap<String, String> nt3Properties = new HashMap<>();
+        HashMap<String, Object> nt3Properties = new HashMap<>();
         nt3Properties.put("os_family", "ubuntu");
         nt3Properties.put("public_key", "-----BEGIN PUBLIC KEY----- ... -----END PUBLIC KEY-----");
         nt3Properties.put("ssh_port", "22");

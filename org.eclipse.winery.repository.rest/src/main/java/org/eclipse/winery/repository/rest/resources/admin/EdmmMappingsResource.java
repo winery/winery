@@ -22,8 +22,8 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.eclipse.winery.model.transformation.edmm.EdmmMappingItem;
-import org.eclipse.winery.repository.backend.EdmmManager;
+import org.eclipse.winery.edmm.EdmmManager;
+import org.eclipse.winery.edmm.model.EdmmMappingItem;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 public class EdmmMappingsResource {
@@ -38,7 +38,7 @@ public class EdmmMappingsResource {
 
     public EdmmMappingsResource(Type type) {
         this.type = type;
-        this.edmmManager = RepositoryFactory.getRepository().getEdmmManager();
+        this.edmmManager = EdmmManager.forRepository(RepositoryFactory.getRepository());
     }
 
     @GET

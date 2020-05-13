@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.common.toscalight;
+package org.eclipse.winery.edmm.toscalight;
 
 import org.eclipse.winery.model.tosca.TInterface;
 

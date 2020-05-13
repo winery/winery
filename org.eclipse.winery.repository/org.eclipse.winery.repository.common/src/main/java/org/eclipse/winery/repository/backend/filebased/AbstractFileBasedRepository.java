@@ -52,14 +52,12 @@ import org.eclipse.winery.model.ids.GenericId;
 import org.eclipse.winery.model.ids.IdUtil;
 import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.XmlId;
-import org.eclipse.winery.model.ids.admin.EdmmMappingsId;
 import org.eclipse.winery.model.ids.admin.NamespacesId;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.ids.elements.ToscaElementId;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.EdmmManager;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
@@ -504,12 +502,6 @@ public abstract class AbstractFileBasedRepository implements IRepository {
         }
 
         return manager;
-    }
-
-    @Override
-    public EdmmManager getEdmmManager() {
-        RepositoryFileReference ref = BackendUtils.getRefOfJsonConfiguration(new EdmmMappingsId());
-        return new JsonBasedEdmmManager(ref2AbsolutePath(ref).toFile());
     }
     
     public Collection<? extends DefinitionsChildId> getAllIdsInNamespace(Class<? extends DefinitionsChildId> clazz, Namespace namespace) {

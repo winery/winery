@@ -35,6 +35,7 @@ import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.converter.support.Utils;
 import org.eclipse.winery.repository.converter.writer.YamlWriter;
 import org.eclipse.winery.repository.export.CsarContentProperties;
 import org.eclipse.winery.repository.export.CsarExporter;

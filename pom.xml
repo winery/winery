@@ -114,6 +114,7 @@
                 <module>org.eclipse.winery.common</module>
                 <module>org.eclipse.winery.compliance</module>
                 <module>org.eclipse.winery.crawler</module>
+                <module>org.eclipse.winery.edmm</module>
                 <module>org.eclipse.winery.frontends</module>
                 <module>org.eclipse.winery.generators.ia</module>
                 <module>org.eclipse.winery.highlevelrestapi</module>
@@ -146,6 +147,7 @@
                 <module>org.eclipse.winery.common</module>
                 <module>org.eclipse.winery.compliance</module>
                 <module>org.eclipse.winery.crawler</module>
+                <module>org.eclipse.winery.edmm</module>
                 <module>org.eclipse.winery.generators.ia</module>
                 <module>org.eclipse.winery.highlevelrestapi</module>
                 <module>org.eclipse.winery.model</module>

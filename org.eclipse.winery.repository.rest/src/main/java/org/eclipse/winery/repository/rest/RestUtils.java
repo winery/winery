@@ -50,13 +50,14 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.edmm.EdmmManager;
+import org.eclipse.winery.edmm.model.EdmmConverter;
+import org.eclipse.winery.edmm.model.EdmmType;
 import org.eclipse.winery.repository.backend.WineryVersionUtils;
 import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.constants.MimeTypes;
-import org.eclipse.winery.model.transformation.edmm.EdmmConverter;
-import org.eclipse.winery.model.transformation.edmm.EdmmType;
 import org.eclipse.winery.model.ids.GenericId;
 import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.XmlId;
@@ -86,7 +87,6 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.EdmmManager;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -302,7 +302,7 @@ public class RestUtils {
         Map<QName, TNodeTypeImplementation> nodeTypeImplementations = repository.getQNameToElementMapping(NodeTypeImplementationId.class);
         Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations = repository.getQNameToElementMapping(RelationshipTypeImplementationId.class);
         Map<QName, TArtifactTemplate> artifactTemplates = repository.getQNameToElementMapping(ArtifactTemplateId.class);
-        EdmmManager edmmManager = repository.getEdmmManager();
+        EdmmManager edmmManager = EdmmManager.forRepository(repository);
         Map<QName, EdmmType> oneToOneMappings = edmmManager.getOneToOneMap();
         Map<QName, EdmmType> typeMappings = edmmManager.getTypeMap();
 
@@ -1038,7 +1038,7 @@ public class RestUtils {
             .sorted()
             .map(id -> {
                 String name = id.getXmlId().getDecoded();
-                Definitions definitions = null;
+                TDefinitions definitions = null;
                 WineryVersion version = null;
                 if (Util.instanceSupportsNameAttribute(id.getClass())) {
                     TExtensibleElements element = RepositoryFactory.getRepository().getElement(id);
@@ -1057,7 +1057,7 @@ public class RestUtils {
             .collect(Collectors.toList());
     }
 
-    public static Definitions getFullComponentData(DefinitionsChildId id) {
+    public static TDefinitions getFullComponentData(DefinitionsChildId id) {
         try {
             return BackendUtils.getDefinitionsHavingCorrectImports(RepositoryFactory.getRepository(), id);
         } catch (Exception e) {

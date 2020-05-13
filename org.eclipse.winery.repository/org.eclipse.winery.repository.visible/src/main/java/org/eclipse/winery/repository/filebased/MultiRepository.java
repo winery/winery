@@ -39,14 +39,11 @@ import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
 import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
 import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
-import org.eclipse.winery.model.ids.admin.EdmmMappingsId;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.EdmmManager;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.filebased.AbstractFileBasedRepository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
-import org.eclipse.winery.repository.backend.filebased.JsonBasedEdmmManager;
 import org.eclipse.winery.repository.backend.filebased.NamespaceProperties;
 import org.eclipse.winery.repository.backend.filebased.RepositoryProperties;
 import org.eclipse.winery.repository.common.RepositoryFileReference;
@@ -406,12 +403,6 @@ public class MultiRepository implements IRepository {
     @Override
     public void doClear() {
         localRepository.doClear();
-    }
-
-    @Override
-    public EdmmManager getEdmmManager() {
-        RepositoryFileReference ref = BackendUtils.getRefOfJsonConfiguration(new EdmmMappingsId());
-        return new JsonBasedEdmmManager(ref2AbsolutePath(ref).toFile());
     }
     
     @Override

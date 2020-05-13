@@ -413,7 +413,7 @@ public class FromCanonical {
         return Collections.singletonMap(
             nodeFullName,
             convert(node, new TRelationshipType.Builder(), org.eclipse.winery.model.tosca.TRelationshipType.class)
-                .addInterfaces(convert(node.getInterfaceDefinitions()))
+                .addInterfaces(convert(node.getInterfaces()))
                 .addValidTargetTypes(convertTargets(node.getValidSource(), node.getValidTarget()))
                 .build()
         );

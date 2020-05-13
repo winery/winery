@@ -13,8 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.model.ids.definitions.imports;
 
-import org.apache.commons.io.FilenameUtils;
-
 import org.eclipse.winery.model.ids.IdUtil;
 import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.XmlId;
@@ -57,7 +55,8 @@ public class GenericImportId extends DefinitionsChildId {
 
     private static String getId(TImport i) {
         String fileName = IdUtil.getLastURIPart(i.getLocation());
-        return FilenameUtils.removeExtension(fileName);
+        // this doesn't handle filenames with directory separators inside correctly
+        return fileName.substring(0, fileName.lastIndexOf("."));
     }
 
     public String getType() {

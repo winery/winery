@@ -37,16 +37,13 @@ export class ConstraintClause {
 
 /**
  * Referenced YAML types as defined in YAML spec 3.3.1, as well as the types defined by the spec
- * 
  */
 export const knownTypes = ['string', 'integer', 'float', 'boolean', 'timestamp', 'null',
     'version', 'range', 'list', 'map', 'scalar-unit.size', 'scalar-unit.time', 'scalar-unit.frequency', 'scalar-unit.bitrate'];
 
 export class ConstraintChecking {
     /**
-     * Checks a value against a given constraint. The first argument is the ConstraintClause to check 
-     * @param constraint
-     * @param checked
+     * Checks a value against a given constraint. The first argument is the ConstraintClause to check.
      */
     static isValid(constraint: ConstraintClause, checked: any): boolean {
         switch (constraint.operator) {

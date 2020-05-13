@@ -24,14 +24,11 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
 @XmlRootElement(name = "Definitions")
 public class Definitions extends TDefinitions {
     @XmlTransient
-    @JsonIgnore
     protected Map<String, QName> importDefinitions = new HashMap<>();
 
     public Definitions() {

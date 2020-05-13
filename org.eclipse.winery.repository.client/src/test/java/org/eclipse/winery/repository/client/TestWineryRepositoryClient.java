@@ -148,9 +148,9 @@ public class TestWineryRepositoryClient extends TestWithGitBackedRepository {
         assertNotNull(nodeTemplateWithTwoKVProperties);
         TEntityTemplate.Properties properties = nodeTemplateWithTwoKVProperties.getProperties();
         assertNotNull(properties);
-        final LinkedHashMap<String, String> kvProperties = properties.getKVProperties();
+        final LinkedHashMap<String, Object> kvProperties = properties.getKVProperties();
         assertNotNull(kvProperties);
-        final String value = kvProperties.get("key1");
+        final String value = (String)kvProperties.get("key1");
         assertEquals("value", value);
     }
 

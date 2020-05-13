@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.common.toscalight;
+package org.eclipse.winery.edmm.toscalight;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.edmm.EdmmType;
+import org.eclipse.winery.edmm.model.EdmmType;
 import org.eclipse.winery.model.tosca.HasPolicies;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TInterface;

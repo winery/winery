@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.export;
+package org.eclipse.winery.edmm;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,11 +21,16 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.edmm.EdmmType;
-import org.eclipse.winery.common.toscalight.ToscaLightChecker;
+import org.eclipse.winery.edmm.model.EdmmType;
+import org.eclipse.winery.edmm.toscalight.ToscaLightChecker;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 public class EdmmUtils {
 
@@ -48,8 +53,8 @@ public class EdmmUtils {
 
         Map<QName, TRelationshipType> relationshipTypes = repository.getQNameToElementMapping(RelationshipTypeId.class);
         Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
-        Map<QName, EdmmType> typeMap = repository.getEdmmManager().getTypeMap();
-        Map<QName, EdmmType> oneToOneMap = repository.getEdmmManager().getOneToOneMap();
+        Map<QName, EdmmType> typeMap = EdmmManager.forRepository(repository).getTypeMap();
+        Map<QName, EdmmType> oneToOneMap = EdmmManager.forRepository(repository).getOneToOneMap();
 
         return new ToscaLightChecker(nodeTypes, relationshipTypes, typeMap, oneToOneMap);
     }

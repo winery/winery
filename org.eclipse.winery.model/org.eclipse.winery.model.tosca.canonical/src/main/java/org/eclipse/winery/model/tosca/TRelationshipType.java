@@ -51,6 +51,8 @@ public class TRelationshipType extends TEntityType {
     protected TInterfaces sourceInterfaces;
     @XmlElement(name = "TargetInterfaces")
     protected TInterfaces targetInterfaces;
+    @XmlElement(name = "InterfaceDefinitions")
+    protected List<TInterfaceDefinition> interfaceDefinitions;
     @XmlElement(name = "ValidSource")
     protected TRelationshipType.ValidSource validSource;
     @XmlElement(name = "ValidTarget")
@@ -71,6 +73,7 @@ public class TRelationshipType extends TEntityType {
         this.interfaceDefinitions = builder.interfaceDefinitions;
         this.validSource = builder.validSource;
         this.validTarget = builder.validTarget;
+        this.interfaceDefinitions = builder.interfaceDefinitions;
     }
 
     @Override
@@ -380,7 +383,7 @@ public class TRelationshipType extends TEntityType {
             return addTargetInterfaces(tmp);
         }
 
-        public TRelationshipType.Builder setInterfaceDefinitions(List<TInterfaceDefinition> interfaceDefinitions) {
+        public Builder setInterfaceDefinitions(List<TInterfaceDefinition> interfaceDefinitions) {
             this.interfaceDefinitions = interfaceDefinitions;
             return self();
         }

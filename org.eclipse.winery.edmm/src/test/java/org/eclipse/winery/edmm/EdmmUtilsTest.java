@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.export;
+package org.eclipse.winery.edmm;
 
 import java.util.Map;
 

@@ -28,6 +28,7 @@ import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.Filename;
+import org.eclipse.winery.repository.backend.filebased.FileUtils;
 import org.eclipse.winery.repository.backend.filebased.RepositoryProperties;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -14,8 +14,6 @@
 package org.eclipse.winery.repository.backend;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -37,8 +35,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Constants;
@@ -66,7 +62,6 @@ import org.eclipse.winery.model.ids.definitions.TestRefinementModelId;
 import org.eclipse.winery.model.ids.definitions.TopologyFragmentRefinementModelId;
 import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.model.ids.elements.ToscaElementId;
-import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
 import org.eclipse.winery.model.tosca.HasInheritance;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.OTComplianceRule;
@@ -100,7 +95,6 @@ import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.xsd.RepositoryBasedXsdImportManager;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
@@ -1292,8 +1286,6 @@ public interface IRepository extends IWineryRepositoryCommon {
     }
 
     NamespaceManager getNamespaceManager();
-
-    EdmmManager getEdmmManager();
 
     default XsdImportManager getXsdImportManager() {
         return new RepositoryBasedXsdImportManager(this);

@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.model.transformation.edmm;
+package org.eclipse.winery.edmm.model;
 
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.eclipse.winery.edmm.EdmmDependantTest;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 

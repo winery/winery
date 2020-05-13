@@ -87,7 +87,7 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
         // TODO get nodeTemplate's type and grab the propertiesDefinition for the NodeType.
         //  That definition can be a List<YamlPropertiesDefinition> or an XmlPropertiesDefinition.
         //  This way we can obtain the constraints required for input form generation.
-        
+
         this.propertyDefinitionType = this.determinePropertyDefinitionType(nodeTemplate);
         this.nodeType = nodeTemplate.type;
         // reset nodeProperties to empty object to change it's pointer for change detection to work

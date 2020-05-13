@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.backend;
+package org.eclipse.winery.edmm;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,12 +20,20 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.edmm.EdmmMappingItem;
-import org.eclipse.winery.common.edmm.EdmmType;
-import org.eclipse.winery.model.transformation.edmm.EdmmMappingItem;
+import org.eclipse.winery.edmm.model.EdmmMappingItem;
+import org.eclipse.winery.edmm.model.EdmmType;
+import org.eclipse.winery.model.ids.admin.EdmmMappingsId;
+import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
 
 public interface EdmmManager {
 
+    public static EdmmManager forRepository(IRepository repo) {
+        RepositoryFileReference ref = BackendUtils.getRefOfJsonConfiguration(new EdmmMappingsId());
+        return new JsonBasedEdmmManager(repo.ref2AbsolutePath(ref).toFile());
+    }
+    
     List<EdmmMappingItem> getOneToOneMappings();
 
     void setOneToOneMappings(List<EdmmMappingItem> list);

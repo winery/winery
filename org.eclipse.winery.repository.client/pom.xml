@@ -63,6 +63,16 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.winery</groupId>
+            <artifactId>org.eclipse.winery.repository.rest</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.winery</groupId>
+            <artifactId>org.eclipse.winery.repository.visible</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.common</artifactId>
             <version>${project.version}</version>
         </dependency>

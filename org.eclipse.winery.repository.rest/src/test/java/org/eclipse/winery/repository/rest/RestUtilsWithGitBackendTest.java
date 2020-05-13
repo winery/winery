@@ -84,8 +84,8 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
 
         assertEquals(201, response.getStatus());
         assertEquals(expectedEntity, response.getEntity());
-        assertEquals(5, BackendUtils.getAllVersionsOfOneDefinition(oldId, repository).size());
-        assertEquals(1, BackendUtils.getAllVersionsOfOneDefinition(newId, repository).size());
+        assertEquals(5, WineryVersionUtils.getAllVersionsOfOneDefinition(oldId, repository).size());
+        assertEquals(1, WineryVersionUtils.getAllVersionsOfOneDefinition(newId, repository).size());
     }
 
     @Test
@@ -105,8 +105,8 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
 
         assertEquals(201, response.getStatus());
         assertEquals(expectedEntity, response.getEntity());
-        assertEquals(5, BackendUtils.getAllVersionsOfOneDefinition(oldId, repository).size());
-        assertEquals(1, BackendUtils.getAllVersionsOfOneDefinition(newId, repository).size());
+        assertEquals(5, WineryVersionUtils.getAllVersionsOfOneDefinition(oldId, repository).size());
+        assertEquals(1, WineryVersionUtils.getAllVersionsOfOneDefinition(newId, repository).size());
     }
 
     @Test
@@ -130,8 +130,8 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
 
         assertEquals(201, response.getStatus());
         assertEquals(expectedEntity, response.getEntity());
-        assertEquals(4, BackendUtils.getAllVersionsOfOneDefinition(otherElement, repository).size());
-        assertEquals(1, BackendUtils.getAllVersionsOfOneDefinition(newId, repository).size());
+        assertEquals(4, WineryVersionUtils.getAllVersionsOfOneDefinition(otherElement, repository).size());
+        assertEquals(1, WineryVersionUtils.getAllVersionsOfOneDefinition(newId, repository).size());
     }
 
     @Test
@@ -151,8 +151,8 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
 
         assertEquals(201, response.getStatus());
         assertEquals(expectedEntity, response.getEntity());
-        assertEquals(5, BackendUtils.getAllVersionsOfOneDefinition(oldId, repository).size());
-        assertEquals(5, BackendUtils.getAllVersionsOfOneDefinition(newId, repository).size());
+        assertEquals(5, WineryVersionUtils.getAllVersionsOfOneDefinition(oldId, repository).size());
+        assertEquals(5, WineryVersionUtils.getAllVersionsOfOneDefinition(newId, repository).size());
     }
 
     @Test
@@ -172,8 +172,8 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
 
         assertEquals(201, response.getStatus());
         assertEquals(expectedEntity, response.getEntity());
-        assertEquals(5, BackendUtils.getAllVersionsOfOneDefinition(oldId, repository).size());
-        assertEquals(5, BackendUtils.getAllVersionsOfOneDefinition(newId, repository).size());
+        assertEquals(5, WineryVersionUtils.getAllVersionsOfOneDefinition(oldId, repository).size());
+        assertEquals(5, WineryVersionUtils.getAllVersionsOfOneDefinition(newId, repository).size());
     }
 
     @Test

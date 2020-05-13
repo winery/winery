@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,14 +12,14 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.backend.filebased;
+package org.eclipse.winery.edmm;
 
 import java.io.File;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.transformation.edmm.EdmmMappingItem;
-import org.eclipse.winery.model.transformation.edmm.EdmmType;
+import org.eclipse.winery.edmm.model.EdmmMappingItem;
+import org.eclipse.winery.edmm.model.EdmmType;
 
 import org.junit.jupiter.api.Test;
 

@@ -169,7 +169,7 @@ public class ToCanonical {
 
         init(node);
 
-        TDefinitions.Builder builder= new TDefinitions.Builder(id + "_Definitions", target_namespace);
+        TDefinitions.Builder builder = new TDefinitions.Builder(id + "_Definitions", target_namespace);
         builder.setImport(convert(node.getImports()))
             .addTypes(convert(node.getGroupTypes()));
         if (isServiceTemplate) {
@@ -855,8 +855,8 @@ public class ToCanonical {
         if (Objects.isNull(node)) return null;
         String typeName = fixNamespaceDuplication(id, node.getMetadata().get("targetNamespace"));
         TRelationshipType output = convert(node, new TRelationshipType.Builder(typeName))
-            .addSourceInterfaces(convert(node.getInterfaces(), "SourceInterfaces"))
             .addInterfaces(convert(node.getInterfaces(), null))
+            .addSourceInterfaces(convert(node.getInterfaces(), "SourceInterfaces"))
             .addTargetInterfaces(convert(node.getInterfaces(), "TargetInterfaces"))
             .setInterfaceDefinitions(convert(node.getInterfaces()))
             .setValidSource(convertValidTargetSource(node.getValidTargetTypes(), true))

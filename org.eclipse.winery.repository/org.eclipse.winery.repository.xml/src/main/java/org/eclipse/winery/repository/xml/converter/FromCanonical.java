@@ -136,6 +136,10 @@ public class FromCanonical {
         if (canonical.getValidTarget() != null) {
             builder.setValidTarget(canonical.getValidTarget().getTypeRef());
         }
+        if (canonical.getInterfaceDefinitions() != null) {
+            builder.setInterfaceDefinitions(canonical.getInterfaceDefinitions().stream()
+                .map(this::convert).collect(Collectors.toList()));
+        }
         return builder.build();
     }
 

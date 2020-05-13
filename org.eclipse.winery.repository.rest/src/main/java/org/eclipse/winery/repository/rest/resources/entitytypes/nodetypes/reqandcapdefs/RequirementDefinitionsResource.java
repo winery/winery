@@ -26,7 +26,7 @@ import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.filebased.RepositoryUtils;
+import org.eclipse.winery.repository.filebased.RepositoryUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.RequirementOrCapabilityDefinitionPostData;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
 
