@@ -55,8 +55,13 @@ public abstract class TestWithGitBackedRepository {
      * @throws RuntimeException wraps an Exception
      */
     public TestWithGitBackedRepository() {
+        this(Paths.get(System.getProperty("java.io.tmpdir")).resolve("test-repository"),
+            "https://github.com/winery/test-repository.git",
+            RepositoryConfigurationObject.RepositoryProvider.FILE);
+    }
+    
+    protected TestWithGitBackedRepository(Path repositoryPath, String remoteUrl, RepositoryConfigurationObject.RepositoryProvider provider) {
         try {
-            Path repositoryPath = Paths.get(System.getProperty("java.io.tmpdir")).resolve("test-repository");
             LOGGER.debug("Testing with repository directory {}", repositoryPath);
 
             if (!Files.exists(repositoryPath)) {
@@ -67,7 +72,7 @@ public abstract class TestWithGitBackedRepository {
             if (!Files.exists(repositoryPath.resolve(".git"))) {
                 FileUtils.cleanDirectory(repositoryPath.toFile());
                 this.git = Git.cloneRepository()
-                    .setURI("https://github.com/winery/test-repository.git")
+                    .setURI(remoteUrl)
                     .setBare(false)
                     .setCloneAllBranches(true)
                     .setDirectory(repositoryPath.toFile())
@@ -86,7 +91,7 @@ public abstract class TestWithGitBackedRepository {
             // inject the current path to the repository factory
             FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration = new FileBasedRepositoryConfiguration(repositoryPath);
             // force xml repository provider
-            fileBasedRepositoryConfiguration.setRepositoryProvider(RepositoryConfigurationObject.RepositoryProvider.FILE);
+            fileBasedRepositoryConfiguration.setRepositoryProvider(provider);
             GitBasedRepositoryConfiguration gitBasedRepositoryConfiguration = new GitBasedRepositoryConfiguration(false, fileBasedRepositoryConfiguration);
             RepositoryFactory.reconfigure(gitBasedRepositoryConfiguration);
 
