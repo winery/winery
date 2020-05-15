@@ -600,7 +600,6 @@ public class YamlBuilder {
 
     @Nullable
     public <T> TPropertyAssignment buildPropertyAssignment(Object object, Parameter<T> parameter) {
-        if (Objects.isNull(object)) return null;
         return new TPropertyAssignment.Builder()
             .setValue(object)
             .build();
@@ -1152,9 +1151,6 @@ public class YamlBuilder {
         //if (Objects.isNull(parameter.getFilter())) parameter.setFilter(this::nonNull);
         Map<String, T> output = buildStream(object, parameter)
             .map(entry -> {
-                if (entry.getValue() == null) {
-                    entry.setValue("null");
-                }
                 return Tuples.pair(entry.getKey(), parameter.getBuilderOO().apply(
                     entry.getValue(),
                     new Parameter<T>(parameter.getContext()).addContext(entry.getKey())

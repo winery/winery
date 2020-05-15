@@ -25,10 +25,10 @@ public abstract class ValueHelper {
     /**
      * Helper function to convert property, parameter, and attribute values to a string.
      */
-    @SuppressWarnings("unchecked")
     public static String toString(Object value) {
-        if (value == null) return "";
+        if (value == null) return null;
         if (value instanceof Map) {
+            @SuppressWarnings("unchecked")
             Map<String, Object> valueMap = (Map<String, Object>) value;
             Optional<Map.Entry<String, Object>> optionalEntry = valueMap.entrySet().stream().findFirst();
             if (optionalEntry.isPresent()) {
@@ -36,6 +36,7 @@ public abstract class ValueHelper {
                 return "{ " + entry.getKey() + ": " + toString(entry.getValue()) + " }";
             }
         } else if (value instanceof List) {
+            @SuppressWarnings("unchecked")
             List<Object> valueList = (List<Object>) value;
             String values = valueList.stream().map(ValueHelper::toString).collect(Collectors.joining(", "));
             return "[ " + values + " ]";

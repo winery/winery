@@ -277,6 +277,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
     public static class YamlProperties extends Properties {
         
         @XmlElement(name = "yamlproperties")
+        @JsonInclude()// defaults to always include to override ObjectMapper's NON_NULL specification
         private LinkedHashMap<String, Object> properties = new LinkedHashMap<>();
 
         public LinkedHashMap<String, Object> getProperties() {

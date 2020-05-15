@@ -963,15 +963,8 @@ public class ToCanonical {
     }
 
     private TEntityTemplate.Properties convertPropertyAssignments(Map<String, TPropertyAssignment> originalProperties) {
-        LinkedHashMap<String, Object> properties = originalProperties
-            .entrySet()
-            .stream()
-            .collect(Collectors.toMap(
-                Map.Entry::getKey,
-                entry -> Objects.requireNonNull(ValueHelper.toString(entry.getValue().getValue())),
-                // merging values should never be required
-                (l, r) -> l,
-                LinkedHashMap::new));
+        LinkedHashMap<String, Object> properties = new LinkedHashMap<>();
+        originalProperties.forEach((key, value) -> properties.put(key, ValueHelper.toString(value.getValue())));
         TEntityTemplate.YamlProperties toscaProperties = new TEntityTemplate.YamlProperties();
         toscaProperties.setProperties(properties);
         return toscaProperties;
