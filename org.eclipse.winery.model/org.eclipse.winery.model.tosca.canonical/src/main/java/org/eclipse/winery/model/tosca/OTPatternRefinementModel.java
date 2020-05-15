@@ -35,11 +35,11 @@ public class OTPatternRefinementModel extends OTRefinementModel {
 
     @XmlElementWrapper(name = "AttributeMappings")
     @XmlElement(name = "AttributeMapping")
-    private List<AttributeMapping> attributeMappings;
+    private List<OTAttributeMapping> attributeMappings;
 
     @XmlElementWrapper(name = "StayMappings")
     @XmlElement(name = "StayMapping")
-    private List<TStayMapping> stayMappings;
+    private List<OTStayMapping> stayMappings;
 
     @NonNull
     @JsonIgnore
@@ -60,20 +60,20 @@ public class OTPatternRefinementModel extends OTRefinementModel {
     }
 
     @Nullable
-    public List<AttributeMapping> getAttributeMappings() {
+    public List<OTAttributeMapping> getAttributeMappings() {
         return attributeMappings;
     }
 
-    public void setAttributeMappings(List<AttributeMapping> attributeMappings) {
+    public void setAttributeMappings(List<OTAttributeMapping> attributeMappings) {
         this.attributeMappings = attributeMappings;
     }
 
     @Nullable
-    public List<TStayMapping> getStayMappings() {
+    public List<OTStayMapping> getStayMappings() {
         return stayMappings;
     }
 
-    public void setStayMappings(List<TStayMapping> stayMappings) {
+    public void setStayMappings(List<OTStayMapping> stayMappings) {
         this.stayMappings = stayMappings;
     }
 }

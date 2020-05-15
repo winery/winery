@@ -14,19 +14,19 @@
 <div id="NTPropertiesView"
      class="sidebar-root"
      style="display: block;">
-    <div id="nodeTemplateInformationSection" style="margin: 8px"  *ngIf="sidebarState.nodeTemplate">
+    <div id="nodeTemplateInformationSection" style="margin: 8px"  *ngIf="sidebarState.template">
         <button type="button" class="close" style="color: #000000" aria-label="Close" (click)="closeSidebar()" closeSidebar>
             <span aria-hidden="true">&times;</span>
         </button>
         <fieldset>
             <div class="form-group">
                 <label for="nodetemplateid">Id</label>
-                <input id="nodetemplateid" disabled="disabled" class="form-control" value="{{sidebarState.nodeTemplate.id}}">
+                <input id="nodetemplateid" disabled="disabled" class="form-control" value="{{sidebarState.template.id}}">
             </div>
             <div class="form-group">
                 <label for="nodetemplatename" class="control-label">Name</label>
                 <input id="nodetemplatename" name="name" class="form-control"
-                       value="{{sidebarState.nodeTemplate.name}}"
+                       value="{{sidebarState.template.name}}"
                        [disabled]="readonly"
                        (keyup)="nodeNameKeyUp.next($event.target.value)"
                        (focus)="onFocus($event)"
@@ -39,7 +39,7 @@
                    [routerLink]=""
                    (click)="linkType($event)"
                    class="form-control">
-                    {{sidebarState.nodeTemplate.type}}
+                    {{sidebarState.template.type}}
                 </a>
             </div>
             <div *ngIf="sidebarState.nodeClicked == false">
@@ -58,8 +58,9 @@
                 <div class="form-group">
                     <label>Properties</label>
                     <winery-properties
-                        [nodeId]="sidebarState.nodeTemplate.id"
-                        [readonly]="readonly">
+                        [templateId]="sidebarState.template.id"
+                        [readonly]="readonly"
+                        [isNode]="sidebarState.nodeClicked">
                     </winery-properties>
                 </div>
                 <div class="form-group" *wineryRepositoryHideOnFeature="'yaml'">

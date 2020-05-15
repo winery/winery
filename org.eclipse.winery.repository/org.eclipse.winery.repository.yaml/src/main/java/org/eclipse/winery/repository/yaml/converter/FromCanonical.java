@@ -210,19 +210,22 @@ public class FromCanonical {
 
     public Map<String, TPropertyAssignment> convert(TEntityTemplate.Properties node) {
         if (Objects.isNull(node)) return null;
-        Map<String, Object> propertiesKV = node.getKVProperties();
-        if (Objects.isNull(propertiesKV)) return null;
-        return propertiesKV.entrySet().stream()
-            .map(entry ->
-                new LinkedHashMap.SimpleEntry<>(
-                    String.valueOf(entry.getKey()),
-                    PropertyConverter.convert(entry.getValue())
+        if (node instanceof TEntityTemplate.YamlProperties) {
+            Map<String, Object> propertiesKV = ((TEntityTemplate.YamlProperties) node).getProperties();
+            return propertiesKV.entrySet().stream()
+                .map(entry ->
+                    new LinkedHashMap.SimpleEntry<>(
+                        String.valueOf(entry.getKey()),
+                        PropertyConverter.convert(entry.getValue())
+                    )
                 )
-            )
-            .collect(Collectors.toMap(
-                Map.Entry::getKey,
-                Map.Entry::getValue
-            ));
+                .collect(Collectors.toMap(
+                    Map.Entry::getKey,
+                    Map.Entry::getValue
+                ));
+        }
+        // FIXME deal with converting WineryKVProperties and XmlProperties
+        return null;
     }
 
     public TTopologyTemplateDefinition convert(org.eclipse.winery.model.tosca.TServiceTemplate node) {
@@ -962,7 +965,7 @@ public class FromCanonical {
         if (Objects.isNull(node)) return null;
 
         // skip empty capability assignments
-        if (node.getProperties() == null || node.getProperties().getKVProperties() == null || node.getProperties().getKVProperties().size() == 0) {
+        if (node.getProperties() == null) {
             return null;
         }
 

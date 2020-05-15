@@ -349,7 +349,7 @@ public class ToCanonical {
             builder.addArtifactReferences(Collections.singletonList(new TArtifactReference.Builder(node.getFile()).build()));
         }
         if (node.getProperties() != null) {
-            builder.setProperties(new TEntityTemplate.Properties());
+            builder.setProperties(convertPropertyAssignments(node.getProperties()));
         }
         return builder.build();
     }
@@ -963,14 +963,17 @@ public class ToCanonical {
     }
 
     private TEntityTemplate.Properties convertPropertyAssignments(Map<String, TPropertyAssignment> originalProperties) {
-        Map<String, Object> properties = originalProperties
+        LinkedHashMap<String, Object> properties = originalProperties
             .entrySet()
             .stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
-                entry -> Objects.requireNonNull(ValueHelper.toString(entry.getValue().getValue()))));
-        TEntityTemplate.Properties toscaProperties = new TEntityTemplate.Properties();
-        toscaProperties.setAny(properties);
+                entry -> Objects.requireNonNull(ValueHelper.toString(entry.getValue().getValue())),
+                // merging values should never be required
+                (l, r) -> l,
+                LinkedHashMap::new));
+        TEntityTemplate.YamlProperties toscaProperties = new TEntityTemplate.YamlProperties();
+        toscaProperties.setProperties(properties);
         return toscaProperties;
     }
 

@@ -201,15 +201,7 @@ public abstract class Visitor {
     }
 
     public void visit(TEntityTemplate.Properties properties) {
-        final LinkedHashMap<String, String> kvProperties = properties.getKVProperties();
-        if (kvProperties != null) {
-            this.visitKvProperties(kvProperties);
-        }
-        // meta model does not offer more children
-    }
-
-    public void visitKvProperties(LinkedHashMap<String, String> kvProperties) {
-        // this is a leaf, so no action to take
+        // this is a leaf because the xml model just has an "any" here
     }
 
     public void visit(TEntityTemplate.PropertyConstraints propertyConstraints) {

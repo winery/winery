@@ -15,6 +15,7 @@ package org.eclipse.winery.topologygraph.matching;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -26,6 +27,7 @@ import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicy;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
 
@@ -75,13 +77,11 @@ public class ToscaPrmPropertyMatcherTest {
 
     @ParameterizedTest(name = "{index} => ''{3}''")
     @MethodSource("compatiblePropertiesArguments")
-    public void compatibleProperties(Map<String, Object> leftProperties, Map<String, Object> rightProperties, boolean expected, String description) {
+    public void compatibleProperties(LinkedHashMap<String, String> leftProperties, LinkedHashMap<String, String> rightProperties, boolean expected, String description) {
         // region ***** left *****
         TNodeTemplate left = new TNodeTemplate();
         if (Objects.nonNull(leftProperties)) {
-            TEntityTemplate.Properties properties = new TNodeTemplate.Properties();
-            properties.setKVProperties(leftProperties);
-            left.setProperties(properties);
+            ModelUtilities.setPropertiesKV(left, leftProperties);
         }
 
         ToscaNode leftEntity = new ToscaNode();
@@ -94,9 +94,7 @@ public class ToscaPrmPropertyMatcherTest {
         // region ***** right *****
         TNodeTemplate right = new TNodeTemplate();
         if (Objects.nonNull(leftProperties)) {
-            TEntityTemplate.Properties properties2 = new TNodeTemplate.Properties();
-            properties2.setKVProperties(rightProperties);
-            right.setProperties(properties2);
+            ModelUtilities.setPropertiesKV(right, rightProperties);
         }
 
         ToscaNode rightEntity = new ToscaNode();

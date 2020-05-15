@@ -21,6 +21,7 @@ import java.util.Objects;
 import org.eclipse.winery.model.tosca.HasPolicies;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TPolicy;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.topologygraph.model.ToscaEdge;
 import org.eclipse.winery.topologygraph.model.ToscaEntity;
@@ -57,11 +58,12 @@ public class ToscaPrmPropertyMatcher extends ToscaTypeMatcher {
         TEntityTemplate detectorElement = templates[0];
         TEntityTemplate candidate = templates[1];
 
-        if (Objects.nonNull(detectorElement.getProperties()) && Objects.nonNull(candidate.getProperties()) &&
-            // the implementation (currently) works for KV properties only
-            Objects.nonNull(detectorElement.getProperties().getKVProperties()) && Objects.nonNull(candidate.getProperties().getKVProperties())) {
-            Map<String, Object> detectorProperties = detectorElement.getProperties().getKVProperties();
-            Map<String, Object> candidateProperties = candidate.getProperties().getKVProperties();
+        if (Objects.nonNull(detectorElement.getProperties()) && Objects.nonNull(candidate.getProperties()) 
+            // TODO the implementation (currently) works for KV properties only
+            && Objects.nonNull(ModelUtilities.getPropertiesKV(detectorElement))
+            && Objects.nonNull(ModelUtilities.getPropertiesKV(candidate))) {
+            Map<String, String> detectorProperties = ModelUtilities.getPropertiesKV(detectorElement);
+            Map<String, String> candidateProperties = ModelUtilities.getPropertiesKV(candidate);
 
             propertiesCompatible = detectorProperties.entrySet().stream()
                 .allMatch(entry -> {

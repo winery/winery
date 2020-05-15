@@ -438,16 +438,16 @@ public class ToCanonical {
     }
 
     private TEntityTemplate.Properties convertProperties(org.eclipse.winery.model.tosca.xml.TEntityTemplate.Properties xml) {
-        TEntityTemplate.Properties props = new TEntityTemplate.Properties();
-        if (xml.getAny() != null) {
-            props.setAny(props.getAny());
-        } else if (xml.getKVProperties() != null) {
-            // XML kvProperties are guaranteed to be <String, String>
-            //  the type erasure of that conforms to Map<String, Object> but the compiler doesn't believe that
-            //  which is why we hack around that with a cast to the rawtype
-            props.setKVProperties((Map)xml.getKVProperties());
+        if (PropertyMappingSupport.isKeyValuePropertyDefinition(xml)) {
+            TEntityTemplate.WineryKVProperties props = new TEntityTemplate.WineryKVProperties();
+            props.setKvProperties(PropertyMappingSupport.convertToKVProperties(xml));
+            return props;
+        } else {
+            // assume XML properties here
+            TEntityTemplate.XmlProperties props = new TEntityTemplate.XmlProperties();
+            props.setAny(xml.getAny());
+            return props;
         }
-        return props;
     }
 
     private TPropertyConstraint convert(org.eclipse.winery.model.tosca.xml.TPropertyConstraint xml) {
@@ -575,10 +575,10 @@ public class ToCanonical {
     }
 
     private TCondition convert(org.eclipse.winery.model.tosca.xml.TCondition xml) {
-        TCondition xml = new TCondition();
-        xml.setExpressionLanguage(xml.getExpressionLanguage());
-        xml.getAny().addAll(xml.getAny());
-        return xml;
+        TCondition canonical = new TCondition();
+        canonical.setExpressionLanguage(xml.getExpressionLanguage());
+        canonical.getAny().addAll(xml.getAny());
+        return canonical;
     }
 
     private TBoundaryDefinitions convert(org.eclipse.winery.model.tosca.xml.TBoundaryDefinitions xml) {
@@ -627,20 +627,20 @@ public class ToCanonical {
     }
 
     private TExportedOperation convert(org.eclipse.winery.model.tosca.xml.TExportedOperation xml) {
-        TExportedOperation xml = new TExportedOperation();
-        xml.setName(xml.getName());
+        TExportedOperation canonical = new TExportedOperation();
+        canonical.setName(xml.getName());
         if (xml.getNodeOperation() != null) {
-            xml.setNodeOperation(convert(xml.getNodeOperation()));
+            canonical.setNodeOperation(convert(xml.getNodeOperation()));
         }
         if (xml.getRelationshipOperation() != null) {
-            xml.setRelationshipOperation(convert(xml.getRelationshipOperation()));
+            canonical.setRelationshipOperation(convert(xml.getRelationshipOperation()));
         }
         if (xml.getPlan() != null) {
             TExportedOperation.Plan plan = new TExportedOperation.Plan();
             plan.setPlanRef(xml.getPlan().getPlanRef());
-            xml.setPlan(plan);
+            canonical.setPlan(plan);
         }
-        return xml;
+        return canonical;
     }
 
     private TExportedOperation.RelationshipOperation convert(org.eclipse.winery.model.tosca.xml.TExportedOperation.RelationshipOperation xml) {

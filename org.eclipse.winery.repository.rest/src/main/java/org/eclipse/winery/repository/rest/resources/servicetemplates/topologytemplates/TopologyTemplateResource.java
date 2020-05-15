@@ -331,8 +331,8 @@ public class TopologyTemplateResource {
             .filter(template -> template.getProperties() != null)
             .findFirst();
 
-        if (foundTemplate.isPresent() && Objects.nonNull(foundTemplate.get().getProperties().getKVProperties())) {
-            HashMap<String, Object> oldKvs = foundTemplate.get().getProperties().getKVProperties();
+        if (foundTemplate.isPresent() && Objects.nonNull(ModelUtilities.getPropertiesKV(foundTemplate.get()))) {
+            HashMap<String, String> oldKvs = ModelUtilities.getPropertiesKV(foundTemplate.get());
 
             QName qNameType = QName.valueOf(updateInfo.getNewComponentType());
             IRepository repository = RepositoryFactory.getRepository();
@@ -386,14 +386,14 @@ public class TopologyTemplateResource {
                 propertyMatching -> propertyMappings.put(propertyMatching.getOldKey(), propertyMatching.getNewKey())
             );
 
-            LinkedHashMap<String, Object> resultKvs = new LinkedHashMap<>();
+            LinkedHashMap<String, String> resultKvs = new LinkedHashMap<>();
 
             topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream()
                 .filter(template -> template.getId().equals(updateInfo.getNodeTemplateId()))
                 .filter(template -> template.getProperties() != null)
                 .findFirst()
                 .ifPresent(nodeTemplate -> {
-                    Map<String, Object> oldKvs = nodeTemplate.getProperties().getKVProperties();
+                    Map<String, String> oldKvs = ModelUtilities.getPropertiesKV(nodeTemplate);
                     oldKvs.forEach((key, value) -> {
                         if (propertyMappings.containsKey(key)) {
                             resultKvs.put(propertyMappings.get(key), value);
@@ -407,10 +407,7 @@ public class TopologyTemplateResource {
                             resultKvs.put(key, "");
                         }
                     });
-
-                    TEntityTemplate.Properties oldProps = nodeTemplate.getProperties();
-                    oldProps.setAny(null);
-                    oldProps.setKVProperties(resultKvs);
+                    ModelUtilities.setPropertiesKV(nodeTemplate, resultKvs);
                 });
         }
 

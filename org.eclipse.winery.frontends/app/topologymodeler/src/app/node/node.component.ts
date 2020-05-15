@@ -469,7 +469,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                 sidebarContents: {
                     visible: false,
                     nodeClicked: true,
-                    nodeTemplate: {
+                    template: {
                         id: '',
                         name: '',
                         type: '',
@@ -484,7 +484,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                 sidebarContents: {
                     visible: true,
                     nodeClicked: true,
-                    nodeTemplate: this.nodeTemplate,
+                    template: this.nodeTemplate,
                     // special handling for instance restrictions due to infinity
                     minInstances: this.nodeTemplate.minInstances,
                     maxInstances: this.nodeTemplate.maxInstances,

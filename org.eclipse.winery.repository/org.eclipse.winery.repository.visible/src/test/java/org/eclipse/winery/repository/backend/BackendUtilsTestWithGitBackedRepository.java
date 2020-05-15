@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
@@ -59,8 +60,8 @@ public class BackendUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
 
         assertNotNull(policyTemplate.getProperties());
 
-        LinkedHashMap<String, Object> kvProperties = policyTemplate.getProperties().getKVProperties();
-        LinkedHashMap<String, Object> expectedPropertyKVS = new LinkedHashMap<>();
+        LinkedHashMap<String, String> kvProperties = ModelUtilities.getPropertiesKV(policyTemplate);
+        LinkedHashMap<String, String> expectedPropertyKVS = new LinkedHashMap<>();
         expectedPropertyKVS.put("key1", "");
         expectedPropertyKVS.put("key2", "");
         assertEquals(expectedPropertyKVS, kvProperties);

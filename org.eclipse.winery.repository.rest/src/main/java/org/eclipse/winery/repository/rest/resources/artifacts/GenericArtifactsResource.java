@@ -40,6 +40,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.model.ids.Namespace;
@@ -445,7 +446,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
         element.appendChild(text);
         root.appendChild(element);
 
-        Properties properties = new Properties();
+        TEntityTemplate.XmlProperties properties = new TEntityTemplate.XmlProperties();
         properties.setAny(root);
 
         final IRepository repository = RepositoryFactory.getRepository();

@@ -66,6 +66,8 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     @XmlElement(name = "DerivedFrom")
     protected TEntityType.DerivedFrom derivedFrom;
     @XmlElement(name = "Properties")
+    // FIXME unify this type of properties definition and the XML properties definition as well as the special 
+    //  support for WineryKVPropertiesDefinition nonsense
     protected List<YamlPropertyDefinition> properties;
     @XmlElement(name = "PropertiesDefinition")
     protected XmlPropertiesDefinition propertiesDefinition;

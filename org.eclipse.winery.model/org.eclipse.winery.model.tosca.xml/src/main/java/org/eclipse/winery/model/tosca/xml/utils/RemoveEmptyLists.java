@@ -41,7 +41,7 @@ public class RemoveEmptyLists extends Visitor {
             entityTemplate.setPropertyConstraints(null);
         }
         TEntityTemplate.Properties properties = entityTemplate.getProperties();
-        if ((properties != null) && (properties.getInternalAny() == null)) {
+        if ((properties != null) && (properties.getAny() == null)) {
             entityTemplate.setProperties(null);
         }
         super.visit(entityTemplate);

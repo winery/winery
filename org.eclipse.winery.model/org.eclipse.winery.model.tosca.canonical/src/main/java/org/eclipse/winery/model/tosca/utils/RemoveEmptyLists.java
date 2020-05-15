@@ -42,8 +42,20 @@ public class RemoveEmptyLists extends Visitor {
             entityTemplate.setPropertyConstraints(null);
         }
         TEntityTemplate.Properties properties = entityTemplate.getProperties();
-        if ((properties != null) && (properties.getInternalAny() == null)) {
-            entityTemplate.setProperties(null);
+        if (properties instanceof TEntityTemplate.XmlProperties) {
+            if (((TEntityTemplate.XmlProperties) properties).getAny() == null) {
+                entityTemplate.setProperties(null);
+            }
+        }
+        if (properties instanceof TEntityTemplate.WineryKVProperties) {
+            if (((TEntityTemplate.WineryKVProperties) properties).getKvProperties().isEmpty()) {
+                entityTemplate.setProperties(null);
+            }
+        }
+        if (properties instanceof TEntityTemplate.YamlProperties) {
+            if (((TEntityTemplate.YamlProperties) properties).getProperties().isEmpty()) {
+                entityTemplate.setProperties(null);
+            }
         }
         super.visit(entityTemplate);
     }

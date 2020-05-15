@@ -48,7 +48,7 @@ public class ToscaModelPropertiesBuilder {
 
 	public TEntityTemplate.Properties build() {
 		Document doc = null;
-		TEntityTemplate.Properties result = new TEntityTemplate.Properties();
+		TEntityTemplate.XmlProperties result = new TEntityTemplate.XmlProperties();
 
 		if (properties.isEmpty()) {
 			return result;

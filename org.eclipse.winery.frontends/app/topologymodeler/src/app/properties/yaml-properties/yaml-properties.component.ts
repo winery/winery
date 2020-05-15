@@ -30,13 +30,13 @@ import { ToscaUtils } from '../../models/toscaUtils';
 })
 export class YamlPropertiesComponent implements OnChanges, OnDestroy {
     @Input() readonly: boolean;
-    @Input() nodeProperties: object;
-    @Input() nodeType: string;
+    @Input() properties: object;
+    @Input() templateType: string;
 
     @Output() propertyEdited: EventEmitter<KeyValueItem> = new EventEmitter<KeyValueItem>();
 
     propertyValues: any;
-    properties: Array<any>;
+    propertyDefinitions: Array<any>;
 
     // subject allows for debouncing
     private outputSubject: Subject<KeyValueItem> = new Subject<KeyValueItem>();
@@ -48,7 +48,7 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
     constructor(private backend: BackendService) {
         this.subscriptions.push(this.backend.model$.subscribe(
             model => {
-                this.nodeTypes = model.unGroupedNodeTypes;
+                this.nodeTypes = model.unGroupedNodeTypes.concat(model.relationshipTypes);
                 this.dataTypes = model.dataTypes;
             }
         ));
@@ -61,12 +61,12 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
 
     ngOnChanges(changes: SimpleChanges): void {
         // TODO flattening the object graph for yaml properties is a more involved operation than we can leave to the keysPipe
-        if (changes.nodeType) {
-            this.nodeType = changes.nodeType.currentValue;
+        if (changes.templateType) {
+            this.templateType = changes.templateType.currentValue;
             this.determineProperties();
         }
-        if (changes.nodeProperties) {
-            this.propertyValues = changes.nodeProperties.currentValue;
+        if (changes.properties) {
+            this.propertyValues = changes.properties.currentValue;
             this.backfillPropertyDefaults();
         }
     }
@@ -104,7 +104,7 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
     }
 
     private determineProperties(): void {
-        const inheritance = InheritanceUtils.getInheritanceAncestry(this.nodeType, this.nodeTypes);
+        const inheritance = InheritanceUtils.getInheritanceAncestry(this.templateType, this.nodeTypes);
         const definedProperties = [];
         for (const type of inheritance) {
             const definition = ToscaUtils.getDefinition(type);
@@ -117,11 +117,11 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
                 }
             }
         }
-        this.properties = definedProperties;
+        this.propertyDefinitions = definedProperties;
     }
 
     private handleDataType(propertyDefinition: any, definedProperties: any[]) {
-        // TODO the inheritance hierarchy resolution for a type may need to be namespace-aware
+        // FIXME the inheritance hierarchy resolution for a type may need to be namespace-aware
         const dataTypeInheritance = InheritanceUtils.getInheritanceAncestry(propertyDefinition.type, this.dataTypes);
         // FIXME we may have messed up some kind of normalization on the backend
         if (dataTypeInheritance.some(t => t.properties || ToscaUtils.getDefinition(t).properties)) {
@@ -149,7 +149,7 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
     }
 
     private backfillPropertyDefaults() {
-        for (const propDefinition of this.properties) {
+        for (const propDefinition of this.propertyDefinitions) {
             if (this.propertyValues[propDefinition.name] === undefined) {
                 this.propertyValues[propDefinition.name] = propDefinition.defaultValue || '';
             }

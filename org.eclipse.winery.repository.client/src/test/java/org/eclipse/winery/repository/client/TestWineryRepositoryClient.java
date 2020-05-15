@@ -29,6 +29,7 @@ import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -148,9 +149,9 @@ public class TestWineryRepositoryClient extends TestWithGitBackedRepository {
         assertNotNull(nodeTemplateWithTwoKVProperties);
         TEntityTemplate.Properties properties = nodeTemplateWithTwoKVProperties.getProperties();
         assertNotNull(properties);
-        final LinkedHashMap<String, Object> kvProperties = properties.getKVProperties();
+        final LinkedHashMap<String, String> kvProperties = ModelUtilities.getPropertiesKV(nodeTemplateWithTwoKVProperties);
         assertNotNull(kvProperties);
-        final String value = (String)kvProperties.get("key1");
+        final String value = kvProperties.get("key1");
         assertEquals("value", value);
     }
 

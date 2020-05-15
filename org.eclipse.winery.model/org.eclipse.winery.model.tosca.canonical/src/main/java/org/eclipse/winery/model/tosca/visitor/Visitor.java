@@ -156,7 +156,7 @@ public abstract class Visitor {
         this.visit((HasId) entityTemplate);
         final TEntityTemplate.Properties properties = entityTemplate.getProperties();
         if (properties != null) {
-            properties.accept(this);
+            visit(properties);
         }
         final TEntityTemplate.PropertyConstraints propertyConstraints = entityTemplate.getPropertyConstraints();
         if (propertyConstraints != null) {
@@ -202,14 +202,30 @@ public abstract class Visitor {
     }
 
     public void visit(TEntityTemplate.Properties properties) {
-        final LinkedHashMap<String, Object> kvProperties = properties.getKVProperties();
-        if (kvProperties != null) {
+        if (properties instanceof TEntityTemplate.XmlProperties) {
+            final Object xmlAny = ((TEntityTemplate.XmlProperties) properties).getAny();
+            this.visitXmlProperties(xmlAny);
+        }
+        if (properties instanceof TEntityTemplate.WineryKVProperties) {
+            final LinkedHashMap<String, String> kvProperties = ((TEntityTemplate.WineryKVProperties) properties).getKvProperties();
             this.visitKvProperties(kvProperties);
+        }
+        if (properties instanceof TEntityTemplate.YamlProperties) {
+            final LinkedHashMap<String, Object> yamlProperties = ((TEntityTemplate.YamlProperties) properties).getProperties();
+            this.visitYamlProperties(yamlProperties);
         }
         // meta model does not offer more children
     }
 
-    public void visitKvProperties(LinkedHashMap<String, Object> kvProperties) {
+    public void visitKvProperties(LinkedHashMap<String, String> kvProperties) {
+        // this is a leaf, so no action to take
+    }
+    
+    public void visitYamlProperties(LinkedHashMap<String, Object> yamlProperties) {
+        // this is a leaf, so no action to take
+    }
+    
+    public void visitXmlProperties(Object xmlProperties) {
         // this is a leaf, so no action to take
     }
 
@@ -241,7 +257,7 @@ public abstract class Visitor {
     public void visit(TRequirement requirement) {
         final TEntityTemplate.Properties properties = requirement.getProperties();
         if (properties != null) {
-            properties.accept(this);
+            visit(properties);
         }
         final TEntityTemplate.PropertyConstraints propertyConstraints = requirement.getPropertyConstraints();
         if (propertyConstraints != null) {

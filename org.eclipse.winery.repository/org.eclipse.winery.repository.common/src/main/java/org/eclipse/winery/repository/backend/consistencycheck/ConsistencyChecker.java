@@ -215,7 +215,7 @@ public class ConsistencyChecker {
                             continue;
                         }
                         // assign value, but change "null" to "" if no property is defined
-                        final Map<String, Object> propertiesKV = ModelUtilities.getPropertiesKV(nodeTemplate);
+                        final Map<String, String> propertiesKV = ModelUtilities.getPropertiesKV(nodeTemplate);
                         if (propertiesKV == null) {
                             printAndAddError(id, "propertiesKV of node template " + nodeTemplate.getId() + " is null");
                         }
@@ -280,86 +280,100 @@ public class ConsistencyChecker {
     }
 
     private void checkPropertiesValidation(DefinitionsChildId id) {
-        if (id instanceof EntityTemplateId) {
-            TEntityTemplate entityTemplate;
-            try {
-                // TEntityTemplate is abstract. IRepository does not offer getElement for abstract ids
-                // Therefore, we have to use the detour through getDefinitions
-                entityTemplate = (TEntityTemplate) configuration.getRepository().getDefinitions((EntityTemplateId) id).getElement();
-            } catch (IllegalStateException e) {
-                LOGGER.debug("Illegal State Exception during reading of id {}", id.toReadableString(), e);
-                printAndAddError(id, "Reading error " + e.getMessage());
-                return;
-            } catch (ClassCastException e) {
-                LOGGER.error("Something wrong in the consistency between Ids and the TOSCA data model. See http://eclipse.github.io/winery/dev/id-system.html for more information on the ID system.");
-                printAndAddError(id, "Critical error at analysis: " + e.getMessage());
-                return;
-            }
-            if (Objects.isNull(entityTemplate.getType())) {
-                // no printing necessary; type consistency is checked at other places
-                return;
-            }
-            TEntityType entityType;
-            try {
-                entityType = configuration.getRepository().getTypeForTemplate(entityTemplate);
-            } catch (IllegalStateException e) {
-                LOGGER.debug("Illegal State Exception during getting type for template {}", entityTemplate.getId(), e);
-                printAndAddError(id, "Reading error " + e.getMessage());
-                return;
-            }
-            final WinerysPropertiesDefinition winerysPropertiesDefinition = entityType.getWinerysPropertiesDefinition();
-            final List<TEntityType.YamlPropertyDefinition> propertyDefinitions = entityType.getProperties();
-            // FIXME deal with xml vs yaml / propertiesDefinition vs properties
-            if ((winerysPropertiesDefinition != null) || (propertyDefinitions != null && !propertyDefinitions.isEmpty())) {
-                final TEntityTemplate.Properties properties = entityTemplate.getProperties();
-                if (properties == null) {
-                    printAndAddError(id, "Properties required, but no properties defined");
-                    return;
-                }
-                if (winerysPropertiesDefinition != null) {
-                    Map<String, Object> kvProperties = entityTemplate.getProperties().getKVProperties();
-                    if (kvProperties.isEmpty()) {
-                        printAndAddError(id, "Properties required, but no properties set (any case)");
-                        return;
-                    }
-                    for (PropertyDefinitionKV propertyDefinitionKV : winerysPropertiesDefinition.getPropertyDefinitionKVList().getPropertyDefinitionKVs()) {
-                        String key = propertyDefinitionKV.getKey();
-                        if (kvProperties.get(key) == null) {
-                            printAndAddError(id, "Property " + key + " required, but not set.");
-                        } else {
-                            // removeNamespaceProperties the key from the map to enable checking below whether a property is defined which not requried by the property definition 
-                            kvProperties.remove(key);
-                        }
-                    }
-                    // All winery-property-definition-keys have been removed from kvProperties.
-                    // If any key is left, this is a key not defined at the schema
-                    for (Object o : kvProperties.keySet()) {
-                        printAndAddError(id, "Property " + o + " set, but not defined at schema.");
-                    }
-                }
-            // FIXME this whole block is based on the XML model.
-            } else if (propertyDefinitions != null && !propertyDefinitions.isEmpty() && entityType.getPropertiesDefinition() != null) {
-                @Nullable final Object any = entityTemplate.getProperties().getAny();
-                if (any == null) {
-                    printAndAddError(id, "Properties required, but no properties defined (any case)");
-                    return;
-                }
+        if (!(id instanceof EntityTemplateId)) {
+            return;
+        }
+        TEntityTemplate entityTemplate;
+        try {
+            // TEntityTemplate is abstract. IRepository does not offer getElement for abstract ids
+            // Therefore, we have to use the detour through getDefinitions
+            entityTemplate = (TEntityTemplate) configuration.getRepository().getDefinitions(id).getElement();
+        } catch (IllegalStateException e) {
+            LOGGER.debug("Illegal State Exception during reading of id {}", id.toReadableString(), e);
+            printAndAddError(id, "Reading error " + e.getMessage());
+            return;
+        } catch (ClassCastException e) {
+            LOGGER.error("Something wrong in the consistency between Ids and the TOSCA data model. See http://eclipse.github.io/winery/dev/id-system.html for more information on the ID system.");
+            printAndAddError(id, "Critical error at analysis: " + e.getMessage());
+            return;
+        }
 
-                TEntityType.XmlPropertiesDefinition def = entityType.getPropertiesDefinition();
-                @Nullable final QName element = def.getElement();
-                if (element != null) {
-                    final Map<String, RepositoryFileReference> mapFromLocalNameToXSD = configuration.getRepository().getXsdImportManager().getMapFromLocalNameToXSD(new Namespace(element.getNamespaceURI(), false), false);
-                    final RepositoryFileReference repositoryFileReference = mapFromLocalNameToXSD.get(element.getLocalPart());
-                    if (repositoryFileReference == null) {
-                        printAndAddError(id, "No Xml Schema definition found for " + element);
-                        return;
-                    }
-                    validate(repositoryFileReference, any, id);
+        TEntityType entityType;
+        try {
+            entityType = configuration.getRepository().getTypeForTemplate(entityTemplate);
+        } catch (IllegalStateException e) {
+            LOGGER.debug("Illegal State Exception during getting type for template {}", entityTemplate.getId(), e);
+            printAndAddError(id, "Reading error " + e.getMessage());
+            return;
+        }
+        TEntityTemplate.Properties definedProps = entityTemplate.getProperties();
+        if (requiresProperties(entityType) && definedProps == null) {
+            printAndAddError(id, "Properties required, but no properties defined");
+            return;
+        } else if (!requiresProperties(entityType) && definedProps != null) {
+            printAndAddError(id, "No properties required by type, but properties were defined on template");
+            return;
+        } else if (definedProps == null) {
+            // no properties required and none defined
+            return;
+        }
+
+        if (definedProps instanceof TEntityTemplate.XmlProperties) {
+            // check defined properties any against the xml schema 
+            @Nullable final Object any = ((TEntityTemplate.XmlProperties) definedProps).getAny();
+            if (any == null) {
+                printAndAddError(id, "Properties required, but no XmlProperties were empty (any case)");
+                return;
+            }
+
+            TEntityType.XmlPropertiesDefinition def = entityType.getPropertiesDefinition();
+            if (def == null) {
+                printAndAddError(id, "XmlProperties were given, but no XmlPropertiesDefinition was specified");
+                return;
+            }
+            @Nullable final QName element = def.getElement();
+            if (element != null) {
+                final Map<String, RepositoryFileReference> mapFromLocalNameToXSD = configuration.getRepository().getXsdImportManager().getMapFromLocalNameToXSD(new Namespace(element.getNamespaceURI(), false), false);
+                final RepositoryFileReference repositoryFileReference = mapFromLocalNameToXSD.get(element.getLocalPart());
+                if (repositoryFileReference == null) {
+                    printAndAddError(id, "No Xml Schema definition found for " + element);
+                    return;
+                }
+                validate(repositoryFileReference, any, id);
+            }
+        } else if (definedProps instanceof TEntityTemplate.WineryKVProperties) {
+            final WinerysPropertiesDefinition winerysPropertiesDefinition = entityType.getWinerysPropertiesDefinition();
+            Map<String, String> kvProperties = ((TEntityTemplate.WineryKVProperties) definedProps).getKvProperties();
+            if (kvProperties.isEmpty()) {
+                printAndAddError(id, "Properties required, but no properties set (kvproperties case)");
+                return;
+            }
+            for (PropertyDefinitionKV propertyDefinitionKV : winerysPropertiesDefinition.getPropertyDefinitionKVList().getPropertyDefinitionKVs()) {
+                String key = propertyDefinitionKV.getKey();
+                if (kvProperties.get(key) == null) {
+                    printAndAddError(id, "Property " + key + " required, but not set.");
+                } else {
+                    // removeNamespaceProperties the key from the map to enable checking below whether a property is defined which not requried by the property definition 
+                    kvProperties.remove(key);
                 }
             }
+            // All winery-property-definition-keys have been removed from kvProperties.
+            // If any key is left, this is a key not defined at the schema
+            for (Object o : kvProperties.keySet()) {
+                printAndAddError(id, "Property " + o + " set, but not defined at schema.");
+            }
+        } else if (definedProps instanceof TEntityTemplate.YamlProperties) {
+            // check for conformance to the YamlPropertiesDefinition defined by the entityType, accounting for DataTypes
+            final List<TEntityType.YamlPropertyDefinition> propertyDefinitions = entityType.getProperties();
+            // FIXME todo
         }
     }
 
+    private static boolean requiresProperties(TEntityType type) {
+        return type.getPropertiesDefinition() != null
+            || (type.getProperties() != null && !type.getProperties().isEmpty());
+    }
+    
     private void checkId(DefinitionsChildId id) {
         checkNamespaceUri(id);
         checkNcname(id, id.getXmlId().getDecoded());

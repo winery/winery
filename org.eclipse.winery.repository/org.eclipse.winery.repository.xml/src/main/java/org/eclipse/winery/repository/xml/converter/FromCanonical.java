@@ -449,18 +449,17 @@ public class FromCanonical {
     
     private TEntityTemplate.Properties convertProperties(org.eclipse.winery.model.tosca.TEntityTemplate.Properties canonical) {
         TEntityTemplate.Properties props = new TEntityTemplate.Properties();
-        if (canonical.getAny() != null) {
-            props.setAny(props.getAny());
-        } else if (canonical.getKVProperties() != null) {
-            // KV properties are probably a mess...
-            Map<String, Object> cProps = canonical.getKVProperties();
-            if (cProps.values().stream().anyMatch(v -> !(v instanceof String))) {
-                // this is some kind of complex map, which isn't really supported by us
-                LOGGER.warn("KVProperties with complex entries are not supported for XML serialization");
-                return props;
-            }
-            // at this point we know all values are actually strings and can downcast
-            props.setKVProperties(cProps.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (String)e.getValue())));
+        if (canonical instanceof org.eclipse.winery.model.tosca.TEntityTemplate.XmlProperties) {
+            props.setAny(((org.eclipse.winery.model.tosca.TEntityTemplate.XmlProperties) canonical).getAny());
+        }
+        else if (canonical instanceof org.eclipse.winery.model.tosca.TEntityTemplate.WineryKVProperties) {
+            // FIXME this shouldn't be part of the xml model's definition
+            //  instead use PropertyMappingSupport
+            props.setKVProperties(((org.eclipse.winery.model.tosca.TEntityTemplate.WineryKVProperties) canonical).getKvProperties());
+        }
+        else if (canonical instanceof org.eclipse.winery.model.tosca.TEntityTemplate.YamlProperties) {
+            // this is the messy case of converting from YAML to XML
+            LOGGER.warn("KVProperties with complex entries are not supported for XML serialization");
         }
         return props;
     }

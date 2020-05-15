@@ -146,8 +146,9 @@
                 ></i>
             </div>
             <winery-properties
-                [nodeId]="nodeTemplate.id"
-                [readonly]="readonly">
+                    [templateId]="nodeTemplate.id"
+                    [readonly]="readonly"
+                    [isNode]="true">
             </winery-properties>
         </accordion-group>
 

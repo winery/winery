@@ -33,6 +33,7 @@ import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
@@ -263,9 +264,9 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
                 + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_VERSION_PREFIX + "1"),
             topology.getNodeTemplate(mySqlNodeTemplateId).getType()
         );
-        assertNotNull(topology.getNodeTemplate(ubuntuNodeTemplateId).getProperties());
-        assertEquals(9, topology.getNodeTemplate(ubuntuNodeTemplateId).getProperties().getKVProperties().size());
-        assertNotNull(topology.getNodeTemplate(mySqlNodeTemplateId).getProperties());
-        assertEquals(3, topology.getNodeTemplate(mySqlNodeTemplateId).getProperties().getKVProperties().size());
+        assertNotNull(ModelUtilities.getPropertiesKV(topology.getNodeTemplate(ubuntuNodeTemplateId)));
+        assertEquals(9, ModelUtilities.getPropertiesKV(topology.getNodeTemplate(ubuntuNodeTemplateId)).size());
+        assertNotNull(ModelUtilities.getPropertiesKV(topology.getNodeTemplate(mySqlNodeTemplateId)));
+        assertEquals(3, ModelUtilities.getPropertiesKV(topology.getNodeTemplate(mySqlNodeTemplateId)).size());
     }
 }

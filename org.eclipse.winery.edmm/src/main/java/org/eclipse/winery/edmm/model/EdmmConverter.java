@@ -39,6 +39,7 @@ import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 
 import io.github.edmm.core.parser.Entity;
 import io.github.edmm.core.parser.EntityGraph;
@@ -115,7 +116,7 @@ public class EdmmConverter {
 
             EntityId relationEntityId = relationsCollectionEntityId.extend(relationTypeEntityId.getName());
 
-            if (Objects.nonNull(relationship.getProperties()) && Objects.nonNull(relationship.getProperties().getKVProperties())) {
+            if (Objects.nonNull(relationship.getProperties()) && Objects.nonNull(ModelUtilities.getPropertiesKV(relationship))) {
                 entityGraph.addEntity(new MappingEntity(relationEntityId, entityGraph));
                 createProperties(relationship, relationEntityId, entityGraph);
             } else {
@@ -191,15 +192,14 @@ public class EdmmConverter {
     }
 
     private void createProperties(TEntityTemplate toscaTemplate, EntityId componentNodeId, EntityGraph entityGraph) {
-        if (Objects.nonNull(toscaTemplate.getProperties()) && Objects.nonNull(toscaTemplate.getProperties().getKVProperties())) {
+        if (Objects.nonNull(toscaTemplate.getProperties()) && Objects.nonNull(ModelUtilities.getPropertiesKV(toscaTemplate))) {
             EntityId propertiesEntityId = componentNodeId.extend(DefaultKeys.PROPERTIES);
             entityGraph.addEntity(new MappingEntity(propertiesEntityId, entityGraph));
 
-            toscaTemplate.getProperties().getKVProperties()
+            ModelUtilities.getPropertiesKV(toscaTemplate)
                 .forEach((key, value) -> {
                     EntityId propertyEntityId = propertiesEntityId.extend(key);
-                    // FIXME assumption that properties are strings here!
-                    entityGraph.addEntity(new ScalarEntity((String)value, propertyEntityId, entityGraph));
+                    entityGraph.addEntity(new ScalarEntity(value, propertyEntityId, entityGraph));
                 });
         }
     }

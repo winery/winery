@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -54,6 +55,7 @@ import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.NamespaceProperties;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -275,14 +277,15 @@ public class EnhancementUtils {
                 TNodeType generatedNodeType = createFeatureNodeType(nodeTemplate, featureMap.get(nodeTemplate.getId()));
                 nodeTemplate.setType(generatedNodeType.getQName());
                 if (Objects.nonNull(generatedNodeType.getWinerysPropertiesDefinition())) {
-                    PropertyDefinitionKVList definedProperties = generatedNodeType.getWinerysPropertiesDefinition().getPropertyDefinitionKVList();
+                    PropertyDefinitionKVList definedProperties = generatedNodeType.getWinerysPropertiesDefinition()
+                        .getPropertyDefinitionKVList();
 
-                    // todo: think about moving this code to a separate ModelUtilities method.
-                    Map<String, Object> kvProperties = Objects.nonNull(nodeTemplate.getProperties())
-                        && Objects.nonNull(nodeTemplate.getProperties().getKVProperties())
-                        ? nodeTemplate.getProperties().getKVProperties()
-                        : new HashMap<>();
+                    final @NonNull LinkedHashMap<String, String> kvProperties = ModelUtilities.getPropertiesKV(nodeTemplate) == null
+                        ? new LinkedHashMap<>()
+                        : ModelUtilities.getPropertiesKV(nodeTemplate);
                     if (kvProperties.isEmpty()) {
+                        definedProperties.stream().map(PropertyDefinitionKV::getKey)
+                            .forEach(k -> kvProperties.put(k, ""));
                         definedProperties.forEach(propertyDefinition -> kvProperties.put(propertyDefinition.getKey(), ""));
                     } else {
                         definedProperties.forEach(propertyDefinition -> {
@@ -295,9 +298,7 @@ public class EnhancementUtils {
                     // We need to set new Properties because the {@link TEntityTemplate#setProperties} is implemented
                     // badly and does not add new properties. Due to time constraints we do it that way for now.
                     if (!kvProperties.isEmpty()) {
-                        TEntityTemplate.Properties p = new TEntityTemplate.Properties();
-                        p.setKVProperties(kvProperties);
-                        nodeTemplate.setProperties(p);
+                        ModelUtilities.setPropertiesKV(nodeTemplate, kvProperties);
                     }
                 }
             });

@@ -38,8 +38,11 @@ import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,228 +144,150 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
 
     public abstract void accept(Visitor visitor);
 
+    
+    @JsonTypeInfo(defaultImpl = XmlProperties.class
+        , include = JsonTypeInfo.As.EXTERNAL_PROPERTY
+        , property = "propertyType"
+        , use = JsonTypeInfo.Id.NAME)
+    @JsonSubTypes({
+        @JsonSubTypes.Type(value = XmlProperties.class, name = "XML"),
+        @JsonSubTypes.Type(value = WineryKVProperties.class, name = "KV"),
+        @JsonSubTypes.Type(value = YamlProperties.class, name = "YAML")
+    })
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static abstract class Properties implements Serializable {
+//        @ADR(12)
+//        public void setKVProperties(String namespace, String elementName, Map<String, Object> properties) {
+//            Objects.requireNonNull(properties);
+//            
+//            // properties are a complex map, so we must be reading a YAML assignment
+//            if (properties.values().stream().anyMatch(v -> !(v instanceof String))) {
+//                this.any = properties;
+//                return;
+//            }
+//            
+//            if (any == null) {
+//                // special case if JSON is parsed without updating an existing element
+//                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+//                DocumentBuilder db;
+//                try {
+//                    db = dbf.newDocumentBuilder();
+//                } catch (ParserConfigurationException e) {
+//                    LOGGER.debug(e.getMessage(), e);
+//                    throw new IllegalStateException("Could not instantiate document builder", e);
+//                }
+//                Document doc = db.newDocument();
+//
+//                Element root = doc.createElementNS(namespace, elementName);
+//                doc.appendChild(root);
+//
+//                // No wpd - so this is not possible:
+//                // we produce the serialization in the same order the XSD would be generated (because of the usage of xsd:sequence)
+//                // for (PropertyDefinitionKV prop : wpd.getPropertyDefinitionKVList()) {
+//
+//                for (String key : properties.keySet()) {
+//                    Element element = doc.createElementNS(namespace, key);
+//                    root.appendChild(element);
+//                    
+//                    Object value = properties.get(key);
+//                    if (value == null) { continue; }
+//                    if (value instanceof String) {
+//                        Text text = doc.createTextNode((String)value);
+//                        element.appendChild(text);
+//                    } else {
+//                        // FIXME value is complex type
+//                    }
+//                }
+//
+//                this.setAny(doc.getDocumentElement());
+//            } else if (any instanceof Element){
+//                // TODO: this implementation does not support adding a new property.
+//                //  However, I don't understand it yet so we need to fix it in future.
+//
+//                Element el = (Element) any;
+//                // straight-forward copy over to existing property structure
+//                NodeList childNodes = el.getChildNodes();
+//
+//                for (int i = 0; i < childNodes.getLength(); i++) {
+//                    Node item = childNodes.item(i);
+//                    if (item instanceof Element) {
+//                        final Element element = (Element) item;
+//                        final String key = element.getLocalName();
+//                        final Object value = properties.get(key);
+//                        if (value instanceof String) {
+//                            element.setTextContent((String)value);
+//                        } else {
+//                            // FIXME Value is complex type
+//                        }
+//                    } else if (item instanceof Text || item instanceof Comment) {
+//                        // these kinds of nodes are OK
+//                    } else {
+//                        LOGGER.warn("Trying to read k/v property from a template which does not follow the k/v scheme.");
+//                    }
+//                }
+//            } else {
+//                LOGGER.warn("Failed to set properties on stored yaml properties??");
+//            }
+//        }
+    }
+
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
         "any"
     })
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class Properties implements Serializable {
-
+    public static class XmlProperties extends Properties {
         @XmlAnyElement(lax = true)
         protected Object any;
 
-        /**
-         * Returns the XML element from the other namespace. In case the properties are of the form key/value, null is
-         * returned.
-         */
         @Nullable
         public Object getAny() {
-            if (this.getKVProperties() == null) {
-                return any;
-            } else {
-                return null;
-            }
-        }
-
-        /**
-         * Returns the internal any object without any K/V treatment. Required to patch JSON data received by clients
-         */
-        @Nullable
-        @JsonIgnore
-        public Object getInternalAny() {
             return any;
         }
 
-        public void setAny(Object value) {
-            this.any = value;
-        }
-
-        /**
-         * This is a special method for Winery. Winery allows to define a property by specifying name/value values.
-         * Instead of parsing the XML contained in TNodeType, this method is a convenience method to access this
-         * information assumes the properties are key/value pairs (see WinerysPropertiesDefinition), all other cases are
-         * return null.
-         * <p>
-         * Returns a map of key/values of this template based on the information of WinerysPropertiesDefinition. In case
-         * no value is set, the empty string is used. The map is implemented as {@link LinkedHashMap} to ensure that the
-         * order of the elements is the same as in the XML. We return the type {@link LinkedHashMap}, because there is
-         * no appropriate Java interface for "sorted" Maps
-         * <p>
-         * In case the element is not of the form k/v, null is returned
-         * <p>
-         * This method assumes that the any field is always populated.
-         *
-         * @return null if not k/v, a map of k/v properties otherwise
-         */
-        @ADR(12)
-        @Nullable
-        public LinkedHashMap<String, Object> getKVProperties() {
-            // we use the internal variable "any", because getAny() returns null, if we have KVProperties
-            if (any == null) {
-                return null;
-            }
-
-            if (!(any instanceof Element)) {
-                LinkedHashMap<String, Object> proxy = new LinkedHashMap<>();
-                if (any instanceof Map) {
-                    proxy.putAll((Map<String, Object>) any);
-                } else {
-                    proxy.put("value", any);
-                }
-                return proxy;
-            }
-
-            Element el = (Element) any;
-            if (el == null) {
-                return null;
-            }
-
-            // we have no type information in this place
-            // we could inject a repository, but if Winery is used with multiple repositories, this could cause race conditions
-            // therefore, we guess at the instance of the properties definition (i.e., here) if it is key/value or not.
-
-            boolean isKv = true;
-
-            LinkedHashMap<String, Object> properties = new LinkedHashMap<>();
-
-            NodeList childNodes = el.getChildNodes();
-
-            if (childNodes.getLength() == 0) {
-                // somehow invalid XML - do not treat it as k/v
-                return null;
-            }
-
-            for (int i = 0; i < childNodes.getLength(); i++) {
-                Node item = childNodes.item(i);
-                if (item instanceof Element) {
-                    String key = item.getLocalName();
-                    String value;
-
-                    Element kvElement = (Element) item;
-                    NodeList kvElementChildNodes = kvElement.getChildNodes();
-                    if (kvElementChildNodes.getLength() == 0) {
-                        value = "";
-                    } else if (kvElementChildNodes.getLength() > 1) {
-                        // FIXME deserialize complex types to Objects?
-                        // This is a wrong guess if comments are used, but this is prototype
-                        isKv = false;
-                        break;
-                    } else {
-                        // one child - just get the text.
-                        value = item.getTextContent();
-                    }
-                    properties.put(key, value);
-                } else if (item instanceof Text || item instanceof Comment) {
-                    // these kinds of nodes are OK
-                } else {
-                    LOGGER.error("Trying to set k/v property on a template which does not follow the k/v scheme.");
-                }
-            }
-
-            if (isKv) {
-                return properties;
-            } else {
-                return null;
-            }
-        }
-
-        @ADR(12)
-        public void setKVProperties(Map<String, Object> properties) {
-            setKVProperties(Namespaces.EXAMPLE_NAMESPACE_URI, "Properties", properties);
-        }
-
-        @ADR(12)
-        public void setKVProperties(String namespace, String elementName, Map<String, Object> properties) {
-            Objects.requireNonNull(properties);
-            
-            // properties are a complex map, so we must be reading a YAML assignment
-            if (properties.values().stream().anyMatch(v -> !(v instanceof String))) {
-                this.any = properties;
-                return;
-            }
-            
-            if (any == null) {
-                // special case if JSON is parsed without updating an existing element
-                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                DocumentBuilder db;
-                try {
-                    db = dbf.newDocumentBuilder();
-                } catch (ParserConfigurationException e) {
-                    LOGGER.debug(e.getMessage(), e);
-                    throw new IllegalStateException("Could not instantiate document builder", e);
-                }
-                Document doc = db.newDocument();
-
-                Element root = doc.createElementNS(namespace, elementName);
-                doc.appendChild(root);
-
-                // No wpd - so this is not possible:
-                // we produce the serialization in the same order the XSD would be generated (because of the usage of xsd:sequence)
-                // for (PropertyDefinitionKV prop : wpd.getPropertyDefinitionKVList()) {
-
-                for (String key : properties.keySet()) {
-                    Element element = doc.createElementNS(namespace, key);
-                    root.appendChild(element);
-                    
-                    Object value = properties.get(key);
-                    if (value == null) { continue; }
-                    if (value instanceof String) {
-                        Text text = doc.createTextNode((String)value);
-                        element.appendChild(text);
-                    } else {
-                        // FIXME value is complex type
-                    }
-                }
-
-                this.setAny(doc.getDocumentElement());
-            } else if (any instanceof Element){
-                // TODO: this implementation does not support adding a new property.
-                //  However, I don't understand it yet so we need to fix it in future.
-
-                Element el = (Element) any;
-                // straight-forward copy over to existing property structure
-                NodeList childNodes = el.getChildNodes();
-
-                for (int i = 0; i < childNodes.getLength(); i++) {
-                    Node item = childNodes.item(i);
-                    if (item instanceof Element) {
-                        final Element element = (Element) item;
-                        final String key = element.getLocalName();
-                        final Object value = properties.get(key);
-                        if (value instanceof String) {
-                            element.setTextContent((String)value);
-                        } else {
-                            // FIXME Value is complex type
-                        }
-                    } else if (item instanceof Text || item instanceof Comment) {
-                        // these kinds of nodes are OK
-                    } else {
-                        LOGGER.warn("Trying to read k/v property from a template which does not follow the k/v scheme.");
-                    }
-                }
-            } else {
-                LOGGER.warn("Failed to set properties on stored yaml properties??");
-            }
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Properties that = (Properties) o;
-            return Objects.equals(any, that.any);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(any);
-        }
-
-        public void accept(Visitor visitor) {
-            visitor.visit(this);
+        public void setAny(Object any) {
+            this.any = any;
         }
     }
 
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", propOrder = {
+        "kvProperties"
+    })
+    @NonNullByDefault
+    public static class WineryKVProperties extends Properties {
+        @XmlElement(name = "kvproperties")
+        private LinkedHashMap<String, String> kvProperties = new LinkedHashMap<>();
+
+        public LinkedHashMap<String, String> getKvProperties() {
+            return kvProperties;
+        }
+
+        public void setKvProperties(LinkedHashMap<String, String> kvProperties) {
+            this.kvProperties = kvProperties;
+        }
+    }
+
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", propOrder = {
+        "properties"
+    })
+    @NonNullByDefault
+    public static class YamlProperties extends Properties {
+        
+        @XmlElement(name = "yamlproperties")
+        private LinkedHashMap<String, Object> properties = new LinkedHashMap<>();
+
+        public LinkedHashMap<String, Object> getProperties() {
+            return properties;
+        }
+
+        public void setProperties(LinkedHashMap<String, Object> properties) {
+            this.properties = properties;
+        }
+    }
+    
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
         "propertyConstraint"

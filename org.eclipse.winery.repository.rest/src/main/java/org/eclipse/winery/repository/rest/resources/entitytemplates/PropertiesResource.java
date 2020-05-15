@@ -14,6 +14,7 @@
 package org.eclipse.winery.repository.rest.resources.entitytemplates;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
@@ -27,6 +28,7 @@ import javax.ws.rs.core.Response;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -66,8 +68,8 @@ public class PropertiesResource {
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response setProperties(Map<String, Object> properties) {
-        this.template.getProperties().setKVProperties(properties);
+    public Response setProperties(LinkedHashMap<String, String> properties) {
+        ModelUtilities.setPropertiesKV(template, properties);
         return RestUtils.persist(this.res);
     }
 
@@ -82,44 +84,53 @@ public class PropertiesResource {
     @Produces( {MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
     public @NonNull Response getProperties() {
         TEntityType tempType = RepositoryFactory.getRepository().getTypeForTemplate(this.template);
-        WinerysPropertiesDefinition wpd = tempType.getWinerysPropertiesDefinition();
         TEntityTemplate.Properties props = this.template.getProperties();
-        if (wpd == null) {
-            // no Winery special treatment, just return the XML properties
-            // These can be null resulting in 200 No Content at the caller
+        WinerysPropertiesDefinition wpd = tempType.getWinerysPropertiesDefinition();
+        if (props instanceof TEntityTemplate.WineryKVProperties || (props == null && wpd != null)) {
             if (props == null) {
-                return Response.ok().entity("{}").type(MediaType.APPLICATION_JSON).build();
-            } else {
-                @Nullable final Object any = props.getAny();
-                if (any == null) {
-                    LOGGER.debug("XML properties expected, but none found. Returning empty JSON.");
-                    return Response.ok().entity("{}").type(MediaType.APPLICATION_JSON).build();
-                }
-                try {
-                    @ADR(6)
-                    String xmlAsString = BackendUtils.getXMLAsString(TEntityTemplate.Properties.class, props, true, requestRepository);
-                    return Response
-                        .ok()
-                        .entity(xmlAsString)
-                        .type(MediaType.TEXT_XML)
-                        .build();
-                } catch (Exception e) {
-                    throw new WebApplicationException(e);
-                }
-            }
-        } else {
-            if (props == null) {
-                HashMap<String, Object> emptyProps = new HashMap<>();
+                LinkedHashMap<String, String> emptyProps = new LinkedHashMap<>();
                 wpd.getPropertyDefinitionKVList().getPropertyDefinitionKVs()
                     .forEach(propDef -> emptyProps.put(propDef.getKey(), ""));
 
-                props = new TEntityTemplate.Properties();
-                props.setKVProperties(emptyProps);
-                this.template.setProperties(props);
+                TEntityTemplate.WineryKVProperties update = new TEntityTemplate.WineryKVProperties();
+                update.setKvProperties(emptyProps);
+                this.template.setProperties(update);
                 RestUtils.persist(this.res);
             }
-            Map<String, Object> kvProperties = this.template.getProperties().getKVProperties();
+            Map<String, String> kvProperties = ModelUtilities.getPropertiesKV(template);
             return Response.ok().entity(kvProperties).type(MediaType.APPLICATION_JSON).build();
         }
+        // no Winery special treatment, just return the XML properties
+        // These can be null resulting in 200 No Content at the caller
+        if (props == null) {
+            return Response.ok().entity("{}").type(MediaType.APPLICATION_JSON).build();
+        }
+        if (props instanceof TEntityTemplate.XmlProperties) {
+            @Nullable final Object any = ((TEntityTemplate.XmlProperties) props).getAny();
+            if (any == null) {
+                LOGGER.debug("XML properties expected, but none found. Returning empty JSON.");
+                return Response.ok().entity("{}").type(MediaType.APPLICATION_JSON).build();
+            }
+            try {
+                @ADR(6)
+                String xmlAsString = BackendUtils.getXMLAsString(TEntityTemplate.Properties.class, props, true, requestRepository);
+                return Response
+                    .ok()
+                    .entity(xmlAsString)
+                    .type(MediaType.TEXT_XML)
+                    .build();
+            } catch (Exception e) {
+                throw new WebApplicationException(e);
+            }
+        }
+        if (props instanceof TEntityTemplate.YamlProperties) {
+            // hurrah for yaml properties
+            return Response.ok()
+                .entity(((TEntityTemplate.YamlProperties) props).getProperties())
+                .type(MediaType.APPLICATION_JSON)
+                .build();
+        }
+        LOGGER.error("Property definition for Entity Template {} was not handled", template.getId());
+        return Response.serverError().build();
     }
 }

@@ -16,6 +16,7 @@ package org.eclipse.winery.model.threatmodeling;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -172,7 +173,7 @@ public class ThreatModelingUtils {
             .map((TPolicyTemplate policyTemplate) -> {
                 Threat threat = new Threat();
                 if (Objects.nonNull(policyTemplate.getProperties())) {
-                    threat.setProperties(policyTemplate.getProperties().getKVProperties());
+                    threat.setProperties(ModelUtilities.getPropertiesKV(policyTemplate));
                 }
                 threat.setTemplateName(policyTemplate.getName());
                 threat.setNamespace(policyTemplate.getTypeAsQName().getNamespaceURI());
@@ -208,12 +209,12 @@ public class ThreatModelingUtils {
         threat.setName(threatName);
         threat.setType(threatTypeQName);
 
-        TPolicyTemplate.Properties threatProps = new TPolicyTemplate.Properties();
-        Map<String, Object> propMap = new HashMap<>();
+        TPolicyTemplate.WineryKVProperties threatProps = new TPolicyTemplate.WineryKVProperties();
+        LinkedHashMap<String, String> propMap = new LinkedHashMap<>();
         propMap.put(ThreatModelingProperties.description.toString(), data.getDescription());
         propMap.put(ThreatModelingProperties.strideClassification.toString(), data.getStride());
         propMap.put(ThreatModelingProperties.severity.toString(), data.getSeverity());
-        threatProps.setKVProperties(propMap);
+        threatProps.setKvProperties(propMap);
         threat.setProperties(threatProps);
 
         TDefinitions threatDefinitions = BackendUtils.createWrapperDefinitions(threatID, repository);
@@ -235,12 +236,12 @@ public class ThreatModelingUtils {
         mitigation.setName(mitigationName);
         mitigation.setType(mitigationTypeQName);
 
-        TPolicyTemplate.Properties mitigationProps = new TPolicyTemplate.Properties();
-        Map<String, Object> mitigationPropMap = new HashMap<>();
+        TPolicyTemplate.WineryKVProperties mitigationProps = new TPolicyTemplate.WineryKVProperties();
+        LinkedHashMap<String, String> mitigationPropMap = new LinkedHashMap<>();
 
         mitigationPropMap.put(ThreatModelingProperties.ThreatReference.toString(), threatID.getQName().toString());
 
-        mitigationProps.setKVProperties(mitigationPropMap);
+        mitigationProps.setKvProperties(mitigationPropMap);
         mitigation.setProperties(mitigationProps);
 
         TDefinitions mitigationDefinitions = BackendUtils.createWrapperDefinitions(threatID, repository);

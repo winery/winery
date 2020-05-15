@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
 
+import javax.jws.WebParam;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.version.VersionSupport;
@@ -967,8 +968,8 @@ public class Splitting {
             relationshipTypes.add(RepositoryFactory.getRepository().getElement(id));
         }
 
-        Map<String, Object> requirementProperties = ModelUtilities.getPropertiesKV(requirement);
-        Map<String, Object> capabilityProperties = ModelUtilities.getPropertiesKV(capability);
+        Map<String, String> requirementProperties = ModelUtilities.getPropertiesKV(requirement);
+        Map<String, String> capabilityProperties = ModelUtilities.getPropertiesKV(capability);
 
         /* If the property "requiredRelationshipType" is defined for the requirement and the capability this relationship type
            has to be taken - if the specified relationship type is not available, no relationship type is chosen */
@@ -1428,10 +1429,10 @@ public class Splitting {
 
         // check properties if they are defined (just equals on properties does not seem to work)
         if (Objects.nonNull(node1.getProperties()) && Objects.nonNull(node2.getProperties())
-            && Objects.nonNull(node1.getProperties().getKVProperties())
-            && Objects.nonNull(node2.getProperties().getKVProperties())) {
-            LinkedHashMap<String, Object> properties1 = node1.getProperties().getKVProperties();
-            LinkedHashMap<String, Object> properties2 = node1.getProperties().getKVProperties();
+            && Objects.nonNull(ModelUtilities.getPropertiesKV(node1))
+            && Objects.nonNull(ModelUtilities.getPropertiesKV(node2))) {
+            LinkedHashMap<String, String> properties1 = ModelUtilities.getPropertiesKV(node1);
+            LinkedHashMap<String, String> properties2 = ModelUtilities.getPropertiesKV(node2);
             if (!properties1.equals(properties2)) {
                 return false;
             }

@@ -12,10 +12,10 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-export class NodeDetailsSidebarState {
+export class DetailsSidebarState {
     visible: boolean;
     nodeClicked: boolean;
-    nodeTemplate: SidebarNodeTemplate;
+    template: SidebarEntityTemplate;
     minInstances: number;
     // this shoehorns the possibility of unicode infinity into the type
     maxInstances: number | '\u221E';
@@ -26,7 +26,7 @@ export class NodeDetailsSidebarState {
     target: any;
 }
 
-export class SidebarNodeTemplate {
+export class SidebarEntityTemplate {
     id: string;
     name: string;
     type: string;

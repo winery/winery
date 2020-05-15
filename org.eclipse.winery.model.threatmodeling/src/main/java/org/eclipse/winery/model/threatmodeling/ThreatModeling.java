@@ -29,6 +29,7 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
@@ -105,7 +106,7 @@ public class ThreatModeling {
                 TPolicyTemplate mitigationTemplate = repository.getElement(mitigationTemplateId);
 
                 if (Objects.nonNull(mitigationTemplate.getProperties())) {
-                    LinkedHashMap<String, Object> properties = mitigationTemplate.getProperties().getKVProperties();
+                    LinkedHashMap<String, String> properties = ModelUtilities.getPropertiesKV(mitigationTemplate);
                     // FIXME Assumption that we're dealing with simple KV Properties
                     String threatReferenceString = (String)properties.get("ThreatReference");
 
@@ -142,7 +143,7 @@ public class ThreatModeling {
                         threat.addTarget(nt.getName(), nt.getTypeAsQName());
 
                         if (Objects.nonNull(threatTemplate.getProperties())) {
-                            threat.setProperties(threatTemplate.getProperties().getKVProperties());
+                            threat.setProperties(ModelUtilities.getPropertiesKV(threatTemplate));
                         }
                         threat.setTemplateName(threatQName.getLocalPart());
                         threat.setNamespace(threatQName.getNamespaceURI());

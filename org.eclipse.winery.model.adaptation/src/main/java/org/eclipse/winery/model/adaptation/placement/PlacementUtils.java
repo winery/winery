@@ -459,8 +459,7 @@ public class PlacementUtils {
     }
 
     private static double getDataSourceSize(TNodeTemplate node) {
-        // well-known keys should be filled with Strings and not complex objects
-        String dataSize = (String)getKVProperties(node).get(NODE_TEMPLATE_PROPERTY_DATA_SIZE);
+        String dataSize = getKVProperties(node).get(NODE_TEMPLATE_PROPERTY_DATA_SIZE);
         if (Objects.isNull(dataSize)) {
             throw new InvalidParameterException("NodeTemplate " + node.getId() + " has no data size property although" +
                 " its a data source in the data flow model!");
@@ -469,8 +468,7 @@ public class PlacementUtils {
     }
 
     private static double getDataFactor(TNodeTemplate node) {
-        // well-known keys should be filled with Strings and not complex objects
-        String dataFactor = (String)getKVProperties(node).get(NODE_TEMPLATE_PROPERTY_DATA_FACTOR);
+        String dataFactor = getKVProperties(node).get(NODE_TEMPLATE_PROPERTY_DATA_FACTOR);
         if (Objects.isNull(dataFactor)) {
             throw new InvalidParameterException("NodeTemplate " + node.getId() + " has no data factor property " +
                 "although its a data processor in the data flow model!");
@@ -478,14 +476,14 @@ public class PlacementUtils {
         return Double.parseDouble(dataFactor);
     }
 
-    private static LinkedHashMap<String, Object> getKVProperties(TNodeTemplate node) {
+    private static LinkedHashMap<String, String> getKVProperties(TNodeTemplate node) {
         TEntityTemplate.Properties props = node.getProperties();
-        if (Objects.isNull(props) || Objects.isNull(props.getKVProperties())) {
+        if (Objects.isNull(props) || Objects.isNull(ModelUtilities.getPropertiesKV(node))) {
             throw new InvalidParameterException("NodeTemplate " + node.getId() + " has no properties defined but all " +
                 "NodeTemplates corresponding to filters of the data flow model need either a DataFactor or a DataSize" +
                 " property!");
         }
-        return props.getKVProperties();
+        return ModelUtilities.getPropertiesKV(node);
     }
 
     /**

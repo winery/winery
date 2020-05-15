@@ -29,7 +29,7 @@ import org.eclipse.winery.repository.common.RepositoryFileReference;
 
 public interface EdmmManager {
 
-    public static EdmmManager forRepository(IRepository repo) {
+    static EdmmManager forRepository(IRepository repo) {
         RepositoryFileReference ref = BackendUtils.getRefOfJsonConfiguration(new EdmmMappingsId());
         return new JsonBasedEdmmManager(repo.ref2AbsolutePath(ref).toFile());
     }

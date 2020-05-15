@@ -24,6 +24,7 @@ import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 
 import org.junit.jupiter.api.Test;
@@ -162,7 +163,7 @@ class ThreatModelingUtilsWithGitBackendRepositoryTest extends TestWithGitBackedR
         assertTrue(repository.exists(mitigation));
 
         TPolicyTemplate mitigationPolicy = repository.getElement(mitigation);
-        assertEquals(threat.getQName().toString(), mitigationPolicy.getProperties().getKVProperties().get("ThreatReference"));
+        assertEquals(threat.getQName().toString(), ModelUtilities.getPropertiesKV(mitigationPolicy).get("ThreatReference"));
     }
 
     @Test

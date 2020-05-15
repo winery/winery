@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -104,11 +105,18 @@ public class ModelUtilities {
      *
      * @param template the node template to get the associated properties
      */
-    public static Map<String, Object> getPropertiesKV(TEntityTemplate template) {
-        if (template.getProperties() != null) {
-            return template.getProperties().getKVProperties();
+    public static LinkedHashMap<String, String> getPropertiesKV(TEntityTemplate template) {
+        if (template.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
+            return ((TEntityTemplate.WineryKVProperties) template.getProperties()).getKvProperties();
         } else {
+            // FIXME is this appropriate for YAML properties??
             return null;
+        }
+    }
+    
+    public static void setPropertiesKV(TEntityTemplate template, LinkedHashMap<String, String> properties) {
+        if (template.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
+            ((TEntityTemplate.WineryKVProperties) template.getProperties()).setKvProperties(properties);
         }
     }
 
@@ -716,22 +724,23 @@ public class ModelUtilities {
 
             // Convert the String created by the JSON serialization back to a XML dom document
             TEntityTemplate.Properties properties = template.getProperties();
-            if (properties != null) {
-                Object any = properties.getInternalAny();
-                if (any instanceof String) {
-                    Document doc = null;
-                    try {
-                        doc = documentBuilder.parse(new InputSource(new StringReader((String) any)));
-                    } catch (SAXException e) {
-                        LOGGER.error("Could not parse", e);
-                        throw new IOException("Could not parse", e);
-                    } catch (IOException e) {
-                        LOGGER.error("Could not parse", e);
-                        throw e;
-                    }
-                    template.getProperties().setAny(doc.getDocumentElement());
-                }
-            }
+            // FIXME deal with serialization madness?
+//            if (properties != null) {
+//                Object any = properties.getInternalAny();
+//                if (any instanceof String) {
+//                    Document doc = null;
+//                    try {
+//                        doc = documentBuilder.parse(new InputSource(new StringReader((String) any)));
+//                    } catch (SAXException e) {
+//                        LOGGER.error("Could not parse", e);
+//                        throw new IOException("Could not parse", e);
+//                    } catch (IOException e) {
+//                        LOGGER.error("Could not parse", e);
+//                        throw e;
+//                    }
+//                    template.getProperties().setAny(doc.getDocumentElement());
+//                }
+//            }
         }
     }
 

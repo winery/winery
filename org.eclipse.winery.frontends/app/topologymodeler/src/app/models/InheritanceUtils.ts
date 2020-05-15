@@ -29,7 +29,7 @@ export class InheritanceUtils {
     }
 
     static getInheritanceAncestry(entityType: string, entityTypes: EntityType[]): EntityType[] {
-        const entity = entityTypes.find(type => type.qName === entityType);
+        const entity = entityTypes.find(type => type.qName === entityType || type.id === entityType);
         const result = [];
 
         if (entity) {

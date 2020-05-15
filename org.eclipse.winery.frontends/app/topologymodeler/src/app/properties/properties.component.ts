@@ -20,7 +20,7 @@ import { WineryActions } from '../redux/actions/winery.actions';
 import { JsPlumbService } from '../services/jsPlumb.service';
 import { PropertyDefinitionType } from '../models/enums';
 import { KeyValueItem } from '../../../../tosca-management/src/app/model/keyValueItem';
-import { TNodeTemplate } from '../models/ttopology-template';
+import { TNodeTemplate, TRelationshipTemplate } from '../models/ttopology-template';
 import { isNullOrUndefined } from 'util';
 import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
@@ -32,16 +32,17 @@ import { WineryRepositoryConfigurationService } from '../../../../tosca-manageme
 export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
 
     @Input() readonly: boolean;
-    @Input() nodeId: string;
+    @Input() templateId: string;
+    @Input() isNode: boolean;
 
-    propertyDefinitionType: PropertyDefinitionType;
-    nodeProperties: any = {};
+    private propertyDefinitionType: PropertyDefinitionType;
+    private templateProperties: any = {};
+    private templateType: string;
 
     private subscriptions: Array<Subscription> = [];
     // flag to allow skipping an update when this instance is the instigator of said update
     //  this way we avoid recreating the input form during the editing process
     private skipUpdate = false;
-    private nodeType: string;
 
     constructor(private $ngRedux: NgRedux<IWineryState>,
                 private actions: WineryActions,
@@ -54,13 +55,16 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
      * Angular lifecycle event.
      */
     ngOnChanges(changes: SimpleChanges) {
-        if (changes.nodeId) {
+        if (changes.isNode) {
+            this.isNode = changes.isNode.currentValue;
+        }
+        if (changes.templateId) {
             this.clearSubscriptions();
-            this.nodeId = changes.nodeId.currentValue;
-            if (this.nodeId) {
-                this.subscriptions.push(this.buildSubscription(this.nodeId));
+            this.templateId = changes.templateId.currentValue;
+            if (this.templateId) {
+                this.subscriptions.push(this.buildSubscription());
             } else {
-                this.nodeProperties = {};
+                this.templateProperties = {};
                 this.propertyDefinitionType = PropertyDefinitionType.NONE;
             }
         }
@@ -72,38 +76,37 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
      * Angular lifecycle event.
      */
     ngOnInit() {
-        if (this.nodeId) {
+        if (this.templateId) {
             this.clearSubscriptions();
-            this.subscriptions.push(this.buildSubscription(this.nodeId));
+            this.subscriptions.push(this.buildSubscription());
         }
     }
 
-    private loadData(nodeTemplate: TNodeTemplate): void {
+    private loadData(template: TNodeTemplate | TRelationshipTemplate): void {
         if (this.skipUpdate) {
             this.skipUpdate = false;
             return;
         }
-        const propertyData = nodeTemplate.properties;
+        const propertyData = template.properties;
         // TODO get nodeTemplate's type and grab the propertiesDefinition for the NodeType.
         //  That definition can be a List<YamlPropertiesDefinition> or an XmlPropertiesDefinition.
         //  This way we can obtain the constraints required for input form generation.
 
-        this.propertyDefinitionType = this.determinePropertyDefinitionType(nodeTemplate);
-        this.nodeType = nodeTemplate.type;
+        // this.propertyDefinitionType = this.determinePropertyDefinitionType(nodeTemplate);
+        this.propertyDefinitionType = propertyData.propertyType;
+        this.templateType = template.type;
         // reset nodeProperties to empty object to change it's pointer for change detection to work
-        this.nodeProperties = {};
+        this.templateProperties = {};
         try {
             if (this.propertyDefinitionType === PropertyDefinitionType.KV) {
                 // need to use Object.assign here to avoid overwriting the refreshed pointer
-                Object.assign(this.nodeProperties, propertyData.kvproperties);
+                Object.assign(this.templateProperties, propertyData.kvproperties);
             } else if (this.propertyDefinitionType === PropertyDefinitionType.XML) {
-                // FIXME this could also be using propertyData.element because XML props can be two different things!
                 // since this particular value is a String, Angular correctly detects changes
-                this.nodeProperties = propertyData.any;
+                this.templateProperties = propertyData.any;
             } else if (this.propertyDefinitionType === PropertyDefinitionType.YAML) {
-                // FIXME this is not really useful, actually
                 // need to use Object.assign here to avoid overwriting the refreshed pointer
-                Object.assign(this.nodeProperties, propertyData.kvproperties);
+                Object.assign(this.templateProperties, propertyData.properties);
             }
         } catch (e) {
         }
@@ -118,19 +121,19 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     xmlPropertyEdit($event: string) {
-        this.nodeProperties = $event;
+        this.templateProperties = $event;
         this.dispatchRedux();
     }
 
     kvPropertyEdit($event: KeyValueItem) {
-        this.nodeProperties[$event.key] = $event.value;
+        this.templateProperties[$event.key] = $event.value;
         this.dispatchRedux();
     }
 
     // TODO? rewrite to have a "PathValueItem"
     yamlPropertyEdit($event: KeyValueItem) {
         // FIXME deal with the fact that yaml properties support complex datatypes, implying nesting
-        this.nodeProperties[$event.key] = $event.value;
+        this.templateProperties[$event.key] = $event.value;
         this.dispatchRedux();
     }
 
@@ -138,44 +141,44 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
         this.skipUpdate = true;
         this.$ngRedux.dispatch(this.actions.setProperty({
             nodeProperty: {
-                newProperty: this.nodeProperties,
+                newProperty: this.templateProperties,
                 propertyType: this.propertyDefinitionType,
-                nodeId: this.nodeId,
+                nodeId: this.templateId,
             }
         }));
     }
 
-    private buildSubscription(nodeId: string): Subscription {
-        if (!nodeId) {
+    private buildSubscription(): Subscription {
+        if (!this.templateId) {
             return;
         }
-        return this.$ngRedux.select(wineryState => wineryState
-            .wineryState
-            .currentJsonTopology
-            .nodeTemplates
-            .find(nt => {
-                return nodeId && nt.id === nodeId;
-            })
-        ).subscribe(nodeTemplate => {
-            if (nodeTemplate) {
-                this.loadData(nodeTemplate);
-            }
-        });
-    }
-
-    private determinePropertyDefinitionType(nodeTemplate: TNodeTemplate): PropertyDefinitionType {
-        // if PropertiesDefinition doesn't exist then it must be of type NONE
-        if (isNullOrUndefined(nodeTemplate.properties)) {
-            return PropertyDefinitionType.NONE;
-        }
-        // if no XML element inside PropertiesDefinition then it must be of type Key Value
-        if (!(nodeTemplate.properties.element || nodeTemplate.properties.any)) {
-            return this.repoConfiguration.isYaml() ?
-                PropertyDefinitionType.YAML :
-                PropertyDefinitionType.KV;
+        // we also need to display relationships here
+        if (this.isNode) {
+            return this.$ngRedux.select(wineryState => wineryState
+                .wineryState
+                .currentJsonTopology
+                .nodeTemplates
+                .find(nt => {
+                    return nt.id === this.templateId;
+                })
+            ).subscribe(nodeTemplate => {
+                if (nodeTemplate) {
+                    this.loadData(nodeTemplate);
+                }
+            });
         } else {
-            // else we have XML
-            return PropertyDefinitionType.XML;
+            return this.$ngRedux.select(wineryState => wineryState
+                .wineryState
+                .currentJsonTopology
+                .relationshipTemplates
+                .find(rt => {
+                    return rt.id === this.templateId;
+                })
+            ).subscribe(relationship => {
+                if (relationship) {
+                    this.loadData(relationship);
+                }
+            });
         }
     }
 }

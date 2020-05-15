@@ -24,6 +24,7 @@ import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TPolicyType;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
@@ -62,8 +63,12 @@ public class PolicyWrapper {
         PolicyTypeId policyTypeId = new PolicyTypeId(policy.getType());
         TPolicyType policyType = repository.getElement(policyTypeId);
 
-        LinkedHashMap<String, Object> properties = policy.getProperties().getKVProperties();
-        for (Map.Entry<String, Object> property : properties.entrySet()) {
+        LinkedHashMap<String, String> properties = ModelUtilities.getPropertiesKV(policy);
+        if (properties == null) {
+            // FIXME This needs to correctly deal with YamlProperties as well!!
+            return null;
+        }
+        for (Map.Entry<String, String> property : properties.entrySet()) {
             if (property.getKey().equals(propertyKey)) {
                 String type = getType(policyType, propertyKey);
                 return cast(property.getValue(), type);

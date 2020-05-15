@@ -11,26 +11,26 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
 -->
-<div *ngIf="!nodeProperties"
+<div *ngIf="!templateProperties"
      style="display: flex; justify-content: center; align-items: center">
     <i class="fa fa-3x fa-refresh fa-spin" style="max-width: 50%;"></i>
 </div>
 <winery-kv-properties *ngIf="propertyDefinitionType == 'KV'"
     [readonly]="readonly"
-    [nodeProperties]="nodeProperties"
+    [nodeProperties]="templateProperties"
     (propertyEdited)="kvPropertyEdit($event)">
 </winery-kv-properties>
 
 <winery-yaml-properties *ngIf="propertyDefinitionType == 'YAML'"
     [readonly]="readonly"
-    [nodeProperties]="nodeProperties"
-    [nodeType]="nodeType"
+    [properties]="templateProperties"
+    [templateType]="templateType"
     (propertyEdited)="yamlPropertyEdit($event)">
 </winery-yaml-properties>
 
 <winery-xml-properties *ngIf="propertyDefinitionType == 'XML'"
     [readonly]="readonly"
-    [propertiesValue]="nodeProperties"
+    [propertiesValue]="templateProperties"
     (propertyEdited)="xmlPropertyEdit($event)">
 </winery-xml-properties>
 

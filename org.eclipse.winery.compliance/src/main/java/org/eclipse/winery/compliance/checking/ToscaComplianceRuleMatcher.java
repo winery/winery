@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.topologygraph.matching.IToscaMatcher;
 import org.eclipse.winery.topologygraph.model.ToscaEdge;
 import org.eclipse.winery.topologygraph.model.ToscaEntity;
@@ -63,8 +64,8 @@ public class ToscaComplianceRuleMatcher implements IToscaMatcher {
     public boolean isPropertiesCompatible(ToscaNode left, ToscaNode right) {
         if (left.getTemplate().getProperties() != null) {
             if (right.getTemplate().getProperties() != null) {
-                for (Entry<String, Object> leftEntry : left.getTemplate().getProperties().getKVProperties().entrySet()) {
-                    if (!isPropertyCompatible(leftEntry, right.getTemplate().getProperties().getKVProperties())) {
+                for (Entry<String, String> leftEntry : ModelUtilities.getPropertiesKV(left.getTemplate()).entrySet()) {
+                    if (!isPropertyCompatible(leftEntry, ModelUtilities.getPropertiesKV(right.getTemplate()))) {
                         return false;
                     }
                 }
@@ -75,7 +76,7 @@ public class ToscaComplianceRuleMatcher implements IToscaMatcher {
         return true;
     }
 
-    public boolean isPropertyCompatible(Entry<String, Object> leftEntry, @ADR(12) LinkedHashMap<String, Object> rightProperties) {
+    public boolean isPropertyCompatible(Entry<String, String> leftEntry, @ADR(12) LinkedHashMap<String, String> rightProperties) {
         return rightProperties.containsKey(leftEntry.getKey()) &&
             rightProperties.get(leftEntry.getKey()) != null &&
             isPropertyValueCompatible(leftEntry.getValue(), rightProperties.get(leftEntry.getKey()));

@@ -145,112 +145,13 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         @XmlAnyElement(lax = true)
         protected Object any;
 
-        /**
-         * Returns the XML element from the other namespace. In case the properties are of the form key/value, null is
-         * returned.
-         */
         @Nullable
         public Object getAny() {
-            if (this.getKVProperties() == null) {
-                return any;
-            } else {
-                return null;
-            }
-        }
-
-        /**
-         * Returns the internal any object without any K/V treatment. Required to patch JSON data received by clients
-         */
-        @Nullable
-        public Object getInternalAny() {
             return any;
         }
 
         public void setAny(Object value) {
             this.any = value;
-        }
-
-        /**
-         * This is a special method for Winery. Winery allows to define a property by specifying name/value values.
-         * Instead of parsing the XML contained in TNodeType, this method is a convenience method to access this
-         * information assumes the properties are key/value pairs (see WinerysPropertiesDefinition), all other cases are
-         * return null.
-         * <p>
-         * Returns a map of key/values of this template based on the information of WinerysPropertiesDefinition. In case
-         * no value is set, the empty string is used. The map is implemented as {@link LinkedHashMap} to ensure that the
-         * order of the elements is the same as in the XML. We return the type {@link LinkedHashMap}, because there is
-         * no appropriate Java interface for "sorted" Maps
-         * <p>
-         * In case the element is not of the form k/v, null is returned
-         * <p>
-         * This method assumes that the any field is always populated.
-         *
-         * @return null if not k/v, a map of k/v properties otherwise
-         */
-        @ADR(12)
-        @Nullable
-        public LinkedHashMap<String, String> getKVProperties() {
-            // we use the internal variable "any", because getAny() returns null, if we have KVProperties
-            if (any == null) {
-                return null;
-            }
-
-            if (!(any instanceof Element)) {
-                LOGGER.error("Corrupt storage - any should be null or instanceof Element");
-                return null;
-            }
-
-            Element el = (Element) any;
-            if (el == null) {
-                return null;
-            }
-
-            // we have no type information in this place
-            // we could inject a repository, but if Winery is used with multiple repositories, this could cause race conditions
-            // therefore, we guess at the instance of the properties definition (i.e., here) if it is key/value or not.
-
-            boolean isKv = true;
-
-            LinkedHashMap<String, String> properties = new LinkedHashMap<>();
-
-            NodeList childNodes = el.getChildNodes();
-
-            if (childNodes.getLength() == 0) {
-                // somehow invalid XML - do not treat it as k/v
-                return null;
-            }
-
-            for (int i = 0; i < childNodes.getLength(); i++) {
-                Node item = childNodes.item(i);
-                if (item instanceof Element) {
-                    String key = item.getLocalName();
-                    String value;
-
-                    Element kvElement = (Element) item;
-                    NodeList kvElementChildNodes = kvElement.getChildNodes();
-                    if (kvElementChildNodes.getLength() == 0) {
-                        value = "";
-                    } else if (kvElementChildNodes.getLength() > 1) {
-                        // This is a wrong guess if comments are used, but this is prototype
-                        isKv = false;
-                        break;
-                    } else {
-                        // one child - just get the text.
-                        value = item.getTextContent();
-                    }
-                    properties.put(key, value);
-                } else if (item instanceof Text || item instanceof Comment) {
-                    // these kinds of nodes are OK
-                } else {
-                    LOGGER.error("Trying to set k/v property on a template which does not follow the k/v scheme.");
-                }
-            }
-
-            if (isKv) {
-                return properties;
-            } else {
-                return null;
-            }
         }
 
         @ADR(12)

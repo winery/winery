@@ -679,28 +679,29 @@ public class BackendUtils {
         if (winerysPropertiesDefinition == null) {
             return;
         }
-        Document document;
-        try {
-            document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-        } catch (ParserConfigurationException e) {
-            LOGGER.error("Could not create document", e);
-            return;
-        }
-
-        final String namespace = winerysPropertiesDefinition.getNamespace();
-        final Element wrapperElement = document.createElementNS(namespace, winerysPropertiesDefinition.getElementName());
-        document.appendChild(wrapperElement);
-
-        // we produce the serialization in the same order the XSD would be generated (because of the usage of xsd:sequence)
-        for (PropertyDefinitionKV propertyDefinitionKV : winerysPropertiesDefinition.getPropertyDefinitionKVList()) {
-            // we always write the element tag as the XSD forces that
-            final Element valueElement = document.createElementNS(namespace, propertyDefinitionKV.getKey());
-            wrapperElement.appendChild(valueElement);
-        }
-
-        TEntityTemplate.Properties properties = new TEntityTemplate.Properties();
-        properties.setAny(document.getDocumentElement());
-        entityTemplate.setProperties(properties);
+        // FIXME do things here?!
+//        Document document;
+//        try {
+//            document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+//        } catch (ParserConfigurationException e) {
+//            LOGGER.error("Could not create document", e);
+//            return;
+//        }
+//
+//        final String namespace = winerysPropertiesDefinition.getNamespace();
+//        final Element wrapperElement = document.createElementNS(namespace, winerysPropertiesDefinition.getElementName());
+//        document.appendChild(wrapperElement);
+//
+//        // we produce the serialization in the same order the XSD would be generated (because of the usage of xsd:sequence)
+//        for (PropertyDefinitionKV propertyDefinitionKV : winerysPropertiesDefinition.getPropertyDefinitionKVList()) {
+//            // we always write the element tag as the XSD forces that
+//            final Element valueElement = document.createElementNS(namespace, propertyDefinitionKV.getKey());
+//            wrapperElement.appendChild(valueElement);
+//        }
+//
+//        TEntityTemplate.Properties properties = new TEntityTemplate.Properties();
+//        properties.setAny(document.getDocumentElement());
+//        entityTemplate.setProperties(properties);
     }
 
     /**

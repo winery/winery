@@ -58,9 +58,6 @@ import org.eclipse.winery.model.tosca.xml.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.xml.TCapabilityDefinition;
 import org.eclipse.winery.model.tosca.xml.TRequirement;
 import org.eclipse.winery.model.tosca.xml.TTopologyTemplate;
-import org.eclipse.winery.model.tosca.xml.kvproperties.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.xml.kvproperties.PropertyDefinitionKVList;
-import org.eclipse.winery.model.tosca.xml.kvproperties.WinerysPropertiesDefinition;
 
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Comment;
@@ -80,118 +77,102 @@ public class ModelUtilities {
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ModelUtilities.class);
 
-    /**
-     * @param et the entity type to query
-     * @return null if et == null
-     * @deprecated Use {@link TEntityType#getWinerysPropertiesDefinition()}
-     */
-    @Deprecated
-    public static WinerysPropertiesDefinition getWinerysPropertiesDefinition(TEntityType et) {
-        if (et != null) {
-            return et.getWinerysPropertiesDefinition();
-        }
-        return null;
-    }
+//    /**
+//     * @param et the entity type to query
+//     * @return null if et == null
+//     * @deprecated Use {@link TEntityType#getWinerysPropertiesDefinition()}
+//     */
+//    @Deprecated
+//    public static WinerysPropertiesDefinition getWinerysPropertiesDefinition(TEntityType et) {
+//        if (et != null) {
+//            return et.getWinerysPropertiesDefinition();
+//        }
+//        return null;
+//    }
 
-    /**
-     * This is a special method for Winery. Winery allows to define a property by specifying name/value values. Instead
-     * of parsing the XML contained in TNodeType, this method is a convenience method to access this information
-     * <p>
-     * The return type "Properties" is used because of the key/value properties.
-     *
-     * @param template the node template to get the associated properties
-     */
-    public static Map<String, String> getPropertiesKV(TEntityTemplate template) {
-        if (template.getProperties() != null) {
-            return template.getProperties().getKVProperties();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Generates a XSD when Winery's K/V properties are used. This method is put here instead of
-     * WinerysPropertiesDefinitionResource to avoid generating the subresource
-     * <p>
-     * public because of the usage by TOSCAEXportUtil
-     *
-     * @return empty Document, if Winery's Properties Definition is not fully filled (e.g., no wrapping element defined)
-     */
-    public static Document getWinerysPropertiesDefinitionXsdAsDocument(WinerysPropertiesDefinition wpd) {
-        /*
-         * This is a quick hack: an XML schema container is created for each
-         * element. Smarter solution: create a hash from namespace to XML schema
-         * element and re-use that for each new element
-         * Drawback of "smarter" solution: not a single XSD file any more
-         */
-        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder;
-        try {
-            docBuilder = docFactory.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            ModelUtilities.LOGGER.debug(e.getMessage(), e);
-            throw new IllegalStateException("Could not instantiate document builder", e);
-        }
-        Document doc = docBuilder.newDocument();
-
-        if (!ModelUtilities.allRequiredFieldsNonNull(wpd)) {
-            // wpd not fully filled -> valid XSD cannot be provided
-            // fallback: add comment and return "empty" document
-            Comment comment = doc.createComment("Required fields are missing in Winery's key/value properties definition.");
-            doc.appendChild(comment);
-            return doc;
-        }
-
-        // create XSD schema container
-        Element schemaElement = doc.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "schema");
-        doc.appendChild(schemaElement);
-        schemaElement.setAttribute("elementFormDefault", "qualified");
-        schemaElement.setAttribute("attributeFormDefault", "unqualified");
-        schemaElement.setAttribute("targetNamespace", wpd.getNamespace());
-
-        // create XSD element itself
-        Element el = doc.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "element");
-        schemaElement.appendChild(el);
-        el.setAttribute("name", wpd.getElementName());
-        Element el2 = doc.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "complexType");
-        el.appendChild(el2);
-        el = el2;
-        el2 = doc.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "sequence");
-        el.appendChild(el2);
-        el = el2;
-
-        // currently, "xsd" is a hardcoded prefix in the type definition
-        el.setAttribute("xmlns:xsd", XMLConstants.W3C_XML_SCHEMA_NS_URI);
-
-        for (PropertyDefinitionKV prop : wpd.getPropertyDefinitionKVList()) {
-            el2 = doc.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "element");
-            el.appendChild(el2);
-            el2.setAttribute("name", prop.getKey());
-            // prop.getType has the prefix included
-            el2.setAttribute("type", prop.getType());
-        }
-
-        return doc;
-    }
-
-    /**
-     * Removes an existing Winery's Properties definition. If no such definition exists, the TEntityType is not
-     * modified
-     */
-    public static void removeWinerysPropertiesDefinition(TEntityType et) {
-        for (Iterator<Object> iterator = et.getAny().iterator(); iterator.hasNext(); ) {
-            Object o = iterator.next();
-            if (o instanceof WinerysPropertiesDefinition) {
-                iterator.remove();
-                break;
-            }
-        }
-    }
-
-    public static void replaceWinerysPropertiesDefinition(TEntityType et, WinerysPropertiesDefinition wpd) {
-        ModelUtilities.removeWinerysPropertiesDefinition(et);
-        et.getAny().add(wpd);
-    }
+//    /**
+//     * Generates a XSD when Winery's K/V properties are used. This method is put here instead of
+//     * WinerysPropertiesDefinitionResource to avoid generating the subresource
+//     * <p>
+//     * public because of the usage by TOSCAEXportUtil
+//     *
+//     * @return empty Document, if Winery's Properties Definition is not fully filled (e.g., no wrapping element defined)
+//     */
+//    public static Document getWinerysPropertiesDefinitionXsdAsDocument(WinerysPropertiesDefinition wpd) {
+//        /*
+//         * This is a quick hack: an XML schema container is created for each
+//         * element. Smarter solution: create a hash from namespace to XML schema
+//         * element and re-use that for each new element
+//         * Drawback of "smarter" solution: not a single XSD file any more
+//         */
+//        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+//        DocumentBuilder docBuilder;
+//        try {
+//            docBuilder = docFactory.newDocumentBuilder();
+//        } catch (ParserConfigurationException e) {
+//            ModelUtilities.LOGGER.debug(e.getMessage(), e);
+//            throw new IllegalStateException("Could not instantiate document builder", e);
+//        }
+//        Document doc = docBuilder.newDocument();
+//
+//        if (!ModelUtilities.allRequiredFieldsNonNull(wpd)) {
+//            // wpd not fully filled -> valid XSD cannot be provided
+//            // fallback: add comment and return "empty" document
+//            Comment comment = doc.createComment("Required fields are missing in Winery's key/value properties definition.");
+//            doc.appendChild(comment);
+//            return doc;
+//        }
+//
+//        // create XSD schema container
+//        Element schemaElement = doc.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "schema");
+//        doc.appendChild(schemaElement);
+//        schemaElement.setAttribute("elementFormDefault", "qualified");
+//        schemaElement.setAttribute("attributeFormDefault", "unqualified");
+//        schemaElement.setAttribute("targetNamespace", wpd.getNamespace());
+//
+//        // create XSD element itself
+//        Element el = doc.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "element");
+//        schemaElement.appendChild(el);
+//        el.setAttribute("name", wpd.getElementName());
+//        Element el2 = doc.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "complexType");
+//        el.appendChild(el2);
+//        el = el2;
+//        el2 = doc.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "sequence");
+//        el.appendChild(el2);
+//        el = el2;
+//
+//        // currently, "xsd" is a hardcoded prefix in the type definition
+//        el.setAttribute("xmlns:xsd", XMLConstants.W3C_XML_SCHEMA_NS_URI);
+//
+//        for (PropertyDefinitionKV prop : wpd.getPropertyDefinitionKVList()) {
+//            el2 = doc.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "element");
+//            el.appendChild(el2);
+//            el2.setAttribute("name", prop.getKey());
+//            // prop.getType has the prefix included
+//            el2.setAttribute("type", prop.getType());
+//        }
+//
+//        return doc;
+//    }
+//
+//    /**
+//     * Removes an existing Winery's Properties definition. If no such definition exists, the TEntityType is not
+//     * modified
+//     */
+//    public static void removeWinerysPropertiesDefinition(TEntityType et) {
+//        for (Iterator<Object> iterator = et.getAny().iterator(); iterator.hasNext(); ) {
+//            Object o = iterator.next();
+//            if (o instanceof WinerysPropertiesDefinition) {
+//                iterator.remove();
+//                break;
+//            }
+//        }
+//    }
+//
+//    public static void replaceWinerysPropertiesDefinition(TEntityType et, WinerysPropertiesDefinition wpd) {
+//        ModelUtilities.removeWinerysPropertiesDefinition(et);
+//        et.getAny().add(wpd);
+//    }
 
     /**
      * Determines a color belonging to the given name
@@ -302,21 +283,21 @@ public class ModelUtilities {
         }
     }
 
-    public static boolean allRequiredFieldsNonNull(WinerysPropertiesDefinition wpd) {
-        boolean valid = wpd.getNamespace() != null;
-        valid = valid && (wpd.getElementName() != null);
-        if (valid) {
-            PropertyDefinitionKVList propertyDefinitionKVList = wpd.getPropertyDefinitionKVList();
-            valid = (propertyDefinitionKVList != null);
-            if (valid) {
-                for (PropertyDefinitionKV def : propertyDefinitionKVList) {
-                    valid = valid && (def.getKey() != null);
-                    valid = valid && (def.getType() != null);
-                }
-            }
-        }
-        return valid;
-    }
+//    public static boolean allRequiredFieldsNonNull(WinerysPropertiesDefinition wpd) {
+//        boolean valid = wpd.getNamespace() != null;
+//        valid = valid && (wpd.getElementName() != null);
+//        if (valid) {
+//            PropertyDefinitionKVList propertyDefinitionKVList = wpd.getPropertyDefinitionKVList();
+//            valid = (propertyDefinitionKVList != null);
+//            if (valid) {
+//                for (PropertyDefinitionKV def : propertyDefinitionKVList) {
+//                    valid = valid && (def.getKey() != null);
+//                    valid = valid && (def.getType() != null);
+//                }
+//            }
+//        }
+//        return valid;
+//    }
 
     public static Optional<Integer> getLeft(TNodeTemplate nodeTemplate) {
         Map<QName, String> otherAttributes = nodeTemplate.getOtherAttributes();
@@ -714,7 +695,7 @@ public class ModelUtilities {
             // Convert the String created by the JSON serialization back to a XML dom document
             TEntityTemplate.Properties properties = template.getProperties();
             if (properties != null) {
-                Object any = properties.getInternalAny();
+                Object any = properties.getAny();
                 if (any instanceof String) {
                     Document doc = null;
                     try {

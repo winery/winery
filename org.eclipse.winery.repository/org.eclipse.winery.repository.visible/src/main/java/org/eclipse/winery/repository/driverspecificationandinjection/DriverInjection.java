@@ -21,6 +21,8 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 
 import javax.xml.namespace.QName;
+
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -59,12 +61,13 @@ public class DriverInjection {
         ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId(DAArtifactTemplateQName);
         TArtifactTemplate artifactTemplate = RepositoryFactory.getRepository().getElement(artifactTemplateId);
 
-        Map<String, Object> artifactProperties = ModelUtilities.getPropertiesKV(artifactTemplate);
-        Map<String, Object> relationshipProperties = ModelUtilities.getPropertiesKV(relationshipTemplate);
+        Map<String, String> artifactProperties = ModelUtilities.getPropertiesKV(artifactTemplate);
+        LinkedHashMap<String, String> relationshipProperties = ModelUtilities.getPropertiesKV(relationshipTemplate);
 
-        if ((artifactProperties != null) && (relationshipProperties != null) && artifactProperties.containsKey("Driver") && relationshipProperties.containsKey("Driver")) {
+        if ((artifactProperties != null) && (relationshipProperties != null) 
+            && artifactProperties.containsKey("Driver") && relationshipProperties.containsKey("Driver")) {
             relationshipProperties.put("Driver", artifactProperties.get("Driver"));
-            relationshipTemplate.getProperties().setKVProperties(relationshipProperties);
+            ModelUtilities.setPropertiesKV(relationshipTemplate, relationshipProperties);
         } else {
             throw new WineryRepositoryException("No Property found to set to the driver classname");
         }
