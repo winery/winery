@@ -3,7 +3,7 @@
 URLs should be human-readable, slashes are not allowed.
 Encoded slahes are not enabled as default due to security reasons.
 
-More information about encoding is available at [dev/Encoding.md](dev/Encoding).
+More information about encoding is available at [dev/Encoding.md](../dev/encoding.md).
 
 ## Considered Alternatives
 

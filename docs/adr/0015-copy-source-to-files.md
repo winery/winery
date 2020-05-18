@@ -31,4 +31,4 @@ Forces:
 * `-` Needs a runtime/compiler
 * `-` See [ADR-0014]
 
-  [ADR-0014]: (0014-use-eclipse-orion-as-editor.md)
+[ADR-0014]: 0014-use-eclipse-orion-as-editor.md

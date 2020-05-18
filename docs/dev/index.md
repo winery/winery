@@ -1,53 +1,43 @@
-# Eclipse Winery Developer Guide
+<!---~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2020 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-This document provides an index to all development guidelines and background information of winery.
 
-- [ADR](../adr) - list of [architectural decision records](https://adr.github.io) showing which design decisions were taken during development of Winery
-- [Branches](branches.md) - information on branches
-- [CodeHeaders](CodeHeaders.md) - documentation about required code headers
-- [UI Configuration](Configurationmanagment.md) - documentation how to configure the frontends 
-- IDE Setup
-    - IntelliJ Ultimate setup: [config/IntelliJ IDEA/README.md](config/IntelliJ%20IDEA/)
-    - Eclipse setup: [config/Eclipse/README.md](config/Eclipse/)
-- [Encoding](Encoding.md) - information about how percent-encoding is used at Winery
-- [Handling of Properties](property-handling.md)
-- [How tos](howtos) - multiple howtos
-- [ID system](id-system.md)
-- [Projects](projects.md) - information on the projects
-- [Property Handling](property-handling.md)
+# Developer Guide
+
+This document provides an index to all development guidelines and background information of Eclipse Winery.
+
 - [Recommended Reading](recommended-reading.md)
-- [RepositoryLayout](RepositoryLayout.md) - documents the layout of the repository (stored as plain text files)
-- [TOSCA-Mangement UI](TOSCA-Management.md)
-- [REST](REST.md) - how Winery's REST API works
-- [ToolChain](ToolChain) - GitHub workflow
-- [Trouble Shooting](troubleshootings.md)
-- [TOSCA](../tosca/) - notes on OASIS TOSCA
-- [Extract Deployable Components from Chef Cookbooks](../user/CrawlerAndComponentExtractionForChefCookbooks.md) - Notes on crawler and extraction of components from chef cookbooks
-- [DeployableComponents](../user/DeployableComponentsUsage.md) - Explanations on dockerfile component extraction tool
+- [Modules](modules.md) - Winery's module structure
+- [Branches](branches.md) - How to branch
+- [Source Code Headers](source-code-headers.md) - Documentation about required source code headers
+- [REST API](rest.md) - How Winery's REST API works
+- [Encoding](encoding.md) - Information about how encoding is used in Winery
+- [ID System](id-system.md) - Winery's ID System
+- [Repository Layout](repository-layout.md) - Documents the layout of the repository (stored as plain text files)
+- [Property Handling](property-handling.md)
+- [Configuration and Features](config.md)
+- [TOSCA 1.0 Notes](tosca.md)
+- IDE Setup
+  * IntelliJ IDEA (recommended): [config/IntelliJ IDEA](../config/IntelliJ%20IDEA/index.md)
+  * Eclipse: [config/Eclipse](../config/Eclipse/index.md)
+- [Winery GitHub Workflow](github-workflow.md)
 
-To get started, go on at [ToolChain](ToolChain.md).
+## Getting Started
 
-As a user, continue at our [quick Start](../user/quickstart.md), which shows how to start how to work with Winery.
-
-## Quick Develop
-
-1. Clone the repository `git clone https://github.com/eclipse/winery && cd winery`.
-2. If you are a Mac user, [install solidity natively](https://solidity.readthedocs.io/en/latest/installing-solidity.html#binary-packages).
-3. Build the repository `mvn package -DskipTests` (skiping the tests for a faster build).
-4. Continue your IDE setup:
-    - [IntelliJ Ultimate](config/IntelliJ%20IDEA/)
-    - [Eclipse](config/Eclipse/)
-
-## License
-
-Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
-
-See the NOTICE file(s) distributed with this work for additional
-information regarding copyright ownership.
-
-This program and the accompanying materials are made available under the
-terms of the Eclipse Public License 2.0 which is available at
-http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
-which is available at https://www.apache.org/licenses/LICENSE-2.0.
-
-SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+* Clone the repository: `git clone https://github.com/eclipse/winery && cd winery`.
+* Build Eclipse Winery: `mvn clean install -DskipTests` (skipping the tests for a faster build).
+* Setup your IDE:
+  - IntelliJ IDEA (recommended): [config/IntelliJ IDEA](../config/IntelliJ%20IDEA/index.md)
+  - Eclipse: [config/Eclipse](../config/Eclipse/index.md)
+* Get familiar with [Winery's GitHub workflow](github-workflow.md)
