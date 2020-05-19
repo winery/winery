@@ -71,7 +71,7 @@ public class TDataType extends TEntityType {
     }
 
     @NonNull
-    public List<ConstraintClauseKV> getConstraints() {
+    public ConstraintClauseKVList getConstraints() {
         if (this.constraints == null) {
             this.constraints = new ConstraintClauseKVList();
         }

@@ -586,6 +586,10 @@ public class ToCanonical {
     }
 
     private String fixNamespaceDuplication(String id, String ns) {
+        if (ns == null) {
+            LOGGER.debug("Attempting to fix namespace duplication without a namespace for id {}", id);
+            return id;
+        }
         if (id.contains(ns)) {
             return id.replace(ns + ".", "");
         }
@@ -964,7 +968,8 @@ public class ToCanonical {
 
     private TEntityTemplate.Properties convertPropertyAssignments(Map<String, TPropertyAssignment> originalProperties) {
         LinkedHashMap<String, Object> properties = new LinkedHashMap<>();
-        originalProperties.forEach((key, value) -> properties.put(key, ValueHelper.toString(value.getValue())));
+        // don't stringify values here, that'd lose type information
+        originalProperties.forEach((key, value) -> properties.put(key, value.getValue()));
         TEntityTemplate.YamlProperties toscaProperties = new TEntityTemplate.YamlProperties();
         toscaProperties.setProperties(properties);
         return toscaProperties;

@@ -352,7 +352,7 @@ public class YamlBuilder {
         Map<String, Object> map = (Map<String, Object>) object;
         String type = stringValue(map.get("type"));
         if (type == null) type = "string";
-        return new TPropertyDefinition.Builder<>(buildQName(type))
+        return new TPropertyDefinition.Builder(buildQName(type))
             .setDescription(buildDescription(map.get("description")))
             .setRequired(buildRequired(map.get("required")))
             .setDefault(map.get("default"))

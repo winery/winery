@@ -116,7 +116,6 @@ public class TInterfaceType extends TEntityType {
 
     public static class Builder extends TEntityType.Builder<Builder> {
         public String description;
-        public QName derivedFrom;
         private Map<String, TOperationDefinition> operations;
         private Map<String, TPropertyDefinition> inputs;
 
@@ -126,11 +125,6 @@ public class TInterfaceType extends TEntityType {
 
         public Builder setDescription(String description) {
             this.description = description;
-            return this;
-        }
-
-        public Builder setDerivedFrom(QName derivedFrom) {
-            this.derivedFrom = derivedFrom;
             return this;
         }
 

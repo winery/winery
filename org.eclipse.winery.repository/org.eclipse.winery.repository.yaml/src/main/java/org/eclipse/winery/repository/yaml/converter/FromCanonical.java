@@ -80,6 +80,7 @@ import org.eclipse.winery.model.tosca.yaml.TCapabilityAssignment;
 import org.eclipse.winery.model.tosca.yaml.TCapabilityDefinition;
 import org.eclipse.winery.model.tosca.yaml.TCapabilityType;
 import org.eclipse.winery.model.tosca.yaml.TConstraintClause;
+import org.eclipse.winery.model.tosca.yaml.TDataType;
 import org.eclipse.winery.model.tosca.yaml.TImplementation;
 import org.eclipse.winery.model.tosca.yaml.TImportDefinition;
 import org.eclipse.winery.model.tosca.yaml.TInterfaceDefinition;
@@ -152,7 +153,8 @@ public class FromCanonical {
             .setRelationshipTypes(convert(node.getRelationshipTypes()))
             .setNodeTypes(convert(node.getNodeTypes()))
             .setPolicyTypes(convert(node.getPolicyTypes()))
-            .setInterfaceTypes(convert(node.getInterfaceTypes()));
+            .setInterfaceTypes(convert(node.getInterfaceTypes()))
+            .setDataTypes(convert(node.getDataTypes()));
 
         if (node.getServiceTemplates().size() == 1) {
             builder.setTopologyTemplate(convert(node.getServiceTemplates().get(0)));
@@ -317,10 +319,21 @@ public class FromCanonical {
     // FIXME properties are completely and utterly ignored!
     public Map<String, TPropertyDefinition> convert(TEntityType type, List<TEntityType.YamlPropertyDefinition> nodes) {
         // TODO convert properties beside simple winery properties
+        
         WinerysPropertiesDefinition properties = type.getWinerysPropertiesDefinition();
         if (Objects.isNull(properties) ||
             Objects.isNull(properties.getPropertyDefinitionKVList()) ||
-            properties.getPropertyDefinitionKVList().isEmpty()) return null;
+            properties.getPropertyDefinitionKVList().isEmpty()) {
+            // assume we have a YamlPropertyDefinition
+            if (type.getProperties() == null) {
+                return null;
+            }
+            return type.getProperties().stream()
+                .collect(Collectors.toMap(
+                    TEntityType.YamlPropertyDefinition::getName,
+                    this::convert
+                ));
+        }
         return properties.getPropertyDefinitionKVList().stream()
             .collect(Collectors.toMap(
                 PropertyDefinitionKV::getKey,
@@ -331,6 +344,17 @@ public class FromCanonical {
                     .addConstraints(convert(entry.getConstraints()))
                     .build()
             ));
+    }
+    
+    private TPropertyDefinition convert(TEntityType.YamlPropertyDefinition canonical) {
+        TPropertyDefinition.Builder builder = new TPropertyDefinition.Builder(canonical.getType());
+        builder.setConstraints(convert(canonical.getConstraints()));
+        builder.setDefault(canonical.getDefaultValue());
+        builder.setDescription(canonical.getDescription());
+        // FIXME how do we handle EntrySchema?
+        builder.setRequired(canonical.getRequired());
+        builder.setStatus(canonical.getStatus().toString());
+        return builder.build();
     }
 
     public Map<String, TAttributeDefinition> convert(TEntityType node, @Nullable AttributeDefinitionList attributes) {
@@ -1050,12 +1074,23 @@ public class FromCanonical {
                     return convert((org.eclipse.winery.model.tosca.TArtifact) node).entrySet().stream();
                 } else if (node instanceof org.eclipse.winery.model.tosca.TInterfaceType) {
                     return convert((org.eclipse.winery.model.tosca.TInterfaceType) node).entrySet().stream();
+                } else if (node instanceof org.eclipse.winery.model.tosca.TDataType) {
+                    return convert((org.eclipse.winery.model.tosca.TDataType) node).entrySet().stream();
                 }
                 throw new AssertionError();
             })
             .peek(entry -> LOGGER.debug("entry: {}", entry))
             .filter(Objects::nonNull)
             .collect(Collectors.toMap(Map.Entry::getKey, entry -> (K) entry.getValue()));
+    }
+    
+    private Map<String, TDataType> convert(org.eclipse.winery.model.tosca.TDataType node) {
+        if (Objects.isNull(node)) return new HashMap<>();
+        TDataType.Builder builder = convert(node, new TDataType.Builder(), org.eclipse.winery.model.tosca.TDataType.class);
+        return Collections.singletonMap(
+            node.getIdFromIdOrNameField(),
+            builder.setConstraints(convert(node.getConstraints())).build()
+        );
     }
 
     private Map<String, TParameterDefinition> convert(ParameterDefinition node) {
@@ -1183,8 +1218,8 @@ public class FromCanonical {
                 );
                 return builder.build();
             }
-            // value is some kind of object
-            builder.setValue(String.valueOf(value));
+            // value is some kind of object, which we DO NOT TOUCH!
+            builder.setValue(value);
             return builder.build();
         }
     }

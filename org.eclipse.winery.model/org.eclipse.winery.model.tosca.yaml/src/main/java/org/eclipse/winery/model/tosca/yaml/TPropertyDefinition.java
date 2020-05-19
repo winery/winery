@@ -29,7 +29,6 @@ import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
 import org.eclipse.winery.model.tosca.yaml.visitor.AbstractResult;
 import org.eclipse.winery.model.tosca.yaml.visitor.IVisitor;
 
-import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -182,7 +181,7 @@ public class TPropertyDefinition extends TPropertyAssignmentOrDefinition {
         return visitor.visit(this, parameter);
     }
 
-    public static class Builder<T extends Builder<T>> {
+    public static class Builder {
         private final QName type;
         private String description;
         private Boolean required;
@@ -205,46 +204,46 @@ public class TPropertyDefinition extends TPropertyAssignmentOrDefinition {
             this.entrySchema = propertyDefinition.getEntrySchema();
         }
 
-        public T setDescription(String description) {
+        public Builder setDescription(String description) {
             this.description = description;
-            return self();
+            return (Builder) this;
         }
 
-        public T setRequired(Boolean required) {
+        public Builder setRequired(Boolean required) {
             this.required = required;
-            return self();
+            return (Builder) this;
         }
 
-        public T setDefault(Object defaultValue) {
+        public Builder setDefault(Object defaultValue) {
             this.defaultValue = defaultValue;
-            return self();
+            return (Builder) this;
         }
 
-        public T setStatus(TStatusValue status) {
+        public Builder setStatus(TStatusValue status) {
             this.status = status;
-            return self();
+            return (Builder) this;
         }
 
-        public T setStatus(String status) {
+        public Builder setStatus(String status) {
             return setStatus(TStatusValue.getStatus(status));
         }
 
-        public T setEntrySchema(TEntrySchema entrySchema) {
+        public Builder setEntrySchema(TEntrySchema entrySchema) {
             this.entrySchema = entrySchema;
-            return self();
+            return (Builder) this;
         }
 
-        public T setConstraints(List<TConstraintClause> constraints) {
+        public Builder setConstraints(List<TConstraintClause> constraints) {
             if (constraints == null || constraints.isEmpty()) {
-                return self();
+                return (Builder) this;
             }
             this.constraints = constraints;
-            return self();
+            return (Builder) this;
         }
 
-        public T addConstraints(List<TConstraintClause> constraints) {
+        public Builder addConstraints(List<TConstraintClause> constraints) {
             if (constraints == null || constraints.isEmpty()) {
-                return self();
+                return (Builder) this;
             }
 
             if (this.constraints == null) {
@@ -253,20 +252,15 @@ public class TPropertyDefinition extends TPropertyAssignmentOrDefinition {
                 this.constraints.addAll(constraints);
             }
 
-            return self();
+            return (Builder) this;
         }
 
-        public T addConstraints(TConstraintClause constraint) {
+        public Builder addConstraints(TConstraintClause constraint) {
             if (constraint == null) {
-                return self();
+                return (Builder) this;
             }
 
             return addConstraints(Collections.singletonList(constraint));
-        }
-
-        @ADR(11)
-        public T self() {
-            return (T) this;
         }
 
         public TPropertyDefinition build() {
