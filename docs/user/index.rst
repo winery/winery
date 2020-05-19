@@ -29,4 +29,5 @@ For more information on TOSCA see our :ref:`TOSCA information page<tosca>`.
    yml/index.rst
    xml/index.rst
    overview.md
+   winery-cli.rst
    faq.rst
