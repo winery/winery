@@ -1,3 +1,0 @@
-plugins:
-  - jekyll-redirect-from
-redirect_to: https://projects.eclipse.org/projects/soa.winery
