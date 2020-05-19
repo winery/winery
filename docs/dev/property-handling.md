@@ -1,6 +1,23 @@
-# Winery's property handling by example of policy type + policy template
+<!---~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2020 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-## Using the 'propertiesDefinitionComponent' in the frontend
+
+# Winery's Property Handling 
+
+> Based Policy Type and Policy Template
+
+## Using the 'propertiesDefinitionComponent' in the Frontend
 
 In this section we will take a look at how the propertiesDefinition component can be used in the winery application.
 
@@ -18,9 +35,9 @@ Therefor, open the file [`instance.service.ts`](https://github.com/OpenTOSCA/win
 
 Example(current winery implementation):
 ```typescript
- case ToscaTypes.PolicyType:
-                subMenu = ['README', 'LICENSE', 'Language', 'Applies To', 'Properties Definition', 'Inheritance', 'Templates', 'Documentation', 'XML'];
-                break;
+case ToscaTypes.PolicyType:
+  subMenu = ['README', 'LICENSE', 'Language', 'Applies To', 'Properties Definition', 'Inheritance', 'Templates', 'Documentation', 'XML'];
+  break;
 ```
 This will create a clickable entry in the submenu.
 
@@ -28,14 +45,14 @@ This will create a clickable entry in the submenu.
 Navigate to the file [`policyTypeRouter.module.ts`](https://github.com/OpenTOSCA/winery/blob/cdbce161aac69c5a861a9f2be3b7e7d809674186/org.eclipse.winery.repository.ui/src/app/wineryMainModules/policyTypes/policyTypeRouter.module.ts#L1) and add an entry to the 'children' array of the [`policyTypeRoutes`](https://github.com/OpenTOSCA/winery/blob/cdbce161aac69c5a861a9f2be3b7e7d809674186/org.eclipse.winery.repository.ui/src/app/wineryMainModules/policyTypes/policyTypeRouter.module.ts#L33) that will tell the router to load the correct component.
 
 The entry looks like this:
-```typescript
+```json
 {path: 'propertiesdefinition', component: PropertiesDefinitionComponent},
 ``` 
 This is necessary so the router will inject the 'propertiesDefinitionComponent' into the `<router-outlet></router-outlet>` of the instance component when the 'Properties Definition' submenu is clicked.
 Further, clicking on the 'Properties Definition' submenu will append '/propertiesdefinition' to the end of the current URL and send a GET request to the URL when the submenu is clicked. The handling of received data as well as the data to be sent is done by the propertiesDefinitionComponent.
 
 
-## Policy Type creation
+## Policy Type Creation
 
 ### Winery GUI
 
@@ -44,11 +61,10 @@ Further, clicking on the 'Properties Definition' submenu will append '/propertie
 - select one of the available namespaces or type in a new namespace
 - click the 'Add' button
 
-Screenshot of the create modal
-![create policy modal](graphics/create-policy-modal.PNG)
+GUI Screenshot
+![create policy modal](figures/CreatePolicyModal.png)
 
 The Winery application creates the policy type, however the policy type does not yet contain any properties. This can be observed in the xml representation of the policy type as well as in the GUI.
-
 
 ### Resulting XML
 ```xml
@@ -58,14 +74,14 @@ The Winery application creates the policy type, however the policy type does not
 </Definitions>
 ```
 
-## Property creation
+## Property Creation
 
 ### Winery GUI
 
 - click on 'Properties Definition' in the sub header and choose the 'custom key/value' radio button.
 
-GUI sceenshot:
-![Custom key/value property](graphics/custom-key-value-property.PNG)
+GUI Screenshot:
+![](figures/CustomKeyValueProperty.png)
 
 - click on the 'Add' button
 - again, choose a fitting name
@@ -73,11 +89,11 @@ GUI sceenshot:
 - click the 'Add' button
 
 GUI Screenshot
-![Custom key/value property](graphics/custom-key-value-property-modal.PNG) 
+![](figures/CustomKeyValuePropertyModal.png) 
 
 The application shows the newly created property in the table.
 
-![KV property in table](graphics/custom-key-value-property-created.PNG) 
+![](figures/CustomKeyValuePropertyCreated.png) 
 
 click the 'save' to save the property to the policy type.
 
@@ -96,30 +112,29 @@ After adding a property to the policy type the resulting xml looks like this:
     </PolicyType>
 </Definitions>
 ```
+
 ### Winery Backend
 The request to create a property is received by the [`OnPost()`](https://github.com/OpenTOSCA/winery/blob/0904a5c432364af22b68dc4d6d0769601e68b346/org.eclipse.winery.repository.rest/src/main/java/org/eclipse/winery/repository/rest/resources/entitytypes/properties/PropertiesDefinitionResource.java#L108) method in the [`PropertiesDefinitionResource.java`](https://github.com/OpenTOSCA/winery/blob/ustutt/org.eclipse.winery.repository.rest/src/main/java/org/eclipse/winery/repository/rest/resources/entitytypes/properties/PropertiesDefinitionResource.java) class.
 The following code fragment (starting at line 131) in the [`OnPost()`](https://github.com/OpenTOSCA/winery/blob/0904a5c432364af22b68dc4d6d0769601e68b346/org.eclipse.winery.repository.rest/src/main/java/org/eclipse/winery/repository/rest/resources/entitytypes/properties/PropertiesDefinitionResource.java#L108) is responsible for handling requests to create a custom key/value property:
 ```java
 else if (data.selectedValue == PropertiesDefinitionEnum.Custom) {
-            TEntityType et = this.parentRes.getEntityType();
+    TEntityType et = this.parentRes.getEntityType();
 
-            // clear current properties definition
-            et.setPropertiesDefinition(null);
+    // clear current properties definition
+    et.setPropertiesDefinition(null);
 
-            // create winery properties definition and persist it
-            ModelUtilities.replaceWinerysPropertiesDefinition(et, data.winerysPropertiesDefinition);
-            String namespace = data.winerysPropertiesDefinition.getNamespace();
-            NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
-            if (!namespaceManager.hasPrefix(namespace)) {
-                namespaceManager.addNamespace(namespace);
-            }
-            return RestUtils.persist(this.parentRes);
-        }
+    // create winery properties definition and persist it
+    ModelUtilities.replaceWinerysPropertiesDefinition(et, data.winerysPropertiesDefinition);
+    String namespace = data.winerysPropertiesDefinition.getNamespace();
+    NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
+    if (!namespaceManager.hasPrefix(namespace)) {
+        namespaceManager.addNamespace(namespace);
+    }
+    return RestUtils.persist(this.parentRes);
+}
 ``` 
 
-
-
-# Policy Template creation
+## Policy Template Creation
 
 ### Winery GUI
 
@@ -129,7 +144,7 @@ else if (data.selectedValue == PropertiesDefinitionEnum.Custom) {
 - click the 'Add' button
 
 GUI screenshot:
-![policy template create modal](graphics/create-policy-template-modal.PNG)
+![](figures/CreatePolicyTemplateModal.png)
 
 The created policy template has a property with the same key (prop1) as the policy type. This can be observed in the 'xml' tab as well as in the 'properties' tab.
 
@@ -147,15 +162,18 @@ XML:
 </Definitions>
 ```
 
-Poperties tab:
-![Policy template properties tab](graphics/custom-key-value-property-template.PNG)
+Properties tab:
+![](figures/CustomKeyValuePropertyTemplate.png)
+
 
 ## Assigning a value
+
 ### Winery GUI
+
 Enter the value that should be assigned to the property in the input filed and click on save.
 
 Screenshot:
-![Policy template properties tab](graphics/custom-key-value-property-template-value.PNG)
+![](figures/CustomKeyValuePropertyTemplateValue.png)
 
 XML:
 ```xml
@@ -172,26 +190,12 @@ XML:
 ```
 
 ### Winery Backend
-The request to add a value to a template property gets handled by the [`setProperties()`](https://github.com/OpenTOSCA/winery/blob/0904a5c432364af22b68dc4d6d0769601e68b346/org.eclipse.winery.repository.rest/src/main/java/org/eclipse/winery/repository/rest/resources/entitytemplates/PropertiesResource.java#L59) method in the [`PropertiesResource.java`](https://github.com/OpenTOSCA/winery/blob/0904a5c432364af22b68dc4d6d0769601e68b346/org.eclipse.winery.repository.rest/src/main/java/org/eclipse/winery/repository/rest/resources/entitytemplates/PropertiesResource.java#L59) class.
 
+The request to add a value to a template property gets handled by the [`setProperties()`](https://github.com/OpenTOSCA/winery/blob/0904a5c432364af22b68dc4d6d0769601e68b346/org.eclipse.winery.repository.rest/src/main/java/org/eclipse/winery/repository/rest/resources/entitytemplates/PropertiesResource.java#L59) method in the [`PropertiesResource.java`](https://github.com/OpenTOSCA/winery/blob/0904a5c432364af22b68dc4d6d0769601e68b346/org.eclipse.winery.repository.rest/src/main/java/org/eclipse/winery/repository/rest/resources/entitytemplates/PropertiesResource.java#L59) class.
 
 ```java
 public Response setProperties(Map<String, String> properties) {
-        this.template.getProperties().setKVProperties(properties);
-        return RestUtils.persist(this.res);
-    }
+    this.template.getProperties().setKVProperties(properties);
+    return RestUtils.persist(this.res);
+}
 ```
-
-## License
-
-Copyright (c) 2018 Contributors to the Eclipse Foundation
-
-See the NOTICE file(s) distributed with this work for additional
-information regarding copyright ownership.
-
-This program and the accompanying materials are made available under the
-terms of the Eclipse Public License 2.0 which is available at
-http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
-which is available at https://www.apache.org/licenses/LICENSE-2.0.
-
-SPDX-License-Identifier: EPL-2.0 OR Apache-2.0

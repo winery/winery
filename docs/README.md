@@ -13,7 +13,11 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 
-# Recommended Readings
+# Eclipse Winery Documentation
 
-* Simon Harrer et al. [Java by Comparison](http://java.by-comparison.com/). The Pragmatic Programmers, 2018.
-* Joshua Bloch. [Effective Java, 3rd edition](https://www.safaribooksonline.com/library/view/effective-java-third/9780134686097/). Addison-Wesley Professional, 2017.
+## Build
+
+```
+pip install -r requirements.txt
+make.bat html
+```
