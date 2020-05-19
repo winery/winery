@@ -12,10 +12,6 @@
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
----
-redirect_to: https://projects.eclipse.org/projects/soa.winery
----
-
 
 # Eclipse Winery Documentation
 
