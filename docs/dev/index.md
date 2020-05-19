@@ -21,8 +21,8 @@ This document provides an index to all development guidelines and background inf
 - [Modules](modules.md) - Winery's module structure
 - [Branches](branches.md) - How to branch
 - [Source Code Headers](source-code-headers.md) - Documentation about required source code headers
-- [REST API](rest.md) - How Winery's REST API works
-- [Encoding](encoding.md) - Information about how encoding is used in Winery
+- [REST API](rest-api.md) - How Winery's REST API works
+- [Encoding](double-encoding.md) - Information about how encoding is used in Winery
 - [ID System](id-system.md) - Winery's ID System
 - [Repository Layout](repository-layout.md) - Documents the layout of the repository (stored as plain text files)
 - [Property Handling](property-handling.md)
@@ -32,6 +32,8 @@ This document provides an index to all development guidelines and background inf
   * IntelliJ IDEA (recommended): [config/IntelliJ IDEA](../config/IntelliJ%20IDEA/index.md)
   * Eclipse: [config/Eclipse](../config/Eclipse/index.md)
 - [Winery GitHub Workflow](github-workflow.md)
+- [Setup Winery Toolchain](toolchain.md)
+
 
 ## Getting Started
 
@@ -40,4 +42,5 @@ This document provides an index to all development guidelines and background inf
 * Setup your IDE:
   - IntelliJ IDEA (recommended): [config/IntelliJ IDEA](../config/IntelliJ%20IDEA/index.md)
   - Eclipse: [config/Eclipse](../config/Eclipse/index.md)
+* Go to [Eclipse Winery Toolchain](toolchain.md) for further details
 * Get familiar with [Winery's GitHub workflow](github-workflow.md)

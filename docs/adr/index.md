@@ -49,7 +49,7 @@ This lists the architectural decisions for Eclipse Winery.
 - [ADR-0027](0027-use-dasherization-for-filenames.md) - Use dasherization for filenames
 - [ADR-0028](0028-use-hardcoded-namespaces-for-threat-modeling.md) - Use hardcoded namespaces for threat modeling
 - [ADR-0029](0029-IPSec-algorithm-application.md) - IPSec Algorithm Implementation
-- [ADR-0030](0030-multiple-repositories) - Support of multiple repositories
+- [ADR-0030](0030-multiple-repositories.md) - Support of multiple repositories
 
 <!-- adrlogstop -->
 
