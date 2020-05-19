@@ -12,8 +12,23 @@
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
+  
+# Notes on TOSCA 1.0
 
-# Recommended Readings
+## "name" vs. "id"
 
-* Simon Harrer et al. [Java by Comparison](http://java.by-comparison.com/). The Pragmatic Programmers, 2018.
-* Joshua Bloch. [Effective Java, 3rd edition](https://www.safaribooksonline.com/library/view/effective-java-third/9780134686097/). Addison-Wesley Professional, 2017.
+Some entities carry a name, some an id and some both.
+A justification is available at [TOSCA issue 47](https://issues.oasis-open.org/browse/TOSCA-47).
+
+## Possible attachments of artifacts
+
+Implementation Artifacts (IAs) may be attached at:
+
+* NodeType/Interfaces/Interface/Operation (via IA's operation attribute)
+* NodeType/Interfaces/Interface/Operation
+* NodeTemplate
+
+Deployment Artifacts (DAs) may be attached at:
+
+* NodeType
+* NodeTemplate

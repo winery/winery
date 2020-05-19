@@ -1,6 +1,6 @@
 # File system folder structure using type-namespace-id structure
 
-Winery's data is stored in a a file system [ADR-0001](0001-use-filesystem-as-backend).
+Winery's data is stored in a a file system [ADR-0001](0001-use-filesystem-as-backend.md).
 The contents of the repository should be
 
 - human readable
@@ -15,7 +15,7 @@ The contents of the repository should be
 
 *Chosen Alternative: Folders subdivided in type-namespace-id*
 
-The final file system layout itself is documented at [RepositoryLayout](../dev/RepositoryLayout).
+The final file system layout itself is documented at [RepositoryLayout](../dev/repository-layout.md).
 
 ### human readable
 
