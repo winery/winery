@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -344,7 +344,12 @@ export class EntitiesModalComponent implements OnInit, OnChanges {
             nodeId: this.currentNodeData.id,
             newPolicy: policyToBeSavedToRedux
         };
-        this.ngRedux.dispatch(this.actions.setPolicy(actionObject));
+        if (this.deploymentArtifactOrPolicyModalData.nodeTemplateId.startsWith('con')) {
+            this.ngRedux.dispatch(this.actions.setPolicyForRelationship(actionObject));
+        } else {
+            this.ngRedux.dispatch(this.actions.setPolicy(actionObject));
+        }
+
         this.resetDeploymentArtifactOrPolicyModalData();
     }
 
