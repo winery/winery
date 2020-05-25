@@ -16,9 +16,9 @@
 
 ## Contributing Issues
 
-Please check <https://github.com/eclipse/winery/issues> and <https://github.com/opentosca/winery/issues/> whether the issue is already open.
-If not, just open an issue at <https://github.com/eclipse/winery/issues>.
-In case you are affiliated with the OpenTOSCA ecosystem (e.g., a student of the Universtiy of Stuttgart), we ask you to open an issue at <https://github.com/opentosca/winery/issues/>.
+Please check <https://github.com/eclipse/winery/issues> and its forks (OpenTOSCA: <https://github.com/opentosca/winery/issues>; RADON: <https://github.com/radon-h2020/radon-gmt/issues>) whether the issue is already open.
+If not, just open an issue at <https://github.com/eclipse/winery/issues> or its respective fork.
+In case you are affiliated with the OpenTOSCA ecosystem (e.g., a student of the University of Stuttgart), we ask you to open an issue at <https://github.com/opentosca/winery/issues/>.
 
 ## Contributing Patches
 
