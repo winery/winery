@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -313,6 +313,36 @@ export const WineryReducer =
                             )
                     }
                 };
+
+            case WineryActions.SET_POLICY_FOR_RELATIONSHIP:
+                const newRelPolicy: any = (<SetPolicyAction>action).nodePolicy;
+                const relPolicy = newRelPolicy.newPolicy;
+                const indexOfRelationshipPolicy = lastState.currentJsonTopology.relationshipTemplates
+                    .map(node => node.id).indexOf(newRelPolicy.nodeId);
+                const relationshipPolicyTemplate = lastState.currentJsonTopology.relationshipTemplates
+                    .find(relationshipTemplate => relationshipTemplate.id === newRelPolicy.nodeId);
+                const policyExistCheck = relationshipPolicyTemplate.policies && relationshipPolicyTemplate.policies.policy;
+
+                return <WineryState>{
+                    ...lastState,
+                    currentJsonTopology: {
+                        ...lastState.currentJsonTopology,
+                        relationshipTemplates: lastState.currentJsonTopology.relationshipTemplates
+                            .map(relationshipTemplate => relationshipTemplate.id === newRelPolicy.nodeId ?
+                                relationshipTemplate.generateNewRelTemplateWithUpdatedAttribute('policies',
+                                    policyExistCheck ? {
+                                        policy: [
+                                            ...lastState.currentJsonTopology.relationshipTemplates[indexOfRelationshipPolicy].policies.policy,
+                                            relPolicy
+                                        ]
+                                    } : {
+                                        policy: [
+                                            relPolicy
+                                        ]
+                                    }) : relationshipTemplate
+                            )
+                    }
+                };
             case WineryActions.SET_TARGET_LOCATION:
                 const newTargetLocation: any = (<SetTargetLocation>action).nodeTargetLocation;
 
@@ -457,7 +487,7 @@ export const WineryReducer =
                     currentNodeData: currentNodeData
                 };
             case WineryActions.SET_NODE_VISUALS:
-                const visuals: Visuals[] = (<SetNodeVisuals> action).visuals;
+                const visuals: Visuals[] = (<SetNodeVisuals>action).visuals;
 
                 return {
                     ...lastState,
@@ -465,6 +495,6 @@ export const WineryReducer =
                 };
 
             default:
-                return <WineryState> lastState;
+                return <WineryState>lastState;
         }
     };
