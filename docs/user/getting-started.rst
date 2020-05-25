@@ -31,7 +31,7 @@ Open a command prompt and execute the following command:
      -e WINERY_FEATURE_RADON=true \
      -e WINERY_REPOSITORY_PROVIDER=yaml \
      -e WINERY_REPOSITORY_URL=https://github.com/radon-h2020/radon-particles \
-     opentosca/winery
+     opentosca/radon-gmt
 
 Launch a browser: `<http://localhost:8080>`_.
 
@@ -66,7 +66,7 @@ Open a command prompt and execute the following command:
      -e WINERY_FEATURE_RADON=true \
      -e WINERY_REPOSITORY_PROVIDER=yaml \
      -v <path_on_your_host>:/var/repository \
-     opentosca/winery
+     opentosca/radon-gmt
 
 Launch a browser: `<http://localhost:8080>`_.
 

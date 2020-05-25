@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,6 +24,7 @@ import { QName } from '../models/qname';
 import { PropertyDefinitionType, urlElement } from '../models/enums';
 import { BackendService } from '../services/backend.service';
 import { isNullOrUndefined } from 'util';
+import { PolicyService } from '../services/policy.service';
 
 /**
  * This is the right sidebar, where attributes of nodes and relationships get displayed.
@@ -64,7 +65,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
     constructor(private $ngRedux: NgRedux<IWineryState>,
                 private actions: WineryActions,
-                private backendService: BackendService) {
+                private backendService: BackendService,
+                private policyService: PolicyService) {
     }
 
     deleteButtonSidebarClicked($event) {
@@ -165,6 +167,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
                         minInstances: Number(this.sidebarState.minInstances),
                         maxInstances: Number(this.sidebarState.maxInstances),
                         properties: this.sidebarState.properties,
+                        relationshipTemplate : this.sidebarState.relationshipTemplate,
                         source: this.sidebarState.source,
                         target: this.sidebarState.target
                     }
@@ -195,6 +198,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
                         minInstances: Number(data),
                         maxInstances: this.sidebarState.maxInstances,
                         properties: this.sidebarState.properties,
+                        relationshipTemplate : this.sidebarState.relationshipTemplate,
                         source: this.sidebarState.source,
                         target: this.sidebarState.target
                     }
@@ -224,6 +228,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
                         minInstances: this.sidebarState.minInstances,
                         maxInstances: Number(data),
                         properties: this.sidebarState.properties,
+                        relationshipTemplate : this.sidebarState.relationshipTemplate,
                         source: this.sidebarState.source,
                         target: this.sidebarState.target
                     }
@@ -268,6 +273,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
                 minInstances: this.sidebarState.minInstances,
                 maxInstances: this.sidebarState.maxInstances,
                 properties: this.sidebarState.properties,
+                relationshipTemplate : this.sidebarState.relationshipTemplate,
                 source: this.sidebarState.source,
                 target: this.sidebarState.target
             }
@@ -330,6 +336,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
                 minInstances: this.sidebarState.minInstances,
                 maxInstances: this.sidebarState.maxInstances,
                 properties: this.sidebarState.properties,
+                relationshipTemplate : this.sidebarState.relationshipTemplate,
                 source: this.sidebarState.source,
                 target: this.sidebarState.target
             }
@@ -382,5 +389,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.subscription.unsubscribe();
+    }
+
+    addNewPolicy(nodeData: any) {
+        const currentNodeData = { ...this.sidebarState.relationshipTemplate, ...nodeData };
+        this.policyService.addNewPolicyToRelationship(currentNodeData);
     }
 }

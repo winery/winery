@@ -25,6 +25,7 @@ In this view, users can create new TOSCA service template or maintain existing o
 
 To create a new TOSCA service template click on *Add new*.
 In the "Add new" pop up you can specify your template's name, enable/disable versioning, and specify the namespace to be used.
+For example, you may choose a namespace like ``com.example.blueprints`` to logically group your TOSCA service templates. 
 
 .. image:: 1-CreateServiceTemplate.gif
 

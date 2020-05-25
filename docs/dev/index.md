@@ -33,6 +33,7 @@ This document provides an index to all development guidelines and background inf
   * Eclipse: [config/Eclipse](../config/Eclipse/index.md)
 - [Winery GitHub Workflow](github-workflow.md)
 - [Setup Winery Toolchain](toolchain.md)
+- [Winery and Docker](docker.md)
 
 
 ## Getting Started
