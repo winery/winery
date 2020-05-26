@@ -48,7 +48,7 @@ public class RemoveEmptyLists extends Visitor {
             }
         }
         if (properties instanceof TEntityTemplate.WineryKVProperties) {
-            if (((TEntityTemplate.WineryKVProperties) properties).getKvProperties().isEmpty()) {
+            if (((TEntityTemplate.WineryKVProperties) properties).getKVProperties().isEmpty()) {
                 entityTemplate.setProperties(null);
             }
         }

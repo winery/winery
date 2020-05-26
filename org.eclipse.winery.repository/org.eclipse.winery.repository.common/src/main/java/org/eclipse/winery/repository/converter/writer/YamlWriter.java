@@ -63,6 +63,7 @@ import org.eclipse.winery.model.tosca.yaml.TRepositoryDefinition;
 import org.eclipse.winery.model.tosca.yaml.TRequirementAssignment;
 import org.eclipse.winery.model.tosca.yaml.TRequirementDefinition;
 import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
+import org.eclipse.winery.model.tosca.yaml.TStatusValue;
 import org.eclipse.winery.model.tosca.yaml.TSubstitutionMappings;
 import org.eclipse.winery.model.tosca.yaml.TTopologyTemplateDefinition;
 import org.eclipse.winery.model.tosca.yaml.TVersion;
@@ -217,14 +218,22 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
     }
 
     public YamlPrinter visit(TPropertyDefinition node, Parameter parameter) {
-        return new YamlPrinter(parameter.getIndent())
+        YamlPrinter printer = new YamlPrinter(parameter.getIndent())
             .printKeyValue("type", node.getType())
-            .printKeyValue("description", node.getDescription())
-            .printKeyValue("required", node.getRequired())
-            .printYamlValue("default", node.getDefault())
-            .printKeyValue("status", node.getStatus())
-            .print(printList("constraints", node.getConstraints(), parameter))
+            .printKeyValue("description", node.getDescription());
+        // do not print the default value for required to avoid bloating the output
+        if (!node.getRequired()) {
+            printer.printKeyValue("required", node.getRequired());
+        }
+        printer.printYamlValue("default", node.getDefault());
+        // do not print the default value for status to avoid bloating the output
+        if (node.getStatus() != TStatusValue.supported) {
+            printer.printKeyValue("status", node.getStatus());
+        }
+        printer.print(printList("constraints", node.getConstraints(), parameter))
             .print(printVisitorNode(node.getEntrySchema(), parameter));
+
+        return printer;
     }
 
     public YamlPrinter visit(TEntrySchema node, Parameter parameter) {

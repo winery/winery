@@ -343,7 +343,7 @@ public class ConsistencyChecker {
             }
         } else if (definedProps instanceof TEntityTemplate.WineryKVProperties) {
             final WinerysPropertiesDefinition winerysPropertiesDefinition = entityType.getWinerysPropertiesDefinition();
-            Map<String, String> kvProperties = ((TEntityTemplate.WineryKVProperties) definedProps).getKvProperties();
+            Map<String, String> kvProperties = ((TEntityTemplate.WineryKVProperties) definedProps).getKVProperties();
             if (kvProperties.isEmpty()) {
                 printAndAddError(id, "Properties required, but no properties set (kvproperties case)");
                 return;

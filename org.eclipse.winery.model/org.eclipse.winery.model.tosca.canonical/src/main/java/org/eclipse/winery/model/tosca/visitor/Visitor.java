@@ -207,7 +207,7 @@ public abstract class Visitor {
             this.visitXmlProperties(xmlAny);
         }
         if (properties instanceof TEntityTemplate.WineryKVProperties) {
-            final LinkedHashMap<String, String> kvProperties = ((TEntityTemplate.WineryKVProperties) properties).getKvProperties();
+            final LinkedHashMap<String, String> kvProperties = ((TEntityTemplate.WineryKVProperties) properties).getKVProperties();
             this.visitKvProperties(kvProperties);
         }
         if (properties instanceof TEntityTemplate.YamlProperties) {

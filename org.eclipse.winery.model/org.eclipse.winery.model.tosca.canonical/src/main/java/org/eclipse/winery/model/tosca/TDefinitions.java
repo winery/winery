@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -238,6 +239,25 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
 
     @JsonIgnore
     @NonNull
+    public List<TPatternRefinementModel> getPatternRefinementModels() {
+        return getServiceTemplateOrNodeTypeOrNodeTypeImplementation().stream()
+            .filter(x -> x instanceof TPatternRefinementModel)
+            .map(TPatternRefinementModel.class::cast)
+            .collect(Collectors.toList());
+    }
+
+    @JsonIgnore
+    @NonNull
+    public List<TTestRefinementModel> getTestRefinementModels() {
+        return getServiceTemplateOrNodeTypeOrNodeTypeImplementation().stream()
+            .filter(x -> x instanceof TTestRefinementModel)
+            .map(TTestRefinementModel.class::cast)
+            .collect(Collectors.toList());
+    }
+
+
+    @JsonIgnore
+    @NonNull
     public List<TServiceTemplate> getServiceTemplates() {
         return getServiceTemplateOrNodeTypeOrNodeTypeImplementation().stream()
             .filter(x -> x instanceof TServiceTemplate)
@@ -434,6 +454,8 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         private List<TPolicyType> policyTypes;
         private List<TInterfaceType> interfaceTypes;
         private List<TPolicyTemplate> policyTemplate;
+        private List<TPatternRefinementModel> patternRefinementModels;
+        private List<TTestRefinementModel> testRefinementModels;
         private String name;
 
         public Builder(String id, String target_namespace) {
@@ -468,6 +490,16 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
 
         public Builder setNodeTypeImplementations(List<TNodeTypeImplementation> nodeTypeImplementations) {
             this.nodeTypeImplementations = nodeTypeImplementations;
+            return self();
+        }
+
+        public Builder setPatternRefinementModels(List<TPatternRefinementModel> refinementModels) {
+            this.patternRefinementModels = refinementModels;
+            return self();
+        }
+
+        public Builder setTestRefinementModels(List<TTestRefinementModel> refinementModels) {
+            this.testRefinementModels = refinementModels;
             return self();
         }
 
@@ -916,20 +948,24 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         @Deprecated
         public List<TExtensibleElements> getServiceTemplateOrNodeTypeOrNodeTypeImplementation() {
             List<TExtensibleElements> tmp = new ArrayList<>();
-
-            Optional.ofNullable(serviceTemplates).ifPresent(tmp::addAll);
-            Optional.ofNullable(nodeTypes).ifPresent(tmp::addAll);
-            Optional.ofNullable(nodeTypeImplementations).ifPresent(tmp::addAll);
-            Optional.ofNullable(relationshipTypes).ifPresent(tmp::addAll);
-            Optional.ofNullable(relationshipTypeImplementations).ifPresent(tmp::addAll);
-            Optional.ofNullable(requirementTypes).ifPresent(tmp::addAll);
-            Optional.ofNullable(capabilityTypes).ifPresent(tmp::addAll);
-            Optional.ofNullable(dataTypes).ifPresent(tmp::addAll);
-            Optional.ofNullable(artifactTypes).ifPresent(tmp::addAll);
-            Optional.ofNullable(artifactTemplates).ifPresent(tmp::addAll);
-            Optional.ofNullable(policyTypes).ifPresent(tmp::addAll);
-            Optional.ofNullable(policyTemplate).ifPresent(tmp::addAll);
-            Optional.ofNullable(interfaceTypes).ifPresent(tmp::addAll);
+            Stream.of(
+                serviceTemplates,
+                nodeTypes,
+                nodeTypeImplementations,
+                relationshipTypes,
+                relationshipTypeImplementations,
+                requirementTypes,
+                capabilityTypes,
+                dataTypes,
+                artifactTypes,
+                artifactTemplates,
+                policyTypes,
+                policyTemplate,
+                interfaceTypes,
+                patternRefinementModels,
+                testRefinementModels
+            ).filter(Objects::nonNull)
+                .forEach(tmp::addAll);
             return tmp;
         }
     }

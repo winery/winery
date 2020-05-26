@@ -18,7 +18,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -29,14 +28,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -46,12 +40,6 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Comment;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tEntityTemplate", propOrder = {
@@ -252,19 +240,19 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
 
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "kvProperties"
+        "KVProperties"
     })
     @NonNullByDefault
     public static class WineryKVProperties extends Properties {
         @XmlElement(name = "kvproperties")
-        private LinkedHashMap<String, String> kvProperties = new LinkedHashMap<>();
+        private LinkedHashMap<String, String> KVProperties = new LinkedHashMap<>();
 
-        public LinkedHashMap<String, String> getKvProperties() {
-            return kvProperties;
+        public LinkedHashMap<String, String> getKVProperties() {
+            return KVProperties;
         }
 
-        public void setKvProperties(LinkedHashMap<String, String> kvProperties) {
-            this.kvProperties = kvProperties;
+        public void setKVProperties(LinkedHashMap<String, String> KVProperties) {
+            this.KVProperties = KVProperties;
         }
     }
 

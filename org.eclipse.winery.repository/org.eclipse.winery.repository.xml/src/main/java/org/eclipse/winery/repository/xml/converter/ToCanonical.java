@@ -17,7 +17,10 @@ package org.eclipse.winery.repository.xml.converter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.winery.model.tosca.RelationshipSourceOrTarget;
 import org.eclipse.winery.model.tosca.TAppliesTo;
@@ -62,6 +65,7 @@ import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicy;
+import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TPolicyType;
 import org.eclipse.winery.model.tosca.TPropertyConstraint;
 import org.eclipse.winery.model.tosca.TPropertyMapping;
@@ -79,6 +83,7 @@ import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.xml.XmlRepository;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,8 +97,8 @@ public class ToCanonical {
         this.repository = repository;
     }
 
-    public TDefinitions convert(org.eclipse.winery.model.tosca.xml.TDefinitions canonical) {
-        return convert(canonical, false);
+    public TDefinitions convert(org.eclipse.winery.model.tosca.xml.TDefinitions xml) {
+        return convert(xml, false);
     }
 
     /**
@@ -102,22 +107,89 @@ public class ToCanonical {
     public TDefinitions convert(org.eclipse.winery.model.tosca.xml.TDefinitions xml, boolean convertImports) {
         // FIXME need to correctly deal with convertImports flag to create a self-contained Definitions to export as CSAR if it is set.
         TDefinitions.Builder builder = new TDefinitions.Builder(xml.getId(), xml.getTargetNamespace())
-            .setImport(convertImports(xml.getImport()))
-            .addTypes(convertTypes(xml.getTypes()))
-            .setServiceTemplates(convertServiceTemplates(xml.getServiceTemplates()))
-            .setNodeTypes(convertNodeTypes(xml.getNodeTypes()))
-            .setNodeTypeImplementations(convertNodeTypeImplementations(xml.getNodeTypeImplementations()))
-            .setRelationshipTypes(convertRelationshipTypes(xml.getRelationshipTypes()))
-            .setRelationshipTypeImplementations(convertRelationshipImplementations(xml.getRelationshipTypeImplementations()))
-            .setCapabilityTypes(convertCapabilityTypes(xml.getCapabilityTypes()))
-            .setArtifactTypes(convertArtifactTypes(xml.getArtifactTypes()))
-            .setArtifactTemplates(convertArtifactTemplates(xml.getArtifactTemplates()))
-            .setPolicyTypes(convertPolicyTypes(xml.getPolicyTypes()))
-            .setInterfaceTypes(convertInterfaceTypes(xml.getInterfaceTypes()))
             .setName(xml.getName())
-            .addRequirementTypes(convertRequirementTypes(xml.getRequirementTypes()));
+            .addTypes(convertTypes(xml.getTypes()))
+            .setImport(convertList(xml.getImport(), this::convert))
+            .setServiceTemplates(convertList(xml.getServiceTemplates(), this::convert))
+            .setNodeTypes(convertList(xml.getNodeTypes(), this::convert))
+            .setNodeTypeImplementations(convertList(xml.getNodeTypeImplementations(), this::convert))
+            .setRelationshipTypes(convertList(xml.getRelationshipTypes(), this::convert))
+            .setRelationshipTypeImplementations(convertList(xml.getRelationshipTypeImplementations(), this::convert))
+            .setCapabilityTypes(convertList(xml.getCapabilityTypes(), this::convert))
+            .setArtifactTypes(convertList(xml.getArtifactTypes(), this::convert))
+            .setArtifactTemplates(convertList(xml.getArtifactTemplates(), this::convert))
+            .setPolicyTypes(convertList(xml.getPolicyTypes(), this::convert))
+            .setPolicyTemplate(convertList(xml.getPolicyTemplates(), this::convert))
+            .setInterfaceTypes(convertList(xml.getInterfaceTypes(), this::convert))
+            .addRequirementTypes(convertList(xml.getRequirementTypes(), this::convert));
         fillExtensibleElementsProperties(builder, xml);
-        return builder.build();
+        return resolveReferences(builder.build());
+    }
+
+    private TDefinitions resolveReferences(TDefinitions preliminary) {
+        preliminary.getServiceTemplates().forEach(st -> {
+            TTopologyTemplate topology = st.getTopologyTemplate();
+            // if there's no topology, we can't have requirementRefs, capabilityRefs or relationshipTemplates
+            if (topology == null) { return; }
+            topology.getRelationshipTemplates()
+                .forEach(rt -> {
+                    rt.setTargetElement(resolveReference(rt.getTargetElement(), topology));
+                    rt.setSourceElement(resolveReference(rt.getSourceElement(), topology));
+                });
+            // iterate TBoundaryDefinitions for the Capability and Requirement refs
+            TBoundaryDefinitions boundaries = st.getBoundaryDefinitions();
+            if (boundaries == null) { return; }
+            if (boundaries.getRequirements() != null) {
+                boundaries.getRequirements().getRequirement().forEach(req -> {
+                    req.setRef(resolveRequirement(req.getRef(), topology));
+                });
+            }
+            if (boundaries.getCapabilities() != null) {
+                boundaries.getCapabilities().getCapability().forEach(cap -> {
+                    cap.setRef(resolveCapability(cap.getRef(), topology));
+                });
+            }
+        });
+
+        return preliminary;
+    }
+
+    private TRelationshipTemplate.@NonNull SourceOrTargetElement resolveReference(TRelationshipTemplate.@NonNull SourceOrTargetElement incomplete, TTopologyTemplate topology) {
+        RelationshipSourceOrTarget ref = incomplete.getRef();
+        if (ref instanceof TCapability) {
+            incomplete.setRef(resolveCapability((TCapability)ref, topology));
+        } else if (ref instanceof TNodeTemplate) {
+            incomplete.setRef(topology.getNodeTemplate(ref.getId()));
+        } else if (ref instanceof TRequirement) {
+            incomplete.setRef(resolveRequirement((TRequirement)ref, topology));
+        } else {
+            throw new IllegalStateException(String.format("Tried to resolve a SourceOrTargetReference of unknown type %s", ref.getClass()));
+        }
+        return incomplete;
+    }
+
+    private TCapability resolveCapability(TCapability incomplete, TTopologyTemplate topology) {
+        return topology.getNodeTemplates().stream()
+            .flatMap(nt ->  nt.getCapabilities() == null ? Stream.empty()
+                        : nt.getCapabilities().getCapability().stream())
+            .filter(cap -> cap.getId().equals(incomplete.getId()))
+            .findFirst()
+            .orElseGet(() -> {
+                LOGGER.warn("Could not resolve the capability with id {}", incomplete.getId());
+                return incomplete;
+            });
+    }
+
+    private TRequirement resolveRequirement(TRequirement incomplete, TTopologyTemplate topology) {
+        return topology.getNodeTemplates().stream()
+            .flatMap(nt ->  nt.getRequirements() == null ? Stream.empty()
+                : nt.getRequirements().getRequirement().stream())
+            .filter(req -> req.getId().equals(incomplete.getId()))
+            .findFirst()
+            .orElseGet(() -> {
+                LOGGER.warn("Could not resolve the requirement with id {}", incomplete.getId());
+                return incomplete;
+            });
     }
 
     private TRelationshipType convert(org.eclipse.winery.model.tosca.xml.TRelationshipType xml) {
@@ -130,6 +202,7 @@ public class ToCanonical {
         if (xml.getValidTarget() != null) {
             builder.setValidTarget(xml.getValidTarget().getTypeRef());
         }
+        fillEntityTypeProperties(builder, xml);
         return builder.build();
     }
 
@@ -255,9 +328,17 @@ public class ToCanonical {
 
     private <Builder extends TExtensibleElements.Builder, Value extends org.eclipse.winery.model.tosca.xml.TExtensibleElements>
     void fillExtensibleElementsProperties(Builder builder, Value xml) {
-        builder.setDocumentation(xml.getDocumentation().stream().map(this::convert).collect(Collectors.toList()));
-        builder.setOtherAttributes(xml.getOtherAttributes());
-        builder.setAny(xml.getAny());
+        // because the getters are side-effecting by generating empty collections instead of returning null, 
+        // we check for emptyness instead of nullness
+        if (!xml.getDocumentation().isEmpty()) {
+            builder.setDocumentation(xml.getDocumentation().stream().map(this::convert).collect(Collectors.toList()));
+        }
+        if (!xml.getOtherAttributes().isEmpty()) {
+            builder.setOtherAttributes(xml.getOtherAttributes());
+        }
+        if (!xml.getAny().isEmpty()) {
+            builder.setAny(xml.getAny());
+        }
     }
 
     private TRequirementType convert(org.eclipse.winery.model.tosca.xml.TRequirementType xml) {
@@ -435,12 +516,13 @@ public class ToCanonical {
                 .map(this::convert).collect(Collectors.toList()));
             builder.setPropertyConstraints(constraints);
         }
+        fillExtensibleElementsProperties(builder, xml);
     }
 
     private TEntityTemplate.Properties convertProperties(org.eclipse.winery.model.tosca.xml.TEntityTemplate.Properties xml) {
         if (PropertyMappingSupport.isKeyValuePropertyDefinition(xml)) {
             TEntityTemplate.WineryKVProperties props = new TEntityTemplate.WineryKVProperties();
-            props.setKvProperties(PropertyMappingSupport.convertToKVProperties(xml));
+            props.setKVProperties(PropertyMappingSupport.convertToKVProperties(xml));
             return props;
         } else {
             // assume XML properties here
@@ -501,6 +583,7 @@ public class ToCanonical {
 
     private TArtifactTemplate convert(org.eclipse.winery.model.tosca.xml.TArtifactTemplate xml) {
         TArtifactTemplate.Builder builder = new TArtifactTemplate.Builder(xml.getName(), xml.getType());
+        builder.setName(xml.getName());
         if (xml.getArtifactReferences() != null) {
             xml.getArtifactReferences().getArtifactReference().stream()
                 .map(this::convert)
@@ -511,10 +594,27 @@ public class ToCanonical {
     }
 
     private TArtifactReference convert(org.eclipse.winery.model.tosca.xml.TArtifactReference xml) {
-        TArtifactReference canonical = new TArtifactReference();
-        // FIXME because all of this is a mess, the includes and excludes are stored as Include and Exclude in the same field
-//        xml.getIncludeOrExclude().add(canonical.getIncludeOrExclude());
-        canonical.setReference(xml.getReference());
+        TArtifactReference.Builder builder = new TArtifactReference.Builder(xml.getReference());
+        xml.getIncludeOrExclude()
+            .forEach(iOrE -> {
+                if (iOrE instanceof org.eclipse.winery.model.tosca.xml.TArtifactReference.Include) {
+                    builder.addInclude(convert((org.eclipse.winery.model.tosca.xml.TArtifactReference.Include) iOrE));
+                } else if (iOrE instanceof org.eclipse.winery.model.tosca.xml.TArtifactReference.Exclude) {
+                    builder.addExclude(convert((org.eclipse.winery.model.tosca.xml.TArtifactReference.Exclude) iOrE));
+                }
+            });
+        return builder.build();
+    }
+
+    private TArtifactReference.Include convert(org.eclipse.winery.model.tosca.xml.TArtifactReference.Include xml) {
+        TArtifactReference.Include canonical = new TArtifactReference.Include();
+        canonical.setPattern(xml.getPattern());
+        return canonical;
+    }
+
+    private TArtifactReference.Exclude convert(org.eclipse.winery.model.tosca.xml.TArtifactReference.Exclude xml) {
+        TArtifactReference.Exclude canonical = new TArtifactReference.Exclude();
+        canonical.setPattern(xml.getPattern());
         return canonical;
     }
 
@@ -528,6 +628,7 @@ public class ToCanonical {
 
     private TServiceTemplate convert(org.eclipse.winery.model.tosca.xml.TServiceTemplate xml) {
         TServiceTemplate.Builder builder = new TServiceTemplate.Builder(xml.getId(), convert(xml.getTopologyTemplate()));
+        builder.setName(xml.getName());
         if (xml.getTags() != null) {
             xml.getTags().getTag().stream().map(this::convert).forEach(builder::addTags);
         }
@@ -664,7 +765,16 @@ public class ToCanonical {
         builder.setName(xml.getName());
         builder.setPolicyRef(xml.getPolicyRef());
         builder.setTargets(xml.getTargets());
-        builder.setProperties(convertProperties(xml.getProperties()));
+        if (xml.getProperties() != null) {
+            builder.setProperties(convertProperties(xml.getProperties()));
+        }
+        return builder.build();
+    }
+
+    private TPolicyTemplate convert(org.eclipse.winery.model.tosca.xml.TPolicyTemplate xml) {
+        TPolicyTemplate.Builder builder = new TPolicyTemplate.Builder(xml.getId(), xml.getType());
+        builder.setName(xml.getName());
+        fillEntityTemplateProperties(builder, xml);
         return builder.build();
     }
 
@@ -783,54 +893,6 @@ public class ToCanonical {
         throw new IllegalStateException(String.format("Tried to convert unknown RelationshipSourceOrTarget implementation %s", xml.getClass().getName()));
     }
 
-    private List<TServiceTemplate> convertServiceTemplates(List<org.eclipse.winery.model.tosca.xml.TServiceTemplate> xml) {
-        return xml.stream().map(this::convert).collect(Collectors.toList());
-    }
-
-    private List<TRelationshipType> convertRelationshipTypes(List<org.eclipse.winery.model.tosca.xml.TRelationshipType> xml) {
-        return xml.stream().map(this::convert).collect(Collectors.toList());
-    }
-
-    private List<TRelationshipTypeImplementation> convertRelationshipImplementations(List<org.eclipse.winery.model.tosca.xml.TRelationshipTypeImplementation> xml) {
-        return xml.stream().map(this::convert).collect(Collectors.toList());
-    }
-
-    private List<TPolicyType> convertPolicyTypes(List<org.eclipse.winery.model.tosca.xml.TPolicyType> xml) {
-        return xml.stream().map(this::convert).collect(Collectors.toList());
-    }
-
-    private List<TRequirementType> convertRequirementTypes(List<org.eclipse.winery.model.tosca.xml.TRequirementType> xml) {
-        return xml.stream().map(this::convert).collect(Collectors.toList());
-    }
-
-    private List<TNodeTypeImplementation> convertNodeTypeImplementations(List<org.eclipse.winery.model.tosca.xml.TNodeTypeImplementation> xml) {
-        return xml.stream().map(this::convert).collect(Collectors.toList());
-    }
-
-    private List<TNodeType> convertNodeTypes(List<org.eclipse.winery.model.tosca.xml.TNodeType> xml) {
-        return xml.stream().map(this::convert).collect(Collectors.toList());
-    }
-
-    private List<TInterfaceType> convertInterfaceTypes(List<org.eclipse.winery.model.tosca.xml.TInterfaceType> xml) {
-        return xml.stream().map(this::convert).collect(Collectors.toList());
-    }
-
-    private List<TCapabilityType> convertCapabilityTypes(List<org.eclipse.winery.model.tosca.xml.TCapabilityType> xml) {
-        return xml.stream().map(this::convert).collect(Collectors.toList());
-    }
-
-    private List<TArtifactType> convertArtifactTypes(List<org.eclipse.winery.model.tosca.xml.TArtifactType> xml) {
-        return xml.stream().map(this::convert).collect(Collectors.toList());
-    }
-
-    private List<TArtifactTemplate> convertArtifactTemplates(List<org.eclipse.winery.model.tosca.xml.TArtifactTemplate> xml) {
-        return xml.stream().map(this::convert).collect(Collectors.toList());
-    }
-
-    private List<TImport> convertImports(List<org.eclipse.winery.model.tosca.xml.TImport> xml) {
-        return xml.stream().map(this::convert).collect(Collectors.toList());
-    }
-
     private TDefinitions.Types convertTypes(org.eclipse.winery.model.tosca.xml.TDefinitions.@Nullable Types xml) {
         if (xml == null) {
             return new TDefinitions.Types();
@@ -838,5 +900,9 @@ public class ToCanonical {
         TDefinitions.Types result = new TDefinitions.Types();
         result.getAny().addAll(xml.getAny());
         return result;
+    }
+
+    private <R, I> List<R> convertList(List<I> xml, Function<I, R> convert) {
+        return xml.stream().map(convert).collect(Collectors.toList());
     }
 }

@@ -370,7 +370,7 @@ public class DataFlowResource {
             propertyList.putAll(properties);
 
             TEntityTemplate.WineryKVProperties nodeProperties = new TEntityTemplate.WineryKVProperties();
-            nodeProperties.setKvProperties(propertyList);
+            nodeProperties.setKVProperties(propertyList);
             templateBuilder.setProperties(nodeProperties);
         }
 
@@ -451,7 +451,7 @@ public class DataFlowResource {
             TEntityTemplate.WineryKVProperties relationProperties = new TEntityTemplate.WineryKVProperties();
             // FIXME deal with namespacing here
             // def.getNamespace(), def.getElementName(),
-            relationProperties.setKvProperties(propertyList);
+            relationProperties.setKVProperties(propertyList);
             builder.setProperties(relationProperties);
         }
 

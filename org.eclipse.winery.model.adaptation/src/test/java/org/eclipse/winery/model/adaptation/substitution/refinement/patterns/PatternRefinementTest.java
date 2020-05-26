@@ -301,21 +301,21 @@ class PatternRefinementTest extends AbstractRefinementTest {
         nt13PropsMap.put("a", null);
         nt13PropsMap.put("b", null);
         nt13PropsMap.put("c", "0");
-        nt13Props.setKvProperties(nt13PropsMap);
+        nt13Props.setKVProperties(nt13PropsMap);
         nt13.setProperties(nt13Props);
 
         TNodeTemplate nt12 = candidateForTopology.getRefinementModel().getRefinementTopology().getNodeTemplate("12");
         TEntityTemplate.WineryKVProperties nt12Props = new TEntityTemplate.WineryKVProperties();
         LinkedHashMap<String, String> nt12PropsMap = new LinkedHashMap<>();
         nt12PropsMap.put("j", null);
-        nt12Props.setKvProperties(nt12PropsMap);
+        nt12Props.setKVProperties(nt12PropsMap);
         nt12.setProperties(nt12Props);
 
         TNodeTemplate nt11 = candidateForTopology.getRefinementModel().getRefinementTopology().getNodeTemplate("11");
         TEntityTemplate.WineryKVProperties nt11Props = new TEntityTemplate.WineryKVProperties();
         LinkedHashMap<String, String> nt11PropsMap = new LinkedHashMap<>();
         nt11PropsMap.put("k", null);
-        nt11Props.setKvProperties(nt11PropsMap);
+        nt11Props.setKVProperties(nt11PropsMap);
         nt11.setProperties(nt11Props);
 
         OTAttributeMapping allOn4to13 = new OTAttributeMapping();
@@ -351,7 +351,7 @@ class PatternRefinementTest extends AbstractRefinementTest {
         LinkedHashMap<String, String> nt2PropsMap = new LinkedHashMap<>();
         nt2PropsMap.put("p", "1");
         nt2PropsMap.put("x", "2");
-        nt2Props.setKvProperties(nt2PropsMap);
+        nt2Props.setKVProperties(nt2PropsMap);
         nt2.setProperties(nt2Props);
 
         TNodeTemplate nt4 = topology.getNodeTemplate("4");
@@ -359,7 +359,7 @@ class PatternRefinementTest extends AbstractRefinementTest {
         LinkedHashMap<String, String> nt4PropsMap = new LinkedHashMap<>();
         nt4PropsMap.put("a", "3");
         nt4PropsMap.put("b", "4");
-        nt4Props.setKvProperties(nt4PropsMap);
+        nt4Props.setKVProperties(nt4PropsMap);
         nt4.setProperties(nt4Props);
 
         Map<String, String> idMapping = BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(

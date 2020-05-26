@@ -44,6 +44,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -59,8 +60,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+//import javax.xml.parsers.DocumentBuilderFactory;
+//import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.model.ids.IdNames;
@@ -174,7 +175,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
+//import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.ls.LSInput;
 import org.xml.sax.ErrorHandler;
@@ -699,9 +700,13 @@ public class BackendUtils {
 //            wrapperElement.appendChild(valueElement);
 //        }
 //
-//        TEntityTemplate.Properties properties = new TEntityTemplate.Properties();
-//        properties.setAny(document.getDocumentElement());
-//        entityTemplate.setProperties(properties);
+        final LinkedHashMap<String, String> emptyKVProperties = new LinkedHashMap<>();
+        for (PropertyDefinitionKV definitionKV : winerysPropertiesDefinition.getPropertyDefinitionKVList()) {
+            emptyKVProperties.put(definitionKV.getKey(), "");
+        }
+        TEntityTemplate.WineryKVProperties properties = new TEntityTemplate.WineryKVProperties();
+        properties.setKVProperties(emptyKVProperties);
+        entityTemplate.setProperties(properties);
     }
 
     /**
@@ -1068,24 +1073,21 @@ public class BackendUtils {
             return null;
         }
         RepositoryFileReference ref = BackendUtils.getRefOfDefinitions((ArtifactTemplateId) directoryId.getParent());
-        try (InputStream is = repo.newInputStream(ref)) {
-            Unmarshaller u = JAXBSupport.createUnmarshaller();
-            TDefinitions defs = ((TDefinitions) u.unmarshal(is));
+        try {
+            TDefinitions defs = repo.definitionsFromRef(ref);
             Map<QName, String> atts = defs.getOtherAttributes();
             String src = atts.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "gitsrc"));
             String branch = atts.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "gitbranch"));
-            // ^ is the XOR operator
-            if (src == null ^ branch == null) {
-                LOGGER.error("Git information not complete, URL or branch missing");
+            if (src == null && branch == null) {
                 return null;
-            } else if (src == null && branch == null) {
+            }
+            if (src == null || branch == null) {
+                LOGGER.error("Git information not complete, URL or branch missing");
                 return null;
             }
             return new GitInfo(src, branch);
         } catch (IOException e) {
             LOGGER.error("Error reading definitions of " + directoryId.getParent() + " at " + ref.getFileName(), e);
-        } catch (JAXBException e) {
-            LOGGER.error("Error in XML in " + ref.getFileName(), e);
         }
         return null;
     }

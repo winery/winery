@@ -207,7 +207,7 @@ public abstract class EdmmDependantTest {
         nt3Properties.put("os_family", "ubuntu");
         nt3Properties.put("public_key", "-----BEGIN PUBLIC KEY----- ... -----END PUBLIC KEY-----");
         nt3Properties.put("ssh_port", "22");
-        properties.setKvProperties(nt3Properties);
+        properties.setKVProperties(nt3Properties);
         nt3.setProperties(properties);
         nodeTemplates.put(nt3.getId(), nt3);
 

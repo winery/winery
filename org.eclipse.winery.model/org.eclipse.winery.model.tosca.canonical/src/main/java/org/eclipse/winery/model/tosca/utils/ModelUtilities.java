@@ -15,7 +15,6 @@
 package org.eclipse.winery.model.tosca.utils;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -70,8 +69,6 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 public class ModelUtilities {
 
@@ -107,7 +104,7 @@ public class ModelUtilities {
      */
     public static LinkedHashMap<String, String> getPropertiesKV(TEntityTemplate template) {
         if (template.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
-            return ((TEntityTemplate.WineryKVProperties) template.getProperties()).getKvProperties();
+            return ((TEntityTemplate.WineryKVProperties) template.getProperties()).getKVProperties();
         } else {
             // FIXME is this appropriate for YAML properties??
             return null;
@@ -116,7 +113,7 @@ public class ModelUtilities {
     
     public static void setPropertiesKV(TEntityTemplate template, LinkedHashMap<String, String> properties) {
         if (template.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
-            ((TEntityTemplate.WineryKVProperties) template.getProperties()).setKvProperties(properties);
+            ((TEntityTemplate.WineryKVProperties) template.getProperties()).setKVProperties(properties);
         }
     }
 
@@ -605,8 +602,8 @@ public class ModelUtilities {
         if (relationshipTemplate.getSourceElement().getRef() instanceof TRequirement) {
             TRequirement requirement = (TRequirement) relationshipTemplate.getSourceElement().getRef();
             return topologyTemplate.getNodeTemplates().stream()
-                .filter(nt -> nt.getRequirements().getRequirement() != null)
-                .filter(nt -> nt.getRequirements().getRequirement().contains(requirement))
+                .filter(nt -> nt.getRequirements() != null
+                        && nt.getRequirements().getRequirement().contains(requirement))
                 .findAny().get();
         } else {
             TNodeTemplate sourceNodeTemplate = (TNodeTemplate) relationshipTemplate.getSourceElement().getRef();
@@ -618,8 +615,8 @@ public class ModelUtilities {
         if (relationshipTemplate.getTargetElement().getRef() instanceof TCapability) {
             TCapability capability = (TCapability) relationshipTemplate.getTargetElement().getRef();
             return topologyTemplate.getNodeTemplates().stream()
-                .filter(nt -> nt.getRequirements().getRequirement() != null)
-                .filter(nt -> nt.getRequirements().getRequirement().contains(capability))
+                .filter(nt -> nt.getRequirements() != null
+                        && nt.getRequirements().getRequirement().contains(capability))
                 .findAny().get();
         } else {
             return (TNodeTemplate) relationshipTemplate.getTargetElement().getRef();

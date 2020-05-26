@@ -16,6 +16,7 @@ package org.eclipse.winery.model.tosca;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,6 +32,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tArtifactReference", propOrder = {
+    "reference",
     "includeOrExclude"
 })
 public class TArtifactReference implements Serializable {
@@ -39,6 +41,7 @@ public class TArtifactReference implements Serializable {
         @XmlElement(name = "Exclude", type = TArtifactReference.Exclude.class),
         @XmlElement(name = "Include", type = TArtifactReference.Include.class)
     })
+    // cannot split these into separate lists because the semantics are affected by the order of the elements
     protected List<Object> includeOrExclude;
 
     @XmlAttribute(name = "reference", required = true)
@@ -59,13 +62,13 @@ public class TArtifactReference implements Serializable {
         if (this == o) return true;
         if (!(o instanceof TArtifactReference)) return false;
         TArtifactReference that = (TArtifactReference) o;
-        return Objects.equals(includeOrExclude, that.includeOrExclude) &&
-            Objects.equals(reference, that.reference);
+        return Objects.equals(reference, that.reference)
+            && Objects.equals(includeOrExclude, that.includeOrExclude);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(includeOrExclude, reference);
+        return Objects.hash(reference, includeOrExclude);
     }
 
     @Override
@@ -100,7 +103,7 @@ public class TArtifactReference implements Serializable {
     @NonNull
     public List<Object> getIncludeOrExclude() {
         if (includeOrExclude == null) {
-            includeOrExclude = new ArrayList<Object>();
+            this.includeOrExclude = new ArrayList<>();
         }
         return this.includeOrExclude;
     }
@@ -151,13 +154,38 @@ public class TArtifactReference implements Serializable {
     public static class Builder {
         private final String reference;
         private List<Object> includeOrExclude;
-
+        
         public Builder(String reference) {
             this.reference = reference;
         }
 
-        public Builder setIncludeOrExclude(List<Object> includeOrExclude) {
-            this.includeOrExclude = includeOrExclude;
+        public Builder addExclude(TArtifactReference.Exclude exclude) {
+            if (exclude == null) {
+                return this;
+            }
+            return addExcludes(Collections.singletonList(exclude));
+        }
+
+        public Builder addExcludes(List<TArtifactReference.Exclude> excludes) {
+            if (this.includeOrExclude == null) {
+                this.includeOrExclude = new ArrayList<>();
+            }
+            this.includeOrExclude.addAll(excludes);
+            return this;
+        }
+
+        public Builder addInclude(TArtifactReference.Include include) {
+            if (include == null) {
+                return this;
+            }
+            return addIncludes(Collections.singletonList(include));
+        }
+
+        public Builder addIncludes(List<TArtifactReference.Include> includes) {
+            if (this.includeOrExclude == null) {
+                this.includeOrExclude = new ArrayList<>();
+            }
+            this.includeOrExclude.addAll(includes);
             return this;
         }
 

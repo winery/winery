@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytemplates;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -93,7 +92,7 @@ public class PropertiesResource {
                     .forEach(propDef -> emptyProps.put(propDef.getKey(), ""));
 
                 TEntityTemplate.WineryKVProperties update = new TEntityTemplate.WineryKVProperties();
-                update.setKvProperties(emptyProps);
+                update.setKVProperties(emptyProps);
                 this.template.setProperties(update);
                 RestUtils.persist(this.res);
             }

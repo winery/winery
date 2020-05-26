@@ -31,6 +31,9 @@ public class PropertyMappingSupport {
     private static final Logger LOGGER = LoggerFactory.getLogger(PropertyMappingSupport.class);
     
     public static boolean isKeyValuePropertyDefinition(TEntityTemplate.Properties xmlProps) {
+        if (xmlProps == null) {
+            return false;
+        }
         Object any = xmlProps.getAny();
         if (any == null) {
             return false;

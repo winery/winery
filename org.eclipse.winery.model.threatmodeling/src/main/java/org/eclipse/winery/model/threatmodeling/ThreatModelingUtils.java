@@ -15,10 +15,8 @@ package org.eclipse.winery.model.threatmodeling;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -214,7 +212,7 @@ public class ThreatModelingUtils {
         propMap.put(ThreatModelingProperties.description.toString(), data.getDescription());
         propMap.put(ThreatModelingProperties.strideClassification.toString(), data.getStride());
         propMap.put(ThreatModelingProperties.severity.toString(), data.getSeverity());
-        threatProps.setKvProperties(propMap);
+        threatProps.setKVProperties(propMap);
         threat.setProperties(threatProps);
 
         TDefinitions threatDefinitions = BackendUtils.createWrapperDefinitions(threatID, repository);
@@ -241,7 +239,7 @@ public class ThreatModelingUtils {
 
         mitigationPropMap.put(ThreatModelingProperties.ThreatReference.toString(), threatID.getQName().toString());
 
-        mitigationProps.setKvProperties(mitigationPropMap);
+        mitigationProps.setKVProperties(mitigationPropMap);
         mitigation.setProperties(mitigationProps);
 
         TDefinitions mitigationDefinitions = BackendUtils.createWrapperDefinitions(threatID, repository);

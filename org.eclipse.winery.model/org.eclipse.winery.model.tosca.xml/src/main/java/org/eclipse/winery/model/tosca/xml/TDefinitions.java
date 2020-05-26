@@ -205,6 +205,22 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
     }
 
     @NonNull
+    public List<TPatternRefinementModel> getPatternRefinementModels() {
+        return getServiceTemplateOrNodeTypeOrNodeTypeImplementation().stream()
+            .filter(x -> x instanceof TPatternRefinementModel)
+            .map(TPatternRefinementModel.class::cast)
+            .collect(Collectors.toList());
+    }
+
+    @NonNull
+    public List<TTestRefinementModel> getTestRefinementModels() {
+        return getServiceTemplateOrNodeTypeOrNodeTypeImplementation().stream()
+            .filter(x -> x instanceof TTestRefinementModel)
+            .map(TTestRefinementModel.class::cast)
+            .collect(Collectors.toList());
+    }
+
+    @NonNull
     public List<TServiceTemplate> getServiceTemplates() {
         return getServiceTemplateOrNodeTypeOrNodeTypeImplementation().stream()
             .filter(x -> x instanceof TServiceTemplate)
@@ -375,6 +391,8 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         private List<TArtifactTemplate> artifactTemplates;
         private List<TPolicyType> policyTypes;
         private List<TPolicyTemplate> policyTemplate;
+        private List<TPatternRefinementModel> patternRefinementModels;
+        private List<TTestRefinementModel> testRefinementModels;
         private String name;
 
         public Builder(String id, String target_namespace) {
@@ -424,6 +442,16 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
 
         public T setRequirementTypes(List<TRequirementType> requirementTypes) {
             this.requirementTypes = requirementTypes;
+            return self();
+        }
+
+        public T setPatternRefinementModels(List<TPatternRefinementModel> refinementModels) {
+            this.patternRefinementModels = refinementModels;
+            return self();
+        }
+
+        public T setTestRefinementModels(List<TTestRefinementModel> refinementModels) {
+            this.testRefinementModels = refinementModels;
             return self();
         }
 

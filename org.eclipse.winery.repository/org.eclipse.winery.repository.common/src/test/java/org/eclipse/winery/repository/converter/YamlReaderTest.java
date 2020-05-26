@@ -16,6 +16,7 @@ package org.eclipse.winery.repository.converter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -34,8 +35,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class YamlReaderTest extends AbstractConverterTest {
 
     @BeforeAll
-    private static void init() {
-        path = Paths.get("src/test/resources/yaml/simple-tests");
+    private static void init() throws URISyntaxException {
+        path = Paths.get(YamlReaderTest.class.getClassLoader().getResource("yaml/simple-tests").toURI());
     }
 
     @DisplayName("Simple YAML Reader Test")
@@ -50,8 +51,7 @@ public class YamlReaderTest extends AbstractConverterTest {
     @Test
     public void testSupportedInterfaceDefinitions() throws Exception {
         YamlReader reader = new YamlReader();
-        Path file = getYamlFile("src/test/resources/yaml/supported_interfaces");
-        InputStream is = new FileInputStream(file.toFile());
+        InputStream is = getClass().getClassLoader().getResourceAsStream("yaml/supported_interfaces.yml");
         TServiceTemplate template = reader.parse(is);
         Assertions.assertNotNull(template);
         TNodeType server = template.getNodeTypes().get("server");
