@@ -19,7 +19,6 @@ import java.util.Objects;
 
 import org.eclipse.winery.model.tosca.HasInheritance;
 import org.eclipse.winery.model.tosca.HasType;
-import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TEntityType;
 
 public class NamespaceSubstitutionStrategy<R extends HasType, T extends HasInheritance> extends SubstitutionStrategy<R, T> {
@@ -34,7 +33,7 @@ public class NamespaceSubstitutionStrategy<R extends HasType, T extends HasInher
     protected T selectElement(List<T> subtypes) {
         return subtypes.stream()
             .filter(o -> {
-                if (TBoolean.NO.equals(o.getAbstract()) && o instanceof TEntityType) {
+                if (!o.getAbstract() && o instanceof TEntityType) {
                     TEntityType subtype = (TEntityType) o;
                     return this.requiredNamespace.equals(subtype.getTargetNamespace());
                 }

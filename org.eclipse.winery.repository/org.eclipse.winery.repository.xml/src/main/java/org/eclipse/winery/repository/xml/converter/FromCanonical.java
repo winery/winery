@@ -119,11 +119,11 @@ public class FromCanonical {
             .setCapabilityTypes(convertList(canonical.getCapabilityTypes(), this::convert))
             .setArtifactTypes(convertList(canonical.getArtifactTypes(), this::convert))
             .setArtifactTemplates(convertList(canonical.getArtifactTemplates(), this::convert))
-            .setPatternRefinementModels(convertList(canonical.getPatternRefinementModels(), this::convert))
+//            .setPatternRefinementModels(convertList(canonical.getPatternRefinementModels(), this::convert))
             .setPolicyTypes(convertList(canonical.getPolicyTypes(), this::convert))
             .setPolicyTemplate(convertList(canonical.getPolicyTemplates(), this::convert))
             .setRequirementTypes(convertList(canonical.getRequirementTypes(), this::convert))
-            .setTestRefinementModels(convertList(canonical.getTestRefinementModels(), this::convert))
+//            .setTestRefinementModels(convertList(canonical.getTestRefinementModels(), this::convert))
             .setInterfaceTypes(convertList(canonical.getInterfaceTypes(), this::convert))
             .setName(canonical.getName())
             .addImports(this.rollingImportStorage)
@@ -179,7 +179,7 @@ public class FromCanonical {
     }
 
     private TParameter convert(org.eclipse.winery.model.tosca.TParameter canonical) {
-        return new TParameter.Builder(canonical.getName(), canonical.getType(), TBoolean.fromValue(canonical.getRequired().value())).build();
+        return new TParameter.Builder(canonical.getName(), canonical.getType(), canonical.getRequired()).build();
     }
 
     private TRelationshipTypeImplementation convert(org.eclipse.winery.model.tosca.TRelationshipTypeImplementation canonical) {
@@ -207,8 +207,8 @@ public class FromCanonical {
                 .map(this::convert).collect(Collectors.toList()));
         }
         builder.setTargetNamespace(canonical.getTargetNamespace());
-        builder.setAbstract(TBoolean.fromValue(canonical.getAbstract().value()));
-        builder.setFinal(TBoolean.fromValue(canonical.getFinal().value()));
+        builder.setAbstract(canonical.getAbstract() ? TBoolean.YES : TBoolean.NO);
+        builder.setFinal(canonical.getFinal() ? TBoolean.YES : TBoolean.NO);
         fillExtensibleElementsProperties(builder, canonical);
     }
 
@@ -271,8 +271,8 @@ public class FromCanonical {
             propertiesDefinition.setType(canonical.getPropertiesDefinition().getType());
             builder.setPropertiesDefinition(propertiesDefinition);
         }
-        builder.setAbstract(TBoolean.fromValue(canonical.getAbstract().value()));
-        builder.setFinal(TBoolean.fromValue(canonical.getFinal().value()));
+        builder.setAbstract(canonical.getAbstract() ? TBoolean.YES : TBoolean.NO);
+        builder.setFinal(canonical.getFinal() ? TBoolean.YES : TBoolean.NO);
         builder.setTargetNamespace(canonical.getTargetNamespace());
         fillExtensibleElementsProperties(builder, canonical);
     }
@@ -499,7 +499,7 @@ public class FromCanonical {
 
     private TExtension convert(org.eclipse.winery.model.tosca.TExtension canonical) {
         TExtension.Builder builder = new TExtension.Builder(canonical.getNamespace());
-        builder.setMustUnderstand(TBoolean.fromValue(canonical.getMustUnderstand().value()));
+        builder.setMustUnderstand(canonical.getMustUnderstand() ? TBoolean.YES : TBoolean.NO);
         fillExtensibleElementsProperties(builder, canonical);
         return builder.build();
     }

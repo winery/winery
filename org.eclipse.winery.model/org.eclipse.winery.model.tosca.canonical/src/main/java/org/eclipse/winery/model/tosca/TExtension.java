@@ -34,7 +34,7 @@ public class TExtension extends TExtensibleElements {
     @XmlSchemaType(name = "anyURI")
     protected String namespace;
     @XmlAttribute(name = "mustUnderstand")
-    protected TBoolean mustUnderstand;
+    protected boolean mustUnderstand;
 
     public TExtension() {
     }
@@ -68,17 +68,12 @@ public class TExtension extends TExtensibleElements {
         this.namespace = value;
     }
 
-    @NonNull
-    public TBoolean getMustUnderstand() {
-        if (mustUnderstand == null) {
-            return TBoolean.YES;
-        } else {
-            return mustUnderstand;
-        }
+    public boolean getMustUnderstand() {
+        return mustUnderstand;
     }
 
-    public void setMustUnderstand(@Nullable TBoolean value) {
-        this.mustUnderstand = value;
+    public void setMustUnderstand(@Nullable Boolean value) {
+        this.mustUnderstand = value == null ? true : value;
     }
 
     @Override
@@ -88,23 +83,14 @@ public class TExtension extends TExtensibleElements {
 
     public static class Builder extends TExtensibleElements.Builder<Builder> {
         private final String namespace;
-        private TBoolean mustUnderstand;
+        private boolean mustUnderstand = true;
 
         public Builder(String namespace) {
             this.namespace = namespace;
         }
 
-        public Builder setMustUnderstand(TBoolean mustUnderstand) {
+        public Builder setMustUnderstand(boolean mustUnderstand) {
             this.mustUnderstand = mustUnderstand;
-            return this;
-        }
-
-        public Builder setMustUnderstand(Boolean mustUnderstand) {
-            if (mustUnderstand == null) {
-                return this;
-            }
-
-            this.mustUnderstand = mustUnderstand ? TBoolean.YES : TBoolean.NO;
             return this;
         }
 

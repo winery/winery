@@ -25,7 +25,6 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.HasInheritance;
 import org.eclipse.winery.model.tosca.HasType;
-import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.repository.backend.NamespaceManager;
@@ -71,7 +70,7 @@ public class SubstitutionUtils {
     public static <T extends HasInheritance> Optional<List<Subtypes<T>>> collectTypeHierarchy(Map<QName, T> types, QName parent) {
         T type = types.get(parent);
 
-        if (Objects.nonNull(type) && type.getAbstract().equals(TBoolean.YES)) {
+        if (Objects.nonNull(type) && type.getAbstract()) {
             List<Subtypes<T>> subtypes = new ArrayList<>();
             types.forEach((key, current) -> {
                 if (Objects.nonNull(current.getDerivedFrom()) && current.getDerivedFrom().getTypeAsQName().equals(parent)) {

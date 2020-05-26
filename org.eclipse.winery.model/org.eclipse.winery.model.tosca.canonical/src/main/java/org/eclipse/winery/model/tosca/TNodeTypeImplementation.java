@@ -230,8 +230,8 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
         private TRequiredContainerFeatures requiredContainerFeatures;
         private TImplementationArtifacts implementationArtifacts;
         private TDeploymentArtifacts deploymentArtifacts;
-        private TBoolean _abstract;
-        private TBoolean _final;
+        private boolean _abstract;
+        private boolean _final;
 
         public Builder(TExtensibleElements extensibleElements, String name, QName implementedNodeType) {
             super(extensibleElements, name, implementedNodeType);
@@ -266,12 +266,12 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
             return this;
         }
 
-        public Builder setAbstract(TBoolean _abstract) {
+        public Builder setAbstract(boolean _abstract) {
             this._abstract = _abstract;
             return this;
         }
 
-        public Builder setFinal(TBoolean _final) {
+        public Builder setFinal(boolean _final) {
             this._final = _final;
             return this;
         }

@@ -36,7 +36,7 @@ public class DASpecification {
         List<TNodeTemplate> nodeTemplatesWithAbstractDA = nodeTemplates.stream()
             .filter(nt -> nt.getDeploymentArtifacts() != null)
             .filter(nt -> nt.getDeploymentArtifacts().getDeploymentArtifact().stream()
-                .anyMatch(da -> getArtifactTypeOfDA(da).getAbstract() == TBoolean.YES))
+                .anyMatch(da -> getArtifactTypeOfDA(da).getAbstract()))
             .collect(Collectors.toList());
 
         return nodeTemplatesWithAbstractDA;

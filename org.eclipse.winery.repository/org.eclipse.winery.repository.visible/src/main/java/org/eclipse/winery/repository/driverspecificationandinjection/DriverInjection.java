@@ -35,7 +35,7 @@ public class DriverInjection {
 
         for (TNodeTemplate nodeTemplateWithAbstractDA : nodeTemplatesWithAbstractDA) {
             List<TDeploymentArtifact> abstractDAsAttachedToNodeTemplate = nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact().stream()
-                .filter(da -> DASpecification.getArtifactTypeOfDA(da).getAbstract() == TBoolean.YES)
+                .filter(da -> DASpecification.getArtifactTypeOfDA(da).getAbstract())
                 .collect(Collectors.toList());
             for (TDeploymentArtifact abstractDA : abstractDAsAttachedToNodeTemplate) {
                 Map<TRelationshipTemplate, TNodeTemplate> nodeTemplatesWithConcreteDA = DASpecification.getNodesWithSuitableConcreteDAAndTheDirectlyConnectedNode(nodeTemplateWithAbstractDA, abstractDA, topologyTemplate);

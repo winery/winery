@@ -61,10 +61,10 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
     protected String name;
 
     @XmlAttribute(name = "abstract")
-    protected TBoolean _abstract;
+    protected boolean _abstract;
 
     @XmlAttribute(name = "final")
-    protected TBoolean _final;
+    protected boolean _final;
 
     @XmlTransient
     protected QName implementedType;
@@ -137,30 +137,28 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
         this.implementationArtifacts = value;
     }
 
-    @NonNull
-    public TBoolean getAbstract() {
-        if (_abstract == null) {
-            return TBoolean.NO;
-        } else {
-            return _abstract;
-        }
+    public boolean getAbstract() {
+        return _abstract;
     }
 
-    public void setAbstract(TBoolean value) {
+    public void setAbstract(boolean value) {
         this._abstract = value;
     }
 
-    @NonNull
-    public TBoolean getFinal() {
-        if (_final == null) {
-            return TBoolean.NO;
-        } else {
-            return _final;
-        }
+    public void setAbstract(@Nullable Boolean value) {
+        this._abstract = value == null ? false : value;
     }
 
-    public void setFinal(TBoolean value) {
+    public boolean getFinal() {
+        return _final;
+    }
+
+    public void setFinal(boolean value) {
         this._final = value;
+    }
+
+    public void setFinal(@Nullable Boolean value) {
+        this._final = value == null ? false : value;
     }
 
     @Override
@@ -201,8 +199,8 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
         private TTags tags;
         private TRequiredContainerFeatures requiredContainerFeatures;
         private TImplementationArtifacts implementationArtifacts;
-        private TBoolean _abstract;
-        private TBoolean _final;
+        private boolean _abstract;
+        private boolean _final;
 
         public Builder(Builder builder, String name, QName implementedType) {
             super(builder);
@@ -246,12 +244,12 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
             return self();
         }
 
-        public T setAbstract(TBoolean _abstract) {
+        public T setAbstract(boolean _abstract) {
             this._abstract = _abstract;
             return self();
         }
 
-        public T setFinal(TBoolean _final) {
+        public T setFinal(boolean _final) {
             this._final = _final;
             return self();
         }

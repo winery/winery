@@ -43,7 +43,6 @@ import org.eclipse.winery.model.tosca.TArtifact;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifacts;
-import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TDefinitions;
@@ -296,9 +295,6 @@ public class FromCanonical {
     }
 
     public <T extends org.eclipse.winery.model.tosca.yaml.TEntityType.Builder<T>> T convert(TEntityType node, T builder, Class<? extends TEntityType> clazz) {
-        TBoolean isFinal = node.getFinal();
-        TBoolean isAbstract = node.getAbstract();
-
         // ensure that the targetNamespace is always set
         if (Objects.isNull(node.getTargetNamespace()) || node.getTargetNamespace().isEmpty()) {
             String id = node.getIdFromIdOrNameField();
@@ -309,8 +305,8 @@ public class FromCanonical {
             .setDerivedFrom(convert(node.getDerivedFrom(), clazz))
             .setMetadata(convert(node.getTags()))
             .addMetadata("targetNamespace", node.getTargetNamespace())
-            .addMetadata("abstract", isAbstract.equals(TBoolean.YES) ? "true" : "false")
-            .addMetadata("final", isFinal.equals(TBoolean.YES) ? "true" : "false")
+            .addMetadata("abstract", node.getAbstract() ? "true" : "false")
+            .addMetadata("final", node.getFinal() ? "true" : "false")
             .setProperties(convert(node, node.getProperties()))
             .setAttributes(convert(node, node.getAttributeDefinitions()))
             .setDescription(convertDocumentation(node.getDocumentation()));
@@ -905,7 +901,7 @@ public class FromCanonical {
             .collect(Collectors.toMap(
                 TParameter::getName,
                 entry -> new TPropertyDefinition.Builder(convertType(entry.getType()))
-                    .setRequired(convert(entry.getRequired()))
+                    .setRequired(entry.getRequired())
                     .build()
             ));
     }
@@ -917,13 +913,9 @@ public class FromCanonical {
             .collect(Collectors.toMap(
                 TParameter::getName,
                 entry -> new TPropertyDefinition.Builder(convertType(entry.getType()))
-                    .setRequired(convert(entry.getRequired()))
+                    .setRequired(entry.getRequired())
                     .build()
             ));
-    }
-
-    public boolean convert(TBoolean node) {
-        return Objects.nonNull(node) && node.equals(TBoolean.YES);
     }
 
     private QName convertType(String type) {

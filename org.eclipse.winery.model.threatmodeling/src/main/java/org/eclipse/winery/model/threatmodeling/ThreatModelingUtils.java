@@ -27,7 +27,6 @@ import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.model.tosca.TDefinitions;
-import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TPolicies;
@@ -109,7 +108,7 @@ public class ThreatModelingUtils {
         TNodeType nodeType = repository.getElement(id);
 
         // check if node type is abstract
-        if (nodeType.getAbstract().value().equals("yes")) {
+        if (nodeType.getAbstract()) {
             return nodeTypeName;
         } else if (Objects.nonNull(nodeType.getDerivedFrom())) { // check if node type inherits from other node type
             return findFirstAbstractType(nodeType.getDerivedFrom().getTypeAsQName());
@@ -282,8 +281,8 @@ public class ThreatModelingUtils {
         TPolicyType threat = new TPolicyType();
         threat.setId(ThreatModelingConstants.THREAT_POLICY_NAME);
         threat.setName(ThreatModelingConstants.THREAT_POLICY_NAME);
-        threat.setAbstract(TBoolean.NO);
-        threat.setFinal(TBoolean.NO);
+        threat.setAbstract(false);
+        threat.setFinal(false);
 
         threat.setTargetNamespace(ThreatModelingConstants.THREATMODELING_NAMESPACE);
 
@@ -310,8 +309,8 @@ public class ThreatModelingUtils {
 
         mitigation.setId(ThreatModelingConstants.MITIGATION_POLICY_NAME);
         mitigation.setName(ThreatModelingConstants.MITIGATION_POLICY_NAME);
-        mitigation.setAbstract(TBoolean.NO);
-        mitigation.setFinal(TBoolean.NO);
+        mitigation.setAbstract(false);
+        mitigation.setFinal(false);
 
         mitigation.setTargetNamespace(ThreatModelingConstants.THREATMODELING_NAMESPACE);
 
@@ -334,7 +333,7 @@ public class ThreatModelingUtils {
 
         TNodeType svnf = new TNodeType.Builder("S-VNF-w1_wip1")
             .setTargetNamespace(ThreatModelingConstants.SECURITY_NAMESPACE)
-            .setAbstract(TBoolean.YES)
+            .setAbstract(true)
             .build();
 
         NodeTypeId svnfID = new NodeTypeId(QName.valueOf(ThreatModelingConstants.SVNF_NODE_TYPE));

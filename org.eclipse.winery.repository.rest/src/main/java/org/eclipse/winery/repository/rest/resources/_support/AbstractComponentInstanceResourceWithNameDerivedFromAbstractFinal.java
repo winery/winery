@@ -26,7 +26,6 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.HasInheritance;
 import org.eclipse.winery.model.tosca.HasType;
-import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
@@ -101,19 +100,15 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
     public String getTBoolean(String methodName) {
         // see getAvailableSuperClasses for verbose comments
         Method method;
-        TBoolean tBoolean;
+        boolean tBoolean;
         try {
             method = this.getElement().getClass().getMethod(methodName);
-            tBoolean = (TBoolean) method.invoke(this.getElement());
+            tBoolean = (boolean)method.invoke(this.getElement());
         } catch (Exception e) {
             AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.LOGGER.error("Could not get boolean " + methodName, e);
             throw new IllegalStateException(e);
         }
-        if (tBoolean == null) {
-            return null;
-        } else {
-            return tBoolean.value();
-        }
+        return tBoolean ? "yes" : "no";
     }
 
     /**
@@ -139,8 +134,8 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 
         HasInheritance element = (HasInheritance) this.getElement();
         element.setDerivedFrom(derivedFrom);
-        element.setAbstract(TBoolean.fromValue(json.isAbstract));
-        element.setFinal(TBoolean.fromValue(json.isFinal));
+        element.setAbstract(json.isAbstract.equalsIgnoreCase("yes"));
+        element.setFinal(json.isFinal.equalsIgnoreCase("yes"));
 
         return RestUtils.persist(this);
     }

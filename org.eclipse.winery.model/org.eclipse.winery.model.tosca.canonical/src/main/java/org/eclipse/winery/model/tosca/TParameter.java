@@ -39,7 +39,7 @@ public class TParameter implements Serializable {
     protected String type;
 
     @XmlAttribute(name = "required")
-    protected TBoolean required;
+    protected boolean required;
 
     public TParameter() {
     }
@@ -88,16 +88,11 @@ public class TParameter implements Serializable {
     /**
      * @return In case the internal model stores <code>null</code>, the default value <code>TBoolean.YES</code> is returned
      */
-    @NonNull
-    public TBoolean getRequired() {
-        if (required == null) {
-            return TBoolean.YES;
-        } else {
-            return required;
-        }
+    public boolean getRequired() {
+        return required;
     }
 
-    public void setRequired(@NonNull TBoolean value) {
+    public void setRequired(boolean value) {
         Objects.requireNonNull(value);
         this.required = value;
     }
@@ -109,16 +104,16 @@ public class TParameter implements Serializable {
     public static class Builder {
         private final String name;
         private final String type;
-        private final TBoolean required;
+        private final boolean required;
 
-        public Builder(String name, String type, TBoolean required) {
+        public Builder(String name, String type) {
+            this(name, type, false);
+        }
+
+        public Builder(String name, String type, boolean required) {
             this.name = name;
             this.type = type;
             this.required = required;
-        }
-
-        public Builder(String name, String type, Boolean required) {
-            this(name, type, required == null ? TBoolean.YES : required ? TBoolean.YES : TBoolean.NO);
         }
 
         public TParameter build() {

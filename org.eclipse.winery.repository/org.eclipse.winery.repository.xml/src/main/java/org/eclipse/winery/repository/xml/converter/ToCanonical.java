@@ -29,7 +29,6 @@ import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TArtifacts;
-import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
@@ -81,6 +80,8 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.xml.TBoolean;
 import org.eclipse.winery.repository.xml.XmlRepository;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -235,7 +236,7 @@ public class ToCanonical {
     }
 
     private TParameter convert(org.eclipse.winery.model.tosca.xml.TParameter xml) {
-        return new TParameter.Builder(xml.getName(), xml.getType(), TBoolean.fromValue(xml.getRequired().value())).build();
+        return new TParameter.Builder(xml.getName(), xml.getType(), xml.getRequired() == TBoolean.YES).build();
     }
 
     private TRelationshipTypeImplementation convert(org.eclipse.winery.model.tosca.xml.TRelationshipTypeImplementation xml) {
@@ -263,8 +264,8 @@ public class ToCanonical {
                 .map(this::convert).collect(Collectors.toList()));
         }
         builder.setTargetNamespace(xml.getTargetNamespace());
-        builder.setAbstract(TBoolean.fromValue(xml.getAbstract().value()));
-        builder.setFinal(TBoolean.fromValue(xml.getFinal().value()));
+        builder.setAbstract(xml.getAbstract() == TBoolean.YES);
+        builder.setFinal(xml.getFinal() == TBoolean.YES);
         fillExtensibleElementsProperties(builder, xml);
     }
 
@@ -320,8 +321,8 @@ public class ToCanonical {
             propertiesDefinition.setType(xml.getPropertiesDefinition().getType());
             builder.setPropertiesDefinition(propertiesDefinition);
         }
-        builder.setAbstract(TBoolean.fromValue(xml.getAbstract().value()));
-        builder.setFinal(TBoolean.fromValue(xml.getFinal().value()));
+        builder.setAbstract(xml.getAbstract() == TBoolean.YES);
+        builder.setFinal(xml.getFinal() == TBoolean.YES);
         builder.setTargetNamespace(xml.getTargetNamespace());
         fillExtensibleElementsProperties(builder, xml);
     }
@@ -552,7 +553,7 @@ public class ToCanonical {
 
     private TExtension convert(org.eclipse.winery.model.tosca.xml.TExtension xml) {
         TExtension.Builder builder = new TExtension.Builder(xml.getNamespace());
-        builder.setMustUnderstand(TBoolean.fromValue(xml.getMustUnderstand().value()));
+        builder.setMustUnderstand(xml.getMustUnderstand() == TBoolean.YES);
         fillExtensibleElementsProperties(builder, xml);
         return builder.build();
     }
@@ -809,7 +810,9 @@ public class ToCanonical {
         return canonical;
     }
 
-    private TTopologyTemplate convert(org.eclipse.winery.model.tosca.xml.TTopologyTemplate xml) {
+    @Nullable
+    private TTopologyTemplate convert(org.eclipse.winery.model.tosca.xml.@Nullable TTopologyTemplate xml) {
+        if (xml == null) { return null; }
         TTopologyTemplate.Builder builder = new TTopologyTemplate.Builder();
         xml.getNodeTemplates().stream().map(this::convert).forEach(builder::addNodeTemplates);
         xml.getRelationshipTemplates().stream().map(this::convert).forEach(builder::addRelationshipTemplate);

@@ -76,9 +76,9 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     @XmlSchemaType(name = "NCName")
     protected String name;
     @XmlAttribute(name = "abstract")
-    protected TBoolean _abstract;
+    protected boolean _abstract;
     @XmlAttribute(name = "final")
-    protected TBoolean _final;
+    protected boolean _final;
     @XmlAttribute(name = "targetNamespace")
     @XmlSchemaType(name = "anyURI")
     protected String targetNamespace;
@@ -185,30 +185,28 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
         return QName.valueOf("{" + this.targetNamespace + "}" + this.name);
     }
 
-    @NonNull
-    public TBoolean getAbstract() {
-        if (_abstract == null) {
-            return TBoolean.NO;
-        } else {
-            return _abstract;
-        }
+    public boolean getAbstract() {
+        return _abstract;
     }
 
-    public void setAbstract(@Nullable TBoolean value) {
+    public void setAbstract(boolean value) {
         this._abstract = value;
     }
 
-    @NonNull
-    public TBoolean getFinal() {
-        if (_final == null) {
-            return TBoolean.NO;
-        } else {
-            return _final;
-        }
+    public void setAbstract(@Nullable Boolean value) {
+        this._abstract = value == null ? false : value;
     }
 
-    public void setFinal(@Nullable TBoolean value) {
+    public boolean getFinal() {
+        return _final;
+    }
+
+    public void setFinal(boolean value) {
         this._final = value;
+    }
+
+    public void setFinal(@Nullable Boolean value) {
+        this._final = value == null ? false : value;
     }
 
     @Nullable
@@ -516,8 +514,8 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
         private TEntityType.DerivedFrom derivedFrom;
         private List<YamlPropertyDefinition> properties;
         private XmlPropertiesDefinition propertiesDefinition;
-        private TBoolean abstractValue;
-        private TBoolean finalValue;
+        private boolean abstractValue;
+        private boolean finalValue;
         private String targetNamespace;
         private AttributeDefinitionList attributeDefinitions;
 
@@ -594,30 +592,14 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             return self();
         }
 
-        public T setAbstract(TBoolean abstractValue) {
+        public T setAbstract(boolean abstractValue) {
             this.abstractValue = abstractValue;
             return self();
         }
 
-        public T setAbstract(Boolean abstractValue) {
-            if (this.abstractValue == null) {
-                return self();
-            }
-
-            return setAbstract(abstractValue ? TBoolean.YES : TBoolean.NO);
-        }
-
-        public T setFinal(TBoolean finalValue) {
+        public T setFinal(boolean finalValue) {
             this.finalValue = finalValue;
             return self();
-        }
-
-        public T setFinal(Boolean finalValue) {
-            if (this.finalValue == null) {
-                return self();
-            }
-
-            return setFinal(finalValue ? TBoolean.YES : TBoolean.NO);
         }
 
         public T setTargetNamespace(String targetNamespace) {

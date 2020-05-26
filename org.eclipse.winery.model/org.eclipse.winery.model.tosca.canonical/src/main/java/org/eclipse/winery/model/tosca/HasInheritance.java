@@ -18,15 +18,15 @@ package org.eclipse.winery.model.tosca;
  */
 public interface HasInheritance {
 
-    public TBoolean getAbstract();
+    boolean getAbstract();
 
-    public void setAbstract(TBoolean value);
+    void setAbstract(boolean value);
 
-    public TBoolean getFinal();
+    boolean getFinal();
 
-    public void setFinal(TBoolean value);
+    void setFinal(boolean value);
 
-    public HasType getDerivedFrom();
+    HasType getDerivedFrom();
 
-    public void setDerivedFrom(HasType value);
+    void setDerivedFrom(HasType value);
 }
