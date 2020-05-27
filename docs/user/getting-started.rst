@@ -45,6 +45,15 @@ Launch a browser: `<http://localhost:8080>`_.
         -e WINERY_REPOSITORY_URL=https://github.com/OpenTOSCA/tosca-definitions-public \
         opentosca/winery
 
+.. note:: 
+   Make sure you regularly pull the latest images:
+
+   .. code-block::
+
+      opentosca/radon-gmt:latest
+      # or
+      docker pull opentosca/winery:latest
+
 
 Use a custom TOSCA model repository
 -----------------------------------
@@ -57,7 +66,7 @@ Clone or create git repository on your local filesystem, e.g., by cloning `<http
 Open a command prompt and execute the following command:
 
 .. warning::
-   Replace ``<path_on_your_host>`` with an empty directory path on your host system.
+   Replace ``<path_on_your_host>`` with the respective dirctory path on your host system.
 
 .. code-block::
 
@@ -66,9 +75,13 @@ Open a command prompt and execute the following command:
      -e WINERY_FEATURE_RADON=true \
      -e WINERY_REPOSITORY_PROVIDER=yaml \
      -v <path_on_your_host>:/var/repository \
+     -u `id -u`
      opentosca/radon-gmt
 
 Launch a browser: `<http://localhost:8080>`_.
+
+Any change (create service template, modify or create node types) will be reflected on your host machine.
+You are now able to commit your changes and push them to your own Git remote (e.g., using ``git push`` from a command-prompt).
 
 .. note::
    To start Eclipse Winery based on an TOSCA XML repository layout, use the following command:
