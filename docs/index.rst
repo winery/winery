@@ -14,10 +14,6 @@
 Eclipse Winery
 ##############
 
-This is the main documentation of Eclipse Winery.
-
-Organizational information is provided at the `eclipse.org page <http://eclipse.org/winery>`_.
-
 Eclipse Winery is a web-based environment to graphically model TOSCA topologies and plans managing these topologies.
 The environment includes a type and template management component to offer creation and modification of all elements defined in the TOSCA specification.
 All information is stored in a repository, which allows importing and exporting using the TOSCA packaging format.
@@ -31,6 +27,10 @@ Eclipse Winery validates and stores all TOSCA entities in the syntax defined in 
 
 Further, the graph-based representation of TOSCA topologies in Eclipse Winery provides a quick overview of the entire system and offers a communication basis for the cooperation with other parties.
 It therefore offers a quicker introduction to modeling with TOSCA and provides newcomers with necessary guidelines.
+
+This is the main documentation of Eclipse Winery.
+
+Organizational information is provided at the `eclipse.org page <http://eclipse.org/winery>`_.
 
 .. list-table::
    :widths: 30 70
@@ -53,6 +53,7 @@ It therefore offers a quicker introduction to modeling with TOSCA and provides n
    tosca/index.rst
    adr/index.md
    How to Contribute <https://github.com/eclipse/winery/blob/master/CONTRIBUTING.md>
+   Found an issue? <https://github.com/eclipse/winery/blob/master/CONTRIBUTING.md#contributing-issues>
 
 
 Getting support for Eclipse Winery
