@@ -15,7 +15,7 @@
 package org.eclipse.winery.repository.rest.resources.apiData;
 
 import org.eclipse.winery.model.tosca.TEntityType;
-import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 
 // FIXME unify properties exposition on the API
 public class PropertiesDefinitionResourceApiData {

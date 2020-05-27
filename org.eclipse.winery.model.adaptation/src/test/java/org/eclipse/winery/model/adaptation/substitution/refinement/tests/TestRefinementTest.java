@@ -22,11 +22,11 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.OTRelationDirection;
-import org.eclipse.winery.model.tosca.OTRelationMapping;
+import org.eclipse.winery.model.tosca.extensions.OTRelationDirection;
+import org.eclipse.winery.model.tosca.extensions.OTRelationMapping;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
-import org.eclipse.winery.model.tosca.OTTestRefinementModel;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.extensions.OTTestRefinementModel;
 import org.eclipse.winery.topologygraph.matching.ToscaIsomorphismMatcher;
 import org.eclipse.winery.topologygraph.matching.ToscaTypeMatcher;
 import org.eclipse.winery.topologygraph.model.ToscaEdge;

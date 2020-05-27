@@ -20,7 +20,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.winery.model.tosca.kvproperties.AttributeDefinitionList;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitionList;
 import org.eclipse.winery.repository.rest.RestUtils;
 
 public class AttributeDefinitionsResource {

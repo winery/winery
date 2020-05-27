@@ -21,7 +21,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.eclipse.winery.model.tosca.OTRelationMapping;
+import org.eclipse.winery.model.tosca.extensions.OTRelationMapping;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelMappingsResource;
 import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelResource;

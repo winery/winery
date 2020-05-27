@@ -58,9 +58,6 @@ public class TRelationshipType extends TEntityType {
     @XmlElement(name = "ValidTarget")
     protected TRelationshipType.ValidTarget validTarget;
 
-    // added to support TOSCA YAML 
-    protected List<TInterfaceDefinition> interfaceDefinitions;
-
     public TRelationshipType() {
     }
 

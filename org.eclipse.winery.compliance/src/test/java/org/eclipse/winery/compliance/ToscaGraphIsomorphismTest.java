@@ -37,7 +37,7 @@ import org.eclipse.winery.compliance.checking.ComplianceRuleChecker;
 import org.eclipse.winery.compliance.checking.ServiceTemplateCheckingResult;
 import org.eclipse.winery.compliance.checking.ServiceTemplateComplianceRuleRuleChecker;
 import org.eclipse.winery.compliance.checking.ToscaComplianceRuleMatcher;
-import org.eclipse.winery.model.tosca.OTComplianceRule;
+import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;

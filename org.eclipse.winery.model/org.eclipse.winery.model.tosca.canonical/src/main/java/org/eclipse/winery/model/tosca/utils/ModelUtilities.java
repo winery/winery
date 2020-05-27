@@ -61,9 +61,9 @@ import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.constants.QNames;
 import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
-import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
-import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKVList;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Comment;

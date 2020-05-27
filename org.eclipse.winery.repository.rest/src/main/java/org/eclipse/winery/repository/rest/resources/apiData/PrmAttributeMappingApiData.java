@@ -14,8 +14,8 @@
 
 package org.eclipse.winery.repository.rest.resources.apiData;
 
-import org.eclipse.winery.model.tosca.OTAttributeMapping;
-import org.eclipse.winery.model.tosca.OTAttributeMappingType;
+import org.eclipse.winery.model.tosca.extensions.OTAttributeMapping;
+import org.eclipse.winery.model.tosca.extensions.OTAttributeMappingType;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

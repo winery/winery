@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.eclipse.winery.model.tosca.kvproperties.ParameterDefinition;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinition;
 
 /**
  * Class to represent an property definition in TOSCA YAML.

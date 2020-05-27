@@ -17,8 +17,8 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.OTRelationDirection;
-import org.eclipse.winery.model.tosca.OTRelationMapping;
+import org.eclipse.winery.model.tosca.extensions.OTRelationDirection;
+import org.eclipse.winery.model.tosca.extensions.OTRelationMapping;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

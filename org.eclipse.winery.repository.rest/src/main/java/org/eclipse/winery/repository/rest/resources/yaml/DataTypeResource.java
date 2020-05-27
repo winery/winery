@@ -25,7 +25,7 @@ import org.eclipse.winery.model.ids.definitions.DataTypeId;
 import org.eclipse.winery.model.tosca.TDataType;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.model.tosca.kvproperties.ConstraintClauseKV;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKV;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal;
 
 public class DataTypeResource extends AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal {

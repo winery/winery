@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,11 +32,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
+import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTTestRefinementModel;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -239,19 +240,19 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
 
     @JsonIgnore
     @NonNull
-    public List<TPatternRefinementModel> getPatternRefinementModels() {
+    public List<OTPatternRefinementModel> getPatternRefinementModels() {
         return getServiceTemplateOrNodeTypeOrNodeTypeImplementation().stream()
-            .filter(x -> x instanceof TPatternRefinementModel)
-            .map(TPatternRefinementModel.class::cast)
+            .filter(x -> x instanceof OTPatternRefinementModel)
+            .map(OTPatternRefinementModel.class::cast)
             .collect(Collectors.toList());
     }
 
     @JsonIgnore
     @NonNull
-    public List<TTestRefinementModel> getTestRefinementModels() {
+    public List<OTTestRefinementModel> getTestRefinementModels() {
         return getServiceTemplateOrNodeTypeOrNodeTypeImplementation().stream()
-            .filter(x -> x instanceof TTestRefinementModel)
-            .map(TTestRefinementModel.class::cast)
+            .filter(x -> x instanceof OTTestRefinementModel)
+            .map(OTTestRefinementModel.class::cast)
             .collect(Collectors.toList());
     }
 
@@ -454,8 +455,8 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         private List<TPolicyType> policyTypes;
         private List<TInterfaceType> interfaceTypes;
         private List<TPolicyTemplate> policyTemplate;
-        private List<TPatternRefinementModel> patternRefinementModels;
-        private List<TTestRefinementModel> testRefinementModels;
+        private List<OTPatternRefinementModel> patternRefinementModels;
+        private List<OTTestRefinementModel> testRefinementModels;
         private String name;
 
         public Builder(String id, String target_namespace) {
@@ -493,12 +494,12 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return self();
         }
 
-        public Builder setPatternRefinementModels(List<TPatternRefinementModel> refinementModels) {
+        public Builder setPatternRefinementModels(List<OTPatternRefinementModel> refinementModels) {
             this.patternRefinementModels = refinementModels;
             return self();
         }
 
-        public Builder setTestRefinementModels(List<TTestRefinementModel> refinementModels) {
+        public Builder setTestRefinementModels(List<OTTestRefinementModel> refinementModels) {
             this.testRefinementModels = refinementModels;
             return self();
         }

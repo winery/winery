@@ -13,15 +13,14 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca;
 
-import java.util.List;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.eclipse.winery.model.tosca.kvproperties.ConstraintClauseKV;
-import org.eclipse.winery.model.tosca.kvproperties.ConstraintClauseKVList;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKV;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKVList;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.NonNull;

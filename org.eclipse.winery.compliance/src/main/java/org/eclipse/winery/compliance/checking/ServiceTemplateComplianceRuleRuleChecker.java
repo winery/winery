@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.definitions.ComplianceRuleId;
-import org.eclipse.winery.model.tosca.OTComplianceRule;
+import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;

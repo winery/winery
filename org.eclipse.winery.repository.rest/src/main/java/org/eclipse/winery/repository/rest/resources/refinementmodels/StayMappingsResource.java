@@ -22,8 +22,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.winery.model.tosca.TEntityTemplate;
-import org.eclipse.winery.model.tosca.OTPrmModelElementType;
-import org.eclipse.winery.model.tosca.OTStayMapping;
+import org.eclipse.winery.model.tosca.extensions.OTPrmModelElementType;
+import org.eclipse.winery.model.tosca.extensions.OTStayMapping;
 import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelMappingsResource;
 import org.eclipse.winery.repository.rest.resources.apiData.PrmStayMappingApiData;
 

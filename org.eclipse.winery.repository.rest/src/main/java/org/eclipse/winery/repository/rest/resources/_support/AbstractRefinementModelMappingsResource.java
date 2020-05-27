@@ -23,7 +23,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.eclipse.winery.model.tosca.OTPrmMapping;
+import org.eclipse.winery.model.tosca.extensions.OTPrmMapping;
 import org.eclipse.winery.repository.rest.RestUtils;
 
 public abstract class AbstractRefinementModelMappingsResource<T extends OTPrmMapping> {

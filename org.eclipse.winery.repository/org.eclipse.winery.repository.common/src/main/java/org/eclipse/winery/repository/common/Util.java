@@ -55,11 +55,11 @@ import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.ids.definitions.EntityTemplateId;
 import org.eclipse.winery.model.ids.definitions.EntityTypeId;
 import org.eclipse.winery.model.ids.definitions.EntityTypeImplementationId;
-import org.eclipse.winery.model.ids.definitions.PatternRefinementModelId;
+import org.eclipse.winery.model.ids.extensions.PatternRefinementModelId;
 import org.eclipse.winery.model.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.model.ids.definitions.TestRefinementModelId;
-import org.eclipse.winery.model.ids.definitions.TopologyFragmentRefinementModelId;
+import org.eclipse.winery.model.ids.extensions.TestRefinementModelId;
+import org.eclipse.winery.model.ids.extensions.TopologyFragmentRefinementModelId;
 import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.model.ids.elements.ToscaElementId;
 import org.eclipse.winery.model.tosca.TEntityType;
@@ -179,6 +179,9 @@ public class Util {
             // quick hack to handle imports, which reside in their own package
             pkg = pkg + "imports.";
         }
+        if (idClassName.contains("Refinement")) {
+            pkg = pkg.replace("definitions.", "extensions.");
+        }
         String fullClassName = pkg + idClassName;
         try {
             return (Class<? extends DefinitionsChildId>) Class.forName(fullClassName);
@@ -193,22 +196,6 @@ public class Util {
                 throw new IllegalStateException(errorMsg);
             }
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    public static Class<? extends GenericId> getGenericIdClassForType(String typeIdType) {
-        Class<? extends GenericId> res;
-        // quick hack - we only need definitions right now
-        String pkg = "org.eclipse.winery.model.ids.definitions.";
-        String className = typeIdType;
-        className = pkg + className;
-        try {
-            res = (Class<? extends GenericId>) Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            LOGGER.error("Could not find id class for id type", e);
-            res = null;
-        }
-        return res;
     }
 
     /**

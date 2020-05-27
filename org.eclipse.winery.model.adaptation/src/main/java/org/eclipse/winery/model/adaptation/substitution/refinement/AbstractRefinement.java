@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.eclipse.winery.model.ids.definitions.RefinementId;
+import org.eclipse.winery.model.ids.extensions.RefinementId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.adaptation.substitution.AbstractSubstitution;
-import org.eclipse.winery.model.tosca.OTRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTRefinementModel;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.topologygraph.matching.IToscaMatcher;

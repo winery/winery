@@ -23,8 +23,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.model.tosca.OTRefinementModel;
-import org.eclipse.winery.model.tosca.OTRelationMapping;
+import org.eclipse.winery.model.tosca.extensions.OTRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTRelationMapping;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.refinementmodels.RelationMappingsResource;

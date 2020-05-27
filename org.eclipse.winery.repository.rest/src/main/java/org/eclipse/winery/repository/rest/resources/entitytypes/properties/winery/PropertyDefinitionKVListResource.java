@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.properties.winery;
 
-import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKVList;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;
 

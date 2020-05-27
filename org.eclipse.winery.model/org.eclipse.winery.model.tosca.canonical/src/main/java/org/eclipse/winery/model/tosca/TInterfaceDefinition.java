@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.kvproperties.ParameterDefinition;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinition;
 
 /**
  * Class to represent an interface definition in TOSCA YAML.

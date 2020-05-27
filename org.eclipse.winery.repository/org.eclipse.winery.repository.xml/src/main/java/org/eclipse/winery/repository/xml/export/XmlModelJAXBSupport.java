@@ -22,9 +22,9 @@ import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.xml.TDefinitions;
-import org.eclipse.winery.model.tosca.kvproperties.AttributeDefinitionList;
-import org.eclipse.winery.model.tosca.kvproperties.ParameterDefinitionList;
-import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitionList;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinitionList;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.repository.backend.MockXMLElement;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;

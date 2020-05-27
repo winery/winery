@@ -16,7 +16,7 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.OTDeploymentArtifactMapping;
+import org.eclipse.winery.model.tosca.extensions.OTDeploymentArtifactMapping;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
