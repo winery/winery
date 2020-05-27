@@ -50,7 +50,7 @@ Launch a browser: `<http://localhost:8080>`_.
 
    .. code-block::
 
-      opentosca/radon-gmt:latest
+      docker pull opentosca/radon-gmt:latest
       # or
       docker pull opentosca/winery:latest
 
