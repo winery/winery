@@ -75,7 +75,7 @@ Open a command prompt and execute the following command:
      -e WINERY_FEATURE_RADON=true \
      -e WINERY_REPOSITORY_PROVIDER=yaml \
      -v <path_on_your_host>:/var/repository \
-     -u `id -u`
+     -u `id -u` \
      opentosca/radon-gmt
 
 Launch a browser: `<http://localhost:8080>`_.
