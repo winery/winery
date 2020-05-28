@@ -240,6 +240,7 @@ export class WineryActions {
     static DELETE_YAML_ARTIFACT = 'DELETE_YAML_ARTIFACT';
     static SET_POLICY = 'SET_POLICY';
     static UPDATE_YAML_POLICIES = 'UPDATE_YAML_POLICIES';
+    static SET_POLICY_FOR_RELATIONSHIP = 'SET_POLICY_FOR_RELATIONSHIP';
     static SET_TARGET_LOCATION = 'SET_TARGET_LOCATION';
     static DELETE_POLICY = 'DELETE_POLICY';
     static SEND_CURRENT_NODE_ID = 'SEND_CURRENT_NODE_ID';
@@ -364,6 +365,11 @@ export class WineryActions {
     setPolicy: ActionCreator<SetPolicyAction> =
         ((newPolicy) => ({
             type: WineryActions.SET_POLICY,
+            nodePolicy: newPolicy
+        }));
+    setPolicyForRelationship: ActionCreator<SetPolicyAction> =
+        ((newPolicy) => ({
+            type: WineryActions.SET_POLICY_FOR_RELATIONSHIP,
             nodePolicy: newPolicy
         }));
     changeYamlPolicies: ActionCreator<ChangeYamlPoliciesAction> =

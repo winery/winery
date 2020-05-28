@@ -84,7 +84,7 @@ import { Ng2TableModule } from 'ng2-table';
     ],
     exports: [
         TopologyRendererComponent,
-
+        PoliciesComponent,
     ],
 })
 export class TopologyRendererModule {

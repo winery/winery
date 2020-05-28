@@ -53,6 +53,7 @@ import { PlaceComponentsService } from './services/placement.service';
 import { ReqCapRelationshipService } from './services/req-cap-relationship.service';
 import { WineryTableModule } from '../../../tosca-management/src/app/wineryTableModule/wineryTable.module';
 import { EdmmTransformationCheckComponent } from './edmmTransformationCheck/edmmTransformationCheck.component';
+import { PolicyService } from './services/policy.service';
 
 @NgModule({
     declarations: [
@@ -108,7 +109,8 @@ import { EdmmTransformationCheckComponent } from './edmmTransformationCheck/edmm
         ErrorHandlerService,
         StatefulAnnotationsService,
         PlaceComponentsService,
-        ReqCapRelationshipService
+        ReqCapRelationshipService,
+        PolicyService
     ],
     bootstrap: [WineryComponent]
 })

@@ -103,19 +103,19 @@ Registering new CSARs in the blockchain, as well as storing their contents in th
 happens at export-time using the button entitled "Provenance CSAR (XML)".
 The button will not appear if the accountability feature is not configured and enabled (see above):
 
-![Registering Exported CSARs in the Blockchain](../docs/user/graphics/accountability/Exporting.PNG). 
+![](../docs/user/features/figures/Exporting.png). 
 
 ### Validating the Integrity of Imported CSARS
 
 Validation of CSAR happens automatically at import-time if the accountability feature is configured (see above), and
 a specific option is checked in the import CSAR dialog:
 
-![Validating the Integrity of Imported CSARS](../docs/user/graphics/accountability/Validation.PNG)
+![](../docs/user/features/figures/Validation.png)
 
 After the validation process is over, a summary is shown that allows exploring the contents of the imported CSAR and
 viewing the provenance of each contained file, and even download previous versions of it:
 
-![Validating the Integrity of Imported CSARS](../docs/user/graphics/accountability/ValidationResult.PNG)
+![](../docs/user/features/figures/ValidationResult.png)
 
 ### Authorizing Users to Particiate in Collaborative CSAR Development
 
@@ -123,12 +123,12 @@ Authorization of users to work on specific CSARS (service templates) takes place
 Here the Ethereum address (0x + 40-places hexadecmial number) is entered along with a human-readable name that is not required to
 be unique:
 
-![Authorizing Users to Particiate in Collaborative CSAR Development](../docs/user/graphics/accountability/Authorization.PNG)
+![](../docs/user/features/figures/Authorization.png)
 
 Authorized participants are automatically verified during CSAR-import process.
 However, one can manually verify the authenticity of a given participant using a different sub-UI of the Winery Admin UI:
 
-![Manual Authentication of Participants](../docs/user/graphics/accountability/Authentication.PNG)
+![](../docs/user/features/figures/Authentication.png)
 
 ### Checking the Provenance of a CSAR and its Contents
 
@@ -136,17 +136,17 @@ The provenance of a given service template, i.e, the immutable history of versio
 of those versions, can be accessed using the "Provenance" UI of the Winery Admin UI.
 Here the desired service template id is selected and the button "Show Provenance" is pressed:
 
-![Checking the Provenance of a CSAR](../docs/user/graphics/accountability/Provenance1.PNG)
+![](../docs/user/features/figures/Provenance1.png)
 
 When the user clicks on one of the provenance entries, more details are shown including details about each of the files 
 contained in this version:
 
-![Checking the Contents of an Exported CSAR](../docs/user/graphics/accountability/Provenance2.PNG)
+![](../docs/user/features/figures/Provenance2.png)
 
 Any of these files can be downloaded using the "(download)" link below it.
 Moreover, it can be compared with other versions of it using the "(compare)" link which shows the following dialog:
 
-![Comparing the Various Versions of the Files of a CSAR](../docs/user/graphics/accountability/FileComparison.PNG)
+![](../docs/user/features/figures/FileComparison.png)
 
 ## Demonstrative Scenarios
 
@@ -230,4 +230,3 @@ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
 which is available at https://www.apache.org/licenses/LICENSE-2.0.
 
 SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
-

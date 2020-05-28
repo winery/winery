@@ -375,6 +375,36 @@ export const WineryReducer =
                         policies: (<ChangeYamlPoliciesAction>action).yamlPolicies.policies
                     }
                 };
+
+            case WineryActions.SET_POLICY_FOR_RELATIONSHIP:
+                const newRelPolicy: any = (<SetPolicyAction>action).nodePolicy;
+                const relPolicy = newRelPolicy.newPolicy;
+                const indexOfRelationshipPolicy = lastState.currentJsonTopology.relationshipTemplates
+                    .map(node => node.id).indexOf(newRelPolicy.nodeId);
+                const relationshipPolicyTemplate = lastState.currentJsonTopology.relationshipTemplates
+                    .find(relationshipTemplate => relationshipTemplate.id === newRelPolicy.nodeId);
+                const policyExistCheck = relationshipPolicyTemplate.policies && relationshipPolicyTemplate.policies.policy;
+
+                return <WineryState>{
+                    ...lastState,
+                    currentJsonTopology: {
+                        ...lastState.currentJsonTopology,
+                        relationshipTemplates: lastState.currentJsonTopology.relationshipTemplates
+                            .map(relationshipTemplate => relationshipTemplate.id === newRelPolicy.nodeId ?
+                                relationshipTemplate.generateNewRelTemplateWithUpdatedAttribute('policies',
+                                    policyExistCheck ? {
+                                        policy: [
+                                            ...lastState.currentJsonTopology.relationshipTemplates[indexOfRelationshipPolicy].policies.policy,
+                                            relPolicy
+                                        ]
+                                    } : {
+                                        policy: [
+                                            relPolicy
+                                        ]
+                                    }) : relationshipTemplate
+                            )
+                    }
+                };
             case WineryActions.SET_TARGET_LOCATION:
                 const newTargetLocation: any = (<SetTargetLocation>action).nodeTargetLocation;
 

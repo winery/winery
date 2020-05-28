@@ -410,7 +410,12 @@ export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
             nodeId: this.currentNodeData.id,
             newPolicy: policyToBeSavedToRedux
         };
-        this.ngRedux.dispatch(this.actions.setPolicy(actionObject));
+        if (this.deploymentArtifactOrPolicyModalData.nodeTemplateId.startsWith('con')) {
+            this.ngRedux.dispatch(this.actions.setPolicyForRelationship(actionObject));
+        } else {
+            this.ngRedux.dispatch(this.actions.setPolicy(actionObject));
+        }
+
         this.resetDeploymentArtifactOrPolicyModalData();
     }
 

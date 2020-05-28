@@ -12,8 +12,8 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 import {
-    AfterViewInit, Component, ElementRef, HostListener, Input, KeyValueDiffers, NgZone, OnChanges, OnDestroy, OnInit, QueryList, Renderer2, SimpleChanges,
-    ViewChild, ViewChildren
+    AfterViewInit, Component, ElementRef, HostListener, Input, KeyValueDiffers, NgZone, OnChanges, OnDestroy, OnInit,
+    QueryList, Renderer2, SimpleChanges, ViewChild, ViewChildren
 } from '@angular/core';
 import { JsPlumbService } from '../services/jsPlumb.service';
 import { EntityType, TNodeTemplate, TRelationshipTemplate, VisualEntityType } from '../models/ttopology-template';
@@ -59,6 +59,7 @@ import { RequirementDefinitionModel } from '../models/requirementDefinitonModel'
 import { CapabilityDefinitionModel } from '../models/capabilityDefinitionModel';
 import { WineryRowData } from '../../../../tosca-management/src/app/wineryTableModule/wineryTable.component';
 import { InheritanceUtils } from '../models/InheritanceUtils';
+import { PolicyService } from '../services/policy.service';
 
 @Component({
     selector: 'winery-canvas',
@@ -186,6 +187,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 private splitMatchService: SplitMatchTopologyService,
                 private placementService: PlaceComponentsService,
                 private errorHandler: ErrorHandlerService,
+                private policyService: PolicyService,
                 private reqCapRelationshipService: ReqCapRelationshipService,
                 private notify: ToastrService,
                 private configuration: WineryRepositoryConfigurationService) {
@@ -946,6 +948,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 this.allRelationshipTemplates.forEach(relTemplate => this.manageRelationships(relTemplate));
             }
         } else if (storeRelationshipsLength !== 0 && localRelationshipsCopyLength !== 0) {
+            this.addPolicyIcon(currentRelationships);
             this.updateRelName(currentRelationships);
         }
     }
@@ -1659,6 +1662,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             }
         });
         this.entityTypes.relationshipTypes.forEach(value => this.assignRelTypes(value));
+        this.policyService.policyEventListener().subscribe(data => this.toggleModalHandler(data));
         this.reqCapRelationshipService.sourceSelectedEvent.subscribe(source => this.setSource(source));
         this.reqCapRelationshipService.sendSelectedRelationshipTypeEvent.subscribe(relationship => this.setSelectedRelationshipType(relationship));
     }
@@ -1991,20 +1995,28 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         this.clearSelectedNodes();
         this.newJsPlumbInstance.select().removeType('marked');
         const currentRel = this.allRelationshipTemplates.find(con => con.id === rel.id);
+        let name = currentRel.name;
+        if (currentRel.name.startsWith(this.backendService.configuration.relationshipPrefix)) {
+            // Workaround to support old topology templates with the real name
+            name = currentRel.type.substring(currentRel.type.indexOf('}') + 1);
+        }
         if (currentRel) {
             this.ngRedux.dispatch(this.actions.openSidebar({
                 sidebarContents: {
                     sidebarVisible: true,
                     nodeClicked: false,
                     id: currentRel.id,
-                    nameTextFieldValue: currentRel.name,
+                    nameTextFieldValue: name,
                     type: currentRel.type,
                     properties: currentRel.properties,
+                    relationshipTemplate: currentRel,
                     source: currentRel.sourceElement.ref,
                     target: currentRel.targetElement.ref
                 }
             }));
-            conn.addType('marked');
+            if (conn.types) {
+                conn.addType('marked');
+            }
         }
     }
 
@@ -2353,6 +2365,82 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     private layoutTopology() {
         this.layoutDirective.layoutNodes(this.nodeChildrenArray, this.allRelationshipTemplates);
         this.ngRedux.dispatch(this.topologyRendererActions.executeLayout());
+    }
+
+    /**
+     * Adds a policy icon to a relationshipTemplate
+     * @param currentRelationships
+     */
+    private addPolicyIcon(currentRelationships: Array<TRelationshipTemplate>) {
+        this.allRelationshipTemplates.some(rel => {
+            const relationshipTemplate = currentRelationships.find(el => el.id === rel.id);
+            if (relationshipTemplate) {
+                if (rel.policies !== relationshipTemplate.policies) {
+                    const oldCon = this.newJsPlumbInstance.getAllConnections().find(jSPlumbConnection => jSPlumbConnection.id === relationshipTemplate.id);
+                    if (relationshipTemplate.policies && relationshipTemplate.policies.policy) {
+                        let labelString = (isNullOrUndefined(relationshipTemplate.state) ? '' : relationshipTemplate.state + '<br>')
+                            + relationshipTemplate.name;
+                        if (labelString.startsWith(this.backendService.configuration.relationshipPrefix)) {
+                            // Workaround to support old topology templates with the real name
+                            labelString = relationshipTemplate.type.substring(relationshipTemplate.type.indexOf('}') + 1);
+                        }
+                        const list: TPolicy[] = relationshipTemplate.policies.policy;
+                        labelString += '<br>';
+                        for (const value of list) {
+                            const visual = this.entityTypes.policyTypeVisuals.find(
+                                policyTypeVisual => policyTypeVisual.typeId === value.policyType
+                            );
+                            if (visual && visual.imageUrl) {
+                                labelString += '<img style="display: block; margin-left: auto; margin-right: auto; margin-top: 5px;' +
+                                    ' max-width: 40px; max-height: 40px;" src="' + visual.imageUrl + '" />';
+                            }
+                        }
+                        const relationshipType = this.entityTypes.relationshipTypes.filter(rT => rT.qName === relationshipTemplate.type)[0];
+
+                        if (oldCon) {
+                            const border = isNullOrUndefined(relationshipTemplate.state)
+                                ? '#fafafa' : VersionUtils.getElementColorByDiffState(relationshipTemplate.state);
+                            const me = this;
+                            // create new JsPlumb instance with updated attributes
+                            const newCon = this.newJsPlumbInstance.connect({
+                                source: oldCon.source,
+                                target: oldCon.target,
+                                paintStyle: {
+                                    stroke: relationshipType.color,
+                                    strokeWidth: 2
+                                },
+                                hoverPaintStyle: { stroke: relationshipType.color, strokeWidth: 5 },
+                                overlays: [['Arrow', { width: 15, length: 15, location: 1, id: 'arrow', direction: 1 }],
+                                    ['Label', {
+                                        label: labelString,
+                                        id: 'label',
+                                        events: {
+                                            click: function (labelOverlay, originalEvent) {
+                                                setTimeout(() => me.onClickJsPlumbConnection(newCon, relationshipTemplate), 1);
+                                            }
+                                        },
+                                        labelStyle: {
+                                            font: '11px Roboto, sans-serif',
+                                            color: '#212121',
+                                            fill: '#efefef',
+                                            borderStyle: border,
+                                            borderWidth: 1,
+                                            padding: '3px'
+                                        }
+                                    }]
+                                ],
+                            });
+                            // and delete the old one
+                            this.newJsPlumbInstance.deleteConnection(oldCon);
+                        }
+                    }
+                    this.allRelationshipTemplates[this.allRelationshipTemplates.indexOf(rel)] = relationshipTemplate;
+                    this.onClickJsPlumbConnection(oldCon, relationshipTemplate);
+                    return true;
+                }
+            }
+        });
+        this.revalidateContainer();
     }
 
     // YAML Policy methids

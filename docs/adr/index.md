@@ -1,3 +1,18 @@
+<!---~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2020 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+
 # Architectural Decision Log
 
 This lists the architectural decisions for Eclipse Winery.
@@ -34,9 +49,9 @@ This lists the architectural decisions for Eclipse Winery.
 - [ADR-0027](0027-use-dasherization-for-filenames.md) - Use dasherization for filenames
 - [ADR-0028](0028-use-hardcoded-namespaces-for-threat-modeling.md) - Use hardcoded namespaces for threat modeling
 - [ADR-0029](0029-IPSec-algorithm-application.md) - IPSec Algorithm Implementation
-- [ADR-0030](0030-multiple-repositories) - Support of multiple repositories
+- [ADR-0030](0030-multiple-repositories.md) - Support of multiple repositories
 
 <!-- adrlogstop -->
 
-[template.md](template.md) contains the template.
+The [template.md](template.md) contains the MADR template.
 More information on MADR is available at <https://adr.github.io/madr/>.
