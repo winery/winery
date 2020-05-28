@@ -78,6 +78,8 @@ export class Utils {
                 return ToscaTypes.PatternRefinementModel;
             case ToscaTypes.TestRefinementModel:
                 return ToscaTypes.TestRefinementModel;
+            case ToscaTypes.TopologyFragmentRefinementModel:
+                return ToscaTypes.TopologyFragmentRefinementModel;
             default:
                 return ToscaTypes.Admin;
         }

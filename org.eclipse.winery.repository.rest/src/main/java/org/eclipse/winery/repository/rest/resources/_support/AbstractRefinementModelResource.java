@@ -23,8 +23,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.model.tosca.TRefinementModel;
-import org.eclipse.winery.model.tosca.TRelationMapping;
+import org.eclipse.winery.model.tosca.OTRefinementModel;
+import org.eclipse.winery.model.tosca.OTRelationMapping;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.refinementmodels.RelationMappingsResource;
@@ -39,7 +39,7 @@ public abstract class AbstractRefinementModelResource extends AbstractComponentI
         super(id);
     }
 
-    public abstract TRefinementModel getTRefinementModel();
+    public abstract OTRefinementModel getTRefinementModel();
 
     @Path("detector")
     public TopologyTemplateResource getDetector() {
@@ -50,7 +50,7 @@ public abstract class AbstractRefinementModelResource extends AbstractComponentI
 
     @Path("relationmappings")
     public RelationMappingsResource getRelationMappings() {
-        List<TRelationMapping> relationMappings = this.getTRefinementModel().getRelationMappings();
+        List<OTRelationMapping> relationMappings = this.getTRefinementModel().getRelationMappings();
 
         if (Objects.isNull(relationMappings)) {
             relationMappings = new ArrayList<>();

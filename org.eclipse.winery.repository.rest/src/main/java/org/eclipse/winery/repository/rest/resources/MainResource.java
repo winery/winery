@@ -62,9 +62,10 @@ import org.eclipse.winery.repository.rest.resources.entitytypes.policytypes.Poli
 import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes.RelationshipTypesResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.requirementtypes.RequirementTypesResource;
 import org.eclipse.winery.repository.rest.resources.imports.ImportsResource;
-import org.eclipse.winery.repository.rest.resources.patternrefinementmodels.PatternRefinementModelsResource;
+import org.eclipse.winery.repository.rest.resources.refinementmodels.PatternRefinementModelsResource;
+import org.eclipse.winery.repository.rest.resources.refinementmodels.TestRefinementModelsResource;
+import org.eclipse.winery.repository.rest.resources.refinementmodels.TopologyFragmentRefinementModelsResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplatesResource;
-import org.eclipse.winery.repository.rest.resources.testrefinementmodels.TestRefinementModelsResource;
 import org.eclipse.winery.repository.rest.resources.threats.ThreatsResource;
 import org.eclipse.winery.repository.rest.resources.yaml.YAMLParserResource;
 
@@ -166,6 +167,11 @@ public class MainResource {
     @Path("patternrefinementmodels/")
     public PatternRefinementModelsResource patternRefinementModels() {
         return new PatternRefinementModelsResource();
+    }
+
+    @Path("topologyfragmentrefinementmodels/")
+    public TopologyFragmentRefinementModelsResource componentRefinementModels() {
+        return new TopologyFragmentRefinementModelsResource();
     }
 
     @Path("testrefinementmodels/")

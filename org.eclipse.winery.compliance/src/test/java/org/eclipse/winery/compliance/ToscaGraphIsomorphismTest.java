@@ -37,7 +37,7 @@ import org.eclipse.winery.compliance.checking.ComplianceRuleChecker;
 import org.eclipse.winery.compliance.checking.ServiceTemplateCheckingResult;
 import org.eclipse.winery.compliance.checking.ServiceTemplateComplianceRuleRuleChecker;
 import org.eclipse.winery.compliance.checking.ToscaComplianceRuleMatcher;
-import org.eclipse.winery.model.tosca.TComplianceRule;
+import org.eclipse.winery.model.tosca.OTComplianceRule;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -101,7 +101,7 @@ public class ToscaGraphIsomorphismTest extends TestWithGitBackedRepository {
 
     @Test
     public void testTComplianceRulePersistence() throws Exception {
-        TComplianceRule rule = new TComplianceRule();
+        OTComplianceRule rule = new OTComplianceRule();
         rule.setName("test");
         rule.setTargetNamespace(TEST_TARGET_NAMESPACE);
 
@@ -254,19 +254,19 @@ public class ToscaGraphIsomorphismTest extends TestWithGitBackedRepository {
         TNodeTemplate serviceTemplateTopology = createTNodeTemplate("ST", nodeTypeIdB);
 
         //satisfied
-        TComplianceRule ruleOne = createTComplianceRule(crId1);
+        OTComplianceRule ruleOne = createTComplianceRule(crId1);
         ruleOne.setIdentifier(createTTopologyTemplate(Arrays.asList(ruleOneIdentifier), newArrayList()));
         ruleOne.setRequiredStructure(createTTopologyTemplate(Arrays.asList(ruleOneRequiredStructure), newArrayList()));
         allEntities.put(crId1, ruleOne);
 
         //unsatisfied
-        TComplianceRule ruleTwo = createTComplianceRule(crId2);
+        OTComplianceRule ruleTwo = createTComplianceRule(crId2);
         ruleTwo.setIdentifier(createTTopologyTemplate(Arrays.asList(ruleTwoIdentifier), newArrayList()));
         ruleTwo.setRequiredStructure(createTTopologyTemplate(Arrays.asList(ruleTwoRequiredStructure), newArrayList()));
         allEntities.put(crId2, ruleTwo);
 
         //invalid rule
-        TComplianceRule ruleThree = createTComplianceRule(crId3);
+        OTComplianceRule ruleThree = createTComplianceRule(crId3);
         ruleThree.setIdentifier(createTTopologyTemplate(Arrays.asList(ruleThreeIdentifier), newArrayList()));
         ruleThree.setRequiredStructure(createTTopologyTemplate(Arrays.asList(ruleThreeRequiredStructure), newArrayList()));
         allEntities.put(crId3, ruleThree);
@@ -513,7 +513,7 @@ public class ToscaGraphIsomorphismTest extends TestWithGitBackedRepository {
         checker.setRequiredStructureTemplate(identifier);
         assertEquals(0, checker.checkComplianceRule().size());
 
-        TComplianceRule rule = new TComplianceRule();
+        OTComplianceRule rule = new OTComplianceRule();
         rule.setName("test");
         rule.setTargetNamespace(TEST_TARGET_NAMESPACE);
         rule.setIdentifier(identifier);
@@ -576,16 +576,16 @@ public class ToscaGraphIsomorphismTest extends TestWithGitBackedRepository {
         ComplianceRuleId crId3 = new ComplianceRuleId(new QName(TEST_TARGET_NAMESPACE + dirABC, "test3"));
         ComplianceRuleId crId4 = new ComplianceRuleId(new QName(TEST_TARGET_NAMESPACE + dirBCD, "test4"));
 
-        TComplianceRule ruleOne = createTComplianceRule(crId1);
+        OTComplianceRule ruleOne = createTComplianceRule(crId1);
         allEntities.put(crId1, ruleOne);
 
-        TComplianceRule ruleTwo = createTComplianceRule(crId2);
+        OTComplianceRule ruleTwo = createTComplianceRule(crId2);
         allEntities.put(crId2, ruleTwo);
 
-        TComplianceRule ruleThree = createTComplianceRule(crId3);
+        OTComplianceRule ruleThree = createTComplianceRule(crId3);
         allEntities.put(crId3, ruleThree);
 
-        TComplianceRule ruleFour = createTComplianceRule(crId4);
+        OTComplianceRule ruleFour = createTComplianceRule(crId4);
         allEntities.put(crId4, ruleFour);
 
         persist(allEntities);

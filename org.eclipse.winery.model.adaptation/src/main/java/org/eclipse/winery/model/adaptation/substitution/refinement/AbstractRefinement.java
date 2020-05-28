@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import org.eclipse.winery.common.ids.definitions.RefinementId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.adaptation.substitution.AbstractSubstitution;
-import org.eclipse.winery.model.tosca.TRefinementModel;
+import org.eclipse.winery.model.tosca.OTRefinementModel;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.topologygraph.matching.IToscaMatcher;
@@ -44,7 +44,7 @@ public abstract class AbstractRefinement extends AbstractSubstitution {
 
     protected ServiceTemplateId refinementServiceTemplateId;
 
-    private List<TRefinementModel> patternRefinementModels;
+    private List<OTRefinementModel> patternRefinementModels;
     private RefinementChooser refinementChooser;
 
     public AbstractRefinement(RefinementChooser refinementChooser, Class<? extends RefinementId> idClass, String versionAppendix) {
@@ -109,7 +109,7 @@ public abstract class AbstractRefinement extends AbstractSubstitution {
 
     public abstract boolean getLoopCondition(TTopologyTemplate topology);
 
-    public abstract IToscaMatcher getMatcher(TRefinementModel prm);
+    public abstract IToscaMatcher getMatcher(OTRefinementModel prm);
 
     public abstract boolean isApplicable(RefinementCandidate candidate, TTopologyTemplate topology);
 

@@ -1,5 +1,5 @@
-/********************************************************************************
- * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
+/*******************************************************************************
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -10,7 +10,8 @@
  * which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- ********************************************************************************/
+ *******************************************************************************/
+
 package org.eclipse.winery.model.tosca;
 
 import java.util.List;
@@ -27,19 +28,23 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tPatternRefinementModel")
-public class TPatternRefinementModel extends TRefinementModel {
+@XmlType(name = "otTopologyFragmentRefinementModel")
+public class OTTopologyFragmentRefinementModel extends OTRefinementModel {
 
     @XmlElement(name = "RefinementStructure")
-    private TTopologyTemplate refinementStructure;
+    protected TTopologyTemplate refinementStructure;
 
     @XmlElementWrapper(name = "AttributeMappings")
     @XmlElement(name = "AttributeMapping")
-    private List<AttributeMapping> attributeMappings;
+    protected List<OTAttributeMapping> attributeMappings;
 
     @XmlElementWrapper(name = "StayMappings")
     @XmlElement(name = "StayMapping")
-    private List<TStayMapping> stayMappings;
+    protected List<OTStayMapping> stayMappings;
+
+    @XmlElementWrapper(name = "DeploymentArtifactMappings")
+    @XmlElement(name = "DeploymentArtifactMapping")
+    protected List<OTDeploymentArtifactMapping> deploymentArtifactMappings;
 
     @NonNull
     @JsonIgnore
@@ -60,20 +65,28 @@ public class TPatternRefinementModel extends TRefinementModel {
     }
 
     @Nullable
-    public List<AttributeMapping> getAttributeMappings() {
+    public List<OTAttributeMapping> getAttributeMappings() {
         return attributeMappings;
     }
 
-    public void setAttributeMappings(List<AttributeMapping> attributeMappings) {
+    public void setAttributeMappings(List<OTAttributeMapping> attributeMappings) {
         this.attributeMappings = attributeMappings;
     }
 
     @Nullable
-    public List<TStayMapping> getStayMappings() {
+    public List<OTStayMapping> getStayMappings() {
         return stayMappings;
     }
 
-    public void setStayMappings(List<TStayMapping> stayMappings) {
+    public void setStayMappings(List<OTStayMapping> stayMappings) {
         this.stayMappings = stayMappings;
+    }
+
+    public List<OTDeploymentArtifactMapping> getDeploymentArtifactMappings() {
+        return deploymentArtifactMappings;
+    }
+
+    public void setDeploymentArtifactMappings(List<OTDeploymentArtifactMapping> deploymentArtifactMappings) {
+        this.deploymentArtifactMappings = deploymentArtifactMappings;
     }
 }

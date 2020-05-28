@@ -55,6 +55,7 @@ public abstract class DefinitionsChildId extends GenericId {
         ServiceTemplateId.class,
         ComplianceRuleId.class,
         PatternRefinementModelId.class,
+        TopologyFragmentRefinementModelId.class,
         TestRefinementModelId.class
     );
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.rest.resources.patternrefinementmodels;
+package org.eclipse.winery.repository.rest.resources.refinementmodels;
 
 import java.util.List;
 
@@ -22,14 +22,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.winery.model.tosca.TEntityTemplate;
-import org.eclipse.winery.model.tosca.TPrmModelElementType;
-import org.eclipse.winery.model.tosca.TStayMapping;
+import org.eclipse.winery.model.tosca.OTPrmModelElementType;
+import org.eclipse.winery.model.tosca.OTStayMapping;
 import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelMappingsResource;
 import org.eclipse.winery.repository.rest.resources.apiData.PrmStayMappingApiData;
 
-public class StayMappingsResource extends AbstractRefinementModelMappingsResource {
+public class StayMappingsResource extends AbstractRefinementModelMappingsResource<OTStayMapping> {
 
-    public StayMappingsResource(PatternRefinementModelResource res, List<TStayMapping> stayMappings) {
+    public StayMappingsResource(TopologyFragmentRefinementModelResource res, List<OTStayMapping> stayMappings) {
         super(res);
         this.mappings = stayMappings;
     }
@@ -37,10 +37,10 @@ public class StayMappingsResource extends AbstractRefinementModelMappingsResourc
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public List<TStayMapping> addPropertyMappingFromApi(PrmStayMappingApiData mapping) {
+    public List<OTStayMapping> addPropertyMappingFromApi(PrmStayMappingApiData mapping) {
         TEntityTemplate detectorElement, refinementNode;
 
-        if (mapping.modelElementType == TPrmModelElementType.NODE) {
+        if (mapping.modelElementType == OTPrmModelElementType.NODE) {
             detectorElement = this.res.getDetector().getComponentInstanceJSON().getNodeTemplate(mapping.detectorNode);
             refinementNode = this.res.getRefinementTopology().getComponentInstanceJSON().getNodeTemplate(mapping.refinementNode);
         } else {
@@ -48,6 +48,6 @@ public class StayMappingsResource extends AbstractRefinementModelMappingsResourc
             refinementNode = this.res.getRefinementTopology().getComponentInstanceJSON().getRelationshipTemplate(mapping.refinementNode);
         }
 
-        return (List<TStayMapping>) this.addMapping(mapping.createTPrmStayMapping(detectorElement, refinementNode));
+        return this.addMapping(mapping.createTPrmStayMapping(detectorElement, refinementNode));
     }
 }

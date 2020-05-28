@@ -24,6 +24,7 @@ import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
 import { SelectModule } from 'ng2-select';
 import { StayMappingsComponent } from './stayMappings/stayMappings.component';
 import { AttributeMappingsComponent } from './attributeMappings/attributeMappings.component';
+import { DeploymentArtifactsMappingsComponent } from './deploymentArtifactsMappings/deploymentArtifactsMappings.component';
 
 @NgModule({
     imports: [
@@ -46,6 +47,7 @@ import { AttributeMappingsComponent } from './attributeMappings/attributeMapping
         RelationMappingsComponent,
         AttributeMappingsComponent,
         StayMappingsComponent,
+        DeploymentArtifactsMappingsComponent,
     ]
 })
 export class RefinementModelsModule {

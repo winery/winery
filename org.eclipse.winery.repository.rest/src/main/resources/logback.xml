@@ -21,6 +21,7 @@
     </appender>
 
     <logger name="org.eclipse.winery" level="DEBUG"/>
+    <logger name="org.glassfish.jersey" level="DEBUG"/>
     <logger name="org.apache.catalina.core.ApplicationDispatcher" level="SEVERE"/>
 
     <root level="info">

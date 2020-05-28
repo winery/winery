@@ -27,16 +27,16 @@ import org.eclipse.winery.model.adaptation.substitution.refinement.AbstractRefin
 import org.eclipse.winery.model.adaptation.substitution.refinement.DefaultRefinementChooser;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementChooser;
-import org.eclipse.winery.model.tosca.AttributeMapping;
-import org.eclipse.winery.model.tosca.TAttributeMappingType;
+import org.eclipse.winery.model.tosca.OTAttributeMapping;
+import org.eclipse.winery.model.tosca.OTAttributeMappingType;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TPatternRefinementModel;
-import org.eclipse.winery.model.tosca.TPrmMapping;
-import org.eclipse.winery.model.tosca.TRefinementModel;
-import org.eclipse.winery.model.tosca.TRelationDirection;
+import org.eclipse.winery.model.tosca.OTPatternRefinementModel;
+import org.eclipse.winery.model.tosca.OTPrmMapping;
+import org.eclipse.winery.model.tosca.OTRefinementModel;
+import org.eclipse.winery.model.tosca.OTRelationDirection;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
-import org.eclipse.winery.model.tosca.TStayMapping;
+import org.eclipse.winery.model.tosca.OTStayMapping;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -72,15 +72,15 @@ public class PatternRefinement extends AbstractRefinement {
     }
 
     public void applyRefinement(RefinementCandidate refinement, TTopologyTemplate topology) {
-        if (!(refinement.getRefinementModel() instanceof TPatternRefinementModel)) {
+        if (!(refinement.getRefinementModel() instanceof OTPatternRefinementModel)) {
             throw new UnsupportedOperationException("The refinement candidate is not a PRM!");
         }
 
         // determine the elements that are staying
-        TPatternRefinementModel prm = (TPatternRefinementModel) refinement.getRefinementModel();
+        OTPatternRefinementModel prm = (OTPatternRefinementModel) refinement.getRefinementModel();
         List<TEntityTemplate> stayingRefinementElements = prm.getStayMappings() == null ? new ArrayList<>() :
             prm.getStayMappings().stream()
-                .map(TPrmMapping::getRefinementNode)
+                .map(OTPrmMapping::getRefinementNode)
                 .collect(Collectors.toList());
 
         // import the refinement structure
@@ -143,7 +143,7 @@ public class PatternRefinement extends AbstractRefinement {
 
     public void applyPropertyMappings(RefinementCandidate refinement, String detectorNodeId, TEntityTemplate matchingEntity,
                                       TTopologyTemplate topology, Map<String, String> idMapping) {
-        List<AttributeMapping> propertyMappings = ((TPatternRefinementModel) refinement.getRefinementModel()).getAttributeMappings();
+        List<OTAttributeMapping> propertyMappings = ((OTPatternRefinementModel) refinement.getRefinementModel()).getAttributeMappings();
         if (Objects.nonNull(propertyMappings)) {
             propertyMappings.stream()
                 .filter(mapping -> mapping.getDetectorNode().getId().equals(detectorNodeId))
@@ -159,7 +159,7 @@ public class PatternRefinement extends AbstractRefinement {
 
                     if (Objects.nonNull(matchingEntity.getProperties()) && Objects.nonNull(sourceProperties) && !sourceProperties.isEmpty()
                         && Objects.nonNull(targetProperties)) {
-                        if (mapping.getType() == TAttributeMappingType.ALL) {
+                        if (mapping.getType() == OTAttributeMappingType.ALL) {
                             sourceProperties.forEach(targetProperties::replace);
                         } else {
                             // TPrmPropertyMappingType.SELECTIVE
@@ -180,7 +180,7 @@ public class PatternRefinement extends AbstractRefinement {
     private boolean redirectExternalRelations(RefinementCandidate refinement, TNodeTemplate detectorNode, TNodeTemplate matchingNode,
                                               TTopologyTemplate topology, Map<String, String> idMapping) {
         // if the current element is a staying element, the external elements do not need to be redirected
-        return this.getStayMappingsOfCurrentElement((TPatternRefinementModel) refinement.getRefinementModel(), detectorNode)
+        return this.getStayMappingsOfCurrentElement((OTPatternRefinementModel) refinement.getRefinementModel(), detectorNode)
             .findFirst().isPresent()
             ||
             this.getExternalRelations(matchingNode, refinement, topology)
@@ -190,7 +190,7 @@ public class PatternRefinement extends AbstractRefinement {
                         // use anyMatch to reduce runtime
                         .anyMatch(relationMapping -> {
                             if (ModelUtilities.isOfType(relationMapping.getRelationType(), relationship.getType(), this.relationshipTypes)) {
-                                if (relationMapping.getDirection() == TRelationDirection.INGOING
+                                if (relationMapping.getDirection() == OTRelationDirection.INGOING
                                     && (Objects.isNull(relationMapping.getValidSourceOrTarget())
                                     || relationship.getSourceElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget()))
                                 ) {
@@ -214,7 +214,7 @@ public class PatternRefinement extends AbstractRefinement {
                 );
     }
 
-    private void redirectInternalRelations(TPatternRefinementModel prm, TNodeTemplate currentDetectorNode,
+    private void redirectInternalRelations(OTPatternRefinementModel prm, TNodeTemplate currentDetectorNode,
                                            TNodeTemplate matchingNodeInTopology, TTopologyTemplate topology) {
         if (prm.getStayMappings() != null) {
             topology.getRelationshipTemplates()
@@ -265,7 +265,7 @@ public class PatternRefinement extends AbstractRefinement {
     }
 
     @Override
-    public IToscaMatcher getMatcher(TRefinementModel prm) {
+    public IToscaMatcher getMatcher(OTRefinementModel prm) {
         return new ToscaPrmPropertyMatcher(prm.getDetector().getNodeTemplateOrRelationshipTemplate(), repository.getNamespaceManager());
     }
 
@@ -308,7 +308,7 @@ public class PatternRefinement extends AbstractRefinement {
         }
     }
 
-    private Stream<TStayMapping> getStayMappingsOfCurrentElement(TPatternRefinementModel prm, TEntityTemplate currentDetectorNode) {
+    private Stream<OTStayMapping> getStayMappingsOfCurrentElement(OTPatternRefinementModel prm, TEntityTemplate currentDetectorNode) {
         return prm.getStayMappings() == null ? Stream.of() :
             prm.getStayMappings().stream()
                 .filter(stayMapping -> stayMapping.getDetectorNode().getId().equals(currentDetectorNode.getId()));

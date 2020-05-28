@@ -25,8 +25,8 @@ import org.eclipse.winery.model.tosca.visitor.Visitor;
 import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tComplianceRule")
-public class TComplianceRule extends HasId implements HasName, HasTargetNamespace {
+@XmlType(name = "otComplianceRule")
+public class OTComplianceRule extends HasId implements HasName, HasTargetNamespace {
 
     @XmlAttribute
     protected String name;

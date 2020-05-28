@@ -103,7 +103,8 @@ export class RefinementMappingsService {
 
     private getRefinementStructureUrl(): string {
         let url = this.path;
-        if (this.sharedData.toscaComponent.toscaType === ToscaTypes.PatternRefinementModel) {
+        if (this.sharedData.toscaComponent.toscaType === ToscaTypes.PatternRefinementModel
+            || this.sharedData.toscaComponent.toscaType === ToscaTypes.TopologyFragmentRefinementModel) {
             url += '/refinementstructure';
         } else if (this.sharedData.toscaComponent.toscaType === ToscaTypes.TestRefinementModel) {
             url += '/testfragment';

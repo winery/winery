@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,18 +12,18 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.rest.resources.testrefinementmodels;
+package org.eclipse.winery.repository.rest.resources.refinementmodels;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithoutTypeReferenceResource;
 
-public class TestRefinementModelsResource extends AbstractComponentsWithoutTypeReferenceResource<TestRefinementModelResource> {
+public class PatternRefinementModelsResource extends AbstractComponentsWithoutTypeReferenceResource<PatternRefinementModelResource>  {
 
     @Override
     @Path("{namespace}/{id}/")
-    public TestRefinementModelResource getComponentInstanceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+    public PatternRefinementModelResource getComponentInstanceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
         return this.getComponentInstanceResource(namespace, id, true);
     }
 }

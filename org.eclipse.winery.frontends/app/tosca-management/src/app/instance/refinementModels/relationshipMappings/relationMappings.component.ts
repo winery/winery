@@ -59,7 +59,7 @@ export class RelationMappingsComponent implements OnInit {
 
     constructor(private service: RefinementMappingsService,
                 private notify: WineryNotificationService,
-                private sharedData: InstanceService,
+                public sharedData: InstanceService,
                 private modalService: BsModalService) {
     }
 

@@ -17,14 +17,14 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TRelationDirection;
-import org.eclipse.winery.model.tosca.TRelationMapping;
+import org.eclipse.winery.model.tosca.OTRelationDirection;
+import org.eclipse.winery.model.tosca.OTRelationMapping;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class RelationMappingApiData extends AbstractPrmMappingElement {
 
-    public TRelationDirection direction;
+    public OTRelationDirection direction;
     public QName relationType;
     public QName validSourceOrTarget;
 
@@ -33,8 +33,8 @@ public class RelationMappingApiData extends AbstractPrmMappingElement {
     }
 
     @JsonIgnore
-    public TRelationMapping createTRelationMapping(TNodeTemplate detectorNodeTemplate, TNodeTemplate refinementNodeTemplate) {
-        TRelationMapping mapping = new TRelationMapping();
+    public OTRelationMapping createTRelationMapping(TNodeTemplate detectorNodeTemplate, TNodeTemplate refinementNodeTemplate) {
+        OTRelationMapping mapping = new OTRelationMapping();
         mapping.setId(this.id);
         mapping.setDetectorNode(detectorNodeTemplate);
         mapping.setRefinementNode(refinementNodeTemplate);

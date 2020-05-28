@@ -69,6 +69,7 @@ export class SubMenuItems {
     static readonly source: SubMenuItem = { displayName: 'Source', urlFragment: 'source' };
     static readonly sourceInterfaces: SubMenuItem = { displayName: 'Source Interfaces', urlFragment: 'sourceinterfaces' };
     static readonly stayMappings: SubMenuItem = { displayName: 'Stay Mappings', urlFragment: 'staymappings' };
+    static readonly deploymentArtifactMappings: SubMenuItem = { displayName: 'Deployment Artifacts Mappings', urlFragment: 'deploymentartifactsmappings' };
     static readonly tags: SubMenuItem = { displayName: 'Tags', urlFragment: 'tags' };
     static readonly targetInterfaces: SubMenuItem = { displayName: 'Target Interfaces', urlFragment: 'targetinterfaces' };
     static readonly templates: SubMenuItem = { displayName: 'Templates', urlFragment: 'templates' };
