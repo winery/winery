@@ -22,7 +22,7 @@ import { ModalDirective } from 'ngx-bootstrap';
 import { ArtifactApiData, WineryInstance } from '../../../model/wineryComponent';
 import { backendBaseURL, hostURL } from '../../../configuration';
 import { Router } from '@angular/router';
-import { FilesApiData, FilesService } from '../../artifactTemplates/filesTag/files.service.';
+import { FilesApiData, FilesService } from '../filesTag/files.service';
 import { GenerateData } from '../../../wineryComponentExists/wineryComponentExists.component';
 import { ToscaTypes } from '../../../model/enums';
 import { WineryVersion } from '../../../model/wineryVersion';

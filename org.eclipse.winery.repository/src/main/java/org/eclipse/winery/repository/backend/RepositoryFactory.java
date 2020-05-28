@@ -103,7 +103,7 @@ public class RepositoryFactory {
      * Reconfigures based on Environment
      */
     public static void reconfigure() throws Exception {
-        final Optional<GitBasedRepositoryConfiguration> gitBasedRepositoryConfiguration = Environments.getInstance().getGitBasedRepsitoryConfiguration();
+        final Optional<GitBasedRepositoryConfiguration> gitBasedRepositoryConfiguration = Environments.getInstance().getGitBasedRepositoryConfiguration();
         final FileBasedRepositoryConfiguration filebasedRepositoryConfiguration = Environments.getInstance().getFilebasedRepositoryConfiguration();
 
         // Determine whether the filebased repository could be git repository.

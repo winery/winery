@@ -6,9 +6,7 @@ RUN mvn package -DskipTests=true -Dmaven.javadoc.skip=true -B
 FROM tomcat:9-jdk8
 LABEL maintainer = "Oliver Kopp <kopp.dev@gmail.com>, Michael Wurster <miwurster@gmail.com>, Lukas Harzenetter <lharzenetter@gmx.de>"
 
-ARG DOCKERIZE_VERSION=v0.3.0
-ARG USER_ID=1724
-
+ENV WINERY_USER_ID 1724
 ENV WINERY_USER_HOME /opt/winery
 ENV WINERY_REPOSITORY_URL ""
 ENV WINERY_HEAP_MAX 2048m
@@ -38,19 +36,23 @@ ENV WINERY_FEATURE_RADON false
 ENV WINERY_FEATURE_SPLITTING false
 ENV WINERY_FEATURE_TEST_REFINEMENT false
 ENV WINERY_FEATURE_EDMM_MODELING false
+ENV DOCKERIZE_VERSION v0.6.1
 
 RUN rm /dev/random && ln -s /dev/urandom /dev/random \
     && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \
     && apt-get update -qq && apt-get install -qqy \
         git \
         git-lfs \
+        sudo \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf ${CATALINA_HOME}/webapps/* \
-    && sed -ie "s/securerandom.source=file:\/dev\/random/securerandom.source=file:\/dev\/.\/urandom/g" /usr/local/openjdk-8/jre/lib/security/java.security \
     && wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+    && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && rm -rf ${CATALINA_HOME}/webapps/* \
+    && sed -ie "s/securerandom.source=file:\/dev\/random/securerandom.source=file:\/dev\/.\/urandom/g" /usr/local/openjdk-8/jre/lib/security/java.security \
+    && git config --global core.fscache true \
+    && git lfs install \
+    && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 COPY --from=builder /tmp/winery/org.eclipse.winery.repository.rest/target/winery.war ${CATALINA_HOME}/webapps/winery.war
 COPY --from=builder /tmp/winery/org.eclipse.winery.frontends/target/tosca-management.war ${CATALINA_HOME}/webapps/ROOT.war
@@ -58,27 +60,23 @@ COPY --from=builder /tmp/winery/org.eclipse.winery.frontends/target/topologymode
 COPY --from=builder /tmp/winery/org.eclipse.winery.frontends/target/workflowmodeler.war ${CATALINA_HOME}/webapps/winery-workflowmodeler.war
 
 # create Winery user and home dir
-RUN mkdir ${WINERY_USER_HOME}
-RUN groupadd -g ${USER_ID} winery
-RUN useradd -s /bin/nologin -u ${USER_ID} -g winery -d ${WINERY_USER_HOME} --system winery
-RUN chown winery: ${WINERY_USER_HOME}
+RUN mkdir ${WINERY_USER_HOME} \
+    && groupadd -g ${WINERY_USER_ID} winery \
+    && useradd -s /bin/nologin -u ${WINERY_USER_ID} -g winery -d ${WINERY_USER_HOME} --system winery \
+    && chmod a+rwx ${WINERY_USER_HOME} \
+    && chown winery: ${WINERY_USER_HOME} \
+    && echo "winery:winery" | chpasswd \
+    && usermod -aG sudo winery
 
 # create repository dir and change ownership
-RUN mkdir /var/repository
-RUN chmod a+rwx /var/repository
-RUN chown winery: /var/repository
+RUN mkdir /var/repository \
+    && chmod a+rwx /var/repository \
+    && chown winery: /var/repository
 
 # workaround because catalina has to be able to write files in the catalina_home dir
 RUN chmod -R a+w ${CATALINA_HOME}
 
-# install git lfs and set git config
-RUN git config --global core.fscache true
-RUN git lfs install
-
-# copy config
 COPY --chown=winery:winery docker/winery.yml.tpl ${WINERY_USER_HOME}/winery.yml.tpl
-
-# configure entrypoint
 COPY --chown=winery:winery docker/docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 

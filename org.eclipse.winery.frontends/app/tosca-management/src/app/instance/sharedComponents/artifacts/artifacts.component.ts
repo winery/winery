@@ -42,6 +42,7 @@ export class ArtifactsComponent implements OnInit {
     @ViewChild('removeModal') removeModal: ModalDirective;
     validatorObject: WineryValidatorObject;
 
+    isFileRemote = false;
     selectedFile: File;
     allowedTypes = '';
 
@@ -73,7 +74,7 @@ export class ArtifactsComponent implements OnInit {
     addArtifact() {
         this.artifacts.push(Object.assign(new Artifact(), this.selectedArtifact));
         this.loading = true;
-        this.artifactsService.createArtifact(this.selectedArtifact, this.selectedFile).subscribe(() => {
+        this.artifactsService.createArtifact(this.selectedArtifact, this.selectedFile, this.isFileRemote).subscribe(() => {
             this.loading = false;
             this.selectedArtifact = new Artifact();
         });

@@ -26,6 +26,7 @@ import { InterfaceDefinitionsService } from './interfaceDefinitions.service';
 import { SelectModule } from 'ng2-select';
 import { ArtifactsModule } from '../artifacts/artifacts.module';
 import { DependenciesComponent } from './dependencies/dependencies.component';
+import { FilesModule } from '../filesTag/files.module';
 
 @NgModule({
     imports: [
@@ -40,6 +41,7 @@ import { DependenciesComponent } from './dependencies/dependencies.component';
         WineryDuplicateValidatorModule,
         ParametersModule,
         ArtifactsModule,
+        FilesModule
     ],
     exports: [
         InterfaceDefinitionsComponent,

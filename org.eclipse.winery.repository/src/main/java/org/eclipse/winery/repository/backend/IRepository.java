@@ -99,8 +99,10 @@ import org.eclipse.winery.repository.backend.xsd.RepositoryBasedXsdImportManager
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
+import org.eclipse.winery.repository.export.entries.RemoteRefBasedCsarEntry;
 
 import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.tika.mime.MediaType;
 import org.slf4j.Logger;
@@ -306,6 +308,16 @@ public interface IRepository extends IWineryRepositoryCommon {
             }
         }
         return mimeType;
+    }
+
+    default String getMimeType(RemoteRefBasedCsarEntry ref) throws IOException {
+        MediaType mediaType = BackendUtils.getMimeType(new BufferedInputStream(ref.getInputStream()), FilenameUtils.getName(ref.getUrl().getPath()));
+        if (Objects.nonNull(mediaType)) {
+            return mediaType.toString();
+        } else {
+            LOGGER.debug("Could not determine mimetype of the remote file");
+            return "application/octet-stream";
+        }
     }
 
     /**
@@ -605,8 +617,8 @@ public interface IRepository extends IWineryRepositoryCommon {
 
         final TNodeType nodeType = this.getElement(id);
 
-        // add all referenced requirement types, but only in XML mode. YAML does not have requirement types
-
+        // Add all referenced requirement types, but only in XML mode. 
+        // For YAML mode add referenced RelationshipType and CapabilityType, if present
         TNodeType.RequirementDefinitions reqDefsContainer = nodeType.getRequirementDefinitions();
         if (reqDefsContainer != null) {
             List<TRequirementDefinition> reqDefs = reqDefsContainer.getRequirementDefinition();
@@ -617,6 +629,9 @@ public interface IRepository extends IWineryRepositoryCommon {
                 } else {
                     if (Objects.nonNull(reqDef.getRelationship())) {
                         ids.add(new RelationshipTypeId(reqDef.getRelationship()));
+                    }
+                    if (Objects.nonNull(reqDef.getCapability())) {
+                        ids.add(new CapabilityTypeId(reqDef.getCapability()));
                     }
                 }
             }
@@ -629,6 +644,12 @@ public interface IRepository extends IWineryRepositoryCommon {
             for (TCapabilityDefinition capDef : capDefs) {
                 CapabilityTypeId capTypeId = new CapabilityTypeId(capDef.getCapabilityType());
                 ids.add(capTypeId);
+
+                // Add all types referenced in valid source types
+                if (Objects.nonNull(capDef.getValidSourceTypes())) {
+                    capDef.getValidSourceTypes()
+                        .forEach(sourceType -> ids.add(new NodeTypeId(sourceType)));
+                }
             }
         }
 

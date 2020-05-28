@@ -30,6 +30,7 @@ import { ValidSourcesAndTargetsComponent } from '../../instance/relationshipType
 import { WineryReadmeComponent } from '../../wineryReadmeModule/wineryReadme.component';
 import { WineryLicenseComponent } from '../../wineryLicenseModule/wineryLicense.component';
 import { InterfaceDefinitionsComponent } from '../../instance/sharedComponents/interfaceDefinitions/interfaceDefinitions.component';
+import { FilesComponent } from '../../instance/sharedComponents/filesTag/files.component';
 
 const toscaType = ToscaTypes.RelationshipType;
 
@@ -55,6 +56,7 @@ const relationshipTypeRoutes: Routes = [
             { path: 'inheritance', component: InheritanceComponent },
             { path: 'documentation', component: DocumentationComponent },
             { path: 'xml', component: EditXMLComponent },
+            { path: 'files', component: FilesComponent },
             { path: '', redirectTo: 'readme', pathMatch: 'full' }
         ]
     }

@@ -25,8 +25,8 @@
     <winery-modal-body>
         <form #form="ngForm">
             <div class="form-group">
-                <label class="control-label" for="name-{{uuid}}">Artifact</label>
-                <ng-select id="name-{{uuid}}" [items]="selectableArtifacts" (selected)="onArtifactSelected($event)"
+                <label class="control-label">Artifacts and Files</label>
+                <ng-select [items]="selectableArtifacts" (selected)="onArtifactSelected($event)"
                            [disabled]="!instanceService?.currentVersion?.editable">
                 </ng-select>
             </div>
