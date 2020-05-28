@@ -36,14 +36,17 @@ export class ArtifactsService {
         return this.getJson<Artifact[]>(backendBaseURL + tokens.join('/') + '/artifacts');
     }
 
-    createArtifact(artifact: Artifact, file: File) {
+    createArtifact(artifact: Artifact, file: File, isFileRemote: boolean) {
         const url = `${backendBaseURL}${this.route.url}/${artifact.name}`;
         const formData: FormData = new FormData();
-        formData.append('file', file, file.name);
-        return concat(
-            this.postJson(backendBaseURL + this.route.url, artifact),
-            this.http.post(url, formData, { observe: 'response', responseType: 'text' })
-        ).pipe(takeLast(1));
+        if (!isFileRemote) {
+            formData.append('file', file, file.name);
+            return concat(
+                this.postJson(backendBaseURL + this.route.url, artifact),
+                this.http.post(url, formData, { observe: 'response', responseType: 'text' })
+            ).pipe(takeLast(1));
+        }
+        return this.postJson(backendBaseURL + this.route.url, artifact);
     }
 
     deleteArtifact(artifact: Artifact): Observable<HttpResponse<string>> {

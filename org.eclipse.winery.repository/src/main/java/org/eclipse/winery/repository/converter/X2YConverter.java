@@ -161,20 +161,44 @@ public class X2YConverter {
         }
 
         if (convertImports) {
-            builder.setImports(convertImports());
+            List<TMapImportDefinition> imports = convertImports();
+            TMapImportDefinition existingImports = prepareExistingImports(node.getImportDefinitions());
+            if (Objects.nonNull(imports)) {
+                imports.stream().findFirst().ifPresent(def -> def.putAll(existingImports));
+            } else if (!existingImports.isEmpty()) {
+                imports = new ArrayList<>();
+                imports.add(existingImports);
+            }
+            builder.setImports(imports);
         }
 
         return builder.build();
+    }
+
+    private TMapImportDefinition prepareExistingImports(Map<String, QName> importDefinitions) {
+        TMapImportDefinition tMapImportDefinition = new TMapImportDefinition();
+        importDefinitions.forEach((key, value) -> {
+            TImportDefinition tImportDefinition =
+                new TImportDefinition.Builder(key)
+                    .setNamespacePrefix(getNamespacePrefix(value.getNamespaceURI()))
+                    .setNamespaceUri(value.getNamespaceURI())
+                    .build();
+            tMapImportDefinition.put(value.getLocalPart(), tImportDefinition);
+        });
+
+        return tMapImportDefinition;
     }
 
     public List<TMapImportDefinition> convertImports() {
         List<TMapImportDefinition> imports = new ArrayList<>();
         TMapImportDefinition tMapImportDefinition = new TMapImportDefinition();
         for (Map.Entry<DefinitionsChildId, Definitions> importDefinition : importDefinitions.entrySet()) {
-            TImportDefinition tImportDefinition = new TImportDefinition.Builder(YamlExporter.getDefinitionsName(repository, importDefinition.getKey()).concat(Constants.SUFFIX_TOSCA_DEFINITIONS))
-                .setNamespacePrefix(getNamespacePrefix(importDefinition.getKey().getQName().getNamespaceURI()))
-                .setNamespaceUri(importDefinition.getKey().getQName().getNamespaceURI())
-                .build();
+            TImportDefinition tImportDefinition =
+                new TImportDefinition.Builder(YamlExporter.getDefinitionsName(repository, importDefinition.getKey())
+                    .concat(Constants.SUFFIX_TOSCA_DEFINITIONS))
+                    .setNamespacePrefix(getNamespacePrefix(importDefinition.getKey().getQName().getNamespaceURI()))
+                    .setNamespaceUri(importDefinition.getKey().getQName().getNamespaceURI())
+                    .build();
             tMapImportDefinition.put(importDefinition.getKey().getQName().getLocalPart(), tImportDefinition);
         }
         if (!tMapImportDefinition.isEmpty()) {

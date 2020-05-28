@@ -28,6 +28,7 @@
             <winery-selectable-list #interfacesList
                                     [title]="'Interfaces'"
                                     [rows]="interfaces"
+                                    [currentSelected]="selectedInterface"
                                     (addButtonClicked)="onAddInterface()"
                                     (selectionChanged)="onInterfaceSelected($event)"
                                     (removeButtonClicked)="onRemoveInterface()">
@@ -55,6 +56,7 @@
             <winery-selectable-list #operationsList
                                     [title]="'Operations'"
                                     [rows]="selectedInterface.operations"
+                                    [currentSelected]="selectedOperation"
                                     (addButtonClicked)="onAddOperation()"
                                     (selectionChanged)="onOperationSelected($event)"
                                     (removeButtonClicked)="onRemoveOperation()">
@@ -74,6 +76,8 @@
             <div class="form-group">
                 <label for="artifact" class="control-label">Artifact</label>
                 <ng-select id="artifact" [items]="selectableArtifacts" (selected)="onArtifactSelected($event)"
+                           [allowClear]="true"
+                           (removed)="onArtifactRemoved($event)"
                            [active]="selectedArtifact" [disabled]="!instanceService?.currentVersion?.editable">
                 </ng-select>
             </div>
@@ -84,6 +88,7 @@
                                [parameters]="selectedOperation.outputs" [columns]="columnsOutputParameters">
             </winery-parameters>
             <winery-dependencies [dependencies]="selectedOperation.implementation?.dependencies"
+                                 (newDependencyAdded)="addNewDependency($event)"
                                  [selectableArtifacts]="selectableArtifacts">
             </winery-dependencies>
         </div>

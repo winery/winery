@@ -27,10 +27,12 @@ import org.slf4j.LoggerFactory;
  * KeystoreFile.
  */
 public class AccountabilityConfigurationManager {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountabilityConfigurationManager.class);
-    private static AccountabilityConfigurationManager instance;
+
     private static final String DEFAULT_KEYSTORE_FILE_NAME = "UTC--2019-01-23T10-48-04.632976800Z--44fb31577305b7b6ed8ff05ee7c0f07b3cc99306.json";
-    private static final File ETHEREUM_CREDENTIALS_FILE_PATH = new File(System.getProperty("user.home") + "/.winery/accountability-credentials");
+
+    private static AccountabilityConfigurationManager instance;
 
     private AccountabilityConfigurationManager() {
     }
@@ -44,10 +46,11 @@ public class AccountabilityConfigurationManager {
      * properties
      */
     public void setDefaultKeystore() {
+        File credentialsDirectory = new File(Environment.getInstance().getConfigDirectory(), "accountability-credentials");
         try {
             try (InputStream defaultKeystoreStream = getClass().getClassLoader().getResourceAsStream(DEFAULT_KEYSTORE_FILE_NAME)) {
                 Objects.requireNonNull(defaultKeystoreStream);
-                FileUtils.copyInputStreamToFile(defaultKeystoreStream, new File(ETHEREUM_CREDENTIALS_FILE_PATH.toString() + "/" + DEFAULT_KEYSTORE_FILE_NAME));
+                FileUtils.copyInputStreamToFile(defaultKeystoreStream, new File(credentialsDirectory, DEFAULT_KEYSTORE_FILE_NAME));
                 Environments.getInstance().getAccountabilityConfig().setEthereumCredentialsFileName(DEFAULT_KEYSTORE_FILE_NAME);
                 Environments.getInstance().getAccountabilityConfig().save();
             }
@@ -57,7 +60,7 @@ public class AccountabilityConfigurationManager {
     }
 
     public static File getEthereumCredentialsFilePath() {
-        return ETHEREUM_CREDENTIALS_FILE_PATH;
+        return new File(Environment.getInstance().getConfigDirectory(), "accountability-credentials");
     }
 
     public void restoreDefaults() throws IOException {
@@ -73,9 +76,10 @@ public class AccountabilityConfigurationManager {
      * @throws IOException if an error occurs when trying to write to the application keystore file.
      */
     public void setNewKeystoreFile(InputStream keystoreFile, String fileName) throws IOException {
+        File credentialsDirectory = new File(Environment.getInstance().getConfigDirectory(), "accountability-credentials");
         try {
             Environments.getInstance().getAccountabilityConfig().setEthereumCredentialsFileName(fileName);
-            FileUtils.copyInputStreamToFile(keystoreFile, new File(ETHEREUM_CREDENTIALS_FILE_PATH.toString() + "/" + fileName));
+            FileUtils.copyInputStreamToFile(keystoreFile, new File(credentialsDirectory, fileName));
         } catch (IOException e) {
             LOGGER.error("Cannot open stream for Ethereum keystore application file. Reason: {}", e.getMessage());
             throw e;

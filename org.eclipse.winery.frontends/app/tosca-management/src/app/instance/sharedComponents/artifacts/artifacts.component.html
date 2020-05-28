@@ -42,7 +42,7 @@
         <form #form="ngForm">
             <div class="form-group">
                 <label class="control-label" for="name">Name</label>
-                <input type="text" #nameInput #propName="ngModel" id="name" name="key" autocomplete=off required
+                <input type="text" #nameInput #propName="ngModel" id="name" name="key" autocomplete=off
                        class="form-control" [(ngModel)]="selectedArtifact.name"
                        [wineryDuplicateValidator]="validatorObject"/>
                 <div *ngIf="propName.errors && (propName.dirty || propName.touched)"
@@ -57,12 +57,32 @@
                                        (selectedValueChanged)="onArtifactTypeChanged($event.value)">
                 </winery-qname-selector>
             </div>
+
             <div class="form-group">
-                <label for="file">Select Artifact File (will be uploaded when clicking on "Add")</label>
-                <br>
-                <input type="file" #fileInput id="file" name="file" [accept]="allowedTypes"
-                       (change)="fileSelected($event.target.files)"/>
+                <div class="row">
+
+                    <div class="col-md-9">
+                        <label for="file">Select Artifact File (will be uploaded when clicking on "Add")</label>
+                        <br>
+                        <input type="file" #fileInput id="file" name="file" [disabled]="isFileRemote"
+                               [accept]="allowedTypes" (change)="fileSelected($event.target.files)"/>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="checkbox">
+                            <label>
+                                <input id="fileRemote" name="fileRemote" [(ngModel)]="isFileRemote" (change)="selectedArtifact.file = null" type="checkbox">
+                                Specify URL
+                            </label>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <div class="form-group" *ngIf="isFileRemote">
+                <label class="control-label" for="fileRef">Artifact URL</label>
+                <input class="form-control" id="fileRef" name="fileRef" [(ngModel)]="selectedArtifact.file" type="text">
+            </div>
+
             <div class="form-group">
                 <label class="control-label" for="description">Description</label>
                 <input type="text" name="description" id="description" class="form-control"
@@ -76,7 +96,7 @@
         </form>
     </winery-modal-body>
     <winery-modal-footer (onOk)="addArtifact()"
-                         [disableOkButton]="!form?.form.valid || selectedArtifact.type === null || selectedFile === null"
+                         [disableOkButton]="!form?.form.valid || selectedArtifact.name === null || selectedArtifact.type === null || selectedArtifact.file === null || selectedArtifact.file === ''"
                          [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Add'">
     </winery-modal-footer>
 </winery-modal>

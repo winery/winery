@@ -14,8 +14,9 @@
 import { Injectable } from '@angular/core';
 import { InstanceService } from '../../instance.service';
 import { Observable } from 'rxjs';
-import { hostURL } from '../../../configuration';
+import { backendBaseURL, hostURL } from '../../../configuration';
 import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class FilesService {
@@ -23,12 +24,19 @@ export class FilesService {
     private path: string;
 
     constructor(private http: HttpClient,
-                private sharedData: InstanceService) {
+                private sharedData: InstanceService,
+                private route: Router) {
         this.path = this.sharedData.path + '/files';
     }
 
     getFiles(path?: string): Observable<{ files: FilesApiData[], paths: string[] }> {
         return this.http.get<{ files: FilesApiData[], paths: string[] }>(path ? path : this.path);
+    }
+
+    getLocalFiles(): Observable<{ files: FilesApiData[], paths: string[] }> {
+        const tokens = this.route.url.split('/');
+        tokens.pop();
+        return this.http.get<{ files: FilesApiData[], paths: string[] }>(backendBaseURL + tokens.join('/') + '/files');
     }
 
     get uploadUrl() {

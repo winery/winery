@@ -534,7 +534,7 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
 
     private <T> YamlPrinter printMap(String keyValue, Map<String, T> map, Parameter parameter) {
         YamlPrinter printer = new YamlPrinter(parameter.getIndent());
-        if (!map.isEmpty()) {
+        if (map != null && !map.isEmpty()) {
             printer.printKey(keyValue)
                 .print(map.entrySet().stream()
                     .filter(entry -> entry.getValue() instanceof VisitorNode)

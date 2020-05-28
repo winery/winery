@@ -13,23 +13,12 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.export;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.PathMatcher;
-import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -39,23 +28,14 @@ import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFile;
-import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileParser;
-import org.eclipse.winery.model.tosca.Definitions;
-import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.YamlRepository;
-import org.eclipse.winery.repository.converter.Y2XConverter;
-import org.eclipse.winery.repository.converter.support.Utils;
-import org.eclipse.winery.repository.converter.support.exception.MultiException;
-import org.eclipse.winery.repository.converter.support.reader.XmlReader;
-import org.eclipse.winery.repository.converter.support.reader.YamlReader;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
-import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 import org.eclipse.winery.repository.export.entries.CsarEntry;
 import org.eclipse.winery.repository.export.entries.DocumentBasedCsarEntry;
+import org.eclipse.winery.repository.export.entries.RemoteRefBasedCsarEntry;
 import org.eclipse.winery.repository.export.entries.RepositoryRefBasedCsarEntry;
 import org.eclipse.winery.repository.export.entries.XMLDefinitionsBasedCsarEntry;
 import org.eclipse.winery.repository.export.entries.YAMLDefinitionsBasedCsarEntry;
@@ -93,6 +73,12 @@ public class YamlExporter extends CsarExporter {
         // the prefix is globally unique and the id locally in a namespace
         // therefore a concatenation of both is also unique
         return repository.getNamespaceManager().getPrefix(id.getNamespace()) + "__" + id.getXmlId().getEncoded();
+    }
+
+    public static String getDefinitionsPathInsideCSAR(IRepository repository, DefinitionsChildId id) {
+        return DEFINITIONS_PATH_PREFIX
+            .concat(getDefinitionsName(repository, id))
+            .concat(Constants.SUFFIX_TOSCA_DEFINITIONS);
     }
 
     /**
@@ -149,12 +135,6 @@ public class YamlExporter extends CsarExporter {
         }
     }
 
-    public static String getDefinitionsPathInsideCSAR(IRepository repository, DefinitionsChildId id) {
-        return DEFINITIONS_PATH_PREFIX
-            .concat(getDefinitionsName(repository, id))
-            .concat(Constants.SUFFIX_TOSCA_DEFINITIONS);
-    }
-
     /**
      * Adds a file to an archive
      *
@@ -171,105 +151,6 @@ public class YamlExporter extends CsarExporter {
         } catch (Exception e) {
             LOGGER.error("Could not copy file content to ZIP outputstream", e);
         }
-    }
-
-    public Definitions convertY2X(TServiceTemplate serviceTemplate, String name, String namespace, Path path, Path outPath) {
-        return new Y2XConverter().convert(serviceTemplate, name, namespace/* TODO, path, outPath*/);
-    }
-
-    public void convertY2X(InputStream zip) throws MultiException {
-        Path path = Utils.unzipFile(zip);
-        LOGGER.debug("Unzip path: {}", path);
-
-        PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:*.{yml,yaml}");
-        MultiException exception = Arrays.stream(Optional.ofNullable(path.toFile().listFiles()).orElse(new File[] {}))
-            .map(File::toPath)
-            .filter(file -> matcher.matches(file.getFileName()))
-            .map(file -> {
-                YamlReader reader = new YamlReader();
-                try {
-                    String id = file.getFileName().toString().substring(0, file.getFileName().toString().lastIndexOf("."));
-                    Path fileName = file.subpath(path.getNameCount(), file.getNameCount());
-                    Path fileOutPath = path.resolve("tmp");
-                    String namespace = reader.getNamespace(path, fileName);
-                    try (InputStream is = new FileInputStream(new File(path.toFile(), fileName.toString()))) {
-                        TServiceTemplate serviceTemplate = reader.parse(is, namespace);
-                        LOGGER.debug("Convert filePath = {}, fileName = {}, id = {}, namespace = {}, fileOutPath = {}",
-                            path, fileName, id, namespace, fileOutPath);
-                        this.convertY2X(serviceTemplate, id, namespace, path, fileOutPath);
-                    } catch (Exception e) {
-                        return new MultiException().add(e);
-                    }
-                } catch (MultiException e) {
-                    return e;
-                }
-                return null;
-            })
-            .filter(Objects::nonNull)
-            .reduce(MultiException::add)
-            .orElse(new MultiException());
-        if (exception.hasException()) throw exception;
-    }
-
-    public InputStream convertX2Y(InputStream csar) {
-        Path filePath = Utils.unzipFile(csar);
-        Path fileOutPath = filePath.resolve("tmp");
-        try {
-            TOSCAMetaFileParser parser = new TOSCAMetaFileParser();
-            TOSCAMetaFile metaFile = parser.parse(filePath.resolve("TOSCA-Metadata").resolve("TOSCA.meta"));
-
-            XmlReader reader = new XmlReader();
-            try {
-                String fileName = metaFile.getEntryDefinitions();
-                Definitions definitions = reader.parse(filePath, Paths.get(fileName));
-                this.convertX2Y(definitions, fileOutPath);
-            } catch (MultiException e) {
-                LOGGER.error("Convert TOSCA XML to TOSCA YAML error", e);
-            }
-            return Utils.zipPath(fileOutPath);
-        } catch (Exception e) {
-            LOGGER.error("Error", e);
-            throw new AssertionError();
-        }
-    }
-
-    public InputStream convertX2Y(DefinitionsChildId id) throws MultiException {
-        Path path = Utils.getTmpDir(Paths.get(id.getQName().getLocalPart()));
-        convertX2Y(repository.getDefinitions(id), path);
-        return Utils.zipPath(path);
-    }
-
-    public String convertDefinitionsChildToYaml(DefinitionsChildId id) throws MultiException {
-        Path path = Utils.getTmpDir(Paths.get(id.getQName().getLocalPart()));
-        convertX2Y(repository.getDefinitions(id), path);
-        // convention: single file in root contains the YAML support
-        // TODO: Links in the YAML should be changed to real links into Winery
-        Optional<Path> rootYamlFile;
-        try {
-            return Files.find(path, 1, (filePath, basicFileAttributes) -> filePath.getFileName().toString().endsWith(".yml"))
-                .findAny()
-                .map(p -> {
-                    try {
-                        return new String(Files.readAllBytes(p), StandardCharsets.UTF_8);
-                    } catch (IOException e) {
-                        LOGGER.debug("Could not read root file", e);
-                        return "Could not read root file";
-                    }
-                })
-                .orElseThrow(() -> {
-                    MultiException multiException = new MultiException();
-                    multiException.add(new WineryRepositoryException("Root YAML file not found."));
-                    return multiException;
-                });
-        } catch (IOException e) {
-            MultiException multiException = new MultiException();
-            multiException.add(new WineryRepositoryException("Root YAML file not found.", e));
-            throw multiException;
-        }
-    }
-
-    public void convertX2Y(Definitions definitions, Path outPath) throws MultiException {
-        // new X2YConverter(this.repository).convert(definitions/*, outPath*/);
     }
 
     private String addManifest(IRepository repository, DefinitionsChildId id, Map<CsarContentProperties, CsarEntry> refMap,
@@ -312,6 +193,8 @@ public class YamlExporter extends CsarExporter {
             } else if (csarEntry instanceof XMLDefinitionsBasedCsarEntry ||
                 csarEntry instanceof YAMLDefinitionsBasedCsarEntry) {
                 mimeType = MimeTypes.MIMETYPE_TOSCA_DEFINITIONS;
+            } else if (csarEntry instanceof RemoteRefBasedCsarEntry) {
+                mimeType = repository.getMimeType((RemoteRefBasedCsarEntry) csarEntry);
             } else {
                 mimeType = repository.getMimeType(((RepositoryRefBasedCsarEntry) csarEntry).getReference());
             }
