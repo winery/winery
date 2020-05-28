@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,7 +13,7 @@
  *******************************************************************************/
 import {NgModule} from '@angular/core';
 import {ArtifactTemplateRouterModule} from './artifactTemplateRouter.module';
-import {FilesComponent} from '../../instance/artifactTemplates/filesTag/files.component';
+import {FilesComponent} from '../../instance/sharedComponents/filesTag/files.component';
 import {PropertiesComponent} from '../../instance/sharedComponents/properties/properties.component';
 import {WineryModalModule} from '../../wineryModalModule/winery.modal.module';
 import {WineryTableModule} from '../../wineryTableModule/wineryTable.module';

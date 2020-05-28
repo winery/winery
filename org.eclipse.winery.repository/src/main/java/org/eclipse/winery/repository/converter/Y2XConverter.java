@@ -834,8 +834,13 @@ public class Y2XConverter {
         builder.setNodeTemplates(convert(node.getNodeTemplates()));
         builder.setRelationshipTemplates(convert(node.getRelationshipTemplates()));
         builder.setPolicies(new TPolicies(convert(node.getPolicies())));
-        builder.setInputs(new ParameterDefinitionList(convert(node.getInputs())));
-        builder.setOutputs(new ParameterDefinitionList(convert(node.getOutputs())));
+
+        if (node.getInputs() != null) {
+            builder.setInputs(new ParameterDefinitionList(convert(node.getInputs())));
+        }
+        if (node.getOutputs() != null) {
+            builder.setOutputs(new ParameterDefinitionList(convert(node.getOutputs())));
+        }
 
         return builder.build();
     }

@@ -75,7 +75,7 @@ public final class Environments {
     /**
      * Returns an instance of the ui configuration.
      *
-     * @return Returns an UiConfigurationObject object which represtents the ui configuration of the winery.yml
+     * @return Returns an UiConfigurationObject object which represents the ui configuration of the winery.yml
      * configuration file.
      */
     public UiConfigurationObject getUiConfig() {
@@ -89,7 +89,7 @@ public final class Environments {
     /**
      * Returns an instance of the git configuration.
      *
-     * @return Returns a GitConfigurationObject object which represtents the git configuration of the winery.yml
+     * @return Returns a GitConfigurationObject object which represents the git configuration of the winery.yml
      * configuration file.
      */
     public GitConfigurationObject getGitConfig() {
@@ -103,7 +103,7 @@ public final class Environments {
     /**
      * Returns an instance of the repository configuration. This includes the GitConfigurationObject
      *
-     * @return Returns a RepositoryConfigurationObject object which represtents the repository configuration of the
+     * @return Returns a RepositoryConfigurationObject object which represents the repository configuration of the
      * winery.yml configuration file.
      */
     public RepositoryConfigurationObject getRepositoryConfig() {
@@ -118,7 +118,7 @@ public final class Environments {
     /**
      * Returns an instance of the ui configuration.
      *
-     * @return Returns an AccountabilityConfigurationObject object which represtents the accountability configuration of
+     * @return Returns an AccountabilityConfigurationObject object which represents the accountability configuration of
      * the winery.yml configuration file.
      */
     public AccountabilityConfigurationObject getAccountabilityConfig() {
@@ -164,7 +164,7 @@ public final class Environments {
     }
 
     private void afterUpdateNotify() {
-        configurationChangeListeners.forEach(configurationChangeListener -> configurationChangeListener.update());
+        configurationChangeListeners.forEach(ConfigurationChangeListener::update);
     }
 
     /**
@@ -182,7 +182,7 @@ public final class Environments {
      *
      * @return an instance of GitBasedRepositoryConfiguration
      */
-    public Optional<GitBasedRepositoryConfiguration> getGitBasedRepsitoryConfiguration() {
+    public Optional<GitBasedRepositoryConfiguration> getGitBasedRepositoryConfiguration() {
         final FileBasedRepositoryConfiguration filebasedRepositoryConfiguration = getFilebasedRepositoryConfiguration();
         return Optional.of(new GitBasedRepositoryConfiguration(this.getGitConfig().isAutocommit(), filebasedRepositoryConfiguration));
     }

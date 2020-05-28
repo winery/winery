@@ -12,9 +12,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {isNullOrUndefined} from 'util';
-import {InterfacesApiData} from '../interfacesApiData';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { isNullOrUndefined } from 'util';
+import { InterfacesApiData } from '../interfacesApiData';
 import { InstanceService } from '../../../instance.service';
 
 @Component({
@@ -28,11 +28,11 @@ export class SelectableListComponent implements OnInit {
 
     @Input() rows: Array<any>;
     @Input() title: string;
+    @Input() currentSelected: any;
 
     @Output() removeButtonClicked = new EventEmitter<any>();
     @Output() addButtonClicked = new EventEmitter<any>();
     @Output() selectionChanged = new EventEmitter<any>();
-    currentSelected: any;
 
     constructor(public sharedData: InstanceService) {
     }

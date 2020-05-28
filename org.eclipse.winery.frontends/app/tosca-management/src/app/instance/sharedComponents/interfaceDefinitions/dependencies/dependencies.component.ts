@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { WineryTableColumn } from '../../../../wineryTableModule/wineryTable.component';
 import { InstanceService } from '../../../instance.service';
 import { ModalDirective } from 'ngx-bootstrap';
@@ -26,11 +26,10 @@ export class DependencyTableModel {
 @Component({
     selector: 'winery-dependencies',
     templateUrl: 'dependencies.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DependenciesComponent implements OnInit {
+export class DependenciesComponent implements OnInit, OnChanges {
 
-    /* tslint:disable no-bitwise */
-    uuid: string = (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
     columns: Array<WineryTableColumn> = [
         { title: 'Name', name: 'name', sort: false },
     ];
@@ -39,6 +38,7 @@ export class DependenciesComponent implements OnInit {
 
     @Input() dependencies: string[] = [];
     @Input() selectableArtifacts: Artifact[] = [];
+    @Output() newDependencyAdded: EventEmitter<Artifact> = new EventEmitter();
 
     @ViewChild('modal') modal: ModalDirective;
     @ViewChild('confirmRemoveModal') confirmRemoveModal: ModalDirective;
@@ -50,9 +50,18 @@ export class DependenciesComponent implements OnInit {
     }
 
     ngOnInit() {
+    }
+
+    /**
+     * refreshes depdendencies if @Input values changed
+     * @param changes
+     */
+    ngOnChanges(changes: SimpleChanges) {
         this.dependenciesTableModel = [];
         if (this.dependencies) {
             this.dependencies.forEach(item => this.dependenciesTableModel.push({ name: item }));
+        } else {
+            this.dependencies = [];
         }
     }
 
@@ -72,7 +81,7 @@ export class DependenciesComponent implements OnInit {
     add() {
         const value = this.selectData.id;
         this.dependenciesTableModel.push({ name: value });
-        this.dependencies.push(value);
+        this.newDependencyAdded.emit(this.selectableArtifacts.find(v => v.name === value));
     }
 
     removeObject(object: DependencyTableModel) {
