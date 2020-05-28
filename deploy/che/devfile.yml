@@ -21,4 +21,4 @@ components:
           discoverable: "true"
           public: "true"
     mountSources: true
-    reference: https://raw.githubusercontent.com/OpenTOSCA/winery/project/radon/deploy/che/winery.yaml
+    reference: https://raw.githubusercontent.com/eclipse/winery/master/deploy/che/winery.yaml
