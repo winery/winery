@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -45,19 +45,19 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.beans.NamespaceIdOptionalName;
+import org.eclipse.winery.common.exceptions.QNameAlreadyExistsException;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.IdUtil;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.interfaces.QNameAlreadyExistsException;
 import org.eclipse.winery.common.interfaces.QNameWithName;
+import org.eclipse.winery.common.json.JsonFeature;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
-import org.eclipse.winery.common.json.JsonFeature;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.internal.util.collection.MultivaluedStringMap;

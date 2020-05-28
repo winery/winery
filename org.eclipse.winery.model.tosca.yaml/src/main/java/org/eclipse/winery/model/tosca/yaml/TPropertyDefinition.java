@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,22 +13,28 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.yaml;
 
-import io.github.adr.embedded.ADR;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
-import org.eclipse.winery.model.tosca.yaml.visitor.AbstractResult;
-import org.eclipse.winery.model.tosca.yaml.visitor.IVisitor;
-
-import javax.xml.bind.annotation.*;
-import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
+import org.eclipse.winery.model.tosca.yaml.visitor.AbstractResult;
+import org.eclipse.winery.model.tosca.yaml.visitor.IVisitor;
+
+import io.github.adr.embedded.ADR;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tPropertyDefinition", namespace = " http://docs.oasis-open.org/tosca/ns/simple/yaml/1.0", propOrder = {
+@XmlType(name = "tPropertyDefinition", namespace = " http://docs.oasis-open.org/tosca/ns/simple/yaml/1.3", propOrder = {
     "type",
     "description",
     "required",
@@ -38,6 +44,7 @@ import java.util.Objects;
     "entrySchema"
 })
 public class TPropertyDefinition extends TPropertyAssignmentOrDefinition {
+
     @XmlAttribute(name = "type", required = true)
     private QName type;
     private String description;
@@ -222,13 +229,16 @@ public class TPropertyDefinition extends TPropertyAssignmentOrDefinition {
             return setStatus(TStatusValue.getStatus(status));
         }
 
-        public T setConstraints(List<TConstraintClause> constraints) {
-            this.constraints = constraints;
+        public T setEntrySchema(TEntrySchema entrySchema) {
+            this.entrySchema = entrySchema;
             return self();
         }
 
-        public T setEntrySchema(TEntrySchema entrySchema) {
-            this.entrySchema = entrySchema;
+        public T setConstraints(List<TConstraintClause> constraints) {
+            if (constraints == null || constraints.isEmpty()) {
+                return self();
+            }
+            this.constraints = constraints;
             return self();
         }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -41,11 +41,15 @@
 }
 
 .sectionSidebar {
-    display: grid;
     grid-template-columns: auto 200px auto;
     grid-column: 3 / span 1;
     grid-row: 1 / span 3;
     align-self: start;
+}
+
+.sectionSidebar button,
+.sectionSidebar div {
+    width: 90%;
 }
 
 .sectionBtn {

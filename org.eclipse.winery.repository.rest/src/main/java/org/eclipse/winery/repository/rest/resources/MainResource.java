@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -36,12 +36,15 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.common.configuration.Environments;
+import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.repository.export.EdmmUtils;
 import org.eclipse.winery.repository.importing.CsarImportOptions;
 import org.eclipse.winery.repository.importing.CsarImporter;
 import org.eclipse.winery.repository.importing.ImportMetaInformation;
+import org.eclipse.winery.repository.importing.YamlCsarImporter;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.datatypes.ComponentId;
 import org.eclipse.winery.repository.rest.resources.API.APIResource;
@@ -226,7 +229,14 @@ public class MainResource {
         @Context UriInfo uriInfo) {
         LocalDateTime start = LocalDateTime.now();
         // @formatter:on
-        CsarImporter importer = new CsarImporter();
+
+        CsarImporter importer;
+        if (Environments.getInstance().getUiConfig().getFeatures().get(RepositoryConfigurationObject.RepositoryProvider.YAML.toString())) {
+            importer = new YamlCsarImporter();
+        } else {
+            importer = new CsarImporter();
+        }
+
         CsarImportOptions options = new CsarImportOptions();
         options.setOverwrite((overwrite != null) && overwrite);
         options.setAsyncWPDParsing(false);

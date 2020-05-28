@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -17,15 +17,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
+import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
+import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
-import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -63,6 +65,7 @@ public abstract class TestWithGitBackedRepository {
 
             FileRepositoryBuilder builder = new FileRepositoryBuilder();
             if (!Files.exists(repositoryPath.resolve(".git"))) {
+                FileUtils.cleanDirectory(repositoryPath.toFile());
                 this.git = Git.cloneRepository()
                     .setURI("https://github.com/winery/test-repository.git")
                     .setBare(false)
@@ -82,6 +85,8 @@ public abstract class TestWithGitBackedRepository {
 
             // inject the current path to the repository factory
             FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration = new FileBasedRepositoryConfiguration(repositoryPath);
+            // force xml repository provider
+            fileBasedRepositoryConfiguration.setRepositoryProvider(RepositoryConfigurationObject.RepositoryProvider.FILE);
             GitBasedRepositoryConfiguration gitBasedRepositoryConfiguration = new GitBasedRepositoryConfiguration(false, fileBasedRepositoryConfiguration);
             RepositoryFactory.reconfigure(gitBasedRepositoryConfiguration);
 
@@ -94,12 +99,10 @@ public abstract class TestWithGitBackedRepository {
 
     protected void setRevisionTo(String ref) throws GitAPIException {
         git.clean().setForce(true).setCleanDirectories(true).call();
-
         git.reset()
             .setMode(ResetCommand.ResetType.HARD)
             .setRef(ref)
             .call();
-
         LOGGER.debug("Switched to commit {}", ref);
     }
 

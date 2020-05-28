@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -38,7 +38,7 @@ import org.eclipse.winery.repository.backend.SelfServiceMetaDataUtils;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ServiceTemplateSelfServiceFilesDirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.FilesResource;
+import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplateFilesResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
 import org.apache.commons.io.IOUtils;
@@ -149,8 +149,8 @@ public class SelfServicePortalResource {
     }
 
     @Path("files")
-    public FilesResource files() {
-        return new FilesResource(this.filesDirectoryId);
+    public ArtifactTemplateFilesResource files() {
+        return new ArtifactTemplateFilesResource(this.filesDirectoryId);
     }
 
     @GET

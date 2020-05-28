@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -19,4 +19,11 @@
 .form-group-grouping {
     padding: 1em;
     background-color: #dddddd;
+}
+
+.btn-link.btn-anchor {
+    outline: none !important;
+    padding: 0;
+    border: 0;
+    vertical-align: baseline;
 }

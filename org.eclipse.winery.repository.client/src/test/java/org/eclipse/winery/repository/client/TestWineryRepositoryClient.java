@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -32,7 +32,7 @@ import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
+import org.eclipse.winery.repository.backend.filebased.AbstractFileBasedRepository;
 import org.eclipse.winery.repository.rest.server.WineryUsingHttpServer;
 
 import org.eclipse.jetty.server.Server;
@@ -82,8 +82,8 @@ public class TestWineryRepositoryClient extends TestWithGitBackedRepository {
         server.start();
 
         IRepository repository = RepositoryFactory.getRepository();
-        if (repository instanceof FilebasedRepository) {
-            LOGGER.debug("Using path " + ((FilebasedRepository) repository).getRepositoryRoot());
+        if (repository instanceof AbstractFileBasedRepository) {
+            LOGGER.debug("Using path " + repository.getRepositoryRoot());
         } else {
             LOGGER.debug("Repository is not filebased");
         }

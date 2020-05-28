@@ -1,0 +1,25 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+metadata:
+  description: This test contains valid node types.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.3/test
+  tosca.version: 1.1
+  reference: 3.5.2.1
+  exception: None
+  keyname: node_types.test.nodetypes.nt1.attributes.attr1.entry_schema.constraints
+  assert-typeof: |
+    0 = TConstraintClause
+  assert: |
+    0.key = greater_than
+    0.value = 0
+   
+node_types:
+  test.nodetypes.nt1:
+    derived_from: tosca.nodes.Root
+    attributes:
+      attr1:
+        type: integer
+        entry_schema:
+          constraints:
+            - greater_than: 0
+

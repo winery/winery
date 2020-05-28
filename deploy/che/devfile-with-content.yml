@@ -1,0 +1,61 @@
+apiVersion: 1.0.0
+metadata:
+  generateName: radon-workspace-
+projects:
+  - name: radon-particles
+    source:
+      type: git
+      location: https://github.com/radon-h2020/radon-particles
+components:
+  - alias: theia-editor
+    type: cheEditor
+    id: eclipse/che-theia/next
+  - alias: radon-gmt
+    type: kubernetes
+    endpoints:
+      - name: radon-gmt
+        port: 8080
+        attributes:
+          protocol: http
+          secure: "false"
+          discoverable: "true"
+          public: "true"
+    mountSources: true
+    referenceContent: |
+      ---
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: winery-deployment
+        labels:
+          app: winery
+          tier: frontend
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: winery
+            tier: frontend
+        template:
+          metadata:
+            labels:
+              app: winery
+              tier: frontend
+          spec:
+            containers:
+              - name: winery
+                image: opentosca/radon-gmt:latest
+                imagePullPolicy: Always
+                ports:
+                  - containerPort: 8080
+                env:
+                  - name: WINERY_FEATURE_RADON
+                    value: "true"
+                  - name: WINERY_REPOSITORY_PROVIDER
+                    value: "yaml"
+                  - name: WINERY_REPOSITORY_URL
+                    value: "https://github.com/radon-h2020/radon-particles"
+                  - name: WINERY_REPOSITORY_PATH
+                    value: "/projects/radon-particles"
+                  - name: WINERY_CSAR_OUTPUT_PATH
+                    value: "/projects/radon-csars"

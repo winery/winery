@@ -38,6 +38,7 @@ import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.ValidEndingsApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.ValidEndingsApiDataSet;
 import org.eclipse.winery.repository.rest.resources.entitytypes.InstanceStatesResource;
+import org.eclipse.winery.repository.rest.resources.entitytypes.InterfaceDefinitionsResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 import org.eclipse.winery.repository.rest.resources.interfaces.InterfacesResource;
 
@@ -103,6 +104,11 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
             this.getRelationshipType().setTargetInterfaces(interfaces);
         }
         return new InterfacesResource(this, interfaces.getInterface(), "target");
+    }
+
+    @Path("interfacedefinitions")
+    public InterfaceDefinitionsResource InterfaceDefinitionsResource() {
+        return new InterfaceDefinitionsResource(this);
     }
 
     /*

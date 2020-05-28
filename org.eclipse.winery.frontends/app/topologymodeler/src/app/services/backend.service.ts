@@ -23,7 +23,7 @@ import { ServiceTemplateId } from '../models/serviceTemplateId';
 import { ToscaDiff } from '../models/ToscaDiff';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs/Observable';
-import { forkJoin } from 'rxjs';
+import { concat, forkJoin } from 'rxjs';
 import { TopologyModelerConfiguration } from '../models/topologyModelerConfiguration';
 import { ErrorHandlerService } from './error-handler.service';
 import { ThreatCreation } from '../models/threatCreation';
@@ -31,6 +31,8 @@ import { Threat, ThreatAssessmentApiData } from '../models/threatModelingModalDa
 import { Visuals } from '../models/visuals';
 import { VersionElement } from '../models/versionElement';
 import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { takeLast } from 'rxjs/operators';
+import { TPolicy } from '../models/policiesModalData';
 
 /**
  * Responsible for interchanging data between the app and the server.
@@ -203,7 +205,7 @@ export class BackendService {
      */
     private requestArtifactTypes(): Observable<any> {
         if (this.configuration) {
-            return this.http.get(this.configuration.repositoryURL + '/artifacttypes', { headers: this.headers });
+            return this.http.get(this.configuration.repositoryURL + '/artifacttypes?full', { headers: this.headers });
         }
     }
 
@@ -272,26 +274,63 @@ export class BackendService {
      */
     saveTopologyTemplate(topologyTemplate: TTopologyTemplate): Observable<HttpResponse<string>> {
         if (this.configuration) {
-            // Prepare for saving by updating the existing topology with the current topology state inside the Redux store
+            // Initialization
             const topologySkeleton = {
                 documentation: [],
                 any: [],
                 otherAttributes: {},
-                relationshipTemplates: topologyTemplate.relationshipTemplates.map(relationship => {
-                    delete relationship.state;
-                }),
-                // remove the 'Color' field from all nodeTemplates as the REST Api does not recognize it.
-                nodeTemplates: topologyTemplate.nodeTemplates.map(nodeTemplate => {
-                    nodeTemplate.deleteStateAndVisuals();
-                })
+                relationshipTemplates: [],
+                nodeTemplates: [],
+                policies: { policy: new Array<TPolicy>() }
             };
+            // Prepare for saving by updating the existing topology with the current topology state inside the Redux store
+            topologySkeleton.nodeTemplates = topologyTemplate.nodeTemplates;
+            topologySkeleton.relationshipTemplates = topologyTemplate.relationshipTemplates;
+            topologySkeleton.relationshipTemplates.map(relationship => {
+                delete relationship.state;
+            });
+            // remove the 'Color' field from all nodeTemplates as the REST Api does not recognize it.
+            topologySkeleton.nodeTemplates.map(nodeTemplate => {
+                delete nodeTemplate.visuals;
+                delete nodeTemplate._state;
+            });
+            topologySkeleton.policies = topologyTemplate.policies;
+            console.log(topologySkeleton);
 
             const headers = new HttpHeaders().set('Content-Type', 'application/json');
             return this.http.put(this.configuration.elementUrl,
-                topologyTemplate,
+                topologySkeleton,
                 { headers: headers, responseType: 'text', observe: 'response' }
             );
         }
+    }
+
+    saveYamlArtifact(topology: TTopologyTemplate,
+                     nodeTemplateId: string,
+                     artifactName: string,
+                     file: File): Observable<HttpResponse<string>> {
+        const url =
+            `${this.serviceTemplateURL}${urlElement.TopologyTemplate}${urlElement.NodeTemplates}${nodeTemplateId}${urlElement.YamlArtifacts}/${artifactName}`;
+        // handle entries managed by the backend
+        const formData: FormData = new FormData();
+        formData.append('file', file, file.name);
+
+        // we save the new topology template first, and then post the artifact file.
+        return concat(
+            this.saveTopologyTemplate(topology),
+            this.http.post(url, formData, { observe: 'response', responseType: 'text' }))
+            .pipe(
+                takeLast(1)
+            );
+    }
+
+    downloadYamlArtifactFile(nodeTemplateId: string,
+                             artifactName: string,
+                             fileName: string) {
+        const url =
+            `${this.serviceTemplateURL}${urlElement.TopologyTemplate}${urlElement.NodeTemplates}${nodeTemplateId}${urlElement.YamlArtifacts}/${artifactName}/` +
+            fileName;
+        return this.http.get(url, { observe: 'response', responseType: 'blob' });
     }
 
     /**

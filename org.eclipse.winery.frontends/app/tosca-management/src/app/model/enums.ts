@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -55,7 +55,8 @@ export enum ServiceTemplateTemplateTypes {
 
 export enum StartNamespaces {
     LocalStorageEntry = 'defaultNamespace',
-    DefaultStartNamespace = 'http://www.example.org/tosca'
+    DefaultStartNamespace = 'http://www.example.org/tosca',
+    DefaultStartNamespaceYaml= 'example.org.tosca'
 }
 
 /**

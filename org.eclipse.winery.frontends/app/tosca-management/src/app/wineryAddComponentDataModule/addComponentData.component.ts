@@ -60,6 +60,7 @@ export class WineryAddComponentDataComponent {
     newComponentFinalName: string;
     newComponentVersion: WineryVersion = new WineryVersion('', 1, 1);
     newComponentNamespace: string;
+    useComponentVersion = true;
     collapseVersioning = true;
     hideHelp = true;
     storage: Storage = localStorage;
@@ -80,18 +81,25 @@ export class WineryAddComponentDataComponent {
             this.validation.noTypeAvailable = true;
             return { noTypeAvailable: true };
         }
+
         this.determineFinalName();
-        if (this.newComponentVersion.componentVersion) {
+
+        if (this.newComponentVersion.componentVersion && this.useComponentVersion) {
             this.validation.noUnderscoresAllowed = this.newComponentVersion.componentVersion.includes('_');
             if (this.validation.noUnderscoresAllowed) {
                 return { noUnderscoresAllowed: true };
             }
         }
 
-        this.validation.noVersionProvidedWarning = isNullOrUndefined(this.newComponentVersion.componentVersion)
-            || this.newComponentVersion.componentVersion.length === 0;
+        this.validation.noVersionProvidedWarning = !this.newComponentVersion.componentVersion
+            || this.newComponentVersion.componentVersion.length === 0 || !this.useComponentVersion;
         this.newComponentNameEvent.emit(this.newComponentFinalName);
         this.newComponentNamespaceEvent.emit(this.newComponentNamespace);
+    }
+
+    onToggleUseVersion() {
+        this.useComponentVersion = !this.useComponentVersion;
+        this.onInputChange();
     }
 
     showHelp() {
@@ -113,8 +121,10 @@ export class WineryAddComponentDataComponent {
     }
 
     private determineFinalName() {
-        if (!isNullOrUndefined(this.newComponentFinalName) && this.newComponentFinalName.length > 0) {
-            this.newComponentFinalName += WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + this.newComponentVersion.toString();
+        if (this.newComponentFinalName && this.newComponentFinalName.length > 0) {
+            if (this.useComponentVersion) {
+                this.newComponentFinalName += WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + this.newComponentVersion.toString();
+            }
             this.createUrlAndCheck();
         }
     }

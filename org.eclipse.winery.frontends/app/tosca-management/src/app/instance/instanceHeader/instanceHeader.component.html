@@ -23,43 +23,62 @@
     </div>
     <div class="managementButtons row" *ngIf="showManagementButtons">
         <button class="btn btn-danger col-lg-4" (click)="openDeleteConfirmationModel()">Delete</button>
-        <div class="btn-group col-lg-4" dropdown>
-            <button dropdownToggle type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split">
-                Export <span class="caret"></span>
-            </button>
-            <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
-                <li>
-                    <a target="_blank" href="{{ toscaComponent.xmlPath }}">XML</a>
-                </li>
-                <li>
-                    <a target="_blank" href="{{ toscaComponent.yamlPath }}">YAML</a>
-                </li>
-                <li class="divider dropdown-divider"></li>
-                <li>
-                    <a target="_blank" href="{{ toscaComponent.yamlCsarPath }}">CSAR (YAML)</a>
-                </li>
-                <li>
-                    <a target="_blank" href="{{ toscaComponent.xmlCsarPath }}">CSAR (XML)</a>
-                </li>
-                <li *ngIf="accountabilityEnabled">
-                    <a target="_blank" href="{{ toscaComponent.provenanceCsarPath }}">Provenance CSAR (XML)</a>
-                </li>
-                <li *ngIf="showEdmmExport">
-                    <a target="_blank" href="{{ toscaComponent.edmmExportPath }}"
-                       *ngIf="toscaLightCompatibilityData?.isToscaLightCompatible; else errorReport">Export to EDMM</a>
-                    <ng-template #errorReport>
-                        <a (click)="showErrorReport()">Show TOSCA Light Error Report</a>
-                    </ng-template>
-                </li>
-            </ul>
-        </div>
+        <div *ngIf="!this.configurationService.isYaml(); then xmlExport else yamlExport"></div>
+        <ng-template #xmlExport>
+            <div class="btn-group col-lg-4" dropdown>
+                <button dropdownToggle type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split">
+                    Export <span class="caret"></span>
+                </button>
+                <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+                    <li>
+                        <a target="_blank" href="{{ toscaComponent.xmlPath }}">XML</a>
+                    </li>
+                    <li>
+                        <a target="_blank" href="{{ toscaComponent.yamlPath }}">YAML</a>
+                    </li>
+                    <li class="divider dropdown-divider"></li>
+                    <li>
+                        <a target="_blank" href="{{ toscaComponent.yamlCsarPath }}">CSAR (YAML)</a>
+                    </li>
+                    <li>
+                        <a target="_blank" href="{{ toscaComponent.xmlCsarPath }}">CSAR (XML)</a>
+                    </li>
+                    <li *ngIf="accountabilityEnabled">
+                        <a target="_blank" href="{{ toscaComponent.provenanceCsarPath }}">Provenance CSAR (XML)</a>
+                    </li>
+                    <li *ngIf="showEdmmExport">
+                        <a target="_blank" href="{{ toscaComponent.edmmExportPath }}"
+                           *ngIf="toscaLightCompatibilityData?.isToscaLightCompatible; else errorReport">Export to
+                            EDMM</a>
+                        <ng-template #errorReport>
+                            <a (click)="showErrorReport()">Show TOSCA Light Error Report</a>
+                        </ng-template>
+                    </li>
+                </ul>
+            </div>
+        </ng-template>
+        <ng-template #yamlExport>
+            <div class="btn-group col-lg-4" dropdown>
+                <button dropdownToggle type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split">
+                    Export <span class="caret"></span>
+                </button>
+                <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+                    <li>
+                        <a target="_blank" href="{{ toscaComponent.yamlCsarPath }}">Download</a>
+                    </li>
+                    <li>
+                        <a (click)="exportToFilesystem()">Export to Filesystem</a>
+                    </li>
+                </ul>
+            </div>
+        </ng-template>
         <winery-version class="col-lg-4" [versions]="versions"></winery-version>
         <div *ngIf="typeUrl">
             <span style="white-space: pre">{{ typeOf }} <a [routerLink]="typeUrl">{{ typeId }}</a></span>
         </div>
     </div>
     <div class="subMenu">
-        <a *ngFor="let item of subMenu"
+        <a *ngFor="let item of subMenu; index as i"
            class="styledTabMenuButton styledTabMenuButton2ndlevel"
            [routerLink]="['./' + item.urlFragment]"
            [routerLinkActive]="'selected'"

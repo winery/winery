@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,6 +13,17 @@
  ********************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes;
 
+import java.util.Collection;
+import java.util.SortedSet;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -22,16 +33,6 @@ import org.eclipse.winery.repository.rest.datatypes.select2.Select2DataWithOptGr
 import org.eclipse.winery.repository.rest.datatypes.select2.Select2OptGroup;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal;
 import org.eclipse.winery.repository.rest.resources.entitytypes.properties.PropertiesDefinitionResource;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import java.util.Collection;
-import java.util.SortedSet;
 
 public abstract class EntityTypeResource extends AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal {
 
@@ -52,6 +53,11 @@ public abstract class EntityTypeResource extends AbstractComponentInstanceResour
     @Path("propertiesdefinition/")
     public PropertiesDefinitionResource getPropertiesDefinitionResource() {
         return new PropertiesDefinitionResource(this);
+    }
+
+    @Path("attributes")
+    public AttributeDefinitionsResource getAttributeDefinitionResource() {
+        return new AttributeDefinitionsResource(this);
     }
 
     /**

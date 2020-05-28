@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -95,6 +95,7 @@ import org.eclipse.winery.repository.backend.xsd.NamespaceAndDefinedLocalNames;
 import org.eclipse.winery.repository.export.CsarExportOptions;
 import org.eclipse.winery.repository.export.CsarExporter;
 import org.eclipse.winery.repository.export.ToscaExportUtil;
+import org.eclipse.winery.repository.export.YamlExporter;
 import org.eclipse.winery.repository.rest.datatypes.ComponentId;
 import org.eclipse.winery.repository.rest.datatypes.LocalNameForAngular;
 import org.eclipse.winery.repository.rest.datatypes.NamespaceAndDefinedLocalNamesForAngular;
@@ -109,8 +110,6 @@ import org.eclipse.winery.repository.rest.resources.apiData.converter.QNameConve
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
-import org.eclipse.winery.yaml.common.exception.MultiException;
-import org.eclipse.winery.yaml.converter.Converter;
 
 import io.github.edmm.core.parser.EntityGraph;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -258,39 +257,40 @@ public class RestUtils {
     }
 
     public static Response getYamlOfSelectedResource(DefinitionsChildId id) {
-        final Converter converter = new Converter();
-        try {
-            // MimeTypes.MIMETYPE_YAML not chosen, because firefox always demands download
-            return Response.ok(converter.convertDefinitionsChildToYaml(id)).type(MediaType.TEXT_PLAIN_TYPE).build();
-        } catch (MultiException e) {
-            throw new WebApplicationException(e);
-        }
+        // TODO
+//        final Converter converter = new Converter();
+//        try {
+//            // MimeTypes.MIMETYPE_YAML not chosen, because firefox always demands download
+//            return Response.ok(converter.convertDefinitionsChildToYaml(id)).type(MediaType.TEXT_PLAIN_TYPE).build();
+//        } catch (MultiException e) {
+//            throw new WebApplicationException(e);
+//        }
+        return Response.noContent().build();
     }
 
     public static Response getYamlCSARofSelectedResource(final AbstractComponentInstanceResource resource) {
-        final Converter converter = new Converter();
+        LocalDateTime start = LocalDateTime.now();
+        final YamlExporter exporter = new YamlExporter();
+        Map<String, Object> exportConfiguration = new HashMap<>();
+
         StreamingOutput so = output -> {
             try {
-                InputStream is = converter.convertX2Y(resource.getId());
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                //read from is to buffer
-                while ((bytesRead = is.read(buffer)) != -1) {
-                    output.write(buffer, 0, bytesRead);
-                }
-                is.close();
-                //flush OutputStream to write any buffered data to file
-                output.flush();
-                output.close();
+                exporter.writeCsar(RepositoryFactory.getRepository(), resource.getId(), output, exportConfiguration);
+                LOGGER.debug("CSAR export lasted {}", Duration.between(LocalDateTime.now(), start).toString());
             } catch (Exception e) {
+                LOGGER.error("Error while exporting CSAR", e);
                 throw new WebApplicationException(e);
             }
         };
-        String sb = "attachment;filename=\"" +
-            resource.getXmlId().getEncoded() +
-            Constants.SUFFIX_CSAR +
-            "\"";
-        return Response.ok().header("Content-Disposition", sb).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
+        String contentDisposition = String.format("attachment;filename=\"%s%s\"",
+            resource.getXmlId().getEncoded(),
+            Constants.SUFFIX_CSAR);
+
+        return Response.ok()
+            .header("Content-Disposition", contentDisposition)
+            .type(MimeTypes.MIMETYPE_ZIP)
+            .entity(so)
+            .build();
     }
 
     public static Response getEdmmModel(TServiceTemplate element, boolean useAbsolutPaths) {

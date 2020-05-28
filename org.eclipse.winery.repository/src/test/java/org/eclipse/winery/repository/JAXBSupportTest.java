@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -20,17 +20,17 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class JAXBSupportTest {
 
     @Test
-    public void createMarshaller() throws Exception {
+    public void createMarshaller() {
         assertNotNull(JAXBSupport.createMarshaller(true));
     }
 
     @Test
-    public void createUnmarshaller() throws Exception {
+    public void createUnmarshaller() {
         assertNotNull(JAXBSupport.createUnmarshaller());
     }
 
     @Test
     public void JAXBContextIsNotNull() {
-        assertNotNull(JAXBSupport.context);
+        assertNotNull(JAXBSupport.getContext());
     }
 }

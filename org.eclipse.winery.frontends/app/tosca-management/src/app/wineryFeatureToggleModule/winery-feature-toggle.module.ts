@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,19 +15,23 @@
 import { NgModule } from '@angular/core';
 import { FeatureToggleDirective } from './wineryRepository.feature.direct';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { WineryRepositoryConfigurationService } from './WineryRepositoryConfiguration.service';
+import { HideOnFeatureDirective } from './wineryRepository.hideOnFeature.direct';
+import { ShowOnFeatureDirective } from './wineryRepository.showOnFeature.direct';
 
 @NgModule({
     imports: [CommonModule],
     declarations: [
-        FeatureToggleDirective
+        FeatureToggleDirective,
+        HideOnFeatureDirective,
+        ShowOnFeatureDirective,
     ],
     exports: [
-        FeatureToggleDirective
+        FeatureToggleDirective,
+        HideOnFeatureDirective,
+        ShowOnFeatureDirective,
     ],
     providers: [WineryRepositoryConfigurationService]
 })
-
 export class WineryFeatureToggleModule {
 }

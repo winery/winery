@@ -14,13 +14,13 @@
 
 import { Action } from 'redux';
 import {
-    DecMaxInstances, DecMinInstances, DeleteDeploymentArtifactAction, DeleteNodeAction, DeletePolicyAction, DeleteRelationshipAction,
-    HideNavBarAndPaletteAction, IncMaxInstances, IncMinInstances, SaveNodeTemplateAction, SaveRelationshipAction, SendCurrentNodeIdAction,
-    SendPaletteOpenedAction, SetCababilityAction, SetDeploymentArtifactAction, SetNodeVisuals, SetPolicyAction, SetPropertyAction, SetRequirementAction,
-    SetTargetLocation, SidebarMaxInstanceChanges, SidebarMinInstanceChanges, SidebarNodeNamechange, SidebarStateAction, UpdateNodeCoordinatesAction,
-    UpdateRelationshipNameAction, WineryActions
+    ChangeYamlPoliciesAction, DecMaxInstances, DecMinInstances, DeleteDeploymentArtifactAction, DeleteNodeAction, DeletePolicyAction, DeleteRelationshipAction,
+    DeleteYamlArtifactAction, HideNavBarAndPaletteAction, IncMaxInstances, IncMinInstances, SaveNodeTemplateAction, SaveRelationshipAction,
+    SendCurrentNodeIdAction, SendPaletteOpenedAction, SetCababilityAction, SetDeploymentArtifactAction, SetNodeVisuals, SetPolicyAction, SetPropertyAction,
+    SetRequirementAction, SetTargetLocation, SetYamlArtifactAction, SidebarMaxInstanceChanges, SidebarMinInstanceChanges, SidebarNodeNamechange,
+    SidebarStateAction, UpdateNodeCoordinatesAction, UpdateRelationshipNameAction, WineryActions
 } from '../actions/winery.actions';
-import { TNodeTemplate, TRelationshipTemplate, TTopologyTemplate } from '../../models/ttopology-template';
+import { TArtifact, TNodeTemplate, TRelationshipTemplate, TTopologyTemplate } from '../../models/ttopology-template';
 import { TDeploymentArtifact } from '../../models/artifactsModalData';
 import { Visuals } from '../../models/visuals';
 
@@ -258,6 +258,37 @@ export const WineryReducer =
                             )
                     }
                 };
+            case WineryActions.SET_YAML_ARTIFACT:
+                const newArtActionData: any = (<SetYamlArtifactAction>action).nodeYamlArtifact;
+                const newYamlArtifact: TArtifact = newArtActionData.newYamlArtifact;
+                const indexOfContainingNodeTemplate = lastState.currentJsonTopology.nodeTemplates
+                    .map(node => node.id).indexOf(newArtActionData.nodeId);
+                const containingNodeTemplate = lastState.currentJsonTopology.nodeTemplates
+                    .find(nodeTemplate => nodeTemplate.id === newArtActionData.nodeId);
+                const artifactsExistInNodeTemplate = containingNodeTemplate.artifacts && containingNodeTemplate.artifacts.artifact;
+
+                return <WineryState>{
+                    ...lastState,
+                    currentJsonTopology: {
+                        ...lastState.currentJsonTopology,
+                        nodeTemplates: lastState.currentJsonTopology.nodeTemplates
+                            .map(nodeTemplate => nodeTemplate.id === newArtActionData.nodeId ?
+                                nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('artifacts',
+                                    artifactsExistInNodeTemplate ?
+                                        {
+                                            artifact: [
+                                                ...lastState.currentJsonTopology.nodeTemplates[indexOfContainingNodeTemplate].artifacts.artifact,
+                                                newYamlArtifact
+                                            ]
+                                        } :
+                                        {
+                                            artifact: [
+                                                newYamlArtifact
+                                            ]
+                                        }) : nodeTemplate
+                            )
+                    }
+                };
             case WineryActions.DELETE_DEPLOYMENT_ARTIFACT:
                 const deletedDeploymentArtifact: any = (<DeleteDeploymentArtifactAction>action).nodeDeploymentArtifact.deletedDeploymentArtifact;
                 const indexOfNodeWithDeletedDeploymentArtifact = lastState.currentJsonTopology.nodeTemplates
@@ -283,7 +314,30 @@ export const WineryReducer =
                             )
                     }
                 };
+            case WineryActions.DELETE_YAML_ARTIFACT:
+                const deletedYamlArtifactId: any = (<DeleteYamlArtifactAction>action).nodeYamlArtifact.deletedYamlArtifactId;
+                const indexOfNodeWithDeletedYamlArtifact = lastState.currentJsonTopology.nodeTemplates
+                    .map(node => node.id)
+                    .indexOf((<DeleteYamlArtifactAction>action).nodeYamlArtifact.nodeId);
 
+                return <WineryState>{
+                    ...lastState,
+                    currentJsonTopology: {
+                        ...lastState.currentJsonTopology,
+                        nodeTemplates: lastState.currentJsonTopology.nodeTemplates
+                            .map((nodeTemplate) => nodeTemplate.id === (<DeleteYamlArtifactAction>action).nodeYamlArtifact.nodeId ?
+                                nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('artifacts',
+                                    {
+                                        artifact: [
+                                            ...lastState.currentJsonTopology.nodeTemplates[indexOfNodeWithDeletedYamlArtifact]
+                                                .artifacts.artifact
+                                                .filter(a => a.id !== deletedYamlArtifactId)
+                                        ]
+                                    })
+                                : nodeTemplate
+                            )
+                    }
+                };
             case WineryActions.SET_POLICY:
                 const newPolicy: any = (<SetPolicyAction>action).nodePolicy;
                 const policy = newPolicy.newPolicy;
@@ -311,6 +365,14 @@ export const WineryReducer =
                                         ]
                                     }) : nodeTemplate
                             )
+                    }
+                };
+            case WineryActions.UPDATE_YAML_POLICIES:
+                return <WineryState>{
+                    ...lastState,
+                    currentJsonTopology: {
+                        ...lastState.currentJsonTopology,
+                        policies: (<ChangeYamlPoliciesAction>action).yamlPolicies.policies
                     }
                 };
 
@@ -449,7 +511,21 @@ export const WineryReducer =
                             .filter(nodeTemplate => nodeTemplate.id !== deletedNodeId),
                         relationshipTemplates: lastState.currentJsonTopology.relationshipTemplates.filter(
                             relationshipTemplate => relationshipTemplate.sourceElement.ref !== deletedNodeId &&
-                                relationshipTemplate.targetElement.ref !== deletedNodeId)
+                                relationshipTemplate.targetElement.ref !== deletedNodeId),
+                        // we check if the targets of YAML policies include the deleted node template<
+                        policies: {
+                            policy: lastState.currentJsonTopology.policies.policy.map(pol => {
+                                if (pol.targets) {
+                                    pol.targets = pol.targets.filter(target => target !== deletedNodeId);
+                                    // to keep a consistent behavior, if no targets remain, remove the field.
+                                    if (pol.targets.length === 0) {
+                                        pol.targets = undefined;
+                                    }
+                                }
+
+                                return pol;
+                            })
+                        }
                     }
                 };
             case WineryActions.DELETE_RELATIONSHIP_TEMPLATE:

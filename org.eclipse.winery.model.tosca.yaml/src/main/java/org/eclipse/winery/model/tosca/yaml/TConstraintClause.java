@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,178 +13,72 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.yaml;
 
+import java.util.List;
+import java.util.Objects;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
+
 import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
 import org.eclipse.winery.model.tosca.yaml.visitor.AbstractResult;
 import org.eclipse.winery.model.tosca.yaml.visitor.IVisitor;
 import org.eclipse.winery.model.tosca.yaml.visitor.VisitorNode;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
-import java.util.List;
-import java.util.Objects;
-
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tConstraintClause", namespace = " http://docs.oasis-open.org/tosca/ns/simple/yaml/1.0", propOrder = {
-    "equal",
-    "greaterThan",
-    "greaterOrEqual",
-    "lessThan",
-    "inRange",
-    "validValues",
-    "length",
-    "minLength",
-    "maxLength",
-    "pattern"
-})
+@XmlType(name = "tConstraintClause", namespace = " http://docs.oasis-open.org/tosca/ns/simple/yaml/1.3")
 public class TConstraintClause implements VisitorNode {
-    private Object equal;
-    @XmlAttribute(name = "greater_than")
-    private Object greaterThan;
-    @XmlAttribute(name = "greater_or_equal")
-    private Object greaterOrEqual;
-    @XmlAttribute(name = "less_than")
-    private Object lessThan;
-    @XmlAttribute(name = "less_or_equal")
-    private Object lessOrEqual;
-    @XmlAttribute(name = "in_range")
-    private List<Object> inRange;
-    @XmlAttribute(name = "valid_values")
-    private List<Object> validValues;
-    private Object length;
-    @XmlAttribute(name = "min_length")
-    private Object minLength;
-    @XmlAttribute(name = "max_length")
-    private Object maxLength;
-    private Object pattern;
+    
+    private String key;
+    private String value;
+    private List<String> list;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof TConstraintClause)) return false;
-        TConstraintClause that = (TConstraintClause) o;
-        return Objects.equals(getEqual(), that.getEqual()) &&
-            Objects.equals(getGreaterThan(), that.getGreaterThan()) &&
-            Objects.equals(getGreaterOrEqual(), that.getGreaterOrEqual()) &&
-            Objects.equals(getLessThan(), that.getLessThan()) &&
-            Objects.equals(getLessOrEqual(), that.getLessOrEqual()) &&
-            Objects.equals(getInRange(), that.getInRange()) &&
-            Objects.equals(getValidValues(), that.getValidValues()) &&
-            Objects.equals(getLength(), that.getLength()) &&
-            Objects.equals(getMinLength(), that.getMinLength()) &&
-            Objects.equals(getMaxLength(), that.getMaxLength()) &&
-            Objects.equals(getPattern(), that.getPattern());
+    public String getKey() {
+        return key;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getEqual(), getGreaterThan(), getGreaterOrEqual(), getLessThan(), getLessOrEqual(), getInRange(), getValidValues(), getLength(), getMinLength(), getMaxLength(), getPattern());
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public List<String> getList() {
+        return list;
+    }
+
+    public void setList(List<String> list) {
+        this.list = list;
     }
 
     @Override
     public String toString() {
         return "TConstraintClause{" +
-            "equal=" + getEqual() +
-            ", greaterThan=" + getGreaterThan() +
-            ", greaterOrEqual=" + getGreaterOrEqual() +
-            ", lessThan=" + getLessThan() +
-            ", lessOrEqual=" + getLessOrEqual() +
-            ", inRange=" + getInRange() +
-            ", validValues=" + getValidValues() +
-            ", length=" + getLength() +
-            ", minLength=" + getMinLength() +
-            ", maxLength=" + getMaxLength() +
-            ", pattern=" + getPattern() +
+            "key='" + key + '\'' +
+            ", value='" + value + '\'' +
+            ", list=" + list +
             '}';
     }
 
-    public Object getEqual() {
-        return equal;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TConstraintClause that = (TConstraintClause) o;
+        return Objects.equals(key, that.key) &&
+            Objects.equals(value, that.value) &&
+            Objects.equals(list, that.list);
     }
 
-    public void setEqual(Object equal) {
-        this.equal = equal;
-    }
-
-    public Object getGreaterThan() {
-        return greaterThan;
-    }
-
-    public void setGreaterThan(Object greaterThan) {
-        this.greaterThan = greaterThan;
-    }
-
-    public Object getGreaterOrEqual() {
-        return greaterOrEqual;
-    }
-
-    public void setGreaterOrEqual(Object greaterOrEqual) {
-        this.greaterOrEqual = greaterOrEqual;
-    }
-
-    public Object getLessThan() {
-        return lessThan;
-    }
-
-    public void setLessThan(Object lessThan) {
-        this.lessThan = lessThan;
-    }
-
-    public Object getLessOrEqual() {
-        return lessOrEqual;
-    }
-
-    public void setLessOrEqual(Object lessOrEqual) {
-        this.lessOrEqual = lessOrEqual;
-    }
-
-    public List<Object> getInRange() {
-        return inRange;
-    }
-
-    public void setInRange(List<Object> inRange) {
-        this.inRange = inRange;
-    }
-
-    public List<Object> getValidValues() {
-        return validValues;
-    }
-
-    public void setValidValues(List<Object> validValues) {
-        this.validValues = validValues;
-    }
-
-    public Object getLength() {
-        return length;
-    }
-
-    public void setLength(Object length) {
-        this.length = length;
-    }
-
-    public Object getMinLength() {
-        return minLength;
-    }
-
-    public void setMinLength(Object minLength) {
-        this.minLength = minLength;
-    }
-
-    public Object getMaxLength() {
-        return maxLength;
-    }
-
-    public void setMaxLength(Object maxLength) {
-        this.maxLength = maxLength;
-    }
-
-    public Object getPattern() {
-        return pattern;
-    }
-
-    public void setPattern(Object pattern) {
-        this.pattern = pattern;
+    @Override
+    public int hashCode() {
+        return Objects.hash(key, value, list);
     }
 
     public <R extends AbstractResult<R>, P extends AbstractParameter<P>> R accept(IVisitor<R, P> visitor, P parameter) {

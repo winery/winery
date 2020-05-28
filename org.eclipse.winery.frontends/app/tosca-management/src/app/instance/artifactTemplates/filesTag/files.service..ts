@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -27,8 +27,8 @@ export class FilesService {
         this.path = this.sharedData.path + '/files';
     }
 
-    getFiles(): Observable<{ files: FilesApiData[], paths: string[] }> {
-        return this.http.get<{ files: FilesApiData[], paths: string[] }>(this.path);
+    getFiles(path?: string): Observable<{ files: FilesApiData[], paths: string[] }> {
+        return this.http.get<{ files: FilesApiData[], paths: string[] }>(path ? path : this.path);
     }
 
     get uploadUrl() {
@@ -36,9 +36,13 @@ export class FilesService {
     }
 
     delete(fileToRemove: FilesApiData): Observable<HttpResponse<string>> {
+        let url = fileToRemove.deleteUrl;
+        if (!url.startsWith('http')) {
+            url = hostURL + fileToRemove.deleteUrl;
+        }
         return this.http
             .delete(
-                hostURL + fileToRemove.deleteUrl + '?path=' + fileToRemove.subDirectory,
+                url + '?path=' + fileToRemove.subDirectory,
                 { observe: 'response', responseType: 'text' }
             );
     }

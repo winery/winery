@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -16,28 +16,52 @@ package org.eclipse.winery.common.configuration;
 
 import java.io.File;
 
-import org.eclipse.winery.common.Constants;
+import org.eclipse.winery.common.Util;
 
 import org.apache.commons.configuration2.YAMLConfiguration;
-import org.apache.commons.io.FileUtils;
 
 public class RepositoryConfigurationObject extends AbstractConfigurationObject {
 
-    private final String key = "repository.";
-    private String repositoryRoot;
-    private String provider;
+    private static final String key = "repository.";
+    private GitConfigurationObject gitConfiguration;
 
-    RepositoryConfigurationObject(YAMLConfiguration configuration) {
-        this.repositoryRoot = configuration.getString(key + "repositoryRoot");
-        this.setProvider(configuration.getString(key + "provider"));
-        this.configuration = configuration;
-        initialize();
+    private RepositoryProvider provider;
+    private String repositoryRoot;
+    private String csarOutputPath;
+
+    private YAMLConfiguration configuration;
+
+    public enum RepositoryProvider {
+
+        FILE("file"), YAML("yaml");
+
+        private final String name;
+
+        RepositoryProvider(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
+    RepositoryConfigurationObject(YAMLConfiguration configuration, GitConfigurationObject gitConfigurationObject) {
+        this.setGitConfiguration(gitConfigurationObject);
+        this.update(configuration);
+    }
+
+    public static String getProviderConfigurationKey() {
+        return key + "provider";
     }
 
     @Override
     void save() {
-        configuration.setProperty(key + "provider", this.getProvider());
+        configuration.setProperty(key + "provider", this.getProvider().toString());
         configuration.setProperty(key + "repositoryRoot", this.repositoryRoot);
+        configuration.setProperty(key + "csarOutputPath", this.csarOutputPath);
+        this.getGitConfiguration().save();
         Environment.getInstance().save();
     }
 
@@ -45,7 +69,13 @@ public class RepositoryConfigurationObject extends AbstractConfigurationObject {
     void update(YAMLConfiguration updatedConfiguration) {
         this.configuration = updatedConfiguration;
         this.repositoryRoot = configuration.getString(key + "repositoryRoot");
-        this.setProvider(configuration.getString(key + "provider"));
+        this.csarOutputPath = configuration.getString(key + "csarOutputPath");
+        String provider = Environment.getInstance().getConfiguration().getString(getProviderConfigurationKey());
+        if (provider.equalsIgnoreCase(RepositoryProvider.YAML.name())) {
+            this.setProvider(RepositoryProvider.YAML);
+        } else {
+            this.setProvider(RepositoryProvider.FILE);
+        }
     }
 
     @Override
@@ -53,18 +83,26 @@ public class RepositoryConfigurationObject extends AbstractConfigurationObject {
 
     }
 
+    public RepositoryConfigurationObject.RepositoryProvider getProvider() {
+        return provider;
+    }
+
+    public void setProvider(RepositoryProvider provider) {
+        this.provider = provider;
+    }
+
     /**
-     * Returns the path to the repositiory saved in the configuration file.
+     * Returns the path to the repository saved in the configuration file.
      *
      * @return path to configuration
      */
     public String getRepositoryRoot() {
         String repositoryRoot = this.repositoryRoot;
         if (repositoryRoot == null || repositoryRoot.isEmpty()) {
-            return FileUtils.getUserDirectory().getAbsolutePath() + File.separator + Constants.DEFAULT_REPO_NAME;
-        } else {
-            return repositoryRoot;
+            repositoryRoot = Util.determineAndCreateRepositoryPath().toString();
         }
+        setRepositoryRoot(repositoryRoot);
+        return repositoryRoot;
     }
 
     public void setRepositoryRoot(String changedRepositoryRoot) {
@@ -72,11 +110,26 @@ public class RepositoryConfigurationObject extends AbstractConfigurationObject {
         this.save();
     }
 
-    public String getProvider() {
-        return provider;
+    public String getCsarOutputPath() {
+        String csarOutputPath = this.csarOutputPath;
+        if (csarOutputPath == null || csarOutputPath.isEmpty()) {
+            csarOutputPath = getRepositoryRoot() + File.separator + "csars";
+        }
+        setCsarOutputPath(csarOutputPath);
+        Util.createCsarOutputPath(csarOutputPath);
+        return csarOutputPath;
     }
 
-    public void setProvider(String provider) {
-        this.provider = provider;
+    public void setCsarOutputPath(String csarOutputPath) {
+        this.csarOutputPath = csarOutputPath;
+        this.save();
+    }
+
+    public GitConfigurationObject getGitConfiguration() {
+        return gitConfiguration;
+    }
+
+    public void setGitConfiguration(GitConfigurationObject gitConfiguration) {
+        this.gitConfiguration = gitConfiguration;
     }
 }

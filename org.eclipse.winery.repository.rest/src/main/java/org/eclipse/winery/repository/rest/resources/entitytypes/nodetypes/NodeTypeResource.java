@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,23 +13,36 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+import org.eclipse.winery.common.ids.IdNames;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.model.tosca.TArtifact;
+import org.eclipse.winery.model.tosca.TArtifacts;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeType.RequirementDefinitions;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
+import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.GenericDirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.rest.resources._support.GenericFileResource;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.rest.resources.entitytypes.InstanceStatesResource;
+import org.eclipse.winery.repository.rest.resources.entitytypes.InterfaceDefinitionsResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.reqandcapdefs.CapabilityDefinitionsResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.reqandcapdefs.RequirementDefinitionsResource;
@@ -102,6 +115,65 @@ public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
     @Path("appearance")
     public VisualAppearanceResource getVisualAppearanceResource() {
         return new VisualAppearanceResource(this, this.getElement().getOtherAttributes(), (NodeTypeId) this.id);
+    }
+
+    @Path("interfacedefinitions")
+    public InterfaceDefinitionsResource InterfaceDefinitionsResource() {
+        return new InterfaceDefinitionsResource(this);
+    }
+
+    @GET
+    @Path("artifacts/")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<TArtifact> getArtifacts() {
+        TArtifacts artifacts = this.getNodeType().getArtifacts();
+        if (artifacts == null) {
+            return new ArrayList<>();
+        }
+        return artifacts.getArtifact();
+    }
+
+    @POST
+    @Path("artifacts/")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addArtifact(TArtifact artifact) {
+        TNodeType nodeType = this.getNodeType();
+        if (nodeType.getArtifacts() == null) {
+            nodeType.setArtifacts(new TArtifacts());
+        }
+        this.getNodeType().getArtifacts().addArtifact(artifact);
+        return RestUtils.persist(this);
+    }
+
+    @DELETE
+    @Path("artifacts/f/{name}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response deleteArtifact(@PathParam("name") String name) {
+        TNodeType nodeType = this.getNodeType();
+        if (nodeType.getArtifacts() == null) {
+            nodeType.setArtifacts(new TArtifacts());
+        }
+        TArtifact artifact = null;
+        for (TArtifact item : nodeType.getArtifacts().getArtifact()) {
+            if (name.equalsIgnoreCase(item.getName())) {
+                artifact = item;
+            }
+        }
+        if (artifact == null) {
+            return Response.noContent().build();
+        }
+        List<TArtifact> artifacts = nodeType.getArtifacts().getArtifact();
+        artifacts.remove(artifact);
+        this.getNodeType().getArtifacts().setArtifact(artifacts);
+        this.uploadArtifact(name).deleteFile(artifact.getFile(), null);
+        return RestUtils.persist(this);
+    }
+
+    @Path("artifacts/{name}")
+    public GenericFileResource uploadArtifact(@PathParam("name") String name) {
+        DirectoryId dir = new GenericDirectoryId(this.getId(), IdNames.FILES_DIRECTORY);
+        DirectoryId files = new GenericDirectoryId(dir, name);
+        return new GenericFileResource(files);
     }
 
     @Override

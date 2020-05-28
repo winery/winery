@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -19,7 +19,7 @@
         <button class="btn btn-info" (click)="onAddSubType()">
             Add a subtype
         </button>
-        <button class="btn btn-primary" name="save" (click)="saveToServer()"
+        <button class="btn btn-primary left-margin-10" name="save" (click)="saveToServer()"
                 [disabled]="!sharedData?.currentVersion?.editable">
             Save
         </button>
@@ -39,7 +39,7 @@
         </select>
     </div>
 
-    <p>Derived from</p>
+    <label class="control-label">Derived From</label>
     <ng-select #derivedFromSelector
                [disabled]="!sharedData?.currentVersion?.editable"
                [items]="availableSuperClasses"
@@ -47,7 +47,7 @@
                [active]="initialActiveItem">
     </ng-select>
     <br>
-    <button class="btn btn-info btn-sm" [disabled]="!enableButton" (click)="onButtonClick()">open</button>
+    <button class="btn btn-info btn-sm" [disabled]="!enableButton" (click)="onButtonClick()">Open</button>
 </div>
 
 <winery-add-component #addSubTypeModal

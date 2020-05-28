@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -53,9 +53,9 @@ import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.export.entries.CsarEntry;
-import org.eclipse.winery.repository.export.entries.DefinitionsBasedCsarEntry;
 import org.eclipse.winery.repository.export.entries.DocumentBasedCsarEntry;
 import org.eclipse.winery.repository.export.entries.RepositoryRefBasedCsarEntry;
+import org.eclipse.winery.repository.export.entries.XMLDefinitionsBasedCsarEntry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,19 +73,19 @@ public class ToscaExportUtil {
     // collects the references to be put in the CSAR and the assigned path in
     // the CSAR MANIFEST
     // this allows to use other paths in the CSAR than on the local storage
-    private Map<CsarContentProperties, CsarEntry> referencesToPathInCSARMap = null;
+    protected Map<CsarContentProperties, CsarEntry> referencesToPathInCSARMap = null;
 
     /**
      * Currently a very simple approach to configure the export
      */
-    private Map<String, Object> exportConfiguration;
+    protected Map<String, Object> exportConfiguration;
 
     public void writeTOSCA(IRepository repository, DefinitionsChildId id,
                            Map<String, Object> conf, OutputStream outputStream)
         throws RepositoryCorruptException, IOException {
         this.processTOSCA(repository, id, new CsarContentProperties(id.getQName().toString()), conf);
         CsarEntry csarEntry = this.referencesToPathInCSARMap.values().stream()
-            .filter(entry -> entry instanceof DefinitionsBasedCsarEntry)
+            .filter(entry -> entry instanceof XMLDefinitionsBasedCsarEntry)
             .findFirst()
             .orElseThrow(() -> new RepositoryCorruptException("Definition not found!"));
         csarEntry.writeToOutputStream(outputStream);
@@ -123,8 +123,8 @@ public class ToscaExportUtil {
     }
 
     /**
-     * Completes the tosca xml in preparation to write it. Additionally, a the artifactMap is filled to
-     * enable the CSAR exporter to create necessary entries in TOSCA-Meta and to add them to the CSAR itself
+     * Completes the tosca xml in preparation to write it. Additionally, a the artifactMap is filled to enable the CSAR
+     * exporter to create necessary entries in TOSCA-Meta and to add them to the CSAR itself
      *
      * @param id                        the component instance to export
      * @param exportConfiguration       Configures the exporter
@@ -144,7 +144,7 @@ public class ToscaExportUtil {
      * @return a collection of DefinitionsChildIds referenced by the given component
      * @throws RepositoryCorruptException if tcId does not exist
      */
-    private Collection<DefinitionsChildId> processDefinitionsElement(IRepository repository, DefinitionsChildId tcId, CsarContentProperties definitionsFileProperties)
+    protected Collection<DefinitionsChildId> processDefinitionsElement(IRepository repository, DefinitionsChildId tcId, CsarContentProperties definitionsFileProperties)
         throws RepositoryCorruptException, IOException {
         if (!repository.exists(tcId)) {
             String error = "Component instance " + tcId.toReadableString() + " does not exist.";
@@ -207,12 +207,12 @@ public class ToscaExportUtil {
 
         // END: Definitions modification
 
-        this.referencesToPathInCSARMap.put(definitionsFileProperties, new DefinitionsBasedCsarEntry(entryDefinitions));
+        this.referencesToPathInCSARMap.put(definitionsFileProperties, new XMLDefinitionsBasedCsarEntry(entryDefinitions));
 
         return referencedDefinitionsChildIds;
     }
 
-    private void exportEntityType(Definitions entryDefinitions, URI uri, DefinitionsChildId tcId) {
+    protected void exportEntityType(Definitions entryDefinitions, URI uri, DefinitionsChildId tcId) {
         TEntityType entityType = (TEntityType) entryDefinitions.getElement();
 
         // we have an entity type with a possible properties definition
@@ -291,7 +291,7 @@ public class ToscaExportUtil {
     /**
      * Adds the given id as import to the given imports collection
      */
-    private void addToImports(IRepository repository, DefinitionsChildId id, Collection<TImport> imports) {
+    protected void addToImports(IRepository repository, DefinitionsChildId id, Collection<TImport> imports) {
         TImport imp = new TImport();
         imp.setImportType(Namespaces.TOSCA_NAMESPACE);
         imp.setNamespace(id.getNamespace().getDecoded());
@@ -349,7 +349,7 @@ public class ToscaExportUtil {
      *
      * @return a collection of referenced definition child Ids
      */
-    private void prepareForExport(IRepository repository, ArtifactTemplateId id) throws RepositoryCorruptException, IOException {
+    protected void prepareForExport(IRepository repository, ArtifactTemplateId id) throws RepositoryCorruptException, IOException {
         // Export files
 
         // This method is called BEFORE the concrete definitions element is written.
@@ -375,7 +375,7 @@ public class ToscaExportUtil {
      * <p>
      * Thereby, it uses the global variable referencesToPathInCSARMap
      */
-    private void putRefAsReferencedItemInCsar(RepositoryFileReference ref) {
+    protected void putRefAsReferencedItemInCsar(RepositoryFileReference ref) {
         // Determine path
         String pathInsideRepo = BackendUtils.getPathInsideRepo(ref);
 
@@ -384,7 +384,7 @@ public class ToscaExportUtil {
         this.referencesToPathInCSARMap.put(new CsarContentProperties(pathInsideRepo), new RepositoryRefBasedCsarEntry(ref));
     }
 
-    private void addVisualAppearanceToCSAR(IRepository repository, TopologyGraphElementEntityTypeId id) {
+    protected void addVisualAppearanceToCSAR(IRepository repository, TopologyGraphElementEntityTypeId id) {
         VisualAppearanceId visId = new VisualAppearanceId(id);
         if (repository.exists(visId)) {
             // we do NOT check for the id, but simply check for bigIcon.png (only exists in NodeType) and smallIcon.png (exists in NodeType and RelationshipType)

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,17 +12,18 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
-import { Entity, EntityType, TTopologyTemplate, VisualEntityType } from './ttopology-template';
+import { Entity, EntityType, TArtifactType, TPolicyType, TTopologyTemplate, VisualEntityType } from './ttopology-template';
 import { TopologyModelerConfiguration } from './topologyModelerConfiguration';
 import { VersionElement } from './versionElement';
 import { Visuals } from './visuals';
+import { TPolicy } from './policiesModalData';
 
 /**
  * Internal representation of entity Types
  */
 export class EntityTypesModel {
     artifactTemplates: any;
-    artifactTypes: EntityType[];
+    artifactTypes: TArtifactType[];
     capabilityTypes: EntityType[];
     groupedNodeTypes: any[];
     versionElements: VersionElement[];
@@ -30,11 +31,12 @@ export class EntityTypesModel {
     relationshipVisuals: Visuals[];
     policyTemplates: Entity[];
     policyTemplateVisuals: Visuals[];
-    policyTypes: EntityType[];
+    policyTypes: TPolicyType[];
     policyTypeVisuals: Visuals[];
     relationshipTypes: VisualEntityType[];
     requirementTypes: EntityType[];
     unGroupedNodeTypes: EntityType[];
+    yamlPolicies: TPolicy[];
 }
 
 /**

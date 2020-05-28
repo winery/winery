@@ -96,7 +96,7 @@ RequirementDefinitions in this model have the additional field description.
 ## References
 Types references and other references are defined as `strings` in the TOSCA Simple Profile in YAML Specification. This model uses `QNames` instead of simple strings. Each reference has a namespace.
 
-References to elements in the same ServiceTemplate have the `namespace_uri` of the ServiceTemplate, which is specified by the user when parsing the document or set to the default namespace (`http://www.eclipse.org/winery/ns/simple/yaml/1.1/default`).
+References to elements in the same ServiceTemplate have the `namespace_uri` of the ServiceTemplate, which is specified by the user when parsing the document or set to the default namespace (`http://www.eclipse.org/winery/ns/simple/yaml/1.3/default`).
   
 References to elements specified in imported ServiceTemplate will use the namespace and prefix of the the ImportDefinition, if defined, or the namespace of the importing ServiceTemplate.
 

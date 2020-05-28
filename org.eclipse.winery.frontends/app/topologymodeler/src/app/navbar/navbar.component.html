@@ -24,7 +24,8 @@
             Manage
         </button>
 
-        <div class="btn-group button-group" data-toggle="buttons">
+        <div class="btn-group button-group" data-toggle="buttons"
+             *wineryRepositoryHideOnFeature="'yaml'">
             <button
                 class="btn btn-sm align-middle dark-button-style"
                 type="button"
@@ -58,12 +59,12 @@
         </div>
 
         <div class="btn-group button-group" data-toggle="buttons">
-            <button
-                class="btn btn-sm align-middle dark-button-style"
-                type="button"
-                id="ids"
-                (click)="toggleButton($event)"
-                [style.background-color]="getStyle(navbarButtonsState.buttonsState.idsButton)">
+            <button *wineryRepositoryHideOnFeature="'yaml'"
+                    class="btn btn-sm align-middle dark-button-style"
+                    type="button"
+                    id="ids"
+                    (click)="toggleButton($event)"
+                    [style.background-color]="getStyle(navbarButtonsState.buttonsState.idsButton)">
                 Ids
             </button>
             <button
@@ -88,7 +89,7 @@
                 id="deploymentArtifacts"
                 (click)="toggleButton($event)"
                 [style.background-color]="getStyle(navbarButtonsState.buttonsState.deploymentArtifactsButton)">
-                Deployment Artifacts
+                {{this.configurationService.isYaml() ? 'Artifacts' : 'Deployment Artifacts'}}
             </button>
             <button
                 class="btn btn-sm align-middle dark-button-style"
@@ -226,24 +227,33 @@
             </button>
             <ul *dropdownMenu class="dropdown-menu" role="menu">
                 <!--<li role="menuitem"><a class="dropdown-item" href="#">Complete Topology</a></li>-->
-                <li role="menuitem">
+                <li role="menuitem" *wineryRepositoryHideOnFeature="'yaml'">
                     <button style="cursor: pointer" #exportCsarButton target="_blank"
                             tooltip="Hold CTRL key to export XML only."
                             placement="left" class="dropdown-item" (click)="exportCsar($event)">Export CSAR
                     </button>
                 </li>
-                <li role="menuitem">
+                <li role="menuitem" *wineryRepositoryHideOnFeature="'yaml'">
                     <button style="cursor: pointer" id="threatModeling" target="_blank"
                             class="dropdown-item" (click)="toggleButton($event)">Threat Modeling
                     </button>
                 </li>
-                <li role="menuitem">
+                <li role="menuitem" *wineryRepositoryHideOnFeature="'yaml'">
                     <button
                         style="cursor: pointer"
                         class="dropdown-item"
                         id="substituteTopology"
                         (click)="toggleButton($event)">
                         Substitute Topology
+                    </button>
+                </li>
+                <li role="menuitem" *wineryRepositoryShowOnFeature="configEnum.Yaml">
+                    <button
+                        style="cursor: pointer"
+                        class="dropdown-item"
+                        id="manageYamlPolicies"
+                        (click)="toggleButton($event)">
+                        Manage Policies
                     </button>
                 </li>
                 <!--<li role="menuitem"><a class="dropdown-item" (click)="checkCompliance()">Check Compliance</a></li>-->

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -58,7 +58,7 @@ export class SelectableListComponent implements OnInit {
         this.selectionChanged.emit(value);
     }
 
-    selectItem(item: InterfacesApiData) {
+    selectItem(item: any) {
         this.currentSelected = item;
         this.onChange(item);
     }

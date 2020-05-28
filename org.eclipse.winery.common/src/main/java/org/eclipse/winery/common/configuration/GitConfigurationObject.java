@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -18,7 +18,7 @@ import org.apache.commons.configuration2.YAMLConfiguration;
 
 public class GitConfigurationObject extends AbstractConfigurationObject {
 
-    private final String key = "repository.git.";
+    private static final String key = "repository.git.";
     private String clientSecret;
     private String password;
     private String clientID;
@@ -26,12 +26,7 @@ public class GitConfigurationObject extends AbstractConfigurationObject {
     private boolean autocommit;
 
     GitConfigurationObject(YAMLConfiguration configuration) {
-        this.setClientSecret(configuration.getString(key + "clientSecret"));
-        this.setPassword(configuration.getString(key + "password"));
-        this.setClientID(configuration.getString(key + "clientID"));
-        this.setUsername(configuration.getString(key + "username"));
-        this.setAutocommit(configuration.getBoolean(key + "autocommit", false));
-        this.configuration = configuration;
+        this.update(configuration);
         initialize();
     }
 
@@ -52,7 +47,7 @@ public class GitConfigurationObject extends AbstractConfigurationObject {
         this.setPassword(configuration.getString(key + "password"));
         this.setClientID(configuration.getString(key + "clientID"));
         this.setUsername(configuration.getString(key + "username"));
-        this.setAutocommit(configuration.getBoolean(key + "autocommit"));
+        this.setAutocommit(configuration.getBoolean(key + "autocommit", false));
     }
 
     @Override

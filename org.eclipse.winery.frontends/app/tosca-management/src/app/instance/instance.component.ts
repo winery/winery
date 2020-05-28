@@ -53,7 +53,8 @@ export class InstanceComponent implements OnDestroy {
     constructor(private route: ActivatedRoute,
                 private router: Router,
                 private service: InstanceService,
-                private notify: WineryNotificationService, private existService: ExistService) {
+                private notify: WineryNotificationService,
+                private existService: ExistService) {
         this.routeSub = this.route
             .data
             .subscribe(data => {

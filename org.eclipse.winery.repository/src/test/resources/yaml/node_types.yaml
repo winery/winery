@@ -1,4 +1,4 @@
-# Copyright (c) 2017 Contributors to the Eclipse Foundation
+# Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
 #
 # See the NOTICE file(s) distributed with this work for additional
 # information regarding copyright ownership.
@@ -15,7 +15,7 @@
 # TOSCA Namespacing keyword specifies the TOSCA Namespace Alias value which 
 # all TOSCA Service Templates MUST always have.
 ##########################################################################
-tosca_definitions_version: tosca_simple_yaml_1_1
+tosca_definitions_version: tosca_simple_yaml_1_3
 
 node_types:
 

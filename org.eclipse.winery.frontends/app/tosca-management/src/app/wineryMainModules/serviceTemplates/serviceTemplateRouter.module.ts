@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -31,6 +31,7 @@ import { WineryReadmeComponent } from '../../wineryReadmeModule/wineryReadme.com
 import { WineryLicenseComponent } from '../../wineryLicenseModule/wineryLicense.component';
 import { ConstraintCheckingComponent } from '../../instance/serviceTemplates/constraintChecking/constraintChecking.component';
 import { ThreatAssessmentComponent } from '../../instance/serviceTemplates/threatAssessment/threatAssessment.component';
+import { InputOutputParametersComponent } from '../../instance/serviceTemplates/inputOutputParameters/inputOutputParameters.component';
 
 const toscaType = ToscaTypes.ServiceTemplate;
 
@@ -60,6 +61,7 @@ const serviceTemplateRoutes: Routes = [
                 // 'app/instance/serviceTemplates/boundaryDefinitions/boundaryDefinitions.module#BoundaryDefinitionsModule'
                 children: boundaryDefinitionsRoutes
             },
+            { path: 'parameters', component: InputOutputParametersComponent },
             { path: 'constraintchecking', component: ConstraintCheckingComponent },
             { path: 'tags', component: TagComponent },
             { path: 'documentation', component: DocumentationComponent },

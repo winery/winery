@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -16,6 +16,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { IWineryState } from '../../redux/store/winery.store';
 import { NgRedux } from '@angular-redux/store';
 import { TableType } from '../../models/enums';
+import { WineryRepositoryConfigurationService } from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { TArtifact } from '../../models/ttopology-template';
 
 @Component({
     selector: 'winery-deployment-artifacts',
@@ -33,9 +35,10 @@ export class DeploymentArtifactsComponent implements OnInit {
     @Input() readonly: boolean;
     @Input() currentNodeData: any;
     @Input() deploymentArtifacts;
+    @Input() yamlArtifacts: TArtifact[];
     latestNodeTemplate;
 
-    constructor(private $ngRedux: NgRedux<IWineryState>) {
+    constructor(private $ngRedux: NgRedux<IWineryState>, private configurationService: WineryRepositoryConfigurationService) {
         this.toggleModalHandler = new EventEmitter();
     }
 

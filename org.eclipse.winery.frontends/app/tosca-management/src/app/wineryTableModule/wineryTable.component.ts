@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -146,6 +146,8 @@ export class WineryTableComponent implements OnInit, DoCheck {
         className: ['table-striped', 'table-bordered']
     };
     @Input() disableButtons = false;
+    @Input() showAddButton = true;
+    @Input() showRemoveButton = true;
     @Input() enableEditButton = false;
     @Input() enableIOButton = false;
 

@@ -50,6 +50,7 @@ export class TopologyRendererActions {
     static DETERMINE_FREEZABLE_COMPONENTS = 'DETERMINE_FREEZABLE_COMPONENTS';
     static CLEAN_FREEZABLE_COMPONENTS = 'CLEAN_FREEZABLE_COMPONENTS';
     static PLACE_COMPONENTS = 'PLACE_COMPONENTS';
+    static MANAGE_YAML_POLICIES = 'MANAGE_YAML_POLICIES';
 
     togglePolicies(): Action {
         return { type: TopologyRendererActions.TOGGLE_POLICIES };
@@ -154,5 +155,9 @@ export class TopologyRendererActions {
 
     placeComponents(): Action {
         return { type: TopologyRendererActions.PLACE_COMPONENTS };
+    }
+
+    manageYamlPolicies(): Action {
+        return { type: TopologyRendererActions.MANAGE_YAML_POLICIES };
     }
 }

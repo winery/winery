@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,12 +11,15 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FeatureEnum } from '../../../wineryFeatureToggleModule/wineryRepository.feature.direct';
 
 @Component({
     templateUrl: 'appliesTo.component.html'
 })
 export class AppliesToComponent implements OnInit {
+    configEnum = FeatureEnum;
+
     constructor() {
     }
 

@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -73,6 +73,16 @@
                 <winery-spinner-with-infinity #upperBoundSpinner [label]="'Upper Bound'"
                                               [withInfinity]="true"></winery-spinner-with-infinity>
             </div>
+            <br>
+            <div *ngIf="this.capOrReqDefToBeAdded.type && this.capOrReqDefToBeAdded.type != 'none'">
+                <winery-table title="Valid Source Types"
+                              [columns]="addCapabilityColumns"
+                              [data]="validSourceTypesTableData"
+                              disableFiltering="true"
+                              (addBtnClicked)="onAddSourceTypeClick()"
+                              (removeBtnClicked)="onRemoveClicked($event)">
+                </winery-table>
+            </div>
         </form>
     </winery-modal-body>
     <winery-modal-footer [showDefaultButtons]="false">
@@ -82,6 +92,31 @@
         </button>
     </winery-modal-footer>
 </winery-modal>
+
+<ng-template #addValidNodeTypeModal>
+    <winery-modal-header [title]="'Add Valid Source Type'" [modalRef]="addModalRef">
+    </winery-modal-header>
+    <winery-modal-body>
+        <form>
+            <div class="form-group">
+                <label for="validNodeTypes" class="control-label">Node Types</label>
+                <ng-select id="validNodeTypes"
+                           [disabled]="!sharedData?.currentVersion?.editable"
+                           [items]="currentNodeTypes"
+                           (selected)="onSelectedNodeTypeChanged($event)"
+                           [active]=""
+                >
+                </ng-select>
+            </div>
+
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer [modalRef]="addModalRef"
+                         [okButtonLabel]="'Add'"
+                         [disableOkButton]=""
+                         (onOk)="onAddValidSourceType()">
+    </winery-modal-footer>
+</ng-template>
 
 <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
     <winery-modal-header [title]="'Delete Property'"></winery-modal-header>
@@ -119,6 +154,24 @@
                          [closeButtonLabel]="'Close'"
                          [okButtonLabel]="'Add new'">
     </winery-modal-footer>
+</winery-modal>
+
+
+<winery-modal bsModal #showYAMLConModal="bs-modal" [modalRef]="showYAMLConModal">
+    <winery-modal-header [title]="'Constraints of Capability Definition'"></winery-modal-header>
+    <winery-modal-body>
+        <winery-table title="Valid Source Types"
+                      [columns]="addCapabilityColumns"
+                      [data]="validSourceTypesTableData"
+                      disableFiltering="true"
+                      disableButtons="true"
+                      (cellSelected)="onCellSelected($event)">
+        </winery-table>
+    </winery-modal-body>
+    <winery-modal-footer [closeButtonLabel]="'Close'"
+                         hideOkButton="true">
+    </winery-modal-footer>
+
 </winery-modal>
 
 <!--add/edit constraint modal-->

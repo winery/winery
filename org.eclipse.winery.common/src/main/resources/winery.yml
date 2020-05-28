@@ -8,6 +8,7 @@ ui:
     nfv: true
     patternRefinement: true
     problemDetection: true
+    radon: false
     splitting: true
     testRefinement: true
     placement: true
@@ -22,6 +23,7 @@ ui:
 repository:
   provider: file
   repositoryRoot: ""
+  # csarOutputPath: "" # default: $repositoryRoot/csars
   git:
     clientSecret: secret
     password: default

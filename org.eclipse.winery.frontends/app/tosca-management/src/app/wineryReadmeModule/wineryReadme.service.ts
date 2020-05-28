@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -32,10 +32,9 @@ export class ReadmeService {
     }
 
     save(readmeFile: String): Observable<HttpResponse<string>> {
-        return this.http.put<string>(
+        return this.http.put(
             this.sharedData.path + '/README.md',
             readmeFile,
-            { observe: 'response' });
+            { observe: 'response', responseType: 'text' });
     }
-
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -30,13 +30,7 @@ public class AccountabilityConfigurationObject extends AbstractConfigurationObje
     private String swarmGatewayUrl;
 
     AccountabilityConfigurationObject(YAMLConfiguration configuration) {
-        ethereumPassword = configuration.getString(key + "ethereum-password", "winery");
-        gethUrl = configuration.getString(key + "geth-url", "http://localhost:8545");
-        ethereumCredentialsFileName = configuration.getString(key + "ethereum-credentials-file-name", "");
-        ethereumProvenanceSmartContractAddress = configuration.getString(key + "ethereum-provenance-smart-contract-address", "0x7a7286d6a5bc548234850821d57c649Eb71A8519");
-        ethereumAuthorizationSmartContractAddress = configuration.getString(key + "ethereum-authorization-smart-contract-address", "0x8414D5f1AF1749B349D9cE88dEB28E5aCB19E417");
-        swarmGatewayUrl = configuration.getString(key + "swarm-gateway-url", "http://localhost");
-        this.configuration = configuration;
+        this.update(configuration);
     }
 
     @Override
@@ -52,13 +46,13 @@ public class AccountabilityConfigurationObject extends AbstractConfigurationObje
 
     @Override
     void update(YAMLConfiguration configuration) {
-        ethereumPassword = configuration.getString(key + "ethereum-password");
-        gethUrl = configuration.getString(key + "geth-url");
-        ethereumCredentialsFileName = configuration.getString(key + "ethereum-credentials-file-name");
-        ethereumProvenanceSmartContractAddress = configuration.getString(key + "ethereum-provenance-smart-contract-address");
-        ethereumAuthorizationSmartContractAddress = configuration.getString(key + "ethereum-authorization-smart-contract-address");
-        swarmGatewayUrl = configuration.getString(key + "swarm-gateway-url");
         this.configuration = configuration;
+        ethereumPassword = this.configuration.getString(key + "ethereum-password", "winery");
+        gethUrl = this.configuration.getString(key + "geth-url", "http://localhost:8545");
+        ethereumCredentialsFileName = this.configuration.getString(key + "ethereum-credentials-file-name", "");
+        ethereumProvenanceSmartContractAddress = this.configuration.getString(key + "ethereum-provenance-smart-contract-address", "0x7a7286d6a5bc548234850821d57c649Eb71A8519");
+        ethereumAuthorizationSmartContractAddress = this.configuration.getString(key + "ethereum-authorization-smart-contract-address", "0x8414D5f1AF1749B349D9cE88dEB28E5aCB19E417");
+        swarmGatewayUrl = this.configuration.getString(key + "swarm-gateway-url", "http://localhost");
     }
 
     @Override

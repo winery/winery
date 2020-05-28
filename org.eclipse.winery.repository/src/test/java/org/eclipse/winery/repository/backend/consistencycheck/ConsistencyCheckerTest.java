@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -90,7 +90,6 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
         ConsistencyErrorCollector errorLogger = new ConsistencyErrorCollector();
         consistencyChecker.checkNamespaceUri(id);
         assertEquals(Collections.emptyMap(), errorLogger.getErrorList());
-
     }
 
     public ConsistencyErrorCollector checkRevisionWithoutDocumentation(String revision) throws Exception {
@@ -100,7 +99,7 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
             (false, false, verbosity, repository, true);
         final ConsistencyChecker consistencyChecker = new ConsistencyChecker(configuration);
         consistencyChecker.checkCorruption();
-        return  consistencyChecker.getErrorCollector();
+        return consistencyChecker.getErrorCollector();
     }
 
     @ParameterizedTest
@@ -176,18 +175,9 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
         Map<QName, ElementErrorList> expected = new HashMap<>();
         ElementErrorList elementErrorList;
 
-        elementErrorList = new ElementErrorList("ArtifactType");
-        elementErrorList.addError("java.lang.UnsupportedOperationException");
-        expected.put(new QName("http://winery.opentosca.org/test/ponyuniverse", "WesternEquipment_Pony"), elementErrorList);
-
-        elementErrorList = new ElementErrorList("ArtifactType");
-        elementErrorList.addError("java.lang.UnsupportedOperationException");
-        expected.put(new QName("http://winery.opentosca.org/test/ponyuniverse", "DressageEquipment_Unicorn"), elementErrorList);
-
         elementErrorList = new ElementErrorList("ArtifactTemplate");
         elementErrorList.addError("Namespace URI contains tosca definitions name from other type. E.g., Namespace is ...servicetemplates..., but the type is an artifact template");
         elementErrorList.addError("Properties required, but no properties defined");
-        elementErrorList.addError("java.lang.UnsupportedOperationException");
         expected.put(new QName("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DressageEquipment_Unicorn"), elementErrorList);
 
         elementErrorList = new ElementErrorList("ServiceTemplate");
@@ -217,14 +207,12 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
 
         elementErrorList = new ElementErrorList("ArtifactTemplate");
         elementErrorList.addError("Namespace URI contains tosca definitions name from other type. E.g., Namespace is ...servicetemplates..., but the type is an artifact template");
-        elementErrorList.addError("java.lang.UnsupportedOperationException");
         expected.put(new QName("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "WesternEquipment_Pony"), elementErrorList);
 
         elementErrorList = new ElementErrorList("ServiceTemplate");
         elementErrorList.addError("propertiesKV of node template shetland_pony is null");
         elementErrorList.addError("propertiesKV of node template ponycompetition is null");
         elementErrorList.addError("propertiesKV of node template ponycompetition_2 is null");
-        elementErrorList.addError("java.lang.UnsupportedOperationException");
         expected.put(new QName("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTest"), elementErrorList);
 
         elementErrorList = new ElementErrorList("ServiceTemplate");
@@ -256,7 +244,6 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
         elementErrorList = new ElementErrorList("ArtifactTemplate");
         elementErrorList.addError("Namespace URI contains tosca definitions name from other type. E.g., Namespace is ...servicetemplates..., but the type is an artifact template");
         elementErrorList.addError("Properties required, but no properties defined");
-        elementErrorList.addError("java.lang.UnsupportedOperationException");
         expected.put(new QName("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "WesternEquipment_Unicorn"), elementErrorList);
 
         elementErrorList = new ElementErrorList("ServiceTemplate");
@@ -269,10 +256,6 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
             "Fatal Error: cvc-complex-type.2.4.b: The content of element 'Requirements' is not complete. One of '{\"http://docs.oasis-open.org/tosca/ns/2011/12\":Requirement}' is expected.\n" +
             "Fatal Error: cvc-complex-type.2.4.b: The content of element 'DeploymentArtifacts' is not complete. One of '{\"http://docs.oasis-open.org/tosca/ns/2011/12\":DeploymentArtifact}' is expected.\n");
         expected.put(new QName("http://www.opentosca.org/providers/FieldProvider", "FieldProvider"), elementErrorList);
-
-        elementErrorList = new ElementErrorList("ServiceTemplate");
-        elementErrorList.addError("java.lang.UnsupportedOperationException");
-        expected.put(new QName("http://www.opentosca.org/providers/EquipmentProvider", "EquipmentProvider"), elementErrorList);
 
         elementErrorList = new ElementErrorList("ServiceTemplate");
         elementErrorList.addError("Fatal Error: cvc-datatype-valid.1.2.1: '1' is not a valid value for 'NCName'.\n" +
@@ -289,12 +272,7 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
 
         elementErrorList = new ElementErrorList("ArtifactTemplate");
         elementErrorList.addError("Namespace URI contains tosca definitions name from other type. E.g., Namespace is ...servicetemplates..., but the type is an artifact template");
-        elementErrorList.addError("java.lang.UnsupportedOperationException");
         expected.put(new QName("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DressageEquipment_Pony"), elementErrorList);
-
-        elementErrorList = new ElementErrorList("ArtifactType");
-        elementErrorList.addError("java.lang.UnsupportedOperationException");
-        expected.put(new QName("http://winery.opentosca.org/test/ponyuniverse", "DressageEquipment_Pony"), elementErrorList);
 
         elementErrorList = new ElementErrorList("ServiceTemplate");
         elementErrorList.addError("Fatal Error: cvc-datatype-valid.1.2.1: '1' is not a valid value for 'NCName'.\n" +
@@ -361,10 +339,6 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
             "Fatal Error: cvc-attribute.3: The value '20' of attribute 'id' on element 'Requirement' is not valid with respect to its type, 'ID'.\n");
         expected.put(new QName("http://www.winery.opentosca.org/test/targetallocation/servicetemplates", "MinExternalConnectionsTest2"), elementErrorList);
 
-        elementErrorList = new ElementErrorList("ArtifactType");
-        elementErrorList.addError("java.lang.UnsupportedOperationException");
-        expected.put(new QName("http://winery.opentosca.org/test/ponyuniverse", "WesternEquipment_Unicorn"), elementErrorList);
-
         elementErrorList = new ElementErrorList("ServiceTemplate");
         elementErrorList.addError("propertiesKV of node template straw is null");
         elementErrorList.addError("propertiesKV of node template stall is null");
@@ -426,9 +400,9 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
     }
 
     /**
-     * If this method fails, reconfigure IntelliJ and rebuild the complete project <br>
-     * Settings | Build, Execution, Deployment | Compiler | [ ] Add runtime assertions for not-null-annotated methods and parameters.
-     * 
+     * If this method fails, reconfigure IntelliJ and rebuild the complete project <br> Settings | Build, Execution,
+     * Deployment | Compiler | [ ] Add runtime assertions for not-null-annotated methods and parameters.
+     *
      * See https://stackoverflow.com/a/40847858/873282 for more information
      */
     @ParameterizedTest

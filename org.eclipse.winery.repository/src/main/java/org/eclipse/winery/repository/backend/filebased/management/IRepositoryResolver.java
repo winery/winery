@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -17,7 +17,7 @@ package org.eclipse.winery.repository.backend.filebased.management;
 import java.io.File;
 import java.io.IOException;
 
-import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
+import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 
@@ -33,6 +33,5 @@ public interface IRepositoryResolver {
 
     String getRepositoryName();
 
-    FilebasedRepository createRepository(File repositoryLocation) throws IOException, GitAPIException;
-
+    GitBasedRepository createRepository(File repositoryLocation) throws IOException, GitAPIException;
 }

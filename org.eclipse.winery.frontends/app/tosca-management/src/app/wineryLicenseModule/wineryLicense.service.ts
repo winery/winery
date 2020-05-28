@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,9 +24,9 @@ export class WineryLicenseService {
 
     constructor(private http: HttpClient, private sharedData: InstanceService) {
         this._allLicences = [
-            new WineryLicense('Apache-2.0', 'assets/licenses/Apache-2.0.txt'),
-            new WineryLicense('EPL-2.0', 'assets/licenses/EPL-2.0.txt'),
-            new WineryLicense('Proprietary', 'assets/licenses/Proprietary.txt')
+            new WineryLicense('Apache-2.0', '/assets/licenses/Apache-2.0.txt'),
+            new WineryLicense('EPL-2.0', '/assets/licenses/EPL-2.0.txt'),
+            new WineryLicense('Proprietary', '/assets/licenses/Proprietary.txt')
         ];
     }
 

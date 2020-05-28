@@ -21,6 +21,8 @@ import { WineryVersion } from '../../model/wineryVersion';
 import { InstanceService, ToscaLightCompatibilityData } from '../instance.service';
 import { WineryRepositoryConfigurationService } from '../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { SubMenuItem } from '../../model/subMenuItem';
+import { HttpErrorResponse } from '@angular/common/http';
+import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
 
 @Component({
     selector: 'winery-instance-header',
@@ -60,7 +62,7 @@ export class InstanceHeaderComponent implements OnInit {
 
     constructor(private router: Router, public sharedData: InstanceService,
                 private configurationService: WineryRepositoryConfigurationService,
-                private modalService: BsModalService) {
+                private modalService: BsModalService, private notify: WineryNotificationService) {
     }
 
     ngOnInit(): void {
@@ -68,6 +70,14 @@ export class InstanceHeaderComponent implements OnInit {
 
         if (this.subMenu.length > 7) {
             this.needTwoLines = true;
+        }
+
+        if (this.configurationService.isYaml()) {
+            if (this.toscaComponent.toscaType === ToscaTypes.ServiceTemplate
+                || this.toscaComponent.toscaType === ToscaTypes.Admin
+                || this.toscaComponent.toscaType === ToscaTypes.PolicyType) {
+                this.needTwoLines = true;
+            }
         }
 
         if (this.toscaComponent.toscaType === ToscaTypes.Imports || this.toscaComponent.toscaType === ToscaTypes.Admin) {
@@ -86,7 +96,23 @@ export class InstanceHeaderComponent implements OnInit {
         this.toscaLightCompatibilityErrorReportModalRef = this.modalService.show(this.toscaLightCompatibilityModel);
     }
 
+    exportToFilesystem() {
+        this.sharedData.exportToFilesystem()
+            .subscribe(
+                () => this.handleSuccess(`Successfully exported ${this.toscaComponent.localName} CSAR to filesystem`),
+                error => this.handleError(error)
+            );
+    }
+
     openDeleteConfirmationModel() {
         this.deleteConfirmationModalRef = this.modalService.show(this.confirmDeleteModal);
+    }
+
+    private handleSuccess(message: string) {
+        this.notify.success(message);
+    }
+
+    private handleError(error: HttpErrorResponse) {
+        this.notify.error(error.message, 'Error');
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,8 +14,11 @@
 package org.eclipse.winery.repository.rest.resources.admin;
 
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -27,17 +30,28 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
+import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
+import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
-import org.eclipse.winery.repository.backend.IRepositoryAdministration;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.filebased.MultiRepository;
-import org.eclipse.winery.repository.backend.filebased.RepositoryConfigurationManager;
+import org.eclipse.winery.repository.backend.filebased.MultiRepositoryManager;
 import org.eclipse.winery.repository.backend.filebased.RepositoryProperties;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RepositoryAdminResource {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryAdminResource.class);
 
     /**
      * Imports the given ZIP
@@ -46,19 +60,19 @@ public class RepositoryAdminResource {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response importRepositoryDump(@FormDataParam("file") InputStream uploadedInputStream,
                                          @FormDataParam("file") FormDataContentDisposition fileDetail) {
-        ((IRepositoryAdministration) RepositoryFactory.getRepository()).doImport(uploadedInputStream);
+        RepositoryFactory.getRepository().doImport(uploadedInputStream);
         return Response.noContent().build();
     }
 
     @DELETE
     public void deleteRepositoryData() {
-        ((IRepositoryAdministration) RepositoryFactory.getRepository()).doClear();
+        RepositoryFactory.getRepository().doClear();
     }
 
     @GET
     @Produces(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP)
     public Response dumpRepository() {
-        StreamingOutput so = output -> ((IRepositoryAdministration) RepositoryFactory.getRepository()).doDump(output);
+        StreamingOutput so = output -> RepositoryFactory.getRepository().doDump(output);
         return Response.ok()
             .header("Content-Disposition", "attachment;filename=\"repository.zip\"")
             .type(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP)
@@ -75,11 +89,8 @@ public class RepositoryAdminResource {
     @Path("repositories")
     @Produces(MediaType.APPLICATION_JSON)
     public List<RepositoryProperties> getRepositoriesAsJson() {
-        IRepository repository = RepositoryFactory.getRepository();
-        if (repository instanceof MultiRepository) {
-            return RepositoryConfigurationManager.getRepositoriesFromFile((MultiRepository) repository);
-        }
-        return Collections.emptyList();
+        MultiRepositoryManager multiRepositoryManager = new MultiRepositoryManager();
+        return multiRepositoryManager.getRepositoriesAsList();
     }
 
     /**
@@ -94,7 +105,28 @@ public class RepositoryAdminResource {
                 .entity("Repositories list must be given.")
                 .build();
         }
-        RepositoryConfigurationManager.addRepositoryToFile(repositoriesList);
+        MultiRepositoryManager multiRepositoryManager = new MultiRepositoryManager();
+        multiRepositoryManager.addRepositoryToFile(repositoriesList);
+        return Response.ok().build();
+    }
+
+    @POST
+    @Path("touch")
+    public Response touchAllDefinitions() {
+        IRepository repository = RepositoryFactory.getRepository();
+        SortedSet<DefinitionsChildId> definitionIds = Stream.of(ArtifactTypeId.class, CapabilityTypeId.class,
+            NodeTypeId.class, PolicyTypeId.class, RelationshipTypeId.class, RequirementTypeId.class, ServiceTemplateId.class)
+            .flatMap(id -> repository.getAllDefinitionsChildIds(id).stream())
+            .collect(Collectors.toCollection(TreeSet::new));
+        for (DefinitionsChildId id : definitionIds) {
+            try {
+                Definitions definitions = repository.getDefinitions(id);
+                BackendUtils.persist(id, definitions);
+            } catch (Exception e) {
+                LOGGER.error("Could not persist definition: {}", id);
+                return Response.serverError().build();
+            }
+        }
         return Response.ok().build();
     }
 }

@@ -1,0 +1,24 @@
+apiVersion: 1.0.0
+metadata:
+  generateName: radon-workspace-
+projects:
+  - name: radon-particles
+    source:
+      type: git
+      location: https://github.com/radon-h2020/radon-particles
+components:
+  - alias: theia-editor
+    type: cheEditor
+    id: eclipse/che-theia/next
+  - alias: radon-gmt
+    type: kubernetes
+    endpoints:
+      - name: radon-gmt
+        port: 8080
+        attributes:
+          protocol: http
+          secure: "false"
+          discoverable: "true"
+          public: "true"
+    mountSources: true
+    reference: https://raw.githubusercontent.com/OpenTOSCA/winery/project/radon/deploy/che/winery.yaml

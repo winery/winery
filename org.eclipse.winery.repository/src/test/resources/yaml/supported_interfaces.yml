@@ -1,0 +1,70 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  server:
+    derived_from: tosca.nodes.SoftwareComponent
+    artifacts:
+      file:
+        type: tosca.artifacts.File
+        file: file.sh
+      dep:
+        type: tosca.artifacts.File
+        file: dep.sh
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        inputs:
+          name:
+            type: string
+            default: server
+        operations:
+          create:
+            description: create operation
+            inputs:
+              foo:
+                type: string
+                default: bar
+            outputs:
+              baz:
+                type: string
+                default: qux
+            implementation:
+              primary: file
+          delete:
+            description: delete operation
+            inputs:
+              foo:
+                type: string
+                default: bar
+            outputs:
+              baz:
+                type: string
+                default: qux
+            implementation:
+              primary: file
+              dependencies:
+                - dep
+              operation_host: SELF
+              timeout: 60
+
+topology_template:
+  node_templates:
+    compute:
+      type: tosca.nodes.Compute
+      artifacts:
+        configure:
+          type: tosca.artifacts.File
+          file: configure.sh
+        image:
+          type: tosca.artifacts.Deployment.Image.VM
+          file: image.qcow2
+      interfaces:
+        Standard:
+          type: tosca.interfaces.node.lifecycle.Standard
+          operations:
+            configure:
+              description: configure operation
+              inputs:
+                image: { get_artifact: image }
+              implementation:
+                primary: configure

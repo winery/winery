@@ -1,0 +1,79 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2020 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div *ngIf="loading" style="margin-top: 179px">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <winery-table [data]="attributes"
+                  [columns]="columns"
+                  [disableButtons]="!instanceService?.currentVersion?.editable"
+                  (addBtnClicked)="openModal()"
+                  (removeBtnClicked)="openConfirmModal($event)">
+    </winery-table>
+</div>
+
+<winery-modal bsModal #modal="bs-modal" [modalRef]="modal"
+              (onShown)="onModalShown()" (onHide)="form.reset()">
+    <winery-modal-header [title]="'Add Attribute'"></winery-modal-header>
+    <winery-modal-body>
+        <form #form="ngForm" id="inputParameterForm">
+            <div class="form-group">
+                <label class="control-label" for="key">Name</label>
+                <input type="text" #nameInput #propName="ngModel" id="key" name="key" autocomplete=off required
+                       class="form-control" [(ngModel)]="attr.key" [wineryDuplicateValidator]="validatorObject"/>
+                <div *ngIf="propName.errors && (propName.dirty || propName.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!propName.errors.wineryDuplicateValidator">No duplicates allowed!</div>
+                    <div [hidden]="!propName.errors.required">Name is required</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="type">Type</label>
+                <select name="type" id="type" class="form-control" [(ngModel)]="attr.type">
+                    <option value="string">string</option>
+                    <option value="integer">integer</option>
+                    <option value="float">float</option>
+                    <option value="boolean">boolean</option>
+                    <option value="timestamp">timestamp</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="defaultValue">Default Value</label>
+                <input type="text" name="defaultValue" id="defaultValue" class="form-control"
+                       [(ngModel)]="attr.defaultValue"/>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="description">Description</label>
+                <input type="text" name="description" id="description" class="form-control"
+                       [(ngModel)]="attr.description"/>
+            </div>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer
+        [disableOkButton]="!form?.form.valid"
+        (onOk)="addAttribute(attr); form.reset();"
+        [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Add'">
+    </winery-modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #confirmModal="bs-modal" [modalRef]="confirmModal">
+    <winery-modal-header [title]="'Delete Parameter'"></winery-modal-header>
+    <winery-modal-body>
+        <p *ngIf="selectedAttr">
+            Do you want to delete parameter <span style="font-weight:bold;">{{ selectedAttr.key }}</span>?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="removeAttribute()" [closeButtonLabel]="'Cancel'"
+                         [okButtonLabel]="'Delete'"></winery-modal-footer>
+</winery-modal>

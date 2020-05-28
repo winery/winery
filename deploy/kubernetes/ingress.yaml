@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: winery-ingress
+  labels:
+    app: winery
+    tier: frontend
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            backend:
+              serviceName: winery
+              servicePort: 8080
+          - path: /winery
+            backend:
+              serviceName: winery
+              servicePort: 8080
+          - path: /winery-topologymodeler
+            backend:
+              serviceName: winery
+              servicePort: 8080

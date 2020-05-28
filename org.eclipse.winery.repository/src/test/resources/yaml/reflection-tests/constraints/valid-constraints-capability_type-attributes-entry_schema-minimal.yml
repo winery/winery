@@ -1,0 +1,23 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+metadata:
+  description: This test contains a valid, complete attribute definition for capability types.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.3/test
+  tosca.version: 1.1
+  reference: 3.5.2.1
+  keyname: capability_types.test.capabilities.ct1.attributes.attr1.entry_schema.constraints
+  assert-typeof: |
+      0 = TConstraintClause
+  assert: |
+      0.key = greater_than
+      0.value = 0      
+  
+capability_types:  
+  test.capabilities.ct1:
+    attributes:
+      attr1:
+        type: list
+        entry_schema:
+          type: integer
+          constraints:
+            - greater_than: 0

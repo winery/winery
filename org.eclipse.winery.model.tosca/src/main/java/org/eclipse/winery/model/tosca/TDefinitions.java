@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -238,6 +238,15 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
 
     @JsonIgnore
     @NonNull
+    public List<TInterfaceType> getInterfaceTypes() {
+        return getServiceTemplateOrNodeTypeOrNodeTypeImplementation().stream()
+            .filter(x -> x instanceof TInterfaceType)
+            .map(TInterfaceType.class::cast)
+            .collect(Collectors.toList());
+    }
+
+    @JsonIgnore
+    @NonNull
     public List<TNodeType> getNodeTypes() {
         return getServiceTemplateOrNodeTypeOrNodeTypeImplementation().stream()
             .filter(x -> x instanceof TNodeType)
@@ -386,6 +395,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         private List<TArtifactType> artifactTypes;
         private List<TArtifactTemplate> artifactTemplates;
         private List<TPolicyType> policyTypes;
+        private List<TInterfaceType> interfaceTypes;
         private List<TPolicyTemplate> policyTemplate;
         private String name;
 
@@ -456,6 +466,11 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
 
         public T setPolicyTypes(List<TPolicyType> policyTypes) {
             this.policyTypes = policyTypes;
+            return self();
+        }
+
+        public T setInterfaceTypes(List<TInterfaceType> interfaceTypes) {
+            this.interfaceTypes = interfaceTypes;
             return self();
         }
 
@@ -778,6 +793,29 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return addPolicyTypes(tmp);
         }
 
+        public T addInterfaceTypes(List<TInterfaceType> interfaceTypes) {
+            if (interfaceTypes == null || interfaceTypes.isEmpty()) {
+                return self();
+            }
+
+            if (this.interfaceTypes == null) {
+                this.interfaceTypes = interfaceTypes;
+            } else {
+                this.interfaceTypes.addAll(interfaceTypes);
+            }
+            return self();
+        }
+
+        public T addInterfaceTypes(TInterfaceType interfaceTypes) {
+            if (interfaceTypes == null) {
+                return self();
+            }
+
+            List<TInterfaceType> tmp = new ArrayList<>();
+            tmp.add(interfaceTypes);
+            return addInterfaceTypes(tmp);
+        }
+
         public T addPolicyTemplates(List<TPolicyTemplate> policyTemplate) {
             if (policyTemplate == null || policyTemplate.isEmpty()) {
                 return self();
@@ -825,6 +863,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             Optional.ofNullable(artifactTemplates).ifPresent(tmp::addAll);
             Optional.ofNullable(policyTypes).ifPresent(tmp::addAll);
             Optional.ofNullable(policyTemplate).ifPresent(tmp::addAll);
+            Optional.ofNullable(interfaceTypes).ifPresent(tmp::addAll);
             return tmp;
         }
     }

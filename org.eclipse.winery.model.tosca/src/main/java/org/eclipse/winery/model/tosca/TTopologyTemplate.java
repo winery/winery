@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -8,7 +8,6 @@
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
  * which is available at https://www.apache.org/licenses/LICENSE-2.0.
- *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
@@ -27,6 +26,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlType;
 
+import org.eclipse.winery.model.tosca.kvproperties.ParameterDefinitionList;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -35,7 +35,10 @@ import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tTopologyTemplate", propOrder = {
-    "nodeTemplateOrRelationshipTemplate"
+    "nodeTemplateOrRelationshipTemplate",
+    "policies",
+    "inputs",
+    "outputs"
 })
 public class TTopologyTemplate extends TExtensibleElements {
     @XmlElements( {
@@ -44,12 +47,22 @@ public class TTopologyTemplate extends TExtensibleElements {
     })
     protected List<TEntityTemplate> nodeTemplateOrRelationshipTemplate;
 
+    // added to support conversion from/to YAML policies
+    protected TPolicies policies;
+
+    // added to support conversion from/to YAML inputs/outputs
+    protected ParameterDefinitionList inputs;
+    protected ParameterDefinitionList outputs;
+
     public TTopologyTemplate() {
     }
 
     public TTopologyTemplate(Builder builder) {
         super(builder);
         this.nodeTemplateOrRelationshipTemplate = builder.getNodeTemplateOrRelationshipTemplate();
+        this.policies = builder.policies;
+        this.inputs = builder.inputs;
+        this.outputs = builder.outputs;
     }
 
     @Override
@@ -145,6 +158,33 @@ public class TTopologyTemplate extends TExtensibleElements {
         this.getNodeTemplateOrRelationshipTemplate().add(rt);
     }
 
+    @Nullable
+    public TPolicies getPolicies() {
+        return policies;
+    }
+
+    public void setPolicies(TPolicies policies) {
+        this.policies = policies;
+    }
+
+    @Nullable
+    public ParameterDefinitionList getInputs() {
+        return inputs;
+    }
+
+    public void setInputs(ParameterDefinitionList inputs) {
+        this.inputs = inputs;
+    }
+
+    @Nullable
+    public ParameterDefinitionList getOutputs() {
+        return outputs;
+    }
+
+    public void setOutputs(ParameterDefinitionList outputs) {
+        this.outputs = outputs;
+    }
+
     public void accept(Visitor visitor) {
         visitor.visit(this);
     }
@@ -152,6 +192,9 @@ public class TTopologyTemplate extends TExtensibleElements {
     public static class Builder extends TExtensibleElements.Builder<Builder> {
         private List<TNodeTemplate> nodeTemplates;
         private List<TRelationshipTemplate> relationshipTemplates;
+        private TPolicies policies;
+        private ParameterDefinitionList inputs;
+        private ParameterDefinitionList outputs;
 
         public Builder() {
         }
@@ -215,6 +258,21 @@ public class TTopologyTemplate extends TExtensibleElements {
             List<TRelationshipTemplate> tmp = new ArrayList<>();
             tmp.add(relationshipTemplates);
             return addRelationshipTemplates(tmp);
+        }
+
+        public Builder setPolicies(TPolicies policies) {
+            this.policies = policies;
+            return this;
+        }
+
+        public Builder setInputs(ParameterDefinitionList inputs) {
+            this.inputs = inputs;
+            return this;
+        }
+
+        public Builder setOutputs(ParameterDefinitionList outputs) {
+            this.outputs = outputs;
+            return this;
         }
 
         public List<TEntityTemplate> getNodeTemplateOrRelationshipTemplate() {

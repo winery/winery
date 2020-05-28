@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,6 +15,7 @@
 package org.eclipse.winery.repository.rest.resources.apiData;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 
@@ -29,5 +30,17 @@ public class QNameApiData {
     public QNameApiData(DefinitionsChildId newId) {
         this.localname = newId.getXmlId().getDecoded();
         this.namespace = newId.getNamespace().getDecoded();
+    }
+
+    public QName asQName() {
+        return new QName(namespace, localname);
+    }
+
+    public static QNameApiData fromQName(QName original) {
+        QNameApiData result = new QNameApiData();
+        result.localname = original.getLocalPart();
+        result.namespace = original.getNamespaceURI();
+
+        return result;
     }
 }

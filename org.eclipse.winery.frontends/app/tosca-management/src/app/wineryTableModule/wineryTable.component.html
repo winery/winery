@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -23,12 +23,12 @@
                    (tableChanged)="onChangeTable(config)"/>
         </div>
         <div *ngIf="!disableButtons" class="table-component-header-btn-wrap">
-            <button class="rightbutton btn btn-danger btn-xs"
+            <button *ngIf="showRemoveButton" class="rightbutton btn btn-danger btn-xs"
                     (click)="onRemoveClick($event);"
                     [disabled]="rows.length === 0 || !currentSelected">
                 Remove
             </button>
-            <button class="rightbutton btn btn-primary btn-xs"
+            <button *ngIf="showAddButton" class="rightbutton btn btn-primary btn-xs"
                     (click)="onAddClick($event);">
                 Add
             </button>

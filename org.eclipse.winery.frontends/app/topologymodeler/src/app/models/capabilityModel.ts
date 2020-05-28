@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,6 +12,8 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
+import { CapabilityDefinitionModel } from './capabilityDefinitionModel';
+
 /**
  * Encompasses the capability model
  */
@@ -23,6 +25,16 @@ export class CapabilityModel {
     public otherAttributes: any;
     public type: string;
     public properties?: any;
+    static fromCapabilityDefinitionModel(def: CapabilityDefinitionModel): CapabilityModel {
+        const result = new CapabilityModel();
+        result.any = def.any;
+        result.documentation = def.documentation;
+        result.name = def.name;
+        result.otherAttributes = def.otherAttributes;
+        result.type = def.capabilityType;
+
+        return result;
+    }
 
     constructor() {
     }

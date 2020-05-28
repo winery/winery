@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -19,6 +19,7 @@ import { IWineryState } from '../redux/store/winery.store';
 import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
+import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 @Component({
     selector: 'winery-refinement',
@@ -43,6 +44,7 @@ export class RefinementSidebarComponent implements OnDestroy {
                 private rendererActions: TopologyRendererActions,
                 private wineryActions: WineryActions,
                 private webSocketService: RefinementWebSocketService,
+                private configurationService: WineryRepositoryConfigurationService,
                 private backendService: BackendService) {
     }
 
@@ -97,7 +99,7 @@ export class RefinementSidebarComponent implements OnDestroy {
             }
 
             if (value.currentTopology) {
-                TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, value.currentTopology);
+                TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, value.currentTopology, this.configurationService.isYaml());
             } else {
                 this.openModelerFor(value.serviceTemplateContainingRefinements.xmlId.decoded,
                     value.serviceTemplateContainingRefinements.namespace.decoded,

@@ -1,0 +1,63 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2020 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<div class="localLoader" [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading" style="margin-bottom: 5px;">
+    <div>
+        <div class="right">
+            <button class="btn btn-primary" name="save" (click)="saveToServer()"
+                    [disabled]="!sharedData?.currentVersion?.editable">
+                Save
+            </button>
+        </div>
+
+        <div class="left" style="width: 70%;">
+            <form style="margin: 5px; width: 600px;">
+                <div class="form-group">
+                    <label for="mimeType" class="control-label">Mime Type</label>
+                    <input type="text" class="form-control" id="mimeType" placeholder="Enter Mime Type"
+                           [value]="currentMimeType" (keyup)="onMimeTypeInputChanged($event)">
+                </div>
+                <div class="input-group width-100-percent">
+                    <label for="fileExtensionInput" class="control-label">File Extensions</label>
+                    <div>
+                        <button class="btn btn-secondary right" type="button" [disabled]="!fileExtensionInput"
+                                (click)="addExtension()">Add
+                        </button>
+                        <div style="overflow: hidden; padding-right: .5em;">
+                            <input type="text" class="form-control width-100-percent" placeholder="Enter File Extension"
+                                   id="fileExtensionInput"
+                                   [value]="fileExtensionInput" (keyup)="onFileExtensionInputChanged($event)">
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+    <div style="margin: 5px 0 5px 5px; clear: both; padding-top: 5px; width: 600px;">
+        <winery-table [columns]="columns"
+                      [data]="allFileExtensions"
+                      [showAddButton]="false"
+                      [disableFiltering]="true"
+                      (removeBtnClicked)="removeFileExtension($event)">
+
+        </winery-table>
+    </div>
+
+
+</div>

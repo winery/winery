@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -19,7 +19,8 @@
     <i class="fa fa-ban"></i>
     <span>&nbsp;&nbsp;You cannot edit this version! To edit this component, add a new version.</span>
 </alert>
-<div *ngIf="!(loadingVersions || loadingData); else loader" class="mainContentContainer {{ toscaComponent.toscaType | toscaTypeToCamelCase}}">
+<div *ngIf="!(loadingVersions || loadingData); else loader"
+     class="mainContentContainer {{ toscaComponent.toscaType | toscaTypeToCamelCase}}">
     <winery-instance-header
         [imageUrl]="imageUrl"
         [toscaComponent]="toscaComponent"

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -19,6 +19,18 @@
 }
 
 #cap-or-reqdef-table tr td:nth-of-type(5) { /* Select the 5th td */
+    cursor: pointer;
+}
+
+#reqdef-table tr td:nth-of-type(2) { /* Select the 2nd td */
+    cursor: pointer;
+}
+
+#reqdef-table tr td:nth-of-type(3) { /* Select the 3rd td */
+    cursor: pointer;
+}
+
+#reqdef-table tr td:nth-of-type(4) { /* Select the 4th td */
     cursor: pointer;
 }
 
@@ -209,7 +221,7 @@ div#mainMenuContainer {
 /* tabs */
 
 a.styledTabMenuButton {
-    margin-bottom: 5px;
+    margin-bottom: 3px;
     float: left;
 }
 
@@ -1177,11 +1189,19 @@ div.col-xs-4.bordered div.listheading > button {
 
 table.dataTable {
     font-size: 12px;
+    max-width: 100%;
+    table-layout: fixed;
 }
 
 table.dataTable thead th {
     font-size: 11px;
     color: #3F3F3F;
+}
+
+table.dataTable tbody tr td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 div.titledTableBox {
@@ -1311,4 +1331,12 @@ div.policiesContainer > div.content > div.policy > textarea.policy_xml {
 
 .active-row {
     background-color: #ccc !important;
+}
+
+.left-margin-10 {
+    margin-left: 10px;
+}
+
+.right-margin-10 {
+    margin-right: 10px;
 }

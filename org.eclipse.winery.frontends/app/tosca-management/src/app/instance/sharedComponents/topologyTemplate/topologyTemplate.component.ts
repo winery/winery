@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,7 +13,7 @@
  *******************************************************************************/
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { InstanceService } from '../../instance.service';
-import { backendBaseURL } from '../../../configuration';
+import { backendBaseURL, editorURL } from '../../../configuration';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { WineryVersion } from '../../../model/wineryVersion';
 import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
@@ -66,7 +66,9 @@ export class TopologyTemplateComponent implements OnInit {
             editorConfig += '&isReadonly=true';
         }
 
-        this.editorUrl = this.configurationService.configuration.endpoints.topologymodeler + editorConfig;
+        // Disabled next line since in most use cases we don't run the Topology Modeler in a separate instance
+        // this.editorUrl = this.configurationService.configuration.endpoints.topologymodeler + editorConfig;
+        this.editorUrl = editorURL + editorConfig;
         this.refinementAvailable = this.sharedData.toscaComponent.toscaType === ToscaTypes.ServiceTemplate;
     }
 

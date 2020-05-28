@@ -39,7 +39,6 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { ExistsService } from './services/exists.service';
 import { EntitiesModalService } from './canvas/entities-modal/entities-modal.service';
 import { ImportTopologyService } from './services/import-topology.service';
-import { ReqCapService } from './services/req-cap.service';
 import { SplitMatchTopologyService } from './services/split-match-topology.service';
 import { ErrorHandlerService } from './services/error-handler.service';
 import { PopoverModule } from 'ngx-bootstrap/popover';
@@ -52,6 +51,7 @@ import { EnricherComponent } from './enricher/enricher.component';
 import { WineryFeatureToggleModule } from '../../../tosca-management/src/app/wineryFeatureToggleModule/winery-feature-toggle.module';
 import { PlaceComponentsService } from './services/placement.service';
 import { ReqCapRelationshipService } from './services/req-cap-relationship.service';
+import { WineryTableModule } from '../../../tosca-management/src/app/wineryTableModule/wineryTable.module';
 import { EdmmTransformationCheckComponent } from './edmmTransformationCheck/edmmTransformationCheck.component';
 import { PolicyService } from './services/policy.service';
 
@@ -91,7 +91,8 @@ import { PolicyService } from './services/policy.service';
         TypeaheadModule.forRoot(),
         PopoverModule.forRoot(),
         PropertiesModule,
-        WineryFeatureToggleModule
+        WineryFeatureToggleModule,
+        WineryTableModule
     ],
     providers: [
         // { provide: ToastOptions, useClass: WineryCustomOption },
@@ -104,7 +105,6 @@ import { PolicyService } from './services/policy.service';
         ExistsService,
         EntitiesModalService,
         ImportTopologyService,
-        ReqCapService,
         SplitMatchTopologyService,
         ErrorHandlerService,
         StatefulAnnotationsService,

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -31,14 +31,17 @@ export enum urlElement {
     RelationshipTypeURL = '/relationshiptypes/',
     ReadMe = '/readme',
     ServiceTemplates = '/servicetemplates/',
-    TopologyTemplate = '/topologytemplate/'
+    TopologyTemplate = '/topologytemplate/',
+    NodeTemplates = 'nodetemplates/',
+    YamlArtifacts = '/yamlartifacts'
 }
 
 export enum TableType {
     Requirements = 'Requirements',
     Capabilities = 'Capabilities',
     Policies = 'Policies',
-    DeploymentArtifacts = 'DeploymentArtifacts'
+    DeploymentArtifacts = 'DeploymentArtifacts',
+    YamlArtifacts = 'YamlArtifacts'
 }
 
 export enum toggleModalType {

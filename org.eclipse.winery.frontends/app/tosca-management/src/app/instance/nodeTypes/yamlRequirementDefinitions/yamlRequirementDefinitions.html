@@ -1,0 +1,129 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div class="localLoader" [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+
+<div *ngIf="!loading">
+    <!--need data for table component-->
+    <winery-table id="reqdef-table"
+                  [data]="tableData"
+                  [columns]="columns"
+                  [disableButtons]="!sharedData?.currentVersion?.editable"
+                  [itemsPerPage]="10"
+                  (removeBtnClicked)="onRemoveClick($event)"
+                  (addBtnClicked)="onAddClick()">
+    </winery-table>
+</div>
+
+<ng-template #addModal>
+    <winery-modal-header [title]="'Add a Requirement Definition'" [modalRef]="addModalRef">
+    </winery-modal-header>
+    <winery-modal-body>
+        <form #addRequirementDefinitionForm="ngForm" id="addRequirementDefinitionForm">
+            <div class="form-group">
+                <label class="control-label" for="reqDefName">Name*</label>
+                <input #reqDefName="ngModel"
+                       id="reqDefName"
+                       class="form-control"
+                       type="text"
+                       name="Requirement Definition Name"
+                       required
+                       [(ngModel)]="reqDefToBeAdded.name">
+
+                <div *ngIf="reqDefName.errors && (reqDefName.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!reqDefName.errors.wineryDuplicateValidator">
+                        No duplicates allowed!
+                    </div>
+                    <div [hidden]="!reqDefName.errors.required">
+                        Name is required
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="capabilityType" class="control-label">Capability Type*</label>
+                <ng-select id="capabilityType"
+                           [disabled]="!sharedData?.currentVersion?.editable"
+                           [items]="allCapabilityTypes"
+                           (selected)="onSelectedCapTypeChanged($event)"
+                           [active]="initialCapabilityType">
+                </ng-select>
+            </div>
+
+            <div class="form-group">
+                <label for="nodeType" class="control-label">Node Type</label>
+                <ng-select id="nodeType"
+                           [disabled]="!sharedData?.currentVersion?.editable"
+                           [items]="allNodeTypes"
+                           (selected)="onSelectedNodeTypeChanged($event)"
+                           [active]="initialNodeType">
+                </ng-select>
+            </div>
+
+            <div class="form-group">
+                <label for="relationshipType" class="control-label">Relationship Type</label>
+                <ng-select id="relationshipType"
+                           [disabled]="!sharedData?.currentVersion?.editable"
+                           [items]="allRelationshipTypes"
+                           (selected)="onSelectedRelTypeChanged($event)"
+                           [active]="initialRelationshipType">
+                </ng-select>
+            </div>
+
+            <div class="form-group">
+                <div style="margin-bottom: 10px;">
+                    <label for="lowerBound" class="control-label">Lower Bound</label>
+                    <input type="number" class="form-control" id="lowerBound" name="lowerBound"
+                           [(ngModel)]="lowerBound"/>
+                </div>
+                <label for="upperBound" class="control-label">Upper Bound</label>
+                <div class="flex">
+                    <div>
+                        <input type="number" class="form-control" id="upperBound" name="upperBound"
+                               [disabled]="isUnboundedSelected"
+                               [(ngModel)]="upperBound"/>
+                    </div>
+                    <div class="left-margin-10 form-check" style="margin-top: 5px;">
+                        <input type="checkbox" class="form-check-input" id="isUnbounded"
+                               [checked]="isUnboundedSelected"
+                               (change)="unboundedToggle()">
+                        <label class="form-check-label" style="margin-left: 5px;" for="isUnbounded">Is Unbounded</label>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer [modalRef]="addModalRef"
+                         [okButtonLabel]="'Add'"
+                         [disableOkButton]="!addRequirementDefinitionForm?.form.valid || !enableAddItemButton"
+                         (onOk)="addRequirementDefinition()">
+    </winery-modal-footer>
+</ng-template>
+
+<ng-template #removeModal>
+    <winery-modal-header [title]="'Delete Requirement Definition'" [modalRef]="removeModalRef">
+    </winery-modal-header>
+    <winery-modal-body>
+        <p *ngIf="elementToRemove != null" id="diagyesnomsg">
+            Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.name }}</span>?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer [modalRef]="removeModalRef"
+                         (onOk)="removeConfirmed();"
+                         [closeButtonLabel]="'No'"
+                         [okButtonLabel]="'Yes'">
+    </winery-modal-footer>
+</ng-template>

@@ -1,5 +1,5 @@
 <!--
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -47,7 +47,9 @@
                      (handleNodeClickedActions)="handleNodeClickedActions($event)"
                      (updateSelectedNodes)="updateSelectedNodes()"
                      (unmarkConnections)="unmarkConnections()"
-                     (sendNodeData)="toggleModalHandler($event)">
+                     (relationshipTemplateIdClicked)="onClickRelationshipTemplateName($event)"
+                     (sendNodeData)="toggleModalHandler($event)"
+                     (showYamlPolicyManagementModal)="showYamlPolicyManagementModal();">
         </winery-node>
     </div>
     <!-- workaround for a jsPlumb connection bug, where upon loading node templates without relationships
@@ -64,7 +66,7 @@
         <form #capForm="ngForm" id="addCapForm" enctype="multipart/form-data">
             <fieldset>
 
-                <div class="form-group" id="capIdGroup">
+                <div *wineryRepositoryHideOnFeature="'yaml'" class="form-group" id="capIdGroup">
                     <label for="capId" class="control-label">Id:</label>
                     <input [(ngModel)]="capabilities.capId"
                            id="capId"
@@ -147,8 +149,9 @@
                             placeholder="Edit your value here."
                             required
                             value="{{capabilities.properties}}">
-                </textarea>
+                        </textarea>
                     </div>
+
                 </div>
             </fieldset>
         </form>
@@ -157,17 +160,29 @@
         <button type="button" id="cancelCapabilities" class="btn btn-default"
                 (click)="closeAndResetCapabilities(); capForm.reset()">Cancel
         </button>
+
         <button *ngIf="!showCurrentCapability; else deleteCapButton"
-                (click)="saveCapabilityToModel(); capForm.reset()" type="button" id="addCapbtn" class="btn btn-primary"
+                (click)="saveCapabilityToModel(); capForm.reset()" type="button" id="addCapbtn"
+                class="btn btn-primary"
                 [disabled]="!capForm.form.valid || duplicateId">Add
         </button>
+
         <ng-template #deleteCapButton>
-            <button type="button" id="updateCapabilitiesBtn" (click)="updateCaps(); capForm.reset()"
-                    class="btn btn-primary" [disabled]="!capForm.form.valid || duplicateId">Update
-            </button>
-            <button (click)="deleteCapability(); capForm.reset()" type="button" id="deleteCapbtn"
-                    class="btn btn-primary">Delete
-            </button>
+            <div *wineryRepositoryHideOnFeature="'yaml'">
+                <button type="button" id="updateCapabilitiesBtn" (click)="updateCaps(); capForm.reset()"
+                        class="btn btn-primary" [disabled]="!capForm.form.valid || duplicateId">Update
+                </button>
+                <button (click)="deleteCapability(); capForm.reset()"
+                        type="button"
+                        id="deleteCapbtn"
+                        class="btn btn-primary">Delete
+                </button>
+            </div>
+            <div *wineryRepositoryShowOnFeature="'yaml'">
+                <button type="button" (click)="updateCaps(); capForm.reset()"
+                        class="btn btn-primary"> Update
+                </button>
+            </div>
         </ng-template>
     </winery-modal-footer>
 </winery-modal>
@@ -327,6 +342,74 @@
     </winery-modal-footer>
 </winery-modal>
 
+<winery-modal style="z-index: 1060" *ngIf="!readonly" bsModal #addYamlPolicyModal="bs-modal"
+              [modalRef]="addYamlPolicyModal">
+    <winery-modal-header title="Add New Policy"></winery-modal-header>
+    <winery-modal-body>
+        <form>
+            <div class="form-group">
+                <label for="newPolicyName">Policy Name</label>
+                <input type="text" class="form-control" #newPolicyName id="newPolicyName" required>
+            </div>
+            <div class="form-group">
+                <label for="newPolicyType">Policy Type</label>
+                <select class="form-control" id="newPolicyType" [(ngModel)]="selectedNewPolicyType" name="newPolicyType"
+                        required>
+                    <option *ngFor="let policyType of entityTypes.policyTypes"
+                            [value]="policyType.qName">
+                        {{policyType.qName}}
+                    </option>
+                </select>
+            </div>
+        </form>
+
+    </winery-modal-body>
+    <winery-modal-footer closeButtonLabel="Cancel" okButtonLabel="Add" (onOk)="addNewYamlPolicy(newPolicyName.value)">
+
+    </winery-modal-footer>
+</winery-modal>
+
+<winery-modal style="z-index: 1050" *ngIf="!readonly" bsModal #manageYamlPoliciesModal="bs-modal"
+              [modalRef]="manageYamlPoliciesModal">
+    <winery-modal-header title="Manage Policies"></winery-modal-header>
+    <winery-modal-body>
+        <h5>Existing Policies:</h5>
+        <winery-table *ngIf="copyOfYamlPolicies"
+                      [columns]="yamlPoliciesColumns"
+                      [data]="copyOfYamlPolicies"
+                      (removeBtnClicked)="handleRemoveYamlPolicyClick($event)"
+                      (addBtnClicked)="handleAddNewYamlPolicyClick()"
+                      (cellSelected)="handleYamlPolicySelected($event)"
+        ></winery-table>
+        <div *ngIf="selectedYamlPolicy">
+            <hr style="margin-top: 20px;">
+            <div class="form-group" *ngIf="showPropertiesOfSelectedYamlPolicy()">
+                <h5>Properties of {{selectedYamlPolicy.name}}:</h5>
+                <form>
+                    <div *ngFor="let prop of selectedYamlPolicy.properties.kvproperties | keysPipe">
+                        <label class="control-label">{{prop.key}}</label>
+                        <textarea
+                            style="width:100%; overflow-y: scroll;"
+                            rows="1"
+                            placeholder="Edit your value here."
+                            #YamlPolicyProperties
+                            [value]="prop.value">
+                        
+                    </textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary"
+                            (click)="savePolicyProperties()"> Save Properties
+                    </button>
+                </form>
+            </div>
+            <div class="form-group" *ngIf="!showPropertiesOfSelectedYamlPolicy()">
+                <h5>Policy: {{selectedYamlPolicy.name}} has no properties to show!</h5>
+            </div>
+        </div>
+    </winery-modal-body>
+</winery-modal>
+
+
 <winery-modal *ngIf="!readonly" bsModal #threatModelingModal="bs-modal" [modalRef]="threatModelingModal">
     <winery-modal-header [title]="'Threat Model'">
     </winery-modal-header>
@@ -335,26 +418,31 @@
             <div class="card">
                 <div class="card-header" id="headingOne">
                     <h5 class="mb-0">
-                        <button class="btn btn-link"  (click)="this.threatModalTab='create'">Create New Threat</button>
+                        <button class="btn btn-link" (click)="this.threatModalTab='create'">Create New Threat</button>
                     </h5>
                 </div>
 
-                <div id="collapseOne" class="collapse" [class.show]="this.threatModalTab==='create'" >
+                <div id="collapseOne" class="collapse" [class.show]="this.threatModalTab==='create'">
                     <div class="card-body">
                         <form (ngSubmit)="this.createNewThreat()">
                             <div class="form-group row">
                                 <label for="text" class="col-sm-4 col-form-label">Threat name</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="name" name="name" required [(ngModel)]="this.threatModelingData.threatCreation.name">
+                                    <input type="text" class="form-control" id="name" name="name" required
+                                           [(ngModel)]="this.threatModelingData.threatCreation.name">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="text" class="col-sm-4 col-form-label">Description</label>
-                                <div class="col-sm-8"><textarea class="form-control" id="description" name="description" required [(ngModel)]="this.threatModelingData.threatCreation.description"></textarea></div>
+                                <div class="col-sm-8"><textarea class="form-control" id="description" name="description"
+                                                                required
+                                                                [(ngModel)]="this.threatModelingData.threatCreation.description"></textarea>
+                                </div>
                             </div>
                             <div class="form-group row">
                                 <label for="stride" class="col-sm-4 col-form-label">STRIDE</label>
-                                <div class="col-sm-8"><select class="form-control" id="stride"  name="stride" [(ngModel)]="this.threatModelingData.threatCreation.stride">
+                                <div class="col-sm-8"><select class="form-control" id="stride" name="stride"
+                                                              [(ngModel)]="this.threatModelingData.threatCreation.stride">
                                     <option>Spoofing</option>
                                     <option>Tampering</option>
                                     <option>Repudiation</option>
@@ -366,7 +454,8 @@
                             <div class="form-group row">
                                 <label for="severity" class="col-sm-4 col-form-label">Severity</label>
                                 <div class="col-sm-8">
-                                    <select class="form-control" id="severity"  name="severity" [(ngModel)]="this.threatModelingData.threatCreation.severity">
+                                    <select class="form-control" id="severity" name="severity"
+                                            [(ngModel)]="this.threatModelingData.threatCreation.severity">
                                         <option>Low</option>
                                         <option>Middle</option>
                                         <option>High</option>
@@ -381,20 +470,25 @@
             <div class="card">
                 <div class="card-header" id="headingTwo">
                     <h5 class="mb-0">
-                        <button class="btn btn-link collapsed" (click)="this.threatModalTab='mitigations'">Available Mitigations</button>
+                        <button class="btn btn-link collapsed" (click)="this.threatModalTab='mitigations'">Available
+                            Mitigations
+                        </button>
                     </h5>
                 </div>
                 <div id="collapseTwo" class="collapse" [class.show]="this.threatModalTab==='mitigations'">
                     <div class="card-body">
                         <p>Click on a Mitigation to directly add it to the topology</p>
-                        <button class="btn btn-primary" style="margin-right:10px;margin-bottom:10px" *ngFor="let mitigation of this.threatModelingData.mitigations" (click)="addMitigationToTopology(mitigation)">{{mitigation.localName}}</button>
+                        <button class="btn btn-primary" style="margin-right:10px;margin-bottom:10px"
+                                *ngFor="let mitigation of this.threatModelingData.mitigations"
+                                (click)="addMitigationToTopology(mitigation)">{{mitigation.localName}}</button>
                     </div>
                 </div>
             </div>
             <div class="card">
                 <div class="card-header" id="headingThree">
                     <h5 class="mb-0">
-                        <button class="btn btn-link collapsed" (click)="this.threatModalTab='catalog'">Threat Catalog</button>
+                        <button class="btn btn-link collapsed" (click)="this.threatModalTab='catalog'">Threat Catalog
+                        </button>
                     </h5>
                 </div>
                 <div id="collapseThree" class="collapse" [class.show]="this.threatModalTab==='catalog'">
@@ -404,8 +498,10 @@
                                 <h5 class="">{{threat.templateName}}</h5>
                                 <p>{{threat.properties.description}}</p>
                                 <div class="pull-right">
-                                    <span class="badge badge-pill badge-warning" style="margin-right: 10px;">{{threat.properties.strideClassification}}</span>
-                                    <span class="badge badge-pill badge-danger" style="">{{threat.properties.severity}}</span>
+                                    <span class="badge badge-pill badge-warning"
+                                          style="margin-right: 10px;">{{threat.properties.strideClassification}}</span>
+                                    <span class="badge badge-pill badge-danger"
+                                          style="">{{threat.properties.severity}}</span>
                                 </div>
                             </li>
                         </ul>
@@ -415,10 +511,13 @@
         </div>
     </winery-modal-body>
     <winery-modal-footer [showDefaultButtons]="false">
-        <button type="button" id="cancelThreatModeling" class="btn btn-primary" (click)="closeThreatModeling()">Cancel</button>
+        <button type="button" id="cancelThreatModeling" class="btn btn-primary" (click)="closeThreatModeling()">Cancel
+        </button>
     </winery-modal-footer>
 </winery-modal>
 
+
+<!-- XML Policies and Deployment Artifacts Modal -->
 <winery-entities-modal *ngIf="!readonly"
                        [(modalVariantAndState)]="modalData"
                        [entityTypes]="entityTypes"

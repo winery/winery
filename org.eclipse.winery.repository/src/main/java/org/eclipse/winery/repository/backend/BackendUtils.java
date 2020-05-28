@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -66,6 +66,7 @@ import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.GenericId;
+import org.eclipse.winery.common.ids.IdNames;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.admin.AdminId;
@@ -75,6 +76,7 @@ import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.common.ids.definitions.ComplianceRuleId;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.EntityTypeId;
+import org.eclipse.winery.common.ids.definitions.InterfaceTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.PatternRefinementModelId;
@@ -113,6 +115,7 @@ import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
 import org.eclipse.winery.model.tosca.TImport;
+import org.eclipse.winery.model.tosca.TInterfaceType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
@@ -138,11 +141,12 @@ import org.eclipse.winery.repository.GitInfo;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
-import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
+import org.eclipse.winery.repository.backend.filebased.MultiRepository;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.GenericDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.export.ToscaExportUtil;
@@ -333,9 +337,17 @@ public class BackendUtils {
      * @return the reference
      */
     public static RepositoryFileReference getRefOfDefinitions(DefinitionsChildId id) {
-        String name = Util.getTypeForComponentId(id.getClass());
+        return new RepositoryFileReference(id, getFileNameOfDefinitions(id));
+    }
+
+    public static String getFileNameOfDefinitions(DefinitionsChildId id) {
+        return getFileNameOfDefinitions(id.getClass());
+    }
+
+    public static <T extends DefinitionsChildId> String getFileNameOfDefinitions(Class<T> id) {
+        String name = Util.getTypeForComponentId(id);
         name = name + Constants.SUFFIX_TOSCA_DEFINITIONS;
-        return new RepositoryFileReference(id, name);
+        return name;
     }
 
     /**
@@ -633,6 +645,8 @@ public class BackendUtils {
             element = new TPatternRefinementModel();
         } else if (id instanceof TestRefinementModelId) {
             element = new TTestRefinementModel();
+        } else if (id instanceof InterfaceTypeId) {
+            element = new TInterfaceType();
         } else if (id instanceof XSDImportId) {
             // TImport has no id; thus directly generating it without setting an id
             TImport tImport = new TImport();
@@ -693,7 +707,7 @@ public class BackendUtils {
      * @param id      the id of the definition child to persist
      * @param element the element of the definition child
      */
-    public static void persist(IGenericRepository repository, DefinitionsChildId id, TExtensibleElements element) throws IOException {
+    public static void persist(IRepository repository, DefinitionsChildId id, TExtensibleElements element) throws IOException {
         repository.setElement(id, element);
     }
 
@@ -710,6 +724,8 @@ public class BackendUtils {
         BackendUtils.persist(definitions, ref, MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
     }
 
+    // todo this should not depend on JAXB !
+
     /**
      * @throws IOException           if content could not be updated in the repository
      * @throws IllegalStateException if an JAXBException occurred. This should never happen.
@@ -722,6 +738,7 @@ public class BackendUtils {
             m.marshal(o, out);
             byte[] data = out.toByteArray();
             try (ByteArrayInputStream in = new ByteArrayInputStream(data)) {
+                // String xml = IOUtils.toString(in);
                 // this may throw an IOException. We propagate this exception.
                 RepositoryFactory.getRepository().putContentToFile(ref, in, mediaType);
             }
@@ -943,8 +960,8 @@ public class BackendUtils {
     /**
      * Returns all components available of the given id type
      * <p>
-     * Similar functionality as {@link IGenericRepository#getAllDefinitionsChildIds(java.lang.Class)}, but it crawls
-     * through the repository
+     * Similar functionality as {@link IRepository#getAllDefinitionsChildIds(java.lang.Class)}, but it crawls through
+     * the repository
      * <p>
      * This method is required as we do not use a database.
      *
@@ -1087,6 +1104,18 @@ public class BackendUtils {
         return null;
     }
 
+    public static DirectoryId getYamlArtifactsDirectoryOfNodeTemplate(ServiceTemplateId serviceTemplateId, String nodeTemplateId) {
+        DirectoryId serviceTemplateYamlArtifactsDir =
+            new GenericDirectoryId(serviceTemplateId, IdNames.FILES_DIRECTORY);
+        return new GenericDirectoryId(serviceTemplateYamlArtifactsDir, nodeTemplateId);
+    }
+
+    public static DirectoryId getYamlArtifactDirectoryOfNodeTemplate(ServiceTemplateId serviceTemplateId,
+                                                                     String nodeTemplateId, String yamlArtifactId) {
+        DirectoryId nodeTemplateYamlArtifactsDir = getYamlArtifactsDirectoryOfNodeTemplate(serviceTemplateId, nodeTemplateId);
+        return new GenericDirectoryId(nodeTemplateYamlArtifactsDir, yamlArtifactId);
+    }
+
     /**
      * Tests if a path matches a glob pattern. @see <a href="https://en.wikipedia.org/wiki/Glob_(programming)">Wikipedia</a>
      *
@@ -1137,7 +1166,7 @@ public class BackendUtils {
      * @return The synchronized artifact template. Used for testing only, because mockito cannot mock static methods
      * (https://github.com/mockito/mockito/issues/1013).
      */
-    public static TArtifactTemplate synchronizeReferences(IGenericRepository repository, ArtifactTemplateId id) throws IOException {
+    public static TArtifactTemplate synchronizeReferences(IRepository repository, ArtifactTemplateId id) throws IOException {
         TArtifactTemplate template = repository.getElement(id);
         List<TArtifactReference> toRemove = new ArrayList<>();
         List<RepositoryFileReference> toAdd = new ArrayList<>();
@@ -1638,28 +1667,39 @@ public class BackendUtils {
         versionList.get(0).setLatestVersion(true);
         versionList.get(0).setReleasable(true);
 
-        if (current[0].isVersionedInWinery() && RepositoryFactory.getRepository() instanceof GitBasedRepository) {
-            boolean changesInFile = false;
-            for (FilebasedRepository repo : RepositoryFactory.repositoryList) {
-                if (repo.getClass().equals(GitBasedRepository.class)) {
-                    GitBasedRepository gitRepo = (GitBasedRepository) repo;
+        boolean changesInFile = false;
+        // Check for MultiRepository
+        if (current[0].isVersionedInWinery() && RepositoryFactory.getRepository() instanceof MultiRepository) {
+            for (IRepository repository : ((MultiRepository) RepositoryFactory.getRepository()).getRepositories()) {
+                if (repository.getClass().equals(GitBasedRepository.class)) {
+                    GitBasedRepository gitRepo = (GitBasedRepository) repository;
                     if (gitRepo.hasChangesInFile(BackendUtils.getRefOfDefinitions(id))) {
                         changesInFile = true;
                     }
                 }
             }
-            if (!current[0].isLatestVersion()) {
-                // The current version may still be releasable, if it's the latest WIP version of a component version.
-                List<WineryVersion> collect = versionList.stream()
-                    .filter(version -> version.getComponentVersion().equals(current[0].getComponentVersion()))
-                    .sorted(Comparator.reverseOrder())
-                    .collect(Collectors.toList());
-                current[0].setReleasable(collect.get(0).isCurrentVersion());
-                // And if there are changes, it's also editable.
-                current[0].setEditable(changesInFile && current[0].isReleasable());
-            } else {
-                current[0].setEditable(changesInFile);
+        }
+        if (current[0].isVersionedInWinery() && RepositoryFactory.getRepository() instanceof GitBasedRepository) {
+            GitBasedRepository gitRepo = (GitBasedRepository) RepositoryFactory.getRepository();
+            if (gitRepo.hasChangesInFile(BackendUtils.getRefOfDefinitions(id))) {
+                changesInFile = true;
             }
+        }
+        // Check if element is unversioned
+        if (!current[0].isVersionedInWinery()) {
+            changesInFile = true;
+        }
+        if (!current[0].isLatestVersion()) {
+            // The current version may still be releasable, if it's the latest WIP version of a component version.
+            List<WineryVersion> collect = versionList.stream()
+                .filter(version -> version.getComponentVersion().equals(current[0].getComponentVersion()))
+                .sorted(Comparator.reverseOrder())
+                .collect(Collectors.toList());
+            current[0].setReleasable(collect.get(0).isCurrentVersion());
+            // And if there are changes, it's also editable.
+            current[0].setEditable(changesInFile && current[0].isReleasable());
+        } else {
+            current[0].setEditable(changesInFile);
         }
 
         return versionList;

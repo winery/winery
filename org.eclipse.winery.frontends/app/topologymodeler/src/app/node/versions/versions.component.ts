@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -26,6 +26,7 @@ import { WineryActions } from '../../redux/actions/winery.actions';
 import { PropertyDiffList } from '../../models/propertyDiffList';
 import { Utils } from '../../../../../tosca-management/src/app/wineryUtils/utils';
 import { WineryVersion } from '../../../../../tosca-management/src/app/model/wineryVersion';
+import { WineryRepositoryConfigurationService } from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 @Component({
     selector: 'winery-versions',
@@ -66,6 +67,7 @@ export class VersionsComponent implements OnInit {
                 private updateService: UpdateService,
                 private errorHandler: ErrorHandlerService,
                 private ngRedux: NgRedux<IWineryState>,
+                private configurationService: WineryRepositoryConfigurationService,
                 private wineryActions: WineryActions) {
     }
 
@@ -150,7 +152,7 @@ export class VersionsComponent implements OnInit {
     }
 
     updateTopology(topology: TTopologyTemplate) {
-        TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, topology);
+        TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, topology, this.configurationService.isYaml());
     }
 
     showKVComparison() {

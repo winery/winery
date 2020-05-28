@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { ModalDirective } from 'ngx-bootstrap';
 import { TPolicy } from '../../models/policiesModalData';
 import { TDeploymentArtifact } from '../../models/artifactsModalData';
@@ -29,15 +29,19 @@ import { DeploymentArtifactOrPolicyModalData, ModalVariant, ModalVariantAndState
 import { EntitiesModalService, OpenModalEvent } from './entities-modal.service';
 import { QName } from '../../models/qname';
 import { urlElement } from '../../models/enums';
+import { TArtifact, TTopologyTemplate } from '../../models/ttopology-template';
+import { WineryRepositoryConfigurationService } from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'winery-entities-modal',
     templateUrl: './entities-modal.component.html',
     styleUrls: ['./entities-modal.component.css']
 })
-export class EntitiesModalComponent implements OnInit, OnChanges {
+export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
 
     @ViewChild('modal') public modal: ModalDirective;
+    @ViewChild('fileUploader') fileUploader: ElementRef;
 
     @Input() modalVariantAndState: ModalVariantAndState;
     @Input() entityTypes: EntityTypesModel;
@@ -62,41 +66,57 @@ export class EntitiesModalComponent implements OnInit, OnChanges {
 
     // this is required for some reason
     ModalVariant = ModalVariant;
+    private selectedYamlArtifactFile: File;
+    private selectedYamlArtifactAllowedTypes = '';
+    private currentTopologyTemplate: TTopologyTemplate;
+    private subscriptions: Subscription[] = [];
 
     constructor(public backendService: BackendService,
                 private ngRedux: NgRedux<IWineryState>,
                 private actions: WineryActions,
                 private existsService: ExistsService,
                 private entitiesModalService: EntitiesModalService,
-                private alert: ToastrService) {
+                private alert: ToastrService,
+                private configurationService: WineryRepositoryConfigurationService) {
     }
 
     ngOnInit() {
         this.deploymentArtifactOrPolicyModalData = new DeploymentArtifactOrPolicyModalData();
-        this.entitiesModalService.requestNamespaces()
-            .subscribe(
-                data => {
-                    this.allNamespaces = data;
-                },
-                error => this.alert.info((error.toString()))
-            );
-        this.entitiesModalService.openModalEvent.subscribe((newEvent: OpenModalEvent) => {
-            try {
-                this.deploymentArtifactOrPolicyModalData.artifactTypes = this.entityTypes.artifactTypes;
-                this.deploymentArtifactOrPolicyModalData.policyTypes = this.entityTypes.policyTypes;
-                this.deploymentArtifactOrPolicyModalData.artifactTemplates = this.entityTypes.artifactTemplates;
-                this.deploymentArtifactOrPolicyModalData.policyTemplates = this.entityTypes.policyTemplates;
-            } catch (e) {
-                console.log(e);
-            }
-            this.deploymentArtifactOrPolicyModalData.nodeTemplateId = newEvent.currentNodeId;
-            this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace = newEvent.modalTemplateNameSpace;
-            this.deploymentArtifactOrPolicyModalData.modalTemplateName = newEvent.modalTemplateName;
-            this.deploymentArtifactOrPolicyModalData.modalName = newEvent.modalName;
-            this.deploymentArtifactOrPolicyModalData.modalType = newEvent.modalType;
-            this.modalVariantForEditDeleteTasks = newEvent.modalVariant.toString();
-            this.modal.show();
-        });
+        this.subscriptions.push(
+            this.entitiesModalService.requestNamespaces()
+                .subscribe(
+                    data => {
+                        this.allNamespaces = data;
+                    },
+                    error => this.alert.info((error.toString()))
+                ));
+        this.subscriptions.push(
+            this.entitiesModalService.openModalEvent.subscribe((newEvent: OpenModalEvent) => {
+                try {
+                    this.deploymentArtifactOrPolicyModalData.artifactTypes = this.entityTypes.artifactTypes;
+                    this.deploymentArtifactOrPolicyModalData.policyTypes = this.entityTypes.policyTypes;
+                    this.deploymentArtifactOrPolicyModalData.artifactTemplates = this.entityTypes.artifactTemplates;
+                    this.deploymentArtifactOrPolicyModalData.policyTemplates = this.entityTypes.policyTemplates;
+                } catch (e) {
+                    console.log(e);
+                }
+                this.deploymentArtifactOrPolicyModalData.nodeTemplateId = newEvent.currentNodeId;
+                this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace = newEvent.modalTemplateNameSpace;
+                this.deploymentArtifactOrPolicyModalData.modalTemplateName = newEvent.modalTemplateName;
+                this.deploymentArtifactOrPolicyModalData.modalName = newEvent.modalName;
+                this.deploymentArtifactOrPolicyModalData.modalType = newEvent.modalType;
+                this.modalVariantForEditDeleteTasks = newEvent.modalVariant.toString();
+                this.deploymentArtifactOrPolicyModalData.modalFileName = newEvent.modalFilePath;
+                this.deploymentArtifactOrPolicyModalData.modalTargetLocation = newEvent.modalTargetLocation;
+                this.modal.show();
+            }));
+        this.subscriptions.push(
+            this.ngRedux.select(currentState => currentState.wineryState.currentJsonTopology)
+                .subscribe(topologyTemplate => this.currentTopologyTemplate = topologyTemplate));
+    }
+
+    ngOnDestroy(): void {
+        this.subscriptions.forEach(sub => sub.unsubscribe());
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -138,7 +158,35 @@ export class EntitiesModalComponent implements OnInit, OnChanges {
         this.artifactOrPolicy.localname = this.deploymentArtifactOrPolicyModalData.modalTemplateName;
         this.artifactOrPolicy.namespace = this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace;
         this.artifactOrPolicy.type = this.deploymentArtifactOrPolicyModalData.modalType;
-        if (this.modalSelectedRadioButton === 'create' && this.modalVariantAndState.modalVariant === ModalVariant.DeploymentArtifacts) {
+
+        if (this.modalVariantAndState.modalVariant === ModalVariant.DeploymentArtifacts && this.configurationService.isYaml()) {
+            // the name is retrieved from the open file dialog
+            this.deploymentArtifactOrPolicyModalData.modalFileName = this.selectedYamlArtifactFile.name;
+            const yamlArtifact: TArtifact = new TArtifact(
+                this.deploymentArtifactOrPolicyModalData.modalName,
+                this.deploymentArtifactOrPolicyModalData.modalType,
+                this.deploymentArtifactOrPolicyModalData.modalFileName,
+                this.deploymentArtifactOrPolicyModalData.modalTargetLocation,
+                {},
+                [],
+                [],
+                {}
+            );
+            this.saveYamlArtifactsToModel(yamlArtifact);
+            this.backendService.saveYamlArtifact(
+                this.currentTopologyTemplate,
+                this.currentNodeData.id,
+                yamlArtifact.id,
+                this.selectedYamlArtifactFile,
+            ).subscribe((res) => {
+                this.resetDeploymentArtifactOrPolicyModalData();
+                this.alert.success('Successfully Saved the Artifact!', 'Operation Successful');
+            }, error => {
+                this.alert.info('<p>Something went wrong! The DA was not added to the Topology Template!<br>' + 'Error: '
+                    + error + '</p>');
+            });
+
+        } else if (this.modalSelectedRadioButton === 'create' && this.modalVariantAndState.modalVariant === ModalVariant.DeploymentArtifacts) {
             const deploymentArtifactToBeSavedToRedux: TDeploymentArtifact = new TDeploymentArtifact(
                 [],
                 [],
@@ -320,6 +368,13 @@ export class EntitiesModalComponent implements OnInit, OnChanges {
         this.deploymentArtifactOrPolicyModalData.modalTemplateName = '';
         this.deploymentArtifactOrPolicyModalData.modalName = '';
         this.deploymentArtifactOrPolicyModalData.modalType = '';
+        this.deploymentArtifactOrPolicyModalData.modalFileName = '';
+        this.deploymentArtifactOrPolicyModalData.modalTargetLocation = '';
+
+        if (this.fileUploader && this.fileUploader.nativeElement) {
+            this.fileUploader.nativeElement.value = '';
+        }
+
         this.resetModalData();
         this.modal.hide();
     }
@@ -334,6 +389,17 @@ export class EntitiesModalComponent implements OnInit, OnChanges {
         };
         this.ngRedux.dispatch(this.actions.setDeploymentArtifact(actionObject));
         this.resetDeploymentArtifactOrPolicyModalData();
+    }
+
+    /**
+     * Saves a yaml artifact to the model and gets pushed into the Redux state of the application
+     */
+    saveYamlArtifactsToModel(artifact: TArtifact): void {
+        const actionObject = {
+            nodeId: this.currentNodeData.id,
+            newYamlArtifact: artifact
+        };
+        this.ngRedux.dispatch(this.actions.setYamlArtifact(actionObject));
     }
 
     /**
@@ -359,6 +425,8 @@ export class EntitiesModalComponent implements OnInit, OnChanges {
         this.deploymentArtifactOrPolicyModalData.modalName = undefined;
         this.deploymentArtifactOrPolicyModalData.modalTemplate = undefined;
         this.deploymentArtifactOrPolicyModalData.modalTemplateName = undefined;
+        this.selectedYamlArtifactFile = undefined;
+        this.selectedYamlArtifactAllowedTypes = '';
         this.modalVariantForEditDeleteTasks = '(none)';
         this.modalVariantAndState.modalVariant = ModalVariant.None;
         this.modalDataChange.emit(this.modalVariantAndState);
@@ -381,6 +449,15 @@ export class EntitiesModalComponent implements OnInit, OnChanges {
             this.resetDeploymentArtifactOrPolicyModalData();
         }
 
+    }
+
+    deleteYamlArtifact() {
+        const actionObject = {
+            nodeId: this.deploymentArtifactOrPolicyModalData.nodeTemplateId,
+            deletedYamlArtifactId: this.deploymentArtifactOrPolicyModalData.modalName
+        };
+        this.ngRedux.dispatch(this.actions.deleteYamlArtifact(actionObject));
+        this.resetDeploymentArtifactOrPolicyModalData();
     }
 
     getLocalName(qName?: string): string {
@@ -412,5 +489,46 @@ export class EntitiesModalComponent implements OnInit, OnChanges {
         // TODO: add upload ability "this.uploadUrl = this.artifactOrPolicyUrl + 'files/';"
     }
 
-}
+    yamlArtifactFileSelected(files: FileList) {
+        if (files.length > 0) {
+            this.selectedYamlArtifactFile = files[0];
+        } else {
+            this.selectedYamlArtifactFile = undefined;
+        }
+    }
 
+    yamlArtifactTypeChanged() {
+        this.selectedYamlArtifactAllowedTypes = '';
+
+        if (this.deploymentArtifactOrPolicyModalData.modalType) {
+            const selectedYamlArtifactType = this.entityTypes
+                .artifactTypes
+                .find(artiTyep => artiTyep.qName === this.deploymentArtifactOrPolicyModalData.modalType);
+            if (selectedYamlArtifactType) {
+                if (selectedYamlArtifactType.fileExtensions && selectedYamlArtifactType.fileExtensions.length > 0) {
+                    this.selectedYamlArtifactAllowedTypes = selectedYamlArtifactType.fileExtensions.join(',');
+                }
+                if (selectedYamlArtifactType.mimeType) {
+                    if (this.selectedYamlArtifactAllowedTypes.length > 0) {
+                        this.selectedYamlArtifactAllowedTypes += ',';
+                    }
+
+                    this.selectedYamlArtifactAllowedTypes += selectedYamlArtifactType.mimeType;
+                }
+            }
+        }
+    }
+
+    downloadYamlArtifactFile() {
+        this.backendService.downloadYamlArtifactFile(this.deploymentArtifactOrPolicyModalData.nodeTemplateId,
+            this.deploymentArtifactOrPolicyModalData.modalName,
+            this.deploymentArtifactOrPolicyModalData.modalFileName).subscribe(data => {
+            const blob = new Blob([data.body], { type: 'application/octet-stream' });
+            const url = window.URL.createObjectURL(blob);
+            const anchor = document.createElement('a');
+            anchor.download = this.deploymentArtifactOrPolicyModalData.modalFileName;
+            anchor.href = url;
+            anchor.click();
+        });
+    }
+}
