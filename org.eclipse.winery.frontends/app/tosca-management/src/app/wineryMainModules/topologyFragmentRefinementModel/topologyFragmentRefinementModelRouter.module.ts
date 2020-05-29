@@ -44,7 +44,7 @@ const topologyFragmentRefinementRoutes: Routes = [
             { path: 'relationmappings', component: RelationMappingsComponent },
             { path: 'attributemappings', component: AttributeMappingsComponent },
             { path: 'staymappings', component: StayMappingsComponent },
-            { path: 'deploymentartifactsmappings', component: DeploymentArtifactsMappingsComponent },
+            { path: 'deploymentartifactmappings', component: DeploymentArtifactsMappingsComponent },
             { path: 'xml', component: EditXMLComponent },
             { path: '', redirectTo: 'readme', pathMatch: 'full' }
         ]

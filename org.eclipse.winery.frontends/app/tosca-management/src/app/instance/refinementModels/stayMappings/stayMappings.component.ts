@@ -23,6 +23,7 @@ import { SelectData } from '../../../model/selectData';
 import { InstanceService } from '../../instance.service';
 import { PrmModelElementType, StayMapping } from './stayMapping';
 import { forkJoin } from 'rxjs';
+import { RelationMapping } from '../relationshipMappings/relationMapping';
 
 @Component({
     templateUrl: 'stayMappings.component.html',
@@ -73,16 +74,7 @@ export class StayMappingsComponent implements OnInit {
 
     // region ********** Table Callbacks **********
     onAddButtonClicked() {
-        let id = 0;
-        this.stayMappings.forEach(value => {
-            const number = Number(value.id.split(StayMapping.idPrefix)[1]);
-            if (!isNaN(number) && number >= id) {
-                id = number;
-                if (number === id) {
-                    id++;
-                }
-            }
-        });
+        const id = this.service.getNewMappingsId(this.stayMappings, StayMapping.idPrefix);
 
         this.mapping = new StayMapping(id);
         this.addModalRef = this.modalService.show(this.addModal);

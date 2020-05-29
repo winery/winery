@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,26 +12,16 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import { RefinementMappings } from '../RefinementMappings';
+export abstract class RefinementMappings {
 
-export enum AttributeMappingType {
-    ALL = 'ALL',
-    SELECTIVE = 'SELECTIVE'
-}
+    public id: string;
+    public detectorNode: string;
+    public refinementNode: string;
 
-export class AttributeMapping extends RefinementMappings {
-
-    public static readonly idPrefix = 'propMap';
-
-    public detectorProperty: string;
-    public refinementProperty: string;
-    public type: AttributeMappingType;
-
-    constructor(id: number) {
-        super(id);
+    protected constructor(id: number) {
+        this.id = this.idPrefix() + id;
     }
 
-    idPrefix(): string {
-        return AttributeMapping.idPrefix;
-    }
+    abstract idPrefix(): string;
 }
+

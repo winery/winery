@@ -24,6 +24,8 @@ import { PropertiesDefinitionsResourceApiData } from '../sharedComponents/proper
 import { ToscaTypes } from '../../model/enums';
 import { StayMapping } from './stayMappings/stayMapping';
 import { AttributeMapping } from './attributeMappings/attributeMapping';
+import { DeploymentArtifactMapping } from './deploymentArtifactsMappings/deploymentArtifactMapping';
+import { RefinementMappings } from './RefinementMappings';
 
 @Injectable()
 export class RefinementMappingsService {
@@ -99,6 +101,33 @@ export class RefinementMappingsService {
 
     public deleteStayMapping(mapping: StayMapping): Observable<StayMapping[]> {
         return this.http.delete<StayMapping[]>(this.path + '/staymappings/' + mapping.id);
+    }
+
+    public addDeploymentArtifactMappings(element: DeploymentArtifactMapping): Observable<DeploymentArtifactMapping[]> {
+        return this.http.put<DeploymentArtifactMapping[]>(this.path + '/deploymentartifactmappings', element);
+    }
+
+    public deleteDeploymentArtifactMappings(mapping: DeploymentArtifactMapping): Observable<DeploymentArtifactMapping[]> {
+        return this.http.delete<DeploymentArtifactMapping[]>(this.path + '/deploymentartifactmappings/' + mapping.id);
+    }
+
+    public getDeploymentArtifactMappings(): Observable<DeploymentArtifactMapping[]> {
+        return this.http.get<DeploymentArtifactMapping[]>(this.path + '/deploymentartifactmappings');
+    }
+
+    public getNewMappingsId(mappings: RefinementMappings[], prefix: string): number {
+        let id = 0;
+        mappings.forEach(value => {
+            const number = Number(value.id.split(prefix)[1]);
+            if (!isNaN(number) && number >= id) {
+                id = number;
+                if (number === id) {
+                    id++;
+                }
+            }
+        });
+
+        return id;
     }
 
     private getRefinementStructureUrl(): string {

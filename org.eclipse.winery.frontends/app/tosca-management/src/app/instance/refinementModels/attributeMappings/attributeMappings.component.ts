@@ -90,16 +90,7 @@ export class AttributeMappingsComponent implements OnInit {
 
     // region ********** Table Callbacks **********
     onAddButtonClicked() {
-        let id = 0;
-        this.attributeMappings.forEach(value => {
-            const number = Number(value.id.split(AttributeMapping.idPrefix)[1]);
-            if (!isNaN(number) && number >= id) {
-                id = number;
-                if (number === id) {
-                    id++;
-                }
-            }
-        });
+        const id = this.service.getNewMappingsId(this.attributeMappings, AttributeMapping.idPrefix);
 
         this.mapping = new AttributeMapping(id);
         this.cleanProperties();

@@ -22,6 +22,7 @@ import javax.ws.rs.Path;
 
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.OTAttributeMapping;
+import org.eclipse.winery.model.tosca.OTDeploymentArtifactMapping;
 import org.eclipse.winery.model.tosca.OTTopologyFragmentRefinementModel;
 import org.eclipse.winery.model.tosca.OTPatternRefinementModel;
 import org.eclipse.winery.model.tosca.OTStayMapping;
@@ -70,5 +71,17 @@ public class TopologyFragmentRefinementModelResource extends AbstractRefinementM
         }
 
         return new StayMappingsResource(this, stayMappings);
+    }
+
+    @Path("deploymentartifactmappings")
+    public DeploymentArtifactMappingsResource getDeploymentArtifactMappings() {
+        List<OTDeploymentArtifactMapping> artifactMappings = this.getTRefinementModel().getDeploymentArtifactMappings();
+
+        if (Objects.isNull(artifactMappings)) {
+            artifactMappings = new ArrayList<>();
+            this.getTRefinementModel().setDeploymentArtifactMappings(artifactMappings);
+        }
+
+        return new DeploymentArtifactMappingsResource(this, artifactMappings);
     }
 }

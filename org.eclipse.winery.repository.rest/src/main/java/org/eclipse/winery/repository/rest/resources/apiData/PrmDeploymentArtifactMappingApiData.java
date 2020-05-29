@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,27 +14,26 @@
 
 package org.eclipse.winery.repository.rest.resources.apiData;
 
+import org.eclipse.winery.model.tosca.OTDeploymentArtifactMapping;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
-import org.eclipse.winery.model.tosca.OTPrmModelElementType;
-import org.eclipse.winery.model.tosca.OTStayMapping;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class PrmStayMappingApiData extends AbstractPrmMappingElement {
+public class PrmDeploymentArtifactMappingApiData extends AbstractPrmMappingElement {
 
-    public OTPrmModelElementType modelElementType;
+    public String artifactName;
 
-    public PrmStayMappingApiData() {
+    public PrmDeploymentArtifactMappingApiData() {
     }
 
     @JsonIgnore
-    public OTStayMapping createOTPrmStayMapping(TEntityTemplate detectorNodeTemplate, TEntityTemplate refinementNodeTemplate) {
-        OTStayMapping mapping = new OTStayMapping();
-        mapping.setId(this.id);
-        mapping.setDetectorNode(detectorNodeTemplate);
-        mapping.setRefinementNode(refinementNodeTemplate);
-        mapping.setModelElementType(this.modelElementType);
+    public OTDeploymentArtifactMapping createDeploymentArtifactMapping(TEntityTemplate detectorNodeTemplate, TEntityTemplate refinementNodeTemplate) {
+        OTDeploymentArtifactMapping artifactMapping = new OTDeploymentArtifactMapping();
+        artifactMapping.setId(this.id);
+        artifactMapping.setDetectorNode(detectorNodeTemplate);
+        artifactMapping.setArtifactName(this.artifactName);
+        artifactMapping.setRefinementNode(refinementNodeTemplate);
 
-        return mapping;
+        return artifactMapping;
     }
 }

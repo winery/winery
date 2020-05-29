@@ -25,10 +25,12 @@ import { SelectModule } from 'ng2-select';
 import { StayMappingsComponent } from './stayMappings/stayMappings.component';
 import { AttributeMappingsComponent } from './attributeMappings/attributeMappings.component';
 import { DeploymentArtifactsMappingsComponent } from './deploymentArtifactsMappings/deploymentArtifactsMappings.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
     imports: [
         CommonModule,
+        FormsModule,
         HttpClientModule,
         BrowserModule,
         SelectModule,
@@ -42,6 +44,7 @@ import { DeploymentArtifactsMappingsComponent } from './deploymentArtifactsMappi
         RelationMappingsComponent,
         AttributeMappingsComponent,
         StayMappingsComponent,
+        DeploymentArtifactsMappingsComponent
     ],
     declarations: [
         RelationMappingsComponent,

@@ -48,6 +48,6 @@ public class StayMappingsResource extends AbstractRefinementModelMappingsResourc
             refinementNode = this.res.getRefinementTopology().getComponentInstanceJSON().getRelationshipTemplate(mapping.refinementNode);
         }
 
-        return this.addMapping(mapping.createTPrmStayMapping(detectorElement, refinementNode));
+        return this.addMapping(mapping.createOTPrmStayMapping(detectorElement, refinementNode));
     }
 }

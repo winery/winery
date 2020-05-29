@@ -95,16 +95,7 @@ export class RelationMappingsComponent implements OnInit {
     }
 
     onAddButtonClicked() {
-        let id = 0;
-        this.relationshipMappings.forEach(value => {
-            const number = Number(value.id.split(RelationMapping.idPrefix)[1]);
-            if (!isNaN(number) && number >= id) {
-                id = number;
-                if (number === id) {
-                    id++;
-                }
-            }
-        });
+        const id = this.service.getNewMappingsId(this.relationshipMappings, RelationMapping.idPrefix);
 
         this.mapping = new RelationMapping(id);
         this.addModalRef = this.modalService.show(this.addModal);
