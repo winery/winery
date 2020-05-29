@@ -30,6 +30,9 @@ import org.eclipse.winery.model.adaptation.substitution.refinement.DefaultRefine
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.model.tosca.OTAttributeMapping;
 import org.eclipse.winery.model.tosca.OTAttributeMappingType;
+import org.eclipse.winery.model.tosca.OTDeploymentArtifactMapping;
+import org.eclipse.winery.model.tosca.TDeploymentArtifact;
+import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.OTPatternRefinementModel;
@@ -652,14 +655,10 @@ class PatternRefinementTest {
         TTopologyTemplate detector = candidate.getRefinementModel().getDetector();
 
         refinementTopology.getNodeTemplateOrRelationshipTemplate()
-            .removeIf(template -> {
-                if (template.getId().equals("13") || template.getId().equals("1213")) {
-                    return true;
-                }
-                return false;
-            });
+            .removeIf(template -> template.getId().equals("13") || template.getId().equals("1213"));
 
         TNodeTemplate nt12 = refinementTopology.getNodeTemplate("12");
+        assertNotNull(nt12);
         nt12.setType("{http://ex.org}nodeType_4");
         TNodeTemplate nt4 = detector.getNodeTemplate("8");
 
@@ -698,5 +697,92 @@ class PatternRefinementTest {
         // endregion
     }
 
+    // endregion
+    
+    // region ********** redirectDeploymentArtifactMappings **********
+    @Test
+    void redirectDeploymentArtifacts() {
+        setUp();
+        
+                 /*
+        input:
+        #######   (1)  ########----
+        # (1) # <----- # (2) # DA |
+        #######        #######-----
+                          | (2)
+                         \/
+                       #######
+                       # (4) #
+                       #######
+
+        expected output:
+        #######   (1)  ########        ########-----
+        # (1) # <----- # (10) #        # (11) # DA |
+        #######        ########        ########-----
+                           | (2)          | (2)
+                           +-------|------+
+                                  \/
+                                #######
+                                # (4) #
+                                #######
+         */
+
+        // region *** add stay mapping to PRM ***
+        TTopologyTemplate refinementTopology = candidate.getRefinementModel().getRefinementTopology();
+        TTopologyTemplate detector = candidate.getRefinementModel().getDetector();
+        
+        refinementTopology.getNodeTemplateOrRelationshipTemplate()
+            .removeIf(template -> template.getId().equals("13") || template.getId().equals("1213"));
+
+        String daName = "testDA";
+        QName artifactType = new QName("file", "http://example.org/tosca/at");
+        QName test_da = new QName("test_da", "http://example.org/tosca/atemp/das");
+
+        TNodeTemplate nodeTemplate = topology2.getNodeTemplate("2");
+        assertNotNull(nodeTemplate);
+        
+        TDeploymentArtifacts das = new TDeploymentArtifacts();
+        TDeploymentArtifact da = new TDeploymentArtifact();
+        da.setName(daName);
+        da.setArtifactRef(test_da);
+        da.setArtifactType(artifactType);
+        das.getDeploymentArtifact().add(da);
+        nodeTemplate.setDeploymentArtifacts(das);
+
+        OTDeploymentArtifactMapping deploymentArtifactMapping = new OTDeploymentArtifactMapping();
+        deploymentArtifactMapping.setId("daMap-1");
+        deploymentArtifactMapping.setArtifactName(daName);
+        deploymentArtifactMapping.setDetectorNode(detector.getNodeTemplate("7"));
+        deploymentArtifactMapping.setRefinementNode(refinementTopology.getNodeTemplate("11"));
+
+        ((OTPatternRefinementModel) candidate.getRefinementModel())
+            .setDeploymentArtifactMappings(Collections.singletonList(deploymentArtifactMapping));
+        // endregion
+
+
+        // recreate the candidate
+        ToscaGraph topologyGraph = ToscaTransformer.createTOSCAGraph(topology2);
+        ToscaGraph detectorGraph = ToscaTransformer.createTOSCAGraph(detector);
+
+        GraphMapping<ToscaNode, ToscaEdge> mapping = new ToscaIsomorphismMatcher()
+            .findMatches(detectorGraph, topologyGraph, new ToscaTypeMatcher())
+            .next();
+
+        candidate = new RefinementCandidate(candidate.getRefinementModel(), mapping, detectorGraph, 1);
+
+        PatternRefinement patternRefinement = new PatternRefinement();
+        patternRefinement.applyRefinement(candidate, topology2);
+        
+        // region *** assertions ***
+        TNodeTemplate refinedNt = topology2.getNodeTemplate("11");
+        assertNotNull(refinedNt);
+        assertNotNull(refinedNt.getDeploymentArtifacts());
+        assertEquals(refinedNt.getDeploymentArtifacts().getDeploymentArtifact().size(), 1);
+        assertEquals(refinedNt.getDeploymentArtifacts().getDeploymentArtifact().get(0).getName(), daName);
+        assertEquals(refinedNt.getDeploymentArtifacts().getDeploymentArtifact().get(0).getArtifactRef(), test_da);
+        assertEquals(refinedNt.getDeploymentArtifacts().getDeploymentArtifact().get(0).getArtifactType(), artifactType);
+
+        // endregion
+    }
     // endregion
 }
