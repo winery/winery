@@ -12,7 +12,6 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 import { ServiceTemplateTemplateTypes, ToscaTypes } from '../model/enums';
-import { isNullOrUndefined } from 'util';
 import { QName } from '../model/qName';
 
 export class Utils {
@@ -131,6 +130,9 @@ export class Utils {
             case ToscaTypes.PatternRefinementModel:
                 type = 'Pattern Refinement Model';
                 break;
+            case ToscaTypes.TopologyFragmentRefinementModel:
+                type = 'Topology Fragment Refinement Model';
+                break;
             case ToscaTypes.TestRefinementModel:
                 type = 'Test Refinement Model';
                 break;
@@ -234,7 +236,7 @@ export class Utils {
 
     public static getNameWithoutVersion(name: string): string {
         const res = name.match(/_(([^_]*)-)?w([0-9]+)(-wip([0-9]+))?$/);
-        if (isNullOrUndefined(res)) {
+        if (!res) {
             return name;
         } else {
             return name.substr(0, res.index);
@@ -242,14 +244,12 @@ export class Utils {
     }
 
     public static nodeTypeUrlForQName(nodeType: QName): string {
-        const url = `/#/nodetypes/${encodeURIComponent(encodeURIComponent(nodeType.namespace))}/${nodeType.localPart}/readme`;
-        return url;
+        return `/#/nodetypes/${encodeURIComponent(encodeURIComponent(nodeType.namespace))}/${nodeType.localPart}/readme`;
     }
 
     public static nodeTypeURL(nodeTypeName: string): string {
         const qname = QName.stringToQName(nodeTypeName);
-        const url = `/#/nodetypes/${encodeURIComponent(encodeURIComponent(qname.namespace))}/${qname.localPart}/readme`;
-        return url;
+        return `/#/nodetypes/${encodeURIComponent(encodeURIComponent(qname.namespace))}/${qname.localPart}/readme`;
 
     }
 }

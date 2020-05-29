@@ -24,7 +24,8 @@
     </p>
     <h4>Artifacts</h4>
     <a class="btn btn-default right-margin-10" [routerLink]="['/artifacttypes']">Artifact Types</a>
-    <a class="btn btn-default" [routerLink]="['/artifacttemplates']" *wineryRepositoryHideOnFeature="configEnum.Yaml">Artifact Templates</a>
+    <a class="btn btn-default" [routerLink]="['/artifacttemplates']" *wineryRepositoryHideOnFeature="configEnum.Yaml">Artifact
+        Templates</a>
     <h4> {{!configurationService.isYaml() ? 'Requirements and ' : ''}} Capabilities</h4>
     <a *wineryRepositoryHideOnFeature="configEnum.Yaml" class="btn btn-default right-margin-10"
        [routerLink]="['/requirementtypes']">
@@ -38,7 +39,8 @@
     </span>
     <h4>Policies</h4>
     <a class="btn btn-default right-margin-10" [routerLink]="['/policytypes']">Policy Types</a>
-    <a *wineryRepositoryHideOnFeature="configEnum.Yaml" class="btn btn-default" [routerLink]="['/policytemplates']">Policy Templates</a>
+    <a *wineryRepositoryHideOnFeature="configEnum.Yaml" class="btn btn-default" [routerLink]="['/policytemplates']">Policy
+        Templates</a>
     <span *wineryRepositoryHideOnFeature="configEnum.Yaml">
     <hr>
     <h4>Imports</h4>
@@ -57,7 +59,7 @@
         </a>
         <a class="btn btn-default" [routerLink]="['/topologyfragmentrefinementmodels']"
            *wineryRepositoryFeatureToggle="configEnum.TopologyFragmentRefinementModel">
-            Topology Fragment Refinement Model
+            Topology Fragment Refinement
         </a>
         <a class="btn btn-default" [routerLink]="['/testrefinementmodels']"
            *wineryRepositoryFeatureToggle="configEnum.TestRefinement">
