@@ -35,6 +35,7 @@ export interface TopologyRendererState {
         problemDetectionButton?: boolean;
         enrichmentButton?: boolean;
         substituteTopologyButton?: boolean;
+        refinePatternsButton?: boolean;
         refineTopologyButton?: boolean;
         refineTopologyWithTestsButton?: boolean;
         determineStatefulComponents?: boolean;
@@ -66,6 +67,7 @@ export const INITIAL_TOPOLOGY_RENDERER_STATE: TopologyRendererState = {
         problemDetectionButton: false,
         enrichmentButton: false,
         substituteTopologyButton: false,
+        refinePatternsButton: false,
         refineTopologyButton: false,
         refineTopologyWithTestsButton: false,
         determineStatefulComponents: false,
@@ -223,6 +225,14 @@ export const TopologyRendererReducer =
                     buttonsState: {
                         ...lastState.buttonsState,
                         substituteTopologyButton: !lastState.buttonsState.substituteTopologyButton
+                    }
+                };
+            case TopologyRendererActions.REFINE_PATTERNS:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        refinePatternsButton: !lastState.buttonsState.refinePatternsButton
                     }
                 };
             case TopologyRendererActions.REFINE_TOPOLOGY:

@@ -373,10 +373,12 @@ export class WineryComponent implements OnInit, AfterViewInit {
 
     private setButtonsState(currentButtonsState: TopologyRendererState) {
         if (currentButtonsState.buttonsState.refineTopologyButton) {
+            this.refiningType = 'topology';
+        } else if (currentButtonsState.buttonsState.refinePatternsButton) {
             this.refiningType = 'patterns';
         } else if (currentButtonsState.buttonsState.refineTopologyWithTestsButton) {
             this.refiningType = 'tests';
-        } else if (!currentButtonsState.buttonsState.refineTopologyWithTestsButton && !currentButtonsState.buttonsState.refineTopologyButton) {
+        } else {
             delete this.refiningType;
         }
     }
