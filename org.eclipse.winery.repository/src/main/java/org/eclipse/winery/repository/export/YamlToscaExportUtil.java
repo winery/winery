@@ -252,37 +252,33 @@ public class YamlToscaExportUtil extends ToscaExportUtil {
     private void prepareServiceTemplateForExport(IRepository repository, ServiceTemplateId id, Definitions entryDefinitions) throws IOException {
         BackendUtils.synchronizeReferences(id);
         TServiceTemplate st = repository.getElement(id);
+        String serviceTemplatePath = BackendUtils.getPathInsideRepo(id);
 
         if (Objects.nonNull(st.getTopologyTemplate())) {
-            for (TNodeTemplate n : st.getTopologyTemplate().getNodeTemplates()) {
-                TArtifacts artifacts = n.getArtifacts();
+            for (TNodeTemplate nodeTemplate : st.getTopologyTemplate().getNodeTemplates()) {
+                TArtifacts artifacts = nodeTemplate.getArtifacts();
                 if (Objects.nonNull(artifacts)) {
 
                     // update file paths in the exported service template
                     artifacts.getArtifact().forEach(a -> {
-                        Path p = Paths.get("files", n.getId(), a.getId());
-                        RepositoryFileReference ref = new RepositoryFileReference(id, p, a.getFile());
-                        if (repository.exists(ref)) {
-                            putRefAsReferencedItemInCsar(ref);
-                            entryDefinitions.getServiceTemplates()
-                                .stream().filter(Objects::nonNull)
-                                .findFirst()
-                                .ifPresent(s -> {
-                                    if (Objects.nonNull(s.getTopologyTemplate())) {
-                                        s.getTopologyTemplate()
-                                            .getNodeTemplates()
-                                            .stream()
-                                            .filter(node -> node.getId().equals(n.getId()))
-                                            .forEach(node -> node.getArtifacts()
-                                                .getArtifact()
-                                                .stream()
-                                                .filter(art -> art.getFile().equals(a.getFile()))
-                                                .forEach(art -> {
-                                                    String pathInsideRepo = BackendUtils.getPathInsideRepo(ref);
-                                                    art.setFile("/" + FilenameUtils.separatorsToUnix(pathInsideRepo));
-                                                }));
-                                    }
-                                });
+                        UrlValidator customValidator = new UrlValidator();
+                        if (customValidator.isValid(a.getFile())) {
+                            LOGGER.info("Specified file is a valid URL, start processing the reference");
+                            try {
+                                String templateArtifactPath = nodeTemplate.getId() + "/" + a.getName();
+                                String pathInsideRepo = putRemoteRefAsReferencedItemInCsar(new URL(a.getFile()), serviceTemplatePath, templateArtifactPath);
+                                updatePathsInTopologyTemplateArtifacts(entryDefinitions, nodeTemplate, a, pathInsideRepo);
+                            } catch (MalformedURLException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            Path p = Paths.get("files", nodeTemplate.getId(), a.getId());
+                            RepositoryFileReference ref = new RepositoryFileReference(id, p, a.getFile());
+                            if (repository.exists(ref)) {
+                                putRefAsReferencedItemInCsar(ref);
+                                String pathInsideRepo = BackendUtils.getPathInsideRepo(ref);
+                                updatePathsInTopologyTemplateArtifacts(entryDefinitions, nodeTemplate, a, pathInsideRepo);
+                            }
                         }
                     });
 
@@ -290,6 +286,27 @@ public class YamlToscaExportUtil extends ToscaExportUtil {
                 }
             }
         }
+    }
+
+    private void updatePathsInTopologyTemplateArtifacts(Definitions entryDefinitions, TNodeTemplate nodeTemplate, TArtifact artifact, String pathInsideRepo) {
+        entryDefinitions.getServiceTemplates()
+            .stream().filter(Objects::nonNull)
+            .findFirst()
+            .ifPresent(s -> {
+                if (Objects.nonNull(s.getTopologyTemplate())) {
+                    s.getTopologyTemplate()
+                        .getNodeTemplates()
+                        .stream()
+                        .filter(node -> node.getId().equals(nodeTemplate.getId()))
+                        .forEach(node -> node.getArtifacts()
+                            .getArtifact()
+                            .stream()
+                            .filter(art -> art.getFile().equals(artifact.getFile()))
+                            .forEach(art -> {
+                                art.setFile("/" + FilenameUtils.separatorsToUnix(pathInsideRepo));
+                            }));
+                }
+            });
     }
 
     /**

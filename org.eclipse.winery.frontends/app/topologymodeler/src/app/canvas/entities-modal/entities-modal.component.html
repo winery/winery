@@ -236,23 +236,50 @@
                     </div>
                 </fieldset>
                 <fieldset id="yamlArtifactFileFieldSet">
-                    <div class="form-group" id="yamlArtifactFileDiv"
-                         *ngIf="modalVariantForEditDeleteTasks === '(none)' else artifactFileNameOnly">
-                        <label for="fileUploader">Select Artifact File (will be uploaded when clicking on "Add")</label>
-                        <br>
-                        <input type="file" #fileUploader id="fileUploader" name="fileUploader"
-                               [accept]="selectedYamlArtifactAllowedTypes"
-                               (change)="yamlArtifactFileSelected($event.target.files)"/>
-                    </div>
-                    <ng-template #artifactFileNameOnly>
-                        <div class="form-group" id="yamlArtifactFileNameDiv">
-                            <label for="fileUploader">Selected File</label>
-                            <br>
-                            <button type="button"
-                                    class="btn btn-link btn-anchor"
-                                    (click)="downloadYamlArtifactFile()">{{deploymentArtifactOrPolicyModalData.modalFileName}}</button>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="form-group" id="yamlArtifactFileDiv"
+                                 *ngIf="modalVariantForEditDeleteTasks === '(none)' else artifactFileNameOnly">
+                                <label for="fileUploader">Select Artifact File (will be uploaded when clicking on
+                                    "Add")</label>
+                                <br>
+                                <input type="file" #fileUploader id="fileUploader" name="fileUploader"
+                                       [disabled]="deploymentArtifactOrPolicyModalData.isFileRemote"
+                                       [accept]="selectedYamlArtifactAllowedTypes"
+                                       (change)="yamlArtifactFileSelected($event.target.files)"/>
+                            </div>
+                            <ng-template #artifactFileNameOnly>
+                                <div class="form-group" id="yamlArtifactFileNameDiv">
+                                    <label for="fileUploader">Selected File</label>
+                                    <br>
+                                    <button type="button"
+                                            class="btn btn-link btn-anchor"
+                                            (click)="downloadYamlArtifactFile()">{{deploymentArtifactOrPolicyModalData.modalFileName}}</button>
+                                </div>
+                            </ng-template>
                         </div>
-                    </ng-template>
+                        <div class="col-md-3">
+                            <div class="checkbox">
+                                <label>
+                                    <input id="fileRemote" name="fileRemote"
+                                           [(ngModel)]="deploymentArtifactOrPolicyModalData.isFileRemote"
+                                           (change)="yamlArtifactFileSelected(null)" type="checkbox">
+                                    Specify URL
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group" *ngIf="deploymentArtifactOrPolicyModalData.isFileRemote">
+                                <label class="control-label" for="fileRef">Artifact URL</label>
+                                <input class="form-control" id="fileRef" name="fileRef"
+                                       [(ngModel)]="deploymentArtifactOrPolicyModalData.selectedArtifactReference"
+                                       type="text">
+                            </div>
+                        </div>
+                    </div>
                 </fieldset>
                 <fieldset id="yamlDeployPathFieldset">
                     <div class="form-group" id="artifactDeployPathDiv">

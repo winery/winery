@@ -18,7 +18,7 @@ components:
         attributes:
           protocol: http
           secure: "false"
-          discoverable: "true"
+          discoverable: "false"
           public: "true"
     mountSources: true
     referenceContent: |
