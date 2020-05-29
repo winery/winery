@@ -17,7 +17,6 @@ package org.eclipse.winery.repository.rest.resources.refinementmodels;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
-import org.eclipse.winery.model.tosca.OTTopologyFragmentRefinementModel;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithoutTypeReferenceResource;
 
 public class TopologyFragmentRefinementModelsResource extends AbstractComponentsWithoutTypeReferenceResource<TopologyFragmentRefinementModelResource> {

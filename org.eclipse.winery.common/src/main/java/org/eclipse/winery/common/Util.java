@@ -66,7 +66,6 @@ import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TestRefinementModelId;
 import org.eclipse.winery.common.ids.definitions.TopologyFragmentRefinementModelId;
-import org.eclipse.winery.common.ids.definitions.TopologyGraphElementEntityTypeId;
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.common.ids.definitions.imports.WsdlImportId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
