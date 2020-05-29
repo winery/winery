@@ -61,7 +61,11 @@ export class DeploymentArtifactOrPolicyModalData {
         // the file path of a yaml artifact
         public modalFileName?: string,
         // the deployment path of a yaml artifact
-        public modalTargetLocation?: string
+        public modalTargetLocation?: string,
+        // yaml artifact provided as a reference
+        public isFileRemote?: boolean,
+        // file reference
+        public selectedArtifactReference?: string
     ) {
     }
 }

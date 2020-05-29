@@ -161,31 +161,52 @@ export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
 
         if (this.modalVariantAndState.modalVariant === ModalVariant.DeploymentArtifacts && this.configurationService.isYaml()) {
             // the name is retrieved from the open file dialog
-            this.deploymentArtifactOrPolicyModalData.modalFileName = this.selectedYamlArtifactFile.name;
-            const yamlArtifact: TArtifact = new TArtifact(
-                this.deploymentArtifactOrPolicyModalData.modalName,
-                this.deploymentArtifactOrPolicyModalData.modalType,
-                this.deploymentArtifactOrPolicyModalData.modalFileName,
-                this.deploymentArtifactOrPolicyModalData.modalTargetLocation,
-                {},
-                [],
-                [],
-                {}
-            );
-            this.saveYamlArtifactsToModel(yamlArtifact);
-            this.backendService.saveYamlArtifact(
-                this.currentTopologyTemplate,
-                this.currentNodeData.id,
-                yamlArtifact.id,
-                this.selectedYamlArtifactFile,
-            ).subscribe((res) => {
-                this.resetDeploymentArtifactOrPolicyModalData();
-                this.alert.success('Successfully Saved the Artifact!', 'Operation Successful');
-            }, error => {
-                this.alert.info('<p>Something went wrong! The DA was not added to the Topology Template!<br>' + 'Error: '
-                    + error + '</p>');
-            });
-
+            let yamlArtifact: TArtifact;
+            if (this.deploymentArtifactOrPolicyModalData.isFileRemote) {
+                yamlArtifact = new TArtifact(
+                    this.deploymentArtifactOrPolicyModalData.modalName,
+                    this.deploymentArtifactOrPolicyModalData.modalType,
+                    this.deploymentArtifactOrPolicyModalData.selectedArtifactReference,
+                    this.deploymentArtifactOrPolicyModalData.modalTargetLocation,
+                    {},
+                    [],
+                    [],
+                    {}
+                );
+                this.saveYamlArtifactsToModel(yamlArtifact);
+                this.backendService.saveTopologyTemplate(this.currentTopologyTemplate).subscribe((res) => {
+                    this.resetDeploymentArtifactOrPolicyModalData();
+                    this.alert.success('Successfully Saved the Artifact!', 'Operation Successful');
+                }, error => {
+                    this.alert.info('<p>Something went wrong! The DA was not added to the Topology Template!<br>' + 'Error: '
+                        + error + '</p>');
+                });
+            } else {
+                this.deploymentArtifactOrPolicyModalData.modalFileName = this.selectedYamlArtifactFile.name;
+                yamlArtifact = new TArtifact(
+                    this.deploymentArtifactOrPolicyModalData.modalName,
+                    this.deploymentArtifactOrPolicyModalData.modalType,
+                    this.deploymentArtifactOrPolicyModalData.modalFileName,
+                    this.deploymentArtifactOrPolicyModalData.modalTargetLocation,
+                    {},
+                    [],
+                    [],
+                    {}
+                );
+                this.saveYamlArtifactsToModel(yamlArtifact);
+                this.backendService.saveYamlArtifact(
+                    this.currentTopologyTemplate,
+                    this.currentNodeData.id,
+                    yamlArtifact.id,
+                    this.selectedYamlArtifactFile,
+                ).subscribe((res) => {
+                    this.resetDeploymentArtifactOrPolicyModalData();
+                    this.alert.success('Successfully Saved the Artifact!', 'Operation Successful');
+                }, error => {
+                    this.alert.info('<p>Something went wrong! The DA was not added to the Topology Template!<br>' + 'Error: '
+                        + error + '</p>');
+                });
+            }
         } else if (this.modalSelectedRadioButton === 'create' && this.modalVariantAndState.modalVariant === ModalVariant.DeploymentArtifacts) {
             const deploymentArtifactToBeSavedToRedux: TDeploymentArtifact = new TDeploymentArtifact(
                 [],
@@ -490,7 +511,7 @@ export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     yamlArtifactFileSelected(files: FileList) {
-        if (files.length > 0) {
+        if (files && files.length > 0) {
             this.selectedYamlArtifactFile = files[0];
         } else {
             this.selectedYamlArtifactFile = undefined;
