@@ -18,3 +18,6 @@ org.eclipse.winery.frontends/app/tosca-management/src/assets/built-codeEdit15_1/
 !org.eclipse.winery.frontends/app/workflowmodeler/src/app/components/node
 !org.eclipse.winery.frontends/app/topologymodeler/src/app/node
 Dockerfile
+deploy
+docs
+graphics

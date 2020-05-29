@@ -7,6 +7,13 @@ services:
       WINERY_REPOSITORY_PROVIDER: "yaml"
       # use to clone a modeling repository on container start
       # WINERY_REPOSITORY_URL: "https://github.com/radon-h2020/radon-particles"
+      # use to set up multiple dependent modeling repositories 
+      # WINERY_DEPENDENT_REPOSITORIES: |
+      #  [ {
+      #    "name" : "RADON Particles",
+      #    "url" : "https://github.com/radon-h2020/radon-particles.git",
+      #    "branch" : "master"
+      #  } ]
     ports:
       - '8080:8080'
     # use to mount an existing modeling repository from your host machine
