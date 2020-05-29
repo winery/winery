@@ -128,7 +128,8 @@
                                            [(ngModel)]="newComponentNamespace"
                                            [isRequired]="true"
                                            [useStartNamespace]="useStartNamespace"
-                                           [toscaType]="toscaType">
+                                           [toscaType]="toscaType"
+                                           (input)="createUrlAndCheck()">
                 </winery-namespace-selector>
             </div>
         </div>

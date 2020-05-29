@@ -44,8 +44,8 @@ public abstract class AbstractRefinement extends AbstractSubstitution {
 
     protected ServiceTemplateId refinementServiceTemplateId;
 
-    private List<OTRefinementModel> patternRefinementModels;
-    private RefinementChooser refinementChooser;
+    private final List<OTRefinementModel> patternRefinementModels;
+    private final RefinementChooser refinementChooser;
 
     public AbstractRefinement(RefinementChooser refinementChooser, Class<? extends RefinementId> idClass, String versionAppendix) {
         this.refinementChooser = refinementChooser;
@@ -72,7 +72,7 @@ public abstract class AbstractRefinement extends AbstractSubstitution {
 
     public void refineTopology(TTopologyTemplate topology) {
         ToscaIsomorphismMatcher isomorphismMatcher = new ToscaIsomorphismMatcher();
-        int id[] = new int[1];
+        int[] id = new int[1];
 
         while (getLoopCondition(topology)) {
             ToscaGraph topologyGraph = ToscaTransformer.createTOSCAGraph(topology);
