@@ -142,12 +142,6 @@ Clone the repository:
    git clone https://github.com/eclipse/winery
    cd winery/deploy/compose
 
-**[Optional]** Build the Docker image based on your current working copy:
-  
-.. code-block::
-
-   docker-compose build
-
 **[Optional]** Adapt the Docker Compose configuration to your needs, e.g., to mount a local TOSCA model repository.
 
 Start Winery:
