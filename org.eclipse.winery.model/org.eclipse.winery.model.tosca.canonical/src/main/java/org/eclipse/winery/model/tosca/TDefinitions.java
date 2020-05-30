@@ -256,6 +256,14 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             .collect(Collectors.toList());
     }
 
+    @JsonIgnore
+    @NonNull
+    public List<OTComplianceRule> getComplianceRules() {
+        return getServiceTemplateOrNodeTypeOrNodeTypeImplementation().stream()
+            .filter(x -> x instanceof OTComplianceRule)
+            .map(OTComplianceRule.class::cast)
+            .collect(Collectors.toList());
+    }
 
     @JsonIgnore
     @NonNull
@@ -457,6 +465,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         private List<TPolicyTemplate> policyTemplate;
         private List<OTPatternRefinementModel> patternRefinementModels;
         private List<OTTestRefinementModel> testRefinementModels;
+        private List<TExtensibleElements> nonStandardElements;
         private String name;
 
         public Builder(String id, String target_namespace) {
@@ -501,6 +510,11 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
 
         public Builder setTestRefinementModels(List<OTTestRefinementModel> refinementModels) {
             this.testRefinementModels = refinementModels;
+            return self();
+        }
+        
+        public Builder setNonStandardElements(List<TExtensibleElements> nonStandardElements) {
+            this.nonStandardElements = nonStandardElements;
             return self();
         }
 
@@ -963,8 +977,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
                 policyTypes,
                 policyTemplate,
                 interfaceTypes,
-                patternRefinementModels,
-                testRefinementModels
+                nonStandardElements
             ).filter(Objects::nonNull)
                 .forEach(tmp::addAll);
             return tmp;

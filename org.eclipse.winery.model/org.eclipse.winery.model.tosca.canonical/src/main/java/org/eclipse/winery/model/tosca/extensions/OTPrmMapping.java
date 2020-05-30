@@ -43,6 +43,15 @@ public abstract class OTPrmMapping extends HasId implements Serializable {
     @NonNull
     private TEntityTemplate refinementNode;
 
+    @Deprecated
+    public OTPrmMapping() { }
+
+    public OTPrmMapping(Builder builder) {
+        super(builder);
+        this.detectorNode = builder.detectorNode;
+        this.refinementNode = builder.refinementNode;
+    }
+
     public TEntityTemplate getDetectorNode() {
         return detectorNode;
     }
@@ -62,5 +71,24 @@ public abstract class OTPrmMapping extends HasId implements Serializable {
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
+    }
+
+    public static abstract class Builder<T extends Builder<T>> extends HasId.Builder<T> {
+        private TEntityTemplate detectorNode;
+        private TEntityTemplate refinementNode;
+
+        public Builder(String id) {
+            super(id);
+        }
+
+        public Builder<T> setDetectorNode(TEntityTemplate detectorNode) {
+            this.detectorNode = detectorNode;
+            return self();
+        }
+
+        public Builder<T> setRefinementNode(TEntityTemplate refinementNode) {
+            this.refinementNode = refinementNode;
+            return self();
+        }
     }
 }

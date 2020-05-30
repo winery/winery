@@ -16,10 +16,11 @@ package org.eclipse.winery.model.tosca.xml;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -32,7 +33,14 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import org.eclipse.winery.model.tosca.xml.constants.TOSCA_xml_1_0;
 import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
+
+import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
+import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTTestRefinementModel;
+
 
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
@@ -205,18 +213,11 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
     }
 
     @NonNull
-    public List<TPatternRefinementModel> getPatternRefinementModels() {
+    public List<TExtensibleElements> getExtensionDefinitionsChildren() {
+        // Should currently be ComplianceRules, PatternRefinementModels and TestRefinementModels
         return getServiceTemplateOrNodeTypeOrNodeTypeImplementation().stream()
-            .filter(x -> x instanceof TPatternRefinementModel)
-            .map(TPatternRefinementModel.class::cast)
-            .collect(Collectors.toList());
-    }
-
-    @NonNull
-    public List<TTestRefinementModel> getTestRefinementModels() {
-        return getServiceTemplateOrNodeTypeOrNodeTypeImplementation().stream()
-            .filter(x -> x instanceof TTestRefinementModel)
-            .map(TTestRefinementModel.class::cast)
+            .filter(x -> Arrays.stream(TOSCA_xml_1_0.DEFINITIONS_ELEMENT_CLASSES)
+                .noneMatch(standardType -> standardType.isInstance(x)))
             .collect(Collectors.toList());
     }
 
@@ -391,8 +392,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         private List<TArtifactTemplate> artifactTemplates;
         private List<TPolicyType> policyTypes;
         private List<TPolicyTemplate> policyTemplate;
-        private List<TPatternRefinementModel> patternRefinementModels;
-        private List<TTestRefinementModel> testRefinementModels;
+        private List<TExtensibleElements> nonStandardElements;
         private String name;
 
         public Builder(String id, String target_namespace) {
@@ -445,13 +445,11 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return self();
         }
 
-        public T setPatternRefinementModels(List<TPatternRefinementModel> refinementModels) {
-            this.patternRefinementModels = refinementModels;
-            return self();
-        }
-
-        public T setTestRefinementModels(List<TTestRefinementModel> refinementModels) {
-            this.testRefinementModels = refinementModels;
+        public T addNonStandardElements(List<? extends TExtensibleElements> nonStandardElements) {
+            if (this.nonStandardElements == null) {
+                this.nonStandardElements = new ArrayList<>();
+            }
+            this.nonStandardElements.addAll(nonStandardElements);
             return self();
         }
 
@@ -829,18 +827,21 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
 
         public List<TExtensibleElements> getServiceTemplateOrNodeTypeOrNodeTypeImplementation() {
             List<TExtensibleElements> tmp = new ArrayList<>();
-
-            Optional.ofNullable(serviceTemplates).ifPresent(tmp::addAll);
-            Optional.ofNullable(nodeTypes).ifPresent(tmp::addAll);
-            Optional.ofNullable(nodeTypeImplementations).ifPresent(tmp::addAll);
-            Optional.ofNullable(relationshipTypes).ifPresent(tmp::addAll);
-            Optional.ofNullable(relationshipTypeImplementations).ifPresent(tmp::addAll);
-            Optional.ofNullable(requirementTypes).ifPresent(tmp::addAll);
-            Optional.ofNullable(capabilityTypes).ifPresent(tmp::addAll);
-            Optional.ofNullable(artifactTypes).ifPresent(tmp::addAll);
-            Optional.ofNullable(artifactTemplates).ifPresent(tmp::addAll);
-            Optional.ofNullable(policyTypes).ifPresent(tmp::addAll);
-            Optional.ofNullable(policyTemplate).ifPresent(tmp::addAll);
+            Stream.of(
+                serviceTemplates,
+                nodeTypes,
+                nodeTypeImplementations,
+                relationshipTypes,
+                relationshipTypeImplementations,
+                requirementTypes,
+                capabilityTypes,
+                artifactTypes,
+                artifactTemplates,
+                policyTypes,
+                policyTemplate,
+                nonStandardElements
+            ).filter(Objects::nonNull)
+                .forEach(tmp::addAll);
             return tmp;
         }
     }

@@ -32,6 +32,14 @@ public class OTTestRefinementModel extends OTRefinementModel {
     @XmlElement(name = "TestFragment")
     private TTopologyTemplate testFragment;
 
+    @Deprecated
+    public OTTestRefinementModel() { }
+
+    public OTTestRefinementModel(Builder builder) {
+        super(builder);
+        this.testFragment = builder.testFragment;
+    }
+
     @NonNull
     @JsonIgnore
     @XmlTransient
@@ -48,5 +56,26 @@ public class OTTestRefinementModel extends OTRefinementModel {
 
     public TTopologyTemplate getTestFragment() {
         return getRefinementTopology();
+    }
+
+    public static class Builder extends OTRefinementModel.Builder<Builder> {
+
+        private TTopologyTemplate testFragment;
+
+        public Builder() { }
+
+        public Builder setTestFragment(TTopologyTemplate testFragment) {
+            this.testFragment = testFragment;
+            return self();
+        }
+
+        public OTTestRefinementModel build() {
+            return new OTTestRefinementModel(this);
+        }
+
+        @Override
+        public Builder self() {
+            return this;
+        }
     }
 }

@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.extensions;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -23,6 +25,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.eclipse.winery.model.tosca.HasId;
 import org.eclipse.winery.model.tosca.HasName;
 import org.eclipse.winery.model.tosca.HasTargetNamespace;
+import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
@@ -49,6 +52,17 @@ public class OTComplianceRule extends HasId implements HasName, HasTargetNamespa
     @XmlElement(name = "Tags")
     protected TTags tags;
 
+    @Deprecated
+    public OTComplianceRule() { }
+
+    private OTComplianceRule(Builder builder) {
+        super(builder);
+        this.name = builder.name;
+        this.identifier = builder.identifier;
+        this.requiredStructure = builder.requiredStructure;
+        this.tags = builder.tags;
+    }
+    
     @Override
     public String getName() {
         return name;
@@ -107,5 +121,48 @@ public class OTComplianceRule extends HasId implements HasName, HasTargetNamespa
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
+    }
+
+    public static class Builder extends HasId.Builder<Builder> {
+
+        private String name;
+        private TTopologyTemplate identifier;
+        private TTopologyTemplate requiredStructure;
+        private TTags tags;
+
+        public Builder(String id) {
+            super(id);
+        }
+
+        public Builder setName(String name) {
+            this.name = name;
+            return self();
+        }
+
+        public Builder setIdentifier(TTopologyTemplate identifier) {
+            this.identifier = identifier;
+            return self();
+        }
+
+        public Builder setRequiredStructure(TTopologyTemplate requiredStructure) {
+            this.requiredStructure = requiredStructure;
+            return self();
+        }
+
+        public Builder addTags(List<TTag> tags) {
+            if (this.tags == null) {
+                this.tags = new TTags();
+            }
+            this.tags.getTag().addAll(tags);
+            return self();
+        }
+
+        public Builder self() {
+            return this;
+        }
+
+        public OTComplianceRule build() {
+            return new OTComplianceRule(this);
+        }
     }
 }

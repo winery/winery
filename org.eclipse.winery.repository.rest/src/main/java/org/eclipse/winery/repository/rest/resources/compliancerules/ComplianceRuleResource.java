@@ -47,13 +47,13 @@ public class ComplianceRuleResource extends AbstractComponentInstanceResourceCon
         return new OTComplianceRule();
     }
 
-    public OTComplianceRule getCompliancerule() {
+    public OTComplianceRule getComplianceRule() {
         return (OTComplianceRule) this.getElement();
     }
 
     @Override
     public String getName() {
-        String name = this.getCompliancerule().getName();
+        String name = this.getComplianceRule().getName();
         if (name == null) {
             // place default
             name = this.getId().getXmlId().getDecoded();
@@ -63,28 +63,28 @@ public class ComplianceRuleResource extends AbstractComponentInstanceResourceCon
 
     @Override
     public Response setName(String name) {
-        this.getCompliancerule().setName(name);
+        this.getComplianceRule().setName(name);
         return RestUtils.persist(this);
     }
 
     @Path("identifier/")
     public TopologyTemplateResource getIdentifier() {
-        return new TopologyTemplateResource(this, this.getCompliancerule().getIdentifier(), IDENTIFIER);
+        return new TopologyTemplateResource(this, this.getComplianceRule().getIdentifier(), IDENTIFIER);
     }
 
     @Path("requiredstructure/")
     public TopologyTemplateResource getRequiredStructure() {
-        return new TopologyTemplateResource(this, this.getCompliancerule().getRequiredStructure(), REQUIRED_STRUCTURE);
+        return new TopologyTemplateResource(this, this.getComplianceRule().getRequiredStructure(), REQUIRED_STRUCTURE);
     }
 
     @Override
     public void setTopology(TTopologyTemplate topologyTemplate, String type) {
         switch (type) {
             case IDENTIFIER:
-                this.getCompliancerule().setIdentifier(topologyTemplate);
+                this.getComplianceRule().setIdentifier(topologyTemplate);
                 break;
             case REQUIRED_STRUCTURE:
-                this.getCompliancerule().setRequiredStructure(topologyTemplate);
+                this.getComplianceRule().setRequiredStructure(topologyTemplate);
                 break;
             default:
                 break;

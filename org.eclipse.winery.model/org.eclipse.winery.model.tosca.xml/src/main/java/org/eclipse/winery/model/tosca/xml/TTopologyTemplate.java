@@ -205,13 +205,13 @@ public class TTopologyTemplate extends TExtensibleElements {
             return this;
         }
 
-        public Builder addRelationshipTemplate(TRelationshipTemplate relationshipTemplates) {
-            if (this.relationshipTemplates == null) {
+        public Builder addRelationshipTemplate(TRelationshipTemplate relationshipTemplate) {
+            if (relationshipTemplate == null) {
                 return this;
             }
 
             List<TRelationshipTemplate> tmp = new ArrayList<>();
-            tmp.add(relationshipTemplates);
+            tmp.add(relationshipTemplate);
             return addRelationshipTemplates(tmp);
         }
 

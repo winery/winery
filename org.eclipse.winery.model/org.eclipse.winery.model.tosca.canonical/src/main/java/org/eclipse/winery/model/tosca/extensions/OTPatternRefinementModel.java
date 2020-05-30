@@ -43,6 +43,16 @@ public class OTPatternRefinementModel extends OTRefinementModel {
     @XmlElement(name = "StayMapping")
     private List<OTStayMapping> stayMappings;
 
+    @Deprecated
+    public OTPatternRefinementModel() { }
+
+    public OTPatternRefinementModel(Builder builder) {
+        super(builder);
+        this.refinementStructure = builder.refinementStructure;
+        this.attributeMappings = builder.attributeMappings;
+        this.stayMappings = builder.stayMappings;
+    }
+
     @NonNull
     @JsonIgnore
     @XmlTransient
@@ -77,5 +87,38 @@ public class OTPatternRefinementModel extends OTRefinementModel {
 
     public void setStayMappings(List<OTStayMapping> stayMappings) {
         this.stayMappings = stayMappings;
+    }
+
+    public static class Builder extends OTRefinementModel.Builder<Builder> {
+
+        private TTopologyTemplate refinementStructure;
+        private List<OTAttributeMapping> attributeMappings;
+        private List<OTStayMapping> stayMappings;
+
+        public Builder() { }
+
+        public Builder setRefinementStructure(TTopologyTemplate refinementStructure) {
+            this.refinementStructure = refinementStructure;
+            return self();
+        }
+
+        public Builder setAttributeMappings(List<OTAttributeMapping> attributeMappings) {
+            this.attributeMappings = attributeMappings;
+            return self();
+        }
+
+        public Builder setStayMappings(List<OTStayMapping> stayMappings) {
+            this.stayMappings = stayMappings;
+            return self();
+        }
+
+        public OTPatternRefinementModel build() {
+            return new OTPatternRefinementModel(this);
+        }
+
+        @Override
+        public Builder self() {
+            return null;
+        }
     }
 }

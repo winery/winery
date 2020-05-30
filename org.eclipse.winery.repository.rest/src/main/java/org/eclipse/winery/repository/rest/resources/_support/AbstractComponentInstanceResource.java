@@ -581,7 +581,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
             tags = ((OTComplianceRule) this.element).getTags();
             if (tags == null) {
                 tags = new TTags();
-                ((ComplianceRuleResource) this).getCompliancerule().setTags(tags);
+                ((ComplianceRuleResource) this).getComplianceRule().setTags(tags);
             }
         } else {
             throw new IllegalStateException("tags was called on a resource not supporting tags");

@@ -179,7 +179,8 @@ public class Util {
             // quick hack to handle imports, which reside in their own package
             pkg = pkg + "imports.";
         }
-        if (idClassName.contains("Refinement")) {
+        if (idClassName.contains("Refinement")
+            || idClassName.contains("Compliance")) {
             pkg = pkg.replace("definitions.", "extensions.");
         }
         String fullClassName = pkg + idClassName;

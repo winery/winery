@@ -24,7 +24,7 @@ import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "otRelationMapping")
-public class OTRelationMapping extends TPrmMapping {
+public class OTRelationMapping extends OTPrmMapping {
 
     @XmlAttribute(name = "relationType")
     private QName relationType;
@@ -34,6 +34,16 @@ public class OTRelationMapping extends TPrmMapping {
 
     @XmlAttribute(name = "validSourceOrTarget")
     private QName validSourceOrTarget;
+
+    @Deprecated
+    public OTRelationMapping() { }
+
+    public OTRelationMapping(Builder builder) {
+        super(builder);
+        this.relationType = builder.relationType;
+        this.direction = builder.direction;
+        this.validSourceOrTarget = builder.validSourceOrTarget;
+    }
 
     public QName getRelationType() {
         return relationType;
@@ -68,5 +78,40 @@ public class OTRelationMapping extends TPrmMapping {
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
+    }
+
+    public static class Builder extends OTPrmMapping.Builder<Builder> {
+
+        private QName relationType;
+        private OTRelationDirection direction;
+        private QName validSourceOrTarget;
+
+        public Builder(String id) {
+            super(id);
+        }
+
+        public Builder setRelationType(QName relationType) {
+            this.relationType = relationType;
+            return self();
+        }
+
+        public Builder setDirection(OTRelationDirection direction) {
+            this.direction = direction;
+            return self();
+        }
+
+        public Builder setValidSourceOrTarget(QName validSourceOrTarget) {
+            this.validSourceOrTarget = validSourceOrTarget;
+            return self();
+        }
+
+        public OTRelationMapping build() {
+            return new OTRelationMapping(this);
+        }
+
+        @Override
+        public Builder self() {
+            return this;
+        }
     }
 }

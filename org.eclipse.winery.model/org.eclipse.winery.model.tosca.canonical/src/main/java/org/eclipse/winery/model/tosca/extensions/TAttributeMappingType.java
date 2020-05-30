@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.model.tosca.xml;
+package org.eclipse.winery.model.tosca.extensions;
 
 import java.io.Serializable;
 
@@ -21,23 +21,23 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-public enum OTPrmModelElementType implements Serializable {
+public enum TAttributeMappingType implements Serializable {
 
-    @XmlEnumValue("node")
-    NODE("node"),
-    @XmlEnumValue("relation")
-    RELATION("relation");
+    @XmlEnumValue("all")
+    ALL("all"),
+    @XmlEnumValue("selective")
+    SELECTIVE("selective");
 
     private final String value;
 
-    OTPrmModelElementType(String v) {
-        value = v;
+    TAttributeMappingType(String value) {
+        this.value = value;
     }
 
     @NonNull
-    public static OTPrmModelElementType fromValue(String v) {
-        for (OTPrmModelElementType c : OTPrmModelElementType.values()) {
-            if (c.value.equals(v)) {
+    public static TAttributeMappingType fromValue(String v) {
+        for (TAttributeMappingType c : TAttributeMappingType.values()) {
+            if (c.value.equalsIgnoreCase(v)) {
                 return c;
             }
         }
@@ -46,6 +46,6 @@ public enum OTPrmModelElementType implements Serializable {
 
     @Nullable
     public String value() {
-        return value;
+        return this.value;
     }
 }

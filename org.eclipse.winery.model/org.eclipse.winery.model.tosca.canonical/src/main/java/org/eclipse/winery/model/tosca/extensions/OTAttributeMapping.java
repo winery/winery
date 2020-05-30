@@ -1,5 +1,9 @@
 /*******************************************************************************
+<<<<<<< HEAD:org.eclipse.winery.model/org.eclipse.winery.model.tosca.canonical/src/main/java/org/eclipse/winery/model/tosca/extensions/OTAttributeMapping.java
  * Copyright (c) 2020 Contributors to the Eclipse Foundation
+=======
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
+>>>>>>> d1751e010... Add XML Roundtrip test accessing the test-repository:org.eclipse.winery.model/org.eclipse.winery.model.tosca.canonical/src/main/java/org/eclipse/winery/model/tosca/extensions/AttributeMapping.java
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -38,6 +42,16 @@ public class OTAttributeMapping extends OTPrmMapping {
     @Nullable
     private String refinementProperty;
 
+    @Deprecated
+    public OTAttributeMapping() { }
+
+    public OTAttributeMapping(Builder builder) {
+        super(builder);
+        this.type = builder.type;
+        this.detectorProperty = builder.detectorProperty;
+        this.refinementProperty = builder.refinementProperty;
+    }
+    
     public OTAttributeMappingType getType() {
         return type;
     }
@@ -71,5 +85,40 @@ public class OTAttributeMapping extends OTPrmMapping {
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
+    }
+
+    public static class Builder extends OTPrmMapping.Builder<Builder> {
+
+        private OTAttributeMappingType type;
+        private String detectorProperty;
+        private String refinementProperty;
+
+        public Builder(String id) {
+            super(id);
+        }
+
+        public Builder setType(OTAttributeMappingType type) {
+            this.type = type;
+            return self();
+        }
+
+        public Builder setDetectorProperty(String detectorProperty) {
+            this.detectorProperty = detectorProperty;
+            return self();
+        }
+
+        public Builder setRefinementProperty(String refinementProperty) {
+            this.refinementProperty = refinementProperty;
+            return self();
+        }
+
+        public OTAttributeMapping build() {
+            return new OTAttributeMapping(this);
+        }
+
+        @Override
+        public Builder self() {
+            return this;
+        }
     }
 }

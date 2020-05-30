@@ -60,7 +60,6 @@ import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.ids.extensions.TestRefinementModelId;
 import org.eclipse.winery.model.ids.extensions.TopologyFragmentRefinementModelId;
-import org.eclipse.winery.model.ids.extensions.TestRefinementModelId;
 import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.model.ids.elements.ToscaElementId;
 import org.eclipse.winery.model.tosca.HasInheritance;

@@ -45,6 +45,18 @@ public abstract class OTRefinementModel extends TExtensibleElements implements H
     @XmlElement(name = "RelationMapping")
     protected List<OTRelationMapping> relationMappings;
 
+    @Deprecated
+    public OTRefinementModel() { }
+
+    @SuppressWarnings("unchecked")
+    public OTRefinementModel(Builder builder) {
+        super(builder);
+        this.name = builder.name;
+        this.targetNamespace = builder.targetNamespace;
+        this.detector = builder.detector;
+        this.relationMappings = builder.relationMappings;
+    }
+
     @Override
     public String getName() {
         return name;
@@ -86,16 +98,46 @@ public abstract class OTRefinementModel extends TExtensibleElements implements H
 
     public abstract void setRefinementTopology(TTopologyTemplate topology);
 
-    @Override
-    public void accept(Visitor visitor) {
-        visitor.visit(this);
-    }
-
     public List<OTRelationMapping> getRelationMappings() {
         return relationMappings;
     }
 
     public void setRelationMappings(List<OTRelationMapping> relationMappings) {
         this.relationMappings = relationMappings;
+    }
+
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
+
+    public static abstract class Builder<T extends Builder<T>> extends TExtensibleElements.Builder<T> {
+
+        private String name;
+        private String targetNamespace;
+        private TTopologyTemplate detector;
+        private List<OTRelationMapping> relationMappings;
+
+        public Builder() { }
+
+        public T setName(String name) {
+            this.name = name;
+            return self();
+        }
+
+        public T setTargetNamespace(String targetNamespace) {
+            this.targetNamespace = targetNamespace;
+            return self();
+        }
+
+        public T setDetector(TTopologyTemplate detector) {
+            this.detector = detector;
+            return self();
+        }
+
+        public T setRelationMappings(List<OTRelationMapping> relationMappings) {
+            this.relationMappings = relationMappings;
+            return self();
+        }
     }
 }

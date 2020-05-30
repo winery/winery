@@ -48,6 +48,17 @@ public class OTTopologyFragmentRefinementModel extends OTRefinementModel {
     @XmlElement(name = "DeploymentArtifactMapping")
     protected List<OTDeploymentArtifactMapping> deploymentArtifactMappings;
 
+    @Deprecated
+    public OTTopologyFragmentRefinementModel() { }
+
+    public OTTopologyFragmentRefinementModel(Builder builder) {
+        super(builder);
+        this.refinementStructure = builder.refinementStructure;
+        this.attributeMappings = builder.attributeMappings;
+        this.stayMappings = builder.stayMappings;
+        this.deploymentArtifactMappings = builder.deploymentArtifactMappings;
+    }
+
     @NonNull
     @JsonIgnore
     @XmlTransient
@@ -91,5 +102,46 @@ public class OTTopologyFragmentRefinementModel extends OTRefinementModel {
 
     public void setDeploymentArtifactMappings(List<OTDeploymentArtifactMapping> deploymentArtifactMappings) {
         this.deploymentArtifactMappings = deploymentArtifactMappings;
+    }
+
+    public static class Builder extends OTRefinementModel.Builder<Builder> {
+
+        private TTopologyTemplate refinementStructure;
+        private List<OTAttributeMapping> attributeMappings;
+        private List<OTStayMapping> stayMappings;
+        private List<OTDeploymentArtifactMapping> deploymentArtifactMappings;
+
+        public Builder() {
+            super();
+        }
+
+        public Builder setRefinementStructure(TTopologyTemplate refinementStructure) {
+            this.refinementStructure = refinementStructure;
+            return self();
+        }
+
+        public Builder setAttributeMappings(List<OTAttributeMapping> attributeMappings) {
+            this.attributeMappings = attributeMappings;
+            return self();
+        }
+
+        public Builder setStayMappings(List<OTStayMapping> stayMappings) {
+            this.stayMappings = stayMappings;
+            return self();
+        }
+        
+        public Builder setDeploymentArtifactMappings(List<OTDeploymentArtifactMapping> deploymentArtifactMappings) {
+            this.deploymentArtifactMappings = deploymentArtifactMappings;
+            return self();
+        }
+
+        public OTTopologyFragmentRefinementModel build() {
+            return new OTTopologyFragmentRefinementModel(this);
+        }
+
+        @Override
+        public Builder self() {
+            return this;
+        }
     }
 }

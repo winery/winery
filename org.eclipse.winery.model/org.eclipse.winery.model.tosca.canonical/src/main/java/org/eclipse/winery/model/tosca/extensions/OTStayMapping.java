@@ -28,6 +28,14 @@ public class OTStayMapping extends OTPrmMapping {
     @XmlAttribute(name = "modelElementType")
     private OTPrmModelElementType modelElementType;
 
+    @Deprecated
+    public OTStayMapping() { }
+
+    public OTStayMapping(Builder builder) {
+        super(builder);
+        this.modelElementType = builder.modelElementType;
+    }
+
     @Override
     public boolean equals(Object obj) {
         return obj instanceof OTStayMapping
@@ -45,5 +53,28 @@ public class OTStayMapping extends OTPrmMapping {
 
     public void setModelElementType(OTPrmModelElementType modelElementType) {
         this.modelElementType = modelElementType;
+    }
+
+    public static class Builder extends OTPrmMapping.Builder<Builder> {
+
+        private OTPrmModelElementType modelElementType;
+
+        public Builder(String id) {
+            super(id);
+        }
+
+        public Builder setModelElementType(OTPrmModelElementType modelElementType) {
+            this.modelElementType = modelElementType;
+            return self();
+        }
+
+        public OTStayMapping build() {
+            return new OTStayMapping(this);
+        }
+
+        @Override
+        public Builder self() {
+            return this;
+        }
     }
 }
