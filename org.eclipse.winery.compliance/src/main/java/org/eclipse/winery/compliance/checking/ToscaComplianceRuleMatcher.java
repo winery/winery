@@ -15,6 +15,7 @@ package org.eclipse.winery.compliance.checking;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
@@ -62,21 +63,34 @@ public class ToscaComplianceRuleMatcher implements IToscaMatcher {
     }
 
     public boolean isPropertiesCompatible(ToscaNode left, ToscaNode right) {
-        if (left.getTemplate().getProperties() != null) {
-            if (right.getTemplate().getProperties() != null) {
-                for (Entry<String, String> leftEntry : ModelUtilities.getPropertiesKV(left.getTemplate()).entrySet()) {
-                    if (!isPropertyCompatible(leftEntry, ModelUtilities.getPropertiesKV(right.getTemplate()))) {
-                        return false;
-                    }
-                }
-            } else {
+        if (left.getTemplate().getProperties() == null
+            && right.getTemplate().getProperties() == null) {
+            return true;
+        }
+        if (left.getTemplate().getProperties() == null
+            ^ right.getTemplate().getProperties() == null) {
+            return false;
+        }
+        Map<String, String> leftMap = ModelUtilities.getPropertiesKV(left.getTemplate());
+        Map<String, String> rightMap = ModelUtilities.getPropertiesKV(right.getTemplate());
+        if (leftMap == null && rightMap == null) {
+            // properties are not of KV type
+            // FIXME this needs to be handled appropriately
+            return false;
+        }
+        if (leftMap == null ^ rightMap == null) {
+            // one is KV, the other is not!
+            return false;
+        }
+        for (Entry<String, String> leftEntry : leftMap.entrySet()) {
+            if (!isPropertyCompatible(leftEntry, rightMap)) {
                 return false;
             }
         }
         return true;
     }
 
-    public boolean isPropertyCompatible(Entry<String, String> leftEntry, @ADR(12) LinkedHashMap<String, String> rightProperties) {
+    public boolean isPropertyCompatible(Entry<String, String> leftEntry, @ADR(12) Map<String, String> rightProperties) {
         return rightProperties.containsKey(leftEntry.getKey()) &&
             rightProperties.get(leftEntry.getKey()) != null &&
             isPropertyValueCompatible(leftEntry.getValue(), rightProperties.get(leftEntry.getKey()));

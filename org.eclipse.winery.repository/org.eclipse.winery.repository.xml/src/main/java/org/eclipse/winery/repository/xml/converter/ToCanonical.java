@@ -21,6 +21,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.eclipse.winery.model.tosca.HasId;
 import org.eclipse.winery.model.tosca.RelationshipSourceOrTarget;
 import org.eclipse.winery.model.tosca.TAppliesTo;
 import org.eclipse.winery.model.tosca.TArtifact;
@@ -423,13 +424,20 @@ public class ToCanonical {
             builder.setDerivedFrom(derived);
         }
         if (xml.getPropertiesDefinition() != null) {
-            TEntityType.XmlPropertiesDefinition propertiesDefinition = new TEntityType.XmlPropertiesDefinition();
-            propertiesDefinition.setElement(xml.getPropertiesDefinition().getElement());
-            propertiesDefinition.setType(xml.getPropertiesDefinition().getType());
-            builder.setPropertiesDefinition(propertiesDefinition);
+            if (xml.getPropertiesDefinition().getElement() != null) {
+                builder.setProperties(new TEntityType.XmlElementDefinition(xml.getPropertiesDefinition().getElement()));
+            } else if (xml.getPropertiesDefinition().getType() != null) {
+                builder.setProperties(new TEntityType.XmlTypeDefinition(xml.getPropertiesDefinition().getType()));
+            } else {
+                throw new IllegalStateException("If a PropertiesDefinition is given, either Element or Type must be specified!");
+            }
         }
         if (xml.getAny().stream().anyMatch(anyElement -> anyElement instanceof WinerysPropertiesDefinition)) {
-
+            builder.setProperties(xml.getAny().stream()
+                .filter(el -> el instanceof WinerysPropertiesDefinition)
+                .map(WinerysPropertiesDefinition.class::cast)
+                // get without check should be safe here, because at least one element is a WinerysPropertiesDefinition
+                .findFirst().get());
         }
         builder.setAbstract(xml.getAbstract() == TBoolean.YES);
         builder.setFinal(xml.getFinal() == TBoolean.YES);
@@ -692,7 +700,7 @@ public class ToCanonical {
     }
 
     private TArtifactTemplate convert(org.eclipse.winery.model.tosca.xml.TArtifactTemplate xml) {
-        TArtifactTemplate.Builder builder = new TArtifactTemplate.Builder(xml.getName(), xml.getType());
+        TArtifactTemplate.Builder builder = new TArtifactTemplate.Builder(xml.getId(), xml.getType());
         builder.setName(xml.getName());
         if (xml.getArtifactReferences() != null) {
             xml.getArtifactReferences().getArtifactReference().stream()
@@ -916,7 +924,7 @@ public class ToCanonical {
         TPropertyMapping canonical = new TPropertyMapping();
         canonical.setServiceTemplatePropertyRef(xml.getServiceTemplatePropertyRef());
         canonical.setTargetPropertyRef(xml.getTargetPropertyRef());
-        canonical.setTargetObjectRef(xml.getTargetObjectRef());
+        canonical.setTargetObjectRef(convert(xml.getTargetObjectRef()));
         return canonical;
     }
 
@@ -969,6 +977,7 @@ public class ToCanonical {
     private TRelationshipTemplate convert(org.eclipse.winery.model.tosca.xml.TRelationshipTemplate xml) {
         TRelationshipTemplate.Builder builder = new TRelationshipTemplate.Builder(xml.getId(), xml.getType(),
             convert(xml.getSourceElement()), convert(xml.getTargetElement()));
+        builder.setName(xml.getName());
         if (xml.getRelationshipConstraints() != null) {
             TRelationshipTemplate.RelationshipConstraints constraints = new TRelationshipTemplate.RelationshipConstraints();
             constraints.getRelationshipConstraint().addAll(xml.getRelationshipConstraints().getRelationshipConstraint().stream()
@@ -1013,6 +1022,42 @@ public class ToCanonical {
         TDefinitions.Types result = new TDefinitions.Types();
         result.getAny().addAll(xml.getAny());
         return result;
+    }
+
+    private HasId convert(org.eclipse.winery.model.tosca.xml.HasId xml) {
+        if (xml instanceof org.eclipse.winery.model.tosca.xml.TDefinitions) {
+            // what in the ever loving fuck am I supposed to do now??
+            // this case should never ever come true
+            throw new IllegalStateException("Attempted to convert a TDefinitions instance through HasId overload.");
+        }
+        if (xml instanceof org.eclipse.winery.model.tosca.xml.TComplianceRule) {
+            return convert((org.eclipse.winery.model.tosca.xml.TComplianceRule) xml);
+        }
+        if (xml instanceof org.eclipse.winery.model.tosca.xml.AttributeMapping) {
+            return convert((org.eclipse.winery.model.tosca.xml.AttributeMapping) xml);
+        }
+        if (xml instanceof org.eclipse.winery.model.tosca.xml.TRelationMapping) {
+            return convert((org.eclipse.winery.model.tosca.xml.TRelationMapping) xml);
+        }
+        if (xml instanceof org.eclipse.winery.model.tosca.xml.TStayMapping) {
+            return convert((org.eclipse.winery.model.tosca.xml.TStayMapping) xml);
+        }
+        if (xml instanceof org.eclipse.winery.model.tosca.xml.RelationshipSourceOrTarget) {
+            return convert((org.eclipse.winery.model.tosca.xml.RelationshipSourceOrTarget) xml);
+        }
+        if (xml instanceof org.eclipse.winery.model.tosca.xml.TArtifact) {
+            return convert((org.eclipse.winery.model.tosca.xml.TArtifact)xml);
+        }
+        if (xml instanceof org.eclipse.winery.model.tosca.xml.TArtifactTemplate) {
+            return convert((org.eclipse.winery.model.tosca.xml.TArtifactTemplate)xml);
+        }
+        if (xml instanceof org.eclipse.winery.model.tosca.xml.TPolicyTemplate) {
+            return convert((org.eclipse.winery.model.tosca.xml.TPolicyTemplate)xml);
+        }
+        if (xml instanceof org.eclipse.winery.model.tosca.xml.TRelationshipTemplate) {
+            return convert((org.eclipse.winery.model.tosca.xml.TRelationshipTemplate)xml);
+        }
+        throw new IllegalStateException("Attempted to convert unknown element deriving from HasId with type " + xml.getClass().getName());
     }
 
     private <R, I> List<R> convertList(@Nullable List<I> xml, Function<I, R> convert) {

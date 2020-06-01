@@ -16,7 +16,6 @@ package org.eclipse.winery.model.tosca.xml;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -72,6 +71,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
     protected TEntityTemplate.PropertyConstraints propertyConstraints;
     
     @XmlAttribute(name = "type", required = true)
+    @NonNull
     protected QName type;
 
     public TEntityTemplate() {
@@ -121,15 +121,17 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         this.propertyConstraints = value;
     }
 
+    @NonNull
     public QName getType() {
         return type;
     }
 
-    public void setType(QName value) {
+    public void setType(@NonNull QName value) {
         this.type = value;
     }
 
     @Override
+    @NonNull
     public QName getTypeAsQName() {
         return this.getType();
     }

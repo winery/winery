@@ -301,35 +301,29 @@ public class FromCanonical {
             node.setTargetNamespace(id.substring(0, id.lastIndexOf(".")));
         }
 
-        return builder
+        builder
             .setDerivedFrom(convert(node.getDerivedFrom(), clazz))
             .setMetadata(convert(node.getTags()))
             .addMetadata("targetNamespace", node.getTargetNamespace())
             .addMetadata("abstract", node.getAbstract() ? "true" : "false")
             .addMetadata("final", node.getFinal() ? "true" : "false")
-            .setProperties(convert(node, node.getProperties()))
             .setAttributes(convert(node, node.getAttributeDefinitions()))
             .setDescription(convertDocumentation(node.getDocumentation()));
+        
+        if (node.getProperties() != null) {
+            if (node.getProperties() instanceof TEntityType.YamlPropertiesDefinition) {
+                builder.setProperties(convertYamlProperties((TEntityType.YamlPropertiesDefinition)node.getProperties()));
+            } else if (node.getProperties() instanceof WinerysPropertiesDefinition) {
+                builder.setProperties(convertWinerysProperties((WinerysPropertiesDefinition)node.getProperties()));
+            } else {
+                LOGGER.warn("Attempting to convert XML-based properties definition on type {} to YAML definitions", node.getQName());
+            }
+        }
+
+        return builder;
     }
 
-    // FIXME properties are completely and utterly ignored!
-    public Map<String, TPropertyDefinition> convert(TEntityType type, List<TEntityType.YamlPropertyDefinition> nodes) {
-        // TODO convert properties beside simple winery properties
-        
-        WinerysPropertiesDefinition properties = type.getWinerysPropertiesDefinition();
-        if (Objects.isNull(properties) ||
-            Objects.isNull(properties.getPropertyDefinitionKVList()) ||
-            properties.getPropertyDefinitionKVList().isEmpty()) {
-            // assume we have a YamlPropertyDefinition
-            if (type.getProperties() == null) {
-                return null;
-            }
-            return type.getProperties().stream()
-                .collect(Collectors.toMap(
-                    TEntityType.YamlPropertyDefinition::getName,
-                    this::convert
-                ));
-        }
+    private Map<String, TPropertyDefinition> convertWinerysProperties(WinerysPropertiesDefinition properties) {
         return properties.getPropertyDefinitionKVList().stream()
             .collect(Collectors.toMap(
                 PropertyDefinitionKV::getKey,
@@ -339,6 +333,14 @@ public class FromCanonical {
                     .setDescription(entry.getDescription())
                     .addConstraints(convert(entry.getConstraints()))
                     .build()
+            ));
+    }
+
+    private Map<String, TPropertyDefinition> convertYamlProperties(TEntityType.YamlPropertiesDefinition properties) {
+        return properties.getProperties().stream()
+            .collect(Collectors.toMap(
+                TEntityType.YamlPropertyDefinition::getName,
+                this::convert
             ));
     }
     

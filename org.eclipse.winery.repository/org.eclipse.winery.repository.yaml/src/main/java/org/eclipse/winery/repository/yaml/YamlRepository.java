@@ -649,12 +649,11 @@ public class YamlRepository extends AbstractFileBasedRepository {
     }
 
     @Override
-    public void putDefinition(DefinitionsChildId id, TDefinitions content) throws IOException {
-        RepositoryFileReference existing = BackendUtils.getRefOfDefinitions(id);
+    public void putDefinition(RepositoryFileReference ref, TDefinitions content) throws IOException {
         try {
-            TServiceTemplate yaml = convertToYamlModel(existing, content);
+            TServiceTemplate yaml = convertToYamlModel(ref, content);
             YamlWriter writer = new YamlWriter();
-            writer.write(yaml, ref2AbsolutePath(existing));
+            writer.write(yaml, ref2AbsolutePath(ref));
         } catch (Exception e) {
             LOGGER.error("Error converting service template. Reason: {}", e.getMessage(), e);
         }

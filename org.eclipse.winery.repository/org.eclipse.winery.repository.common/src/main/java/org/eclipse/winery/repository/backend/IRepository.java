@@ -203,7 +203,11 @@ public interface IRepository extends IWineryRepositoryCommon {
      * @param content The content to be put into the repository at the given id.
      * @throws IOException if something goes wrong
      */
-    void putDefinition(DefinitionsChildId id, TDefinitions content) throws IOException;
+    default void putDefinition(DefinitionsChildId id, TDefinitions content) throws IOException {
+        putDefinition(BackendUtils.getRefOfDefinitions(id), content);
+    }
+
+    void putDefinition(RepositoryFileReference ref, TDefinitions content) throws IOException;
 
     /**
      * Creates an opened inputStream of the contents referenced by ref. The stream has to be closed by the caller.
@@ -1304,7 +1308,7 @@ public interface IRepository extends IWineryRepositoryCommon {
         // the client side has to use the REST method
         TDefinitions definitions = BackendUtils.createWrapperDefinitions(id, this);
         definitions.setElement(element);
-        BackendUtils.persist(id, definitions, this);
+        BackendUtils.persist(this, id, definitions);
     }
 
     default int getReferenceCount(ArtifactTemplateId id) {

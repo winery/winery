@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,17 +11,27 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-package org.eclipse.winery.repository.rest.resources._support;
 
-import org.eclipse.winery.repository.common.RepositoryFileReference;
-import org.eclipse.winery.model.tosca.TDefinitions;
+package org.eclipse.winery.repository.xml.export;
 
-/**
- * Indicates that BackendUtils.persist() can be used
- */
-public interface IPersistable {
+import org.junit.jupiter.api.Test;
 
-    TDefinitions getDefinitions();
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-    RepositoryFileReference getRepositoryFileReference();
+public class XmlModelJAXBSupportTests {
+
+    @Test
+    public void XmlModelMarshaller() {
+        assertNotNull(XmlModelJAXBSupport.createMarshaller(true));
+    }
+
+    @Test
+    public void XmlModelUnmarshaller() {
+        assertNotNull(XmlModelJAXBSupport.createUnmarshaller());
+    }
+
+    @Test
+    public void XmlModelContext() {
+        assertNotNull(XmlModelJAXBSupport.getContext());
+    }
 }

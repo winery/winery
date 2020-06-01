@@ -143,80 +143,13 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         @JsonSubTypes.Type(value = YamlProperties.class, name = "YAML")
     })
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @XmlType(name = "")
+    @XmlSeeAlso({
+        XmlProperties.class,
+        WineryKVProperties.class,
+        YamlProperties.class
+    })
     public static abstract class Properties implements Serializable {
-//        @ADR(12)
-//        public void setKVProperties(String namespace, String elementName, Map<String, Object> properties) {
-//            Objects.requireNonNull(properties);
-//            
-//            // properties are a complex map, so we must be reading a YAML assignment
-//            if (properties.values().stream().anyMatch(v -> !(v instanceof String))) {
-//                this.any = properties;
-//                return;
-//            }
-//            
-//            if (any == null) {
-//                // special case if JSON is parsed without updating an existing element
-//                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-//                DocumentBuilder db;
-//                try {
-//                    db = dbf.newDocumentBuilder();
-//                } catch (ParserConfigurationException e) {
-//                    LOGGER.debug(e.getMessage(), e);
-//                    throw new IllegalStateException("Could not instantiate document builder", e);
-//                }
-//                Document doc = db.newDocument();
-//
-//                Element root = doc.createElementNS(namespace, elementName);
-//                doc.appendChild(root);
-//
-//                // No wpd - so this is not possible:
-//                // we produce the serialization in the same order the XSD would be generated (because of the usage of xsd:sequence)
-//                // for (PropertyDefinitionKV prop : wpd.getPropertyDefinitionKVList()) {
-//
-//                for (String key : properties.keySet()) {
-//                    Element element = doc.createElementNS(namespace, key);
-//                    root.appendChild(element);
-//                    
-//                    Object value = properties.get(key);
-//                    if (value == null) { continue; }
-//                    if (value instanceof String) {
-//                        Text text = doc.createTextNode((String)value);
-//                        element.appendChild(text);
-//                    } else {
-//                        // FIXME value is complex type
-//                    }
-//                }
-//
-//                this.setAny(doc.getDocumentElement());
-//            } else if (any instanceof Element){
-//                // TODO: this implementation does not support adding a new property.
-//                //  However, I don't understand it yet so we need to fix it in future.
-//
-//                Element el = (Element) any;
-//                // straight-forward copy over to existing property structure
-//                NodeList childNodes = el.getChildNodes();
-//
-//                for (int i = 0; i < childNodes.getLength(); i++) {
-//                    Node item = childNodes.item(i);
-//                    if (item instanceof Element) {
-//                        final Element element = (Element) item;
-//                        final String key = element.getLocalName();
-//                        final Object value = properties.get(key);
-//                        if (value instanceof String) {
-//                            element.setTextContent((String)value);
-//                        } else {
-//                            // FIXME Value is complex type
-//                        }
-//                    } else if (item instanceof Text || item instanceof Comment) {
-//                        // these kinds of nodes are OK
-//                    } else {
-//                        LOGGER.warn("Trying to read k/v property from a template which does not follow the k/v scheme.");
-//                    }
-//                }
-//            } else {
-//                LOGGER.warn("Failed to set properties on stored yaml properties??");
-//            }
-//        }
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)

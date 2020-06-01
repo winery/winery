@@ -53,7 +53,8 @@ public class DataTypeResource extends AbstractComponentInstanceResourceWithNameD
     @Path("properties/")
     @Produces(MediaType.APPLICATION_JSON) 
     public List<TEntityType.YamlPropertyDefinition> properties() {
-        return getDataType().getProperties();
+        // this cast SHOULD be safe, since DataTypes are a YAML-only feature
+        return ((TEntityType.YamlPropertiesDefinition)getDataType().getProperties()).getProperties();
     }
     
     @Override

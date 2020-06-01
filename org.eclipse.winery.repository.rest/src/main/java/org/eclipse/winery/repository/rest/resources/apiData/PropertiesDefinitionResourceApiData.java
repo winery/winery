@@ -17,10 +17,12 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 
+import org.slf4j.LoggerFactory;
+
 // FIXME unify properties exposition on the API
 public class PropertiesDefinitionResourceApiData {
 
-    public TEntityType.XmlPropertiesDefinition propertiesDefinition;
+    public TEntityType.PropertiesDefinition propertiesDefinition;
     public WinerysPropertiesDefinition winerysPropertiesDefinition;
     public PropertiesDefinitionEnum selectedValue;
 
@@ -28,20 +30,25 @@ public class PropertiesDefinitionResourceApiData {
     }
 
     public PropertiesDefinitionResourceApiData(
-        TEntityType.XmlPropertiesDefinition propertiesDefinition,
+        TEntityType.PropertiesDefinition propertiesDefinition,
         WinerysPropertiesDefinition winerysPropertiesDefinition
     ) {
         this.propertiesDefinition = propertiesDefinition;
         this.winerysPropertiesDefinition = winerysPropertiesDefinition;
 
-        if ((winerysPropertiesDefinition != null) && (winerysPropertiesDefinition.getIsDerivedFromXSD() == null)) {
-            this.selectedValue = PropertiesDefinitionEnum.Custom;
-        } else if ((this.propertiesDefinition != null) && (this.propertiesDefinition.getElement() != null)) {
-            this.selectedValue = PropertiesDefinitionEnum.Element;
-        } else if ((this.propertiesDefinition != null) && (this.propertiesDefinition.getType() != null)) {
-            this.selectedValue = PropertiesDefinitionEnum.Type;
-        } else {
+        if (propertiesDefinition == null) {
             this.selectedValue = PropertiesDefinitionEnum.None;
+        } else if (propertiesDefinition instanceof TEntityType.XmlElementDefinition) {
+            this.selectedValue = PropertiesDefinitionEnum.Element;
+        } else if (propertiesDefinition instanceof TEntityType.XmlTypeDefinition) {
+            this.selectedValue = PropertiesDefinitionEnum.Type;
+        } else if (propertiesDefinition instanceof WinerysPropertiesDefinition) {
+            this.selectedValue = PropertiesDefinitionEnum.Custom;
+        } else if (propertiesDefinition instanceof TEntityType.YamlPropertiesDefinition) {
+            // FIXME this needs to be handled in some way?!
+            this.selectedValue = PropertiesDefinitionEnum.Custom;
+        } else {
+            throw new IllegalStateException("Properties Definition Type was unknown");
         }
     }
 }

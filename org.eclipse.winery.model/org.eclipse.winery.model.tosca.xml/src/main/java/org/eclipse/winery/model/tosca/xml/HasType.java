@@ -16,6 +16,9 @@ package org.eclipse.winery.model.tosca.xml;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.namespace.QName;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
+@NonNullByDefault
 public interface HasType {
 
     /**

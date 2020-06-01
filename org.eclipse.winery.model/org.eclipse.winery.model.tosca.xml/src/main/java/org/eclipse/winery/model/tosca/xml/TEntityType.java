@@ -23,7 +23,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -41,7 +40,7 @@ import org.eclipse.jdt.annotation.Nullable;
     "derivedFrom",
     "propertiesDefinition"
 })
-@XmlSeeAlso( {
+@XmlSeeAlso({
     TNodeType.class,
     TRelationshipType.class,
     TRequirementType.class,
@@ -180,7 +179,6 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     public void setTargetNamespace(@Nullable String value) {
         this.targetNamespace = value;
     }
-
 
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")

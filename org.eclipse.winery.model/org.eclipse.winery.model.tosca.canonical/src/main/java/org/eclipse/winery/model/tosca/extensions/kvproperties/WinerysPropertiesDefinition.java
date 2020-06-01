@@ -19,13 +19,16 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 
 @XmlRootElement(name = "PropertiesDefinition")
 /**
- * This is Winery's main extension element for a key/value based properties definition
+ * This is Winery's main extension element for a key/value based properties definition.
+ * To be representable in the canonical model it directly implements the marker interface used for storing
+ * PropertiesDefinitions {@link org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition}
  */
-public class WinerysPropertiesDefinition implements Serializable {
+public class WinerysPropertiesDefinition extends TEntityType.PropertiesDefinition implements Serializable {
 
     private String namespace;
     private String elementName;

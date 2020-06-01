@@ -23,7 +23,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlEnum;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
@@ -37,8 +39,10 @@ import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKV
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -46,7 +50,6 @@ import org.eclipse.jdt.annotation.Nullable;
     "tags",
     "derivedFrom",
     "properties",
-    "propertiesDefinition",
     "attributeDefinitions"
 })
 @XmlSeeAlso( {
@@ -65,12 +68,8 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     protected TTags tags;
     @XmlElement(name = "DerivedFrom")
     protected TEntityType.DerivedFrom derivedFrom;
-    @XmlElement(name = "Properties")
-    // FIXME unify this type of properties definition and the XML properties definition as well as the special 
-    //  support for WineryKVPropertiesDefinition nonsense
-    protected List<YamlPropertyDefinition> properties;
-    @XmlElement(name = "PropertiesDefinition")
-    protected XmlPropertiesDefinition propertiesDefinition;
+    @XmlElementRef(name = "PropertiesDefinition")
+    protected TEntityType.PropertiesDefinition properties;
     @XmlAttribute(name = "name", required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlSchemaType(name = "NCName")
@@ -146,23 +145,11 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
         this.derivedFrom = (TEntityType.DerivedFrom) value;
     }
 
-    // FIXME this is a bit of a mess, because we also have {@link #getProperties}
-    @Nullable
-    public XmlPropertiesDefinition getPropertiesDefinition() {
-        return propertiesDefinition;
-    }
-    
-    public void setPropertiesDefinition(@Nullable XmlPropertiesDefinition propertiesDefinition) {
-        this.propertiesDefinition = propertiesDefinition;
-    }
-                                        
-    // Must be nullable, because types are not required to define any properties if they inherit
-    @Nullable
-    public List<YamlPropertyDefinition> getProperties() {
+    public PropertiesDefinition getProperties() {
         return properties;
     }
-    
-    public void setProperties(@Nullable List<YamlPropertyDefinition> properties) {
+
+    public void setProperties(PropertiesDefinition properties) {
         this.properties = properties;
     }
 
@@ -230,32 +217,24 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     @XmlTransient
     @JsonIgnore
     public WinerysPropertiesDefinition getWinerysPropertiesDefinition() {
-        // similar implementation as org.eclipse.winery.repository.resources.entitytypes.properties.PropertiesDefinitionResource.getListFromEntityType(TEntityType)
-        WinerysPropertiesDefinition res = null;
-        for (Object o : this.getAny()) {
-            if (o instanceof WinerysPropertiesDefinition) {
-                res = (WinerysPropertiesDefinition) o;
-            }
+        if (properties == null || !(properties instanceof WinerysPropertiesDefinition)) {
+            return null;
+        }
+        WinerysPropertiesDefinition res = (WinerysPropertiesDefinition) properties;
+        // we put defaults if elementname and namespace have not been set
+        if (res.getElementName() == null) {
+            res.setElementName("Properties");
         }
 
-        if (res != null) {
-            // we put defaults if elementname and namespace have not been set
-
-            if (res.getElementName() == null) {
-                res.setElementName("Properties");
+        if (res.getNamespace() == null) {
+            // we use the targetnamespace of the original element
+            String ns = this.getTargetNamespace();
+            if (!ns.endsWith("/")) {
+                ns += "/";
             }
-
-            if (res.getNamespace() == null) {
-                // we use the targetnamespace of the original element
-                String ns = this.getTargetNamespace();
-                if (!ns.endsWith("/")) {
-                    ns += "/";
-                }
-                ns += NS_SUFFIX_PROPERTIESDEFINITION_WINERY;
-                res.setNamespace(ns);
-            }
+            ns += NS_SUFFIX_PROPERTIESDEFINITION_WINERY;
+            res.setNamespace(ns);
         }
-
         return res;
     }
 
@@ -304,47 +283,6 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
         @Override
         public int hashCode() {
             return Objects.hash(typeRef);
-        }
-    }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "")
-    public static class XmlPropertiesDefinition {
-        @XmlAttribute(name = "element")
-        protected QName element;
-        @XmlAttribute(name = "type")
-        protected QName type;
-
-        @Nullable
-        public QName getElement() {
-            return element;
-        }
-
-        public void setElement(@Nullable QName value) {
-            this.element = value;
-        }
-
-        @Nullable
-        public QName getType() {
-            return type;
-        }
-
-        public void setType(@Nullable QName value) {
-            this.type = value;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            XmlPropertiesDefinition that = (XmlPropertiesDefinition) o;
-            return Objects.equals(element, that.element) &&
-                Objects.equals(type, that.type);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(element, type);
         }
     }
     
@@ -505,6 +443,86 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             this.constraints = constraints;
         }
     }
+
+    /**
+     * Acts as a marker interface to unify the four different possibilities of defining the property "schema" associated
+     * with a type.
+     *
+     * This is specifically implemented as an abstract class because JAXB refuses to handle interfaces54
+     */
+    @XmlType(name = "")
+    @XmlSeeAlso({
+        YamlPropertiesDefinition.class,
+        WinerysPropertiesDefinition.class,
+        XmlElementDefinition.class,
+        XmlTypeDefinition.class
+    })
+    public abstract static class PropertiesDefinition { }
+
+    @NonNullByDefault
+    @XmlRootElement(name = "PropertiesDefinition")
+    public static class YamlPropertiesDefinition extends PropertiesDefinition {
+        private List<YamlPropertyDefinition> properties = new ArrayList<>();
+
+        public List<YamlPropertyDefinition> getProperties() {
+            return properties;
+        }
+
+        public void setProperties(List<YamlPropertyDefinition> properties) {
+            this.properties = properties;
+        }
+    }
+
+    /**
+     * The XML standard defines two mutually exclusive ways of specifying a property.
+     * Option 1 is a QName pointing to an element, the other option is a type reference,
+     * see {@link XmlTypeDefinition}.
+     */
+    @XmlRootElement(name = "PropertiesDefinition")
+    public static class XmlElementDefinition extends PropertiesDefinition {
+        private QName element;
+
+        // required for jaxb
+        public XmlElementDefinition() { }
+
+        public XmlElementDefinition(QName element) {
+            this.element = element;
+        }
+
+        public QName getElement() {
+            return element;
+        }
+
+        public void setElement(QName element) {
+            this.element = element;
+        }
+    }
+
+    /**
+     * The XML standard defines two mutually exclusive ways of specifying a property.
+     * Option 1 is a QName pointing to an element, see {@link XmlElementDefinition},
+     * the other option is a type reference.
+     */
+    @XmlRootElement(name = "PropertiesDefinition")
+    public static class XmlTypeDefinition extends PropertiesDefinition {
+        private QName type;
+
+        // required for JAXB
+        public XmlTypeDefinition() { }
+
+        public XmlTypeDefinition(QName type) {
+            this.type = type;
+        }
+
+        public QName getType() {
+            return type;
+        }
+
+        public void setType(QName type) {
+            this.type = type;
+        }
+    }
+
     
     @ADR(11)
     public abstract static class Builder<T extends Builder<T>> extends TExtensibleElements.Builder<T> {
@@ -512,8 +530,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
 
         private TTags tags;
         private TEntityType.DerivedFrom derivedFrom;
-        private List<YamlPropertyDefinition> properties;
-        private XmlPropertiesDefinition propertiesDefinition;
+        private PropertiesDefinition properties;
         private boolean abstractValue;
         private boolean finalValue;
         private String targetNamespace;
@@ -565,30 +582,11 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             return setDerivedFrom(new QName(derivedFrom));
         }
 
-        public T setProperties(List<YamlPropertyDefinition> properties) {
-            if (properties == null || properties.isEmpty()) {
+        public T setProperties(PropertiesDefinition properties) {
+            if (properties == null) {
                 return self();
             }
-            
-            if (this.properties == null) {
-                this.properties = properties;
-                return self();
-            }
-            this.properties.addAll(properties);
-            return self();
-        }
-        
-        public T setProperties(YamlPropertyDefinition property) {
-            if (property == null) {
-                return self();
-            }
-            List<YamlPropertyDefinition> tmp = new ArrayList<>();
-            tmp.add(property);
-            return setProperties(tmp);
-        }
-        
-        public T setPropertiesDefinition(XmlPropertiesDefinition propertiesDefinition) {
-            this.propertiesDefinition = propertiesDefinition;
+            this.properties = properties;
             return self();
         }
 

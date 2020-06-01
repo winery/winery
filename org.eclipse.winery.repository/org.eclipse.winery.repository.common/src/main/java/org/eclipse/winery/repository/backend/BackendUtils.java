@@ -722,12 +722,15 @@ public class BackendUtils {
 
     /**
      * Persists the given definitions
-     *
-     * @param id          the id of the definition child to persist
+     *  @param id          the id of the definition child to persist
      * @param definitions the definitions to persist
      */
-    public static void persist(DefinitionsChildId id, TDefinitions definitions, IRepository repo) throws IOException {
-        repo.putDefinition(id, definitions);
+    public static void persist(IRepository repository, DefinitionsChildId id, TDefinitions definitions) throws IOException {
+        repository.putDefinition(id, definitions);
+    }
+
+    public static void persist(IRepository repository, RepositoryFileReference ref, TDefinitions definitions) throws IOException {
+        repository.putDefinition(ref, definitions);
     }
 
     // todo this should not depend on JAXB !
@@ -864,16 +867,16 @@ public class BackendUtils {
     // FIXME this is specifically for xml backends and therefore broken under the new canonical model
     public static void deriveWPD(TEntityType ci, List<String> errors, IRepository repository) {
         BackendUtils.LOGGER.trace("deriveWPD");
-        TEntityType.XmlPropertiesDefinition propertiesDefinition = ci.getPropertiesDefinition();
+        TEntityType.PropertiesDefinition propertiesDefinition = ci.getProperties();
         if (propertiesDefinition == null) {
             // if there's no properties definition, there's nothing to derive because we're in YAML mode
             return;
         }
-        QName element = propertiesDefinition.getElement();
-        if (element == null) {
+        if (!(propertiesDefinition instanceof TEntityType.XmlElementDefinition)) {
             BackendUtils.LOGGER.debug("only works for an element definition, not for types");
             return;
         }
+        final QName element = ((TEntityType.XmlElementDefinition) propertiesDefinition).getElement();
         BackendUtils.LOGGER.debug("Looking for the definition of {" + element.getNamespaceURI() + "}" + element.getLocalPart());
         // fetch the XSD defining the element
         final XsdImportManager xsdImportManager = repository.getXsdImportManager();

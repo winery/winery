@@ -428,11 +428,11 @@ public class GitBasedRepository extends AbstractFileBasedRepository {
     }
     
     @Override
-    public void putDefinition(DefinitionsChildId id, TDefinitions definitions) throws IOException {
-        repository.putDefinition(id, definitions);
+    public void putDefinition(RepositoryFileReference ref, TDefinitions definitions) throws IOException {
+        repository.putDefinition(ref, definitions);
         try {
             if (configuration.isAutoCommit()) {
-                this.addCommit(BackendUtils.getRefOfDefinitions(id));
+                this.addCommit(ref);
             } else {
                 postEventMap();
             }

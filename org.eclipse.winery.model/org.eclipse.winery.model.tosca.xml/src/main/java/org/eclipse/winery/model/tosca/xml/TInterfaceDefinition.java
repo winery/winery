@@ -24,6 +24,8 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinition;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * Class to represent an interface definition in TOSCA YAML.
  */
@@ -68,7 +70,7 @@ public class TInterfaceDefinition implements HasName, HasType, Serializable {
     }
 
     @Override
-    public void setType(QName type) {
+    public void setType(@NonNull QName type) {
         this.type = type;
     }
 

@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.xml.XMLConstants;
@@ -82,19 +83,6 @@ public class ModelUtilities {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ModelUtilities.class);
 
     /**
-     * @param et the entity type to query
-     * @return null if et == null
-     * @deprecated Use {@link TEntityType#getWinerysPropertiesDefinition()}
-     */
-    @Deprecated
-    public static WinerysPropertiesDefinition getWinerysPropertiesDefinition(TEntityType et) {
-        if (et != null) {
-            return et.getWinerysPropertiesDefinition();
-        }
-        return null;
-    }
-
-    /**
      * This is a special method for Winery. Winery allows to define a property by specifying name/value values. Instead
      * of parsing the XML contained in TNodeType, this method is a convenience method to access this information
      * <p>
@@ -105,8 +93,12 @@ public class ModelUtilities {
     public static LinkedHashMap<String, String> getPropertiesKV(TEntityTemplate template) {
         if (template.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
             return ((TEntityTemplate.WineryKVProperties) template.getProperties()).getKVProperties();
+        } else if (template.getProperties() instanceof TEntityTemplate.YamlProperties) {
+            // flattening YAML properties here
+            return ((TEntityTemplate.YamlProperties) template.getProperties()).getProperties()
+                .entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, String::valueOf, (s, s2) -> s, LinkedHashMap::new));
         } else {
-            // FIXME is this appropriate for YAML properties??
             return null;
         }
     }

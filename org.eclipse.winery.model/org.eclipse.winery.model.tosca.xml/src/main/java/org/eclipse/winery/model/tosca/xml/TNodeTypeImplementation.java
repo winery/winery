@@ -197,7 +197,7 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
         }
 
         @Override
-        public void setType(QName type) {
+        public void setType(@NonNull QName type) {
             this.setNodeTypeImplementationRef(type);
         }
 

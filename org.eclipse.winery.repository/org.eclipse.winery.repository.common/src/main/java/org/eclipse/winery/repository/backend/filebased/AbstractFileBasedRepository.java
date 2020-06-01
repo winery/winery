@@ -202,7 +202,7 @@ public abstract class AbstractFileBasedRepository implements IRepository {
         BackendUtils.copyIdToFields((HasIdInIdOrNameField) definitions.getElement(), newId);
 
         try {
-            BackendUtils.persist(definitions, newRef, MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS, this);
+            BackendUtils.persist(this, newId, definitions);
         } catch (InvalidPathException e) {
             LOGGER.debug("Invalid path during write", e);
             // QUICK FIX

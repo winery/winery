@@ -430,10 +430,10 @@ public class MultiRepository implements IRepository {
     }
 
     @Override
-    public void putDefinition(DefinitionsChildId id, TDefinitions content) throws IOException {
-        IRepository repository = RepositoryUtils.getRepositoryByRef(BackendUtils.getRefOfDefinitions(id), this);
-        repository.putDefinition(id, content);
-        addNamespacesToRepository(repository, id);
+    public void putDefinition(RepositoryFileReference ref, TDefinitions content) throws IOException {
+        IRepository repository = RepositoryUtils.getRepositoryByRef(ref, this);
+        repository.putDefinition(ref, content);
+        addNamespacesToRepository(repository, ref);
     }
 
     @Override

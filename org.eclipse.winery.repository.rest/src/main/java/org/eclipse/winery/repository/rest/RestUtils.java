@@ -651,7 +651,7 @@ public class RestUtils {
         try {
             NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
             namespaceManager.addPermanentNamespace(res.getDefinitions().getTargetNamespace());
-            BackendUtils.persist(res.getDefinitions(), res.getRepositoryFileReference(), MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS, RepositoryFactory.getRepository());
+            BackendUtils.persist(RepositoryFactory.getRepository(), res.getRepositoryFileReference(), res.getDefinitions());
         } catch (IOException e) {
             LOGGER.debug("Could not persist resource", e);
             throw new WebApplicationException(e);
@@ -667,7 +667,7 @@ public class RestUtils {
 
         if (version.toString().length() > 0) {
             // ensure that the version isn't changed by the user
-            String componentName = oldId.getNameWithoutVersion() + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
+            String componentName = newId.getNameWithoutVersion() + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
             id = BackendUtils.getDefinitionsChildId(oldId.getClass(), newId.getNamespace().getDecoded(), componentName, false);
         }
 

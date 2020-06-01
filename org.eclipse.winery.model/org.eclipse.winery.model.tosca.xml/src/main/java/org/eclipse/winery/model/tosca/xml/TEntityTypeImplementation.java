@@ -186,7 +186,7 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
     }
 
     @Override
-    public void setType(QName type) {
+    public void setType(@NonNull QName type) {
         this.implementedType = type;
     }
 

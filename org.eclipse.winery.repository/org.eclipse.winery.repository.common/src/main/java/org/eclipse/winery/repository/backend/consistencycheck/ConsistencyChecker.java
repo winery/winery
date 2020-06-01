@@ -326,13 +326,13 @@ public class ConsistencyChecker {
                 return;
             }
 
-            TEntityType.XmlPropertiesDefinition def = entityType.getPropertiesDefinition();
+            TEntityType.PropertiesDefinition def = entityType.getProperties();
             if (def == null) {
                 printAndAddError(id, "XmlProperties were given, but no XmlPropertiesDefinition was specified");
                 return;
             }
-            @Nullable final QName element = def.getElement();
-            if (element != null) {
+            if (def instanceof TEntityType.XmlElementDefinition) {
+                final QName element = ((TEntityType.XmlElementDefinition) def).getElement(); 
                 final Map<String, RepositoryFileReference> mapFromLocalNameToXSD = configuration.getRepository().getXsdImportManager().getMapFromLocalNameToXSD(new Namespace(element.getNamespaceURI(), false), false);
                 final RepositoryFileReference repositoryFileReference = mapFromLocalNameToXSD.get(element.getLocalPart());
                 if (repositoryFileReference == null) {
@@ -363,15 +363,12 @@ public class ConsistencyChecker {
                 printAndAddError(id, "Property " + o + " set, but not defined at schema.");
             }
         } else if (definedProps instanceof TEntityTemplate.YamlProperties) {
-            // check for conformance to the YamlPropertiesDefinition defined by the entityType, accounting for DataTypes
-            final List<TEntityType.YamlPropertyDefinition> propertyDefinitions = entityType.getProperties();
             // FIXME todo
         }
     }
 
     private static boolean requiresProperties(TEntityType type) {
-        return type.getPropertiesDefinition() != null
-            || (type.getProperties() != null && !type.getProperties().isEmpty());
+        return type.getProperties() != null;
     }
     
     private void checkId(DefinitionsChildId id) {

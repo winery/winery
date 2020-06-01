@@ -20,7 +20,9 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.xml.AttributeMapping;
+import org.eclipse.winery.model.tosca.xml.HasId;
 import org.eclipse.winery.model.tosca.xml.RelationshipSourceOrTarget;
 import org.eclipse.winery.model.tosca.xml.TArtifact;
 import org.eclipse.winery.model.tosca.xml.TArtifactReference;
@@ -278,11 +280,26 @@ public class FromCanonical {
             derived.setTypeRef(canonical.getDerivedFrom().getTypeRef());
             builder.setDerivedFrom(derived);
         }
-        if (canonical.getPropertiesDefinition() != null) {
-            TEntityType.PropertiesDefinition propertiesDefinition = new TEntityType.PropertiesDefinition();
-            propertiesDefinition.setElement(canonical.getPropertiesDefinition().getElement());
-            propertiesDefinition.setType(canonical.getPropertiesDefinition().getType());
-            builder.setPropertiesDefinition(propertiesDefinition);
+        if (canonical.getProperties() != null) {
+            org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition properties = canonical.getProperties();
+            if (properties instanceof WinerysPropertiesDefinition) {
+                // do the magic thingy of storing the properties definition in the any element.
+                builder.addAny(properties);
+            } else if (properties instanceof org.eclipse.winery.model.tosca.TEntityType.XmlElementDefinition) {
+                TEntityType.PropertiesDefinition propertiesDefinition = new TEntityType.PropertiesDefinition();
+                propertiesDefinition.setElement(
+                    ((org.eclipse.winery.model.tosca.TEntityType.XmlElementDefinition)properties).getElement());
+                builder.setPropertiesDefinition(propertiesDefinition);
+            } else if (properties instanceof org.eclipse.winery.model.tosca.TEntityType.XmlTypeDefinition) {
+                TEntityType.PropertiesDefinition propertiesDefinition = new TEntityType.PropertiesDefinition();
+                propertiesDefinition.setType(
+                    ((org.eclipse.winery.model.tosca.TEntityType.XmlTypeDefinition)properties).getType()
+                );
+                builder.setPropertiesDefinition(propertiesDefinition);
+            } else if (properties instanceof org.eclipse.winery.model.tosca.TEntityType.YamlPropertiesDefinition) {
+                // currently unsupported!?
+                LOGGER.warn("Trying to convert YAML-based type defintion [{}] to XML. Properties are incorrect!", canonical.getQName());
+            }
         }
         builder.setAbstract(canonical.getAbstract() ? TBoolean.YES : TBoolean.NO);
         builder.setFinal(canonical.getFinal() ? TBoolean.YES : TBoolean.NO);
@@ -576,9 +593,7 @@ public class FromCanonical {
         if (canonical.getTags() != null) {
             builder.addTags(convertList(canonical.getTags().getTag(), this::convert));
         }
-        if (canonical.getBoundaryDefinitions() != null) {
-            builder.setBoundaryDefinitions(convert(canonical.getBoundaryDefinitions()));
-        }
+        builder.setBoundaryDefinitions(convert(canonical.getBoundaryDefinitions()));
         if (canonical.getPlans() != null) {
             TPlans plans = new TPlans();
             plans.setTargetNamespace(canonical.getPlans().getTargetNamespace());
@@ -626,7 +641,9 @@ public class FromCanonical {
         return xml;
     }
     
-    private TBoundaryDefinitions convert(org.eclipse.winery.model.tosca.TBoundaryDefinitions canonical) {
+    @Nullable
+    private TBoundaryDefinitions convert(org.eclipse.winery.model.tosca.@Nullable TBoundaryDefinitions canonical) {
+        if (canonical == null) { return null; }
         TBoundaryDefinitions.Builder builder = new TBoundaryDefinitions.Builder();
         if (canonical.getProperties() != null) {
             TBoundaryDefinitions.Properties props = new TBoundaryDefinitions.Properties();
@@ -742,11 +759,13 @@ public class FromCanonical {
         TPropertyMapping xml = new TPropertyMapping();
         xml.setServiceTemplatePropertyRef(canonical.getServiceTemplatePropertyRef());
         xml.setTargetPropertyRef(canonical.getTargetPropertyRef());
-        xml.setTargetObjectRef(canonical.getTargetObjectRef());
+        xml.setTargetObjectRef(convert(canonical.getTargetObjectRef()));
         return xml;
     }
     
-    private TTopologyTemplate convert(org.eclipse.winery.model.tosca.TTopologyTemplate canonical) {
+    @Nullable
+    private TTopologyTemplate convert(org.eclipse.winery.model.tosca.@Nullable TTopologyTemplate canonical) {
+        if (canonical == null) { return null; }
         TTopologyTemplate.Builder builder = new TTopologyTemplate.Builder();
         builder.setNodeTemplates(convertList(canonical.getNodeTemplates(), this::convert));
         builder.setRelationshipTemplates(convertList(canonical.getRelationshipTemplates(), this::convert));
@@ -934,6 +953,43 @@ public class FromCanonical {
         TDefinitions.Types result = new TDefinitions.Types();
         result.getAny().addAll(canonical.getAny());
         return result;
+    }
+
+    private HasId convert(org.eclipse.winery.model.tosca.HasId canonical) {
+        if (canonical instanceof org.eclipse.winery.model.tosca.TDefinitions) {
+            // what in the ever loving fuck am I supposed to do now??
+            // this case should never ever come true
+            throw new IllegalStateException("Attempted to convert a TDefinitions instance through HasId overload.");
+        }
+        if (canonical instanceof org.eclipse.winery.model.tosca.extensions.TComplianceRule) {
+            return convert((org.eclipse.winery.model.tosca.extensions.TComplianceRule) canonical);
+        }
+        if (canonical instanceof org.eclipse.winery.model.tosca.extensions.AttributeMapping) {
+            return convert((org.eclipse.winery.model.tosca.extensions.AttributeMapping) canonical);
+        }
+        if (canonical instanceof org.eclipse.winery.model.tosca.extensions.TRelationMapping) {
+            return convert((org.eclipse.winery.model.tosca.extensions.TRelationMapping) canonical);
+        }
+        if (canonical instanceof org.eclipse.winery.model.tosca.extensions.TStayMapping) {
+            return convert((org.eclipse.winery.model.tosca.extensions.TStayMapping) canonical);
+        }
+        if (canonical instanceof org.eclipse.winery.model.tosca.RelationshipSourceOrTarget) {
+            return convert((org.eclipse.winery.model.tosca.RelationshipSourceOrTarget) canonical);
+        }
+        if (canonical instanceof org.eclipse.winery.model.tosca.TArtifact) {
+            return convert((org.eclipse.winery.model.tosca.TArtifact)canonical);
+        }
+        if (canonical instanceof org.eclipse.winery.model.tosca.TArtifactTemplate) {
+            return convert((org.eclipse.winery.model.tosca.TArtifactTemplate)canonical);
+        }
+        if (canonical instanceof org.eclipse.winery.model.tosca.TPolicyTemplate) {
+            return convert((org.eclipse.winery.model.tosca.TPolicyTemplate)canonical);
+        }
+        if (canonical instanceof org.eclipse.winery.model.tosca.TRelationshipTemplate) {
+            return convert((org.eclipse.winery.model.tosca.TRelationshipTemplate)canonical);
+        }
+        throw new IllegalStateException("Attempted to convert unknown element deriving from HasId with type " + canonical.getClass().getName());
+
     }
 
     private <R, I> List<R> convertList(@Nullable List<I> canonical, Function<I, R> convert) {

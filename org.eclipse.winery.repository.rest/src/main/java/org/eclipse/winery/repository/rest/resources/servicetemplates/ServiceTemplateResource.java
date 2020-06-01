@@ -121,6 +121,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
             });
         }
         this.getServiceTemplate().setTopologyTemplate(topologyTemplate);
+        // FIXME this needs to clear the potentially destroyed element references outside of the topologytemplate
     }
 
     /**

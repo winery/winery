@@ -121,7 +121,7 @@ public class RepositoryAdminResource {
         for (DefinitionsChildId id : definitionIds) {
             try {
                 TDefinitions definitions = repository.getDefinitions(id);
-                BackendUtils.persist(id, definitions, repository);
+                BackendUtils.persist(repository, id, definitions);
             } catch (Exception e) {
                 LOGGER.error("Could not persist definition: {}", id);
                 return Response.serverError().build();

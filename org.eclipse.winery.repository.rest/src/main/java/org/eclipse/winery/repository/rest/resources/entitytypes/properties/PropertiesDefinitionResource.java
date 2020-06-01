@@ -73,8 +73,7 @@ public class PropertiesDefinitionResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public PropertiesDefinitionResourceApiData getJson() {
-//        PropertiesDefinition definition = this.getEntityType().getPropertiesDefinition();
-        return new PropertiesDefinitionResourceApiData(null, this.wpd);
+        return new PropertiesDefinitionResourceApiData(this.getEntityType().getProperties(), this.wpd);
     }
 
     @GET
@@ -117,17 +116,12 @@ public class PropertiesDefinitionResource {
             // first of all, remove Winery's Properties definition (if it exists)
             ModelUtilities.removeWinerysPropertiesDefinition(this.getEntityType());
             // replace old properties definition by new one
-            /* PropertiesDefinition def = new PropertiesDefinition();
-
-            if (data.propertiesDefinition.getElement() != null) {
-                def.setElement(data.propertiesDefinition.getElement());
-            } else if (data.propertiesDefinition.getType() != null) {
-                def.setType(data.propertiesDefinition.getType());
-            } else {
+            // FIXME need to actually handle propertiesData properly!
+            if (data.propertiesDefinition == null) {
                 return Response.status(Status.BAD_REQUEST).entity("Wrong data submitted!").build();
             }
 
-            this.getEntityType().setPropertiesDefinition(def);*/
+            this.getEntityType().setProperties(data.propertiesDefinition);
             List<String> errors = new ArrayList<>();
             BackendUtils.deriveWPD(this.getEntityType(), errors, RepositoryFactory.getRepository());
             // currently the errors are just logged

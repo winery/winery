@@ -13,8 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.xml;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -40,6 +38,7 @@ import org.eclipse.winery.model.ids.IdUtil;
 import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.XmlId;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.tosca.xml.Definitions;
 import org.eclipse.winery.model.tosca.xml.TDefinitions;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -72,15 +71,17 @@ public class XmlRepository extends AbstractFileBasedRepository {
 
     @Override
     public org.eclipse.winery.model.tosca.TDefinitions definitionsFromRef(RepositoryFileReference ref) throws IOException {
+        final Object definition;
         try {
             InputStream is = newInputStream(ref);
             Unmarshaller unmarshaller = XmlModelJAXBSupport.createUnmarshaller();
-            ToCanonical converter = new ToCanonical(this);
-            return converter.convert((TDefinitions) unmarshaller.unmarshal(is));
+            definition = unmarshaller.unmarshal(is);
         } catch (Exception e) {
             LOGGER.info("Failed to read definitions from reference {}", ref, e);
             return null;
         }
+        ToCanonical converter = new ToCanonical(this);
+        return converter.convert((Definitions) definition);
     }
 
     @Override
@@ -114,9 +115,7 @@ public class XmlRepository extends AbstractFileBasedRepository {
     }
 
     @Override
-    public void putDefinition(DefinitionsChildId id, org.eclipse.winery.model.tosca.TDefinitions content) throws IOException {
-        // implementation is partially copied from BackendUtils.persist
-        RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
+    public void putDefinition(RepositoryFileReference ref, org.eclipse.winery.model.tosca.TDefinitions content) throws IOException {
         FromCanonical converter = new FromCanonical(this);
         TDefinitions definitions = converter.convert(content);
         Path serializationTarget = ref2AbsolutePath(ref);

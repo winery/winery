@@ -40,29 +40,29 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ToscaPrmPropertyMatcherTest {
 
     private static Stream<Arguments> compatiblePropertiesArguments() {
-        Map<String, String> allInOneLeftProperties = new HashMap<>();
+        Map<String, String> allInOneLeftProperties = new LinkedHashMap<>();
         allInOneLeftProperties.put("key0", null);
         allInOneLeftProperties.put("key1", "*");
         allInOneLeftProperties.put("key2", "");
         allInOneLeftProperties.put("key3", "special");
-        Map<String, String> allInOneRightProperties = new HashMap<>();
+        Map<String, String> allInOneRightProperties = new LinkedHashMap<>();
         allInOneRightProperties.put("key0", "");
         allInOneRightProperties.put("key1", "I must be set");
         allInOneRightProperties.put("key2", "I can have anything");
         allInOneRightProperties.put("key3", "special");
 
-        Map<String, String> mustBeSetLeftProperties = new HashMap<>();
+        Map<String, String> mustBeSetLeftProperties = new LinkedHashMap<>();
         mustBeSetLeftProperties.put("key", "*");
-        Map<String, String> mustBeSetRightProperties = new HashMap<>();
+        Map<String, String> mustBeSetRightProperties = new LinkedHashMap<>();
         mustBeSetRightProperties.put("key", "isSet");
-        Map<String, String> mustBeSetButIsNotRightProperties = new HashMap<>();
+        Map<String, String> mustBeSetButIsNotRightProperties = new LinkedHashMap<>();
         mustBeSetButIsNotRightProperties.put("key", "");
 
-        Map<String, String> mustBeEqualsLeftProperties = new HashMap<>();
+        Map<String, String> mustBeEqualsLeftProperties = new LinkedHashMap<>();
         mustBeEqualsLeftProperties.put("key", "must be equals");
-        Map<String, String> mustBeEqualsRightProperties = new HashMap<>();
+        Map<String, String> mustBeEqualsRightProperties = new LinkedHashMap<>();
         mustBeEqualsRightProperties.put("key", "must Be equals");
-        Map<String, String> mustBeEqualsButIsNotRightProperties = new HashMap<>();
+        Map<String, String> mustBeEqualsButIsNotRightProperties = new LinkedHashMap<>();
         mustBeEqualsButIsNotRightProperties.put("key", "who cares?");
 
         return Stream.of(

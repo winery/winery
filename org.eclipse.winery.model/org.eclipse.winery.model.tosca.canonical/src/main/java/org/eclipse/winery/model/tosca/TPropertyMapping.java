@@ -43,7 +43,7 @@ public class TPropertyMapping implements Serializable {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @NonNull
-    protected Object targetObjectRef;
+    protected HasId targetObjectRef;
 
     @XmlAttribute(name = "targetPropertyRef", required = true)
     @NonNull
@@ -74,11 +74,11 @@ public class TPropertyMapping implements Serializable {
     }
 
     @NonNull
-    public Object getTargetObjectRef() {
+    public HasId getTargetObjectRef() {
         return targetObjectRef;
     }
 
-    public void setTargetObjectRef(@NonNull Object value) {
+    public void setTargetObjectRef(@NonNull HasId value) {
         Objects.requireNonNull(value);
         this.targetObjectRef = value;
     }

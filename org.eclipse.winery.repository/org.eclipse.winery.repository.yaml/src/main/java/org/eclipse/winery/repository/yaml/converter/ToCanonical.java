@@ -246,7 +246,7 @@ public class ToCanonical {
         }
 
         if (!node.getProperties().isEmpty()) {
-            builder.setProperties(convert(node.getProperties()));
+            builder.setProperties(convertProperties(node.getProperties()));
         }
 
         if (!node.getProperties().isEmpty()) {
@@ -1185,13 +1185,14 @@ public class ToCanonical {
         TDataType result = new TDataType.Builder(name)
             // set entity type fields
             .setAttributeDefinitions(new AttributeDefinitionList(convert(node.getAttributes())))
-            .setProperties(convert(node.getProperties()))
+            .setProperties(convertProperties(node.getProperties()))
             .setDerivedFrom(node.getDerivedFrom())
             .addDocumentation(node.getDescription())
             .addDocumentation(node.getMetadata())
             // set specific fields 
             .addConstraints(convertConstraints(node.getConstraints()))
             .build();
+
         // FIXME need to actually transform the node.getProperties() to an xml schema
         //  to be able to import it and add a PropertiesDefinition reference to that schema
         TImport importDefinition = new TImport.Builder(Namespaces.XML_NS)
@@ -1202,6 +1203,12 @@ public class ToCanonical {
         if (!this.imports.contains(importDefinition)) {
             this.imports.add(importDefinition);
         }
+        return result;
+    }
+
+    private TEntityType.YamlPropertiesDefinition convertProperties(@NonNull Map<String, TPropertyDefinition> properties) {
+        TEntityType.YamlPropertiesDefinition result = new TEntityType.YamlPropertiesDefinition();
+        result.setProperties(convert(properties));
         return result;
     }
 

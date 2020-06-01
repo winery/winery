@@ -141,11 +141,11 @@ public abstract class Visitor {
 
     public void visit(TEntityType entityType) {
         Objects.requireNonNull(entityType);
-        visit((TExtensibleElements) entityType);
-        final List<TEntityType.YamlPropertyDefinition> propertyDefinitions = entityType.getProperties();
-        if (propertyDefinitions != null) {
-            propertyDefinitions.forEach(this::visit);
+        if (entityType.getProperties() instanceof TEntityType.YamlPropertiesDefinition) {
+            ((TEntityType.YamlPropertiesDefinition) entityType.getProperties()).getProperties()
+                .forEach(this::visit);
         }
+        visit((TExtensibleElements) entityType);
     }
 
     public void visitOtherAttributes(Map<QName, String> otherAttributes) {
