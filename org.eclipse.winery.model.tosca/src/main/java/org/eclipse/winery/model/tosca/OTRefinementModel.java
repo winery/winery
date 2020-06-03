@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -88,7 +89,10 @@ public abstract class OTRefinementModel extends TExtensibleElements implements H
     }
 
     public List<OTRelationMapping> getRelationMappings() {
-        return relationMappings;
+        if (this.relationMappings == null) {
+            this.relationMappings = new ArrayList<>();
+        }
+        return this.relationMappings;
     }
 
     public void setRelationMappings(List<OTRelationMapping> relationMappings) {
