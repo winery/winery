@@ -262,6 +262,7 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                     refinement.getRefinementModel().getRelationMappings()
                         .stream()
                         // use anyMatch to reduce runtime
+                        .filter(mapping -> mapping.getDetectorNode().getId().equals(detectorNode.getId()))
                         .anyMatch(relationMapping -> {
                             if (ModelUtilities.isOfType(relationMapping.getRelationType(), relationship.getType(), this.relationshipTypes)) {
                                 if (relationMapping.getDirection() == OTRelationDirection.INGOING

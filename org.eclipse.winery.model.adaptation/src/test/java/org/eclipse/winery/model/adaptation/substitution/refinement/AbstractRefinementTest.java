@@ -15,6 +15,7 @@
 package org.eclipse.winery.model.adaptation.substitution.refinement;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -44,10 +45,15 @@ public class AbstractRefinementTest {
     protected static TTopologyTemplate topology;
     protected static TTopologyTemplate topology2;
     protected static TTopologyTemplate topology3;
-    protected static RefinementCandidate candidate;
-    protected static RefinementCandidate candidateWithDa;
-    protected static RefinementCandidate candidateWithnNotMatchingDa;
-    protected static RefinementCandidate invalidCandidate;
+    protected static TTopologyTemplate topology4;
+    protected static RefinementCandidate candidateForTopology;
+    protected static RefinementCandidate invalidCandidateForTopology;
+    protected static RefinementCandidate candidateForTopology2;
+    protected static RefinementCandidate secondValidCandidateForTopology2;
+    protected static RefinementCandidate candidateForTopology3WithDa;
+    protected static RefinementCandidate candidateForTopology3WithNotMatchingDa;
+    protected static RefinementCandidate validCandidateForTopology4;
+    protected static RefinementCandidate invalidCandidateForTopology4;
 
     protected static void setUp() {
         // region *** topology ***
@@ -131,8 +137,18 @@ public class AbstractRefinementTest {
         topology2.addRelationshipTemplate(rt21);
         topology2.addRelationshipTemplate(rt24);
         // endregion
-        
+
         // region *** topology 3 ***
+        /*
+        #######   (1)  #######----|
+        # (1) # <----- # (2) # DA |
+        #######        #######----|
+                          | (2)
+                         \/
+                       #######
+                       # (4) #
+                       #######
+         */
         QName artifactTypeFile = new QName("file", "http://example.org/tosca/at");
         QName test_da = new QName("test_da", "http://example.org/tosca/atemp/das");
 
@@ -153,7 +169,7 @@ public class AbstractRefinementTest {
         rt301.setId("301");
         rt301.setSourceNodeTemplate(nt30);
         rt301.setTargetNodeTemplate(nt1);
-        
+
         TDeploymentArtifacts das = new TDeploymentArtifacts();
         TDeploymentArtifact da = new TDeploymentArtifact();
         da.setArtifactRef(test_da);
@@ -167,6 +183,33 @@ public class AbstractRefinementTest {
         topology3.addNodeTemplate(nt4);
         topology3.addRelationshipTemplate(rt301);
         topology3.addRelationshipTemplate(rt304);
+        // endregion
+
+        // region *** topology4 ***
+        TRelationshipTemplate rt14 = new TRelationshipTemplate();
+        rt14.setType("{http://ex.org}relType_1");
+        rt14.setId("14");
+        rt14.setSourceNodeTemplate(nt1);
+        rt14.setTargetNodeTemplate(nt4);
+        
+        /*
+        #######  (1)  #######
+        # (3) # -----># (2) #
+        #######       #######
+                         | (2)
+                        \/
+        #######  (1)  #######
+        # (1) # -----># (4) #
+        #######       #######
+        */
+        topology4 = new TTopologyTemplate();
+        topology4.addNodeTemplate(nt1);
+        topology4.addNodeTemplate(nt2);
+        topology4.addNodeTemplate(nt3);
+        topology4.addNodeTemplate(nt4);
+        topology4.addRelationshipTemplate(rt32);
+        topology4.addRelationshipTemplate(rt14);
+        topology4.addRelationshipTemplate(rt24);
         // endregion
 
         // region *** matching PRM ***
@@ -286,42 +329,55 @@ public class AbstractRefinementTest {
         rm2.setRefinementNode(nt10);
         // endregion
 
-        OTPatternRefinementModel matchingPrm = new OTPatternRefinementModel();
-        matchingPrm.setDetector(detector);
-        matchingPrm.setRefinementTopology(refinementStructure);
+        OTPatternRefinementModel prmWithNt2HostedOnNt4AndIngoingRt1AtNt2AndOutgoingRt1AtNt2 = new OTPatternRefinementModel();
+        prmWithNt2HostedOnNt4AndIngoingRt1AtNt2AndOutgoingRt1AtNt2.setDetector(detector);
+        prmWithNt2HostedOnNt4AndIngoingRt1AtNt2AndOutgoingRt1AtNt2.setRefinementTopology(refinementStructure);
 
         ToscaGraph topologyGraph = ToscaTransformer.createTOSCAGraph(topology);
-        ToscaGraph detectorGraph = ToscaTransformer.createTOSCAGraph(matchingPrm.getDetector());
+        ToscaGraph detectorGraph = ToscaTransformer.createTOSCAGraph(detector);
 
         ToscaIsomorphismMatcher matcher = new ToscaIsomorphismMatcher();
         Iterator<GraphMapping<ToscaNode, ToscaEdge>> mappings = matcher.findMatches(detectorGraph, topologyGraph, new ToscaTypeMatcher());
-        GraphMapping<ToscaNode, ToscaEdge> mapping = mappings.next();
+        GraphMapping<ToscaNode, ToscaEdge> detectorWithTopologyMapping = mappings.next();
 
         List<OTRelationMapping> relationMappings = new ArrayList<>();
         relationMappings.add(rm1);
         relationMappings.add(rm2);
-        matchingPrm.setRelationMappings(relationMappings);
+        prmWithNt2HostedOnNt4AndIngoingRt1AtNt2AndOutgoingRt1AtNt2.setRelationMappings(relationMappings);
 
-        candidate = new RefinementCandidate(matchingPrm, mapping, detectorGraph, 1);
+        candidateForTopology = new RefinementCandidate(prmWithNt2HostedOnNt4AndIngoingRt1AtNt2AndOutgoingRt1AtNt2,
+            detectorWithTopologyMapping, detectorGraph, 1);
         // endregion
 
-        // region *** non-matching PRM **
-        OTPatternRefinementModel nonMatchingPrm = new OTPatternRefinementModel();
-        nonMatchingPrm.setDetector(detector);
+        // region *** invalidCandidateForTopology **
+        OTPatternRefinementModel prmWithNt2HostedOnNt4AndOutgoingRt1AtNt2 = new OTPatternRefinementModel();
+        prmWithNt2HostedOnNt4AndOutgoingRt1AtNt2.setDetector(detector);
 
         List<OTRelationMapping> relationMappingsNonMatchingPrm = new ArrayList<>();
         relationMappingsNonMatchingPrm.add(rm2);
-        nonMatchingPrm.setRelationMappings(relationMappingsNonMatchingPrm);
+        prmWithNt2HostedOnNt4AndOutgoingRt1AtNt2.setRelationMappings(relationMappingsNonMatchingPrm);
 
-        invalidCandidate = new RefinementCandidate(nonMatchingPrm, mapping, detectorGraph, 2);
+        invalidCandidateForTopology = new RefinementCandidate(prmWithNt2HostedOnNt4AndOutgoingRt1AtNt2, detectorWithTopologyMapping,
+            detectorGraph, 2);
         // endregion
 
-        // region *** candidateWithDa ***
+        // region *** Candidates for Topology 2 ***
+        ToscaGraph topology2Graph = ToscaTransformer.createTOSCAGraph(topology2);
+        GraphMapping<ToscaNode, ToscaEdge> detectorWithTopology2Mapping = matcher
+            .findMatches(detectorGraph, topology2Graph, new ToscaTypeMatcher())
+            .next();
+
+        candidateForTopology2 = new RefinementCandidate(prmWithNt2HostedOnNt4AndIngoingRt1AtNt2AndOutgoingRt1AtNt2,
+            detectorWithTopology2Mapping, detectorGraph, 3);
+        secondValidCandidateForTopology2 = new RefinementCandidate(prmWithNt2HostedOnNt4AndOutgoingRt1AtNt2, detectorWithTopology2Mapping, detectorGraph, 4);
+        // endregion
+
+        // region *** Candidates for Topology 3 ***
         ToscaGraph topologyGraph3 = ToscaTransformer.createTOSCAGraph(topology3);
-        GraphMapping<ToscaNode, ToscaEdge> mapping3 = new ToscaIsomorphismMatcher()
+        GraphMapping<ToscaNode, ToscaEdge> detectorToTopology3Mapping = new ToscaIsomorphismMatcher()
             .findMatches(detectorGraph, topologyGraph3, new ToscaTypeMatcher())
             .next();
-        
+
         OTDeploymentArtifactMapping deploymentArtifactMapping1 = new OTDeploymentArtifactMapping();
         deploymentArtifactMapping1.setId("daMap-1");
         deploymentArtifactMapping1.setArtifactType(artifactTypeFile);
@@ -333,11 +389,9 @@ public class AbstractRefinementTest {
         matchingPrmWithDa.setRefinementTopology(refinementStructure);
         matchingPrmWithDa.setDeploymentArtifactMappings(Collections.singletonList(deploymentArtifactMapping1));
         matchingPrmWithDa.setRelationMappings(relationMappings);
-        
-        candidateWithDa = new RefinementCandidate(matchingPrmWithDa, mapping3, detectorGraph,3);
-        // endregion
 
-        // region *** candidateWithnNotMatchingDa ***
+        candidateForTopology3WithDa = new RefinementCandidate(matchingPrmWithDa, detectorToTopology3Mapping, detectorGraph, 5);
+
         QName artifactTypeZip = new QName("zip", "http://example.org/tosca/at");
 
         OTDeploymentArtifactMapping deploymentArtifactMapping2 = new OTDeploymentArtifactMapping();
@@ -351,8 +405,43 @@ public class AbstractRefinementTest {
         nonMatchingPrmWithDa.setRefinementTopology(refinementStructure);
         nonMatchingPrmWithDa.setDeploymentArtifactMappings(Collections.singletonList(deploymentArtifactMapping2));
         nonMatchingPrmWithDa.setRelationMappings(relationMappings);
-        
-        candidateWithnNotMatchingDa = new RefinementCandidate(nonMatchingPrmWithDa, mapping3, detectorGraph,4);
+
+        candidateForTopology3WithNotMatchingDa = new RefinementCandidate(nonMatchingPrmWithDa, detectorToTopology3Mapping, detectorGraph, 6);
+        // endregion
+
+        // region *** Candidates for Topology 4 ***
+        ToscaGraph topology4Graph = ToscaTransformer.createTOSCAGraph(topology4);
+        GraphMapping<ToscaNode, ToscaEdge> detectorWithTopology4Mapping = matcher
+            .findMatches(detectorGraph, topology4Graph, new ToscaTypeMatcher())
+            .next();
+
+        OTRelationMapping rm3 = new OTRelationMapping();
+        rm3.setRelationType(QName.valueOf("{http://ex.org}relType_1"));
+        rm3.setDirection(OTRelationDirection.INGOING);
+        rm3.setDetectorNode(nt7);
+        rm3.setRefinementNode(nt11);
+
+        OTPatternRefinementModel prmWithNT2HostedOnNT4AndIngoingRT1AtNT2 = new OTPatternRefinementModel();
+        prmWithNT2HostedOnNT4AndIngoingRT1AtNT2.setDetector(detector);
+        prmWithNT2HostedOnNT4AndIngoingRT1AtNT2.setRefinementTopology(refinementStructure);
+        prmWithNT2HostedOnNT4AndIngoingRT1AtNT2.setRelationMappings(Collections.singletonList(rm3));
+
+        invalidCandidateForTopology4 = new RefinementCandidate(prmWithNT2HostedOnNT4AndIngoingRT1AtNT2,
+            detectorWithTopology4Mapping, detectorGraph, 7);
+
+        OTRelationMapping rm4 = new OTRelationMapping();
+        rm4.setRelationType(QName.valueOf("{http://ex.org}relType_1"));
+        rm4.setDirection(OTRelationDirection.INGOING);
+        rm4.setDetectorNode(nt8);
+        rm4.setRefinementNode(nt13);
+
+        OTPatternRefinementModel prmWithNT2HostedOnNT4AndIngoingRT1AtNT2AndIngoingRT1AtNT4 = new OTPatternRefinementModel();
+        prmWithNT2HostedOnNT4AndIngoingRT1AtNT2AndIngoingRT1AtNT4.setDetector(detector);
+        prmWithNT2HostedOnNT4AndIngoingRT1AtNT2AndIngoingRT1AtNT4.setRefinementTopology(refinementStructure);
+        prmWithNT2HostedOnNT4AndIngoingRT1AtNT2AndIngoingRT1AtNT4.setRelationMappings(Arrays.asList(rm3, rm4));
+
+        validCandidateForTopology4 = new RefinementCandidate(prmWithNT2HostedOnNT4AndIngoingRT1AtNT2AndIngoingRT1AtNT4,
+            detectorWithTopology4Mapping, detectorGraph, 8);
         // endregion
     }
 }

@@ -30,12 +30,9 @@ import org.eclipse.winery.model.adaptation.substitution.refinement.DefaultRefine
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.model.tosca.OTAttributeMapping;
 import org.eclipse.winery.model.tosca.OTAttributeMappingType;
-import org.eclipse.winery.model.tosca.OTDeploymentArtifactMapping;
 import org.eclipse.winery.model.tosca.OTPatternRefinementModel;
 import org.eclipse.winery.model.tosca.OTPrmModelElementType;
 import org.eclipse.winery.model.tosca.OTStayMapping;
-import org.eclipse.winery.model.tosca.TDeploymentArtifact;
-import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
@@ -73,12 +70,14 @@ class PatternRefinementTest extends AbstractRefinementTest {
     private static Stream<Arguments> getIsApplicableArguments() {
         setUp();
         return Stream.of(
-            Arguments.of(candidate, topology, true, "Expect applicable PRM"),
-            Arguments.of(invalidCandidate, topology, false, "Expect inapplicable PRM"),
-            Arguments.of(candidate, topology2, true, "Expect applicable PRM"),
-            Arguments.of(invalidCandidate, topology2, true, "Expect applicable PRM"),
-            Arguments.of(candidateWithDa, topology3, true, "Expect applicable PRM with compatible DA"),
-            Arguments.of(candidateWithnNotMatchingDa, topology3, false, "Expect inapplicable PRM because of incompatible DA type")
+            Arguments.of(candidateForTopology, topology, true, "Expect applicable PRM"),
+            Arguments.of(invalidCandidateForTopology, topology, false, "Expect inapplicable PRM"),
+            Arguments.of(candidateForTopology2, topology2, true, "Expect applicable PRM"),
+            Arguments.of(secondValidCandidateForTopology2, topology2, true, "Expect applicable PRM"),
+            Arguments.of(candidateForTopology3WithDa, topology3, true, "Expect applicable PRM with compatible DA"),
+            Arguments.of(candidateForTopology3WithNotMatchingDa, topology3, false, "Expect inapplicable PRM because of incompatible DA type"),
+            Arguments.of(invalidCandidateForTopology4, topology4, false, "Expect inapplicable PRM because of not redirectable relations"),
+            Arguments.of(validCandidateForTopology4, topology4, true, "Expect applicable PRM with multiple redirectable relations")
         );
     }
     // endregion
@@ -116,7 +115,7 @@ class PatternRefinementTest extends AbstractRefinementTest {
                                ########
          */
         PatternRefinement patternRefinement = new PatternRefinement();
-        patternRefinement.applyRefinement(candidate, topology);
+        patternRefinement.applyRefinement(candidateForTopology, topology);
 
         // static elements
         assertTrue(Objects.nonNull(topology.getNodeTemplate("1")));
@@ -176,7 +175,7 @@ class PatternRefinementTest extends AbstractRefinementTest {
                                ########
          */
         PatternRefinement patternRefinement = new PatternRefinement();
-        patternRefinement.applyRefinement(candidate, topology2);
+        patternRefinement.applyRefinement(candidateForTopology, topology2);
 
         // static elements
         assertTrue(Objects.nonNull(topology2.getNodeTemplate("1")));
@@ -224,17 +223,17 @@ class PatternRefinementTest extends AbstractRefinementTest {
          */
         PatternRefinement patternRefinement = new PatternRefinement();
         ArrayList<ToscaNode> matchingNodes = new ArrayList<>();
-        Iterators.addAll(matchingNodes, candidate.getDetectorGraph().vertexSet().iterator());
+        Iterators.addAll(matchingNodes, candidateForTopology.getDetectorGraph().vertexSet().iterator());
 
         assertEquals(2, matchingNodes.size());
 
-        TNodeTemplate nt2 = candidate.getGraphMapping().getVertexCorrespondence(matchingNodes.get(0), false).getTemplate();
-        List<TRelationshipTemplate> externalRelationsOf2 = patternRefinement.getExternalRelations(nt2, candidate, topology)
+        TNodeTemplate nt2 = candidateForTopology.getGraphMapping().getVertexCorrespondence(matchingNodes.get(0), false).getTemplate();
+        List<TRelationshipTemplate> externalRelationsOf2 = patternRefinement.getExternalRelations(nt2, candidateForTopology, topology)
             .collect(Collectors.toList());
         assertEquals(2, externalRelationsOf2.size());
 
         TNodeTemplate nt4 = matchingNodes.get(1).getTemplate();
-        List<TRelationshipTemplate> externalRelationsOf4 = patternRefinement.getExternalRelations(nt4, candidate, topology)
+        List<TRelationshipTemplate> externalRelationsOf4 = patternRefinement.getExternalRelations(nt4, candidateForTopology, topology)
             .collect(Collectors.toList());
         assertEquals(0, externalRelationsOf4.size());
     }
@@ -295,7 +294,7 @@ class PatternRefinementTest extends AbstractRefinementTest {
                                                            ######## */
 
         // region *** setup the PRM ***
-        TNodeTemplate nt13 = candidate.getRefinementModel().getRefinementTopology().getNodeTemplate("13");
+        TNodeTemplate nt13 = candidateForTopology.getRefinementModel().getRefinementTopology().getNodeTemplate("13");
         TEntityTemplate.Properties nt13Props = new TEntityTemplate.Properties();
         HashMap<String, String> nt13PropsMap = new HashMap<>();
         nt13PropsMap.put("a", null);
@@ -304,14 +303,14 @@ class PatternRefinementTest extends AbstractRefinementTest {
         nt13Props.setKVProperties(nt13PropsMap);
         nt13.setProperties(nt13Props);
 
-        TNodeTemplate nt12 = candidate.getRefinementModel().getRefinementTopology().getNodeTemplate("12");
+        TNodeTemplate nt12 = candidateForTopology.getRefinementModel().getRefinementTopology().getNodeTemplate("12");
         TEntityTemplate.Properties nt12Props = new TEntityTemplate.Properties();
         HashMap<String, String> nt12PropsMap = new HashMap<>();
         nt12PropsMap.put("j", null);
         nt12Props.setKVProperties(nt12PropsMap);
         nt12.setProperties(nt12Props);
 
-        TNodeTemplate nt11 = candidate.getRefinementModel().getRefinementTopology().getNodeTemplate("11");
+        TNodeTemplate nt11 = candidateForTopology.getRefinementModel().getRefinementTopology().getNodeTemplate("11");
         TEntityTemplate.Properties nt11Props = new TEntityTemplate.Properties();
         HashMap<String, String> nt11PropsMap = new HashMap<>();
         nt11PropsMap.put("k", null);
@@ -320,19 +319,19 @@ class PatternRefinementTest extends AbstractRefinementTest {
 
         OTAttributeMapping allOn4to13 = new OTAttributeMapping();
         allOn4to13.setType(OTAttributeMappingType.ALL);
-        allOn4to13.setDetectorNode(candidate.getRefinementModel().getDetector().getNodeTemplate("8"));
+        allOn4to13.setDetectorNode(candidateForTopology.getRefinementModel().getDetector().getNodeTemplate("8"));
         allOn4to13.setRefinementNode(nt13);
 
         OTAttributeMapping pIn2_to_jIn12 = new OTAttributeMapping();
         pIn2_to_jIn12.setType(OTAttributeMappingType.SELECTIVE);
-        pIn2_to_jIn12.setDetectorNode(candidate.getRefinementModel().getDetector().getNodeTemplate("7"));
+        pIn2_to_jIn12.setDetectorNode(candidateForTopology.getRefinementModel().getDetector().getNodeTemplate("7"));
         pIn2_to_jIn12.setRefinementNode(nt12);
         pIn2_to_jIn12.setDetectorProperty("p");
         pIn2_to_jIn12.setRefinementProperty("j");
 
         OTAttributeMapping xIn2_to_kIn11 = new OTAttributeMapping();
         xIn2_to_kIn11.setType(OTAttributeMappingType.SELECTIVE);
-        xIn2_to_kIn11.setDetectorNode(candidate.getRefinementModel().getDetector().getNodeTemplate("7"));
+        xIn2_to_kIn11.setDetectorNode(candidateForTopology.getRefinementModel().getDetector().getNodeTemplate("7"));
         xIn2_to_kIn11.setRefinementNode(nt11);
         xIn2_to_kIn11.setDetectorProperty("x");
         xIn2_to_kIn11.setRefinementProperty("k");
@@ -342,7 +341,7 @@ class PatternRefinementTest extends AbstractRefinementTest {
         relationMappings.add(pIn2_to_jIn12);
         relationMappings.add(xIn2_to_kIn11);
 
-        ((OTPatternRefinementModel) candidate.getRefinementModel()).setAttributeMappings(relationMappings);
+        ((OTPatternRefinementModel) candidateForTopology.getRefinementModel()).setAttributeMappings(relationMappings);
         // endregion
 
         // region *** setup the topology ***
@@ -363,14 +362,14 @@ class PatternRefinementTest extends AbstractRefinementTest {
         nt4.setProperties(nt4Props);
 
         Map<String, String> idMapping = BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(
-            candidate.getRefinementModel().getRefinementTopology(),
+            candidateForTopology.getRefinementModel().getRefinementTopology(),
             topology
         );
         // endregion
 
         PatternRefinement patternRefinement = new PatternRefinement();
 
-        patternRefinement.applyPropertyMappings(candidate, "8", nt4, topology, idMapping);
+        patternRefinement.applyPropertyMappings(candidateForTopology, "8", nt4, topology, idMapping);
         assertNotNull(topology.getNodeTemplate("13"));
         assertNotNull(topology.getNodeTemplate("13").getProperties());
         assertEquals(3, topology.getNodeTemplate("13").getProperties().getKVProperties().size());
@@ -378,7 +377,7 @@ class PatternRefinementTest extends AbstractRefinementTest {
         assertEquals("4", topology.getNodeTemplate("13").getProperties().getKVProperties().get("b"));
         assertEquals("0", topology.getNodeTemplate("13").getProperties().getKVProperties().get("c"));
 
-        patternRefinement.applyPropertyMappings(candidate, "7", nt2, topology, idMapping);
+        patternRefinement.applyPropertyMappings(candidateForTopology, "7", nt2, topology, idMapping);
         assertEquals(1, topology.getNodeTemplate("11").getProperties().getKVProperties().size());
         assertEquals("2", topology.getNodeTemplate("11").getProperties().getKVProperties().get("k"));
         assertEquals(1, topology.getNodeTemplate("12").getProperties().getKVProperties().size());
@@ -416,8 +415,8 @@ class PatternRefinementTest extends AbstractRefinementTest {
          */
 
         // region *** add stay mapping to PRM ***
-        TTopologyTemplate refinementTopology = candidate.getRefinementModel().getRefinementTopology();
-        TTopologyTemplate detector = candidate.getRefinementModel().getDetector();
+        TTopologyTemplate refinementTopology = candidateForTopology.getRefinementModel().getRefinementTopology();
+        TTopologyTemplate detector = candidateForTopology.getRefinementModel().getDetector();
 
         refinementTopology.getNodeTemplateOrRelationshipTemplate()
             .removeIf(template -> template.getId().equals("13") || template.getId().equals("1213"));
@@ -432,7 +431,7 @@ class PatternRefinementTest extends AbstractRefinementTest {
         nt4staysAsNt12.setId("stay1");
         nt4staysAsNt12.setDetectorNode(nt4);
         nt4staysAsNt12.setRefinementNode(nt12);
-        ((OTPatternRefinementModel) candidate.getRefinementModel())
+        ((OTPatternRefinementModel) candidateForTopology.getRefinementModel())
             .setStayMappings(Collections.singletonList(nt4staysAsNt12));
         // endregion
 
@@ -444,10 +443,10 @@ class PatternRefinementTest extends AbstractRefinementTest {
             .findMatches(detectorGraph, topologyGraph, new ToscaTypeMatcher())
             .next();
 
-        candidate = new RefinementCandidate(candidate.getRefinementModel(), mapping, detectorGraph, 1);
+        candidateForTopology = new RefinementCandidate(candidateForTopology.getRefinementModel(), mapping, detectorGraph, 1);
 
         PatternRefinement patternRefinement = new PatternRefinement();
-        patternRefinement.applyRefinement(candidate, topology2);
+        patternRefinement.applyRefinement(candidateForTopology, topology2);
 
         // region *** assertions ***
         assertNotNull(topology2.getNodeTemplate("4"));
@@ -492,7 +491,7 @@ class PatternRefinementTest extends AbstractRefinementTest {
                                 #######
          */
         PatternRefinement patternRefinement = new PatternRefinement();
-        patternRefinement.applyRefinement(candidateWithDa, topology3);
+        patternRefinement.applyRefinement(candidateForTopology3WithDa, topology3);
 
         // region *** assertions ***
         TNodeTemplate refinedNt = topology3.getNodeTemplate("11");
