@@ -37,7 +37,6 @@ export class RelationMappingsComponent implements OnInit {
 
     loading = true;
     columns: Array<WineryTableColumn> = [
-        { title: 'Id', name: 'id', sort: true },
         { title: 'Direction', name: 'direction', sort: true },
         { title: 'Detector Node', name: 'detectorNode', sort: true },
         { title: 'Refinement Node', name: 'refinementNode', sort: true },

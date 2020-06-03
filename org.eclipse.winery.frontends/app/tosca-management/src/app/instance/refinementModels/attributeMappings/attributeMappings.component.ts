@@ -39,7 +39,6 @@ export class AttributeMappingsComponent implements OnInit {
 
     loading = true;
     columns: Array<WineryTableColumn> = [
-        { title: 'Id', name: 'id', sort: true },
         { title: 'Detector Node', name: 'detectorNode', sort: true },
         { title: 'Refinement Node', name: 'refinementNode', sort: true },
         { title: 'Type', name: 'type', sort: true },
@@ -71,7 +70,7 @@ export class AttributeMappingsComponent implements OnInit {
 
     constructor(private service: RefinementMappingsService,
                 private notify: WineryNotificationService,
-                private sharedData: InstanceService,
+                public sharedData: InstanceService,
                 private modalService: BsModalService) {
     }
 

@@ -33,15 +33,15 @@ export class DeploymentArtifactsMappingsComponent implements OnInit {
 
     loading = true;
     columns: Array<WineryTableColumn> = [
-        { title: 'Id', name: 'id', sort: true },
+        { title: 'Deployment Artifact Type', name: 'artifactType', sort: true },
         { title: 'Detector Element', name: 'detectorNode', sort: true },
-        { title: 'Deployment Artifact Name', name: 'artifactName', sort: true },
         { title: 'Refinement Element', name: 'refinementNode', sort: true },
     ];
 
     deploymentArtifactMappings: DeploymentArtifactMapping[];
     detectorNodes: NodeTemplate[];
     refinementNodes: NodeTemplate[];
+    artifactTypes: SelectData[];
 
     mapping: DeploymentArtifactMapping;
 
@@ -61,6 +61,7 @@ export class DeploymentArtifactsMappingsComponent implements OnInit {
             this.service.getDeploymentArtifactMappings(),
             this.service.getDetectorNodeTemplates(),
             this.service.getRefinementTopologyNodeTemplates(),
+            this.service.getArtifactTypes(),
         ).subscribe(
             data => this.handleData(data),
             error => this.handleError(error)
@@ -113,11 +114,12 @@ export class DeploymentArtifactsMappingsComponent implements OnInit {
         this.notify.error(error.message);
     }
 
-    private handleData(data: [DeploymentArtifactMapping[], NodeTemplate[], NodeTemplate[]]) {
+    private handleData(data: [DeploymentArtifactMapping[], NodeTemplate[], NodeTemplate[], SelectData[]]) {
         this.loading = false;
         this.deploymentArtifactMappings = data[0];
         this.detectorNodes = data[1];
         this.refinementNodes = data[2];
+        this.artifactTypes = data[3];
     }
 
     // endregion

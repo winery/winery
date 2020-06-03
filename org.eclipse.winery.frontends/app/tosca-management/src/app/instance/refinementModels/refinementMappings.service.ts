@@ -60,6 +60,10 @@ export class RefinementMappingsService {
         return this.http.get<SelectData[]>(backendBaseURL + '/nodetypes/?grouped=angularSelect');
     }
 
+    public getArtifactTypes(): Observable<SelectData[]> {
+        return this.http.get<SelectData[]>(backendBaseURL + '/artifacttypes/?grouped=angularSelect');
+    }
+
     public getRelationshipMappings(): Observable<RelationMapping[]> {
         return this.http.get<RelationMapping[]>(this.path + '/relationmappings');
     }

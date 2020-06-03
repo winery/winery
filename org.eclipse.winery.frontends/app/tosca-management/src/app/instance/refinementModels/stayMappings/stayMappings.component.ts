@@ -23,7 +23,6 @@ import { SelectData } from '../../../model/selectData';
 import { InstanceService } from '../../instance.service';
 import { PrmModelElementType, StayMapping } from './stayMapping';
 import { forkJoin } from 'rxjs';
-import { RelationMapping } from '../relationshipMappings/relationMapping';
 
 @Component({
     templateUrl: 'stayMappings.component.html',
@@ -38,7 +37,6 @@ export class StayMappingsComponent implements OnInit {
     loading = true;
     loadingElements = false;
     columns: Array<WineryTableColumn> = [
-        { title: 'Id', name: 'id', sort: true },
         { title: 'Element Type', name: 'modelElementType', sort: true },
         { title: 'Detector Element', name: 'detectorNode', sort: true },
         { title: 'Refinement Element', name: 'refinementNode', sort: true },
