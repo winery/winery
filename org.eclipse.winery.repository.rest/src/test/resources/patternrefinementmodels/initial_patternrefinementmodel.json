@@ -39,6 +39,9 @@
 
                 ]
             },
+            "relationMappings": [
+
+            ],
             "refinementStructure": {
                 "documentation": [
 

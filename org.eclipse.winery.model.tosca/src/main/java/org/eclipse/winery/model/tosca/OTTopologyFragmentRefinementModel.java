@@ -82,6 +82,7 @@ public class OTTopologyFragmentRefinementModel extends OTRefinementModel {
         this.stayMappings = stayMappings;
     }
 
+    @Nullable
     public List<OTDeploymentArtifactMapping> getDeploymentArtifactMappings() {
         return deploymentArtifactMappings;
     }

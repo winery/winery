@@ -23,6 +23,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.RefinementId;
 import org.eclipse.winery.common.ids.definitions.TopologyFragmentRefinementModelId;
 import org.eclipse.winery.model.adaptation.substitution.refinement.AbstractRefinement;
@@ -37,6 +40,7 @@ import org.eclipse.winery.model.tosca.OTRefinementModel;
 import org.eclipse.winery.model.tosca.OTRelationDirection;
 import org.eclipse.winery.model.tosca.OTStayMapping;
 import org.eclipse.winery.model.tosca.OTTopologyFragmentRefinementModel;
+import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -57,9 +61,11 @@ import org.slf4j.LoggerFactory;
 public class TopologyFragmentRefinement extends AbstractRefinement {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TopologyFragmentRefinement.class);
+    protected final Map<QName, TArtifactType> artifactTypes = new HashMap<>();
 
     public TopologyFragmentRefinement(RefinementChooser refinementChooser, Class<? extends RefinementId> idClass, String versionAppendix) {
         super(refinementChooser, idClass, versionAppendix);
+        this.artifactTypes.putAll(this.repository.getQNameToElementMapping(ArtifactTypeId.class));
     }
 
     public TopologyFragmentRefinement(RefinementChooser refinementChooser) {
@@ -70,15 +76,28 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
         this(new DefaultRefinementChooser());
     }
 
+    @Override
     public boolean isApplicable(RefinementCandidate candidate, TTopologyTemplate topology) {
         return candidate.getDetectorGraph().vertexSet()
             .stream()
             .allMatch(vertex -> {
                 TNodeTemplate matchingNode = candidate.getGraphMapping().getVertexCorrespondence(vertex, false).getTemplate();
-                return this.canRedirectExternalRelations(candidate, vertex.getTemplate(), matchingNode, topology);
+                return this.canRedirectExternalRelations(candidate, vertex.getTemplate(), matchingNode, topology)
+                    && this.canMoveDeploymentArtifacts(candidate, vertex.getTemplate(), matchingNode, topology);
             });
     }
 
+    @Override
+    public boolean getLoopCondition(TTopologyTemplate topology) {
+        return true;
+    }
+
+    @Override
+    public IToscaMatcher getMatcher(OTRefinementModel prm) {
+        return new ToscaPrmPropertyMatcher(prm.getDetector().getNodeTemplateOrRelationshipTemplate(), repository.getNamespaceManager());
+    }
+
+    @Override
     public void applyRefinement(RefinementCandidate refinement, TTopologyTemplate topology) {
         if (!(refinement.getRefinementModel() instanceof OTTopologyFragmentRefinementModel)) {
             throw new UnsupportedOperationException("The refinement candidate is not a PRM!");
@@ -109,8 +128,10 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
             .forEach(node -> {
                     Map<String, Integer> newCoordinates = coordinates.get(node.getId());
                     TNodeTemplate nodeTemplate = topology.getNodeTemplate(idMapping.get(node.getId()));
-                    nodeTemplate.setX(newCoordinates.get("x").toString());
-                    nodeTemplate.setY(newCoordinates.get("y").toString());
+                    if (nodeTemplate != null) {
+                        nodeTemplate.setX(newCoordinates.get("x").toString());
+                        nodeTemplate.setY(newCoordinates.get("y").toString());
+                    }
                 }
             );
 
@@ -124,17 +145,17 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                 this.redirectExternalRelations(refinement, vertex.getTemplate(), matchingNode, topology, idMapping);
 
                 this.applyPropertyMappings(refinement, vertex.getId(), matchingNode, topology, idMapping);
-                this.applyDeploymentArtifactMapping(refinement, vertex.getId(), matchingNode, topology, idMapping);
+                this.applyDeploymentArtifactMapping(refinement, vertex.getTemplate(), matchingNode, topology, idMapping);
 
                 if (!getStayMappingsOfCurrentElement(prm, vertex.getTemplate()).findFirst().isPresent()) {
                     topology.getNodeTemplateOrRelationshipTemplate()
                         .remove(matchingNode);
                 } else if (vertex.getTemplate().getPolicies() != null && matchingNode.getPolicies() != null) {
                     vertex.getTemplate().getPolicies().getPolicy()
-                        .forEach(detectorPolicy -> {
+                        .forEach(detectorPolicy ->
                             matchingNode.getPolicies().getPolicy()
-                                .removeIf(matchingPolicy -> matchingPolicy.getPolicyType().equals(detectorPolicy.getPolicyType()));
-                        });
+                                .removeIf(matchingPolicy -> matchingPolicy.getPolicyType().equals(detectorPolicy.getPolicyType()))
+                        );
                 }
             });
         refinement.getDetectorGraph().edgeSet()
@@ -150,34 +171,40 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
             });
     }
 
-    private void applyDeploymentArtifactMapping(RefinementCandidate refinement, String detectorNodeId, TNodeTemplate matchingNode,
-                                                TTopologyTemplate topology, Map<String, String> idMapping) {
+    private boolean applyDeploymentArtifactMapping(RefinementCandidate refinement, TNodeTemplate detectorNode, TNodeTemplate matchingNode,
+                                                   TTopologyTemplate topology, Map<String, String> idMapping) {
         List<OTDeploymentArtifactMapping> deploymentArtifactMappings = ((OTTopologyFragmentRefinementModel) refinement.getRefinementModel()).getDeploymentArtifactMappings();
-        if (deploymentArtifactMappings != null) {
-            deploymentArtifactMappings.stream()
-                .filter(mapping -> mapping.getDetectorNode().getId().equals(detectorNodeId))
-                .forEach(mapping -> {
-                    if (matchingNode.getDeploymentArtifacts() != null) {
-                        matchingNode.getDeploymentArtifacts().getDeploymentArtifact().stream()
-                            .filter(deploymentArtifact -> deploymentArtifact.getName().equals(mapping.getArtifactName()))
-                            .forEach(deploymentArtifactAtMatchingNode -> {
-                                TNodeTemplate addedNode = topology.getNodeTemplate(idMapping.get(mapping.getRefinementNode().getId()));
-                                if (addedNode != null) {
-                                    TDeploymentArtifacts existingDeploymentArtifactsOfRefinement = addedNode.getDeploymentArtifacts();
-                                    if (existingDeploymentArtifactsOfRefinement == null) {
-                                        existingDeploymentArtifactsOfRefinement = new TDeploymentArtifacts();
-                                        addedNode.setDeploymentArtifacts(existingDeploymentArtifactsOfRefinement);
-                                    } else if (existingDeploymentArtifactsOfRefinement.getDeploymentArtifact(deploymentArtifactAtMatchingNode.getName()) != null) {
-                                        deploymentArtifactAtMatchingNode.setName(deploymentArtifactAtMatchingNode.getName() + UUID.randomUUID());
+
+        return matchingNode.getDeploymentArtifacts() == null
+            || matchingNode.getDeploymentArtifacts().getDeploymentArtifact().isEmpty()
+            || (
+            deploymentArtifactMappings != null && matchingNode.getDeploymentArtifacts().getDeploymentArtifact().stream()
+                .allMatch(deploymentArtifact ->
+                    deploymentArtifactMappings.stream()
+                        .filter(mapping -> mapping.getDetectorNode().getId().equals(detectorNode.getId()))
+                        .anyMatch(mapping -> {
+                            if (ModelUtilities.isOfType(mapping.getArtifactType(), deploymentArtifact.getArtifactType(), this.artifactTypes)) {
+                                if (idMapping != null) {
+                                    TNodeTemplate addedNode = topology.getNodeTemplate(idMapping.get(mapping.getRefinementNode().getId()));
+                                    if (addedNode != null) {
+                                        TDeploymentArtifacts existingDeploymentArtifactsOfRefinement = addedNode.getDeploymentArtifacts();
+                                        if (existingDeploymentArtifactsOfRefinement == null) {
+                                            existingDeploymentArtifactsOfRefinement = new TDeploymentArtifacts();
+                                            addedNode.setDeploymentArtifacts(existingDeploymentArtifactsOfRefinement);
+                                        } else if (existingDeploymentArtifactsOfRefinement.getDeploymentArtifact(deploymentArtifact.getName()) != null) {
+                                            deploymentArtifact.setName(deploymentArtifact.getName() + UUID.randomUUID());
+                                        }
+                                        existingDeploymentArtifactsOfRefinement.getDeploymentArtifact().add(deploymentArtifact);
+                                    } else {
+                                        LOGGER.error("Error while adding Deployment Artifacts! Node was not added to the topology!");
                                     }
-                                    existingDeploymentArtifactsOfRefinement.getDeploymentArtifact().add(deploymentArtifactAtMatchingNode);
-                                } else {
-                                    LOGGER.error("Error while adding Deployment Artifacts! Node was not added to the topology!");
                                 }
-                            });
-                    }
-                });
-        }
+                                return true;
+                            }
+                            return false;
+                        })
+                )
+        );
     }
 
     public void applyPropertyMappings(RefinementCandidate refinement, String detectorNodeId, TEntityTemplate matchingEntity,
@@ -187,26 +214,30 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
             propertyMappings.stream()
                 .filter(mapping -> mapping.getDetectorNode().getId().equals(detectorNodeId))
                 .forEach(mapping -> {
-                    Map<String, String> sourceProperties = matchingEntity.getProperties().getKVProperties();
-                    TEntityTemplate.Properties properties = topology.getNodeTemplateOrRelationshipTemplate()
-                        .stream()
-                        .filter(element -> element.getId().equals(idMapping.get(mapping.getRefinementNode().getId())))
-                        .findFirst()
-                        .get()
-                        .getProperties();
-                    Map<String, String> targetProperties = properties.getKVProperties();
+                    if (Objects.nonNull(matchingEntity.getProperties())) {
+                        Map<String, String> sourceProperties = matchingEntity.getProperties().getKVProperties();
+                        topology.getNodeTemplateOrRelationshipTemplate()
+                            .stream()
+                            .filter(element -> element.getId().equals(idMapping.get(mapping.getRefinementNode().getId())))
+                            .findFirst()
+                            .ifPresent(addedElement -> {
+                                if (addedElement.getProperties() != null) {
+                                    Map<String, String> targetProperties = addedElement.getProperties().getKVProperties();
 
-                    if (Objects.nonNull(matchingEntity.getProperties()) && Objects.nonNull(sourceProperties) && !sourceProperties.isEmpty()
-                        && Objects.nonNull(targetProperties)) {
-                        if (mapping.getType() == OTAttributeMappingType.ALL) {
-                            sourceProperties.forEach(targetProperties::replace);
-                        } else {
-                            // TPrmPropertyMappingType.SELECTIVE
-                            String sourceValue = sourceProperties.get(mapping.getDetectorProperty());
-                            targetProperties.put(mapping.getRefinementProperty(), sourceValue);
-                        }
-                        // because of the dynamical generation of the KV properties, we must set them again to persist them...
-                        properties.setKVProperties(targetProperties);
+                                    if (Objects.nonNull(sourceProperties) && !sourceProperties.isEmpty()
+                                        && Objects.nonNull(targetProperties)) {
+                                        if (mapping.getType() == OTAttributeMappingType.ALL) {
+                                            sourceProperties.forEach(targetProperties::replace);
+                                        } else {
+                                            // TPrmPropertyMappingType.SELECTIVE
+                                            String sourceValue = sourceProperties.get(mapping.getDetectorProperty());
+                                            targetProperties.put(mapping.getRefinementProperty(), sourceValue);
+                                        }
+                                        // because of the dynamical generation of the KV properties, we must set them again to persist them...
+                                        addedElement.getProperties().setKVProperties(targetProperties);
+                                    }
+                                }
+                            });
                     }
                 });
         }
@@ -214,6 +245,10 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
 
     private boolean canRedirectExternalRelations(RefinementCandidate refinement, TNodeTemplate detectorNode, TNodeTemplate matchingNode, TTopologyTemplate topology) {
         return this.redirectExternalRelations(refinement, detectorNode, matchingNode, topology, null);
+    }
+
+    private boolean canMoveDeploymentArtifacts(RefinementCandidate candidate, TNodeTemplate detectorNode, TNodeTemplate matchingNode, TTopologyTemplate topology) {
+        return this.applyDeploymentArtifactMapping(candidate, detectorNode, matchingNode, topology, null);
     }
 
     private boolean redirectExternalRelations(RefinementCandidate refinement, TNodeTemplate detectorNode, TNodeTemplate matchingNode,
@@ -298,16 +333,6 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
             });
     }
 
-    @Override
-    public boolean getLoopCondition(TTopologyTemplate topology) {
-        return true;
-    }
-
-    @Override
-    public IToscaMatcher getMatcher(OTRefinementModel prm) {
-        return new ToscaPrmPropertyMatcher(prm.getDetector().getNodeTemplateOrRelationshipTemplate(), repository.getNamespaceManager());
-    }
-
     private Map<String, Map<String, Integer>> calculateNewPositions(ToscaGraph detectorGraph, GraphMapping<ToscaNode, ToscaEdge> mapping, TTopologyTemplate refinementStructure) {
         HashMap<String, Map<String, Integer>> coordinates = new HashMap<>();
         int[] topLeftOriginal = {-1, -1};
@@ -322,14 +347,16 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
         );
 
         refinementStructure.getNodeTemplates().forEach(nodeTemplate -> {
-            int x = Integer.parseInt(nodeTemplate.getX());
-            int y = Integer.parseInt(nodeTemplate.getY());
+            if (nodeTemplate.getX() != null && nodeTemplate.getY() != null) {
+                int x = Integer.parseInt(nodeTemplate.getX());
+                int y = Integer.parseInt(nodeTemplate.getY());
 
-            HashMap<String, Integer> newCoordinates = new HashMap<>();
-            newCoordinates.put("x", (x - topLeftReplacement[0]) + topLeftOriginal[0]);
-            newCoordinates.put("y", (y - topLeftReplacement[1]) + topLeftOriginal[1]);
+                HashMap<String, Integer> newCoordinates = new HashMap<>();
+                newCoordinates.put("x", (x - topLeftReplacement[0]) + topLeftOriginal[0]);
+                newCoordinates.put("y", (y - topLeftReplacement[1]) + topLeftOriginal[1]);
 
-            coordinates.put(nodeTemplate.getId(), newCoordinates);
+                coordinates.put(nodeTemplate.getId(), newCoordinates);
+            }
         });
 
         return coordinates;

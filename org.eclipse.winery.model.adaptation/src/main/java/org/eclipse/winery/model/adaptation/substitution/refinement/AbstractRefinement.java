@@ -44,13 +44,13 @@ public abstract class AbstractRefinement extends AbstractSubstitution {
 
     protected ServiceTemplateId refinementServiceTemplateId;
 
-    private final List<OTRefinementModel> patternRefinementModels;
+    private final List<OTRefinementModel> refinementModels;
     private final RefinementChooser refinementChooser;
 
     public AbstractRefinement(RefinementChooser refinementChooser, Class<? extends RefinementId> idClass, String versionAppendix) {
         this.refinementChooser = refinementChooser;
         this.versionAppendix = versionAppendix;
-        this.patternRefinementModels = this.repository.getAllDefinitionsChildIds(idClass)
+        this.refinementModels = this.repository.getAllDefinitionsChildIds(idClass)
             .stream()
             .map(repository::getElement)
             .collect(Collectors.toList());
@@ -78,7 +78,7 @@ public abstract class AbstractRefinement extends AbstractSubstitution {
             ToscaGraph topologyGraph = ToscaTransformer.createTOSCAGraph(topology);
 
             List<RefinementCandidate> candidates = new ArrayList<>();
-            this.patternRefinementModels
+            this.refinementModels
                 .forEach(prm -> {
                     ToscaGraph detectorGraph = ToscaTransformer.createTOSCAGraph(prm.getDetector());
                     IToscaMatcher matcher = getMatcher(prm);

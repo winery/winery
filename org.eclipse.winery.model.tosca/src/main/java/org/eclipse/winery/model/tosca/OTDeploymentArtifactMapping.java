@@ -18,19 +18,20 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.namespace.QName;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "otDeploymentArtifactMapping")
 public class OTDeploymentArtifactMapping extends OTPrmMapping {
 
-    @XmlAttribute(name = "artifactName", required = true)
-    private String artifactName;
+    @XmlAttribute(name = "artifactType", required = true)
+    private QName artifactType;
 
-    public String getArtifactName() {
-        return artifactName;
+    public QName getArtifactType() {
+        return artifactType;
     }
 
-    public void setArtifactName(String artifactName) {
-        this.artifactName = artifactName;
+    public void setArtifactType(QName artifactType) {
+        this.artifactType = artifactType;
     }
 }
