@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -27,7 +28,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "Artifacts", propOrder = {
     "artifact"
 })
-public class TArtifacts {
+public class TArtifacts implements Serializable {
 
     @XmlElement(name = "Artifact", required = true)
     List<TArtifact> artifact;
