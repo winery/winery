@@ -188,10 +188,19 @@ export class TDataType extends EntityType {
                 properties: any,
                 public full: any,
                 public constraints: any,
-                public keySchema: any,
-                public entrySchema: any) {
+                public keySchema: SchemaDefinition,
+                public entrySchema: SchemaDefinition) {
         super(id, qName, name, namespace, properties, full);
     }
+}
+
+export class SchemaDefinition {
+    constructor(public type: string,
+                public description: string,
+                public constraints: any,
+                public keySchema: SchemaDefinition,
+                public entrySchema: SchemaDefinition
+                ) {}
 }
 
 export class TArtifactType extends EntityType {

@@ -11,9 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
+import { QName } from '../../../model/qName';
+
 export class PropertiesTableData {
     key: string = null;
-    type: string = null;
+    type: string | QName = null;
     required: boolean;
     defaultValue: string;
     description: string;

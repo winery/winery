@@ -13,8 +13,8 @@
  *******************************************************************************/
 
 import { Component, Input } from '@angular/core';
-import { InstanceService } from '../../../instance.service';
-import { YamlPropertyConstraint } from '../../propertiesDefinition/yaml/yamlProperty';
+import { InstanceService } from '../../../../instance.service';
+import { YamlPropertyConstraint } from '../yamlProperty';
 
 @Component({
     selector: 'winery-yaml-constraints',

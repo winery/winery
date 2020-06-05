@@ -21,7 +21,7 @@ import { EditXMLComponent } from '../../instance/sharedComponents/editXML/editXM
 import { ToscaTypes } from '../../model/enums';
 import { InheritanceComponent } from '../../instance/sharedComponents/inheritance/inheritance.component';
 import { PropertyConstraintsComponent } from '../../instance/serviceTemplates/boundaryDefinitions/propertyConstraints/propertyConstraints.component';
-import { YamlPropertiesComponent } from '../../instance/sharedComponents/yaml/properties/yamlProperties.component';
+import { YamlPropertiesComponent } from '../../instance/sharedComponents/propertiesDefinition/yaml/yamlProperties.component';
 import { DataTypeComponent } from '../../instance/sharedComponents/yaml/datatypes/dataType.component';
 
 const toscaType = ToscaTypes.DataType;

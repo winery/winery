@@ -15,6 +15,7 @@ import { QName } from '../../../../model/qName';
 import { KeyValueItem } from '../../../../model/keyValueItem';
 import { SchemaDefinition } from '../../../../../../../topologymodeler/src/app/models/ttopology-template';
 import { YamlWellKnown } from '../../../../../../../topologymodeler/src/app/properties/property-constraints';
+import { Constraint } from '../../../../model/constraint';
 
 export class YamlProperty {
     name: string;
@@ -23,14 +24,8 @@ export class YamlProperty {
     required: boolean;
     defaultValue: any;
     status: string;
-    constraints: YamlPropertyConstraint[];
+    constraints: Constraint[];
     keySchema: SchemaDefinition;
     entrySchema: SchemaDefinition;
     humanSchema: string;
-}
-
-export class YamlPropertyConstraint implements KeyValueItem {
-    key: string;
-    value: any;
-    list: String[];
 }

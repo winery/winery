@@ -21,8 +21,7 @@ import { DataTypeComponent } from '../../instance/sharedComponents/yaml/datatype
 import { InheritanceModule } from '../../instance/sharedComponents/inheritance/inheritance.module';
 import { WineryPipesModule } from '../../wineryPipes/wineryPipes.module';
 import { AlertModule } from 'ngx-bootstrap';
-import { YamlConstraintsComponent } from '../../instance/sharedComponents/yaml/constraints/yamlConstraints.component';
-import { YamlPropertiesComponent } from '../../instance/sharedComponents/yaml/properties/yamlProperties.component';
+import { PropertiesDefinitionModule } from '../../instance/sharedComponents/propertiesDefinition/propertiesDefinition.module';
 
 @NgModule({
     imports: [
@@ -34,16 +33,13 @@ import { YamlPropertiesComponent } from '../../instance/sharedComponents/yaml/pr
         InheritanceModule,
         WineryPipesModule,
         AlertModule,
+        PropertiesDefinitionModule,
     ],
     declarations: [
         DataTypeComponent,
-        YamlPropertiesComponent,
-        YamlConstraintsComponent,
     ],
     exports: [
         DataTypeComponent,
-        YamlPropertiesComponent,
-        YamlConstraintsComponent,
     ]
 })
 export class DataTypeModule {

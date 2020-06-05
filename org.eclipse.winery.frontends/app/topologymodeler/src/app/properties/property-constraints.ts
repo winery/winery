@@ -36,10 +36,19 @@ export class ConstraintClause {
 }
 
 /**
- * Referenced YAML types as defined in YAML spec 3.3.1, as well as the types defined by the spec
+ * Referenced YAML types as defined in YAML spec 3.3.1, as well as the types defined by the spec itself.
  */
-export const knownTypes = ['string', 'integer', 'float', 'boolean', 'timestamp', 'null',
-    'version', 'range', 'list', 'map', 'scalar-unit.size', 'scalar-unit.time', 'scalar-unit.frequency', 'scalar-unit.bitrate'];
+export type YamlWellKnown =
+    'string' | 'integer' | 'float' | 'boolean' | 'timestamp' | 'null' |
+    'version'| 'range' | 'list' | 'map' |
+    'scalar-unit.size' | 'scalar-unit.time' | 'scalar-unit.frequency' | 'scalar-unit.bitrate';
+
+/**
+ * Checks whether a given value is a declaration of a well-known YAML type as defined in {@link YamlWellKnown} and can act as a type guard.
+ */
+export function isWellKnown(value: any): value is YamlWellKnown {
+    return (value as YamlWellKnown) !== undefined;
+}
 
 export class ConstraintChecking {
     /**

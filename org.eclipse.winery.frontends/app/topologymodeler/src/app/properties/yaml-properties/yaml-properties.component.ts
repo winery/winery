@@ -19,7 +19,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { BackendService } from '../../services/backend.service';
 import { EntityType, TDataType } from '../../models/ttopology-template';
 import { InheritanceUtils } from '../../models/InheritanceUtils';
-import { ConstraintChecking, knownTypes } from '../property-constraints';
+import { ConstraintChecking, isWellKnown } from '../property-constraints';
 import { ToscaUtils } from '../../models/toscaUtils';
 
 
@@ -109,8 +109,12 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
         for (const type of inheritance) {
             const definition = ToscaUtils.getDefinition(type);
             for (const propertyDefinition of definition.properties || []) {
-                if (knownTypes.some(t => t === propertyDefinition.type)) {
+                if (isWellKnown(propertyDefinition.type)) {
                     // the property type is a simple type like "string" or "integer"
+                    if (propertyDefinition.type === 'list' || propertyDefinition.type === 'map') {
+                        // known types list and map require JSON processing, which is tied to the "complex" flag
+                        propertyDefinition.complex = true;
+                    }
                     definedProperties.push(propertyDefinition);
                 } else {
                     this.handleDataType(propertyDefinition, definedProperties);

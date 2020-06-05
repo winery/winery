@@ -89,22 +89,16 @@ export class PropertiesDefinitionComponent implements OnInit {
 
     copyToTable() {
         this.tableData = [];
-        if (this.resourceApiData.winerysPropertiesDefinition && this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList) {
-            for (const property of this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList) {
-                let constraintsString = '';
-                if (property.constraints) {
-                    for (const constraint of property.constraints) {
-                        if (constraint.value == null) {
-                            constraintsString += constraint.key + ':' + constraint.list.toString();
-                        } else if (constraint.list == null) {
-                            constraintsString += constraint.key + ':' + constraint.value;
-                        } else {
-                            constraintsString += constraint.key;
-                        }
-                        if (property.constraints.indexOf(constraint) !== property.constraints.length - 1) {
-                            constraintsString += ', ';
-                        }
-                    }
+        for (const property of this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList
+                                || this.resourceApiData.propertiesDefinition.properties) {
+            let constraintsString = '';
+            for (const constraint of property.constraints) {
+                if (constraint.value == null) {
+                    constraintsString += constraint.key + ':' + constraint.list.toString();
+                } else if (constraint.list == null) {
+                    constraintsString += constraint.key + ':' + constraint.value;
+                } else {
+                    constraintsString += constraint.key;
                 }
                 if (!property.defaultValue) {
                     property.defaultValue = '';
@@ -115,6 +109,17 @@ export class PropertiesDefinitionComponent implements OnInit {
                 this.tableData.push(new PropertiesTableData(property.key, property.type, property.required, property.defaultValue, property.description,
                     constraintsString));
             }
+            if (!property.defaultValue) {
+                property.defaultValue = '';
+            }
+            if (!property.description) {
+                property.description = '';
+            }
+
+            // key / name are disjoint properties
+            // @ts-ignore 2339
+            this.tableData.push(new PropertiesTableData(property.key || property.name, property.type, property.required, property.defaultValue,
+                property.description, constraintsString));
         }
     }
 
@@ -198,6 +203,16 @@ export class PropertiesDefinitionComponent implements OnInit {
 
         this.activeElement = new SelectData();
         this.activeElement.text = this.resourceApiData.winerysPropertiesDefinition.namespace;
+    }
+
+    onYamlProperties(): void {
+        this.resourceApiData.selectedValue = PropertiesDefinitionEnum.Yaml;
+
+        // null away all the data access points that are not yaml
+        this.resourceApiData.winerysPropertiesDefinition = new WinerysPropertiesDefinition();
+        this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList = null;
+        this.resourceApiData.propertiesDefinition.element = null;
+        this.resourceApiData.propertiesDefinition.type = null;
     }
 
     // endregion
@@ -374,12 +389,11 @@ export class PropertiesDefinitionComponent implements OnInit {
             case PropertiesDefinitionEnum.Custom:
                 this.onCustomKeyValuePairSelected();
                 break;
+            case PropertiesDefinitionEnum.Yaml:
+                this.onYamlProperties();
+                break;
             default:
-                if (this.configurationService.configuration.features.yaml) {
-                    this.onCustomKeyValuePairSelected();
-                } else {
-                    this.resourceApiData.selectedValue = PropertiesDefinitionEnum.None;
-                }
+                this.resourceApiData.selectedValue = PropertiesDefinitionEnum.None;
         }
 
         this.handleSuccess(data);
@@ -395,10 +409,17 @@ export class PropertiesDefinitionComponent implements OnInit {
      * @param itemToDelete
      */
     private deleteItemFromPropertyDefinitionKvList(itemToDelete: any): void {
-        const list = this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList;
+        const list = this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList || [];
         for (let i = 0; i < list.length; i++) {
             if (list[i].key === itemToDelete.key) {
                 list.splice(i, 1);
+            }
+        }
+
+        const yamlList = this.resourceApiData.propertiesDefinition.properties || [];
+        for (let i = 0; i < yamlList.length; i++) {
+            if (yamlList[i].name === itemToDelete.key) {
+                yamlList.splice(i, 1);
             }
         }
     }
