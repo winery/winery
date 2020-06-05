@@ -22,17 +22,25 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 @XmlRootElement(name = "PropertiesDefinition")
 /**
  * This is Winery's main extension element for a key/value based properties definition.
  * To be representable in the canonical model it directly implements the marker interface used for storing
  * PropertiesDefinitions {@link org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition}
  */
+@JsonDeserialize(as = WinerysPropertiesDefinition.class)
 public class WinerysPropertiesDefinition extends TEntityType.PropertiesDefinition implements Serializable {
 
+    @JsonProperty
     private String namespace;
+    @JsonProperty
     private String elementName;
+    @JsonProperty
     private PropertyDefinitionKVList propertyDefinitionKVList;
+    @JsonProperty
     private Boolean isDerivedFromXSD = Boolean.FALSE;
     
     @XmlAttribute(name = "namespace")

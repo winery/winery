@@ -63,6 +63,7 @@ import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementType;
+import org.eclipse.winery.model.tosca.TSchema;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
@@ -99,6 +100,7 @@ import org.eclipse.winery.model.tosca.yaml.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.yaml.TRelationshipType;
 import org.eclipse.winery.model.tosca.yaml.TRequirementAssignment;
 import org.eclipse.winery.model.tosca.yaml.TRequirementDefinition;
+import org.eclipse.winery.model.tosca.yaml.TSchemaDefinition;
 import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.model.tosca.yaml.TSubstitutionMappings;
 import org.eclipse.winery.model.tosca.yaml.TTopologyTemplateDefinition;
@@ -349,9 +351,23 @@ public class FromCanonical {
         builder.setConstraints(convert(canonical.getConstraints()));
         builder.setDefault(canonical.getDefaultValue());
         builder.setDescription(canonical.getDescription());
-        // FIXME how do we handle EntrySchema?
+        if (canonical.getEntrySchema() != null) {
+            builder.setEntrySchema(convert(canonical.getEntrySchema()));
+        }
+        if (canonical.getKeySchema() != null) {
+            builder.setKeySchema(convert(canonical.getKeySchema()));
+        }
         builder.setRequired(canonical.getRequired());
         builder.setStatus(canonical.getStatus().toString());
+        return builder.build();
+    }
+
+    private TSchemaDefinition convert(TSchema canonical) {
+        TSchemaDefinition.Builder builder = new TSchemaDefinition.Builder(canonical.getType());
+        builder.setDescription(canonical.getDescription());
+        builder.setConstraints(convert(canonical.getConstraints()));
+        builder.setKeySchema(convert(canonical.getKeySchema()));
+        builder.setEntrySchema(convert(canonical.getEntrySchema()));
         return builder.build();
     }
 

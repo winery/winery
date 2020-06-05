@@ -34,12 +34,17 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.jsonsupport.PropertiesDefinitionDeserializer;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitionList;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKVList;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -300,6 +305,11 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
         @XmlElement
         private ConstraintClauseKVList constraints;
 
+        @XmlElement(name = "entry_schema")
+        private TSchema entrySchema;
+        @XmlElement(name = "key_schema")
+        private TSchema keySchema;
+
         public YamlPropertyDefinition() {
             // added for xml serialization!
         }
@@ -312,6 +322,8 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             this.defaultValue = builder.defaultValue;
             this.status = builder.status;
             this.constraints = builder.constraints;
+            this.keySchema = builder.keySchema;
+            this.entrySchema = builder.entrySchema;
         }
         
         @XmlEnum(String.class)
@@ -330,9 +342,6 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
                     .orElse(null);
             }
         }
-        // FIXME introduce this
-//        @XmlAttribute(name = "entry_schema")
-//        private TEntrySchema entrySchema;
 
         public static class Builder {
             private String name;
@@ -342,6 +351,8 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             private Object defaultValue;
             private YamlPropertyDefinition.Status status;
             private ConstraintClauseKVList constraints;
+            private TSchema entrySchema;
+            private TSchema keySchema;
             
             public Builder(String name) {
                 this.name = name;
@@ -381,7 +392,17 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
                 this.constraints = constraints;
                 return this;
             }
-            
+
+            public Builder setEntrySchema(TSchema entrySchema) {
+                this.entrySchema = entrySchema;
+                return this;
+            }
+
+            public Builder setKeySchema(TSchema keySchema) {
+                this.keySchema = keySchema;
+                return this;
+            }
+
             public YamlPropertyDefinition build() {
                 return new YamlPropertyDefinition(this);
             }
@@ -395,19 +416,21 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             this.name = name;
         }
 
+        @NonNull
         public QName getType() {
             return type;
         }
 
-        public void setType(QName type) {
+        public void setType(@NonNull QName type) {
             this.type = type;
         }
 
+        @Nullable
         public String getDescription() {
             return description;
         }
 
-        public void setDescription(String description) {
+        public void setDescription(@Nullable String description) {
             this.description = description;
         }
 
@@ -419,11 +442,12 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             this.required = required;
         }
 
+        @Nullable
         public Object getDefaultValue() {
             return defaultValue;
         }
 
-        public void setDefaultValue(Object defaultValue) {
+        public void setDefaultValue(@Nullable Object defaultValue) {
             this.defaultValue = defaultValue;
         }
 
@@ -435,12 +459,31 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             this.status = status;
         }
 
+        @Nullable
         public ConstraintClauseKVList getConstraints() {
             return constraints;
         }
 
-        public void setConstraints(ConstraintClauseKVList constraints) {
+        public void setConstraints(@Nullable ConstraintClauseKVList constraints) {
             this.constraints = constraints;
+        }
+
+        @Nullable
+        public TSchema getEntrySchema() {
+            return entrySchema;
+        }
+
+        public void setEntrySchema(@Nullable TSchema entrySchema) {
+            this.entrySchema = entrySchema;
+        }
+
+        @Nullable
+        public TSchema getKeySchema() {
+            return keySchema;
+        }
+
+        public void setKeySchema(@Nullable TSchema keySchema) {
+            this.keySchema = keySchema;
         }
     }
 
@@ -457,11 +500,20 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
         XmlElementDefinition.class,
         XmlTypeDefinition.class
     })
+    @JsonSubTypes({
+        @JsonSubTypes.Type(YamlPropertiesDefinition.class),
+        @JsonSubTypes.Type(WinerysPropertiesDefinition.class),
+        @JsonSubTypes.Type(XmlElementDefinition.class),
+        @JsonSubTypes.Type(XmlTypeDefinition.class),
+    })
+    @JsonDeserialize(using = PropertiesDefinitionDeserializer.class)
     public abstract static class PropertiesDefinition { }
 
     @NonNullByDefault
     @XmlRootElement(name = "PropertiesDefinition")
+    @JsonDeserialize(as = YamlPropertiesDefinition.class)
     public static class YamlPropertiesDefinition extends PropertiesDefinition {
+        @JsonProperty("properties")
         private List<YamlPropertyDefinition> properties = new ArrayList<>();
 
         public List<YamlPropertyDefinition> getProperties() {
@@ -479,7 +531,9 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
      * see {@link XmlTypeDefinition}.
      */
     @XmlRootElement(name = "PropertiesDefinition")
+    @JsonDeserialize(as = XmlElementDefinition.class)
     public static class XmlElementDefinition extends PropertiesDefinition {
+        @JsonProperty
         private QName element;
 
         // required for jaxb
@@ -504,7 +558,9 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
      * the other option is a type reference.
      */
     @XmlRootElement(name = "PropertiesDefinition")
+    @JsonDeserialize(as = XmlTypeDefinition.class)
     public static class XmlTypeDefinition extends PropertiesDefinition {
+        @JsonProperty
         private QName type;
 
         // required for JAXB

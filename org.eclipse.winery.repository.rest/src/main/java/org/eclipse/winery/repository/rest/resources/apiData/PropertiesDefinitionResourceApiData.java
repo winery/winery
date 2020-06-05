@@ -17,17 +17,14 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 
-import org.slf4j.LoggerFactory;
-
-// FIXME unify properties exposition on the API
 public class PropertiesDefinitionResourceApiData {
 
     public TEntityType.PropertiesDefinition propertiesDefinition;
     public WinerysPropertiesDefinition winerysPropertiesDefinition;
     public PropertiesDefinitionEnum selectedValue;
 
-    public PropertiesDefinitionResourceApiData() {
-    }
+    @SuppressWarnings("unused") // required for JSON deserialization
+    public PropertiesDefinitionResourceApiData() { }
 
     public PropertiesDefinitionResourceApiData(
         TEntityType.PropertiesDefinition propertiesDefinition,
@@ -45,8 +42,7 @@ public class PropertiesDefinitionResourceApiData {
         } else if (propertiesDefinition instanceof WinerysPropertiesDefinition) {
             this.selectedValue = PropertiesDefinitionEnum.Custom;
         } else if (propertiesDefinition instanceof TEntityType.YamlPropertiesDefinition) {
-            // FIXME this needs to be handled in some way?!
-            this.selectedValue = PropertiesDefinitionEnum.Custom;
+            this.selectedValue = PropertiesDefinitionEnum.Yaml;
         } else {
             throw new IllegalStateException("Properties Definition Type was unknown");
         }

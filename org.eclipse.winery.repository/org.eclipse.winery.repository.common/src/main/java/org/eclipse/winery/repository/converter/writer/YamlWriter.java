@@ -37,7 +37,7 @@ import org.eclipse.winery.model.tosca.yaml.TCapabilityType;
 import org.eclipse.winery.model.tosca.yaml.TConstraintClause;
 import org.eclipse.winery.model.tosca.yaml.TDataType;
 import org.eclipse.winery.model.tosca.yaml.TEntityType;
-import org.eclipse.winery.model.tosca.yaml.TEntrySchema;
+import org.eclipse.winery.model.tosca.yaml.TSchemaDefinition;
 import org.eclipse.winery.model.tosca.yaml.TGroupDefinition;
 import org.eclipse.winery.model.tosca.yaml.TGroupType;
 import org.eclipse.winery.model.tosca.yaml.TImplementation;
@@ -236,7 +236,7 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
         return printer;
     }
 
-    public YamlPrinter visit(TEntrySchema node, Parameter parameter) {
+    public YamlPrinter visit(TSchemaDefinition node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
             .printKeyValue("type", node.getType())
             .printKeyValue("description", node.getDescription())

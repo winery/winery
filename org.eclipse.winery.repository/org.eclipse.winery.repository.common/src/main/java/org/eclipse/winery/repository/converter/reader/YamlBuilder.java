@@ -44,7 +44,7 @@ import org.eclipse.winery.model.tosca.yaml.TCapabilityType;
 import org.eclipse.winery.model.tosca.yaml.TConstraintClause;
 import org.eclipse.winery.model.tosca.yaml.TDataType;
 import org.eclipse.winery.model.tosca.yaml.TEntityType;
-import org.eclipse.winery.model.tosca.yaml.TEntrySchema;
+import org.eclipse.winery.model.tosca.yaml.TSchemaDefinition;
 import org.eclipse.winery.model.tosca.yaml.TGroupDefinition;
 import org.eclipse.winery.model.tosca.yaml.TGroupType;
 import org.eclipse.winery.model.tosca.yaml.TImplementation;
@@ -347,7 +347,7 @@ public class YamlBuilder {
     @Nullable
     @SuppressWarnings("unchecked")
     public <T> TPropertyDefinition buildPropertyDefinition(Object object, Parameter<T> parameter) {
-        if (Objects.isNull(object)) return new TPropertyDefinition();
+        if (Objects.isNull(object)) return null;
         if (!validate(parameter.getClazz(), object, parameter)) return null;
         Map<String, Object> map = (Map<String, Object>) object;
         String type = stringValue(map.get("type"));
@@ -358,9 +358,11 @@ public class YamlBuilder {
             .setDefault(map.get("default"))
             .setStatus(buildStatus(map.get("status")))
             .addConstraints(buildList(map, "constraints", this::buildConstraintClause, parameter))
-            .setEntrySchema(buildEntrySchema(map.get("entry_schema"),
-                new Parameter<TEntrySchema>(parameter.getContext()).addContext("entry_schema")
+            .setEntrySchema(buildSchemaDefinition(map.get("entry_schema"),
+                new Parameter<TSchemaDefinition>(parameter.getContext()).addContext("entry_schema")
             ))
+            .setKeySchema(buildSchemaDefinition(map.get("key_schema"),
+                new Parameter<TSchemaDefinition>(parameter.getContext()).addContext("key_schema")))
             .build();
     }
 
@@ -423,19 +425,22 @@ public class YamlBuilder {
     }
 
     @Nullable
-    public TEntrySchema buildEntrySchema(Object object, Parameter<TEntrySchema> parameter) {
+    public TSchemaDefinition buildSchemaDefinition(Object object, Parameter<TSchemaDefinition> parameter) {
         if (Objects.isNull(object)) {
             return null;
         }
         if (object instanceof String) {
-            return new TEntrySchema.Builder().setType(buildQName(stringValue(object))).build();
+            return new TSchemaDefinition.Builder(buildQName(stringValue(object))).build();
         } else {
             @SuppressWarnings("unchecked")
             Map<String, Object> map = (Map<String, Object>) object;
-            return new TEntrySchema.Builder()
-                .setType(buildQName(stringValue(map.get("type"))))
+            return new TSchemaDefinition.Builder(buildQName(stringValue(map.get("type"))))
                 .setDescription(buildDescription(map.get("description")))
                 .setConstraints(buildList(map, "constraints", this::buildConstraintClause, parameter))
+                .setEntrySchema(buildSchemaDefinition(map.get("entry_schema"),
+                    new Parameter<TSchemaDefinition>(parameter.getContext()).addContext("entry_schema")))
+                .setKeySchema(buildSchemaDefinition(map.get("key_schema"),
+                    new Parameter<TSchemaDefinition>(parameter.getContext()).addContext("key_schema")))
                 .build();
         }
     }
@@ -450,9 +455,11 @@ public class YamlBuilder {
             .setDescription(buildDescription(map.get("description")))
             .setDefault(map.get("default"))
             .setStatus(buildStatus(map.get("status")))
-            .setEntrySchema(buildEntrySchema(map.get("entry_schema"),
-                new Parameter<TEntrySchema>(parameter.getContext()).addContext("entry_schema")
+            .setEntrySchema(buildSchemaDefinition(map.get("entry_schema"),
+                new Parameter<TSchemaDefinition>(parameter.getContext()).addContext("entry_schema")
             ))
+            .setKeySchema(buildSchemaDefinition(map.get("key_schema"),
+                new Parameter<TSchemaDefinition>(parameter.getContext()).addContext("key_schema")))
             .build();
     }
 
@@ -835,9 +842,11 @@ public class YamlBuilder {
             .setDefault(map.get("default"))
             .setStatus(buildStatus(map.get("status")))
             .setConstraints(buildList(map, "constraints", this::buildConstraintClause, parameter))
-            .setEntrySchema(buildEntrySchema(map.get("entry_schema"),
-                new Parameter<TEntrySchema>(parameter.getContext()).addContext("entry_schema")
+            .setEntrySchema(buildSchemaDefinition(map.get("entry_schema"),
+                new Parameter<TSchemaDefinition>(parameter.getContext()).addContext("entry_schema")
             ))
+            .setKeySchema(buildSchemaDefinition(map.get("key_schema"),
+                new Parameter<TSchemaDefinition>(parameter.getContext()).addContext("key_schema")))
             .setValue(map.get("value"))
             .build();
     }

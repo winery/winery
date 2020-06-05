@@ -29,23 +29,20 @@
                     <td>Description</td>
                     <td>Required</td>
                     <td>Default</td>
-                    <td>Status</td>
-<!--                    <td>Actions</td>-->
                 </tr>
             </thead>
             <tbody>
                 <ng-template ngFor let-prop [ngForOf]="properties">
                     <tr>
                         <td>{{ prop.name }}</td>
-                        <td>{{ prop.type }}</td>
+                        <td>{{ prop.type }}{{ prop.humanSchema }}</td>
                         <td>{{ prop.description}}</td>
                         <td>{{ prop.required }}</td>
                         <td>{{ prop.defaultValue }}</td>
-                        <td>{{ prop.status }}</td>
                     </tr>
                     <tr *ngIf="prop.constraints.length" class="constraints-row">
                         <td>Constraints:</td>
-                        <td colspan="5">
+                        <td colspan="4">
                             <winery-yaml-constraints [constraints]="prop.constraints"></winery-yaml-constraints>
                         </td>
                     </tr>

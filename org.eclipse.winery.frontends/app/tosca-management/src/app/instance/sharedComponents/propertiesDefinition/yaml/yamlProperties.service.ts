@@ -28,7 +28,7 @@ export class YamlPropertiesService {
 
     constructor(private http: HttpClient,
                 private sharedData: InstanceService) {
-        this.path = backendBaseURL + this.sharedData.path + '/properties/';
+        this.path = this.sharedData.path + '/properties/';
     }
 
     public getProperties(): Observable<YamlProperty[]> {
@@ -37,7 +37,19 @@ export class YamlPropertiesService {
                 if (res.headers.get('Content-Type') === 'application/json') {
                     // fake some null-coalescing
                     if (res.body === null) { return []; }
-                    return JSON.parse(res.body);
+                    return JSON.parse(res.body)
+                        .map((def: YamlProperty) => {
+                            // FIXME we want to be a bit smarter about converting these to human-readable types.
+                            //  (especially since nesting is an option)
+                            if (def.entrySchema || def.keySchema) {
+                                if (def.type === 'list') {
+                                    def.humanSchema = ` of ${def.entrySchema.type}`;
+                                } else if (def.type === 'map') {
+                                    def.humanSchema = ` from ${(def.keySchema || {type: 'string'}).type} to ${def.entrySchema.type}`;
+                                }
+                            } else { def.humanSchema = ''; }
+                            return def;
+                        });
                 } else {
                     // log an error
                     return [];
@@ -45,13 +57,13 @@ export class YamlPropertiesService {
             }));
     }
 
-    public saveProperties(properties: any): Observable<HttpResponse<string>> {
+    public saveProperties(properties: YamlProperty[]): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders();
         headers.set('Content-Type', 'application/json');
         return this.http
             .put(
                 this.path,
-                properties,
+                properties.map(p => { delete(p.humanSchema); return p; }),
                 { headers: headers, observe: 'response', responseType: 'text' }
             );
     }

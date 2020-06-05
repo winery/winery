@@ -40,6 +40,7 @@ import org.eclipse.jdt.annotation.Nullable;
     "defaultValue",
     "status",
     "constraints",
+    "keySchema",
     "entrySchema",
     "value"
 })
@@ -53,28 +54,31 @@ public class TParameterDefinition implements VisitorNode {
     private TStatusValue status;
     @XmlElement
     private List<TConstraintClause> constraints;
+    @XmlAttribute(name = "key_schema")
+    private TSchemaDefinition keySchema;
     @XmlAttribute(name = "entry_schema")
-    private TEntrySchema entrySchema;
+    private TSchemaDefinition entrySchema;
     private Object value;
 
     public TParameterDefinition() {
     }
 
     public TParameterDefinition(Builder builder) {
-        this.setType(builder.type);
-        this.setDescription(builder.description);
-        this.setRequired(builder.required);
-        this.setDefault(builder.defaultValue);
-        this.setStatus(builder.status);
-        this.setConstraints(builder.constraints);
-        this.setEntrySchema(builder.entrySchema);
-        this.setValue(builder.value);
+        this.type = builder.type;
+        this.description = builder.description;
+        this.required = builder.required;
+        this.defaultValue = builder.defaultValue;
+        this.status = builder.status;
+        this.constraints = builder.constraints;
+        this.keySchema = builder.keySchema;
+        this.entrySchema = builder.entrySchema;
+        this.value = builder.value;
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(getType(), getDescription(), getRequired(), getDefault(), getStatus(), getConstraints(), getEntrySchema(), getValue());
+        return Objects.hash(getType(), getDescription(), getRequired(), getDefault(),
+            getStatus(), getConstraints(), getKeySchema(), getEntrySchema(), getValue());
     }
 
     @Override
@@ -88,6 +92,7 @@ public class TParameterDefinition implements VisitorNode {
             Objects.equals(getDefault(), that.getDefault()) &&
             getStatus() == that.getStatus() &&
             Objects.equals(getConstraints(), that.getConstraints()) &&
+            Objects.equals(getKeySchema(), that.getKeySchema()) &&
             Objects.equals(getEntrySchema(), that.getEntrySchema()) &&
             Objects.equals(getValue(), that.getValue());
     }
@@ -101,6 +106,7 @@ public class TParameterDefinition implements VisitorNode {
             ", defaultValue=" + getDefault() +
             ", status=" + getStatus() +
             ", constraints=" + getConstraints() +
+            ", keySchema=" + getKeySchema() +
             ", entrySchema=" + getEntrySchema() +
             ", value=" + getValue() +
             '}';
@@ -154,12 +160,29 @@ public class TParameterDefinition implements VisitorNode {
         this.constraints = constraints;
     }
 
-    public TEntrySchema getEntrySchema() {
+    public TSchemaDefinition getEntrySchema() {
         return entrySchema;
     }
 
-    public void setEntrySchema(TEntrySchema entrySchema) {
+    public void setEntrySchema(TSchemaDefinition entrySchema) {
         this.entrySchema = entrySchema;
+    }
+
+    public Object getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(Object defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    @Nullable
+    public TSchemaDefinition getKeySchema() {
+        return keySchema;
+    }
+
+    public void setKeySchema(TSchemaDefinition keySchema) {
+        this.keySchema = keySchema;
     }
 
     @Nullable
@@ -183,7 +206,8 @@ public class TParameterDefinition implements VisitorNode {
         private Object defaultValue;
         private TStatusValue status;
         private List<TConstraintClause> constraints;
-        private TEntrySchema entrySchema;
+        private TSchemaDefinition keySchema;
+        private TSchemaDefinition entrySchema;
         private Object value;
 
         public Builder setType(QName type) {
@@ -230,7 +254,7 @@ public class TParameterDefinition implements VisitorNode {
             return this;
         }
 
-        public Builder setEntrySchema(TEntrySchema entrySchema) {
+        public Builder setEntrySchema(TSchemaDefinition entrySchema) {
             this.entrySchema = entrySchema;
             return this;
         }
@@ -264,6 +288,16 @@ public class TParameterDefinition implements VisitorNode {
             }
 
             return addConstraints(Collections.singletonList(constraint));
+        }
+
+        public Builder setDefaultValue(Object defaultValue) {
+            this.defaultValue = defaultValue;
+            return this;
+        }
+
+        public Builder setKeySchema(TSchemaDefinition keySchema) {
+            this.keySchema = keySchema;
+            return this;
         }
 
         public TParameterDefinition build() {

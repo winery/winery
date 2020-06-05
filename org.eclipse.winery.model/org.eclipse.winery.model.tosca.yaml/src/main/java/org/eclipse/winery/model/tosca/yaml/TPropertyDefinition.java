@@ -40,11 +40,13 @@ import org.eclipse.jdt.annotation.Nullable;
     "defaultValue",
     "status",
     "constraints",
+    "keySchema",
     "entrySchema"
 })
 public class TPropertyDefinition extends TPropertyAssignmentOrDefinition {
 
     @XmlAttribute(name = "type", required = true)
+    @NonNull
     private QName type;
     private String description;
     private Boolean required;
@@ -54,24 +56,28 @@ public class TPropertyDefinition extends TPropertyAssignmentOrDefinition {
     @XmlElement
     private List<TConstraintClause> constraints;
     @XmlAttribute(name = "entry_schema")
-    private TEntrySchema entrySchema;
+    private TSchemaDefinition entrySchema;
+    @XmlAttribute(name = "key_schema")
+    private TSchemaDefinition keySchema;
 
-    public TPropertyDefinition() {
-    }
-
+    @Deprecated // used for XML deserialization?
+    public TPropertyDefinition() { }
+    
     public TPropertyDefinition(Builder builder) {
-        this.setType(builder.type);
-        this.setDescription(builder.description);
-        this.setRequired(builder.required);
-        this.setDefault(builder.defaultValue);
-        this.setStatus(builder.status);
-        this.setConstraints(builder.constraints);
-        this.setEntrySchema(builder.entrySchema);
+        this.type = builder.type;
+        this.description = builder.description;
+        this.required = builder.required;
+        this.defaultValue = builder.defaultValue;
+        this.status = builder.status;
+        this.constraints = builder.constraints;
+        this.keySchema = builder.keySchema;
+        this.entrySchema = builder.entrySchema;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getType(), getDescription(), getRequired(), getDefault(), getStatus(), getConstraints(), getEntrySchema());
+        return Objects.hash(getType(), getDescription(), getRequired(), getDefault(),
+            getStatus(), getConstraints(), getKeySchema(), getEntrySchema());
     }
 
     @Override
@@ -85,6 +91,7 @@ public class TPropertyDefinition extends TPropertyAssignmentOrDefinition {
             Objects.equals(getDefault(), that.getDefault()) &&
             getStatus() == that.getStatus() &&
             Objects.equals(getConstraints(), that.getConstraints()) &&
+            Objects.equals(getKeySchema(), that.getKeySchema()) &&
             Objects.equals(getEntrySchema(), that.getEntrySchema());
     }
 
@@ -98,6 +105,7 @@ public class TPropertyDefinition extends TPropertyAssignmentOrDefinition {
             ", status=" + getStatus() +
             ", constraints=" + getConstraints() +
             ", entrySchema=" + getEntrySchema() +
+            ", keySchema=" + getKeySchema() +
             "}";
     }
 
@@ -106,7 +114,7 @@ public class TPropertyDefinition extends TPropertyAssignmentOrDefinition {
         return type;
     }
 
-    public void setType(QName type) {
+    public void setType(@NonNull QName type) {
         this.type = type;
     }
 
@@ -169,12 +177,21 @@ public class TPropertyDefinition extends TPropertyAssignmentOrDefinition {
     }
 
     @Nullable
-    public TEntrySchema getEntrySchema() {
+    public TSchemaDefinition getEntrySchema() {
         return entrySchema;
     }
 
-    public void setEntrySchema(TEntrySchema entrySchema) {
+    public void setEntrySchema(@Nullable TSchemaDefinition entrySchema) {
         this.entrySchema = entrySchema;
+    }
+
+    @Nullable
+    public TSchemaDefinition getKeySchema() {
+        return keySchema;
+    }
+
+    public void setKeySchema(@Nullable TSchemaDefinition keySchema) {
+        this.keySchema = keySchema;
     }
 
     public <R extends AbstractResult<R>, P extends AbstractParameter<P>> R accept(IVisitor<R, P> visitor, P parameter) {
@@ -188,7 +205,8 @@ public class TPropertyDefinition extends TPropertyAssignmentOrDefinition {
         private Object defaultValue;
         private TStatusValue status;
         private List<TConstraintClause> constraints;
-        private TEntrySchema entrySchema;
+        private TSchemaDefinition entrySchema;
+        private TSchemaDefinition keySchema;
 
         public Builder(QName type) {
             this.type = type;
@@ -202,65 +220,74 @@ public class TPropertyDefinition extends TPropertyAssignmentOrDefinition {
             this.status = propertyDefinition.getStatus();
             this.constraints = propertyDefinition.getConstraints();
             this.entrySchema = propertyDefinition.getEntrySchema();
+            this.keySchema = propertyDefinition.getKeySchema();
         }
 
         public Builder setDescription(String description) {
             this.description = description;
-            return (Builder) this;
+            return this;
         }
 
         public Builder setRequired(Boolean required) {
             this.required = required;
-            return (Builder) this;
+            return this;
         }
 
         public Builder setDefault(Object defaultValue) {
             this.defaultValue = defaultValue;
-            return (Builder) this;
+            return this;
         }
 
         public Builder setStatus(TStatusValue status) {
             this.status = status;
-            return (Builder) this;
+            return this;
         }
 
         public Builder setStatus(String status) {
             return setStatus(TStatusValue.getStatus(status));
         }
 
-        public Builder setEntrySchema(TEntrySchema entrySchema) {
+        public Builder setEntrySchema(TSchemaDefinition entrySchema) {
             this.entrySchema = entrySchema;
-            return (Builder) this;
+            return this;
         }
 
         public Builder setConstraints(List<TConstraintClause> constraints) {
             if (constraints == null || constraints.isEmpty()) {
-                return (Builder) this;
+                return this;
             }
             this.constraints = constraints;
-            return (Builder) this;
+            return this;
         }
 
         public Builder addConstraints(List<TConstraintClause> constraints) {
             if (constraints == null || constraints.isEmpty()) {
-                return (Builder) this;
+                return this;
             }
 
             if (this.constraints == null) {
-                this.constraints = new ArrayList<>(constraints);
-            } else {
-                this.constraints.addAll(constraints);
-            }
-
-            return (Builder) this;
+                this.constraints = new ArrayList<>();
+            } 
+            this.constraints.addAll(constraints);
+            return this;
         }
 
         public Builder addConstraints(TConstraintClause constraint) {
             if (constraint == null) {
-                return (Builder) this;
+                return this;
             }
 
             return addConstraints(Collections.singletonList(constraint));
+        }
+
+        public Builder setDefaultValue(Object defaultValue) {
+            this.defaultValue = defaultValue;
+            return this;
+        }
+
+        public Builder setKeySchema(TSchemaDefinition keySchema) {
+            this.keySchema = keySchema;
+            return this;
         }
 
         public TPropertyDefinition build() {

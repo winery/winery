@@ -32,30 +32,40 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tEntrySchema", namespace = " http://docs.oasis-open.org/tosca/ns/simple/yaml/1.3", propOrder = {
+@XmlType(name = "tSchemaDefinition", namespace = " http://docs.oasis-open.org/tosca/ns/simple/yaml/1.3", propOrder = {
     "type",
     "description",
-    "constraints"
+    "constraints",
+    "keySchema",
+    "entrySchema"
 })
-public class TEntrySchema implements VisitorNode {
+public class TSchemaDefinition implements VisitorNode {
+    @NonNull
     private QName type;
     private String description;
     private List<TConstraintClause> constraints;
 
-    public TEntrySchema() {
+    // type could be map
+    private TSchemaDefinition keySchema;
+    // type could be list or map
+    private TSchemaDefinition entrySchema;
+
+    public TSchemaDefinition() {
     }
 
-    public TEntrySchema(Builder builder) {
-        this.setType(builder.type);
-        this.setDescription(builder.description);
-        this.setConstraints(builder.constraints);
+    public TSchemaDefinition(Builder builder) {
+        this.type = builder.type;
+        this.description = builder.description;
+        this.constraints = builder.constraints;
+        this.keySchema = builder.keySchema;
+        this.entrySchema = builder.entrySchema;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof TEntrySchema)) return false;
-        TEntrySchema that = (TEntrySchema) o;
+        if (!(o instanceof TSchemaDefinition)) return false;
+        TSchemaDefinition that = (TSchemaDefinition) o;
         return Objects.equals(getType(), that.getType()) &&
             Objects.equals(getDescription(), that.getDescription()) &&
             Objects.equals(getConstraints(), that.getConstraints());
@@ -75,12 +85,12 @@ public class TEntrySchema implements VisitorNode {
             '}';
     }
 
-    @Nullable
+    @NonNull
     public QName getType() {
         return type;
     }
 
-    public void setType(QName type) {
+    public void setType(@NonNull QName type) {
         this.type = type;
     }
 
@@ -102,8 +112,26 @@ public class TEntrySchema implements VisitorNode {
         return constraints;
     }
 
-    public void setConstraints(List<TConstraintClause> constraints) {
+    public void setConstraints(@Nullable List<TConstraintClause> constraints) {
         this.constraints = constraints;
+    }
+
+    @Nullable
+    public TSchemaDefinition getKeySchema() {
+        return keySchema;
+    }
+
+    public void setKeySchema(@Nullable TSchemaDefinition keySchema) {
+        this.keySchema = keySchema;
+    }
+
+    @Nullable
+    public TSchemaDefinition getEntrySchema() {
+        return entrySchema;
+    }
+
+    public void setEntrySchema(@Nullable TSchemaDefinition entrySchema) {
+        this.entrySchema = entrySchema;
     }
 
     public <R extends AbstractResult<R>, P extends AbstractParameter<P>> R accept(IVisitor<R, P> visitor, P parameter) {
@@ -111,13 +139,16 @@ public class TEntrySchema implements VisitorNode {
     }
 
     public static class Builder {
-        private QName type;
+        @NonNull
+        private final QName type;
         private String description;
         private List<TConstraintClause> constraints;
 
-        public Builder setType(QName type) {
+        private TSchemaDefinition keySchema;
+        private TSchemaDefinition entrySchema;
+
+        public Builder(QName type) {
             this.type = type;
-            return this;
         }
 
         public Builder setDescription(String description) {
@@ -152,8 +183,18 @@ public class TEntrySchema implements VisitorNode {
             return addConstraints(Collections.singletonList(contraint));
         }
 
-        public TEntrySchema build() {
-            return new TEntrySchema(this);
+        public Builder setKeySchema(TSchemaDefinition keySchema) {
+            this.keySchema = keySchema;
+            return this;
+        }
+
+        public Builder setEntrySchema(TSchemaDefinition entrySchema) {
+            this.entrySchema = entrySchema;
+            return this;
+        }
+
+        public TSchemaDefinition build() {
+            return new TSchemaDefinition(this);
         }
     }
 }

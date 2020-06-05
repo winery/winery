@@ -29,7 +29,7 @@ import org.eclipse.winery.model.tosca.yaml.TCapabilityType;
 import org.eclipse.winery.model.tosca.yaml.TConstraintClause;
 import org.eclipse.winery.model.tosca.yaml.TDataType;
 import org.eclipse.winery.model.tosca.yaml.TEntityType;
-import org.eclipse.winery.model.tosca.yaml.TEntrySchema;
+import org.eclipse.winery.model.tosca.yaml.TSchemaDefinition;
 import org.eclipse.winery.model.tosca.yaml.TGroupDefinition;
 import org.eclipse.winery.model.tosca.yaml.TGroupType;
 import org.eclipse.winery.model.tosca.yaml.TImplementation;
@@ -125,7 +125,7 @@ public abstract class AbstractVisitor<R extends AbstractResult<R>, P extends Abs
     }
 
     @Override
-    public R visit(TEntrySchema node, P parameter) {
+    public R visit(TSchemaDefinition node, P parameter) {
         return visitElement(node.getConstraints(), parameter, "constraints");
     }
 

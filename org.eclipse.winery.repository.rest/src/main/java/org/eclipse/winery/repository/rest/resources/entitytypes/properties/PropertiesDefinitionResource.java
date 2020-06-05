@@ -143,6 +143,13 @@ public class PropertiesDefinitionResource {
                 namespaceManager.addPermanentNamespace(namespace);
             }
             return RestUtils.persist(this.parentRes);
+        } else if (data.selectedValue == PropertiesDefinitionEnum.Yaml) {
+            TEntityType et = this.parentRes.getEntityType();
+            if (!(data.propertiesDefinition instanceof TEntityType.YamlPropertiesDefinition)) {
+                return Response.status(Status.BAD_REQUEST).entity("Expected YamlPropertiesDefinition element").build();
+            }
+            et.setProperties(data.propertiesDefinition);
+            return RestUtils.persist(this.parentRes);
         }
 
         return Response.status(Status.BAD_REQUEST).entity("Wrong data submitted!").build();

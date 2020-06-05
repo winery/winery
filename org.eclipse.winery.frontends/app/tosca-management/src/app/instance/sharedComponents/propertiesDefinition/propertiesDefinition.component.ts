@@ -181,12 +181,6 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.resourceApiData.propertiesDefinition.element = null;
         this.resourceApiData.propertiesDefinition.type = null;
 
-        if (this.resourceApiData.propertiesDefinition) {
-            this.resourceApiData.propertiesDefinition = new PropertiesDefinition();
-        }
-        this.resourceApiData.propertiesDefinition.element = null;
-        this.resourceApiData.propertiesDefinition.type = null;
-
         if (!this.resourceApiData.winerysPropertiesDefinition) {
             this.resourceApiData.winerysPropertiesDefinition = new WinerysPropertiesDefinition();
         }

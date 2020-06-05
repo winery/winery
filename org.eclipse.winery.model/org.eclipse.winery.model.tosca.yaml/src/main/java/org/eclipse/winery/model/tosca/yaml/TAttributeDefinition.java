@@ -36,33 +36,37 @@ import org.eclipse.jdt.annotation.Nullable;
     "type",
     "defaultValue",
     "status",
+    "keySchema",
     "entrySchema"
 })
 public class TAttributeDefinition implements VisitorNode {
 
     private String description;
     @XmlAttribute(name = "type", required = true)
+    @NonNull
     private QName type;
     @XmlElement(name = "default")
     private Object defaultValue;
     private TStatusValue status;
+    @XmlAttribute(name = "key_schema")
+    private TSchemaDefinition keySchema;
     @XmlAttribute(name = "entry_schema")
-    private TEntrySchema entrySchema;
+    private TSchemaDefinition entrySchema;
 
     public TAttributeDefinition() {
     }
 
     public TAttributeDefinition(Builder builder) {
-        this.setType(builder.type);
-        this.setDescription(builder.description);
-        this.setDefault(builder.defaultValue);
-        this.setStatus(builder.status);
-        this.setEntrySchema(builder.entrySchema);
+        this.type = builder.type;
+        this.description = builder.description;
+        this.defaultValue = builder.defaultValue;
+        this.status = builder.status;
+        this.entrySchema = builder.entrySchema;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getDescription(), getType(), getDefault(), getStatus(), getEntrySchema());
+        return Objects.hash(getDescription(), getType(), getDefault(), getStatus(), getKeySchema(), getEntrySchema());
     }
 
     @Override
@@ -74,6 +78,7 @@ public class TAttributeDefinition implements VisitorNode {
             Objects.equals(getType(), that.getType()) &&
             Objects.equals(getDefault(), that.getDefault()) &&
             getStatus() == that.getStatus() &&
+            Objects.equals(getKeySchema(), that.getKeySchema()) &&
             Objects.equals(getEntrySchema(), that.getEntrySchema());
     }
 
@@ -84,6 +89,7 @@ public class TAttributeDefinition implements VisitorNode {
             ", type=" + getType() +
             ", defaultValue=" + getDefault() +
             ", status=" + getStatus() +
+            ", keySchema=" + getKeySchema() +
             ", entrySchema=" + getEntrySchema() +
             '}';
     }
@@ -124,12 +130,29 @@ public class TAttributeDefinition implements VisitorNode {
         this.status = status;
     }
 
+    public Object getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(Object defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
     @Nullable
-    public TEntrySchema getEntrySchema() {
+    public TSchemaDefinition getKeySchema() {
+        return keySchema;
+    }
+
+    public void setKeySchema(TSchemaDefinition keySchema) {
+        this.keySchema = keySchema;
+    }
+
+    @Nullable
+    public TSchemaDefinition getEntrySchema() {
         return entrySchema;
     }
 
-    public void setEntrySchema(TEntrySchema entrySchema) {
+    public void setEntrySchema(TSchemaDefinition entrySchema) {
         this.entrySchema = entrySchema;
     }
 
@@ -142,7 +165,8 @@ public class TAttributeDefinition implements VisitorNode {
         private String description;
         private Object defaultValue;
         private TStatusValue status;
-        private TEntrySchema entrySchema;
+        private TSchemaDefinition keySchema;
+        private TSchemaDefinition entrySchema;
 
         public Builder(QName type) {
             this.type = type;
@@ -163,8 +187,18 @@ public class TAttributeDefinition implements VisitorNode {
             return this;
         }
 
-        public Builder setEntrySchema(TEntrySchema entrySchema) {
+        public Builder setEntrySchema(TSchemaDefinition entrySchema) {
             this.entrySchema = entrySchema;
+            return this;
+        }
+
+        public Builder setDefaultValue(Object defaultValue) {
+            this.defaultValue = defaultValue;
+            return this;
+        }
+
+        public Builder setKeySchema(TSchemaDefinition keySchema) {
+            this.keySchema = keySchema;
             return this;
         }
 

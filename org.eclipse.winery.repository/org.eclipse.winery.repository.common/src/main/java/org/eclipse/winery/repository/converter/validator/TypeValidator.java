@@ -25,7 +25,7 @@ import org.eclipse.winery.model.tosca.yaml.TAttributeDefinition;
 import org.eclipse.winery.model.tosca.yaml.TCapabilityType;
 import org.eclipse.winery.model.tosca.yaml.TDataType;
 import org.eclipse.winery.model.tosca.yaml.TEntityType;
-import org.eclipse.winery.model.tosca.yaml.TEntrySchema;
+import org.eclipse.winery.model.tosca.yaml.TSchemaDefinition;
 import org.eclipse.winery.model.tosca.yaml.TGroupDefinition;
 import org.eclipse.winery.model.tosca.yaml.TGroupType;
 import org.eclipse.winery.model.tosca.yaml.TInterfaceType;
@@ -95,7 +95,7 @@ public class TypeValidator extends ExceptionVisitor<Result, Parameter> {
         }
     }
 
-    private void validatePropertyOrAttributeDefinition(QName type, TEntrySchema entrySchema, Parameter parameter) {
+    private void validatePropertyOrAttributeDefinition(QName type, TSchemaDefinition entrySchema, Parameter parameter) {
         if (Objects.isNull(type)) {
             setInvalidDefinition(parameter);
         } else {

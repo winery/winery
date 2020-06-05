@@ -37,7 +37,7 @@ public interface IVisitor<R extends AbstractResult, P extends AbstractParameter>
 
     R visit(TEntityType node, P parameter);
 
-    R visit(TEntrySchema node, P parameter);
+    R visit(TSchemaDefinition node, P parameter);
 
     R visit(TGroupDefinition node, P parameter);
 

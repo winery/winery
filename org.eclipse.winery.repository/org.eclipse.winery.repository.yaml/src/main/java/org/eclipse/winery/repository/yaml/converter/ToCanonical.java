@@ -61,10 +61,12 @@ import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.model.tosca.TRequirementType;
+import org.eclipse.winery.model.tosca.TSchema;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.yaml.TSchemaDefinition;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.yaml.converter.support.InheritanceUtils;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinition;
@@ -1303,7 +1305,6 @@ public class ToCanonical {
                         v instanceof TInterfaceDefinition ||
                         v instanceof TOperationDefinition ||
                         v instanceof org.eclipse.winery.model.tosca.yaml.TNodeTemplate ||
-                        v instanceof TDataType ||
                         v instanceof TGroupType ||
                         v instanceof org.eclipse.winery.model.tosca.yaml.TNodeType ||
                         v instanceof TImportDefinition ||
@@ -1331,6 +1332,19 @@ public class ToCanonical {
             .setDefaultValue(node.getDefault())
             .setStatus(TEntityType.YamlPropertyDefinition.Status.getStatus(node.getStatus().toString()))
             .setConstraints(convertConstraints(node.getConstraints()))
+            .setEntrySchema(convert(node.getEntrySchema()))
+            .setKeySchema(convert(node.getKeySchema()))
+            .build();
+    }
+
+    @Nullable
+    private TSchema convert(@Nullable TSchemaDefinition node) {
+        if (node == null) { return null; }
+        TSchema.Builder builder = new TSchema.Builder(node.getType());
+        return builder.setConstraints(convertConstraints(node.getConstraints()))
+            .setDescription(node.getDescription())
+            .setEntrySchema(convert(node.getEntrySchema()))
+            .setKeySchema(convert(node.getKeySchema()))
             .build();
     }
 }
