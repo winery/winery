@@ -18,7 +18,7 @@ import { WineryNotificationService } from '../../../../wineryNotificationModule/
 import { InstanceService } from '../../../instance.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { YamlPropertiesService } from './yamlProperties.service';
-import { YamlProperty } from './yamlProperty';
+import { YamlPropertyDefinition } from './yamlPropertyDefinition';
 
 @Component({
     selector: 'winery-yaml-properties',
@@ -32,7 +32,7 @@ import { YamlProperty } from './yamlProperty';
 })
 export class YamlPropertiesComponent implements OnInit {
 
-    properties: YamlProperty[] = [];
+    properties: YamlPropertyDefinition[] = [];
     loading = true;
     @ViewChild('propertiesEditor') propertiesEditor: WineryEditorComponent;
 
@@ -66,7 +66,7 @@ export class YamlPropertiesComponent implements OnInit {
         this.getProperties();
     }
 
-    private handleProperties(data: YamlProperty[]) {
+    private handleProperties(data: YamlPropertyDefinition[]) {
         this.loading = false;
         this.properties = data;
     }

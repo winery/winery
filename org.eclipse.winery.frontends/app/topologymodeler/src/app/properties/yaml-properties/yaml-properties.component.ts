@@ -19,8 +19,9 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { BackendService } from '../../services/backend.service';
 import { EntityType, TDataType } from '../../models/ttopology-template';
 import { InheritanceUtils } from '../../models/InheritanceUtils';
-import { ConstraintChecking, isWellKnown } from '../property-constraints';
+import { ConstraintChecking } from '../property-constraints';
 import { ToscaUtils } from '../../models/toscaUtils';
+import { isWellKnown } from '../../../../../tosca-management/src/app/model/constraint';
 
 
 @Component({

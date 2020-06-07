@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Constraint } from '../../../model/constraint';
-import { YamlProperty } from './yaml/yamlProperty';
+import { YamlPropertyDefinition } from './yaml/yamlPropertyDefinition';
 
 export enum PropertiesDefinitionEnum {
     Custom = 'Custom',
@@ -34,7 +34,7 @@ export class PropertiesDefinitionKVElement {
 export class PropertiesDefinition {
     element: string = null;
     type: string = null;
-    properties: YamlProperty[] = null;
+    properties: YamlPropertyDefinition[] = null;
 }
 
 export class WinerysPropertiesDefinition {

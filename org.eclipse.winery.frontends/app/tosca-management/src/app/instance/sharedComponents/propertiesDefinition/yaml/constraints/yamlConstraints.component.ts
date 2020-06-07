@@ -14,7 +14,7 @@
 
 import { Component, Input } from '@angular/core';
 import { InstanceService } from '../../../../instance.service';
-import { YamlPropertyConstraint } from '../yamlProperty';
+import { Constraint } from '../../../../../model/constraint';
 
 @Component({
     selector: 'winery-yaml-constraints',
@@ -24,7 +24,7 @@ import { YamlPropertyConstraint } from '../yamlProperty';
     ]
 })
 export class YamlConstraintsComponent {
-    @Input() constraints: YamlPropertyConstraint[];
+    @Input() constraints: Constraint[];
 
     constructor(public sharedData: InstanceService) {
     }

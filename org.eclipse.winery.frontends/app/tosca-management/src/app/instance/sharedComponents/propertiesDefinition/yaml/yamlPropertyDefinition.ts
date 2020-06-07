@@ -11,21 +11,18 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { QName } from '../../../model/qName';
+import { QName } from '../../../../model/qName';
+import { SchemaDefinition } from '../../../../../../../topologymodeler/src/app/models/ttopology-template';
+import { Constraint, YamlWellKnown } from '../../../../model/constraint';
 
-export class PropertiesTableData {
-    key: string = null;
-    type: string | QName = null;
-    required: boolean;
-    defaultValue: string;
+export class YamlPropertyDefinition {
+    name: string;
+    type: QName | YamlWellKnown;
     description: string;
-    constraints: string;
-    constructor(key: string, type: string, required: boolean, defaultValue: string, description: string, constraints: string) {
-        this.key = key;
-        this.type = type;
-        this.required = required ? required : false;
-        this.defaultValue = defaultValue;
-        this.description = description;
-        this.constraints = constraints;
-    }
+    required: boolean;
+    defaultValue: any;
+    status: string;
+    constraints: Constraint[];
+    keySchema: SchemaDefinition;
+    entrySchema: SchemaDefinition;
 }

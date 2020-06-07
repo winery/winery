@@ -124,7 +124,7 @@ export class WineryTableComponent implements OnInit, DoCheck {
     @Input() length = 0;
     @Input() disableFiltering = false;
     @Input() data: Array<any> = [];
-    @Input() columns: Array<WineryTableColumn>;
+    @Input() columns: Array<WineryTableColumn> = [];
     @Input() filterString: string;
     @Input() config: any = {
         /**
@@ -160,6 +160,7 @@ export class WineryTableComponent implements OnInit, DoCheck {
     public rows: Array<any> = [];
     public page = 1;
     public currentSelected: any = null;
+    private selectedRow = -1;
 
     private oldData: Array<any> = this.data;
     private oldLength = this.oldData.length;
@@ -180,7 +181,8 @@ export class WineryTableComponent implements OnInit, DoCheck {
 
         const filteredData = this.changeFilter(this.data, this.config);
         const sortedData = this.changeSort(filteredData, this.config);
-        this.rows = page && config.paging ? this.changePage(page, sortedData) : sortedData;
+        this.rows = (page && config.paging ? this.changePage(page, sortedData) : sortedData)
+            .map((r: any) => { return this.applyDisplay(r); });
         this.length = sortedData.length;
     }
 
@@ -258,18 +260,41 @@ export class WineryTableComponent implements OnInit, DoCheck {
     }
 
     onCellClick(data: WineryRowData) {
+        // account for pagination to get the actual data
+        const rawIndex = this.rows.indexOf(data.row);
+        const index = this.page ? (this.page - 1) * this.itemsPerPage + rawIndex : rawIndex;
+
+        this.selectedRow = rawIndex;
+        // monkey-patch the data row
+        data.row = this.data[index];
         this.cellSelected.emit(data);
         this.currentSelected = data.row;
         this.refreshRowHighlighting();
     }
 
     private refreshRowHighlighting(): void {
-        const rowNumber: number = this.currentSelected ? this.rows.findIndex(row => row === this.currentSelected) : -1;
         const tableRows = this.tableContainer.nativeElement.children[0].children[0].children[1].children;
 
         for (let i = 0; i < tableRows.length; i++) {
-            tableRows[i].className = (i === rowNumber) ? 'active-row' : '';
+            tableRows[i].className = (i === this.selectedRow) ? 'active-row' : '';
         }
+    }
+
+    private applyDisplay(row: any): any {
+        if (row === null || row === undefined) {
+            return row;
+        }
+        if (!this.columns.some(coldef => coldef.display !== undefined)) {
+            return row;
+        }
+        const result = {};
+        Object.assign(result, row);
+        for (const displayColumn of this.columns) {
+            if (displayColumn.display !== undefined) {
+                result[displayColumn.name] = displayColumn.display(row[displayColumn.name]);
+            }
+        }
+        return result;
     }
 
     onAddClick($event: Event) {
@@ -359,7 +384,10 @@ export interface WineryTableColumn {
      * @member  filtering
      */
     filtering?: ColumnFilter;
-
+    /**
+     * Defines a function that maps the raw data elements of this column to a string for display purposes.
+     */
+    display?: (value: any) => string;
 }
 
 /**

@@ -14,9 +14,15 @@
 
 package org.eclipse.winery.repository.rest.resources.yaml;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+import org.eclipse.winery.model.tosca.TDataType;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithoutTypeReferenceResource;
 
 import io.swagger.annotations.Api;
@@ -27,5 +33,13 @@ public class DataTypesResource extends AbstractComponentsWithoutTypeReferenceRes
     @Path("{namespace}/{id}/")
     public DataTypeResource getComponentInstanceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
         return this.getComponentInstanceResource(namespace, id, true);
+    }
+
+    @POST
+    @Path("create/")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createNew(TDataType dataType) {
+        // FIXME implement this!
+        return Response.noContent().build();
     }
 }

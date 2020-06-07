@@ -18,7 +18,7 @@ import { InstanceService } from '../../../instance.service';
 import { backendBaseURL } from '../../../../configuration';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { YamlProperty } from './yamlProperty';
+import { YamlPropertyDefinition } from './yamlPropertyDefinition';
 
 
 @Injectable()
@@ -30,26 +30,13 @@ export class YamlPropertiesService {
                 private sharedData: InstanceService) {
         this.path = this.sharedData.path + '/properties/';
     }
-
-    public getProperties(): Observable<YamlProperty[]> {
+    public getProperties(): Observable<YamlPropertyDefinition[]> {
         return this.http.get(this.path, { observe: 'response', responseType: 'text' })
             .pipe(map(res => {
                 if (res.headers.get('Content-Type') === 'application/json') {
                     // fake some null-coalescing
                     if (res.body === null) { return []; }
-                    return JSON.parse(res.body)
-                        .map((def: YamlProperty) => {
-                            // FIXME we want to be a bit smarter about converting these to human-readable types.
-                            //  (especially since nesting is an option)
-                            if (def.entrySchema || def.keySchema) {
-                                if (def.type === 'list') {
-                                    def.humanSchema = ` of ${def.entrySchema.type}`;
-                                } else if (def.type === 'map') {
-                                    def.humanSchema = ` from ${(def.keySchema || {type: 'string'}).type} to ${def.entrySchema.type}`;
-                                }
-                            } else { def.humanSchema = ''; }
-                            return def;
-                        });
+                    return JSON.parse(res.body);
                 } else {
                     // log an error
                     return [];
@@ -57,13 +44,13 @@ export class YamlPropertiesService {
             }));
     }
 
-    public saveProperties(properties: YamlProperty[]): Observable<HttpResponse<string>> {
+    public saveProperties(properties: YamlPropertyDefinition[]): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders();
         headers.set('Content-Type', 'application/json');
         return this.http
             .put(
                 this.path,
-                properties.map(p => { delete(p.humanSchema); return p; }),
+                properties,
                 { headers: headers, observe: 'response', responseType: 'text' }
             );
     }
