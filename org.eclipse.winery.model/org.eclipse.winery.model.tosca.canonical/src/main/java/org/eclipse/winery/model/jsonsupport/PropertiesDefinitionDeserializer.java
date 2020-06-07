@@ -15,28 +15,33 @@
 package org.eclipse.winery.model.jsonsupport;
 
 import java.io.IOException;
-import java.util.List;
 
-import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
-import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+/**
+ * <p>
+ * Deserializes a {@link TEntityType.PropertiesDefinition} into one of the known subclasses implementing the marker
+ * interface by inspecting the properties available on the JSON passed to it.
+ * </p>
+ * <p>
+ * The deserialization works by first reading the JSON to a "raw" JSON Object and inspecting the properties
+ * available on it to determine the target type. Then the JSON object is traversed again to allow deserialization by a
+ * delegated {@link JsonDeserializer Deserializer} obtained with the known target type.
+ * </p>
+ * <p>
+ * For this to work, the implementing classes need to explicitly declare they are deserialized as that specific class
+ * or querying the context for a deserializer will yield <b>this</b> deserializer itself, resulting in an error.
+ * </p>
+ */
 public class PropertiesDefinitionDeserializer extends StdDeserializer<TEntityType.PropertiesDefinition> {
 
     public PropertiesDefinitionDeserializer() {
