@@ -16,13 +16,18 @@ import { SchemaDefinition } from '../../../../../../../topologymodeler/src/app/m
 import { Constraint, YamlWellKnown } from '../../../../model/constraint';
 
 export class YamlPropertyDefinition {
-    name: string;
-    type: QName | YamlWellKnown;
-    description: string;
-    required: boolean;
-    defaultValue: any;
-    status: string;
-    constraints: Constraint[];
-    keySchema: SchemaDefinition;
-    entrySchema: SchemaDefinition;
+    constructor(
+        public name: string = '',
+        public type: QName | YamlWellKnown = 'string',
+        public description: string = '',
+        public required: boolean = false,
+        public defaultValue: any = '',
+        public status: string = 'supported',
+        public constraints: Constraint[] = [],
+        public keySchema: SchemaDefinition = undefined,
+        public entrySchema: SchemaDefinition = undefined) { }
+}
+
+export function isYaml(value: any): value is YamlPropertyDefinition {
+    return (value as YamlPropertyDefinition).name !== undefined;
 }

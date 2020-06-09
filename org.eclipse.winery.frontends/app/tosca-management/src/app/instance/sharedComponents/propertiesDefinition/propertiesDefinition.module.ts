@@ -26,7 +26,6 @@ import { PropertiesDefinitionComponent } from './propertiesDefinition.component'
 import { WineryFeatureToggleModule } from '../../../wineryFeatureToggleModule/winery-feature-toggle.module';
 import { YamlPropertiesComponent } from './yaml/yamlProperties.component';
 import { YamlConstraintsComponent } from './yaml/constraints/yamlConstraints.component';
-import { PropertiesDefinitionEditorComponent } from './editor/propertiesDefinitionEditor.component';
 
 @NgModule({
     imports: [
@@ -48,7 +47,6 @@ import { PropertiesDefinitionEditorComponent } from './editor/propertiesDefiniti
     ],
     declarations: [
         PropertiesDefinitionComponent,
-        PropertiesDefinitionEditorComponent,
         YamlPropertiesComponent,
         YamlConstraintsComponent,
     ],

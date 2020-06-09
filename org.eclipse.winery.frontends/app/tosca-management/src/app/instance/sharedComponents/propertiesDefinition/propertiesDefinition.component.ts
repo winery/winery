@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { InstanceService } from '../../instance.service';
 import { PropertiesDefinitionService } from './propertiesDefinition.service';
 import {
@@ -24,41 +24,11 @@ import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { WineryRepositoryConfigurationService } from '../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { FeatureEnum } from '../../../wineryFeatureToggleModule/wineryRepository.feature.direct';
-import { YamlPropertyDefinition } from './yaml/yamlPropertyDefinition';
-
-const winery_properties_columns: Array<WineryTableColumn> = [
-    { title: 'Name', name: 'key', sort: true },
-    { title: 'Type', name: 'type', sort: true },
-    { title: 'Required', name: 'required' },
-    { title: 'Default Value', name: 'defaultValue' },
-    { title: 'Description', name: 'description' },
-    { title: 'Constraints', name: 'constraints', display: joinList},
-];
-const yaml_columns: Array<WineryTableColumn> = [
-    { title: 'Name', name: 'name', sort: true },
-    { title: 'Type', name: 'type', sort: true },
-    { title: 'Required', name: 'required' },
-    { title: 'Default Value', name: 'defaultValue' },
-    { title: 'Description', name: 'description' },
-    { title: 'Constraints', name: 'constraints', display: joinList },
-];
-
-function joinList(list: any[]): string {
-    let constraintsString = '';
-    for (const value of list) {
-        if (value.value == null) {
-            constraintsString += value.key + ':' + value.list.toString();
-        } else if (value.list == null) {
-            constraintsString += value.key + ':' + value.value;
-        } else {
-            constraintsString += value.key;
-        }
-        if (list.indexOf(value) !== list.length - 1) {
-            constraintsString += ', ';
-        }
-    }
-    return constraintsString;
-}
+import { YamlPropertyDefinition, isYaml } from './yaml/yamlPropertyDefinition';
+import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
+import { Constraint, yaml_well_known } from '../../../model/constraint';
+import { SchemaDefinition, TDataType } from '../../../../../../topologymodeler/src/app/models/ttopology-template';
+import { DataTypesService } from '../../dataTypes/dataTypes.service';
 
 @Component({
     templateUrl: 'propertiesDefinition.component.html',
@@ -66,7 +36,8 @@ function joinList(list: any[]): string {
         'propertiesDefinition.component.css'
     ],
     providers: [
-        PropertiesDefinitionService
+        PropertiesDefinitionService,
+        DataTypesService,
     ],
 })
 export class PropertiesDefinitionComponent implements OnInit {
@@ -75,26 +46,35 @@ export class PropertiesDefinitionComponent implements OnInit {
     loading = true;
 
     resourceApiData: PropertiesDefinitionsResourceApiData;
+
     selectItems: SelectData[];
     activeElement = new SelectData();
     selectedCell: WineryRowData;
     elementToRemove: any = null;
     columns: Array<WineryTableColumn> = [];
     tableData: Array<PropertiesDefinitionKVElement | YamlPropertyDefinition> = [];
-    editedProperty: PropertiesDefinitionKVElement | YamlPropertyDefinition;
+
+    editedProperty: any;
+    editedConstraints: Constraint[];
     propertyOperation: 'Add' | 'Edit';
+    isYaml: boolean;
+    validatorObject: WineryValidatorObject;
+    availableTypes: string[] = [];
+    private yamlTypes: string[] = [];
+    private xmlTypes: string[] = ['xsd:string', 'xsd:float', 'xsd:decimal', 'xsd:anyURI', 'xsd:QName'];
+
     configEnum = FeatureEnum;
 
-    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
+    @ViewChild('confirmDeleteModal')
+    confirmDeleteModal: ModalDirective;
     confirmDeleteModalRef: BsModalRef;
 
-    @ViewChild('editorModal') editorModal: ModalDirective;
+    @ViewChild('editorModal')
+    editorModal: ModalDirective;
     editorModalRef: BsModalRef;
 
-    @ViewChild('nameInputForm') nameInputForm: ElementRef;
-
     constructor(public sharedData: InstanceService, private service: PropertiesDefinitionService,
-                private modalService: BsModalService,
+                private modalService: BsModalService, private dataTypes: DataTypesService,
                 private notify: WineryNotificationService, private configurationService: WineryRepositoryConfigurationService) {
     }
 
@@ -104,6 +84,15 @@ export class PropertiesDefinitionComponent implements OnInit {
      */
     ngOnInit() {
         this.getPropertiesDefinitionsResourceApiData();
+
+        // fill the available types with the types we know
+        setTimeout(() => {
+            yaml_well_known.forEach(t => this.yamlTypes.push(t));
+            this.dataTypes.getDataTypes().subscribe(
+                (types: TDataType[]) => types.forEach(t => this.yamlTypes.push(`{${t.namespace}}${t.id}`)),
+                error => console.log(error),
+            );
+        });
     }
 
     copyToTable() {
@@ -113,25 +102,30 @@ export class PropertiesDefinitionComponent implements OnInit {
             this.columns = yaml_columns;
             this.tableData = this.resourceApiData.propertiesDefinition.properties
                 .map(prop => {
-                    this.fillDefaults(prop);
+                    fillDefaults(prop);
                     return prop;
                 });
+            this.isYaml = true;
+            this.availableTypes = this.yamlTypes;
+            this.validatorObject = new WineryValidatorObject(
+                this.resourceApiData.propertiesDefinition.properties,
+                'name',
+                this.editedProperty);
+
         } else if (this.resourceApiData.winerysPropertiesDefinition !== null) {
             this.columns = winery_properties_columns;
             this.tableData = this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList
                 .map(prop => {
-                    this.fillDefaults(prop);
+                    fillDefaults(prop);
                     return prop;
                 });
-        }
-    }
-
-    private fillDefaults(propDef: YamlPropertyDefinition | PropertiesDefinitionKVElement) {
-        if (!propDef.defaultValue) {
-            propDef.defaultValue = '';
-        }
-        if (!propDef.description) {
-            propDef.description = '';
+            this.isYaml = false;
+            this.availableTypes = this.xmlTypes;
+            this.validatorObject = new WineryValidatorObject(
+                this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList,
+                'key',
+                this.editedProperty
+            );
         }
     }
 
@@ -263,18 +257,29 @@ export class PropertiesDefinitionComponent implements OnInit {
      */
     onAddClick() {
         this.editedProperty = this.configurationService.isYaml() ? new YamlPropertyDefinition() : new PropertiesDefinitionKVElement();
+        this.editedConstraints = [];
         this.propertyOperation = 'Add';
+        if (this.editedProperty.entrySchema === undefined) {
+            this.editedProperty.entrySchema = { type: '' };
+        }
+        if (this.editedProperty.keySchema === undefined) {
+            this.editedProperty.keySchema = { type: '' };
+        }
         this.editorModalRef = this.modalService.show(this.editorModal);
     }
 
     onEditClick(data: YamlPropertyDefinition | PropertiesDefinitionKVElement) {
         this.propertyOperation = 'Edit';
         this.editedProperty = data;
+        this.editedConstraints = [];
+        if (this.editedProperty.keySchema === undefined) {
+            this.editedProperty.keySchema = { type: '' };
+        }
+        if (this.editedProperty.entrySchema === undefined) {
+            this.editedProperty.entrySchema = { type: '' };
+        }
+        this.editedProperty.constraints.forEach((c: Constraint) => this.editedConstraints.push(c));
         this.editorModalRef = this.modalService.show(this.editorModal);
-    }
-
-    handleEditorSubmit() {
-
     }
 
     // endregion
@@ -298,26 +303,80 @@ export class PropertiesDefinitionComponent implements OnInit {
     // endregion
 
     // region ########## Modal Callbacks ##########
-    /**
-     * Adds a property to the table and model
-     * @param propType
-     * @param propName
-     * @param required
-     * @param defaultValue
-     * @param description
-     */
-    addProperty(propType: string, propName: string, required: boolean, defaultValue: string, description: string) {
-        this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList.push({
-            key: propName,
-            type: propType,
-            defaultValue: defaultValue,
-            required: required,
-            description: description,
-            constraints: this.editedProperty.constraints.slice(),
-        });
-        this.editorModalRef.hide();
-        this.copyToTable();
+    handleEditorSubmit(name: string, type: string, entrySchema: string, keySchema: string, defaultValue: string, required: boolean, description: string) {
+        if (this.propertyOperation === 'Add') {
+            this.createEditedProperty(name, type, entrySchema, keySchema);
+        } else if (this.propertyOperation === 'Edit') {
+            this.updateEditedProperty(name, type, entrySchema, keySchema);
+        }
+        // update shared properties
+        this.editedProperty.type = type;
+        this.editedProperty.defaultValue = defaultValue;
+        this.editedProperty.required = required;
+        this.editedProperty.description = description;
+        this.editedProperty.constraints = this.editedConstraints;
+        // no need to update resourceApiData for edit operation because the editedProperty is a reference
+        if (this.propertyOperation === 'Add') {
+            if (this.isYaml) {
+                // @ts-ignore
+                this.resourceApiData.propertiesDefinition.properties.push(newProp);
+            } else {
+                // @ts-ignore
+                this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList.push(newProp);
+            }
+        }
         this.save();
+        this.copyToTable();
+        // abuse AddClick to clear the form without producing errors
+        this.onAddClick();
+        this.editorModalRef.hide();
+    }
+
+    private updateEditedProperty(name: string, type: string, entrySchema: string, keySchema: string) {
+        if (this.isYaml) {
+            this.editedProperty.name = name;
+            if (type === 'list' || type === 'map') {
+                // entrySchema should be defined now
+                if (this.editedProperty.entrySchema) {
+                    this.editedProperty.entrySchema.type = entrySchema || 'string';
+                } else {
+                    this.editedProperty.entrySchema = new SchemaDefinition(entrySchema || 'string', '', [], undefined, undefined);
+                }
+            } else {
+                this.editedProperty.entrySchema = undefined;
+            }
+            if (type === 'map' && keySchema !== '') {
+                if (this.editedProperty.keySchema) {
+                    this.editedProperty.keySchema.type = keySchema;
+                } else {
+                    this.editedProperty.keySchema = new SchemaDefinition(keySchema, '', [], undefined, undefined);
+                }
+            } else {
+                this.editedProperty.keySchema = undefined;
+            }
+        } else {
+            this.editedProperty.key = name;
+            delete this.editedProperty.entrySchema;
+            delete this.editedProperty.keySchema;
+        }
+    }
+
+    private createEditedProperty(name: string, type: string, entrySchema: string, keySchema: string) {
+        let newProp;
+        if (this.isYaml) {
+            newProp = new YamlPropertyDefinition(name);
+            if (type === 'list' || type === 'map') {
+                // entry schema should be defined now
+                newProp.entrySchema = new SchemaDefinition(entrySchema || 'string', '', [], undefined, undefined);
+            }
+            if (type === 'map' && keySchema !== '') {
+                newProp.keySchema = new SchemaDefinition(keySchema, '', [], undefined, undefined);
+            }
+        } else {
+            newProp = new PropertiesDefinitionKVElement();
+            newProp.key = name;
+        }
+        this.editedProperty = newProp;
     }
 
     removeConfirmed() {
@@ -326,6 +385,38 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.elementToRemove = null;
         this.copyToTable();
         this.save();
+    }
+
+    addConstraint(selectedConstraintKey: string, constraintValue: string) {
+        // lists have to be separated by ','
+        if (list_constraint_keys.indexOf(selectedConstraintKey) > -1) {
+            this.editedConstraints.push(new Constraint(selectedConstraintKey, null, constraintValue.split(',')));
+        } else {
+            this.editedConstraints.push(new Constraint(selectedConstraintKey, constraintValue, null));
+        }
+    }
+
+    /**
+     * removes item from constraint list
+     * @param constraintClause
+     */
+    removeConstraint(constraintClause: Constraint) {
+        const index = this.editedConstraints.indexOf(constraintClause);
+        if (index > -1) {
+            this.editedConstraints.splice(index, 1);
+        }
+    }
+
+    get valid_constraint_keys() {
+        return valid_constraint_keys;
+    }
+
+    get list_constraint_keys() {
+        return list_constraint_keys;
+    }
+
+    get range_constraint_keys() {
+        return range_constraint_keys;
     }
 
     // endregion
@@ -448,3 +539,51 @@ export class PropertiesDefinitionComponent implements OnInit {
     }
     // endregion
 }
+
+const winery_properties_columns: Array<WineryTableColumn> = [
+    { title: 'Name', name: 'key', sort: true },
+    { title: 'Type', name: 'type', sort: true },
+    { title: 'Required', name: 'required' },
+    { title: 'Default Value', name: 'defaultValue' },
+    { title: 'Description', name: 'description' },
+    { title: 'Constraints', name: 'constraints', display: joinList},
+];
+const yaml_columns: Array<WineryTableColumn> = [
+    { title: 'Name', name: 'name', sort: true },
+    { title: 'Type', name: 'type', sort: true },
+    { title: 'Required', name: 'required' },
+    { title: 'Default Value', name: 'defaultValue' },
+    { title: 'Description', name: 'description' },
+    { title: 'Constraints', name: 'constraints', display: joinList },
+];
+
+function joinList(list: any[]): string {
+    let constraintsString = '';
+    for (const value of list) {
+        if (value.value == null) {
+            constraintsString += value.key + ':' + value.list.toString();
+        } else if (value.list == null) {
+            constraintsString += value.key + ':' + value.value;
+        } else {
+            constraintsString += value.key;
+        }
+        if (list.indexOf(value) !== list.length - 1) {
+            constraintsString += ', ';
+        }
+    }
+    return constraintsString;
+}
+
+function fillDefaults(propDef: YamlPropertyDefinition | PropertiesDefinitionKVElement) {
+    if (!propDef.defaultValue) {
+        propDef.defaultValue = '';
+    }
+    if (!propDef.description) {
+        propDef.description = '';
+    }
+}
+
+const valid_constraint_keys = ['equal', 'greater_than', 'greater_or_equal', 'less_than', 'less_or_equal', 'in_range',
+    'valid_values', 'length', 'min_length', 'max_length', 'pattern', 'schema'];
+const list_constraint_keys = ['valid_values', 'in_range'];
+const range_constraint_keys = ['in_range'];

@@ -16,6 +16,7 @@ import { Visuals } from './visuals';
 import { TPolicy } from './policiesModalData';
 import { Interface } from '../../../../tosca-management/src/app/model/interfaces';
 import { PropertiesDefinition } from '../../../../tosca-management/src/app/instance/sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
+import { Constraint } from '../../../../tosca-management/src/app/model/constraint';
 
 export class AbstractTEntity {
     constructor(public documentation?: any,
@@ -187,19 +188,19 @@ export class TDataType extends EntityType {
                 namespace: string,
                 properties: any,
                 public full: any,
-                public constraints: any,
-                public keySchema: SchemaDefinition,
-                public entrySchema: SchemaDefinition) {
+                public constraints: Constraint[] = [],
+                public keySchema: SchemaDefinition = undefined,
+                public entrySchema: SchemaDefinition = undefined) {
         super(id, qName, name, namespace, properties, full);
     }
 }
 
 export class SchemaDefinition {
     constructor(public type: string,
-                public description: string,
-                public constraints: any,
-                public keySchema: SchemaDefinition,
-                public entrySchema: SchemaDefinition
+                public description: string = '',
+                public constraints: Constraint[] = [],
+                public keySchema: SchemaDefinition = undefined,
+                public entrySchema: SchemaDefinition = undefined,
                 ) {}
 }
 

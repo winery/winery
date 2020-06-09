@@ -362,7 +362,9 @@ public class FromCanonical {
         return builder.build();
     }
 
-    private TSchemaDefinition convert(TSchema canonical) {
+    @Nullable
+    private TSchemaDefinition convert(@Nullable TSchema canonical) {
+        if (canonical == null) { return null; }
         TSchemaDefinition.Builder builder = new TSchemaDefinition.Builder(canonical.getType());
         builder.setDescription(canonical.getDescription());
         builder.setConstraints(convert(canonical.getConstraints()));

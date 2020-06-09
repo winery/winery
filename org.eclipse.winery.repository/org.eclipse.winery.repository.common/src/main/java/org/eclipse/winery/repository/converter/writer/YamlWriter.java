@@ -230,8 +230,13 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
         if (node.getStatus() != TStatusValue.supported) {
             printer.printKeyValue("status", node.getStatus());
         }
-        printer.print(printList("constraints", node.getConstraints(), parameter))
-            .print(printVisitorNode(node.getEntrySchema(), parameter));
+        printer.print(printList("constraints", node.getConstraints(), parameter));
+        if (node.getEntrySchema() != null) {
+            printer.printKey("entry_schema").print(visit(node.getEntrySchema(), new Parameter(parameter.getIndent() + INDENT_SIZE)));
+        }
+        if (node.getKeySchema() != null) {
+            printer.printKey("key_schema").print(visit(node.getKeySchema(), new Parameter(parameter.getIndent() + INDENT_SIZE)));
+        }
 
         return printer;
     }
