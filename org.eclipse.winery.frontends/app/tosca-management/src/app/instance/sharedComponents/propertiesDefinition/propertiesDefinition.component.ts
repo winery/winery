@@ -89,28 +89,32 @@ export class PropertiesDefinitionComponent implements OnInit {
 
     copyToTable() {
         this.tableData = [];
-        for (const property of this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList) {
-            let constraintsString = '';
-            for (const constraint of property.constraints) {
-                if (constraint.value == null) {
-                    constraintsString += constraint.key + ':' + constraint.list.toString();
-                } else if (constraint.list == null) {
-                    constraintsString += constraint.key + ':' + constraint.value;
-                } else {
-                    constraintsString += constraint.key;
+        if (this.resourceApiData.winerysPropertiesDefinition && this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList) {
+            for (const property of this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList) {
+                let constraintsString = '';
+                if (property.constraints) {
+                    for (const constraint of property.constraints) {
+                        if (constraint.value == null) {
+                            constraintsString += constraint.key + ':' + constraint.list.toString();
+                        } else if (constraint.list == null) {
+                            constraintsString += constraint.key + ':' + constraint.value;
+                        } else {
+                            constraintsString += constraint.key;
+                        }
+                        if (property.constraints.indexOf(constraint) !== property.constraints.length - 1) {
+                            constraintsString += ', ';
+                        }
+                    }
                 }
-                if (property.constraints.indexOf(constraint) !== property.constraints.length - 1) {
-                    constraintsString += ', ';
+                if (!property.defaultValue) {
+                    property.defaultValue = '';
                 }
+                if (!property.description) {
+                    property.description = '';
+                }
+                this.tableData.push(new PropertiesTableData(property.key, property.type, property.required, property.defaultValue, property.description,
+                    constraintsString));
             }
-            if (!property.defaultValue) {
-                property.defaultValue = '';
-            }
-            if (!property.description) {
-                property.description = '';
-            }
-            this.tableData.push(new PropertiesTableData(property.key, property.type, property.required, property.defaultValue, property.description
-                , constraintsString));
         }
     }
 
@@ -365,7 +369,7 @@ export class PropertiesDefinitionComponent implements OnInit {
 
     private handlePropertiesDefinitionData(data: PropertiesDefinitionsResourceApiData): void {
         this.resourceApiData = data;
-
+        debugger
         // because the selectedValue doesn't get set correctly do it here
         switch (!this.resourceApiData.selectedValue ? '' : this.resourceApiData.selectedValue.toString()) {
             case PropertiesDefinitionEnum.Element:

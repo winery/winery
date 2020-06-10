@@ -21,7 +21,7 @@ export class PropertiesTableData {
     constructor(key: string, type: string, required: boolean, defaultValue: string, description: string, constraints: string) {
         this.key = key;
         this.type = type;
-        this.required = required;
+        this.required = required ? required : false;
         this.defaultValue = defaultValue;
         this.description = description;
         this.constraints = constraints;
