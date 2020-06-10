@@ -14,8 +14,10 @@
 import { DifferenceStates, VersionUtils } from './ToscaDiff';
 import { Visuals } from './visuals';
 import { TPolicy } from './policiesModalData';
+import { Interface } from '../../../../tosca-management/src/app/model/interfaces';
+import { PropertiesDefinition } from '../../../../tosca-management/src/app/instance/sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
 
-export class AbstractTTemplate {
+export class AbstractTEntity {
     constructor(public documentation?: any,
                 public any?: any,
                 public otherAttributes?: any) {
@@ -25,7 +27,7 @@ export class AbstractTTemplate {
 /**
  * This is the datamodel for node Templates and relationship templates
  */
-export class TTopologyTemplate extends AbstractTTemplate {
+export class TTopologyTemplate extends AbstractTEntity {
     nodeTemplates: Array<TNodeTemplate> = [];
     relationshipTemplates: Array<TRelationshipTemplate> = [];
     policies: { policy: Array<TPolicy> };
@@ -34,7 +36,7 @@ export class TTopologyTemplate extends AbstractTTemplate {
 /**
  * This is the datamodel for node Templates
  */
-export class TNodeTemplate extends AbstractTTemplate {
+export class TNodeTemplate extends AbstractTEntity {
 
     constructor(public properties: any,
                 public id: string,
@@ -126,6 +128,10 @@ export class TNodeTemplate extends AbstractTTemplate {
     }
 }
 
+export interface Full<T> {
+    serviceTemplateOrNodeTypeOrNodeTypeImplementation: T[];
+}
+
 export class Entity {
     constructor(public id: string,
                 public qName: string,
@@ -190,7 +196,7 @@ export class TArtifactType extends EntityType {
 /**
  * This is the datamodel for relationship templates
  */
-export class TRelationshipTemplate extends AbstractTTemplate {
+export class TRelationshipTemplate extends AbstractTEntity {
 
     constructor(public sourceElement: { ref: string },
                 public targetElement: { ref: string },
@@ -223,7 +229,7 @@ export class TRelationshipTemplate extends AbstractTTemplate {
 
 }
 
-export class TArtifact extends AbstractTTemplate {
+export class TArtifact extends AbstractTEntity {
     constructor(public id: string,
                 public type: string,
                 public file: string,
@@ -236,3 +242,13 @@ export class TArtifact extends AbstractTTemplate {
     }
 }
 
+export class TNodeType extends AbstractTEntity {
+    constructor(public name: string,
+                public interfaces: { interfaces: Interface[]},
+                public propertiesDefinition: PropertiesDefinition,
+                documentation?: any,
+                any?: any,
+                other?: any) {
+        super(documentation, any, other);
+    }
+}

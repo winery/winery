@@ -369,7 +369,6 @@ export class PropertiesDefinitionComponent implements OnInit {
 
     private handlePropertiesDefinitionData(data: PropertiesDefinitionsResourceApiData): void {
         this.resourceApiData = data;
-        debugger
         // because the selectedValue doesn't get set correctly do it here
         switch (!this.resourceApiData.selectedValue ? '' : this.resourceApiData.selectedValue.toString()) {
             case PropertiesDefinitionEnum.Element:

@@ -206,13 +206,13 @@ export class InheritanceUtils {
      * The assumption appears to be that types only add new properties and never change existing ones (e.g., change type or default value)
      * todo why name not qname?
      * todo use the 'getInheritanceAncestry' method
-     * @param name
+     * @param qName
      * @param entities
      * @return properties
      */
-    static getDefaultPropertiesFromEntityTypes(name: string, entities: EntityType[]): any {
+    static getDefaultPropertiesFromEntityTypes(qName: string, entities: EntityType[]): any {
         for (const element of entities) {
-            if (element.name === name) {
+            if (element.qName === qName) {
                 // if propertiesDefinition is defined it's a XML property
                 if (element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition
                     && element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element) {
