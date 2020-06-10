@@ -246,6 +246,7 @@ export class TNodeType extends AbstractTEntity {
     constructor(public name: string,
                 public interfaces: { interfaces: Interface[]},
                 public propertiesDefinition: PropertiesDefinition,
+                public derivedFrom: any,
                 documentation?: any,
                 any?: any,
                 other?: any) {
