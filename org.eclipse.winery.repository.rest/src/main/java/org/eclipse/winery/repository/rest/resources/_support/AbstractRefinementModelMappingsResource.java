@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,13 +23,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.eclipse.winery.model.tosca.TPrmMapping;
+import org.eclipse.winery.model.tosca.OTPrmMapping;
 import org.eclipse.winery.repository.rest.RestUtils;
 
-public abstract class AbstractRefinementModelMappingsResource {
+public abstract class AbstractRefinementModelMappingsResource<T extends OTPrmMapping> {
 
     protected final AbstractRefinementModelResource res;
-    protected List<? extends TPrmMapping> mappings;
+    protected List<T> mappings;
 
     public AbstractRefinementModelMappingsResource(AbstractRefinementModelResource res) {
         this.res = res;
@@ -37,23 +37,23 @@ public abstract class AbstractRefinementModelMappingsResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<? extends TPrmMapping> get() {
+    public List<? extends OTPrmMapping> get() {
         return this.mappings;
     }
 
     @DELETE
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<? extends TPrmMapping> removePatternRefinement(@PathParam("id") String id) {
+    public List<? extends OTPrmMapping> removePatternRefinement(@PathParam("id") String id) {
         this.mappings.removeIf(mapping -> mapping.getId().equals(id));
         RestUtils.persist(this.res);
         return this.mappings;
     }
 
-    public List<? extends TPrmMapping> addMapping(TPrmMapping mapping) {
+    public List<T> addMapping(T mapping) {
         // to update an element, just remove the old one from the list and add it again
         this.mappings.remove(mapping);
-        ((List<TPrmMapping>) this.mappings).add(mapping);
+        this.mappings.add(mapping);
         RestUtils.persist(this.res);
         return mappings;
     }

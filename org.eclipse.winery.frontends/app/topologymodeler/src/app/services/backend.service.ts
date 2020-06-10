@@ -33,6 +33,7 @@ import { VersionElement } from '../models/versionElement';
 import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { takeLast } from 'rxjs/operators';
 import { TPolicy } from '../models/policiesModalData';
+import { backendBaseURL } from '../../../../tosca-management/src/app/configuration';
 
 /**
  * Responsible for interchanging data between the app and the server.
@@ -338,7 +339,7 @@ export class BackendService {
      */
     importTopology(importedTemplateQName: string): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders().set('Content-Type', 'text/plain');
-        return this.http.post(this.configuration.elementPath + '/merge/',
+        return this.http.post(`${this.serviceTemplateURL}${urlElement.TopologyTemplate}merge/`,
             importedTemplateQName,
             { headers: headers, observe: 'response', responseType: 'text' }
         );

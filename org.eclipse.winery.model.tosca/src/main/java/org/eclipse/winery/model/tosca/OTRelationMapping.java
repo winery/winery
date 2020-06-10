@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,14 +23,14 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tRelationMapping")
-public class TRelationMapping extends TPrmMapping {
+@XmlType(name = "otRelationMapping")
+public class OTRelationMapping extends OTPrmMapping {
 
     @XmlAttribute(name = "relationType")
     private QName relationType;
 
     @XmlAttribute(name = "direction")
-    private TRelationDirection direction;
+    private OTRelationDirection direction;
 
     @XmlAttribute(name = "validSourceOrTarget")
     private QName validSourceOrTarget;
@@ -43,11 +43,11 @@ public class TRelationMapping extends TPrmMapping {
         this.relationType = relationType;
     }
 
-    public TRelationDirection getDirection() {
+    public OTRelationDirection getDirection() {
         return direction;
     }
 
-    public void setDirection(TRelationDirection direction) {
+    public void setDirection(OTRelationDirection direction) {
         this.direction = direction;
     }
 
@@ -61,8 +61,8 @@ public class TRelationMapping extends TPrmMapping {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof TRelationMapping
-            && getId().equals(((TRelationMapping) obj).getId());
+        return obj instanceof OTRelationMapping
+            && getId().equals(((OTRelationMapping) obj).getId());
     }
 
     @Override

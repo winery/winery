@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,7 +14,6 @@
 import { Injectable } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
-import { isNullOrUndefined } from 'util';
 import { backendBaseURL } from '../configuration';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
@@ -35,7 +34,7 @@ export class SectionService {
     getSectionData(resourceType?: string): Observable<any> {
         const headers = new HttpHeaders({ 'Accept': 'application/json' });
 
-        if (isNullOrUndefined(resourceType)) {
+        if (!resourceType) {
             resourceType = this.path;
         }
 
@@ -47,7 +46,7 @@ export class SectionService {
 
         const saveObject: any = { localname: newComponentName, namespace: newComponentNamespace };
 
-        if (!isNullOrUndefined(newComponentSelectedType) && newComponentSelectedType.length > 0) {
+        if (newComponentSelectedType && newComponentSelectedType.length > 0) {
             saveObject.type = newComponentSelectedType;
         }
 

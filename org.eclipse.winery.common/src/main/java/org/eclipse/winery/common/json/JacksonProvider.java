@@ -44,7 +44,7 @@ public class JacksonProvider extends JacksonJaxbJsonProvider {
         );
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
 
-        logger.info("Initialized JasonMapper with VisibilityChecker {}", mapper.getVisibilityChecker());
+        logger.info("Initialized JsonMapper with VisibilityChecker {}", mapper.getVisibilityChecker());
     }
 
     /**

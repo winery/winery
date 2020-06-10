@@ -58,7 +58,7 @@ import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
-import org.eclipse.winery.model.tosca.TComplianceRule;
+import org.eclipse.winery.model.tosca.OTComplianceRule;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
@@ -577,8 +577,8 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
                 tags = new TTags();
                 ((RelationshipTypeImplementationResource) this).getRTI().setTags(tags);
             }
-        } else if (this.element instanceof TComplianceRule) {
-            tags = ((TComplianceRule) this.element).getTags();
+        } else if (this.element instanceof OTComplianceRule) {
+            tags = ((OTComplianceRule) this.element).getTags();
             if (tags == null) {
                 tags = new TTags();
                 ((ComplianceRuleResource) this).getCompliancerule().setTags(tags);

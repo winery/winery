@@ -42,7 +42,12 @@
     <input type="checkbox" [(ngModel)]="config.features.patternRefinement" id="patternRefinement"
            name="patternRefinement"
            [checked]="config.features.patternRefinement">
-    <label for="patternRefinement">PatternRefinement</label>
+    <label for="patternRefinement">Pattern Refinement</label>
+    <br>
+    <input type="checkbox" [(ngModel)]="config.features.topologyFragmentRefinementModel" id="topologyFragmentRefinementModel"
+           name="topologyFragmentRefinementModel"
+           [checked]="config.features.topologyFragmentRefinementModel">
+    <label for="topologyFragmentRefinementModel">Topology Fragment Refinement</label>
     <br>
     <input type="checkbox" [(ngModel)]="config.features.problemDetection" id="problemDetection" name="problemDetection"
            [checked]="config.features.problemDetection">

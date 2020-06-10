@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2013-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -55,6 +55,7 @@ public abstract class DefinitionsChildId extends GenericId {
         ServiceTemplateId.class,
         ComplianceRuleId.class,
         PatternRefinementModelId.class,
+        TopologyFragmentRefinementModelId.class,
         TestRefinementModelId.class
     );
 

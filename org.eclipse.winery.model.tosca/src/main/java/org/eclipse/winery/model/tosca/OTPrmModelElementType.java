@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-public enum TPrmModelElementType implements Serializable {
+public enum OTPrmModelElementType implements Serializable {
 
     @XmlEnumValue("node")
     NODE("node"),
@@ -30,13 +30,13 @@ public enum TPrmModelElementType implements Serializable {
 
     private final String value;
 
-    TPrmModelElementType(String v) {
+    OTPrmModelElementType(String v) {
         value = v;
     }
 
     @NonNull
-    public static TPrmModelElementType fromValue(String v) {
-        for (TPrmModelElementType c : TPrmModelElementType.values()) {
+    public static OTPrmModelElementType fromValue(String v) {
+        for (OTPrmModelElementType c : OTPrmModelElementType.values()) {
             if (c.value.equals(v)) {
                 return c;
             }

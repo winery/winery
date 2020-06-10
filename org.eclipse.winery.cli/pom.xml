@@ -22,10 +22,12 @@
     </parent>
     <artifactId>org.eclipse.winery.cli</artifactId>
     <packaging>jar</packaging>
+    
     <properties>
         <checkstyle.config.location>../checkstyle.xml</checkstyle.config.location>
         <main.basedir>${project.parent.basedir}</main.basedir>
     </properties>
+    
     <dependencies>
         <dependency>
             <groupId>commons-cli</groupId>
@@ -81,7 +83,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.17</version>
+                <version>${maven.checkstyle.version}</version>
                 <executions>
                     <execution>
                         <id>checkstyle</id>
@@ -93,14 +95,9 @@
                 </executions>
                 <dependencies>
                     <dependency>
-                        <groupId>com.puppycrawl.tools</groupId>
-                        <artifactId>checkstyle</artifactId>
-                        <version>7.6</version>
-                    </dependency>
-                    <dependency>
                         <groupId>com.thomasjensen.checkstyle.addons</groupId>
                         <artifactId>checkstyle-addons</artifactId>
-                        <version>4.0.1</version>
+                        <version>${checkstyle.addons.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>

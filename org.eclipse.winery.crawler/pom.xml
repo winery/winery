@@ -22,8 +22,13 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>org.eclipse.winery.crawler</artifactId>
+
+    <properties>
+        <checkstyle.config.location>../checkstyle.xml</checkstyle.config.location>
+        <main.basedir>${project.parent.basedir}</main.basedir>
+    </properties>
+    
     <dependencies>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -102,6 +107,27 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven.checkstyle.version}</version>
+                <executions>
+                    <execution>
+                        <id>checkstyle</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.thomasjensen.checkstyle.addons</groupId>
+                        <artifactId>checkstyle-addons</artifactId>
+                        <version>${checkstyle.addons.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>

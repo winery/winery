@@ -42,6 +42,7 @@ export class TopologyRendererActions {
     static MATCH_TOPOLOGY = 'MATCH_TOPOLOGY';
     static SUBSTITUTE_TOPOLOGY = 'SUBSTITUTE_TOPOLOGY';
     static REFINE_TOPOLOGY = 'REFINE_TOPOLOGY';
+    static REFINE_PATTERNS = 'REFINE_PATTERNS';
     static REFINE_TOPOLOGY_WITH_TESTS = 'REFINE_TOPOLOGY_WITH_TESTS';
     static HIGHLIGHT_NODES = 'HIGHLIGHT_NODES';
     static DETECT_PROBLEMS = 'DETECT_PROBLEMS';
@@ -126,6 +127,10 @@ export class TopologyRendererActions {
 
     refineTopology(): Action {
         return { type: TopologyRendererActions.REFINE_TOPOLOGY };
+    }
+
+    refinePatterns(): Action {
+        return { type: TopologyRendererActions.REFINE_PATTERNS };
     }
 
     addTestRefinements(): Action {

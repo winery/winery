@@ -1,5 +1,5 @@
-/********************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+/*******************************************************************************
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,22 +21,23 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-public enum TRelationDirection implements Serializable {
+public enum OTAttributeMappingType implements Serializable {
 
-    @XmlEnumValue("ingoing")
-    INGOING("ingoing"),
-    @XmlEnumValue("outgoing")
-    OUTGOING("outgoing");
+    @XmlEnumValue("all")
+    ALL("all"),
+    @XmlEnumValue("selective")
+    SELECTIVE("selective");
+
     private final String value;
 
-    TRelationDirection(String v) {
-        value = v;
+    OTAttributeMappingType(String value) {
+        this.value = value;
     }
 
     @NonNull
-    public static TRelationDirection fromValue(String v) {
-        for (TRelationDirection c : TRelationDirection.values()) {
-            if (c.value.equals(v)) {
+    public static OTAttributeMappingType fromValue(String v) {
+        for (OTAttributeMappingType c : OTAttributeMappingType.values()) {
+            if (c.value.equalsIgnoreCase(v)) {
                 return c;
             }
         }
@@ -45,7 +46,6 @@ public enum TRelationDirection implements Serializable {
 
     @Nullable
     public String value() {
-        return value;
+        return this.value;
     }
 }
-

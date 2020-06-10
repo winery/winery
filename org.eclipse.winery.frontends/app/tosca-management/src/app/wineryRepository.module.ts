@@ -47,6 +47,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { PatternRefinementModelModule } from './wineryMainModules/patternRefinementModels/patternRefinementModel.module';
 import { TestRefinementModelModule } from './wineryMainModules/testRefinementModels/testRefinementModel.module';
 import { WineryRepositoryConfigurationService } from './wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { TopologyFragmentRefinementModelModule } from './wineryMainModules/topologyFragmentRefinementModel/topologyFragmentRefinementModel.module';
 import { WineryFeatureToggleModule } from './wineryFeatureToggleModule/winery-feature-toggle.module';
 
 @NgModule({
@@ -76,6 +77,7 @@ import { WineryFeatureToggleModule } from './wineryFeatureToggleModule/winery-fe
         ImportModule,
         ComplianceRuleModule,
         PatternRefinementModelModule,
+        TopologyFragmentRefinementModelModule,
         TestRefinementModelModule,
         WineryRepositoryRoutingModule,
         WineryFeatureToggleModule

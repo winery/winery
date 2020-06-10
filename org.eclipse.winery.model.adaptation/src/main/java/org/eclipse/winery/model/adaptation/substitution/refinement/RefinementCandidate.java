@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -17,7 +17,7 @@ package org.eclipse.winery.model.adaptation.substitution.refinement;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import org.eclipse.winery.model.tosca.TRefinementModel;
+import org.eclipse.winery.model.tosca.OTRefinementModel;
 import org.eclipse.winery.topologygraph.model.ToscaEdge;
 import org.eclipse.winery.topologygraph.model.ToscaGraph;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
@@ -28,14 +28,14 @@ import org.jgrapht.GraphMapping;
 
 public class RefinementCandidate {
 
-    private final TRefinementModel refinementModel;
+    private final OTRefinementModel refinementModel;
     @JsonIgnore
     private final GraphMapping<ToscaNode, ToscaEdge> graphMapping;
     @JsonIgnore
     private final ToscaGraph detectorGraph;
     private final int id;
 
-    public RefinementCandidate(TRefinementModel refinementModel, GraphMapping<ToscaNode, ToscaEdge> graphMapping,
+    public RefinementCandidate(OTRefinementModel refinementModel, GraphMapping<ToscaNode, ToscaEdge> graphMapping,
                                ToscaGraph detectorGraph, int id) {
         this.refinementModel = Objects.requireNonNull(refinementModel);
         this.graphMapping = Objects.requireNonNull(graphMapping);
@@ -44,7 +44,7 @@ public class RefinementCandidate {
     }
 
     @NonNull
-    public TRefinementModel getRefinementModel() {
+    public OTRefinementModel getRefinementModel() {
         return refinementModel;
     }
 

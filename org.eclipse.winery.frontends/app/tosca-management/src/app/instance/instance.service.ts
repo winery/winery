@@ -139,8 +139,9 @@ export class InstanceService {
                     SubMenuItems.documentation, SubMenuItems.xml];
                 break;
             case ToscaTypes.PatternRefinementModel:
+            case ToscaTypes.TopologyFragmentRefinementModel:
                 subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.detector, SubMenuItems.refinementStructure, SubMenuItems.relationMappings,
-                    SubMenuItems.attributeMappings, SubMenuItems.stayMappings, SubMenuItems.xml];
+                    SubMenuItems.attributeMappings, SubMenuItems.stayMappings, SubMenuItems.deploymentArtifactMappings, SubMenuItems.xml];
                 break;
             case ToscaTypes.TestRefinementModel:
                 subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.detector, SubMenuItems.testFragment, SubMenuItems.relationMappings,

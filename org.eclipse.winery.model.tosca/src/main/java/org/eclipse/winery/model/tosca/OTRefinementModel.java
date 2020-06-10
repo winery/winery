@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -25,7 +26,7 @@ import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-public abstract class TRefinementModel extends TExtensibleElements implements HasName, HasTargetNamespace {
+public abstract class OTRefinementModel extends TExtensibleElements implements HasName, HasTargetNamespace {
 
     @XmlAttribute
     protected String name;
@@ -39,7 +40,7 @@ public abstract class TRefinementModel extends TExtensibleElements implements Ha
 
     @XmlElementWrapper(name = "RelationMappings")
     @XmlElement(name = "RelationMapping")
-    protected List<TRelationMapping> relationMappings;
+    protected List<OTRelationMapping> relationMappings;
 
     @Override
     public String getName() {
@@ -87,11 +88,14 @@ public abstract class TRefinementModel extends TExtensibleElements implements Ha
         visitor.visit(this);
     }
 
-    public List<TRelationMapping> getRelationMappings() {
-        return relationMappings;
+    public List<OTRelationMapping> getRelationMappings() {
+        if (this.relationMappings == null) {
+            this.relationMappings = new ArrayList<>();
+        }
+        return this.relationMappings;
     }
 
-    public void setRelationMappings(List<TRelationMapping> relationMappings) {
+    public void setRelationMappings(List<OTRelationMapping> relationMappings) {
         this.relationMappings = relationMappings;
     }
 }

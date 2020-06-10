@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,7 +23,7 @@ import org.eclipse.winery.topologygraph.model.ToscaEdge;
 import org.eclipse.winery.topologygraph.model.ToscaGraph;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
 import org.eclipse.winery.topologygraph.transformation.ToscaTransformer;
-import org.eclipse.winery.model.tosca.TComplianceRule;
+import org.eclipse.winery.model.tosca.OTComplianceRule;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -142,12 +142,12 @@ public class ToscaModelHelper {
 //		return tTags;
 //	}
 
-    public static TComplianceRule createTComplianceRule(ComplianceRuleId id) {
+    public static OTComplianceRule createTComplianceRule(ComplianceRuleId id) {
         return createTComplianceRule(id.getQName().getLocalPart(), id.getQName().getNamespaceURI());
     }
 
-    public static TComplianceRule createTComplianceRule(String id, String ns) {
-        TComplianceRule rule = new TComplianceRule();
+    public static OTComplianceRule createTComplianceRule(String id, String ns) {
+        OTComplianceRule rule = new OTComplianceRule();
         rule.setId(id);
         rule.setTargetNamespace(ns);
         return rule;

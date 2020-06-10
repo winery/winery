@@ -17,6 +17,7 @@ import { TopologyModelerConfiguration } from './topologyModelerConfiguration';
 import { VersionElement } from './versionElement';
 import { Visuals } from './visuals';
 import { TPolicy } from './policiesModalData';
+import { GroupedNodeTypeModel } from './groupedNodeTypeModel';
 
 /**
  * Internal representation of entity Types
@@ -25,7 +26,7 @@ export class EntityTypesModel {
     artifactTemplates: any;
     artifactTypes: TArtifactType[];
     capabilityTypes: EntityType[];
-    groupedNodeTypes: any[];
+    groupedNodeTypes: GroupedNodeTypeModel[];
     versionElements: VersionElement[];
     nodeVisuals: Visuals[];
     relationshipVisuals: Visuals[];

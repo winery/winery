@@ -15,9 +15,10 @@ import { Directive, Input, OnInit } from '@angular/core';
 import { ShowOnFeatureDirective } from './wineryRepository.showOnFeature.direct';
 
 export enum FeatureEnum {
-    Accountability = 'accountability', Completion = 'completion', Compliance = 'compliance', FreezeAndDefrost = 'freezeAndDefrost',
-    ManagementFeatureEnrichment = 'managementFeatureEnrichment', NFV = 'nfv', PatternRefinement = 'patternRefinement', ProblemDetection = 'problemDetection',
-    Radon = 'radon', Splitting = 'splitting', TestRefinement = 'testRefinement', Placement = 'placement', updateTemplates = 'updateTemplates', Yaml = 'yaml'
+    Accountability = 'accountability', Completion = 'completion', Compliance = 'compliance', EdmmModeling = 'edmmModeling',
+    FreezeAndDefrost = 'freezeAndDefrost', ManagementFeatureEnrichment = 'managementFeatureEnrichment', NFV = 'nfv', PatternRefinement = 'patternRefinement',
+    ProblemDetection = 'problemDetection', Radon = 'radon', Splitting = 'splitting', TestRefinement = 'testRefinement',
+    TopologyFragmentRefinementModel = 'topologyFragmentRefinementModel', Placement = 'placement', updateTemplates = 'updateTemplates', Yaml = 'yaml'
 }
 
 @Directive({

@@ -68,6 +68,8 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.surefire.version>3.0.0-M4</maven.surefire.version>
+        <maven.checkstyle.version>3.1.1</maven.checkstyle.version>
+        <checkstyle.addons.version>6.0.1</checkstyle.addons.version>
         <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.version.osgi>2.0.0</project.version.osgi>

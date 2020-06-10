@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, ElementRef, forwardRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, forwardRef, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { WineryNamespaceSelectorService } from './wineryNamespaceSelector.service';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -78,6 +78,7 @@ export class WineryNamespaceSelectorComponent implements OnInit, ControlValueAcc
     @Input() typeAheadListLimit = 50;
     @Input() toscaType: ToscaTypes;
     @Input() useStartNamespace = true;
+    @Output() onChange = new EventEmitter<string>();
 
     loading = true;
     isCollapsed = true;
@@ -131,7 +132,7 @@ export class WineryNamespaceSelectorComponent implements OnInit, ControlValueAcc
     // region ########## ControlValueAccessor Interface ##########
     writeValue(value: string) {
         if (value !== this.innerNamespaceValue) {
-            if ((isNullOrUndefined(value) || value.length === 0) && this.useStartNamespace) {
+            if ((!value || value.length === 0) && this.useStartNamespace) {
                 // In the case that the namespace is set from outside this component via ngModel, don't overwrite the value set by the parent component.
                 // Otherwise, use the default namespace.
                 if (this.innerNamespaceValue.length === 0) {
@@ -148,6 +149,7 @@ export class WineryNamespaceSelectorComponent implements OnInit, ControlValueAcc
 
     registerOnChange(fn: any) {
         this.propagateChange = fn;
+        this.onChange.emit(this.innerNamespaceValue);
     }
 
     registerOnTouched(fn: any) {
@@ -174,6 +176,6 @@ export class WineryNamespaceSelectorComponent implements OnInit, ControlValueAcc
         const defaultNamespace = this.configuration.isYaml() ?
             StartNamespaces.DefaultStartNamespaceYaml.toString() : StartNamespaces.DefaultStartNamespace.toString();
         const storageValue = localStorage.getItem(StartNamespaces.LocalStorageEntry.toString());
-        this.initNamespaceString = isNullOrUndefined(storageValue) || storageValue.length === 0 ? defaultNamespace : storageValue;
+        this.initNamespaceString = !storageValue || storageValue.length === 0 ? defaultNamespace : storageValue;
     }
 }

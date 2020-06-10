@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -37,7 +37,6 @@ export class StayMappingsComponent implements OnInit {
     loading = true;
     loadingElements = false;
     columns: Array<WineryTableColumn> = [
-        { title: 'Id', name: 'id', sort: true },
         { title: 'Element Type', name: 'modelElementType', sort: true },
         { title: 'Detector Element', name: 'detectorNode', sort: true },
         { title: 'Refinement Element', name: 'refinementNode', sort: true },
@@ -56,7 +55,7 @@ export class StayMappingsComponent implements OnInit {
 
     constructor(private service: RefinementMappingsService,
                 private notify: WineryNotificationService,
-                private sharedData: InstanceService,
+                public sharedData: InstanceService,
                 private modalService: BsModalService) {
     }
 
@@ -73,16 +72,7 @@ export class StayMappingsComponent implements OnInit {
 
     // region ********** Table Callbacks **********
     onAddButtonClicked() {
-        let id = 0;
-        this.stayMappings.forEach(value => {
-            const number = Number(value.id.split(StayMapping.idPrefix)[1]);
-            if (!isNaN(number) && number >= id) {
-                id = number;
-                if (number === id) {
-                    id++;
-                }
-            }
-        });
+        const id = this.service.getNewMappingsId(this.stayMappings, StayMapping.idPrefix);
 
         this.mapping = new StayMapping(id);
         this.addModalRef = this.modalService.show(this.addModal);

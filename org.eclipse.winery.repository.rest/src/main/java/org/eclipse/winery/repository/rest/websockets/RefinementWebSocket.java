@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -36,6 +36,7 @@ import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCan
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementChooser;
 import org.eclipse.winery.model.adaptation.substitution.refinement.patterns.PatternRefinement;
 import org.eclipse.winery.model.adaptation.substitution.refinement.tests.TestRefinement;
+import org.eclipse.winery.model.adaptation.substitution.refinement.topologyrefinement.TopologyFragmentRefinement;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.rest.resources.apiData.RefinementElementApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.RefinementWebSocketApiData;
@@ -45,12 +46,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ServerEndpoint(value = "/refinetopology")
-public class PatternRefinementWebSocket implements RefinementChooser {
+public class RefinementWebSocket implements RefinementChooser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsistencyCheckWebSocket.class);
 
     private Session session;
-    private AbstractRefinement patternRefinement;
+    private AbstractRefinement refinement;
     private CompletableFuture<Integer> future;
     private boolean running = false;
     private ServiceTemplateId refinementServiceTemplate;
@@ -63,12 +64,14 @@ public class PatternRefinementWebSocket implements RefinementChooser {
         List<String> refinementType = requestParameterMap.get("type");
         if (Objects.nonNull(refinementType)) {
             String type = refinementType.get(0);
-            if (type.equals("patterns")) {
-                this.patternRefinement = new PatternRefinement(this);
-            } else if (type.equals("tests")) {
-                this.patternRefinement = new TestRefinement(this);
+            if ("patterns".equals(type)) {
+                this.refinement = new PatternRefinement(this);
+            } else if ("topology".equals(type)) {
+                this.refinement = new TopologyFragmentRefinement(this);
+            } else if ("tests".equals(type)) {
+                this.refinement = new TestRefinement(this);
             }
-            if (Objects.nonNull(this.patternRefinement)) {
+            if (Objects.nonNull(this.refinement)) {
                 LOGGER.info("Opened consistency check web-socket with id: " + session.getId());
                 return;
             }
@@ -99,7 +102,7 @@ public class PatternRefinementWebSocket implements RefinementChooser {
                 if (!running) {
                     Thread thread = new Thread(() -> {
                         RefinementElementApiData element = new RefinementElementApiData();
-                        element.serviceTemplateContainingRefinements = patternRefinement.refineServiceTemplate(new ServiceTemplateId(data.serviceTemplate));
+                        element.serviceTemplateContainingRefinements = refinement.refineServiceTemplate(new ServiceTemplateId(data.serviceTemplate));
                         try {
                             this.send(element);
                             session.close();

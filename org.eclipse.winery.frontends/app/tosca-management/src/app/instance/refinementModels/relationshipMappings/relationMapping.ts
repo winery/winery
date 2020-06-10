@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,23 +12,26 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
+import { RefinementMappings } from '../RefinementMappings';
+
 export enum RelationDirection {
     INGOING = 'INGOING',
     OUTGOING = 'OUTGOING'
 }
 
-export class RelationMapping {
+export class RelationMapping extends RefinementMappings {
 
-    public static readonly idPrefix = 'mapping';
+    public static readonly idPrefix = 'relMap';
 
-    id: string;
-    detectorNode: string;
-    refinementNode: string;
-    relationType: string;
-    direction: RelationDirection;
-    validSourceOrTarget: string;
+    public relationType: string;
+    public direction: RelationDirection;
+    public validSourceOrTarget: string;
 
     constructor(id: number) {
-        this.id = RelationMapping.idPrefix + id;
+        super(id);
+    }
+
+    idPrefix(): string {
+        return RelationMapping.idPrefix;
     }
 }

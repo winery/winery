@@ -1,5 +1,5 @@
-/********************************************************************************
- * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
+/*******************************************************************************
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.rest.resources.patternrefinementmodels;
+package org.eclipse.winery.repository.rest.resources.refinementmodels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,25 +21,27 @@ import java.util.Objects;
 import javax.ws.rs.Path;
 
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.model.tosca.AttributeMapping;
-import org.eclipse.winery.model.tosca.TPatternRefinementModel;
-import org.eclipse.winery.model.tosca.TStayMapping;
+import org.eclipse.winery.model.tosca.OTAttributeMapping;
+import org.eclipse.winery.model.tosca.OTDeploymentArtifactMapping;
+import org.eclipse.winery.model.tosca.OTTopologyFragmentRefinementModel;
+import org.eclipse.winery.model.tosca.OTPatternRefinementModel;
+import org.eclipse.winery.model.tosca.OTStayMapping;
 import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates.TopologyTemplateResource;
 
-public class PatternRefinementModelResource extends AbstractRefinementModelResource {
+public class TopologyFragmentRefinementModelResource extends AbstractRefinementModelResource {
 
-    public PatternRefinementModelResource(DefinitionsChildId id) {
+    public TopologyFragmentRefinementModelResource(DefinitionsChildId id) {
         super(id);
     }
 
     @Override
-    protected TPatternRefinementModel createNewElement() {
-        return new TPatternRefinementModel();
+    protected OTPatternRefinementModel createNewElement() {
+        return new OTPatternRefinementModel();
     }
 
-    public TPatternRefinementModel getTRefinementModel() {
-        return (TPatternRefinementModel) this.getElement();
+    public OTTopologyFragmentRefinementModel getTRefinementModel() {
+        return (OTTopologyFragmentRefinementModel) this.getElement();
     }
 
     @Path("refinementstructure")
@@ -49,7 +51,7 @@ public class PatternRefinementModelResource extends AbstractRefinementModelResou
 
     @Path("attributemappings")
     public AttributeMappingsResource getPropertyMappings() {
-        List<AttributeMapping> propertyMappings = this.getTRefinementModel().getAttributeMappings();
+        List<OTAttributeMapping> propertyMappings = this.getTRefinementModel().getAttributeMappings();
 
         if (Objects.isNull(propertyMappings)) {
             propertyMappings = new ArrayList<>();
@@ -61,7 +63,7 @@ public class PatternRefinementModelResource extends AbstractRefinementModelResou
 
     @Path("staymappings")
     public StayMappingsResource getStayMappings() {
-        List<TStayMapping> stayMappings = this.getTRefinementModel().getStayMappings();
+        List<OTStayMapping> stayMappings = this.getTRefinementModel().getStayMappings();
 
         if (Objects.isNull(stayMappings)) {
             stayMappings = new ArrayList<>();
@@ -69,5 +71,17 @@ public class PatternRefinementModelResource extends AbstractRefinementModelResou
         }
 
         return new StayMappingsResource(this, stayMappings);
+    }
+
+    @Path("deploymentartifactmappings")
+    public DeploymentArtifactMappingsResource getDeploymentArtifactMappings() {
+        List<OTDeploymentArtifactMapping> artifactMappings = this.getTRefinementModel().getDeploymentArtifactMappings();
+
+        if (Objects.isNull(artifactMappings)) {
+            artifactMappings = new ArrayList<>();
+            this.getTRefinementModel().setDeploymentArtifactMappings(artifactMappings);
+        }
+
+        return new DeploymentArtifactMappingsResource(this, artifactMappings);
     }
 }

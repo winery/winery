@@ -51,7 +51,7 @@ export class EntityComponent implements OnInit {
 
     constructor(private existService: ExistService, private router: Router,
                 private service: EntityService, private notify: WineryNotificationService,
-                private configurationService: WineryRepositoryConfigurationService) {
+                public configurationService: WineryRepositoryConfigurationService) {
     }
 
     ngOnInit(): void {
