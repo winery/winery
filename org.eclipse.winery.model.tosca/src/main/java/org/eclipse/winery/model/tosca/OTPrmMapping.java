@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,7 +25,7 @@ import org.eclipse.winery.model.tosca.visitor.Visitor;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import org.eclipse.jdt.annotation.NonNull;
 
-public abstract class TPrmMapping extends HasId implements Serializable {
+public abstract class OTPrmMapping extends HasId implements Serializable {
 
     @JsonIdentityReference(alwaysAsId = true)
     @XmlAttribute(name = "detectorNode", required = true)

@@ -29,6 +29,7 @@ export interface WineryConfiguration {
         radon: boolean;
         splitting: boolean;
         testRefinement: boolean;
+        topologyFragmentRefinementModel: boolean;
         placement: boolean;
         edmmModeling: boolean;
         updateTemplates: boolean;

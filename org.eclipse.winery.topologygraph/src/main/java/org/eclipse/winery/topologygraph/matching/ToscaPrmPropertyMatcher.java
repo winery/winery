@@ -28,8 +28,8 @@ import org.eclipse.winery.topologygraph.model.ToscaNode;
 
 public class ToscaPrmPropertyMatcher extends ToscaTypeMatcher {
 
-    private List<TEntityTemplate> detectorElements;
-    private NamespaceManager namespaceManager;
+    private final List<TEntityTemplate> detectorElements;
+    private final NamespaceManager namespaceManager;
 
     public ToscaPrmPropertyMatcher(List<TEntityTemplate> detectorElements, NamespaceManager namespaceManager) {
         this.detectorElements = detectorElements;

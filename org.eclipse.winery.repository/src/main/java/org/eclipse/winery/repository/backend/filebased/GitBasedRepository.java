@@ -57,28 +57,30 @@ import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationI
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TestRefinementModelId;
+import org.eclipse.winery.common.ids.definitions.TopologyFragmentRefinementModelId;
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
 import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.OTTopologyFragmentRefinementModel;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TCapabilityType;
-import org.eclipse.winery.model.tosca.TComplianceRule;
+import org.eclipse.winery.model.tosca.OTComplianceRule;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
-import org.eclipse.winery.model.tosca.TPatternRefinementModel;
+import org.eclipse.winery.model.tosca.OTPatternRefinementModel;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TPolicyType;
-import org.eclipse.winery.model.tosca.TRefinementModel;
+import org.eclipse.winery.model.tosca.OTRefinementModel;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
-import org.eclipse.winery.model.tosca.TTestRefinementModel;
+import org.eclipse.winery.model.tosca.OTTestRefinementModel;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.EdmmManager;
 import org.eclipse.winery.repository.backend.NamespaceManager;
@@ -562,6 +564,10 @@ public class GitBasedRepository extends AbstractFileBasedRepository {
         return repository.getReferencedDefinitionsChildIds(id);
     }
 
+    public Collection<DefinitionsChildId> getReferencedDefinitionsChildIds(TopologyFragmentRefinementModelId id) {
+        return repository.getReferencedDefinitionsChildIds(id);
+    }
+
     @Override
     public Collection<DefinitionsChildId> getReferencedDefinitionsChildIds(TestRefinementModelId id) {
         return repository.getReferencedDefinitionsChildIds(id);
@@ -748,22 +754,27 @@ public class GitBasedRepository extends AbstractFileBasedRepository {
     }
 
     @Override
-    public TComplianceRule getElement(ComplianceRuleId id) {
+    public OTComplianceRule getElement(ComplianceRuleId id) {
         return repository.getElement(id);
     }
 
     @Override
-    public TPatternRefinementModel getElement(PatternRefinementModelId id) {
+    public OTPatternRefinementModel getElement(PatternRefinementModelId id) {
         return repository.getElement(id);
     }
 
     @Override
-    public TTestRefinementModel getElement(TestRefinementModelId id) {
+    public OTTopologyFragmentRefinementModel getElement(TopologyFragmentRefinementModelId id) {
         return repository.getElement(id);
     }
 
     @Override
-    public TRefinementModel getElement(RefinementId id) {
+    public OTTestRefinementModel getElement(TestRefinementModelId id) {
+        return repository.getElement(id);
+    }
+
+    @Override
+    public OTRefinementModel getElement(RefinementId id) {
         return repository.getElement(id);
     }
 

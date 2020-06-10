@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import org.eclipse.winery.common.ids.definitions.RefinementId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.adaptation.substitution.AbstractSubstitution;
-import org.eclipse.winery.model.tosca.TRefinementModel;
+import org.eclipse.winery.model.tosca.OTRefinementModel;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.topologygraph.matching.IToscaMatcher;
@@ -44,13 +44,13 @@ public abstract class AbstractRefinement extends AbstractSubstitution {
 
     protected ServiceTemplateId refinementServiceTemplateId;
 
-    private List<TRefinementModel> patternRefinementModels;
-    private RefinementChooser refinementChooser;
+    private final List<OTRefinementModel> refinementModels;
+    private final RefinementChooser refinementChooser;
 
     public AbstractRefinement(RefinementChooser refinementChooser, Class<? extends RefinementId> idClass, String versionAppendix) {
         this.refinementChooser = refinementChooser;
         this.versionAppendix = versionAppendix;
-        this.patternRefinementModels = this.repository.getAllDefinitionsChildIds(idClass)
+        this.refinementModels = this.repository.getAllDefinitionsChildIds(idClass)
             .stream()
             .map(repository::getElement)
             .collect(Collectors.toList());
@@ -72,13 +72,13 @@ public abstract class AbstractRefinement extends AbstractSubstitution {
 
     public void refineTopology(TTopologyTemplate topology) {
         ToscaIsomorphismMatcher isomorphismMatcher = new ToscaIsomorphismMatcher();
-        int id[] = new int[1];
+        int[] id = new int[1];
 
         while (getLoopCondition(topology)) {
             ToscaGraph topologyGraph = ToscaTransformer.createTOSCAGraph(topology);
 
             List<RefinementCandidate> candidates = new ArrayList<>();
-            this.patternRefinementModels
+            this.refinementModels
                 .forEach(prm -> {
                     ToscaGraph detectorGraph = ToscaTransformer.createTOSCAGraph(prm.getDetector());
                     IToscaMatcher matcher = getMatcher(prm);
@@ -109,7 +109,7 @@ public abstract class AbstractRefinement extends AbstractSubstitution {
 
     public abstract boolean getLoopCondition(TTopologyTemplate topology);
 
-    public abstract IToscaMatcher getMatcher(TRefinementModel prm);
+    public abstract IToscaMatcher getMatcher(OTRefinementModel prm);
 
     public abstract boolean isApplicable(RefinementCandidate candidate, TTopologyTemplate topology);
 

@@ -22,31 +22,12 @@
     </parent>
     <artifactId>org.eclipse.winery.highlevelrestapi</artifactId>
     <packaging>jar</packaging>
-    <inceptionYear>2012</inceptionYear>
-    <mailingLists>
-        <mailingList>
-            <name>Winery Developer List</name>
-            <post>winery-dev@eclipse.org</post>
-            <archive>http://dev.eclipse.org/mhonarc/lists/winery-dev</archive>
-        </mailingList>
-    </mailingLists>
-    <licenses>
-        <license>
-            <name>Eclipse Public License v2.0</name>
-            <url>http://www.eclipse.org/legal/epl-v20.html</url>
-            <distribution>repo</distribution>
-            <comments>Standard Eclipse Licence</comments>
-        </license>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+
     <properties>
         <checkstyle.config.location>../checkstyle.xml</checkstyle.config.location>
         <main.basedir>${project.parent.basedir}</main.basedir>
     </properties>
+
     <profiles>
         <profile>
             <activation>
@@ -64,6 +45,7 @@
             </properties>
         </profile>
     </profiles>
+
     <dependencies>
         <dependency>
             <groupId>commons-codec</groupId>
@@ -108,7 +90,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.17</version>
+                <version>${maven.checkstyle.version}</version>
                 <executions>
                     <execution>
                         <id>checkstyle</id>
@@ -120,14 +102,9 @@
                 </executions>
                 <dependencies>
                     <dependency>
-                        <groupId>com.puppycrawl.tools</groupId>
-                        <artifactId>checkstyle</artifactId>
-                        <version>7.6</version>
-                    </dependency>
-                    <dependency>
                         <groupId>com.thomasjensen.checkstyle.addons</groupId>
                         <artifactId>checkstyle-addons</artifactId>
-                        <version>4.0.1</version>
+                        <version>${checkstyle.addons.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,16 +14,21 @@
 
 package org.eclipse.winery.model.tosca;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-public class AttributeMapping extends TPrmMapping {
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "otAttributeMapping")
+public class OTAttributeMapping extends OTPrmMapping {
 
     @XmlAttribute(name = "type")
-    private TAttributeMappingType type;
+    private OTAttributeMappingType type;
 
     @XmlAttribute(name = "detectorProperty")
     @Nullable
@@ -33,11 +38,11 @@ public class AttributeMapping extends TPrmMapping {
     @Nullable
     private String refinementProperty;
 
-    public TAttributeMappingType getType() {
+    public OTAttributeMappingType getType() {
         return type;
     }
 
-    public void setType(TAttributeMappingType type) {
+    public void setType(OTAttributeMappingType type) {
         this.type = type;
     }
 
@@ -59,8 +64,8 @@ public class AttributeMapping extends TPrmMapping {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof AttributeMapping
-            && getId().equals(((AttributeMapping) obj).getId());
+        return obj instanceof OTAttributeMapping
+            && getId().equals(((OTAttributeMapping) obj).getId());
     }
 
     @Override

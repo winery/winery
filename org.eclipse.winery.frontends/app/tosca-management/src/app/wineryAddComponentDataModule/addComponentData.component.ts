@@ -17,7 +17,6 @@ import { SectionService } from '../section/section.service';
 import { InheritanceService } from '../instance/sharedComponents/inheritance/inheritance.service';
 import { TooltipConfig } from 'ngx-bootstrap';
 import { AddComponentValidation } from '../wineryAddComponentModule/addComponentValidation';
-import { isNullOrUndefined } from 'util';
 import { WineryVersion } from '../model/wineryVersion';
 import { SelectData } from '../model/selectData';
 import { ToscaTypes } from '../model/enums';
@@ -77,7 +76,7 @@ export class WineryAddComponentDataComponent {
         this.validation = new AddComponentValidation();
         this.newComponentFinalName = this.newComponentName;
 
-        if (this.typeRequired && isNullOrUndefined(this.newComponentSelectedType)) {
+        if (this.typeRequired && !this.newComponentSelectedType) {
             this.validation.noTypeAvailable = true;
             return { noTypeAvailable: true };
         }
@@ -116,7 +115,7 @@ export class WineryAddComponentDataComponent {
         this.typeChanged.emit(this.newComponentSelectedType);
     }
 
-    private versioning() {
+    versioning() {
         this.collapseVersioning = !this.collapseVersioning;
     }
 

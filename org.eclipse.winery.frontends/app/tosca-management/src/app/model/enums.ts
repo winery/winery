@@ -38,6 +38,7 @@ export enum ToscaTypes {
     Imports = 'imports',
     ComplianceRule = 'compliancerules',
     PatternRefinementModel = 'patternrefinementmodels',
+    TopologyFragmentRefinementModel = 'topologyfragmentrefinementmodels',
     TestRefinementModel = 'testrefinementmodels',
     Admin = 'admin'
 }

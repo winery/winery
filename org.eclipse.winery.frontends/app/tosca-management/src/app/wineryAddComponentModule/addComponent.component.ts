@@ -19,12 +19,11 @@ import { ToscaTypes } from '../model/enums';
 import { Router } from '@angular/router';
 import { Utils } from '../wineryUtils/utils';
 import { SectionData } from '../section/sectionData';
-import { ModalDirective, TooltipConfig } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap';
 import { InheritanceService } from '../instance/sharedComponents/inheritance/inheritance.service';
 import { WineryVersion } from '../model/wineryVersion';
 import { AddComponentValidation } from './addComponentValidation';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { ExistService } from '../wineryUtils/existService';
 import { backendBaseURL } from '../configuration';
 import { WineryAddComponentDataComponent } from '../wineryAddComponentDataModule/addComponentData.component';
 
@@ -70,7 +69,6 @@ export class WineryAddComponent {
     valid: boolean;
 
     constructor(private sectionService: SectionService,
-                private existService: ExistService,
                 private inheritanceService: InheritanceService,
                 private change: ChangeDetectorRef,
                 private notify: WineryNotificationService,

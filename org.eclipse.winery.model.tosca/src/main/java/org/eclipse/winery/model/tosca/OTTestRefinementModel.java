@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,8 +24,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.jdt.annotation.NonNull;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tTestRefinementModel")
-public class TTestRefinementModel extends TRefinementModel {
+@XmlType(name = "otTestRefinementModel")
+public class OTTestRefinementModel extends OTRefinementModel {
 
     @XmlElement(name = "TestFragment")
     private TTopologyTemplate testFragment;

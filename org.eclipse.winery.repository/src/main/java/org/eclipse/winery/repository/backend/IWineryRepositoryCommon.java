@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -34,29 +34,31 @@ import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationI
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TestRefinementModelId;
+import org.eclipse.winery.common.ids.definitions.TopologyFragmentRefinementModelId;
 import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.OTTopologyFragmentRefinementModel;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityType;
-import org.eclipse.winery.model.tosca.TComplianceRule;
+import org.eclipse.winery.model.tosca.OTComplianceRule;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
-import org.eclipse.winery.model.tosca.TPatternRefinementModel;
+import org.eclipse.winery.model.tosca.OTPatternRefinementModel;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TPolicyType;
-import org.eclipse.winery.model.tosca.TRefinementModel;
+import org.eclipse.winery.model.tosca.OTRefinementModel;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
-import org.eclipse.winery.model.tosca.TTestRefinementModel;
+import org.eclipse.winery.model.tosca.OTTestRefinementModel;
 
 /**
  * Enables access to the winery repository via Ids defined in package {@link org.eclipse.winery.common.ids}
@@ -130,20 +132,24 @@ public interface IWineryRepositoryCommon {
         return (TPolicyType) this.getDefinitions(id).getElement();
     }
 
-    default TComplianceRule getElement(ComplianceRuleId id) {
-        return (TComplianceRule) this.getDefinitions(id).getElement();
+    default OTComplianceRule getElement(ComplianceRuleId id) {
+        return (OTComplianceRule) this.getDefinitions(id).getElement();
     }
 
-    default TPatternRefinementModel getElement(PatternRefinementModelId id) {
-        return (TPatternRefinementModel) this.getDefinitions(id).getElement();
+    default OTPatternRefinementModel getElement(PatternRefinementModelId id) {
+        return (OTPatternRefinementModel) this.getDefinitions(id).getElement();
+    }
+    
+    default OTTopologyFragmentRefinementModel getElement(TopologyFragmentRefinementModelId id) {
+        return (OTTopologyFragmentRefinementModel) this.getDefinitions(id).getElement();
     }
 
-    default TTestRefinementModel getElement(TestRefinementModelId id) {
-        return (TTestRefinementModel) this.getDefinitions(id).getElement();
+    default OTTestRefinementModel getElement(TestRefinementModelId id) {
+        return (OTTestRefinementModel) this.getDefinitions(id).getElement();
     }
 
-    default TRefinementModel getElement(RefinementId id) {
-        return (TRefinementModel) this.getDefinitions(id).getElement();
+    default OTRefinementModel getElement(RefinementId id) {
+        return (OTRefinementModel) this.getDefinitions(id).getElement();
     }
 
     /**

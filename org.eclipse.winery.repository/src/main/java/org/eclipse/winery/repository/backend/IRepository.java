@@ -60,18 +60,19 @@ import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationI
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TestRefinementModelId;
+import org.eclipse.winery.common.ids.definitions.TopologyFragmentRefinementModelId;
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasInheritance;
 import org.eclipse.winery.model.tosca.HasType;
+import org.eclipse.winery.model.tosca.OTComplianceRule;
 import org.eclipse.winery.model.tosca.TAppliesTo;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifacts;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
-import org.eclipse.winery.model.tosca.TComplianceRule;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
@@ -938,6 +939,11 @@ public interface IRepository extends IWineryRepositoryCommon {
         return new HashSet<>();
     }
 
+    default Collection<DefinitionsChildId> getReferencedDefinitionsChildIds(TopologyFragmentRefinementModelId id) {
+        // TODO
+        return new HashSet<>();
+    }
+
     default Collection<DefinitionsChildId> getReferencedDefinitionsChildIds(TestRefinementModelId id) {
         // TODO
         return new HashSet<>();
@@ -948,7 +954,7 @@ public interface IRepository extends IWineryRepositoryCommon {
         // E.g., there may be multiple relationship templates having the same type
         Collection<DefinitionsChildId> ids = new HashSet<>();
 
-        TComplianceRule complianceRule = this.getElement(id);
+        OTComplianceRule complianceRule = this.getElement(id);
 
         //TODO to extra method
         //TODO extend to required Structure
@@ -1036,6 +1042,8 @@ public interface IRepository extends IWineryRepositoryCommon {
             referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((ComplianceRuleId) id);
         } else if (id instanceof PatternRefinementModelId) {
             referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((PatternRefinementModelId) id);
+        } else if (id instanceof TopologyFragmentRefinementModelId) {
+            referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((TopologyFragmentRefinementModelId) id);
         } else if (id instanceof TestRefinementModelId) {
             referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((TestRefinementModelId) id);
         } else {

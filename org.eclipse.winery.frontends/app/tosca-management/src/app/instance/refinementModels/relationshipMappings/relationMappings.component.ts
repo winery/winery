@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -37,7 +37,6 @@ export class RelationMappingsComponent implements OnInit {
 
     loading = true;
     columns: Array<WineryTableColumn> = [
-        { title: 'Id', name: 'id', sort: true },
         { title: 'Direction', name: 'direction', sort: true },
         { title: 'Detector Node', name: 'detectorNode', sort: true },
         { title: 'Refinement Node', name: 'refinementNode', sort: true },
@@ -59,7 +58,7 @@ export class RelationMappingsComponent implements OnInit {
 
     constructor(private service: RefinementMappingsService,
                 private notify: WineryNotificationService,
-                private sharedData: InstanceService,
+                public sharedData: InstanceService,
                 private modalService: BsModalService) {
     }
 
@@ -95,16 +94,7 @@ export class RelationMappingsComponent implements OnInit {
     }
 
     onAddButtonClicked() {
-        let id = 0;
-        this.relationshipMappings.forEach(value => {
-            const number = Number(value.id.split(RelationMapping.idPrefix)[1]);
-            if (!isNaN(number) && number >= id) {
-                id = number;
-                if (number === id) {
-                    id++;
-                }
-            }
-        });
+        const id = this.service.getNewMappingsId(this.relationshipMappings, RelationMapping.idPrefix);
 
         this.mapping = new RelationMapping(id);
         this.addModalRef = this.modalService.show(this.addModal);

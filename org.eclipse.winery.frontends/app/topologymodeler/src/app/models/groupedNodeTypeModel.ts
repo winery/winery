@@ -11,6 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
+import { Full, TNodeType } from './ttopology-template';
 
 export interface GroupedNodeTypeModel {
     children: Array<NodeTypeModel>;
@@ -19,7 +20,7 @@ export interface GroupedNodeTypeModel {
 }
 
 export interface NodeTypeModel {
-    full: any;
+    full: Full<TNodeType>;
     id: string;
     text: string;
 }

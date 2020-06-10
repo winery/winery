@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,8 +25,8 @@ import org.eclipse.winery.model.tosca.visitor.Visitor;
 import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tComplianceRule")
-public class TComplianceRule extends HasId implements HasName, HasTargetNamespace {
+@XmlType(name = "otComplianceRule")
+public class OTComplianceRule extends HasId implements HasName, HasTargetNamespace {
 
     @XmlAttribute
     protected String name;

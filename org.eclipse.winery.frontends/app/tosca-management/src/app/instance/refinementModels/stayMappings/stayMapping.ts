@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,22 +12,25 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
+import { RefinementMappings } from '../RefinementMappings';
+
 export enum PrmModelElementType {
     NODE = 'NODE',
     RELATION = 'RELATION',
 }
 
-export class StayMapping {
+export class StayMapping extends RefinementMappings {
 
     public static readonly idPrefix = 'stayMap';
 
-    id: string;
-    detectorNode: string;
-    refinementNode: string;
-    modelElementType: PrmModelElementType;
+    public modelElementType: PrmModelElementType;
 
     constructor(id: number) {
-        this.id = StayMapping.idPrefix + id;
+        super(id);
+    }
+
+    idPrefix(): string {
+        return StayMapping.idPrefix;
     }
 
 }

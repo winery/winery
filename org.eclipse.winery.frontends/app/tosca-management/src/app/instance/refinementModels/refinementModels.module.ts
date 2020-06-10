@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,10 +24,13 @@ import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
 import { SelectModule } from 'ng2-select';
 import { StayMappingsComponent } from './stayMappings/stayMappings.component';
 import { AttributeMappingsComponent } from './attributeMappings/attributeMappings.component';
+import { DeploymentArtifactsMappingsComponent } from './deploymentArtifactsMappings/deploymentArtifactsMappings.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
     imports: [
         CommonModule,
+        FormsModule,
         HttpClientModule,
         BrowserModule,
         SelectModule,
@@ -41,11 +44,13 @@ import { AttributeMappingsComponent } from './attributeMappings/attributeMapping
         RelationMappingsComponent,
         AttributeMappingsComponent,
         StayMappingsComponent,
+        DeploymentArtifactsMappingsComponent
     ],
     declarations: [
         RelationMappingsComponent,
         AttributeMappingsComponent,
         StayMappingsComponent,
+        DeploymentArtifactsMappingsComponent,
     ]
 })
 export class RefinementModelsModule {

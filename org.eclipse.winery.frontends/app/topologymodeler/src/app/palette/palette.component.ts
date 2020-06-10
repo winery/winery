@@ -22,7 +22,7 @@ import { NewNodeIdTypeColorPropertiesModel } from '../models/newNodeIdTypeColorM
 import { Subscription } from 'rxjs';
 import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 import { EntityTypesModel } from '../models/entityTypesModel';
-import { GroupedNodeTypeModel } from '../models/groupedNodeTypeModel';
+import { NodeTypeModel } from '../models/groupedNodeTypeModel';
 import { Visuals } from '../models/visuals';
 import { BackendService } from '../services/backend.service';
 import { InheritanceUtils } from '../models/InheritanceUtils';
@@ -134,15 +134,14 @@ export class PaletteComponent implements OnDestroy {
      * @param $event
      * @param child
      */
-    generateNewNode($event: MouseEvent, child: any): void {
+    generateNewNode($event: MouseEvent, child: NodeTypeModel): void {
         const x = $event.pageX - this.newNodePositionOffsetX;
         const y = $event.pageY - this.newNodePositionOffsetY;
-
-        const newIdTypeColorProperties = this.generateIdTypeAndProperties(child.text);
+        const newIdTypeColorProperties = this.generateIdTypeAndProperties(child);
         const nodeVisuals: Visuals = TopologyTemplateUtil.getNodeVisualsForNodeTemplate(newIdTypeColorProperties.type, this.entityTypes.nodeVisuals);
         const newNode: TNodeTemplate = new TNodeTemplate(
             newIdTypeColorProperties.properties,
-            this.removeVersionIdentifier(newIdTypeColorProperties.id),
+            newIdTypeColorProperties.id,
             newIdTypeColorProperties.type,
             this.removeVersionIdentifier(child.text),
             1,
@@ -172,65 +171,20 @@ export class PaletteComponent implements OnDestroy {
 
     /**
      * Generates a new unique node id, type, color and properties
-     * @param name
+     * @param nodeType
      * @return result
      */
-    generateIdTypeAndProperties(name: string): NewNodeIdTypeColorPropertiesModel {
-        if (this.allNodeTemplates.length > 0) {
-            // iterate from back to front because only the last added instance of a node type is important
-            // e.g. Node_8 so to increase to Node_9 only the 8 is important which is in the end of the array
-            for (let i = this.allNodeTemplates.length - 1; i >= 0; i--) {
-                // get type of node Template
-                const type = this.allNodeTemplates[i].type;
-                // split it to get a string like "NodeTypeWithTwoProperties"
-                let typeOfCurrentNode = type.split('}').pop();
-                // eliminate whitespaces from both strings, important for string comparison
-                typeOfCurrentNode = typeOfCurrentNode.replace(/\s+/g, '');
-                name = name.replace(/\s+/g, '');
-                if (name === typeOfCurrentNode) {
-                    const idOfCurrentNode = this.allNodeTemplates[i].id;
-                    name = this.removeVersionIdentifier(name);
-                    const numberOfNewInstance = parseInt(idOfCurrentNode.substring(name.length + 1), 10) + 1;
-                    let newId;
-                    if (numberOfNewInstance) {
-                        newId = name.concat('_', numberOfNewInstance.toString());
-                    } else {
-                        newId = name.concat('_', '2');
-                    }
-                    return {
-                        id: this.backendService.configuration.idPrefix + newId,
-                        type: type,
-                        properties: InheritanceUtils.getDefaultPropertiesFromEntityTypes(name, this.entityTypes.unGroupedNodeTypes)
-                    };
-                }
-            }
-            return this.getNewNodeDataFromNodeTypes(name);
-        } else {
-            return this.getNewNodeDataFromNodeTypes(name);
-        }
-    }
+    generateIdTypeAndProperties(nodeType: NodeTypeModel): NewNodeIdTypeColorPropertiesModel {
+        let idNumber = 0, newId = '';
+        do {
+            newId = `${this.backendService.configuration.idPrefix}${nodeType.text}_${idNumber++}`;
+        } while (this.allNodeTemplates && this.allNodeTemplates.find(element => element.id === newId));
 
-    /**
-     * Generates node id, type, color and properties from the node types
-     * @param name
-     * @return result
-     */
-    public getNewNodeDataFromNodeTypes(name: string) {
-        // case that the node name is not in the array which contains a local copy of all node templates visible in the
-        // DOM, then search in ungroupedNodeTypes where all possible node information is available
-        try {
-            for (const node of this.entityTypes.unGroupedNodeTypes) {
-                if (node.id === name) {
-                    const result = {
-                        id: this.backendService.configuration.idPrefix + node.id,
-                        type: node.qName,
-                        properties: InheritanceUtils.getDefaultPropertiesFromEntityTypes(name, this.entityTypes.unGroupedNodeTypes)
-                    };
-                    return result;
-                }
-            }
-        } catch (e) {
-        }
+        return {
+            id: newId,
+            type: nodeType.id,
+            properties: InheritanceUtils.getDefaultPropertiesFromEntityTypes(nodeType.id, this.entityTypes.unGroupedNodeTypes)
+        };
     }
 
     /**
@@ -240,7 +194,7 @@ export class PaletteComponent implements OnDestroy {
         this.subscriptions.forEach(subscription => subscription.unsubscribe());
     }
 
-    getImageUrl(child: GroupedNodeTypeModel): string {
+    getImageUrl(child: NodeTypeModel): string {
         const visuals = TopologyTemplateUtil.getNodeVisualsForNodeTemplate(child.id,
             this.entityTypes.nodeVisuals);
 

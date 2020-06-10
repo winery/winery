@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -19,7 +19,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.model.tosca.TComplianceRule;
+import org.eclipse.winery.model.tosca.OTComplianceRule;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.rest.RestUtils;
@@ -44,11 +44,11 @@ public class ComplianceRuleResource extends AbstractComponentInstanceResourceCon
 
     @Override
     protected TExtensibleElements createNewElement() {
-        return new TComplianceRule();
+        return new OTComplianceRule();
     }
 
-    public TComplianceRule getCompliancerule() {
-        return (TComplianceRule) this.getElement();
+    public OTComplianceRule getCompliancerule() {
+        return (OTComplianceRule) this.getElement();
     }
 
     @Override

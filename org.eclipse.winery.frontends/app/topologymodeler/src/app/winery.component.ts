@@ -34,6 +34,7 @@ import { VersionElement } from './models/versionElement';
 import { TopologyRendererActions } from './redux/actions/topologyRenderer.actions';
 import { WineryRepositoryConfigurationService } from '../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { TPolicy } from './models/policiesModalData';
+import { GroupedNodeTypeModel } from './models/groupedNodeTypeModel';
 
 /**
  * This is the root component of the topology modeler.
@@ -233,7 +234,7 @@ export class WineryComponent implements OnInit, AfterViewInit {
                 break;
             }
             case 'groupedNodeTypes': {
-                this.entityTypes.groupedNodeTypes = entityTypeJSON;
+                this.entityTypes.groupedNodeTypes = entityTypeJSON as GroupedNodeTypeModel[];
                 break;
             }
             case 'versionElements': {
@@ -373,10 +374,12 @@ export class WineryComponent implements OnInit, AfterViewInit {
 
     private setButtonsState(currentButtonsState: TopologyRendererState) {
         if (currentButtonsState.buttonsState.refineTopologyButton) {
+            this.refiningType = 'topology';
+        } else if (currentButtonsState.buttonsState.refinePatternsButton) {
             this.refiningType = 'patterns';
         } else if (currentButtonsState.buttonsState.refineTopologyWithTestsButton) {
             this.refiningType = 'tests';
-        } else if (!currentButtonsState.buttonsState.refineTopologyWithTestsButton && !currentButtonsState.buttonsState.refineTopologyButton) {
+        } else {
             delete this.refiningType;
         }
     }

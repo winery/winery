@@ -368,6 +368,18 @@ div.mainContentContainer.patternRefinementModel div.bottom {
     background: url('../assets/img/containers/admin/FrameBottom.jpg');
 }
 
+div.mainContentContainer.topologyFragmentRefinementModel div.top {
+    background: url('../assets/img/containers/admin/FrameTopLarge.jpg');
+}
+
+div.mainContentContainer.topologyFragmentRefinementModel div.middle {
+    background: url('../assets/img/containers/admin/FrameMiddle.jpg');
+}
+
+div.mainContentContainer.topologyFragmentRefinementModel div.bottom {
+    background: url('../assets/img/containers/admin/FrameBottom.jpg');
+}
+
 div.mainContentContainer.testRefinementModel div.top {
     background: url('../assets/img/containers/admin/FrameTop.jpg');
 }
@@ -801,15 +813,15 @@ div.entityContainer.complianceRuleContainer > div.right {
     background: url('../assets/img/entityBox/adminContainer/a-container-right.png');
 }
 
-div.entityContainer.patternRefinementModelContainer > div.left {
+div.entityContainer.topologyFragmentRefinementModelContainer > div.left {
     background: url('../assets/img/entityBox/adminContainer/a-container-left.png');
 }
 
-div.entityContainer.patternRefinementModelContainer > div.center {
+div.entityContainer.topologyFragmentRefinementModelContainer > div.center {
     background: url('../assets/img/entityBox/adminContainer/a-container-center.jpg');
 }
 
-div.entityContainer.patternRefinementModelContainer > div.right {
+div.entityContainer.topologyFragmentRefinementModelContainer > div.right {
     background: url('../assets/img/entityBox/adminContainer/a-container-right.png');
 }
 
@@ -1014,6 +1026,18 @@ div.entityContainer.patternRefinementModel > div.center {
 }
 
 div.entityContainer.patternRefinementModel > div.right {
+    background: url('../assets/img/entityBox/admin/a-right.png');
+}
+
+div.entityContainer.topologyFragmentRefinementModel > div.left {
+    background: url('../assets/img/entityBox/admin/a-left.png');
+}
+
+div.entityContainer.topologyFragmentRefinementModel > div.center {
+    background: url('../assets/img/entityBox/admin/a-center.jpg');
+}
+
+div.entityContainer.topologyFragmentRefinementModel > div.right {
     background: url('../assets/img/entityBox/admin/a-right.png');
 }
 

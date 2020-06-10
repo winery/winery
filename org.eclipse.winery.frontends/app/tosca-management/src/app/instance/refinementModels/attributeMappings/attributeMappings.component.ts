@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -39,7 +39,6 @@ export class AttributeMappingsComponent implements OnInit {
 
     loading = true;
     columns: Array<WineryTableColumn> = [
-        { title: 'Id', name: 'id', sort: true },
         { title: 'Detector Node', name: 'detectorNode', sort: true },
         { title: 'Refinement Node', name: 'refinementNode', sort: true },
         { title: 'Type', name: 'type', sort: true },
@@ -71,7 +70,7 @@ export class AttributeMappingsComponent implements OnInit {
 
     constructor(private service: RefinementMappingsService,
                 private notify: WineryNotificationService,
-                private sharedData: InstanceService,
+                public sharedData: InstanceService,
                 private modalService: BsModalService) {
     }
 
@@ -90,16 +89,7 @@ export class AttributeMappingsComponent implements OnInit {
 
     // region ********** Table Callbacks **********
     onAddButtonClicked() {
-        let id = 0;
-        this.attributeMappings.forEach(value => {
-            const number = Number(value.id.split(AttributeMapping.idPrefix)[1]);
-            if (!isNaN(number) && number >= id) {
-                id = number;
-                if (number === id) {
-                    id++;
-                }
-            }
-        });
+        const id = this.service.getNewMappingsId(this.attributeMappings, AttributeMapping.idPrefix);
 
         this.mapping = new AttributeMapping(id);
         this.cleanProperties();

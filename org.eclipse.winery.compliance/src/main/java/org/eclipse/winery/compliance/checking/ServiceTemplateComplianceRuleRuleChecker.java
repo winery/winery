@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.ComplianceRuleId;
-import org.eclipse.winery.model.tosca.TComplianceRule;
+import org.eclipse.winery.model.tosca.OTComplianceRule;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -52,7 +52,7 @@ public class ServiceTemplateComplianceRuleRuleChecker {
             IRepository repository = RepositoryFactory.getRepository();
 
             for (ComplianceRuleId ruleId : ruleIds) {
-                TComplianceRule tComplianceRule = repository.getElement(ruleId);
+                OTComplianceRule tComplianceRule = repository.getElement(ruleId);
 
                 ComplianceRuleChecker checker = new ComplianceRuleChecker(tComplianceRule, serviceTemplate.getTopologyTemplate());
                 List<GraphMapping> graphMappings;

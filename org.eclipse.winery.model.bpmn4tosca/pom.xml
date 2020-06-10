@@ -21,6 +21,12 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>org.eclipse.winery.model.bpmn4tosca</artifactId>
+
+    <properties>
+        <checkstyle.config.location>../checkstyle.xml</checkstyle.config.location>
+        <main.basedir>${project.parent.basedir}</main.basedir>
+    </properties>
+    
     <dependencies>
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
@@ -45,29 +51,13 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <properties>
-        <checkstyle.config.location>../checkstyle.xml</checkstyle.config.location>
-        <main.basedir>${project.parent.basedir}</main.basedir>
-    </properties>
-    <licenses>
-        <license>
-            <name>Eclipse Public License v2.0</name>
-            <url>http://www.eclipse.org/legal/epl-v20.html</url>
-            <distribution>repo</distribution>
-            <comments>Standard Eclipse Licence</comments>
-        </license>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.17</version>
+                <version>${maven.checkstyle.version}</version>
                 <executions>
                     <execution>
                         <id>checkstyle</id>
@@ -79,14 +69,9 @@
                 </executions>
                 <dependencies>
                     <dependency>
-                        <groupId>com.puppycrawl.tools</groupId>
-                        <artifactId>checkstyle</artifactId>
-                        <version>7.6</version>
-                    </dependency>
-                    <dependency>
                         <groupId>com.thomasjensen.checkstyle.addons</groupId>
                         <artifactId>checkstyle-addons</artifactId>
-                        <version>4.0.1</version>
+                        <version>${checkstyle.addons.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>

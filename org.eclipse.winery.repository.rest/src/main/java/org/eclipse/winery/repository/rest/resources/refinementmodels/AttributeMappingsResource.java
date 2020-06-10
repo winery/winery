@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.rest.resources.patternrefinementmodels;
+package org.eclipse.winery.repository.rest.resources.refinementmodels;
 
 import java.util.List;
 
@@ -21,14 +21,14 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.eclipse.winery.model.tosca.AttributeMapping;
+import org.eclipse.winery.model.tosca.OTAttributeMapping;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelMappingsResource;
 import org.eclipse.winery.repository.rest.resources.apiData.PrmAttributeMappingApiData;
 
-public class AttributeMappingsResource extends AbstractRefinementModelMappingsResource {
+public class AttributeMappingsResource extends AbstractRefinementModelMappingsResource<OTAttributeMapping> {
 
-    public AttributeMappingsResource(PatternRefinementModelResource res, List<AttributeMapping> attributeMappings) {
+    public AttributeMappingsResource(TopologyFragmentRefinementModelResource res, List<OTAttributeMapping> attributeMappings) {
         super(res);
         this.mappings = attributeMappings;
     }
@@ -36,7 +36,7 @@ public class AttributeMappingsResource extends AbstractRefinementModelMappingsRe
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public List<AttributeMapping> addPropertyMappingFromApi(PrmAttributeMappingApiData mapping) {
+    public List<OTAttributeMapping> addPropertyMappingFromApi(PrmAttributeMappingApiData mapping) {
         TEntityTemplate refinementNode = this.res.getRefinementTopology().getComponentInstanceJSON().getNodeTemplateOrRelationshipTemplate().stream()
             .filter(entityTemplate -> entityTemplate.getId().equals(mapping.refinementNode))
             .findFirst()
@@ -45,6 +45,6 @@ public class AttributeMappingsResource extends AbstractRefinementModelMappingsRe
             .filter(entityTemplate -> entityTemplate.getId().equals(mapping.detectorNode))
             .findFirst()
             .orElseGet(null);
-        return (List<AttributeMapping>) this.addMapping(mapping.createTPrmPropertyMapping(detectorNode, refinementNode));
+        return this.addMapping(mapping.createTPrmPropertyMapping(detectorNode, refinementNode));
     }
 }

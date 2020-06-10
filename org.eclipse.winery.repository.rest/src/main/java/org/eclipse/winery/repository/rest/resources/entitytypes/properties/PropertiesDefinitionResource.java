@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -69,7 +69,7 @@ public class PropertiesDefinitionResource {
 
     public PropertiesDefinitionResource(EntityTypeResource res) {
         this.parentRes = res;
-        this.wpd = ModelUtilities.getWinerysPropertiesDefinition(res.getEntityType());
+        this.wpd = res.getEntityType().getWinerysPropertiesDefinition();
     }
 
     @GET
@@ -94,7 +94,7 @@ public class PropertiesDefinitionResource {
         }
 
         if (allDeclaredElementsLocalNames == null) {
-            LOGGER.error("No such parameter available in this call", type);
+            LOGGER.error("No such parameter \"{}\" available in this call", type);
             throw new WebApplicationException(Status.BAD_REQUEST);
         }
 

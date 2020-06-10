@@ -193,10 +193,18 @@
 
         <div *wineryRepositoryFeatureToggle="configEnum.PatternRefinement" class="btn-group button-group"
              data-toggle="buttons">
+            <button class="btn btn-sm align-middle dark-button-style" id="refinePatterns"
+                    (click)="toggleButton($event)"
+                    [style.background-color]="getStyle(navbarButtonsState.buttonsState.refinePatternsButton)">
+                Refine Patterns
+            </button>
+        </div>
+        <div *wineryRepositoryFeatureToggle="configEnum.TopologyFragmentRefinementModel" class="btn-group button-group"
+             data-toggle="buttons">
             <button class="btn btn-sm align-middle dark-button-style" id="refineTopology"
                     (click)="toggleButton($event)"
                     [style.background-color]="getStyle(navbarButtonsState.buttonsState.refineTopologyButton)">
-                Refine Patterns
+                Refine Topology
             </button>
         </div>
         <div *wineryRepositoryFeatureToggle="configEnum.TestRefinement" class="btn-group button-group"

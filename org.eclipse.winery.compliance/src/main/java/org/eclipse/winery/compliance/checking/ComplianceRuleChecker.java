@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.eclipse.winery.model.tosca.TComplianceRule;
+import org.eclipse.winery.model.tosca.OTComplianceRule;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.topologygraph.matching.ToscaIsomorphismMatcher;
 import org.eclipse.winery.topologygraph.model.ToscaEdge;
@@ -40,7 +40,7 @@ public class ComplianceRuleChecker {
 	private ToscaGraph requiredStructureGraph = null;
 	private ToscaGraph toCheckGraph = null;
 
-	public ComplianceRuleChecker(TComplianceRule rule, TTopologyTemplate toCheckTemplate) {
+	public ComplianceRuleChecker(OTComplianceRule rule, TTopologyTemplate toCheckTemplate) {
 		this(rule.getIdentifier(), rule.getRequiredStructure(), toCheckTemplate);
 	}
 

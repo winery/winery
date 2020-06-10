@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -18,32 +18,20 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.winery.model.tosca.visitor.Visitor;
+import javax.xml.namespace.QName;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tStayMapping")
-public class TStayMapping extends TPrmMapping {
+@XmlType(name = "otDeploymentArtifactMapping")
+public class OTDeploymentArtifactMapping extends OTPrmMapping {
 
-    @XmlAttribute(name = "modelElementType")
-    private TPrmModelElementType modelElementType;
+    @XmlAttribute(name = "artifactType", required = true)
+    private QName artifactType;
 
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof TStayMapping
-            && getId().equals(((TStayMapping) obj).getId());
+    public QName getArtifactType() {
+        return artifactType;
     }
 
-    @Override
-    public void accept(Visitor visitor) {
-        visitor.visit(this);
-    }
-
-    public TPrmModelElementType getModelElementType() {
-        return modelElementType;
-    }
-
-    public void setModelElementType(TPrmModelElementType modelElementType) {
-        this.modelElementType = modelElementType;
+    public void setArtifactType(QName artifactType) {
+        this.artifactType = artifactType;
     }
 }
