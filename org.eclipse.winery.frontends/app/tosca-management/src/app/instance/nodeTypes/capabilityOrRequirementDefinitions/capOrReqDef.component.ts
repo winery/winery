@@ -221,7 +221,7 @@ export class CapOrReqDefComponent implements OnInit {
         for (const entry of apidata.capOrRegDefinitionsList) {
             const name = entry.name;
             const lowerBound = entry.lowerBound;
-            const upperBound = entry.upperBound === 'unbounded' ? '∞' : entry.upperBound;
+            const upperBound = entry.upperBound === 'UNBOUNDED' ? '∞' : entry.upperBound;
             const type = this.capOrReqTypeToHref(isNullOrUndefined(entry.capabilityType)
             === false ? entry.capabilityType : entry.requirementType);
             const constraint = '<button class="btn btn-xs" style="pointer-events: none;">Constraint...</button>';
@@ -289,7 +289,7 @@ export class CapOrReqDefComponent implements OnInit {
         this.addModal.hide();
         this.capOrReqDefToBeAdded.lowerBound = this.lowerBoundSpinner.value;
         if (this.upperBoundSpinner.value === '∞') {
-            this.capOrReqDefToBeAdded.upperBound = 'unbounded';
+            this.capOrReqDefToBeAdded.upperBound = 'UNBOUNDED';
         } else {
             this.capOrReqDefToBeAdded.upperBound = this.upperBoundSpinner.value;
         }
