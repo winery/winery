@@ -29,7 +29,10 @@ import org.eclipse.winery.model.tosca.TDataType;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKV;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal;
+import org.eclipse.winery.repository.rest.resources.apiData.PropertiesDefinitionEnum;
+import org.eclipse.winery.repository.rest.resources.apiData.PropertiesDefinitionResourceApiData;
 
 public class DataTypeResource extends AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal {
 
@@ -55,9 +58,23 @@ public class DataTypeResource extends AbstractComponentInstanceResourceWithNameD
     @GET
     @Path("properties/")
     @Produces(MediaType.APPLICATION_JSON) 
-    public List<TEntityType.YamlPropertyDefinition> properties() {
+    public PropertiesDefinitionResourceApiData properties() {
         // this cast SHOULD be safe, since DataTypes are a YAML-only feature
-        return ((TEntityType.YamlPropertiesDefinition)getDataType().getProperties()).getProperties();
+        return new PropertiesDefinitionResourceApiData(getDataType().getProperties(), null);
+    }
+
+    @POST
+    @Path("properties/")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response setProperties(PropertiesDefinitionResourceApiData data) {
+        if (data.selectedValue != PropertiesDefinitionEnum.Yaml
+            || !(data.propertiesDefinition instanceof TEntityType.YamlPropertiesDefinition)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                .entity("DataTypes are always specified in YAML mode. No other property definitions types are accepted")
+                .build();
+        }
+        getDataType().setProperties(data.propertiesDefinition);
+        return RestUtils.persist(this);
     }
     
     @Override

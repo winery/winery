@@ -23,6 +23,7 @@ import { InheritanceComponent } from '../../instance/sharedComponents/inheritanc
 import { PropertyConstraintsComponent } from '../../instance/serviceTemplates/boundaryDefinitions/propertyConstraints/propertyConstraints.component';
 import { YamlPropertiesComponent } from '../../instance/sharedComponents/propertiesDefinition/yaml/yamlProperties.component';
 import { DataTypeComponent } from '../../instance/sharedComponents/yaml/datatypes/dataType.component';
+import { PropertiesDefinitionComponent } from '../../instance/sharedComponents/propertiesDefinition/propertiesDefinition.component';
 
 const toscaType = ToscaTypes.DataType;
 
@@ -34,16 +35,16 @@ const dataTypeRoutes: Routes = [
         component: InstanceComponent,
         resolve: { resolveData: InstanceResolver },
         children: [
-            // { path: 'readme', component: WineryReadmeComponent },
-            // { path: 'license', component: WineryLicenseComponent },
-            // { path: 'properties', component: YamlPropertiesComponent },
-            // { path: 'inheritance', component: InheritanceComponent },
+            { path: 'readme', component: DataTypeComponent },
+            { path: 'properties', component: PropertiesDefinitionComponent },
             // { path: 'constraints', component: PropertyConstraintsComponent },
+            // { path: 'license', component: WineryLicenseComponent },
+            // { path: 'inheritance', component: InheritanceComponent },
             // { path: SubMenuItems.supportedFiles.urlFragment, component: SupportedFileTypesComponent },
             // { path: 'documentation', component: DocumentationComponent },
             // { path: 'yaml', component: EditXMLComponent },
             // { path: 'templates', component: ImplementationsComponent },
-            { path: '', component: DataTypeComponent }
+            { path: '', redirectTo: 'readme', pathMatch: 'full' }
         ]
     }
 ];

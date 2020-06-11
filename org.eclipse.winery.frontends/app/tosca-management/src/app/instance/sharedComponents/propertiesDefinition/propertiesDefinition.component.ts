@@ -24,7 +24,7 @@ import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { WineryRepositoryConfigurationService } from '../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { FeatureEnum } from '../../../wineryFeatureToggleModule/wineryRepository.feature.direct';
-import { YamlPropertyDefinition, isYaml } from './yaml/yamlPropertyDefinition';
+import { YamlPropertyDefinition } from './yaml/yamlPropertyDefinition';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import { Constraint, yaml_well_known } from '../../../model/constraint';
 import { SchemaDefinition, TDataType } from '../../../../../../topologymodeler/src/app/models/ttopology-template';
@@ -318,11 +318,9 @@ export class PropertiesDefinitionComponent implements OnInit {
         // no need to update resourceApiData for edit operation because the editedProperty is a reference
         if (this.propertyOperation === 'Add') {
             if (this.isYaml) {
-                // @ts-ignore
-                this.resourceApiData.propertiesDefinition.properties.push(newProp);
+                this.resourceApiData.propertiesDefinition.properties.push(this.editedProperty);
             } else {
-                // @ts-ignore
-                this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList.push(newProp);
+                this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList.push(this.editedProperty);
             }
         }
         this.save();
@@ -381,7 +379,7 @@ export class PropertiesDefinitionComponent implements OnInit {
 
     removeConfirmed() {
         this.confirmDeleteModalRef.hide();
-        this.deleteItemFromPropertyDefinitionKvList(this.elementToRemove);
+        this.deleteItem(this.elementToRemove);
         this.elementToRemove = null;
         this.copyToTable();
         this.save();
@@ -512,7 +510,7 @@ export class PropertiesDefinitionComponent implements OnInit {
      * Deletes a property from the table and model.
      * @param itemToDelete
      */
-    private deleteItemFromPropertyDefinitionKvList(itemToDelete: any): void {
+    private deleteItem(itemToDelete: any): void {
         const list = this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList || [];
         for (let i = 0; i < list.length; i++) {
             if (list[i].key === itemToDelete.key) {
@@ -522,7 +520,7 @@ export class PropertiesDefinitionComponent implements OnInit {
 
         const yamlList = this.resourceApiData.propertiesDefinition.properties || [];
         for (let i = 0; i < yamlList.length; i++) {
-            if (yamlList[i].name === itemToDelete.key) {
+            if (yamlList[i].name === itemToDelete.name) {
                 yamlList.splice(i, 1);
             }
         }

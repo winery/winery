@@ -148,11 +148,8 @@ export class InstanceService {
                     SubMenuItems.xml];
                 break;
             case ToscaTypes.DataType:
-                // if this tosca type is accessed we must be in yaml mode
-                // FIXME used to expose properties, xml and constraints, properties and constraints have been merged.
-                //  gotta check for a possible editing idea
-                // [SubMenuItems.properties, SubMenuItems.xml, SubMenuItems.constraints];
-                subMenu = [];
+                // abusing readme as a default tab
+                subMenu = [SubMenuItems.readme, SubMenuItems.properties];
                 break;
             default: // assume Admin
                 if (this.configurationService.isYaml()) {
