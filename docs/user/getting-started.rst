@@ -119,7 +119,7 @@ Open a command prompt and execute the following command:
      -e WINERY_FEATURE_RADON=true \
      -e WINERY_REPOSITORY_PROVIDER=yaml \
      -e WINERY_DEPENDENT_REPOSITORIES="[ { \"name\" : \"RADON Particles\", \"url\" : \"https://github.com/radon-h2020/radon-particles.git\", \"branch\" : \"master\" } ]" \
-     -v <path_on_your_host>:/var/repository/workspace \
+     -v <path_on_your_host>:/var/repository \
      -u `id -u` \
      opentosca/radon-gmt
 
