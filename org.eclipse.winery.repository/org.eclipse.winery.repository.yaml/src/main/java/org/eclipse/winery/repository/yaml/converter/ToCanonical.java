@@ -15,12 +15,15 @@ package org.eclipse.winery.repository.yaml.converter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -228,10 +231,10 @@ public class ToCanonical {
      * @param node TOSCA YAML EntityType
      * @return TOSCA XML EntityType
      */
-    private <T extends TEntityType.Builder<T>> T convert(org.eclipse.winery.model.tosca.yaml.TEntityType node, T builder) {
+    private <T extends TEntityType.Builder<T>> T fillEntityTypeProperties(org.eclipse.winery.model.tosca.yaml.TEntityType node, T builder) {
         builder.addDocumentation(node.getDescription())
             .setDerivedFrom(node.getDerivedFrom())
-            .addTags(convertMetadata(node.getMetadata()))
+            .addTags(convertMetadata(node.getMetadata(), "targetNamespace", "abstract", "final"))
             .setTargetNamespace(node.getMetadata().get("targetNamespace"))
             .setAbstract(Boolean.valueOf(node.getMetadata().get("abstract")))
             .setFinal(Boolean.valueOf(node.getMetadata().get("final")))
@@ -306,11 +309,13 @@ public class ToCanonical {
      * @return TOSCA XML Tags
      */
     @NonNull
-    private TTags convertMetadata(Metadata metadata) {
+    private TTags convertMetadata(Metadata metadata, String... excludedKeys) {
+        Set<String> exclusionSet = new HashSet<>(Arrays.asList(excludedKeys));
         return new TTags.Builder()
             .addTag(
                 metadata.entrySet().stream()
                     .filter(Objects::nonNull)
+                    .filter(e -> !exclusionSet.contains(e.getKey()))
                     .map(entry -> new TTag.Builder().setName(entry.getKey()).setValue(entry.getValue()).build())
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList())
@@ -329,7 +334,7 @@ public class ToCanonical {
         if (node == null) return null;
         String typeName = fixNamespaceDuplication(id, node.getMetadata().get("targetNamespace"));
         TArtifactType.Builder builder = new TArtifactType.Builder(typeName);
-        convert(node, builder);
+        fillEntityTypeProperties(node, builder);
         builder.setFileExtensions(node.getFileExt());
         if (node.getMimeType() != null) {
             builder.setMimeType(node.getMimeType());
@@ -579,7 +584,7 @@ public class ToCanonical {
     private TNodeType convert(org.eclipse.winery.model.tosca.yaml.TNodeType node, String id) {
         if (Objects.isNull(node)) return null;
         String typeName = fixNamespaceDuplication(id, node.getMetadata().get("targetNamespace"));
-        TNodeType.Builder builder = convert(node, new TNodeType.Builder(typeName))
+        TNodeType.Builder builder = fillEntityTypeProperties(node, new TNodeType.Builder(typeName))
             .addRequirementDefinitions(convert(node.getRequirements()))
             .addCapabilityDefinitions(convert(node.getCapabilities()))
             .setInterfaceDefinitions(convert(node.getInterfaces()))
@@ -753,7 +758,7 @@ public class ToCanonical {
     private TCapabilityType convert(org.eclipse.winery.model.tosca.yaml.TCapabilityType node, String id) {
         if (Objects.isNull(node)) return null;
         String typeName = fixNamespaceDuplication(id, node.getMetadata().get("targetNamespace"));
-        return convert(node, new TCapabilityType.Builder(typeName))
+        return fillEntityTypeProperties(node, new TCapabilityType.Builder(typeName))
             .setValidSourceTypes(node.getValidSourceTypes())
             .build();
     }
@@ -860,7 +865,7 @@ public class ToCanonical {
     private TRelationshipType convert(org.eclipse.winery.model.tosca.yaml.TRelationshipType node, String id) {
         if (Objects.isNull(node)) return null;
         String typeName = fixNamespaceDuplication(id, node.getMetadata().get("targetNamespace"));
-        TRelationshipType output = convert(node, new TRelationshipType.Builder(typeName))
+        TRelationshipType output = fillEntityTypeProperties(node, new TRelationshipType.Builder(typeName))
             .addInterfaces(convert(node.getInterfaces(), null))
             .addSourceInterfaces(convert(node.getInterfaces(), "SourceInterfaces"))
             .addTargetInterfaces(convert(node.getInterfaces(), "TargetInterfaces"))
@@ -937,7 +942,7 @@ public class ToCanonical {
         }
         String typeName = fixNamespaceDuplication(id, node.getMetadata().get("targetNamespace"));
         TPolicyType.Builder builder = new TPolicyType.Builder(typeName);
-        convert(node, builder);
+        fillEntityTypeProperties(node, builder);
         builder.setAppliesTo(convertTargets(node.getTargets()));
 
         return builder.build();
@@ -1184,16 +1189,11 @@ public class ToCanonical {
     }
 
     public TDataType convert(org.eclipse.winery.model.tosca.yaml.TDataType node, String name) {
-        TDataType result = new TDataType.Builder(name)
-            // set entity type fields
-            .setAttributeDefinitions(new AttributeDefinitionList(convert(node.getAttributes())))
-            .setProperties(convertProperties(node.getProperties()))
-            .setDerivedFrom(node.getDerivedFrom())
-            .addDocumentation(node.getDescription())
-            .addDocumentation(node.getMetadata())
+        TDataType.Builder builder = new TDataType.Builder(name)
             // set specific fields 
-            .addConstraints(convertConstraints(node.getConstraints()))
-            .build();
+            .addConstraints(convertConstraints(node.getConstraints()));
+        fillEntityTypeProperties(node, builder);
+        TDataType result = builder.build();
 
         // FIXME need to actually transform the node.getProperties() to an xml schema
         //  to be able to import it and add a PropertiesDefinition reference to that schema
