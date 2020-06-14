@@ -76,6 +76,7 @@ export class PropertiesDefinitionComponent implements OnInit {
     constructor(public sharedData: InstanceService, private service: PropertiesDefinitionService,
                 private modalService: BsModalService, private dataTypes: DataTypesService,
                 private notify: WineryNotificationService, private configurationService: WineryRepositoryConfigurationService) {
+        this.isYaml = configurationService.isYaml();
     }
 
     // region ########## Angular Callbacks ##########
@@ -97,15 +98,13 @@ export class PropertiesDefinitionComponent implements OnInit {
 
     copyToTable() {
         this.tableData = [];
-        if (this.resourceApiData.propertiesDefinition !== null) {
-            // assume we have yaml properties
+        if (this.isYaml) {
             this.columns = yaml_columns;
             this.tableData = this.resourceApiData.propertiesDefinition.properties
                 .map(prop => {
                     fillDefaults(prop);
                     return prop;
                 });
-            this.isYaml = true;
             this.availableTypes = this.yamlTypes;
             this.validatorObject = new WineryValidatorObject(
                 this.resourceApiData.propertiesDefinition.properties,
@@ -119,7 +118,6 @@ export class PropertiesDefinitionComponent implements OnInit {
                     fillDefaults(prop);
                     return prop;
                 });
-            this.isYaml = false;
             this.availableTypes = this.xmlTypes;
             this.validatorObject = new WineryValidatorObject(
                 this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList,
@@ -256,16 +254,20 @@ export class PropertiesDefinitionComponent implements OnInit {
      * handler for clicks on the add button
      */
     onAddClick() {
-        this.editedProperty = this.configurationService.isYaml() ? new YamlPropertyDefinition() : new PropertiesDefinitionKVElement();
-        this.editedConstraints = [];
         this.propertyOperation = 'Add';
+        this.clearEditedProperty();
+        this.editorModalRef = this.modalService.show(this.editorModal);
+    }
+
+    private clearEditedProperty() {
+        this.editedProperty = this.isYaml ? new YamlPropertyDefinition() : new PropertiesDefinitionKVElement();
+        this.editedConstraints = [];
         if (this.editedProperty.entrySchema === undefined) {
             this.editedProperty.entrySchema = { type: '' };
         }
         if (this.editedProperty.keySchema === undefined) {
             this.editedProperty.keySchema = { type: '' };
         }
-        this.editorModalRef = this.modalService.show(this.editorModal);
     }
 
     onEditClick(data: YamlPropertyDefinition | PropertiesDefinitionKVElement) {
@@ -323,11 +325,10 @@ export class PropertiesDefinitionComponent implements OnInit {
                 this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList.push(this.editedProperty);
             }
         }
+        this.editorModalRef.hide();
+        this.clearEditedProperty();
         this.save();
         this.copyToTable();
-        // abuse AddClick to clear the form without producing errors
-        this.onAddClick();
-        this.editorModalRef.hide();
     }
 
     private updateEditedProperty(name: string, type: string, entrySchema: string, keySchema: string) {
@@ -495,7 +496,13 @@ export class PropertiesDefinitionComponent implements OnInit {
                 this.onYamlProperties();
                 break;
             default:
-                this.resourceApiData.selectedValue = PropertiesDefinitionEnum.None;
+                // Yaml mode frontend does not support the PropertiesDefinitionEnum type None
+                this.resourceApiData.selectedValue = this.isYaml ? PropertiesDefinitionEnum.Yaml : PropertiesDefinitionEnum.None;
+                // if necessary, fill with default values to simplify access
+                if (this.isYaml && !this.resourceApiData.propertiesDefinition) {
+                    this.resourceApiData.propertiesDefinition = new PropertiesDefinition();
+                    this.resourceApiData.propertiesDefinition.properties = [];
+                }
         }
 
         this.handleSuccess(data);
