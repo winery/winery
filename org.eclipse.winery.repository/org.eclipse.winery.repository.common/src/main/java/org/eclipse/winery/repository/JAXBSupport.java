@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository;
 
+import java.util.LinkedHashMap;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -60,7 +62,8 @@ public class JAXBSupport {
                 ParameterDefinitionList.class,
                 AttributeDefinitionList.class,
                 Application.class,
-                MockXMLElement.class // MockXMLElement is added for testing purposes only.
+                MockXMLElement.class, // MockXMLElement is added for testing purposes only.
+                LinkedHashMap.class
             );
         } catch (JAXBException e) {
             LOGGER.error("Could not initialize JAXBContext", e);

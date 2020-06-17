@@ -202,31 +202,7 @@ public abstract class Visitor {
     }
 
     public void visit(TEntityTemplate.Properties properties) {
-        if (properties instanceof TEntityTemplate.XmlProperties) {
-            final Object xmlAny = ((TEntityTemplate.XmlProperties) properties).getAny();
-            this.visitXmlProperties(xmlAny);
-        }
-        if (properties instanceof TEntityTemplate.WineryKVProperties) {
-            final LinkedHashMap<String, String> kvProperties = ((TEntityTemplate.WineryKVProperties) properties).getKVProperties();
-            this.visitKvProperties(kvProperties);
-        }
-        if (properties instanceof TEntityTemplate.YamlProperties) {
-            final LinkedHashMap<String, Object> yamlProperties = ((TEntityTemplate.YamlProperties) properties).getProperties();
-            this.visitYamlProperties(yamlProperties);
-        }
-        // meta model does not offer more children
-    }
-
-    public void visitKvProperties(LinkedHashMap<String, String> kvProperties) {
-        // this is a leaf, so no action to take
-    }
-    
-    public void visitYamlProperties(LinkedHashMap<String, Object> yamlProperties) {
-        // this is a leaf, so no action to take
-    }
-    
-    public void visitXmlProperties(Object xmlProperties) {
-        // this is a leaf, so no action to take
+        // in all cases this is a leaf node, so no action to take
     }
 
     public void visit(TEntityTemplate.PropertyConstraints propertyConstraints) {

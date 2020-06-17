@@ -1442,7 +1442,7 @@ public class BackendUtils {
         });
     }
 
-    public static TDefinitions getDefinitionsHavingCorrectImports(IRepository repository, DefinitionsChildId id) throws Exception {
+    public static TDefinitions getDefinitionsHavingCorrectImports(IRepository repository, DefinitionsChildId id) throws IOException, RepositoryCorruptException {
         // idea: get the XML, parse it, return it
         // the conversion to JSON is made by Jersey automatically
         // TODO: future work: force TOSCAExportUtil to return TDefinitions directly
@@ -1457,6 +1457,8 @@ public class BackendUtils {
             String xmlRepresentation = bos.toString(StandardCharsets.UTF_8.toString());
             Unmarshaller u = JAXBSupport.createUnmarshaller();
             return ((TDefinitions) u.unmarshal(new StringReader(xmlRepresentation)));
+        } catch (JAXBException e) {
+            throw new IOException(e);
         }
     }
 

@@ -380,6 +380,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
                 return BackendUtils.getDefinitionsHavingCorrectImports(requestRepository, this.id);
             }
         } catch (Exception e) {
+            LOGGER.warn("Failed to return element at {} as JSON due to exception.", this.id, e);
             throw new WebApplicationException(e);
         }
     }

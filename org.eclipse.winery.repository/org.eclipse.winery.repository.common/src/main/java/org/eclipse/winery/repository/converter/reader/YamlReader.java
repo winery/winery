@@ -204,7 +204,6 @@ public class YamlReader {
      * @return ServiceTemplate
      * @throws MultiException the ServiceTemplate or the file is invalid.
      */
-
     private TServiceTemplate readServiceTemplate(InputStream inputStream, String namespace) throws MultiException {
         Object object = null;
         // pre parse checking

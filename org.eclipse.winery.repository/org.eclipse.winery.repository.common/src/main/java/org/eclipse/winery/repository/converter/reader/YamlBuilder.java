@@ -862,7 +862,10 @@ public class YamlBuilder {
     @Nullable
     public TNodeTemplate buildNodeTemplate(Object object, Parameter<TNodeTemplate> parameter) {
         if (Objects.isNull(object)) return new TNodeTemplate();
-        if (!validate(TNodeTemplate.class, object, parameter)) return null;
+        if (!validate(TNodeTemplate.class, object, parameter)) {
+            LOGGER.info("Validation failed when trying to deserialize NodeTemplate");
+            return null;
+        }
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return new TNodeTemplate.Builder(buildQName(stringValue(map.get("type"))))
@@ -1168,7 +1171,7 @@ public class YamlBuilder {
                     )
                 );
             })
-//            .filter(this::nonNull)
+            .filter(this::nonNull)
             .collect(Collectors.toMap(Pair::getOne, Pair::getTwo));
         return output;
     }
@@ -1210,7 +1213,7 @@ public class YamlBuilder {
         private T builder;
 
         private Predicate<Map.Entry<String, Object>> filter;
-        private BiFunction<Object, Parameter<T>, T> builderOO;
+        private BiFunction<Object, Parameter<T>, @Nullable T> builderOO;
 
         public Parameter() {
             context = new LinkedHashSet<>();
