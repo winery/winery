@@ -36,7 +36,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
@@ -81,7 +80,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
 
 public class ServiceTemplateResource extends AbstractComponentInstanceResourceContainingATopology implements IHasName {
 
@@ -265,7 +263,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     @Path("injector/replace")
     @Consumes( {MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
     @Produces( {MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
-    public Response injectNodeTemplates(InjectorReplaceData injectorReplaceData, @Context UriInfo uriInfo) throws Exception, IOException, ParserConfigurationException, SAXException, SplittingException {
+    public Response injectNodeTemplates(InjectorReplaceData injectorReplaceData, @Context UriInfo uriInfo) throws Exception {
 
         if (injectorReplaceData.hostInjections != null) {
             Collection<TTopologyTemplate> hostInjectorTopologyTemplates = injectorReplaceData.hostInjections.values();
