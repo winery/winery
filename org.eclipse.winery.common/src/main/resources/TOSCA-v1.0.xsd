@@ -821,7 +821,6 @@
    <xs:extension base="tExtensibleElements">
     <xs:sequence>
      <xs:element name="Detector" type="tTopologyTemplate"/>
-     <xs:element name="RefinementStructure" type="tTopologyTemplate"/>
      <xs:element name="RelationMappings">
       <xs:complexType>
        <xs:sequence>
@@ -829,6 +828,7 @@
        </xs:sequence>
       </xs:complexType>
      </xs:element>
+     <xs:element name="RefinementStructure" type="tTopologyTemplate"/>
      <xs:element name="AttributeMappings">
       <xs:complexType>
        <xs:sequence>
@@ -882,7 +882,7 @@
   <xs:attribute name="id" type="xs:ID" use="required"/>
   <xs:attribute name="detectorNode" type="xs:string" use="required"/>
   <xs:attribute name="refinementNode" type="xs:string" use="required"/>
-  <xs:attribute name="artifactName" type="xs:string" use="required"/>
+  <xs:attribute name="artifactType" type="xs:QName" use="required"/>
  </xs:complexType>
  <xs:simpleType name="otDirection">
   <xs:restriction base="xs:string">
