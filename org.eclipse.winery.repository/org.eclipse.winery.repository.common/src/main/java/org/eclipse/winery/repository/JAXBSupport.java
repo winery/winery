@@ -102,7 +102,7 @@ public class JAXBSupport {
                 }
             } catch (PropertyException e) {
                 // Namespace-Prefixing is not supported by the used Provider. Nothing we can do about that
-                LOGGER.debug("NamespacePrefixMapper could not be initialized!");
+                LOGGER.error("NamespacePrefixMapper could not be initialized!");
             }
             if (!includeProcessingInstruction) {
                 // side effect of JAXB_FRAGMENT property (when true): processing instruction is not included

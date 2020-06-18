@@ -42,6 +42,10 @@ public class XMLDefinitionsBasedCsarEntry implements CsarEntry {
         this.definitions = Objects.requireNonNull(definitions);
     }
 
+    public TDefinitions getDefinitions() {
+        return definitions;
+    }
+
     @Override
     public InputStream getInputStream() throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

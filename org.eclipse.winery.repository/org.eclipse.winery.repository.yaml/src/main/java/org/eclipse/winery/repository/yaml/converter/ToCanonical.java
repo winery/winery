@@ -254,9 +254,9 @@ public class ToCanonical {
             builder.setProperties(convertProperties(node.getProperties()));
         }
 
-        if (!node.getProperties().isEmpty()) {
-            builder.addAny(convertWineryPropertiesDefinition(node.getProperties(), builder.build().getTargetNamespace(), builder.build().getIdFromIdOrNameField()));
-        }
+//        if (!node.getProperties().isEmpty()) {
+//            builder.addAny(convertWineryPropertiesDefinition(node.getProperties(), builder.build().getTargetNamespace(), builder.build().getIdFromIdOrNameField()));
+//        }
 
         return builder;
     }

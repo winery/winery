@@ -39,11 +39,9 @@ import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitio
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKVList;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;

@@ -85,12 +85,24 @@ public class ToscaExportUtil {
     public void writeTOSCA(IRepository repository, DefinitionsChildId id,
                            Map<String, Object> conf, OutputStream outputStream)
         throws RepositoryCorruptException, IOException {
+        CsarEntry csarEntry = getExportableEntry(repository, id, conf);
+        csarEntry.writeToOutputStream(outputStream);
+    }
+
+    public TDefinitions getExportableDefinitions(IRepository repository, DefinitionsChildId id,
+                                                 Map<String, Object> conf)
+        throws IOException, RepositoryCorruptException {
+        // Cast should be safe
+        XMLDefinitionsBasedCsarEntry xmlEntry = (XMLDefinitionsBasedCsarEntry) getExportableEntry(repository, id, conf);
+        return xmlEntry.getDefinitions();
+    }
+
+    private CsarEntry getExportableEntry(IRepository repository, DefinitionsChildId id, Map<String, Object> conf) throws IOException, RepositoryCorruptException {
         this.processTOSCA(repository, id, new CsarContentProperties(id.getQName().toString()), conf);
-        CsarEntry csarEntry = this.referencesToPathInCSARMap.values().stream()
-            .filter(entry -> entry instanceof XMLDefinitionsBasedCsarEntry)
+        return this.referencesToPathInCSARMap.values().stream()
+            .filter(e -> e instanceof XMLDefinitionsBasedCsarEntry)
             .findFirst()
             .orElseThrow(() -> new RepositoryCorruptException("Definition not found!"));
-        csarEntry.writeToOutputStream(outputStream);
     }
 
     public enum ExportProperties {
@@ -260,10 +272,15 @@ public class ToscaExportUtil {
                 // END: add import and put into CSAR
 
                 // BEGIN: generate TOSCA conforming PropertiesDefinition
-                // FIXME this broke when the "canonical model Definitions" became also responsible for YAML DataTypes 
-//                PropertiesDefinition propertiesDefinition = new PropertiesDefinition();
-//                propertiesDefinition.setType(new QName(wrapperElementNamespace, wrapperElementLocalName));
-//                entityType.setPropertiesDefinition(propertiesDefinition);
+
+                // Winerys properties definitions are serialized as an XSD.
+                // As such their TOSCA representation is a type reference, so we generate that here.
+                // Of course that breaks when we export as YAML, but this exporter basically targets XML in the first place
+                // TODO: future work — deal with WPD when exporting to YAML
+                //  (a map[string, string] can be represented as a TDataType)
+                TEntityType.XmlTypeDefinition propertiesDefinition = new TEntityType.XmlTypeDefinition();
+                propertiesDefinition.setType(new QName(wrapperElementNamespace, wrapperElementLocalName));
+                entityType.setProperties(propertiesDefinition);
 
                 // END: generate TOSCA conforming PropertiesDefinition
             } else {

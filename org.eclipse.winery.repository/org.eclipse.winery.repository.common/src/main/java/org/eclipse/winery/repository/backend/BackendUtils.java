@@ -1442,24 +1442,12 @@ public class BackendUtils {
         });
     }
 
+    /**
+     * Uses a ToscaExportUtil object to create a TDefinitions object that has imports resolved to the point of being exportable as a CSAR.
+     */
     public static TDefinitions getDefinitionsHavingCorrectImports(IRepository repository, DefinitionsChildId id) throws IOException, RepositoryCorruptException {
-        // idea: get the XML, parse it, return it
-        // the conversion to JSON is made by Jersey automatically
-        // TODO: future work: force TOSCAExportUtil to return TDefinitions directly
-
-        // Have to use TOSCAExportUtil to have the imports correctly set
-
         ToscaExportUtil exporter = new ToscaExportUtil();
-        // we include everything related
-        Map<String, Object> conf = new HashMap<>();
-        try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-            exporter.writeTOSCA(repository, id, conf, bos);
-            String xmlRepresentation = bos.toString(StandardCharsets.UTF_8.toString());
-            Unmarshaller u = JAXBSupport.createUnmarshaller();
-            return ((TDefinitions) u.unmarshal(new StringReader(xmlRepresentation)));
-        } catch (JAXBException e) {
-            throw new IOException(e);
-        }
+        return exporter.getExportableDefinitions(repository, id, new HashMap<String, Object>());
     }
 
     public static void mergeTopologyTemplateAinTopologyTemplateB(ServiceTemplateId serviceTemplateIdA, ServiceTemplateId serviceTemplateIdB, IRepository repository) throws IOException {
