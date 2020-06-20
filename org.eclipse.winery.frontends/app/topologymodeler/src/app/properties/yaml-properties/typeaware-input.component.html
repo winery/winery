@@ -11,24 +11,12 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-
-<table class="table table-border--grey table-sm body-table">
-    <tr>
-        <th>
-            Key
-        </th>
-        <th>
-            Values
-        </th>
-    <tr *ngFor="let definition of propertyDefinitions">
-        <td class="">{{definition.name}}</td>
-        <td class="">
-            <winery-properties-input
-                [type]="definition.type"
-                [(ngModel)]="propertyValues[definition.name]"
-                (ngModelChange)="propertyChangeRequest($event, definition)"
-                [disabled]="readonly">
-            </winery-properties-input>
-        </td>
-    </tr>
-</table>
+<textarea
+    style="width:100%; overflow-y: scroll;"
+    [rows]="1"
+    placeholder="Edit your value here."
+    required
+    [disabled]="isDisabled"
+    [value]="unQuote(JSON.stringify(_value))"
+    (keyup)="keyup($event.target)">
+</textarea>

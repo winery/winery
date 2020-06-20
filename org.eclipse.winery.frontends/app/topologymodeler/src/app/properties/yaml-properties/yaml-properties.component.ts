@@ -43,7 +43,6 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
     private nodeTypes: Array<EntityType> = [];
     private dataTypes: Array<TDataType> = [];
     private subscriptions: Array<Subscription> = [];
-    JSON: JSON;
 
     constructor(private backend: BackendService) {
         this.subscriptions.push(this.backend.model$.subscribe(
@@ -56,8 +55,6 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
             debounceTime(300),
             distinctUntilChanged(), )
             .subscribe(kv => this.propertyEdited.emit(kv)));
-        // this is a fix to make the global javascript object available inside the component template
-        this.JSON = JSON;
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -68,6 +65,7 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
         }
         if (changes.properties) {
             this.propertyValues = changes.properties.currentValue;
+            // values that are property functions need to be marked as complex
             this.backfillPropertyDefaults();
         }
     }
@@ -76,28 +74,14 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
         this.subscriptions.forEach(s => s.unsubscribe());
     }
 
-    propertyChangeRequest(target: any, definition: any) {
-        let result;
-        try {
-            result = JSON.parse(target.value);
-        } catch (e) {
-            // try reparsing as string
-            try {
-                result = JSON.parse( '"' + target.value + '"');
-            } catch (e) {
-                console.log('failed to parse value', target.value);
-                return;
-            }
-        }
-        if (YamlPropertiesComponent.isValid(result, definition.constraints)) {
-            this.outputDebouncer.next({
-                key: definition.name,
-                value: result,
-            });
-        }
+    propertyChangeRequest(validValue: any, definition: any) {
+        this.outputDebouncer.next({
+            key: definition.name,
+            value: validValue,
+        });
     }
 
-    private static isValid(value: any, constraints: any): boolean {
+    static isValid(value: any, constraints: any): boolean {
         if (constraints === null) { return true; }
         for (const c of constraints) {
             ConstraintChecking.isValid(c, value);
@@ -163,12 +147,5 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
                 this.propertyValues[propDefinition.name] = propDefinition.defaultValue || '';
             }
         }
-    }
-
-    unQuote(value: string): string {
-        if (value.startsWith('"') && value.endsWith('"')) {
-            return value.substr(1, value.length - 2);
-        }
-        return value;
     }
 }

@@ -28,6 +28,7 @@ import { KvPropertiesComponent } from './kv-properties/kv-properties.component';
 import { XmlPropertiesComponent } from './xml-properties/xml-properties.component';
 import { YamlPropertiesComponent } from './yaml-properties/yaml-properties.component';
 import { ConstraintChecking, ConstraintClause } from './property-constraints';
+import { TypeawareInputComponent } from './yaml-properties/typeaware-input.component';
 
 @NgModule({
     imports: [
@@ -48,6 +49,7 @@ import { ConstraintChecking, ConstraintClause } from './property-constraints';
         KvPropertiesComponent,
         XmlPropertiesComponent,
         YamlPropertiesComponent,
+        TypeawareInputComponent,
         KeysPipe,
     ],
     exports: [
