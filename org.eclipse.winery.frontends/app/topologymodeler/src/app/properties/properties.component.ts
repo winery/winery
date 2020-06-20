@@ -88,11 +88,7 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
             return;
         }
         const propertyData = template.properties;
-        // TODO get nodeTemplate's type and grab the propertiesDefinition for the NodeType.
-        //  That definition can be a List<YamlPropertiesDefinition> or an XmlPropertiesDefinition.
-        //  This way we can obtain the constraints required for input form generation.
 
-        // this.propertyDefinitionType = this.determinePropertyDefinitionType(nodeTemplate);
         this.propertyDefinitionType = propertyData.propertyType;
         this.templateType = template.type;
         // reset nodeProperties to empty object to change it's pointer for change detection to work
@@ -122,27 +118,28 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
 
     xmlPropertyEdit($event: string) {
         this.templateProperties = $event;
-        this.dispatchRedux();
+        this.dispatchRedux('any');
     }
 
     kvPropertyEdit($event: KeyValueItem) {
         this.templateProperties[$event.key] = $event.value;
-        this.dispatchRedux();
+        this.dispatchRedux('kvproperties');
     }
 
     // TODO? rewrite to have a "PathValueItem"
     yamlPropertyEdit($event: KeyValueItem) {
         // FIXME deal with the fact that yaml properties support complex datatypes, implying nesting
         this.templateProperties[$event.key] = $event.value;
-        this.dispatchRedux();
+        this.dispatchRedux('properties');
     }
 
-    private dispatchRedux(): void {
+    private dispatchRedux(member: string): void {
+        const newProperty = { propertyType: this.propertyDefinitionType };
+        newProperty[member] = this.templateProperties;
         this.skipUpdate = true;
         this.$ngRedux.dispatch(this.actions.setProperty({
             nodeProperty: {
-                newProperty: this.templateProperties,
-                propertyType: this.propertyDefinitionType,
+                newProperty: newProperty,
                 nodeId: this.templateId,
             }
         }));

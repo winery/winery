@@ -106,8 +106,12 @@ export interface UpdateRelationshipNameAction extends Action {
 
 export interface SetPropertyAction extends Action {
     nodeProperty: {
-        newProperty: any,
-        propertyType: string,
+        newProperty: {
+            propertyType: string,
+            properties?: any[],
+            kvproperties?: any[],
+            any?: any
+        },
         nodeId: string,
     };
 }

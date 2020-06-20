@@ -39,12 +39,11 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
     propertyValues: any;
     propertyDefinitions: Array<any>;
 
-    // subject allows for debouncing
-    private outputSubject: Subject<KeyValueItem> = new Subject<KeyValueItem>();
+    private outputDebouncer: Subject<KeyValueItem> = new Subject<KeyValueItem>();
     private nodeTypes: Array<EntityType> = [];
     private dataTypes: Array<TDataType> = [];
     private subscriptions: Array<Subscription> = [];
-    private JSON: JSON;
+    JSON: JSON;
 
     constructor(private backend: BackendService) {
         this.subscriptions.push(this.backend.model$.subscribe(
@@ -53,10 +52,11 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
                 this.dataTypes = model.dataTypes;
             }
         ));
-        this.subscriptions.push(this.outputSubject.pipe(
+        this.subscriptions.push(this.outputDebouncer.pipe(
             debounceTime(300),
             distinctUntilChanged(), )
             .subscribe(kv => this.propertyEdited.emit(kv)));
+        // this is a fix to make the global javascript object available inside the component template
         this.JSON = JSON;
     }
 
@@ -78,25 +78,26 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
 
     propertyChangeRequest(target: any, definition: any) {
         let result;
-        if (definition.complex) {
+        try {
+            result = JSON.parse(target.value);
+        } catch (e) {
+            // try reparsing as string
             try {
-                result = JSON.parse(target.value);
+                result = JSON.parse( '"' + target.value + '"');
             } catch (e) {
                 console.log('failed to parse value', target.value);
                 return;
             }
-        } else {
-            result = target.value;
         }
-        if (this.isValid(result, definition.constraints)) {
-            this.outputSubject.next({
+        if (YamlPropertiesComponent.isValid(result, definition.constraints)) {
+            this.outputDebouncer.next({
                 key: definition.name,
                 value: result,
             });
         }
     }
 
-    private isValid(value: any, constraints: any): boolean {
+    private static isValid(value: any, constraints: any): boolean {
         if (constraints === null) { return true; }
         for (const c of constraints) {
             ConstraintChecking.isValid(c, value);
@@ -109,7 +110,10 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
         const definedProperties = [];
         for (const type of inheritance) {
             const definition = ToscaUtils.getDefinition(type);
-            for (const propertyDefinition of definition.properties || []) {
+            if (definition.properties === undefined) {
+                continue;
+            }
+            for (const propertyDefinition of definition.properties.properties || []) {
                 if (isWellKnown(propertyDefinition.type)) {
                     // the property type is a simple type like "string" or "integer"
                     if (propertyDefinition.type === 'list' || propertyDefinition.type === 'map') {
@@ -159,5 +163,12 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
                 this.propertyValues[propDefinition.name] = propDefinition.defaultValue || '';
             }
         }
+    }
+
+    unQuote(value: string): string {
+        if (value.startsWith('"') && value.endsWith('"')) {
+            return value.substr(1, value.length - 2);
+        }
+        return value;
     }
 }

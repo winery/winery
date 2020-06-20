@@ -30,7 +30,7 @@
                 placeholder="Edit your value here."
                 required
                 [disabled]="readonly"
-                [value]="definition.complex ? JSON.stringify(propertyValues[definition.name]) : propertyValues[definition.name]"
+                [value]="unQuote(JSON.stringify(propertyValues[definition.name]))"
                 (keyup)="propertyChangeRequest($event.target, definition)">
             </textarea>
         </td>

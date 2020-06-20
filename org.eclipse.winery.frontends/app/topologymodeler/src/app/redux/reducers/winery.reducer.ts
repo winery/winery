@@ -202,17 +202,16 @@ export const WineryReducer =
                     }
                 };
             case WineryActions.SET_PROPERTY:
-                const newProperty: any = (<SetPropertyAction>action).nodeProperty;
+                const update: any = (<SetPropertyAction>action).nodeProperty;
 
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
                         ...lastState.currentJsonTopology,
                         nodeTemplates: lastState.currentJsonTopology.nodeTemplates
-                            .map(nodeTemplate => nodeTemplate.id === newProperty.nodeId ?
-                                nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('properties',
-                                    newProperty.propertyType === 'KV' || newProperty.propertyType === 'YAML' ?
-                                        { kvproperties: newProperty.newProperty } : { any: newProperty.newProperty }) : nodeTemplate
+                            .map(nodeTemplate => nodeTemplate.id === update.nodeId
+                                ? nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('properties', update.newProperty)
+                                : nodeTemplate
                             )
                     }
                 };
