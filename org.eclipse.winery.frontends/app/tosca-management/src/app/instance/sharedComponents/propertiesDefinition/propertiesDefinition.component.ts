@@ -24,11 +24,11 @@ import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { WineryRepositoryConfigurationService } from '../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { FeatureEnum } from '../../../wineryFeatureToggleModule/wineryRepository.feature.direct';
-import { YamlPropertyDefinition } from './yaml/yamlPropertyDefinition';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import { Constraint, yaml_well_known } from '../../../model/constraint';
 import { SchemaDefinition, TDataType } from '../../../../../../topologymodeler/src/app/models/ttopology-template';
 import { DataTypesService } from '../../dataTypes/dataTypes.service';
+import { YamlPropertyDefinition } from '../../../model/yaml';
 
 @Component({
     templateUrl: 'propertiesDefinition.component.html',

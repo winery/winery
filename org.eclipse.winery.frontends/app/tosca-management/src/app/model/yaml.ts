@@ -11,9 +11,10 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { QName } from '../../../../model/qName';
-import { SchemaDefinition } from '../../../../../../../topologymodeler/src/app/models/ttopology-template';
-import { Constraint, YamlWellKnown } from '../../../../model/constraint';
+
+import { QName } from './qName';
+import { Constraint, YamlWellKnown } from './constraint';
+import { SchemaDefinition } from '../../../../topologymodeler/src/app/models/ttopology-template';
 
 export class YamlPropertyDefinition {
     constructor(
@@ -25,9 +26,10 @@ export class YamlPropertyDefinition {
         public status: string = 'supported',
         public constraints: Constraint[] = [],
         public keySchema: SchemaDefinition = undefined,
-        public entrySchema: SchemaDefinition = undefined) { }
+        public entrySchema: SchemaDefinition = undefined) {
+    }
 }
 
-export function isYaml(value: any): value is YamlPropertyDefinition {
+export function isYamlPropertyDefinition(value: any): value is YamlPropertyDefinition {
     return (value as YamlPropertyDefinition).name !== undefined;
 }
