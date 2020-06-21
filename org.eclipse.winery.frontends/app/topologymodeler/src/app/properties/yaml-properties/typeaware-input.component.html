@@ -18,5 +18,9 @@
     required
     [disabled]="isDisabled"
     [value]="unQuote(JSON.stringify(_value))"
-    (keyup)="keyup($event.target)">
+    (keyup)="keyup($event.target)"
+    [className]="errors.length ? 'error' : ''">
 </textarea>
+<div [className]="'error'" *ngIf="errors.length">
+    <span [className]="'errorMessage'" *ngFor="let message of errors">{{ message }}</span>
+</div>

@@ -47,7 +47,6 @@ import { ConstraintChecking } from '../property-constraints';
         //     useExisting: forwardRef(() => TypeawareInputComponent),
         //     multi: true
         // },
-        // DataTypesService
     ]
 })
 export class TypeawareInputComponent implements ControlValueAccessor, OnInit, OnChanges {
@@ -57,6 +56,7 @@ export class TypeawareInputComponent implements ControlValueAccessor, OnInit, On
 
     // values used to render the view
     isDisabled: boolean;
+    errors: string[] = [];
     _value: any;
 
     // storage for callbacks
@@ -99,10 +99,10 @@ export class TypeawareInputComponent implements ControlValueAccessor, OnInit, On
 
     private validateAndDispatch(value: string): void {
         // reset stored errors
-        // this.errors = [];
-        // FIXME we need to deal with the probably rather common case of failing to parse here
+        this.errors = [];
         const structuredValue = this.parseValue(value);
         if (structuredValue === undefined) {
+            // this only happens if parsing is not lax or the value could not be parsed as string after enquoting it
             this.pushError('Could not parse entered value as JSON');
             return;
         }
@@ -116,7 +116,6 @@ export class TypeawareInputComponent implements ControlValueAccessor, OnInit, On
             this._onChange(structuredValue);
             return;
         }
-        // FIXME otherwise add the validation errors to the NgModel backing this field
     }
 
     private parseValue(value: string): any {
@@ -198,6 +197,7 @@ export class TypeawareInputComponent implements ControlValueAccessor, OnInit, On
             this.laxParsing = false;
             return;
         }
+        // FIXME deal with checking for the basetype of the constrained type?!
         // aggregate constraints through the hierarchy
         const allConstraints = [];
         for (const ancestor of dataTypeInheritance) {
@@ -210,26 +210,25 @@ export class TypeawareInputComponent implements ControlValueAccessor, OnInit, On
         this.laxParsing = true;
     }
 
-    private handleComplexDataType(hierarchy: TDataType[]): any {
+    private handleComplexDataType(hierarchy: TDataType[]): YamlPropertyDefinition[] {
         const result = [];
         // it's useful to assume that the types themselves in the hierarchy do not have constraints
         // as such we only need to aggregate the properties enforced by each of the
         for (const parent of hierarchy) {
             for (const property of parent.properties) {
                 // FIXME if necessary create a type definition for these ones as well!
-                result.push({ name: property.name, required: property.required, constraints: property.constraints });
+                result.push(property);
             }
         }
         return result;
     }
 
     private pushError(message: string) {
-        // FIXME make this available to the user in some way
-        console.warn(message);
+        this.errors.push(message);
     }
 
-    private fulfilsWellKnownType(structuredValue: any, fullTypeDefinition: string) {
-        switch (fullTypeDefinition) {
+    private fulfilsWellKnownType(structuredValue: any, knownType: string) {
+        switch (knownType) {
             case 'string':
                 return typeof structuredValue === 'string';
             case 'integer':
@@ -264,17 +263,31 @@ export class TypeawareInputComponent implements ControlValueAccessor, OnInit, On
     }
 
     private fulfilsKnownConstraints(structuredValue: any, requirements: { constraints: Constraint[] }) {
+        let valid = true;
         for (const constraint of requirements.constraints) {
             if (!ConstraintChecking.isValid({ operator: constraint.key, value: constraint.list || constraint.value }, structuredValue)) {
-                // TODO add error message
-                return false;
+                this.pushError(`Value does not conform to constraint "${constraint.key} - ${constraint.list || constraint.value}"`);
+                valid = false;
             }
         }
-        return true;
+        return valid;
     }
 
-    private fulfilsPropertyRequirements(structuredValue: any, fullTypeDefinition: YamlPropertyDefinition[]) {
-        return true;
+    private fulfilsPropertyRequirements(structuredValue: any, properties: YamlPropertyDefinition[]) {
+        let valid = true;
+        for (const member in structuredValue) {
+            if (properties.find(prop => prop.name === member) !== undefined) {
+                this.pushError(`Includes the member ${member} that is not defined on the type`);
+                valid = false;
+            }
+        }
+        for (const requiredProperty of properties.filter(prop => prop.required)) {
+            if (structuredValue[requiredProperty.name] === undefined) {
+                this.pushError(`Does not include the required member ${requiredProperty.name}`);
+                valid = false;
+            }
+        }
+        return valid;
     }
 }
 
