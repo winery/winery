@@ -60,8 +60,8 @@ export class TypeawareInputComponent implements ControlValueAccessor, OnInit, On
     _value: any;
 
     // storage for callbacks
-    private _onChange: any;
-    private _onTouch: any;
+    private _onChange: any = e => {};
+    private _onTouch: any = e => {};
 
     // this subject helps reduce computation load by debouncing validation triggers while the user adds input.
     private validationDebouncer: Subject<any> = new Subject<any>();
@@ -95,6 +95,7 @@ export class TypeawareInputComponent implements ControlValueAccessor, OnInit, On
 
     keyup(target: any): void {
         this.validationDebouncer.next(target.value);
+        this._onTouch(target);
     }
 
     private validateAndDispatch(value: string): void {
