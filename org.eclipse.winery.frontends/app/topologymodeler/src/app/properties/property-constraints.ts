@@ -16,22 +16,22 @@
  * constraint operators defined in tosca yaml spec 3.6.3.1
  */
 enum ConstraintOperator {
-    equal,
-    greater_than,
-    greater_or_equal,
-    less_than,
-    less_or_equal,
-    in_range,
-    valid_values,
-    length,
-    min_length,
-    max_length,
-    pattern,
-    schema
+    equal = 'equal',
+    greater_than = 'greater_than',
+    greater_or_equal = 'greater_or_equal',
+    less_than = 'less_than',
+    less_or_equal = 'less_or_equal',
+    in_range = 'in_range',
+    valid_values = 'valid_values',
+    length = 'length',
+    min_length = 'min_length',
+    max_length = 'max_length',
+    pattern = 'pattern',
+    schema = 'schema'
 }
 
 export class ConstraintClause {
-    operator: ConstraintOperator;
+    operator: string;
     value: any; // string | number | [number, number] | any[] | Object;
 }
 

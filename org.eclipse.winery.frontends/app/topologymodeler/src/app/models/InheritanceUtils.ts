@@ -28,7 +28,7 @@ export class InheritanceUtils {
         return null;
     }
 
-    static getInheritanceAncestry(entityType: string, entityTypes: EntityType[]): EntityType[] {
+    static getInheritanceAncestry<T extends EntityType>(entityType: string, entityTypes: T[]): T[] {
         const entity = entityTypes.find(type => type.qName === entityType || type.id === entityType);
         const result = [];
 

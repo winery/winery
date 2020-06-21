@@ -34,5 +34,5 @@ export type YamlWellKnown =
  * Checks whether a given value is a declaration of a well-known YAML type as defined in {@link YamlWellKnown} and can act as a type guard.
  */
 export function isWellKnown(value: any): value is YamlWellKnown {
-    return (value as YamlWellKnown) !== undefined;
+    return (typeof value === 'string') && yaml_well_known.includes(value);
 }

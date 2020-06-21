@@ -27,7 +27,6 @@ import { isWellKnown } from '../../../../../tosca-management/src/app/model/const
 @Component({
     selector: 'winery-yaml-properties',
     templateUrl: './yaml-properties.component.html',
-    // styleUrls: ['./yaml-properties.component.css'],
 })
 export class YamlPropertiesComponent implements OnChanges, OnDestroy {
     @Input() readonly: boolean;
@@ -41,14 +40,12 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
 
     private outputDebouncer: Subject<KeyValueItem> = new Subject<KeyValueItem>();
     private nodeTypes: Array<EntityType> = [];
-    private dataTypes: Array<TDataType> = [];
     private subscriptions: Array<Subscription> = [];
 
     constructor(private backend: BackendService) {
         this.subscriptions.push(this.backend.model$.subscribe(
             model => {
                 this.nodeTypes = model.unGroupedNodeTypes.concat(model.relationshipTypes);
-                this.dataTypes = model.dataTypes;
             }
         ));
         this.subscriptions.push(this.outputDebouncer.pipe(
@@ -98,47 +95,14 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
                 continue;
             }
             for (const propertyDefinition of definition.properties.properties || []) {
-                if (isWellKnown(propertyDefinition.type)) {
-                    // the property type is a simple type like "string" or "integer"
-                    if (propertyDefinition.type === 'list' || propertyDefinition.type === 'map') {
-                        // known types list and map require JSON processing, which is tied to the "complex" flag
-                        propertyDefinition.complex = true;
-                    }
+                // only add properties that have not been overwritten by subtypes.
+                // "lower" types come earlier in the ancestry list, that's why we can afford this
+                if (definedProperties.find(def => def.name === propertyDefinition.name) === undefined) {
                     definedProperties.push(propertyDefinition);
-                } else {
-                    this.handleDataType(propertyDefinition, definedProperties);
                 }
             }
         }
         this.propertyDefinitions = definedProperties;
-    }
-
-    private handleDataType(propertyDefinition: any, definedProperties: any[]) {
-        // FIXME the inheritance hierarchy resolution for a type may need to be namespace-aware
-        const dataTypeInheritance = InheritanceUtils.getInheritanceAncestry(propertyDefinition.type, this.dataTypes);
-        // FIXME we may have messed up some kind of normalization on the backend
-        if (dataTypeInheritance.some(t => t.properties || ToscaUtils.getDefinition(t).properties)) {
-            this.handleComplexDataType(dataTypeInheritance, propertyDefinition, definedProperties);
-        } else {
-            // aggregate constraints through the hierarchy
-            const push: any = {};
-            Object.assign(push, propertyDefinition);
-            if (push.constraints === undefined) {
-                push.constraints = [];
-            }
-            for (const ancestor of dataTypeInheritance) {
-                // no need to check for ancestor properties, that's handled by handleComplexDataType
-                push.constraints.push(ToscaUtils.getDefinition(ancestor).constraints);
-            }
-        }
-    }
-
-    private handleComplexDataType(dataTypeInheritance: EntityType[], propertyDefinition: any, definedProperties: any[]) {
-        // FIXME need to find some way to represent hierarchical data types
-        // TODO the inheritance hierarchy resolution for a type may need to be namespace-aware
-        propertyDefinition.complex = true;
-        definedProperties.push(propertyDefinition);
-        console.warn('pushing complex typed property to definedProperties without flattening!');
     }
 
     private backfillPropertyDefaults() {

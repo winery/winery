@@ -13,14 +13,18 @@
  *******************************************************************************/
 
 import { Component, forwardRef, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TDataType } from '../../models/ttopology-template';
-import { DataTypesService } from '../../../../../tosca-management/src/app/instance/dataTypes/dataTypes.service';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { YamlPropertiesComponent } from './yaml-properties.component';
 import { BackendService } from '../../services/backend.service';
+// FIXME these probably shouldn't be the management constraints
+import { Constraint, isWellKnown } from '../../../../../tosca-management/src/app/model/constraint';
+import { QName } from '../../models/qname';
+import { InheritanceUtils } from '../../models/InheritanceUtils';
+import { ToscaUtils } from '../../models/toscaUtils';
 import { YamlPropertyDefinition } from '../../../../../tosca-management/src/app/model/yaml';
+import { ConstraintChecking } from '../property-constraints';
 
 /**
  * This is an input component that is aware of the DataType that the value it receives must conform to.
@@ -38,13 +42,18 @@ import { YamlPropertyDefinition } from '../../../../../tosca-management/src/app/
             useExisting: forwardRef(() => TypeawareInputComponent),
             multi: true
         },
-        DataTypesService
+        // {
+        //     provide: NG_VALIDATORS,
+        //     useExisting: forwardRef(() => TypeawareInputComponent),
+        //     multi: true
+        // },
+        // DataTypesService
     ]
 })
 export class TypeawareInputComponent implements ControlValueAccessor, OnInit, OnChanges {
 
     @Input()
-    type: TDataType;
+    type: QName | string;
 
     // values used to render the view
     isDisabled: boolean;
@@ -57,7 +66,9 @@ export class TypeawareInputComponent implements ControlValueAccessor, OnInit, On
     // this subject helps reduce computation load by debouncing validation triggers while the user adds input.
     private validationDebouncer: Subject<any> = new Subject<any>();
     private availableDataTypes: TDataType[] = [];
-    private fullTypeDefinition: YamlPropertyDefinition;
+
+    private fullTypeDefinition: string | { constraints: Constraint[] } | YamlPropertyDefinition[];
+    private laxParsing: boolean;
     JSON: JSON;
 
     constructor(private dataTypes: BackendService) {
@@ -76,7 +87,7 @@ export class TypeawareInputComponent implements ControlValueAccessor, OnInit, On
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes.type) {
-            // compute the complete typedefinition including all required properties for this value
+            // compute the complete type definition including all required properties for this value
             this.type = changes.type.currentValue;
             this.computeApplicablePropertyDefinitions();
         }
@@ -91,6 +102,10 @@ export class TypeawareInputComponent implements ControlValueAccessor, OnInit, On
         // this.errors = [];
         // FIXME we need to deal with the probably rather common case of failing to parse here
         const structuredValue = this.parseValue(value);
+        if (structuredValue === undefined) {
+            this.pushError('Could not parse entered value as JSON');
+            return;
+        }
         // we cannot perform "static typechecking" on property functions defined in Section 4.4 of the spec
         if (isPropertyFunction(structuredValue)) {
             this._onChange(structuredValue);
@@ -109,11 +124,16 @@ export class TypeawareInputComponent implements ControlValueAccessor, OnInit, On
         try {
             result = JSON.parse(value);
         } catch (e) {
+            if (!this.laxParsing) {
+                // the value is not actually a string or something deriving from it
+                // therefore we expect something that's parseable as JSON and bail here
+                return undefined;
+            }
             // try reparsing as string
             try {
+                // this should never ever fail because we should be able to parse literally anything as a string, so long as we enquote it
                 result = JSON.parse( '"' + value + '"');
             } catch (e) {
-                // this case should never ever fail because we should be able to parse literally anything as a string, so long as we enquote it
                 return;
             }
         }
@@ -151,13 +171,110 @@ export class TypeawareInputComponent implements ControlValueAccessor, OnInit, On
             console.warn('No full type-definition was computed for type ' + this.type);
             return true;
         }
-        // FIXME implement the actual validation of the structured value against it's type
-        return true;
+        if (typeof this.fullTypeDefinition === 'string') {
+            return this.fulfilsWellKnownType(structuredValue, this.fullTypeDefinition);
+        }
+        if (!this.fullTypeDefinition['constraints'] !== undefined) {
+            // @ts-ignore Typescript doesn't correctly narrow the union type here
+            return this.fulfilsKnownConstraints(structuredValue, this.fullTypeDefinition);
+        }
+        // @ts-ignore Typescript doesn't correctly narrow the union type here
+        return this.fulfilsPropertyRequirements(structuredValue, this.fullTypeDefinition);
     }
 
     private computeApplicablePropertyDefinitions() {
-        // FIXME compute the complete type definition from the given TDataType
-        this.fullTypeDefinition = undefined;
+        if (isWellKnown(this.type)) {
+            this.fullTypeDefinition = this.type;
+            // these known types need to be parseable as objects because they are
+            this.laxParsing = this.type !== 'list' && this.type !== 'map' && this.type !== 'range';
+            return;
+        }
+
+        const typeIdentifier: string = (this.type instanceof QName) ? this.type.qName : this.type;
+        const dataTypeInheritance = InheritanceUtils.getInheritanceAncestry(typeIdentifier, this.availableDataTypes);
+        if (dataTypeInheritance.some(t => t.properties || ToscaUtils.getDefinition(t).properties)) {
+            // assume that there's no constraints here, since the constraints don't really work on complex types in the first place
+            this.fullTypeDefinition = this.handleComplexDataType(dataTypeInheritance);
+            this.laxParsing = false;
+            return;
+        }
+        // aggregate constraints through the hierarchy
+        const allConstraints = [];
+        for (const ancestor of dataTypeInheritance) {
+            // no need to check for ancestor properties, that's handled by handleComplexDataType
+            for (const c of ToscaUtils.getDefinition(ancestor).constraints) {
+                allConstraints.push(c);
+            }
+        }
+        this.fullTypeDefinition = { constraints: allConstraints };
+        this.laxParsing = true;
+    }
+
+    private handleComplexDataType(hierarchy: TDataType[]): any {
+        const result = [];
+        // it's useful to assume that the types themselves in the hierarchy do not have constraints
+        // as such we only need to aggregate the properties enforced by each of the
+        for (const parent of hierarchy) {
+            for (const property of parent.properties) {
+                // FIXME if necessary create a type definition for these ones as well!
+                result.push({ name: property.name, required: property.required, constraints: property.constraints });
+            }
+        }
+        return result;
+    }
+
+    private pushError(message: string) {
+        // FIXME make this available to the user in some way
+        console.warn(message);
+    }
+
+    private fulfilsWellKnownType(structuredValue: any, fullTypeDefinition: string) {
+        switch (fullTypeDefinition) {
+            case 'string':
+                return typeof structuredValue === 'string';
+            case 'integer':
+            case 'float':
+                return typeof structuredValue === 'number';
+            case 'boolean':
+                return typeof structuredValue === 'boolean' || structuredValue === 'yes' || structuredValue === 'no';
+            case 'timestamp':
+                // FIXME actual check for conformance to typestamp value
+                return typeof structuredValue === 'string';
+            case 'null':
+                // why ever you'd want to do this?
+                return structuredValue === null || structuredValue === undefined;
+            case 'version':
+                return typeof structuredValue === 'string' && structuredValue.match(/\d+\.\d+(\.\d+(\..+?(-\d+)?)?)?/);
+            case 'range':
+                return structuredValue.isArray && structuredValue.length === 2;
+            case 'list':
+                return structuredValue.isArray;
+            case 'map':
+                return structuredValue.isObject;
+            case 'scalar-unit.size':
+            case 'scalar-unit.time':
+            case 'scalar-unit.frequency':
+            case 'scalar-unit.bitrate':
+                // FIXME check unit conformance
+                return typeof structuredValue === 'string';
+            default:
+                // not actually one of the well-known types here!
+                return false;
+        }
+    }
+
+    private fulfilsKnownConstraints(structuredValue: any, requirements: { constraints: Constraint[] }) {
+        for (const constraint of requirements.constraints) {
+            if (!ConstraintChecking.isValid({ operator: constraint.key, value: constraint.list || constraint.value }, structuredValue)) {
+                // TODO add error message
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private fulfilsPropertyRequirements(structuredValue: any, fullTypeDefinition: YamlPropertyDefinition[]) {
+        return true;
     }
 }
 
