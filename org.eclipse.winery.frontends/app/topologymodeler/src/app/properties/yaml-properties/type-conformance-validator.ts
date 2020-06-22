@@ -172,6 +172,7 @@ export class TypeConformanceValidator implements Validator {
                 valid = false;
             }
         }
+        // FIXME recurse into the object to validate its properties!
         return valid ? null : {'typeConformance' : errors };
     }
 

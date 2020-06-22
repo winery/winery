@@ -24,8 +24,6 @@ import { WineryModalModule } from '../../../wineryModalModule/winery.modal.modul
 import { WineryTableModule } from '../../../wineryTableModule/wineryTable.module';
 import { PropertiesDefinitionComponent } from './propertiesDefinition.component';
 import { WineryFeatureToggleModule } from '../../../wineryFeatureToggleModule/winery-feature-toggle.module';
-import { YamlPropertiesComponent } from './yaml/yamlProperties.component';
-import { YamlConstraintsComponent } from './yaml/constraints/yamlConstraints.component';
 
 @NgModule({
     imports: [
@@ -42,13 +40,9 @@ import { YamlConstraintsComponent } from './yaml/constraints/yamlConstraints.com
         WineryFeatureToggleModule,
     ],
     exports: [
-        YamlPropertiesComponent,
-        YamlConstraintsComponent,
     ],
     declarations: [
         PropertiesDefinitionComponent,
-        YamlPropertiesComponent,
-        YamlConstraintsComponent,
     ],
     providers: [],
 })
