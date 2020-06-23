@@ -89,7 +89,8 @@ export class WineryArtifactComponent implements OnInit {
     typeRequired = false;
     types: SelectData[];
     private createComponent: boolean;
-    private nodetype: string;
+    private nodeType: string;
+    private nodeTypeName: string;
 
     constructor(private service: WineryArtifactService,
                 public sharedData: InstanceService,
@@ -133,11 +134,11 @@ export class WineryArtifactComponent implements OnInit {
             this.artifact.namespace = this.sharedData.toscaComponent.namespace;
         }
         this.artifact.namespace = this.artifact.namespace.slice(0, this.sharedData.toscaComponent.namespace.lastIndexOf('/') + 1) + ToscaTypes.ArtifactTemplate;
-        this.artifact.name = this.nodetype;
+        this.artifact.name = this.nodeTypeName;
         this.artifact.toscaType = ToscaTypes.ArtifactTemplate;
         this.existCheck();
-        this.addComponentData.createArtifactName(this.sharedData.toscaComponent, this.sharedData.currentVersion,
-            this.selectedOperation, this.isImplementationArtifact, this.nodetype);
+        this.addComponentData.createArtifactName(this.sharedData.toscaComponent, this.nodeType,
+            this.selectedOperation, this.isImplementationArtifact, this.nodeTypeName);
         this.addArtifactModal.show();
     }
 
@@ -445,13 +446,18 @@ export class WineryArtifactComponent implements OnInit {
     }
 
     interfaceAndOperation() {
-        this.addComponentData.createArtifactName(this.sharedData.toscaComponent, this.sharedData.currentVersion,
-            this.selectedOperation, this.isImplementationArtifact, this.nodetype);
+        if (this.isImplementationArtifact) {
+            this.addComponentData.createArtifactName(this.sharedData.toscaComponent, this.nodeType,
+                this.selectedOperation, this.isImplementationArtifact, this.nodeTypeName);
+        } else {
+            this.addComponentData.createArtifactName(this.sharedData.toscaComponent, this.nodeType,
+                this.newArtifact.artifactName, this.isImplementationArtifact, this.nodeTypeName);
+        }
     }
 
     private handleComponentData(compData: WineryInstance) {
-        const node = compData.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].nodeType;
-        this.nodetype = node.substring(node.indexOf('}') + 1, node.indexOf('_'));
+        this.nodeType = compData.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].nodeType;
+        this.nodeTypeName = this.nodeType.substring(this.nodeType.indexOf('}') + 1, this.nodeType.indexOf('_'));
     }
 
     clearOperation() {

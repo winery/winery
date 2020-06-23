@@ -11,7 +11,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-import { isNullOrUndefined } from 'util';
 
 export class WineryVersion {
 
@@ -31,13 +30,13 @@ export class WineryVersion {
     }
 
     toString(): string {
-        let versionString = isNullOrUndefined(this.componentVersion) ? '' : this.componentVersion;
+        let versionString = !this.componentVersion ? '' : this.componentVersion;
 
-        if (!isNullOrUndefined(this.wineryVersion) && this.wineryVersion > 0) {
+        if (this.wineryVersion && this.wineryVersion > 0) {
             versionString += (versionString.length > 0 ? WineryVersion.WINERY_VERSION_SEPARATOR : '')
                 + WineryVersion.WINERY_VERSION_PREFIX + this.wineryVersion;
 
-            if (!isNullOrUndefined(this.workInProgressVersion) && this.workInProgressVersion > 0) {
+            if (this.workInProgressVersion && this.workInProgressVersion > 0) {
                 versionString += WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_WORK_IN_PROGRESS_PREFIX + this.workInProgressVersion;
             }
         }
@@ -56,33 +55,22 @@ export class WineryVersion {
     hasVersion(version: string): boolean {
         switch (version) {
             case 'wineryVersion':
-                if (!this.wineryVersion) {
-                    return false;
-                } else {
-                    return true;
-                }
-                break;
+                return !!this.wineryVersion;
             case 'componentVersion':
-                if (!this.componentVersion) {
-                    return false;
-                } else {
-                    return true;
-                }
-                break;
+                return !!this.componentVersion;
         }
     }
 
     getComponentVersion(): string {
-        const versionString = isNullOrUndefined(this.componentVersion) ? '' : this.componentVersion;
-        return versionString;
+        return !this.componentVersion ? '' : this.componentVersion;
     }
 
     getWineryAndWipVersion(): string {
         let version: string;
-        if (!isNullOrUndefined(this.wineryVersion) && this.wineryVersion > 0) {
+        if (this.wineryVersion && this.wineryVersion > 0) {
             version = WineryVersion.WINERY_VERSION_PREFIX + this.wineryVersion;
 
-            if (!isNullOrUndefined(this.workInProgressVersion) && this.workInProgressVersion > 0) {
+            if (this.workInProgressVersion && this.workInProgressVersion > 0) {
                 version += WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_WORK_IN_PROGRESS_PREFIX + this.workInProgressVersion;
             }
         }
@@ -96,7 +84,7 @@ export class WineryVersion {
     }
 
     public compareTo(o: WineryVersion): number {
-        if (isNullOrUndefined(o)) {
+        if (!o) {
             return 1;
         }
 
