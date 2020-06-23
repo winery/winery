@@ -16,99 +16,66 @@ import { TDataType } from '../../models/ttopology-template';
 import { QName } from '../../models/qname';
 // TODO this should possibly not be from tosca-management
 import { YamlPropertyDefinition } from '../../../../../tosca-management/src/app/model/yaml';
-import { Constraint, isWellKnown } from '../../../../../tosca-management/src/app/model/constraint';
+import { Constraint, isWellKnown, YamlWellKnown } from '../../../../../tosca-management/src/app/model/constraint';
 import { ConstraintChecking } from '../property-constraints';
 import { InheritanceUtils } from '../../models/InheritanceUtils';
 import { ToscaUtils } from '../../models/toscaUtils';
 
 export class TypeConformanceValidator implements Validator {
 
-    private fullTypeDefinition: string | { constraints: Constraint[] } | YamlPropertyDefinition[];
     private laxParsing: boolean;
+    private readonly enforcedType: TDataType | YamlWellKnown;
 
-    constructor(private dataTypes: TDataType[], private enforcedType: string | QName) {
-        this.precacheMetaInformation();
+    constructor(private dataTypes: TDataType[], private typeId: string | QName) {
+        if (isWellKnown(typeId)) {
+            this.enforcedType = typeId;
+        } else {
+            this.enforcedType = dataTypes.find(t => t.id === typeId || t.qName === typeId);
+        }
+        this.precacheMetaInformation(this.enforcedType);
     }
 
     validate(control: AbstractControl): ValidationErrors | null {
-        // reset stored errors
         const structuredValue = this.parseValue(control.value);
         if (structuredValue === undefined) {
             // this only happens if parsing is not lax OR the value could not be parsed as string after enquoting it
             return { 'typeConformance':  [ 'Could not parse entered value as JSON' ]};
         }
-        // we cannot perform "static typechecking" on property functions defined in Section 4.4 of the spec
-        if (isPropertyFunction(structuredValue)) {
-            return null;
-        }
-        return this.fulfilsTypeDefinition(structuredValue);
+        const results = this.fulfilsTypeDefinition(this.enforcedType, '',  structuredValue);
+        return results.length === 0 ? null : { 'typeConformance': results };
     }
 
-    private precacheMetaInformation() {
-        if (isWellKnown(this.enforcedType)) {
-            this.fullTypeDefinition = this.enforcedType;
+    private precacheMetaInformation(enforcedType: TDataType | YamlWellKnown) {
+        if (isWellKnown(enforcedType)) {
             // these known types need to be parseable as objects because they are
-            this.laxParsing = this.enforcedType !== 'list' && this.enforcedType !== 'map' && this.enforcedType !== 'range';
+            this.laxParsing = enforcedType !== 'list' && enforcedType !== 'map' && enforcedType !== 'range';
             return;
         }
-
-        const typeIdentifier: string = (this.enforcedType instanceof QName) ? this.enforcedType.qName : this.enforcedType;
-        const dataTypeInheritance = InheritanceUtils.getInheritanceAncestry(typeIdentifier, this.dataTypes);
-        if (dataTypeInheritance.some(t => t.properties || ToscaUtils.getDefinition(t).properties)) {
-            // assume that there's no constraints here, since the constraints don't really work on complex types in the first place
-            this.fullTypeDefinition = this.handleComplexDataType(dataTypeInheritance);
+        const dataTypeInheritance = InheritanceUtils.getInheritanceAncestry(enforcedType.id, this.dataTypes);
+        if (dataTypeInheritance.some(definesProperties)) {
             this.laxParsing = false;
             return;
         }
-        // FIXME deal with checking for the basetype of the constrained type?!
-        // aggregate constraints through the hierarchy
-        const allConstraints = [];
-        for (const ancestor of dataTypeInheritance) {
-            // no need to check for ancestor properties, that's handled by handleComplexDataType
-            for (const c of ToscaUtils.getDefinition(ancestor).constraints) {
-                allConstraints.push(c);
-            }
-        }
-        this.fullTypeDefinition = { constraints: allConstraints };
         this.laxParsing = true;
     }
 
-    private handleComplexDataType(hierarchy: TDataType[]): YamlPropertyDefinition[] {
-        const result = [];
-        // it's useful to assume that the types themselves in the hierarchy do not have constraints
-        // as such we only need to aggregate the properties enforced by each of the
-        for (const parent of hierarchy) {
-            const parentDefinition = ToscaUtils.getDefinition(parent);
-            if (parentDefinition.properties === undefined) {
-                continue;
-            }
-            // parentDefinition must have YAML properties if they are defined
-            for (const property of parentDefinition.properties.properties || []) {
-                // FIXME if necessary create a type definition for these ones as well!
-                result.push(property);
-            }
+    private fulfilsTypeDefinition(type: TDataType | YamlWellKnown, valuePath: string, structuredValue: any): string[] {
+        // we cannot perform "static typechecking" on property functions defined in Section 4.4 of the spec
+        if (isPropertyFunction(structuredValue)) {
+            return [];
         }
-        return result;
+        if (isWellKnown(type)) {
+            return this.fulfilsWellKnownType(structuredValue, type) ? []
+                : [ `Value ${valuePath.substr(1)} was not conform to TOSCA-YAML well known type ${type}.` ];
+        }
+        const hierarchy = InheritanceUtils.getInheritanceAncestry(type.id, this.dataTypes);
+        if (hierarchy.some(definesProperties)) {
+            return this.fulfilsPropertyRequirements(structuredValue, hierarchy, valuePath);
+        }
+        return this.fulfilsKnownConstraints(structuredValue, hierarchy, valuePath);
     }
 
-    private fulfilsTypeDefinition(structuredValue: any): ValidationErrors | null {
-        if (!this.fullTypeDefinition) {
-            console.warn('No full type-definition was computed for type ' + this.enforcedType);
-            return null;
-        }
-        if (typeof this.fullTypeDefinition === 'string') {
-            return this.fulfilsWellKnownType(structuredValue, this.fullTypeDefinition) ? null
-                : { 'typeConformance': [ `Value was not conform to TOSCA-YAML well known type ${this.fullTypeDefinition}.` ]};
-        }
-        if (this.fullTypeDefinition['constraints'] !== undefined) {
-            // @ts-ignore Typescript doesn't correctly narrow the union type here
-            return this.fulfilsKnownConstraints(structuredValue, this.fullTypeDefinition);
-        }
-        // @ts-ignore Typescript doesn't correctly narrow the union type here
-        return this.fulfilsPropertyRequirements(structuredValue, this.fullTypeDefinition);
-    }
-
-    private fulfilsWellKnownType(structuredValue: any, knownType: string): boolean {
+    private fulfilsWellKnownType(structuredValue: any, knownType: YamlWellKnown): boolean {
         switch (knownType) {
             case 'string':
                 // consider that this might need to also accept stuff that's parseable as number, boolean or anything else
@@ -144,41 +111,71 @@ export class TypeConformanceValidator implements Validator {
         }
     }
 
-    private fulfilsKnownConstraints(structuredValue: any, requirements: { constraints: Constraint[] }): ValidationErrors | null {
+    private fulfilsKnownConstraints(structuredValue: any, hierarchy: TDataType[], valuePath: string): string[] {
+        const constraints: Constraint[] = [];
+        for (const parent of hierarchy) {
+            for (const c of ToscaUtils.getDefinition(parent).constraints) {
+                constraints.push(c);
+            }
+        }
+
         let valid = true;
-        const errors: ValidationErrors = [];
-        for (const constraint of requirements.constraints) {
+        const errors: string[] = [];
+        for (const constraint of constraints) {
             if (!ConstraintChecking.isValid({ operator: constraint.key, value: constraint.list || constraint.value }, structuredValue)) {
-                errors.push(`Value does not conform to constraint "${constraint.key} - ${constraint.list || constraint.value}"`);
+                errors.push(`Value ${valuePath.substr(1)} does not conform to constraint "${constraint.key} - ${constraint.list || constraint.value}"`);
                 valid = false;
             }
         }
-        return valid ? null : { 'typeConformance': errors };
+        return valid ? [] : errors;
     }
 
-    private fulfilsPropertyRequirements(structuredValue: any, properties: YamlPropertyDefinition[]): ValidationErrors | null {
+    private fulfilsPropertyRequirements(structuredValue: any, hierarchy: TDataType[], valuePath: string): string[] {
+        const properties: YamlPropertyDefinition[] = [];
+        for (const parent of hierarchy) {
+            if (definesProperties(parent)) {
+                for (const prop of ToscaUtils.getDefinition(parent).properties.properties) {
+                    properties.push(prop);
+                }
+            }
+        }
+
         let valid = true;
-        const errors: ValidationErrors = [];
+        const errors: string[] = [];
         if (structuredValue === undefined || structuredValue === null) {
-            // FIXME deal with the question whether the form field is required
-            return properties.some(prop => prop.required)
-                ? [ `${this.enforcedType} has defined required properties!` ]
-                : null;
+            // handling of "required" status is not on this level.
+            // Assume no validation errors because structuredValue cannot have properties here
+            return [];
         }
         for (const member in structuredValue) {
             if (properties.find(prop => prop.name === member) === undefined) {
-                errors.push(`Includes the member ${member} that is not defined on the type`);
+                errors.push(`${valuePath.substr(1)} includes the member ${member} that is not defined on the type`);
                 valid = false;
             }
         }
         for (const requiredProperty of properties.filter(prop => prop.required)) {
             if (structuredValue[requiredProperty.name] === undefined) {
-                errors.push(`Does not include the required member ${requiredProperty.name}`);
+                errors.push(`${valuePath.substr(1)} does not include the required member ${requiredProperty.name}`);
                 valid = false;
             }
         }
-        // FIXME recurse into the object to validate its properties!
-        return valid ? null : {'typeConformance' : errors };
+        // recurse into the object to validate its properties!
+        if (valid) {
+            // tslint:disable-next-line:forin
+            for (const member in structuredValue) {
+                const applicableType = properties.find(p => p.name === member);
+                if (!applicableType) {
+                    console.warn(`Did not find applicable type defintion for member ${member} on value ${valuePath}`);
+                    continue;
+                }
+                const memberType = this.resolveType(applicableType.type);
+                for (const error of this.fulfilsTypeDefinition(memberType, valuePath + '.' + member, structuredValue[member])) {
+                    errors.push(error);
+                    valid = false;
+                }
+            }
+        }
+        return valid ? [] :  errors;
     }
 
     private parseValue(value: string): any {
@@ -201,6 +198,13 @@ export class TypeConformanceValidator implements Validator {
         }
         return result;
     }
+
+    private resolveType(type: any): YamlWellKnown | TDataType {
+        if (isWellKnown(type)) {
+            return type;
+        }
+        return this.dataTypes.find(t => t.qName === type.qName || t.id === type.localName);
+    }
 }
 
 const function_keys: string[] = [
@@ -216,4 +220,8 @@ function isPropertyFunction(structuredValue: any) {
         }
     }
     return false;
+}
+
+function definesProperties(type: TDataType): boolean {
+    return type.properties || ToscaUtils.getDefinition(type).properties;
 }
