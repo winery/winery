@@ -54,6 +54,7 @@
                 type="text"
                 name="key"
                 required
+                (input)="interfaceAndOperation()"
                 [(ngModel)]="newArtifact.artifactName">
 
             <div *ngIf="artifactName.errors && (artifactName.touched)"

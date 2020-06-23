@@ -13,6 +13,7 @@
  ********************************************************************************/
 import { ServiceTemplateTemplateTypes, ToscaTypes } from '../model/enums';
 import { QName } from '../model/qName';
+import { WineryVersion } from '../model/wineryVersion';
 
 export class Utils {
 
@@ -251,6 +252,19 @@ export class Utils {
         const qname = QName.stringToQName(nodeTypeName);
         return `/#/nodetypes/${encodeURIComponent(encodeURIComponent(qname.namespace))}/${qname.localPart}/readme`;
 
+    }
+
+    static getVersionFromString(qName: string) {
+        const res = qName.match(/_(([^_]*)-)?w([0-9]+)(-wip([0-9]+))?$/);
+        if (res) {
+            const [, , componentVersion, wineryVersion, , wipVersion] = res;
+            return new WineryVersion(
+                componentVersion,
+                isNaN(Number(wineryVersion)) ? 1 : Number(wineryVersion),
+                isNaN(Number(wipVersion)) ? 0 : Number(wipVersion)
+            );
+        }
+        return undefined;
     }
 }
 
