@@ -32,7 +32,7 @@
             </winery-properties-input>
             <div *ngIf="validation.errors && (validation.dirty || validation.touched)"
                  class="alert alert-danger">
-                <span *ngFor="let message of validation.errors['typeConformance']">{{ message }}</span>
+                <p *ngFor="let message of validation.errors['typeConformance']">{{ message }}</p>
             </div>
         </td>
     </tr>

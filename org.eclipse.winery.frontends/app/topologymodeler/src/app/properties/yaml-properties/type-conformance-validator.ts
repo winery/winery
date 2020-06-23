@@ -78,7 +78,12 @@ export class TypeConformanceValidator implements Validator {
         // it's useful to assume that the types themselves in the hierarchy do not have constraints
         // as such we only need to aggregate the properties enforced by each of the
         for (const parent of hierarchy) {
-            for (const property of parent.properties) {
+            const parentDefinition = ToscaUtils.getDefinition(parent);
+            if (parentDefinition.properties === undefined) {
+                continue;
+            }
+            // parentDefinition must have YAML properties if they are defined
+            for (const property of parentDefinition.properties.properties || []) {
                 // FIXME if necessary create a type definition for these ones as well!
                 result.push(property);
             }
@@ -95,7 +100,7 @@ export class TypeConformanceValidator implements Validator {
             return this.fulfilsWellKnownType(structuredValue, this.fullTypeDefinition) ? null
                 : { 'typeConformance': [ `Value was not conform to TOSCA-YAML well known type ${this.fullTypeDefinition}.` ]};
         }
-        if (!this.fullTypeDefinition['constraints'] !== undefined) {
+        if (this.fullTypeDefinition['constraints'] !== undefined) {
             // @ts-ignore Typescript doesn't correctly narrow the union type here
             return this.fulfilsKnownConstraints(structuredValue, this.fullTypeDefinition);
         }
@@ -161,7 +166,7 @@ export class TypeConformanceValidator implements Validator {
                 : null;
         }
         for (const member in structuredValue) {
-            if (properties.find(prop => prop.name === member) !== undefined) {
+            if (properties.find(prop => prop.name === member) === undefined) {
                 errors.push(`Includes the member ${member} that is not defined on the type`);
                 valid = false;
             }
