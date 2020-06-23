@@ -63,6 +63,14 @@ public class TopologyTemplateResourceTest extends AbstractResourceTest {
     }
 
     @Test
+    public void emptyElementTagsInXML() throws Exception {
+        this.setRevisionTo("origin/plain");
+        // for testing an arbitrary existing service template is used
+        this.assertPut("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants_w1-wip1/topologytemplate/", "servicetemplates/topologytemplates/plain-TopologyTemplateMinimalExampleWithAllPropertyVariants_w1-wip1.json");
+        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants_w1-wip1/topologytemplate/", "servicetemplates/topologytemplates/plain-TopologyTemplateMinimalExampleWithAllPropertyVariants_w1-wip1.xml");
+    }
+
+    @Test
     public void topologyTemplateUpdateWithEmptyListsGetTheListsRemoved() throws Exception {
         this.setRevisionTo("3fe0df76e98d46ead68295920e5d1cf1354bdea1");
         this.assertPut("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/", "servicetemplates/baobab_topologytemplate_v2-with-empty-objects.json");
