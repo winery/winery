@@ -13,26 +13,35 @@
  *******************************************************************************/
 import { AbstractControl, ValidationErrors, Validator } from '@angular/forms';
 import { TDataType } from '../../models/ttopology-template';
-import { QName } from '../../models/qname';
 // TODO this should possibly not be from tosca-management
 import { YamlPropertyDefinition } from '../../../../../tosca-management/src/app/model/yaml';
 import { Constraint, isWellKnown, YamlWellKnown } from '../../../../../tosca-management/src/app/model/constraint';
 import { ConstraintChecking } from '../property-constraints';
 import { InheritanceUtils } from '../../models/InheritanceUtils';
 import { ToscaUtils } from '../../models/toscaUtils';
+import { QName } from '../../../../../shared/src/app/model/qName';
 
 export class TypeConformanceValidator implements Validator {
 
-    private laxParsing: boolean;
+    private readonly laxParsing: boolean;
     private readonly enforcedType: TDataType | YamlWellKnown;
 
-    constructor(private dataTypes: TDataType[], private typeId: string | QName) {
+    constructor(private dataTypes: TDataType[], private typeId: YamlWellKnown | QName) {
         if (isWellKnown(typeId)) {
             this.enforcedType = typeId;
         } else {
-            this.enforcedType = dataTypes.find(t => t.id === typeId || t.qName === typeId);
+            this.enforcedType = dataTypes.find(t => t.qName === typeId.qName);
         }
-        this.precacheMetaInformation(this.enforcedType);
+        this.laxParsing =  this.determineParsingStandard(this.enforcedType);
+    }
+
+    private determineParsingStandard(enforcedType: TDataType | YamlWellKnown): boolean {
+        if (isWellKnown(enforcedType)) {
+            // these known types need to be parseable as objects because they are
+            return enforcedType !== 'list' && enforcedType !== 'map' && enforcedType !== 'range';
+        }
+        const dataTypeInheritance = InheritanceUtils.getInheritanceAncestry(enforcedType.id, this.dataTypes);
+        return !dataTypeInheritance.some(definesProperties);
     }
 
     validate(control: AbstractControl): ValidationErrors | null {
@@ -43,20 +52,6 @@ export class TypeConformanceValidator implements Validator {
         }
         const results = this.fulfilsTypeDefinition(this.enforcedType, '',  structuredValue);
         return results.length === 0 ? null : { 'typeConformance': results };
-    }
-
-    private precacheMetaInformation(enforcedType: TDataType | YamlWellKnown) {
-        if (isWellKnown(enforcedType)) {
-            // these known types need to be parseable as objects because they are
-            this.laxParsing = enforcedType !== 'list' && enforcedType !== 'map' && enforcedType !== 'range';
-            return;
-        }
-        const dataTypeInheritance = InheritanceUtils.getInheritanceAncestry(enforcedType.id, this.dataTypes);
-        if (dataTypeInheritance.some(definesProperties)) {
-            this.laxParsing = false;
-            return;
-        }
-        this.laxParsing = true;
     }
 
     private fulfilsTypeDefinition(type: TDataType | YamlWellKnown, valuePath: string, structuredValue: any): string[] {

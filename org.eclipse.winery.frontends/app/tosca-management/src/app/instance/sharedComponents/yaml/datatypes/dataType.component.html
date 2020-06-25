@@ -15,7 +15,12 @@
     <h4>Derived from</h4>
     <winery-instance-inheritance></winery-instance-inheritance>
     <h4>Constraints</h4>
-    <winery-yaml-constraints [constraints]="component.constraints"></winery-yaml-constraints>
+    <p *ngFor="let c of component.constraints">
+        {{ c.key }}: {{ c.value }}{{ c.list }}
+    </p>
+    <p *ngIf="component.constraints === undefined || component.constraints.length === 0">
+        This datatype does not define constraints
+    </p>
 </div>
 <ng-template #loadingIcon>
     <div>
