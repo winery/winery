@@ -19,18 +19,18 @@ import { Constraint, isWellKnown, YamlWellKnown } from '../../../../../tosca-man
 import { ConstraintChecking } from '../property-constraints';
 import { InheritanceUtils } from '../../models/InheritanceUtils';
 import { ToscaUtils } from '../../models/toscaUtils';
-import { QName } from '../../../../../shared/src/app/model/qName';
 
 export class TypeConformanceValidator implements Validator {
 
     private readonly laxParsing: boolean;
     private readonly enforcedType: TDataType | YamlWellKnown;
 
-    constructor(private dataTypes: TDataType[], private typeId: YamlWellKnown | QName) {
+    constructor(private dataTypes: TDataType[], private typeId: YamlWellKnown | string) {
         if (isWellKnown(typeId)) {
             this.enforcedType = typeId;
         } else {
-            this.enforcedType = dataTypes.find(t => t.qName === typeId.qName);
+            // typeId can be a QName or just the name of a type without namespacing
+            this.enforcedType = dataTypes.find(t => t.qName === typeId || t.name === typeId);
         }
         this.laxParsing =  this.determineParsingStandard(this.enforcedType);
     }
@@ -40,7 +40,7 @@ export class TypeConformanceValidator implements Validator {
             // these known types need to be parseable as objects because they are
             return enforcedType !== 'list' && enforcedType !== 'map' && enforcedType !== 'range';
         }
-        const dataTypeInheritance = InheritanceUtils.getInheritanceAncestry(enforcedType.id, this.dataTypes);
+        const dataTypeInheritance = InheritanceUtils.getInheritanceAncestry(enforcedType.qName, this.dataTypes);
         return !dataTypeInheritance.some(definesProperties);
     }
 
@@ -113,7 +113,10 @@ export class TypeConformanceValidator implements Validator {
                 constraints.push(c);
             }
         }
+        return this.fulfilsConstraints(constraints, structuredValue, valuePath);
+    }
 
+    private fulfilsConstraints(constraints: Constraint[], structuredValue: any, valuePath: string) {
         let valid = true;
         const errors: string[] = [];
         for (const constraint of constraints) {
@@ -142,9 +145,27 @@ export class TypeConformanceValidator implements Validator {
             // Assume no validation errors because structuredValue cannot have properties here
             return [];
         }
+        // Verify all properties that are given for:
+        //  1. being defined in the first place
+        //  2. conforming to the type they are defined as
+        //  3. fulfilling the narrowing constraints defined on the property definition itself
+        // tslint:disable-next-line:forin
         for (const member in structuredValue) {
-            if (properties.find(prop => prop.name === member) === undefined) {
+            const correspondingProperty = properties.find(prop => prop.name === member);
+            if (correspondingProperty === undefined) {
                 errors.push(`${valuePath.substr(1)} includes the member ${member} that is not defined on the type`);
+                valid = false;
+                continue;
+            }
+            const memberType = this.resolveType(correspondingProperty.type);
+            for (const error of this.fulfilsTypeDefinition(memberType, valuePath + '.' + member, structuredValue[member])) {
+                errors.push(error);
+                valid = false;
+            }
+            // propertiesDefinitions can include constraints. They are validated here
+            const violations = this.fulfilsConstraints(correspondingProperty.constraints, structuredValue[member], valuePath + '.' + member);
+            for (const error of violations) {
+                errors.push(error);
                 valid = false;
             }
         }
@@ -152,22 +173,6 @@ export class TypeConformanceValidator implements Validator {
             if (structuredValue[requiredProperty.name] === undefined) {
                 errors.push(`${valuePath.substr(1)} does not include the required member ${requiredProperty.name}`);
                 valid = false;
-            }
-        }
-        // recurse into the object to validate its properties!
-        if (valid) {
-            // tslint:disable-next-line:forin
-            for (const member in structuredValue) {
-                const applicableType = properties.find(p => p.name === member);
-                if (!applicableType) {
-                    console.warn(`Did not find applicable type defintion for member ${member} on value ${valuePath}`);
-                    continue;
-                }
-                const memberType = this.resolveType(applicableType.type);
-                for (const error of this.fulfilsTypeDefinition(memberType, valuePath + '.' + member, structuredValue[member])) {
-                    errors.push(error);
-                    valid = false;
-                }
             }
         }
         return valid ? [] :  errors;

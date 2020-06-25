@@ -36,6 +36,7 @@ export class ConstraintClause {
 }
 
 export class ConstraintChecking {
+    // FIXME comparison needs to be aware of the builtin scalar-unit types and their units
     /**
      * Checks a value against a given constraint. The first argument is the ConstraintClause to check.
      */
