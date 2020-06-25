@@ -12,7 +12,6 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 import { TNodeTemplate, TRelationshipTemplate, TTopologyTemplate } from './ttopology-template';
-import { QName } from './qname';
 import { DifferenceStates, ToscaDiff, VersionUtils } from './ToscaDiff';
 import { Visuals } from './visuals';
 import { NgRedux } from '@angular-redux/store';
@@ -24,6 +23,7 @@ import { CapabilityModel } from './capabilityModel';
 import { RequirementDefinitionModel } from './requirementDefinitonModel';
 import { RequirementModel } from './requirementModel';
 import { InheritanceUtils } from './InheritanceUtils';
+import { QName } from '../../../../shared/src/app/model/qName';
 
 export class TopologyTemplateUtil {
 

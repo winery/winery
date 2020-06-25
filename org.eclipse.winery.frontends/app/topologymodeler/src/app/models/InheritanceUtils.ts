@@ -16,7 +16,7 @@ import { EntityTypesModel } from './entityTypesModel';
 import { CapabilityDefinitionModel } from './capabilityDefinitionModel';
 import { RequirementDefinitionModel } from './requirementDefinitonModel';
 import { EntityType, TPolicyType } from './ttopology-template';
-import { QName } from './qname';
+import { QName } from '../../../../shared/src/app/model/qName';
 
 export class InheritanceUtils {
 

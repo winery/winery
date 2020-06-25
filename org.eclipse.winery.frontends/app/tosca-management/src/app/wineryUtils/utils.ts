@@ -12,8 +12,8 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 import { ServiceTemplateTemplateTypes, ToscaTypes } from '../model/enums';
-import { QName } from '../model/qName';
 import { WineryVersion } from '../model/wineryVersion';
+import { QName } from '../../../../shared/src/app/model/qName';
 
 export class Utils {
 
@@ -251,13 +251,12 @@ export class Utils {
     }
 
     public static nodeTypeUrlForQName(nodeType: QName): string {
-        return `/#/nodetypes/${encodeURIComponent(encodeURIComponent(nodeType.namespace))}/${nodeType.localPart}/readme`;
+        return `/#/nodetypes/${encodeURIComponent(encodeURIComponent(nodeType.nameSpace))}/${nodeType.localName}/readme`;
     }
 
     public static nodeTypeURL(nodeTypeName: string): string {
         const qname = QName.stringToQName(nodeTypeName);
-        return `/#/nodetypes/${encodeURIComponent(encodeURIComponent(qname.namespace))}/${qname.localPart}/readme`;
-
+        return `/#/nodetypes/${encodeURIComponent(encodeURIComponent(qname.nameSpace))}/${qname.localName}/readme`;
     }
 
     static getVersionFromString(qName: string) {

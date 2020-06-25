@@ -11,12 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { QName } from './qName';
+import { QName } from '../../../../shared/src/app/model/qName';
 
 export class QNameApiData {
 
     static fromQName(qName: QName) {
-        return new QNameApiData(qName.localPart, qName.namespace);
+        return new QNameApiData(qName.localName, qName.nameSpace);
     }
 
     constructor(public localname: string, public namespace: string) {

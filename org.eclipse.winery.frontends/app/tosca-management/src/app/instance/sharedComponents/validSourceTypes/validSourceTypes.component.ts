@@ -21,9 +21,9 @@ import { SelectData } from '../../../model/selectData';
 import { ValidSourceTypesApiData } from './validSourceTypesApiData';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
-import { QName } from '../../../model/qName';
 import { forkJoin } from 'rxjs';
 import { QNameApiData } from '../../../model/qNameApiData';
+import { QName } from '../../../../../../shared/src/app/model/qName';
 
 @Component({
     selector: 'winery-nodetype-selector',
@@ -114,8 +114,8 @@ export class ValidSourceTypesComponent implements OnInit {
                     if (parentNode.children) {
                         const children = parentNode.children.filter(node => {
                             const asQName = QName.stringToQName(node.id);
-                            const existing: QNameApiData = this.validSourceTypes.nodes.find(qname => qname.localname === asQName.localPart
-                                && qname.namespace === asQName.namespace);
+                            const existing: QNameApiData = this.validSourceTypes.nodes.find(qname => qname.localname === asQName.localName
+                                && qname.namespace === asQName.nameSpace);
                             return existing === null || existing === undefined;
                         });
 

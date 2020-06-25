@@ -1,5 +1,5 @@
-/********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+/*******************************************************************************
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -10,16 +10,34 @@
  * which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- ********************************************************************************/
+ *******************************************************************************/
 
-/**
- * Retrieves the local name and the namespace from the qname
- */
 export class QName {
+
+    public static stringToQName(name: string): QName {
+        return new QName(name);
+    }
+
+    public static create(nameSpace: string, localName: string): QName {
+        return new QName(`{${nameSpace}}${localName}`);
+    }
+
     private _localName: string;
     private _nameSpace: string;
 
     constructor(private _qName?: string) {
+        this.parseQName();
+    }
+
+    private parseQName() {
+        const regex = /\{(.*?)\}(.*)/g;
+        const res = regex.exec(this._qName);
+
+        if (res.length !== 3) {
+            throw new Error();
+        }
+        this._nameSpace = res[1];
+        this._localName = res[2];
     }
 
     /**
@@ -35,6 +53,7 @@ export class QName {
      */
     set localName(value: string) {
         this._localName = value;
+        this._qName = `{${this._nameSpace}}${this._localName}`;
     }
 
     /**
@@ -51,6 +70,7 @@ export class QName {
      */
     set nameSpace(value: string) {
         this._nameSpace = value;
+        this._qName = `{${this._nameSpace}}${this._localName}`;
     }
 
     /**
@@ -68,6 +88,7 @@ export class QName {
      */
     set qName(value: string) {
         this._qName = value;
+        this.parseQName();
     }
 
     /**
@@ -77,5 +98,6 @@ export class QName {
      */
     setQNameWithLocalNameAndNamespace(localname: string, namespace: string) {
         this._qName = '{' + namespace + '}' + localname;
+        this.parseQName();
     }
 }

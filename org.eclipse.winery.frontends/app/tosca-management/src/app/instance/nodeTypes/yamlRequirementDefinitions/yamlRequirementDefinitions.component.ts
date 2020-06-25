@@ -22,9 +22,9 @@ import { WineryNotificationService } from '../../../wineryNotificationModule/win
 import { HttpErrorResponse } from '@angular/common/http';
 import { YamlRequirementDefinitionTableData } from './yamlRequirementDefinitionTableData';
 import { InstanceService } from '../../instance.service';
-import { QName } from '../../../model/qName';
 import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
 import { SelectItem } from 'ng2-select';
+import { QName } from '../../../../../../shared/src/app/model/qName';
 
 @Component({
     selector: 'winery-req-definitions',
@@ -163,8 +163,8 @@ export class YamlRequirementDefinitionsComponent implements OnInit {
 
     private typeToHref(typeQName: QName, refType: string): string {
         // no need to encode the namespace since we assume dotted namespaces in YAML mode
-        const absoluteURL = `/#/${refType}/${typeQName.namespace}/${typeQName.localPart}`;
-        return '<a href="' + absoluteURL + '">' + typeQName.localPart + '</a>';
+        const absoluteURL = `/#/${refType}/${typeQName.nameSpace}/${typeQName.localName}`;
+        return '<a href="' + absoluteURL + '">' + typeQName.localName + '</a>';
     }
 
     onSelectedCapTypeChanged(value: SelectItem) {

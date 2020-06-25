@@ -40,7 +40,6 @@ import { EntityTypesModel } from '../models/entityTypesModel';
 import { ExistsService } from '../services/exists.service';
 import { ModalVariant, ModalVariantAndState } from './entities-modal/modal-model';
 import { align, toggleModalType } from '../models/enums';
-import { QName } from '../models/qname';
 import { ImportTopologyModalData } from '../models/importTopologyModalData';
 import { ImportTopologyService } from '../services/import-topology.service';
 import { SplitMatchTopologyService } from '../services/split-match-topology.service';
@@ -60,6 +59,7 @@ import { CapabilityDefinitionModel } from '../models/capabilityDefinitionModel';
 import { WineryRowData } from '../../../../tosca-management/src/app/wineryTableModule/wineryTable.component';
 import { InheritanceUtils } from '../models/InheritanceUtils';
 import { PolicyService } from '../services/policy.service';
+import { QName } from '../../../../shared/src/app/model/qName';
 
 @Component({
     selector: 'winery-canvas',

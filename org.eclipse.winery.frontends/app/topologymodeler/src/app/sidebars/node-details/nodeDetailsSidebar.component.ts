@@ -19,12 +19,12 @@ import { IWineryState } from '../../redux/store/winery.store';
 import { WineryActions } from '../../redux/actions/winery.actions';
 import { Subject, Subscription } from 'rxjs';
 
-import { QName } from '../../models/qname';
 import { urlElement } from '../../models/enums';
 import { BackendService } from '../../services/backend.service';
 import { PolicyService } from '../../services/policy.service';
 import { DetailsSidebarState } from './node-details-sidebar';
 import { WineryRepositoryConfigurationService } from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { QName } from '../../../../../shared/src/app/model/qName';
 
 /**
  * This is the right sidebar, where attributes of nodes and relationships get displayed.

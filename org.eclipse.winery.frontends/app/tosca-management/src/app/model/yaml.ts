@@ -12,16 +12,14 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import { QName as managementQName } from './qName';
 import { Constraint, YamlWellKnown } from './constraint';
-// FIXME oh for FUCK's sake why are these models separated?
+import { QName } from '../../../../shared/src/app/model/qName';
 import { SchemaDefinition } from '../../../../topologymodeler/src/app/models/ttopology-template';
-import { QName } from '../../../../topologymodeler/src/app/models/qname';
 
 export class YamlPropertyDefinition {
     constructor(
         public name: string = '',
-        public type: managementQName | QName | YamlWellKnown = 'string',
+        public type: QName | YamlWellKnown = 'string',
         public description: string = '',
         public required: boolean = false,
         public defaultValue: any = '',

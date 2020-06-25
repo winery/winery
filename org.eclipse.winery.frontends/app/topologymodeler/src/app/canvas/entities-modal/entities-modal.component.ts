@@ -27,11 +27,11 @@ import { ExistsService } from '../../services/exists.service';
 import { ToastrService } from 'ngx-toastr';
 import { DeploymentArtifactOrPolicyModalData, ModalVariant, ModalVariantAndState } from './modal-model';
 import { EntitiesModalService, OpenModalEvent } from './entities-modal.service';
-import { QName } from '../../models/qname';
 import { urlElement } from '../../models/enums';
 import { TArtifact, TTopologyTemplate } from '../../models/ttopology-template';
 import { WineryRepositoryConfigurationService } from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { Subscription } from 'rxjs';
+import { QName } from '../../../../../shared/src/app/model/qName';
 
 @Component({
     selector: 'winery-entities-modal',

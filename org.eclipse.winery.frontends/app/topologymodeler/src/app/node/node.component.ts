@@ -20,7 +20,6 @@ import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { EntityType, TNodeTemplate } from '../models/ttopology-template';
-import { QName } from '../models/qname';
 import { PropertyDefinitionType, urlElement } from '../models/enums';
 import { BackendService } from '../services/backend.service';
 import { GroupedNodeTypeModel } from '../models/groupedNodeTypeModel';
@@ -36,6 +35,7 @@ import { FeatureEnum } from '../../../../tosca-management/src/app/wineryFeatureT
 import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { Subscription } from 'rxjs';
 import { InheritanceUtils } from '../models/InheritanceUtils';
+import { QName } from '../../../../shared/src/app/model/qName';
 
 /**
  * Every node has its own component and gets created dynamically.

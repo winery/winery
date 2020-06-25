@@ -13,7 +13,6 @@
  *******************************************************************************/
 
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { QName } from '../../models/qname';
 import { EntitiesModalService, OpenModalEvent } from '../../canvas/entities-modal/entities-modal.service';
 import { ModalVariant } from '../../canvas/entities-modal/modal-model';
 import { definitionType, TableType, urlElement } from '../../models/enums';
@@ -27,6 +26,7 @@ import { RequirementDefinitionModel } from '../../models/requirementDefinitonMod
 import { TArtifact, VisualEntityType } from '../../models/ttopology-template';
 import { TPolicy } from '../../models/policiesModalData';
 import { InheritanceUtils } from '../../models/InheritanceUtils';
+import { QName } from '../../../../../shared/src/app/model/qName';
 
 @Component({
     selector: 'winery-toscatype-table',

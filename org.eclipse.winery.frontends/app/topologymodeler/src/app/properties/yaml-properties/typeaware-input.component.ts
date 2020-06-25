@@ -18,8 +18,9 @@ import { TDataType } from '../../models/ttopology-template';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { BackendService } from '../../services/backend.service';
-import { QName } from '../../models/qname';
 import { TypeConformanceValidator } from './type-conformance-validator';
+import { QName } from '../../../../../shared/src/app/model/qName';
+import { YamlWellKnown } from '../../../../../tosca-management/src/app/model/constraint';
 
 /**
  * This is an input component that is aware of the DataType that the value it receives must conform to.
@@ -47,7 +48,7 @@ import { TypeConformanceValidator } from './type-conformance-validator';
 export class TypeawareInputComponent implements ControlValueAccessor, OnInit, OnChanges, Validator {
 
     @Input()
-    type: QName | string;
+    type: QName | YamlWellKnown;
 
     // values used to render the view
     isDisabled: boolean;
