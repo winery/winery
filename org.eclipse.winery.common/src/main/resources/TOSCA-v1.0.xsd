@@ -279,6 +279,7 @@
        <xs:simpleType>
         <xs:restriction base="xs:string">
          <xs:enumeration value="unbounded"/>
+         <xs:enumeration value="UNBOUNDED"/>
         </xs:restriction>
        </xs:simpleType>
       </xs:union>
@@ -478,6 +479,7 @@
        <xs:simpleType>
         <xs:restriction base="xs:string">
          <xs:enumeration value="unbounded"/>
+         <xs:enumeration value="UNBOUNDED"/>
         </xs:restriction>
        </xs:simpleType>
       </xs:union>
@@ -524,6 +526,7 @@
        <xs:simpleType>
         <xs:restriction base="xs:string">
          <xs:enumeration value="unbounded"/>
+         <xs:enumeration value="UNBOUNDED"/>
         </xs:restriction>
        </xs:simpleType>
       </xs:union>
