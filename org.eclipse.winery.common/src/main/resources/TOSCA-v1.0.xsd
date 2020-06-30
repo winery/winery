@@ -532,6 +532,7 @@
       </xs:union>
      </xs:simpleType>
     </xs:attribute>
+    <xs:attribute name="validSourceTypes" use="optional"/>
    </xs:extension>
   </xs:complexContent>
  </xs:complexType>
