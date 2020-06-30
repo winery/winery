@@ -16,6 +16,7 @@ package org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 import org.eclipse.winery.repository.rest.resources.TestIds;
+
 import org.junit.jupiter.api.Test;
 import org.xmlunit.matchers.CompareMatcher;
 
@@ -79,6 +80,13 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
     public void baobabAddCapabilityDefinition() throws Exception {
         this.setRevisionTo("8b125a426721f8a0eb17340dc08e9b571b0cd7f7");
         this.assertNoContentPost("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/capabilitydefinitions/", "entitytypes/nodetypes/baobab_capability_definitions_add_capabilitydefinition.json");
+        this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/capabilitydefinitions/", "entitytypes/nodetypes/baobab_capability_definitions_add_capabilitydefinition_contents.json");
+    }
+
+    @Test
+    public void addCapabilityDefinitionWithNoValidSourceTypes() throws Exception {
+        this.setRevisionTo("8b125a426721f8a0eb17340dc08e9b571b0cd7f7");
+        this.assertNoContentPost("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/capabilitydefinitions/", "entitytypes/nodetypes/baobab_capability_definitions_add_capabilitydefinition_without_validSourceTypes.json");
         this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/capabilitydefinitions/", "entitytypes/nodetypes/baobab_capability_definitions_add_capabilitydefinition_contents.json");
     }
 

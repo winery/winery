@@ -125,7 +125,11 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
 
             if (def instanceof TCapabilityDefinition) {
                 ((TCapabilityDefinition) def).setCapabilityType(typeQName);
-                ((TCapabilityDefinition) def).setValidSourceTypes(postData.validSourceTypes);
+                if (postData.validSourceTypes != null) {
+                    if (!postData.validSourceTypes.isEmpty()) {
+                        ((TCapabilityDefinition) def).setValidSourceTypes(postData.validSourceTypes);
+                    }
+                }
             } else {
                 ((TRequirementDefinition) def).setRequirementType(typeQName);
             }

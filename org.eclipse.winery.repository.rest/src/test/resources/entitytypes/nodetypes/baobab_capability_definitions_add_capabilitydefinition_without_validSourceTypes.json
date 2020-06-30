@@ -1,0 +1,7 @@
+{
+    "name": "ImportConstraintsSaturating",
+    "type": "{http://winery.opentosca.org/test/capabilitytypes/fruits}Saturating",
+    "lowerBound": 1,
+    "upperBound": "1",
+    "validSourceTypes":[]
+}
