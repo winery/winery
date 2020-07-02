@@ -25,12 +25,16 @@ export class TypeConformanceValidator implements Validator {
     private readonly laxParsing: boolean;
     private readonly enforcedType: TDataType | YamlWellKnown;
 
-    constructor(private dataTypes: TDataType[], private typeId: YamlWellKnown | string) {
+    constructor(private dataTypes: TDataType[], private propDef: YamlPropertyDefinition) {
+        const typeId = propDef.type;
         if (isWellKnown(typeId)) {
             this.enforcedType = typeId;
         } else {
             // typeId can be a QName or just the name of a type without namespacing
             this.enforcedType = dataTypes.find(t => t.qName === typeId || t.name === typeId);
+        }
+        if (this.enforcedType === undefined) {
+            console.warn('Could not determine enforceable type for definition ' + JSON.stringify(propDef));
         }
         this.laxParsing =  this.determineParsingStandard(this.enforcedType);
     }
@@ -46,11 +50,14 @@ export class TypeConformanceValidator implements Validator {
 
     validate(control: AbstractControl): ValidationErrors | null {
         const structuredValue = this.parseValue(control.value);
-        if (structuredValue === undefined) {
+        if (structuredValue === undefined && (this.propDef.required || control.value !== '')) {
             // this only happens if parsing is not lax OR the value could not be parsed as string after enquoting it
             return { 'typeConformance':  [ 'Could not parse entered value as JSON' ]};
         }
         const results = this.fulfilsTypeDefinition(this.enforcedType, '',  structuredValue);
+        for (const error of this.fulfilsConstraints(this.propDef.constraints, structuredValue, '')) {
+            results.push(error);
+        }
         return results.length === 0 ? null : { 'typeConformance': results };
     }
 
@@ -117,15 +124,13 @@ export class TypeConformanceValidator implements Validator {
     }
 
     private fulfilsConstraints(constraints: Constraint[], structuredValue: any, valuePath: string) {
-        let valid = true;
         const errors: string[] = [];
         for (const constraint of constraints) {
             if (!ConstraintChecking.isValid({ operator: constraint.key, value: constraint.list || constraint.value }, structuredValue)) {
                 errors.push(`Value ${valuePath.substr(1)} does not conform to constraint "${constraint.key} - ${constraint.list || constraint.value}"`);
-                valid = false;
             }
         }
-        return valid ? [] : errors;
+        return errors;
     }
 
     private fulfilsPropertyRequirements(structuredValue: any, hierarchy: TDataType[], valuePath: string): string[] {
@@ -138,7 +143,6 @@ export class TypeConformanceValidator implements Validator {
             }
         }
 
-        let valid = true;
         const errors: string[] = [];
         if (structuredValue === undefined || structuredValue === null) {
             // handling of "required" status is not on this level.
@@ -154,28 +158,24 @@ export class TypeConformanceValidator implements Validator {
             const correspondingProperty = properties.find(prop => prop.name === member);
             if (correspondingProperty === undefined) {
                 errors.push(`${valuePath.substr(1)} includes the member ${member} that is not defined on the type`);
-                valid = false;
                 continue;
             }
             const memberType = this.resolveType(correspondingProperty.type);
             for (const error of this.fulfilsTypeDefinition(memberType, valuePath + '.' + member, structuredValue[member])) {
                 errors.push(error);
-                valid = false;
             }
             // propertiesDefinitions can include constraints. They are validated here
             const violations = this.fulfilsConstraints(correspondingProperty.constraints, structuredValue[member], valuePath + '.' + member);
             for (const error of violations) {
                 errors.push(error);
-                valid = false;
             }
         }
         for (const requiredProperty of properties.filter(prop => prop.required)) {
             if (structuredValue[requiredProperty.name] === undefined) {
                 errors.push(`${valuePath.substr(1)} does not include the required member ${requiredProperty.name}`);
-                valid = false;
             }
         }
-        return valid ? [] :  errors;
+        return errors;
     }
 
     private parseValue(value: string): any {

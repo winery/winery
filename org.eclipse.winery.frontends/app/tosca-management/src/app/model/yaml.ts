@@ -19,7 +19,7 @@ import { SchemaDefinition } from '../../../../topologymodeler/src/app/models/tto
 export class YamlPropertyDefinition {
     constructor(
         public name: string = '',
-        public type: QName | YamlWellKnown = 'string',
+        public type: QName | YamlWellKnown | string = 'string',
         public description: string = '',
         public required: boolean = false,
         public defaultValue: any = '',

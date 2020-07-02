@@ -24,7 +24,7 @@
         <td class="">{{definition.name}}</td>
         <td class="">
             <winery-properties-input
-                [type]="definition.type"
+                [definition]="definition"
                 [(ngModel)]="propertyValues[definition.name]"
                 (ngModelChange)="propertyChangeRequest($event, definition)"
                 [disabled]="readonly"

@@ -21,6 +21,7 @@ import { BackendService } from '../../services/backend.service';
 import { TypeConformanceValidator } from './type-conformance-validator';
 import { QName } from '../../../../../shared/src/app/model/qName';
 import { YamlWellKnown } from '../../../../../tosca-management/src/app/model/constraint';
+import { YamlPropertyDefinition } from '../../../../../tosca-management/src/app/model/yaml';
 
 /**
  * This is an input component that is aware of the DataType that the value it receives must conform to.
@@ -48,7 +49,7 @@ import { YamlWellKnown } from '../../../../../tosca-management/src/app/model/con
 export class TypeawareInputComponent implements ControlValueAccessor, OnInit, OnChanges, Validator {
 
     @Input()
-    type: QName | YamlWellKnown;
+    definition: YamlPropertyDefinition;
 
     // values used to render the view
     isDisabled: boolean;
@@ -81,10 +82,10 @@ export class TypeawareInputComponent implements ControlValueAccessor, OnInit, On
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes.type) {
+        if (changes.definition) {
             // compute the complete type definition including all required properties for this value
-            this.type = changes.type.currentValue;
-            this.desugaredValidator = new TypeConformanceValidator(this.availableDataTypes, this.type);
+            this.definition = changes.definition.currentValue;
+            this.desugaredValidator = new TypeConformanceValidator(this.availableDataTypes, this.definition);
         }
     }
 
