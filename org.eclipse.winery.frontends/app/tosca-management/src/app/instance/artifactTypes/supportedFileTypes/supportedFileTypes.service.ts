@@ -16,7 +16,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { InstanceService } from '../../instance.service';
 import { concat, Observable } from 'rxjs';
-import { backendBaseURL } from '../../../configuration';
 import { last } from 'rxjs/operators';
 
 @Injectable()
@@ -29,19 +28,19 @@ export class SupportedFileTypesService {
     }
 
     public getMimeType(): Observable<string> {
-        return this.http.get(backendBaseURL + this.path + '/mimetype', { responseType: 'text' });
+        return this.http.get(this.path + '/mimetype', { responseType: 'text' });
     }
 
     public setMimeType(mimeType: string): Observable<any> {
-        return this.http.put<any>(backendBaseURL + this.path + '/mimetype', mimeType);
+        return this.http.put<any>(this.path + '/mimetype', mimeType);
     }
 
     public getFileExtensions(): Observable<string[]> {
-        return this.http.get<string[]>(backendBaseURL + this.path + '/fileextensions');
+        return this.http.get<string[]>(this.path + '/fileextensions');
     }
 
     public setFileExtensions(fileExtensions: string[]): Observable<any> {
-        return this.http.put<any>(backendBaseURL + this.path + '/fileextensions', fileExtensions);
+        return this.http.put<any>(this.path + '/fileextensions', fileExtensions);
     }
 
     public set(mimeType: string, fileExtensions: string[]): Observable<any> {
