@@ -245,6 +245,7 @@ public class MainResource {
         // @formatter:on
 
         CsarImporter importer;
+        // FIXME the importer selection must not rely on the Provider, but on the type of CSAR uploaded!
         if (Environments.getInstance().getUiConfig().getFeatures().get(RepositoryConfigurationObject.RepositoryProvider.YAML.toString())) {
             // cast should be safe
             importer = new YamlCsarImporter((YamlRepository)RepositoryFactory.getRepository());

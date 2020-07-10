@@ -96,11 +96,13 @@ export class TypeConformanceValidator implements Validator {
             case 'version':
                 return typeof structuredValue === 'string' && structuredValue.match(/\d+\.\d+(\.\d+(\..+?(-\d+)?)?)?/) !== undefined;
             case 'range':
+                // FIXME check whether the borders used are in fact scalar values or UNBOUNDED
                 return structuredValue.isArray && structuredValue.length === 2;
             case 'list':
                 return structuredValue.isArray;
             case 'map':
                 return structuredValue.isObject;
+            case 'scalar-unit':
             case 'scalar-unit.size':
             case 'scalar-unit.time':
             case 'scalar-unit.frequency':
