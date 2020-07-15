@@ -710,7 +710,8 @@ public class YamlRepository extends AbstractFileBasedRepository {
                     } else {
                         serviceTemplate = createNewCacheNodeTypeWithArtifact(ref, artifactTemplate, artifact, imports);
                     }
-                } else if (ref.getParent() instanceof PolicyTypeId) {
+                } else if (ref.getParent() instanceof PolicyTypeId
+                    || ref.getParent() instanceof CapabilityTypeId) {
                     // we simply take the new definition as is
                     serviceTemplate = converter.convert(definitions);
                 } else {
