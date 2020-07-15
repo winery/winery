@@ -2441,7 +2441,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         this.revalidateContainer();
     }
 
-    // YAML Policy methids
+    // YAML Policy methods
     addNewYamlPolicy(policyName: string) {
         if (policyName && this.selectedNewPolicyType && policyName.length > 0 && this.selectedNewPolicyType.length > 0) {
             if (this.entityTypes.yamlPolicies.some(policy => policy.name === policyName)) {
@@ -2485,14 +2485,12 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             const keyOfChangedTextArea = txtArea.nativeElement.parentElement.innerText.replace(/\s/g, '');
             this.selectedYamlPolicy.properties.kvproperties[keyOfChangedTextArea] = txtArea.nativeElement.value;
         });
-
     }
 
     showPropertiesOfSelectedYamlPolicy(): boolean {
         if (this.selectedYamlPolicy && this.selectedYamlPolicy.properties && this.selectedYamlPolicy.properties.kvproperties) {
             return Object.keys(this.selectedYamlPolicy.properties.kvproperties).length > 0;
         }
-
         return false;
     }
 

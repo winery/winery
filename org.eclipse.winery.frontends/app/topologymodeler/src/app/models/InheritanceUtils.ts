@@ -151,10 +151,8 @@ export class InheritanceUtils {
     }
 
     static getEffectiveKVPropertiesOfTemplateElement(templateElementProperties: any, typeQName: string, entityTypes: EntityType[]): any {
-        const typeName = new QName(typeQName).localName;
-        const defaultTypeProperties = this.getDefaultPropertiesFromEntityTypes(typeName, entityTypes);
+        const defaultTypeProperties = this.getDefaultPropertiesFromEntityTypes(typeQName, entityTypes);
         const result = {};
-
         if (defaultTypeProperties && defaultTypeProperties.kvproperties) {
             Object.keys(defaultTypeProperties.kvproperties).forEach(currentPropKey => {
 
@@ -166,7 +164,6 @@ export class InheritanceUtils {
                 }
             });
         }
-
         return { kvproperties: result };
     }
 
