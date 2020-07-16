@@ -27,6 +27,7 @@ import { PropertiesDefinitionComponent } from '../../instance/sharedComponents/p
 
 const toscaType = ToscaTypes.DataType;
 
+// FIXME deal with documentation, notably also the description. Check other EntityType implementation related components for ideas
 const dataTypeRoutes: Routes = [
     { path: toscaType, component: SectionComponent, resolve: { resolveData: SectionResolver } },
     { path: toscaType + '/:namespace', component: SectionComponent, resolve: { resolveData: SectionResolver } },
