@@ -40,7 +40,6 @@ import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
 import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
 import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
 import org.eclipse.winery.model.tosca.TDefinitions;
-import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.filebased.AbstractFileBasedRepository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;

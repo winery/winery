@@ -14,7 +14,6 @@
 
 package org.eclipse.winery.model.tosca.xml.visitor;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 

@@ -132,7 +132,6 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
 
     public abstract void accept(Visitor visitor);
 
-    
     @JsonTypeInfo(defaultImpl = XmlProperties.class
         , include = JsonTypeInfo.As.EXTERNAL_PROPERTY
         , property = "propertyType"
@@ -170,7 +169,6 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         }
     }
 
-
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
         "KVProperties"
@@ -188,7 +186,6 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
             this.KVProperties = KVProperties;
         }
     }
-
 
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {

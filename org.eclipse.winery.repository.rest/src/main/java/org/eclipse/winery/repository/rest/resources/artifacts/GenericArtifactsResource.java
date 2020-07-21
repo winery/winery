@@ -56,7 +56,6 @@ import org.eclipse.winery.generators.ia.Generator;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
-import org.eclipse.winery.model.tosca.TEntityTemplate.Properties;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeType;

@@ -67,7 +67,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
     @XmlAttribute(name = "maxInstances")
     protected String maxInstances;
     // this element is added to support YAML mode
-    @XmlElement(name ="Artifacts", required = false)
+    @XmlElement(name = "Artifacts", required = false)
     protected TArtifacts artifacts;
 
     public TNodeTemplate() {

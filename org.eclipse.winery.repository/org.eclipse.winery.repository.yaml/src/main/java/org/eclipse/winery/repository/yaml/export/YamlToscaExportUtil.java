@@ -290,7 +290,7 @@ public class YamlToscaExportUtil extends ToscaExportUtil {
         }
     }
 
-    private void updatePathsInTopologyTemplateArtifacts(TDefinitions entryDefinitions, TNodeTemplate nodeTemplate, TArtifact artifact, String pathInsideRepo){
+    private void updatePathsInTopologyTemplateArtifacts(TDefinitions entryDefinitions, TNodeTemplate nodeTemplate, TArtifact artifact, String pathInsideRepo) {
         entryDefinitions.getServiceTemplates()
             .stream().filter(Objects::nonNull)
             .findFirst()

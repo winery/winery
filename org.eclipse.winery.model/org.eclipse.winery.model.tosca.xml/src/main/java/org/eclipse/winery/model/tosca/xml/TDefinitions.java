@@ -41,7 +41,6 @@ import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementMod
 import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
 import org.eclipse.winery.model.tosca.extensions.OTTestRefinementModel;
 
-
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;

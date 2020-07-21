@@ -60,7 +60,6 @@ import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.NamespaceManager;
-import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 
 import org.apache.commons.configuration2.Configuration;

@@ -27,7 +27,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
 
-import javax.jws.WebParam;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.version.VersionSupport;
