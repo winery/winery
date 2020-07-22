@@ -30,6 +30,28 @@ import { SchemaDefinition, TDataType } from '../../../../../../topologymodeler/s
 import { DataTypesService } from '../../dataTypes/dataTypes.service';
 import { YamlPropertyDefinition } from '../../../model/yaml';
 
+const valid_constraint_keys = ['equal', 'greater_than', 'greater_or_equal', 'less_than', 'less_or_equal', 'in_range',
+    'valid_values', 'length', 'min_length', 'max_length', 'pattern', 'schema'];
+const list_constraint_keys = ['valid_values', 'in_range'];
+const range_constraint_keys = ['in_range'];
+
+const winery_properties_columns: Array<WineryTableColumn> = [
+    { title: 'Name', name: 'key', sort: true },
+    { title: 'Type', name: 'type', sort: true },
+    { title: 'Required', name: 'required' },
+    { title: 'Default Value', name: 'defaultValue' },
+    { title: 'Description', name: 'description' },
+    { title: 'Constraints', name: 'constraints', display: joinList},
+];
+const yaml_columns: Array<WineryTableColumn> = [
+    { title: 'Name', name: 'name', sort: true },
+    { title: 'Type', name: 'type', sort: true },
+    { title: 'Required', name: 'required' },
+    { title: 'Default Value', name: 'defaultValue' },
+    { title: 'Description', name: 'description' },
+    { title: 'Constraints', name: 'constraints', display: joinList },
+];
+
 @Component({
     templateUrl: 'propertiesDefinition.component.html',
     styleUrls: [
@@ -545,23 +567,6 @@ export class PropertiesDefinitionComponent implements OnInit {
     // endregion
 }
 
-const winery_properties_columns: Array<WineryTableColumn> = [
-    { title: 'Name', name: 'key', sort: true },
-    { title: 'Type', name: 'type', sort: true },
-    { title: 'Required', name: 'required' },
-    { title: 'Default Value', name: 'defaultValue' },
-    { title: 'Description', name: 'description' },
-    { title: 'Constraints', name: 'constraints', display: joinList},
-];
-const yaml_columns: Array<WineryTableColumn> = [
-    { title: 'Name', name: 'name', sort: true },
-    { title: 'Type', name: 'type', sort: true },
-    { title: 'Required', name: 'required' },
-    { title: 'Default Value', name: 'defaultValue' },
-    { title: 'Description', name: 'description' },
-    { title: 'Constraints', name: 'constraints', display: joinList },
-];
-
 function joinList(list: any[]): string {
     let constraintsString = '';
     for (const value of list) {
@@ -587,8 +592,3 @@ function fillDefaults(propDef: YamlPropertyDefinition | PropertiesDefinitionKVEl
         propDef.description = '';
     }
 }
-
-const valid_constraint_keys = ['equal', 'greater_than', 'greater_or_equal', 'less_than', 'less_or_equal', 'in_range',
-    'valid_values', 'length', 'min_length', 'max_length', 'pattern', 'schema'];
-const list_constraint_keys = ['valid_values', 'in_range'];
-const range_constraint_keys = ['in_range'];
