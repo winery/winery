@@ -30,87 +30,17 @@ import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "otPatternRefinementModel")
-public class OTPatternRefinementModel extends OTRefinementModel {
-
-    @XmlElement(name = "RefinementStructure")
-    private TTopologyTemplate refinementStructure;
-
-    @XmlElementWrapper(name = "AttributeMappings")
-    @XmlElement(name = "AttributeMapping")
-    private List<OTAttributeMapping> attributeMappings;
-
-    @XmlElementWrapper(name = "StayMappings")
-    @XmlElement(name = "StayMapping")
-    private List<OTStayMapping> stayMappings;
+public class OTPatternRefinementModel extends OTTopologyFragmentRefinementModel {
 
     @Deprecated
     public OTPatternRefinementModel() { }
 
     public OTPatternRefinementModel(Builder builder) {
         super(builder);
-        this.refinementStructure = builder.refinementStructure;
-        this.attributeMappings = builder.attributeMappings;
-        this.stayMappings = builder.stayMappings;
     }
 
-    @NonNull
-    @JsonIgnore
-    @XmlTransient
-    public TTopologyTemplate getRefinementTopology() {
-        if (refinementStructure == null) {
-            refinementStructure = new TTopologyTemplate();
-        }
-        return refinementStructure;
-    }
-
-    public TTopologyTemplate getRefinementStructure() {
-        return getRefinementTopology();
-    }
-
-    public void setRefinementTopology(TTopologyTemplate refinementStructure) {
-        this.refinementStructure = refinementStructure;
-    }
-
-    @Nullable
-    public List<OTAttributeMapping> getAttributeMappings() {
-        return attributeMappings;
-    }
-
-    public void setAttributeMappings(List<OTAttributeMapping> attributeMappings) {
-        this.attributeMappings = attributeMappings;
-    }
-
-    @Nullable
-    public List<OTStayMapping> getStayMappings() {
-        return stayMappings;
-    }
-
-    public void setStayMappings(List<OTStayMapping> stayMappings) {
-        this.stayMappings = stayMappings;
-    }
-
-    public static class Builder extends OTRefinementModel.Builder<Builder> {
-
-        private TTopologyTemplate refinementStructure;
-        private List<OTAttributeMapping> attributeMappings;
-        private List<OTStayMapping> stayMappings;
-
+    public static class Builder extends OTTopologyFragmentRefinementModel.Builder {
         public Builder() { }
-
-        public Builder setRefinementStructure(TTopologyTemplate refinementStructure) {
-            this.refinementStructure = refinementStructure;
-            return self();
-        }
-
-        public Builder setAttributeMappings(List<OTAttributeMapping> attributeMappings) {
-            this.attributeMappings = attributeMappings;
-            return self();
-        }
-
-        public Builder setStayMappings(List<OTStayMapping> stayMappings) {
-            this.stayMappings = stayMappings;
-            return self();
-        }
 
         public OTPatternRefinementModel build() {
             return new OTPatternRefinementModel(this);
@@ -118,7 +48,7 @@ public class OTPatternRefinementModel extends OTRefinementModel {
 
         @Override
         public Builder self() {
-            return null;
+            return this;
         }
     }
 }

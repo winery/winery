@@ -16,6 +16,7 @@ package org.eclipse.winery.model.adaptation.substitution.refinement.topologyrefi
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -25,20 +26,20 @@ import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
-import org.eclipse.winery.common.ids.definitions.RefinementId;
-import org.eclipse.winery.model.ids.definitions.TopologyFragmentRefinementModelId;
 import org.eclipse.winery.model.adaptation.substitution.refinement.AbstractRefinement;
 import org.eclipse.winery.model.adaptation.substitution.refinement.DefaultRefinementChooser;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementChooser;
+import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.model.ids.extensions.RefinementId;
+import org.eclipse.winery.model.ids.extensions.TopologyFragmentRefinementModelId;
 import org.eclipse.winery.model.tosca.extensions.OTAttributeMapping;
 import org.eclipse.winery.model.tosca.extensions.OTAttributeMappingType;
 import org.eclipse.winery.model.tosca.extensions.OTDeploymentArtifactMapping;
 import org.eclipse.winery.model.tosca.extensions.OTPrmMapping;
 import org.eclipse.winery.model.tosca.extensions.OTRefinementModel;
 import org.eclipse.winery.model.tosca.extensions.OTRelationDirection;
-import org.eclipse.winery.model.tosca.OTStayMapping;
+import org.eclipse.winery.model.tosca.extensions.OTStayMapping;
 import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
@@ -215,14 +216,14 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                 .filter(mapping -> mapping.getDetectorNode().getId().equals(detectorNodeId))
                 .forEach(mapping -> {
                     if (Objects.nonNull(matchingEntity.getProperties())) {
-                        Map<String, String> sourceProperties = matchingEntity.getProperties().getKVProperties();
+                        Map<String, String> sourceProperties = ModelUtilities.getPropertiesKV(matchingEntity);
                         topology.getNodeTemplateOrRelationshipTemplate()
                             .stream()
                             .filter(element -> element.getId().equals(idMapping.get(mapping.getRefinementNode().getId())))
                             .findFirst()
                             .ifPresent(addedElement -> {
                                 if (addedElement.getProperties() != null) {
-                                    Map<String, String> targetProperties = addedElement.getProperties().getKVProperties();
+                                    LinkedHashMap<String, String> targetProperties = ModelUtilities.getPropertiesKV(addedElement);
 
                                     if (Objects.nonNull(sourceProperties) && !sourceProperties.isEmpty()
                                         && Objects.nonNull(targetProperties)) {
@@ -234,7 +235,7 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                                             targetProperties.put(mapping.getRefinementProperty(), sourceValue);
                                         }
                                         // because of the dynamical generation of the KV properties, we must set them again to persist them...
-                                        addedElement.getProperties().setKVProperties(targetProperties);
+                                        ModelUtilities.setPropertiesKV(addedElement, targetProperties);
                                     }
                                 }
                             });

@@ -156,6 +156,14 @@ public abstract class TExtensibleElements implements Serializable {
             return self();
         }
 
+        public T addToAny(Object any) {
+            if (this.any == null) {
+                this.any = new ArrayList<>();
+            }
+            this.any.add(any);
+            return self();
+        }
+
         public T setOtherAttributes(Map<QName, String> otherAttributes) {
             this.otherAttributes = otherAttributes;
             return self();

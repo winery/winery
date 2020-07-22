@@ -213,7 +213,6 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
 
     @NonNull
     public List<TExtensibleElements> getExtensionDefinitionsChildren() {
-        // Should currently be ComplianceRules, PatternRefinementModels and TestRefinementModels
         return getServiceTemplateOrNodeTypeOrNodeTypeImplementation().stream()
             .filter(x -> Arrays.stream(TOSCA_xml_1_0.DEFINITIONS_ELEMENT_CLASSES)
                 .noneMatch(standardType -> standardType.isInstance(x)))
