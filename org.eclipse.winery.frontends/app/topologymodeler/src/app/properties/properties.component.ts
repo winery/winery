@@ -35,9 +35,9 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
     @Input() templateId: string;
     @Input() isNode: boolean;
 
-    private propertyDefinitionType: PropertyDefinitionType;
-    private templateProperties: any = {};
-    private templateType: string;
+    propertyDefinitionType: PropertyDefinitionType;
+    templateProperties: any = {};
+    templateType: string;
 
     private subscriptions: Array<Subscription> = [];
     // flag to allow skipping an update when this instance is the instigator of said update

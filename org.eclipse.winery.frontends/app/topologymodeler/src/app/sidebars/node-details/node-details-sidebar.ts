@@ -19,7 +19,6 @@ export class DetailsSidebarState {
     minInstances: number;
     // this shoehorns the possibility of unicode infinity into the type
     maxInstances: number | '\u221E';
-    properties: any;
     // relationship editing information
     relationshipTemplate: any;
     source: any;

@@ -187,15 +187,15 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                 if (nodeTypeVar.id === type) {
                     const node = nodeTypeVar.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0];
                     // if PropertiesDefinition doesn't exist then it must be of type NONE
-                    if (!node.properties && node.derivedFrom) {
+                    if (!node.propertiesDefinition && node.derivedFrom) {
                         // check all parents; property definition types
                         propertyDefinitionTypeAssigned = this.checkParentPropertyDefinitions(node.derivedFrom.typeRef);
-                    } else if (!node.properties) {
+                    } else if (!node.propertiesDefinition) {
                         this.propertyDefinitionType = PropertyDefinitionType.NONE;
                         propertyDefinitionTypeAssigned = true;
                     } else {
                         // if no XML element inside PropertiesDefinition then it must be of type Key Value
-                        if (!node.properties.element) {
+                        if (!node.propertiesDefinition.element) {
                             this.propertyDefinitionType = this.configurationService.isYaml() ?
                                 PropertyDefinitionType.YAML : PropertyDefinitionType.KV;
                             propertyDefinitionTypeAssigned = true;
