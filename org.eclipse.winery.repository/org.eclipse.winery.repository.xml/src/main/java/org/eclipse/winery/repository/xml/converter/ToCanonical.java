@@ -28,7 +28,6 @@ import org.eclipse.winery.model.tosca.TArtifact;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
-import org.eclipse.winery.model.tosca.TArtifacts;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
@@ -80,10 +79,6 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.model.tosca.extensions.OTTestRefinementModel;
-import org.eclipse.winery.model.tosca.extensions.TAttributeMappingType;
-import org.eclipse.winery.model.tosca.extensions.TPrmMapping;
-import org.eclipse.winery.model.tosca.extensions.TPrmModelElementType;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.xml.TBoolean;
 import org.eclipse.winery.repository.xml.XmlRepository;
@@ -441,24 +436,6 @@ public class ToCanonical {
         return builder.build();
     }
 
-    private TInterfaceDefinition convert(org.eclipse.winery.model.tosca.xml.TInterfaceDefinition xml) {
-        TInterfaceDefinition definition = new TInterfaceDefinition();
-        definition.setName(xml.getName());
-        definition.setType(xml.getType());
-        definition.setInputs(xml.getInputs());
-        definition.setOperations(xml.getOperations().stream().map(this::convert).collect(Collectors.toList()));
-        return definition;
-    }
-
-    private TOperationDefinition convert(org.eclipse.winery.model.tosca.xml.TOperationDefinition xml) {
-        TOperationDefinition definition = new TOperationDefinition();
-        definition.setName(xml.getName());
-        definition.setDescription(xml.getDescription());
-        definition.setInputs(xml.getInputs());
-        definition.setOutputs(xml.getOutputs());
-        definition.setImplementation(convert(xml.getImplementation()));
-        return definition;
-    }
 
     private TImplementation convert(org.eclipse.winery.model.tosca.xml.TImplementation xml) {
         TImplementation definition = new TImplementation();
@@ -566,15 +543,6 @@ public class ToCanonical {
         return constraint;
     }
 
-    private TInterfaceType convert(org.eclipse.winery.model.tosca.xml.TInterfaceType xml) {
-        // FIXME the interface type is a YAML-model thing. It shouldn't be converted to XML like this!
-        TInterfaceType.Builder builder = new TInterfaceType.Builder(xml.getName());
-        builder.setDescription(xml.getDescription());
-        builder.setOperations(xml.getOperations().entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, e -> convert(e.getValue()))));
-        fillEntityTypeProperties(builder, xml);
-        return builder.build();
-    }
 
     private TExtension convert(org.eclipse.winery.model.tosca.xml.TExtension xml) {
         TExtension.Builder builder = new TExtension.Builder(xml.getNamespace());

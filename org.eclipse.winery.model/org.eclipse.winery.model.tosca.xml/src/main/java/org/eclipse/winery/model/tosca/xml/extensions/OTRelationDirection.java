@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
+/********************************************************************************
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.model.tosca.extensions;
+package org.eclipse.winery.model.tosca.xml.extensions;
 
 import java.io.Serializable;
 
@@ -21,23 +21,22 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-public enum TAttributeMappingType implements Serializable {
+public enum OTRelationDirection implements Serializable {
 
-    @XmlEnumValue("all")
-    ALL("all"),
-    @XmlEnumValue("selective")
-    SELECTIVE("selective");
-
+    @XmlEnumValue("ingoing")
+    INGOING("ingoing"),
+    @XmlEnumValue("outgoing")
+    OUTGOING("outgoing");
     private final String value;
 
-    TAttributeMappingType(String value) {
-        this.value = value;
+    OTRelationDirection(String v) {
+        value = v;
     }
 
     @NonNull
-    public static TAttributeMappingType fromValue(String v) {
-        for (TAttributeMappingType c : TAttributeMappingType.values()) {
-            if (c.value.equalsIgnoreCase(v)) {
+    public static OTRelationDirection fromValue(String v) {
+        for (OTRelationDirection c : OTRelationDirection.values()) {
+            if (c.value.equals(v)) {
                 return c;
             }
         }
@@ -46,6 +45,7 @@ public enum TAttributeMappingType implements Serializable {
 
     @Nullable
     public String value() {
-        return this.value;
+        return value;
     }
 }
+

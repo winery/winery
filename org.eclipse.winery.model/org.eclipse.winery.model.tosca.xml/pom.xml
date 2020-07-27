@@ -27,11 +27,6 @@
     </properties>
     
     <dependencies>
-        <dependency>
-            <groupId>org.eclipse.winery</groupId>
-            <artifactId>org.eclipse.winery.model.tosca.canonical</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.eclipse.jdt/org.eclipse.jdt.annotation -->
         <dependency>

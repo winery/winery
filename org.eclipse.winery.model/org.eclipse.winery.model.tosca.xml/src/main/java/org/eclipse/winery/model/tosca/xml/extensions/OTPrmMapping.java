@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.model.tosca.extensions;
+package org.eclipse.winery.model.tosca.xml.extensions;
 
 import java.io.Serializable;
 
@@ -20,23 +20,20 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 
-import org.eclipse.winery.model.tosca.HasId;
-import org.eclipse.winery.model.tosca.TEntityTemplate;
-import org.eclipse.winery.model.tosca.visitor.Visitor;
+import org.eclipse.winery.model.tosca.xml.HasId;
+import org.eclipse.winery.model.tosca.xml.TEntityTemplate;
+import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import org.eclipse.jdt.annotation.NonNull;
 
-public abstract class TPrmMapping extends HasId implements Serializable {
+public abstract class OTPrmMapping extends HasId implements Serializable {
 
-    @JsonIdentityReference(alwaysAsId = true)
     @XmlAttribute(name = "detectorNode", required = true)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @NonNull
     private TEntityTemplate detectorNode;
 
-    @JsonIdentityReference(alwaysAsId = true)
     @XmlAttribute(name = "refinementNode", required = true)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -44,9 +41,9 @@ public abstract class TPrmMapping extends HasId implements Serializable {
     private TEntityTemplate refinementNode;
 
     @Deprecated
-    public TPrmMapping() { }
+    public OTPrmMapping() { }
 
-    public TPrmMapping(Builder builder) {
+    public OTPrmMapping(Builder builder) {
         super(builder);
         this.detectorNode = builder.detectorNode;
         this.refinementNode = builder.refinementNode;
@@ -74,7 +71,6 @@ public abstract class TPrmMapping extends HasId implements Serializable {
     }
 
     public static abstract class Builder<T extends Builder<T>> extends HasId.Builder<T> {
-
         private TEntityTemplate detectorNode;
         private TEntityTemplate refinementNode;
 
@@ -82,12 +78,12 @@ public abstract class TPrmMapping extends HasId implements Serializable {
             super(id);
         }
 
-        public T setDetectorNode(TEntityTemplate detectorNode) {
+        public Builder<T> setDetectorNode(TEntityTemplate detectorNode) {
             this.detectorNode = detectorNode;
             return self();
         }
 
-        public T setRefinementNode(TEntityTemplate refinementNode) {
+        public Builder<T> setRefinementNode(TEntityTemplate refinementNode) {
             this.refinementNode = refinementNode;
             return self();
         }

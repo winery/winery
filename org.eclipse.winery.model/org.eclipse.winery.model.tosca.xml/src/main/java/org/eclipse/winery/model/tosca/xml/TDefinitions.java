@@ -36,10 +36,10 @@ import javax.xml.bind.annotation.XmlType;
 import org.eclipse.winery.model.tosca.xml.constants.TOSCA_xml_1_0;
 import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
 
-import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
-import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
-import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
-import org.eclipse.winery.model.tosca.extensions.OTTestRefinementModel;
+import org.eclipse.winery.model.tosca.xml.extensions.OTComplianceRule;
+import org.eclipse.winery.model.tosca.xml.extensions.OTTopologyFragmentRefinementModel;
+import org.eclipse.winery.model.tosca.xml.extensions.OTPatternRefinementModel;
+import org.eclipse.winery.model.tosca.xml.extensions.OTTestRefinementModel;
 
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
