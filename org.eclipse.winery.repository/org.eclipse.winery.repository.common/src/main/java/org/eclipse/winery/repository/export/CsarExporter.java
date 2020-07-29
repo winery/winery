@@ -68,6 +68,7 @@ import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataI
 import org.eclipse.winery.repository.datatypes.ids.elements.ServiceTemplateSelfServiceFilesDirectoryId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.export.entries.CsarEntry;
+import org.eclipse.winery.repository.export.entries.DefinitionsBasedCsarEntry;
 import org.eclipse.winery.repository.export.entries.DocumentBasedCsarEntry;
 import org.eclipse.winery.repository.export.entries.RepositoryRefBasedCsarEntry;
 import org.eclipse.winery.repository.export.entries.XMLDefinitionsBasedCsarEntry;
@@ -590,7 +591,8 @@ public class CsarExporter {
 
             if (csarEntry instanceof DocumentBasedCsarEntry) {
                 mimeType = MimeTypes.MIMETYPE_XSD;
-            } else if (csarEntry instanceof XMLDefinitionsBasedCsarEntry) {
+            } else if (csarEntry instanceof XMLDefinitionsBasedCsarEntry
+                || csarEntry instanceof DefinitionsBasedCsarEntry) {
                 mimeType = MimeTypes.MIMETYPE_TOSCA_DEFINITIONS;
             } else {
                 mimeType = repository.getMimeType(((RepositoryRefBasedCsarEntry) csarEntry).getReference());

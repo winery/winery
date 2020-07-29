@@ -1444,7 +1444,7 @@ public class BackendUtils {
      */
     public static TDefinitions getDefinitionsHavingCorrectImports(IRepository repository, DefinitionsChildId id) throws IOException, RepositoryCorruptException {
         ToscaExportUtil exporter = new ToscaExportUtil();
-        return exporter.getExportableDefinitions(repository, id, new HashMap<String, Object>());
+        return exporter.getExportableDefinitions(repository, id);
     }
 
     public static void mergeTopologyTemplateAinTopologyTemplateB(ServiceTemplateId serviceTemplateIdA, ServiceTemplateId serviceTemplateIdB, IRepository repository) throws IOException {

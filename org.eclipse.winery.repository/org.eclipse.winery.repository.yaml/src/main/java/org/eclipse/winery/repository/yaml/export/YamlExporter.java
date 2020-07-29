@@ -32,6 +32,7 @@ import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.repository.export.CsarContentProperties;
 import org.eclipse.winery.repository.export.CsarExporter;
 import org.eclipse.winery.repository.export.ExportedState;
+import org.eclipse.winery.repository.export.entries.DefinitionsBasedCsarEntry;
 import org.eclipse.winery.repository.yaml.YamlRepository;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
@@ -190,7 +191,8 @@ public class YamlExporter extends CsarExporter {
             if (csarEntry instanceof DocumentBasedCsarEntry) {
                 mimeType = MimeTypes.MIMETYPE_XSD;
             } else if (csarEntry instanceof XMLDefinitionsBasedCsarEntry ||
-                csarEntry instanceof YAMLDefinitionsBasedCsarEntry) {
+                csarEntry instanceof YAMLDefinitionsBasedCsarEntry ||
+                csarEntry instanceof DefinitionsBasedCsarEntry) {
                 mimeType = MimeTypes.MIMETYPE_TOSCA_DEFINITIONS;
             } else if (csarEntry instanceof RemoteRefBasedCsarEntry) {
                 mimeType = repository.getMimeType((RemoteRefBasedCsarEntry) csarEntry);

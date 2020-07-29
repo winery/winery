@@ -838,4 +838,9 @@ public class GitBasedRepository extends AbstractFileBasedRepository {
     public AbstractFileBasedRepository getRepository() {
         return repository;
     }
+
+    @Override
+    public void serialize(TDefinitions definitions, OutputStream target) throws IOException {
+        repository.serialize(definitions, target);
+    }
 }

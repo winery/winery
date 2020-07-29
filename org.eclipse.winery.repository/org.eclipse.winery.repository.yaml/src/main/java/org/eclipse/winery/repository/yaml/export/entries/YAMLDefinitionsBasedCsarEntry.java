@@ -30,6 +30,11 @@ import org.eclipse.winery.repository.converter.writer.YamlWriter;
 import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 
 // FIXME a YAML CSAR entry does not need to conform to the canonical model!
+
+/**
+ * @deprecated to be replaced with {@link org.eclipse.winery.repository.export.entries.DefinitionsBasedCsarEntry} working over a YamlRepository
+ */
+@Deprecated
 public class YAMLDefinitionsBasedCsarEntry implements CsarEntry {
     private TServiceTemplate definitions;
 

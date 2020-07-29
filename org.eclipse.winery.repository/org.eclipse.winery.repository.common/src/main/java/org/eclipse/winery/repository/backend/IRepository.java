@@ -129,6 +129,17 @@ public interface IRepository extends IWineryRepositoryCommon {
     final Logger LOGGER = LoggerFactory.getLogger(IRepository.class);
 
     /**
+     * Serializes a given canonical Definitions Object to the targeted Output Stream according to the TOSCA-Standard
+     * of the underlying repository. Not all repository implementations must support this operation
+     * @param definitions A canonical TDefinitions object to be serialized for more or less permanent storage.
+     * @param target      An output stream that the serialized definition is written to.
+     * @throws IOException If writing to the given target fails.
+     * @deprecated FIXME Serialization according to a given standard should not be the repository's responsibility!
+     */
+    @Deprecated
+    void serialize(TDefinitions definitions, OutputStream target) throws IOException;
+
+    /**
      * Flags the given TOSCA element as existing. The respective resource itself creates appropriate data files.
      * <p>
      * Pre-Condition: !exists(id)<br/> Post-Condition: exists(id)

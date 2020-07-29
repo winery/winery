@@ -121,11 +121,7 @@ public class XmlRepository extends AbstractFileBasedRepository {
         Path serializationTarget = ref2AbsolutePath(ref);
         Files.createDirectories(serializationTarget.getParent());
         try (OutputStream out = Files.newOutputStream(serializationTarget, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE)) {
-            Marshaller m = XmlModelJAXBSupport.createMarshaller(true, this.getNamespaceManager().asPrefixMapper());
-            m.marshal(definitions, out);
-        } catch (JAXBException e) {
-            LOGGER.error("Could not put content to file", e);
-            throw new IllegalStateException(e);
+            serialize(definitions, out);
         }
     }
 
@@ -188,5 +184,21 @@ public class XmlRepository extends AbstractFileBasedRepository {
         }
 
         return res;
+    }
+
+    @Override
+    public void serialize(org.eclipse.winery.model.tosca.TDefinitions definitions, OutputStream target) throws IOException {
+        FromCanonical converter = new FromCanonical(this);
+        TDefinitions implementedStandard = converter.convert(definitions);
+        serialize(implementedStandard, target);
+    }
+
+    private void serialize(TDefinitions definitions, OutputStream target) throws IOException {
+        try {
+            Marshaller m = XmlModelJAXBSupport.createMarshaller(true, this.getNamespaceManager().asPrefixMapper());
+            m.marshal(definitions, target);
+        } catch (JAXBException e) {
+            throw new IOException(e);
+        }
     }
 }

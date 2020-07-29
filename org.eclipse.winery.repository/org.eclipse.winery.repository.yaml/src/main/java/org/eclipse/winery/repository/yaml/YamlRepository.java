@@ -15,6 +15,7 @@ package org.eclipse.winery.repository.yaml;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.DirectoryStream;
@@ -1024,5 +1025,17 @@ public class YamlRepository extends AbstractFileBasedRepository {
     @Override
     public void getReferencedRequirementTypeIds(Collection<DefinitionsChildId> ids, TNodeTemplate n) {
         // Do nothing. In Yaml mode, there are no requirement types!
+    }
+
+    @Override
+    public void serialize(TDefinitions definitions, OutputStream target) throws IOException {
+        FromCanonical converter = new FromCanonical(this);
+        TServiceTemplate implementedStandard = converter.convert(definitions);
+        serialize(implementedStandard, target);
+    }
+
+    private void serialize(TServiceTemplate definitions, OutputStream target) throws IOException {
+        YamlWriter writer = new YamlWriter();
+        target.write(writer.visit(definitions, new YamlWriter.Parameter(0)).toString().getBytes());
     }
 }

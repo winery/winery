@@ -55,6 +55,7 @@ import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.export.entries.CsarEntry;
+import org.eclipse.winery.repository.export.entries.DefinitionsBasedCsarEntry;
 import org.eclipse.winery.repository.export.entries.DocumentBasedCsarEntry;
 import org.eclipse.winery.repository.export.entries.RepositoryRefBasedCsarEntry;
 import org.eclipse.winery.repository.export.entries.XMLDefinitionsBasedCsarEntry;
@@ -75,7 +76,7 @@ public class ToscaExportUtil {
     // collects the references to be put in the CSAR and the assigned path in
     // the CSAR MANIFEST
     // this allows to use other paths in the CSAR than on the local storage
-    protected Map<CsarContentProperties, CsarEntry> referencesToPathInCSARMap = null;
+    protected Map<CsarContentProperties, CsarEntry> referencesToPathInCSARMap = new HashMap<>();
 
     /**
      * Currently a very simple approach to configure the export
@@ -89,18 +90,26 @@ public class ToscaExportUtil {
         csarEntry.writeToOutputStream(outputStream);
     }
 
-    public TDefinitions getExportableDefinitions(IRepository repository, DefinitionsChildId id,
-                                                 Map<String, Object> conf)
+    public TDefinitions getExportableDefinitions(IRepository repository, DefinitionsChildId id)
         throws IOException, RepositoryCorruptException {
-        // Cast should be safe
-        XMLDefinitionsBasedCsarEntry xmlEntry = (XMLDefinitionsBasedCsarEntry) getExportableEntry(repository, id, conf);
-        return xmlEntry.getDefinitions();
+        if (!repository.exists(id)) {
+            String error = String.format("Component instance %s does not exist.", id.toReadableString());
+            LOGGER.warn(error);
+            return null;
+        }
+        // FIXME check what this actually does
+        this.getPrepareForExport(repository, id);
+
+        Collection<DefinitionsChildId> referencedDefinitions = repository.getReferencedDefinitionsChildIds(id);
+        TDefinitions result = specifyImports(repository, id, referencedDefinitions);
+        return result;
     }
 
     private CsarEntry getExportableEntry(IRepository repository, DefinitionsChildId id, Map<String, Object> conf) throws IOException, RepositoryCorruptException {
         this.processTOSCA(repository, id, new CsarContentProperties(id.getQName().toString()), conf);
         return this.referencesToPathInCSARMap.values().stream()
-            .filter(e -> e instanceof XMLDefinitionsBasedCsarEntry)
+            // FIXME ... why is this even restricted that way if all we want to do is "writeTOSCA"?
+            .filter(e -> e instanceof XMLDefinitionsBasedCsarEntry || e instanceof DefinitionsBasedCsarEntry)
             .findFirst()
             .orElseThrow(() -> new RepositoryCorruptException("Definition not found!"));
     }
@@ -119,15 +128,7 @@ public class ToscaExportUtil {
     public Collection<DefinitionsChildId> processTOSCA(IRepository repository, DefinitionsChildId id, CsarContentProperties definitionsFileProperties
         , Map<String, Object> exportConfiguration) throws IOException, RepositoryCorruptException {
         this.exportConfiguration = exportConfiguration;
-        this.initializeExport();
         return this.processDefinitionsElement(repository, id, definitionsFileProperties);
-    }
-
-    private void initializeExport() {
-        // quick hack to avoid NPE
-        if (this.referencesToPathInCSARMap == null) {
-            this.referencesToPathInCSARMap = new HashMap<>();
-        }
     }
 
     private void checkConfig(ExportProperties propKey, Boolean bo) {
@@ -169,6 +170,15 @@ public class ToscaExportUtil {
 
         this.getPrepareForExport(repository, tcId);
 
+        Collection<DefinitionsChildId> referencedDefinitionsChildIds = repository.getReferencedDefinitionsChildIds(tcId);
+        TDefinitions entryDefinitions = specifyImports(repository, tcId, referencedDefinitionsChildIds);
+
+        this.referencesToPathInCSARMap.put(definitionsFileProperties, new DefinitionsBasedCsarEntry(entryDefinitions, repository));
+
+        return referencedDefinitionsChildIds;
+    }
+
+    private TDefinitions specifyImports(IRepository repository, DefinitionsChildId tcId, Collection<DefinitionsChildId> referencedDefinitionsChildIds) {
         TDefinitions entryDefinitions = repository.getDefinitions(tcId);
 
         // BEGIN: Definitions modification
@@ -177,7 +187,7 @@ public class ToscaExportUtil {
         // we modify the internal definitions object directly. It is not written back to the storage. Therefore, we do not need to clone it
 
         // the imports (pointing to not-definitions (xsd, wsdl, ...)) already have a correct relative URL. (quick hack)
-        URI uri = (URI) this.exportConfiguration.get(ToscaExportUtil.ExportProperties.REPOSITORY_URI.toString());
+        URI uri = (URI) this.exportConfiguration.get(ExportProperties.REPOSITORY_URI.toString());
         if (uri != null) {
             // we are in the plain-XML mode, the URLs of the imports have to be adjusted
             for (TImport i : entryDefinitions.getImport()) {
@@ -185,7 +195,7 @@ public class ToscaExportUtil {
                 if (!loc.startsWith("../")) {
                     LOGGER.warn("Location is not relative for id " + tcId.toReadableString());
                 }
-                ;
+
                 loc = loc.substring(3);
                 loc = uri + loc;
                 // now the location is an absolute URL
@@ -206,8 +216,6 @@ public class ToscaExportUtil {
             }
         }
 
-        Collection<DefinitionsChildId> referencedDefinitionsChildIds = repository.getReferencedDefinitionsChildIds(tcId);
-
         // adjust imports: add imports of definitions to it
         Collection<TImport> imports = new ArrayList<>();
         for (DefinitionsChildId id : referencedDefinitionsChildIds) {
@@ -221,10 +229,7 @@ public class ToscaExportUtil {
         }
 
         // END: Definitions modification
-
-        this.referencesToPathInCSARMap.put(definitionsFileProperties, new XMLDefinitionsBasedCsarEntry(entryDefinitions, repository));
-
-        return referencedDefinitionsChildIds;
+        return entryDefinitions;
     }
 
     protected void exportEntityType(TDefinitions entryDefinitions, URI uri, DefinitionsChildId tcId) {

@@ -473,11 +473,6 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             this.target_namespace = target_namespace;
         }
 
-        public Builder setExtensions(TDefinitions.Extensions extensions) {
-            this.extensions = extensions;
-            return self();
-        }
-
         public Builder setImport(List<TImport> imports) {
             this.imports = imports;
             return self();
@@ -586,9 +581,9 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
                 return self();
             }
 
-            List<TExtension> tmp = new ArrayList<>();
-            tmp.addAll(extensions);
-            return addExtensions(tmp);
+            TDefinitions.Extensions container = new TDefinitions.Extensions();
+            container.getExtension().addAll(extensions);
+            return addExtensions(container);
         }
 
         public Builder addExtensions(TExtension extensions) {
