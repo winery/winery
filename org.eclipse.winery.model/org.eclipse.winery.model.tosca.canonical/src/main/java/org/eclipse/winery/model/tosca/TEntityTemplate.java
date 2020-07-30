@@ -116,7 +116,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         this.propertyConstraints = value;
     }
 
-    @NonNull
+    @Nullable
     public QName getType() {
         return type;
     }
@@ -126,6 +126,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
     }
 
     @Override
+    @Nullable
     public QName getTypeAsQName() {
         return this.getType();
     }

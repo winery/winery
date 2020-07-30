@@ -297,6 +297,10 @@ public class ConsistencyChecker {
             printAndAddError(id, "Critical error at analysis: " + e.getMessage());
             return;
         }
+        if (Objects.isNull(entityTemplate.getType())) {
+            // no printing necessary; type consistency is checked at other places
+            return;
+        }
 
         TEntityType entityType;
         try {
