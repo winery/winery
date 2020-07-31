@@ -32,13 +32,6 @@ import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// if com.sun.xml.bind.marshaller.NamespacePrefixMapper cannot be resolved,
-// possibly
-// http://mvnrepository.com/artifact/com.googlecode.jaxb-namespaceprefixmapper-interfaces/JAXBNamespacePrefixMapper/2.2.4
-// helps
-// also com.sun.xml.internal.bind.marshaller.NamespacePrefixMapper could be the
-// right package
-
 /**
  * Bundles all general JAXB functionality
  */
