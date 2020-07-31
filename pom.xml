@@ -155,12 +155,13 @@
                 <module>org.eclipse.winery.model.bpmn4tosca</module>
                 <module>org.eclipse.winery.model.csar.toscametafile</module>
                 <module>org.eclipse.winery.model.selfservice</module>
+                <module>org.eclipse.winery.model.threatmodeling</module>
                 <module>org.eclipse.winery.repository</module>
                 <module>org.eclipse.winery.repository.client</module>
                 <module>org.eclipse.winery.repository.rest</module>
+                <module>org.eclipse.winery.topologygraph</module>
                 <module>org.eclipse.winery.tools.copybaragenerator</module>
                 <module>org.eclipse.winery.tools.deployablecomponents</module>
-                <module>org.eclipse.winery.topologygraph</module>
             </modules>
         </profile>
     </profiles>
