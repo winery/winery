@@ -15,6 +15,7 @@
 package org.eclipse.winery.model.tosca.utils;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -69,6 +70,8 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 public class ModelUtilities {
 
@@ -715,23 +718,23 @@ public class ModelUtilities {
 
             // Convert the String created by the JSON serialization back to a XML dom document
             TEntityTemplate.Properties properties = template.getProperties();
-            // FIXME deal with serialization madness?
-//            if (properties != null) {
-//                Object any = properties.getInternalAny();
-//                if (any instanceof String) {
-//                    Document doc = null;
-//                    try {
-//                        doc = documentBuilder.parse(new InputSource(new StringReader((String) any)));
-//                    } catch (SAXException e) {
-//                        LOGGER.error("Could not parse", e);
-//                        throw new IOException("Could not parse", e);
-//                    } catch (IOException e) {
-//                        LOGGER.error("Could not parse", e);
-//                        throw e;
-//                    }
-//                    template.getProperties().setAny(doc.getDocumentElement());
-//                }
-//            }
+            if (properties != null && properties instanceof TEntityTemplate.XmlProperties) {
+                TEntityTemplate.XmlProperties props = (TEntityTemplate.XmlProperties) properties;
+                Object any = props.getAny();
+                if (any instanceof String) {
+                    Document doc = null;
+                    try {
+                        doc = documentBuilder.parse(new InputSource(new StringReader((String) any)));
+                    } catch (SAXException e) {
+                        LOGGER.error("Could not parse", e);
+                        throw new IOException("Could not parse", e);
+                    } catch (IOException e) {
+                        LOGGER.error("Could not parse", e);
+                        throw e;
+                    }
+                    props.setAny(doc.getDocumentElement());
+                }
+            }
         }
     }
 
