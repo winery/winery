@@ -103,6 +103,9 @@ public class ModelUtilities {
     }
     
     public static void setPropertiesKV(TEntityTemplate template, LinkedHashMap<String, String> properties) {
+        if (template.getProperties() == null) {
+            template.setProperties(new TEntityTemplate.WineryKVProperties());
+        }
         if (template.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
             ((TEntityTemplate.WineryKVProperties) template.getProperties()).setKVProperties(properties);
         }

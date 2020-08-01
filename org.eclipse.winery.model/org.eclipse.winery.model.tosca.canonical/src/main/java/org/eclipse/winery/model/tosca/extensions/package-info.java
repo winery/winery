@@ -21,4 +21,7 @@
  * This notably also includes the specialized KeyValue storage facilities through
  * {@link org.eclipse.winery.model.tosca.extensions.kvproperties}, impacting both EntityTemplates and EntityTypes.
  */
+@javax.xml.bind.annotation.XmlSchema(
+    namespace = org.eclipse.winery.model.tosca.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE,
+    elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package org.eclipse.winery.model.tosca.extensions;

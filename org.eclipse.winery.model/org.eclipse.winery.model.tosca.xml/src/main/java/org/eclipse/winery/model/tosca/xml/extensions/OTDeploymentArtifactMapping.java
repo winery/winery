@@ -27,11 +27,42 @@ public class OTDeploymentArtifactMapping extends OTPrmMapping {
     @XmlAttribute(name = "artifactType", required = true)
     private QName artifactType;
 
+    @Deprecated
+    public OTDeploymentArtifactMapping() { }
+
+    public OTDeploymentArtifactMapping(Builder builder) {
+        super(builder);
+        this.artifactType = builder.artifactType;
+    }
+
     public QName getArtifactType() {
         return artifactType;
     }
 
     public void setArtifactType(QName artifactType) {
         this.artifactType = artifactType;
+    }
+
+    public static class Builder extends OTPrmMapping.Builder<Builder> {
+
+        private QName artifactType;
+
+        public Builder(String id) {
+            super(id);
+        }
+
+        public Builder setArtifactType(QName artifactType) {
+            this.artifactType = artifactType;
+            return self();
+        }
+
+        @Override
+        public Builder self() {
+            return this;
+        }
+
+        public OTDeploymentArtifactMapping build() {
+            return new OTDeploymentArtifactMapping(this);
+        }
     }
 }
