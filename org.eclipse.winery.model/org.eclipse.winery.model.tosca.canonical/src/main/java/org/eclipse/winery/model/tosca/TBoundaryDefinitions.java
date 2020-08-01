@@ -149,7 +149,7 @@ public class TBoundaryDefinitions implements Serializable {
         @NonNull
         public List<TCapabilityRef> getCapability() {
             if (capability == null) {
-                capability = new ArrayList<TCapabilityRef>();
+                capability = new ArrayList<>();
             }
             return this.capability;
         }
@@ -167,7 +167,7 @@ public class TBoundaryDefinitions implements Serializable {
         @NonNull
         public List<TExportedInterface> getInterface() {
             if (_interface == null) {
-                _interface = new ArrayList<TExportedInterface>();
+                _interface = new ArrayList<>();
             }
             return this._interface;
         }
@@ -215,10 +215,10 @@ public class TBoundaryDefinitions implements Serializable {
             @XmlElement(name = "PropertyMapping", required = true)
             protected List<TPropertyMapping> propertyMapping;
 
-            @Nullable
+            @NonNull
             public List<TPropertyMapping> getPropertyMapping() {
                 if (propertyMapping == null) {
-                    propertyMapping = new ArrayList<TPropertyMapping>();
+                    propertyMapping = new ArrayList<>();
                 }
                 return this.propertyMapping;
             }
@@ -237,7 +237,7 @@ public class TBoundaryDefinitions implements Serializable {
         @NonNull
         public List<TPropertyConstraint> getPropertyConstraint() {
             if (propertyConstraint == null) {
-                propertyConstraint = new ArrayList<TPropertyConstraint>();
+                propertyConstraint = new ArrayList<>();
             }
             return this.propertyConstraint;
         }

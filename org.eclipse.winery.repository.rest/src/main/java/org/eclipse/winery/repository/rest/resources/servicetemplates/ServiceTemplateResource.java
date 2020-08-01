@@ -50,9 +50,13 @@ import org.eclipse.winery.model.threatmodeling.ThreatAssessment;
 import org.eclipse.winery.model.threatmodeling.ThreatModeling;
 import org.eclipse.winery.model.tosca.HasId;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
+import org.eclipse.winery.model.tosca.TCapability;
+import org.eclipse.winery.model.tosca.TCapabilityRef;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TPlans;
+import org.eclipse.winery.model.tosca.TPropertyMapping;
 import org.eclipse.winery.model.tosca.TRequirement;
+import org.eclipse.winery.model.tosca.TRequirementRef;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
@@ -122,7 +126,63 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
             });
         }
         this.getServiceTemplate().setTopologyTemplate(topologyTemplate);
-        // FIXME this needs to clear the potentially destroyed element references outside of the topologytemplate
+        this.cullElementReferences();
+    }
+
+    private void cullElementReferences() {
+        final TTopologyTemplate topology = this.getServiceTemplate().getTopologyTemplate();
+        TBoundaryDefinitions boundaryDefs = this.getServiceTemplate().getBoundaryDefinitions();
+        if (boundaryDefs == null) {
+            return;
+        }
+        if (boundaryDefs.getProperties() != null
+            && boundaryDefs.getProperties().getPropertyMappings() != null) {
+            for (Iterator<TPropertyMapping> it = boundaryDefs.getProperties().getPropertyMappings().getPropertyMapping().iterator(); it.hasNext(); ) {
+                TPropertyMapping propMapping = it.next();
+                HasId targetObject = propMapping.getTargetObjectRef();
+                if (!containsTarget(topology, targetObject)) {
+                    // cull the property mapping pointing towards a no-longer existing element
+                    it.remove();
+                }
+            }
+        }
+        if (boundaryDefs.getCapabilities() != null) {
+            for (Iterator<TCapabilityRef> it = boundaryDefs.getCapabilities().getCapability().iterator(); it.hasNext();) {
+                TCapabilityRef ref = it.next();
+                TCapability target = ref.getRef();
+                if (!containsCapability(topology, target)) {
+                    // cull the capability referencing a no longer existing capability in the topology
+                    it.remove();
+                }
+            }
+        }
+        if (boundaryDefs.getRequirements() != null) {
+            for (Iterator<TRequirementRef> it = boundaryDefs.getRequirements().getRequirement().iterator(); it.hasNext();) {
+                TRequirementRef ref = it.next();
+                TRequirement target = ref.getRef();
+                if (!containsRequirement(topology, target)) {
+                    // cull the requirement referencing a no longer existing requirement in the topology
+                    it.remove();
+                }
+            }
+        }
+    }
+
+    private static boolean containsTarget(TTopologyTemplate topology, HasId target) {
+        return topology.getNodeTemplate(target.getId()) != null
+            || topology.getRelationshipTemplate(target.getId()) != null;
+    }
+
+    private static boolean containsCapability(TTopologyTemplate topology, TCapability target) {
+        return topology.getNodeTemplates().stream()
+            .anyMatch(nt -> nt.getCapabilities() != null
+                    && nt.getCapabilities().getCapability().contains(target));
+    }
+
+    private static boolean containsRequirement(TTopologyTemplate topology, TRequirement target) {
+        return topology.getNodeTemplates().stream()
+            .anyMatch(nt -> nt.getRequirements() != null
+                && nt.getRequirements().getRequirement().contains(target));
     }
 
     /**
