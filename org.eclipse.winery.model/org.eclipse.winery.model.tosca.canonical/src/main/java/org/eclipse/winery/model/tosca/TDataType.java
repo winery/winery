@@ -26,7 +26,7 @@ import org.eclipse.winery.model.tosca.visitor.Visitor;
 import org.eclipse.jdt.annotation.NonNull;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tDataType", namespace = " http://docs.oasis-open.org/tosca/ns/simple/yaml/1.3", propOrder = {
+@XmlType(name = "tDataType", namespace = "http://docs.oasis-open.org/tosca/ns/simple/yaml/1.3", propOrder = {
     "constraints"
 })
 public class TDataType extends TEntityType {

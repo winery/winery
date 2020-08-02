@@ -162,7 +162,10 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         }
 
         @ADR(12)
-        public void setKVProperties(String namespace, String elementName, Map<String, String> properties) {
+        public void setKVProperties(@Nullable String namespace, @Nullable String elementName, Map<String, String> properties) {
+            if (elementName == null || elementName.equals("")) {
+                elementName = "Properties";
+            }
             Objects.requireNonNull(properties);
             Element el = (Element) any;
 

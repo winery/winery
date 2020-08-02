@@ -65,14 +65,18 @@ public class PropertyMappingSupport {
         return true;
     }
     
-    public static LinkedHashMap<String, String> convertToKVProperties(TEntityTemplate.Properties propDef) {
+    public static org.eclipse.winery.model.tosca.TEntityTemplate.WineryKVProperties convertToKVProperties(TEntityTemplate.Properties propDef) {
         if (!isKeyValuePropertyDefinition(propDef)) {
             throw new IllegalArgumentException("Passed properties are not KeyValue properties and therefore can't be converted as such");
         }
-        final LinkedHashMap<String, String> result = new LinkedHashMap<>();
-        // accessing like this is safe because 
-        // all preconditions are checked with #isKeyValuePropertyDefinition
-        final NodeList entries = ((Element)propDef.getAny()).getChildNodes();
+        final LinkedHashMap<String, String> properties = new LinkedHashMap<>();
+        // ensured by #isKeyValuePropertyDefinition
+        final Element element = (Element) propDef.getAny();
+        assert (element != null);
+        
+        final String namespace = element.getNamespaceURI();
+        final String elementName = element.getLocalName();
+        final NodeList entries = element.getChildNodes();
         for (int i = 0; i < entries.getLength(); i++) {
             final Node item = entries.item(i);
             if (!(item instanceof Element)) {
@@ -81,14 +85,18 @@ public class PropertyMappingSupport {
             final String key = item.getLocalName();
             NodeList entryChildren = item.getChildNodes();
             if (entryChildren.getLength() == 0) {
-                result.put(key, "");
+                properties.put(key, "");
             } else if (entryChildren.getLength() == 1) {
-                result.put(key, item.getTextContent());
+                properties.put(key, item.getTextContent());
             } else {
                 // this shouldn't ever happen, actually...
                 LOGGER.error("Precondition violated when converting XML element to KV Property Map");
             }
         }
+        org.eclipse.winery.model.tosca.TEntityTemplate.WineryKVProperties result = new org.eclipse.winery.model.tosca.TEntityTemplate.WineryKVProperties();
+        result.setKVProperties(properties);
+        result.setElementName(elementName);
+        result.setNamespace(namespace);
         return result;
     }
 
