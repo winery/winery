@@ -53,7 +53,7 @@ public class TypeValidator extends ExceptionVisitor<Result, Parameter> {
     public TypeValidator(Path path, String namespace) {
         this.typeVisitor = new TypeVisitor(namespace, path);
         this.typeVisitor.addDataTypes(Defaults.YAML_TYPES, Namespaces.YAML_NS);
-        this.typeVisitor.addDataTypes(Defaults.TOSCA_TYPES, Namespaces.TOSCA_NS);
+        this.typeVisitor.addDataTypes(Defaults.TOSCA_TYPES, Namespaces.TOSCA_YAML_NS);
     }
 
     public void validate(TServiceTemplate serviceTemplate) throws MultiException {

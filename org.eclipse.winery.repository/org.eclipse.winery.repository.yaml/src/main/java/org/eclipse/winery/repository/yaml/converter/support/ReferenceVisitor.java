@@ -57,11 +57,11 @@ public class ReferenceVisitor extends ExceptionVisitor<ReferenceVisitor.Result, 
 
     @Override
     public Result visit(TImportDefinition node, Parameter parameter) {
-        if (node.getNamespaceUri() == null && !parameter.reference.getNamespaceURI().equals(Namespaces.DEFAULT_NS)) {
+        if (node.getNamespaceUri() == null && !parameter.reference.getNamespaceURI().equals(Namespaces.DEFAULT_YAML_NS)) {
             return null;
         }
 
-        String namespace = node.getNamespaceUri() == null ? Namespaces.DEFAULT_NS : node.getNamespaceUri();
+        String namespace = node.getNamespaceUri() == null ? Namespaces.DEFAULT_YAML_NS : node.getNamespaceUri();
         if (!this.visitors.containsKey(node)) {
             try {
                 this.serviceTemplates.put(node, reader.readImportDefinition(node, path, namespace));

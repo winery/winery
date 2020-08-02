@@ -37,7 +37,7 @@ public class DefinitionValidator extends ExceptionVisitor<Result, Parameter> {
     private DefinitionsVisitor definitionsVisitor;
 
     public DefinitionValidator(Path path) {
-        definitionsVisitor = new DefinitionsVisitor(Namespaces.DEFAULT_NS, path);
+        definitionsVisitor = new DefinitionsVisitor(Namespaces.DEFAULT_YAML_NS, path);
         this.path = path;
     }
 

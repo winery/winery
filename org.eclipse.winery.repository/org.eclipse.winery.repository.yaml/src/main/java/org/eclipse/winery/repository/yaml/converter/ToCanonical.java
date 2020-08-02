@@ -1017,7 +1017,7 @@ public class ToCanonical {
     private TImport convert(TImportDefinition node, String name) {
         String importType;
         if (node.getFile().endsWith(".tosca")) {
-            importType = Namespaces.TOSCA_NS;
+            importType = Namespaces.TOSCA_YAML_NS;
         } else {
             importType = name;
         }

@@ -95,8 +95,8 @@ public class Defaults {
         "tosca.nodes.Container.Application.Docker", "Application.Docker"
     ));
 
-    public static final QName IMPLEMENTATION_ARTIFACTS = new QName(Namespaces.TOSCA_NS, "tosca.artifacts.Implementation");
-    public static final QName DEPLOYMENT_ARTIFACTS = new QName(Namespaces.TOSCA_NS, "tosca.artifacts.Deployment");
+    public static final QName IMPLEMENTATION_ARTIFACTS = new QName(Namespaces.TOSCA_YAML_NS, "tosca.artifacts.Implementation");
+    public static final QName DEPLOYMENT_ARTIFACTS = new QName(Namespaces.TOSCA_YAML_NS, "tosca.artifacts.Deployment");
 
     public static final String X_COORD = "x";
     public static final String Y_COORD = "y";

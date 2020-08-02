@@ -299,7 +299,7 @@ public class YamlCsarImporter extends CsarImporter {
             String importType = imp.getImportType();
             String loc = imp.getLocation();
 
-            if (Namespaces.TOSCA_NS.equals(importType)) {
+            if (Namespaces.TOSCA_YAML_NS.equals(importType)) {
                 Path defsPath = basePath.resolve(loc);
                 // fallback for older CSARs, where the location is given from the root
                 if (Files.exists(defsPath)) {

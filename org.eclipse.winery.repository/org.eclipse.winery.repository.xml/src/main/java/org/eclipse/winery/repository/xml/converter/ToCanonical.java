@@ -540,9 +540,7 @@ public class ToCanonical {
 
     private TEntityTemplate.Properties convertProperties(org.eclipse.winery.model.tosca.xml.TEntityTemplate.Properties xml) {
         if (PropertyMappingSupport.isKeyValuePropertyDefinition(xml)) {
-            TEntityTemplate.WineryKVProperties props = new TEntityTemplate.WineryKVProperties();
-            props.setKVProperties(PropertyMappingSupport.convertToKVProperties(xml));
-            return props;
+            return PropertyMappingSupport.convertToKVProperties(xml);
         } else {
             // assume XML properties here
             TEntityTemplate.XmlProperties props = new TEntityTemplate.XmlProperties();

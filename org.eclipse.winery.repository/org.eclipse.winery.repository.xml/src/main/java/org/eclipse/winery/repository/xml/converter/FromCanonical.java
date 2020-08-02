@@ -474,9 +474,8 @@ public class FromCanonical {
             props.setAny(((org.eclipse.winery.model.tosca.TEntityTemplate.XmlProperties) canonical).getAny());
         }
         else if (canonical instanceof org.eclipse.winery.model.tosca.TEntityTemplate.WineryKVProperties) {
-            // FIXME this shouldn't be part of the xml model's definition
-            //  instead use PropertyMappingSupport
-            props.setKVProperties(((org.eclipse.winery.model.tosca.TEntityTemplate.WineryKVProperties) canonical).getKVProperties());
+            final org.eclipse.winery.model.tosca.TEntityTemplate.WineryKVProperties wineryKV = (org.eclipse.winery.model.tosca.TEntityTemplate.WineryKVProperties) canonical;
+            props.setKVProperties(wineryKV.getNamespace(), wineryKV.getElementName(), wineryKV.getKVProperties());
         }
         else if (canonical instanceof org.eclipse.winery.model.tosca.TEntityTemplate.YamlProperties) {
             // this is the messy case of converting from YAML to XML

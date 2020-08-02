@@ -121,7 +121,7 @@ public class TypeVisitor extends ImportVisitor {
     }
 
     public void setNormativeTypes(String name, Metadata metadata, Map<String, List<String>> map) {
-        if (namespace.equals(Namespaces.TOSCA_NS) && metadata != null) {
+        if (namespace.equals(Namespaces.TOSCA_YAML_NS) && metadata != null) {
             String shorthandName = metadata.get("shorthand_name");
             String typeUri = metadata.get("type_uri");
 

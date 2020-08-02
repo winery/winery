@@ -46,11 +46,11 @@ public class ImportVisitor extends ExceptionVisitor<Result, Parameter> {
     @Override
     public Result visit(TServiceTemplate node, Parameter parameter) {
         YamlReader reader = new YamlReader();
-        if (!this.namespace.equals(Namespaces.TOSCA_NS)) {
+        if (!this.namespace.equals(Namespaces.TOSCA_YAML_NS)) {
             Set<String> typeDefinitions = new HashSet<>(Arrays.asList(
                 Defaults.TOSCA_NORMATIVE_TYPES, Defaults.TOSCA_NONNORMATIVE_TYPES));
             String tmpNamespace = this.namespace;
-            this.namespace = Namespaces.TOSCA_NS;
+            this.namespace = Namespaces.TOSCA_YAML_NS;
             Path tmpDir = Utils.getTmpDir(Paths.get("types"));
             for (String typeDefinition : typeDefinitions) {
                 try {
@@ -60,7 +60,7 @@ public class ImportVisitor extends ExceptionVisitor<Result, Parameter> {
                         "/".concat(typeDefinition)
                     );
                     Files.copy(inputStream, outFilePath, StandardCopyOption.REPLACE_EXISTING);
-                    TServiceTemplate serviceTemplate = reader.parseSkipTest(outFilePath, Namespaces.TOSCA_NS);
+                    TServiceTemplate serviceTemplate = reader.parseSkipTest(outFilePath, Namespaces.TOSCA_YAML_NS);
                     if (Objects.nonNull(serviceTemplate)) {
                         serviceTemplate.accept(this, new Parameter());
                     }

@@ -16,6 +16,7 @@ package org.eclipse.winery.repository.xml.converter;
 
 import java.util.LinkedHashMap;
 
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.xml.TEntityTemplate;
 
 import org.slf4j.Logger;
@@ -95,8 +96,9 @@ public class PropertyMappingSupport {
         }
         org.eclipse.winery.model.tosca.TEntityTemplate.WineryKVProperties result = new org.eclipse.winery.model.tosca.TEntityTemplate.WineryKVProperties();
         result.setKVProperties(properties);
-        result.setElementName(elementName);
-        result.setNamespace(namespace);
+        // remove defaults required for serialization
+        result.setElementName(elementName.equals("Properties") ? null : elementName);
+        result.setNamespace(namespace == null || namespace.equals(Namespaces.EXAMPLE_NAMESPACE_URI) ? null : namespace);
         return result;
     }
 

@@ -25,10 +25,15 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.jaxbsupport.map.PropertiesAdapter;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -60,6 +65,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
     private static final Logger LOGGER = LoggerFactory.getLogger(TEntityTemplate.class);
 
     @XmlElement(name = "Properties")
+    @XmlJavaTypeAdapter(PropertiesAdapter.class)
     protected TEntityTemplate.Properties properties;
 
     @XmlElement(name = "PropertyConstraints")
@@ -153,9 +159,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "any"
-    })
+    @XmlRootElement
     public static class XmlProperties extends Properties {
         @XmlAnyElement(lax = true)
         protected Object any;
@@ -171,27 +175,48 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "KVProperties"
-    })
-    @NonNullByDefault
+    @XmlRootElement
     public static class WineryKVProperties extends Properties {
+        @Nullable
+        private String namespace = null;
+
+        @Nullable
+        private String elementName = null;
+
         @XmlElement(name = "kvproperties")
+        @NonNull
         private LinkedHashMap<String, String> KVProperties = new LinkedHashMap<>();
 
+        @NonNull
         public LinkedHashMap<String, String> getKVProperties() {
             return KVProperties;
         }
 
-        public void setKVProperties(LinkedHashMap<String, String> KVProperties) {
+        public void setKVProperties(@NonNull LinkedHashMap<String, String> KVProperties) {
             this.KVProperties = KVProperties;
+        }
+
+        @Nullable
+        public String getNamespace() {
+            return namespace;
+        }
+
+        public void setNamespace(@Nullable String namespace) {
+            this.namespace = namespace;
+        }
+
+        @Nullable
+        public String getElementName() {
+            return elementName;
+        }
+
+        public void setElementName(@Nullable String elementName) {
+            this.elementName = elementName;
         }
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "properties"
-    })
+    @XmlRootElement
     @NonNullByDefault
     public static class YamlProperties extends Properties {
         

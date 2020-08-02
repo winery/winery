@@ -1156,7 +1156,7 @@ public class FromCanonical {
     private String getNamespacePrefix(String uri) {
         if (!prefixNamespace.containsValue(uri)) {
             String prefix = repository.getNamespaceManager().getPrefix(uri);
-            if ("tosca".equals(prefix) && !uri.equals(Namespaces.TOSCA_NS)) prefix = prefix.concat("_xml");
+            if ("tosca".equals(prefix) && !uri.equals(Namespaces.TOSCA_YAML_NS)) prefix = prefix.concat("_xml");
             prefixNamespace.put(prefix, uri);
         }
         return prefixNamespace.inverse().get(uri);

@@ -70,7 +70,7 @@ public class YamlReader {
     }
 
     public TServiceTemplate parse(InputStream inputStream) throws MultiException {
-        return this.readServiceTemplate(inputStream, Namespaces.DEFAULT_NS);
+        return this.readServiceTemplate(inputStream, Namespaces.DEFAULT_YAML_NS);
     }
 
     public TServiceTemplate parse(InputStream inputStream, String namespace) throws MultiException {
@@ -87,12 +87,12 @@ public class YamlReader {
 
     @NonNull
     public Metadata getMetadata(Path path, Path file) throws MultiException {
-        return readServiceTemplateMetadataSkipTest(path.resolve(file), Namespaces.DEFAULT_NS);
+        return readServiceTemplateMetadataSkipTest(path.resolve(file), Namespaces.DEFAULT_YAML_NS);
     }
 
     @NonNull
     public String getNamespace(Path path, Path file) throws MultiException {
-        return getMetadata(path, file).getOrDefault("targetNamespace", Namespaces.DEFAULT_NS);
+        return getMetadata(path, file).getOrDefault("targetNamespace", Namespaces.DEFAULT_YAML_NS);
     }
 
     private TServiceTemplate readServiceTemplateSkipTest(Path filePath, String namespace) throws MultiException {

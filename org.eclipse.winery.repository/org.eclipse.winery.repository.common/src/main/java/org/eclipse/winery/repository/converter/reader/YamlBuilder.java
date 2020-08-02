@@ -111,7 +111,7 @@ public class YamlBuilder {
 
     private void initPrefix2Namespace(Object object) {
         this.prefix2Namespace = new LinkedHashMap<>();
-        this.prefix2Namespace.put("tosca", Namespaces.TOSCA_NS);
+        this.prefix2Namespace.put("tosca", Namespaces.TOSCA_YAML_NS);
 
         if (Objects.isNull(object)) return;
 
