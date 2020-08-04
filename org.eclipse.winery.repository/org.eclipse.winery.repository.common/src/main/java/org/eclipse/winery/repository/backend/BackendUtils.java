@@ -66,7 +66,7 @@ import org.eclipse.winery.model.ids.IdNames;
 import org.eclipse.winery.model.ids.definitions.DataTypeId;
 import org.eclipse.winery.model.ids.extensions.TopologyFragmentRefinementModelId;
 import org.eclipse.winery.model.tosca.TDataType;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKVList;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitions;
 import org.eclipse.winery.model.version.VersionSupport;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
 import org.eclipse.winery.repository.common.RepositoryFileReference;
@@ -699,7 +699,7 @@ public class BackendUtils {
 //        }
 //
         final LinkedHashMap<String, String> emptyKVProperties = new LinkedHashMap<>();
-        for (PropertyDefinitionKV definitionKV : winerysPropertiesDefinition.getPropertyDefinitionKVList()) {
+        for (PropertyDefinitionKV definitionKV : winerysPropertiesDefinition.getPropertyDefinitions().getPropertyDefinitionKVs()) {
             emptyKVProperties.put(definitionKV.getKey(), "");
         }
         TEntityTemplate.WineryKVProperties properties = new TEntityTemplate.WineryKVProperties();
@@ -924,7 +924,7 @@ public class BackendUtils {
         XSObjectList particles = modelGroup.getParticles();
         int len = particles.getLength();
         boolean everyThingIsASimpleType = true;
-        PropertyDefinitionKVList list = new PropertyDefinitionKVList();
+        PropertyDefinitions list = new PropertyDefinitions();
         if (len != 0) {
             for (int i = 0; i < len; i++) {
                 XSParticle innerParticle = (XSParticle) particles.item(i);
@@ -942,7 +942,7 @@ public class BackendUtils {
                             def.setKey(name);
                             // convention at WPD: use "xsd" as prefix for XML Schema Definition
                             def.setType("xsd:" + typeName);
-                            list.add(def);
+                            list.getPropertyDefinitionKVs().add(def);
                         } else {
                             everyThingIsASimpleType = false;
                             break;
@@ -966,7 +966,7 @@ public class BackendUtils {
         wpd.setIsDerivedFromXSD(Boolean.TRUE);
         wpd.setElementName(element.getLocalPart());
         wpd.setNamespace(element.getNamespaceURI());
-        wpd.setPropertyDefinitionKVList(list);
+        wpd.setPropertyDefinitions(list);
         ModelUtilities.replaceWinerysPropertiesDefinition(ci, wpd);
         BackendUtils.LOGGER.debug("Successfully generated WPD");
     }

@@ -361,7 +361,7 @@ public class DataFlowResource {
             if (Objects.nonNull(nodeType.getWinerysPropertiesDefinition())) {
                 // add empty property for NodeType properties to avoid errors due to missing properties
                 WinerysPropertiesDefinition def = nodeType.getWinerysPropertiesDefinition();
-                for (PropertyDefinitionKV prop : def.getPropertyDefinitionKVList().getPropertyDefinitionKVs()) {
+                for (PropertyDefinitionKV prop : def.getPropertyDefinitions().getPropertyDefinitionKVs()) {
                     propertyList.put(prop.getKey(), "");
                 }
             }
@@ -444,7 +444,7 @@ public class DataFlowResource {
             LinkedHashMap<String, String> propertyList = new LinkedHashMap<>();
 
             WinerysPropertiesDefinition def = relationshipType.getWinerysPropertiesDefinition();
-            for (PropertyDefinitionKV prop : def.getPropertyDefinitionKVList().getPropertyDefinitionKVs()) {
+            for (PropertyDefinitionKV prop : def.getPropertyDefinitions().getPropertyDefinitionKVs()) {
                 propertyList.put(prop.getKey(), "");
             }
 

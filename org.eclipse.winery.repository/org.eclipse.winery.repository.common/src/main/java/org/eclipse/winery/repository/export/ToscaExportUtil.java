@@ -97,6 +97,9 @@ public class ToscaExportUtil {
             LOGGER.warn(error);
             return null;
         }
+        if (this.exportConfiguration == null) {
+            this.exportConfiguration = new HashMap<>();
+        }
         // FIXME check what this actually does
         this.getPrepareForExport(repository, id);
 

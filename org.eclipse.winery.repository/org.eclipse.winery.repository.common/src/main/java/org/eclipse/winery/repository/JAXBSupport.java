@@ -13,16 +13,21 @@
  *******************************************************************************/
 package org.eclipse.winery.repository;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
 import javax.xml.bind.Unmarshaller;
 
+import org.eclipse.winery.model.jaxbsupport.map.PropertiesAdapter;
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.TDefinitions;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitionList;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinitionList;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitions;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinitions;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.repository.backend.MockXMLElement;
 
@@ -47,15 +52,15 @@ public class JAXBSupport {
         try {
             // For winery classes, eventually the package+jaxb.index method could be better.
             // See http://stackoverflow.com/a/3628525/873282
-            context = JAXBContext.newInstance(
+            context = JAXBContext.newInstance(new Class[] {
                 TDefinitions.class, // all other elements are referred by "@XmlSeeAlso"
                 WinerysPropertiesDefinition.class,
-                ParameterDefinitionList.class,
-                AttributeDefinitionList.class,
+                ParameterDefinitions.class,
+                AttributeDefinitions.class,
+                MockXMLElement.class,
                 Application.class,
+            });
                 // MockXMLElement is added for testing purposes only.
-                MockXMLElement.class
-            );
         } catch (JAXBException e) {
             LOGGER.error("Could not initialize JAXBContext", e);
             throw new IllegalStateException(e);
@@ -85,6 +90,7 @@ public class JAXBSupport {
             m = CONTEXT.createMarshaller();
             // pretty printed output is required as the XML is sent 1:1 to the browser for editing
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            m.setAdapter(PropertiesAdapter.class, new PropertiesAdapter(prefixMapper));
             try {
                 if (prefixMapper != null) {
                     m.setProperty("com.sun.xml.bind.namespacePrefixMapper", prefixMapper);

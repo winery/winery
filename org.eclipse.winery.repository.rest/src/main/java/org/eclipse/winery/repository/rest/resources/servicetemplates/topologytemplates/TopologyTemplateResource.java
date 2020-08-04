@@ -340,7 +340,7 @@ public class TopologyTemplateResource {
 
             if (Objects.nonNull(newNodeTypeVersion) && Objects.nonNull(newNodeTypeVersion.getWinerysPropertiesDefinition())) {
                 List<PropertyDefinitionKV> newKvs = newNodeTypeVersion.getWinerysPropertiesDefinition()
-                    .getPropertyDefinitionKVList()
+                    .getPropertyDefinitions()
                     .getPropertyDefinitionKVs();
 
                 resolvedProperties = newKvs.stream()

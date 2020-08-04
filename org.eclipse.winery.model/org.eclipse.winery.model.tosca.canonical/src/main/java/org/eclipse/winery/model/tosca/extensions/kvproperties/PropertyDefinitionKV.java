@@ -30,7 +30,7 @@ public class PropertyDefinitionKV implements Serializable {
     private String defaultValue;
     private String description;
     
-    private ConstraintClauseKVList constraintList;
+    private ConstraintClauseKVs constraintList;
 
     public PropertyDefinitionKV() {
         super();
@@ -53,7 +53,7 @@ public class PropertyDefinitionKV implements Serializable {
         this.setDescription(description);
     }
     
-    public PropertyDefinitionKV(String key, String type, Boolean required, String defaultValue, String description, ConstraintClauseKVList constraints) {
+    public PropertyDefinitionKV(String key, String type, Boolean required, String defaultValue, String description, ConstraintClauseKVs constraints) {
         this(key, type, required, defaultValue, description);
         this.setConstraints(constraints);
     }
@@ -106,11 +106,11 @@ public class PropertyDefinitionKV implements Serializable {
 
     @XmlElementWrapper(name = "constraints")
     @XmlElement(name = "constraint")
-    public ConstraintClauseKVList getConstraints() {
+    public ConstraintClauseKVs getConstraints() {
         return this.constraintList;
     }
 
-    public void setConstraints(ConstraintClauseKVList constraintList) {
+    public void setConstraints(ConstraintClauseKVs constraintList) {
         this.constraintList = constraintList;
     }
     

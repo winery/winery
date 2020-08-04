@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKV;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKVList;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKVs;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -30,7 +30,7 @@ import org.eclipse.jdt.annotation.NonNull;
     "constraints"
 })
 public class TDataType extends TEntityType {
-    private ConstraintClauseKVList constraints;
+    private ConstraintClauseKVs constraints;
     
     // metadata were added to all TEntityTypes, so no need to add these explicitly
     // FIXME add key_schema, entry_schema
@@ -70,20 +70,19 @@ public class TDataType extends TEntityType {
     }
 
     @NonNull
-    public ConstraintClauseKVList getConstraints() {
+    public ConstraintClauseKVs getConstraints() {
         if (this.constraints == null) {
-            this.constraints = new ConstraintClauseKVList();
+            this.constraints = new ConstraintClauseKVs();
         }
-
         return constraints;
     }
 
-    public void setConstraints(ConstraintClauseKVList constraints) {
+    public void setConstraints(ConstraintClauseKVs constraints) {
         this.constraints = constraints;
     }
     
     public static class Builder extends TEntityType.Builder<Builder> {
-        private ConstraintClauseKVList constraints;
+        private ConstraintClauseKVs constraints;
 
         public Builder(String name) {
             super(name);
@@ -98,20 +97,20 @@ public class TDataType extends TEntityType {
             return this;
         }
 
-        public Builder setConstraints(ConstraintClauseKVList constraints) {
+        public Builder setConstraints(ConstraintClauseKVs constraints) {
             this.constraints = constraints;
             return this;
         }
 
-        public Builder addConstraints(ConstraintClauseKVList constraints) {
-            if (constraints == null || constraints.isEmpty()) {
+        public Builder addConstraints(ConstraintClauseKVs constraints) {
+            if (constraints == null || constraints.getConstraintDefinitionKVs().isEmpty()) {
                 return this;
             }
 
             if (this.constraints == null) {
-                this.constraints = new ConstraintClauseKVList();
+                this.constraints = new ConstraintClauseKVs();
             } 
-            this.constraints.addAll(constraints);
+            this.constraints.getConstraintDefinitionKVs().addAll(constraints.getConstraintDefinitionKVs());
 
             return this;
         }
@@ -121,9 +120,9 @@ public class TDataType extends TEntityType {
                 return this;
             }
             if (this.constraints == null) {
-                this.constraints = new ConstraintClauseKVList();
+                this.constraints = new ConstraintClauseKVs();
             }
-            this.constraints.add(constraint);
+            this.constraints.getConstraintDefinitionKVs().add(constraint);
             return this;
         }
 

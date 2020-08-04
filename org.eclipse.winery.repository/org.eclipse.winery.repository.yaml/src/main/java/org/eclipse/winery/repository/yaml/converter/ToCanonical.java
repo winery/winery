@@ -73,13 +73,13 @@ import org.eclipse.winery.model.tosca.yaml.TSchemaDefinition;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.yaml.converter.support.InheritanceUtils;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinition;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitionList;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitions;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKV;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKVList;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKVs;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinition;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinitionList;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinitions;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKVList;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitions;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.yaml.TArtifactDefinition;
 import org.eclipse.winery.model.tosca.yaml.TAttributeDefinition;
@@ -238,7 +238,7 @@ public class ToCanonical {
             .setTargetNamespace(node.getMetadata().get("targetNamespace"))
             .setAbstract(Boolean.valueOf(node.getMetadata().get("abstract")))
             .setFinal(Boolean.valueOf(node.getMetadata().get("final")))
-            .setAttributeDefinitions(new AttributeDefinitionList(convert(node.getAttributes())));
+            .setAttributeDefinitions(new AttributeDefinitions(convert(node.getAttributes())));
 
         if (node.getVersion() != null) {
             String version = node.getVersion().getVersion();
@@ -265,12 +265,12 @@ public class ToCanonical {
         WinerysPropertiesDefinition winerysPropertiesDefinition = new WinerysPropertiesDefinition();
         winerysPropertiesDefinition.setElementName("properties");
         winerysPropertiesDefinition.setNamespace(targetNamespace + "/propertiesDefinition/" + typeName);
-        PropertyDefinitionKVList wineryProperties = new PropertyDefinitionKVList();
+        PropertyDefinitions wineryProperties = new PropertyDefinitions();
         for (Map.Entry<String, TPropertyDefinition> property : properties.entrySet()) {
             TPropertyDefinition propDef = property.getValue();
             String type = (propDef.getType() == null ? "inherited" : propDef.getType().getLocalPart());
             String defaultValue = ValueHelper.toString(propDef.getDefault());
-            wineryProperties.add(
+            wineryProperties.getPropertyDefinitionKVs().add(
                 new PropertyDefinitionKV(property.getKey(),
                     type,
                     propDef.getRequired(),
@@ -280,7 +280,7 @@ public class ToCanonical {
                 )
             );
         }
-        winerysPropertiesDefinition.setPropertyDefinitionKVList(wineryProperties);
+        winerysPropertiesDefinition.setPropertyDefinitions(wineryProperties);
         return winerysPropertiesDefinition;
     }
 
@@ -290,14 +290,14 @@ public class ToCanonical {
      * @param constraints TOSCA YAML constraints
      * @return Winery XML constraints
      */
-    private ConstraintClauseKVList convertConstraints(List<org.eclipse.winery.model.tosca.yaml.TConstraintClause> constraints) {
-        ConstraintClauseKVList constraintList = new ConstraintClauseKVList();
+    private ConstraintClauseKVs convertConstraints(List<org.eclipse.winery.model.tosca.yaml.TConstraintClause> constraints) {
+        ConstraintClauseKVs constraintList = new ConstraintClauseKVs();
         for (org.eclipse.winery.model.tosca.yaml.TConstraintClause constraint : constraints) {
             ConstraintClauseKV con = new ConstraintClauseKV();
             con.setKey(constraint.getKey());
             con.setValue(constraint.getValue());
             con.setList(constraint.getList());
-            constraintList.add(con);
+            constraintList.getConstraintDefinitionKVs().add(con);
         }
         return constraintList;
     }
@@ -813,10 +813,10 @@ public class ToCanonical {
         builder.setPolicies(new TPolicies(convert(node.getPolicies())));
 
         if (node.getInputs() != null) {
-            builder.setInputs(new ParameterDefinitionList(convert(node.getInputs())));
+            builder.setInputs(new ParameterDefinitions(convert(node.getInputs())));
         }
         if (node.getOutputs() != null) {
-            builder.setOutputs(new ParameterDefinitionList(convert(node.getOutputs())));
+            builder.setOutputs(new ParameterDefinitions(convert(node.getOutputs())));
         }
 
         return builder.build();

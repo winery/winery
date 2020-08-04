@@ -270,7 +270,7 @@ public class EdmmConverter {
             EntityId propertiesEntityId = typeEntityId.extend(DefaultKeys.PROPERTIES);
             entityGraph.addEntity(new MappingEntity(propertiesEntityId, entityGraph));
 
-            toscaType.getWinerysPropertiesDefinition().getPropertyDefinitionKVList().getPropertyDefinitionKVs()
+            toscaType.getWinerysPropertiesDefinition().getPropertyDefinitions().getPropertyDefinitionKVs()
                 .forEach(propertyDef -> {
                     EntityId propertyEntityId = propertiesEntityId.extend(propertyDef.getKey());
                     entityGraph.addEntity(new MappingEntity(propertyEntityId, entityGraph));

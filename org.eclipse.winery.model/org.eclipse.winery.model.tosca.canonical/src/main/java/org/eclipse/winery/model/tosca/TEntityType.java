@@ -35,8 +35,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.jsonsupport.PropertiesDefinitionDeserializer;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitionList;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKVList;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitions;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKVs;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -86,7 +86,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     protected String targetNamespace;
 
     // added to support conversion from/to YAML
-    protected AttributeDefinitionList attributeDefinitions;
+    protected AttributeDefinitions attributeDefinitions;
 
     public TEntityType() {
     }
@@ -123,11 +123,11 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     }
 
     @Nullable
-    public AttributeDefinitionList getAttributeDefinitions() {
+    public AttributeDefinitions getAttributeDefinitions() {
         return attributeDefinitions;
     }
 
-    public void setAttributeDefinitions(AttributeDefinitionList attributeDefinitions) {
+    public void setAttributeDefinitions(AttributeDefinitions attributeDefinitions) {
         this.attributeDefinitions = attributeDefinitions;
     }
 
@@ -301,7 +301,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
         private Object defaultValue;
         private YamlPropertyDefinition.Status status;
         @XmlElement
-        private ConstraintClauseKVList constraints;
+        private ConstraintClauseKVs constraints;
 
         @XmlElement(name = "entry_schema")
         private TSchema entrySchema;
@@ -348,7 +348,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             private Boolean required;
             private Object defaultValue;
             private YamlPropertyDefinition.Status status;
-            private ConstraintClauseKVList constraints;
+            private ConstraintClauseKVs constraints;
             private TSchema entrySchema;
             private TSchema keySchema;
             
@@ -386,7 +386,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
                 return this;
             }
 
-            public Builder setConstraints(ConstraintClauseKVList constraints) {
+            public Builder setConstraints(ConstraintClauseKVs constraints) {
                 this.constraints = constraints;
                 return this;
             }
@@ -458,11 +458,11 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
         }
 
         @Nullable
-        public ConstraintClauseKVList getConstraints() {
+        public ConstraintClauseKVs getConstraints() {
             return constraints;
         }
 
-        public void setConstraints(@Nullable ConstraintClauseKVList constraints) {
+        public void setConstraints(@Nullable ConstraintClauseKVs constraints) {
             this.constraints = constraints;
         }
 
@@ -587,7 +587,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
         private boolean abstractValue;
         private boolean finalValue;
         private String targetNamespace;
-        private AttributeDefinitionList attributeDefinitions;
+        private AttributeDefinitions attributeDefinitions;
 
         public Builder(String name) {
             this.name = name;
@@ -702,7 +702,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             return addTags(tag);
         }
 
-        public T setAttributeDefinitions(AttributeDefinitionList attributeDefinitions) {
+        public T setAttributeDefinitions(AttributeDefinitions attributeDefinitions) {
             this.attributeDefinitions = attributeDefinitions;
             return self();
         }

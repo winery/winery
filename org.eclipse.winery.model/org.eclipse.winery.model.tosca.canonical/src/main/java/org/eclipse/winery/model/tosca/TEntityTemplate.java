@@ -36,6 +36,7 @@ import org.eclipse.winery.model.jaxbsupport.map.PropertiesAdapter;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -66,6 +67,9 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
 
     @XmlElement(name = "Properties")
     @XmlJavaTypeAdapter(PropertiesAdapter.class)
+    // PropertiesAdapter is necessary to avoid introducing the namespaceURI "" into the JAXBContext
+    // as well as dealing with the fact that two of the Properties implementations have an xml schema
+    // that depends on the runtime values stored inside the Maps they encapsulate.
     protected TEntityTemplate.Properties properties;
 
     @XmlElement(name = "PropertyConstraints")
@@ -150,18 +154,12 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
     })
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @XmlType(name = "")
-    @XmlSeeAlso({
-        XmlProperties.class,
-        WineryKVProperties.class,
-        YamlProperties.class
-    })
+    // Xml transformation is done by PropertiesAdapter, thus no XmlSeeAlso
     public static abstract class Properties implements Serializable {
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlRootElement
+    // Xml transformation is done by XmlJavaTypeAdapter, thus no XML configuration whatsoever
     public static class XmlProperties extends Properties {
-        @XmlAnyElement(lax = true)
         protected Object any;
 
         @Nullable
@@ -174,16 +172,16 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         }
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlRootElement
+    // Xml transformation is done by XmlJavaTypeAdapter, thus no XML configuration whatsoever
     public static class WineryKVProperties extends Properties {
+        @JsonIgnore
         @Nullable
         private String namespace = null;
 
+        @JsonIgnore
         @Nullable
         private String elementName = null;
 
-        @XmlElement(name = "kvproperties")
         @NonNull
         private LinkedHashMap<String, String> KVProperties = new LinkedHashMap<>();
 
@@ -215,12 +213,10 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         }
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlRootElement
+    // Xml transformation is done by XmlJavaTypeAdapter, thus no XML configuration whatsoever
     @NonNullByDefault
     public static class YamlProperties extends Properties {
         
-        @XmlElement(name = "yamlproperties")
         @JsonInclude()// defaults to always include to override ObjectMapper's NON_NULL specification
         private LinkedHashMap<String, Object> properties = new LinkedHashMap<>();
 

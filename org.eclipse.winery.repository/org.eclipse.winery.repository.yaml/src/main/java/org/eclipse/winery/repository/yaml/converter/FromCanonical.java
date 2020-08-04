@@ -68,8 +68,8 @@ import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinition;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitionList;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKVList;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitions;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKVs;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinition;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
@@ -236,14 +236,18 @@ public class FromCanonical {
         if (Objects.isNull(node)) return null;
         TTopologyTemplate topologyTemplate = node.getTopologyTemplate();
         if (Objects.isNull(topologyTemplate)) return null;
-        return new TTopologyTemplateDefinition.Builder()
+        TTopologyTemplateDefinition.Builder builder = new TTopologyTemplateDefinition.Builder()
             .setDescription(convertDocumentation(topologyTemplate.getDocumentation()))
             .setNodeTemplates(convert(topologyTemplate.getNodeTemplates(), topologyTemplate.getRelationshipTemplates()))
             .setRelationshipTemplates(convert(topologyTemplate.getRelationshipTemplates()))
-            .setPolicies(convert(topologyTemplate.getPolicies()))
-            .setInputs(convert(topologyTemplate.getInputs()))
-            .setOutputs(convert(topologyTemplate.getOutputs()))
-            .build();
+            .setPolicies(convert(topologyTemplate.getPolicies()));
+        if (topologyTemplate.getInputs() != null) {
+            builder.setInputs(convert(topologyTemplate.getInputs().getParameterDefinition()));
+        }
+        if (topologyTemplate.getOutputs() != null) {
+            builder.setOutputs(convert(topologyTemplate.getOutputs().getParameterDefinition()));
+        }
+        return builder.build();
     }
 
     public Map<String, TNodeTemplate> convert(List<org.eclipse.winery.model.tosca.TNodeTemplate> nodes, List<org.eclipse.winery.model.tosca.TRelationshipTemplate> rTs) {
@@ -326,7 +330,7 @@ public class FromCanonical {
     }
 
     private Map<String, TPropertyDefinition> convertWinerysProperties(WinerysPropertiesDefinition properties) {
-        return properties.getPropertyDefinitionKVList().stream()
+        return properties.getPropertyDefinitions().getPropertyDefinitionKVs().stream()
             .collect(Collectors.toMap(
                 PropertyDefinitionKV::getKey,
                 entry -> new TPropertyDefinition.Builder(convertType(entry.getType()))
@@ -373,9 +377,9 @@ public class FromCanonical {
         return builder.build();
     }
 
-    public Map<String, TAttributeDefinition> convert(TEntityType node, @Nullable AttributeDefinitionList attributes) {
+    public Map<String, TAttributeDefinition> convert(TEntityType node, @Nullable AttributeDefinitions attributes) {
         if (Objects.isNull(node) || Objects.isNull(attributes)) return new HashMap<>();
-        return attributes.stream().collect(Collectors.toMap(
+        return attributes.getAttributeDefinitions().stream().collect(Collectors.toMap(
             AttributeDefinition::getKey,
             entry -> new TAttributeDefinition.Builder(entry.getType())
                 .setDescription(entry.getDescription())
@@ -384,11 +388,11 @@ public class FromCanonical {
         ));
     }
 
-    public List<TConstraintClause> convert(ConstraintClauseKVList constraints) {
+    public List<TConstraintClause> convert(ConstraintClauseKVs constraints) {
         if (Objects.isNull(constraints)) return null;
 
         List<TConstraintClause> list = new ArrayList<>();
-        constraints.forEach(entry -> {
+        constraints.getConstraintDefinitionKVs().forEach(entry -> {
             TConstraintClause clause = new TConstraintClause();
             clause.setKey(entry.getKey());
             clause.setValue(entry.getValue());

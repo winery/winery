@@ -88,7 +88,7 @@ public class PropertiesResource {
         if (props instanceof TEntityTemplate.WineryKVProperties || (props == null && wpd != null)) {
             if (props == null) {
                 LinkedHashMap<String, String> emptyProps = new LinkedHashMap<>();
-                wpd.getPropertyDefinitionKVList().getPropertyDefinitionKVs()
+                wpd.getPropertyDefinitions().getPropertyDefinitionKVs()
                     .forEach(propDef -> emptyProps.put(propDef.getKey(), ""));
 
                 TEntityTemplate.WineryKVProperties update = new TEntityTemplate.WineryKVProperties();

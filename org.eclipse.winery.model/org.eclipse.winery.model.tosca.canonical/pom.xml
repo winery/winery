@@ -30,6 +30,12 @@
             <artifactId>jackson-annotations</artifactId>
             <version>2.8.6</version>
         </dependency>
+        <!-- Required to access NamespacePrefixMapper for PropertiesAdapter -->
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.2.11</version>
+        </dependency>
         <dependency>
             <groupId>io.github.adr</groupId>
             <artifactId>e-adr</artifactId>

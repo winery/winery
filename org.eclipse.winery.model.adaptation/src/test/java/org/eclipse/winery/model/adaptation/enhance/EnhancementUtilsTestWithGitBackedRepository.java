@@ -224,7 +224,7 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
         assertEquals(1, listOfNodeTypes.size() - previousListOfNodeTypes.size());
         assertEquals(expectedMergedUbuntuQName, generatedFeatureEnrichedNodeType.getQName());
         assertNotNull(generatedFeatureEnrichedNodeType.getWinerysPropertiesDefinition());
-        assertEquals(9, generatedFeatureEnrichedNodeType.getWinerysPropertiesDefinition().getPropertyDefinitionKVList().size());
+        assertEquals(9, generatedFeatureEnrichedNodeType.getWinerysPropertiesDefinition().getPropertyDefinitions().getPropertyDefinitionKVs().size());
 
         TNodeTypeImplementation generatedUbuntuImpl = this.repository.getElement(
             new ArrayList<>(this.repository.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, expectedMergedUbuntuQName))

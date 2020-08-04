@@ -62,10 +62,10 @@ public interface NamespaceManager {
                     return null;
                 }
 
-                if (!requirePrefix && namespaceUri.equals(Namespaces.TOSCA_NAMESPACE)) {
+                if ((!requirePrefix || "".equals(suggestion)) && namespaceUri.equals(Namespaces.TOSCA_NAMESPACE)) {
                     // in case no prefix is required and the namespace is the TOSCA namespace, 
                     //  there should be no prefix added at all to increase human-readability of the XML
-                    LOGGER.trace("No prefix required: requesting empty prefix from marshaller.");
+                    LOGGER.trace("No prefix required or empty prefix suggested: requesting empty prefix from marshaller.");
                     // Returning empty string over "don't care"
                     return "";
                 }

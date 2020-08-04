@@ -20,7 +20,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitionList;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitions;
 import org.eclipse.winery.repository.rest.RestUtils;
 
 public class AttributeDefinitionsResource {
@@ -33,13 +33,13 @@ public class AttributeDefinitionsResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public AttributeDefinitionList get() {
+    public AttributeDefinitions get() {
         return this.parent.getEntityType().getAttributeDefinitions();
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response put(AttributeDefinitionList attributes) {
+    public Response put(AttributeDefinitions attributes) {
         this.parent.getEntityType().setAttributeDefinitions(attributes);
         return RestUtils.persist(this.parent);
     }

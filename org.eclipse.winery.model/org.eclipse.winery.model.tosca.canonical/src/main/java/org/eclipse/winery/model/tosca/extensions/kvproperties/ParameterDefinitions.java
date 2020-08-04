@@ -17,22 +17,31 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "AttributeDefinitions")
-public class AttributeDefinitionList extends ArrayList<AttributeDefinition> implements Serializable {
+@XmlRootElement(name = "ParameterDefinitions")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class ParameterDefinitions implements Serializable {
 
-    public AttributeDefinitionList() {
+    @XmlElement(name = "ParameterDefinition")
+    private List<ParameterDefinition> parameterDefinition;
+
+    public ParameterDefinitions() {
     }
 
-    public AttributeDefinitionList(Collection<? extends AttributeDefinition> c) {
-        super(c);
+    public ParameterDefinitions(List<ParameterDefinition> parameterDefinition) {
+        this.parameterDefinition = parameterDefinition;
     }
 
-    @XmlElement(name = "AttributeDefinition")
-    public List<AttributeDefinition> getAttributeDefinitions() {
-        return this;
+    public List<ParameterDefinition> getParameterDefinition() {
+        if (this.parameterDefinition == null) {
+            this.parameterDefinition = new ArrayList<>();
+        }
+        return parameterDefinition;
     }
 }

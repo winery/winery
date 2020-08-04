@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -18,21 +18,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+public class PropertyDefinitions implements Serializable {
 
-@XmlRootElement(name = "ParameterDefinitions")
-public class ParameterDefinitionList extends ArrayList<ParameterDefinition> implements Serializable {
+    private static final long serialVersionUID = -6442041855597987095L;
 
-    public ParameterDefinitionList() {
+    private List<PropertyDefinitionKV> propertyDefinition;
+
+    public PropertyDefinitions() {
     }
 
-    public ParameterDefinitionList(Collection<? extends ParameterDefinition> c) {
-        super(c);
+    public PropertyDefinitions(Collection<? extends PropertyDefinitionKV> propertyDefinition) {
+        this.propertyDefinition = new ArrayList<>(propertyDefinition);
     }
 
-    @XmlElement(name = "ParameterDefinition")
-    public List<ParameterDefinition> getParameterDefinitions() {
-        return this;
+    public List<PropertyDefinitionKV> getPropertyDefinitionKVs() {
+        if (this.propertyDefinition == null) {
+            this.propertyDefinition = new ArrayList<>();
+        }
+        return this.propertyDefinition;
     }
 }

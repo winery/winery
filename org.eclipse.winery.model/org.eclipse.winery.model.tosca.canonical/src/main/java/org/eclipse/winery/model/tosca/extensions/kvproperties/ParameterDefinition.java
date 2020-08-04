@@ -30,7 +30,7 @@ public class ParameterDefinition implements Serializable {
     private String description;
     private Boolean required;
     private String defaultValue;
-    private ConstraintClauseKVList constraintList;
+    private ConstraintClauseKVs constraintList;
     private String value;
 
     public ParameterDefinition() {
@@ -81,11 +81,11 @@ public class ParameterDefinition implements Serializable {
         this.defaultValue = defaultValue;
     }
 
-    public ConstraintClauseKVList getConstraintList() {
+    public ConstraintClauseKVs getConstraintList() {
         return constraintList;
     }
 
-    public void setConstraintList(ConstraintClauseKVList constraintList) {
+    public void setConstraintList(ConstraintClauseKVs constraintList) {
         this.constraintList = constraintList;
     }
 

@@ -14,13 +14,9 @@
 
 package org.eclipse.winery.model.jaxbsupport.map;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -29,7 +25,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.winery.model.converter.support.Namespaces;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 
-import org.eclipse.jdt.annotation.NonNull;
+import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Comment;
@@ -39,6 +36,16 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
+/**
+ * <p>
+ * This XmlAdapter is used to transform between the different {@link TEntityTemplate.Properties} implementations and
+ * a "raw" xml {@link Element}. Because {@link Element} is an interface, the XmlAdapter declares <tt>Object</tt> as it's
+ * "intermediate" type.
+ * <p>
+ * This use has the additional benefit of removing the explicit LinkedHashMap declarations in both {@link org.eclipse.winery.model.tosca.TEntityTemplate.WineryKVProperties}
+ * and {@link org.eclipse.winery.model.tosca.TEntityTemplate.YamlProperties} from the JAXBContext, thus avoiding a
+ * pollution with the namespace URI "" by the use of LinkedHashMap.
+ */
 public class PropertiesAdapter extends XmlAdapter<Object, TEntityTemplate.Properties> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesAdapter.class);
@@ -47,8 +54,18 @@ public class PropertiesAdapter extends XmlAdapter<Object, TEntityTemplate.Proper
         XML, YAML, KV
     }
 
+    @Nullable
+    private final NamespacePrefixMapper prefixMapper;
+
+    public PropertiesAdapter(@Nullable NamespacePrefixMapper prefixMapper) {
+        this.prefixMapper = prefixMapper;
+    }
+
     @Override
     public TEntityTemplate.Properties unmarshal(Object xmlData) throws Exception {
+        if (xmlData == null) {
+            return null;
+        }
         if (!(xmlData instanceof Element)) {
             throw new IllegalStateException("Cannot deserialize arbitrary XML if no Element is available. Expected Element, got " + xmlData.getClass().getName());
         }
@@ -111,6 +128,9 @@ public class PropertiesAdapter extends XmlAdapter<Object, TEntityTemplate.Proper
 
     @Override
     public Object marshal(TEntityTemplate.Properties jaxb) throws Exception {
+        if (jaxb == null) {
+            return null;
+        }
         if (jaxb instanceof TEntityTemplate.WineryKVProperties) {
             return marshallWineryKV((TEntityTemplate.WineryKVProperties) jaxb);
         }
@@ -132,16 +152,19 @@ public class PropertiesAdapter extends XmlAdapter<Object, TEntityTemplate.Proper
 
     private Element marshallNestedMap(LinkedHashMap<String, Object> data) {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
         DocumentBuilder db;
         try {
             db = dbf.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
-//            LOGGER.debug(e.getMessage(), e);
             throw new IllegalStateException("Could not instantiate document builder", e);
         }
         Document doc = db.newDocument();
-
+        final String prefix = (prefixMapper != null)
+            ? prefixMapper.getPreferredPrefix(Namespaces.TOSCA_YAML_NS, "", true)
+            : "";
         Element root = doc.createElementNS(Namespaces.TOSCA_YAML_NS, "Properties");
+        root.setPrefix(prefix);
         for (String key : data.keySet()) {
             final Object value = data.get(key);
             if (value instanceof Map) {
@@ -173,31 +196,38 @@ public class PropertiesAdapter extends XmlAdapter<Object, TEntityTemplate.Proper
     }
 
     private Element marshallWineryKV(TEntityTemplate.WineryKVProperties jaxb) {
-        TEntityTemplate.WineryKVProperties wkvProps = jaxb;
-        final String namespace = wkvProps.getNamespace();
-        String elementName = wkvProps.getElementName();
-        if (elementName.equals("")) {
-            elementName = "KVProperties";
+        final String namespace = jaxb.getNamespace();
+        String elementName = jaxb.getElementName();
+        if (elementName == null || elementName.equals("")) {
+            elementName = "Properties";
         }
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
         DocumentBuilder db;
         try {
             db = dbf.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
-//            LOGGER.debug(e.getMessage(), e);
             throw new IllegalStateException("Could not instantiate document builder", e);
         }
         Document doc = db.newDocument();
+        // Because JAXB is unwrapping the top-level element and discarding it, we add this extra wrapper
+        Element serializationWrapper = doc.createElement("DISCARDED");
+        doc.appendChild(serializationWrapper);
 
+        final String prefix = (prefixMapper != null)
+            ? prefixMapper.getPreferredPrefix(namespace, "", true)
+            : "";
         Element root = doc.createElementNS(namespace, elementName);
-        doc.appendChild(root);
+        root.setPrefix(prefix);
+        serializationWrapper.appendChild(root);
 
         // No wpd - so this is not possible:
         // we produce the serialization in the same order the XSD would be generated (because of the usage of xsd:sequence)
         // for (PropertyDefinitionKV prop : wpd.getPropertyDefinitionKVList()) {
-        final LinkedHashMap<String, String> properties = wkvProps.getKVProperties();
+        final LinkedHashMap<String, String> properties = jaxb.getKVProperties();
         for (String key : properties.keySet()) {
             Element element = doc.createElementNS(namespace, key);
+            element.setPrefix(prefix);
             root.appendChild(element);
             String value = properties.get(key);
             if (value != null) {
@@ -205,7 +235,7 @@ public class PropertiesAdapter extends XmlAdapter<Object, TEntityTemplate.Proper
                 element.appendChild(text);
             }
         }
-        return root;
+        return serializationWrapper;
     }
 
     public static boolean isKeyValuePropertyDefinition(Element xmlElement) {

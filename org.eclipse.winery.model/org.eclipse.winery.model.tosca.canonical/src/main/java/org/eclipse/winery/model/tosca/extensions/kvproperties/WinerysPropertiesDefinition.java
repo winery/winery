@@ -39,7 +39,7 @@ public class WinerysPropertiesDefinition extends TEntityType.PropertiesDefinitio
     @JsonProperty
     private String elementName;
     @JsonProperty
-    private PropertyDefinitionKVList propertyDefinitionKVList;
+    private PropertyDefinitions propertyDefinitions;
     @JsonProperty
     private Boolean isDerivedFromXSD = Boolean.FALSE;
     
@@ -62,12 +62,12 @@ public class WinerysPropertiesDefinition extends TEntityType.PropertiesDefinitio
     }
 
     @XmlElement(name = "properties")
-    public PropertyDefinitionKVList getPropertyDefinitionKVList() {
-        return this.propertyDefinitionKVList;
+    public PropertyDefinitions getPropertyDefinitions() {
+        return this.propertyDefinitions;
     }
 
-    public void setPropertyDefinitionKVList(PropertyDefinitionKVList propertyDefinitionKVList) {
-        this.propertyDefinitionKVList = propertyDefinitionKVList;
+    public void setPropertyDefinitions(PropertyDefinitions propertyDefinitions) {
+        this.propertyDefinitions = propertyDefinitions;
     }
 
     /**
