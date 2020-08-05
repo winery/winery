@@ -22,8 +22,8 @@ import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.xml.TDefinitions;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitionList;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinitionList;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitions;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinitions;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.repository.backend.MockXMLElement;
 
@@ -51,8 +51,8 @@ public class XmlModelJAXBSupport {
             context = JAXBContext.newInstance(
                 TDefinitions.class, // all other elements are referred by "@XmlSeeAlso"
                 WinerysPropertiesDefinition.class,
-                ParameterDefinitionList.class,
-                AttributeDefinitionList.class,
+                ParameterDefinitions.class,
+                AttributeDefinitions.class,
                 Application.class,
                 MockXMLElement.class // MockXMLElement is added for testing purposes only.
             );

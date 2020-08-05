@@ -13,9 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -25,7 +22,6 @@ import javax.xml.bind.Unmarshaller;
 import org.eclipse.winery.model.jaxbsupport.map.PropertiesAdapter;
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.TDefinitions;
-import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitions;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinitions;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
@@ -57,8 +53,8 @@ public class JAXBSupport {
                 WinerysPropertiesDefinition.class,
                 ParameterDefinitions.class,
                 AttributeDefinitions.class,
-                MockXMLElement.class,
                 Application.class,
+                MockXMLElement.class,
             });
                 // MockXMLElement is added for testing purposes only.
         } catch (JAXBException e) {

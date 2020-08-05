@@ -57,6 +57,10 @@ public class PropertiesAdapter extends XmlAdapter<Object, TEntityTemplate.Proper
     @Nullable
     private final NamespacePrefixMapper prefixMapper;
 
+    public PropertiesAdapter() {
+        this.prefixMapper = null;
+    }
+
     public PropertiesAdapter(@Nullable NamespacePrefixMapper prefixMapper) {
         this.prefixMapper = prefixMapper;
     }
