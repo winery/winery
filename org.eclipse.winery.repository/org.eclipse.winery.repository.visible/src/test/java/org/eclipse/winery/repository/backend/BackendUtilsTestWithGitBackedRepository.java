@@ -217,7 +217,7 @@ public class BackendUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         WineryVersion oldVersion = new WineryVersion("", 1, 1);
 
         ToscaDiff toscaDiff = BackendUtils.compare(newVersion, oldVersion, repository);
-        ToscaDiff properties = toscaDiff.getChildrenMap().get("winerysPropertiesDefinition").getChildrenMap().get("propertyDefinitionKVList");
+        ToscaDiff properties = toscaDiff.getChildrenMap().get("winerysPropertiesDefinition").getChildrenMap().get("propertyDefinitions");
 
         assertEquals(VersionState.CHANGED, toscaDiff.getState());
         assertEquals(VersionState.CHANGED, properties.getState());

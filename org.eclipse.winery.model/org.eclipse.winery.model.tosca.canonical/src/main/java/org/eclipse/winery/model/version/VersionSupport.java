@@ -126,6 +126,9 @@ public class VersionSupport {
             .propertyName("internalAny")
             // ignore changes of the namespace prefix 
             .propertyName("prefix")
+            // ignore namespace and elementName changes in WineryKVProperties
+            .propertyName("elementName")
+            .propertyName("namespace")
             .category(REFERENCING_OBJECT)
             .and()
             .identity()
