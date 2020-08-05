@@ -98,8 +98,7 @@ public class PolicyWrapper {
 
     private String getType(TPolicyType policyType, String propertyKey) {
         List<PropertyDefinitionKV> propertyDefinitions = policyType.getWinerysPropertiesDefinition()
-            .getPropertyDefinitions()
-            .getPropertyDefinitionKVs();
+            .getPropertyDefinitions();
         for (PropertyDefinitionKV propertyDefinition : propertyDefinitions) {
             if (propertyDefinition.getKey().equals(propertyKey)) {
                 return propertyDefinition.getType();

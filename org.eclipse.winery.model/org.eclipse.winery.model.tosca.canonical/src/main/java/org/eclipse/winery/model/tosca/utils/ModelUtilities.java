@@ -63,7 +63,6 @@ import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.constants.QNames;
 import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitions;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 
 import org.slf4j.LoggerFactory;
@@ -168,7 +167,7 @@ public class ModelUtilities {
         // currently, "xsd" is a hardcoded prefix in the type definition
         el.setAttribute("xmlns:xsd", XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
-        for (PropertyDefinitionKV prop : wpd.getPropertyDefinitions().getPropertyDefinitionKVs()) {
+        for (PropertyDefinitionKV prop : wpd.getPropertyDefinitions()) {
             el2 = doc.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "element");
             el.appendChild(el2);
             el2.setAttribute("name", prop.getKey());
@@ -311,10 +310,10 @@ public class ModelUtilities {
         boolean valid = wpd.getNamespace() != null;
         valid = valid && (wpd.getElementName() != null);
         if (valid) {
-            PropertyDefinitions propertyDefinitions = wpd.getPropertyDefinitions();
+            List<PropertyDefinitionKV> propertyDefinitions = wpd.getPropertyDefinitions();
             valid = (propertyDefinitions != null);
             if (valid) {
-                for (PropertyDefinitionKV def : propertyDefinitions.getPropertyDefinitionKVs()) {
+                for (PropertyDefinitionKV def : propertyDefinitions) {
                     valid = valid && (def.getKey() != null);
                     valid = valid && (def.getType() != null);
                 }

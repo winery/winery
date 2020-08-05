@@ -46,7 +46,6 @@ import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.model.tosca.constants.OpenToscaInterfaces;
 import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitions;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
@@ -276,17 +275,17 @@ public class EnhancementUtils {
                 TNodeType generatedNodeType = createFeatureNodeType(nodeTemplate, featureMap.get(nodeTemplate.getId()));
                 nodeTemplate.setType(generatedNodeType.getQName());
                 if (Objects.nonNull(generatedNodeType.getWinerysPropertiesDefinition())) {
-                    PropertyDefinitions definedProperties = generatedNodeType.getWinerysPropertiesDefinition()
+                    List<PropertyDefinitionKV> definedProperties = generatedNodeType.getWinerysPropertiesDefinition()
                         .getPropertyDefinitions();
 
                     final @NonNull LinkedHashMap<String, String> kvProperties = ModelUtilities.getPropertiesKV(nodeTemplate) == null
                         ? new LinkedHashMap<>()
                         : ModelUtilities.getPropertiesKV(nodeTemplate);
                     if (kvProperties.isEmpty()) {
-                        definedProperties.getPropertyDefinitionKVs().stream().map(PropertyDefinitionKV::getKey)
+                        definedProperties.stream().map(PropertyDefinitionKV::getKey)
                             .forEach(k -> kvProperties.put(k, ""));
                     } else {
-                        definedProperties.getPropertyDefinitionKVs().forEach(propertyDefinition -> {
+                        definedProperties.forEach(propertyDefinition -> {
                             if (Objects.isNull(kvProperties.get(propertyDefinition.getKey()))) {
                                 kvProperties.put(propertyDefinition.getKey(), "");
                             }
@@ -337,12 +336,11 @@ public class EnhancementUtils {
         // prepare Properties
         if (Objects.isNull(featureEnrichedNodeType.getWinerysPropertiesDefinition())) {
             WinerysPropertiesDefinition props = new WinerysPropertiesDefinition();
-            props.setPropertyDefinitions(new PropertyDefinitions());
+            props.setPropertyDefinitions(new ArrayList<>());
             ModelUtilities.replaceWinerysPropertiesDefinition(featureEnrichedNodeType, props);
         }
         List<PropertyDefinitionKV> baseProperties = featureEnrichedNodeType.getWinerysPropertiesDefinition()
-            .getPropertyDefinitions()
-            .getPropertyDefinitionKVs();
+            .getPropertyDefinitions();
 
         // prepare Interfaces
         if (Objects.isNull(featureEnrichedNodeType.getInterfaces())) {
@@ -385,8 +383,7 @@ public class EnhancementUtils {
 
             // merge Properties
             if (Objects.nonNull(nodeType.getWinerysPropertiesDefinition())) {
-                List<PropertyDefinitionKV> kvList = nodeType.getWinerysPropertiesDefinition().getPropertyDefinitions()
-                    .getPropertyDefinitionKVs();
+                List<PropertyDefinitionKV> kvList = nodeType.getWinerysPropertiesDefinition().getPropertyDefinitions();
                 if (Objects.nonNull(kvList) && !kvList.isEmpty()) {
                     for (PropertyDefinitionKV kv : kvList) {
                         boolean listContainsProperty = baseProperties.stream()
@@ -414,7 +411,7 @@ public class EnhancementUtils {
         // remove them from the type to ensure a compliant XML.
         if (Objects.nonNull(featureEnrichedNodeType.getWinerysPropertiesDefinition())
             && Objects.nonNull(featureEnrichedNodeType.getWinerysPropertiesDefinition().getPropertyDefinitions())
-            && featureEnrichedNodeType.getWinerysPropertiesDefinition().getPropertyDefinitions().getPropertyDefinitionKVs().isEmpty()) {
+            && featureEnrichedNodeType.getWinerysPropertiesDefinition().getPropertyDefinitions().isEmpty()) {
             ModelUtilities.removeWinerysPropertiesDefinition(featureEnrichedNodeType);
         }
 

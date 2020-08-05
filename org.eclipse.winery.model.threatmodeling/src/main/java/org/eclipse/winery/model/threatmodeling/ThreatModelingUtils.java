@@ -36,7 +36,6 @@ import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TPolicyType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitions;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -290,11 +289,10 @@ public class ThreatModelingUtils {
         threat.setProperties(null);
 
         WinerysPropertiesDefinition threatProps = new WinerysPropertiesDefinition();
-        PropertyDefinitions threatPropList = new PropertyDefinitions();
         threatProps.setElementName("properties");
         threatProps.setNamespace(ThreatModelingConstants.THREATMODELING_NAMESPACE.concat("/propertiesdefinition/winery"));
 
-        threatPropList.getPropertyDefinitionKVs().addAll(Arrays.asList(
+        List<PropertyDefinitionKV> threatPropList = new ArrayList<>(Arrays.asList(
             new PropertyDefinitionKV(ThreatModelingProperties.description.toString(), "xsd:string"),
             new PropertyDefinitionKV(ThreatModelingProperties.strideClassification.toString(), "xsd:string"),
             new PropertyDefinitionKV(ThreatModelingProperties.severity.toString(), "xsd:string")
@@ -320,11 +318,11 @@ public class ThreatModelingUtils {
         mitigation.setProperties(null);
 
         WinerysPropertiesDefinition mitigationProps = new WinerysPropertiesDefinition();
-        PropertyDefinitions mitigationPropList = new PropertyDefinitions();
+        List<PropertyDefinitionKV> mitigationPropList = new ArrayList<>();
         mitigationProps.setElementName("properties");
         mitigationProps.setNamespace(ThreatModelingConstants.THREATMODELING_NAMESPACE.concat("/propertiesdefinition/winery"));
 
-        mitigationPropList.getPropertyDefinitionKVs().add(new PropertyDefinitionKV(ThreatModelingProperties.ThreatReference.toString(), "xsd:string"));
+        mitigationPropList.add(new PropertyDefinitionKV(ThreatModelingProperties.ThreatReference.toString(), "xsd:string"));
         mitigationProps.setPropertyDefinitions(mitigationPropList);
 
         ModelUtilities.replaceWinerysPropertiesDefinition(mitigation, mitigationProps);

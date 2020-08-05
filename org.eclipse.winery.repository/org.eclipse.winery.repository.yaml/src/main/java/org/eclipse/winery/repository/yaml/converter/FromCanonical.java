@@ -330,7 +330,7 @@ public class FromCanonical {
     }
 
     private Map<String, TPropertyDefinition> convertWinerysProperties(WinerysPropertiesDefinition properties) {
-        return properties.getPropertyDefinitions().getPropertyDefinitionKVs().stream()
+        return properties.getPropertyDefinitions().stream()
             .collect(Collectors.toMap(
                 PropertyDefinitionKV::getKey,
                 entry -> new TPropertyDefinition.Builder(convertType(entry.getType()))

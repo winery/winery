@@ -66,7 +66,6 @@ import org.eclipse.winery.model.ids.IdNames;
 import org.eclipse.winery.model.ids.definitions.DataTypeId;
 import org.eclipse.winery.model.ids.extensions.TopologyFragmentRefinementModelId;
 import org.eclipse.winery.model.tosca.TDataType;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitions;
 import org.eclipse.winery.model.version.VersionSupport;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
 import org.eclipse.winery.repository.common.RepositoryFileReference;
@@ -678,31 +677,13 @@ public class BackendUtils {
         if (winerysPropertiesDefinition == null) {
             return;
         }
-        // FIXME do things here?!
-//        Document document;
-//        try {
-//            document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-//        } catch (ParserConfigurationException e) {
-//            LOGGER.error("Could not create document", e);
-//            return;
-//        }
-//
-//        final String namespace = winerysPropertiesDefinition.getNamespace();
-//        final Element wrapperElement = document.createElementNS(namespace, winerysPropertiesDefinition.getElementName());
-//        document.appendChild(wrapperElement);
-//
-//        // we produce the serialization in the same order the XSD would be generated (because of the usage of xsd:sequence)
-//        for (PropertyDefinitionKV propertyDefinitionKV : winerysPropertiesDefinition.getPropertyDefinitionKVList()) {
-//            // we always write the element tag as the XSD forces that
-//            final Element valueElement = document.createElementNS(namespace, propertyDefinitionKV.getKey());
-//            wrapperElement.appendChild(valueElement);
-//        }
-//
         final LinkedHashMap<String, String> emptyKVProperties = new LinkedHashMap<>();
-        for (PropertyDefinitionKV definitionKV : winerysPropertiesDefinition.getPropertyDefinitions().getPropertyDefinitionKVs()) {
+        for (PropertyDefinitionKV definitionKV : winerysPropertiesDefinition.getPropertyDefinitions()) {
             emptyKVProperties.put(definitionKV.getKey(), "");
         }
         TEntityTemplate.WineryKVProperties properties = new TEntityTemplate.WineryKVProperties();
+        properties.setNamespace(winerysPropertiesDefinition.getNamespace());
+        properties.setElementName(winerysPropertiesDefinition.getElementName());
         properties.setKVProperties(emptyKVProperties);
         entityTemplate.setProperties(properties);
     }
@@ -924,7 +905,7 @@ public class BackendUtils {
         XSObjectList particles = modelGroup.getParticles();
         int len = particles.getLength();
         boolean everyThingIsASimpleType = true;
-        PropertyDefinitions list = new PropertyDefinitions();
+        List<PropertyDefinitionKV> list = new ArrayList<>();
         if (len != 0) {
             for (int i = 0; i < len; i++) {
                 XSParticle innerParticle = (XSParticle) particles.item(i);
@@ -942,7 +923,7 @@ public class BackendUtils {
                             def.setKey(name);
                             // convention at WPD: use "xsd" as prefix for XML Schema Definition
                             def.setType("xsd:" + typeName);
-                            list.getPropertyDefinitionKVs().add(def);
+                            list.add(def);
                         } else {
                             everyThingIsASimpleType = false;
                             break;

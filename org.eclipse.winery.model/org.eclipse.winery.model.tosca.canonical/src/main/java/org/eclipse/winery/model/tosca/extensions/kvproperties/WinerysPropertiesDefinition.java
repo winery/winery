@@ -14,10 +14,16 @@
 package org.eclipse.winery.model.tosca.extensions.kvproperties;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlValue;
 
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
@@ -26,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @XmlRootElement(name = "PropertiesDefinition")
+@XmlAccessorType(XmlAccessType.FIELD)
 /**
  * This is Winery's main extension element for a key/value based properties definition.
  * To be representable in the canonical model it directly implements the marker interface used for storing
@@ -35,15 +42,18 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 public class WinerysPropertiesDefinition extends TEntityType.PropertiesDefinition implements Serializable {
 
     @JsonProperty
+    @XmlAttribute(name = "namespace")
     private String namespace;
     @JsonProperty
+    @XmlAttribute(name = "elementname")
     private String elementName;
     @JsonProperty
-    private PropertyDefinitions propertyDefinitions;
+    @XmlElement(name = "properties")
+    private List<PropertyDefinitionKV> propertyDefinitions;
     @JsonProperty
+    @XmlAttribute(name = "derivedFromXSD", namespace = Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE)
     private Boolean isDerivedFromXSD = Boolean.FALSE;
     
-    @XmlAttribute(name = "namespace")
     public String getNamespace() {
         return this.namespace;
     }
@@ -52,7 +62,6 @@ public class WinerysPropertiesDefinition extends TEntityType.PropertiesDefinitio
         this.namespace = namespace;
     }
 
-    @XmlAttribute(name = "elementname")
     public String getElementName() {
         return this.elementName;
     }
@@ -61,20 +70,26 @@ public class WinerysPropertiesDefinition extends TEntityType.PropertiesDefinitio
         this.elementName = localName;
     }
 
-    @XmlElement(name = "properties")
-    public PropertyDefinitions getPropertyDefinitions() {
-        return this.propertyDefinitions;
+    public List<PropertyDefinitionKV> getPropertyDefinitions() {
+        return propertyDefinitions;
     }
 
-    public void setPropertyDefinitions(PropertyDefinitions propertyDefinitions) {
+    public void setPropertyDefinitions(List<PropertyDefinitionKV> propertyDefinitions) {
         this.propertyDefinitions = propertyDefinitions;
     }
+
+//    public PropertyDefinitions getPropertyDefinitions() {
+//        return this.propertyDefinitions;
+//    }
+//
+//    public void setPropertyDefinitions(PropertyDefinitions propertyDefinitions) {
+//        this.propertyDefinitions = propertyDefinitions;
+//    }
 
     /**
      * @return null if not derived from XSD, "Boolean.TRUE" otherwise. This leads JAXB to write the attribute only if
      * derivedFromXSD is true
      */
-    @XmlAttribute(name = "derivedFromXSD", namespace = Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE)
     public Boolean getIsDerivedFromXSD() {
         if ((this.isDerivedFromXSD != null) && (this.isDerivedFromXSD)) {
             return Boolean.TRUE;

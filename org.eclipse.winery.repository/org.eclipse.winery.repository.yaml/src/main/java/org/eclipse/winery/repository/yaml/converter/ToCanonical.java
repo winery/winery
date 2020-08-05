@@ -79,7 +79,6 @@ import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKV
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinition;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinitions;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitions;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.yaml.TArtifactDefinition;
 import org.eclipse.winery.model.tosca.yaml.TAttributeDefinition;
@@ -265,12 +264,12 @@ public class ToCanonical {
         WinerysPropertiesDefinition winerysPropertiesDefinition = new WinerysPropertiesDefinition();
         winerysPropertiesDefinition.setElementName("properties");
         winerysPropertiesDefinition.setNamespace(targetNamespace + "/propertiesDefinition/" + typeName);
-        PropertyDefinitions wineryProperties = new PropertyDefinitions();
+        List<PropertyDefinitionKV> wineryProperties = new ArrayList<>();
         for (Map.Entry<String, TPropertyDefinition> property : properties.entrySet()) {
             TPropertyDefinition propDef = property.getValue();
             String type = (propDef.getType() == null ? "inherited" : propDef.getType().getLocalPart());
             String defaultValue = ValueHelper.toString(propDef.getDefault());
-            wineryProperties.getPropertyDefinitionKVs().add(
+            wineryProperties.add(
                 new PropertyDefinitionKV(property.getKey(),
                     type,
                     propDef.getRequired(),

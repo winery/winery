@@ -58,7 +58,6 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitions;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -205,10 +204,10 @@ public class ConsistencyChecker {
             }
             final WinerysPropertiesDefinition winerysPropertiesDefinition = nodeType.getWinerysPropertiesDefinition();
             if (winerysPropertiesDefinition != null) {
-                PropertyDefinitions list = winerysPropertiesDefinition.getPropertyDefinitions();
+                List<PropertyDefinitionKV> list = winerysPropertiesDefinition.getPropertyDefinitions();
                 if (list != null) {
                     // iterate on all defined properties
-                    for (PropertyDefinitionKV propdef : list.getPropertyDefinitionKVs()) {
+                    for (PropertyDefinitionKV propdef : list) {
                         String key = propdef.getKey();
                         if (key == null) {
                             printAndAddError(id, "key is null");
@@ -352,7 +351,7 @@ public class ConsistencyChecker {
                 printAndAddError(id, "Properties required, but no properties set (kvproperties case)");
                 return;
             }
-            for (PropertyDefinitionKV propertyDefinitionKV : winerysPropertiesDefinition.getPropertyDefinitions().getPropertyDefinitionKVs()) {
+            for (PropertyDefinitionKV propertyDefinitionKV : winerysPropertiesDefinition.getPropertyDefinitions()) {
                 String key = propertyDefinitionKV.getKey();
                 if (kvProperties.get(key) == null) {
                     printAndAddError(id, "Property " + key + " required, but not set.");

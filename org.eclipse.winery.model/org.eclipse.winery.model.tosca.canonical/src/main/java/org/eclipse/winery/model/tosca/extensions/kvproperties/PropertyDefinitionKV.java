@@ -104,7 +104,7 @@ public class PropertyDefinitionKV implements Serializable {
         this.description = description;
     }
 
-    @XmlElementWrapper(name = "constraints")
+//    @XmlElementWrapper(name = "constraints")
     @XmlElement(name = "constraint")
     public ConstraintClauseKVs getConstraints() {
         return this.constraintList;

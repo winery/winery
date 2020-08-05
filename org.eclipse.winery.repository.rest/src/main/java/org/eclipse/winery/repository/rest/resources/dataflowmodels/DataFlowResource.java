@@ -361,7 +361,7 @@ public class DataFlowResource {
             if (Objects.nonNull(nodeType.getWinerysPropertiesDefinition())) {
                 // add empty property for NodeType properties to avoid errors due to missing properties
                 WinerysPropertiesDefinition def = nodeType.getWinerysPropertiesDefinition();
-                for (PropertyDefinitionKV prop : def.getPropertyDefinitions().getPropertyDefinitionKVs()) {
+                for (PropertyDefinitionKV prop : def.getPropertyDefinitions()) {
                     propertyList.put(prop.getKey(), "");
                 }
             }
@@ -444,13 +444,13 @@ public class DataFlowResource {
             LinkedHashMap<String, String> propertyList = new LinkedHashMap<>();
 
             WinerysPropertiesDefinition def = relationshipType.getWinerysPropertiesDefinition();
-            for (PropertyDefinitionKV prop : def.getPropertyDefinitions().getPropertyDefinitionKVs()) {
+            for (PropertyDefinitionKV prop : def.getPropertyDefinitions()) {
                 propertyList.put(prop.getKey(), "");
             }
 
             TEntityTemplate.WineryKVProperties relationProperties = new TEntityTemplate.WineryKVProperties();
-            // FIXME deal with namespacing here
-            // def.getNamespace(), def.getElementName(),
+            relationProperties.setElementName(def.getElementName());
+            relationProperties.setNamespace(def.getNamespace());
             relationProperties.setKVProperties(propertyList);
             builder.setProperties(relationProperties);
         }

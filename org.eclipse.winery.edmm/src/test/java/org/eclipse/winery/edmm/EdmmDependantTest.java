@@ -16,9 +16,11 @@ package org.eclipse.winery.edmm;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -40,7 +42,6 @@ import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitions;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 
@@ -85,8 +86,8 @@ public abstract class EdmmDependantTest {
         TNodeType nodeType3 = new TNodeType();
         nodeType3.setName(nodeType3QName.getLocalPart());
         nodeType3.setTargetNamespace(nodeType3QName.getNamespaceURI());
-        PropertyDefinitions kvList = new PropertyDefinitions();
-        kvList.getPropertyDefinitionKVs().addAll(Arrays.asList(
+        List<PropertyDefinitionKV> kvList = new ArrayList<>();
+        kvList.addAll(Arrays.asList(
             new PropertyDefinitionKV("os_family", "xsd:string"),
             new PropertyDefinitionKV("public_key", "xsd:string"),
             new PropertyDefinitionKV("ssh_port", "number")
