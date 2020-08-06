@@ -564,6 +564,7 @@ public class FromCanonical {
             TPlans plans = new TPlans();
             plans.setTargetNamespace(canonical.getPlans().getTargetNamespace());
             plans.getPlan().addAll(canonical.getPlans().getPlan().stream().map(this::convert).collect(Collectors.toList()));
+            builder.setPlans(plans);
         }
         builder.setSubstitutableNodeType(canonical.getSubstitutableNodeType());
         fillExtensibleElementsProperties(builder, canonical);

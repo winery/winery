@@ -647,6 +647,7 @@ public class ToCanonical {
             TPlans plans = new TPlans();
             plans.setTargetNamespace(xml.getPlans().getTargetNamespace());
             plans.getPlan().addAll(xml.getPlans().getPlan().stream().map(this::convert).collect(Collectors.toList()));
+            builder.setPlans(plans);
         }
         builder.setSubstitutableNodeType(xml.getSubstitutableNodeType());
         fillExtensibleElementsProperties(builder, xml);

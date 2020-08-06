@@ -21,9 +21,14 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.eclipse.winery.model.jaxbsupport.map.BooleanToYesNo;
+import org.eclipse.winery.model.jsonsupport.YesNo;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.eclipse.jdt.annotation.NonNull;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -39,6 +44,9 @@ public class TParameter implements Serializable {
     protected String type;
 
     @XmlAttribute(name = "required")
+    @XmlJavaTypeAdapter(BooleanToYesNo.class)
+    @JsonSerialize(using = YesNo.Serializer.class)
+    @JsonDeserialize(using = YesNo.Deserializer.class)
     protected boolean required;
 
     public TParameter() {
