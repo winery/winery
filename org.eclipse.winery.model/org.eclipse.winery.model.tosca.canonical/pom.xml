@@ -32,9 +32,9 @@
         </dependency>
         <!-- Required to access NamespacePrefixMapper for PropertiesAdapter -->
         <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>2.2.11</version>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>${org.glassfish.jxb}</version>
         </dependency>
         <dependency>
             <groupId>io.github.adr</groupId>
