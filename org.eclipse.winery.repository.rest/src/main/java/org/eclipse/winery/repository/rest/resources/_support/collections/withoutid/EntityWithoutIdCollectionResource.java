@@ -75,7 +75,7 @@ public abstract class EntityWithoutIdCollectionResource<EntityResourceT extends 
 
     @Override
     public String getId(EntityT entity) {
-        return IdDeterminationWithHashCode.INSTANCE.getId(entity);
+        return new IdDeterminationWithHashCode(requestRepository).getId(entity);
     }
 
     @Override
