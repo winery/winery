@@ -176,6 +176,7 @@
                 "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y":"461"
             },
             "properties":{
+                "propertyType": "KV",
                 "kvproperties":{
                     "key1":"testValue",
                     "key2":""

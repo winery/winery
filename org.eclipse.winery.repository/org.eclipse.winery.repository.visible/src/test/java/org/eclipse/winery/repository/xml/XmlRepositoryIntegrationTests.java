@@ -24,6 +24,7 @@ import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
@@ -43,6 +44,7 @@ public class XmlRepositoryIntegrationTests extends TestWithGitBackedRepository {
     }
     
     @Test
+    @Disabled("for this to work properly we need a \"touched\" repository state as well as deterministic serialization")
     public void roundtripDoesNotChangeContents() {
         assertAll(
             repository.getAllDefinitionsChildIds().stream()

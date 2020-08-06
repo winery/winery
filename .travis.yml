@@ -11,9 +11,9 @@ jobs:
   exclude:
     - jdk: openjdk8
       env: BUILD_PROFILE=frontend
-cache:
-  directories:
-    - $HOME/.m2
+#cache:
+#  directories:
+#    - $HOME/.m2
 before_install:
   - npm install -g ganache-cli
 install:

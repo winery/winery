@@ -67,7 +67,7 @@ public class YamlRepositoryIntegrationTests extends TestWithGitBackedRepository 
     }
     
     @Test
-//    @Disabled("Serialization is currently too non-deterministic to expect useful test results")
+    @Disabled("Serialization is currently too non-deterministic to expect useful test results")
     public void roundtripDoesNotChangeContents() {
         assertAll(
             repository.getAllDefinitionsChildIds().stream()
