@@ -27,10 +27,13 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Queue;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -64,6 +67,8 @@ import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.model.ids.elements.ToscaElementId;
 import org.eclipse.winery.model.tosca.HasInheritance;
 import org.eclipse.winery.model.tosca.HasType;
+import org.eclipse.winery.model.tosca.TDataType;
+import org.eclipse.winery.model.tosca.TSchema;
 import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
 import org.eclipse.winery.model.tosca.TAppliesTo;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
@@ -598,13 +603,36 @@ public interface IRepository extends IWineryRepositoryCommon {
                     }
                 }
 
-                // FIXME this check is based on the XML model for EntityType properties
                 if (!referencesGivenQName && element instanceof TEntityType) {
-//                    TEntityType.PropertiesDefinition propertiesDefinition = ((TEntityType) element).getPropertiesDefinition();
-//                    if (Objects.nonNull(propertiesDefinition)) {
-//                        referencesGivenQName = Objects.nonNull(propertiesDefinition.getElement()) && propertiesDefinition.getElement().equals(qNameOfTheType)
-//                            || Objects.nonNull(propertiesDefinition.getType()) && qNameOfTheType.equals(propertiesDefinition.getType());
-//                    }
+                    TEntityType.PropertiesDefinition propertiesDefinition = ((TEntityType) element).getProperties();
+                    if (Objects.nonNull(propertiesDefinition)) {
+                        if (propertiesDefinition instanceof TEntityType.XmlTypeDefinition) {
+                            referencesGivenQName = ((TEntityType.XmlTypeDefinition) propertiesDefinition).getType().equals(qNameOfTheType);
+                        } else if (propertiesDefinition instanceof TEntityType.XmlElementDefinition) {
+                            // while it's not strictly a type, it's still a QName reference, so err on the side of caution here
+                            referencesGivenQName = ((TEntityType.XmlElementDefinition) propertiesDefinition).getElement().equals(qNameOfTheType);
+                        } else if (propertiesDefinition instanceof TEntityType.YamlPropertiesDefinition) {
+                            TEntityType.YamlPropertiesDefinition def = (TEntityType.YamlPropertiesDefinition) propertiesDefinition;
+                            if (def.getProperties().stream().anyMatch(prop -> prop.getType().equals(qNameOfTheType))) {
+                                referencesGivenQName = true;
+                            }
+                            Queue<TSchema> schemata = new LinkedList<>();
+                            for (TEntityType.YamlPropertyDefinition prop : def.getProperties()) {
+                                schemata.add(prop.getEntrySchema());
+                                schemata.add(prop.getKeySchema());
+                            }
+                            while (!schemata.isEmpty()) {
+                                TSchema current = schemata.poll();
+                                if (current == null) { continue; }
+                                if (current.getType().equals(qNameOfTheType)) {
+                                    referencesGivenQName = true;
+                                    break;
+                                }
+                                schemata.add(current.getEntrySchema());
+                                schemata.add(current.getKeySchema());
+                            }
+                        }
+                    }
                 }
 
                 if (!referencesGivenQName && element instanceof TServiceTemplate) {
@@ -702,6 +730,33 @@ public interface IRepository extends IWineryRepositoryCommon {
         TArtifacts artifacts = nodeType.getArtifacts();
         if (Objects.nonNull(artifacts)) {
             artifacts.getArtifact().forEach(a -> ids.add(new ArtifactTypeId(a.getType())));
+        }
+
+        TEntityType.PropertiesDefinition properties = nodeType.getProperties();
+        if (Objects.nonNull(properties)) {
+            if (properties instanceof TEntityType.XmlElementDefinition
+                || properties instanceof TEntityType.XmlTypeDefinition) {
+                // nothing to do here, since these are not referring to TDefinitions
+            } else if (properties instanceof TEntityType.YamlPropertiesDefinition) {
+                List<TEntityType.YamlPropertyDefinition> props = ((TEntityType.YamlPropertiesDefinition) properties).getProperties();
+                Queue<TSchema> schemata = new LinkedList<>();
+                for (TEntityType.YamlPropertyDefinition def : props) {
+                    if (!def.getType().getNamespaceURI().isEmpty()) {
+                        ids.add(new DataTypeId(def.getType()));
+                    }
+                    schemata.add(def.getKeySchema());
+                    schemata.add(def.getEntrySchema());
+                }
+                while (!schemata.isEmpty()) {
+                    TSchema current = schemata.poll();
+                    if (current == null) { continue; }
+                    if (!current.getType().getNamespaceURI().isEmpty()) {
+                        ids.add(new DataTypeId(current.getType()));
+                    }
+                    schemata.add(current.getKeySchema());
+                    schemata.add(current.getEntrySchema());
+                }
+            }
         }
 
         return ids;
@@ -979,8 +1034,34 @@ public interface IRepository extends IWineryRepositoryCommon {
     }
 
     default Collection<DefinitionsChildId> getReferencedDefinitionsChildIds(DataTypeId id) {
-        // FIXME this probably needs additional work
-        return new HashSet<>();
+        Set<DefinitionsChildId> ids = new HashSet<>();
+        TDataType definition = this.getElement(id);
+
+        // cast is safe because TDataType can only use YamlPropertiesDefinitions
+        final TEntityType.YamlPropertiesDefinition properties = (TEntityType.YamlPropertiesDefinition) definition.getProperties();
+        if (properties != null) {
+            List<TEntityType.YamlPropertyDefinition> propDefs = properties.getProperties();
+            Queue<TSchema> schemata = new LinkedList<>();
+            for (TEntityType.YamlPropertyDefinition def : propDefs) {
+                if (!def.getType().getNamespaceURI().isEmpty()) {
+                    ids.add(new DataTypeId(def.getType()));
+                }
+                schemata.add(def.getKeySchema());
+                schemata.add(def.getEntrySchema());
+            }
+            while (!schemata.isEmpty()) {
+                TSchema current = schemata.poll();
+                if (current == null) {
+                    continue;
+                }
+                if (!current.getType().getNamespaceURI().isEmpty()) {
+                    ids.add(new DataTypeId(current.getType()));
+                }
+                schemata.add(current.getKeySchema());
+                schemata.add(current.getEntrySchema());
+            }
+        }
+        return ids;
     }
 
     default Collection<DefinitionsChildId> getReferencedDefinitionsChildIds(PatternRefinementModelId id) {
@@ -1104,9 +1185,7 @@ public interface IRepository extends IWineryRepositoryCommon {
         // Then, handle the super classes, which support inheritance
         // Currently, it is EntityType and EntityTypeImplementation only
         // Since the latter does not exist in the TOSCA MetaModel, we just handle EntityType here
-        // FIXME We currently explicitly exclude DataTypeId here,
-        //  because conversion from YAML model breaks assumptions about the structure of Definitions
-        if (id instanceof HasInheritanceId && !(id instanceof DataTypeId)) {
+        if (id instanceof HasInheritanceId) {
             Optional<DefinitionsChildId> parentId = this.getDefinitionsChildIdOfParent((HasInheritanceId) id);
             if (parentId.isPresent()) {
                 // add the parent id itself. The referenced definitions are included by recursion
