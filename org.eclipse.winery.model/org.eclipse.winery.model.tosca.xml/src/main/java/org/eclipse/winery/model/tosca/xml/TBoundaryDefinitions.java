@@ -237,7 +237,7 @@ public class TBoundaryDefinitions implements Serializable {
         @NonNull
         public List<TPropertyConstraint> getPropertyConstraint() {
             if (propertyConstraint == null) {
-                propertyConstraint = new ArrayList<TPropertyConstraint>();
+                propertyConstraint = new ArrayList<>();
             }
             return this.propertyConstraint;
         }

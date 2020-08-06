@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.jsonsupport.PropertiesDefinitionDeserializer;
+import org.eclipse.winery.model.jsonsupport.YesNo;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitions;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKVs;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
@@ -43,6 +44,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -78,8 +80,12 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     @XmlSchemaType(name = "NCName")
     protected String name;
     @XmlAttribute(name = "abstract")
+    @JsonSerialize(using = YesNo.Serializer.class)
+    @JsonDeserialize(using = YesNo.Deserializer.class)
     protected boolean _abstract;
     @XmlAttribute(name = "final")
+    @JsonSerialize(using = YesNo.Serializer.class)
+    @JsonDeserialize(using = YesNo.Deserializer.class)
     protected boolean _final;
     @XmlAttribute(name = "targetNamespace")
     @XmlSchemaType(name = "anyURI")

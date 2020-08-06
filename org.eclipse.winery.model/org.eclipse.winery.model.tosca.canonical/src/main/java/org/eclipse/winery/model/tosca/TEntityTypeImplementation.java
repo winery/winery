@@ -28,8 +28,12 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.jsonsupport.YesNo;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -61,9 +65,13 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
     protected String name;
 
     @XmlAttribute(name = "abstract")
+    @JsonSerialize(using = YesNo.Serializer.class)
+    @JsonDeserialize(using = YesNo.Deserializer.class)
     protected boolean _abstract;
 
     @XmlAttribute(name = "final")
+    @JsonSerialize(using = YesNo.Serializer.class)
+    @JsonDeserialize(using = YesNo.Deserializer.class)
     protected boolean _final;
 
     @XmlTransient

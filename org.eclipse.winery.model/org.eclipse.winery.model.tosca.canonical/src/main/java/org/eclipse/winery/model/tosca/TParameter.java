@@ -44,7 +44,7 @@ public class TParameter implements Serializable {
     protected String type;
 
     @XmlAttribute(name = "required")
-    @XmlJavaTypeAdapter(BooleanToYesNo.class)
+//    @XmlJavaTypeAdapter(BooleanToYesNo.class)
     @JsonSerialize(using = YesNo.Serializer.class)
     @JsonDeserialize(using = YesNo.Deserializer.class)
     protected boolean required;

@@ -645,6 +645,11 @@ public class FromCanonical {
             ifaces.getInterface().addAll(canonical.getInterfaces().getInterface().stream().map(this::convert).collect(Collectors.toList()));
             builder.setInterfaces(ifaces);
         }
+        if (canonical.getPropertyConstraints() != null) {
+            TBoundaryDefinitions.PropertyConstraints constraints = new TBoundaryDefinitions.PropertyConstraints();
+            constraints.getPropertyConstraint().addAll(convertList(canonical.getPropertyConstraints().getPropertyConstraint(), this::convert));
+            builder.setPropertyConstraints(constraints);
+        }
         return builder.build();
     }
     

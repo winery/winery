@@ -698,33 +698,35 @@ public class ToCanonical {
             props.setAny(xml.getProperties().getAny());
             if (xml.getProperties().getPropertyMappings() != null) {
                 TBoundaryDefinitions.Properties.PropertyMappings mappings = new TBoundaryDefinitions.Properties.PropertyMappings();
-                mappings.getPropertyMapping().addAll(xml.getProperties().getPropertyMappings().getPropertyMapping().stream()
-                    .map(this::convert).collect(Collectors.toList()));
+                mappings.getPropertyMapping().addAll(convertList(xml.getProperties().getPropertyMappings().getPropertyMapping(), this::convert));
                 props.setPropertyMappings(mappings);
             }
             builder.setProperties(props);
         }
         if (xml.getRequirements() != null) {
             TBoundaryDefinitions.Requirements reqs = new TBoundaryDefinitions.Requirements();
-            reqs.getRequirement().addAll(xml.getRequirements().getRequirement().stream()
-                .map(this::convert).collect(Collectors.toList()));
+            reqs.getRequirement().addAll(convertList(xml.getRequirements().getRequirement(), this::convert));
             builder.setRequirements(reqs);
         }
         if (xml.getCapabilities() != null) {
             TBoundaryDefinitions.Capabilities caps = new TBoundaryDefinitions.Capabilities();
-            caps.getCapability().addAll(xml.getCapabilities().getCapability().stream()
-                .map(this::convert).collect(Collectors.toList()));
+            caps.getCapability().addAll(convertList(xml.getCapabilities().getCapability(), this::convert));
             builder.setCapabilities(caps);
         }
         if (xml.getPolicies() != null) {
             TPolicies policies = new TPolicies();
-            policies.getPolicy().addAll(xml.getPolicies().getPolicy().stream().map(this::convert).collect(Collectors.toList()));
+            policies.getPolicy().addAll(convertList(xml.getPolicies().getPolicy(), this::convert));
             builder.setPolicies(policies);
         }
         if (xml.getInterfaces() != null) {
             TBoundaryDefinitions.Interfaces ifaces = new TBoundaryDefinitions.Interfaces();
-            ifaces.getInterface().addAll(xml.getInterfaces().getInterface().stream().map(this::convert).collect(Collectors.toList()));
+            ifaces.getInterface().addAll(convertList(xml.getInterfaces().getInterface(), this::convert));
             builder.setInterfaces(ifaces);
+        }
+        if (xml.getPropertyConstraints() != null) {
+            TBoundaryDefinitions.PropertyConstraints constraints = new TBoundaryDefinitions.PropertyConstraints();
+            constraints.getPropertyConstraint().addAll(convertList(xml.getPropertyConstraints().getPropertyConstraint(), this::convert));
+            builder.setPropertyConstraints(constraints);
         }
         return builder.build();
     }
