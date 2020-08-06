@@ -666,7 +666,11 @@ public class FromCanonical {
         }
         if (canonical.getPlan() != null) {
             TExportedOperation.Plan plan = new TExportedOperation.Plan();
-            plan.setPlanRef(canonical.getPlan().getPlanRef());
+            if (canonical.getPlan().getPlanRef() instanceof String) {
+                plan.setPlanRef(canonical.getPlan().getPlanRef());
+            } else {
+                plan.setPlanRef(convert((org.eclipse.winery.model.tosca.TPlan)canonical.getPlan().getPlanRef()));
+            }
             xml.setPlan(plan);
         }
         return xml;
@@ -674,7 +678,11 @@ public class FromCanonical {
     
     private TExportedOperation.RelationshipOperation convert(org.eclipse.winery.model.tosca.TExportedOperation.RelationshipOperation canonical) {
         TExportedOperation.RelationshipOperation xml = new TExportedOperation.RelationshipOperation();
-        xml.setRelationshipRef(canonical.getRelationshipRef());
+        if (canonical.getRelationshipRef() instanceof String) {
+            xml.setRelationshipRef(canonical.getRelationshipRef());
+        } else {
+            xml.setRelationshipRef(convert((org.eclipse.winery.model.tosca.TRelationshipTemplate)canonical.getRelationshipRef()));
+        }
         xml.setInterfaceName(canonical.getInterfaceName());
         xml.setOperationName(canonical.getOperationName());
         return xml;
@@ -682,7 +690,11 @@ public class FromCanonical {
     
     private TExportedOperation.NodeOperation convert(org.eclipse.winery.model.tosca.TExportedOperation.NodeOperation canonical) {
         TExportedOperation.NodeOperation xml = new TExportedOperation.NodeOperation();
-        xml.setNodeRef(canonical.getNodeRef());
+        if (canonical.getNodeRef() instanceof String) {
+            xml.setNodeRef(canonical.getNodeRef());
+        } else {
+            xml.setNodeRef(convert((org.eclipse.winery.model.tosca.TNodeTemplate)canonical.getNodeRef()));
+        }
         xml.setInterfaceName(canonical.getInterfaceName());
         xml.setOperationName(canonical.getOperationName());
         return xml;

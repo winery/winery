@@ -169,6 +169,7 @@ public class TExportedOperation implements HasName, Serializable {
         @XmlIDREF
         @XmlSchemaType(name = "IDREF")
         @JsonIdentityReference(alwaysAsId = true)
+        // This field can either store the Id as string or the actual TNodeTemplate
         protected Object nodeRef;
 
         @XmlAttribute(name = "interfaceName", required = true)
@@ -262,6 +263,7 @@ public class TExportedOperation implements HasName, Serializable {
         @XmlIDREF
         @XmlSchemaType(name = "IDREF")
         @JsonIdentityReference(alwaysAsId = true)
+        // This field can either store the Id as string or the actual TPlan
         protected Object planRef;
 
         /**
@@ -310,6 +312,7 @@ public class TExportedOperation implements HasName, Serializable {
         @XmlIDREF
         @XmlSchemaType(name = "IDREF")
         @JsonIdentityReference(alwaysAsId = true)
+        // This field can either store the Id as string or the actual TRelationshipTemplate
         protected Object relationshipRef;
 
         @XmlAttribute(name = "interfaceName", required = true)

@@ -747,7 +747,11 @@ public class ToCanonical {
         }
         if (xml.getPlan() != null) {
             TExportedOperation.Plan plan = new TExportedOperation.Plan();
-            plan.setPlanRef(xml.getPlan().getPlanRef());
+            if (xml.getPlan().getPlanRef() instanceof String) {
+                plan.setPlanRef(xml.getPlan().getPlanRef());
+            } else {
+                plan.setPlanRef(convert((org.eclipse.winery.model.tosca.xml.TPlan)xml.getPlan().getPlanRef()));
+            }
             canonical.setPlan(plan);
         }
         return canonical;
@@ -755,7 +759,11 @@ public class ToCanonical {
 
     private TExportedOperation.RelationshipOperation convert(org.eclipse.winery.model.tosca.xml.TExportedOperation.RelationshipOperation xml) {
         TExportedOperation.RelationshipOperation canonical = new TExportedOperation.RelationshipOperation();
-        canonical.setRelationshipRef(xml.getRelationshipRef());
+        if (xml.getRelationshipRef() instanceof String) {
+            canonical.setRelationshipRef(xml.getRelationshipRef());
+        } else {
+            canonical.setRelationshipRef(convert((org.eclipse.winery.model.tosca.xml.TRelationshipTemplate)xml.getRelationshipRef()));
+        }
         canonical.setInterfaceName(xml.getInterfaceName());
         canonical.setOperationName(xml.getOperationName());
         return canonical;
@@ -763,7 +771,11 @@ public class ToCanonical {
 
     private TExportedOperation.NodeOperation convert(org.eclipse.winery.model.tosca.xml.TExportedOperation.NodeOperation xml) {
         TExportedOperation.NodeOperation canonical = new TExportedOperation.NodeOperation();
-        canonical.setNodeRef(xml.getNodeRef());
+        if (xml.getNodeRef() instanceof String) {
+            canonical.setNodeRef(xml.getNodeRef());
+        } else {
+            canonical.setNodeRef(convert((org.eclipse.winery.model.tosca.xml.TNodeTemplate)xml.getNodeRef()));
+        }
         canonical.setInterfaceName(xml.getInterfaceName());
         canonical.setOperationName(xml.getOperationName());
         return canonical;
