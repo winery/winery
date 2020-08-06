@@ -135,26 +135,6 @@ public class PropertiesAdapter extends XmlAdapter<Object, TEntityTemplate.Proper
         if (jaxb == null) {
             return null;
         }
-        if (jaxb instanceof TEntityTemplate.WineryKVProperties) {
-            return marshallWineryKV((TEntityTemplate.WineryKVProperties) jaxb);
-        }
-        if (jaxb instanceof TEntityTemplate.XmlProperties) {
-            // assume XmlProperties are correctly stored as xml
-            Object any = ((TEntityTemplate.XmlProperties) jaxb).getAny();
-            if (!(any instanceof Element)) {
-                LOGGER.error("XmlProperties did not contain an Xml Element as any. Aborting serialization");
-                return null;
-            }
-            return any;
-        }
-        if (jaxb instanceof TEntityTemplate.YamlProperties) {
-            LinkedHashMap<String, Object> data = ((TEntityTemplate.YamlProperties) jaxb).getProperties();
-            return marshallNestedMap(data);
-        }
-        throw new IllegalStateException("Encountered Unknown Property Subclass during Serialization");
-    }
-
-    private Element marshallNestedMap(LinkedHashMap<String, Object> data) {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
         DocumentBuilder db;
@@ -164,6 +144,31 @@ public class PropertiesAdapter extends XmlAdapter<Object, TEntityTemplate.Proper
             throw new IllegalStateException("Could not instantiate document builder", e);
         }
         Document doc = db.newDocument();
+        // Because JAXB is unwrapping the top-level element and discarding it, we add this extra wrapper
+        Element serializationWrapper = doc.createElement("DISCARDED");
+        doc.appendChild(serializationWrapper);
+
+        if (jaxb instanceof TEntityTemplate.WineryKVProperties) {
+            marshallWineryKV((TEntityTemplate.WineryKVProperties) jaxb, serializationWrapper, doc);
+        } else if (jaxb instanceof TEntityTemplate.XmlProperties) {
+            // assume XmlProperties are correctly stored as xml
+            Object any = ((TEntityTemplate.XmlProperties) jaxb).getAny();
+            if (!(any instanceof Element)) {
+                LOGGER.error("XmlProperties did not contain an Xml Element as any. Aborting serialization");
+                return null;
+            }
+            Element el = (Element) any;
+            serializationWrapper.appendChild(doc.importNode(el, true));
+        } else if (jaxb instanceof TEntityTemplate.YamlProperties) {
+            LinkedHashMap<String, Object> data = ((TEntityTemplate.YamlProperties) jaxb).getProperties();
+            marshallNestedMap(data, serializationWrapper, doc);
+        } else {
+            throw new IllegalStateException("Encountered Unknown Property Subclass during Serialization");
+        }
+        return serializationWrapper;
+    }
+
+    private void marshallNestedMap(LinkedHashMap<String, Object> data, Element serializationWrapper, Document doc) {
         final String prefix = (prefixMapper != null)
             ? prefixMapper.getPreferredPrefix(Namespaces.TOSCA_YAML_NS, "", true)
             : "";
@@ -180,7 +185,7 @@ public class PropertiesAdapter extends XmlAdapter<Object, TEntityTemplate.Proper
                 LOGGER.warn("Could not serialize value of type {}. Skipping!", value.getClass().getName());
             }
         }
-        return root;
+        serializationWrapper.appendChild(root);
     }
 
     private Element marshallNestedMap(Document doc, String elementName, Map<String, Object> data) {
@@ -199,24 +204,15 @@ public class PropertiesAdapter extends XmlAdapter<Object, TEntityTemplate.Proper
         return container;
     }
 
-    private Element marshallWineryKV(TEntityTemplate.WineryKVProperties jaxb) {
-        final String namespace = jaxb.getNamespace();
+    private void marshallWineryKV(TEntityTemplate.WineryKVProperties jaxb, Element serializationWrapper, Document doc) {
+        String namespace = jaxb.getNamespace();
         String elementName = jaxb.getElementName();
+        if (namespace == null) {
+            namespace = org.eclipse.winery.model.tosca.constants.Namespaces.EXAMPLE_NAMESPACE_URI;
+        }
         if (elementName == null || elementName.equals("")) {
             elementName = "Properties";
         }
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        DocumentBuilder db;
-        try {
-            db = dbf.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            throw new IllegalStateException("Could not instantiate document builder", e);
-        }
-        Document doc = db.newDocument();
-        // Because JAXB is unwrapping the top-level element and discarding it, we add this extra wrapper
-        Element serializationWrapper = doc.createElement("DISCARDED");
-        doc.appendChild(serializationWrapper);
 
         final String prefix = (prefixMapper != null)
             ? prefixMapper.getPreferredPrefix(namespace, "", true)
@@ -239,7 +235,6 @@ public class PropertiesAdapter extends XmlAdapter<Object, TEntityTemplate.Proper
                 element.appendChild(text);
             }
         }
-        return serializationWrapper;
     }
 
     public static boolean isKeyValuePropertyDefinition(Element xmlElement) {
