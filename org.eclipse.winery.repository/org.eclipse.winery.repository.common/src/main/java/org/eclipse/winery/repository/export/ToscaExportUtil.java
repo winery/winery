@@ -19,8 +19,12 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -103,9 +107,16 @@ public class ToscaExportUtil {
         // FIXME check what this actually does
         this.getPrepareForExport(repository, id);
 
-        Collection<DefinitionsChildId> referencedDefinitions = repository.getReferencedDefinitionsChildIds(id);
-        TDefinitions result = specifyImports(repository, id, referencedDefinitions);
-        return result;
+        // We need to exhaustively search the references here, since there's no external consumer
+        // doing that for us, like during the export process in #processDefinitionsElement
+        Collection<DefinitionsChildId> exhaustiveDefinitionsReferences = new HashSet<>();
+        Queue<DefinitionsChildId> workingQueue = new LinkedList<>(repository.getReferencedDefinitionsChildIds(id));
+        while (!workingQueue.isEmpty()) {
+            DefinitionsChildId current = workingQueue.poll();
+            exhaustiveDefinitionsReferences.add(current);
+            workingQueue.addAll(repository.getReferencedDefinitionsChildIds(current));
+        }
+        return specifyImports(repository, id, exhaustiveDefinitionsReferences);
     }
 
     private CsarEntry getExportableEntry(IRepository repository, DefinitionsChildId id, Map<String, Object> conf) throws IOException, RepositoryCorruptException {
@@ -173,12 +184,14 @@ public class ToscaExportUtil {
 
         this.getPrepareForExport(repository, tcId);
 
-        Collection<DefinitionsChildId> referencedDefinitionsChildIds = repository.getReferencedDefinitionsChildIds(tcId);
-        TDefinitions entryDefinitions = specifyImports(repository, tcId, referencedDefinitionsChildIds);
+        // this doesn't need to be exhaustive, because this method is only called for a full export.
+        // as such all references are traversed externally
+        Collection<DefinitionsChildId> directReferences = repository.getReferencedDefinitionsChildIds(tcId);
+        TDefinitions entryDefinitions = specifyImports(repository, tcId, directReferences);
 
         this.referencesToPathInCSARMap.put(definitionsFileProperties, new DefinitionsBasedCsarEntry(entryDefinitions, repository));
 
-        return referencedDefinitionsChildIds;
+        return directReferences;
     }
 
     private TDefinitions specifyImports(IRepository repository, DefinitionsChildId tcId, Collection<DefinitionsChildId> referencedDefinitionsChildIds) {
