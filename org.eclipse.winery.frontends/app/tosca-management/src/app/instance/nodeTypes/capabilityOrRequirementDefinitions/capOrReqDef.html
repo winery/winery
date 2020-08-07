@@ -58,7 +58,7 @@
             <div class="form-group">
                 <winery-qname-selector
                     [width]="'none'"
-                    [title]="'Types'"
+                    [title]="'Capability Type'"
                     [displayList]="capabilityTypesList"
                     [toscaType]=""
                     [selectedValue]="capOrReqDefToBeAdded.type"
@@ -99,7 +99,7 @@
     <winery-modal-body>
         <form>
             <div class="form-group">
-                <label for="validNodeTypes" class="control-label">Node Types</label>
+                <label for="validNodeTypes" class="control-label">Select Node Type</label>
                 <ng-select id="validNodeTypes"
                            [disabled]="!sharedData?.currentVersion?.editable"
                            [items]="currentNodeTypes"

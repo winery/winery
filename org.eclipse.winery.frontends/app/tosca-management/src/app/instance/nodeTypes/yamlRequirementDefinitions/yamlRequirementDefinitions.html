@@ -33,7 +33,7 @@
     <winery-modal-body>
         <form #addRequirementDefinitionForm="ngForm" id="addRequirementDefinitionForm">
             <div class="form-group">
-                <label class="control-label" for="reqDefName">Name*</label>
+                <label class="control-label" for="reqDefName">Name</label>
                 <input #reqDefName="ngModel"
                        id="reqDefName"
                        class="form-control"
@@ -54,7 +54,7 @@
             </div>
 
             <div class="form-group">
-                <label for="capabilityType" class="control-label">Capability Type*</label>
+                <label for="capabilityType" class="control-label">Select satisfying Capability Type</label>
                 <ng-select id="capabilityType"
                            [disabled]="!sharedData?.currentVersion?.editable"
                            [items]="allCapabilityTypes"
@@ -64,7 +64,7 @@
             </div>
 
             <div class="form-group">
-                <label for="nodeType" class="control-label">Node Type</label>
+                <label for="nodeType" class="control-label">Restrict to a certain Node Type?</label>
                 <ng-select id="nodeType"
                            [disabled]="!sharedData?.currentVersion?.editable"
                            [items]="allNodeTypes"
@@ -74,7 +74,7 @@
             </div>
 
             <div class="form-group">
-                <label for="relationshipType" class="control-label">Relationship Type</label>
+                <label for="relationshipType" class="control-label">Relationship Type to be used</label>
                 <ng-select id="relationshipType"
                            [disabled]="!sharedData?.currentVersion?.editable"
                            [items]="allRelationshipTypes"
