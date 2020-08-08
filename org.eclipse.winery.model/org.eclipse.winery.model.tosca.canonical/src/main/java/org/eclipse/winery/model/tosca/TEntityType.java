@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.jaxbsupport.map.BooleanToYesNo;
 import org.eclipse.winery.model.jsonsupport.PropertiesDefinitionDeserializer;
 import org.eclipse.winery.model.jsonsupport.YesNo;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitions;
@@ -80,10 +81,12 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     @XmlSchemaType(name = "NCName")
     protected String name;
     @XmlAttribute(name = "abstract")
+    @XmlJavaTypeAdapter(type = boolean.class, value = BooleanToYesNo.class)
     @JsonSerialize(using = YesNo.Serializer.class)
     @JsonDeserialize(using = YesNo.Deserializer.class)
     protected boolean _abstract;
     @XmlAttribute(name = "final")
+    @XmlJavaTypeAdapter(type = boolean.class, value = BooleanToYesNo.class)
     @JsonSerialize(using = YesNo.Serializer.class)
     @JsonDeserialize(using = YesNo.Deserializer.class)
     protected boolean _final;

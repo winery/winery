@@ -221,13 +221,10 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
     }
 
     public static class Builder extends TEntityTypeImplementation.Builder<Builder> {
-        private TTags tags;
         private DerivedFrom derivedFrom;
         private TRequiredContainerFeatures requiredContainerFeatures;
         private TImplementationArtifacts implementationArtifacts;
         private TDeploymentArtifacts deploymentArtifacts;
-        private TBoolean _abstract;
-        private TBoolean _final;
 
         public Builder(TExtensibleElements extensibleElements, String name, QName implementedNodeType) {
             super(extensibleElements, name, implementedNodeType);
@@ -235,11 +232,6 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
 
         public Builder(String name, QName implementedNodeType) {
             super(name, implementedNodeType);
-        }
-
-        public Builder setTags(TTags tags) {
-            this.tags = tags;
-            return this;
         }
 
         public Builder setDerivedFrom(TNodeTypeImplementation.DerivedFrom derivedFrom) {
@@ -259,16 +251,6 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
 
         public Builder setDeploymentArtifacts(TDeploymentArtifacts deploymentArtifacts) {
             this.deploymentArtifacts = deploymentArtifacts;
-            return this;
-        }
-
-        public Builder setAbstract(TBoolean _abstract) {
-            this._abstract = _abstract;
-            return this;
-        }
-
-        public Builder setFinal(TBoolean _final) {
-            this._final = _final;
             return this;
         }
 

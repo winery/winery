@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @XmlRootElement(name = "PropertiesDefinition")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 /**
  * This is Winery's main extension element for a key/value based properties definition.
  * To be representable in the canonical model it directly implements the marker interface used for storing
@@ -42,18 +42,15 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 public class WinerysPropertiesDefinition extends TEntityType.PropertiesDefinition implements Serializable {
 
     @JsonProperty
-    @XmlAttribute(name = "namespace")
     private String namespace;
     @JsonProperty
-    @XmlAttribute(name = "elementname")
     private String elementName;
     @JsonProperty
-    @XmlElement(name = "properties")
     private List<PropertyDefinitionKV> propertyDefinitions;
     @JsonProperty
-    @XmlAttribute(name = "derivedFromXSD", namespace = Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE)
     private Boolean isDerivedFromXSD = Boolean.FALSE;
-    
+
+    @XmlAttribute(name = "namespace")
     public String getNamespace() {
         return this.namespace;
     }
@@ -62,6 +59,7 @@ public class WinerysPropertiesDefinition extends TEntityType.PropertiesDefinitio
         this.namespace = namespace;
     }
 
+    @XmlAttribute(name = "elementname")
     public String getElementName() {
         return this.elementName;
     }
@@ -70,6 +68,7 @@ public class WinerysPropertiesDefinition extends TEntityType.PropertiesDefinitio
         this.elementName = localName;
     }
 
+    @XmlElement(name = "properties")
     public List<PropertyDefinitionKV> getPropertyDefinitions() {
         return propertyDefinitions;
     }
@@ -78,18 +77,11 @@ public class WinerysPropertiesDefinition extends TEntityType.PropertiesDefinitio
         this.propertyDefinitions = propertyDefinitions;
     }
 
-//    public PropertyDefinitions getPropertyDefinitions() {
-//        return this.propertyDefinitions;
-//    }
-//
-//    public void setPropertyDefinitions(PropertyDefinitions propertyDefinitions) {
-//        this.propertyDefinitions = propertyDefinitions;
-//    }
-
     /**
      * @return null if not derived from XSD, "Boolean.TRUE" otherwise. This leads JAXB to write the attribute only if
      * derivedFromXSD is true
      */
+    @XmlAttribute(name = "derivedFromXSD", namespace = Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE)
     public Boolean getIsDerivedFromXSD() {
         if ((this.isDerivedFromXSD != null) && (this.isDerivedFromXSD)) {
             return Boolean.TRUE;

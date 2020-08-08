@@ -147,7 +147,8 @@ public class FromCanonical {
     private TRelationshipType convert(org.eclipse.winery.model.tosca.TRelationshipType canonical) {
         TRelationshipType.Builder builder = new TRelationshipType.Builder(canonical.getIdFromIdOrNameField())
             .addSourceInterfaces(convertInterfaces(canonical.getSourceInterfaces()))
-            .addTargetInterfaces(convertInterfaces(canonical.getTargetInterfaces()));
+            .addTargetInterfaces(convertInterfaces(canonical.getTargetInterfaces()))
+            .addInterfaces(convertInterfaces(canonical.getInterfaces()));
         if (canonical.getValidSource() != null) {
             builder.setValidSource(canonical.getValidSource().getTypeRef());
         }

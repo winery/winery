@@ -28,10 +28,12 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.jaxbsupport.map.BooleanToYesNo;
 import org.eclipse.winery.model.jsonsupport.YesNo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.eclipse.jdt.annotation.NonNull;
@@ -65,11 +67,15 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
     protected String name;
 
     @XmlAttribute(name = "abstract")
+    @XmlJavaTypeAdapter(type = boolean.class, value = BooleanToYesNo.class)
+    @JsonProperty("abstract")
     @JsonSerialize(using = YesNo.Serializer.class)
     @JsonDeserialize(using = YesNo.Deserializer.class)
     protected boolean _abstract;
 
     @XmlAttribute(name = "final")
+    @XmlJavaTypeAdapter(type = boolean.class, value = BooleanToYesNo.class)
+    @JsonProperty("final")
     @JsonSerialize(using = YesNo.Serializer.class)
     @JsonDeserialize(using = YesNo.Deserializer.class)
     protected boolean _final;

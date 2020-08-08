@@ -234,7 +234,8 @@ public class ToCanonical {
     private TRelationshipType convert(org.eclipse.winery.model.tosca.xml.TRelationshipType xml) {
         TRelationshipType.Builder builder = new TRelationshipType.Builder(xml.getIdFromIdOrNameField())
             .addSourceInterfaces(convertInterfaces(xml.getSourceInterfaces()))
-            .addTargetInterfaces(convertInterfaces(xml.getTargetInterfaces()));
+            .addTargetInterfaces(convertInterfaces(xml.getTargetInterfaces()))
+            .addInterfaces(convertInterfaces(xml.getInterfaces()));
         if (xml.getValidSource() != null) {
             builder.setValidSource(xml.getValidSource().getTypeRef());
         }

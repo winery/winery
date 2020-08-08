@@ -31,9 +31,9 @@ public class BooleanToYesNo extends XmlAdapter<BooleanToYesNo.YesNo, Boolean> {
 
     @XmlEnum()
     public static enum YesNo {
-        @XmlEnumValue("YES")
+        @XmlEnumValue("yes")
         YES,
-        @XmlEnumValue("NO")
+        @XmlEnumValue("no")
         NO
     }
 }
