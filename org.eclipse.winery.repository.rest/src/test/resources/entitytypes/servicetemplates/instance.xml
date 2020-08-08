@@ -68,11 +68,9 @@
             <RelationshipTemplate xmlns:ns0="http://winery.opentosca.org/test/ponyuniverse" id="con_47" name="con_47"
                                   type="ns0:attendTo">
                 <Properties>
-                    <ns3:Properties xmlns="http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery"
-                                    xmlns:ns3="http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery"
-                    >
+                    <Properties xmlns="http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery">
                         <Driver/>
-                    </ns3:Properties>
+                    </Properties>
                 </Properties>
                 <SourceElement ref="shetland_pony"/>
                 <TargetElement ref="ponycompetition"/>

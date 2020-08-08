@@ -344,14 +344,12 @@ public class FromCanonical {
         TNodeType.Builder builder = new TNodeType.Builder(canonical.getName());
         if (canonical.getRequirementDefinitions() != null) {
             TNodeType.RequirementDefinitions reqDefs = new TNodeType.RequirementDefinitions();
-            reqDefs.getRequirementDefinition().addAll(canonical.getRequirementDefinitions().getRequirementDefinition()
-                .stream().map(this::convert).collect(Collectors.toList()));
+            reqDefs.getRequirementDefinition().addAll(convertList(canonical.getRequirementDefinitions().getRequirementDefinition(), this::convert));
             builder.setRequirementDefinitions(reqDefs);
         }
         if (canonical.getCapabilityDefinitions() != null) {
             TNodeType.CapabilityDefinitions capDefs = new TNodeType.CapabilityDefinitions();
-            capDefs.getCapabilityDefinition().addAll(canonical.getCapabilityDefinitions().getCapabilityDefinition()
-                .stream().map(this::convert).collect(Collectors.toList()));
+            capDefs.getCapabilityDefinition().addAll(convertList(canonical.getCapabilityDefinitions().getCapabilityDefinition(), this::convert));
             builder.setCapabilityDefinitions(capDefs);
         }
         if (canonical.getInstanceStates() != null) {
@@ -762,26 +760,22 @@ public class FromCanonical {
         TNodeTemplate.Builder builder = new TNodeTemplate.Builder(canonical.getId(), canonical.getType());
         if (canonical.getRequirements() != null) {
             TNodeTemplate.Requirements reqs = new TNodeTemplate.Requirements();
-            reqs.getRequirement().addAll(canonical.getRequirements().getRequirement().stream()
-                .map(this::convert).collect(Collectors.toList()));
+            reqs.getRequirement().addAll(convertList(canonical.getRequirements().getRequirement(), this::convert));
             builder.setRequirements(reqs);
         }
         if (canonical.getCapabilities() != null) {
             TNodeTemplate.Capabilities caps = new TNodeTemplate.Capabilities();
-            caps.getCapability().addAll(canonical.getCapabilities().getCapability().stream()
-                .map(this::convert).collect(Collectors.toList()));
+            caps.getCapability().addAll(convertList(canonical.getCapabilities().getCapability(), this::convert));
             builder.setCapabilities(caps);
         }
         if (canonical.getPolicies() != null) {
             TPolicies policies = new TPolicies();
-            policies.getPolicy().addAll(canonical.getPolicies().getPolicy().stream()
-                .map(this::convert).collect(Collectors.toList()));
+            policies.getPolicy().addAll(convertList(canonical.getPolicies().getPolicy(), this::convert));
             builder.setPolicies(policies);
         }
         if (canonical.getDeploymentArtifacts() != null) {
             TDeploymentArtifacts artifacts = new TDeploymentArtifacts();
-            artifacts.getDeploymentArtifact().addAll(canonical.getDeploymentArtifacts().getDeploymentArtifact().stream()
-                .map(this::convert).collect(Collectors.toList()));
+            artifacts.getDeploymentArtifact().addAll(convertList(canonical.getDeploymentArtifacts().getDeploymentArtifact(), this::convert));
             builder.setDeploymentArtifacts(artifacts);
         }
         builder.setName(canonical.getName());

@@ -41,8 +41,6 @@ import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.common.configuration.Environments;
-import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
 import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
@@ -929,11 +927,11 @@ public interface IRepository extends IWineryRepositoryCommon {
             // reqs and caps don't have to be exported here as they are references to existing reqs/caps (of nested node templates)
         }
 
-        if (serviceTemplate.getTopologyTemplate() != null) {
+        final TTopologyTemplate topology = serviceTemplate.getTopologyTemplate();
+        if (topology != null) {
 
-            if (Objects.nonNull(serviceTemplate.getTopologyTemplate().getPolicies()) &&
-                Environments.getInstance().getUiConfig().getFeatures().get(RepositoryConfigurationObject.RepositoryProvider.YAML.toString())) {
-                serviceTemplate.getTopologyTemplate()
+            if (Objects.nonNull(topology.getPolicies())) {
+                topology
                     .getPolicies()
                     .getPolicy()
                     .stream().filter(Objects::nonNull)
@@ -944,14 +942,13 @@ public interface IRepository extends IWineryRepositoryCommon {
                     });
             }
 
-            for (TEntityTemplate entityTemplate : serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate()) {
+            for (TEntityTemplate entityTemplate : topology.getNodeTemplateOrRelationshipTemplate()) {
                 QName qname = entityTemplate.getType();
                 if (entityTemplate instanceof TNodeTemplate) {
                     ids.add(new NodeTypeId(qname));
                     TNodeTemplate n = (TNodeTemplate) entityTemplate;
 
                     // crawl through policies
-                    // TODO: this is relevant only for XML mode 
                     TPolicies policies = n.getPolicies();
                     if (policies != null) {
                         for (TPolicy pol : policies.getPolicy()) {
@@ -967,50 +964,46 @@ public interface IRepository extends IWineryRepositoryCommon {
                         }
                     }
 
-                    if (!Environments.getInstance().getUiConfig().getFeatures()
-                        .get(RepositoryConfigurationObject.RepositoryProvider.YAML.toString())) {
-                        // TODO: this information is collected differently for YAML and XML modes         
-                        // crawl through deployment artifacts
-                        TDeploymentArtifacts deploymentArtifacts = n.getDeploymentArtifacts();
-                        if (deploymentArtifacts != null) {
-                            List<TDeploymentArtifact> das = deploymentArtifacts.getDeploymentArtifact();
-                            for (TDeploymentArtifact da : das) {
-                                ids.add(new ArtifactTypeId(da.getArtifactType()));
-                                if ((qname = da.getArtifactRef()) != null) {
-                                    ids.add(new ArtifactTemplateId(qname));
+                    // Crawl RequirementTypes and Capabilities for their references
+                    getReferencedRequirementTypeIds(ids, n);
+                    TNodeTemplate.Capabilities capabilities = n.getCapabilities();
+                    if (capabilities != null) {
+                        for (TCapability cap : capabilities.getCapability()) {
+                            QName type = cap.getType();
+                            CapabilityTypeId ctId = new CapabilityTypeId(type);
+                            ids.add(ctId);
+                        }
+                    }
+
+                    // TODO: this information is collected differently for YAML and XML modes
+                    // crawl through deployment artifacts
+                    TDeploymentArtifacts deploymentArtifacts = n.getDeploymentArtifacts();
+                    if (deploymentArtifacts != null) {
+                        List<TDeploymentArtifact> das = deploymentArtifacts.getDeploymentArtifact();
+                        for (TDeploymentArtifact da : das) {
+                            ids.add(new ArtifactTypeId(da.getArtifactType()));
+                            if ((qname = da.getArtifactRef()) != null) {
+                                ids.add(new ArtifactTemplateId(qname));
+                            }
+                        }
+                    }
+                    // Store all referenced artifact types
+                    TArtifacts artifacts = n.getArtifacts();
+                    if (Objects.nonNull(artifacts)) {
+                        artifacts.getArtifact().forEach(a -> ids.add(new ArtifactTypeId(a.getType())));
+                    }
+
+                    TNodeType nodeType = this.getElement(new NodeTypeId(qname));
+                    if (Objects.nonNull(nodeType.getInterfaceDefinitions())) {
+                        nodeType
+                            .getInterfaceDefinitions()
+                            .stream()
+                            .filter(Objects::nonNull)
+                            .forEach(iDef -> {
+                                if (Objects.nonNull(iDef.getType())) {
+                                    ids.add(new InterfaceTypeId(iDef.getType()));
                                 }
-                            }
-                        }
-
-                        // TODO: this information is also collected from NodeTypes -> not needed for YAML mode                    
-                        getReferencedRequirementTypeIds(ids, n);
-                        TNodeTemplate.Capabilities capabilities = n.getCapabilities();
-                        if (capabilities != null) {
-                            for (TCapability cap : capabilities.getCapability()) {
-                                QName type = cap.getType();
-                                CapabilityTypeId ctId = new CapabilityTypeId(type);
-                                ids.add(ctId);
-                            }
-                        }
-                    } else {
-                        // Store all referenced artifact types
-                        TArtifacts artifacts = n.getArtifacts();
-                        if (Objects.nonNull(artifacts)) {
-                            artifacts.getArtifact().forEach(a -> ids.add(new ArtifactTypeId(a.getType())));
-                        }
-
-                        TNodeType nodeType = this.getElement(new NodeTypeId(qname));
-                        if (Objects.nonNull(nodeType.getInterfaceDefinitions())) {
-                            nodeType
-                                .getInterfaceDefinitions()
-                                .stream()
-                                .filter(Objects::nonNull)
-                                .forEach(iDef -> {
-                                    if (Objects.nonNull(iDef.getType())) {
-                                        ids.add(new InterfaceTypeId(iDef.getType()));
-                                    }
-                                });
-                        }
+                            });
                     }
                 } else {
                     assert (entityTemplate instanceof TRelationshipTemplate);
@@ -1025,7 +1018,7 @@ public interface IRepository extends IWineryRepositoryCommon {
     default void getReferencedRequirementTypeIds(Collection<DefinitionsChildId> ids, TNodeTemplate n) {
         // crawl through reqs/caps
         TNodeTemplate.Requirements requirements = n.getRequirements();
-        if (requirements != null && Environments.getInstance().getRepositoryConfig().getProvider() == RepositoryConfigurationObject.RepositoryProvider.FILE) {
+        if (requirements != null) {
             for (TRequirement req : requirements.getRequirement()) {
                 QName type = req.getType();
                 RequirementTypeId rtId = new RequirementTypeId(type);

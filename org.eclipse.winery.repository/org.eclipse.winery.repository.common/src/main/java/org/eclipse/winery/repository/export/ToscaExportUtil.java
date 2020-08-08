@@ -24,7 +24,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -104,19 +103,10 @@ public class ToscaExportUtil {
         if (this.exportConfiguration == null) {
             this.exportConfiguration = new HashMap<>();
         }
-        // FIXME check what this actually does
         this.getPrepareForExport(repository, id);
 
-        // We need to exhaustively search the references here, since there's no external consumer
-        // doing that for us, like during the export process in #processDefinitionsElement
-        Collection<DefinitionsChildId> exhaustiveDefinitionsReferences = new HashSet<>();
-        Queue<DefinitionsChildId> workingQueue = new LinkedList<>(repository.getReferencedDefinitionsChildIds(id));
-        while (!workingQueue.isEmpty()) {
-            DefinitionsChildId current = workingQueue.poll();
-            exhaustiveDefinitionsReferences.add(current);
-            workingQueue.addAll(repository.getReferencedDefinitionsChildIds(current));
-        }
-        return specifyImports(repository, id, exhaustiveDefinitionsReferences);
+        Collection<DefinitionsChildId> referencedDefinitionsChildIds = repository.getReferencedDefinitionsChildIds(id);
+        return specifyImports(repository, id, referencedDefinitionsChildIds);
     }
 
     private CsarEntry getExportableEntry(IRepository repository, DefinitionsChildId id, Map<String, Object> conf) throws IOException, RepositoryCorruptException {
@@ -186,12 +176,12 @@ public class ToscaExportUtil {
 
         // this doesn't need to be exhaustive, because this method is only called for a full export.
         // as such all references are traversed externally
-        Collection<DefinitionsChildId> directReferences = repository.getReferencedDefinitionsChildIds(tcId);
-        TDefinitions entryDefinitions = specifyImports(repository, tcId, directReferences);
+        Collection<DefinitionsChildId> references = repository.getReferencedDefinitionsChildIds(tcId);
+        TDefinitions entryDefinitions = specifyImports(repository, tcId, references);
 
         this.referencesToPathInCSARMap.put(definitionsFileProperties, new DefinitionsBasedCsarEntry(entryDefinitions, repository));
 
-        return directReferences;
+        return references;
     }
 
     private TDefinitions specifyImports(IRepository repository, DefinitionsChildId tcId, Collection<DefinitionsChildId> referencedDefinitionsChildIds) {
@@ -326,8 +316,6 @@ public class ToscaExportUtil {
             this.addVisualAppearanceToCSAR(repository, (NodeTypeId) id);
         } else if (id instanceof ArtifactTemplateId) {
             this.prepareForExport(repository, (ArtifactTemplateId) id);
-        } else if (id instanceof DataTypeId) {
-            this.prepareForExport(repository, (DataTypeId) id);
         }
     }
 
@@ -411,10 +399,6 @@ public class ToscaExportUtil {
 
             putRefAsReferencedItemInCsar(repository, ref);
         }
-    }
-    
-    protected void prepareForExport(IRepository repository, DataTypeId id) throws RepositoryCorruptException, IOException {
-        // FIXME resolve all external references of the DataType definition to add them to the export
     }
 
     /**
