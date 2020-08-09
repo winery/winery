@@ -54,7 +54,7 @@
                                  xmlns:rtyIgeneral="http://plain.winery.opentosca.org/placement/requirementtypes"/>
                 </Requirements>
             </NodeTemplate>
-            <NodeTemplate type="ntyIgeneral1:DataProcessingComponent_w1-wip1" id="Adapter-1"
+            <NodeTemplate type="ntyIgeneral1:DataProcessingComponent_w1-wip1" id="Adapter-1" minInstances="1" maxInstances="1"
                           xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
                 <Properties>
                     <ex:Properties xmlns:ex="http://www.example.org">

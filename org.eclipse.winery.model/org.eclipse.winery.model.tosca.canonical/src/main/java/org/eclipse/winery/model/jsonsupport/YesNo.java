@@ -39,6 +39,7 @@ public class YesNo {
             jsonGenerator.writeString(aBoolean ? "YES" : "NO");
         }
     }
+
     public static class Deserializer extends StdDeserializer<Boolean> {
         public Deserializer() { this(null); }
         protected Deserializer(Class<?> vc) {

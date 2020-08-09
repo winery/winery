@@ -82,11 +82,13 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     protected String name;
     @XmlAttribute(name = "abstract")
     @XmlJavaTypeAdapter(type = boolean.class, value = BooleanToYesNo.class)
+    @JsonProperty("abstract")
     @JsonSerialize(using = YesNo.Serializer.class)
     @JsonDeserialize(using = YesNo.Deserializer.class)
     protected boolean _abstract;
     @XmlAttribute(name = "final")
     @XmlJavaTypeAdapter(type = boolean.class, value = BooleanToYesNo.class)
+    @JsonProperty("final")
     @JsonSerialize(using = YesNo.Serializer.class)
     @JsonDeserialize(using = YesNo.Deserializer.class)
     protected boolean _final;
