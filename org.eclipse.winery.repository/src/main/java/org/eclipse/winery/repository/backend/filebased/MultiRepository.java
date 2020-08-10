@@ -22,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -292,6 +293,9 @@ public class MultiRepository implements IRepository {
      * dependencies of the repositories
      */
     private void loadRepositoriesByList() {
+        MultiRepositoryManager multiRepositoryManager = new MultiRepositoryManager();
+        multiRepositoryManager.createMultiRepositoryFileStructure(Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()),
+            Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), Constants.DEFAULT_LOCAL_REPO_NAME));
         for (RepositoryProperties repository : repositoriesList) {
             createRepository(repository.getUrl(), repository.getBranch());
         }
