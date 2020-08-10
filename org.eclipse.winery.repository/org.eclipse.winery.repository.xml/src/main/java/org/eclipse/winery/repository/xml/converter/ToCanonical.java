@@ -364,11 +364,14 @@ public class ToCanonical {
             }
         }
         if (xml.getAny().stream().anyMatch(anyElement -> anyElement instanceof WinerysPropertiesDefinition)) {
-            builder.setProperties(xml.getAny().stream()
+            WinerysPropertiesDefinition def = xml.getAny().stream()
                 .filter(el -> el instanceof WinerysPropertiesDefinition)
                 .map(WinerysPropertiesDefinition.class::cast)
-                // get without check should be safe here, because at least one element is a WinerysPropertiesDefinition
-                .findFirst().get());
+                // get without check is safe here, because at least one element is a WinerysPropertiesDefinition
+                .findFirst().get();
+            builder.setProperties(def);
+            // remove the element we've recognized as a property to avoid duplicating it in the canonical model
+            xml.getAny().remove(def);
         }
         builder.setAbstract(xml.getAbstract() == TBoolean.YES);
         builder.setFinal(xml.getFinal() == TBoolean.YES);

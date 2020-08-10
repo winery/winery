@@ -151,11 +151,6 @@ public abstract class TExtensibleElements implements Serializable {
             return self();
         }
 
-        public T setAny(List<Object> any) {
-            this.any = any;
-            return self();
-        }
-
         public T addToAny(Object any) {
             if (this.any == null) {
                 this.any = new ArrayList<>();

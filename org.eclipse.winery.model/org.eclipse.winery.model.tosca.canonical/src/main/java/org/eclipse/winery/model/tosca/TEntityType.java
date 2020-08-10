@@ -36,6 +36,7 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.jaxbsupport.map.BooleanToYesNo;
 import org.eclipse.winery.model.jsonsupport.PropertiesDefinitionDeserializer;
+import org.eclipse.winery.model.jsonsupport.PropertiesDefinitionSerializer;
 import org.eclipse.winery.model.jsonsupport.YesNo;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitions;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKVs;
@@ -44,6 +45,7 @@ import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesD
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.github.adr.embedded.ADR;
@@ -75,6 +77,8 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     @XmlElement(name = "DerivedFrom")
     protected TEntityType.DerivedFrom derivedFrom;
     @XmlElementRef(name = "PropertiesDefinition")
+    @JsonProperty("propertiesDefinition")
+    @JsonSerialize(using = PropertiesDefinitionSerializer.class)
     protected TEntityType.PropertiesDefinition properties;
     @XmlAttribute(name = "name", required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -516,6 +520,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
         @JsonSubTypes.Type(XmlTypeDefinition.class),
     })
     @JsonDeserialize(using = PropertiesDefinitionDeserializer.class)
+    @JsonSerialize(using = PropertiesDefinitionSerializer.class)
     public abstract static class PropertiesDefinition { }
 
     @NonNullByDefault

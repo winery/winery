@@ -308,7 +308,7 @@ public class FromCanonical {
         void fillExtensibleElementsProperties(Builder builder, Value canonical) {
         builder.setDocumentation(canonical.getDocumentation().stream().map(this::convert).collect(Collectors.toList()));
         builder.setOtherAttributes(canonical.getOtherAttributes());
-        builder.setAny(canonical.getAny());
+        builder.addAny(canonical.getAny());
     }
 
     private TRequirementType convert(org.eclipse.winery.model.tosca.TRequirementType canonical) {

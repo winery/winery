@@ -23,7 +23,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.eclipse.winery.model.jaxbsupport.map.PropertiesAdapter;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
@@ -60,7 +62,9 @@ public class PropertiesResource {
 
     @PUT
     @Consumes( {MediaType.APPLICATION_XML, MediaType.TEXT_XML})
-    public Response setProperties(@ADR(6) TEntityTemplate.Properties properties) {
+//    public Response setProperties(@ADR(6) @XmlJavaTypeAdapter(PropertiesAdapter.class) TEntityTemplate.Properties properties) {
+    public Response setProperties(@ADR(6) PropertiesAdapter.Union xml) {
+        TEntityTemplate.Properties properties = new PropertiesAdapter().unmarshal(xml);
         this.template.setProperties(properties);
         return RestUtils.persist(this.res);
     }
@@ -111,7 +115,8 @@ public class PropertiesResource {
             }
             try {
                 @ADR(6)
-                String xmlAsString = BackendUtils.getXMLAsString(TEntityTemplate.Properties.class, props, true, requestRepository);
+//                String xmlAsString = BackendUtils.getXMLAsString(TEntityTemplate.XmlProperties.class, (TEntityTemplate.XmlProperties)props, true, requestRepository);
+                String xmlAsString = BackendUtils.getXMLAsString(props, requestRepository);
                 return Response
                     .ok()
                     .entity(xmlAsString)

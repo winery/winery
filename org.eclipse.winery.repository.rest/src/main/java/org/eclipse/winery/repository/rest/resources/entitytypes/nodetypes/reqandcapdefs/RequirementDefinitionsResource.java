@@ -53,7 +53,7 @@ public class RequirementDefinitionsResource extends RequirementOrCapabilityDefin
     @Override
     public Response performPost(RequirementOrCapabilityDefinitionPostData postData) {
         // if we are in XML mode, we delegate to the parent
-        if (!RepositoryUtils.isYamlRepository()) {
+        if (!RepositoryUtils.isYamlRepository(requestRepository)) {
             return super.performPost(postData);
         }
 

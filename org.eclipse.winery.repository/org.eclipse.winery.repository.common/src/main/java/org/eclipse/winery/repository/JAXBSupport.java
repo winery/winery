@@ -22,6 +22,7 @@ import javax.xml.bind.Unmarshaller;
 import org.eclipse.winery.model.jaxbsupport.map.PropertiesAdapter;
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.TDefinitions;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitions;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinitions;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
@@ -55,6 +56,10 @@ public class JAXBSupport {
                 AttributeDefinitions.class,
                 Application.class,
                 MockXMLElement.class,
+                // because XmlSeeAlso is apparently ignored with XmlJavaTypeAdapter annotations
+                TEntityTemplate.XmlProperties.class,
+                TEntityTemplate.WineryKVProperties.class,
+                TEntityTemplate.YamlProperties.class,
             });
                 // MockXMLElement is added for testing purposes only.
         } catch (JAXBException e) {

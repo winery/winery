@@ -302,7 +302,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     @POST
     @Path("exportToFilesystem")
     public Response exportToFilesystem() {
-        if (RepositoryUtils.isYamlRepository()) {
+        if (RepositoryUtils.isYamlRepository(requestRepository)) {
             LocalDateTime start = LocalDateTime.now();
             YamlExporter exporter = new YamlExporter(RepositoryFactory.getRepository());
             Map<String, Object> exportConfiguration = new HashMap<>();

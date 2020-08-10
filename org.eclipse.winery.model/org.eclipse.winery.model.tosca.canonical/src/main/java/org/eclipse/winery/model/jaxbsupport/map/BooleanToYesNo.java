@@ -16,7 +16,10 @@ package org.eclipse.winery.model.jaxbsupport.map;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 
 public class BooleanToYesNo extends XmlAdapter<BooleanToYesNo.YesNo, Boolean> {
     @Override
@@ -30,6 +33,7 @@ public class BooleanToYesNo extends XmlAdapter<BooleanToYesNo.YesNo, Boolean> {
     }
 
     @XmlEnum()
+    @XmlType(name = "yesNo", namespace = Namespaces.TOSCA_NAMESPACE)
     public static enum YesNo {
         @XmlEnumValue("yes")
         YES,

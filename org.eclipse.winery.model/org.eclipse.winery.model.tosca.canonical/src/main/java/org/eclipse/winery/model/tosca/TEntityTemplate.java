@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
@@ -158,8 +159,12 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
     public static abstract class Properties implements Serializable {
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlRootElement(name = "Properties", namespace = Namespaces.TOSCA_NAMESPACE)
+    @XmlJavaTypeAdapter(value = PropertiesAdapter.class, type = Properties.class)
     // Xml transformation is done by XmlJavaTypeAdapter, thus no XML configuration whatsoever
     public static class XmlProperties extends Properties {
+        @XmlAnyElement(lax = true)
         protected Object any;
 
         @Nullable
@@ -172,6 +177,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         }
     }
 
+    @XmlJavaTypeAdapter(value = PropertiesAdapter.class, type = Properties.class)
     // Xml transformation is done by XmlJavaTypeAdapter, thus no XML configuration whatsoever
     public static class WineryKVProperties extends Properties {
         @JsonIgnore
@@ -213,6 +219,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         }
     }
 
+    @XmlJavaTypeAdapter(value = PropertiesAdapter.class, type = Properties.class)
     // Xml transformation is done by XmlJavaTypeAdapter, thus no XML configuration whatsoever
     @NonNullByDefault
     public static class YamlProperties extends Properties {

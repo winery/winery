@@ -37,7 +37,9 @@ import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.model.ids.GenericId;
 import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.repository.filebased.management.GitResolver;
 import org.eclipse.winery.repository.xml.XmlRepository;
+import org.eclipse.winery.repository.yaml.YamlRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -206,8 +208,11 @@ public class RepositoryUtils {
         return getRepositoriesById(ref.getParent(), multiRepository);
     }
 
-    public static boolean isYamlRepository() {
-        RepositoryConfigurationObject config = Environments.getInstance().getRepositoryConfig();
-        return YAML == config.getProvider();
+    public static boolean isYamlRepository(IRepository repository) {
+        if (repository instanceof GitBasedRepository) {
+            return isYamlRepository(((GitBasedRepository) repository).getRepository());
+        }
+        // TODO support for MultiRepository?
+        return repository instanceof YamlRepository;
     }
 }

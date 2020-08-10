@@ -230,10 +230,6 @@ public class ToscaExportUtil {
 
         entryDefinitions.getImport().addAll(imports);
 
-        if (entryDefinitions.getElement() instanceof TEntityType) {
-            exportEntityType(entryDefinitions, uri, tcId);
-        }
-
         // END: Definitions modification
         return entryDefinitions;
     }

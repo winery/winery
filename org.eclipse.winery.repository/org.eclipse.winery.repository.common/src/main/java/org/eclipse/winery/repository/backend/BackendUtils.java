@@ -1342,7 +1342,10 @@ public class BackendUtils {
             return "";
         }
         @SuppressWarnings("unchecked")
-        Class<T> clazz = (Class<T>) obj.getClass();
+        Class<? super T> clazz = (Class<T>) obj.getClass();
+        if (TEntityTemplate.Properties.class.isAssignableFrom(clazz)) {
+            clazz = (Class<? super T>)TEntityTemplate.Properties.class;
+        }
         return BackendUtils.getXMLAsString(clazz, obj, includeProcessingInstruction, repository);
     }
 

@@ -17,6 +17,12 @@ package org.eclipse.winery.model.jaxbsupport.map;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchema;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -46,7 +52,7 @@ import org.w3c.dom.Text;
  * and {@link org.eclipse.winery.model.tosca.TEntityTemplate.YamlProperties} from the JAXBContext, thus avoiding a
  * pollution with the namespace URI "" by the use of LinkedHashMap.
  */
-public class PropertiesAdapter extends XmlAdapter<Object, TEntityTemplate.Properties> {
+public class PropertiesAdapter extends XmlAdapter<PropertiesAdapter.Union, TEntityTemplate.Properties> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesAdapter.class);
 
@@ -66,14 +72,14 @@ public class PropertiesAdapter extends XmlAdapter<Object, TEntityTemplate.Proper
     }
 
     @Override
-    public TEntityTemplate.Properties unmarshal(Object xmlData) throws Exception {
+    public TEntityTemplate.Properties unmarshal(Union xmlData) {
         if (xmlData == null) {
             return null;
         }
-        if (!(xmlData instanceof Element)) {
+        if (!(xmlData.any instanceof Element)) {
             throw new IllegalStateException("Cannot deserialize arbitrary XML if no Element is available. Expected Element, got " + xmlData.getClass().getName());
         }
-        Element element = (Element)xmlData;
+        Element element = (Element)xmlData.any;
         final PropertyKind kind = determinePropertyKind(element);
         switch (kind) {
             case XML:
@@ -131,7 +137,7 @@ public class PropertiesAdapter extends XmlAdapter<Object, TEntityTemplate.Proper
     }
 
     @Override
-    public Object marshal(TEntityTemplate.Properties jaxb) throws Exception {
+    public Union marshal(TEntityTemplate.Properties jaxb) {
         if (jaxb == null) {
             return null;
         }
@@ -148,8 +154,9 @@ public class PropertiesAdapter extends XmlAdapter<Object, TEntityTemplate.Proper
         Element serializationWrapper = doc.createElement("DISCARDED");
         doc.appendChild(serializationWrapper);
 
+        Union result = new Union();
         if (jaxb instanceof TEntityTemplate.WineryKVProperties) {
-            marshallWineryKV((TEntityTemplate.WineryKVProperties) jaxb, serializationWrapper, doc);
+            result.setAny(marshallWineryKV((TEntityTemplate.WineryKVProperties) jaxb, doc));
         } else if (jaxb instanceof TEntityTemplate.XmlProperties) {
             // assume XmlProperties are correctly stored as xml
             Object any = ((TEntityTemplate.XmlProperties) jaxb).getAny();
@@ -157,18 +164,17 @@ public class PropertiesAdapter extends XmlAdapter<Object, TEntityTemplate.Proper
                 LOGGER.error("XmlProperties did not contain an Xml Element as any. Aborting serialization");
                 return null;
             }
-            Element el = (Element) any;
-            serializationWrapper.appendChild(doc.importNode(el, true));
+            result.setAny(any);
         } else if (jaxb instanceof TEntityTemplate.YamlProperties) {
             LinkedHashMap<String, Object> data = ((TEntityTemplate.YamlProperties) jaxb).getProperties();
-            marshallNestedMap(data, serializationWrapper, doc);
+            result.setAny(marshallNestedMap(data, doc));
         } else {
             throw new IllegalStateException("Encountered Unknown Property Subclass during Serialization");
         }
-        return serializationWrapper;
+        return result;
     }
 
-    private void marshallNestedMap(LinkedHashMap<String, Object> data, Element serializationWrapper, Document doc) {
+    private Element marshallNestedMap(LinkedHashMap<String, Object> data, Document doc) {
         final String prefix = (prefixMapper != null)
             ? prefixMapper.getPreferredPrefix(Namespaces.TOSCA_YAML_NS, "", true)
             : "";
@@ -185,7 +191,7 @@ public class PropertiesAdapter extends XmlAdapter<Object, TEntityTemplate.Proper
                 LOGGER.warn("Could not serialize value of type {}. Skipping!", value.getClass().getName());
             }
         }
-        serializationWrapper.appendChild(root);
+        return root;
     }
 
     private Element marshallNestedMap(Document doc, String elementName, Map<String, Object> data) {
@@ -204,7 +210,7 @@ public class PropertiesAdapter extends XmlAdapter<Object, TEntityTemplate.Proper
         return container;
     }
 
-    private void marshallWineryKV(TEntityTemplate.WineryKVProperties jaxb, Element serializationWrapper, Document doc) {
+    private Element marshallWineryKV(TEntityTemplate.WineryKVProperties jaxb, Document doc) {
         String namespace = jaxb.getNamespace();
         String elementName = jaxb.getElementName();
         if (namespace == null) {
@@ -219,7 +225,6 @@ public class PropertiesAdapter extends XmlAdapter<Object, TEntityTemplate.Proper
             : "";
         Element root = doc.createElementNS(namespace, elementName);
         root.setPrefix(prefix);
-        serializationWrapper.appendChild(root);
 
         // No wpd - so this is not possible:
         // we produce the serialization in the same order the XSD would be generated (because of the usage of xsd:sequence)
@@ -235,6 +240,7 @@ public class PropertiesAdapter extends XmlAdapter<Object, TEntityTemplate.Proper
                 element.appendChild(text);
             }
         }
+        return root;
     }
 
     public static boolean isKeyValuePropertyDefinition(Element xmlElement) {
@@ -258,5 +264,21 @@ public class PropertiesAdapter extends XmlAdapter<Object, TEntityTemplate.Proper
             }
         }
         return true;
+    }
+
+    @XmlRootElement(name = "Properties", namespace = org.eclipse.winery.model.tosca.constants.Namespaces.TOSCA_NAMESPACE)
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "Properties", namespace = org.eclipse.winery.model.tosca.constants.Namespaces.TOSCA_NAMESPACE)
+    public static class Union {
+        @XmlAnyElement(lax = true)
+        private Object any;
+
+        public Object getAny() {
+            return any;
+        }
+
+        public void setAny(Object any) {
+            this.any = any;
+        }
     }
 }
