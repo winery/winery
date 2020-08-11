@@ -19,17 +19,13 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
 import java.util.SortedSet;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.ids.IdUtil;
-import org.eclipse.winery.model.ids.definitions.DataTypeId;
 import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.model.ids.EncodingUtil;
