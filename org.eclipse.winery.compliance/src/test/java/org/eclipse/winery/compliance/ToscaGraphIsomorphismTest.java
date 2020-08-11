@@ -79,6 +79,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ToscaGraphIsomorphismTest extends TestWithGitBackedRepository {
 
+    // TODO update this to include test cases that are not solely based on WineryKVProperties created from the ToscaModelPropertiesBuilder
     // TODO revise
 //    private final IRepository repository = initializeRepository();
 //

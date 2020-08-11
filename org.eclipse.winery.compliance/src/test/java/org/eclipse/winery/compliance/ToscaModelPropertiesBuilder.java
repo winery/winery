@@ -13,6 +13,7 @@
  ********************************************************************************/
 package org.eclipse.winery.compliance;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -28,7 +29,7 @@ import org.w3c.dom.Text;
 
 public class ToscaModelPropertiesBuilder {
 
-	java.util.Properties properties = new Properties();
+	LinkedHashMap<String, String> properties = new LinkedHashMap<>();
 	@NonNull
 	public static String namespaceURI;
 	@NonNull
@@ -47,26 +48,10 @@ public class ToscaModelPropertiesBuilder {
 	}
 
 	public TEntityTemplate.Properties build() {
-		Document doc = null;
-		TEntityTemplate.XmlProperties result = new TEntityTemplate.XmlProperties();
-
-		if (properties.isEmpty()) {
-			return result;
-		}
-		try {
-			doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-			Element propertiesElement = doc.createElementNS(namespaceURI, prefix + ":" + localName);
-			for (Map.Entry<Object, Object> e : properties.entrySet()) {
-				Element keyNode = doc.createElementNS(namespaceURI, e.getKey().toString());
-				Text textValue = doc.createTextNode(e.getValue().toString());
-				textValue.setTextContent(e.getValue().toString());
-				keyNode.appendChild(textValue);
-				propertiesElement.appendChild(keyNode);
-			}
-			result.setAny(propertiesElement);
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		}
+	    TEntityTemplate.WineryKVProperties result = new TEntityTemplate.WineryKVProperties();
+	    result.setNamespace(namespaceURI);
+	    result.setElementName(localName);
+	    result.setKVProperties(properties);
 		return result;
 	}
 
