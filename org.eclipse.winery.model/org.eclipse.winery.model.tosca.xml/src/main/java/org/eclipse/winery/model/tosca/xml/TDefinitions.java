@@ -34,6 +34,8 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.winery.model.tosca.xml.constants.TOSCA_xml_1_0;
+import org.eclipse.winery.model.tosca.xml.extensions.OTPrmMapping;
+import org.eclipse.winery.model.tosca.xml.extensions.OTRefinementModel;
 import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
 
 import org.eclipse.winery.model.tosca.xml.extensions.OTComplianceRule;
@@ -53,7 +55,8 @@ import org.eclipse.jdt.annotation.Nullable;
     "serviceTemplateOrNodeTypeOrNodeTypeImplementation"
 })
 @XmlSeeAlso( {
-    Definitions.class
+    Definitions.class,
+    OTPrmMapping.class,
 })
 public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
 

@@ -348,9 +348,11 @@ public class Util {
 
     public static <T> JAXBElement<T> getJAXBElement(Class<T> clazz, T obj) {
         String namespace = null;
+        String localName = null;
         XmlRootElement xmlRootElement = clazz.getAnnotation(XmlRootElement.class);
         if (xmlRootElement != null) {
             namespace = xmlRootElement.namespace();
+            localName = xmlRootElement.name();
             if ("##default".equals(namespace)) {
                 XmlSchema xmlSchema = clazz.getPackage().getAnnotation(XmlSchema.class);
                 if (xmlSchema != null) {
@@ -365,7 +367,9 @@ public class Util {
             // fallback non-specified namespaces
             namespace = Namespaces.TOSCA_NAMESPACE;
         }
-        String localName = Util.getLocalName(clazz);
+        if (localName == null) {
+            localName = Util.getLocalName(clazz);
+        }
         QName qname = new QName(namespace, localName);
         return new JAXBElement<T>(qname, clazz, obj);
     }

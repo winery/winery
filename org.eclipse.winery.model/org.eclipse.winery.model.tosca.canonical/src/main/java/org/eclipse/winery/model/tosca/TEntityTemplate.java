@@ -69,12 +69,6 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
     private static final Logger LOGGER = LoggerFactory.getLogger(TEntityTemplate.class);
 
     @XmlElement(name = "Properties")
-    @JsonProperty("propertiesDefinition")
-    @JsonAlias({ "winerysPropertiesDefinition", "propertiesDefinition" })
-//    @XmlJavaTypeAdapter(PropertiesAdapter.class)
-    // PropertiesAdapter is necessary to avoid introducing the namespaceURI "" into the JAXBContext
-    // as well as dealing with the fact that two of the Properties implementations have an xml schema
-    // that depends on the runtime values stored inside the Maps they encapsulate.
     protected TEntityTemplate.Properties properties;
 
     @XmlElement(name = "PropertyConstraints")
@@ -159,13 +153,10 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
     })
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @XmlType(name = "", namespace = Namespaces.TOSCA_NAMESPACE)
-    // remove XmlSeeAlso because types are remapped using XmlTypeAdapter
-    // and we don't want to expose LinkedHashMap to the JAXBContext
-//    @XmlSeeAlso({
-//        XmlProperties.class,
-//        YamlProperties.class,
-//        WineryKVProperties.class
-//    })
+    // no XmlSeeAlso because types are remapped using XmlTypeAdapter and we don't want to expose LinkedHashMap to the
+    //  JAXBContext This avoids introducing the namespaceURI "" into the JAXBContext
+    // The adapter deals with the fact that two of the Properties implementations have an xml schema that depends on the
+    //  runtime values stored inside the Maps they encapsulate.
     @XmlJavaTypeAdapter(PropertiesAdapter.class)
     @XmlRootElement
     public static abstract class Properties implements Serializable {
@@ -174,7 +165,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", namespace = Namespaces.TOSCA_NAMESPACE)
     @XmlRootElement(name = "Properties", namespace = Namespaces.TOSCA_NAMESPACE)
-    @XmlJavaTypeAdapter(value = PropertiesAdapter.class, type = Properties.class)
+    @XmlJavaTypeAdapter(value = PropertiesAdapter.class, type = XmlProperties.class)
     // Xml transformation is done by XmlJavaTypeAdapter, thus no XML configuration whatsoever
     public static class XmlProperties extends Properties {
         @XmlAnyElement(lax = true)

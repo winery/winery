@@ -20,6 +20,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.winery.model.tosca.xml.HasName;
 import org.eclipse.winery.model.tosca.xml.HasTargetNamespace;
@@ -29,6 +31,11 @@ import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+@XmlType(name = "")
+@XmlSeeAlso({
+    OTTopologyFragmentRefinementModel.class,
+    OTTestRefinementModel.class,
+})
 public abstract class OTRefinementModel extends TExtensibleElements implements HasName, HasTargetNamespace {
 
     @XmlAttribute

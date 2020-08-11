@@ -136,7 +136,16 @@
                         "name": "con_1"
                     }
                 ]
-            }
+            },
+            "attributeMappings": [
+
+            ],
+            "deploymentArtifactMappings": [
+
+            ],
+            "stayMappings": [
+
+            ]
         }
     ],
     "targetNamespace": "http://winery.opentosca.org/test/concrete/patternrefinementmodels",

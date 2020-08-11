@@ -11,9 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
+// cannot use TOSCA_WINERY_EXTENSIONS namespace here, since the testing repository uses the default TOSCA_NAMESPACE
+// for all the already stored elements
 @javax.xml.bind.annotation.XmlSchema(
-    namespace = org.eclipse.winery.model.tosca.xml.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE,
+    namespace = Namespaces.TOSCA_NAMESPACE,
     elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package org.eclipse.winery.model.tosca.xml.extensions;
 
-
+import org.eclipse.winery.model.tosca.xml.constants.Namespaces;
