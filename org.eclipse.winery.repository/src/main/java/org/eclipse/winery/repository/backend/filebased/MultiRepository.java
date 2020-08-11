@@ -245,6 +245,9 @@ public class MultiRepository implements IRepository {
         if (repoContainsConfigFile()) {
             LOGGER.info("Found Repositories file");
             loadConfiguration(repositoryConfiguration);
+            MultiRepositoryManager multiRepositoryManager = new MultiRepositoryManager();
+            multiRepositoryManager.createMultiRepositoryFileStructure(Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()),
+                Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), Constants.DEFAULT_LOCAL_REPO_NAME));
             loadRepositoriesByList();
         } else {
             createConfigFileAndSetFactoryToMultiRepository();
@@ -293,9 +296,6 @@ public class MultiRepository implements IRepository {
      * dependencies of the repositories
      */
     private void loadRepositoriesByList() {
-        MultiRepositoryManager multiRepositoryManager = new MultiRepositoryManager();
-        multiRepositoryManager.createMultiRepositoryFileStructure(Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()),
-            Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), Constants.DEFAULT_LOCAL_REPO_NAME));
         for (RepositoryProperties repository : repositoriesList) {
             createRepository(repository.getUrl(), repository.getBranch());
         }
