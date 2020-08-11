@@ -75,7 +75,8 @@ public class TDeploymentArtifact extends TExtensibleElements implements HasName,
         this.name = Objects.requireNonNull(value);
     }
 
-    @NonNull
+    // apparently this can be null, even though it shouldn't ever be...
+    @Nullable
     public QName getArtifactType() {
         return artifactType;
     }

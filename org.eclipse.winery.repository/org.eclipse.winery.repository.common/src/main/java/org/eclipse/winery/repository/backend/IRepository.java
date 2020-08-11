@@ -981,9 +981,13 @@ public interface IRepository extends IWineryRepositoryCommon {
                     if (deploymentArtifacts != null) {
                         List<TDeploymentArtifact> das = deploymentArtifacts.getDeploymentArtifact();
                         for (TDeploymentArtifact da : das) {
-                            ids.add(new ArtifactTypeId(da.getArtifactType()));
-                            if ((qname = da.getArtifactRef()) != null) {
-                                ids.add(new ArtifactTemplateId(qname));
+                            if (da.getArtifactType() != null) {
+                                // TODO This is considered Nullable, because the test case ConsistencyCheckerTest#hasError
+                                //  for revision 20f6d0afd4395ab83f059cb5fabbb08218c9fcbd assumes that that can be nullable
+                                ids.add(new ArtifactTypeId(da.getArtifactType()));
+                            }
+                            if (da.getArtifactRef() != null) {
+                                ids.add(new ArtifactTemplateId(da.getArtifactRef()));
                             }
                         }
                     }

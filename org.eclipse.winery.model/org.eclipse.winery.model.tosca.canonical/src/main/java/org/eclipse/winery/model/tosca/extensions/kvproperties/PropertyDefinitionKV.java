@@ -17,7 +17,6 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

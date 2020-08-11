@@ -29,22 +29,17 @@ import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.common.configuration.Environments;
-import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.model.ids.GenericId;
 import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.repository.filebased.management.GitResolver;
 import org.eclipse.winery.repository.xml.XmlRepository;
 import org.eclipse.winery.repository.yaml.YamlRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.eclipse.winery.common.configuration.RepositoryConfigurationObject.RepositoryProvider.YAML;
 
 public class RepositoryUtils {
 

@@ -380,8 +380,7 @@ public class FromCanonical {
         fillEntityTypeProperties(builder, canonical);
         return builder.build();
     }
-    
-    
+
     private TImplementation convert(org.eclipse.winery.model.tosca.TImplementation canonical) {
         TImplementation definition = new TImplementation();
         definition.setPrimary(canonical.getPrimary());
@@ -390,7 +389,7 @@ public class FromCanonical {
         definition.setTimeout(canonical.getTimeout());
         return definition;
     }
-    
+
     private TArtifact convert(org.eclipse.winery.model.tosca.TArtifact canonical) {
         TArtifact.Builder builder = new TArtifact.Builder(canonical.getName(), canonical.getType());
         builder.setDeployPath(canonical.getDeployPath());
@@ -490,7 +489,6 @@ public class FromCanonical {
         constraint.setProperty(canonical.getProperty());
         return constraint;
     }
-
 
     private TExtension convert(org.eclipse.winery.model.tosca.TExtension canonical) {
         TExtension.Builder builder = new TExtension.Builder(canonical.getNamespace());

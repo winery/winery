@@ -19,8 +19,6 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.eclipse.winery.model.tosca.TEntityTemplate;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.topologygraph.matching.IToscaMatcher;
 import org.eclipse.winery.topologygraph.model.ToscaEdge;
 import org.eclipse.winery.topologygraph.model.ToscaEntity;
@@ -79,7 +77,7 @@ public class ToscaComplianceRuleMatcher implements IToscaMatcher {
             return false;
         }
         if (leftProps instanceof TEntityTemplate.WineryKVProperties) {
-            assert(rightProps instanceof TEntityTemplate.WineryKVProperties);
+            assert (rightProps instanceof TEntityTemplate.WineryKVProperties);
 
             Map<String, String> leftMap = ((TEntityTemplate.WineryKVProperties) leftProps).getKVProperties();
             Map<String, String> rightMap = ((TEntityTemplate.WineryKVProperties) rightProps).getKVProperties();
