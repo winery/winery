@@ -45,7 +45,7 @@ public class WinerysPropertiesDefinition extends TEntityType.PropertiesDefinitio
     private String namespace;
     @JsonProperty
     private String elementName;
-    @JsonProperty
+    @JsonProperty("propertyDefinitionKVList")
     private List<PropertyDefinitionKV> propertyDefinitions;
     @JsonProperty
     private Boolean isDerivedFromXSD = Boolean.FALSE;

@@ -131,17 +131,7 @@ public class PropertiesDefinitionResource {
             return RestUtils.persist(this.parentRes);
         } else if (data.selectedValue == PropertiesDefinitionEnum.Custom) {
             TEntityType et = this.parentRes.getEntityType();
-
-            // clear current properties definition
-            et.setProperties(null);
-
-            // create winery properties definition and persist it
-            ModelUtilities.replaceWinerysPropertiesDefinition(et, data.winerysPropertiesDefinition);
-            String namespace = data.winerysPropertiesDefinition.getNamespace();
-            NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
-            if (!namespaceManager.hasPermanentProperties(namespace)) {
-                namespaceManager.addPermanentNamespace(namespace);
-            }
+            et.setProperties(data.winerysPropertiesDefinition);
             return RestUtils.persist(this.parentRes);
         } else if (data.selectedValue == PropertiesDefinitionEnum.Yaml) {
             TEntityType et = this.parentRes.getEntityType();

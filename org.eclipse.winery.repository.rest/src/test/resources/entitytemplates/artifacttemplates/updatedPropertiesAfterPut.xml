@@ -2,17 +2,17 @@
     <w3c:shiporder
         xmlns:w3c="https://www.w3schools.com/xml/schema_example.asp"
         orderid="123456">
-        <orderperson xmlns="">Marty McFly Jr.</orderperson>
-        <shipto xmlns="">
+        <w3c:orderperson xmlns="">Marty McFly Jr.</w3c:orderperson>
+        <w3c:shipto xmlns="">
             <name>name</name>
             <address>new address</address>
             <city>city</city>
             <country>country</country>
-        </shipto>
-        <item xmlns="">
+        </w3c:shipto>
+        <w3c:item xmlns="">
             <title>Title</title>
             <quantity>1</quantity>
             <price>1.47</price>
-        </item>
+        </w3c:item>
     </w3c:shiporder>
 </Properties>

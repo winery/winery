@@ -13,23 +13,15 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.extensions;
 
-import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import org.eclipse.winery.model.tosca.TTopologyTemplate;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "otPatternRefinementModel")
+@XmlType(name = "otPatternRefinementModel", namespace = Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE)
 public class OTPatternRefinementModel extends OTTopologyFragmentRefinementModel {
 
     @Deprecated

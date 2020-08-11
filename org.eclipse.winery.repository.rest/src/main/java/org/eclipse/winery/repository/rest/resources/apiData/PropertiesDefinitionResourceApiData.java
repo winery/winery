@@ -14,12 +14,16 @@
 
 package org.eclipse.winery.repository.rest.resources.apiData;
 
+import org.eclipse.winery.model.jsonsupport.PropertiesDefinitionDeserializer;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 public class PropertiesDefinitionResourceApiData {
 
     public TEntityType.PropertiesDefinition propertiesDefinition;
+    @JsonDeserialize(using = PropertiesDefinitionDeserializer.class)
     public WinerysPropertiesDefinition winerysPropertiesDefinition;
     public PropertiesDefinitionEnum selectedValue;
 

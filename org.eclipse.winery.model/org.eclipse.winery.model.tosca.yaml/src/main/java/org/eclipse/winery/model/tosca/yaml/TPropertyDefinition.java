@@ -45,8 +45,9 @@ import org.eclipse.jdt.annotation.Nullable;
 })
 public class TPropertyDefinition extends TPropertyAssignmentOrDefinition {
 
+    // TODO while this is required, we can not guarantee it's set while working with the model
     @XmlAttribute(name = "type", required = true)
-    @NonNull
+    @Nullable
     private QName type;
     private String description;
     private Boolean required;
@@ -109,7 +110,7 @@ public class TPropertyDefinition extends TPropertyAssignmentOrDefinition {
             "}";
     }
 
-    @NonNull
+    @Nullable
     public QName getType() {
         return type;
     }

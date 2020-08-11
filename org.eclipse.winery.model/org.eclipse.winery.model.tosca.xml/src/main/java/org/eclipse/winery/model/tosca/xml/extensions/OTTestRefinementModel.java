@@ -24,11 +24,10 @@ import org.eclipse.winery.model.tosca.xml.TTopologyTemplate;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(name = "otTestRefinementModel")
 public class OTTestRefinementModel extends OTRefinementModel {
 
-    @XmlElement(name = "TestFragment")
     private TTopologyTemplate testFragment;
 
     @Deprecated
@@ -52,6 +51,7 @@ public class OTTestRefinementModel extends OTRefinementModel {
         this.testFragment = refinementStructure;
     }
 
+    @XmlElement(name = "TestFragment")
     public TTopologyTemplate getTestFragment() {
         return getRefinementTopology();
     }

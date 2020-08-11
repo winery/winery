@@ -73,8 +73,7 @@ public class PropertiesDefinitionDeserializer extends StdDeserializer<TEntityTyp
             node.remove("type");
             node.remove("element");
         } else {
-            // this throws an exception
-            context.reportMappingException("Could not determine EntityType.PropertiesDefinition implementation from properties", node.fieldNames());
+            // must not throw an exception because PropertiesDefinitionAPIData can contain a null element
             return null;
         }
         JsonDeserializer<Object> deserializer = context.findNonContextualValueDeserializer(targetType);

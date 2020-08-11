@@ -56,10 +56,8 @@ public class JAXBSupport {
                 AttributeDefinitions.class,
                 Application.class,
                 MockXMLElement.class,
-                // because XmlSeeAlso is apparently ignored with XmlJavaTypeAdapter annotations
+                // required because we're not XmlSeeAlso referring it
                 TEntityTemplate.XmlProperties.class,
-                TEntityTemplate.WineryKVProperties.class,
-                TEntityTemplate.YamlProperties.class,
             });
                 // MockXMLElement is added for testing purposes only.
         } catch (JAXBException e) {

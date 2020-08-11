@@ -37,8 +37,10 @@ import org.eclipse.winery.model.jaxbsupport.map.PropertiesAdapter;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.github.adr.embedded.ADR;
@@ -67,7 +69,9 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
     private static final Logger LOGGER = LoggerFactory.getLogger(TEntityTemplate.class);
 
     @XmlElement(name = "Properties")
-    @XmlJavaTypeAdapter(PropertiesAdapter.class)
+    @JsonProperty("propertiesDefinition")
+    @JsonAlias({ "winerysPropertiesDefinition", "propertiesDefinition" })
+//    @XmlJavaTypeAdapter(PropertiesAdapter.class)
     // PropertiesAdapter is necessary to avoid introducing the namespaceURI "" into the JAXBContext
     // as well as dealing with the fact that two of the Properties implementations have an xml schema
     // that depends on the runtime values stored inside the Maps they encapsulate.
@@ -154,12 +158,21 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         @JsonSubTypes.Type(value = YamlProperties.class, name = "YAML")
     })
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @XmlType(name = "")
-    // Xml transformation is done by PropertiesAdapter, thus no XmlSeeAlso
+    @XmlType(name = "", namespace = Namespaces.TOSCA_NAMESPACE)
+    // remove XmlSeeAlso because types are remapped using XmlTypeAdapter
+    // and we don't want to expose LinkedHashMap to the JAXBContext
+//    @XmlSeeAlso({
+//        XmlProperties.class,
+//        YamlProperties.class,
+//        WineryKVProperties.class
+//    })
+    @XmlJavaTypeAdapter(PropertiesAdapter.class)
+    @XmlRootElement
     public static abstract class Properties implements Serializable {
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", namespace = Namespaces.TOSCA_NAMESPACE)
     @XmlRootElement(name = "Properties", namespace = Namespaces.TOSCA_NAMESPACE)
     @XmlJavaTypeAdapter(value = PropertiesAdapter.class, type = Properties.class)
     // Xml transformation is done by XmlJavaTypeAdapter, thus no XML configuration whatsoever
@@ -178,6 +191,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
     }
 
     @XmlJavaTypeAdapter(value = PropertiesAdapter.class, type = Properties.class)
+    @XmlType(name = "", namespace = Namespaces.TOSCA_NAMESPACE)
     // Xml transformation is done by XmlJavaTypeAdapter, thus no XML configuration whatsoever
     public static class WineryKVProperties extends Properties {
         @JsonIgnore
@@ -219,6 +233,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         }
     }
 
+    @XmlType(name = "", namespace = Namespaces.TOSCA_NAMESPACE)
     @XmlJavaTypeAdapter(value = PropertiesAdapter.class, type = Properties.class)
     // Xml transformation is done by XmlJavaTypeAdapter, thus no XML configuration whatsoever
     @NonNullByDefault

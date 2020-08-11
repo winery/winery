@@ -24,13 +24,14 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "otTopologyFragmentRefinementModel")
+@XmlType(name = "otTopologyFragmentRefinementModel", namespace = Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE)
 public class OTTopologyFragmentRefinementModel extends OTRefinementModel {
 
     @XmlElement(name = "RefinementStructure")
