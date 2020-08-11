@@ -2129,7 +2129,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                             this.selectedRelationshipType.name,
                             relationshipId,
                             this.selectedRelationshipType.qName,
-                            InheritanceUtils.getDefaultPropertiesFromEntityTypes(this.selectedRelationshipType.name, this.entityTypes.relationshipTypes),
+                            InheritanceUtils.getDefaultPropertiesFromEntityTypes(this.selectedRelationshipType.qName, this.entityTypes.relationshipTypes),
                             [],
                             [],
                             {}
@@ -2187,8 +2187,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                                 this.selectedRelationshipType.name,
                                 relationshipId,
                                 this.selectedRelationshipType.qName,
-                                InheritanceUtils.getDefaultPropertiesFromEntityTypes(this.selectedRelationshipType.name,
-                                    this.entityTypes.relationshipTypes),
+                                InheritanceUtils.getDefaultPropertiesFromEntityTypes(this.selectedRelationshipType.qName, this.entityTypes.relationshipTypes),
                                 [],
                                 [],
                                 {}
