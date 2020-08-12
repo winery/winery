@@ -91,10 +91,10 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
         const definedProperties = [];
         for (const type of inheritance) {
             const definition = ToscaUtils.getDefinition(type);
-            if (definition.properties === undefined) {
+            if (definition.propertiesDefinition === undefined) {
                 continue;
             }
-            for (const propertyDefinition of definition.properties.properties || []) {
+            for (const propertyDefinition of definition.propertiesDefinition.properties || []) {
                 // only add properties that have not been overwritten by subtypes.
                 // "lower" types come earlier in the ancestry list, that's why we can afford this
                 if (definedProperties.find(def => def.name === propertyDefinition.name) === undefined) {

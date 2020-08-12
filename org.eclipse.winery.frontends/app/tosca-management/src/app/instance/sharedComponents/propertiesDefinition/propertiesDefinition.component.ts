@@ -128,11 +128,6 @@ export class PropertiesDefinitionComponent implements OnInit {
                     return prop;
                 });
             this.availableTypes = this.yamlTypes;
-            this.validatorObject = new WineryValidatorObject(
-                this.resourceApiData.propertiesDefinition.properties,
-                'name',
-                this.editedProperty);
-
         } else if (this.resourceApiData.winerysPropertiesDefinition !== null) {
             this.columns = winery_properties_columns;
             this.tableData = this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList
@@ -141,11 +136,6 @@ export class PropertiesDefinitionComponent implements OnInit {
                     return prop;
                 });
             this.availableTypes = this.xmlTypes;
-            this.validatorObject = new WineryValidatorObject(
-                this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList,
-                'key',
-                this.editedProperty
-            );
         }
     }
 
@@ -278,6 +268,16 @@ export class PropertiesDefinitionComponent implements OnInit {
     onAddClick() {
         this.propertyOperation = 'Add';
         this.clearEditedProperty();
+        if (this.isYaml) {
+            this.validatorObject = new WineryValidatorObject(
+                this.resourceApiData.propertiesDefinition.properties,
+                'name');
+        } else {
+            this.validatorObject = new WineryValidatorObject(
+                this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList,
+                'key'
+            );
+        }
         this.editorModalRef = this.modalService.show(this.editorModal);
     }
 
@@ -301,6 +301,18 @@ export class PropertiesDefinitionComponent implements OnInit {
         }
         if (this.editedProperty.entrySchema === undefined) {
             this.editedProperty.entrySchema = { type: '' };
+        }
+        if (this.isYaml) {
+            this.validatorObject = new WineryValidatorObject(
+                this.resourceApiData.propertiesDefinition.properties,
+                'name',
+                this.editedProperty);
+        } else {
+            this.validatorObject = new WineryValidatorObject(
+                this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList,
+                'key',
+                this.editedProperty
+            );
         }
         this.editedProperty.constraints.forEach((c: Constraint) => this.editedConstraints.push(c));
         this.editorModalRef = this.modalService.show(this.editorModal);
