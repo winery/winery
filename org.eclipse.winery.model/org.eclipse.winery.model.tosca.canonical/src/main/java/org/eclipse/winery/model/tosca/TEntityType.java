@@ -38,8 +38,8 @@ import org.eclipse.winery.model.jaxbsupport.map.BooleanToYesNo;
 import org.eclipse.winery.model.jsonsupport.PropertiesDefinitionDeserializer;
 import org.eclipse.winery.model.jsonsupport.PropertiesDefinitionSerializer;
 import org.eclipse.winery.model.jsonsupport.YesNo;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitions;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKVs;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinition;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKV;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -100,7 +100,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     protected String targetNamespace;
 
     // added to support conversion from/to YAML
-    protected AttributeDefinitions attributeDefinitions;
+    protected List<AttributeDefinition> attributeDefinitions;
 
     public TEntityType() {
     }
@@ -137,11 +137,11 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     }
 
     @Nullable
-    public AttributeDefinitions getAttributeDefinitions() {
+    public List<AttributeDefinition> getAttributeDefinitions() {
         return attributeDefinitions;
     }
 
-    public void setAttributeDefinitions(AttributeDefinitions attributeDefinitions) {
+    public void setAttributeDefinitions(List<AttributeDefinition> attributeDefinitions) {
         this.attributeDefinitions = attributeDefinitions;
     }
 
@@ -315,7 +315,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
         private Object defaultValue;
         private YamlPropertyDefinition.Status status;
         @XmlElement
-        private ConstraintClauseKVs constraints;
+        private List<ConstraintClauseKV> constraints;
 
         @XmlElement(name = "entry_schema")
         private TSchema entrySchema;
@@ -362,7 +362,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             private Boolean required;
             private Object defaultValue;
             private YamlPropertyDefinition.Status status;
-            private ConstraintClauseKVs constraints;
+            private List<ConstraintClauseKV> constraints;
             private TSchema entrySchema;
             private TSchema keySchema;
             
@@ -400,7 +400,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
                 return this;
             }
 
-            public Builder setConstraints(ConstraintClauseKVs constraints) {
+            public Builder setConstraints(List<ConstraintClauseKV> constraints) {
                 this.constraints = constraints;
                 return this;
             }
@@ -472,11 +472,11 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
         }
 
         @Nullable
-        public ConstraintClauseKVs getConstraints() {
+        public List<ConstraintClauseKV> getConstraints() {
             return constraints;
         }
 
-        public void setConstraints(@Nullable ConstraintClauseKVs constraints) {
+        public void setConstraints(@Nullable List<ConstraintClauseKV> constraints) {
             this.constraints = constraints;
         }
 
@@ -602,7 +602,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
         private boolean abstractValue;
         private boolean finalValue;
         private String targetNamespace;
-        private AttributeDefinitions attributeDefinitions;
+        private List<AttributeDefinition> attributeDefinitions;
 
         public Builder(String name) {
             this.name = name;
@@ -717,7 +717,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             return addTags(tag);
         }
 
-        public T setAttributeDefinitions(AttributeDefinitions attributeDefinitions) {
+        public T setAttributeDefinitions(List<AttributeDefinition> attributeDefinitions) {
             this.attributeDefinitions = attributeDefinitions;
             return self();
         }

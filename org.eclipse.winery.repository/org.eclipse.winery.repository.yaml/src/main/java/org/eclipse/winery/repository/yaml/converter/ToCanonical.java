@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -73,11 +74,8 @@ import org.eclipse.winery.model.tosca.yaml.TSchemaDefinition;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.yaml.converter.support.InheritanceUtils;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinition;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitions;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKV;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKVs;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinition;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinitions;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.yaml.TArtifactDefinition;
@@ -237,7 +235,7 @@ public class ToCanonical {
             .setTargetNamespace(node.getMetadata().get("targetNamespace"))
             .setAbstract(Boolean.valueOf(node.getMetadata().get("abstract")))
             .setFinal(Boolean.valueOf(node.getMetadata().get("final")))
-            .setAttributeDefinitions(new AttributeDefinitions(convert(node.getAttributes())));
+            .setAttributeDefinitions(convert(node.getAttributes()));
 
         if (node.getVersion() != null) {
             String version = node.getVersion().getVersion();
@@ -275,7 +273,7 @@ public class ToCanonical {
                     propDef.getRequired(),
                     defaultValue,
                     propDef.getDescription(),
-                    convertConstraints(propDef.getConstraints())
+                    convertList(propDef.getConstraints(), this::convert)
                 )
             );
         }
@@ -286,19 +284,15 @@ public class ToCanonical {
     /**
      * converts TOSCA YAML constraints to Winery XML constraints
      *
-     * @param constraints TOSCA YAML constraints
-     * @return Winery XML constraints
+     * @param constraint TOSCA YAML constrains
+     * @return Winery XML constraint
      */
-    private ConstraintClauseKVs convertConstraints(List<org.eclipse.winery.model.tosca.yaml.TConstraintClause> constraints) {
-        ConstraintClauseKVs constraintList = new ConstraintClauseKVs();
-        for (org.eclipse.winery.model.tosca.yaml.TConstraintClause constraint : constraints) {
-            ConstraintClauseKV con = new ConstraintClauseKV();
-            con.setKey(constraint.getKey());
-            con.setValue(constraint.getValue());
-            con.setList(constraint.getList());
-            constraintList.getConstraintDefinitionKVs().add(con);
-        }
-        return constraintList;
+    private ConstraintClauseKV convert(org.eclipse.winery.model.tosca.yaml.TConstraintClause constraint) {
+        ConstraintClauseKV con = new ConstraintClauseKV();
+        con.setKey(constraint.getKey());
+        con.setValue(constraint.getValue());
+        con.setList(constraint.getList());
+        return con;
     }
 
     /**
@@ -812,10 +806,10 @@ public class ToCanonical {
         builder.setPolicies(new TPolicies(convert(node.getPolicies())));
 
         if (node.getInputs() != null) {
-            builder.setInputs(new ParameterDefinitions(convert(node.getInputs())));
+            builder.setInputs(convert(node.getInputs()));
         }
         if (node.getOutputs() != null) {
-            builder.setOutputs(new ParameterDefinitions(convert(node.getOutputs())));
+            builder.setOutputs(convert(node.getOutputs()));
         }
 
         return builder.build();
@@ -1190,7 +1184,7 @@ public class ToCanonical {
     public TDataType convert(org.eclipse.winery.model.tosca.yaml.TDataType node, String name) {
         TDataType.Builder builder = new TDataType.Builder(name)
             // set specific fields 
-            .addConstraints(convertConstraints(node.getConstraints()));
+            .addConstraints(convertList(node.getConstraints(), this::convert));
         fillEntityTypeProperties(node, builder);
         TDataType result = builder.build();
 
@@ -1330,7 +1324,7 @@ public class ToCanonical {
             .setRequired(node.getRequired())
             .setDefaultValue(node.getDefault())
             .setStatus(TEntityType.YamlPropertyDefinition.Status.getStatus(node.getStatus().toString()))
-            .setConstraints(convertConstraints(node.getConstraints()))
+            .setConstraints(convertList(node.getConstraints(), this::convert))
             .setEntrySchema(convert(node.getEntrySchema()))
             .setKeySchema(convert(node.getKeySchema()))
             .build();
@@ -1340,10 +1334,15 @@ public class ToCanonical {
     private TSchema convert(@Nullable TSchemaDefinition node) {
         if (node == null) { return null; }
         TSchema.Builder builder = new TSchema.Builder(node.getType());
-        return builder.setConstraints(convertConstraints(node.getConstraints()))
+        return builder.setConstraints(convertList(node.getConstraints(), this::convert))
             .setDescription(node.getDescription())
             .setEntrySchema(convert(node.getEntrySchema()))
             .setKeySchema(convert(node.getKeySchema()))
             .build();
+    }
+
+    private <R, I> List<R> convertList(@Nullable List<I> yaml, Function<I, R> convert) {
+        if (yaml == null) { return Collections.emptyList(); }
+        return yaml.stream().map(convert).collect(Collectors.toList());
     }
 }

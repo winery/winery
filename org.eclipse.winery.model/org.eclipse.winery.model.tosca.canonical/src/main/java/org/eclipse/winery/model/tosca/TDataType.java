@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -20,7 +22,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKV;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKVs;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -30,7 +31,7 @@ import org.eclipse.jdt.annotation.NonNull;
     "constraints"
 })
 public class TDataType extends TEntityType {
-    private ConstraintClauseKVs constraints;
+    private List<ConstraintClauseKV> constraints;
     
     // metadata were added to all TEntityTypes, so no need to add these explicitly
     // FIXME add key_schema, entry_schema
@@ -70,19 +71,19 @@ public class TDataType extends TEntityType {
     }
 
     @NonNull
-    public ConstraintClauseKVs getConstraints() {
+    public List<ConstraintClauseKV> getConstraints() {
         if (this.constraints == null) {
-            this.constraints = new ConstraintClauseKVs();
+            this.constraints = new ArrayList<>();
         }
         return constraints;
     }
 
-    public void setConstraints(ConstraintClauseKVs constraints) {
+    public void setConstraints(List<ConstraintClauseKV> constraints) {
         this.constraints = constraints;
     }
     
     public static class Builder extends TEntityType.Builder<Builder> {
-        private ConstraintClauseKVs constraints;
+        private List<ConstraintClauseKV> constraints;
 
         public Builder(String name) {
             super(name);
@@ -97,20 +98,20 @@ public class TDataType extends TEntityType {
             return this;
         }
 
-        public Builder setConstraints(ConstraintClauseKVs constraints) {
+        public Builder setConstraints(List<ConstraintClauseKV> constraints) {
             this.constraints = constraints;
             return this;
         }
 
-        public Builder addConstraints(ConstraintClauseKVs constraints) {
-            if (constraints == null || constraints.getConstraintDefinitionKVs().isEmpty()) {
+        public Builder addConstraints(List<ConstraintClauseKV> constraints) {
+            if (constraints == null || constraints.isEmpty()) {
                 return this;
             }
 
             if (this.constraints == null) {
-                this.constraints = new ConstraintClauseKVs();
+                this.constraints = new ArrayList<>();
             } 
-            this.constraints.getConstraintDefinitionKVs().addAll(constraints.getConstraintDefinitionKVs());
+            this.constraints.addAll(constraints);
 
             return this;
         }
@@ -120,9 +121,9 @@ public class TDataType extends TEntityType {
                 return this;
             }
             if (this.constraints == null) {
-                this.constraints = new ConstraintClauseKVs();
+                this.constraints = new ArrayList<>();
             }
-            this.constraints.getConstraintDefinitionKVs().add(constraint);
+            this.constraints.add(constraint);
             return this;
         }
 

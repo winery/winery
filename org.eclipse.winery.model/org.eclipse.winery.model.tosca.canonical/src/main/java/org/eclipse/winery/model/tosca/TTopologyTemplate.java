@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlType;
 
-import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinitions;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinition;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -54,8 +54,8 @@ public class TTopologyTemplate extends TExtensibleElements {
     protected TPolicies policies;
 
     // added to support conversion from/to YAML inputs/outputs
-    protected ParameterDefinitions inputs;
-    protected ParameterDefinitions outputs;
+    protected List<ParameterDefinition> inputs;
+    protected List<ParameterDefinition> outputs;
 
     public TTopologyTemplate() {
     }
@@ -174,20 +174,20 @@ public class TTopologyTemplate extends TExtensibleElements {
     }
 
     @Nullable
-    public ParameterDefinitions getInputs() {
+    public List<ParameterDefinition> getInputs() {
         return inputs;
     }
 
-    public void setInputs(ParameterDefinitions inputs) {
+    public void setInputs(List<ParameterDefinition> inputs) {
         this.inputs = inputs;
     }
 
     @Nullable
-    public ParameterDefinitions getOutputs() {
+    public List<ParameterDefinition> getOutputs() {
         return outputs;
     }
 
-    public void setOutputs(ParameterDefinitions outputs) {
+    public void setOutputs(List<ParameterDefinition> outputs) {
         this.outputs = outputs;
     }
 
@@ -199,8 +199,8 @@ public class TTopologyTemplate extends TExtensibleElements {
         private List<TNodeTemplate> nodeTemplates;
         private List<TRelationshipTemplate> relationshipTemplates;
         private TPolicies policies;
-        private ParameterDefinitions inputs;
-        private ParameterDefinitions outputs;
+        private List<ParameterDefinition> inputs;
+        private List<ParameterDefinition> outputs;
 
         public Builder() {
         }
@@ -271,12 +271,12 @@ public class TTopologyTemplate extends TExtensibleElements {
             return this;
         }
 
-        public Builder setInputs(ParameterDefinitions inputs) {
+        public Builder setInputs(List<ParameterDefinition> inputs) {
             this.inputs = inputs;
             return this;
         }
 
-        public Builder setOutputs(ParameterDefinitions outputs) {
+        public Builder setOutputs(List<ParameterDefinition> outputs) {
             this.outputs = outputs;
             return this;
         }

@@ -36,6 +36,7 @@ import org.eclipse.winery.repository.rest.resources.apiData.InheritanceResourceA
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;
+import org.eclipse.winery.repository.rest.resources.yaml.DataTypeResource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,6 +127,8 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
                 derivedFrom = new TRelationshipTypeImplementation.DerivedFrom();
             } else if (this instanceof NodeTypeImplementationResource) {
                 derivedFrom = new TNodeTypeImplementation.DerivedFrom();
+            } else if (this instanceof DataTypeResource) {
+                derivedFrom = new TEntityType.DerivedFrom();
             } else {
                 return Response.status(Response.Status.BAD_REQUEST).entity("Type does not support inheritance!").build();
             }

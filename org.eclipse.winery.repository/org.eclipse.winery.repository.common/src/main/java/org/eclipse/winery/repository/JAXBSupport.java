@@ -23,8 +23,6 @@ import org.eclipse.winery.model.jaxbsupport.map.PropertiesAdapter;
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitions;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinitions;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.repository.backend.MockXMLElement;
 
@@ -52,8 +50,6 @@ public class JAXBSupport {
             context = JAXBContext.newInstance(new Class[] {
                 TDefinitions.class, // all other elements are referred by "@XmlSeeAlso"
                 WinerysPropertiesDefinition.class,
-                ParameterDefinitions.class,
-                AttributeDefinitions.class,
                 Application.class,
                 MockXMLElement.class,
                 // required because we're not XmlSeeAlso referring it

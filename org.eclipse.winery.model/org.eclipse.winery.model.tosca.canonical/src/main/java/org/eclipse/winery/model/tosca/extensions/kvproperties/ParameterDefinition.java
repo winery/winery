@@ -14,12 +14,14 @@
 package org.eclipse.winery.model.tosca.extensions.kvproperties;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @XmlRootElement(name = "ParameterDefinition")
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -30,7 +32,8 @@ public class ParameterDefinition implements Serializable {
     private String description;
     private Boolean required;
     private String defaultValue;
-    private ConstraintClauseKVs constraintList;
+    @JsonProperty("constraints")
+    private List<ConstraintClauseKV> constraintList;
     private String value;
 
     public ParameterDefinition() {
@@ -81,11 +84,11 @@ public class ParameterDefinition implements Serializable {
         this.defaultValue = defaultValue;
     }
 
-    public ConstraintClauseKVs getConstraintList() {
+    public List<ConstraintClauseKV> getConstraintList() {
         return constraintList;
     }
 
-    public void setConstraintList(ConstraintClauseKVs constraintList) {
+    public void setConstraintList(List<ConstraintClauseKV> constraintList) {
         this.constraintList = constraintList;
     }
 

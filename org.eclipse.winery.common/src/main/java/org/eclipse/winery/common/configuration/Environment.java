@@ -164,6 +164,7 @@ final class Environment {
             if (defaultConfigInputStream == null) {
                 throw new NullPointerException();
             }
+            LOGGER.info("Copying default configuration to user home");
             FileUtils.copyInputStreamToFile(defaultConfigInputStream, Environment.DEFAULT_CONFIG_FILE);
         } catch (IOException | NullPointerException e) {
             LOGGER.debug("Error while copying the default config file into the winery directory", e);

@@ -68,8 +68,7 @@ import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinition;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinitions;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKVs;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKV;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinition;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
@@ -242,10 +241,10 @@ public class FromCanonical {
             .setRelationshipTemplates(convert(topologyTemplate.getRelationshipTemplates()))
             .setPolicies(convert(topologyTemplate.getPolicies()));
         if (topologyTemplate.getInputs() != null) {
-            builder.setInputs(convert(topologyTemplate.getInputs().getParameterDefinition()));
+            builder.setInputs(convert(topologyTemplate.getInputs()));
         }
         if (topologyTemplate.getOutputs() != null) {
-            builder.setOutputs(convert(topologyTemplate.getOutputs().getParameterDefinition()));
+            builder.setOutputs(convert(topologyTemplate.getOutputs()));
         }
         return builder.build();
     }
@@ -313,7 +312,7 @@ public class FromCanonical {
             .addMetadata("targetNamespace", node.getTargetNamespace())
             .addMetadata("abstract", node.getAbstract() ? "true" : "false")
             .addMetadata("final", node.getFinal() ? "true" : "false")
-            .setAttributes(convert(node, node.getAttributeDefinitions()))
+            .setAttributes(convertAttributes(node, node.getAttributeDefinitions()))
             .setDescription(convertDocumentation(node.getDocumentation()));
         
         if (node.getProperties() != null) {
@@ -337,7 +336,7 @@ public class FromCanonical {
                     .setRequired(entry.isRequired())
                     .setDefault(entry.getDefaultValue())
                     .setDescription(entry.getDescription())
-                    .addConstraints(convert(entry.getConstraints()))
+                    .addConstraints(convertConstraints(entry.getConstraints()))
                     .build()
             ));
     }
@@ -352,7 +351,7 @@ public class FromCanonical {
     
     private TPropertyDefinition convert(TEntityType.YamlPropertyDefinition canonical) {
         TPropertyDefinition.Builder builder = new TPropertyDefinition.Builder(canonical.getType());
-        builder.setConstraints(convert(canonical.getConstraints()));
+        builder.setConstraints(convertConstraints(canonical.getConstraints()));
         builder.setDefault(canonical.getDefaultValue());
         builder.setDescription(canonical.getDescription());
         if (canonical.getEntrySchema() != null) {
@@ -371,15 +370,15 @@ public class FromCanonical {
         if (canonical == null) { return null; }
         TSchemaDefinition.Builder builder = new TSchemaDefinition.Builder(canonical.getType());
         builder.setDescription(canonical.getDescription());
-        builder.setConstraints(convert(canonical.getConstraints()));
+        builder.setConstraints(convertConstraints(canonical.getConstraints()));
         builder.setKeySchema(convert(canonical.getKeySchema()));
         builder.setEntrySchema(convert(canonical.getEntrySchema()));
         return builder.build();
     }
 
-    public Map<String, TAttributeDefinition> convert(TEntityType node, @Nullable AttributeDefinitions attributes) {
+    public Map<String, TAttributeDefinition> convertAttributes(TEntityType node, @Nullable List<AttributeDefinition> attributes) {
         if (Objects.isNull(node) || Objects.isNull(attributes)) return new HashMap<>();
-        return attributes.getAttributeDefinitions().stream().collect(Collectors.toMap(
+        return attributes.stream().collect(Collectors.toMap(
             AttributeDefinition::getKey,
             entry -> new TAttributeDefinition.Builder(entry.getType())
                 .setDescription(entry.getDescription())
@@ -388,11 +387,11 @@ public class FromCanonical {
         ));
     }
 
-    public List<TConstraintClause> convert(ConstraintClauseKVs constraints) {
+    public List<TConstraintClause> convertConstraints(List<ConstraintClauseKV> constraints) {
         if (Objects.isNull(constraints)) return null;
 
         List<TConstraintClause> list = new ArrayList<>();
-        constraints.getConstraintDefinitionKVs().forEach(entry -> {
+        constraints.forEach(entry -> {
             TConstraintClause clause = new TConstraintClause();
             clause.setKey(entry.getKey());
             clause.setValue(entry.getValue());
@@ -1105,7 +1104,7 @@ public class FromCanonical {
         TDataType.Builder builder = convert(node, new TDataType.Builder(), org.eclipse.winery.model.tosca.TDataType.class);
         return Collections.singletonMap(
             node.getIdFromIdOrNameField(),
-            builder.setConstraints(convert(node.getConstraints())).build()
+            builder.setConstraints(convertConstraints(node.getConstraints())).build()
         );
     }
 

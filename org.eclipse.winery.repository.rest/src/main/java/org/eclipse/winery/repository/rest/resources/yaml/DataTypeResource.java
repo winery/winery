@@ -53,7 +53,7 @@ public class DataTypeResource extends AbstractComponentInstanceResourceWithNameD
     @Path("constraints/")
     @Produces(MediaType.APPLICATION_JSON)
     public List<ConstraintClauseKV> constraints() {
-        return getDataType().getConstraints().getConstraintDefinitionKVs();
+        return getDataType().getConstraints();
     }
 
     @GET

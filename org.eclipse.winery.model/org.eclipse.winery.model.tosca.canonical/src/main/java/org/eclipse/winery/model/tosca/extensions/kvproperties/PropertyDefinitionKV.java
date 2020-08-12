@@ -14,11 +14,13 @@
 package org.eclipse.winery.model.tosca.extensions.kvproperties;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlElement;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PropertyDefinitionKV implements Serializable {
@@ -28,8 +30,9 @@ public class PropertyDefinitionKV implements Serializable {
     private Boolean required;
     private String defaultValue;
     private String description;
-    
-    private ConstraintClauseKVs constraintList;
+
+    @JsonProperty("constraint")
+    private List<ConstraintClauseKV> constraintList;
 
     public PropertyDefinitionKV() {
         super();
@@ -52,7 +55,7 @@ public class PropertyDefinitionKV implements Serializable {
         this.setDescription(description);
     }
     
-    public PropertyDefinitionKV(String key, String type, Boolean required, String defaultValue, String description, ConstraintClauseKVs constraints) {
+    public PropertyDefinitionKV(String key, String type, Boolean required, String defaultValue, String description, List<ConstraintClauseKV> constraints) {
         this(key, type, required, defaultValue, description);
         this.setConstraints(constraints);
     }
@@ -105,11 +108,11 @@ public class PropertyDefinitionKV implements Serializable {
 
 //    @XmlElementWrapper(name = "constraints")
     @XmlElement(name = "constraint")
-    public ConstraintClauseKVs getConstraints() {
+    public List<ConstraintClauseKV> getConstraints() {
         return this.constraintList;
     }
 
-    public void setConstraints(ConstraintClauseKVs constraintList) {
+    public void setConstraints(List<ConstraintClauseKV> constraintList) {
         this.constraintList = constraintList;
     }
     

@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -23,7 +24,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKV;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKVs;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -33,7 +33,7 @@ public class TSchema {
     @NonNull
     private QName type;
     private String description;
-    private ConstraintClauseKVs constraints;
+    private List<ConstraintClauseKV> constraints;
     private TSchema keySchema;
     private TSchema entrySchema;
 
@@ -91,11 +91,11 @@ public class TSchema {
         this.description = description;
     }
 
-    public ConstraintClauseKVs getConstraints() {
+    public List<ConstraintClauseKV> getConstraints() {
         return constraints;
     }
 
-    public void setConstraints(ConstraintClauseKVs constraints) {
+    public void setConstraints(List<ConstraintClauseKV> constraints) {
         this.constraints = constraints;
     }
 
@@ -120,7 +120,7 @@ public class TSchema {
         @NonNull
         private final QName type;
         private String description;
-        private ConstraintClauseKVs constraints;
+        private List<ConstraintClauseKV> constraints;
         private TSchema keySchema;
         private TSchema entrySchema;
 
@@ -133,7 +133,7 @@ public class TSchema {
             return this;
         }
 
-        public Builder setConstraints(ConstraintClauseKVs constraints) {
+        public Builder setConstraints(List<ConstraintClauseKV> constraints) {
             this.constraints = constraints;
             return this;
         }
@@ -144,9 +144,9 @@ public class TSchema {
             }
 
             if (this.constraints == null) {
-                this.constraints = new ConstraintClauseKVs();
+                this.constraints = new ArrayList<>();
             } 
-            this.constraints.getConstraintDefinitionKVs().addAll(constraints);
+            this.constraints.addAll(constraints);
 
             return this;
         }
