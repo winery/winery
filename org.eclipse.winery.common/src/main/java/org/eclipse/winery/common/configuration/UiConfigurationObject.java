@@ -14,10 +14,18 @@
 
 package org.eclipse.winery.common.configuration;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.commons.configuration2.YAMLConfiguration;
+import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.eclipse.winery.common.configuration.RepositoryConfigurationObject.RepositoryProvider.YAML;
 
 /**
  * This Class is used to create a JSON Object that is structured like the winery.yaml file. Therefore this class is a
@@ -25,13 +33,15 @@ import org.apache.commons.configuration2.YAMLConfiguration;
  */
 public class UiConfigurationObject extends AbstractConfigurationObject {
 
+    private static final Logger logger = LoggerFactory.getLogger(UiConfigurationObject.class);
+
     private static final String key = "ui";
     private static final String featurePrefix = key + ".features.";
     private static final String endpointPrefix = key + ".endpoints.";
-    
-    private HashMap<String, Boolean> features;
-    private HashMap<String, String> endpoints;
-    
+
+    private Map<String, Boolean> features;
+    private Map<String, String> endpoints;
+
     /**
      * Required for REST API
      */
@@ -47,18 +57,18 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
         initialize();
     }
 
-    public HashMap<String, Boolean> getFeatures() {
+    public Map<String, Boolean> getFeatures() {
         return features;
     }
 
-    public HashMap<String, String> getEndpoints() {
+    public Map<String, String> getEndpoints() {
         return endpoints;
     }
 
     @Override
     void save() {
         this.features.keySet().stream()
-            .filter(p -> !RepositoryConfigurationObject.RepositoryProvider.YAML.toString().equals(p)
+            .filter(p -> !YAML.toString().equals(p)
             ).forEach(property -> configuration.setProperty(featurePrefix + property, this.features.get(property)));
         this.endpoints.keySet()
             .forEach(property -> configuration.setProperty(endpointPrefix + property, this.endpoints.get(property)));
@@ -68,19 +78,19 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
     @Override
     void update(YAMLConfiguration configuration) {
         this.configuration = configuration;
-        HashMap<String, Boolean> features = new HashMap<>();
-        HashMap<String, String> endpoints = new HashMap<>();
+        Map<String, Boolean> features = new HashMap<>();
+        Map<String, String> endpoints = new HashMap<>();
         Iterator<String> featureIterator = this.configuration.getKeys(featurePrefix);
         Iterator<String> endpointIterator = this.configuration.getKeys(endpointPrefix);
         featureIterator.forEachRemaining(key -> features.put(key.replace(featurePrefix, ""), this.configuration.getBoolean((key))));
         endpointIterator.forEachRemaining(key -> endpoints.put(key.replace(endpointPrefix, ""), this.configuration.getString(key)));
         final String providerAsString = this.configuration.getString(RepositoryConfigurationObject.getProviderConfigurationKey());
 
-        if (RepositoryConfigurationObject.RepositoryProvider.YAML.toString().equals(providerAsString)) {
-            features.put(RepositoryConfigurationObject.RepositoryProvider.YAML.toString(), true);
+        if (YAML.toString().equals(providerAsString)) {
+            features.put(YAML.toString(), true);
         } else {
-            // closed-world assumption. Apparently..
-            features.put(RepositoryConfigurationObject.RepositoryProvider.YAML.toString(), false);
+            // closed-world assumption ... apparently.
+            features.put(YAML.toString(), false);
         }
 
         this.features = features;
@@ -89,6 +99,22 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
 
     @Override
     void initialize() {
-
+        InputStream is = null;
+        YAMLConfiguration defaultConfiguration = new YAMLConfiguration();
+        try {
+            is = Thread.currentThread().getContextClassLoader().getResourceAsStream("winery.yml");
+            defaultConfiguration.read(is);
+        } catch (ConfigurationException e) {
+            logger.error("Error loading default configuration", e);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+        Iterator<String> defaultEndpoints = defaultConfiguration.getKeys("ui.endpoints");
+        while (defaultEndpoints.hasNext()) {
+            String defaultEndpoint = defaultEndpoints.next();
+            String defaultValue = defaultConfiguration.getString(defaultEndpoint);
+            String key = defaultEndpoint.replace("ui.endpoints.", "");
+            this.endpoints.putIfAbsent(key, defaultValue);
+        }
     }
 }
