@@ -52,6 +52,7 @@ import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.configuration.Environments;
+import org.eclipse.winery.common.configuration.UiConfigurationObject;
 import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.edmm.EdmmConverter;
 import org.eclipse.winery.common.edmm.EdmmType;
@@ -379,14 +380,14 @@ public class RestUtils {
      * @return the absolute path for the given id
      */
     public static String getAbsoluteURL(GenericId id) {
-        return Environments.getInstance().getUiConfig().getEndpoints().get("repositoryApiUrl") + "/" + Util.getUrlPath(id);
+        return Environments.getInstance().getUiConfig().getEndpoints().get(UiConfigurationObject.apiUrl) + "/" + Util.getUrlPath(id);
     }
 
     /**
      * @return the absolute path for the given id
      */
     public static String getAbsoluteURL(RepositoryFileReference ref) {
-        return Environments.getInstance().getUiConfig().getEndpoints().get("repositoryApiUrl") + "/" + Util.getUrlPath(ref);
+        return Environments.getInstance().getUiConfig().getEndpoints().get(UiConfigurationObject.apiUrl) + "/" + Util.getUrlPath(ref);
     }
 
     public static URI getAbsoluteURI(GenericId id) {

@@ -760,15 +760,23 @@ public class ModelUtilities {
         return children;
     }
 
-    public static <T extends TEntityType> Map<T, String> getAvailableFeaturesOfType(QName givenType, Map<QName, T> elements) {
+    public static <T extends TEntityType> Map<T, String> getAvailableFeaturesOfType(QName givenType, Map<QName, T> elements,
+                                                                                    String deploymentTechnology) {
         HashMap<T, String> features = new HashMap<>();
         getChildrenOf(givenType, elements).forEach((qName, t) -> {
             if (Objects.nonNull(t.getTags())) {
                 List<TTag> list = t.getTags().getTag();
-                list.stream()
-                    .filter(tag -> "feature".equals(tag.getName()))
-                    .findFirst()
-                    .ifPresent(tTag -> features.put(elements.get(qName), tTag.getValue()));
+
+                if (deploymentTechnology == null
+                    || list.stream().anyMatch(
+                    // To enable the usage of "technology" and "technologies", we only check for "technolog"
+                    tag -> tag.getName().toLowerCase().contains("deploymentTechnolog".toLowerCase())
+                        && tag.getValue().toLowerCase().contains(deploymentTechnology.toLowerCase()))) {
+                    list.stream()
+                        .filter(tag -> "feature".equals(tag.getName().toLowerCase()))
+                        .findFirst()
+                        .ifPresent(tTag -> features.put(elements.get(qName), tTag.getValue()));
+                }
             }
         });
         return features;

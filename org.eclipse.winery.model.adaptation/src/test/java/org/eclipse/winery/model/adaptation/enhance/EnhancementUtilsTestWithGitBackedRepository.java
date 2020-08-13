@@ -145,7 +145,7 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
 
         Map<String, Map<QName, String>> availableFeaturesForTopology =
             EnhancementUtils.getAvailableFeaturesForTopology
-                (serviceTemplate.getTopologyTemplate());
+                (serviceTemplate.getTopologyTemplate(), null);
 
         assertEquals(2, availableFeaturesForTopology.size());
         assertEquals(1, availableFeaturesForTopology.get("MySQL-Database_w1").size());
@@ -164,7 +164,7 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
             );
 
         Map<String, Map<QName, String>> availableFeaturesForTopology =
-            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate());
+            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), null);
 
         assertEquals(1, availableFeaturesForTopology.size());
         assertEquals(1, availableFeaturesForTopology.get("MySQL-Database_w2").size()
@@ -184,7 +184,7 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
 
         Map<String, Map<QName, String>> availableFeaturesForTopology =
             EnhancementUtils.getAvailableFeaturesForTopology
-                (serviceTemplate.getTopologyTemplate());
+                (serviceTemplate.getTopologyTemplate(), null);
 
         assertEquals(2, availableFeaturesForTopology.size());
         assertEquals(2, availableFeaturesForTopology.get("MySQL-Database_w2").size());
@@ -246,7 +246,7 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
                 )
             ).getTopologyTemplate();
 
-        EnhancementUtils.applyFeaturesForTopology(topology, EnhancementUtils.getAvailableFeaturesForTopology(topology));
+        EnhancementUtils.applyFeaturesForTopology(topology, EnhancementUtils.getAvailableFeaturesForTopology(topology, null));
 
         String ubuntuNodeTemplateId = "Ubuntu_16.04-w1";
         String mySqlNodeTemplateId = "MySQL-Database_w1";
@@ -267,5 +267,38 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
         assertEquals(9, topology.getNodeTemplate(ubuntuNodeTemplateId).getProperties().getKVProperties().size());
         assertNotNull(topology.getNodeTemplate(mySqlNodeTemplateId).getProperties());
         assertEquals(3, topology.getNodeTemplate(mySqlNodeTemplateId).getProperties().getKVProperties().size());
+    }
+
+    @Test
+    void getAvailableFeaturesFilteredByDeploymentTechnology() throws Exception {
+        this.setRevisionTo("origin/plain");
+
+        TServiceTemplate serviceTemplate = RepositoryFactory.getRepository()
+            .getElement(
+                new ServiceTemplateId(
+                    // This ST is the same as the other ones only without a annotated deployment technology.
+                    // This is required for the integration tests, as the deployment technology is determined by
+                    // the resource.
+                    QName.valueOf("{http://opentosca.org/add/management/to/instances/servicetemplates}STWithBasicManagementOnly_noDeplTech-w1-wip1")
+                )
+            );
+
+        Map<String, Map<QName, String>> openStackFeatures =
+            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), "OpenStackHeat");
+        assertEquals(1, openStackFeatures.size());
+        Map<QName, String> openStackFeature = openStackFeatures.get("NodeTypeWithDifferentFeatures_w1-wip1_0");
+        assertEquals(1, openStackFeature.size());
+        assertEquals("scalable AWS and Heat", openStackFeature.get(QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes}ScaleFeature_AWS-OpenStack-w1-wip1")));
+
+        Map<String, Map<QName, String>> kubernetesFeatures =
+            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), "Kubernetes");
+        assertEquals(1, kubernetesFeatures.size());
+        Map<QName, String> kubernetesFeature = kubernetesFeatures.get("NodeTypeWithDifferentFeatures_w1-wip1_0");
+        assertEquals(1, kubernetesFeature.size());
+        assertEquals("scalable Kubernetes", kubernetesFeature.get(QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes}ScaleFeature_Kubernetes-w1-wip1")));
+
+        Map<String, Map<QName, String>> nonExisting =
+            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), "Chef");
+        assertEquals(0, nonExisting.size());
     }
 }
