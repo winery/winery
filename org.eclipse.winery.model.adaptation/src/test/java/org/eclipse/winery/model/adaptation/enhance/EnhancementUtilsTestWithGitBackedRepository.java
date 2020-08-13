@@ -144,8 +144,8 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
             );
 
         Map<String, Map<QName, String>> availableFeaturesForTopology =
-            EnhancementUtils.getAvailableFeaturesForTopology
-                (serviceTemplate.getTopologyTemplate(), null);
+            // As we do not want to filter the features based on the deployment technology, the second parameter is null.
+            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), null);
 
         assertEquals(2, availableFeaturesForTopology.size());
         assertEquals(1, availableFeaturesForTopology.get("MySQL-Database_w1").size());
@@ -164,6 +164,7 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
             );
 
         Map<String, Map<QName, String>> availableFeaturesForTopology =
+            // As we do not want to filter the features based on the deployment technology, the second parameter is null.
             EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), null);
 
         assertEquals(1, availableFeaturesForTopology.size());
@@ -183,8 +184,8 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
             );
 
         Map<String, Map<QName, String>> availableFeaturesForTopology =
-            EnhancementUtils.getAvailableFeaturesForTopology
-                (serviceTemplate.getTopologyTemplate(), null);
+            // As we do not want to filter the features based on the deployment technology, the second parameter is null.
+            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), null);
 
         assertEquals(2, availableFeaturesForTopology.size());
         assertEquals(2, availableFeaturesForTopology.get("MySQL-Database_w2").size());
@@ -246,6 +247,7 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
                 )
             ).getTopologyTemplate();
 
+        // As we do not want to filter the features based on the deployment technology, the second parameter is null.
         EnhancementUtils.applyFeaturesForTopology(topology, EnhancementUtils.getAvailableFeaturesForTopology(topology, null));
 
         String ubuntuNodeTemplateId = "Ubuntu_16.04-w1";

@@ -201,6 +201,9 @@ public class EnhancementUtils {
 
     /**
      * Gathers all feature NodeTypes available for the given topology.
+     *
+     * If the underlying implementation of the feature does not matter, use <code>null</code>.
+     *
      * <p>
      * Note: If feature NodeTypes are used in the topology, they cannot be enhanced with more features.
      * </p>
