@@ -392,6 +392,18 @@ div.mainContentContainer.testRefinementModel div.bottom {
     background: url('../assets/img/containers/admin/FrameBottom.jpg');
 }
 
+div.mainContentContainer.yAMLCustomPropertyType div.top {
+    background: url('../assets/img/containers/admin/FrameTop.jpg');
+}
+
+div.mainContentContainer.yAMLCustomPropertyType div.middle {
+    background: url('../assets/img/containers/admin/FrameMiddle.jpg');
+}
+
+div.mainContentContainer.yAMLCustomPropertyType div.bottom {
+    background: url('../assets/img/containers/admin/FrameBottom.jpg');
+}
+
 div.componentHeaderImg {
     position: absolute;
     margin-top: 32px;
@@ -1050,6 +1062,18 @@ div.entityContainer.testRefinementModel > div.center {
 }
 
 div.entityContainer.testRefinementModel > div.right {
+    background: url('../assets/img/entityBox/admin/a-right.png');
+}
+
+div.entityContainer.yAMLCustomPropertyType > div.left {
+    background: url('../assets/img/entityBox/admin/a-left.png');
+}
+
+div.entityContainer.yAMLCustomPropertyType > div.center {
+    background: url('../assets/img/entityBox/admin/a-center.jpg');
+}
+
+div.entityContainer.yAMLCustomPropertyType > div.right {
     background: url('../assets/img/entityBox/admin/a-right.png');
 }
 
