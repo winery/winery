@@ -54,13 +54,14 @@
         <div *ngIf="resourceApiData.selectedValue === propertiesEnum.Custom">
             <tabset *wineryRepositoryHideOnFeature="configEnum.Yaml">
                 <tab heading="Properties">
-                    <winery-table
-                        [data]="tableData"
-                        [columns]="columns"
-                        (cellSelected)="onCellSelected($event)"
-                        (removeBtnClicked)="onRemoveClick($event)"
-                        (addBtnClicked)="onAddClick();">
-                    </winery-table>
+                    <winery-dynamic-table [dynamicMetadata]="dynamicTableData"
+                                          [tableTitle]="tableTitle"
+                                          [modalTitle]="modalTitle"
+                                          [data]="this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList"
+                                          [avoidDuplicateProperties]="['key']"
+                                          (entryAdded)="onChangeProperty()"
+                                          (entryEdited)="onChangeProperty()"
+                                          (entryRemoved)="onChangeProperty()"></winery-dynamic-table>
                 </tab>
                 <tab heading="Wrapper">
                     <div class="wrapperTab">
@@ -81,123 +82,14 @@
             </tabset>
         </div>
         <div *wineryRepositoryShowOnFeature="configEnum.Yaml">
-            <winery-table [data]="tableData"
-                          [columns]="columns"
-                          (cellSelected)="onCellSelected($event)"
-                          (removeBtnClicked)="onRemoveClick($event)"
-                          (addBtnClicked)="onAddClick()">
-            </winery-table>
+            <winery-dynamic-table [dynamicMetadata]="dynamicTableData"
+                                  [tableTitle]="tableTitle"
+                                  [modalTitle]="modalTitle"
+                                  [avoidDuplicateProperties]="['key']"
+                                  [data]="this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList"
+                                  (entryAdded)="onChangeProperty()"
+                                  (entryEdited)="onChangeProperty()"
+                                  (entryRemoved)="onChangeProperty()"></winery-dynamic-table>
         </div>
     </div>
 </div>
-
-<ng-template #addModal>
-    <winery-modal-header [modalRef]="addModalRef" [title]="'Add a Property Definition'">
-    </winery-modal-header>
-    <winery-modal-body>
-        <form #addPropertyFrom="ngForm" id="addPropertyForm">
-            <div class="form-group">
-                <label class="control-label" for="key">Name</label>
-                <input #nameInputForm
-                       #propName="ngModel"
-                       id="key"
-                       class="form-control"
-                       type="text"
-                       name="key"
-                       autocomplete=off
-                       required
-                       [(ngModel)]="newProperty.key"
-                       [wineryDuplicateValidator]="validatorObject"/>
-
-                <div *ngIf="propName.errors && (propName.dirty || propName.touched)"
-                     class="alert alert-danger">
-                    <div [hidden]="!propName.errors.wineryDuplicateValidator">
-                        No duplicates allowed!
-                    </div>
-                    <div [hidden]="!propName.errors.required">
-                        Name is required
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="control-label" for="propType">Type</label>
-                <select #selectProperty name="type" class="form-control" id="propType">
-                    <option *wineryRepositoryHideOnFeature="'yaml'" value="xsd:string">xsd:string</option>
-                    <option *wineryRepositoryHideOnFeature="'yaml'" value="xsd:float">xsd:float</option>
-                    <option *wineryRepositoryHideOnFeature="'yaml'" value="xsd:decimal">xsd:decimal</option>
-                    <option *wineryRepositoryHideOnFeature="'yaml'" value="xsd:anyURI">xsd:anyURI</option>
-                    <option *wineryRepositoryHideOnFeature="'yaml'" value="xsd:QName">xsd:QName</option>
-                    <!-- YAML types -->
-                    <option *wineryRepositoryShowOnFeature="'yaml'" value="string">string</option>
-                    <option *wineryRepositoryShowOnFeature="'yaml'" value="integer">integer</option>
-                    <option *wineryRepositoryShowOnFeature="'yaml'" value="float">float</option>
-                    <option *wineryRepositoryShowOnFeature="'yaml'" value="boolean">boolean</option>
-                    <option *wineryRepositoryShowOnFeature="'yaml'" value="timestamp">timestamp</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="control-label" for="defaultValue">Default Value</label>
-                <input #propertyDefaultValue id="defaultValue" class="form-control" type="text"/>
-            </div>
-            <div class="form-group">
-                <input type="checkbox" id="isRequired" #propertyIsRequired style="margin-right: 7px"/>
-                <label class="control-label" for="isRequired">Is required</label>
-            </div>
-            <div class="form-group">
-                <label class="control-label" for="description">Description</label>
-                <input #propertyDescription id="description" class="form-control" type="text"/>
-            </div>
-            <div class="form-group">
-                <label class="control-label" for="constraints">Constraints</label>
-                <p>
-                <div *ngFor="let constraintClause of newProperty.constraints" id="constraints" class="constraintField">
-                    <span><b>{{constraintClause.key}}</b>:
-                        <span *ngIf="constraintClause.value != null">{{constraintClause.value}}</span>
-                        <span *ngIf="constraintClause.list != null">{{constraintClause.list.toString()}}</span>
-                        <button class="rightbutton btn btn-danger btn-xs" (click)="removeConstraint(constraintClause)">Delete</button>
-                    </span>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label" for="constraintKey">Add new constraint</label><br>
-                <select #selectedConstraintKey id="constraintKey">
-                    <option *ngFor="let item of valid_constraint_keys">{{ item }}</option>
-                </select>
-                <div *ngIf="list_constraint_keys.includes(selectedConstraintKey.value)">
-                    Please separate items by using ','
-                </div>
-                <div *ngIf="range_constraint_keys.includes(selectedConstraintKey.value)">
-                    Only two items are allowed.
-                </div>
-                <input #constraintValue id="constraintVal" class="form-control" type="text"/>
-                <button type="button" class="btn btn-default"
-                        (click)="addConstraint(selectedConstraintKey.value, constraintValue.value)">
-                    Add Constraint
-                </button>
-            </div>
-        </form>
-    </winery-modal-body>
-    <winery-modal-footer
-        (onOk)="addProperty(selectProperty.value, propName.value, propertyIsRequired.checked, propertyDefaultValue.value, propertyDescription.value)"
-        [closeButtonLabel]="'Cancel'"
-        [okButtonLabel]="'Add'"
-        [modalRef]="addModalRef"
-        [disableOkButton]="!addPropertyFrom?.form.valid">
-    </winery-modal-footer>
-</ng-template>
-
-<ng-template #confirmDeleteModal>
-    <winery-modal-header [title]="'Delete Property Definition'" [modalRef]="confirmDeleteModalRef">
-    </winery-modal-header>
-    <winery-modal-body>
-        <p *ngIf="elementToRemove != null" id="diagyesnomsg">
-            Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.key }}</span>?
-        </p>
-    </winery-modal-body>
-    <winery-modal-footer (onOk)="removeConfirmed();"
-                         [modalRef]="confirmDeleteModalRef"
-                         [closeButtonLabel]="'Cancel'"
-                         [okButtonLabel]="'Delete'">
-    </winery-modal-footer>
-</ng-template>

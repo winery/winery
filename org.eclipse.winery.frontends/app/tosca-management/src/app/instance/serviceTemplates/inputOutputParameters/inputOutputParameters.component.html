@@ -16,13 +16,15 @@
 </div>
 <div *ngIf="!loading">
     <winery-parameters tableTitle="Input Parameters" modalTitle="Input Parameter"
-                       [parameters]="inputParameters" [columns]="columnsInputParameters"
+                       [parameters]="inputParameters"
+                       (onParameterEdited)="save(modeType.INPUT)"
                        (onParameterAdded)="save(modeType.INPUT)"
                        (onParameterRemoved)="save(modeType.INPUT)">
     </winery-parameters>
     <hr>
     <winery-parameters tableTitle="Output Parameters" modalTitle="Output Parameter"
-                       [parameters]="outputParameters" [columns]="columnsOutputParameters"
+                       [parameters]="outputParameters"
+                       (onParameterEdited)="save(modeType.INPUT)"
                        (onParameterAdded)="save(modeType.OUTPUT)"
                        (onParameterRemoved)="save(modeType.OUTPUT)">
     </winery-parameters>

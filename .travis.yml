@@ -9,9 +9,9 @@ jobs:
   exclude:
     - jdk: openjdk8
       env: BUILD_PROFILE=frontend
-#cache:
-#  directories:
-#    - $HOME/.m2
+cache:
+  directories:
+    - $HOME/.m2
 install:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -P $BUILD_PROFILE
 script:

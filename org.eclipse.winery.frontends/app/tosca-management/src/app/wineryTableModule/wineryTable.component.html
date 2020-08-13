@@ -28,10 +28,6 @@
                     [disabled]="rows.length === 0 || !currentSelected">
                 Remove
             </button>
-            <button *ngIf="showAddButton" class="rightbutton btn btn-primary btn-xs"
-                    (click)="onAddClick($event);">
-                Add
-            </button>
             <button *ngIf="enableIOButton"
                     class="rightbutton btn btn-info btn-xs"
                     (click)="onIOClick($event)"
@@ -43,6 +39,10 @@
                     (click)="onEditClick($event);"
                     [disabled]="rows.length === 0 || !currentSelected">
                 Edit
+            </button>
+            <button *ngIf="showAddButton" class="rightbutton btn btn-primary btn-xs"
+                    (click)="onAddClick($event);">
+                Add
             </button>
         </div>
     </div>
