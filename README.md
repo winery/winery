@@ -1,6 +1,5 @@
 # Eclipse Winery – OpenTOSCA fork
 
-[![Build Status](https://travis-ci.org/OpenTOSCA/winery.svg?branch=ustutt)](https://travis-ci.org/OpenTOSCA/winery)
 [![License](https://img.shields.io/badge/License-EPL%202.0-blue.svg)](https://opensource.org/licenses/EPL-2.0)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
