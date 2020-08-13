@@ -50,11 +50,13 @@ import org.eclipse.winery.model.adaptation.placement.PlacementUtils;
 import org.eclipse.winery.model.adaptation.problemsolving.SolutionFactory;
 import org.eclipse.winery.model.adaptation.problemsolving.SolutionInputData;
 import org.eclipse.winery.model.adaptation.problemsolving.SolutionStrategy;
+import org.eclipse.winery.model.tosca.HasTags;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
@@ -275,7 +277,7 @@ public class TopologyTemplateResource {
         Splitting splitting = new Splitting();
         String newComposedSolutionServiceTemplateId = compositionData.getTargetid();
         List<ServiceTemplateId> compositionServiceTemplateIDs = new ArrayList<>();
-        compositionData.getCspath().stream().forEach(entry -> {
+        compositionData.getCspath().forEach(entry -> {
             QName qName = QName.valueOf(entry);
             compositionServiceTemplateIDs.add(new ServiceTemplateId(qName.getNamespaceURI(), qName.getLocalPart(), false));
         });
@@ -461,13 +463,24 @@ public class TopologyTemplateResource {
     public ArrayList<AvailableFeaturesApiData> getAvailableFeatures() {
         ArrayList<AvailableFeaturesApiData> apiData = new ArrayList<>();
 
-        EnhancementUtils.getAvailableFeaturesForTopology(this.topologyTemplate).forEach((nodeTemplateId, featuresMap) -> {
-            ArrayList<AvailableFeaturesApiData.Features> features = new ArrayList<>();
-            featuresMap.forEach(
-                (featureType, featureName) -> features.add(new AvailableFeaturesApiData.Features(featureType, featureName))
-            );
-            apiData.add(new AvailableFeaturesApiData(nodeTemplateId, features));
-        });
+        String deploymentTechnology = null;
+        if (this.parent.getElement() instanceof HasTags && ((HasTags) this.parent.getElement()).getTags() != null) {
+            for (TTag tag : ((HasTags) this.parent.getElement()).getTags().getTag()) {
+                if (tag.getName().toLowerCase().contains("deploymentTechnology".toLowerCase())) {
+                    deploymentTechnology = tag.getValue();
+                    break;
+                }
+            }
+        }
+
+        EnhancementUtils.getAvailableFeaturesForTopology(this.topologyTemplate, deploymentTechnology)
+            .forEach((nodeTemplateId, featuresMap) -> {
+                ArrayList<AvailableFeaturesApiData.Features> features = new ArrayList<>();
+                featuresMap.forEach(
+                    (featureType, featureName) -> features.add(new AvailableFeaturesApiData.Features(featureType, featureName))
+                );
+                apiData.add(new AvailableFeaturesApiData(nodeTemplateId, features));
+            });
 
         return apiData;
     }
