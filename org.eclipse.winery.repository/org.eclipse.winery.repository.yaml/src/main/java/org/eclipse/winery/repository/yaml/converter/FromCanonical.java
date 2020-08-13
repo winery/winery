@@ -231,7 +231,7 @@ public class FromCanonical {
     }
 
     public TTopologyTemplateDefinition convert(org.eclipse.winery.model.tosca.TServiceTemplate node) {
-        // TODO substitution mappings are currently not converted
+        // substitution mappings are an extension feature and currently not supported for YAML
         if (Objects.isNull(node)) return null;
         TTopologyTemplate topologyTemplate = node.getTopologyTemplate();
         if (Objects.isNull(topologyTemplate)) return null;

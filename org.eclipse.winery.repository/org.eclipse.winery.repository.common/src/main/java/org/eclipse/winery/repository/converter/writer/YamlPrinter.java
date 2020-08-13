@@ -21,9 +21,11 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.tosca.visitor.Visitor;
 import org.eclipse.winery.model.tosca.yaml.TStatusValue;
 import org.eclipse.winery.model.tosca.yaml.TVersion;
 import org.eclipse.winery.model.tosca.yaml.visitor.AbstractResult;
+import org.eclipse.winery.model.tosca.yaml.visitor.VisitorNode;
 
 public class YamlPrinter extends AbstractResult<YamlPrinter> {
 

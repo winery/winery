@@ -99,6 +99,11 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     }
 
     @Override
+    public TTopologyTemplate getTopology() {
+        return getServiceTemplate().getTopologyTemplate();
+    }
+
+    @Override
     public void setTopology(TTopologyTemplate topologyTemplate, String type) {
         // if we are in yaml mode, replacing the topology can result in yaml artifacts having to be deleted.
         if (Environments.getInstance().getRepositoryConfig().getProvider() == RepositoryConfigurationObject.RepositoryProvider.YAML) {

@@ -21,10 +21,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.winery.model.tosca.yaml.TArtifactDefinition;
@@ -419,11 +422,26 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
             .printKeyValue("targets", node.getTargets());
     }
 
+    private static final String[] PROPERTY_FUNCTIONS = new String[]{
+        "get_input", "get_property", "get_attribute", "get_operation_output", "get_nodes_of_type", "get_artifact"
+    };
+
     public YamlPrinter visit(TPropertyAssignment node, Parameter parameter) {
-        // FIXME visit nested assignments
+        // nested assignments are implemented by calling #printMap for Map values that are not property functions
         YamlPrinter printer = new YamlPrinter(parameter.getIndent());
         if (node.getValue() instanceof Map) {
-            printer.print(printMap(parameter.getKey(), (Map<String, ?>) node.getValue(), parameter));
+            Map<String, Object> value = (Map<String, Object>)node.getValue();
+            // special casing for property functions to always be a single-line map value
+            if (value.size() == 1 && Arrays.stream(PROPERTY_FUNCTIONS).anyMatch(value::containsKey)) {
+                String key = value.keySet().iterator().next();
+                String functionArg = (String)((TPropertyAssignment)value.get(key)).getValue();
+                printer.print(parameter.getKey()).print(":")
+                    .print(" {")
+                        .print(key).print(": ").print(functionArg)
+                    .print(" }").printNewLine();
+            } else {
+                printer.print(printMap(parameter.getKey(), value, parameter));
+            }
         } else {
             printer.printKeyObject(parameter.getKey(), node.getValue());
         }
@@ -555,23 +573,24 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
 
     private <T> YamlPrinter printMap(String keyValue, Map<String, T> map, Parameter parameter) {
         YamlPrinter printer = new YamlPrinter(parameter.getIndent());
-        if (map != null && !map.isEmpty()) {
-            printer.printKey(keyValue)
-                .print(map.entrySet().stream()
-                    .filter(entry -> entry.getValue() instanceof VisitorNode)
-                    .map((entry) -> {
-                            YamlPrinter p = new YamlPrinter(parameter.getIndent() + INDENT_SIZE)
-                                .print(
-                                    printVisitorNode((VisitorNode) entry.getValue(),
-                                        new Parameter(parameter.getIndent() + INDENT_SIZE).addContext(entry.getKey())
-                                    )
-                                );
-                            return p;
-                        }
-                    )
-                    .reduce(YamlPrinter::print)
-                );
+        if (map == null || map.isEmpty()) {
+            return printer;
         }
+        printer.printKey(keyValue)
+            .print(map.entrySet().stream()
+                .filter(entry -> entry.getValue() instanceof VisitorNode)
+                .map((entry) -> {
+                        YamlPrinter p = new YamlPrinter(parameter.getIndent() + INDENT_SIZE)
+                            .print(
+                                printVisitorNode((VisitorNode) entry.getValue(),
+                                    new Parameter(parameter.getIndent() + INDENT_SIZE).addContext(entry.getKey())
+                                )
+                            );
+                        return p;
+                    }
+                )
+                .reduce(YamlPrinter::print)
+            );
         return printer;
     }
 

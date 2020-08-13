@@ -92,6 +92,12 @@ public class ComplianceRuleResource extends AbstractComponentInstanceResourceCon
     }
 
     @Override
+    public TTopologyTemplate getTopology() {
+        // TODO this is only here to have SOME implementation
+        return this.getComplianceRule().getIdentifier();
+    }
+
+    @Override
     protected void synchronizeReferences() throws IOException {
         // no synchronizing needed
     }

@@ -32,6 +32,7 @@ import org.eclipse.winery.model.tosca.visitor.Visitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -54,7 +55,9 @@ public class TTopologyTemplate extends TExtensibleElements {
     protected TPolicies policies;
 
     // added to support conversion from/to YAML inputs/outputs
+    @JsonProperty("inputs")
     protected List<ParameterDefinition> inputs;
+    @JsonProperty("outputs")
     protected List<ParameterDefinition> outputs;
 
     public TTopologyTemplate() {

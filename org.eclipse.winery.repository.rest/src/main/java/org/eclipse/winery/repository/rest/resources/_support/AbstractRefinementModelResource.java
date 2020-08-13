@@ -94,4 +94,10 @@ public abstract class AbstractRefinementModelResource extends AbstractComponentI
                 break;
         }
     }
+
+    @Override
+    public TTopologyTemplate getTopology() {
+        // TODO this is only here to have SOME implementation
+        return this.getTRefinementModel().getRefinementTopology();
+    }
 }

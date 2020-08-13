@@ -201,6 +201,16 @@ public class TopologyTemplateResource {
     public Response setModelJson(TTopologyTemplate topologyTemplate) throws Exception {
         ModelUtilities.patchAnyAttributes(topologyTemplate.getNodeTemplates());
         ModelUtilities.patchAnyAttributes(topologyTemplate.getRelationshipTemplates());
+        // FIXME patching the topology with the inputs and outputs stored on the server, so long as they are empty
+        //  this is necessary because the topologymodeler does not in any way interact with inputs and outputs and
+        //  thus does not store or include any information about them here
+        if (topologyTemplate.getInputs() == null) {
+            topologyTemplate.setInputs(this.parent.getTopology().getInputs());
+        }
+        if (topologyTemplate.getOutputs() == null) {
+            topologyTemplate.setOutputs(this.parent.getTopology().getOutputs());
+        }
+
         // the following method includes patching of the topology template (removing empty lists, ..)
         this.parent.setTopology(topologyTemplate, this.type);
         requestRepository.putDefinition(parent.getId(), this.parent.getDefinitions());
