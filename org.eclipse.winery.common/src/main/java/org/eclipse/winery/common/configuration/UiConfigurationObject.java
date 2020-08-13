@@ -102,7 +102,7 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
         InputStream is = null;
         YAMLConfiguration defaultConfiguration = new YAMLConfiguration();
         try {
-            is = ClassLoader.getSystemClassLoader().getResourceAsStream("winery.yml");
+            is = Thread.currentThread().getContextClassLoader().getResourceAsStream("winery.yml");
             defaultConfiguration.read(is);
         } catch (ConfigurationException e) {
             logger.error("Error loading default configuration", e);
