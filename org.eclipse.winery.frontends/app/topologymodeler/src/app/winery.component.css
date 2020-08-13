@@ -11,3 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
+
+:host ::ng-deep .ng-sidebar { 
+    z-index: 1000 !important;
+}
