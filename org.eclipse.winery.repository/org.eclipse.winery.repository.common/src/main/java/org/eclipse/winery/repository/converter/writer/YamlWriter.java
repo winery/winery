@@ -434,9 +434,26 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
             // special casing for property functions to always be a single-line map value
             if (value.size() == 1 && Arrays.stream(PROPERTY_FUNCTIONS).anyMatch(value::containsKey)) {
                 String key = value.keySet().iterator().next();
-                String functionArg = (String)((TPropertyAssignment)value.get(key)).getValue();
+                final Object rawFunctionArg = ((TPropertyAssignment) value.get(key)).getValue();
+                final String functionArg;
+                if (rawFunctionArg instanceof List) {
+                    final String list = ((List<?>) rawFunctionArg).stream()
+                        .map(String::valueOf).collect(Collectors.joining(", "));
+                    // get_operation_output value is not in brackets, compare Section 4.6.1 of YAML-Standard 1.3
+                    if (key.equals("get_operation_output")) {
+                        functionArg = list;
+                    } else {
+                        functionArg = "[ " + list + " ]";
+                    }
+                } else if (rawFunctionArg instanceof String) {
+                    functionArg = (String) rawFunctionArg;
+                } else {
+                    // TODO
+                    LOGGER.warn("Unexpected value type [{}] in property function definition", rawFunctionArg.getClass().getName());
+                    functionArg = "";
+                }
                 printer.print(parameter.getKey()).print(":")
-                    .print(" {")
+                    .print(" { ")
                         .print(key).print(": ").print(functionArg)
                     .print(" }").printNewLine();
             } else {
