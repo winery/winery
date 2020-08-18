@@ -760,15 +760,34 @@ public class ModelUtilities {
         return children;
     }
 
-    public static <T extends TEntityType> Map<T, String> getAvailableFeaturesOfType(QName givenType, Map<QName, T> elements) {
+    /**
+     * Retrieve the available types of the <code>givenType</code> and filter them according to their implementation
+     * based on the underlying <code>deploymentTechnology</code>. If the filtering by the
+     * <code>deploymentTechnology</code> is not required, <code>null</code> should be passed.
+     *
+     * @param givenType            The QName of the type to be investigated.
+     * @param elements             The set of Types available.
+     * @param deploymentTechnology The underlying deployment technology, the features must comply to.
+     * @param <T>                  The type of the Elements
+     * @return The set of applicable features.
+     */
+    public static <T extends TEntityType> Map<T, String> getAvailableFeaturesOfType(QName givenType, Map<QName, T> elements,
+                                                                                    String deploymentTechnology) {
         HashMap<T, String> features = new HashMap<>();
         getChildrenOf(givenType, elements).forEach((qName, t) -> {
             if (Objects.nonNull(t.getTags())) {
                 List<TTag> list = t.getTags().getTag();
-                list.stream()
-                    .filter(tag -> "feature".equals(tag.getName()))
-                    .findFirst()
-                    .ifPresent(tTag -> features.put(elements.get(qName), tTag.getValue()));
+
+                if (deploymentTechnology == null
+                    || list.stream().anyMatch(
+                    // To enable the usage of "technology" and "technologies", we only check for "technolog"
+                    tag -> tag.getName().toLowerCase().contains("deploymentTechnolog".toLowerCase())
+                        && tag.getValue().toLowerCase().contains(deploymentTechnology.toLowerCase()))) {
+                    list.stream()
+                        .filter(tag -> "feature".equals(tag.getName().toLowerCase()))
+                        .findFirst()
+                        .ifPresent(tTag -> features.put(elements.get(qName), tTag.getValue()));
+                }
             }
         });
         return features;
