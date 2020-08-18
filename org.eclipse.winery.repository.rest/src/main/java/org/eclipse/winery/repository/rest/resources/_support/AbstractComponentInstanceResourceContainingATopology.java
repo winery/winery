@@ -24,5 +24,6 @@ public abstract class AbstractComponentInstanceResourceContainingATopology exten
     }
 
     public abstract void setTopology(TTopologyTemplate topologyTemplate, String type);
+
     public abstract TTopologyTemplate getTopology();
 }

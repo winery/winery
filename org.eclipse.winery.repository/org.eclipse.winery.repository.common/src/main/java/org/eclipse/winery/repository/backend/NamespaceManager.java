@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 public interface NamespaceManager {
 
-
     // if com.sun.xml.bind.marshaller.NamespacePrefixMapper cannot be resolved,
     // possibly
     // http://mvnrepository.com/artifact/com.googlecode.jaxb-namespaceprefixmapper-interfaces/JAXBNamespacePrefixMapper/2.2.4

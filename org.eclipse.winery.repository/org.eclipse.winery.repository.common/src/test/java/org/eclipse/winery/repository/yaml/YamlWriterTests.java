@@ -12,14 +12,15 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.converter.writer;
+package org.eclipse.winery.repository.yaml;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 import org.eclipse.winery.model.tosca.yaml.TPropertyAssignment;
+import org.eclipse.winery.repository.converter.writer.YamlPrinter;
+import org.eclipse.winery.repository.converter.writer.YamlWriter;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;

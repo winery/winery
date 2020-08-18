@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-package org.eclipse.winery.repository.converter;
+package org.eclipse.winery.repository.yaml;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +23,7 @@ import java.nio.file.Paths;
 import org.eclipse.winery.model.tosca.yaml.TInterfaceDefinition;
 import org.eclipse.winery.model.tosca.yaml.TNodeType;
 import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
+import org.eclipse.winery.repository.converter.AbstractConverterTest;
 import org.eclipse.winery.repository.converter.reader.YamlReader;
 
 import org.junit.jupiter.api.Assertions;
@@ -59,5 +60,13 @@ public class YamlReaderTest extends AbstractConverterTest {
         TInterfaceDefinition standard = server.getInterfaces().get("Standard");
         Assertions.assertEquals(2, standard.getOperations().size());
         Assertions.assertEquals(1, standard.getInputs().size());
+    }
+
+    @Test
+    public void testPropertyFunctionReading() throws Exception {
+        YamlReader reader = new YamlReader();
+        InputStream is = getClass().getClassLoader().getResourceAsStream("yaml/property_functions.yml");
+        TServiceTemplate template = reader.parse(is);
+        Assertions.assertNotNull(template);
     }
 }

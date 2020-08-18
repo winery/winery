@@ -23,11 +23,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.winery.model.tosca.yaml.TArtifactDefinition;
@@ -89,7 +87,12 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractVisitor.class);
 
+    private static final String[] PROPERTY_FUNCTIONS = new String[]{
+        "get_input", "get_property", "get_attribute", "get_operation_output", "get_nodes_of_type", "get_artifact"
+    };
+
     private final int INDENT_SIZE;
+
 
     public YamlWriter() {
         this.INDENT_SIZE = 2;
@@ -421,10 +424,6 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
             .print(printMap("properties", node.getProperties(), parameter))
             .printKeyValue("targets", node.getTargets());
     }
-
-    private static final String[] PROPERTY_FUNCTIONS = new String[]{
-        "get_input", "get_property", "get_attribute", "get_operation_output", "get_nodes_of_type", "get_artifact"
-    };
 
     public YamlPrinter visit(TPropertyAssignment node, Parameter parameter) {
         // nested assignments are implemented by calling #printMap for Map values that are not property functions
