@@ -23,6 +23,7 @@ import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
 import { WineryModalModule } from '../../../wineryModalModule/winery.modal.module';
 import { WineryTableModule } from '../../../wineryTableModule/wineryTable.module';
 import { WineryDuplicateValidatorModule } from '../../../wineryValidators/wineryDuplicateValidator.module';
+import { WineryDynamicTableModule } from '../../../wineryDynamicTable/wineryDynamicTable.module';
 
 @NgModule({
     imports: [
@@ -35,6 +36,7 @@ import { WineryDuplicateValidatorModule } from '../../../wineryValidators/winery
         WineryModalModule,
         WineryTableModule,
         WineryDuplicateValidatorModule,
+        WineryDynamicTableModule,
     ],
     exports: [],
     declarations: [
