@@ -17,6 +17,7 @@ import { CapabilityDefinitionModel } from './capabilityDefinitionModel';
 import { RequirementDefinitionModel } from './requirementDefinitonModel';
 import { EntityType, TPolicyType } from './ttopology-template';
 import { QName } from '../../../../shared/src/app/model/qName';
+import { PropertyDefinitionType } from './enums';
 
 export class InheritanceUtils {
 
@@ -198,6 +199,27 @@ export class InheritanceUtils {
         );
     }
 
+    static hasYamlPropDefinition(element: EntityType): boolean {
+        return (element && element.full &&
+            element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition &&
+            element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.properties
+        );
+    }
+
+    static getYamlProperties(type: EntityType): any {
+        const newProperies = {};
+        const definedProperties = type.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.properties;
+        for (const obj of definedProperties) {
+            const name = obj.name;
+            if (obj.required) {
+                newProperies[name] = obj.defaultValue;
+            } else {
+                newProperies[name] = null;
+            }
+        }
+        return newProperies;
+    }
+
     /**
      * Generates default properties from node types or relationshipTypes
      * The assumption appears to be that types only add new properties and never change existing ones (e.g., change type or default value)
@@ -211,11 +233,55 @@ export class InheritanceUtils {
         for (const element of entities) {
             if (element.qName === qName) {
                 // if propertiesDefinition is defined it's a XML property
+                // FIXME this needs to correctly handle the type option for defining XML properties
                 if (element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition
                     && element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element) {
                     return {
+                        propertyType: PropertyDefinitionType.XML,
                         any: element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element
                     };
+                // properties definition contains yaml properties
+                } else if (element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition
+                    && element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.properties) {
+                    let inheritedProperties = {};
+                    if (InheritanceUtils.hasParentType(element)) {
+                        let parent = element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].derivedFrom.typeRef;
+                        let continueFlag;
+
+                        while (parent) {
+                            continueFlag = false;
+                            for (const parentElement of entities) {
+                                if (parentElement.qName === parent) {
+                                    if (InheritanceUtils.hasYamlPropDefinition(parentElement)) {
+                                        inheritedProperties = {
+                                            ...inheritedProperties, ...InheritanceUtils.getYamlProperties(parentElement)
+                                        };
+                                    }
+                                    if (InheritanceUtils.hasParentType(parentElement)) {
+                                        parent = parentElement.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].derivedFrom.typeRef;
+                                        continueFlag = true;
+                                    }
+                                    break;
+                                }
+                            }
+                            if (!continueFlag) {
+                                break;
+                            }
+                        }
+
+
+                        let typeProperties = {};
+                        if (InheritanceUtils.hasYamlPropDefinition(element)) {
+                            typeProperties = InheritanceUtils.getYamlProperties(element);
+                        }
+
+                        const mergedProperties = { ...inheritedProperties, ...typeProperties };
+
+                        return {
+                            propertyType: PropertyDefinitionType.YAML,
+                            properties: { ...mergedProperties }
+                        };
+                    }
                 } else { // otherwise KV properties or no properties at all
                     let inheritedProperties = {};
                     if (InheritanceUtils.hasParentType(element)) {
@@ -253,6 +319,7 @@ export class InheritanceUtils {
                     const mergedProperties = { ...inheritedProperties, ...typeProperties };
 
                     return {
+                        propertyType: PropertyDefinitionType.KV,
                         kvproperties: { ...mergedProperties }
                     };
                 }

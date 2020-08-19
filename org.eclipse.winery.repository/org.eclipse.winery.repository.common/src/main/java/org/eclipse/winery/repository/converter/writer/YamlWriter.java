@@ -93,7 +93,6 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
 
     private final int INDENT_SIZE;
 
-
     public YamlWriter() {
         this.INDENT_SIZE = 2;
     }
