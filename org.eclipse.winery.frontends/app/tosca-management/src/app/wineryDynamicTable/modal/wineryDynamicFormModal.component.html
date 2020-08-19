@@ -11,16 +11,18 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<div *ngIf="loading" style="margin-top: 179px">
-    <winery-loader></winery-loader>
-</div>
-<div *ngIf="!loading">
-    <winery-dynamic-table [dynamicMetadata]="dynamicTableData"
-                          [tableTitle]="tableTitle"
-                          [modalTitle]="modalTitle"
-                          [data]="attributes"
-                          [avoidDuplicateProperties]="['key']"
-                          (entryRemoved)="save()"
-                          (entryEdited)="save()"
-                          (entryAdded)="save()"></winery-dynamic-table>
-</div>
+
+<winery-modal bsModal #modal="bs-modal" [modalRef]="modal" (onHide)="form.reset()">
+    <winery-modal-header [title]="modalTitle"></winery-modal-header>
+    <winery-modal-body>
+        <form [formGroup]="form">
+            <ng-container *ngFor="let entity of config" wineryDynamicField
+                          [config]="entity"
+                          [group]="form"></ng-container>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer [disableOkButton]="form?.invalid"
+                         (onOk)="onOkPress(); form.reset();"
+                         [closeButtonLabel]="closeButtonLabel" [okButtonLabel]="okButtonLabel">
+    </winery-modal-footer>
+</winery-modal>
