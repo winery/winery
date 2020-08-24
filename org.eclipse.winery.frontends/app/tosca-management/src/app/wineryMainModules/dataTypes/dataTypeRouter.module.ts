@@ -17,13 +17,11 @@ import { SectionComponent } from '../../section/section.component';
 import { SectionResolver } from '../../section/section.resolver';
 import { InstanceComponent } from '../../instance/instance.component';
 import { InstanceResolver } from '../../instance/instance.resolver';
-import { EditXMLComponent } from '../../instance/sharedComponents/editXML/editXML.component';
 import { ToscaTypes } from '../../model/enums';
 import { InheritanceComponent } from '../../instance/sharedComponents/inheritance/inheritance.component';
-import { PropertyConstraintsComponent } from '../../instance/serviceTemplates/boundaryDefinitions/propertyConstraints/propertyConstraints.component';
-import { YamlPropertiesComponent } from '../../instance/sharedComponents/propertiesDefinition/yaml/yamlProperties.component';
-import { DataTypeComponent } from '../../instance/sharedComponents/yaml/datatypes/dataType.component';
 import { PropertiesDefinitionComponent } from '../../instance/sharedComponents/propertiesDefinition/propertiesDefinition.component';
+import { WineryReadmeComponent } from '../../wineryReadmeModule/wineryReadme.component';
+import { YamlConstraintsComponent } from '../../instance/sharedComponents/yaml/constraints/yaml-constraints.component';
 
 const toscaType = ToscaTypes.DataType;
 
@@ -36,12 +34,11 @@ const dataTypeRoutes: Routes = [
         component: InstanceComponent,
         resolve: { resolveData: InstanceResolver },
         children: [
-            { path: 'readme', component: DataTypeComponent },
+            { path: 'readme', component: WineryReadmeComponent },
+            { path: 'inheritance', component: InheritanceComponent },
+            { path: 'constraints', component: YamlConstraintsComponent },
             { path: 'properties', component: PropertiesDefinitionComponent },
-            // { path: 'constraints', component: PropertyConstraintsComponent },
             // { path: 'license', component: WineryLicenseComponent },
-            // { path: 'inheritance', component: InheritanceComponent },
-            // { path: SubMenuItems.supportedFiles.urlFragment, component: SupportedFileTypesComponent },
             // { path: 'documentation', component: DocumentationComponent },
             // { path: 'yaml', component: EditXMLComponent },
             // { path: 'templates', component: ImplementationsComponent },

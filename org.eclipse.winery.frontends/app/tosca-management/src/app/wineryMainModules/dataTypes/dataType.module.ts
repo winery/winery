@@ -17,11 +17,11 @@ import { CommonModule } from '@angular/common';
 import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
 import { SelectModule } from 'ng2-select';
 import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
-import { DataTypeComponent } from '../../instance/sharedComponents/yaml/datatypes/dataType.component';
 import { InheritanceModule } from '../../instance/sharedComponents/inheritance/inheritance.module';
 import { WineryPipesModule } from '../../wineryPipes/wineryPipes.module';
 import { AlertModule } from 'ngx-bootstrap';
 import { PropertiesDefinitionModule } from '../../instance/sharedComponents/propertiesDefinition/propertiesDefinition.module';
+import { YamlConstraintsComponent } from '../../instance/sharedComponents/yaml/constraints/yaml-constraints.component';
 
 @NgModule({
     imports: [
@@ -36,10 +36,10 @@ import { PropertiesDefinitionModule } from '../../instance/sharedComponents/prop
         PropertiesDefinitionModule,
     ],
     declarations: [
-        DataTypeComponent,
+        YamlConstraintsComponent,
     ],
     exports: [
-        DataTypeComponent,
+        YamlConstraintsComponent,
     ]
 })
 export class DataTypeModule {

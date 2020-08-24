@@ -148,8 +148,7 @@ export class InstanceService {
                     SubMenuItems.xml];
                 break;
             case ToscaTypes.DataType:
-                // abusing readme as a default tab
-                subMenu = [SubMenuItems.readme, SubMenuItems.properties];
+                subMenu = [SubMenuItems.readme, SubMenuItems.inheritance, SubMenuItems.constraints, SubMenuItems.properties];
                 break;
             default: // assume Admin
                 if (this.configurationService.isYaml()) {

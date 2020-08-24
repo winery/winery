@@ -21,18 +21,19 @@ import { WineryNotificationService } from '../../../../wineryNotificationModule/
 import { ExistService } from '../../../../wineryUtils/existService';
 import { WineryInstance, WineryTemplateOrImplementationComponent } from '../../../../model/wineryComponent';
 import { HttpErrorResponse } from '@angular/common/http';
+import { TDataType } from '../../../../../../../topologymodeler/src/app/models/ttopology-template';
 
 @Component({
-    selector: 'winery-datatype',
-    templateUrl: 'dataType.component.html',
+    selector: 'winery-yaml-constraints',
+    templateUrl: 'yaml-constraints.component.html',
     styleUrls: [
-        'dataType.component.css'
+        'yaml-constraints.component.css'
     ],
     providers: []
 })
-export class DataTypeComponent implements OnInit {
+export class YamlConstraintsComponent implements OnInit {
 
-    component: object;
+    component: TDataType;
     loadingData = true;
 
     constructor(private notify: WineryNotificationService,
@@ -52,7 +53,8 @@ export class DataTypeComponent implements OnInit {
     }
 
     private handleDataInput(componentData: WineryInstance) {
-        this.component = componentData.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0];
+        // TODO: check type hierarchy exposed by WineryInstance?
+        this.component = componentData.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0] as unknown as TDataType;
         this.loadingData = false;
     }
 
