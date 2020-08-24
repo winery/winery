@@ -268,20 +268,19 @@ export class InheritanceUtils {
                                 break;
                             }
                         }
-
-
-                        let typeProperties = {};
-                        if (InheritanceUtils.hasYamlPropDefinition(element)) {
-                            typeProperties = InheritanceUtils.getYamlProperties(element);
-                        }
-
-                        const mergedProperties = { ...inheritedProperties, ...typeProperties };
-
-                        return {
-                            propertyType: PropertyDefinitionType.YAML,
-                            properties: { ...mergedProperties }
-                        };
                     }
+
+                    let typeProperties = {};
+                    if (InheritanceUtils.hasYamlPropDefinition(element)) {
+                        typeProperties = InheritanceUtils.getYamlProperties(element);
+                    }
+
+                    const mergedProperties = { ...inheritedProperties, ...typeProperties };
+
+                    return {
+                        propertyType: PropertyDefinitionType.YAML,
+                        properties: { ...mergedProperties }
+                    };
                 } else { // otherwise KV properties or no properties at all
                     let inheritedProperties = {};
                     if (InheritanceUtils.hasParentType(element)) {
