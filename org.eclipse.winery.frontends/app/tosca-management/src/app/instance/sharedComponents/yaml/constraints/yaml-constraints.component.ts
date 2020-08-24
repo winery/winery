@@ -22,6 +22,14 @@ import { ExistService } from '../../../../wineryUtils/existService';
 import { WineryInstance, WineryTemplateOrImplementationComponent } from '../../../../model/wineryComponent';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TDataType } from '../../../../../../../topologymodeler/src/app/models/ttopology-template';
+import { Constraint } from '../../../../model/constraint';
+import { BsModalService } from 'ngx-bootstrap';
+import { DataTypesService } from '../../../dataTypes/dataTypes.service';
+
+const valid_constraint_keys = ['equal', 'greater_than', 'greater_or_equal', 'less_than', 'less_or_equal', 'in_range',
+    'valid_values', 'length', 'min_length', 'max_length', 'pattern', 'schema'];
+const list_constraint_keys = ['valid_values', 'in_range'];
+const range_constraint_keys = ['in_range'];
 
 @Component({
     selector: 'winery-yaml-constraints',
@@ -29,7 +37,9 @@ import { TDataType } from '../../../../../../../topologymodeler/src/app/models/t
     styleUrls: [
         'yaml-constraints.component.css'
     ],
-    providers: []
+    providers: [
+        DataTypesService
+    ]
 })
 export class YamlConstraintsComponent implements OnInit {
 
@@ -37,7 +47,8 @@ export class YamlConstraintsComponent implements OnInit {
     loadingData = true;
 
     constructor(private notify: WineryNotificationService,
-                public sharedData: InstanceService) {
+                public sharedData: InstanceService,
+                private dataTypes: DataTypesService) {
     }
 
     ngOnInit(): void {
@@ -55,6 +66,8 @@ export class YamlConstraintsComponent implements OnInit {
     private handleDataInput(componentData: WineryInstance) {
         // TODO: check type hierarchy exposed by WineryInstance?
         this.component = componentData.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0] as unknown as TDataType;
+        // backfill namespace from targetNamespace coming from the sharedData
+        this.component.namespace = this.component.namespace || (this.component as any).targetNamespace;
         this.loadingData = false;
     }
 
@@ -62,5 +75,47 @@ export class YamlConstraintsComponent implements OnInit {
         this.loadingData = false;
         this.notify.error(error.message);
     }
+
+    /**
+     * removes item from constraint list
+     * @param constraintClause
+     */
+    removeConstraint(constraintClause: Constraint) {
+        const index = this.component.constraints.indexOf(constraintClause);
+        if (index > -1) {
+            this.component.constraints.splice(index, 1);
+        }
+    }
+
+    addConstraint(selectedConstraintKey: string, constraintValue: string) {
+        // lists have to be separated by ','
+        if (list_constraint_keys.indexOf(selectedConstraintKey) > -1) {
+            this.component.constraints.push(new Constraint(selectedConstraintKey, null, constraintValue.split(',')));
+        } else {
+            this.component.constraints.push(new Constraint(selectedConstraintKey, constraintValue, null));
+        }
+    }
+
+    save(): void {
+        this.loadingData = true;
+        this.dataTypes.updateConstraints(this.component)
+            .subscribe(
+                emptyResponse => this.loadingData = false,
+                error => this.handleError(error)
+            );
+    }
+
+    get valid_constraint_keys() {
+        return valid_constraint_keys;
+    }
+
+    get list_constraint_keys() {
+        return list_constraint_keys;
+    }
+
+    get range_constraint_keys() {
+        return range_constraint_keys;
+    }
+
 }
 

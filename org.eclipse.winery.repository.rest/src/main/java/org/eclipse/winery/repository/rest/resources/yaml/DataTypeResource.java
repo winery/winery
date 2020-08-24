@@ -14,11 +14,13 @@
 
 package org.eclipse.winery.repository.rest.resources.yaml;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -29,13 +31,19 @@ import org.eclipse.winery.model.tosca.TDataType;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKV;
+import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal;
 import org.eclipse.winery.repository.rest.resources._support.VisualAppearanceResource;
 import org.eclipse.winery.repository.rest.resources.apiData.PropertiesDefinitionEnum;
 import org.eclipse.winery.repository.rest.resources.apiData.PropertiesDefinitionResourceApiData;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class DataTypeResource extends AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataTypeResource.class);
 
     public DataTypeResource(DataTypeId id) {
         super(id);
@@ -49,6 +57,20 @@ public class DataTypeResource extends AbstractComponentInstanceResourceWithNameD
         return getDefinitions().getDataTypes().get(0);
     }
     
+    @PUT
+    @Path("constraints")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateConstraints(List<ConstraintClauseKV> data) {
+        this.getDataType().setConstraints(data);
+        try {
+            BackendUtils.persist(requestRepository, id, getDataType());
+        } catch (IOException e) {
+            LOGGER.error("Failed to persist updated constraint definitions", e);
+            return Response.serverError().build();
+        }
+        return Response.noContent().build();
+    }
+
     @GET
     @Path("constraints/")
     @Produces(MediaType.APPLICATION_JSON)

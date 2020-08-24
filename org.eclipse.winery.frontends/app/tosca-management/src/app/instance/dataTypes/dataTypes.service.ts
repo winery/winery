@@ -51,6 +51,16 @@ export class DataTypesService {
             );
     }
 
+    updateConstraints(type: TDataType): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        return this.http
+            .put(
+                backendBaseURL + `/datatypes/${type.namespace}/${type.name}/constraints`,
+                type.constraints,
+                {headers: headers, observe: 'response', responseType: 'text' }
+            );
+    }
+
     deleteDataType(deletedType: TDataType): Observable<HttpResponse<string>> {
         return this.http.delete(
             backendBaseURL + `/datatypes/${deletedType.namespace}/${deletedType.name}`,

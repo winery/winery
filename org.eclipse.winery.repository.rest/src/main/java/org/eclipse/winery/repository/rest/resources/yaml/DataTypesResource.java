@@ -34,11 +34,4 @@ public class DataTypesResource extends AbstractComponentsWithoutTypeReferenceRes
         return this.getComponentInstanceResource(namespace, id, true);
     }
 
-    @POST
-    @Path("create/")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response createNew(TDataType dataType) {
-        // FIXME implement this!
-        return Response.noContent().build();
-    }
 }
