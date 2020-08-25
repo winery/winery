@@ -12,8 +12,8 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 import {
-    AfterViewInit, Component, ElementRef, HostListener, Input, KeyValueDiffers, NgZone, OnChanges, OnDestroy, OnInit,
-    QueryList, Renderer2, SimpleChanges, ViewChild, ViewChildren
+    AfterViewInit, Component, ElementRef, HostListener, Input, KeyValueDiffers, NgZone, OnChanges, OnDestroy, OnInit, QueryList, Renderer2, SimpleChanges,
+    ViewChild, ViewChildren
 } from '@angular/core';
 import { JsPlumbService } from '../services/jsPlumb.service';
 import { EntityType, TNodeTemplate, TRelationshipTemplate, VisualEntityType } from '../models/ttopology-template';
@@ -934,12 +934,22 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                                 && nt.requirements.requirement.some(req => req.id === reqId));
                         const requirementModel: RequirementModel = sourceNodeTemplate.requirements.requirement
                             .find(req => req.id === reqId);
+
                         const requirementDefinition: RequirementDefinitionModel = InheritanceUtils
                             .getEffectiveRequirementDefinitionsOfNodeType(sourceNodeTemplate.type, this.entityTypes)
-                            .find(reqDef => reqDef.name === requirementModel.name);
-                        requirementModel.capability = requirementDefinition.capability;
-                        requirementModel.relationship = requirementDefinition.relationship;
-                        requirementModel.node = requirementDefinition.node;
+                            .find(reqDef => reqDef.name === this.getReqDefName(requirementModel));
+                        if (requirementModel.name !== requirementDefinition.name) {
+                            sourceNodeTemplate.requirements.requirement = sourceNodeTemplate.requirements
+                                .requirement
+                                .filter(
+                                    r => r.name !== requirementModel.name
+                                );
+                            this.updateAllNodes();
+                        } else {
+                            requirementModel.capability = requirementDefinition.capability;
+                            requirementModel.relationship = requirementDefinition.relationship;
+                            requirementModel.node = requirementDefinition.node;
+                        }
 
                     });
 
@@ -2215,6 +2225,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                         const sourceNodeTypeString: string = this.allNodeTemplates
                             .filter(nodeTemplate => nodeTemplate.id === this.dragSourceInfos.nodeId)
                             .map(nodeTemplate => nodeTemplate.type)[0];
+                        const sourceNodeTemplate: TNodeTemplate = this.allNodeTemplates
+                            .find(nodeTemplate => nodeTemplate.id === sourceNode);
                         const targetNodeTypeString: string = this.allNodeTemplates
                             .filter(nodeTemplate => nodeTemplate.id === info.targetId.substring(0, info.targetId.indexOf('.')))
                             .map(nodeTemplate => nodeTemplate.type)[0];
@@ -2223,7 +2235,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                             .filter(current => current.name === capModel.name)[0];
                         const reqDef: RequirementDefinitionModel = InheritanceUtils
                             .getEffectiveRequirementDefinitionsOfNodeType(sourceNodeTypeString, this.entityTypes)
-                            .filter(current => current.name === reqModel.name)[0];
+                            .filter(current => current.name === this.getReqDefName(reqModel))[0];
 
                         if (this.checkReqCapCompatibility(reqDef, capDef, capModel, new QName(sourceNodeTypeString), new QName(targetNodeTypeString))) {
                             reqModel.capability = capModel.name;
@@ -2240,7 +2252,18 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                                 [],
                                 {}
                             );
-                            this.ngRedux.dispatch(this.actions.saveRelationship(newRelationship));
+                            // add the non-fulfilled requirement if the reqDef is unbounded
+                            if (reqModel.unbounded) {
+                                reqModel.name = reqDef.name + '_' + relNumber;
+                                reqModel.id = TopologyTemplateUtil.generateYAMLRequirementID(sourceNodeTemplate, reqModel.name);
+                                newRelationship.sourceElement = { ref: reqModel.id };
+                                this.ngRedux.dispatch(this.actions.saveRelationship(newRelationship));
+
+                                const nonFulfilledReq = RequirementModel.fromRequirementDefinition(reqDef);
+                                sourceNodeTemplate.requirements.requirement.push(nonFulfilledReq);
+                            } else {
+                                this.ngRedux.dispatch(this.actions.saveRelationship(newRelationship));
+                            }
                         }
                         for (const rel of this.newJsPlumbInstance.getConnections()) {
                             if (rel.targetId === info.targetId) {
@@ -2255,6 +2278,15 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 }
             });
         }
+    }
+
+    // if the requirement is unbounded, there might be multiple numbered reqModels with name different from the reqDef
+    getReqDefName(reqModel: RequirementModel): string {
+        let nameToCompare = reqModel.name;
+        if (reqModel.name.lastIndexOf('_') > 0) {
+            nameToCompare = reqModel.name.substring(0, reqModel.name.lastIndexOf('_'));
+        }
+        return nameToCompare;
     }
 
     getCapability(capabilityId: string): CapabilityModel {
