@@ -244,12 +244,19 @@ export class ToscatypeTableComponent implements OnInit, OnChanges {
             if (nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0] &&
                 nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].requirementDefinitions &&
                 nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].requirementDefinitions.requirementDefinition) {
+
+                // if the requirement is unbounded, there might be multiple numbered reqModels with name different from the reqDef
+                let nameToCompare = req.name;
+                if (req.name.lastIndexOf('_') > 0) {
+                    nameToCompare = req.name.substring(0, req.name.lastIndexOf('_'));
+                }
+
                 const requirementDefinition = nodeType
                     .full
                     .serviceTemplateOrNodeTypeOrNodeTypeImplementation[0]
                     .requirementDefinitions
                     .requirementDefinition
-                    .find((reqDef: RequirementDefinitionModel) => reqDef.name === req.name);
+                    .find((reqDef: RequirementDefinitionModel) => reqDef.name === nameToCompare);
                 if (requirementDefinition) {
                     return requirementDefinition;
                 }
@@ -343,5 +350,9 @@ export class ToscatypeTableComponent implements OnInit, OnChanges {
                 anchor.click();
             });
         }
+    }
+
+    sortBy(req: RequirementModel[], prop: string) {
+        return req.sort((a, b) => a[prop] > b[prop] ? 1 : a[prop] === b[prop] ? 0 : -1);
     }
 }
