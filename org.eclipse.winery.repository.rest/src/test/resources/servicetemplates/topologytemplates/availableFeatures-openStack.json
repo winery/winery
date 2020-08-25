@@ -1,0 +1,11 @@
+[
+    {
+        "nodeTemplateId": "NodeTypeWithDifferentFeatures_w1-wip1_0",
+        "features": [
+            {
+                "type": "{http://opentosca.org/add/management/to/instances/nodetypes}ScaleFeature_AWS-OpenStack-w1-wip1",
+                "featureName": "scalable AWS and Heat"
+            }
+        ]
+    }
+]

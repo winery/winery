@@ -19,6 +19,10 @@ import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.compon
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import { AttributeDefinition } from '../../../model/attribute';
 import { HttpErrorResponse } from '@angular/common/http';
+import { WineryDynamicTableMetadata } from '../../../wineryDynamicTable/wineryDynamicTableMetadata';
+import { DynamicTextComponent, DynamicTextData } from '../../../wineryDynamicTable/formComponents/dynamicText.component';
+import { Validators } from '@angular/forms';
+import { DynamicDropdownData } from '../../../wineryDynamicTable/formComponents/dynamicDropdown.component';
 
 @Component({
     selector: 'winery-attributes',
@@ -28,24 +32,37 @@ export class AttributesComponent implements OnInit {
 
     attributes: AttributeDefinition[] = [];
 
-    columns: Array<WineryTableColumn> = [
-        { title: 'Name', name: 'key', sort: true },
-        { title: 'Type', name: 'type', sort: false },
-        { title: 'Default Value', name: 'defaultValue', sort: false },
-        { title: 'Description', name: 'description', sort: false },
+    dynamicTableData: WineryDynamicTableMetadata[] = [
+        new DynamicTextData(
+            'key',
+            'Name',
+            0,
+            Validators.required,
+            undefined,
+            false,
+            true),
+        new DynamicDropdownData<'string'|'integer'|'float'|'boolean'|'timestamp'>(
+            'type',
+            'Type',
+            [{label: 'string', value: 'string'},
+                {label: 'integer', value: 'integer'},
+                {label: 'float', value: 'float'},
+                {label: 'boolean', value: 'boolean'},
+                {label: 'timestamp', value: 'timestamp'}],
+            1),
+        new DynamicTextData(
+            'defaultValue',
+            'Default Value',
+            2),
+        new DynamicTextData(
+            'description',
+            'Description',
+            3)
     ];
 
-    @ViewChild('modal')
-    modal: ModalDirective;
-    @ViewChild('confirmModal')
-    confirmModal: ModalDirective;
-    validatorObject: WineryValidatorObject;
-    @ViewChild('nameInput') nameInput: ElementRef;
-
-    attr: AttributeDefinition = new AttributeDefinition();
-    selectedAttr: AttributeDefinition;
-
     loading = false;
+    tableTitle = 'Attributes';
+    modalTitle = 'Add/Change Attribute';
 
     constructor(private attributeService: AttributesService, public instanceService: InstanceService) {
     }
@@ -75,40 +92,5 @@ export class AttributesComponent implements OnInit {
                 () => this.loading = false,
                 error => this.handleError(error)
             );
-    }
-
-    openModal() {
-        this.attr = new AttributeDefinition();
-        this.validatorObject = new WineryValidatorObject(this.attributes, 'key');
-        this.modal.show();
-    }
-
-    openConfirmModal(attr: AttributeDefinition) {
-        if (attr === null || attr === undefined) {
-            return;
-        }
-        this.selectedAttr = attr;
-        this.confirmModal.show();
-    }
-
-    onModalShown() {
-        this.nameInput.nativeElement.focus();
-    }
-
-    addAttribute(attr: AttributeDefinition) {
-        const o = Object.assign(new AttributeDefinition(), attr);
-        this.attributes.push(o);
-        this.save();
-    }
-
-    removeAttribute() {
-        for (let i = 0; i < this.attributes.length; i++) {
-            if (this.attributes[i].key === this.selectedAttr.key) {
-                this.attributes.splice(i, 1);
-            }
-        }
-        this.confirmModal.hide();
-        this.selectedAttr = null;
-        this.save();
     }
 }

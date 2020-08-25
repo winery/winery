@@ -11,8 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, DoCheck, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { isNullOrUndefined } from 'util';
+import { Component, DoCheck, EventEmitter, Input, IterableDiffer, IterableDiffers, OnInit, Output, ViewChild } from '@angular/core';
 
 /**
  * This component provides an easy and fast way to use the ng2-table with further modifications
@@ -162,8 +161,14 @@ export class WineryTableComponent implements OnInit, DoCheck {
     public currentSelected: any = null;
     private selectedRow = -1;
 
-    private oldData: Array<any> = this.data;
-    private oldLength = this.oldData.length;
+    /**
+     * checks if input data changed
+     */
+    private iterableDiffer: IterableDiffer<any>;
+
+    constructor(private iterableDiffers: IterableDiffers) {
+        this.iterableDiffer = iterableDiffers.find([]).create(null);
+    }
 
     // region #######Table events and functions######
 
@@ -246,7 +251,7 @@ export class WineryTableComponent implements OnInit, DoCheck {
         filteredData.forEach((item: any) => {
             let flag = false;
             this.columns.forEach((column: any) => {
-                if (!isNullOrUndefined(item[column.name]) && item[column.name].toString().match(this.config.filtering.filterString)) {
+                if (item[column.name] && item[column.name].toString().match(this.config.filtering.filterString)) {
                     flag = true;
                 }
             });
@@ -323,32 +328,20 @@ export class WineryTableComponent implements OnInit, DoCheck {
         this.onChangeTable(this.config);
     }
 
-    constructor() {
-        // this.length = this.data.length;
-    }
-
     ngOnInit() {
         this.config.sorting.columns = this.columns;
         this.length = this.data.length;
         this.onChangeTable(this.config);
     }
 
-    // We "know" that the only way the list can change is
-    // identity or in length so that's all we check
+    /**
+     * checks for changes in this.data and refreshes table if they occur
+     * as the OnChanges Lifecycle Hook will only trigger when the input properties instance changes
+     */
     ngDoCheck() {
-        if (this.oldData !== this.data) {
-            this.oldData = this.data;
-            this.oldLength = this.data.length;
+        const changes = this.iterableDiffer.diff(this.data);
+        if (changes) {
             this.onChangeTable(this.config);
-        } else {
-            const newLength = this.data.length;
-            const old = this.oldLength;
-            if (old !== newLength) {
-                // let direction = old < newLength ? 'grew' : 'shrunk';
-                // this.logs.push(`heroes ${direction} from ${old} to ${newLength}`);
-                this.oldLength = newLength;
-                this.onChangeTable(this.config);
-            }
         }
     }
 

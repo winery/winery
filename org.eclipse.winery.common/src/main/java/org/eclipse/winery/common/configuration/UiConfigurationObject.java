@@ -33,6 +33,8 @@ import static org.eclipse.winery.common.configuration.RepositoryConfigurationObj
  */
 public class UiConfigurationObject extends AbstractConfigurationObject {
 
+    public static String apiUrlKey = "repositoryApiUrl";
+
     private static final Logger logger = LoggerFactory.getLogger(UiConfigurationObject.class);
 
     private static final String key = "ui";

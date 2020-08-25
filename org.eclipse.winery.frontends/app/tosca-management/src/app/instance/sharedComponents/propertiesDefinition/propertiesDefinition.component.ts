@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { InstanceService } from '../../instance.service';
 import { PropertiesDefinitionService } from './propertiesDefinition.service';
 import {
@@ -19,11 +19,17 @@ import {
 } from './propertiesDefinitionsResourceApiData';
 import { SelectData } from '../../../model/selectData';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { WineryRowData, WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
-import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { WineryRepositoryConfigurationService } from '../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { FeatureEnum } from '../../../wineryFeatureToggleModule/wineryRepository.feature.direct';
+import { WineryDynamicTableMetadata } from '../../../wineryDynamicTable/wineryDynamicTableMetadata';
+import { DynamicTextData } from '../../../wineryDynamicTable/formComponents/dynamicText.component';
+import { Validators } from '@angular/forms';
+import { DynamicDropdownData } from '../../../wineryDynamicTable/formComponents/dynamicDropdown.component';
+import { DynamicConstraintsData } from '../../../wineryDynamicTable/formComponents/dynamicConstraints/dynamicConstraints.component';
+import { XmlTypes, YamlTypes } from '../../../model/parameters';
+import { WineryRowData, WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
+import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import { Constraint, yaml_well_known } from '../../../model/constraint';
 import { SchemaDefinition, TDataType } from '../../../../../../topologymodeler/src/app/models/ttopology-template';
@@ -32,6 +38,7 @@ import { YamlPropertyDefinition } from '../../../model/yaml';
 
 const valid_constraint_keys = ['equal', 'greater_than', 'greater_or_equal', 'less_than', 'less_or_equal', 'in_range',
     'valid_values', 'length', 'min_length', 'max_length', 'pattern', 'schema'];
+// we differentiate between constraint keys to validate input
 const list_constraint_keys = ['valid_values', 'in_range'];
 const range_constraint_keys = ['in_range'];
 
@@ -67,10 +74,15 @@ export class PropertiesDefinitionComponent implements OnInit {
     propertiesEnum = PropertiesDefinitionEnum;
     loading = true;
 
+    dynamicTableData: Array<WineryDynamicTableMetadata> = [];
+    tableTitle = 'Properties';
+    modalTitle = 'Add a Property Definition';
+
     resourceApiData: PropertiesDefinitionsResourceApiData;
 
     selectItems: SelectData[];
     activeElement = new SelectData();
+
     selectedCell: WineryRowData;
     elementToRemove: any = null;
     columns: Array<WineryTableColumn> = [];
@@ -85,8 +97,6 @@ export class PropertiesDefinitionComponent implements OnInit {
     private yamlTypes: string[] = [];
     private xmlTypes: string[] = ['xsd:string', 'xsd:float', 'xsd:decimal', 'xsd:anyURI', 'xsd:QName'];
 
-    configEnum = FeatureEnum;
-
     @ViewChild('confirmDeleteModal')
     confirmDeleteModal: ModalDirective;
     confirmDeleteModalRef: BsModalRef;
@@ -94,6 +104,10 @@ export class PropertiesDefinitionComponent implements OnInit {
     @ViewChild('editorModal')
     editorModal: ModalDirective;
     editorModalRef: BsModalRef;
+    configEnum = FeatureEnum;
+
+    @ViewChild('nameInputForm') nameInputForm: ElementRef;
+
 
     constructor(public sharedData: InstanceService, private service: PropertiesDefinitionService,
                 private modalService: BsModalService, private dataTypes: DataTypesService,
@@ -102,9 +116,6 @@ export class PropertiesDefinitionComponent implements OnInit {
     }
 
     // region ########## Angular Callbacks ##########
-    /**
-     * @override
-     */
     ngOnInit() {
         this.getPropertiesDefinitionsResourceApiData();
 
@@ -116,6 +127,57 @@ export class PropertiesDefinitionComponent implements OnInit {
                 error => console.log(error),
             );
         });
+        // fill dynamic table data with metadata used for WinerysKVProperties
+        this.dynamicTableData = [
+            new DynamicTextData(
+                'key',
+                'Name',
+                0,
+                Validators.required
+            ),
+            new DynamicTextData(
+                'defaultValue',
+                'Default Value',
+                2
+            ),
+            new DynamicTextData(
+                'description',
+                'Description',
+                3
+            ),
+            new DynamicConstraintsData(
+                'constraints',
+                'Constraints',
+                valid_constraint_keys,
+                list_constraint_keys,
+                range_constraint_keys,
+                4,
+            )
+        ];
+        if (!this.configurationService.configuration.features.yaml) {
+            const options = [
+                { label: 'xsd:string', value: 'xsd:string' },
+                { label: 'xsd:float', value: 'xsd:float' },
+                { label: 'xsd:decimal', value: 'xsd:decimal' },
+                { label: 'xsd:anyURI', value: 'xsd:anyURI' },
+                { label: 'xsd:QName', value: 'xsd:QName' }
+            ];
+            this.dynamicTableData.push(new DynamicDropdownData<XmlTypes>('type', 'Type', options, 1));
+        } else {
+        // FIXME the dynamic table form generation currently has no way of dealing with Yaml's type system that includes key_schema and entry_schema
+        //  So we're just going to loudly complain and leave it at that
+            console.warn('attempting to initialize dynamic winery table with a yaml repository. This DOES NOT WORK right now!');
+        }
+        // else {
+        //     const options = [
+        //         { label: 'string', value: 'string' },
+        //         { label: 'integer', value: 'integer' },
+        //         { label: 'float', value: 'float' },
+        //         { label: 'boolean', value: 'boolean' },
+        //         { label: 'timestamp', value: 'timestamp' }
+        //     ];
+        //     this.dynamicTableData.push(new DynamicDropdownData<YamlTypes>('type', 'Type', options, 1));
+        // }
     }
 
     copyToTable() {
@@ -130,11 +192,7 @@ export class PropertiesDefinitionComponent implements OnInit {
             this.availableTypes = this.yamlTypes;
         } else if (this.resourceApiData.winerysPropertiesDefinition !== null) {
             this.columns = winery_properties_columns;
-            this.tableData = this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList
-                .map(prop => {
-                    fillDefaults(prop);
-                    return prop;
-                });
+            this.tableData = this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList;
             this.availableTypes = this.xmlTypes;
         }
     }
@@ -233,7 +291,7 @@ export class PropertiesDefinitionComponent implements OnInit {
 
     // endregion
 
-    // region ########## Button Callbacks ##########
+    // region ########## Save Callbacks ##########
     save(): void {
         this.loading = true;
         if (this.resourceApiData.selectedValue === PropertiesDefinitionEnum.None) {
@@ -332,10 +390,6 @@ export class PropertiesDefinitionComponent implements OnInit {
         }
     }
 
-    onCellSelected(data: WineryRowData) {
-        this.selectedCell = data;
-    }
-
     // endregion
 
     // region ########## Modal Callbacks ##########
@@ -417,6 +471,9 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.deleteItem(this.elementToRemove);
         this.elementToRemove = null;
         this.copyToTable();
+    }
+    // region ########## Table Callbacks ##########
+    onChangeProperty() {
         this.save();
     }
 
@@ -548,6 +605,7 @@ export class PropertiesDefinitionComponent implements OnInit {
     }
 
     /**
+<<<<<<< HEAD
      * Deletes a property from the table and model.
      * @param itemToDelete
      */
@@ -568,6 +626,8 @@ export class PropertiesDefinitionComponent implements OnInit {
     }
 
     /**
+=======
+>>>>>>> blessed/master
      * Sets loading to false and shows error notification.
      *
      * @param error

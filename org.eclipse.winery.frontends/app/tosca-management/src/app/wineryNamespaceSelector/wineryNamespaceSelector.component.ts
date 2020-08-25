@@ -119,6 +119,7 @@ export class WineryNamespaceSelectorComponent implements OnInit, ControlValueAcc
     set namespaceValue(value: string) {
         this.innerNamespaceValue = value;
         this.propagateChange(this.innerNamespaceValue);
+        this.onChange.emit(this.innerNamespaceValue);
         if (this.namespaceInput) {
             this.namespaceInput.nativeElement.focus();
         }

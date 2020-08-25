@@ -37,7 +37,7 @@ import org.eclipse.jdt.annotation.Nullable;
     "topologyTemplate",
     "plans"
 })
-public class TServiceTemplate extends HasId implements HasName, HasTargetNamespace {
+public class TServiceTemplate extends HasId implements HasName, HasTargetNamespace, HasTags {
 
     @XmlElement(name = "Tags")
     protected TTags tags;
@@ -96,6 +96,7 @@ public class TServiceTemplate extends HasId implements HasName, HasTargetNamespa
     }
 
     @Nullable
+    @Override
     public TTags getTags() {
         return tags;
     }
@@ -178,7 +179,7 @@ public class TServiceTemplate extends HasId implements HasName, HasTargetNamespa
         private String name;
         private String targetNamespace;
         private QName substitutableNodeType;
-        
+
         public Builder(String id) {
             super(id);
             topologyTemplate = null;

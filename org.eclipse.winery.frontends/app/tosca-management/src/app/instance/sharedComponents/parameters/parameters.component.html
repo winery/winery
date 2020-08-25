@@ -11,76 +11,11 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<winery-table [title]="tableTitle"
-              [data]="parameters"
-              [columns]="columns"
-              [disableFiltering]="!enableFiltering"
-              [disableButtons]="!instanceService?.currentVersion?.editable"
-              (addBtnClicked)="openModal()"
-              (removeBtnClicked)="openConfirmRemoveModal($event)">
-</winery-table>
-
-<winery-modal bsModal #modal="bs-modal" [modalRef]="modal"
-              (onShown)="nameInput.focus()" (onHide)="form.reset()">
-    <winery-modal-header [title]="'Add ' + modalTitle"></winery-modal-header>
-    <winery-modal-body>
-        <form #form="ngForm">
-            <div class="form-group">
-                <label class="control-label" for="key-{{uuid}}">Name</label>
-                <input type="text" #nameInput #propName="ngModel" id="key-{{uuid}}" name="key" autocomplete=off required
-                       class="form-control" [(ngModel)]="param.key" [wineryDuplicateValidator]="validatorObject"/>
-                <div *ngIf="propName.errors && (propName.dirty || propName.touched)"
-                     class="alert alert-danger">
-                    <div [hidden]="!propName.errors.wineryDuplicateValidator">No duplicates allowed!</div>
-                    <div [hidden]="!propName.errors.required">Name is required</div>
-                </div>
-            </div>
-            <div class="form-group" *ngIf="containsColumn('type')">
-                <label class="control-label" for="type-{{uuid}}">Type</label>
-                <select name="type" id="type-{{uuid}}" class="form-control" [(ngModel)]="param.type">
-                    <option value="string">string</option>
-                    <option value="integer">integer</option>
-                    <option value="float">float</option>
-                    <option value="boolean">boolean</option>
-                    <option value="timestamp">timestamp</option>
-                </select>
-            </div>
-            <div class="form-group" *ngIf="containsColumn('required')">
-                <input type="checkbox" name="required" id="required-{{uuid}}" style="margin-right: 7px"
-                       [(ngModel)]="param.required"/>
-                <label class="control-label" for="required-{{uuid}}">Required</label>
-            </div>
-            <div class="form-group" *ngIf="containsColumn('defaultValue')">
-                <label class="control-label" for="defaultValue-{{uuid}}">Default Value</label>
-                <input type="text" name="defaultValue" id="defaultValue-{{uuid}}" class="form-control"
-                       [(ngModel)]="param.defaultValue"/>
-            </div>
-            <div class="form-group" *ngIf="containsColumn('value')">
-                <label class="control-label" for="value-{{uuid}}">Value</label>
-                <input type="text" name="value" id="value-{{uuid}}" class="form-control"
-                       [(ngModel)]="param.value"/>
-            </div>
-            <div class="form-group" *ngIf="containsColumn('description')">
-                <label class="control-label" for="description-{{uuid}}">Description</label>
-                <input type="text" name="description" id="description-{{uuid}}" class="form-control"
-                       [(ngModel)]="param.description"/>
-            </div>
-        </form>
-    </winery-modal-body>
-    <winery-modal-footer
-        [disableOkButton]="!form?.form.valid"
-        (onOk)="addParameter(param); form.reset();"
-        [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Add'">
-    </winery-modal-footer>
-</winery-modal>
-
-<winery-modal bsModal #confirmRemoveModal="bs-modal" [modalRef]="confirmRemoveModal">
-    <winery-modal-header [title]="'Delete ' + modalTitle"></winery-modal-header>
-    <winery-modal-body>
-        <p *ngIf="selectedParam">
-            Do you want to delete parameter <span style="font-weight:bold;">{{ selectedParam.key }}</span>?
-        </p>
-    </winery-modal-body>
-    <winery-modal-footer (onOk)="removeParameter()" [closeButtonLabel]="'Cancel'"
-                         [okButtonLabel]="'Delete'"></winery-modal-footer>
-</winery-modal>
+<winery-dynamic-table [dynamicMetadata]="dynamicTableData"
+                      [tableTitle]="tableTitle"
+                      [modalTitle]="modalTitle"
+                      [data]="parameters"
+                      [avoidDuplicateProperties]="['key']"
+                      (entryAdded)="addParameter($event)"
+                      (entryRemoved)="removeParameter($event)"
+                      (entryEdited)="editParameter($event)"></winery-dynamic-table>

@@ -54,13 +54,14 @@
         <div *ngIf="resourceApiData.selectedValue === propertiesEnum.Custom">
             <tabset *wineryRepositoryHideOnFeature="configEnum.Yaml">
                 <tab heading="Properties">
-                    <winery-table
-                        [data]="tableData"
-                        [columns]="columns"
-                        (cellSelected)="onCellSelected($event)"
-                        (removeBtnClicked)="onRemoveClick($event)"
-                        (addBtnClicked)="onAddClick();">
-                    </winery-table>
+                    <winery-dynamic-table [dynamicMetadata]="dynamicTableData"
+                                          [tableTitle]="tableTitle"
+                                          [modalTitle]="modalTitle"
+                                          [data]="this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList"
+                                          [avoidDuplicateProperties]="['key']"
+                                          (entryAdded)="onChangeProperty()"
+                                          (entryEdited)="onChangeProperty()"
+                                          (entryRemoved)="onChangeProperty()"></winery-dynamic-table>
                 </tab>
                 <tab heading="Wrapper">
                     <div class="wrapperTab">
@@ -81,10 +82,14 @@
             </tabset>
         </div>
         <div *wineryRepositoryShowOnFeature="configEnum.Yaml">
+            <!-- 
+                FIXME winery-dynamic-table currently CAN NOT deal with keySchema and entrySchema 
+                  being dependent on the type selected in the type field, so we're falling back to winery-table 
+                  lacking better options right now
+             -->
             <winery-table [data]="tableData"
                           [columns]="columns"
                           [enableEditButton]="true"
-                          (cellSelected)="onCellSelected($event)"
                           (removeBtnClicked)="onRemoveClick($event)"
                           (addBtnClicked)="onAddClick()"
                           (editBtnClicked)="onEditClick($event)">

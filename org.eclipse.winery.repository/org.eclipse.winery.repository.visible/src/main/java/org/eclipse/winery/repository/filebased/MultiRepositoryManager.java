@@ -73,12 +73,14 @@ public class MultiRepositoryManager {
      * @param oldPath The path of the old repository
      * @param newPath The path of the workspace folder to which the files are moved
      */
-    private void createMultiRepositoryFileStructure(Path oldPath, Path newPath) {
+    void createMultiRepositoryFileStructure(Path oldPath, Path newPath) {
         List<String> ignoreFiles = new ArrayList<>();
-        try {
-            Files.createDirectory(newPath);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (!Files.exists(newPath)) {
+            try {
+                Files.createDirectory(newPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         ignoreFiles.add(Constants.DEFAULT_LOCAL_REPO_NAME);
         ignoreFiles.add(Filename.FILENAME_JSON_REPOSITORIES);

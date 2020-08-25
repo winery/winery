@@ -138,7 +138,9 @@ public class FileUtils {
                             return FileVisitResult.SKIP_SUBTREE;
                         } else {
                             try {
-                                Files.copy(dir, newFile);
+                                if (!Files.exists(newFile)) {
+                                    Files.copy(dir, newFile);
+                                }
                             } catch (IOException ex) {
                                 ex.printStackTrace();
                             }

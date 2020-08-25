@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,27 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-.localLoader {
-    padding-top: 180px;
-}
 
-.radioWrapper {
-    height: 315px;
-}
+import { WineryDynamicTableMetadata } from '../../wineryDynamicTableMetadata';
+import { FormGroup } from '@angular/forms';
 
-.left {
-    float: left;
-}
-
-.right {
-    float: right;
-}
-
-.wrapperTab {
-    margin-top: 15px;
-}
-
-.wrapperTabButtom {
-    margin-top: 15px;
-    padding-bottom: 30px;
+export interface DynamicFieldComponent {
+    config: WineryDynamicTableMetadata;
+    group: FormGroup;
 }

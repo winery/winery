@@ -48,7 +48,7 @@ import org.eclipse.jdt.annotation.Nullable;
     TArtifactType.class,
     TPolicyType.class
 })
-public abstract class TEntityType extends TExtensibleElements implements HasName, HasInheritance, HasTargetNamespace {
+public abstract class TEntityType extends TExtensibleElements implements HasName, HasInheritance, HasTargetNamespace, HasTags {
     public static final String NS_SUFFIX_PROPERTIESDEFINITION_WINERY = "propertiesdefinition/winery";
 
     @XmlElement(name = "Tags")

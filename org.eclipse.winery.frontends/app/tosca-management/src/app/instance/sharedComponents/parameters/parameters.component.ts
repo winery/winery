@@ -11,25 +11,27 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { Parameter } from '../../../model/parameters';
-import { InstanceService } from '../../instance.service';
-import { ModalDirective } from 'ngx-bootstrap';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Parameter, YamlTypes } from '../../../model/parameters';
 import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
+import { DynamicDropdownData } from '../../../wineryDynamicTable/formComponents/dynamicDropdown.component';
+import { DynamicCheckboxData } from '../../../wineryDynamicTable/formComponents/dynamicCheckbox.component';
+import { DynamicTextData } from '../../../wineryDynamicTable/formComponents/dynamicText.component';
+import { WineryDynamicTableMetadata } from '../../../wineryDynamicTable/wineryDynamicTableMetadata';
+import { Validators } from '@angular/forms';
 
 @Component({
     selector: 'winery-parameters',
     templateUrl: 'parameters.component.html'
 })
-export class ParametersComponent {
-
-    /* tslint:disable no-bitwise */
-    uuid: string = (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+export class ParametersComponent implements OnInit {
 
     @Input() tableTitle = 'Parameters';
     @Input() modalTitle = 'Parameter';
+
     @Input() parameters: Parameter[] = [];
+
     @Input() columns: Array<WineryTableColumn> = [
         { title: 'Name', name: 'key', sort: true },
         { title: 'Type', name: 'type', sort: false },
@@ -40,52 +42,89 @@ export class ParametersComponent {
     ];
     @Input() enableFiltering = false;
 
+    @Output() onParameterEdited = new EventEmitter<Parameter>();
     @Output() onParameterAdded = new EventEmitter<Parameter>();
     @Output() onParameterRemoved = new EventEmitter<Parameter>();
 
-    @ViewChild('modal') modal: ModalDirective;
-    @ViewChild('confirmRemoveModal') confirmRemoveModal: ModalDirective;
+    dynamicTableData: Array<WineryDynamicTableMetadata> = [];
 
     validatorObject: WineryValidatorObject;
 
-    param: Parameter = new Parameter();
-    selectedParam: Parameter;
-
-    constructor(public instanceService: InstanceService) {
-    }
-
-    openModal() {
-        this.param = new Parameter();
-        this.validatorObject = new WineryValidatorObject(this.parameters, 'key');
-        this.modal.show();
-    }
-
-    openConfirmRemoveModal(param: Parameter) {
-        if (param === null || param === undefined) {
-            return;
+    ngOnInit(): void {
+        this.dynamicTableData = [
+            new DynamicTextData(
+                'key',
+                'Name',
+                0,
+                [Validators.required],
+            )];
+        if (this.containsColumn('type')) {
+            this.dynamicTableData.push(
+                new DynamicDropdownData<YamlTypes>(
+                    'type',
+                    'Type',
+                    [
+                        { label: 'String', value: 'string' },
+                        { label: 'Integer', value: 'integer' },
+                        { label: 'Float', value: 'float' },
+                        { label: 'Boolean', value: 'boolean' },
+                        { label: 'Timestamp', value: 'timestamp' }
+                    ],
+                    1,
+                    'float',
+                    [Validators.required],
+                ));
         }
-        this.selectedParam = param;
-        this.confirmRemoveModal.show();
+        if (this.containsColumn('required')) {
+            this.dynamicTableData.push(
+                new DynamicCheckboxData(
+                    'required',
+                    'Required',
+                    false,
+                    2,
+                ));
+        }
+        if (this.containsColumn('defaultValue')) {
+            this.dynamicTableData.push(
+                new DynamicTextData(
+                    'defaultValue',
+                    'Default Value',
+                    3,
+                ));
+        }
+        if (this.containsColumn('value')) {
+            this.dynamicTableData.push(
+                new DynamicTextData(
+                    'value',
+                    'Value',
+                    4
+                ));
+        }
+        if (this.containsColumn('description')) {
+            this.dynamicTableData.push(
+                new DynamicTextData(
+                    'description',
+                    'Description',
+                    5
+                ));
+        }
+    }
+
+    editParameter(param: Parameter) {
+        const p = Object.assign(new Parameter(), param);
+        this.onParameterAdded.emit(p);
     }
 
     addParameter(param: Parameter) {
         const p = Object.assign(new Parameter(), param);
-        this.parameters.push(p);
         this.onParameterAdded.emit(p);
     }
 
-    removeParameter() {
-        for (let i = 0; i < this.parameters.length; i++) {
-            if (this.parameters[i].key === this.selectedParam.key) {
-                this.parameters.splice(i, 1);
-            }
-        }
-        this.onParameterRemoved.emit(Object.assign(this.selectedParam));
-        this.confirmRemoveModal.hide();
-        this.selectedParam = null;
+    removeParameter(param: Parameter) {
+        this.onParameterRemoved.emit(Object.assign(param));
     }
 
-    containsColumn(name: String): boolean {
+    private containsColumn(name: String): boolean {
         return this.columns.filter(c => c.name === name).length > 0;
     }
 }
