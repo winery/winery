@@ -23,6 +23,22 @@ import { ConstraintChecking } from '../property-constraints';
 import { ToscaUtils } from '../../models/toscaUtils';
 import { isWellKnown } from '../../../../../tosca-management/src/app/model/constraint';
 
+function toJson(rawKV: KeyValueItem) {
+    const userInput = rawKV.value;
+    let result;
+    try {
+        result = JSON.parse(userInput);
+    } catch (e) {
+        // try reparsing as string
+        try {
+            // this should never ever fail because we should be able to parse literally anything as a string, so long as we enquote it
+            result = JSON.parse( '"' + userInput + '"');
+        } catch (e) {
+            result = undefined;
+        }
+    }
+    return { key: rawKV.key, value: result};
+}
 
 @Component({
     selector: 'winery-yaml-properties',
@@ -51,7 +67,7 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
         this.subscriptions.push(this.outputDebouncer.pipe(
             debounceTime(300),
             distinctUntilChanged(), )
-            .subscribe(kv => this.propertyEdited.emit(kv)));
+            .subscribe(rawValue => this.propertyEdited.emit(toJson(rawValue))));
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -71,10 +87,10 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
         this.subscriptions.forEach(s => s.unsubscribe());
     }
 
-    propertyChangeRequest(validValue: any, definition: any) {
+    propertyChangeRequest(rawValue: any, definition: any) {
         this.outputDebouncer.next({
             key: definition.name,
-            value: validValue,
+            value: rawValue,
         });
     }
 

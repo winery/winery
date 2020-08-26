@@ -105,14 +105,15 @@ export interface UpdateRelationshipNameAction extends Action {
 }
 
 export interface SetPropertyAction extends Action {
-    nodeProperty: {
+    propertyData: {
         newProperty: {
             propertyType: string,
             properties?: any[],
             kvproperties?: any[],
             any?: any
         },
-        nodeId: string,
+        nodeId?: string,
+        relationId?: string
     };
 }
 
@@ -321,10 +322,9 @@ export class WineryActions {
             relData: currentRelData.relData
         }));
     setProperty: ActionCreator<SetPropertyAction> =
-        ((newProperty) => ({
+        ((data) => ({
             type: WineryActions.SET_PROPERTY,
-            nodeProperty: newProperty.nodeProperty,
-            propertyType: newProperty.propertyType
+            propertyData: data,
         }));
     setCapability: ActionCreator<SetCababilityAction> =
         ((newCapability) => ({

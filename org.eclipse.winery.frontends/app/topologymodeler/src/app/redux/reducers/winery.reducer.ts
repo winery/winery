@@ -203,19 +203,35 @@ export const WineryReducer =
                     }
                 };
             case WineryActions.SET_PROPERTY:
-                const update: any = (<SetPropertyAction>action).nodeProperty;
+                const update = (<SetPropertyAction>action).propertyData;
 
-                return <WineryState>{
-                    ...lastState,
-                    currentJsonTopology: {
-                        ...lastState.currentJsonTopology,
-                        nodeTemplates: lastState.currentJsonTopology.nodeTemplates
-                            .map(nodeTemplate => nodeTemplate.id === update.nodeId
-                                ? nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('properties', update.newProperty)
-                                : nodeTemplate
-                            )
-                    }
-                };
+                if (update.nodeId !== undefined) {
+                    return <WineryState>{
+                        ...lastState,
+                        currentJsonTopology: {
+                            ...lastState.currentJsonTopology,
+                            nodeTemplates: lastState.currentJsonTopology.nodeTemplates
+                                .map(nodeTemplate => nodeTemplate.id === update.nodeId
+                                    ? nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('properties', update.newProperty)
+                                    : nodeTemplate
+                                )
+                        }
+                    };
+                } else if (update.relationId !== undefined) {
+                    return <WineryState>{
+                        ...lastState,
+                        currentJsonTopology: {
+                            ...lastState.currentJsonTopology,
+                            relationshipTemplates: lastState.currentJsonTopology.relationshipTemplates
+                                .map(relationshipTemplate => relationshipTemplate.id === update.relationId
+                                    ? relationshipTemplate.generateNewRelTemplateWithUpdatedAttribute('properties', update.newProperty)
+                                    : relationshipTemplate
+                                )
+                        }
+                    };
+                } else {
+                    return lastState;
+                }
             case WineryActions.SET_CAPABILITY:
                 const newCapability: any = (<SetCababilityAction>action).nodeCapability;
 

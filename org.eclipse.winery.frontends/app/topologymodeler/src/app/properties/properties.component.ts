@@ -137,12 +137,17 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
         const newProperty = { propertyType: this.propertyDefinitionType };
         newProperty[member] = this.templateProperties;
         this.skipUpdate = true;
-        this.$ngRedux.dispatch(this.actions.setProperty({
-            nodeProperty: {
+        if (this.isNode) {
+            this.$ngRedux.dispatch(this.actions.setProperty({
                 newProperty: newProperty,
                 nodeId: this.templateId,
-            }
-        }));
+            }));
+        } else {
+            this.$ngRedux.dispatch(this.actions.setProperty({
+                newProperty: newProperty,
+                relationId: this.templateId,
+            }));
+        }
     }
 
     private buildSubscription(): Subscription {
