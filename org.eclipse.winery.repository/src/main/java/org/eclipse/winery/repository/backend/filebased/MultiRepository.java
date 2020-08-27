@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -105,7 +106,7 @@ public class MultiRepository implements IRepository {
         updateNamespaces();
     }
 
-    IRepository getLocalRepository() {
+    public IRepository getLocalRepository() {
         return localRepository;
     }
 
@@ -246,8 +247,10 @@ public class MultiRepository implements IRepository {
             LOGGER.info("Found Repositories file");
             loadConfiguration(repositoryConfiguration);
             MultiRepositoryManager multiRepositoryManager = new MultiRepositoryManager();
-            multiRepositoryManager.createMultiRepositoryFileStructure(Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()),
-                Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), Constants.DEFAULT_LOCAL_REPO_NAME));
+            if (!multiRepositoryManager.isMultiRepositoryFileStuctureEstablished(Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()))) {
+                multiRepositoryManager.createMultiRepositoryFileStructure(Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()),
+                    Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), Constants.DEFAULT_LOCAL_REPO_NAME));
+            }
             loadRepositoriesByList();
         } else {
             createConfigFileAndSetFactoryToMultiRepository();
@@ -322,8 +325,9 @@ public class MultiRepository implements IRepository {
      */
     private void createRepository(String url, String branch) {
         IRepositoryResolver resolver = null;
-        if (RepositoryResolverFactory.getResolver(url, branch).isPresent()) {
-            resolver = RepositoryResolverFactory.getResolver(url, branch).get();
+        Optional<IRepositoryResolver> resolverOptional = RepositoryResolverFactory.getResolver(url, branch);
+        if (resolverOptional.isPresent()) {
+            resolver = resolverOptional.get();
         }
 
         if (resolver != null && !RepositoryUtils.checkRepositoryDuplicate(url, this)) {
@@ -412,7 +416,7 @@ public class MultiRepository implements IRepository {
         RepositoryFileReference ref = BackendUtils.getRefOfJsonConfiguration(new EdmmMappingsId());
         return new JsonBasedEdmmManager(ref2AbsolutePath(ref).toFile());
     }
-    
+
     @Override
     public boolean flagAsExisting(GenericId id) {
         return RepositoryUtils.getRepositoryById(id, this).flagAsExisting(id);
