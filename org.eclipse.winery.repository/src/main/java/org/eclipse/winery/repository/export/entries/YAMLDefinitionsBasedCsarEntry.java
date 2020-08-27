@@ -27,6 +27,7 @@ import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
+import org.eclipse.winery.repository.backend.filebased.MultiRepository;
 import org.eclipse.winery.repository.backend.filebased.YamlRepository;
 import org.eclipse.winery.repository.converter.X2YConverter;
 import org.eclipse.winery.repository.converter.support.writer.YamlWriter;
@@ -45,6 +46,10 @@ public class YAMLDefinitionsBasedCsarEntry implements CsarEntry {
                 c = new X2YConverter((YamlRepository) wrapper.getRepository());
             } else if (repo instanceof YamlRepository) {
                 c = new X2YConverter((YamlRepository) repo);
+            } else if (repo instanceof MultiRepository) {
+                MultiRepository wrapper = (MultiRepository) RepositoryFactory.getRepository();
+                GitBasedRepository localRepoWrapper = (GitBasedRepository) wrapper.getLocalRepository();
+                c = new X2YConverter((YamlRepository) localRepoWrapper.getRepository());
             } else {
                 throw new WineryRepositoryException("The chosen repository mode is incompatible with YAML-based export");
             }
