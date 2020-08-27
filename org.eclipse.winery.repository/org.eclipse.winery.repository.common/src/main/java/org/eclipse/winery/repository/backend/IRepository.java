@@ -879,6 +879,33 @@ public interface IRepository extends IWineryRepositoryCommon {
             }
         }
 
+        TEntityType.PropertiesDefinition properties = relationshipType.getProperties();
+        if (Objects.nonNull(properties)) {
+            if (properties instanceof TEntityType.XmlElementDefinition
+                || properties instanceof TEntityType.XmlTypeDefinition) {
+                // nothing to do here, since these are not referring to TDefinitions
+            } else if (properties instanceof TEntityType.YamlPropertiesDefinition) {
+                List<TEntityType.YamlPropertyDefinition> props = ((TEntityType.YamlPropertiesDefinition) properties).getProperties();
+                Queue<TSchema> schemata = new LinkedList<>();
+                for (TEntityType.YamlPropertyDefinition def : props) {
+                    if (!def.getType().getNamespaceURI().isEmpty()) {
+                        ids.add(new DataTypeId(def.getType()));
+                    }
+                    schemata.add(def.getKeySchema());
+                    schemata.add(def.getEntrySchema());
+                }
+                while (!schemata.isEmpty()) {
+                    TSchema current = schemata.poll();
+                    if (current == null) { continue; }
+                    if (!current.getType().getNamespaceURI().isEmpty()) {
+                        ids.add(new DataTypeId(current.getType()));
+                    }
+                    schemata.add(current.getKeySchema());
+                    schemata.add(current.getEntrySchema());
+                }
+            }
+        }
+
         return ids;
     }
 
