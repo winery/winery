@@ -1322,7 +1322,7 @@ public class ToCanonical {
             .setType(node.getType())
             .setDescription(node.getDescription())
             .setRequired(node.getRequired())
-            .setDefaultValue(node.getDefault())
+            .setDefaultValue(ValueHelper.toString(node.getDefault()))
             .setStatus(TEntityType.YamlPropertyDefinition.Status.getStatus(node.getStatus().toString()))
             .setConstraints(convertList(node.getConstraints(), this::convert))
             .setEntrySchema(convert(node.getEntrySchema()))

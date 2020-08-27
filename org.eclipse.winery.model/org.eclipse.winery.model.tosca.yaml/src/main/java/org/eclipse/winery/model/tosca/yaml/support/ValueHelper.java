@@ -20,6 +20,10 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * @deprecated this is only intended to support property functions and not complex values
+ */
+@Deprecated
 public abstract class ValueHelper {
 
     /**
