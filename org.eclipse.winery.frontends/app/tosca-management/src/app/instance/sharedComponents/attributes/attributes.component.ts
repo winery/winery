@@ -49,7 +49,8 @@ export class AttributesComponent implements OnInit {
                 {label: 'float', value: 'float'},
                 {label: 'boolean', value: 'boolean'},
                 {label: 'timestamp', value: 'timestamp'}],
-            1),
+            1, 
+            'string',),
         new DynamicTextData(
             'defaultValue',
             'Default Value',
