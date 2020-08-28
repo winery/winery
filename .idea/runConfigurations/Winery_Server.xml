@@ -11,7 +11,7 @@
     </deployment>
     <server-settings>
       <option name="BASE_DIRECTORY_NAME" value="Unnamed_winery_3" />
-      <option name="JNDI_PORT" value="10099" />
+      <option name="JNDI_PORT" value="26416" />
     </server-settings>
     <predefined_log_file enabled="true" id="Tomcat" />
     <predefined_log_file enabled="true" id="Tomcat Catalina" />
