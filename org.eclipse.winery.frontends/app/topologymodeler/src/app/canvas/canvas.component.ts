@@ -937,12 +937,19 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
                         const requirementDefinition: RequirementDefinitionModel = InheritanceUtils
                             .getEffectiveRequirementDefinitionsOfNodeType(sourceNodeTemplate.type, this.entityTypes)
-                            .find(reqDef => reqDef.name === this.getReqDefName(requirementModel));
-                        if (requirementModel.name !== requirementDefinition.name) {
+                            .find(reqDef => reqDef.name === requirementModel.name);
+
+                        const nonFulfilledReqCount = sourceNodeTemplate.requirements
+                            .requirement
+                            .filter(r => r.name === requirementModel.name && r.relationship === requirementDefinition.relationship)
+                            .length;
+
+                        if (nonFulfilledReqCount > 0) {
+                            // there is no need to have more than one non-fulfilled requirement assignment
                             sourceNodeTemplate.requirements.requirement = sourceNodeTemplate.requirements
                                 .requirement
                                 .filter(
-                                    r => r.name !== requirementModel.name
+                                    r => r.id !== requirementModel.id
                                 );
                             this.updateAllNodes();
                         } else {
@@ -950,7 +957,6 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                             requirementModel.relationship = requirementDefinition.relationship;
                             requirementModel.node = requirementDefinition.node;
                         }
-
                     });
 
                 }
@@ -1892,7 +1898,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             if (reqData) {
                 reqData.forEach(reqDef => {
                     const reqModel = RequirementModel.fromRequirementDefinition(reqDef);
-                    reqModel.id = TopologyTemplateUtil.generateYAMLRequirementID(this.newNode, reqModel.name);
+                    reqModel.id = TopologyTemplateUtil.generateYAMLRequirementID(this.newNode, reqModel);
                     this.newNode.requirements.requirement.push(reqModel);
                 });
             }
@@ -2235,7 +2241,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                             .filter(current => current.name === capModel.name)[0];
                         const reqDef: RequirementDefinitionModel = InheritanceUtils
                             .getEffectiveRequirementDefinitionsOfNodeType(sourceNodeTypeString, this.entityTypes)
-                            .filter(current => current.name === this.getReqDefName(reqModel))[0];
+                            .filter(current => current.name === reqModel.name)[0];
 
                         if (this.checkReqCapCompatibility(reqDef, capDef, capModel, new QName(sourceNodeTypeString), new QName(targetNodeTypeString))) {
                             reqModel.capability = capModel.name;
@@ -2252,17 +2258,13 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                                 [],
                                 {}
                             );
+                            this.ngRedux.dispatch(this.actions.saveRelationship(newRelationship));
+
                             // add the non-fulfilled requirement if the reqDef is unbounded
                             if (reqModel.unbounded) {
-                                reqModel.name = reqDef.name + '_' + relNumber;
-                                reqModel.id = TopologyTemplateUtil.generateYAMLRequirementID(sourceNodeTemplate, reqModel.name);
-                                newRelationship.sourceElement = { ref: reqModel.id };
-                                this.ngRedux.dispatch(this.actions.saveRelationship(newRelationship));
-
                                 const nonFulfilledReq = RequirementModel.fromRequirementDefinition(reqDef);
+                                nonFulfilledReq.id = TopologyTemplateUtil.generateYAMLRequirementID(sourceNodeTemplate, reqModel) + '_' + relNumber;
                                 sourceNodeTemplate.requirements.requirement.push(nonFulfilledReq);
-                            } else {
-                                this.ngRedux.dispatch(this.actions.saveRelationship(newRelationship));
                             }
                         }
                         for (const rel of this.newJsPlumbInstance.getConnections()) {
@@ -2278,15 +2280,6 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 }
             });
         }
-    }
-
-    // if the requirement is unbounded, there might be multiple numbered reqModels with name different from the reqDef
-    getReqDefName(reqModel: RequirementModel): string {
-        let nameToCompare = reqModel.name;
-        if (reqModel.name.lastIndexOf('_') > 0) {
-            nameToCompare = reqModel.name.substring(0, reqModel.name.lastIndexOf('_'));
-        }
-        return nameToCompare;
     }
 
     getCapability(capabilityId: string): CapabilityModel {

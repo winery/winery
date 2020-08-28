@@ -101,11 +101,17 @@ export class TopologyTemplateUtil {
             }
             reqDefs.forEach(reqDef => {
                 const req = RequirementModel.fromRequirementDefinition(reqDef);
-                if (!node.requirements.requirement.find(r => r.name === req.name)) {
+                if (!node.requirements.requirement.find(r => {
+                    if (req.unbounded) {
+                        return r.name === req.name && r.relationship === req.relationship;
+                    } else {
+                        return r.name === req.name;
+                    }
+                })) {
                     node.requirements.requirement.push(req);
                 }
             });
-            node.requirements.requirement.forEach(req => req.id = this.generateYAMLRequirementID(node, req.name));
+            node.requirements.requirement.forEach(req => req.id = this.generateYAMLRequirementID(node, req));
         }
 
         return new TNodeTemplate(
@@ -182,8 +188,8 @@ export class TopologyTemplateUtil {
         return nodeTemplates;
     }
 
-    static generateYAMLRequirementID(nodeTemplate: TNodeTemplate, requirement: string): string {
-        return `${nodeTemplate.id}_req_${requirement}`;
+    static generateYAMLRequirementID(nodeTemplate: TNodeTemplate, requirement: RequirementModel): string {
+        return `${nodeTemplate.id}_req_${requirement.name}`;
     }
 
     static generateYAMLCapabilityID(nodeTemplate: TNodeTemplate, capability: string): string {

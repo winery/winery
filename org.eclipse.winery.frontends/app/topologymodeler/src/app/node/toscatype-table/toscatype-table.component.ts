@@ -245,18 +245,12 @@ export class ToscatypeTableComponent implements OnInit, OnChanges {
                 nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].requirementDefinitions &&
                 nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].requirementDefinitions.requirementDefinition) {
 
-                // if the requirement is unbounded, there might be multiple numbered reqModels with name different from the reqDef
-                let nameToCompare = req.name;
-                if (req.name.lastIndexOf('_') > 0) {
-                    nameToCompare = req.name.substring(0, req.name.lastIndexOf('_'));
-                }
-
                 const requirementDefinition = nodeType
                     .full
                     .serviceTemplateOrNodeTypeOrNodeTypeImplementation[0]
                     .requirementDefinitions
                     .requirementDefinition
-                    .find((reqDef: RequirementDefinitionModel) => reqDef.name === nameToCompare);
+                    .find((reqDef: RequirementDefinitionModel) => reqDef.name === req.name);
                 if (requirementDefinition) {
                     return requirementDefinition;
                 }
