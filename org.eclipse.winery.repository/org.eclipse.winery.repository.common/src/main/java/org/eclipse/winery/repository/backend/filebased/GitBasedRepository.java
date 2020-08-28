@@ -37,6 +37,7 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.model.tosca.TDefinitions;
+import org.eclipse.winery.repository.backend.IWrappingRepository;
 import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
 import org.eclipse.winery.model.ids.GenericId;
@@ -111,7 +112,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Allows to reset repository to a certain commit id
  */
-public class GitBasedRepository extends AbstractFileBasedRepository {
+public class GitBasedRepository extends AbstractFileBasedRepository implements IWrappingRepository {
 
     /**
      * Used for synchronizing the method {@link GitBasedRepository#addCommit(RepositoryFileReference)}
@@ -835,6 +836,7 @@ public class GitBasedRepository extends AbstractFileBasedRepository {
         repository.doImport(in);
     }
 
+    @Override
     public AbstractFileBasedRepository getRepository() {
         return repository;
     }

@@ -67,6 +67,10 @@ public class MultiRepositoryManager {
         }
     }
 
+    boolean isMultiRepositoryFileStuctureEstablished(Path repoPath) {
+        return FileUtils.isPresent(repoPath.resolve(Constants.DEFAULT_LOCAL_REPO_NAME));
+    }
+
     /**
      * Creates the filestructure for a multirepository and moves the files in localRepository to workspace
      *

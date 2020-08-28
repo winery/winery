@@ -41,15 +41,16 @@ export class AttributesComponent implements OnInit {
             undefined,
             false,
             true),
-        new DynamicDropdownData<'string'|'integer'|'float'|'boolean'|'timestamp'>(
+        new DynamicDropdownData<'string' | 'integer' | 'float' | 'boolean' | 'timestamp'>(
             'type',
             'Type',
-            [{label: 'string', value: 'string'},
-                {label: 'integer', value: 'integer'},
-                {label: 'float', value: 'float'},
-                {label: 'boolean', value: 'boolean'},
-                {label: 'timestamp', value: 'timestamp'}],
-            1),
+            [{ label: 'string', value: 'string' },
+                { label: 'integer', value: 'integer' },
+                { label: 'float', value: 'float' },
+                { label: 'boolean', value: 'boolean' },
+                { label: 'timestamp', value: 'timestamp' }],
+            1,
+            'string'),
         new DynamicTextData(
             'defaultValue',
             'Default Value',

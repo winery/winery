@@ -22,7 +22,7 @@ import java.util.Objects;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.repository.backend.IRepository;
-import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
+import org.eclipse.winery.repository.backend.IWrappingRepository;
 import org.eclipse.winery.repository.export.entries.CsarEntry;
 import org.eclipse.winery.repository.yaml.YamlRepository;
 import org.eclipse.winery.repository.yaml.converter.FromCanonical;
@@ -30,7 +30,6 @@ import org.eclipse.winery.repository.converter.writer.YamlWriter;
 import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 
 // FIXME a YAML CSAR entry does not need to conform to the canonical model!
-
 /**
  * @deprecated to be replaced with {@link org.eclipse.winery.repository.export.entries.DefinitionsBasedCsarEntry} working over a YamlRepository
  */
@@ -42,10 +41,10 @@ public class YAMLDefinitionsBasedCsarEntry implements CsarEntry {
         assert (definitions != null);
         try {
             FromCanonical c;
-            if (repo instanceof GitBasedRepository) {
-                GitBasedRepository wrapper = (GitBasedRepository) repo;
-                // this is a logical assumption
-                c = new FromCanonical((YamlRepository) wrapper.getRepository());
+            if (repo instanceof IWrappingRepository) {
+                // this handles both MultiRepository and GitBasedRepository
+                IRepository wrapped = ((IWrappingRepository) repo).getRepository();
+                c = new FromCanonical((YamlRepository)wrapped);
             } else if (repo instanceof YamlRepository) {
                 c = new FromCanonical((YamlRepository) repo);
             } else {

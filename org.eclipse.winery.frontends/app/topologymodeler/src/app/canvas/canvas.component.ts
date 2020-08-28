@@ -12,8 +12,8 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 import {
-    AfterViewInit, Component, ElementRef, HostListener, Input, KeyValueDiffers, NgZone, OnChanges, OnDestroy, OnInit,
-    QueryList, Renderer2, SimpleChanges, ViewChild, ViewChildren
+    AfterViewInit, Component, ElementRef, HostListener, Input, KeyValueDiffers, NgZone, OnChanges, OnDestroy, OnInit, QueryList, Renderer2, SimpleChanges,
+    ViewChild, ViewChildren
 } from '@angular/core';
 import { JsPlumbService } from '../services/jsPlumb.service';
 import { EntityType, TNodeTemplate, TRelationshipTemplate, VisualEntityType } from '../models/ttopology-template';
@@ -921,13 +921,29 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                                 && nt.requirements.requirement.some(req => req.id === reqId));
                         const requirementModel: RequirementModel = sourceNodeTemplate.requirements.requirement
                             .find(req => req.id === reqId);
+
                         const requirementDefinition: RequirementDefinitionModel = InheritanceUtils
                             .getEffectiveRequirementDefinitionsOfNodeType(sourceNodeTemplate.type, this.entityTypes)
                             .find(reqDef => reqDef.name === requirementModel.name);
-                        requirementModel.capability = requirementDefinition.capability;
-                        requirementModel.relationship = requirementDefinition.relationship;
-                        requirementModel.node = requirementDefinition.node;
 
+                        const nonFulfilledReqCount = sourceNodeTemplate.requirements
+                            .requirement
+                            .filter(r => r.name === requirementModel.name && r.relationship === requirementDefinition.relationship)
+                            .length;
+
+                        if (nonFulfilledReqCount > 0) {
+                            // there is no need to have more than one non-fulfilled requirement assignment
+                            sourceNodeTemplate.requirements.requirement = sourceNodeTemplate.requirements
+                                .requirement
+                                .filter(
+                                    r => r.id !== requirementModel.id
+                                );
+                            this.updateAllNodes();
+                        } else {
+                            requirementModel.capability = requirementDefinition.capability;
+                            requirementModel.relationship = requirementDefinition.relationship;
+                            requirementModel.node = requirementDefinition.node;
+                        }
                     });
 
                 }
@@ -1858,7 +1874,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             if (reqData) {
                 reqData.forEach(reqDef => {
                     const reqModel = RequirementModel.fromRequirementDefinition(reqDef);
-                    reqModel.id = TopologyTemplateUtil.generateYAMLRequirementID(this.newNode, reqModel.name);
+                    reqModel.id = TopologyTemplateUtil.generateYAMLRequirementID(this.newNode, reqModel);
                     this.newNode.requirements.requirement.push(reqModel);
                 });
             }
@@ -2167,6 +2183,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                         const sourceNodeTypeString: string = this.allNodeTemplates
                             .filter(nodeTemplate => nodeTemplate.id === this.dragSourceInfos.nodeId)
                             .map(nodeTemplate => nodeTemplate.type)[0];
+                        const sourceNodeTemplate: TNodeTemplate = this.allNodeTemplates
+                            .find(nodeTemplate => nodeTemplate.id === sourceNode);
                         const targetNodeTypeString: string = this.allNodeTemplates
                             .filter(nodeTemplate => nodeTemplate.id === info.targetId.substring(0, info.targetId.indexOf('.')))
                             .map(nodeTemplate => nodeTemplate.type)[0];
@@ -2193,6 +2211,13 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                                 {}
                             );
                             this.ngRedux.dispatch(this.actions.saveRelationship(newRelationship));
+
+                            // add the non-fulfilled requirement if the reqDef is unbounded
+                            if (reqModel.unbounded) {
+                                const nonFulfilledReq = RequirementModel.fromRequirementDefinition(reqDef);
+                                nonFulfilledReq.id = TopologyTemplateUtil.generateYAMLRequirementID(sourceNodeTemplate, reqModel) + '_' + relNumber;
+                                sourceNodeTemplate.requirements.requirement.push(nonFulfilledReq);
+                            }
                         }
                         for (const rel of this.newJsPlumbInstance.getConnections()) {
                             if (rel.targetId === info.targetId) {

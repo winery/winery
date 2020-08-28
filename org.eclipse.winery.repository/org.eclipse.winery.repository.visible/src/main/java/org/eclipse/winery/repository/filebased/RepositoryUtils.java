@@ -118,7 +118,7 @@ public class RepositoryUtils {
         }
 
         if (repositoryList.isEmpty()) {
-            return multiRepository.getLocalRepository();
+            return multiRepository.getRepository();
         } else {
             return repositoryList.get(0);
         }
@@ -162,7 +162,7 @@ public class RepositoryUtils {
             }
         }
 
-        return multiRepository.getLocalRepository();
+        return multiRepository.getRepository();
     }
 
     private static Optional<List<IRepository>> getRepositoriesById(GenericId id, MultiRepository multiRepository) {
@@ -195,7 +195,7 @@ public class RepositoryUtils {
         }
 
         return repositoryList.isEmpty()
-            ? Optional.of(Collections.singletonList(multiRepository.getLocalRepository()))
+            ? Optional.of(Collections.singletonList(multiRepository.getRepository()))
             : Optional.of(repositoryList);
     }
 

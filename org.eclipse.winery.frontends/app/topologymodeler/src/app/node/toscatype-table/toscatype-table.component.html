@@ -191,7 +191,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let req of currentToscaTypeData">
+            <tr *ngFor="let req of sortBy(currentToscaTypeData, 'name')">
                 <td class="toscatype-table-td"
                     [class.cell-with-comment]="isEllipsisActive(reqRef)">
                     <div #reqRef (click)="clickYamlReqRef()">{{ req.name }}</div>
@@ -210,11 +210,13 @@
                          style="width: 100%;">
                         <button *ngFor="let rel of getAllowedRelationshipTypes(req)"
                                 [disabled]="true"
-                                type="button" class="reqCap-button btn btn-sm btn-outline-secondary btn-block"
-                                style="font-size: xx-small; ">{{rel.id}}
+                                type="button"
+                                class="reqCap-button btn btn-sm btn-outline-secondary btn-block tooltip"
+                                title="{{rel.qName}}"
+                                style="font-size: xx-small;">
+                            {{rel.id}}
                         </button>
                     </div>
-
                 </td>
                 <ng-template #newRelationship>
                     <td class="toscatype-table-td">
@@ -223,8 +225,11 @@
                             <div class="btn-group-vertical center-block" role="group" id={{dragSource}}
                                  style="width: 100%;">
                                 <button *ngFor="let rel of getAllowedRelationshipTypes(req)"
-                                        type="button" class="reqCap-button btn btn-sm btn-outline-secondary btn-block"
-                                        style="font-size: xx-small;">{{rel.id}}
+                                        type="button"
+                                        title="{{rel.qName}}"
+                                        class="reqCap-button btn btn-sm btn-outline-secondary btn-block"
+                                        style="font-size: xx-small;">
+                                    {{rel.id}}
                                 </button>
                             </div>
                         </div>

@@ -64,14 +64,14 @@ export class ParametersComponent implements OnInit {
                     'type',
                     'Type',
                     [
-                        { label: 'String', value: 'string' },
-                        { label: 'Integer', value: 'integer' },
-                        { label: 'Float', value: 'float' },
-                        { label: 'Boolean', value: 'boolean' },
-                        { label: 'Timestamp', value: 'timestamp' }
+                        { label: 'string', value: 'string' },
+                        { label: 'integer', value: 'integer' },
+                        { label: 'float', value: 'float' },
+                        { label: 'boolean', value: 'boolean' },
+                        { label: 'timestamp', value: 'timestamp' }
                     ],
                     1,
-                    'float',
+                    'string',
                     [Validators.required],
                 ));
         }

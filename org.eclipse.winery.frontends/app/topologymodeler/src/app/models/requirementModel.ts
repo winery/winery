@@ -28,6 +28,7 @@ export class RequirementModel {
     public capability?: string;
     public node?: string;
     public relationship?: string;
+    public unbounded: boolean;
 
     static fromRequirementDefinition(def: RequirementDefinitionModel): RequirementModel {
         const result = new RequirementModel();
@@ -39,6 +40,7 @@ export class RequirementModel {
         result.capability = def.capability;
         result.node = def.node;
         result.relationship = def.relationship;
+        result.unbounded = def.upperBound.trim().toLowerCase() === 'unbounded';
 
         return result;
     }

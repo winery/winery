@@ -1,5 +1,5 @@
-/********************************************************************************
- * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
+/*******************************************************************************
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -42,6 +43,7 @@ import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
 import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.IWrappingRepository;
 import org.eclipse.winery.repository.backend.filebased.AbstractFileBasedRepository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.backend.filebased.NamespaceProperties;
@@ -71,7 +73,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Layer that manages the local repositories
  */
-public class MultiRepository implements IRepository {
+public class MultiRepository implements IWrappingRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MultiRepository.class);
 
@@ -106,8 +108,12 @@ public class MultiRepository implements IRepository {
         updateNamespaces();
     }
 
-    IRepository getLocalRepository() {
-        return localRepository;
+    @Override
+    public IRepository getRepository() {
+        if (localRepository != null) {
+            return localRepository.getRepository();
+        }
+        return null;
     }
 
     Map<IRepository, Set<String>> getRepositoriesMap() {
@@ -247,8 +253,10 @@ public class MultiRepository implements IRepository {
             LOGGER.info("Found Repositories file");
             loadConfiguration(repositoryConfiguration);
             MultiRepositoryManager multiRepositoryManager = new MultiRepositoryManager();
-            multiRepositoryManager.createMultiRepositoryFileStructure(Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()),
-                Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), Constants.DEFAULT_LOCAL_REPO_NAME));
+            if (!multiRepositoryManager.isMultiRepositoryFileStuctureEstablished(Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()))) {
+                multiRepositoryManager.createMultiRepositoryFileStructure(Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()),
+                    Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), Constants.DEFAULT_LOCAL_REPO_NAME));
+            }
             loadRepositoriesByList();
         } else {
             createConfigFileAndSetFactoryToMultiRepository();
@@ -323,8 +331,9 @@ public class MultiRepository implements IRepository {
      */
     private void createRepository(String url, String branch) {
         IRepositoryResolver resolver = null;
-        if (RepositoryResolverFactory.getResolver(url, branch).isPresent()) {
-            resolver = RepositoryResolverFactory.getResolver(url, branch).get();
+        Optional<IRepositoryResolver> resolverOptional = RepositoryResolverFactory.getResolver(url, branch);
+        if (resolverOptional.isPresent()) {
+            resolver = resolverOptional.get();
         }
 
         if (resolver != null && !RepositoryUtils.checkRepositoryDuplicate(url, this)) {
@@ -407,7 +416,7 @@ public class MultiRepository implements IRepository {
     public void doClear() {
         localRepository.doClear();
     }
-    
+
     @Override
     public boolean flagAsExisting(GenericId id) {
         return RepositoryUtils.getRepositoryById(id, this).flagAsExisting(id);
@@ -541,7 +550,7 @@ public class MultiRepository implements IRepository {
 
     @Override
     public void doImport(InputStream in) {
-        getLocalRepository().doImport(in);
+        getRepository().doImport(in);
     }
 
     @Override
