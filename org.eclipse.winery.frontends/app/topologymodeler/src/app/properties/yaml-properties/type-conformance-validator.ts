@@ -78,6 +78,9 @@ export class TypeConformanceValidator implements Validator {
     }
 
     private fulfilsWellKnownType(structuredValue: any, knownType: YamlWellKnown): boolean {
+        if (!structuredValue && knownType !== 'null') {
+            return false;
+        }
         switch (knownType) {
             case 'string':
                 // consider that this might need to also accept stuff that's parseable as number, boolean or anything else

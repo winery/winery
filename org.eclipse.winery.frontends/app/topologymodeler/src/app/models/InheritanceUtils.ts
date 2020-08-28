@@ -336,16 +336,17 @@ export class InheritanceUtils {
      * @param capabilityTypes The list of all Capability Types
      */
     static getValidSourceTypes(capabilityDefinition: CapabilityDefinitionModel, capabilityTypes: EntityType[]): string[] {
-        if (capabilityDefinition.validSourceTypes) {
+        if (capabilityDefinition.validSourceTypes && capabilityDefinition.validSourceTypes.length) {
             return capabilityDefinition.validSourceTypes;
         } else {
             const ancestry: EntityType[] = InheritanceUtils.getInheritanceAncestry(capabilityDefinition.capabilityType, capabilityTypes);
             for (const ancestor of ancestry) {
                 const listOfValidSourceTypes = ancestor.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].validNodeTypes;
-                if (listOfValidSourceTypes) {
+                if (listOfValidSourceTypes && listOfValidSourceTypes.length) {
                     return listOfValidSourceTypes;
                 }
             }
         }
+        return [];
     }
 }

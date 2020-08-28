@@ -2259,7 +2259,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             if (this.matchType(reqDefinition.node, targetNodeType.qName, this.entityTypes.unGroupedNodeTypes) &&
                 this.matchType(reqDefinition.capability, capDefinition.capabilityType, this.entityTypes.capabilityTypes)) {
                 const validSourceTypes: string[] = InheritanceUtils.getValidSourceTypes(capDefinition, this.entityTypes.capabilityTypes);
-                if (validSourceTypes) {
+                if (validSourceTypes && validSourceTypes.length) {
                     if (validSourceTypes.some(e => this.matchType(e, sourceNodeType.qName, this.entityTypes.unGroupedNodeTypes))) {
                         return true;
                     } else {
