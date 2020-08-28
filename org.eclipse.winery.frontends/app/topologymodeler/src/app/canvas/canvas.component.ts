@@ -2247,8 +2247,9 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                             reqModel.capability = capModel.name;
                             reqModel.relationship = relationshipId;
                             reqModel.node = info.targetId.substring(0, info.targetId.indexOf('.'));
+                            reqModel.id = TopologyTemplateUtil.generateYAMLRequirementID(sourceNodeTemplate, reqModel);
                             const newRelationship = new TRelationshipTemplate(
-                                { ref: requirementId },
+                                { ref: reqModel.id },
                                 { ref: capabilityId },
                                 this.selectedRelationshipType.name,
                                 relationshipId,
