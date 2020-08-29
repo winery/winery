@@ -223,7 +223,7 @@ public class RestUtils {
     /**
      * @param options the set of options that are applicable for exporting a csar
      */
-    public static Response getCsarOfSelectedResource(final AbstractComponentInstanceResource resource, CsarExportOptions options) {
+    public static Response getCsarOfSelectedResource(final AbstractComponentInstanceResource resource, CsarExportOptions options, boolean includeDependencies) {
         LocalDateTime start = LocalDateTime.now();
         final CsarExporter exporter = new CsarExporter();
         Map<String, Object> exportConfiguration = new HashMap<>();
@@ -238,7 +238,7 @@ public class RestUtils {
                     LOGGER.debug("Stored state in accountability layer in transaction " + result);
                     LOGGER.debug("CSAR export (provenance) lasted {}", Duration.between(LocalDateTime.now(), start).toString());
                 } else {
-                    exporter.writeCsar(RepositoryFactory.getRepository(), resource.getId(), output, exportConfiguration);
+                    exporter.writeCsar(RepositoryFactory.getRepository(), resource.getId(), output, exportConfiguration, includeDependencies);
                     LOGGER.debug("CSAR export lasted {}", Duration.between(LocalDateTime.now(), start).toString());
                 }
             } catch (Exception e) {
@@ -276,7 +276,7 @@ public class RestUtils {
 
         StreamingOutput so = output -> {
             try {
-                exporter.writeCsar(RepositoryFactory.getRepository(), resource.getId(), output, exportConfiguration);
+                exporter.writeCsar(RepositoryFactory.getRepository(), resource.getId(), output, exportConfiguration, false);
                 LOGGER.debug("CSAR export lasted {}", Duration.between(LocalDateTime.now(), start).toString());
             } catch (Exception e) {
                 LOGGER.error("Error while exporting CSAR", e);

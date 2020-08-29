@@ -23,6 +23,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.xml.bind.JAXBException;
+
 import org.eclipse.winery.accountability.exceptions.AccountabilityException;
 import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.configuration.Environments;
@@ -89,8 +91,8 @@ public class YamlExporter extends CsarExporter {
      * @return the TOSCA meta file for the generated Csar
      */
     @Override
-    public String writeCsar(IRepository repository, DefinitionsChildId entryId, OutputStream out, Map<String, Object> exportConfiguration)
-        throws IOException, RepositoryCorruptException, InterruptedException, AccountabilityException, ExecutionException {
+    public String writeCsar(IRepository repository, DefinitionsChildId entryId, OutputStream out, Map<String, Object> exportConfiguration, boolean includeDependencies)
+        throws IOException, RepositoryCorruptException, InterruptedException, AccountabilityException, ExecutionException, JAXBException {
         LOGGER.trace("Starting CSAR export with {}", entryId.toString());
 
         Map<CsarContentProperties, CsarEntry> refMap = new HashMap<>();
@@ -104,7 +106,7 @@ public class YamlExporter extends CsarExporter {
             String definitionsPathInsideCSAR = getDefinitionsPathInsideCSAR(repository, currentId);
             CsarContentProperties definitionsFileProperties = new CsarContentProperties(definitionsPathInsideCSAR);
             if (!YamlRepository.ROOT_TYPE_QNAME.equals(currentId.getQName())) {
-                referencedIds = exporter.processTOSCA(repository, currentId, definitionsFileProperties, refMap, exportConfiguration);
+                referencedIds = exporter.processTOSCA(repository, currentId, definitionsFileProperties, refMap, exportConfiguration, false);
                 // for each entryId add license and readme files (if they exist) to the refMap
                 addLicenseAndReadmeFiles(repository, currentId, refMap);
 

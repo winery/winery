@@ -431,7 +431,7 @@ public class ConsistencyChecker {
         Map<String, Object> exportConfiguration = new HashMap<>();
         try (OutputStream outputStream = Files.newOutputStream(tempCsar, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
             try {
-                exporter.writeCsar(RepositoryFactory.getRepository(), id, outputStream, exportConfiguration);
+                exporter.writeCsar(RepositoryFactory.getRepository(), id, outputStream, exportConfiguration, false);
             } catch (IOException e) {
                 LOGGER.debug("Error during checking ZIP", e);
                 printAndAddError(id, "I/O error: " + e.getMessage());

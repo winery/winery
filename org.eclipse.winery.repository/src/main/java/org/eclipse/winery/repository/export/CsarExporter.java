@@ -36,6 +36,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.xml.bind.JAXBException;
+
 import org.eclipse.winery.accountability.AccountabilityManager;
 import org.eclipse.winery.accountability.AccountabilityManagerFactory;
 import org.eclipse.winery.accountability.exceptions.AccountabilityException;
@@ -114,12 +116,12 @@ public class CsarExporter {
         return CsarExporter.getDefinitionsName(repository, id) + Constants.SUFFIX_TOSCA_DEFINITIONS;
     }
 
-    private static String getDefinitionsPathInsideCSAR(IRepository repository, DefinitionsChildId id) {
+    public static String getDefinitionsPathInsideCSAR(IRepository repository, DefinitionsChildId id) {
         return CsarExporter.DEFINITONS_PATH_PREFIX + CsarExporter.getDefinitionsFileName(repository, id);
     }
 
     public CompletableFuture<String> writeCsarAndSaveManifestInProvenanceLayer(IRepository repository, DefinitionsChildId entryId, OutputStream out)
-        throws IOException, RepositoryCorruptException, AccountabilityException, InterruptedException, ExecutionException {
+        throws IOException, RepositoryCorruptException, AccountabilityException, InterruptedException, ExecutionException, JAXBException {
         LocalDateTime start = LocalDateTime.now();
         AccountabilityManager accountabilityManager = AccountabilityManagerFactory.getAccountabilityManager();
 
@@ -127,7 +129,7 @@ public class CsarExporter {
         exportConfiguration.put(CsarExportConfiguration.INCLUDE_HASHES.name(), null);
         exportConfiguration.put(CsarExportConfiguration.STORE_IMMUTABLY.name(), null);
 
-        String manifestString = this.writeCsar(repository, entryId, out, exportConfiguration);
+        String manifestString = this.writeCsar(repository, entryId, out, exportConfiguration, false);
         String qNameWithComponentVersionOnly = VersionUtils.getQNameWithComponentVersionOnly(entryId);
         LOGGER.debug("Preparing CSAR export (provenance) lasted {}", Duration.between(LocalDateTime.now(), start).toString());
 
@@ -141,8 +143,8 @@ public class CsarExporter {
      * @param out     the output stream to write to
      * @return the TOSCA meta file for the generated Csar
      */
-    public String writeCsar(IRepository repository, DefinitionsChildId entryId, OutputStream out, Map<String, Object> exportConfiguration)
-        throws IOException, RepositoryCorruptException, InterruptedException, AccountabilityException, ExecutionException {
+    public String writeCsar(IRepository repository, DefinitionsChildId entryId, OutputStream out, Map<String, Object> exportConfiguration, boolean includeDependencies)
+        throws IOException, RepositoryCorruptException, InterruptedException, AccountabilityException, ExecutionException, JAXBException {
         CsarExporter.LOGGER.trace("Starting CSAR export with {}", entryId.toString());
 
         Map<CsarContentProperties, CsarEntry> refMap = new HashMap<>();
@@ -155,7 +157,7 @@ public class CsarExporter {
         do {
             String definitionsPathInsideCSAR = CsarExporter.getDefinitionsPathInsideCSAR(repository, currentId);
             CsarContentProperties definitionsFileProperties = new CsarContentProperties(definitionsPathInsideCSAR);
-            referencedIds = exporter.processTOSCA(repository, currentId, definitionsFileProperties, refMap, exportConfiguration);
+            referencedIds = exporter.processTOSCA(repository, currentId, definitionsFileProperties, refMap, exportConfiguration, includeDependencies);
 
             // for each entryId add license and readme files (if they exist) to the refMap
             addLicenseAndReadmeFiles(repository, currentId, refMap);
