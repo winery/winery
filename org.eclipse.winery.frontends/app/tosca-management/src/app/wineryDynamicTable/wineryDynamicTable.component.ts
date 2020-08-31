@@ -94,7 +94,7 @@ export class WineryDynamicTableComponent implements OnInit, DoCheck {
     humanReadableTableData: any[] = [];
 
     // hashmap for quick access of dynamicMetadata depending on the key
-    dynamicDataMap: Map<string, WineryDynamicTableMetadata>;
+    dynamicDataMap = new Map<string, WineryDynamicTableMetadata>();
 
     modalValidators: ValidatorFn[];
 

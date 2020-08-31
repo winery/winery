@@ -28,9 +28,13 @@ import { FormGroup, ValidatorFn } from '@angular/forms';
                      class="alert alert-danger">
                     <div [hidden]="!textForm.errors.required">Field is required</div>
                 </div>
-                <div *ngIf="parentFormGroup.errors && (textForm.dirty || textForm.touched)"
+                <div *ngIf="parentFormGroup.errors && (textForm.dirty || textForm.touched)
+                && this.config.key === parentFormGroup.errors.wineryDuplicateValidator.property"
                      class="alert alert-danger">
-                    <div [hidden]="!parentFormGroup.errors.wineryDuplicateValidator">{{parentFormGroup.errors.wineryDuplicateValidator.message}}</div>
+                    <div
+                        [hidden]="!parentFormGroup.errors.wineryDuplicateValidator">
+                        {{parentFormGroup.errors.wineryDuplicateValidator.message}}
+                    </div>
                 </div>
             </div>
         </div>
@@ -59,6 +63,6 @@ export class DynamicTextData extends WineryDynamicTableMetadata<string> {
                 defaultValue?: string,
                 disabled?: boolean,
                 sortTableCol?: boolean) {
-        super(key, label, order, defaultValue, disabled, sortTableCol);
+        super(key, label, order, defaultValue, disabled, sortTableCol, validation);
     }
 }
