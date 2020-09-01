@@ -99,7 +99,6 @@ import org.eclipse.winery.model.tosca.TSchema;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
-import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.xsd.RepositoryBasedXsdImportManager;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
 import org.eclipse.winery.repository.common.RepositoryFileReference;
@@ -177,8 +176,8 @@ public interface IRepository extends IWineryRepositoryCommon {
      * If the parent of the reference does not exist, it is created.
      * <p>
      * This method should not be used to write Definitions, calling it with the well-known Media Type {@link
-     * MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS} will result in a warning. For such cases use {@link
-     * #putDefinition(DefinitionsChildId, TDefinitions)} instead.
+     * org.eclipse.winery.repository.backend.constants.MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS} will result in a warning.
+     * For such cases use {@link #putDefinition(DefinitionsChildId, TDefinitions)} instead.
      *
      * @param ref       the reference to the file. Must not be null.
      * @param content   the content to put into the file. Must not be null.
@@ -194,8 +193,8 @@ public interface IRepository extends IWineryRepositoryCommon {
      * If the parent of the reference does not exist, it is created.
      * <p>
      * This method should not be used to write Definitions, calling it with the well-known Media Type {@link
-     * MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS} will result in a warning. For such cases use {@link
-     * #putDefinition(DefinitionsChildId, TDefinitions)} instead.
+     * org.eclipse.winery.repository.backend.constants.MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS} will result in a warning.
+     * For such cases use {@link #putDefinition(DefinitionsChildId, TDefinitions)} instead.
      *
      * @param ref         the reference to the file
      * @param inputStream the content to put into the file
