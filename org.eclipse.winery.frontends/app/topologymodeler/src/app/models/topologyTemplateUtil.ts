@@ -189,7 +189,11 @@ export class TopologyTemplateUtil {
     }
 
     static generateYAMLRequirementID(nodeTemplate: TNodeTemplate, requirement: RequirementModel): string {
-        return `${nodeTemplate.id}_req_${requirement.name}`;
+        let reqId = nodeTemplate.id + '_req_' + requirement.name;
+        if (requirement.node) {
+            reqId += '_' + requirement.node;
+        }
+        return reqId;
     }
 
     static generateYAMLCapabilityID(nodeTemplate: TNodeTemplate, capability: string): string {

@@ -14,13 +14,10 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AttributesService } from './attributes.service';
 import { InstanceService } from '../../instance.service';
-import { ModalDirective } from 'ngx-bootstrap';
-import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
-import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import { AttributeDefinition } from '../../../model/attribute';
 import { HttpErrorResponse } from '@angular/common/http';
 import { WineryDynamicTableMetadata } from '../../../wineryDynamicTable/wineryDynamicTableMetadata';
-import { DynamicTextComponent, DynamicTextData } from '../../../wineryDynamicTable/formComponents/dynamicText.component';
+import { DynamicTextData } from '../../../wineryDynamicTable/formComponents/dynamicText.component';
 import { Validators } from '@angular/forms';
 import { DynamicDropdownData } from '../../../wineryDynamicTable/formComponents/dynamicDropdown.component';
 
