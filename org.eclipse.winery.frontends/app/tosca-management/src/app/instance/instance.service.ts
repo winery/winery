@@ -74,9 +74,8 @@ export class InstanceService {
                 break;
             case ToscaTypes.RelationshipType:
                 if (this.configurationService.isYaml()) {
-                    subMenu = [SubMenuItems.readme, SubMenuItems.documentation, SubMenuItems.license, SubMenuItems.appearance, SubMenuItems.instanceStates,
-                        SubMenuItems.files, SubMenuItems.interfacedefinitions, SubMenuItems.validSourcesAndTargets, SubMenuItems.implementations,
-                        SubMenuItems.propertiesDefinition, SubMenuItems.inheritance];
+                    subMenu = [SubMenuItems.readme, SubMenuItems.documentation, SubMenuItems.license, SubMenuItems.appearance,
+                        SubMenuItems.files, SubMenuItems.interfacedefinitions, SubMenuItems.propertiesDefinition, SubMenuItems.inheritance];
                 } else {
                     subMenu = [SubMenuItems.readme, SubMenuItems.documentation, SubMenuItems.license, SubMenuItems.appearance, SubMenuItems.instanceStates,
                         SubMenuItems.sourceInterfaces, SubMenuItems.interfaces, SubMenuItems.targetInterfaces, SubMenuItems.validSourcesAndTargets,
