@@ -72,8 +72,7 @@ public class WineryVersionUtils {
         List<WineryVersion> versionList = getOtherVersionDefinitionsFromDefinition(id, repository)
             .stream()
             .map(element -> {
-                // FIXME gotta do something about this
-                WineryVersion version = VersionUtils.getVersionWithCurrentFlag(((DefinitionsChildId) element).getXmlId().getDecoded(), id.getXmlId().getDecoded());
+                WineryVersion version = VersionUtils.getVersionWithCurrentFlag(element.getXmlId().getDecoded(), id.getXmlId().getDecoded());
                 if (version.isCurrentVersion()) {
                     current[0] = version;
                 }
@@ -104,6 +103,9 @@ public class WineryVersionUtils {
             if (gitRepo.hasChangesInFile(BackendUtils.getRefOfDefinitions(id))) {
                 changesInFile = true;
             }
+        }
+        if (!current[0].isVersionedInWinery()) {
+            changesInFile = true;
         }
         if (!current[0].isLatestVersion()) {
             // The current version may still be releasable, if it's the latest WIP version of a component version.
