@@ -1,1 +1,1 @@
-proprietary
+Add your proprietary license.

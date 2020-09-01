@@ -17,17 +17,21 @@ import { InstanceService } from '../instance/instance.service';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { WineryLicense } from './wineryLicense';
 import { map } from 'rxjs/internal/operators';
+import { WineryRepositoryConfigurationService } from '../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 @Injectable()
 export class WineryLicenseService {
     private _allLicences: WineryLicense[];
 
-    constructor(private http: HttpClient, private sharedData: InstanceService) {
+    constructor(private http: HttpClient, private sharedData: InstanceService, private configurationService: WineryRepositoryConfigurationService) {
         this._allLicences = [
             new WineryLicense('Apache-2.0', '/assets/licenses/Apache-2.0.txt'),
             new WineryLicense('EPL-2.0', '/assets/licenses/EPL-2.0.txt'),
             new WineryLicense('Proprietary', '/assets/licenses/Proprietary.txt')
         ];
+        if (configurationService.configuration.features.radon) {
+            this._allLicences.push(new WineryLicense('RADON', '/assets/licenses/RADON.txt'));
+        }
     }
 
     getData(): Observable<string> {
