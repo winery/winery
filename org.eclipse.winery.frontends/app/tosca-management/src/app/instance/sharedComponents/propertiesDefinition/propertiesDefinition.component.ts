@@ -105,7 +105,7 @@ export class PropertiesDefinitionComponent implements OnInit {
                 { label: 'boolean', value: 'boolean' },
                 { label: 'timestamp', value: 'timestamp' }
             ];
-            this.dynamicTableData.push(new DynamicDropdownData<YamlTypes>('type', 'Type', options, 1));
+            this.dynamicTableData.push(new DynamicDropdownData<YamlTypes>('type', 'Type', options, 1, 'string'));
         } else {
             const options = [
                 { label: 'xsd:string', value: 'xsd:string' },
@@ -114,7 +114,7 @@ export class PropertiesDefinitionComponent implements OnInit {
                 { label: 'xsd:anyURI', value: 'xsd:anyURI' },
                 { label: 'xsd:QName', value: 'xsd:QName' }
             ];
-            this.dynamicTableData.push(new DynamicDropdownData<XmlTypes>('type', 'Type', options, 1));
+            this.dynamicTableData.push(new DynamicDropdownData<XmlTypes>('type', 'Type', options, 1, 'xsd:string'));
         }
     }
 
