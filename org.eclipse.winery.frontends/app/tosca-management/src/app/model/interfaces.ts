@@ -37,11 +37,11 @@ export class OperationImplementation {
 
 export const StandardInterface: Interface = {
     name: 'Standard', type: '{tosca.interfaces.node.lifecycle}Standard', inputs: [], operations: [
-        Object.assign(new Operation(), { name: 'create' }),
-        Object.assign(new Operation(), { name: 'configure' }),
-        Object.assign(new Operation(), { name: 'start' }),
-        Object.assign(new Operation(), { name: 'stop' }),
-        Object.assign(new Operation(), { name: 'delete' }),
+        Object.assign(new Operation(), { name: 'create', description: 'The standard create operation' }),
+        Object.assign(new Operation(), { name: 'configure', description: 'The standard configure operation' }),
+        Object.assign(new Operation(), { name: 'start', description: 'The standard start operation' }),
+        Object.assign(new Operation(), { name: 'stop', description: 'The standard stop operation' }),
+        Object.assign(new Operation(), { name: 'delete', description: 'The standard delete operation' }),
     ]
 };
 
