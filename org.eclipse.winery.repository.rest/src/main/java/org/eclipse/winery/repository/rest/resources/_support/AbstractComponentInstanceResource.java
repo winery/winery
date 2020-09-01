@@ -247,13 +247,16 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 
     @GET
     @Produces(MimeTypes.MIMETYPE_ZIP)
-    public final Response getCSAR(@QueryParam(value = "addToProvenance") String addToProvenance) {
+    public final Response getCSAR(@QueryParam(value = "addToProvenance") String addToProvenance, @QueryParam(value = "includeDependencies") String includeDependencies) {
         if (!RepositoryFactory.getRepository().exists(this.id)) {
             return Response.status(Status.NOT_FOUND).build();
         }
         CsarExportOptions options = new CsarExportOptions();
         options.setAddToProvenance(Objects.nonNull(addToProvenance));
-        return RestUtils.getCsarOfSelectedResource(this, options);
+
+        boolean dependencyFlag = Boolean.parseBoolean(includeDependencies);
+        
+        return RestUtils.getCsarOfSelectedResource(this, options, dependencyFlag);
     }
 
     /**
@@ -269,6 +272,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         @QueryParam(value = "edmm") String edmm,
         @QueryParam(value = "edmmUseAbsolutePaths") String edmmUseAbsolutePaths,
         @QueryParam(value = "addToProvenance") String addToProvenance,
+        @QueryParam(value = "includeDependencies") String includeDependencies,
         @Context UriInfo uriInfo
     ) {
         final IRepository repository = RepositoryFactory.getRepository();
@@ -293,8 +297,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         } else {
             CsarExportOptions options = new CsarExportOptions();
             options.setAddToProvenance(Objects.nonNull(addToProvenance));
-
-            return RestUtils.getCsarOfSelectedResource(this, options);
+            return RestUtils.getCsarOfSelectedResource(this, options, Objects.nonNull(includeDependencies));
         }
     }
 
@@ -308,7 +311,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
             String filename = getXmlId().getEncoded() + Constants.SUFFIX_CSAR;
             File file = new File(Environments.getInstance().getRepositoryConfig().getCsarOutputPath(), filename);
             try (FileOutputStream fos = new FileOutputStream(file, false)) {
-                exporter.writeCsar(RepositoryFactory.getRepository(), getId(), fos, exportConfiguration);
+                exporter.writeCsar(RepositoryFactory.getRepository(), getId(), fos, exportConfiguration, false);
                 LOGGER.debug("CSAR export to filesystem lasted {}", Duration.between(LocalDateTime.now(), start).toString());
             } catch (Exception e) {
                 LOGGER.error("Error exporting CSAR to filesystem", e);
@@ -327,6 +330,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         @QueryParam(value = "yaml") String yaml,
         @QueryParam(value = "edmm") String edmm,
         @QueryParam(value = "addToProvenance") String addToProvenance,
+        @QueryParam(value = "includeDependencies") String includeDependencies,
         @QueryParam(value = "edmmUseAbsolutePaths") String edmmUseAbsolutePaths,
         @QueryParam(value = "xml") String xml,
         @Context UriInfo uriInfo) {
@@ -334,7 +338,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         // thus, there is the hack with ?csar and ?yaml
         // the hack is implemented at getDefinitionsAsResponse
         if ((csar != null) || (yaml != null) || (xml != null) || (edmm != null)) {
-            return this.getDefinitionsAsResponse(csar, yaml, edmm, edmmUseAbsolutePaths, addToProvenance, uriInfo);
+            return this.getDefinitionsAsResponse(csar, yaml, edmm, edmmUseAbsolutePaths, addToProvenance, includeDependencies, uriInfo);
         }
         String repositoryUiUrl = Environments.getInstance().getUiConfig().getEndpoints().get("repositoryUiUrl");
         String uiUrl = uriInfo.getAbsolutePath().toString().replaceAll(Environments.getInstance().getUiConfig().getEndpoints().get("repositoryApiUrl"), repositoryUiUrl);

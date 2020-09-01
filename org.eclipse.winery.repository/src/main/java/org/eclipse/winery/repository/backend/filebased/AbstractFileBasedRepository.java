@@ -53,6 +53,7 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.admin.EdmmMappingsId;
 import org.eclipse.winery.common.ids.admin.NamespacesId;
+import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
 import org.eclipse.winery.model.tosca.Definitions;
@@ -82,7 +83,6 @@ public abstract class AbstractFileBasedRepository implements IRepository {
     FileSystem fileSystem;
     FileSystemProvider provider;
     private Path repositoryRoot;
-
 
     /**
      * @param repositoryRoot Root to the repository
@@ -201,6 +201,16 @@ public abstract class AbstractFileBasedRepository implements IRepository {
         // This works, because the definitions object here is the same as the definitions object treated at copyIdToFields
         // newId has to be passed, because the id is final at AbstractComponentInstanceResource
         BackendUtils.copyIdToFields((HasIdInIdOrNameField) definitions.getElement(), newId);
+
+        // TODO: When duplicate artifact template, artifact references still refer to old directory. 
+        //  Double check to generalize this code.
+        if (newId instanceof ArtifactTemplateId) {
+            try {
+                BackendUtils.fixReferences(definitions, newId);
+            } catch (Exception e) {
+                LOGGER.debug("An error happened fixing artifact template references");
+            }
+        }
 
         try {
             BackendUtils.persist(definitions, newRef, MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
@@ -511,7 +521,7 @@ public abstract class AbstractFileBasedRepository implements IRepository {
         RepositoryFileReference ref = BackendUtils.getRefOfJsonConfiguration(new EdmmMappingsId());
         return new JsonBasedEdmmManager(ref2AbsolutePath(ref).toFile());
     }
-    
+
     public Collection<? extends DefinitionsChildId> getAllIdsInNamespace(Class<? extends DefinitionsChildId> clazz, Namespace namespace) {
         Collection<DefinitionsChildId> result = new HashSet<>();
         String rootPathFragment = Util.getRootPathFragment(clazz);

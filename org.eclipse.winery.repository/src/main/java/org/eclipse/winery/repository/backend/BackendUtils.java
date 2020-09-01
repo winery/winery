@@ -1054,6 +1054,25 @@ public class BackendUtils {
         }
     }
 
+    public static void fixReferences(Definitions element, DefinitionsChildId id) {
+        TArtifactReference artifactReference = element.getArtifactTemplates().get(0).getArtifactReferences().getArtifactReference().get(0);
+        String[] oldReferenceArray = artifactReference.getReference().split("/");
+        
+        oldReferenceArray[2] = id.getQName().getLocalPart();
+        String newReferenceId = String.join("/", oldReferenceArray);
+        
+        artifactReference.setReference(newReferenceId);
+
+        TArtifactTemplate.ArtifactReferences artifactReferences = new TArtifactTemplate.ArtifactReferences();
+        artifactReferences.getArtifactReference().add(artifactReference);
+        
+        TArtifactTemplate artifactTemplate = new TArtifactTemplate();
+        artifactTemplate.setType(element.getArtifactTemplates().get(0).getType());
+        artifactTemplate.setArtifactReferences(artifactReferences);
+        
+        element.getArtifactTemplates().set(0, artifactTemplate);
+    }
+
     /**
      * @param directoryId DirectoryId of the ArtifactTemplate that should contain a reference to a git repository.
      * @return The URL and the branch/tag that contains the files for the ArtifactTemplate. null if no git information

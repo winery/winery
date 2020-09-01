@@ -62,7 +62,7 @@ public class YamlToscaExportUtil extends ToscaExportUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(YamlToscaExportUtil.class);
 
     @Override
-    protected Collection<DefinitionsChildId> processDefinitionsElement(IRepository repository, DefinitionsChildId tcId, CsarContentProperties definitionsFileProperties)
+    protected Collection<DefinitionsChildId> processDefinitionsElement(IRepository repository, DefinitionsChildId tcId, CsarContentProperties definitionsFileProperties, boolean includeDependencies)
         throws RepositoryCorruptException, IOException {
         if (!repository.exists(tcId)) {
             String error = "Component instance " + tcId.toReadableString() + " does not exist.";

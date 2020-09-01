@@ -25,6 +25,7 @@ export class ToscaComponent {
     readonly yamlPath: string;
     readonly xmlCsarPath: string;
     readonly provenanceCsarPath: string;
+    readonly includeDependencies: string;
     readonly yamlCsarPath: string;
     readonly edmmExportPath: string;
 
@@ -41,6 +42,7 @@ export class ToscaComponent {
                 this.xmlPath = this.backendPath + '/?xml';
                 this.yamlPath = this.backendPath + '/?yaml';
                 this.xmlCsarPath = this.backendPath + '/?csar';
+                this.includeDependencies = this.xmlCsarPath + '&includeDependencies';
                 this.provenanceCsarPath = this.xmlCsarPath + '&addToProvenance';
                 this.yamlCsarPath = this.backendPath + '/?yaml&csar';
                 this.edmmExportPath = this.backendPath + '/?edmm&edmmUseAbsolutePaths';
