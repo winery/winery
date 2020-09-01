@@ -41,24 +41,24 @@ import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
 import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
 import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
+import org.eclipse.winery.model.ids.GenericId;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.elements.ToscaElementId;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.IWrappingRepository;
+import org.eclipse.winery.repository.backend.NamespaceManager;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.filebased.AbstractFileBasedRepository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.backend.filebased.NamespaceProperties;
 import org.eclipse.winery.repository.backend.filebased.RepositoryProperties;
 import org.eclipse.winery.repository.common.RepositoryFileReference;
-import org.eclipse.winery.model.ids.GenericId;
-import org.eclipse.winery.model.ids.Namespace;
-import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.model.ids.elements.ToscaElementId;
-import org.eclipse.winery.repository.backend.NamespaceManager;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.constants.Filename;
+import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 import org.eclipse.winery.repository.filebased.management.IRepositoryResolver;
 import org.eclipse.winery.repository.filebased.management.RepositoryResolverFactory;
-import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -145,14 +145,32 @@ public class MultiRepository implements IWrappingRepository {
         unregisterRepository(repository);
     }
 
+    /**
+     * In case of a Git-based repository we have to check the inner IRepository reference to determine the correct
+     * referenced maintained in repositoryGlobal.
+     */
+    private IRepository determineRepositoryRef(IRepository repository) {
+        for (IRepository r : repositoryGlobal.keySet()) {
+            IRepository inner = r;
+            if (r instanceof GitBasedRepository) {
+                inner = ((GitBasedRepository) r).getRepository();
+            }
+            if (repository.equals(inner)) {
+                return r;
+            }
+        }
+        return repository;
+    }
+
     private void addNamespacesToRepository(IRepository repository, GenericId id) {
         if (id instanceof DefinitionsChildId) {
             Namespace namespace = ((DefinitionsChildId) id).getNamespace();
             String ns = namespace.getDecoded();
 
-            Set<String> set = repositoryGlobal.get(repository);
+            IRepository r = determineRepositoryRef(repository);
+            Set<String> set = repositoryGlobal.get(r);
             set.add(ns);
-            repositoryGlobal.put(repository, set);
+            repositoryGlobal.put(r, set);
 
             String pns;
             try {
@@ -167,9 +185,9 @@ public class MultiRepository implements IWrappingRepository {
                 return;
             }
 
-            Set<Namespace> setPre = repositoryCommonNamespace.get(repository);
+            Set<Namespace> setPre = repositoryCommonNamespace.get(r);
             setPre.add(new Namespace(pns, true));
-            repositoryCommonNamespace.put(repository, setPre);
+            repositoryCommonNamespace.put(r, setPre);
         }
     }
 
