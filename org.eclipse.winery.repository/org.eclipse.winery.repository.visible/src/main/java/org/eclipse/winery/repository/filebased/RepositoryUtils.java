@@ -29,12 +29,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.repository.backend.IRepository;
-import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
-import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.model.ids.GenericId;
 import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.repository.xml.XmlRepository;
 import org.eclipse.winery.repository.yaml.YamlRepository;
 
@@ -207,7 +207,10 @@ public class RepositoryUtils {
         if (repository instanceof GitBasedRepository) {
             return isYamlRepository(((GitBasedRepository) repository).getRepository());
         }
-        // TODO support for MultiRepository?
+        if (repository instanceof MultiRepository) {
+            MultiRepository r = (MultiRepository) repository;
+            return isYamlRepository(r.getRepository());
+        }
         return repository instanceof YamlRepository;
     }
 }
