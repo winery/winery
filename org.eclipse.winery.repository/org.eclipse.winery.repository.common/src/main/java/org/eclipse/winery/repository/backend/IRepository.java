@@ -41,6 +41,7 @@ import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Constants;
+import org.eclipse.winery.model.ids.GenericId;
 import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
@@ -52,28 +53,26 @@ import org.eclipse.winery.model.ids.definitions.HasInheritanceId;
 import org.eclipse.winery.model.ids.definitions.InterfaceTypeId;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
-import org.eclipse.winery.model.ids.extensions.PatternRefinementModelId;
 import org.eclipse.winery.model.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.model.ids.extensions.TestRefinementModelId;
-import org.eclipse.winery.model.ids.extensions.TopologyFragmentRefinementModelId;
 import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.model.ids.elements.ToscaElementId;
+import org.eclipse.winery.model.ids.extensions.PatternRefinementModelId;
+import org.eclipse.winery.model.ids.extensions.TestRefinementModelId;
+import org.eclipse.winery.model.ids.extensions.TopologyFragmentRefinementModelId;
 import org.eclipse.winery.model.tosca.HasInheritance;
 import org.eclipse.winery.model.tosca.HasType;
-import org.eclipse.winery.model.tosca.TDataType;
-import org.eclipse.winery.model.tosca.TSchema;
-import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
 import org.eclipse.winery.model.tosca.TAppliesTo;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifacts;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
+import org.eclipse.winery.model.tosca.TDataType;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
@@ -96,16 +95,17 @@ import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.model.tosca.TRequirementType;
+import org.eclipse.winery.model.tosca.TSchema;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.xsd.RepositoryBasedXsdImportManager;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 import org.eclipse.winery.repository.export.entries.RemoteRefBasedCsarEntry;
-import org.eclipse.winery.repository.common.RepositoryFileReference;
-import org.eclipse.winery.model.ids.GenericId;
 
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.io.FilenameUtils;
@@ -132,8 +132,9 @@ public interface IRepository extends IWineryRepositoryCommon {
     final Logger LOGGER = LoggerFactory.getLogger(IRepository.class);
 
     /**
-     * Serializes a given canonical Definitions Object to the targeted Output Stream according to the TOSCA-Standard
-     * of the underlying repository. Not all repository implementations must support this operation
+     * Serializes a given canonical Definitions Object to the targeted Output Stream according to the TOSCA-Standard of
+     * the underlying repository. Not all repository implementations must support this operation
+     *
      * @param definitions A canonical TDefinitions object to be serialized for more or less permanent storage.
      * @param target      An output stream that the serialized definition is written to.
      * @throws IOException If writing to the given target fails.
@@ -175,16 +176,15 @@ public interface IRepository extends IWineryRepositoryCommon {
      * <p>
      * If the parent of the reference does not exist, it is created.
      * <p>
-     * This method should not be used to write Definitions, calling it with the well-known
-     * Media Type {@link MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS} will result in a warning.
-     * For such cases use {@link #putDefinition(DefinitionsChildId, TDefinitions)} instead.
-     * 
-     * @see #putDefinition(DefinitionsChildId, TDefinitions) 
+     * This method should not be used to write Definitions, calling it with the well-known Media Type {@link
+     * MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS} will result in a warning. For such cases use {@link
+     * #putDefinition(DefinitionsChildId, TDefinitions)} instead.
      *
      * @param ref       the reference to the file. Must not be null.
      * @param content   the content to put into the file. Must not be null.
      * @param mediaType the media type of the file. Must not be null.
      * @throws IOException if something goes wrong
+     * @see #putDefinition(DefinitionsChildId, TDefinitions)
      */
     void putContentToFile(RepositoryFileReference ref, String content, MediaType mediaType) throws IOException;
 
@@ -193,29 +193,27 @@ public interface IRepository extends IWineryRepositoryCommon {
      * <p>
      * If the parent of the reference does not exist, it is created.
      * <p>
-     * This method should not be used to write Definitions, calling it with the well-known
-     * Media Type {@link MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS} will result in a warning.
-     * For such cases use {@link #putDefinition(DefinitionsChildId, TDefinitions)} instead.
-     * 
-     * @see #putDefinition(DefinitionsChildId, TDefinitions) 
+     * This method should not be used to write Definitions, calling it with the well-known Media Type {@link
+     * MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS} will result in a warning. For such cases use {@link
+     * #putDefinition(DefinitionsChildId, TDefinitions)} instead.
      *
      * @param ref         the reference to the file
      * @param inputStream the content to put into the file
      * @throws IOException if something goes wrong
+     * @see #putDefinition(DefinitionsChildId, TDefinitions)
      */
     void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException;
 
     /**
-     * Serializes the given content at a location that the repository makes as belonging to the given id. 
-     * This acts as a replacement for all invocations of {@link #putContentToFile} for the media type 
-     * {@link org.eclipse.winery.repository.backend.constants.MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS}.
-     * 
-     * @see #putContentToFile(RepositoryFileReference, String, MediaType)
-     * @see #putContentToFile(RepositoryFileReference, InputStream, MediaType)
+     * Serializes the given content at a location that the repository makes as belonging to the given id. This acts as a
+     * replacement for all invocations of {@link #putContentToFile} for the media type {@link
+     * org.eclipse.winery.repository.backend.constants.MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS}.
      *
      * @param id      The id of the definitions child encapsulated in the content to be put into the repository
      * @param content The content to be put into the repository at the given id.
      * @throws IOException if something goes wrong
+     * @see #putContentToFile(RepositoryFileReference, String, MediaType)
+     * @see #putContentToFile(RepositoryFileReference, InputStream, MediaType)
      */
     default void putDefinition(DefinitionsChildId id, TDefinitions content) throws IOException {
         putDefinition(BackendUtils.getRefOfDefinitions(id), content);
@@ -621,7 +619,9 @@ public interface IRepository extends IWineryRepositoryCommon {
                             }
                             while (!schemata.isEmpty()) {
                                 TSchema current = schemata.poll();
-                                if (current == null) { continue; }
+                                if (current == null) {
+                                    continue;
+                                }
                                 if (current.getType().equals(qNameOfTheType)) {
                                     referencesGivenQName = true;
                                     break;
@@ -748,7 +748,9 @@ public interface IRepository extends IWineryRepositoryCommon {
                 }
                 while (!schemata.isEmpty()) {
                     TSchema current = schemata.poll();
-                    if (current == null) { continue; }
+                    if (current == null) {
+                        continue;
+                    }
                     if (!current.getType().getNamespaceURI().isEmpty()) {
                         ids.add(new DataTypeId(current.getType()));
                     }
@@ -896,7 +898,9 @@ public interface IRepository extends IWineryRepositoryCommon {
                 }
                 while (!schemata.isEmpty()) {
                     TSchema current = schemata.poll();
-                    if (current == null) { continue; }
+                    if (current == null) {
+                        continue;
+                    }
                     if (!current.getType().getNamespaceURI().isEmpty()) {
                         ids.add(new DataTypeId(current.getType()));
                     }
@@ -1052,8 +1056,11 @@ public interface IRepository extends IWineryRepositoryCommon {
         if (requirements != null) {
             for (TRequirement req : requirements.getRequirement()) {
                 QName type = req.getType();
-                RequirementTypeId rtId = new RequirementTypeId(type);
-                ids.add(rtId);
+                if (type != null) {
+                    // ... in case of YAML, the type is always empty
+                    RequirementTypeId rtId = new RequirementTypeId(type);
+                    ids.add(rtId);
+                }
             }
         }
     }
@@ -1202,7 +1209,7 @@ public interface IRepository extends IWineryRepositoryCommon {
         } else if (id instanceof TestRefinementModelId) {
             referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((TestRefinementModelId) id);
         } else if (id instanceof DataTypeId) {
-            referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((DataTypeId) id);    
+            referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((DataTypeId) id);
         } else {
             throw new IllegalStateException("Unhandled id class " + id.getClass());
         }
@@ -1248,7 +1255,7 @@ public interface IRepository extends IWineryRepositoryCommon {
         // RelationshipTypeImplementations
         return new HashSet<>(this.getAllElementsReferencingGivenType(RelationshipTypeImplementationId.class, id.getQName()));
     }
-    
+
     default Collection<DefinitionsChildId> getReferencingDefinitionsChildIds(DataTypeId id) {
         // RelationshipTypeImplementations
         return new HashSet<>(this.getAllElementsReferencingGivenType(DataTypeId.class, id.getQName()));
@@ -1385,7 +1392,7 @@ public interface IRepository extends IWineryRepositoryCommon {
         } else if (id instanceof RequirementTypeId) {
             referencedDefinitionsChildIds = this.getReferencingDefinitionsChildIds((RequirementTypeId) id);
         } else if (id instanceof DataTypeId) {
-            referencedDefinitionsChildIds = this.getReferencingDefinitionsChildIds((DataTypeId) id);  
+            referencedDefinitionsChildIds = this.getReferencingDefinitionsChildIds((DataTypeId) id);
         } else if (id instanceof ArtifactTypeId) {
             referencedDefinitionsChildIds = this.getReferencingDefinitionsChildIds((ArtifactTypeId) id);
         } else if (id instanceof ArtifactTemplateId) {
