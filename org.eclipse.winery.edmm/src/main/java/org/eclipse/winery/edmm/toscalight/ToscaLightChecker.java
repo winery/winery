@@ -32,6 +32,8 @@ import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.filebased.RepositoryUtils;
 
 public class ToscaLightChecker {
 
@@ -42,7 +44,7 @@ public class ToscaLightChecker {
     private QName hostedOn;
     private QName connectsTo;
     private QName dependsOn;
-    private Map<QName, List<String>> errorList;
+    private Map<QName, List<String>> errorList = new HashMap<>();
     private boolean foundError;
 
     public ToscaLightChecker(Map<QName, TNodeType> nodeTypes,
@@ -73,8 +75,12 @@ public class ToscaLightChecker {
     }
 
     public boolean isToscaLightCompliant(TServiceTemplate serviceTemplate) {
-        this.checkToscaLightCompatibility(serviceTemplate);
-        return !this.foundError;
+        // Only in non-YAML mode for now
+        if (!RepositoryUtils.isYamlRepository(RepositoryFactory.getRepository())) {
+            this.checkToscaLightCompatibility(serviceTemplate);
+            return !this.foundError;
+        }
+        return false;
     }
 
     public Map<QName, List<String>> checkToscaLightCompatibility(TServiceTemplate serviceTemplate) {
