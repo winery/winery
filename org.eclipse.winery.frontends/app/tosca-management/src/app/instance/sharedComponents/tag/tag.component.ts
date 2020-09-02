@@ -34,7 +34,6 @@ export class TagComponent implements OnInit {
     validatorObject: WineryValidatorObject;
 
     columns: Array<any> = [
-        { title: 'id', name: 'id', sort: true },
         { title: 'name', name: 'name', sort: true },
         { title: 'value', name: 'value', sort: true },
     ];
