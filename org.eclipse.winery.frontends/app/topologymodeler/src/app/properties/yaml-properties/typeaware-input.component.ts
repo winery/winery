@@ -16,11 +16,9 @@ import { Component, forwardRef, Input, OnChanges, OnInit, SimpleChanges } from '
 import { ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 import { TDataType } from '../../models/ttopology-template';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 import { BackendService } from '../../services/backend.service';
 import { TypeConformanceValidator } from './type-conformance-validator';
-import { QName } from '../../../../../shared/src/app/model/qName';
-import { YamlWellKnown } from '../../../../../tosca-management/src/app/model/constraint';
 import { YamlPropertyDefinition } from '../../../../../tosca-management/src/app/model/yaml';
 
 /**
@@ -36,11 +34,6 @@ import { YamlPropertyDefinition } from '../../../../../tosca-management/src/app/
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => TypeawareInputComponent),
-            multi: true
-        },
-        {
-            provide: NG_VALIDATORS,
             useExisting: forwardRef(() => TypeawareInputComponent),
             multi: true
         },
@@ -74,9 +67,17 @@ export class TypeawareInputComponent implements ControlValueAccessor, OnInit, On
     }
 
     ngOnInit() {
-        this.validationDebouncer.pipe(
-            debounceTime(350), distinctUntilChanged(),
-        ).subscribe(value => this._onChange(value));
+        this.validationDebouncer.pipe(debounceTime(350))
+            .subscribe(control => {
+                const errors = this.validate(control);
+                if (errors) {
+                    this.errors = errors['typeConformance'];
+                } else {
+                    // clear errors and emit change-event if no validation errors occurred
+                    this.errors = [];
+                    this._onChange(control.value);
+                }
+            });
         // this is a fix to make the global javascript object available inside the component template
         this.JSON = JSON;
     }
@@ -90,7 +91,7 @@ export class TypeawareInputComponent implements ControlValueAccessor, OnInit, On
     }
 
     keyup(target: any): void {
-        this.validationDebouncer.next(target.value);
+        this.validationDebouncer.next(target);
         this._onTouch(target);
     }
 

@@ -142,7 +142,7 @@ export class TypeConformanceValidator implements Validator {
         const properties: YamlPropertyDefinition[] = [];
         for (const parent of hierarchy) {
             if (definesProperties(parent)) {
-                for (const prop of ToscaUtils.getDefinition(parent).properties.properties) {
+                for (const prop of ToscaUtils.getDefinition(parent).propertiesDefinition.properties) {
                     properties.push(prop);
                 }
             }
@@ -196,7 +196,7 @@ export class TypeConformanceValidator implements Validator {
             // try reparsing as string
             try {
                 // this should never ever fail because we should be able to parse literally anything as a string, so long as we enquote it
-                result = JSON.parse( '"' + value + '"');
+                result = JSON.parse( '"' + value.replace(/"/g, '\\"') + '"');
             } catch (e) {
                 return undefined;
             }
@@ -228,5 +228,6 @@ function isPropertyFunction(structuredValue: any) {
 }
 
 function definesProperties(type: TDataType): boolean {
-    return type.properties || ToscaUtils.getDefinition(type).properties;
+    const full = ToscaUtils.getDefinition(type);
+    return full.properties || (full.propertiesDefinition && full.propertiesDefinition.properties);
 }

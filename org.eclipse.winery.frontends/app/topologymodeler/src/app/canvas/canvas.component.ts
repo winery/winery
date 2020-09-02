@@ -1973,7 +1973,6 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             name = currentRel.type.substring(currentRel.type.indexOf('}') + 1);
         }
         if (currentRel) {
-            console.log('opening sidebar');
             this.ngRedux.dispatch(this.actions.openSidebar({
                 sidebarContents: {
                     visible: true,

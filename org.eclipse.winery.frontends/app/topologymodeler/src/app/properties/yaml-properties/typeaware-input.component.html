@@ -11,16 +11,16 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<textarea
-    style="width:100%; overflow-y: scroll;"
-    [rows]="1"
+<input
+    type="text"
+    style="width:100%;"
     placeholder="Edit your value here."
     required
     [disabled]="isDisabled"
-    [value]="unQuote(JSON.stringify(_value))"
     (keyup)="keyup($event.target)"
-    [className]="errors.length ? 'ng-invalid' : ''">
-</textarea>
-<div [className]="'ng-invalid'" *ngIf="errors.length">
-    <span [className]="'ng-invalid'" *ngFor="let message of errors">{{ message }}</span>
+    [value]="unQuote(JSON.stringify(_value))"
+    [className]="errors.length ? 'ng-invalid' : ''"/>
+
+<div class="alert alert-danger" *ngIf="errors.length">
+    <p *ngFor="let message of errors">{{ message }}</p>
 </div>

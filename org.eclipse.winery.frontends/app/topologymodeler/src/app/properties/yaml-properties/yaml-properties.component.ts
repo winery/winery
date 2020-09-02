@@ -23,19 +23,14 @@ import { ConstraintChecking } from '../property-constraints';
 import { ToscaUtils } from '../../models/toscaUtils';
 import { isWellKnown } from '../../../../../tosca-management/src/app/model/constraint';
 
-function toJson(rawKV: KeyValueItem) {
+function patchJson(rawKV: KeyValueItem) {
     const userInput = rawKV.value;
     let result;
     try {
         result = JSON.parse(userInput);
     } catch (e) {
-        // try reparsing as string
-        try {
-            // this should never ever fail because we should be able to parse literally anything as a string, so long as we enquote it
-            result = JSON.parse( '"' + userInput + '"');
-        } catch (e) {
-            result = undefined;
-        }
+        // if the user input is not actually JSON, we just fall back to it
+        result = userInput;
     }
     return { key: rawKV.key, value: result};
 }
@@ -67,7 +62,7 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
         this.subscriptions.push(this.outputDebouncer.pipe(
             debounceTime(300),
             distinctUntilChanged(), )
-            .subscribe(rawValue => this.propertyEdited.emit(toJson(rawValue))));
+            .subscribe(rawValue => this.propertyEdited.emit(patchJson(rawValue))));
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -87,19 +82,11 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
         this.subscriptions.forEach(s => s.unsubscribe());
     }
 
-    propertyChangeRequest(rawValue: any, definition: any) {
+    onPropertyValueChange(rawValue: any, definition: any) {
         this.outputDebouncer.next({
             key: definition.name,
             value: rawValue,
         });
-    }
-
-    static isValid(value: any, constraints: any): boolean {
-        if (constraints === null) { return true; }
-        for (const c of constraints) {
-            ConstraintChecking.isValid(c, value);
-        }
-        return true;
     }
 
     private determineProperties(): void {

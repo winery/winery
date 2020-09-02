@@ -513,3 +513,9 @@ tr.row.col-sm-12 {
         transform: rotate(360deg);
     }
 }
+
+.ng-invalid {
+    border-color: #a94442;
+    border-width: 5px;
+    border-style: solid;
+}
