@@ -214,7 +214,7 @@ public class FromCanonical {
         if (Objects.isNull(node)) return null;
         if (node instanceof TEntityTemplate.YamlProperties) {
             Map<String, Object> propertiesKV = ((TEntityTemplate.YamlProperties) node).getProperties();
-            return propertiesKV.entrySet().stream()
+            Map<String, TPropertyAssignment> assignments = propertiesKV.entrySet().stream()
                 .map(entry ->
                     new LinkedHashMap.SimpleEntry<>(
                         String.valueOf(entry.getKey()),
@@ -225,6 +225,11 @@ public class FromCanonical {
                     Map.Entry::getKey,
                     Map.Entry::getValue
                 ));
+            // remove assignments without a value
+            assignments.values().removeIf(Objects::isNull);
+            assignments.values().removeIf(tpa -> tpa.getValue() == null);
+            // TODO consider traversing the assignment tree to successively remove leaves that don't have an assignment
+            return assignments;
         }
         // FIXME deal with converting WineryKVProperties and XmlProperties
         return null;

@@ -16,7 +16,6 @@ import { EntityTypesModel } from './entityTypesModel';
 import { CapabilityDefinitionModel } from './capabilityDefinitionModel';
 import { RequirementDefinitionModel } from './requirementDefinitonModel';
 import { EntityType, TPolicyType } from './ttopology-template';
-import { QName } from '../../../../shared/src/app/model/qName';
 import { PropertyDefinitionType } from './enums';
 
 export class InheritanceUtils {
@@ -207,17 +206,13 @@ export class InheritanceUtils {
     }
 
     static getYamlProperties(type: EntityType): any {
-        const newProperies = {};
+        const newProperties = {};
         const definedProperties = type.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.properties;
         for (const obj of definedProperties) {
-            const name = obj.name;
-            if (obj.required) {
-                newProperies[name] = obj.defaultValue;
-            } else {
-                newProperies[name] = null;
-            }
+            // set default value, regardless of whether the property is required
+            newProperties[obj.name] = obj.defaultValue;
         }
-        return newProperies;
+        return newProperties;
     }
 
     /**

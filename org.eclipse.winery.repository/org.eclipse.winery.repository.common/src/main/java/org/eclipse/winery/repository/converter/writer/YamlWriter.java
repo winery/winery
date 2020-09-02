@@ -428,7 +428,7 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
         // nested assignments are implemented by calling #printMap for Map values that are not property functions
         YamlPrinter printer = new YamlPrinter(parameter.getIndent());
         if (node.getValue() instanceof Map) {
-            Map<String, Object> value = (Map<String, Object>)node.getValue();
+            Map<String, TPropertyAssignment> value = (Map<String, TPropertyAssignment>)node.getValue();
             // special casing for property functions to always be a single-line map value
             if (value.size() == 1 && Arrays.stream(PROPERTY_FUNCTIONS).anyMatch(value::containsKey)) {
                 String key = value.keySet().iterator().next();
@@ -586,18 +586,21 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
         return printer;
     }
 
-    private <T> YamlPrinter printMap(String keyValue, Map<String, T> map, Parameter parameter) {
+    private <T extends VisitorNode> YamlPrinter printMap(String keyValue, Map<String, T> map, Parameter parameter) {
         YamlPrinter printer = new YamlPrinter(parameter.getIndent());
-        if (map == null || map.isEmpty()) {
+        if (map == null) {
+            return printer;
+        }
+        map.values().removeIf(Objects::isNull);
+        if (map.isEmpty()) {
             return printer;
         }
         printer.printKey(keyValue)
             .print(map.entrySet().stream()
-                .filter(entry -> entry.getValue() instanceof VisitorNode)
                 .map((entry) -> {
                         YamlPrinter p = new YamlPrinter(parameter.getIndent() + INDENT_SIZE)
                             .print(
-                                printVisitorNode((VisitorNode) entry.getValue(),
+                                printVisitorNode(entry.getValue(),
                                     new Parameter(parameter.getIndent() + INDENT_SIZE).addContext(entry.getKey())
                                 )
                             );
