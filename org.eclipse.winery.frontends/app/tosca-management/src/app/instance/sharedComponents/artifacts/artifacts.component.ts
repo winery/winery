@@ -81,7 +81,7 @@ export class ArtifactsComponent implements OnInit {
     }
 
     openRemoveModal(artifact: Artifact) {
-        if (artifact === null || artifact === undefined) {
+        if (!artifact) {
             return;
         }
         this.selectedArtifact = artifact;

@@ -70,11 +70,11 @@ export class DependenciesComponent implements OnInit, OnChanges {
         this.modal.show();
     }
 
-    openConfirmRemoveModal(object: DependencyTableModel) {
-        if (object === null || object === undefined) {
+    openConfirmRemoveModal(tableModel: DependencyTableModel) {
+        if (!tableModel) {
             return;
         }
-        this.object = object;
+        this.object = tableModel;
         this.confirmRemoveModal.show();
     }
 
