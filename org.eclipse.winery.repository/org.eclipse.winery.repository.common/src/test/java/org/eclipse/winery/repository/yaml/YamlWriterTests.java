@@ -16,6 +16,8 @@ package org.eclipse.winery.repository.yaml;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import org.eclipse.winery.model.tosca.yaml.TPropertyAssignment;
@@ -43,10 +45,13 @@ public class YamlWriterTests {
     static class PropertyFunctionArgumentsProvider implements ArgumentsProvider {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            // workaround for test #2 to not use an unmodifiable collection
+            Map<String, TPropertyAssignment> input = new HashMap<>();
+            input.put("key", new TPropertyAssignment("value"));
             return Stream.of(
                 Arguments.of(new TPropertyAssignment(), ""),
                 Arguments.of(
-                    new TPropertyAssignment(Collections.singletonMap("key", new TPropertyAssignment("value"))),
+                    new TPropertyAssignment(input),
                     "root:\n  key: \"value\"\n"),
                 Arguments.of(
                     new TPropertyAssignment(Collections.singletonMap("get_input", new TPropertyAssignment("value"))),
