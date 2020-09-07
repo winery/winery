@@ -49,4 +49,10 @@ export class RepositoryService {
                 { headers: headers, observe: 'response', responseType: 'text' }
             );
     }
+
+    touchAllDefinitions(): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        return this.http.post(backendBaseURL + this.path + '/touch', null,
+            { headers: headers, observe: 'response', responseType: 'text' });
+    }
 }
