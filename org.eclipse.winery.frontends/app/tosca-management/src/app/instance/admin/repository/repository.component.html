@@ -108,12 +108,18 @@
 </div>
 <hr>
 <h4>General Repository Commands</h4>
+<div *ngIf="loading">
+    <div class="smallLoader"></div>
+</div>
 <div>
     <a [attr.href]="path + '?dump'" class="btn btn-primary">Dump Repository</a>
     <button class="btn btn-danger" (click)="clearRepository();" id="btnclearrepository" data-loading-text="Deleting...">
         Clear Repository
     </button>
     <button class="btn btn-default" (click)="uploaderModal.show()">Import Zip Repository</button>
+    <button *ngIf="this.configurationService.isYaml()" class="btn btn-default" (click)="touchAllDefinitions()">Touch
+        Types
+    </button>
 </div>
 
 <winery-modal bsModal #uploaderModal="bs-modal" [modalRef]="uploaderModal">
