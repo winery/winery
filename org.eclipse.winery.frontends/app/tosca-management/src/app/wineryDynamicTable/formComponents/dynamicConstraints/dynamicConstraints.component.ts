@@ -86,8 +86,9 @@ export class DynamicConstraintsData extends WineryDynamicTableMetadata<Constrain
                 public rangeConstraintsKeys: string[],
                 order?: number,
                 disabled?: boolean,
-                sortTableCol?: boolean) {
-        super(key, label, order, undefined, disabled, sortTableCol);
+                sortTableCol?: boolean,
+                isVisible?: boolean) {
+        super(key, label, order, undefined, disabled, sortTableCol, isVisible);
         this.possibleConstraintKeys = possibleConstraintKeys || [];
         this.listConstraintsKeys = listConstraintsKeys || [];
         this.rangeConstraintsKeys = rangeConstraintsKeys || [];

@@ -16,7 +16,7 @@
     <winery-modal-header [title]="modalTitle"></winery-modal-header>
     <winery-modal-body>
         <form [formGroup]="form">
-            <ng-container *ngFor="let entity of config" wineryDynamicField
+            <ng-container *ngFor="let entity of elementsToShow" wineryDynamicField
                           [config]="entity"
                           [group]="form"></ng-container>
         </form>

@@ -21,7 +21,7 @@ import { FormGroup } from '@angular/forms';
     template: `
         <div [formGroup]="group">
 
-        <label>{{ config.label }}</label>
+            <label>{{ config.label }}</label>
             <input type="checkbox" name="required" [formGroup]="group" [formControlName]="config.key" [id]="config.key"/>
         </div>
     `
@@ -33,12 +33,14 @@ export class DynamicCheckboxComponent implements DynamicFieldComponent {
 
 export class DynamicCheckboxData extends WineryDynamicTableMetadata<boolean> {
     controlType = 'checkbox';
+
     constructor(key: string,
                 label: string,
                 defaultValue?: boolean,
                 order?: number,
                 disabled?: boolean,
-                sortTableCol?: boolean) {
-        super(key, label, order, defaultValue, disabled, sortTableCol);
+                sortTableCol?: boolean,
+                isVisible?: boolean) {
+        super(key, label, order, defaultValue, disabled, sortTableCol, isVisible);
     }
 }

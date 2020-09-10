@@ -62,7 +62,8 @@ export class DynamicTextData extends WineryDynamicTableMetadata<string> {
                 validation?: ValidatorFn[] | ValidatorFn,
                 defaultValue?: string,
                 disabled?: boolean,
-                sortTableCol?: boolean) {
-        super(key, label, order, defaultValue, disabled, sortTableCol, validation);
+                sortTableCol?: boolean,
+                isVisible?: boolean) {
+        super(key, label, order, defaultValue, disabled, sortTableCol, isVisible, validation);
     }
 }

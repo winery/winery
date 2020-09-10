@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import { Component, DoCheck, EventEmitter, Input, IterableDiffer, IterableDiffers, OnChanges, OnInit, Output, SimpleChange, ViewChild } from '@angular/core';
+import { Component, DoCheck, EventEmitter, Input, IterableDiffer, IterableDiffers, OnInit, Output, ViewChild } from '@angular/core';
 import { WineryDynamicTableMetadata } from './wineryDynamicTableMetadata';
 import { ModalDirective } from 'ngx-bootstrap';
 import { WineryRowData, WineryTableColumn, WineryTableComponent } from '../wineryTableModule/wineryTable.component';
@@ -127,12 +127,13 @@ export class WineryDynamicTableComponent implements OnInit, DoCheck {
     private refreshData() {
         this.dynamicMetadata.sort((a, b) => a.order - b.order);
         // generate table columns from model
-        this.tableColumns = this.dynamicMetadata.map(item => ({
+        this.tableColumns = this.dynamicMetadata.filter(function (element) {
+            return element.isVisible;
+        }).map(item => ({
             title: item.label,
             name: item.key,
             sort: item.sortTableCol
         }));
-
         if (!this.dynamicDataMap) {
             this.dynamicDataMap = new Map;
             for (const dynamicData of this.dynamicMetadata) {
@@ -166,7 +167,7 @@ export class WineryDynamicTableComponent implements OnInit, DoCheck {
             const data = array[index];
             const tmp = { 'uuid': data['uuid'] };
             for (const key of Object.keys(data)) {
-                if (this.dynamicDataMap[key]) {
+                if (this.dynamicDataMap && this.dynamicDataMap[key]) {
                     tmp[key] = this.dynamicDataMap[key].toHumanReadable(data[key]);
                 } else {
                     tmp[key] = data[key];

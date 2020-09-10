@@ -49,6 +49,8 @@ export class WineryDynamicFormModalComponent implements OnInit, OnChanges {
 
     @ViewChild('modal') modal: ModalDirective;
 
+    elementsToShow: WineryDynamicTableMetadata[] = [];
+
     form: FormGroup;
     okButtonLabel = 'Save';
     closeButtonLabel = 'Close';
@@ -70,6 +72,10 @@ export class WineryDynamicFormModalComponent implements OnInit, OnChanges {
 
     ngOnInit(): void {
         this.config.sort((a, b) => a.order - b.order);
+        // the filtered copy of config is used to display only the elements where the isVisible flag is set
+        this.elementsToShow = this.config.filter(function (element) {
+            return element.isVisible;
+        });
         this.form = this.toFormGroup(this.config);
     }
 

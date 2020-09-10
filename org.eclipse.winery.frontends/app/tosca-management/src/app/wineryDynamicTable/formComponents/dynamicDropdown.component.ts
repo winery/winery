@@ -43,7 +43,8 @@ export class DynamicDropdownData<T = {}> extends WineryDynamicTableMetadata<T> {
                 defaultValue?: T,
                 validation?: ValidatorFn[] | ValidatorFn,
                 disabled?: boolean,
-                sortTableCol?: boolean) {
-        super(key, label, order, defaultValue, disabled, sortTableCol);
+                sortTableCol?: boolean,
+                isVisible?: boolean) {
+        super(key, label, order, defaultValue, disabled, sortTableCol, isVisible);
     }
 }

@@ -57,7 +57,7 @@
     </winery-modal-body>
     <winery-modal-footer [modalRef]="addModalRef"
                          [okButtonLabel]="'Add'"
-                         [disableOkButton]="(!mapping.modelElementType || !mapping.detectorNode || !mapping.refinementNode)"
+                         [disableOkButton]="(!mapping.modelElementType || !mapping.detectorElement || !mapping.refinementElement)"
                          (onOk)="onAddPrmPropertyMapping()">
     </winery-modal-footer>
 </ng-template>
