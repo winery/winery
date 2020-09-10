@@ -39,8 +39,8 @@ export class AttributeMappingsComponent implements OnInit {
 
     loading = true;
     columns: Array<WineryTableColumn> = [
-        { title: 'Detector Node', name: 'detectorNode', sort: true },
-        { title: 'Refinement Node', name: 'refinementNode', sort: true },
+        { title: 'Detector Node', name: 'detectorElement', sort: true },
+        { title: 'Refinement Node', name: 'refinementElement', sort: true },
         { title: 'Type', name: 'type', sort: true },
         { title: 'Detector Node Property', name: 'detectorProperty', sort: true },
         { title: 'Refinement Node Property', name: 'refinementProperty', sort: true },
@@ -122,14 +122,14 @@ export class AttributeMappingsComponent implements OnInit {
     }
 
     detectorNodeSelected(node: SelectData) {
-        this.mapping.detectorNode = node.id;
+        this.mapping.detectorElement = node.id;
         this.selectedDetectorElement = this.detectorTemplates
             .find(value => value.id === node.id);
         this.getProperties();
     }
 
     refinementNodeSelected(node: SelectData) {
-        this.mapping.refinementNode = node.id;
+        this.mapping.refinementElement = node.id;
         this.selectedRefinementElement = this.refinementStructureTemplates
             .find(value => value.id === node.id);
         this.getProperties();

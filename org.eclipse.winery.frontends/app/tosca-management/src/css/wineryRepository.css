@@ -52,7 +52,7 @@ body {
     height: 87px;
     background-repeat: no-repeat;
     background-image: url('../assets/img/header_background.png');
-    postion: relative;
+    position: relative;
 }
 
 #showabout {
@@ -813,6 +813,18 @@ div.entityContainer.complianceRuleContainer > div.right {
     background: url('../assets/img/entityBox/adminContainer/a-container-right.png');
 }
 
+div.entityContainer.patternRefinementModelContainer > div.left {
+    background: url('../assets/img/entityBox/adminContainer/a-container-left.png');
+}
+
+div.entityContainer.patternRefinementModelContainer > div.center {
+    background: url('../assets/img/entityBox/adminContainer/a-container-center.jpg');
+}
+
+div.entityContainer.patternRefinementModelContainer > div.right {
+    background: url('../assets/img/entityBox/adminContainer/a-container-right.png');
+}
+
 div.entityContainer.topologyFragmentRefinementModelContainer > div.left {
     background: url('../assets/img/entityBox/adminContainer/a-container-left.png');
 }
@@ -1235,7 +1247,6 @@ div.titledTableBox {
     border: 1px solid #aeaeae;
     padding: 0;
     margin-left: 0;
-    padding-left: 0 !important;
 }
 
 .listheading {
@@ -1310,17 +1321,16 @@ div.policiesContainer > div.content > div.policy > textarea.policy_xml {
     text-shadow: 0 1px 0 #fff;
     background: #ffffff;
     background: -moz-linear-gradient(top, #ffffff 0%, #e0e0e0 100%);
-    background: -webkit-gradient(left top, left bottom, color-stop(0%, #ffffff), color-stop(100%, #e0e0e0));
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(100%, #e0e0e0));
     background: -webkit-linear-gradient(top, #ffffff 0%, #e0e0e0 100%);
     background: -o-linear-gradient(top, #ffffff 0%, #e0e0e0 100%);
     background: -ms-linear-gradient(top, #ffffff 0%, #e0e0e0 100%);
     background: linear-gradient(to bottom, #ffffff 0%, #e0e0e0 100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e0e0e0', GradientType=0);
     background-repeat: repeat-x;
-    border-color: #dbdbdb;
     border-color: #ccc;
 
-    webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .15), 0 1px 1px rgba(0, 0, 0, .075);
+    -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .15), 0 1px 1px rgba(0, 0, 0, .075);
     -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .15), 0 1px 1px rgba(0, 0, 0, .075);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, .15), 0 1px 1px rgba(0, 0, 0, .075);
 }
@@ -1343,7 +1353,7 @@ div.policiesContainer > div.content > div.policy > textarea.policy_xml {
 
 .collapsespan:after {
     /* symbol for "opening" panel */
-    font-family: 'Glyphicons Halflings'; /* enable glyphicon */
+    font-family: 'Glyphicons Halflings', sans-serif; /* enable glyphicon */
     content: "\e260"; /* menu-up glyphicon */
 
 }

@@ -11,18 +11,20 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RefinementMappingsService } from '../refinementMappings.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { RelationDirection, RelationMapping } from './relationMapping';
+import { RelationMapping } from './relationMapping';
 import { HttpErrorResponse } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
-import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
 import { NodeTemplate } from '../../../model/wineryComponent';
 import { SelectData } from '../../../model/selectData';
-import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
 import { InstanceService } from '../../instance.service';
 import { ToscaTypes } from '../../../model/enums';
+import { WineryDynamicTableMetadata } from '../../../wineryDynamicTable/wineryDynamicTableMetadata';
+import { DynamicDropdownData } from '../../../wineryDynamicTable/formComponents/dynamicDropdown.component';
+import { Validators } from '@angular/forms';
+import { DynamicTextData } from '../../../wineryDynamicTable/formComponents/dynamicText.component';
 
 @Component({
     templateUrl: 'relationMappings.component.html',
@@ -31,19 +33,11 @@ import { ToscaTypes } from '../../../model/enums';
     ]
 })
 export class RelationMappingsComponent implements OnInit {
-
-    readonly relDirections = RelationDirection;
-    readonly toscaType = ToscaTypes;
-
     loading = true;
-    columns: Array<WineryTableColumn> = [
-        { title: 'Direction', name: 'direction', sort: true },
-        { title: 'Detector Node', name: 'detectorNode', sort: true },
-        { title: 'Refinement Node', name: 'refinementNode', sort: true },
-        { title: 'Relation Type', name: 'relationType', sort: true },
-    ];
 
-    relationshipMappings: RelationMapping[];
+    dynamicTableData: Array<WineryDynamicTableMetadata> = [];
+    relationshipMappings: RelationMapping[] = [];
+
     detectorNodeTemplates: NodeTemplate[];
     refinementStructureNodeTemplates: NodeTemplate[];
     relationshipTypes: SelectData[];
@@ -51,15 +45,17 @@ export class RelationMappingsComponent implements OnInit {
 
     mapping: RelationMapping;
 
-    @ViewChild('addModal') addModal: ModalDirective;
-    @ViewChild('removeModal') removeModal: ModalDirective;
-    addModalRef: BsModalRef;
-    removeModalRef: BsModalRef;
+    tableTitle = 'Relationship Mappings';
+    modalTitle = 'Add Relationship Mapping';
+    private detectorElementsTableData: { label: string; value: string }[] = [];
+    private refinementElementsTableData: { label: string, value: string }[] = [];
+    private nodeTypesTableData: { label: string, value: string }[] = [];
+    private relationshipTypesTableData: { label: string, value: string }[] = [];
+    private directionTableData: { label: string, value: string }[] = [{ label: 'ingoing', value: 'INGOING' }, { label: 'outgoing', value: 'OUTGOING' }];
 
     constructor(private service: RefinementMappingsService,
                 private notify: WineryNotificationService,
-                public sharedData: InstanceService,
-                private modalService: BsModalService) {
+                public sharedData: InstanceService) {
     }
 
     ngOnInit(): void {
@@ -74,9 +70,64 @@ export class RelationMappingsComponent implements OnInit {
             error => this.handleError(error)
         );
 
+        this.dynamicTableData = [
+            new DynamicDropdownData(
+                'direction',
+                'Relation Direction',
+                this.directionTableData,
+                1,
+                '',
+                [Validators.required],
+            ),
+            new DynamicDropdownData(
+                'detectorElement',
+                'Detector Node',
+                this.detectorElementsTableData,
+                1,
+                '',
+                [Validators.required],
+            ),
+            new DynamicDropdownData<string>(
+                'refinementElement',
+                'Refinement Structure Node',
+                this.refinementElementsTableData,
+                1,
+                '',
+                [Validators.required],
+            ),
+            new DynamicDropdownData<string>(
+                'relationType',
+                'Applicable Relationship Type',
+                this.relationshipTypesTableData,
+                1,
+                '',
+                [Validators.required],
+            ),
+            new DynamicTextData(
+                'id',
+                'ID',
+                3,
+                [],
+                '',
+                false,
+                false,
+                false
+            ),
+        ];
+
         if (this.sharedData.toscaComponent.toscaType === ToscaTypes.PatternRefinementModel) {
-            this.columns.push({ title: 'Valid Endpoint', name: 'validSourceOrTarget', sort: true });
+            this.dynamicTableData.push(
+                new DynamicDropdownData<string>(
+                    'validSourceOrTarget',
+                    'Valid Endpoint Type',
+                    this.nodeTypesTableData,
+                    1,
+                    '',
+                    [Validators.required],
+                )
+            );
         }
+
     }
 
     private handleData(data: any) {
@@ -86,6 +137,57 @@ export class RelationMappingsComponent implements OnInit {
         this.refinementStructureNodeTemplates = data[2];
         this.relationshipTypes = data[3];
         this.nodeTypes = data[4];
+
+        this.detectorNodeTemplates.forEach((element) => {
+                this.detectorElementsTableData.push({ label: element.name, value: element.id }
+                );
+            }, this
+        );
+        this.refinementStructureNodeTemplates.forEach((element) => {
+                this.refinementElementsTableData.push({ label: element.name, value: element.id }
+                );
+            }, this
+        );
+        this.relationshipTypes.forEach((element) => {
+                element.children.forEach((child) => {
+                    this.relationshipTypesTableData.push({ label: child.text, value: child.id }
+                    );
+                });
+            }
+        );
+        this.nodeTypes.forEach((element) => {
+                element.children.forEach((child) => {
+                    this.nodeTypesTableData.push({ label: child.text, value: child.id }
+                    );
+                });
+            }
+        );
+    }
+
+    save(mapping: RelationMapping) {
+        this.loading = true;
+        const id = this.service.getNewMappingsId(this.relationshipMappings, RelationMapping.idPrefix);
+        const newMapping = new RelationMapping(id);
+        newMapping.detectorElement = mapping.detectorElement;
+        newMapping.refinementElement = mapping.refinementElement;
+        newMapping.direction = mapping.direction;
+        newMapping.relationType = mapping.relationType;
+        newMapping.validSourceOrTarget = mapping.validSourceOrTarget;
+
+        this.service.addRelationMapping(newMapping).subscribe(
+            data => this.handleSave('Added', data),
+            error => this.handleError(error)
+        );
+
+    }
+
+    remove(mapping: RelationMapping) {
+        this.loading = true;
+        this.service.deleteRelationMapping(mapping)
+            .subscribe(
+                data => this.handleSave('Removed', data),
+                error => this.handleError(error)
+            );
     }
 
     private handleError(error: HttpErrorResponse) {
@@ -93,37 +195,8 @@ export class RelationMappingsComponent implements OnInit {
         this.notify.error(error.message);
     }
 
-    onAddButtonClicked() {
-        const id = this.service.getNewMappingsId(this.relationshipMappings, RelationMapping.idPrefix);
-
-        this.mapping = new RelationMapping(id);
-        this.addModalRef = this.modalService.show(this.addModal);
-    }
-
-    onRemoveButtonClicked(selected: RelationMapping) {
-        this.mapping = selected;
-        this.removeModalRef = this.modalService.show(this.removeModal);
-    }
-
-    onAddRelationMapping() {
-        this.loading = true;
-        this.service.addRelationMapping(this.mapping)
-            .subscribe(
-                data => this.handleSave('Added', data),
-                error => this.handleError(error)
-            );
-    }
-
-    onRemoveRelationMapping() {
-        this.service.deleteRelationMapping(this.mapping)
-            .subscribe(
-                data => this.handleSave('Removed', data),
-                error => this.handleError(error)
-            );
-    }
-
     private handleSave(type: string, data: RelationMapping[]) {
-        this.notify.success(type + ' Relation Mapping ' + this.mapping.id);
+        this.notify.success(type + ' Relation Mapping ');
         this.relationshipMappings = data;
         this.loading = false;
     }

@@ -38,16 +38,16 @@ public class StayMappingsResource extends AbstractRefinementModelMappingsResourc
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public List<OTStayMapping> addPropertyMappingFromApi(PrmStayMappingApiData mapping) {
-        TEntityTemplate detectorElement, refinementNode;
+        TEntityTemplate detectorElement, refinementElement;
 
         if (mapping.modelElementType == OTPrmModelElementType.NODE) {
-            detectorElement = this.res.getDetector().getComponentInstanceJSON().getNodeTemplate(mapping.detectorNode);
-            refinementNode = this.res.getRefinementTopology().getComponentInstanceJSON().getNodeTemplate(mapping.refinementNode);
+            detectorElement = this.res.getDetectorResource().getTopologyTempalte().getNodeTemplate(mapping.detectorElement);
+            refinementElement = this.res.getRefinementTopologyResource().getTopologyTempalte().getNodeTemplate(mapping.refinementElement);
         } else {
-            detectorElement = this.res.getDetector().getComponentInstanceJSON().getRelationshipTemplate(mapping.detectorNode);
-            refinementNode = this.res.getRefinementTopology().getComponentInstanceJSON().getRelationshipTemplate(mapping.refinementNode);
+            detectorElement = this.res.getDetectorResource().getTopologyTempalte().getRelationshipTemplate(mapping.detectorElement);
+            refinementElement = this.res.getRefinementTopologyResource().getTopologyTempalte().getRelationshipTemplate(mapping.refinementElement);
         }
 
-        return this.addMapping(mapping.createOTPrmStayMapping(detectorElement, refinementNode));
+        return this.addMapping(mapping.createOTPrmStayMapping(detectorElement, refinementElement));
     }
 }

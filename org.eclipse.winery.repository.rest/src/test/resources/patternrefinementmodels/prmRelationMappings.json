@@ -7,8 +7,8 @@
         "otherAttributes": {
         },
         "id": "propMap0",
-        "detectorNode": "d_NodeTypeWithTwoKVProperties",
-        "refinementNode": "rs_NodeTypeWithTwoKVProperties",
+        "detectorElement": "d_NodeTypeWithTwoKVProperties",
+        "refinementElement": "rs_NodeTypeWithTwoKVProperties",
         "type": "SELECTIVE",
         "detectorProperty": "key1",
         "refinementProperty": "key2"
@@ -21,8 +21,8 @@
         "otherAttributes": {
         },
         "id": "propMap1",
-        "detectorNode": "d_NodeTypeWithTwoKVProperties_2",
-        "refinementNode": "rs_NodeTypeWithTwoKVProperties_2",
+        "detectorElement": "d_NodeTypeWithTwoKVProperties_2",
+        "refinementElement": "rs_NodeTypeWithTwoKVProperties_2",
         "type": "ALL"
     }
 ]

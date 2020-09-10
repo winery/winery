@@ -14,7 +14,6 @@
 
 package org.eclipse.winery.repository.rest.resources._support;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -42,11 +41,11 @@ public abstract class AbstractRefinementModelResource extends AbstractComponentI
     public abstract OTRefinementModel getTRefinementModel();
 
     @Path("detector")
-    public TopologyTemplateResource getDetector() {
+    public TopologyTemplateResource getDetectorResource() {
         return new TopologyTemplateResource(this, this.getTRefinementModel().getDetector(), DETECTOR);
     }
 
-    public abstract TopologyTemplateResource getRefinementTopology();
+    public abstract TopologyTemplateResource getRefinementTopologyResource();
 
     @Path("relationmappings")
     public RelationMappingsResource getRelationMappings() {
@@ -77,7 +76,7 @@ public abstract class AbstractRefinementModelResource extends AbstractComponentI
     }
 
     @Override
-    protected void synchronizeReferences() throws IOException {
+    protected void synchronizeReferences() {
         // no synchronization needed
     }
 

@@ -38,7 +38,7 @@ public class TestRefinementModelResource extends AbstractRefinementModelResource
     }
 
     @Path("testfragment")
-    public TopologyTemplateResource getRefinementTopology() {
+    public TopologyTemplateResource getRefinementTopologyResource() {
         return new TopologyTemplateResource(this, this.getTRefinementModel().getRefinementTopology(), REFINEMENT_TOPOLOGY);
     }
 }

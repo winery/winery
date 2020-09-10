@@ -42,12 +42,18 @@ export class WineryDynamicTableMetadata<T = any> {
         public defaultValue?: T,
         public disabled?: boolean,
         public sortTableCol?: boolean,
+        public isVisible?: boolean,
         public validation?: ValidatorFn[] | ValidatorFn) {
 
         this.label = label || '';
         this.disabled = disabled || false;
         this.order = order === undefined ? 1 : order;
         this.sortTableCol = sortTableCol || false;
+        if (isVisible === true || isVisible === false) {
+            this.isVisible = isVisible;
+        } else {
+            this.isVisible = true;
+        }
     }
 
     /**

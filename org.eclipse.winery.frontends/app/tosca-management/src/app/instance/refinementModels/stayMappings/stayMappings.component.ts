@@ -38,8 +38,8 @@ export class StayMappingsComponent implements OnInit {
     loadingElements = false;
     columns: Array<WineryTableColumn> = [
         { title: 'Element Type', name: 'modelElementType', sort: true },
-        { title: 'Detector Element', name: 'detectorNode', sort: true },
-        { title: 'Refinement Element', name: 'refinementNode', sort: true },
+        { title: 'Detector Element', name: 'detectorElement', sort: true },
+        { title: 'Refinement Element', name: 'refinementElement', sort: true },
     ];
 
     stayMappings: StayMapping[];
@@ -117,11 +117,11 @@ export class StayMappingsComponent implements OnInit {
     }
 
     detectorNodeSelected(node: SelectData) {
-        this.mapping.detectorNode = node.id;
+        this.mapping.detectorElement = node.id;
     }
 
     refinementNodeSelected(node: SelectData) {
-        this.mapping.refinementNode = node.id;
+        this.mapping.refinementElement = node.id;
     }
 
     // endregion

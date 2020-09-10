@@ -31,7 +31,7 @@ import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
-public class SubstitutionUtils {
+public abstract class SubstitutionUtils {
 
     /**
      * This method collects all templates of the given <code>templates</code> which are abstract and must be

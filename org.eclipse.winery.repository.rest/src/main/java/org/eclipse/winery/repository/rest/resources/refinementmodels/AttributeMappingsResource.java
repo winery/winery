@@ -37,14 +37,14 @@ public class AttributeMappingsResource extends AbstractRefinementModelMappingsRe
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public List<OTAttributeMapping> addPropertyMappingFromApi(PrmAttributeMappingApiData mapping) {
-        TEntityTemplate refinementNode = this.res.getRefinementTopology().getComponentInstanceJSON().getNodeTemplateOrRelationshipTemplate().stream()
-            .filter(entityTemplate -> entityTemplate.getId().equals(mapping.refinementNode))
+        TEntityTemplate refinementElement = this.res.getRefinementTopologyResource().getTopologyTempalte().getNodeTemplateOrRelationshipTemplate().stream()
+            .filter(entityTemplate -> entityTemplate.getId().equals(mapping.refinementElement))
             .findFirst()
-            .orElseGet(null);
-        TEntityTemplate detectorNode = this.res.getDetector().getComponentInstanceJSON().getNodeTemplateOrRelationshipTemplate().stream()
-            .filter(entityTemplate -> entityTemplate.getId().equals(mapping.detectorNode))
+            .orElse(null);
+        TEntityTemplate detectorElement = this.res.getDetectorResource().getTopologyTempalte().getNodeTemplateOrRelationshipTemplate().stream()
+            .filter(entityTemplate -> entityTemplate.getId().equals(mapping.detectorElement))
             .findFirst()
-            .orElseGet(null);
-        return this.addMapping(mapping.createTPrmPropertyMapping(detectorNode, refinementNode));
+            .orElse(null);
+        return this.addMapping(mapping.createTPrmPropertyMapping(detectorElement, refinementElement));
     }
 }

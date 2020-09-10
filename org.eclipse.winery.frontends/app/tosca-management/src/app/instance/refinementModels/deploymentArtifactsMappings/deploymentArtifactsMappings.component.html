@@ -14,55 +14,10 @@
 
 <winery-loader *ngIf="loading; else content"></winery-loader>
 <ng-template #content>
-    <winery-table [columns]="columns" [data]="deploymentArtifactMappings"
-                  [disableButtons]="!sharedData.currentVersion.editable"
-                  (addBtnClicked)="onAddButtonClicked()" (removeBtnClicked)="onRemoveButtonClicked($event)">
-    </winery-table>
-</ng-template>
-
-<ng-template #addModal>
-    <winery-modal-header [modalRef]="addModalRef" [title]="'Add Relation Mapping'">
-    </winery-modal-header>
-    <winery-modal-body>
-        <form>
-            <div class="form-group">
-                <label for="detectorNode" class="control-label">Detector Node</label>
-                <ng-select id="detectorNode" [items]="detectorNodes" [textField]="'name'"
-                           (selected)="mapping.detectorNode = $event.id">
-                </ng-select>
-            </div>
-
-            <div class="form-group">
-                <label for="artifactType" class="control-label">Required DA Type</label>
-                <ng-select id="artifactType" [items]="artifactTypes"
-                           (selected)="mapping.artifactType = $event.id">
-                </ng-select>
-            </div>
-
-            <div class="form-group">
-                <label for="refinementNode" class="control-label">Refinement Structure Node</label>
-                <ng-select id="refinementNode" [items]="refinementNodes" [textField]="'name'"
-                           (selected)="mapping.refinementNode = $event.id">
-                </ng-select>
-            </div>
-            <hr>
-        </form>
-    </winery-modal-body>
-    <winery-modal-footer [modalRef]="addModalRef"
-                         [okButtonLabel]="'Add'"
-                         [disableOkButton]="!mapping.detectorNode || !mapping.refinementNode || !mapping.artifactType"
-                         (onOk)="onAddRelationMapping()">
-    </winery-modal-footer>
-</ng-template>
-
-<ng-template #removeModal>
-    <winery-modal-header [modalRef]="removeModalRef" [title]="'Remove Relation Mapping'">
-    </winery-modal-header>
-    <winery-modal-body>
-        <p>Are you sure you want to delete <b>{{ mapping.id }}</b>?</p>
-    </winery-modal-body>
-    <winery-modal-footer [modalRef]="removeModalRef"
-                         [okButtonLabel]="'Delete'"
-                         (onOk)="onRemoveRelationMapping()">
-    </winery-modal-footer>
+    <winery-dynamic-table [dynamicMetadata]="dynamicTableData"
+                          [tableTitle]="tableTitle"
+                          [modalTitle]="modalTitle"
+                          [data]="deploymentArtifactMappings"
+                          (entryAdded)="save($event)"
+                          (entryRemoved)="remove($event)"></winery-dynamic-table>
 </ng-template>

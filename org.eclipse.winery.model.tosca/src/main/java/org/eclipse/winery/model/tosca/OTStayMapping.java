@@ -28,6 +28,13 @@ public class OTStayMapping extends OTPrmMapping {
     @XmlAttribute(name = "modelElementType")
     private OTPrmModelElementType modelElementType;
 
+    public OTStayMapping() {
+    }
+
+    public OTStayMapping(TEntityTemplate detectorElement, TEntityTemplate refinementElement) {
+        super(detectorElement, refinementElement);
+    }
+
     @Override
     public boolean equals(Object obj) {
         return obj instanceof OTStayMapping

@@ -15,8 +15,8 @@
 export abstract class RefinementMappings {
 
     public id: string;
-    public detectorNode: string;
-    public refinementNode: string;
+    public detectorElement: string;
+    public refinementElement: string;
 
     protected constructor(id: number) {
         this.id = this.idPrefix() + id;
