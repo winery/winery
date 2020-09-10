@@ -26,9 +26,14 @@ import { StayMappingsComponent } from './stayMappings/stayMappings.component';
 import { AttributeMappingsComponent } from './attributeMappings/attributeMappings.component';
 import { DeploymentArtifactsMappingsComponent } from './deploymentArtifactsMappings/deploymentArtifactsMappings.component';
 import { FormsModule } from '@angular/forms';
+import { PermutationMappingsComponent } from './permutationMappings/permutationMappings.component';
+import { WineryDynamicTableModule } from '../../wineryDynamicTable/wineryDynamicTable.module';
+import { PermutationsComponent } from './permutations/permutations.component';
+import { AlertModule } from 'ngx-bootstrap';
 
 @NgModule({
     imports: [
+        AlertModule.forRoot(),
         CommonModule,
         FormsModule,
         HttpClientModule,
@@ -39,18 +44,22 @@ import { FormsModule } from '@angular/forms';
         WineryNotificationModule,
         WineryTableModule,
         WineryLoaderModule,
+        WineryDynamicTableModule,
     ],
     exports: [
         RelationMappingsComponent,
         AttributeMappingsComponent,
         StayMappingsComponent,
-        DeploymentArtifactsMappingsComponent
+        DeploymentArtifactsMappingsComponent,
+        PermutationMappingsComponent,
     ],
     declarations: [
         RelationMappingsComponent,
         AttributeMappingsComponent,
         StayMappingsComponent,
         DeploymentArtifactsMappingsComponent,
+        PermutationMappingsComponent,
+        PermutationsComponent,
     ]
 })
 export class RefinementModelsModule {

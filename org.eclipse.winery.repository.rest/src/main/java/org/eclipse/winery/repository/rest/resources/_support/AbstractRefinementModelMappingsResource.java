@@ -37,14 +37,14 @@ public abstract class AbstractRefinementModelMappingsResource<T extends OTPrmMap
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<? extends OTPrmMapping> get() {
+    public List<T> get() {
         return this.mappings;
     }
 
     @DELETE
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<? extends OTPrmMapping> removePatternRefinement(@PathParam("id") String id) {
+    public List<T> removePatternRefinement(@PathParam("id") String id) {
         this.mappings.removeIf(mapping -> mapping.getId().equals(id));
         RestUtils.persist(this.res);
         return this.mappings;

@@ -20,6 +20,7 @@ import { ModalDirective } from 'ngx-bootstrap';
 import { HttpErrorResponse } from '@angular/common/http';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import { isNullOrUndefined } from 'util';
+import { WineryRepositoryConfigurationService } from '../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 @Component({
     selector: 'winery-instance-repository',
@@ -28,7 +29,7 @@ import { isNullOrUndefined } from 'util';
 })
 export class RepositoryComponent implements OnInit {
 
-    loading = true;
+    loading = false;
     repositories: Array<Repository> = [];
     newRepository: Repository = new Repository();
     validatorObjectName: WineryValidatorObject;
@@ -48,7 +49,8 @@ export class RepositoryComponent implements OnInit {
     path: string;
 
     constructor(private service: RepositoryService,
-                private notify: WineryNotificationService) {
+                private notify: WineryNotificationService,
+                public configurationService: WineryRepositoryConfigurationService) {
     }
 
     getRepositories() {
@@ -124,6 +126,7 @@ export class RepositoryComponent implements OnInit {
     }
 
     clearRepository() {
+        this.loading = true;
         this.service.clearRepository().subscribe(
             () => this.handleSuccess('Repository cleared'),
             error => this.handleError(error)
@@ -137,5 +140,13 @@ export class RepositoryComponent implements OnInit {
 
     handleError(error: HttpErrorResponse) {
         this.notify.error(error.message, 'Error');
+    }
+
+    touchAllDefinitions() {
+        this.loading = true;
+        this.service.touchAllDefinitions().subscribe((response) => {
+            this.loading = false;
+            this.notify.success('Touch all definitions completed');
+        });
     }
 }

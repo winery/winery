@@ -26,6 +26,7 @@ import { StayMapping } from './stayMappings/stayMapping';
 import { AttributeMapping } from './attributeMappings/attributeMapping';
 import { DeploymentArtifactMapping } from './deploymentArtifactsMappings/deploymentArtifactMapping';
 import { RefinementMappings } from './RefinementMappings';
+import { PermutationMapping } from './permutationMappings/permutationMapping';
 
 @Injectable()
 export class RefinementMappingsService {
@@ -117,6 +118,18 @@ export class RefinementMappingsService {
 
     public getDeploymentArtifactMappings(): Observable<DeploymentArtifactMapping[]> {
         return this.http.get<DeploymentArtifactMapping[]>(this.path + '/deploymentartifactmappings');
+    }
+
+    public addPermutationMappings(mapping: PermutationMapping): Observable<PermutationMapping[]> {
+        return this.http.put<PermutationMapping[]>(this.path + '/permutationmappings', mapping);
+    }
+
+    public deletePermutationMappings(mapping: PermutationMapping): Observable<PermutationMapping[]> {
+        return this.http.delete<PermutationMapping[]>(this.path + '/permutationmappings/' + mapping.id);
+    }
+
+    public getPermutationMappings(): Observable<PermutationMapping[]> {
+        return this.http.get<PermutationMapping[]>(this.path + '/permutationmappings');
     }
 
     public getNewMappingsId(mappings: RefinementMappings[], prefix: string): number {

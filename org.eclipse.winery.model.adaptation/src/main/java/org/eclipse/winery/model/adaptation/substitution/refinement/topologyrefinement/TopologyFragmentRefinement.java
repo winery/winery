@@ -14,13 +14,11 @@
 
 package org.eclipse.winery.model.adaptation.substitution.refinement.topologyrefinement;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
@@ -32,12 +30,11 @@ import org.eclipse.winery.model.adaptation.substitution.refinement.AbstractRefin
 import org.eclipse.winery.model.adaptation.substitution.refinement.DefaultRefinementChooser;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementChooser;
+import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementUtils;
 import org.eclipse.winery.model.tosca.OTAttributeMapping;
 import org.eclipse.winery.model.tosca.OTAttributeMappingType;
 import org.eclipse.winery.model.tosca.OTDeploymentArtifactMapping;
-import org.eclipse.winery.model.tosca.OTPrmMapping;
 import org.eclipse.winery.model.tosca.OTRefinementModel;
-import org.eclipse.winery.model.tosca.OTRelationDirection;
 import org.eclipse.winery.model.tosca.OTStayMapping;
 import org.eclipse.winery.model.tosca.OTTopologyFragmentRefinementModel;
 import org.eclipse.winery.model.tosca.TArtifactType;
@@ -57,6 +54,8 @@ import org.eclipse.winery.topologygraph.model.ToscaNode;
 import org.jgrapht.GraphMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.eclipse.winery.model.adaptation.substitution.refinement.RefinementUtils.redirectRelation;
 
 public class TopologyFragmentRefinement extends AbstractRefinement {
 
@@ -105,10 +104,7 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
 
         // determine the elements that are staying
         OTTopologyFragmentRefinementModel prm = (OTTopologyFragmentRefinementModel) refinement.getRefinementModel();
-        List<TEntityTemplate> stayingRefinementElements = prm.getStayMappings() == null ? new ArrayList<>() :
-            prm.getStayMappings().stream()
-                .map(OTPrmMapping::getRefinementNode)
-                .collect(Collectors.toList());
+        List<TEntityTemplate> stayingRefinementElements = RefinementUtils.getStayingRefinementElements(prm);
 
         // import the refinement structure
         Map<String, String> idMapping = BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(
@@ -181,11 +177,11 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
             deploymentArtifactMappings != null && matchingNode.getDeploymentArtifacts().getDeploymentArtifact().stream()
                 .allMatch(deploymentArtifact ->
                     deploymentArtifactMappings.stream()
-                        .filter(mapping -> mapping.getDetectorNode().getId().equals(detectorNode.getId()))
+                        .filter(mapping -> mapping.getDetectorElement().getId().equals(detectorNode.getId()))
                         .anyMatch(mapping -> {
                             if (ModelUtilities.isOfType(mapping.getArtifactType(), deploymentArtifact.getArtifactType(), this.artifactTypes)) {
                                 if (idMapping != null) {
-                                    TNodeTemplate addedNode = topology.getNodeTemplate(idMapping.get(mapping.getRefinementNode().getId()));
+                                    TNodeTemplate addedNode = topology.getNodeTemplate(idMapping.get(mapping.getRefinementElement().getId()));
                                     if (addedNode != null) {
                                         TDeploymentArtifacts existingDeploymentArtifactsOfRefinement = addedNode.getDeploymentArtifacts();
                                         if (existingDeploymentArtifactsOfRefinement == null) {
@@ -212,13 +208,13 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
         List<OTAttributeMapping> propertyMappings = ((OTTopologyFragmentRefinementModel) refinement.getRefinementModel()).getAttributeMappings();
         if (Objects.nonNull(propertyMappings)) {
             propertyMappings.stream()
-                .filter(mapping -> mapping.getDetectorNode().getId().equals(detectorNodeId))
+                .filter(mapping -> mapping.getDetectorElement().getId().equals(detectorNodeId))
                 .forEach(mapping -> {
                     if (Objects.nonNull(matchingEntity.getProperties())) {
                         Map<String, String> sourceProperties = matchingEntity.getProperties().getKVProperties();
                         topology.getNodeTemplateOrRelationshipTemplate()
                             .stream()
-                            .filter(element -> element.getId().equals(idMapping.get(mapping.getRefinementNode().getId())))
+                            .filter(element -> element.getId().equals(idMapping.get(mapping.getRefinementElement().getId())))
                             .findFirst()
                             .ifPresent(addedElement -> {
                                 if (addedElement.getProperties() != null) {
@@ -262,30 +258,10 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                     refinement.getRefinementModel().getRelationMappings()
                         .stream()
                         // use anyMatch to reduce runtime
-                        .filter(mapping -> mapping.getDetectorNode().getId().equals(detectorNode.getId()))
-                        .anyMatch(relationMapping -> {
-                            if (ModelUtilities.isOfType(relationMapping.getRelationType(), relationship.getType(), this.relationshipTypes)) {
-                                if (relationMapping.getDirection() == OTRelationDirection.INGOING
-                                    && (Objects.isNull(relationMapping.getValidSourceOrTarget())
-                                    || relationship.getSourceElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget()))
-                                ) {
-                                    // change the source element to the new source defined in the relation mapping
-                                    if (Objects.nonNull(idMapping)) {
-                                        String id = idMapping.get(relationMapping.getRefinementNode().getId());
-                                        relationship.setTargetNodeTemplate(topology.getNodeTemplate(id));
-                                    }
-                                    return true;
-                                } else if (Objects.isNull(relationMapping.getValidSourceOrTarget())
-                                    || relationship.getTargetElement().getRef().getType().equals(relationMapping.getValidSourceOrTarget())) {
-                                    if (Objects.nonNull(idMapping)) {
-                                        String id = idMapping.get(relationMapping.getRefinementNode().getId());
-                                        relationship.setSourceNodeTemplate(topology.getNodeTemplate(id));
-                                    }
-                                    return true;
-                                }
-                            }
-                            return false;
-                        })
+                        .filter(mapping -> mapping.getDetectorElement().getId().equals(detectorNode.getId()))
+                        .anyMatch(relationMapping ->
+                            redirectRelation(relationMapping, relationship, topology, idMapping, this.relationshipTypes, this.nodeTypes)
+                        )
                 );
     }
 
@@ -300,7 +276,7 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                                 String targetId = relationship.getTargetElement().getRef().getId();
                                 String sourceId = relationship.getSourceElement().getRef().getId();
 
-                                String idInRefinementStructure = staying.getRefinementNode().getId();
+                                String idInRefinementStructure = staying.getRefinementElement().getId();
 
                                 if (targetId.equals(idInRefinementStructure)) {
                                     LOGGER.debug("Redirecting target of {} to {}", relationship.getId(), matchingNodeInTopology.getId());
@@ -378,6 +354,6 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
     private Stream<OTStayMapping> getStayMappingsOfCurrentElement(OTTopologyFragmentRefinementModel prm, TEntityTemplate currentDetectorNode) {
         return prm.getStayMappings() == null ? Stream.of() :
             prm.getStayMappings().stream()
-                .filter(stayMapping -> stayMapping.getDetectorNode().getId().equals(currentDetectorNode.getId()));
+                .filter(stayMapping -> stayMapping.getDetectorElement().getId().equals(currentDetectorNode.getId()));
     }
 }

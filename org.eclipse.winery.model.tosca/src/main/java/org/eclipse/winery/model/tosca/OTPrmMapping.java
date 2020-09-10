@@ -15,6 +15,7 @@
 package org.eclipse.winery.model.tosca;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlIDREF;
@@ -32,29 +33,38 @@ public abstract class OTPrmMapping extends HasId implements Serializable {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @NonNull
-    private TEntityTemplate detectorNode;
+    private TEntityTemplate detectorElement;
 
     @JsonIdentityReference(alwaysAsId = true)
     @XmlAttribute(name = "refinementNode", required = true)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @NonNull
-    private TEntityTemplate refinementNode;
+    private TEntityTemplate refinementElement;
 
-    public TEntityTemplate getDetectorNode() {
-        return detectorNode;
+    public OTPrmMapping() {
     }
 
-    public void setDetectorNode(TEntityTemplate detectorNode) {
-        this.detectorNode = detectorNode;
+    public OTPrmMapping(TEntityTemplate detectorElement, TEntityTemplate refinementElement) {
+        this.detectorElement = detectorElement;
+        this.refinementElement = refinementElement;
+        this.setId(UUID.randomUUID().toString());
     }
 
-    public TEntityTemplate getRefinementNode() {
-        return refinementNode;
+    public TEntityTemplate getDetectorElement() {
+        return detectorElement;
     }
 
-    public void setRefinementNode(TEntityTemplate refinementNode) {
-        this.refinementNode = refinementNode;
+    public void setDetectorElement(TEntityTemplate detectorElement) {
+        this.detectorElement = detectorElement;
+    }
+
+    public TEntityTemplate getRefinementElement() {
+        return refinementElement;
+    }
+
+    public void setRefinementElement(TEntityTemplate refinementElement) {
+        this.refinementElement = refinementElement;
     }
 
     @Override

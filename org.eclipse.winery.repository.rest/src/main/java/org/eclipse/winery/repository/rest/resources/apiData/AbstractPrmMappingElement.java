@@ -16,9 +16,9 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 
 public abstract class AbstractPrmMappingElement {
 
-    public String detectorNode;
+    public String detectorElement;
     public String id;
-    public String refinementNode;
+    public String refinementElement;
 
     public AbstractPrmMappingElement() {
     }

@@ -21,11 +21,11 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.OTRelationDirection;
 import org.eclipse.winery.model.tosca.OTRelationMapping;
-import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.OTTestRefinementModel;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.topologygraph.matching.ToscaIsomorphismMatcher;
 import org.eclipse.winery.topologygraph.matching.ToscaTypeMatcher;
@@ -37,8 +37,8 @@ import org.eclipse.winery.topologygraph.transformation.ToscaTransformer;
 import org.jgrapht.GraphMapping;
 import org.junit.jupiter.api.Test;
 
-import static org.eclipse.jdt.annotation.Checks.assertNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class TestRefinementTest {
 
@@ -83,18 +83,18 @@ public class TestRefinementTest {
         OTRelationMapping testHostedOn = new OTRelationMapping();
         testHostedOn.setDirection(OTRelationDirection.OUTGOING);
         testHostedOn.setRelationType(QName.valueOf("{ns}hostedOn"));
-        testHostedOn.setRefinementNode(mySqlConnectorTest);
-        testHostedOn.setDetectorNode(tomcat);
+        testHostedOn.setRefinementElement(mySqlConnectorTest);
+        testHostedOn.setDetectorElement(tomcat);
         OTRelationMapping testConnectsTo = new OTRelationMapping();
         testConnectsTo.setDirection(OTRelationDirection.OUTGOING);
         testConnectsTo.setRelationType(QName.valueOf("{ns}connectsTo"));
-        testConnectsTo.setRefinementNode(mySqlConnectorTest);
-        testConnectsTo.setDetectorNode(database);
+        testConnectsTo.setRefinementElement(mySqlConnectorTest);
+        testConnectsTo.setDetectorElement(database);
         OTRelationMapping testIngoingRelationTest = new OTRelationMapping();
         testIngoingRelationTest.setDirection(OTRelationDirection.INGOING);
         testIngoingRelationTest.setRelationType(QName.valueOf("{ns}ingoingTest"));
-        testIngoingRelationTest.setRefinementNode(mySqlConnectorTest);
-        testIngoingRelationTest.setDetectorNode(webShop);
+        testIngoingRelationTest.setRefinementElement(mySqlConnectorTest);
+        testIngoingRelationTest.setDetectorElement(webShop);
         List<OTRelationMapping> relationMappings = new ArrayList<>();
         relationMappings.add(testHostedOn);
         relationMappings.add(testConnectsTo);
@@ -122,17 +122,17 @@ public class TestRefinementTest {
         assertEquals(5, topologyTemplate.getRelationshipTemplates().size());
 
         TRelationshipTemplate mimicTestHostedOnTomcat = topologyTemplate.getRelationshipTemplate("mimicTest-hostedOn");
-        assertNonNull(mimicTestHostedOnTomcat);
+        assertNotNull(mimicTestHostedOnTomcat);
         assertEquals("tomcat", mimicTestHostedOnTomcat.getTargetElement().getRef().getId());
         assertEquals("sqlConnectorTest", mimicTestHostedOnTomcat.getSourceElement().getRef().getId());
 
         TRelationshipTemplate mimicTestConnectsToDatabase = topologyTemplate.getRelationshipTemplate("mimicTest-connectsTo");
-        assertNonNull(mimicTestConnectsToDatabase);
+        assertNotNull(mimicTestConnectsToDatabase);
         assertEquals("database", mimicTestConnectsToDatabase.getTargetElement().getRef().getId());
         assertEquals("sqlConnectorTest", mimicTestConnectsToDatabase.getSourceElement().getRef().getId());
 
         TRelationshipTemplate mimicTestTestIngoingConnection = topologyTemplate.getRelationshipTemplate("mimicTest-ingoingTest");
-        assertNonNull(mimicTestTestIngoingConnection);
+        assertNotNull(mimicTestTestIngoingConnection);
         assertEquals("webShop", mimicTestTestIngoingConnection.getSourceElement().getRef().getId());
         assertEquals("sqlConnectorTest", mimicTestTestIngoingConnection.getTargetElement().getRef().getId());
         // endregion

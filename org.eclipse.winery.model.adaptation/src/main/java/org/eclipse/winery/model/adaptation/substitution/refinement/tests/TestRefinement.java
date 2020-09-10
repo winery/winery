@@ -70,7 +70,7 @@ public class TestRefinement extends AbstractRefinement {
         refinement.getRefinementModel().getRefinementTopology().getNodeTemplates()
             .forEach(nodeTemplate ->
                 refinement.getRefinementModel().getRelationMappings().stream()
-                    .filter(relationMapping -> relationMapping.getRefinementNode().getId().equals(nodeTemplate.getId()))
+                    .filter(relationMapping -> relationMapping.getRefinementElement().getId().equals(nodeTemplate.getId()))
                     .forEach(relationMapping -> {
                         String relId = this.versionAppendix + "-" + relationMapping.getRelationType().getLocalPart();
                         int counter = 0;
@@ -83,15 +83,15 @@ public class TestRefinement extends AbstractRefinement {
                         relationshipTemplate.setName(relationMapping.getRelationType().getLocalPart());
 
                         // Retrieve the id from the correspondence node of the graph mapping.
-                        ToscaNode node = refinement.getDetectorGraph().getNode(relationMapping.getDetectorNode().getId());
+                        ToscaNode node = refinement.getDetectorGraph().getNode(relationMapping.getDetectorElement().getId());
                         String topologyNodeId = refinement.getGraphMapping().getVertexCorrespondence(node, false).getId();
 
                         if (relationMapping.getDirection() == OTRelationDirection.INGOING) {
-                            String targetId = idMapping.get(relationMapping.getRefinementNode().getId());
+                            String targetId = idMapping.get(relationMapping.getRefinementElement().getId());
                             relationshipTemplate.setSourceNodeTemplate(topology.getNodeTemplate(topologyNodeId));
                             relationshipTemplate.setTargetNodeTemplate(topology.getNodeTemplate(targetId));
                         } else {
-                            String sourceId = idMapping.get(relationMapping.getRefinementNode().getId());
+                            String sourceId = idMapping.get(relationMapping.getRefinementElement().getId());
                             relationshipTemplate.setSourceNodeTemplate(topology.getNodeTemplate(sourceId));
                             relationshipTemplate.setTargetNodeTemplate(topology.getNodeTemplate(topologyNodeId));
                         }
