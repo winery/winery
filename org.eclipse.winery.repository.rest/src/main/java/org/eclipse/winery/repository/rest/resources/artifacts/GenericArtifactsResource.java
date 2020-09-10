@@ -155,7 +155,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
                 doc = db.parse(is);
             } catch (Exception e) {
                 // FIXME: currently we allow a single element only. However, the content should be internally wrapped by an (arbitrary) XML element as the content will be nested in the artifact element, too
-                GenericArtifactsResource.LOGGER.debug("Invalid content", e);
+                LOGGER.debug("Invalid content", e);
                 return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
             }
         }
@@ -329,7 +329,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
         try {
             workingDir = Files.createTempDirectory("winery");
         } catch (IOException e2) {
-            GenericArtifactsResource.LOGGER.debug("Could not create temporary directory", e2);
+            LOGGER.debug("Could not create temporary directory", e2);
             return Response.serverError().entity("Could not create temporary directory").build();
         }
 
@@ -338,7 +338,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
         try {
             artifactTemplateFilesUrl = artifactTemplateFilesUri.toURL();
         } catch (MalformedURLException e2) {
-            GenericArtifactsResource.LOGGER.debug("Could not convert URI to URL", e2);
+            LOGGER.debug("Could not convert URI to URL", e2);
             return Response.serverError().entity("Could not convert URI to URL").build();
         }
 
@@ -380,7 +380,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
     }
 
     private Optional<TInterface> findInterface(EntityTypeId id, String interfaceName) {
-        TInterface i = null;
+        TInterface i;
         List<TInterface> interfaces = new ArrayList<>();
         IRepository repository = RepositoryFactory.getRepository();
         if (this.res instanceof NodeTypeImplementationResource
@@ -421,7 +421,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
         try {
             builder = dbf.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
-            GenericArtifactsResource.LOGGER.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             return;
         }
         Document doc = builder.newDocument();

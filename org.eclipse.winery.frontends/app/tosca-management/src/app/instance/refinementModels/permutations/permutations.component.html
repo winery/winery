@@ -1,0 +1,41 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2020 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<winery-loader *ngIf="loading; else content"></winery-loader>
+<ng-template #content>
+    <div class="btn-group">
+        <button class="btn btn-info" (click)="checkMutability()">Check Mutability</button>
+        <button class="btn btn-primary" (click)="generatePermutations()">Generate Permutations</button>
+    </div>
+    <div class="box">
+        <alert *ngIf="permutationsResponse?.mutable" [type]="'success'" [dismissible]="false">
+            <i class="fa fa-check-circle"></i>
+            <span>&nbsp;&nbsp;Permutations of the refinement model can be generated automatically!</span>
+        </alert>
+        <alert *ngIf="permutationsResponse?.error" [type]="'danger'" [dismissible]="false">
+            <i class="fa fa-times"></i>
+            <span>&nbsp;&nbsp;Permutations cannot be determined automatically!</span><br>
+            <span>{{ permutationsResponse.error }}</span>
+        </alert>
+    </div>
+    <div *ngIf="permutationsResponse?.permutations">
+        <h5>Generated Permutations:</h5>
+        <ul>
+            <li *ngFor="let key of keys">
+                <span class="permutationName">{{ key }}</span>
+                <br>
+                <a href="{{ links[key] }}" target="_blank" class="btn btn-sm btn-info">Open Detector</a>
+            </li>
+        </ul>
+    </div>
+</ng-template>

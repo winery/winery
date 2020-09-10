@@ -33,8 +33,8 @@ public class PrmAttributeMappingApiData extends AbstractPrmMappingElement {
     public OTAttributeMapping createTPrmPropertyMapping(TEntityTemplate detectorNodeTemplate, TEntityTemplate refinementNodeTemplate) {
         OTAttributeMapping mapping = new OTAttributeMapping();
         mapping.setId(this.id);
-        mapping.setDetectorNode(detectorNodeTemplate);
-        mapping.setRefinementNode(refinementNodeTemplate);
+        mapping.setDetectorElement(detectorNodeTemplate);
+        mapping.setRefinementElement(refinementNodeTemplate);
         mapping.setType(this.type);
         mapping.setDetectorProperty(this.detectorProperty);
         mapping.setRefinementProperty(this.refinementProperty);

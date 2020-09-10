@@ -12,16 +12,34 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-export abstract class RefinementMappings {
+package org.eclipse.winery.model.tosca;
 
-    public id: string;
-    public detectorElement: string;
-    public refinementElement: string;
+import java.util.List;
 
-    protected constructor(id: number) {
-        this.id = this.idPrefix() + id;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlList;
+import javax.xml.bind.annotation.XmlValue;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+public class OTStringList {
+
+    @XmlValue
+    @XmlList
+    protected List<String> values;
+
+    public OTStringList() {
     }
 
-    abstract idPrefix(): string;
-}
+    public OTStringList(List<String> options) {
+        this.values = options;
+    }
 
+    public List<String> getValues() {
+        return values;
+    }
+
+    public void setValues(List<String> values) {
+        this.values = values;
+    }
+}

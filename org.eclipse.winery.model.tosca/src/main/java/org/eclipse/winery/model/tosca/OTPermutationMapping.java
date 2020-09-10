@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,14 +12,16 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.rest.resources.apiData;
+package org.eclipse.winery.model.tosca;
 
-public abstract class AbstractPrmMappingElement {
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    public String detectorElement;
-    public String id;
-    public String refinementElement;
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "otPermutationMapping")
+public class OTPermutationMapping extends OTPrmMapping {
 
-    public AbstractPrmMappingElement() {
+    public OTPermutationMapping() {
     }
 }
