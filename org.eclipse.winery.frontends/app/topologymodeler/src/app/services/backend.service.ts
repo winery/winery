@@ -34,6 +34,7 @@ import { WineryRepositoryConfigurationService } from '../../../../tosca-manageme
 import { takeLast } from 'rxjs/operators';
 import { TPolicy } from '../models/policiesModalData';
 import { backendBaseURL } from '../../../../tosca-management/src/app/configuration';
+import { TagsAPIData } from '../../../../tosca-management/src/app/instance/sharedComponents/tag/tagsAPIData';
 
 /**
  * Responsible for interchanging data between the app and the server.
@@ -118,7 +119,7 @@ export class BackendService {
      * We use Observable.forkJoin to await all responses from the backend.
      * This is required
      */
-    private requestTopologyTemplateAndVisuals(): Observable<any> {
+    public requestTopologyTemplateAndVisuals(): Observable<any> {
         if (this.configuration) {
             const nodeVisualsUrl = this.configuration.repositoryURL + '/nodetypes/allvisualappearancedata';
             const relationshipVisualsUrl = this.configuration.repositoryURL + '/relationshiptypes/allvisualappearancedata';
@@ -284,7 +285,8 @@ export class BackendService {
                 nodeTemplates: [],
                 policies: { policy: new Array<TPolicy>() }
             };
-            // Prepare for saving by updating the existing topology with the current topology state inside the Redux store
+            // Prepare for saving by updating the existing topology with the current topology state inside the Redux
+            // store
             topologySkeleton.nodeTemplates = topologyTemplate.nodeTemplates;
             topologySkeleton.relationshipTemplates = topologyTemplate.relationshipTemplates;
             topologySkeleton.relationshipTemplates.map(relationship => {
@@ -296,8 +298,6 @@ export class BackendService {
                 delete nodeTemplate._state;
             });
             topologySkeleton.policies = topologyTemplate.policies;
-            console.log(topologySkeleton);
-
             const headers = new HttpHeaders().set('Content-Type', 'application/json');
             return this.http.put(this.configuration.elementUrl,
                 topologySkeleton,

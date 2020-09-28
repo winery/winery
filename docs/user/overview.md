@@ -98,6 +98,9 @@ This supports the user to model valid service templates.
   To specify what a node type should do, the user can define an interface and the operations provided by this interface. 
   Once the operations of a node type are defined, artifacts (e.g., shell scripts, .war files) implementing these operations need to be modeled. 
   With the *Implementation Artifact Generator* a stub java maven project to build a .war file for a defined interface is generated automatically.
+  
+- *Grouping*:
+  This functionality allows the grouping of node templates in the TOSCA topology model editor. It enables the possibility to model groups within a topology, e.g., to describe that a policy only applies to a certain group of node templates, but not to all node templates of a topology template.
 
 
 ## Features
@@ -111,3 +114,4 @@ This supports the user to model valid service templates.
 - [Version Management](features/version-management.md) - Shows how to update the version of a node template in the topology modeler
 - [Threat Modeling For NFV](features/nfv-threat-modeling.md) - Enables threat modeling capabilities and NFV-based mitigation recommendation
 - [Pattern-based Deployment and Configuration Models](features/pattern-deployment-modeling.md) - Describes how PbDCMs can be crated and refined to executable deployment models
+- [Grouping](features/grouping.md) - Describes the usage of the grouping functionality.

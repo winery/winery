@@ -50,10 +50,13 @@ import { WineryModalModule } from '../../../tosca-management/src/app/wineryModal
 import { EnricherComponent } from './enricher/enricher.component';
 import { WineryFeatureToggleModule } from '../../../tosca-management/src/app/wineryFeatureToggleModule/winery-feature-toggle.module';
 import { PlaceComponentsService } from './services/placement.service';
+import { MultiParticipantsComponent } from './multi-participants/multi-participants.component';
 import { ReqCapRelationshipService } from './services/req-cap-relationship.service';
 import { WineryTableModule } from '../../../tosca-management/src/app/wineryTableModule/wineryTable.module';
 import { EdmmTransformationCheckComponent } from './edmmTransformationCheck/edmmTransformationCheck.component';
 import { PolicyService } from './services/policy.service';
+import { GroupViewComponent } from './group-view/group-view.component';
+import { TagService } from '../../../tosca-management/src/app/instance/sharedComponents/tag/tag.service';
 
 @NgModule({
     declarations: [
@@ -64,7 +67,9 @@ import { PolicyService } from './services/policy.service';
         RefinementSidebarComponent,
         ProblemDetectionComponent,
         EnricherComponent,
+        MultiParticipantsComponent,
         EdmmTransformationCheckComponent,
+        GroupViewComponent,
     ],
     exports: [WineryComponent],
     imports: [
@@ -102,6 +107,7 @@ import { PolicyService } from './services/policy.service';
         LoadedService,
         AppReadyEventService,
         BackendService,
+        TagService,
         ExistsService,
         EntitiesModalService,
         ImportTopologyService,

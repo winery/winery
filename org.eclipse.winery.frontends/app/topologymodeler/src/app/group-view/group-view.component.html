@@ -1,0 +1,58 @@
+<div *ngIf="showGroupView" class="sidebar-root"
+     style="display: block;">
+    <button type="button" class="close" style="color: #000000" aria-label="Close" (click)="closeGroupView()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <div id="groupViewAction" style="margin: 8px">
+        <fieldset>
+            <h5>Groups</h5>
+            <accordion>
+                <accordion-group *ngFor="let group of groups" [panelClass]="groupClass">
+                    <span accordion-heading>
+                    <i class="fa fa-angle-down" aria-hidden="false"
+                       style="padding-left: .5em; pointer-events: auto;"></i>
+                        {{group.name}}
+                        <i (click)="removeGroup(group)" class="fa fa-remove" aria-hidden="false"
+                           style="position: absolute; top: 0.75em; right: 1em; pointer-events: auto;"></i>
+                        </span>
+                    <accordion>
+                        <accordion-group *ngFor="let subgroup of group.subGroup"
+                                         (mouseover)="hoverOverSubGroup(subgroup)" (mouseout)="hoverOutSubGroup()"
+                                         [panelClass]="subGroupClass">
+                            <span accordion-heading>
+                    <i class="fa fa-angle-down" aria-hidden="false"
+                       style="padding-left: .5em; pointer-events: auto;"></i>
+                        {{subgroup.name}}
+                                <i (click)="removeSubGroup(group, subgroup)"class="fa fa-remove" aria-hidden="false"
+                                   style="position: absolute; top: 0.75em; right: 1em; pointer-events: auto;"></i>
+                        </span>
+                            <div class="btn-group" style="width: 100%;"
+                                 *ngFor="let member of subgroup.member">
+                                <input disabled="disabled" class="form-control"
+                                       value="{{member.id}}">
+                                <i (click)="removeMemberFromSubGroup(group, subgroup, member)" class="fa fa-remove" aria-hidden="false"
+                                   style="position: absolute; top: 0.75em; right: 1em; pointer-events: auto;"></i>
+                            </div>
+                        </accordion-group>
+                    </accordion>
+
+                </accordion-group>
+            </accordion>
+            <div *ngIf="!groups || groups.length === 0">
+                No Groups for this Topology Template available!
+                <br/>
+                <br/>
+                Create a Group by marking one or more Node Templates.
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="btn-group" style="width: 100%; margin-top: 1em;">
+                        <button (click)=closeGroupView() type="button" class="btn btn-primary"
+                                style="width: 100%">Dismiss
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>

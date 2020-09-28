@@ -38,7 +38,9 @@ export interface SidebarStateAction extends Action {
         maxInstances: string,
         properties: string,
         source: string,
-        target: string
+        target: string,
+        groupViewVisible: boolean,
+        group: any,
     };
 }
 

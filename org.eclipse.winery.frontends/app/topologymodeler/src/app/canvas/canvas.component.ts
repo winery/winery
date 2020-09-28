@@ -1546,6 +1546,14 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 this.ngRedux.dispatch(this.actions.sendPaletteOpened(false));
             }
         }
+        if (this.selectedNodes.length > 0) {
+            this.ngRedux.dispatch(this.actions.openSidebar({
+                sidebarContents: {
+                    groupViewVisible: true,
+                    group: this.selectedNodes,
+                }
+            }));
+        }
     }
 
     /**
@@ -1572,7 +1580,9 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 type: '',
                 properties: '',
                 source: '',
-                target: ''
+                target: '',
+                groupViewVisible: false,
+                group: null,
             }
         }));
     }

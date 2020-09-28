@@ -480,7 +480,8 @@
                         <p>Click on a Mitigation to directly add it to the topology</p>
                         <button class="btn btn-primary" style="margin-right:10px;margin-bottom:10px"
                                 *ngFor="let mitigation of this.threatModelingData.mitigations"
-                                (click)="addMitigationToTopology(mitigation)">{{mitigation.localName}}</button>
+                                (click)="addMitigationToTopology(mitigation)">{{mitigation.localName}}
+                        </button>
                     </div>
                 </div>
             </div>

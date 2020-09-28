@@ -1,0 +1,20 @@
+:host >>>.panel.groupClass {
+    margin-bottom: 5px;
+    background-color: #007bff;
+    color: #fff;
+}
+
+:host >>>.panel.groupClass .panel-body {
+    background-color: #007bff;
+    color: #fff;
+}
+
+:host >>>.panel.subGroupClass {
+    background-color: #dddcdc;
+    color: #000000;
+}
+
+:host >>>.panel.subGroupClass .panel-body {
+    background-color: #dddcdc;
+    color: #000000;
+}

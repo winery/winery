@@ -62,43 +62,67 @@ export class TNodeTemplate extends AbstractTEntity {
     /**
      * needed for the winery redux reducer,
      * updates a specific attribute and returns a whole new node template
-     * @param indexOfUpdatedAttribute: index of the to be updated attribute in the constructor
+     * @param updatedAttribute: attribute key to be updated
      * @param updatedValue: the new value
      *
      * @return nodeTemplate: a new node template with the updated value
      */
     generateNewNodeTemplateWithUpdatedAttribute(updatedAttribute: string, updatedValue: any): TNodeTemplate {
+        const wineryExtensionNamespace = '{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}';
         const nodeTemplate = new TNodeTemplate(this.properties, this.id, this.type, this.name, this.minInstances, this.maxInstances,
             this.visuals, this.documentation, this.any, this.otherAttributes, this.x, this.y, this.capabilities,
             this.requirements, this.deploymentArtifacts, this.policies, this.artifacts);
         if (updatedAttribute === 'coordinates') {
             nodeTemplate.x = updatedValue.x;
             nodeTemplate.y = updatedValue.y;
-        } else if (updatedAttribute === 'location') {
+        } else if (updatedAttribute === 'location' || updatedAttribute === 'participant') {
             let newOtherAttributesAssigned: boolean;
             let nameSpace: string;
             for (const key in nodeTemplate.otherAttributes) {
                 if (nodeTemplate.otherAttributes.hasOwnProperty(key)) {
                     nameSpace = key.substring(key.indexOf('{'), key.indexOf('}') + 1);
                     if (nameSpace) {
-                        const otherAttributes = {
-                            [nameSpace + 'location']: updatedValue,
-                            [nameSpace + 'x']: nodeTemplate.x,
-                            [nameSpace + 'y']: nodeTemplate.y
-                        };
-                        nodeTemplate.otherAttributes = otherAttributes;
+                        // if groups attribute already exists, just append
+                        if (nodeTemplate.otherAttributes[nameSpace + 'groups']) {
+                            if (!nodeTemplate.otherAttributes[nameSpace + 'groups'].includes(updatedAttribute)) {
+                                nodeTemplate.otherAttributes[nameSpace + 'groups']
+                                    = nodeTemplate.otherAttributes[nameSpace + 'groups'] + ',' + updatedAttribute;
+                            }
+                        } else {
+                            nodeTemplate.otherAttributes[nameSpace + 'groups'] = updatedAttribute;
+                        }
+                        if (nodeTemplate.otherAttributes[nameSpace + 'participant'] && updatedAttribute === 'participant') {
+                            nodeTemplate.otherAttributes[nameSpace + 'participant']
+                                = nodeTemplate.otherAttributes[nameSpace + 'participant'] + ',' + updatedValue;
+                        } else {
+                            nodeTemplate.otherAttributes[nameSpace + updatedAttribute] = updatedValue;
+                        }
+                        nodeTemplate.otherAttributes[nameSpace + 'x'] = nodeTemplate.x;
+                        nodeTemplate.otherAttributes[nameSpace + 'y'] = nodeTemplate.y;
                         newOtherAttributesAssigned = true;
                         break;
                     }
                 }
             }
             if (!newOtherAttributesAssigned) {
-                const otherAttributes = {
-                    'location': updatedValue,
-                };
-                nodeTemplate.otherAttributes = otherAttributes;
+                nodeTemplate.otherAttributes = {};
+                if (updatedAttribute === 'location' || updatedAttribute === 'participant') {
+                    if (nodeTemplate.otherAttributes[wineryExtensionNamespace + 'participant']) {
+                        nodeTemplate.otherAttributes[wineryExtensionNamespace + 'participant']
+                            = nodeTemplate.otherAttributes[wineryExtensionNamespace + 'participant'] + ',' + updatedValue;
+                    } else {
+                        nodeTemplate.otherAttributes[wineryExtensionNamespace + updatedAttribute] = updatedValue;
+                    }
+                    if (nodeTemplate.otherAttributes[wineryExtensionNamespace + 'groups']) {
+                        if (!nodeTemplate.otherAttributes[wineryExtensionNamespace + 'groups'].includes(updatedAttribute)) {
+                            nodeTemplate.otherAttributes[wineryExtensionNamespace + 'groups']
+                                = nodeTemplate.otherAttributes[wineryExtensionNamespace + 'groups'] + ',' + updatedAttribute;
+                        }
+                    } else {
+                        nodeTemplate.otherAttributes[wineryExtensionNamespace + 'groups'] = updatedAttribute;
+                    }
+                }
             }
-            console.log(nodeTemplate);
         } else if (updatedAttribute === ('minInstances') || updatedAttribute === ('maxInstances')) {
             if (Number.isNaN(+updatedValue)) {
                 nodeTemplate[updatedAttribute] = updatedValue;
@@ -106,9 +130,15 @@ export class TNodeTemplate extends AbstractTEntity {
                 nodeTemplate[updatedAttribute] = +updatedValue;
             }
         } else {
-            console.log(updatedValue);
-            nodeTemplate[updatedAttribute] = updatedValue;
-            console.log(nodeTemplate);
+            if (nodeTemplate.otherAttributes[wineryExtensionNamespace + 'groups']) {
+                if (!nodeTemplate.otherAttributes[wineryExtensionNamespace + 'groups'].includes(updatedAttribute)) {
+                    nodeTemplate.otherAttributes[wineryExtensionNamespace + 'groups']
+                        = nodeTemplate.otherAttributes[wineryExtensionNamespace + 'groups'] + ',' + updatedAttribute;
+                }
+            } else {
+                nodeTemplate.otherAttributes[wineryExtensionNamespace + 'groups'] = updatedAttribute;
+            }
+            nodeTemplate.otherAttributes[wineryExtensionNamespace + updatedAttribute] = updatedValue;
         }
         return nodeTemplate;
     }
@@ -244,7 +274,7 @@ export class TArtifact extends AbstractTEntity {
 
 export class TNodeType extends AbstractTEntity {
     constructor(public name: string,
-                public interfaces: { interfaces: Interface[]},
+                public interfaces: { interfaces: Interface[] },
                 public propertiesDefinition: PropertiesDefinition,
                 public derivedFrom: any,
                 documentation?: any,

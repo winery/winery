@@ -172,3 +172,143 @@
         </fieldset>
     </div>
 </div>
+<div id="groupView"
+     class="sidebar-root"
+     style="display: block;"
+     [@sidebarAnimationStatus]="sidebarAnimationStatus"
+     *ngIf="sidebarState.groupViewVisible">
+    <button type="button" class="close" style="color: #000000" aria-label="Close" (click)="closeSidebar()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <div id="groupViewAction" style="margin: 8px">
+        <fieldset>
+            <h5>Current Selection: </h5>
+            <label>Id</label>
+            <input *ngFor="let node of sidebarState.group" disabled="disabled" class="form-control"
+                   value="{{node.id}}">
+            <div class="radio">
+                <label>
+                    <input type="radio" name="createGroup" unchecked value="create"
+                           [(ngModel)]="groupOptionSelection" (ngModelChange)="onCreateNewGroup()"/>
+                    <div style="display: inline-block;">
+                        &nbsp;Create Group Type
+                    </div>
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="reuseGroup" checked value="reuse"
+                           [(ngModel)]="groupOptionSelection" (ngModelChange)="onUseExistingGroup()">
+                    <div style="display: inline-block;">
+                        &nbsp;Select existing Group Type
+                    </div>
+                </label>
+            </div>
+            <div *ngIf="groupOptionSelection === 'reuse'">
+                <label for="groupTypeSelection">Group Type</label>
+                <select [(ngModel)]="this.attributeName"
+                        name="groupTypeSelection"
+                        class="form-control"
+                        id="groupTypeSelection"
+                        type="text"
+                        required="required"
+                        (ngModelChange)="selectGroupType($event)"
+                        [disabled]="this.groupTypes.length == 0">
+
+                    <option *ngFor="let groupType of this.groupTypes"
+                            [value]="groupType">{{groupType}}
+                    </option>
+                </select>
+            </div>
+            <div *ngIf="groupOptionSelection === 'create'">
+                <label>Create new Group Type</label>
+                <input class="form-control"
+                       value="{{this.attributeName}}"
+                       [(ngModel)]="this.attributeName"
+                >
+            </div>
+        </fieldset>
+        <button (click)="addToGroup()" type="button" class="btn btn-primary" style="margin-right: 4px; margin-top: 4px">
+            Add
+            to {{this.attributeName}}
+        </button>
+    </div>
+</div>
+<div id="attributeView"
+     class="sidebar-root"
+     style="display: block;"
+     [@sidebarAnimationStatus]="sidebarAnimationStatus"
+     *ngIf="attributeViewVisible">
+    <button type="button" class="close" style="color: #000000" aria-label="Close" (click)="closeSidebar()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <div id="attributeForm" style="margin: 8px">
+        <fieldset>
+            <h5>Create new {{this.attributeName}} with Selection</h5>
+            <div *ngIf="this.attributeName === 'participant' && this.participants.length > 0 && !this.selectionWasMade">
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="createParticipant" checked value="createNewParticipant"
+                               [(ngModel)]="participantOptionSelection"/>
+                        <div style="display: inline-block;">
+                            &nbsp;Create new Participant
+                        </div>
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="selectExistingParticipant" unchecked value="selectExistingParticipant"
+                               [(ngModel)]="participantOptionSelection" [disabled]="this.participants.length === 0"/>
+                        <div style="display: inline-block;">
+                            &nbsp;Select existing Participant
+                        </div>
+                    </label>
+                </div>
+            </div>
+            <div
+                *ngIf="participantOptionSelection === 'createNewParticipant'; then newParticipantView else selectExistingParticipantView"></div>
+            <ng-template #newParticipantView>
+                <div class="form-group">
+                    <label for="attributeValue" class="control-label">{{this.attributeName}} Name</label>
+                    <input type="text" [(ngModel)]="this.attributeValue" id="attributeValue" name="attributeValue"
+                           class="form-control">
+                    <div *ngIf="this.attributeName === 'participant'">
+                        <label for="endpoint" class="control-label">Endpoint</label>
+                        <input type="text" [(ngModel)]="this.endpoint" id="endpoint" name="endpoint"
+                               class="form-control">
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template #selectExistingParticipantView>
+                <div style="width: 100%"
+                     class="btn-group button-group" dropdown>
+                    <button style="width: 100%" dropdownToggle type="button"
+                            class="btn btn-sm dark-button-style align-middle dropdown-toggle">
+                        Select Participant <span class="caret"></span>
+                    </button>
+                    <button type="button" class="btn btn-danger" (click)="clearParticipant()">
+                        Clear
+                    </button>
+                    <ul *dropdownMenu class="dropdown-menu" role="menu">
+                        <li role="menuitem" *ngFor="let participant of participants">
+                            <button class="dropdown-item" (click)="selectParticipant(participant)">{{participant}}
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div *ngIf="this.participantValue.length > 0">
+                    <label>Selected: {{this.participantValue}}</label>
+                </div>
+            </ng-template>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="btn-group" style="width: 100%; margin-top: 1em;">
+                        <button (click)="submitNewAttribute()" type="button" class="btn btn-success"
+                                style="width: 100%">Submit
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
