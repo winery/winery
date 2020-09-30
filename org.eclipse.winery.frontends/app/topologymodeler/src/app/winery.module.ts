@@ -50,7 +50,6 @@ import { WineryModalModule } from '../../../tosca-management/src/app/wineryModal
 import { EnricherComponent } from './enricher/enricher.component';
 import { WineryFeatureToggleModule } from '../../../tosca-management/src/app/wineryFeatureToggleModule/winery-feature-toggle.module';
 import { PlaceComponentsService } from './services/placement.service';
-import { MultiParticipantsComponent } from './multi-participants/multi-participants.component';
 import { ReqCapRelationshipService } from './services/req-cap-relationship.service';
 import { WineryTableModule } from '../../../tosca-management/src/app/wineryTableModule/wineryTable.module';
 import { EdmmTransformationCheckComponent } from './edmmTransformationCheck/edmmTransformationCheck.component';
@@ -67,7 +66,6 @@ import { TagService } from '../../../tosca-management/src/app/instance/sharedCom
         RefinementSidebarComponent,
         ProblemDetectionComponent,
         EnricherComponent,
-        MultiParticipantsComponent,
         EdmmTransformationCheckComponent,
         GroupViewComponent,
     ],
