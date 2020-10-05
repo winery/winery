@@ -24,10 +24,6 @@ export class VisualAppearanceService {
                 private route: Router) {
     }
 
-    getImg16x16Path(): string {
-        return backendBaseURL + this.route.url + '/16x16';
-    }
-
     getImg50x50Path(): string {
         return backendBaseURL + this.route.url + '/50x50';
     }

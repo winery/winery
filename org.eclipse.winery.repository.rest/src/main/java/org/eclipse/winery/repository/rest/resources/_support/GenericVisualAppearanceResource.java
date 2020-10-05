@@ -112,21 +112,6 @@ public abstract class GenericVisualAppearanceResource {
     public abstract VisualsApiData getJsonData(@Context UriInfo uriInfo);
 
     @GET
-    @Path("16x16")
-    public Response get16x16Image(@HeaderParam("If-Modified-Since") String modified) {
-        // Even if the extension is "png", it might contain a jpg, too
-        // We keep the file extension as the windows explorer can display previews even if the content is not a png
-        return this.getImage(Filename.FILENAME_SMALL_ICON, modified);
-    }
-
-    @PUT
-    @Path("16x16")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response post16x16Image(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataBodyPart body) {
-        return this.putImage(Filename.FILENAME_SMALL_ICON, uploadedInputStream, body.getMediaType());
-    }
-
-    @GET
     @Path("50x50")
     public Response get50x50Image(@HeaderParam("If-Modified-Since") String modified) {
         return this.getImage(Filename.FILENAME_BIG_ICON, modified);

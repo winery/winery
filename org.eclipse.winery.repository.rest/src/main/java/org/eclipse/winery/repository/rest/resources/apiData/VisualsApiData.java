@@ -26,7 +26,6 @@ import org.eclipse.winery.repository.rest.resources._support.GenericVisualAppear
 
 public class VisualsApiData {
 
-    public String iconUrl;
     public String imageUrl;
     public String color;
     public boolean pattern;
@@ -39,15 +38,6 @@ public class VisualsApiData {
         this.color = visuals.getColor();
         this.typeId = parent.getQName();
         this.pattern = repository.getNamespaceManager().isPatternNamespace(parent.getNamespace().getDecoded());
-
-        RepositoryFileReference iconRef = new RepositoryFileReference(visuals.getId(), Filename.FILENAME_SMALL_ICON);
-        if (repository.exists(iconRef)) {
-            if (uriInfo != null) {
-                iconUrl = visuals.getAbsoluteURL(uriInfo) + "16x16";
-            } else {
-                iconUrl = visuals.getAbsoluteURL() + "16x16";
-            }
-        }
 
         RepositoryFileReference imageRef = new RepositoryFileReference(visuals.getId(), Filename.FILENAME_BIG_ICON);
         if (repository.exists(imageRef)) {
