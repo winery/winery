@@ -95,7 +95,7 @@
         <!-- grouped libraries -->
         <org.apache.cxf.version>2.7.6</org.apache.cxf.version>
         <org.slf4j>1.7.25</org.slf4j>
-        <org.glassfish.jxb>2.4.0-b180725.0644</org.glassfish.jxb>
+        <org.glassfish.jxb>2.4.0-b180830.0438</org.glassfish.jxb>
         <javax.xml.bind>2.4.0-b180725.0427</javax.xml.bind>
 
         <junit.jupiter.version>5.2.0</junit.jupiter.version>
