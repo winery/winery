@@ -33,7 +33,6 @@ export class VisualAppearanceComponent implements OnInit {
     relationshipData: RelationshipTypesVisualsApiData;
     nodeTypeData: NodeTypesVisualsApiData;
     loading = true;
-    img16Path: string;
     img50Path: string;
     isRelationshipType = false;
     isNodeType = false;
@@ -45,7 +44,6 @@ export class VisualAppearanceComponent implements OnInit {
 
     ngOnInit() {
         this.loading = true;
-        this.img16Path = this.service.getImg16x16Path();
         this.img50Path = this.service.getImg50x50Path();
 
         this.isRelationshipType = this.sharedData.toscaComponent.toscaType === ToscaTypes.RelationshipType;

@@ -16,14 +16,13 @@
 </div>
 <div *ngIf="!loading">
     <div class="right">
-        <button class="btn btn-primary" name="save" (click)="saveToServer()"
+        <button class="btn btn-primary" name="save" style="margin-bottom: 10px;" (click)="saveToServer()"
                 [disabled]="!sharedData?.currentVersion?.editable">
             Save
         </button>
     </div>
 
-    <winery-table [title]="title"
-                  [columns]="columns"
+    <winery-table [columns]="columns"
                   [data]="validSourceTypes?.nodes"
                   (addBtnClicked)="onAddClick()"
                   (removeBtnClicked)="onRemoveClicked($event)">

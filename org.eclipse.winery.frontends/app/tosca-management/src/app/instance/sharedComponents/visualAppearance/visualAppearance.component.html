@@ -36,15 +36,6 @@
         </div>
     </div>
     <div class="uploadImgArea">
-        <b>Icon (16x16) used in palette</b><br>
-        <div class="typeIcon"><img src="{{img16Path}}" height="16" width="16"></div>
-        <winery-uploader #uploader16 id="uploader16"
-                         [uploadUrl]="img16Path"
-                         [uploadMethod]="'PUT'"
-                         [isEditable]="sharedData?.currentVersion?.editable"
-                         (onSuccess)="onUploadSuccess()">
-        </winery-uploader>
-        <br/>
         <div>
             <b>Icon (50x50) used in the node template shapes</b><br/>
             <div class="typeIcon"><img src="{{img50Path}}" height="50" width="50"></div>
