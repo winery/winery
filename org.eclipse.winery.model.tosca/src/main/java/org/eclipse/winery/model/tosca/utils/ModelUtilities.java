@@ -798,7 +798,8 @@ public abstract class ModelUtilities {
                     || list.stream().anyMatch(
                     // To enable the usage of "technology" and "technologies", we only check for "technolog"
                     tag -> tag.getName().toLowerCase().contains("deploymentTechnolog".toLowerCase())
-                        && tag.getValue().toLowerCase().contains(deploymentTechnology.toLowerCase()))) {
+                        && (tag.getValue().toLowerCase().contains(deploymentTechnology.toLowerCase())
+                        || "*".equals(tag.getValue())))) {
                     list.stream()
                         .filter(tag -> "feature".equals(tag.getName().toLowerCase()))
                         .findFirst()
