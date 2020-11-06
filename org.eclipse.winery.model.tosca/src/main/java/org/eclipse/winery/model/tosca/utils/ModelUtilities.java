@@ -545,6 +545,18 @@ public abstract class ModelUtilities {
             }
         }
 
+        // add properties
+        WinerysPropertiesDefinition propDef = nodeType.getWinerysPropertiesDefinition();
+        if (propDef != null && propDef.getPropertyDefinitionKVList() != null) {
+            Map<String, String> properties = new HashMap<>();
+            propDef.getPropertyDefinitionKVList().getPropertyDefinitionKVs().forEach(propertyDefinition -> {
+                properties.put(propertyDefinition.getKey(), propertyDefinition.getDefaultValue());
+            });
+            TEntityTemplate.Properties tProps = new TEntityTemplate.Properties();
+            tProps.setKVProperties(properties);
+            nodeTemplate.setProperties(tProps);
+        }
+
         return nodeTemplate;
     }
 
