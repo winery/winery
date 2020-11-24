@@ -54,6 +54,9 @@ import { ReqCapRelationshipService } from './services/req-cap-relationship.servi
 import { WineryTableModule } from '../../../tosca-management/src/app/wineryTableModule/wineryTable.module';
 import { EdmmTransformationCheckComponent } from './edmmTransformationCheck/edmmTransformationCheck.component';
 import { PolicyService } from './services/policy.service';
+import { VersionSliderComponent } from './version-slider/version-slider.component';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
+import { VersionSliderService } from './version-slider/version-slider.service';
 
 @NgModule({
     declarations: [
@@ -65,6 +68,7 @@ import { PolicyService } from './services/policy.service';
         ProblemDetectionComponent,
         EnricherComponent,
         EdmmTransformationCheckComponent,
+        VersionSliderComponent,
     ],
     exports: [WineryComponent],
     imports: [
@@ -92,7 +96,8 @@ import { PolicyService } from './services/policy.service';
         PopoverModule.forRoot(),
         PropertiesModule,
         WineryFeatureToggleModule,
-        WineryTableModule
+        WineryTableModule,
+        NgxSliderModule
     ],
     providers: [
         // { provide: ToastOptions, useClass: WineryCustomOption },
@@ -110,7 +115,8 @@ import { PolicyService } from './services/policy.service';
         StatefulAnnotationsService,
         PlaceComponentsService,
         ReqCapRelationshipService,
-        PolicyService
+        PolicyService,
+        VersionSliderService
     ],
     bootstrap: [WineryComponent]
 })

@@ -229,6 +229,14 @@
             </button>
         </div>
 
+        <div *ngIf="showVersionSliderButton" class="btn-group button-group" data-toggle="buttons">
+            <button class="btn btn-sm align-middle dark-button-style" id="versionSlider"
+                    (click)="toggleButton($event)"
+                    [style.background-color]="getStyle(navbarButtonsState.buttonsState.versionSliderButton)">
+                Version Slider
+            </button>
+        </div>
+
         <div *ngIf="!readonly" class="btn-group button-group" dropdown>
             <button dropdownToggle type="button" class="btn btn-sm dark-button-style align-middle dropdown-toggle">
                 Other <span class="caret"></span>

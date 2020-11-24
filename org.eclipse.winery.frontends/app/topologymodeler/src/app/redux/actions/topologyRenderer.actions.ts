@@ -52,6 +52,7 @@ export class TopologyRendererActions {
     static CLEAN_FREEZABLE_COMPONENTS = 'CLEAN_FREEZABLE_COMPONENTS';
     static PLACE_COMPONENTS = 'PLACE_COMPONENTS';
     static MANAGE_YAML_POLICIES = 'MANAGE_YAML_POLICIES';
+    static TOGGLE_VERSION_SLIDER = 'TOGGLE_VERSION_SLIDER';
 
     togglePolicies(): Action {
         return { type: TopologyRendererActions.TOGGLE_POLICIES };
@@ -164,5 +165,9 @@ export class TopologyRendererActions {
 
     manageYamlPolicies(): Action {
         return { type: TopologyRendererActions.MANAGE_YAML_POLICIES };
+    }
+
+    toggleVersionSlider(): Action {
+        return { type: TopologyRendererActions.TOGGLE_VERSION_SLIDER };
     }
 }
