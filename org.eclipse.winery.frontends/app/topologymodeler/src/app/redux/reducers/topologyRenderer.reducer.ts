@@ -43,6 +43,7 @@ export interface TopologyRendererState {
         cleanFreezableComponentsButton?: boolean;
         placeComponentsButton?: boolean;
         manageYamlPoliciesButton?: boolean;
+        versionSliderButton?: boolean;
     };
     nodesToSelect?: string[];
 }
@@ -74,7 +75,8 @@ export const INITIAL_TOPOLOGY_RENDERER_STATE: TopologyRendererState = {
         determineFreezableComponentsButton: false,
         cleanFreezableComponentsButton: false,
         placeComponentsButton: false,
-        manageYamlPoliciesButton: false
+        manageYamlPoliciesButton: false,
+        versionSliderButton: false
     }
 };
 /**
@@ -300,6 +302,14 @@ export const TopologyRendererReducer =
                     buttonsState: {
                         ...lastState.buttonsState,
                         manageYamlPoliciesButton: !lastState.buttonsState.manageYamlPoliciesButton
+                    }
+                };
+            case TopologyRendererActions.TOGGLE_VERSION_SLIDER:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        versionSliderButton: !lastState.buttonsState.versionSliderButton
                     }
                 };
         }
