@@ -14,17 +14,16 @@
 
 package org.eclipse.winery.repository.rest.resources.apiData;
 
-import org.eclipse.winery.model.tosca.OTPermutationMapping;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.extensions.OTPermutationMapping;
 
 public class PrmPermutationMappingApiData extends AbstractPrmMappingElement {
 
     public OTPermutationMapping createPermutationMapping(TEntityTemplate detectorElement, TEntityTemplate refinementElement) {
-        OTPermutationMapping permutationMapping = new OTPermutationMapping();
-        permutationMapping.setId(this.id);
-        permutationMapping.setDetectorElement(detectorElement);
-        permutationMapping.setRefinementElement(refinementElement);
 
-        return permutationMapping;
+        return new OTPermutationMapping(new OTPermutationMapping.Builder(this.id)
+            .setDetectorElement(detectorElement)
+            .setRefinementElement(refinementElement)
+        );
     }
 }

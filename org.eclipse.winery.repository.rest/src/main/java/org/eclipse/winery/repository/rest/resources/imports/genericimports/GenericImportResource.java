@@ -15,9 +15,11 @@ package org.eclipse.winery.repository.rest.resources.imports.genericimports;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
+
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.repository.backend.ImportUtils;
@@ -51,12 +53,12 @@ public class GenericImportResource extends AbstractComponentInstanceResource {
     @Path("{filename}")
     public Response getFile(@PathParam("filename") @NonNull final String encodedFileName) {
         Objects.requireNonNull(encodedFileName);
-        final Optional<TImport> theImport = ImportUtils.getTheImport((GenericImportId) id);
+        final Optional<TImport> theImport = ImportUtils.getTheImport(RepositoryFactory.getRepository(), (GenericImportId) id);
         if (!theImport.isPresent()) {
             return Response.status(Status.NOT_FOUND).build();
         }
         @Nullable final String location = theImport.get().getLocation();
-        @NonNull String fileName = Util.URLdecode(encodedFileName);
+        @NonNull String fileName = EncodingUtil.URLdecode(encodedFileName);
         if (!fileName.equals(location)) {
             LOGGER.debug("Filename mismatch %s vs %s", fileName, location);
             return Response.status(Status.NOT_FOUND).build();

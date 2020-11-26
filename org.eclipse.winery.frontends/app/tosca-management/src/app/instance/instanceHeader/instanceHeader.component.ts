@@ -23,6 +23,8 @@ import { WineryRepositoryConfigurationService } from '../../wineryFeatureToggleM
 import { SubMenuItem } from '../../model/subMenuItem';
 import { HttpErrorResponse } from '@angular/common/http';
 import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
+import { CheService } from '../../../../../topologymodeler/src/app/services/che.service';
+import { backendBaseURL } from '../../configuration';
 
 @Component({
     selector: 'winery-instance-header',
@@ -55,14 +57,18 @@ export class InstanceHeaderComponent implements OnInit {
     showManagementButtons = true;
     accountabilityEnabled: boolean;
     showEdmmExport: boolean;
+    requiresTabFix = false;
+    radon: boolean;
 
     toscaLightCompatibilityErrorReportModalRef: BsModalRef;
     toscaLightErrorKeys: string[];
     deleteConfirmationModalRef: BsModalRef;
 
     constructor(private router: Router, public sharedData: InstanceService,
-                private configurationService: WineryRepositoryConfigurationService,
-                private modalService: BsModalService, private notify: WineryNotificationService) {
+                public configurationService: WineryRepositoryConfigurationService,
+                private modalService: BsModalService,
+                private notify: WineryNotificationService,
+                private che: CheService) {
     }
 
     ngOnInit(): void {
@@ -85,6 +91,13 @@ export class InstanceHeaderComponent implements OnInit {
         }
 
         this.showEdmmExport = this.toscaComponent.toscaType === ToscaTypes.ServiceTemplate && this.configurationService.configuration.features.edmmModeling;
+
+        if (this.toscaComponent.toscaType === ToscaTypes.Admin
+            || this.toscaComponent.toscaType === ToscaTypes.PolicyType) {
+            this.requiresTabFix = true;
+        }
+
+        this.radon = this.configurationService.configuration.features.radon;
     }
 
     removeConfirmed() {
@@ -106,6 +119,17 @@ export class InstanceHeaderComponent implements OnInit {
 
     openDeleteConfirmationModel() {
         this.deleteConfirmationModalRef = this.modalService.show(this.confirmDeleteModal);
+    }
+
+    openChe() {
+        this.che.openChe(backendBaseURL, this.toscaComponent.localName, this.toscaComponent.namespace, this.toscaComponent.toscaType.valueOf())
+            .catch((err) => {
+                if (err instanceof HttpErrorResponse) {
+                    if (err.status === 500) {
+                        this.notify.error('Winery is not properly configured for IDE usage');
+                    }
+                }
+            });
     }
 
     private handleSuccess(message: string) {

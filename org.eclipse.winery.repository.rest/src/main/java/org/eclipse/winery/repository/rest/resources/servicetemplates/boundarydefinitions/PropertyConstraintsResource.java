@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -29,18 +30,23 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.winery.common.Util;
+import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TPropertyConstraint;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources.apiData.boundarydefinitions.PropertyConstraintsApiData;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PropertyConstraintsResource {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PropertyConstraintsResource.class);
 
     private final TBoundaryDefinitions.PropertyConstraints propertyConstraints;
     private final TEntityTemplate.PropertyConstraints entityPropertyConstraints;
@@ -64,7 +70,7 @@ public class PropertyConstraintsResource {
     @Path("{id}")
     @DELETE
     public Response onDelete(@PathParam("id") String id) {
-        id = Util.URLdecode(id);
+        id = EncodingUtil.URLdecode(id);
         Iterator<TPropertyConstraint> iterator;
         if (isEntitytemplate) {
             iterator = this.entityPropertyConstraints.getPropertyConstraint().iterator();
@@ -95,7 +101,13 @@ public class PropertyConstraintsResource {
 
         TPropertyConstraint propertyConstraint = new TPropertyConstraint();
         propertyConstraint.setProperty(constraintsApiData.getProperty());
-        propertyConstraint.setAny(constraintsApiData.getFragments());
+        // Patching Any from String to XML
+        try {
+            propertyConstraint.setAny(ModelUtilities.patchAnyItem(constraintsApiData.getFragments()));
+        } catch (IOException e) {
+            LOGGER.info("Could not parse the given Fragments as XML elements");
+            return Response.notAcceptable(null).build();
+        }
         propertyConstraint.setConstraintType(constraintsApiData.getConstraintType());
         if (isEntitytemplate) {
             this.entityPropertyConstraints.getPropertyConstraint().add(propertyConstraint);

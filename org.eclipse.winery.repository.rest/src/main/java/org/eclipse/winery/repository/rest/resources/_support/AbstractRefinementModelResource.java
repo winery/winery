@@ -21,9 +21,9 @@ import java.util.Objects;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.model.tosca.OTRefinementModel;
-import org.eclipse.winery.model.tosca.OTRelationMapping;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.tosca.extensions.OTRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTRelationMapping;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.refinementmodels.RelationMappingsResource;
@@ -92,5 +92,11 @@ public abstract class AbstractRefinementModelResource extends AbstractComponentI
             default:
                 break;
         }
+    }
+
+    @Override
+    public TTopologyTemplate getTopology() {
+        // TODO this is only here to have SOME implementation
+        return this.getTRefinementModel().getRefinementTopology();
     }
 }

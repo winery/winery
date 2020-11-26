@@ -25,7 +25,7 @@ import org.eclipse.winery.model.tosca.TAppliesTo;
 import org.eclipse.winery.model.tosca.TPolicyType;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
-import org.eclipse.winery.repository.rest.resources.apiData.ValidSourceTypesApiData;
+import org.eclipse.winery.repository.rest.resources.apiData.ValidTypesListApiData;
 
 public class AppliesToResource {
 
@@ -36,7 +36,7 @@ public class AppliesToResource {
     }
     
     @GET
-    public ValidSourceTypesApiData getValidSourceTypes() {
+    public ValidTypesListApiData getValidSourceTypes() {
         List<QName> qNames = null;
 
         if (getPolicyType().getAppliesTo() != null) {
@@ -47,11 +47,11 @@ public class AppliesToResource {
                 .map(TAppliesTo.NodeTypeReference::getTypeRef)
                 .collect(Collectors.toList());
         }
-        return new ValidSourceTypesApiData(qNames);
+        return new ValidTypesListApiData(qNames);
     }
     
     @PUT
-    public Response saveValidSourceTypes(ValidSourceTypesApiData newValidSourceTypes) {
+    public Response saveValidSourceTypes(ValidTypesListApiData newValidSourceTypes) {
         TPolicyType t = this.getPolicyType();
         List<TAppliesTo.NodeTypeReference> references = newValidSourceTypes
             .getNodes()

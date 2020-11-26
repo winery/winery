@@ -17,7 +17,6 @@ import java.util.EnumSet;
 import java.util.Objects;
 
 import org.eclipse.winery.repository.backend.IRepository;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -28,24 +27,6 @@ public class ConsistencyCheckerConfiguration {
     private boolean checkDocumentation;
     private EnumSet<ConsistencyCheckerVerbosity> verbosity;
     private IRepository repository;
-
-    public ConsistencyCheckerConfiguration() {
-        this.serviceTemplatesOnly = false;
-        this.checkDocumentation = false;
-        this.verbosity = EnumSet.of(ConsistencyCheckerVerbosity.NONE);
-        this.repository = RepositoryFactory.getRepository();
-        this.testMode = false;
-    }
-
-    /**
-     * Constructor used for testing the ConsistencyChecker functionality. Otherwise: Must not be used
-     */
-    public ConsistencyCheckerConfiguration(boolean serviceTemplatesOnly, boolean checkDocumentation, @NonNull EnumSet<ConsistencyCheckerVerbosity> verbosity) {
-        this.serviceTemplatesOnly = serviceTemplatesOnly;
-        this.checkDocumentation = checkDocumentation;
-        this.verbosity = Objects.requireNonNull(verbosity);
-        this.testMode = false;
-    }
 
     public ConsistencyCheckerConfiguration(boolean serviceTemplatesOnly, boolean checkDocumentation, @NonNull EnumSet<ConsistencyCheckerVerbosity> verbosity, @NonNull IRepository repository) {
         this.serviceTemplatesOnly = serviceTemplatesOnly;

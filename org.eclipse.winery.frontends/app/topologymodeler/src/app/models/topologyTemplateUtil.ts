@@ -12,7 +12,6 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 import { TNodeTemplate, TRelationshipTemplate, TTopologyTemplate } from './ttopology-template';
-import { QName } from './qname';
 import { DifferenceStates, ToscaDiff, VersionUtils } from './ToscaDiff';
 import { Visuals } from './visuals';
 import { NgRedux } from '@angular-redux/store';
@@ -24,11 +23,43 @@ import { CapabilityModel } from './capabilityModel';
 import { RequirementDefinitionModel } from './requirementDefinitonModel';
 import { RequirementModel } from './requirementModel';
 import { InheritanceUtils } from './InheritanceUtils';
+import { QName } from '../../../../shared/src/app/model/qName';
+import { TPolicy } from './policiesModalData';
 
-export class TopologyTemplateUtil {
+export abstract class TopologyTemplateUtil {
 
     static HORIZONTAL_OFFSET_FOR_NODES_WITHOUT_COORDINATES = 350;
     static VERTICAL_OFFSET_FOR_NODES_WITHOUT_COORDINATES = 200;
+
+    static prepareSave(topologyTemplate: TTopologyTemplate): TTopologyTemplate {
+        // Initialization
+        const topologySkeleton = {
+            documentation: [],
+            any: [],
+            otherAttributes: {},
+            relationshipTemplates: [],
+            nodeTemplates: [],
+            policies: { policy: new Array<TPolicy>() },
+            groups: [],
+            participants: [],
+        };
+        // Prepare for saving by updating the existing topology with the current topology state inside the Redux store
+        topologySkeleton.nodeTemplates = topologyTemplate.nodeTemplates;
+        topologySkeleton.relationshipTemplates = topologyTemplate.relationshipTemplates;
+        topologySkeleton.relationshipTemplates.map(relationship => {
+            delete relationship.state;
+        });
+        // remove the 'Color' field from all nodeTemplates as the REST Api does not recognize it.
+        topologySkeleton.nodeTemplates.map(nodeTemplate => {
+            delete nodeTemplate.visuals;
+            delete nodeTemplate._state;
+        });
+        topologySkeleton.policies = topologyTemplate.policies;
+        topologySkeleton.groups = topologyTemplate.groups;
+        topologySkeleton.participants = topologyTemplate.participants;
+
+        return topologySkeleton;
+    }
 
     static createTNodeTemplateFromObject(node: TNodeTemplate, nodeVisuals: Visuals[],
                                          isYaml: boolean, types: EntityTypesModel, state?: DifferenceStates): TNodeTemplate {
@@ -37,11 +68,11 @@ export class TopologyTemplateUtil {
         if (node.properties) {
             properties = node.properties;
         }
-
         let nameSpace: string;
         let targetLocationKey: string;
         let providerKey: string;
         let regionKey: string;
+        let participantKey: string;
         let otherAttributes;
         for (const key in node.otherAttributes) {
             if (node.otherAttributes.hasOwnProperty(key)) {
@@ -56,10 +87,14 @@ export class TopologyTemplateUtil {
                     if (key.substring(key.indexOf('}') + 1) === 'region') {
                         regionKey = key;
                     }
+                    if (key.substring(key.indexOf('}') + 1) === 'participant') {
+                        participantKey = key;
+                    }
                     otherAttributes = {
                         [nameSpace + 'location']: node.otherAttributes[targetLocationKey],
                         [nameSpace + 'provider']: node.otherAttributes[providerKey],
                         [nameSpace + 'region']: node.otherAttributes[regionKey],
+                        [nameSpace + 'participant']: node.otherAttributes[participantKey],
                         [nameSpace + 'x']: node.x,
                         [nameSpace + 'y']: node.y
                     };
@@ -239,22 +274,24 @@ export class TopologyTemplateUtil {
         return relationshipTemplates;
     }
 
-    static updateTopologyTemplate(ngRedux: NgRedux<IWineryState>, wineryActions: WineryActions, topology: TTopologyTemplate, isYaml: boolean) {
+    static updateTopologyTemplate(ngRedux: NgRedux<IWineryState>, wineryActions: WineryActions, topology: TTopologyTemplate,
+                                  types: EntityTypesModel, isYaml: boolean) {
         const wineryState = ngRedux.getState().wineryState;
 
         // Required because if the palette is open, the last node inserted will be bound to the mouse movement.
         ngRedux.dispatch(wineryActions.sendPaletteOpened(false));
 
-        wineryState.currentJsonTopology.nodeTemplates
-            .forEach(
-                node => ngRedux.dispatch(wineryActions.deleteNodeTemplate(node.id))
-            );
+        // It's important to remove the relations first, as the YAML mode may break.
         wineryState.currentJsonTopology.relationshipTemplates
             .forEach(
                 relationship => ngRedux.dispatch(wineryActions.deleteRelationshipTemplate(relationship.id))
             );
+        wineryState.currentJsonTopology.nodeTemplates
+            .forEach(
+                node => ngRedux.dispatch(wineryActions.deleteNodeTemplate(node.id))
+            );
 
-        TopologyTemplateUtil.initNodeTemplates(topology.nodeTemplates, wineryState.nodeVisuals, isYaml, null)
+        TopologyTemplateUtil.initNodeTemplates(topology.nodeTemplates, wineryState.nodeVisuals, isYaml, types)
             .forEach(
                 node => ngRedux.dispatch(wineryActions.saveNodeTemplate(node))
             );

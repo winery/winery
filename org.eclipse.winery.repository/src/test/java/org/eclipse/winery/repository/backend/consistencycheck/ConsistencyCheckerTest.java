@@ -1,4 +1,4 @@
-/********************************************************************************
+/*******************************************************************************
  * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -10,7 +10,7 @@
  * which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- ********************************************************************************/
+ *******************************************************************************/
 package org.eclipse.winery.repository.backend.consistencycheck;
 
 import java.util.Collections;
@@ -21,8 +21,8 @@ import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +41,7 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
 
     @BeforeEach
     public void initializeConsistencyChecker() {
-        ConsistencyCheckerConfiguration consistencyCheckerConfiguration = new ConsistencyCheckerConfiguration(false, true, EnumSet.of(ConsistencyCheckerVerbosity.NONE));
+        ConsistencyCheckerConfiguration consistencyCheckerConfiguration = new ConsistencyCheckerConfiguration(false, true, EnumSet.of(ConsistencyCheckerVerbosity.NONE), repository);
         consistencyChecker = new ConsistencyChecker(consistencyCheckerConfiguration);
     }
 
@@ -148,7 +148,8 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
         elementErrorList.addError("propertiesKV of node template NodeTypeWithTwoKVProperties is null");
         elementErrorList.addError("propertiesKV of node template NodeTypeWithTwoKVProperties_2 is null");
         elementErrorList.addError("propertiesKV of node template NodeTypeWithTwoKVProperties_2 is null");
-        elementErrorList.addError("java.lang.NullPointerException");
+//        elementErrorList.addError("java.lang.NullPointerException");
+        elementErrorList.addError("Corrupt: Component instance RelationshipType RelationshlpTypeWithValidSourceAndTarget_w1-wip1 in namespace  does not exist.");
         expected.put(new QName("http://plain.winery.opentosca.org/servicetemplates", "ServiceTemplateWithTwoNodeTemplates_w1-wip4"), elementErrorList);
 
         elementErrorList = new ElementErrorList("ServiceTemplate");

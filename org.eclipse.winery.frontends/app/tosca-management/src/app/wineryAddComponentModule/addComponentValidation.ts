@@ -15,6 +15,7 @@ export class AddComponentValidation {
     // Errors
     noDuplicatesAllowed: boolean;
     noUnderscoresAllowed: boolean;
+    noNameAvailable: boolean;
     noTypeAvailable: boolean;
 
     // Warnings

@@ -56,7 +56,7 @@ import { WineryFeatureToggleModule } from '../wineryFeatureToggleModule/winery-f
         WineryFeatureToggleModule,
         TagInputModule,
         WineryAddModule,
-        AdminModule, // to be able to access the ConfigurationService and AccountabilitySerrvice
+        AdminModule, // to be able to access the ConfigurationService and AccountabilityService
         WineryFileComparisonModule,
         ModalModule,
         TargetAllocationModule

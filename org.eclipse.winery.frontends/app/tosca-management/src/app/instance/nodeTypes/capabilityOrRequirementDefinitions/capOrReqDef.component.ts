@@ -26,9 +26,9 @@ import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
 import { SpinnerWithInfinityComponent } from '../../../winerySpinnerWithInfinityModule/winerySpinnerWithInfinity.component';
 import { InstanceService } from '../../instance.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { QName } from '../../../model/qName';
 import { WineryRepositoryConfigurationService } from '../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { ValidSourceTypesService } from '../../sharedComponents/validSourceTypes/validSourceTypes.service';
+import { QName } from 'app/shared/src/app/model/qName';
 
 @Component({
     selector: 'winery-instance-cap-or-req-definitions',
@@ -145,10 +145,13 @@ export class CapOrReqDefComponent implements OnInit {
             this.validSourceTypesService.getValidSourceTypesForCapabilityDefinition(value.replace('{', '/').replace('}', '/'), 'capabilitydefinitions')
                 .subscribe(
                     (current) => {
-                        current.nodes.forEach(value1 => {
-                            this.validSourceTypesTableData.push(new QName(value1.namespace, value1.localname));
-                            this.capOrReqDefToBeAdded.validSourceTypes.push('{' + value1.namespace + '}' + value1.localname);
-                        });
+                        if (current.nodes) {
+                            current.nodes.forEach(value1 => {
+                                const qName = QName.create(value1.namespace, value1.localname);
+                                this.validSourceTypesTableData.push(qName);
+                                this.capOrReqDefToBeAdded.validSourceTypes.push(qName.qName);
+                            });
+                        }
                     },
                     error => this.handleError(error)
                 );
@@ -185,8 +188,8 @@ export class CapOrReqDefComponent implements OnInit {
             }
             case 'localPart': {
                 for (const entry of this.validSourceTypesTableData) {
-                    if (data.row.localPart === entry.localPart) {
-                        const url = '/nodetypes/' + entry.namespace + '/' + entry.localPart;
+                    if (data.row.localPart === entry.localName) {
+                        const url = '/nodetypes/' + entry.nameSpace + '/' + entry.localName;
                         this.router.navigate([url]);
                     }
                 }
@@ -572,7 +575,7 @@ export class CapOrReqDefComponent implements OnInit {
     }
 
     onRemoveClicked(selected: QName) {
-        const toDelete: String = '{' + selected.namespace + '}' + selected.localPart;
+        const toDelete: String = selected.qName;
         if (selected) {
             this.capOrReqDefToBeAdded.validSourceTypes = this.capOrReqDefToBeAdded.validSourceTypes.filter(item => item !== toDelete);
             this.validSourceTypesTableData = this.validSourceTypesTableData.filter(item => item !== selected);
@@ -581,7 +584,7 @@ export class CapOrReqDefComponent implements OnInit {
     }
 
     onAddValidSourceType() {
-        this.capOrReqDefToBeAdded.validSourceTypes.push('{' + this.selectedNodeType.namespace + '}' + this.selectedNodeType.localPart);
+        this.capOrReqDefToBeAdded.validSourceTypes.push(this.selectedNodeType.qName);
         this.validSourceTypesTableData.push(this.selectedNodeType);
         this.notify.success('Saved changes.');
     }

@@ -14,9 +14,9 @@
 package org.eclipse.winery.repository.datatypes.ids.elements;
 
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.common.ids.XmlId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.elements.ToscaElementId;
+import org.eclipse.winery.model.ids.XmlId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.elements.ToscaElementId;
 
 /**
  * Id of the directory containing the self-service metadata

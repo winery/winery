@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates;
 
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.json.JacksonProvider;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;

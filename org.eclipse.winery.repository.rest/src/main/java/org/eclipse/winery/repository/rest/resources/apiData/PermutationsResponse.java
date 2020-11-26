@@ -16,7 +16,7 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 
 import java.util.Map;
 
-import org.eclipse.winery.model.tosca.OTTopologyFragmentRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
 
 public class PermutationsResponse {
 

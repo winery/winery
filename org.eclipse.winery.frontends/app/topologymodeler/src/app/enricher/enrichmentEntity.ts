@@ -11,7 +11,8 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { QName } from '../models/qname';
+
+import { QName } from '../../../../shared/src/app/model/qName';
 
 /**
  * Enrichment interface containing features of FeatureEntity type and a node template id.

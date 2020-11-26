@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.datatypes;
 
-import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.model.ids.Namespace;
 
 import java.util.List;
 import java.util.Objects;

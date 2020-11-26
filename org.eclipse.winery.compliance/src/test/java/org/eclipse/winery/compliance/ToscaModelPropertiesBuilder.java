@@ -13,84 +13,61 @@
  ********************************************************************************/
 package org.eclipse.winery.compliance;
 
-import java.util.Map;
-import java.util.Properties;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import java.util.LinkedHashMap;
 
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Text;
 
 public class ToscaModelPropertiesBuilder {
 
-	java.util.Properties properties = new Properties();
-	@NonNull
-	public static String namespaceURI;
-	@NonNull
-	public static String prefix = "rnd";
-	@NonNull
-	public static String localName;
+    LinkedHashMap<String, String> properties = new LinkedHashMap<>();
+    @NonNull
+    public static String namespaceURI;
+    @NonNull
+    public static String prefix = "rnd";
+    @NonNull
+    public static String localName;
 
-	public ToscaModelPropertiesBuilder(@NonNull String namespaceURI, @NonNull String localName) {
-		this.namespaceURI = namespaceURI;
-		this.localName = localName;
-	}
+    public ToscaModelPropertiesBuilder(@NonNull String namespaceURI, @NonNull String localName) {
+        this.namespaceURI = namespaceURI;
+        this.localName = localName;
+    }
 
-	public ToscaModelPropertiesBuilder addProperty(@NonNull String key, @NonNull String value) {
-		properties.put(key, value);
-		return this;
-	}
+    public ToscaModelPropertiesBuilder addProperty(@NonNull String key, @NonNull String value) {
+        properties.put(key, value);
+        return this;
+    }
 
-	public TEntityTemplate.Properties build() {
-		Document doc = null;
-		TEntityTemplate.Properties result = new TEntityTemplate.Properties();
+    public TEntityTemplate.Properties build() {
+        TEntityTemplate.WineryKVProperties result = new TEntityTemplate.WineryKVProperties();
+        result.setNamespace(namespaceURI);
+        result.setElementName(localName);
+        result.setKVProperties(properties);
+        return result;
+    }
 
-		if (properties.isEmpty()) {
-			return result;
-		}
-		try {
-			doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-			Element propertiesElement = doc.createElementNS(namespaceURI, prefix + ":" + localName);
-			for (Map.Entry<Object, Object> e : properties.entrySet()) {
-				Element keyNode = doc.createElementNS(namespaceURI, e.getKey().toString());
-				Text textValue = doc.createTextNode(e.getValue().toString());
-				textValue.setTextContent(e.getValue().toString());
-				keyNode.appendChild(textValue);
-				propertiesElement.appendChild(keyNode);
-			}
-			result.setAny(propertiesElement);
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
+    public String getNamespaceURI() {
+        return namespaceURI;
+    }
 
-	public String getNamespaceURI() {
-		return namespaceURI;
-	}
+    public void setNamespaceURI(String namespaceURI) {
+        this.namespaceURI = namespaceURI;
+    }
 
-	public void setNamespaceURI(String namespaceURI) {
-		this.namespaceURI = namespaceURI;
-	}
+    public String getPrefix() {
+        return prefix;
+    }
 
-	public String getPrefix() {
-		return prefix;
-	}
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
 
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
+    public String getLocalName() {
+        return localName;
+    }
 
-	public String getLocalName() {
-		return localName;
-	}
-
-	public void setLocalName(String localName) {
-		this.localName = localName;
-	}
+    public void setLocalName(String localName) {
+        this.localName = localName;
+    }
 }

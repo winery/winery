@@ -36,6 +36,8 @@ import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Requirements;
 import org.eclipse.winery.model.tosca.TCapabilityRef;
 import org.eclipse.winery.model.tosca.TRequirementRef;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.interfaces.InterfacesResource;
@@ -51,24 +53,25 @@ public class BoundaryDefinitionsResource {
 
     private final ServiceTemplateResource serviceTemplateResource;
     private final TBoundaryDefinitions boundaryDefinitions;
-
+    private final IRepository repository;
 
     public BoundaryDefinitionsResource(ServiceTemplateResource serviceTemplateResource, TBoundaryDefinitions boundaryDefinitions) {
         this.serviceTemplateResource = serviceTemplateResource;
         this.boundaryDefinitions = boundaryDefinitions;
+        this.repository = RepositoryFactory.getRepository();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public TBoundaryDefinitions getJSON(@Context UriInfo uriInfo) {
-        return new BoundaryDefinitionsJSPData(this.serviceTemplateResource.getServiceTemplate(), uriInfo.getBaseUri()).getDefs();
+        return new BoundaryDefinitionsJSPData(this.serviceTemplateResource.getServiceTemplate(), uriInfo.getBaseUri(), repository).getDefs();
     }
 
     @Path("xml/")
     @GET
     @Produces(MediaType.APPLICATION_XML)
     public String getXML(@Context UriInfo uriInfo) {
-        return new BoundaryDefinitionsJSPData(this.serviceTemplateResource.getServiceTemplate(), uriInfo.getBaseUri()).getBoundaryDefinitionsAsXMLString();
+        return new BoundaryDefinitionsJSPData(this.serviceTemplateResource.getServiceTemplate(), uriInfo.getBaseUri(), repository).getBoundaryDefinitionsAsXMLString();
     }
 
     @PUT
@@ -83,7 +86,7 @@ public class BoundaryDefinitionsResource {
     @GET
     @Produces(MediaType.APPLICATION_XML)
     public String getProperties(@Context UriInfo uriInfo) {
-        return new BoundaryDefinitionsJSPData(this.serviceTemplateResource.getServiceTemplate(), uriInfo.getBaseUri()).getPropertiesAsXMLString();
+        return new BoundaryDefinitionsJSPData(this.serviceTemplateResource.getServiceTemplate(), uriInfo.getBaseUri(), repository).getPropertiesAsXMLString();
     }
 
     /**

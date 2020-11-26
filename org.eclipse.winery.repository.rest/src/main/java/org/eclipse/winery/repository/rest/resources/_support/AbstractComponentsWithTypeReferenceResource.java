@@ -22,15 +22,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.EntityTemplateId;
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.EntityTemplateId;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.IRepository;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameWithTypeApiData;
 
 import org.apache.commons.lang3.StringUtils;
@@ -54,8 +52,7 @@ public abstract class AbstractComponentsWithTypeReferenceResource<T extends Abst
         }
         if (creationResult.getStatus().equals(Status.CREATED)) {
             final DefinitionsChildId id = (DefinitionsChildId) creationResult.getId();
-            final IRepository repository = RepositoryFactory.getRepository();
-            final Definitions definitions = repository.getDefinitions(id);
+            final TDefinitions definitions = requestRepository.getDefinitions(id);
             final TExtensibleElements element = definitions.getElement();
             ((HasType) element).setType(jsonData.type);
 
@@ -64,11 +61,11 @@ public abstract class AbstractComponentsWithTypeReferenceResource<T extends Abst
             // thus, we do the quick hack here
 
             if (id instanceof EntityTemplateId) {
-                BackendUtils.initializeProperties(repository, (TEntityTemplate) element);
+                BackendUtils.initializeProperties(requestRepository, (TEntityTemplate) element);
             }
 
             try {
-                BackendUtils.persist(id, definitions);
+                BackendUtils.persist(requestRepository, id, definitions);
             } catch (IOException e) {
                 throw new WebApplicationException(e);
             }

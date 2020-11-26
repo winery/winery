@@ -17,7 +17,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.eclipse.winery</groupId>
     <artifactId>winery</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Winery</name>
     <description>
@@ -53,13 +53,6 @@
         <developerConnection>scm:git:https://github.com/eclipse/winery.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
-    <distributionManagement>
-        <repository>
-            <id>internal.repo</id>
-            <name>Temporary Staging Repository</name>
-            <url>file://${main.basedir}/target/mvn-repo</url>
-        </repository>
-    </distributionManagement>
     <properties>
         <github.global.server>github</github.global.server>
         <main.basedir>${project.basedir}</main.basedir>
@@ -72,7 +65,6 @@
         <checkstyle.addons.version>6.0.1</checkstyle.addons.version>
         <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.version.osgi>2.0.0</project.version.osgi>
 
         <!-- versions of all used libraries -->
         <ch.qos.logback.logback-classic.version>1.2.3</ch.qos.logback.logback-classic.version>
@@ -111,28 +103,28 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>org.eclipse.winery.accountability</module>
+                <module>org.eclipse.winery.bpmn4tosca.converter.tobpel</module>
+                <module>org.eclipse.winery.cli</module>
+                <module>org.eclipse.winery.common</module>
+                <module>org.eclipse.winery.compliance</module>
+                <module>org.eclipse.winery.crawler</module>
+                <module>org.eclipse.winery.edmm</module>
+                <module>org.eclipse.winery.frontends</module>
+                <module>org.eclipse.winery.generators.ia</module>
+                <module>org.eclipse.winery.highlevelrestapi</module>
+                <module>org.eclipse.winery.model</module>
+                <module>org.eclipse.winery.model.adaptation</module>
                 <module>org.eclipse.winery.model.bpmn4tosca</module>
                 <module>org.eclipse.winery.model.csar.toscametafile</module>
                 <module>org.eclipse.winery.model.selfservice</module>
-                <module>org.eclipse.winery.model.tosca</module>
-                <module>org.eclipse.winery.model.tosca.yaml</module>
-                <module>org.eclipse.winery.accountability</module>
-                <module>org.eclipse.winery.common</module>
-                <module>org.eclipse.winery.cli</module>
-                <module>org.eclipse.winery.bpmn4tosca.converter.tobpel</module>
+                <module>org.eclipse.winery.model.threatmodeling</module>
                 <module>org.eclipse.winery.repository</module>
                 <module>org.eclipse.winery.repository.client</module>
                 <module>org.eclipse.winery.repository.rest</module>
                 <module>org.eclipse.winery.topologygraph</module>
-                <module>org.eclipse.winery.compliance</module>
-                <module>org.eclipse.winery.generators.ia</module>
-                <module>org.eclipse.winery.highlevelrestapi</module>
                 <module>org.eclipse.winery.tools.copybaragenerator</module>
-                <module>org.eclipse.winery.model.adaptation</module>
-                <module>org.eclipse.winery.frontends</module>
-                <module>org.eclipse.winery.crawler</module>
                 <module>org.eclipse.winery.tools.deployablecomponents</module>
-                <module>org.eclipse.winery.model.threatmodeling</module>
             </modules>
         </profile>
         <profile>
@@ -144,27 +136,27 @@
         <profile>
             <id>java</id>
             <modules>
+                <module>org.eclipse.winery.accountability</module>
+                <module>org.eclipse.winery.bpmn4tosca.converter.tobpel</module>
+                <module>org.eclipse.winery.cli</module>
+                <module>org.eclipse.winery.common</module>
+                <module>org.eclipse.winery.compliance</module>
+                <module>org.eclipse.winery.crawler</module>
+                <module>org.eclipse.winery.edmm</module>
+                <module>org.eclipse.winery.generators.ia</module>
+                <module>org.eclipse.winery.highlevelrestapi</module>
+                <module>org.eclipse.winery.model</module>
+                <module>org.eclipse.winery.model.adaptation</module>
                 <module>org.eclipse.winery.model.bpmn4tosca</module>
                 <module>org.eclipse.winery.model.csar.toscametafile</module>
                 <module>org.eclipse.winery.model.selfservice</module>
-                <module>org.eclipse.winery.model.tosca</module>
-                <module>org.eclipse.winery.model.tosca.yaml</module>
-                <module>org.eclipse.winery.accountability</module>
-                <module>org.eclipse.winery.common</module>
-                <module>org.eclipse.winery.cli</module>
-                <module>org.eclipse.winery.bpmn4tosca.converter.tobpel</module>
+                <module>org.eclipse.winery.model.threatmodeling</module>
                 <module>org.eclipse.winery.repository</module>
                 <module>org.eclipse.winery.repository.client</module>
                 <module>org.eclipse.winery.repository.rest</module>
                 <module>org.eclipse.winery.topologygraph</module>
-                <module>org.eclipse.winery.compliance</module>
-                <module>org.eclipse.winery.generators.ia</module>
-                <module>org.eclipse.winery.highlevelrestapi</module>
                 <module>org.eclipse.winery.tools.copybaragenerator</module>
-                <module>org.eclipse.winery.model.adaptation</module>
-                <module>org.eclipse.winery.crawler</module>
                 <module>org.eclipse.winery.tools.deployablecomponents</module>
-                <module>org.eclipse.winery.model.threatmodeling</module>
             </modules>
         </profile>
     </profiles>

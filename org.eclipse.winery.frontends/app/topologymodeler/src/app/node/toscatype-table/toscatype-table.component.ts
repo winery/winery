@@ -13,7 +13,6 @@
  *******************************************************************************/
 
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { QName } from '../../models/qname';
 import { EntitiesModalService, OpenModalEvent } from '../../canvas/entities-modal/entities-modal.service';
 import { ModalVariant } from '../../canvas/entities-modal/modal-model';
 import { definitionType, TableType, urlElement } from '../../models/enums';
@@ -27,6 +26,7 @@ import { RequirementDefinitionModel } from '../../models/requirementDefinitonMod
 import { TArtifact, VisualEntityType } from '../../models/ttopology-template';
 import { TPolicy } from '../../models/policiesModalData';
 import { InheritanceUtils } from '../../models/InheritanceUtils';
+import { QName } from '../../../../../shared/src/app/model/qName';
 
 @Component({
     selector: 'winery-toscatype-table',
@@ -333,16 +333,20 @@ export class ToscatypeTableComponent implements OnInit, OnChanges {
 
     clickArtifactFile(artifact: TArtifact) {
         if (artifact) {
-            this.backendService.downloadYamlArtifactFile(this.currentNodeData.currentNodeId,
-                artifact.id,
-                artifact.file).subscribe(data => {
-                const blob = new Blob([data.body], { type: 'application/octet-stream' });
-                const url = window.URL.createObjectURL(blob);
-                const anchor = document.createElement('a');
-                anchor.download = artifact.file;
-                anchor.href = url;
-                anchor.click();
-            });
+            if (artifact.type && artifact.type === '{radon.artifacts}Repository') {
+                window.open(artifact.file, '_blank');
+            } else {
+                this.backendService.downloadYamlArtifactFile(this.currentNodeData.currentNodeId,
+                    artifact.id,
+                    artifact.file).subscribe(data => {
+                    const blob = new Blob([data.body], { type: 'application/octet-stream' });
+                    const url = window.URL.createObjectURL(blob);
+                    const anchor = document.createElement('a');
+                    anchor.download = artifact.file;
+                    anchor.href = url;
+                    anchor.click();
+                });
+            }
         }
     }
 

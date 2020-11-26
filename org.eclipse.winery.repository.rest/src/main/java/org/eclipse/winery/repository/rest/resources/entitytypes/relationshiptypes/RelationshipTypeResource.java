@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -24,9 +25,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.IdNames;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
+import org.eclipse.winery.model.ids.IdNames;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TRelationshipType;
@@ -41,6 +42,7 @@ import org.eclipse.winery.repository.rest.resources._support.GenericFileResource
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.ValidEndingsApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.ValidEndingsApiDataSet;
+import org.eclipse.winery.repository.rest.resources.apiData.ValidTypesListApiData;
 import org.eclipse.winery.repository.rest.resources.entitytypes.InstanceStatesResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.InterfaceDefinitionsResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.TopologyGraphElementEntityTypeResource;
@@ -113,6 +115,25 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
     @Path("interfacedefinitions")
     public InterfaceDefinitionsResource InterfaceDefinitionsResource() {
         return new InterfaceDefinitionsResource(this);
+    }
+
+    @Path("validtargets")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public ValidTypesListApiData getValidTargets() {
+        if (this.getRelationshipType().getValidTargetList() == null) {
+            return new ValidTypesListApiData(new ArrayList<>());
+        }
+        return new ValidTypesListApiData(this.getRelationshipType().getValidTargetList());
+    }
+
+    @Path("validtargets")
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response saveValidTargets(ValidTypesListApiData validTargets) {
+        this.getRelationshipType().setValidTargetList(validTargets.asQNames());
+
+        return RestUtils.persist(this);
     }
 
     /*

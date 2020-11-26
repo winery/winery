@@ -18,6 +18,8 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
+
 @XmlRootElement
 public class UpdateInfo {
 
@@ -27,6 +29,7 @@ public class UpdateInfo {
     private List<String> newList;
     private List<String> resolvedList;
     private boolean saveAfterUpdate;
+    private TTopologyTemplate topologyTemplate;
 
     public String getNodeTemplateId() {
         return nodeTemplateId;
@@ -78,5 +81,13 @@ public class UpdateInfo {
 
     public void setSaveAfterUpdate(boolean saveAfterUpdate) {
         this.saveAfterUpdate = saveAfterUpdate;
+    }
+
+    public TTopologyTemplate getTopologyTemplate() {
+        return topologyTemplate;
+    }
+
+    public void setTopologyTemplate(TTopologyTemplate topologyTemplate) {
+        this.topologyTemplate = topologyTemplate;
     }
 }

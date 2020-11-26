@@ -14,7 +14,7 @@
 
 package org.eclipse.winery.repository.rest.resources.imports.wsdlimports;
 
-import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
+import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.repository.rest.resources.imports.genericimports.GenericImportResource;
 
 public class WsdlImportResource extends GenericImportResource {

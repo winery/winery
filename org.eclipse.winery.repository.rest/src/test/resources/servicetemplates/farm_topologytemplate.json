@@ -72,6 +72,7 @@
                 "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "333"
             },
             "properties": {
+                "propertyType": "KV",
                 "kvproperties": {
                     "Antioxidants": "",
                     "VitaminC": "",
@@ -99,6 +100,7 @@
                 "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "331"
             },
             "properties": {
+                "propertyType": "KV",
                 "kvproperties": {
                     "Antioxidants": "",
                     "VitaminC": "",
@@ -126,6 +128,7 @@
                 "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "329"
             },
             "properties": {
+                "propertyType": "KV",
                 "kvproperties": {
                     "Antioxidants": "",
                     "VitaminC": "",
@@ -153,6 +156,7 @@
                 "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "219"
             },
             "properties": {
+                "propertyType": "KV",
                 "kvproperties": {
                     "Antioxidants": "",
                     "VitaminC": "",
@@ -180,6 +184,7 @@
                 "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "325"
             },
             "properties": {
+                "propertyType": "KV",
                 "kvproperties": {
                     "Antioxidants": "",
                     "VitaminC": "",

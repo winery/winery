@@ -17,7 +17,7 @@ package org.eclipse.winery.model.adaptation.substitution.refinement.patterns;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 

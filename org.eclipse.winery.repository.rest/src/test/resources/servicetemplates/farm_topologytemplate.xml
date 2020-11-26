@@ -1,73 +1,68 @@
 <TopologyTemplate xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"
                   xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12">
-    <NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="plantage" name="plantage"
+    <NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="plantage" name="plantage" maxInstances="1" minInstances="1"
                   type="wfn:plantage" winery:location="undefined" winery:x="958" winery:y="894"/>
-    <NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="tree" name="tree" type="wfn:tree"
+    <NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="tree" name="tree" type="wfn:tree" maxInstances="1" minInstances="1"
                   winery:location="undefined" winery:x="606" winery:y="671"/>
-    <NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="tree_2" name="tree_3"
+    <NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="tree_2" name="tree_3" maxInstances="1" minInstances="1"
                   type="wfn:tree" winery:location="undefined" winery:x="1441" winery:y="645"/>
-    <NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="baobab" name="baobab"
+    <NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="baobab" name="baobab" maxInstances="1" minInstances="1"
                   type="wfn:baobab" winery:location="undefined" winery:x="324" winery:y="333">
         <Properties>
-            <wfn:BaobabProperties xmlns="http://winery.opentosca.org/test/nodetypes/fruits"
-                                  xmlns:ty="http://winery.opentosca.org/test/nodetypes/fruits">
-                <ty:Antioxidants/>
-                <ty:VitaminC/>
-                <ty:Potassium/>
-                <ty:Superfood/>
-                <ty:HarvestedAt/>
+            <wfn:BaobabProperties>
+                <wfn:Antioxidants/>
+                <wfn:VitaminC/>
+                <wfn:Potassium/>
+                <wfn:Superfood/>
+                <wfn:HarvestedAt/>
             </wfn:BaobabProperties>
         </Properties>
     </NodeTemplate>
-    <NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="orange" name="orange"
+    <NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="orange" name="orange" maxInstances="1" minInstances="1"
                   type="wfn:orange" winery:location="undefined" winery:x="1284" winery:y="331">
         <Properties>
-            <wfn:OrangeProperties xmlns="http://winery.opentosca.org/test/nodetypes/fruits"
-                                  xmlns:ty="http://winery.opentosca.org/test/nodetypes/fruits">
-                <ty:Antioxidants/>
-                <ty:VitaminC/>
-                <ty:Potassium/>
-                <ty:Superfood/>
-                <ty:HarvestedAt/>
+            <wfn:OrangeProperties>
+                <wfn:Antioxidants/>
+                <wfn:VitaminC/>
+                <wfn:Potassium/>
+                <wfn:Superfood/>
+                <wfn:HarvestedAt/>
             </wfn:OrangeProperties>
         </Properties>
     </NodeTemplate>
-    <NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="orange_2" name="orange_3"
+    <NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="orange_2" name="orange_3" maxInstances="1" minInstances="1"
                   type="wfn:orange" winery:location="undefined" winery:x="1599" winery:y="329">
         <Properties>
-            <wfn:OrangeProperties xmlns="http://winery.opentosca.org/test/nodetypes/fruits"
-                                  xmlns:ty="http://winery.opentosca.org/test/nodetypes/fruits">
-                <ty:Antioxidants/>
-                <ty:VitaminC/>
-                <ty:Potassium/>
-                <ty:Superfood/>
-                <ty:HarvestedAt/>
+            <wfn:OrangeProperties>
+                <wfn:Antioxidants/>
+                <wfn:VitaminC/>
+                <wfn:Potassium/>
+                <wfn:Superfood/>
+                <wfn:HarvestedAt/>
             </wfn:OrangeProperties>
         </Properties>
     </NodeTemplate>
-    <NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="baobab_2" name="baobab_3"
+    <NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="baobab_2" name="baobab_3" maxInstances="1" minInstances="1"
                   type="wfn:baobab" winery:location="undefined" winery:x="606" winery:y="219">
         <Properties>
-            <wfn:BaobabProperties xmlns="http://winery.opentosca.org/test/nodetypes/fruits"
-                                  xmlns:ty="http://winery.opentosca.org/test/nodetypes/fruits">
-                <ty:Antioxidants/>
-                <ty:VitaminC/>
-                <ty:Potassium/>
-                <ty:Superfood/>
-                <ty:HarvestedAt/>
+            <wfn:BaobabProperties>
+                <wfn:Antioxidants/>
+                <wfn:VitaminC/>
+                <wfn:Potassium/>
+                <wfn:Superfood/>
+                <wfn:HarvestedAt/>
             </wfn:BaobabProperties>
         </Properties>
     </NodeTemplate>
-    <NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="baobab_3" name="baobab_4"
+    <NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="baobab_3" name="baobab_4" maxInstances="1" minInstances="1"
                   type="wfn:baobab" winery:location="undefined" winery:x="900" winery:y="325">
         <Properties>
-            <wfn:BaobabProperties xmlns="http://winery.opentosca.org/test/nodetypes/fruits"
-                                  xmlns:ty="http://winery.opentosca.org/test/nodetypes/fruits">
-                <ty:Antioxidants/>
-                <ty:VitaminC/>
-                <ty:Potassium/>
-                <ty:Superfood/>
-                <ty:HarvestedAt/>
+            <wfn:BaobabProperties>
+                <wfn:Antioxidants/>
+                <wfn:VitaminC/>
+                <wfn:Potassium/>
+                <wfn:Superfood/>
+                <wfn:HarvestedAt/>
             </wfn:BaobabProperties>
         </Properties>
     </NodeTemplate>

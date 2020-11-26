@@ -37,8 +37,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.Util;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
@@ -96,7 +96,7 @@ public class GenericFileResource {
             return response;
         }
 
-        String URL = RestUtils.getAbsoluteURL(this.fileDir) + Util.URLencode(fileName);
+        String URL = RestUtils.getAbsoluteURL(this.fileDir) + EncodingUtil.URLencode(fileName);
         return Response.created(URI.create(URL)).entity(this.getAllFileMetas()).build();
     }
 
@@ -130,12 +130,12 @@ public class GenericFileResource {
     }
 
     private RepositoryFileReference fileName2fileRef(String fileName, boolean fileNameEncoded) {
-        String name = fileNameEncoded ? Util.URLdecode(fileName) : fileName;
+        String name = fileNameEncoded ? EncodingUtil.URLdecode(fileName) : fileName;
         return new RepositoryFileReference(this.fileDir, name);
     }
 
     protected RepositoryFileReference fileName2fileRef(String fileName, String path, boolean fileNameEncoded) {
-        String name = fileNameEncoded ? Util.URLdecode(fileName) : fileName;
+        String name = fileNameEncoded ? EncodingUtil.URLdecode(fileName) : fileName;
         return new RepositoryFileReference(this.fileDir, Paths.get(path), name);
     }
 

@@ -74,9 +74,9 @@ export class InstanceService {
                 break;
             case ToscaTypes.RelationshipType:
                 if (this.configurationService.isYaml()) {
-                    subMenu = [SubMenuItems.readme, SubMenuItems.documentation, SubMenuItems.license, SubMenuItems.appearance, SubMenuItems.instanceStates,
-                        SubMenuItems.files, SubMenuItems.interfacedefinitions, SubMenuItems.validSourcesAndTargets, SubMenuItems.implementations,
-                        SubMenuItems.propertiesDefinition, SubMenuItems.inheritance];
+                    subMenu = [SubMenuItems.readme, SubMenuItems.documentation, SubMenuItems.license, SubMenuItems.appearance,
+                        SubMenuItems.files, SubMenuItems.interfacedefinitions, SubMenuItems.propertiesDefinition, SubMenuItems.inheritance,
+                        SubMenuItems.validTargetTypes];
                 } else {
                     subMenu = [SubMenuItems.readme, SubMenuItems.documentation, SubMenuItems.license, SubMenuItems.appearance, SubMenuItems.instanceStates,
                         SubMenuItems.sourceInterfaces, SubMenuItems.interfaces, SubMenuItems.targetInterfaces, SubMenuItems.validSourcesAndTargets,
@@ -104,7 +104,7 @@ export class InstanceService {
             case ToscaTypes.CapabilityType:
                 if (this.configurationService.isYaml()) {
                     subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.propertiesDefinition, SubMenuItems.inheritance,
-                        SubMenuItems.capabilityTypeConstraints, SubMenuItems.documentation];
+                        SubMenuItems.validSourceTypes, SubMenuItems.documentation];
                 } else {
                     subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.propertiesDefinition, SubMenuItems.inheritance,
                         SubMenuItems.documentation, SubMenuItems.xml];
@@ -123,7 +123,7 @@ export class InstanceService {
                     subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.appliesTo, SubMenuItems.propertiesDefinition,
                         SubMenuItems.inheritance, SubMenuItems.appearance, SubMenuItems.documentation];
                 } else {
-                    subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.language, SubMenuItems.appliesTo, SubMenuItems.propertiesDefinition,
+                    subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.propertiesDefinition,
                         SubMenuItems.inheritance, SubMenuItems.templates, SubMenuItems.appearance, SubMenuItems.documentation, SubMenuItems.xml];
                 }
                 break;
@@ -147,6 +147,9 @@ export class InstanceService {
             case ToscaTypes.TestRefinementModel:
                 subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.detector, SubMenuItems.testFragment, SubMenuItems.relationMappings,
                     SubMenuItems.xml];
+                break;
+            case ToscaTypes.DataType:
+                subMenu = [SubMenuItems.readme, SubMenuItems.inheritance, SubMenuItems.constraints, SubMenuItems.properties];
                 break;
             default: // assume Admin
                 if (this.configurationService.isYaml()) {

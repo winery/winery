@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -22,7 +24,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.model.tosca.kvproperties.ParameterDefinitionList;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinition;
 import org.eclipse.winery.repository.rest.RestUtils;
 
 public class ParameterResource {
@@ -38,14 +40,14 @@ public class ParameterResource {
     @GET
     @Path("inputs")
     @Produces(MediaType.APPLICATION_JSON)
-    public ParameterDefinitionList getInputParameters() {
+    public List<ParameterDefinition> getInputParameters() {
         return this.topologyTemplate.getInputs();
     }
 
     @PUT
     @Path("inputs")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response putInputParameters(ParameterDefinitionList parameters) {
+    public Response putInputParameters(List<ParameterDefinition> parameters) {
         this.topologyTemplate.setInputs(parameters);
         return RestUtils.persist(this.parent);
     }
@@ -53,14 +55,14 @@ public class ParameterResource {
     @GET
     @Path("outputs")
     @Produces(MediaType.APPLICATION_JSON)
-    public ParameterDefinitionList getOutputParameters() {
+    public List<ParameterDefinition> getOutputParameters() {
         return this.topologyTemplate.getOutputs();
     }
 
     @PUT
     @Path("outputs")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response putOutputParameters(ParameterDefinitionList parameters) {
+    public Response putOutputParameters(List<ParameterDefinition> parameters) {
         this.topologyTemplate.setOutputs(parameters);
         return RestUtils.persist(this.parent);
     }

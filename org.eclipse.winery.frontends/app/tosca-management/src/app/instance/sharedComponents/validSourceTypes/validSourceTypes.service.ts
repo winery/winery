@@ -33,6 +33,11 @@ export class ValidSourceTypesService {
         return this.http.get<ValidSourceTypesApiData>(this.path + '/' + resourceName);
     }
 
+    getAvailableGenericType(type: ToscaTypes): Observable<SelectData[]> {
+        const url = backendBaseURL + '/' + type + '?grouped=angularSelect&dev=true/';
+        return this.http.get<SelectData[]>(url);
+    }
+
     getAvailableValidSourceTypes(): Observable<SelectData[]> {
         const url = backendBaseURL + '/' + ToscaTypes.NodeType + '?grouped=angularSelect&dev=true/';
         return this.http.get<SelectData[]>(url);

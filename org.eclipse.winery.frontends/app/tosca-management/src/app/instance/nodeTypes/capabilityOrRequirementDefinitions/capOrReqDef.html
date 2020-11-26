@@ -74,14 +74,16 @@
                                               [withInfinity]="true"></winery-spinner-with-infinity>
             </div>
             <br>
-            <div *ngIf="this.capOrReqDefToBeAdded.type && this.capOrReqDefToBeAdded.type != 'none'">
-                <winery-table title="Valid Source Types"
-                              [columns]="addCapabilityColumns"
-                              [data]="validSourceTypesTableData"
-                              disableFiltering="true"
-                              (addBtnClicked)="onAddSourceTypeClick()"
-                              (removeBtnClicked)="onRemoveClicked($event)">
-                </winery-table>
+            <div *wineryRepositoryShowOnFeature="'yaml'">
+                <div *ngIf="this.capOrReqDefToBeAdded.type && this.capOrReqDefToBeAdded.type != 'none'">
+                    <winery-table title="Valid Source Types"
+                                  [columns]="addCapabilityColumns"
+                                  [data]="validSourceTypesTableData"
+                                  disableFiltering="true"
+                                  (addBtnClicked)="onAddSourceTypeClick()"
+                                  (removeBtnClicked)="onRemoveClicked($event)">
+                    </winery-table>
+                </div>
             </div>
         </form>
     </winery-modal-body>

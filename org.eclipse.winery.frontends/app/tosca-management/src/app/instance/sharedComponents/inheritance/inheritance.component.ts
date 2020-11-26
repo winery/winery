@@ -12,7 +12,6 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { isNullOrUndefined } from 'util';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { InstanceService } from '../../instance.service';
 import { InheritanceService } from './inheritance.service';
@@ -98,16 +97,22 @@ export class InheritanceComponent implements OnInit {
         this.initialActiveItem = [{
             'id': this.inheritanceApiData.derivedFrom, 'text': this.inheritanceApiData.derivedFrom.split('}').pop()
         }];
-        if (!isNullOrUndefined(this.availableSuperClasses)) {
+        if (!(this.availableSuperClasses === null || this.availableSuperClasses === undefined)) {
             this.loading = false;
             this.enableButton = this.inheritanceApiData.derivedFrom !== '(none)';
         }
     }
 
     private handleSuperClassData(superClasses: SelectData[]) {
-        this.availableSuperClasses = this.noneElement.concat(superClasses);
-
-        if (!isNullOrUndefined(this.inheritanceApiData)) {
+        this.availableSuperClasses = this.noneElement.concat(superClasses)
+            // do not show current selected type
+            .filter(group => {
+                if (group.children) {
+                    group.children = group.children.filter(type => type.id !== this.sharedData.toscaComponent.getQName());
+                }
+                return group.children && group.children.length > 0;
+            });
+        if (!(this.inheritanceApiData === null || this.inheritanceApiData === undefined)) {
             this.loading = false;
             this.enableButton = this.inheritanceApiData.derivedFrom !== '(none)';
         }

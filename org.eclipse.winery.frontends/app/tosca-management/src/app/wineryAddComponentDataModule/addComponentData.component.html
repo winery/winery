@@ -30,7 +30,7 @@
                     <div [hidden]="!validation?.noDuplicatesAllowed">
                         No duplicates allowed!
                     </div>
-                    <div [hidden]="!newName?.errors?.required">
+                    <div [hidden]="!newName?.errors?.required && !validation?.noNameAvailable">
                         Name is required!
                     </div>
                 </div>

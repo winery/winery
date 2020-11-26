@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,17 +14,23 @@
 
 package org.eclipse.winery.repository.driverspecificationandinjection;
 
-import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.model.tosca.*;
-import org.eclipse.winery.repository.TestWithGitBackedRepository;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
+import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.tosca.TArtifactType;
+import org.eclipse.winery.model.tosca.TDeploymentArtifact;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.repository.TestWithGitBackedRepository;
+
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -109,11 +115,11 @@ public class DASpecificationTest extends TestWithGitBackedRepository {
         TNodeTemplate nodeTemplateConcretDA2 = topologyTemplate.getNodeTemplate("westernequipment");
         TRelationshipTemplate relationshipTemplate2 = topologyTemplate.getRelationshipTemplate("con_54");
 
-        Map<TRelationshipTemplate, TNodeTemplate> concreteDAsAndConnectedNodes = new HashMap<>();
-        concreteDAsAndConnectedNodes.put(relationshipTemplate1, nodeTemplateConcretDA1);
-        concreteDAsAndConnectedNodes.put(relationshipTemplate2, nodeTemplateConcretDA2);
+        Set<Pair<TRelationshipTemplate, TNodeTemplate>> concreteDAsAndConnectedNodes = new HashSet<>();
+        concreteDAsAndConnectedNodes.add(Pair.of(relationshipTemplate1, nodeTemplateConcretDA1));
+        concreteDAsAndConnectedNodes.add(Pair.of(relationshipTemplate2, nodeTemplateConcretDA2));
 
-        Map<TRelationshipTemplate, TNodeTemplate> actualNodeWithConcreteDA =
+        Set<Pair<TRelationshipTemplate, TNodeTemplate>> actualNodeWithConcreteDA =
             DASpecification.getNodesWithSuitableConcreteDAAndTheDirectlyConnectedNode(nodeTemplateWithAbstractDA, deploymentArtifact, topologyTemplate);
 
         assertEquals(concreteDAsAndConnectedNodes, actualNodeWithConcreteDA);

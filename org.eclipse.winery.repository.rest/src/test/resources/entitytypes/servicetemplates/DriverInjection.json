@@ -32,6 +32,7 @@
             "otherAttributes": {
             },
             "properties": {
+                "propertyType": "KV",
                 "kvproperties": {
                     "Driver": ""
                 }
@@ -59,6 +60,7 @@
                 "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "161"
             },
             "properties": {
+                "propertyType": "XML",
                 "any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<ns3:Properties xmlns=\"http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery\" xmlns:ns0=\"http://winery.opentosca.org/test/ponyuniverse\" xmlns:ns1=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:ns2=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:ns3=\"http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery\" xmlns:tosca=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ty=\"http://winery.opentosca.org/test/ponyuniverse\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"/>"
             },
             "type": "{http://winery.opentosca.org/test/ponyuniverse}shetland_pony",

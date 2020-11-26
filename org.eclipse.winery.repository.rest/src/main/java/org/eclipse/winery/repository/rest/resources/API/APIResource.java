@@ -27,9 +27,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.datatypes.select2.Select2DataWithOptGroups;
 import org.eclipse.winery.repository.rest.resources.admin.AccountabilityConfigurationResource;
@@ -52,7 +53,8 @@ public class APIResource {
         QName serviceTemplateQName = QName.valueOf(serviceTemplateQNameString);
 
         ServiceTemplateId serviceTemplateId = new ServiceTemplateId(serviceTemplateQName);
-        if (!RepositoryFactory.getRepository().exists(serviceTemplateId)) {
+        final IRepository repository = RepositoryFactory.getRepository();
+        if (!repository.exists(serviceTemplateId)) {
             return Response.status(Status.BAD_REQUEST).entity("service template does not exist").build();
         }
         ServiceTemplateResource serviceTemplateResource = new ServiceTemplateResource(serviceTemplateId);
@@ -61,7 +63,7 @@ public class APIResource {
         List<TNodeTemplate> allNestedNodeTemplates = BackendUtils.getAllNestedNodeTemplates(serviceTemplateResource.getServiceTemplate());
         for (TNodeTemplate nodeTemplate : allNestedNodeTemplates) {
             if (StringUtils.isEmpty(nodeTemplateId) || nodeTemplate.getId().equals(nodeTemplateId)) {
-                Collection<QName> ats = BackendUtils.getArtifactTemplatesOfReferencedDeploymentArtifacts(nodeTemplate);
+                Collection<QName> ats = BackendUtils.getArtifactTemplatesOfReferencedDeploymentArtifacts(nodeTemplate, repository);
                 artifactTemplates.addAll(ats);
             }
         }
@@ -90,7 +92,8 @@ public class APIResource {
         QName serviceTemplateQName = QName.valueOf(serviceTemplateQNameString);
 
         ServiceTemplateId serviceTemplateId = new ServiceTemplateId(serviceTemplateQName);
-        if (!RepositoryFactory.getRepository().exists(serviceTemplateId)) {
+        final IRepository repository = RepositoryFactory.getRepository();
+        if (!repository.exists(serviceTemplateId)) {
             return Response.status(Status.BAD_REQUEST).entity("service template does not exist").build();
         }
         ServiceTemplateResource serviceTemplateResource = new ServiceTemplateResource(serviceTemplateId);
@@ -99,7 +102,7 @@ public class APIResource {
         List<TNodeTemplate> allNestedNodeTemplates = BackendUtils.getAllNestedNodeTemplates(serviceTemplateResource.getServiceTemplate());
         for (TNodeTemplate nodeTemplate : allNestedNodeTemplates) {
             if (StringUtils.isEmpty(nodeTemplateId) || nodeTemplate.getId().equals(nodeTemplateId)) {
-                Collection<QName> ats = BackendUtils.getArtifactTemplatesOfReferencedImplementationArtifacts(nodeTemplate);
+                Collection<QName> ats = BackendUtils.getArtifactTemplatesOfReferencedImplementationArtifacts(nodeTemplate, repository);
                 artifactTemplates.addAll(ats);
             }
         }

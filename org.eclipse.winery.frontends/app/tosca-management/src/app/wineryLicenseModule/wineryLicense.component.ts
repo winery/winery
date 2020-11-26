@@ -30,7 +30,7 @@ import { Observable } from 'rxjs/Rx';
 export class WineryLicenseComponent implements OnInit {
 
     licenseText = '';
-    intialLicenseText = '';
+    initialLicenseText = '';
     licenseAvailable = true;
     licenseType = '';
 
@@ -40,7 +40,9 @@ export class WineryLicenseComponent implements OnInit {
 
     toscaType: ToscaTypes;
 
-    constructor(private service: WineryLicenseService, private notify: WineryNotificationService, public sharedData: InstanceService) {
+    constructor(private service: WineryLicenseService,
+                private notify: WineryNotificationService,
+                public sharedData: InstanceService) {
         this.toscaType = this.sharedData.toscaComponent.toscaType;
         this.options = this.service.getLicenseNames();
     }
@@ -53,7 +55,7 @@ export class WineryLicenseComponent implements OnInit {
                         map(
                             data => {
                                 this.licenseText = data;
-                                this.intialLicenseText = data;
+                                this.initialLicenseText = data;
                             }),
                         catchError((e) => {
                             this.handleMissingLicense();
@@ -85,7 +87,7 @@ export class WineryLicenseComponent implements OnInit {
     }
 
     cancelEdit() {
-        this.licenseText = this.intialLicenseText;
+        this.licenseText = this.initialLicenseText;
         this.isEditable = false;
     }
 

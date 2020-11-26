@@ -11,45 +11,56 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
 -->
-<hotkeys-cheatsheet></hotkeys-cheatsheet>
-<router-outlet *ngIf="!readonly"></router-outlet>
+<ng-sidebar-container style="height: 100vh;">
 
-<winery-topology-renderer *ngIf="loaded?.loadedData"
-                          [readonly]="backendService.configuration.isReadonly"
-                          [entityTypes]="entityTypes"
-                          [differencesData]="topologyDifferences"
-                          [nodeTemplates]="nodeTemplates"
-                          [relationshipTemplates]="relationshipTemplates"
-                          [sidebarDeleteButtonClickEvent]="sidebarDeleteButtonClickEvent"
-                          (generatedReduxState)="onReduxReady()">
-</winery-topology-renderer>
+    <ng-sidebar class="winery-sidebar"
+                [(opened)]="detailsSidebarVisible"
+                [position]="'right'"
+                (onClosed)="notifyClose('node-details')"
+                *ngIf="loaded?.loadedData">
+        <!-- need to wait for loading to know about repo configuration's yaml state -->
+        <winery-node-details-sidebar [readonly]="readonly"
+                                     (sidebarDeleteButtonClicked)="sidebarDeleteButtonClicked($event)"
+                                     class="sidebar">
+        </winery-node-details-sidebar>
+    </ng-sidebar>
 
-<div *ngIf="loaded?.generatedReduxState">
-    <div *ngIf="!hideNavBarState">
-        <winery-palette-component *ngIf="!topologyDifferences && !readonly"
-                                  style="width:300px;float:left;margin-top:50px;"
-                                  [entityTypes]="this.entityTypes">
-        </winery-palette-component>
+    <div ng-sidebar-content>
+
+        <hotkeys-cheatsheet></hotkeys-cheatsheet>
+        <router-outlet *ngIf="!readonly"></router-outlet>
+
+        <winery-topology-renderer *ngIf="loaded?.loadedData"
+                                  [readonly]="backendService.configuration.isReadonly"
+                                  [entityTypes]="entityTypes"
+                                  [differencesData]="topologyDifferences"
+                                  [nodeTemplates]="nodeTemplates"
+                                  [relationshipTemplates]="relationshipTemplates"
+                                  [sidebarDeleteButtonClickEvent]="sidebarDeleteButtonClickEvent"
+                                  (generatedReduxState)="onReduxReady()">
+        </winery-topology-renderer>
+
+        <div *ngIf="loaded?.generatedReduxState">
+            <div *ngIf="!hideNavBarState">
+                <winery-palette-component *ngIf="!topologyDifferences && !readonly"
+                                          style="width:300px;float:left;margin-top:50px;"
+                                          [entityTypes]="this.entityTypes">
+                </winery-palette-component>
+            </div>
+        </div>
+
+        <div class="sidebar-container">
+            <winery-refinement *ngIf="refiningType" [refinementType]="refiningType"></winery-refinement>
+            <winery-problem-detection></winery-problem-detection>
+            <winery-enricher></winery-enricher>
+            <winery-edmm-transformation-check></winery-edmm-transformation-check>
+            <winery-group-view></winery-group-view>
+            <winery-manage-participants></winery-manage-participants>
+            <winery-multi-participants></winery-multi-participants>
+        </div>
+
+        <winery-version-slider *ngIf="showVersionSlider"></winery-version-slider>
+
     </div>
 
-    <winery-refinement *ngIf="refiningType" [refinementType]="refiningType" class="sidebar">
-    </winery-refinement>
-
-    <winery-problem-detection class="sidebar">
-    </winery-problem-detection>
-
-    <winery-enricher class="sidebar">
-    </winery-enricher>
-
-    <winery-sidebar (sidebarDeleteButtonClicked)="sidebarDeleteButtonClicked($event)" class="sidebar">
-    </winery-sidebar>
-
-    <winery-edmm-transformation-check class="sidebar">
-    </winery-edmm-transformation-check>
-
-    <winery-version-slider *ngIf="showVersionSlider">
-    </winery-version-slider>
-</div>
-<!--
-<app-sidebar style="width : 300px; float:right"></app-sidebar>
--->
+</ng-sidebar-container>

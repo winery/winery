@@ -34,6 +34,7 @@ import { TagModule } from '../../instance/sharedComponents/tag/tag.module';
 import { YamlRequirementDefinitionsModule } from '../../instance/nodeTypes/yamlRequirementDefinitions/yamlRequirementDefinitions.module';
 import { AttributesModule } from '../../instance/sharedComponents/attributes/attributes.module';
 import { ArtifactsModule } from '../../instance/sharedComponents/artifacts/artifacts.module';
+import { WineryFeatureToggleModule } from '../../wineryFeatureToggleModule/winery-feature-toggle.module';
 
 @NgModule({
     imports: [
@@ -58,6 +59,7 @@ import { ArtifactsModule } from '../../instance/sharedComponents/artifacts/artif
         YamlRequirementDefinitionsModule,
         AttributesModule,
         ArtifactsModule,
+        WineryFeatureToggleModule,
     ],
     exports: [],
     declarations: [CapOrReqDefComponent],

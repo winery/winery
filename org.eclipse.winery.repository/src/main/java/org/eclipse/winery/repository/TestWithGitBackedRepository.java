@@ -20,7 +20,7 @@ import java.nio.file.Paths;
 import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
 import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
 import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -45,6 +45,8 @@ public abstract class TestWithGitBackedRepository {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(TestWithGitBackedRepository.class);
 
+    public final Path repositoryPath;
+
     public final IRepository repository;
 
     public final Git git;
@@ -55,8 +57,14 @@ public abstract class TestWithGitBackedRepository {
      * @throws RuntimeException wraps an Exception
      */
     public TestWithGitBackedRepository() {
+        this(RepositoryConfigurationObject.RepositoryProvider.FILE);
+    }
+
+    protected TestWithGitBackedRepository(RepositoryConfigurationObject.RepositoryProvider provider) {
+        this.repositoryPath = Paths.get(System.getProperty("java.io.tmpdir")).resolve("test-repository");
+        String remoteUrl = "https://github.com/winery/test-repository.git";
+
         try {
-            Path repositoryPath = Paths.get(System.getProperty("java.io.tmpdir")).resolve("test-repository");
             LOGGER.debug("Testing with repository directory {}", repositoryPath);
 
             if (!Files.exists(repositoryPath)) {
@@ -67,7 +75,7 @@ public abstract class TestWithGitBackedRepository {
             if (!Files.exists(repositoryPath.resolve(".git"))) {
                 FileUtils.cleanDirectory(repositoryPath.toFile());
                 this.git = Git.cloneRepository()
-                    .setURI("https://github.com/winery/test-repository.git")
+                    .setURI(remoteUrl)
                     .setBare(false)
                     .setCloneAllBranches(true)
                     .setDirectory(repositoryPath.toFile())
@@ -84,9 +92,9 @@ public abstract class TestWithGitBackedRepository {
             }
 
             // inject the current path to the repository factory
-            FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration = new FileBasedRepositoryConfiguration(repositoryPath);
+            FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration = new FileBasedRepositoryConfiguration(repositoryPath, provider);
             // force xml repository provider
-            fileBasedRepositoryConfiguration.setRepositoryProvider(RepositoryConfigurationObject.RepositoryProvider.FILE);
+            fileBasedRepositoryConfiguration.setRepositoryProvider(provider);
             GitBasedRepositoryConfiguration gitBasedRepositoryConfiguration = new GitBasedRepositoryConfiguration(false, fileBasedRepositoryConfiguration);
             RepositoryFactory.reconfigure(gitBasedRepositoryConfiguration);
 

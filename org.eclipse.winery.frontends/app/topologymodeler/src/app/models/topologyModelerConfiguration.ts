@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { QName } from './qname';
+import { QName } from '../../../../shared/src/app/model/qName';
 
 export class TopologyModelerConfiguration {
 

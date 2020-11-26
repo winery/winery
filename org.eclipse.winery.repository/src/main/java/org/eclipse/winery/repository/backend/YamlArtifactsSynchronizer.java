@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TArtifact;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -28,11 +28,13 @@ import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.jdt.annotation.Nullable;
 
 public class YamlArtifactsSynchronizer {
+    final IRepository repository;
     final TTopologyTemplate originalTemplate;
     final TTopologyTemplate newTemplate;
     final ServiceTemplateId serviceTemplateId;
 
     private YamlArtifactsSynchronizer(Builder builder) {
+        this.repository = builder.repository;
         this.originalTemplate = builder.originalTemplate;
         this.newTemplate = builder.newTemplate;
         this.serviceTemplateId = builder.serviceTemplateId;
@@ -64,13 +66,13 @@ public class YamlArtifactsSynchronizer {
     private void deleteNodeTemplate(TNodeTemplate nodeTemplate) throws IOException {
         DirectoryId artifactsDirectory =
             BackendUtils.getYamlArtifactsDirectoryOfNodeTemplate(this.serviceTemplateId, nodeTemplate.getId());
-        RepositoryFactory.getRepository().forceDelete(artifactsDirectory);
+        repository.forceDelete(artifactsDirectory);
     }
 
     private void deleteYamlArtifact(TNodeTemplate nodeTemplate, TArtifact artifact) throws IOException {
         DirectoryId artifactDirectory =
             BackendUtils.getYamlArtifactDirectoryOfNodeTemplate(this.serviceTemplateId, nodeTemplate.getId(), artifact.getId());
-        RepositoryFactory.getRepository().forceDelete(artifactDirectory);
+        repository.forceDelete(artifactDirectory);
     }
 
     private <T extends TEntityTemplate> List<T> getDeleteList(List<T> originalList, List<T> newList) {
@@ -90,9 +92,14 @@ public class YamlArtifactsSynchronizer {
     }
 
     public static class Builder {
+        final IRepository repository;
         TTopologyTemplate originalTemplate;
         TTopologyTemplate newTemplate;
         ServiceTemplateId serviceTemplateId;
+
+        public Builder(IRepository repository) {
+            this.repository = repository;
+        }
 
         public Builder setServiceTemplateId(ServiceTemplateId serviceTemplateId) {
             this.serviceTemplateId = serviceTemplateId;

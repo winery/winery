@@ -40,21 +40,22 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XmlId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.EntityTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.repository.common.Util;
+import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.XmlId;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.EntityTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.generators.ia.Generator;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
-import org.eclipse.winery.model.tosca.TEntityTemplate.Properties;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -283,7 +284,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 
         if (StringUtils.isEmpty(apiData.autoGenerateIA)) {
             // No IA generation
-            return Response.created(URI.create(Util.URLencode(apiData.artifactName))).entity(resultingArtifact).build();
+            return Response.created(URI.create(EncodingUtil.URLencode(apiData.artifactName))).entity(resultingArtifact).build();
         } else {
             // after everything was created, we fire up the artifact generation
             return this.generateImplementationArtifact(apiData.interfaceName, apiData.javaPackage, uriInfo, artifactTemplateId);
@@ -444,7 +445,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
         element.appendChild(text);
         root.appendChild(element);
 
-        Properties properties = new Properties();
+        TEntityTemplate.XmlProperties properties = new TEntityTemplate.XmlProperties();
         properties.setAny(root);
 
         final IRepository repository = RepositoryFactory.getRepository();

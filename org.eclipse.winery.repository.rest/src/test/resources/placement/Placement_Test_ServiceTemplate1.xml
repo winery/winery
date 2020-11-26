@@ -10,9 +10,9 @@
                           type="ntyIgeneral1:CloudProvider1_w1-wip1" id="CloudProvider1_w1-wip1" winery:x="712"
                           winery:y="475" xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
                 <Properties>
-                    <Properties xmlns="http://www.example.org">
-                        <State>Running</State>
-                    </Properties>
+                    <ex:Properties xmlns:ex="http://www.example.org">
+                        <ex:State>Running</ex:State>
+                    </ex:Properties>
                 </Properties>
             </NodeTemplate>
             <NodeTemplate name="DataSource_w1-wip1" minInstances="1" maxInstances="1"
@@ -20,24 +20,19 @@
                           winery:y="265" winery:region="Germany"
                           xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
                 <Properties>
-                    <Properties xmlns="http://www.example.org">
-                        <State>Running</State>
-                        <DataSize>10</DataSize>
-                    </Properties>
+                    <ex:Properties xmlns:ex="http://www.example.org">
+                        <ex:State>Running</ex:State>
+                        <ex:DataSize>10</ex:DataSize>
+                    </ex:Properties>
                 </Properties>
             </NodeTemplate>
-            <RelationshipTemplate name="HostedOn" type="ToscaBaseTypes:HostedOn" id="con_HostedOn_0"
-                                  xmlns:ToscaBaseTypes="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
-                <SourceElement ref="DS1"/>
-                <TargetElement ref="CloudProvider1_w1-wip1"/>
-            </RelationshipTemplate>
             <NodeTemplate name="CloudProvider2_w1-wip1" minInstances="1" maxInstances="1"
                           type="ntyIgeneral1:CloudProvider2_w1-wip1" id="CloudProvider2_w1-wip1" winery:x="680"
                           winery:y="450" xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
                 <Properties>
-                    <Properties xmlns="http://www.example.org">
-                        <State>Running</State>
-                    </Properties>
+                    <ex:Properties xmlns:ex="http://www.example.org">
+                        <ex:State>Running</ex:State>
+                    </ex:Properties>
                 </Properties>
             </NodeTemplate>
             <NodeTemplate name="DataSource_w1-wip1" minInstances="1" maxInstances="1"
@@ -45,18 +40,13 @@
                           winery:y="284" winery:region="US-East"
                           xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
                 <Properties>
-                    <Properties xmlns="http://www.example.org">
-                        <State>Running</State>
-                        <DataSize>50</DataSize>
-                    </Properties>
+                    <ex:Properties xmlns:ex="http://www.example.org">
+                        <ex:State>Running</ex:State>
+                        <ex:DataSize>50</ex:DataSize>
+                    </ex:Properties>
                 </Properties>
             </NodeTemplate>
-            <RelationshipTemplate name="HostedOn" type="ToscaBaseTypes:HostedOn" id="con_HostedOn_0-1"
-                                  xmlns:ToscaBaseTypes="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
-                <SourceElement ref="DS2"/>
-                <TargetElement ref="CloudProvider2_w1-wip1"/>
-            </RelationshipTemplate>
-            <NodeTemplate type="ntyIgeneral1:DataProcessingComponent_w1-wip1" id="AnalyticsService"
+            <NodeTemplate type="ntyIgeneral1:DataProcessingComponent_w1-wip1" id="AnalyticsService" minInstances="1" maxInstances="1"
                           xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
                 <Requirements>
                     <Requirement name="ReqCanHostProcessingComponent" type="rtyIgeneral:ReqCanHostProcessingComponent"
@@ -64,12 +54,12 @@
                                  xmlns:rtyIgeneral="http://plain.winery.opentosca.org/placement/requirementtypes"/>
                 </Requirements>
             </NodeTemplate>
-            <NodeTemplate type="ntyIgeneral1:DataProcessingComponent_w1-wip1" id="Adapter-1"
+            <NodeTemplate type="ntyIgeneral1:DataProcessingComponent_w1-wip1" id="Adapter-1" minInstances="1" maxInstances="1"
                           xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
                 <Properties>
-                    <Properties xmlns="http://www.example.org">
-                        <DataFactor>1.0</DataFactor>
-                    </Properties>
+                    <ex:Properties xmlns:ex="http://www.example.org">
+                        <ex:DataFactor>1.0</ex:DataFactor>
+                    </ex:Properties>
                 </Properties>
                 <Requirements>
                     <Requirement name="ReqCanHostProcessingComponent" type="rtyIgeneral:ReqCanHostProcessingComponent"
@@ -77,12 +67,12 @@
                                  xmlns:rtyIgeneral="http://plain.winery.opentosca.org/placement/requirementtypes"/>
                 </Requirements>
             </NodeTemplate>
-            <NodeTemplate type="ntyIgeneral1:DataProcessingComponent_w1-wip1" id="Adapter-2"
+            <NodeTemplate type="ntyIgeneral1:DataProcessingComponent_w1-wip1" id="Adapter-2" minInstances="1" maxInstances="1"
                           xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
                 <Properties>
-                    <Properties xmlns="http://www.example.org">
-                        <DataFactor>0.5</DataFactor>
-                    </Properties>
+                    <ex:Properties xmlns:ex="http://www.example.org">
+                        <ex:DataFactor>0.5</ex:DataFactor>
+                    </ex:Properties>
                 </Properties>
                 <Requirements>
                     <Requirement name="ReqCanHostProcessingComponent" type="rtyIgeneral:ReqCanHostProcessingComponent"
@@ -90,6 +80,16 @@
                                  xmlns:rtyIgeneral="http://plain.winery.opentosca.org/placement/requirementtypes"/>
                 </Requirements>
             </NodeTemplate>
+            <RelationshipTemplate name="HostedOn" type="ToscaBaseTypes:HostedOn" id="con_HostedOn_0"
+                                  xmlns:ToscaBaseTypes="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
+                <SourceElement ref="DS1"/>
+                <TargetElement ref="CloudProvider1_w1-wip1"/>
+            </RelationshipTemplate>
+            <RelationshipTemplate name="HostedOn" type="ToscaBaseTypes:HostedOn" id="con_HostedOn_0-1"
+                                  xmlns:ToscaBaseTypes="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
+                <SourceElement ref="DS2"/>
+                <TargetElement ref="CloudProvider2_w1-wip1"/>
+            </RelationshipTemplate>
             <RelationshipTemplate name="DS1-connectsTo-Adapter-1" type="ToscaBaseTypes:ConnectsTo"
                                   id="DS1-connectsTo-Adapter-1" winery:dataTransferType="pull"
                                   xmlns:ToscaBaseTypes="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">

@@ -16,6 +16,7 @@ package org.eclipse.winery.repository.rest.resources.admin;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -28,6 +29,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.common.configuration.Environments;
+import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
 import org.eclipse.winery.common.configuration.UiConfigurationObject;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -38,13 +40,21 @@ import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyErrorCo
 import org.eclipse.winery.repository.rest.resources.admin.types.ConstraintTypesManager;
 import org.eclipse.winery.repository.rest.resources.admin.types.PlanLanguagesManager;
 import org.eclipse.winery.repository.rest.resources.admin.types.PlanTypesManager;
+import org.eclipse.winery.repository.rest.resources.admin.types.RepositoryConfigurationResponse;
+import org.eclipse.winery.repository.rest.resources.admin.types.che.CheResponse;
+import org.eclipse.winery.repository.rest.resources.admin.types.che.Machine;
+import org.eclipse.winery.repository.rest.resources.admin.types.che.Server;
+import org.eclipse.winery.repository.rest.resources.admin.types.che.WorkspaceResponse;
 import org.eclipse.winery.repository.rest.resources.apiData.OAuthStateAndCodeApiData;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -91,6 +101,7 @@ public class AdminTopResource {
 
     /**
      * This method answers a get-request by the WineryRepositoryConfigurationService
+     *
      * @return the winery config file in json format.
      */
     @GET
@@ -98,6 +109,49 @@ public class AdminTopResource {
     @Produces(MediaType.APPLICATION_JSON)
     public UiConfigurationObject getConfig() {
         return Environments.getInstance().getUiConfig();
+    }
+
+    @GET
+    @Path("repository-config")
+    @Produces(MediaType.APPLICATION_JSON)
+    public RepositoryConfigurationResponse getRepositoryConfig() {
+        RepositoryConfigurationObject config = Environments.getInstance().getRepositoryConfig();
+        return new RepositoryConfigurationResponse(config.getRepositoryRoot());
+    }
+
+    @GET
+    @Path("che")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCheUrl() throws Exception {
+        HttpClient httpclient = HttpClients.createDefault();
+        String cheApiEndpoint = System.getenv("CHE_API");
+        String cheMachineToken = System.getenv("CHE_MACHINE_TOKEN");
+        String cheWorkspaceId = System.getenv("CHE_WORKSPACE_ID");
+        if (cheApiEndpoint == null || cheMachineToken == null || cheWorkspaceId == null) {
+            return Response.status(500, "Server environment is not correctly configured").build();
+        }
+        HttpGet httpGet = new HttpGet(cheApiEndpoint + "/workspace/" + cheWorkspaceId);
+        httpGet.setHeader("Authorization", "Bearer " + cheMachineToken);
+
+        HttpResponse response = httpclient.execute(httpGet);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        WorkspaceResponse workspace = mapper.readValue(response.getEntity().getContent(), WorkspaceResponse.class);
+        Optional<Machine> machine = workspace.runtime.machines.values().stream().filter(x -> "theia-editor".equals(x.attributes.get("component"))).findFirst();
+        if (!machine.isPresent()) {
+            return Response.status(500, "Eclipse Che is not correctly configured").build();
+        }
+
+        Optional<Server> runningServer = machine.get().servers.values().stream().filter(x -> x.status.equals("RUNNING")).findFirst();
+        if (!runningServer.isPresent()) {
+            return Response.status(500, "Eclipse Che is not correctly configured").build();
+        }
+
+        return Response
+            .status(response.getStatusLine().getStatusCode())
+            .entity(new CheResponse(runningServer.get().url))
+            .build();
     }
 
     @PUT

@@ -16,8 +16,8 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.OTDeploymentArtifactMapping;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.extensions.OTDeploymentArtifactMapping;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -30,12 +30,10 @@ public class PrmDeploymentArtifactMappingApiData extends AbstractPrmMappingEleme
 
     @JsonIgnore
     public OTDeploymentArtifactMapping createDeploymentArtifactMapping(TEntityTemplate detectorNodeTemplate, TEntityTemplate refinementNodeTemplate) {
-        OTDeploymentArtifactMapping artifactMapping = new OTDeploymentArtifactMapping();
-        artifactMapping.setId(this.id);
-        artifactMapping.setDetectorElement(detectorNodeTemplate);
-        artifactMapping.setArtifactType(this.artifactType);
-        artifactMapping.setRefinementElement(refinementNodeTemplate);
-
-        return artifactMapping;
+        return new OTDeploymentArtifactMapping(new OTDeploymentArtifactMapping.Builder(this.id)
+            .setArtifactType(this.artifactType)
+            .setDetectorElement(detectorNodeTemplate)
+            .setRefinementElement(refinementNodeTemplate)
+        );
     }
 }

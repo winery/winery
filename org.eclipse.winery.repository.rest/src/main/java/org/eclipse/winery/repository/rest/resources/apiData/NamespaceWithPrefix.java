@@ -16,7 +16,7 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 
 import java.util.Objects;
 
-import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.model.ids.Namespace;
 
 public class NamespaceWithPrefix implements Comparable<NamespaceWithPrefix> {
 

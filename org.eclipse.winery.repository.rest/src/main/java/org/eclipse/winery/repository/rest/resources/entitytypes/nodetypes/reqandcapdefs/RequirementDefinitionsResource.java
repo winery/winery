@@ -22,11 +22,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
+import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.filebased.RepositoryUtils;
+import org.eclipse.winery.repository.filebased.RepositoryUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.RequirementOrCapabilityDefinitionPostData;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
 
@@ -53,7 +53,7 @@ public class RequirementDefinitionsResource extends RequirementOrCapabilityDefin
     @Override
     public Response performPost(RequirementOrCapabilityDefinitionPostData postData) {
         // if we are in XML mode, we delegate to the parent
-        if (!RepositoryUtils.isYamlRepository()) {
+        if (!RepositoryUtils.isYamlRepository(requestRepository)) {
             return super.performPost(postData);
         }
 

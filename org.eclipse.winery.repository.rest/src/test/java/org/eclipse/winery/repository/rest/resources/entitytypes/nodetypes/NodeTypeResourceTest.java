@@ -26,7 +26,7 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
     public void baobabInitialExistsUsingResource() throws Exception {
         this.setRevisionTo("5b5ad1106a3a428020b6bc5d2f154841acb5f779"); // repository containing boabab fruit only
         NodeTypeResource nodeTypeResource = (NodeTypeResource) NodeTypesResource.getComponentInstanceResource(TestIds.ID_FRUIT_BAOBAB);
-        String testXml = BackendUtils.getXMLAsString(nodeTypeResource.getNodeType());
+        String testXml = BackendUtils.getXMLAsString(nodeTypeResource.getNodeType(), repository);
         String controlXml = readFromClasspath("entitytypes/nodetypes/baobab_initial.xml");
         org.hamcrest.MatcherAssert.assertThat(testXml, CompareMatcher.isIdenticalTo(controlXml).ignoreWhitespace());
     }
@@ -116,7 +116,7 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
         this.assertPost("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/tags/", "entitytypes/nodetypes/baobab_tag_step1_add.json");
         this.assertPost("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/tags/", "entitytypes/nodetypes/baobab_tag_step2_add.json");
         this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/tags/", "entitytypes/nodetypes/baobab_tag_step3_values.json");
-        this.assertDelete("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/tags/-883039691/");
+        this.assertDelete("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/tags/1594499300/");
         this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/tags/", "entitytypes/nodetypes/baobab_tag_step5_values.json");
     }
 

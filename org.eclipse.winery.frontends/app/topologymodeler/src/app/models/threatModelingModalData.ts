@@ -11,8 +11,8 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-import { QName } from './qname';
 import { ThreatCreation } from './threatCreation';
+import { QName } from '../../../../shared/src/app/model/qName';
 
 /**
  * Encompasses the threat modelling data defined by the user when using the modal

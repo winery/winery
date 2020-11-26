@@ -15,15 +15,15 @@ package org.eclipse.winery.model.threatmodeling;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
-import org.eclipse.winery.model.tosca.TBoolean;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 
 import org.junit.jupiter.api.Test;
@@ -91,8 +91,8 @@ class ThreatModelingUtilsWithGitBackendRepositoryTest extends TestWithGitBackedR
         TNodeType otherBaseType = new TNodeType.Builder("BASE")
             .build();
 
-        TNodeType childAType = new TNodeType.Builder("CHILD_A").setAbstract(TBoolean.YES).setDerivedFrom(base).build();
-        TNodeType childBType = new TNodeType.Builder("CHILD_B").setAbstract(TBoolean.YES).setDerivedFrom(otherBase).build();
+        TNodeType childAType = new TNodeType.Builder("CHILD_A").setAbstract(true).setDerivedFrom(base).build();
+        TNodeType childBType = new TNodeType.Builder("CHILD_B").setAbstract(true).setDerivedFrom(otherBase).build();
 
         repository.setElement(new NodeTypeId(base), baseType);
         repository.setElement(new NodeTypeId(otherBase), otherBaseType);
@@ -120,7 +120,7 @@ class ThreatModelingUtilsWithGitBackendRepositoryTest extends TestWithGitBackedR
 
         TNodeType baseType = new TNodeType.Builder("base")
             .setDerivedFrom(QName.valueOf(ThreatModelingConstants.SVNF_NODE_TYPE))
-            .setAbstract(TBoolean.YES)
+            .setAbstract(true)
             .build();
 
         TNodeType childAType = new TNodeType.Builder("childA").setDerivedFrom(base).build();
@@ -162,7 +162,7 @@ class ThreatModelingUtilsWithGitBackendRepositoryTest extends TestWithGitBackedR
         assertTrue(repository.exists(mitigation));
 
         TPolicyTemplate mitigationPolicy = repository.getElement(mitigation);
-        assertEquals(threat.getQName().toString(), mitigationPolicy.getProperties().getKVProperties().get("ThreatReference"));
+        assertEquals(threat.getQName().toString(), ModelUtilities.getPropertiesKV(mitigationPolicy).get("ThreatReference"));
     }
 
     @Test

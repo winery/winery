@@ -19,8 +19,8 @@ import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.tosca.HasName;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
@@ -29,6 +29,7 @@ import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -148,7 +149,7 @@ public class TestWineryRepositoryClient extends TestWithGitBackedRepository {
         assertNotNull(nodeTemplateWithTwoKVProperties);
         TEntityTemplate.Properties properties = nodeTemplateWithTwoKVProperties.getProperties();
         assertNotNull(properties);
-        final LinkedHashMap<String, String> kvProperties = properties.getKVProperties();
+        final LinkedHashMap<String, String> kvProperties = ModelUtilities.getPropertiesKV(nodeTemplateWithTwoKVProperties);
         assertNotNull(kvProperties);
         final String value = kvProperties.get("key1");
         assertEquals("value", value);

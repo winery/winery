@@ -21,9 +21,9 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -33,6 +33,7 @@ import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
@@ -224,7 +225,7 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
         assertEquals(1, listOfNodeTypes.size() - previousListOfNodeTypes.size());
         assertEquals(expectedMergedUbuntuQName, generatedFeatureEnrichedNodeType.getQName());
         assertNotNull(generatedFeatureEnrichedNodeType.getWinerysPropertiesDefinition());
-        assertEquals(9, generatedFeatureEnrichedNodeType.getWinerysPropertiesDefinition().getPropertyDefinitionKVList().size());
+        assertEquals(9, generatedFeatureEnrichedNodeType.getWinerysPropertiesDefinition().getPropertyDefinitions().size());
 
         TNodeTypeImplementation generatedUbuntuImpl = this.repository.getElement(
             new ArrayList<>(this.repository.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, expectedMergedUbuntuQName))
@@ -265,10 +266,10 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
                 + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_VERSION_PREFIX + "1"),
             topology.getNodeTemplate(mySqlNodeTemplateId).getType()
         );
-        assertNotNull(topology.getNodeTemplate(ubuntuNodeTemplateId).getProperties());
-        assertEquals(9, topology.getNodeTemplate(ubuntuNodeTemplateId).getProperties().getKVProperties().size());
-        assertNotNull(topology.getNodeTemplate(mySqlNodeTemplateId).getProperties());
-        assertEquals(3, topology.getNodeTemplate(mySqlNodeTemplateId).getProperties().getKVProperties().size());
+        assertNotNull(ModelUtilities.getPropertiesKV(topology.getNodeTemplate(ubuntuNodeTemplateId)));
+        assertEquals(9, ModelUtilities.getPropertiesKV(topology.getNodeTemplate(ubuntuNodeTemplateId)).size());
+        assertNotNull(ModelUtilities.getPropertiesKV(topology.getNodeTemplate(mySqlNodeTemplateId)));
+        assertEquals(3, ModelUtilities.getPropertiesKV(topology.getNodeTemplate(mySqlNodeTemplateId)).size());
     }
 
     @Test

@@ -27,13 +27,13 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
 
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.json.JacksonProvider;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.ImportUtils;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -52,6 +52,12 @@ public class RepositoryBasedXsdImportManager implements XsdImportManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BackendUtils.class);
 
+    private final IRepository owner;
+
+    public RepositoryBasedXsdImportManager(IRepository owner) {
+        this.owner = owner;
+    }
+
     /**
      * Finds out all imports belonging to the given namespace
      */
@@ -60,12 +66,12 @@ public class RepositoryBasedXsdImportManager implements XsdImportManager {
 
         // implemented using a straight-forward solution: get ALL XSD definitions and filter out the matching ones
 
-        Set<XSDImportId> allImports = RepositoryFactory.getRepository().getAllDefinitionsChildIds(XSDImportId.class);
+        Set<XSDImportId> allImports = owner.getAllDefinitionsChildIds(XSDImportId.class);
         return allImports.stream().filter(imp -> imp.getNamespace().equals(namespace)).collect(Collectors.toSet());
     }
 
     private Optional<RepositoryFileReference> getXsdFileReference(final XSDImportId id) {
-        final Optional<String> location = ImportUtils.getLocation(id);
+        final Optional<String> location = ImportUtils.getLocation(owner, id);
         return location.map(l -> new RepositoryFileReference(id, l));
     }
 
@@ -80,13 +86,13 @@ public class RepositoryBasedXsdImportManager implements XsdImportManager {
         }
 
         short type = getTypes ? XSConstants.TYPE_DEFINITION : XSConstants.ELEMENT_DECLARATION;
-        Date lastUpdate = RepositoryFactory.getRepository().getLastUpdate(ref.get());
+        Date lastUpdate = owner.getLastUpdate(ref.get());
 
         @NonNull final String cacheFileName = "definedLocalNames " + Integer.toString(type) + ".cache";
         @NonNull final RepositoryFileReference cacheRef = new RepositoryFileReference(id, cacheFileName);
         boolean cacheNeedsUpdate = true;
-        if (RepositoryFactory.getRepository().exists(cacheRef)) {
-            Date lastUpdateCache = RepositoryFactory.getRepository().getLastUpdate(cacheRef);
+        if (owner.exists(cacheRef)) {
+            Date lastUpdateCache = owner.getLastUpdate(cacheRef);
             if (lastUpdate.compareTo(lastUpdateCache) <= 0) {
                 cacheNeedsUpdate = false;
             }
@@ -94,7 +100,7 @@ public class RepositoryBasedXsdImportManager implements XsdImportManager {
 
         List<String> result;
         if (cacheNeedsUpdate) {
-            final Optional<XSModel> model = BackendUtils.getXSModel(ref.get());
+            final Optional<XSModel> model = BackendUtils.getXSModel(ref.get(), owner);
             if (!model.isPresent()) {
                 return Collections.emptyList();
             }
@@ -118,14 +124,14 @@ public class RepositoryBasedXsdImportManager implements XsdImportManager {
                 LOGGER.error("Could not generate cache content", e);
             }
             try {
-                RepositoryFactory.getRepository().putContentToFile(cacheRef, cacheContent, MediaTypes.MEDIATYPE_APPLICATION_JSON);
+                owner.putContentToFile(cacheRef, cacheContent, MediaTypes.MEDIATYPE_APPLICATION_JSON);
             } catch (IOException e) {
                 LOGGER.error("Could not update cache", e);
             }
         } else {
             // read content from cache
             // cache should contain most recent information
-            try (InputStream is = RepositoryFactory.getRepository().newInputStream(cacheRef)) {
+            try (InputStream is = owner.newInputStream(cacheRef)) {
                 result = JacksonProvider.mapper.readValue(is, java.util.List.class);
             } catch (IOException e) {
                 LOGGER.error("Could not read from cache", e);
@@ -168,7 +174,7 @@ public class RepositoryBasedXsdImportManager implements XsdImportManager {
     private List<NamespaceAndDefinedLocalNames> getAllXsdDefinitions(boolean getType) {
         MutableMultimap<Namespace, String> data = Multimaps.mutable.list.empty();
 
-        SortedSet<XSDImportId> allImports = RepositoryFactory.getRepository().getAllDefinitionsChildIds(XSDImportId.class);
+        SortedSet<XSDImportId> allImports = owner.getAllDefinitionsChildIds(XSDImportId.class);
 
         for (XSDImportId id : allImports) {
             final List<String> allDefinedLocalNames = getAllDefinedLocalNames(id, getType);

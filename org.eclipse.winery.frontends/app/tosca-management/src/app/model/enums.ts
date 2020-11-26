@@ -24,6 +24,7 @@ export enum YesNoEnum {
  * Default is assumed ToscaTypes.Admin.
  */
 export enum ToscaTypes {
+    DataType = 'datatypes',
     ServiceTemplate = 'servicetemplates',
     NodeType = 'nodetypes',
     RelationshipType = 'relationshiptypes',

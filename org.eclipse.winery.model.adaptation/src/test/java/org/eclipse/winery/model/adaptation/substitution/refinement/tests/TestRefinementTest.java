@@ -21,12 +21,12 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
-import org.eclipse.winery.model.tosca.OTRelationDirection;
-import org.eclipse.winery.model.tosca.OTRelationMapping;
-import org.eclipse.winery.model.tosca.OTTestRefinementModel;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.extensions.OTRelationDirection;
+import org.eclipse.winery.model.tosca.extensions.OTRelationMapping;
+import org.eclipse.winery.model.tosca.extensions.OTTestRefinementModel;
 import org.eclipse.winery.topologygraph.matching.ToscaIsomorphismMatcher;
 import org.eclipse.winery.topologygraph.matching.ToscaTypeMatcher;
 import org.eclipse.winery.topologygraph.model.ToscaEdge;
@@ -65,45 +65,47 @@ public class TestRefinementTest {
         webShopToDatabase.setSourceNodeTemplate(webShop);
         webShopToDatabase.setType("{ns}connectsTo");
 
-        TTopologyTemplate topologyTemplate = new TTopologyTemplate();
-        topologyTemplate.addNodeTemplate(tomcat);
-        topologyTemplate.addNodeTemplate(webShop);
-        topologyTemplate.addNodeTemplate(database);
-        topologyTemplate.addRelationshipTemplate(webShopOnTomcat);
-        topologyTemplate.addRelationshipTemplate(webShopToDatabase);
+        TTopologyTemplate topologyTemplate = new TTopologyTemplate.Builder()
+            .addNodeTemplates(tomcat)
+            .addNodeTemplates(webShop)
+            .addNodeTemplates(database)
+            .addRelationshipTemplate(webShopOnTomcat)
+            .addRelationshipTemplate(webShopToDatabase)
+            .build();
         // endregion
 
         // region *** refinement model ***
         TNodeTemplate mySqlConnectorTest = new TNodeTemplate();
         mySqlConnectorTest.setId("sqlConnectorTest");
         mySqlConnectorTest.setType("{ns}sqlConnectorTest");
-        TTopologyTemplate refinementTopology = new TTopologyTemplate();
-        refinementTopology.addNodeTemplate(mySqlConnectorTest);
+        TTopologyTemplate refinementTopology = new TTopologyTemplate.Builder()
+            .addNodeTemplates(mySqlConnectorTest)
+            .build();
 
-        OTRelationMapping testHostedOn = new OTRelationMapping();
-        testHostedOn.setDirection(OTRelationDirection.OUTGOING);
-        testHostedOn.setRelationType(QName.valueOf("{ns}hostedOn"));
-        testHostedOn.setRefinementElement(mySqlConnectorTest);
-        testHostedOn.setDetectorElement(tomcat);
-        OTRelationMapping testConnectsTo = new OTRelationMapping();
-        testConnectsTo.setDirection(OTRelationDirection.OUTGOING);
-        testConnectsTo.setRelationType(QName.valueOf("{ns}connectsTo"));
-        testConnectsTo.setRefinementElement(mySqlConnectorTest);
-        testConnectsTo.setDetectorElement(database);
-        OTRelationMapping testIngoingRelationTest = new OTRelationMapping();
-        testIngoingRelationTest.setDirection(OTRelationDirection.INGOING);
-        testIngoingRelationTest.setRelationType(QName.valueOf("{ns}ingoingTest"));
-        testIngoingRelationTest.setRefinementElement(mySqlConnectorTest);
-        testIngoingRelationTest.setDetectorElement(webShop);
+        OTRelationMapping testHostedOn = new OTRelationMapping(new OTRelationMapping.Builder()
+            .setDirection(OTRelationDirection.OUTGOING)
+            .setRelationType(QName.valueOf("{ns}hostedOn"))
+            .setRefinementElement(mySqlConnectorTest)
+            .setDetectorElement(tomcat));
+        OTRelationMapping testConnectsTo = new OTRelationMapping(new OTRelationMapping.Builder()
+            .setDirection(OTRelationDirection.OUTGOING)
+            .setRelationType(QName.valueOf("{ns}connectsTo"))
+            .setRefinementElement(mySqlConnectorTest)
+            .setDetectorElement(database));
+        OTRelationMapping testIngoingRelationTest = new OTRelationMapping(new OTRelationMapping.Builder()
+            .setDirection(OTRelationDirection.INGOING)
+            .setRelationType(QName.valueOf("{ns}ingoingTest"))
+            .setRefinementElement(mySqlConnectorTest)
+            .setDetectorElement(webShop));
         List<OTRelationMapping> relationMappings = new ArrayList<>();
         relationMappings.add(testHostedOn);
         relationMappings.add(testConnectsTo);
         relationMappings.add(testIngoingRelationTest);
 
-        OTTestRefinementModel testRefinementModel = new OTTestRefinementModel();
-        testRefinementModel.setRefinementTopology(refinementTopology);
-        testRefinementModel.setDetector(topologyTemplate);
-        testRefinementModel.setRelationMappings(relationMappings);
+        OTTestRefinementModel testRefinementModel = new OTTestRefinementModel(new OTTestRefinementModel.Builder()
+            .setTestFragment(refinementTopology)
+            .setDetector(topologyTemplate)
+            .setRelationMappings(relationMappings));
         // endregion
 
         ToscaGraph topologyGraph = ToscaTransformer.createTOSCAGraph(topologyTemplate);

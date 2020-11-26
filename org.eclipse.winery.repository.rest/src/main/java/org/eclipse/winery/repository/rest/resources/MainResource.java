@@ -37,10 +37,12 @@ import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.configuration.Environments;
-import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
 import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.edmm.EdmmUtils;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
-import org.eclipse.winery.repository.export.EdmmUtils;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.importing.CsarImportOptions;
 import org.eclipse.winery.repository.importing.CsarImporter;
 import org.eclipse.winery.repository.importing.ImportMetaInformation;
@@ -67,7 +69,9 @@ import org.eclipse.winery.repository.rest.resources.refinementmodels.TestRefinem
 import org.eclipse.winery.repository.rest.resources.refinementmodels.TopologyFragmentRefinementModelsResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplatesResource;
 import org.eclipse.winery.repository.rest.resources.threats.ThreatsResource;
+import org.eclipse.winery.repository.rest.resources.yaml.DataTypesResource;
 import org.eclipse.winery.repository.rest.resources.yaml.YAMLParserResource;
+import org.eclipse.winery.repository.yaml.YamlRepository;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -80,6 +84,8 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.eclipse.winery.common.configuration.RepositoryConfigurationObject.RepositoryProvider.YAML;
 
 /**
  * All paths listed here have to be listed in Jersey's filter configuration
@@ -112,6 +118,11 @@ public class MainResource {
     @Path("capabilitytypes/")
     public CapabilityTypesResource capabilitytypes() {
         return new CapabilityTypesResource();
+    }
+
+    @Path("datatypes/")
+    public DataTypesResource datatypes() {
+        return new DataTypesResource();
     }
 
     @Path("imports/")
@@ -237,10 +248,15 @@ public class MainResource {
         // @formatter:on
 
         CsarImporter importer;
-        if (Environments.getInstance().getUiConfig().getFeatures().get(RepositoryConfigurationObject.RepositoryProvider.YAML.toString())) {
-            importer = new YamlCsarImporter();
+        IRepository repository = RepositoryFactory.getRepository();
+        if (Environments.getInstance().getUiConfig().getFeatures().get(YAML.toString())) {
+            if (repository instanceof GitBasedRepository) {
+                importer = new YamlCsarImporter((YamlRepository) ((GitBasedRepository) repository).getRepository());
+            } else {
+                importer = new YamlCsarImporter((YamlRepository) repository);
+            }
         } else {
-            importer = new CsarImporter();
+            importer = new CsarImporter(repository);
         }
 
         CsarImportOptions options = new CsarImportOptions();
@@ -255,7 +271,6 @@ public class MainResource {
         }
         if (importMetaInformation.errors.isEmpty()) {
             if (options.isValidate()) {
-
                 return Response.ok(importMetaInformation, MediaType.APPLICATION_JSON).build();
             } else if (Objects.nonNull(importMetaInformation.entryServiceTemplate)) {
                 URI url = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(importMetaInformation.entryServiceTemplate));
@@ -279,7 +294,7 @@ public class MainResource {
         File toscaFile;
         toscaFile = File.createTempFile("TOSCA", ".tosca");
         FileUtils.copyInputStreamToFile(is, toscaFile);
-        CsarImporter importer = new CsarImporter();
+        CsarImporter importer = new CsarImporter(RepositoryFactory.getRepository());
         List<String> errors = new ArrayList<>();
         CsarImportOptions options = new CsarImportOptions();
         options.setOverwrite(false);

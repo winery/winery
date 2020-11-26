@@ -41,7 +41,8 @@ import { WineryDynamicTableModule } from '../../../wineryDynamicTable/wineryDyna
         WineryFeatureToggleModule,
         WineryDynamicTableModule,
     ],
-    exports: [],
+    exports: [
+    ],
     declarations: [
         PropertiesDefinitionComponent,
     ],

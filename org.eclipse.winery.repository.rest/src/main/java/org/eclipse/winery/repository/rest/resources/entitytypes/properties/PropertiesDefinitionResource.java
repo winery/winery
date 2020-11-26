@@ -29,11 +29,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.model.tosca.TEntityType;
-import org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition;
-import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.xsd.NamespaceAndDefinedLocalNames;
 import org.eclipse.winery.repository.rest.RestUtils;
@@ -50,10 +48,9 @@ import org.slf4j.LoggerFactory;
  * <ol>
  * <li>TOSCA conforming properties definition (XML element / XML schema / none)</li>
  * <li>Winery's KV properties (in the subresource "winery")</li>
+ * <li>YAML property definitions!</li>
  * </ol>
  * <p>
- * This class does not have "KV" in its name, because it models
- * {@link TEntityType.PropertiesDefinition}
  */
 public class PropertiesDefinitionResource {
 
@@ -75,8 +72,7 @@ public class PropertiesDefinitionResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public PropertiesDefinitionResourceApiData getJson() {
-        PropertiesDefinition definition = this.getEntityType().getPropertiesDefinition();
-        return new PropertiesDefinitionResourceApiData(definition, this.wpd);
+        return new PropertiesDefinitionResourceApiData(this.getEntityType().getProperties(), this.wpd);
     }
 
     @GET
@@ -107,7 +103,7 @@ public class PropertiesDefinitionResource {
 
     @DELETE
     public Response clearPropertiesDefinition() {
-        this.getEntityType().setPropertiesDefinition(null);
+        this.getEntityType().setProperties(null);
         ModelUtilities.removeWinerysPropertiesDefinition(this.getEntityType());
         return RestUtils.persist(this.parentRes);
     }
@@ -119,19 +115,14 @@ public class PropertiesDefinitionResource {
             // first of all, remove Winery's Properties definition (if it exists)
             ModelUtilities.removeWinerysPropertiesDefinition(this.getEntityType());
             // replace old properties definition by new one
-            PropertiesDefinition def = new PropertiesDefinition();
-
-            if (data.propertiesDefinition.getElement() != null) {
-                def.setElement(data.propertiesDefinition.getElement());
-            } else if (data.propertiesDefinition.getType() != null) {
-                def.setType(data.propertiesDefinition.getType());
-            } else {
+            // FIXME need to actually handle propertiesData properly!
+            if (data.propertiesDefinition == null) {
                 return Response.status(Status.BAD_REQUEST).entity("Wrong data submitted!").build();
             }
 
-            this.getEntityType().setPropertiesDefinition(def);
+            this.getEntityType().setProperties(data.propertiesDefinition);
             List<String> errors = new ArrayList<>();
-            BackendUtils.deriveWPD(this.getEntityType(), errors);
+            BackendUtils.deriveWPD(this.getEntityType(), errors, RepositoryFactory.getRepository());
             // currently the errors are just logged
             for (String error : errors) {
                 PropertiesDefinitionResource.LOGGER.debug(error);
@@ -139,17 +130,14 @@ public class PropertiesDefinitionResource {
             return RestUtils.persist(this.parentRes);
         } else if (data.selectedValue == PropertiesDefinitionEnum.Custom) {
             TEntityType et = this.parentRes.getEntityType();
-
-            // clear current properties definition
-            et.setPropertiesDefinition(null);
-
-            // create winery properties definition and persist it
-            ModelUtilities.replaceWinerysPropertiesDefinition(et, data.winerysPropertiesDefinition);
-            String namespace = data.winerysPropertiesDefinition.getNamespace();
-            NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
-            if (!namespaceManager.hasPermanentProperties(namespace)) {
-                namespaceManager.addPermanentNamespace(namespace);
+            et.setProperties(data.winerysPropertiesDefinition);
+            return RestUtils.persist(this.parentRes);
+        } else if (data.selectedValue == PropertiesDefinitionEnum.Yaml) {
+            TEntityType et = this.parentRes.getEntityType();
+            if (!(data.propertiesDefinition instanceof TEntityType.YamlPropertiesDefinition)) {
+                return Response.status(Status.BAD_REQUEST).entity("Expected YamlPropertiesDefinition element").build();
             }
+            et.setProperties(data.propertiesDefinition);
             return RestUtils.persist(this.parentRes);
         }
 

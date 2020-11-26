@@ -14,9 +14,9 @@
 package org.eclipse.winery.repository.rest.resources.imports.xsdimports;
 
 import io.swagger.annotations.ApiOperation;
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
-import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
+import org.eclipse.winery.model.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.repository.backend.ImportUtils;
@@ -44,7 +44,6 @@ public class XSDImportResource extends GenericImportResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XSDImportResource.class);
 
-
     public XSDImportResource(XSDImportId id) {
         super(id);
     }
@@ -61,7 +60,7 @@ public class XSDImportResource extends GenericImportResource {
     // we cannot use "MimeTypes.MIMETYPE_XSD" here as the latter is "text/xml" and org.eclipse.winery.repository.resources.AbstractComponentInstanceResource.getDefinitionsAsResponse() also produces text/xml
     @Produces("text/xsd")
     public Response getXSD() {
-        final Optional<String> location = ImportUtils.getLocation((GenericImportId) id);
+        final Optional<String> location = ImportUtils.getLocation(RepositoryFactory.getRepository(), (GenericImportId) id);
         if (!location.isPresent()) {
             return Response.status(Status.NOT_FOUND).build();
         }

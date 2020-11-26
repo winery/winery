@@ -17,7 +17,7 @@ import { ShowOnFeatureDirective } from './wineryRepository.showOnFeature.direct'
 export enum FeatureEnum {
     Accountability = 'accountability', Completion = 'completion', Compliance = 'compliance', EdmmModeling = 'edmmModeling',
     FreezeAndDefrost = 'freezeAndDefrost', ManagementFeatureEnrichment = 'managementFeatureEnrichment', NFV = 'nfv', PatternRefinement = 'patternRefinement',
-    ProblemDetection = 'problemDetection', Radon = 'radon', Splitting = 'splitting', TestRefinement = 'testRefinement',
+    ProblemDetection = 'problemDetection', Radon = 'radon', Splitting = 'splitting', MultiParticipant = 'multiParticipant', TestRefinement = 'testRefinement',
     TopologyFragmentRefinementModel = 'topologyFragmentRefinementModel', Placement = 'placement', updateTemplates = 'updateTemplates', Yaml = 'yaml'
 }
 

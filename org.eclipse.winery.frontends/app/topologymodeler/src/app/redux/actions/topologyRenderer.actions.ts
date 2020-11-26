@@ -44,6 +44,9 @@ export class TopologyRendererActions {
     static REFINE_TOPOLOGY = 'REFINE_TOPOLOGY';
     static REFINE_PATTERNS = 'REFINE_PATTERNS';
     static REFINE_TOPOLOGY_WITH_TESTS = 'REFINE_TOPOLOGY_WITH_TESTS';
+    static GENERATE_GDM = 'GENERATE_GDM';
+    static GENERATE_PLACEHOLDER_SUBS = 'GENERATE_PLACEHOLDER_SUBS';
+    static EXTRACT_LDM = 'EXTRACT_LDM';
     static HIGHLIGHT_NODES = 'HIGHLIGHT_NODES';
     static DETECT_PROBLEMS = 'DETECT_PROBLEMS';
     static ENRICH_NODE_TEMPLATES = 'ENRICH_NODE_TEMPLATES';
@@ -53,6 +56,11 @@ export class TopologyRendererActions {
     static PLACE_COMPONENTS = 'PLACE_COMPONENTS';
     static MANAGE_YAML_POLICIES = 'MANAGE_YAML_POLICIES';
     static TOGGLE_VERSION_SLIDER = 'TOGGLE_VERSION_SLIDER';
+    static SHOW_MANAGE_YAML_GROUPS = 'SHOW_MANAGE_YAML_GROUPS';
+    static TOGGLE_MANAGE_YAML_GROUPS = 'TOGGLE_MANAGE_YAML_GROUPS';
+    static TOGGLE_YAML_GROUPS = 'TOGGLE_YAML_GROUPS';
+    static TOGGLE_MANAGE_PARTICIPANTS = 'TOGGLE_MANAGE_PARTICIPANTS';
+    static TOGGLE_ASSIGN_PARTICIPANTS = 'TOGGLE_ASSIGN_PARTICIPANTS';
 
     togglePolicies(): Action {
         return { type: TopologyRendererActions.TOGGLE_POLICIES };
@@ -130,6 +138,18 @@ export class TopologyRendererActions {
         return { type: TopologyRendererActions.REFINE_TOPOLOGY };
     }
 
+    extractLDM(): Action {
+        return { type: TopologyRendererActions.EXTRACT_LDM };
+    }
+
+    generatePlaceholder(): Action {
+        return { type: TopologyRendererActions.GENERATE_GDM };
+    }
+
+    generatePlaceholderSubs(): Action {
+        return { type: TopologyRendererActions.GENERATE_PLACEHOLDER_SUBS };
+    }
+
     refinePatterns(): Action {
         return { type: TopologyRendererActions.REFINE_PATTERNS };
     }
@@ -169,5 +189,25 @@ export class TopologyRendererActions {
 
     toggleVersionSlider(): Action {
         return { type: TopologyRendererActions.TOGGLE_VERSION_SLIDER };
+    }
+
+    showManageYamlGroups(): Action {
+        return { type: TopologyRendererActions.SHOW_MANAGE_YAML_GROUPS };
+    }
+
+    toggleManageYamlGroups(): Action {
+        return { type: TopologyRendererActions.TOGGLE_MANAGE_YAML_GROUPS };
+    }
+
+    toggleYamlGroups(): Action {
+        return { type: TopologyRendererActions.TOGGLE_YAML_GROUPS };
+    }
+
+    toggleManageParticipants(): Action {
+        return { type: TopologyRendererActions.TOGGLE_MANAGE_PARTICIPANTS };
+    }
+
+    toggleAssignParticipants(): Action {
+        return { type: TopologyRendererActions.TOGGLE_ASSIGN_PARTICIPANTS };
     }
 }

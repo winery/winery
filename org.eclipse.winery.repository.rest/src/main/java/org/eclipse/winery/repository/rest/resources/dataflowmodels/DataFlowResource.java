@@ -31,11 +31,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
@@ -51,8 +51,8 @@ import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
-import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
@@ -96,7 +96,7 @@ public class DataFlowResource {
                 .entity("ServiceTemplate with name of the data flow model already exists!").build();
         }
 
-        Definitions definitions = BackendUtils.createWrapperDefinitionsAndInitialEmptyElement(repo, templateId);
+        TDefinitions definitions = BackendUtils.createWrapperDefinitionsAndInitialEmptyElement(repo, templateId);
         TServiceTemplate serviceTemplate =
             definitions.getServiceTemplates().stream()
                 .filter(template -> template.getId().equals(templateId.getQName().getLocalPart()) && template
@@ -106,6 +106,7 @@ public class DataFlowResource {
                 .build();
         }
 
+        @SuppressWarnings("deprecated")
         TTopologyTemplate topology = serviceTemplate.getTopologyTemplate();
         if (Objects.isNull(topology)) {
             topology = new TTopologyTemplate();
@@ -171,7 +172,7 @@ public class DataFlowResource {
         serviceTemplate.setTopologyTemplate(topology);
 
         try {
-            BackendUtils.persist(templateId, definitions);
+            BackendUtils.persist(repo, templateId, definitions);
             return Response.created(new URI(RestUtils.getAbsoluteURL(templateId))).build();
         } catch (IOException e) {
             return Response.serverError().entity("IOException while persisting ServiceTemplate for data flow model!")
@@ -222,14 +223,14 @@ public class DataFlowResource {
                 TNodeTemplate filterCorrespondingNode = null;
                 LinkedHashMap<String, String> filterCorrespondingNodeProperties = null;
 
-                Map<String, String> nameMap = new HashMap();
+                Map<String, String> nameMap = new HashMap<>();
 
                 // insert all NodeTemplates from the substitution candidate
                 for (TNodeTemplate node : substitutionTopology.getNodeTemplates()) {
 
                     LinkedHashMap<String, String> propertyList = new LinkedHashMap<>();
-                    if (Objects.nonNull(node.getProperties()) && Objects.nonNull(node.getProperties().getKVProperties())) {
-                        propertyList = node.getProperties().getKVProperties();
+                    if (Objects.nonNull(node.getProperties()) && Objects.nonNull(ModelUtilities.getPropertiesKV(node))) {
+                        propertyList = ModelUtilities.getPropertiesKV(node);
                     }
 
                     if (node.getType().equals(nodeTypeId.getQName())) {
@@ -258,9 +259,7 @@ public class DataFlowResource {
 
                     // set the state of all components related to the data source to running
                     propertyList.put("State", "Running");
-                    TEntityTemplate.Properties prop = new TEntityTemplate.Properties();
-                    prop.setKVProperties(propertyList);
-                    node.setProperties(prop);
+                    ModelUtilities.setPropertiesKV(node, propertyList);
 
                     topology.addNodeTemplate(node);
                 }
@@ -273,9 +272,7 @@ public class DataFlowResource {
                     for (String propertyName : properties.keySet()) {
                         filterCorrespondingNodeProperties.put(propertyName, properties.get(propertyName));
                     }
-                    TEntityTemplate.Properties prop = new TEntityTemplate.Properties();
-                    prop.setKVProperties(filterCorrespondingNodeProperties);
-                    filterCorrespondingNode.setProperties(prop);
+                    ModelUtilities.setPropertiesKV(filterCorrespondingNode, filterCorrespondingNodeProperties);
                 }
 
                 // add location and provider attribute to the NodeTemplate
@@ -365,17 +362,15 @@ public class DataFlowResource {
             if (Objects.nonNull(nodeType.getWinerysPropertiesDefinition())) {
                 // add empty property for NodeType properties to avoid errors due to missing properties
                 WinerysPropertiesDefinition def = nodeType.getWinerysPropertiesDefinition();
-                for (PropertyDefinitionKV prop : def.getPropertyDefinitionKVList().getPropertyDefinitionKVs()) {
+                for (PropertyDefinitionKV prop : def.getPropertyDefinitions()) {
                     propertyList.put(prop.getKey(), "");
                 }
             }
 
             // add all properties which are defined at the filter
-            for (Map.Entry<String, String> prop : properties.entrySet()) {
-                propertyList.put(prop.getKey(), prop.getValue());
-            }
+            propertyList.putAll(properties);
 
-            TEntityTemplate.Properties nodeProperties = new TEntityTemplate.Properties();
+            TEntityTemplate.WineryKVProperties nodeProperties = new TEntityTemplate.WineryKVProperties();
             nodeProperties.setKVProperties(propertyList);
             templateBuilder.setProperties(nodeProperties);
         }
@@ -450,12 +445,14 @@ public class DataFlowResource {
             LinkedHashMap<String, String> propertyList = new LinkedHashMap<>();
 
             WinerysPropertiesDefinition def = relationshipType.getWinerysPropertiesDefinition();
-            for (PropertyDefinitionKV prop : def.getPropertyDefinitionKVList().getPropertyDefinitionKVs()) {
+            for (PropertyDefinitionKV prop : def.getPropertyDefinitions()) {
                 propertyList.put(prop.getKey(), "");
             }
 
-            TEntityTemplate.Properties relationProperties = new TEntityTemplate.Properties();
-            relationProperties.setKVProperties(def.getNamespace(), def.getElementName(), propertyList);
+            TEntityTemplate.WineryKVProperties relationProperties = new TEntityTemplate.WineryKVProperties();
+            relationProperties.setElementName(def.getElementName());
+            relationProperties.setNamespace(def.getNamespace());
+            relationProperties.setKVProperties(propertyList);
             builder.setProperties(relationProperties);
         }
 

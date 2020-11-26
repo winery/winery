@@ -57,6 +57,7 @@
                                     "otherAttributes": {
                                     },
                                     "properties": {
+                                        "propertyType": "KV",
                                         "kvproperties": {
                                             "key1": "val1",
                                             "key2": "val2"
@@ -74,6 +75,7 @@
                                     "otherAttributes": {
                                     },
                                     "properties": {
+                                        "propertyType": "XML",
                                         "any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<ns0:shiporder orderid=\"123456\" xmlns=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:nodetypes=\"http://plain.winery.opentosca.org/nodetypes\" xmlns:ns0=\"https://www.w3schools.com/xml/schema_example.asp\" xmlns:requirementtypes=\"http://plain.winery.opentosca.org/requirementtypes\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:testwineryopentoscaorg=\"http://test.winery.opentosca.org\" xmlns:ty=\"http://plain.winery.opentosca.org/requirementtypes\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><ns0:orderperson>\n                                </ns0:orderperson><ns0:shipto><ns0:name>Name</ns0:name><ns0:address>Address</ns0:address><ns0:city>City</ns0:city><ns0:country>Country</ns0:country>\n                                </ns0:shipto><ns0:item><ns0:title>Title</ns0:title><ns0:quantity>5</ns0:quantity><ns0:price>5.5</ns0:price>\n                                </ns0:item>\n                            </ns0:shiporder>"
                                     },
                                     "type": "{http://plain.winery.opentosca.org/requirementtypes}RequirementTypeWithXmlElementProperty",
@@ -103,6 +105,7 @@
                                     "otherAttributes": {
                                     },
                                     "properties": {
+                                        "propertyType": "KV",
                                         "kvproperties": {
                                             "key1": "",
                                             "key2": ""

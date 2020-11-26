@@ -10,7 +10,7 @@
             "dom"
         ],
         "removeComments": false,
-        "noImplicitAny": true,
+        "noImplicitAny": false,
         "suppressImplicitAnyIndexErrors": true,
         "skipLibCheck": true,
         "typeRoots": [

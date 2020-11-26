@@ -20,7 +20,7 @@ export class WineryValidatorObject {
     regEx?: RegExp;
     private active = true;
 
-    constructor(private list: Array<any>, private property?: string) {
+    constructor(private list: Array<any>, private property?: string, private element?: any) {
     }
 
     public setRegExp(regExp: RegExp) {
@@ -67,9 +67,9 @@ export class WineryValidatorObject {
             const name = control.value;
             let no = false;
             if (isNullOrUndefined(compareObject.property)) {
-                no = compareObject.list.find(item => item === name);
+                no = compareObject.list.find(item => item !== this.element && item === name);
             } else {
-                no = compareObject.list.find(item => item[compareObject.property] === name);
+                no = compareObject.list.find(item => item !== this.element && item[compareObject.property] === name);
             }
             if (!isNullOrUndefined(compareObject.regEx)) {
                 no = !compareObject.regEx.test(name);

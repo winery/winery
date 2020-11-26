@@ -22,9 +22,13 @@ import { ToastrModule } from 'ngx-toastr';
 import { NgReduxModule } from '@angular-redux/store';
 import { RouterModule } from '@angular/router';
 import { PropertiesComponent } from './properties.component';
-import { PropertiesContentComponent } from './properties-content/properties-content.component';
 import { KeysPipe } from '../pipes/keys.pipe';
 import { WineryModalModule } from '../../../../tosca-management/src/app/wineryModalModule/winery.modal.module';
+import { KvPropertiesComponent } from './kv-properties/kv-properties.component';
+import { XmlPropertiesComponent } from './xml-properties/xml-properties.component';
+import { YamlPropertiesComponent } from './yaml-properties/yaml-properties.component';
+import { ConstraintChecking, ConstraintClause } from './property-constraints';
+import { TypeawareInputComponent } from './yaml-properties/typeaware-input.component';
 
 @NgModule({
     imports: [
@@ -42,12 +46,14 @@ import { WineryModalModule } from '../../../../tosca-management/src/app/wineryMo
     ],
     declarations: [
         PropertiesComponent,
-        PropertiesContentComponent,
-        KeysPipe
+        KvPropertiesComponent,
+        XmlPropertiesComponent,
+        YamlPropertiesComponent,
+        TypeawareInputComponent,
+        KeysPipe,
     ],
     exports: [
         PropertiesComponent,
-        PropertiesContentComponent,
         KeysPipe
     ]
 })

@@ -22,13 +22,14 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
@@ -105,8 +106,9 @@ public class ThreatModeling {
                 TPolicyTemplate mitigationTemplate = repository.getElement(mitigationTemplateId);
 
                 if (Objects.nonNull(mitigationTemplate.getProperties())) {
-                    LinkedHashMap<String, String> properties = mitigationTemplate.getProperties().getKVProperties();
-                    String threatReferenceString = properties.get("ThreatReference");
+                    LinkedHashMap<String, String> properties = ModelUtilities.getPropertiesKV(mitigationTemplate);
+                    // FIXME Assumption that we're dealing with simple KV Properties
+                    String threatReferenceString = (String)properties.get("ThreatReference");
 
                     QName threatReference = QName.valueOf(threatReferenceString);
                     // check if the threat, the mitigation references is present.
@@ -141,7 +143,7 @@ public class ThreatModeling {
                         threat.addTarget(nt.getName(), nt.getTypeAsQName());
 
                         if (Objects.nonNull(threatTemplate.getProperties())) {
-                            threat.setProperties(threatTemplate.getProperties().getKVProperties());
+                            threat.setProperties(ModelUtilities.getPropertiesKV(threatTemplate));
                         }
                         threat.setTemplateName(threatQName.getLocalPart());
                         threat.setNamespace(threatQName.getNamespaceURI());

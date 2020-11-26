@@ -1,0 +1,46 @@
+<!--
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+-->
+
+<div *ngIf="isEmpty()" style="font-size: 12px">
+    <span>No policies defined for this Topology Template.</span>
+</div>
+
+<table *ngIf="!isEmpty()" class="table table-condensed table-striped table-bordered">
+    <thead>
+    <tr>
+        <th>Policy Name</th>
+        <th>Policy Type</th>
+        <th style="width: 80px">Is Active?</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let policy of policies">
+        <td [class.cell-with-comment]="isEllipsisActive(name)">
+            <div #name>{{ policy.name }}</div>
+            <span class="cell-comment">{{ policy.name }}</span>
+        </td>
+        <td [class.cell-with-comment]="isEllipsisActive(type)">
+            <div #type>{{ policy.policyType | localname }}</div>
+            <span class="cell-comment">{{ policy.policyType | localname }}</span>
+        </td>
+        <td>
+            <div style="margin-left: 2px; margin-top: 4px;">
+                <input type="checkbox" id="isActiveCheckbox" [checked]="isPolicyActive(policy)"
+                       (change)="togglePolicy(policy)">
+                <label for="isActiveCheckbox"></label>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
