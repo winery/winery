@@ -515,7 +515,7 @@ public abstract class ModelUtilities {
 
         TNodeTemplate nodeTemplate = new TNodeTemplate();
 
-        nodeTemplate.setId(UUID.randomUUID().toString());
+        nodeTemplate.setId("node-" + UUID.randomUUID().toString());
         nodeTemplate.setName(nodeType.getName());
         nodeTemplate.setType(new QName(nodeType.getTargetNamespace(), nodeType.getName()));
 
@@ -573,7 +573,7 @@ public abstract class ModelUtilities {
                                                                             relationshipType, TNodeTemplate sourceNodeTemplate, TNodeTemplate targetNodeTemplate) {
 
         TRelationshipTemplate relationshipTemplate = new TRelationshipTemplate();
-        relationshipTemplate.setId(UUID.randomUUID().toString());
+        relationshipTemplate.setId("con-" + UUID.randomUUID().toString());
         relationshipTemplate.setName(relationshipType.getName());
         relationshipTemplate.setType(new QName(relationshipType.getTargetNamespace(), relationshipType.getName()));
 
