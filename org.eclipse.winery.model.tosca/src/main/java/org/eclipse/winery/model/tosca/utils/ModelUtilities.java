@@ -523,7 +523,7 @@ public abstract class ModelUtilities {
         if (nodeType.getCapabilityDefinitions() != null) {
             for (TCapabilityDefinition cd : nodeType.getCapabilityDefinitions().getCapabilityDefinition()) {
                 TCapability capa = new TCapability();
-                capa.setId(cd.getName() + nodeType.getIdFromIdOrNameField());
+                capa.setId(cd.getName() + nodeTemplate.getId());
                 capa.setName(cd.getCapabilityType().getLocalPart());
                 capa.setType(new QName(cd.getCapabilityType().getNamespaceURI(), cd.getCapabilityType().getLocalPart()));
                 nodeTemplate.setCapabilities(new Capabilities());
@@ -539,7 +539,7 @@ public abstract class ModelUtilities {
             for (TRequirementDefinition definition : nodeType.getRequirementDefinitions().getRequirementDefinition()) {
                 TRequirement newRequirement = new TRequirement();
                 newRequirement.setName(definition.getName());
-                newRequirement.setId(definition.getName() + nodeType.getIdFromIdOrNameField());
+                newRequirement.setId(definition.getName() + nodeTemplate.getId());
                 newRequirement.setType(definition.getRequirementType());
                 nodeTemplate.getRequirements().getRequirement().add(newRequirement);
             }
