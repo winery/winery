@@ -695,6 +695,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
 
             // create list of tags to add to service template
             TTags tTagList = new TTags();
+            tTagList.getTag().addAll(tags);
 
             // new tag to define participant of service template
             TTag participantTag = new TTag();
