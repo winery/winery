@@ -245,7 +245,7 @@ export class InheritanceUtils {
                         propertyType: PropertyDefinitionType.XML,
                         any: selectedType.propertiesDefinition.element
                     };
-                // properties definition contains yaml properties
+                    // properties definition contains yaml properties
                 } else if (selectedType.propertiesDefinition
                     && selectedType.propertiesDefinition.properties) {
                     let inheritedProperties = {};
@@ -322,12 +322,19 @@ export class InheritanceUtils {
 
                     const mergedProperties = { ...inheritedProperties, ...typeProperties };
 
-                    return {
+                    const properties = {
                         propertyType: PropertyDefinitionType.KV,
                         kvproperties: { ...mergedProperties },
-                        elementName: selectedType.propertiesDefinition.elementName,
-                        namespace: selectedType.propertiesDefinition.namespace
                     };
+
+                    return InheritanceUtils.hasKVPropDefinition(element) && selectedType.propertiesDefinition.elementName
+                                && selectedType.propertiesDefinition.namespace
+                        ? {
+                            ...properties,
+                            elementName: selectedType.propertiesDefinition.elementName,
+                            namespace: selectedType.propertiesDefinition.namespace
+                        }
+                        : properties;
                 }
             }
         }
