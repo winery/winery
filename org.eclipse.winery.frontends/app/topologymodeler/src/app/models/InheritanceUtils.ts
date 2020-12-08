@@ -325,7 +325,7 @@ export class InheritanceUtils {
                     return {
                         propertyType: PropertyDefinitionType.KV,
                         kvproperties: { ...mergedProperties },
-                        elementName: selectedType.propertiesDefinition.element,
+                        elementName: selectedType.propertiesDefinition.elementName,
                         namespace: selectedType.propertiesDefinition.namespace
                     };
                 }
