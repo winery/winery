@@ -21,8 +21,8 @@
             "name": "plantage",
             "minInstances": 1,
             "maxInstances": "1",
-            "x": "958",
-            "y": "894"
+            "y": "894",
+            "x": "958"
         },
         {
             "id": "tree",
@@ -39,8 +39,8 @@
             "name": "tree",
             "minInstances": 1,
             "maxInstances": "1",
-            "x": "606",
-            "y": "671"
+            "y": "671",
+            "x": "606"
         },
         {
             "id": "tree_2",
@@ -57,8 +57,8 @@
             "name": "tree_3",
             "minInstances": 1,
             "maxInstances": "1",
-            "x": "1441",
-            "y": "645"
+            "y": "645",
+            "x": "1441"
         },
         {
             "id": "baobab",
@@ -73,6 +73,8 @@
             },
             "properties": {
                 "propertyType": "KV",
+                "namespace": "http://winery.opentosca.org/test/nodetypes/fruits",
+                "elementName": "BaobabProperties",
                 "kvproperties": {
                     "Antioxidants": "",
                     "VitaminC": "",
@@ -85,8 +87,8 @@
             "name": "baobab",
             "minInstances": 1,
             "maxInstances": "1",
-            "x": "324",
-            "y": "333"
+            "y": "333",
+            "x": "324"
         },
         {
             "id": "orange",
@@ -101,6 +103,8 @@
             },
             "properties": {
                 "propertyType": "KV",
+                "namespace": "http://winery.opentosca.org/test/nodetypes/fruits",
+                "elementName": "OrangeProperties",
                 "kvproperties": {
                     "Antioxidants": "",
                     "VitaminC": "",
@@ -113,8 +117,8 @@
             "name": "orange",
             "minInstances": 1,
             "maxInstances": "1",
-            "x": "1284",
-            "y": "331"
+            "y": "331",
+            "x": "1284"
         },
         {
             "id": "orange_2",
@@ -129,6 +133,8 @@
             },
             "properties": {
                 "propertyType": "KV",
+                "namespace": "http://winery.opentosca.org/test/nodetypes/fruits",
+                "elementName": "OrangeProperties",
                 "kvproperties": {
                     "Antioxidants": "",
                     "VitaminC": "",
@@ -141,8 +147,8 @@
             "name": "orange_3",
             "minInstances": 1,
             "maxInstances": "1",
-            "x": "1599",
-            "y": "329"
+            "y": "329",
+            "x": "1599"
         },
         {
             "id": "baobab_2",
@@ -157,6 +163,8 @@
             },
             "properties": {
                 "propertyType": "KV",
+                "namespace": "http://winery.opentosca.org/test/nodetypes/fruits",
+                "elementName": "BaobabProperties",
                 "kvproperties": {
                     "Antioxidants": "",
                     "VitaminC": "",
@@ -169,8 +177,8 @@
             "name": "baobab_3",
             "minInstances": 1,
             "maxInstances": "1",
-            "x": "606",
-            "y": "219"
+            "y": "219",
+            "x": "606"
         },
         {
             "id": "baobab_3",
@@ -185,6 +193,8 @@
             },
             "properties": {
                 "propertyType": "KV",
+                "namespace": "http://winery.opentosca.org/test/nodetypes/fruits",
+                "elementName": "BaobabProperties",
                 "kvproperties": {
                     "Antioxidants": "",
                     "VitaminC": "",
@@ -197,8 +207,8 @@
             "name": "baobab_4",
             "minInstances": 1,
             "maxInstances": "1",
-            "x": "900",
-            "y": "325"
+            "y": "325",
+            "x": "900"
         }
     ],
     "relationshipTemplates": [

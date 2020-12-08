@@ -60,7 +60,8 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
     @Test
     public void getServiceTemplateWithProperties() throws Exception {
         this.setRevisionTo("3465576f5b46079bb26f5c8e93663424440421a0");
-        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Fdriverinjection/DriverInjectionTest/topologytemplate", "entitytypes/servicetemplates/DriverInjection.json");
+        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Fdriverinjection/DriverInjectionTest/topologytemplate",
+            "entitytypes/servicetemplates/DriverInjection.json");
     }
 
     @Test
@@ -119,7 +120,8 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
     @Test
     public void checkJsonOfServiceTemplateMinimalExampleWithAllPropertyVariants() throws Exception {
         this.setRevisionTo("origin/plain");
-        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants", "servicetemplates/plain-ServiceTemplateMinimalExampleWithAllPropertyVariants.json");
+        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants",
+            "servicetemplates/plain-ServiceTemplateMinimalExampleWithAllPropertyVariants.json");
     }
 
     @Test

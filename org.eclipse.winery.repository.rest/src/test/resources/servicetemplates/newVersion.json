@@ -58,6 +58,8 @@
                                     },
                                     "properties": {
                                         "propertyType": "KV",
+                                        "namespace": "http://plain.winery.opentosca.org/requirementtypes/propertiesdefinition/winery",
+                                        "elementName": "properties",
                                         "kvproperties": {
                                             "key1": "val1",
                                             "key2": "val2"
@@ -106,6 +108,8 @@
                                     },
                                     "properties": {
                                         "propertyType": "KV",
+                                        "namespace": "http://plain.winery.opentosca.org/capabilitytypes/propertiesdefinition/winery",
+                                        "elementName": "properties",
                                         "kvproperties": {
                                             "key1": "",
                                             "key2": ""
@@ -130,8 +134,8 @@
                         "name": "NodeTypeWithThreeReqCapPairsCoveringAllReqCapVariants",
                         "minInstances": 1,
                         "maxInstances": "1",
-                        "x": "786",
-                        "y": "451"
+                        "y": "451",
+                        "x": "786"
                     },
                     {
                         "id": "NodeTypeWithOneReqCapPairWithoutProperties",
@@ -163,8 +167,8 @@
                         "name": "NodeTypeWithOneReqCapPairWithoutProperties",
                         "minInstances": 1,
                         "maxInstances": "1",
-                        "x": "782",
-                        "y": "147"
+                        "y": "147",
+                        "x": "782"
                     }
                 ],
                 "relationshipTemplates": [

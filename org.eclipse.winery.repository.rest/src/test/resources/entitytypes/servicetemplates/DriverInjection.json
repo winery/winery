@@ -5,48 +5,6 @@
     ],
     "otherAttributes": {
     },
-    "relationshipTemplates": [
-        {
-            "id": "con_25",
-            "documentation": [
-            ],
-            "any": [
-            ],
-            "otherAttributes": {
-            },
-            "type": "{http://winery.opentosca.org/test/ponyuniverse}standsOn",
-            "sourceElement": {
-                "ref": "shetland_pony"
-            },
-            "targetElement": {
-                "ref": "straw"
-            },
-            "name": "con_25"
-        },
-        {
-            "id": "con_47",
-            "documentation": [
-            ],
-            "any": [
-            ],
-            "otherAttributes": {
-            },
-            "properties": {
-                "propertyType": "KV",
-                "kvproperties": {
-                    "Driver": ""
-                }
-            },
-            "type": "{http://winery.opentosca.org/test/ponyuniverse}attendTo",
-            "sourceElement": {
-                "ref": "shetland_pony"
-            },
-            "targetElement": {
-                "ref": "ponycompetition"
-            },
-            "name": "con_47"
-        }
-    ],
     "nodeTemplates": [
         {
             "id": "shetland_pony",
@@ -82,8 +40,8 @@
             "name": "shetland_pony",
             "minInstances": 1,
             "maxInstances": "1",
-            "x": "677",
-            "y": "161"
+            "y": "161",
+            "x": "677"
         },
         {
             "id": "straw",
@@ -100,8 +58,8 @@
             "name": "straw",
             "minInstances": 1,
             "maxInstances": "1",
-            "x": "677",
-            "y": "545"
+            "y": "545",
+            "x": "677"
         },
         {
             "id": "ponycompetition",
@@ -148,8 +106,51 @@
             "name": "ponycompetition",
             "minInstances": 1,
             "maxInstances": "1",
-            "x": "1237",
-            "y": "137"
+            "y": "137",
+            "x": "1237"
+        }
+    ],
+    "relationshipTemplates": [
+        {
+            "id": "con_25",
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+            },
+            "type": "{http://winery.opentosca.org/test/ponyuniverse}standsOn",
+            "sourceElement": {
+                "ref": "shetland_pony"
+            },
+            "targetElement": {
+                "ref": "straw"
+            },
+            "name": "con_25"
+        },
+        {
+            "id": "con_47",
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+            },
+            "properties": {
+                "propertyType": "KV",
+                "namespace": "http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery",
+                "kvproperties": {
+                    "Driver": ""
+                }
+            },
+            "type": "{http://winery.opentosca.org/test/ponyuniverse}attendTo",
+            "sourceElement": {
+                "ref": "shetland_pony"
+            },
+            "targetElement": {
+                "ref": "ponycompetition"
+            },
+            "name": "con_47"
         }
     ]
 }
