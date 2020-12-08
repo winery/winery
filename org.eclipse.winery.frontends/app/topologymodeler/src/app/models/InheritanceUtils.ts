@@ -235,21 +235,22 @@ export class InheritanceUtils {
      */
     static getDefaultPropertiesFromEntityTypes(qName: string, entities: EntityType[]): any {
         for (const element of entities) {
+            const selectedType = element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0];
             if (element.qName === qName) {
                 // if propertiesDefinition is defined it's a XML property
                 // FIXME this needs to correctly handle the type option for defining XML properties
-                if (element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition
-                    && element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element) {
+                if (selectedType.propertiesDefinition
+                    && selectedType.propertiesDefinition.element) {
                     return {
                         propertyType: PropertyDefinitionType.XML,
-                        any: element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element
+                        any: selectedType.propertiesDefinition.element
                     };
                 // properties definition contains yaml properties
-                } else if (element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition
-                    && element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.properties) {
+                } else if (selectedType.propertiesDefinition
+                    && selectedType.propertiesDefinition.properties) {
                     let inheritedProperties = {};
                     if (InheritanceUtils.hasParentType(element)) {
-                        let parent = element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].derivedFrom.typeRef;
+                        let parent = selectedType.derivedFrom.typeRef;
                         let continueFlag;
 
                         while (parent) {
@@ -288,7 +289,7 @@ export class InheritanceUtils {
                 } else { // otherwise KV properties or no properties at all
                     let inheritedProperties = {};
                     if (InheritanceUtils.hasParentType(element)) {
-                        let parent = element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].derivedFrom.typeRef;
+                        let parent = selectedType.derivedFrom.typeRef;
                         let continueFlag;
 
                         while (parent) {
@@ -323,7 +324,9 @@ export class InheritanceUtils {
 
                     return {
                         propertyType: PropertyDefinitionType.KV,
-                        kvproperties: { ...mergedProperties }
+                        kvproperties: { ...mergedProperties },
+                        elementName: selectedType.propertiesDefinition.element,
+                        namespace: selectedType.propertiesDefinition.namespace
                     };
                 }
             }

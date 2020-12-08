@@ -198,11 +198,9 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
     // Xml transformation is done by XmlJavaTypeAdapter, thus no XML configuration whatsoever
     public static class WineryKVProperties extends Properties {
 
-        @JsonIgnore
         @Nullable
         private String namespace = null;
 
-        @JsonIgnore
         @Nullable
         private String elementName = null;
 

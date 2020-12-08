@@ -164,8 +164,11 @@ public abstract class XTEntityTemplate extends XHasId implements XHasType, XHasN
 
         @ADR(12)
         public void setKVProperties(@Nullable String namespace, @Nullable String elementName, Map<String, String> properties) {
-            if (elementName == null || elementName.equals("")) {
+            if (elementName == null || elementName.isEmpty()) {
                 elementName = "Properties";
+            }
+            if (namespace == null || namespace.isEmpty()) {
+                namespace = Namespaces.EXAMPLE_NAMESPACE_URI;
             }
             Objects.requireNonNull(properties);
             Element el = (Element) any;
