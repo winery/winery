@@ -54,7 +54,7 @@ public class CsarExporterTest extends TestWithGitBackedRepository {
         setRevisionTo(commitId);
         CsarExporter exporter = new CsarExporter();
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        exporter.writeCsar(RepositoryFactory.getRepository(), id, os, exportConfiguration);
+        exporter.writeCsar(RepositoryFactory.getRepository(), id, os, exportConfiguration, false);
         return new ByteArrayInputStream(os.toByteArray());
     }
 

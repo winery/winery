@@ -27,14 +27,19 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.SortedSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.namespace.QName;
 
 import org.eclipse.winery.accountability.AccountabilityManager;
 import org.eclipse.winery.accountability.AccountabilityManagerFactory;
@@ -50,6 +55,8 @@ import org.eclipse.winery.common.ids.IdNames;
 import org.eclipse.winery.common.ids.admin.NamespacesId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.model.selfservice.Application;
@@ -57,11 +64,13 @@ import org.eclipse.winery.model.selfservice.Application.Options;
 import org.eclipse.winery.model.selfservice.ApplicationOption;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.repository.GitInfo;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.SelfServiceMetaDataUtils;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.converter.support.TopologyTemplateUtils;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ServiceTemplateSelfServiceFilesDirectoryId;
@@ -114,12 +123,12 @@ public class CsarExporter {
         return CsarExporter.getDefinitionsName(repository, id) + Constants.SUFFIX_TOSCA_DEFINITIONS;
     }
 
-    private static String getDefinitionsPathInsideCSAR(IRepository repository, DefinitionsChildId id) {
+    public static String getDefinitionsPathInsideCSAR(IRepository repository, DefinitionsChildId id) {
         return CsarExporter.DEFINITONS_PATH_PREFIX + CsarExporter.getDefinitionsFileName(repository, id);
     }
 
     public CompletableFuture<String> writeCsarAndSaveManifestInProvenanceLayer(IRepository repository, DefinitionsChildId entryId, OutputStream out)
-        throws IOException, RepositoryCorruptException, AccountabilityException, InterruptedException, ExecutionException {
+        throws IOException, RepositoryCorruptException, AccountabilityException, InterruptedException, ExecutionException, JAXBException {
         LocalDateTime start = LocalDateTime.now();
         AccountabilityManager accountabilityManager = AccountabilityManagerFactory.getAccountabilityManager();
 
@@ -127,7 +136,7 @@ public class CsarExporter {
         exportConfiguration.put(CsarExportConfiguration.INCLUDE_HASHES.name(), null);
         exportConfiguration.put(CsarExportConfiguration.STORE_IMMUTABLY.name(), null);
 
-        String manifestString = this.writeCsar(repository, entryId, out, exportConfiguration);
+        String manifestString = this.writeCsar(repository, entryId, out, exportConfiguration, false);
         String qNameWithComponentVersionOnly = VersionUtils.getQNameWithComponentVersionOnly(entryId);
         LOGGER.debug("Preparing CSAR export (provenance) lasted {}", Duration.between(LocalDateTime.now(), start).toString());
 
@@ -141,21 +150,72 @@ public class CsarExporter {
      * @param out     the output stream to write to
      * @return the TOSCA meta file for the generated Csar
      */
-    public String writeCsar(IRepository repository, DefinitionsChildId entryId, OutputStream out, Map<String, Object> exportConfiguration)
-        throws IOException, RepositoryCorruptException, InterruptedException, AccountabilityException, ExecutionException {
+    public String writeCsar(IRepository repository, DefinitionsChildId entryId, OutputStream out, Map<String, Object> exportConfiguration, boolean includeDependencies)
+        throws IOException, RepositoryCorruptException, InterruptedException, AccountabilityException, ExecutionException, JAXBException {
         CsarExporter.LOGGER.trace("Starting CSAR export with {}", entryId.toString());
 
         Map<CsarContentProperties, CsarEntry> refMap = new HashMap<>();
         ToscaExportUtil exporter = new ToscaExportUtil();
         ExportedState exportedState = new ExportedState();
+        ExportedState exportedStateTemp = new ExportedState();
         DefinitionsChildId currentId = entryId;
+        DefinitionsChildId loopId;
         Collection<DefinitionsChildId> referencedIds;
+        SelfContainmentUtil packager = new SelfContainmentUtil();
+
+        if (includeDependencies) {
+            ServiceTemplateId newServiceTemplateId = new ServiceTemplateId(QName.valueOf(entryId.getQName() + "-self"));
+            if (repository.exists(newServiceTemplateId)) {
+                entryId = newServiceTemplateId;
+                currentId = newServiceTemplateId;
+            } else {
+                repository.duplicate(entryId, newServiceTemplateId);
+                entryId = newServiceTemplateId;
+                currentId = newServiceTemplateId;
+
+                Collection<DefinitionsChildId> nodeTypeIds = repository.getReferencedDefinitionsChildIds(currentId);
+
+                for (DefinitionsChildId nodeTypeId : nodeTypeIds) {
+                    loopId = nodeTypeId;
+                    if (loopId instanceof NodeTypeId) {
+                        do {
+                            Collection<DefinitionsChildId> referencedDefinitionsChildIds = repository.getReferencedDefinitionsChildIds(loopId);
+
+                            Map<String, Collection<DefinitionsChildId>> updatedIds = packager.manageSelfContainedDefinitions(referencedDefinitionsChildIds, repository);
+
+                            if (!updatedIds.isEmpty()) {
+                                TNodeTypeImplementation nodeTypeImplementation = getNodeTypeImplementation(nodeTypeId.getQName(), repository);
+                                SelfContainmentUtil.createNodeTypeImplSelf((NodeTypeId) nodeTypeId, nodeTypeImplementation, repository, updatedIds);
+                            }
+
+                            exportedStateTemp.flagAsExported(loopId);
+                            exportedStateTemp.flagAsExportRequired(referencedDefinitionsChildIds);
+
+                            loopId = exportedStateTemp.pop();
+                        } while (loopId != null);
+                    } else if (loopId instanceof ArtifactTemplateId) {
+                        Collection<DefinitionsChildId> onlyArtifactList = new HashSet<>();
+                        onlyArtifactList.add(loopId);
+                        Map<String, Collection<DefinitionsChildId>> updatedArtifactIds = packager.manageSelfContainedDefinitions(onlyArtifactList, repository);
+
+                        if (!updatedArtifactIds.isEmpty()) {
+                            Collection<DefinitionsChildId> deploymentArtifacts = updatedArtifactIds.get("DeploymentArtifacts");
+                            if (!deploymentArtifacts.isEmpty()) {
+                                TopologyTemplateUtils.updateServiceTemplateWithResolvedDa(entryId, repository, loopId, deploymentArtifacts.iterator().next());
+                            }
+                        }
+                    }
+                }
+
+                currentId = entryId;
+            }
+        }
 
         // Process definitions and referenced files
         do {
             String definitionsPathInsideCSAR = CsarExporter.getDefinitionsPathInsideCSAR(repository, currentId);
             CsarContentProperties definitionsFileProperties = new CsarContentProperties(definitionsPathInsideCSAR);
-            referencedIds = exporter.processTOSCA(repository, currentId, definitionsFileProperties, refMap, exportConfiguration);
+            referencedIds = exporter.processTOSCA(repository, currentId, definitionsFileProperties, refMap, exportConfiguration, includeDependencies);
 
             // for each entryId add license and readme files (if they exist) to the refMap
             addLicenseAndReadmeFiles(repository, currentId, refMap);
@@ -212,6 +272,22 @@ public class CsarExporter {
             // create manifest file and add it to archive
             return this.addManifest(repository, entryId, refMap, zos, exportConfiguration);
         }
+    }
+
+    private TNodeTypeImplementation getNodeTypeImplementation(QName nodeType, IRepository repository) {
+        return repository.getAllDefinitionsChildIds(NodeTypeImplementationId.class)
+            .stream()
+            .map(repository::getElement)
+            .filter(entry -> entry.getNodeType().equals(nodeType))
+            .findAny().orElse(null);
+    }
+
+    private List<TNodeTypeImplementation> getNodeTypeImplementationList(QName nodeType, IRepository repository) {
+        return repository.getAllDefinitionsChildIds(NodeTypeImplementationId.class)
+            .stream()
+            .map(repository::getElement)
+            .filter(entry -> entry.getNodeType().equals(nodeType))
+            .collect(Collectors.toList());
     }
 
     private void calculateFileHashes(Map<CsarContentProperties, CsarEntry> files) {

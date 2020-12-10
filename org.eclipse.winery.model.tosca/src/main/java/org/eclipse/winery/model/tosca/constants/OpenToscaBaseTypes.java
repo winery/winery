@@ -23,6 +23,9 @@ public class OpenToscaBaseTypes {
     public static final QName DockerEngineNodeType = QName.valueOf("{http://opentosca.org/baseelements/nodetypes}DockerEngine");
     // endregion
 
+    public static final QName ubuntuNodeTypeImpl = QName.valueOf("{http://opentosca.org/nodetypeimplementations}Ubuntu-VM");
+    public static final QName dockerContainerArtifactType = QName.valueOf("{http://opentosca.org/artifacttypes}DockerContainerArtifact");
+
     // region ********** secure elements **********
     public static final QName secureProxyContainer = QName.valueOf("{http://opentosca.org/secureelements/nodetypes}SecureProxyContainer");
     public static final QName secureProxy = QName.valueOf("{http://opentosca.org/secureelements/nodetypes}SecureProxy");
@@ -30,6 +33,8 @@ public class OpenToscaBaseTypes {
 
     // region ********** freeze and defrost **********
     public static final QName stateArtifactType = QName.valueOf("{http://opentosca.org/artifacttypes}State");
+    public static final QName isoArtifactType = QName.valueOf("{http://opentosca.org/artifacttypes}ISO");
+    public static final QName cloudImageArtifactType = QName.valueOf("{http://opentosca.org/artifacttypes}CloudImage");
     public static final QName statefulComponentPolicyType = QName.valueOf("{http://opentosca.org/policytypes}StatefulComponent");
     public static final QName freezableComponentPolicyType = QName.valueOf("{http://opentosca.org/policytypes}FreezableComponent");
     // endregion
