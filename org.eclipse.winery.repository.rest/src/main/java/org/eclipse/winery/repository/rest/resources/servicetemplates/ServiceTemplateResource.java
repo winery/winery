@@ -608,7 +608,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
         WineryVersion newVersion = new WineryVersion(
             "_substituted_" + version.toString(),
             1,
-            0
+            1
         );
 
         ServiceTemplateId newId = new ServiceTemplateId(id.getNamespace().getDecoded(),
@@ -687,7 +687,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
             WineryVersion newVersion = new WineryVersion(
                 participant.getName() + "-" + version.toString().replace("gdm", "ldm"),
                 1,
-                0
+                1
             );
 
             List<OTParticipant> newParticipantList = new ArrayList<>();
@@ -747,7 +747,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
         WineryVersion newVersion = new WineryVersion(
             "gdm-" + version.toString(),
             1,
-            0
+            1
         );
 
         IRepository repository = RepositoryFactory.getRepository();
