@@ -36,11 +36,3 @@ public class ToscaNode extends ToscaEntity {
         this.setId(nodeTemplate.getId());
     }
 }
-
-	
-
-	
-	
-
-
-	

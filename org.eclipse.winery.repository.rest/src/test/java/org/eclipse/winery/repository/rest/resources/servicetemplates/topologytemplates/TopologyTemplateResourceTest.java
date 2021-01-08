@@ -46,7 +46,8 @@ public class TopologyTemplateResourceTest extends AbstractResourceTest {
     @Test
     public void getComponentInstanceJSON() throws Exception {
         this.setRevisionTo("3fe0df76e98d46ead68295920e5d1cf1354bdea1");
-        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/", "servicetemplates/baobab_topologytemplate.json");
+        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/",
+            "servicetemplates/baobab_topologytemplate.json");
     }
 
     @Test
@@ -87,7 +88,8 @@ public class TopologyTemplateResourceTest extends AbstractResourceTest {
     @Test
     public void farmTopologyTemplateIsCorrectlyReturnAsJson() throws Exception {
         this.setRevisionTo("2d35f0d3c15b384c53df10967164d97e4a7dd6f2");
-        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/farm/topologytemplate/", "servicetemplates/farm_topologytemplate.json");
+        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/farm/topologytemplate/",
+            "servicetemplates/farm_topologytemplate.json");
     }
 
     @Test

@@ -178,7 +178,7 @@ export class InheritanceUtils {
      * @returns newKVProperties: KV Properties as Object
      */
     static getKVProperties(type: any): any {
-        const newKVProperies = {};
+        const newKVProperties = {};
         const kvProperties = type.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.propertyDefinitionKVList;
         for (const obj of kvProperties) {
             const key = obj.key;
@@ -190,9 +190,9 @@ export class InheritanceUtils {
             } else {
                 value = obj.value;
             }
-            newKVProperies[key] = value;
+            newKVProperties[key] = value;
         }
-        return newKVProperies;
+        return newKVProperties;
     }
 
     static hasKVPropDefinition(element: EntityType): boolean {
@@ -235,21 +235,22 @@ export class InheritanceUtils {
      */
     static getDefaultPropertiesFromEntityTypes(qName: string, entities: EntityType[]): any {
         for (const element of entities) {
+            const selectedType = element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0];
             if (element.qName === qName) {
                 // if propertiesDefinition is defined it's a XML property
                 // FIXME this needs to correctly handle the type option for defining XML properties
-                if (element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition
-                    && element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element) {
+                if (selectedType.propertiesDefinition
+                    && selectedType.propertiesDefinition.element) {
                     return {
                         propertyType: PropertyDefinitionType.XML,
-                        any: element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element
+                        any: selectedType.propertiesDefinition.element
                     };
-                // properties definition contains yaml properties
-                } else if (element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition
-                    && element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.properties) {
+                    // properties definition contains yaml properties
+                } else if (selectedType.propertiesDefinition
+                    && selectedType.propertiesDefinition.properties) {
                     let inheritedProperties = {};
                     if (InheritanceUtils.hasParentType(element)) {
-                        let parent = element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].derivedFrom.typeRef;
+                        let parent = selectedType.derivedFrom.typeRef;
                         let continueFlag;
 
                         while (parent) {
@@ -288,7 +289,7 @@ export class InheritanceUtils {
                 } else { // otherwise KV properties or no properties at all
                     let inheritedProperties = {};
                     if (InheritanceUtils.hasParentType(element)) {
-                        let parent = element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].derivedFrom.typeRef;
+                        let parent = selectedType.derivedFrom.typeRef;
                         let continueFlag;
 
                         while (parent) {
@@ -321,10 +322,19 @@ export class InheritanceUtils {
 
                     const mergedProperties = { ...inheritedProperties, ...typeProperties };
 
-                    return {
+                    const properties = {
                         propertyType: PropertyDefinitionType.KV,
-                        kvproperties: { ...mergedProperties }
+                        kvproperties: { ...mergedProperties },
                     };
+
+                    return InheritanceUtils.hasKVPropDefinition(element) && selectedType.propertiesDefinition.elementName
+                                && selectedType.propertiesDefinition.namespace
+                        ? {
+                            ...properties,
+                            elementName: selectedType.propertiesDefinition.elementName,
+                            namespace: selectedType.propertiesDefinition.namespace
+                        }
+                        : properties;
                 }
             }
         }
