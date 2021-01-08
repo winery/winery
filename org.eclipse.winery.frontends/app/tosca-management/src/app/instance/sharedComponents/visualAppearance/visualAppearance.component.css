@@ -11,6 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
+.save {
+    margin-left: 5px;
+    height: 24px;
+    line-height: 1em;
+    vertical-align: top;
+}
+
 .content {
     height: 700px;
 }

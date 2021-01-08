@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates.plans;
 
-import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TParameter;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
@@ -49,14 +48,13 @@ public class ParameterResource extends EntityWithIdResource<TParameter> {
     @GET
     @Path("required")
     public String getRequired() {
-        return this.o.getRequired().toString();
+        return this.o.getRequired() ? "yes" : "no";
     }
 
     @PUT
     @Path("required")
     public Response putRequired(@FormParam(value = "required") String required) {
-        TBoolean tb = TBoolean.valueOf(required);
-        this.o.setRequired(tb);
+        this.o.setRequired(required.equalsIgnoreCase("yes"));
         return RestUtils.persist(this.res);
     }
 

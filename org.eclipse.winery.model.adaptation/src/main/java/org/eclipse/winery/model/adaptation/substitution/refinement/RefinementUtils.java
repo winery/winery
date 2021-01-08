@@ -18,24 +18,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.OTDeploymentArtifactMapping;
-import org.eclipse.winery.model.tosca.OTPermutationMapping;
-import org.eclipse.winery.model.tosca.OTPrmMapping;
-import org.eclipse.winery.model.tosca.OTRelationDirection;
-import org.eclipse.winery.model.tosca.OTRelationMapping;
-import org.eclipse.winery.model.tosca.OTStayMapping;
-import org.eclipse.winery.model.tosca.OTTopologyFragmentRefinementModel;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.extensions.OTDeploymentArtifactMapping;
+import org.eclipse.winery.model.tosca.extensions.OTPermutationMapping;
+import org.eclipse.winery.model.tosca.extensions.OTPrmMapping;
+import org.eclipse.winery.model.tosca.extensions.OTRelationDirection;
+import org.eclipse.winery.model.tosca.extensions.OTRelationMapping;
+import org.eclipse.winery.model.tosca.extensions.OTStayMapping;
+import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 
 public abstract class RefinementUtils {
@@ -96,7 +95,7 @@ public abstract class RefinementUtils {
             .noneMatch(map -> map.getDetectorElement().getId().equals(detectorNode.getId())
                 && map.getRefinementElement().getId().equals(refinementNode.getId()))) {
             prm.setPermutationMappings(
-                addMapping(detectorNode, refinementNode, new OTPermutationMapping(), prm.getPermutationMappings())
+                addMapping(detectorNode, refinementNode, new OTPermutationMapping(new OTPermutationMapping.Builder()), prm.getPermutationMappings())
             );
         }
     }
@@ -104,14 +103,14 @@ public abstract class RefinementUtils {
     public static void addStayMapping(TNodeTemplate detectorNode, TEntityTemplate refinementNode,
                                       OTTopologyFragmentRefinementModel prm) {
         prm.setStayMappings(
-            addMapping(detectorNode, refinementNode, new OTStayMapping(), prm.getStayMappings())
+            addMapping(detectorNode, refinementNode, new OTStayMapping(new OTStayMapping.Builder()), prm.getStayMappings())
         );
     }
 
     public static void addRelationMapping(TNodeTemplate detectorNode, TEntityTemplate refinementNode,
                                           QName relationType, OTRelationDirection direction, QName validSourOrTarget,
                                           OTTopologyFragmentRefinementModel prm) {
-        OTRelationMapping mapping = new OTRelationMapping();
+        OTRelationMapping mapping = new OTRelationMapping(new OTRelationMapping.Builder());
         prm.setRelationMappings(
             addMapping(detectorNode, refinementNode, mapping, prm.getRelationMappings())
         );
@@ -123,7 +122,7 @@ public abstract class RefinementUtils {
 
     public static void addDeploymentArtifactMapping(TNodeTemplate detectorNode, TEntityTemplate refinementNode,
                                                     QName artifactType, OTTopologyFragmentRefinementModel prm) {
-        OTDeploymentArtifactMapping mapping = new OTDeploymentArtifactMapping();
+        OTDeploymentArtifactMapping mapping = new OTDeploymentArtifactMapping(new OTDeploymentArtifactMapping.Builder());
         prm.setDeploymentArtifactMappings(
             addMapping(detectorNode, refinementNode, mapping, prm.getDeploymentArtifactMappings())
         );
@@ -139,7 +138,7 @@ public abstract class RefinementUtils {
 
         mapping.setDetectorElement(detectorNode);
         mapping.setRefinementElement(refinementNode);
-        mapping.setId(UUID.randomUUID().toString());
+        mapping.setId("pm-" + Math.random());
         mappings.add(mapping);
 
         return mappings;

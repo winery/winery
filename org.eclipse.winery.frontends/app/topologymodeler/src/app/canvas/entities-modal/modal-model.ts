@@ -64,6 +64,8 @@ export class DeploymentArtifactOrPolicyModalData {
         public modalTargetLocation?: string,
         // yaml artifact provided as a reference
         public isFileRemote?: boolean,
+        // yaml artifact only as reference available
+        public isRepositoryType?: boolean,
         // file reference
         public selectedArtifactReference?: string
     ) {

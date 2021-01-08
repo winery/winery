@@ -46,7 +46,6 @@
         <th>Name</th>
         <th>Type</th>
         <th>File</th>
-        <th>Depl. Path</th>
     </tr>
     </thead>
     <tbody>
@@ -66,12 +65,6 @@
             <div #afile (click)="clickArtifactFile(artifact)">{{ artifact.file }}</div>
             <span class="cell-comment">{{ artifact.file }}</span>
         </td>
-        <td class="toscatype-table-td"
-            [class.cell-with-comment]="isEllipsisActive(atargetLocation)">
-            <div #atargetLocation>{{ artifact.targetLocation }}</div>
-            <span class="cell-comment">{{ artifact.targetLocation }}</span>
-        </td>
-
     </tr>
     </tbody>
 </table>

@@ -17,6 +17,7 @@ import { Observable } from 'rxjs';
 import { BackendService } from '../services/backend.service';
 import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { TTopologyTemplate } from '../models/ttopology-template';
+import 'rxjs/add/operator/mergeMap';
 
 export interface EdmmTechnologyTransformationCheck {
     id: string;

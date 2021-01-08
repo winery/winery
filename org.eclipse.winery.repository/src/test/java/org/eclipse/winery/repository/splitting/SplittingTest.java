@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
@@ -30,6 +30,7 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -67,7 +68,7 @@ public class SplittingTest extends TestWithGitBackedRepository {
             .collect(Collectors.toList());
 
         List<TNodeTemplate> nodeTemplatesWithoutIncomingEdges = splitting.getNodeTemplatesWithoutIncomingHostedOnRelationships(topologyTemplate);
-        assertEquals(expectedNodeTemplates, nodeTemplatesWithoutIncomingEdges);
+        Assertions.assertEquals(expectedNodeTemplates, nodeTemplatesWithoutIncomingEdges);
     }
 
     @Test
@@ -81,7 +82,7 @@ public class SplittingTest extends TestWithGitBackedRepository {
             .get();
 
         Optional<String> location = ModelUtilities.getTargetLabel(nt1);
-        assertEquals(Optional.of("l1"), location);
+        Assertions.assertEquals(Optional.of("l1"), location);
     }
 
     @Test
@@ -273,14 +274,14 @@ public class SplittingTest extends TestWithGitBackedRepository {
             Ids.add(nodeTemplate.getId());
         }
 
-        assertEquals(expectedIds, Ids);
+        Assertions.assertEquals(expectedIds, Ids);
     }
 
     @Test
     public void testmatchingofSplittingTopology() throws Exception {
         ServiceTemplateId serviceTemplateId = new ServiceTemplateId("http://opentosca.org/servicetemplates", "Abstract_PHPApp_MySQLDB_MotivatingScenario_Splitting-split", false);
 
-        assertTrue(this.repository.exists(serviceTemplateId));
+        Assertions.assertTrue(this.repository.exists(serviceTemplateId));
 
         final TServiceTemplate serviceTemplate = repository.getElement(serviceTemplateId);
         TTopologyTemplate topologyTemplateMatching = serviceTemplate.getTopologyTemplate();
@@ -293,6 +294,6 @@ public class SplittingTest extends TestWithGitBackedRepository {
             Ids.add(nodeTemplate.getId());
         }
 
-        assertEquals(expectedIds, Ids);
+        Assertions.assertEquals(expectedIds, Ids);
     }
 }

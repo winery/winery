@@ -13,9 +13,7 @@
  ********************************************************************************/
 
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
-import {
-    Entity, EntityType, TArtifactType, TNodeTemplate, TPolicyType, TRelationshipTemplate, TTopologyTemplate, VisualEntityType
-} from './models/ttopology-template';
+import { TNodeTemplate, TRelationshipTemplate, TTopologyTemplate } from './models/ttopology-template';
 import { ILoaded, LoadedService } from './services/loaded.service';
 import { AppReadyEventService } from './services/app-ready-event.service';
 import { BackendService } from './services/backend.service';
@@ -23,7 +21,6 @@ import { Subscription } from 'rxjs';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from './redux/store/winery.store';
 import { ToscaDiff } from './models/ToscaDiff';
-import { isNullOrUndefined } from 'util';
 import { TopologyTemplateUtil } from './models/topologyTemplateUtil';
 import { EntityTypesModel, TopologyModelerInputDataFormat } from './models/entityTypesModel';
 import { ActivatedRoute } from '@angular/router';
@@ -33,8 +30,7 @@ import { TopologyRendererState } from './redux/reducers/topologyRenderer.reducer
 import { VersionElement } from './models/versionElement';
 import { TopologyRendererActions } from './redux/actions/topologyRenderer.actions';
 import { WineryRepositoryConfigurationService } from '../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
-import { TPolicy } from './models/policiesModalData';
-import { GroupedNodeTypeModel } from './models/groupedNodeTypeModel';
+import { WineryActions } from './redux/actions/winery.actions';
 
 /**
  * This is the root component of the topology modeler.
@@ -64,6 +60,8 @@ export class WineryComponent implements OnInit, AfterViewInit {
 
     topologyDifferences: [ToscaDiff, TTopologyTemplate];
 
+    detailsSidebarVisible: boolean;
+
     showVersionSlider: boolean;
 
     public loaded: ILoaded;
@@ -75,6 +73,7 @@ export class WineryComponent implements OnInit, AfterViewInit {
                 public backendService: BackendService,
                 private ngRedux: NgRedux<IWineryState>,
                 private actions: TopologyRendererActions,
+                private uiActions: WineryActions,
                 private alert: ToastrService,
                 private activatedRoute: ActivatedRoute,
                 private configurationService: WineryRepositoryConfigurationService) {
@@ -82,6 +81,8 @@ export class WineryComponent implements OnInit, AfterViewInit {
             .subscribe(hideNavBar => this.hideNavBarState = hideNavBar));
         this.subscriptions.push(this.ngRedux.select(state => state.topologyRendererState)
             .subscribe(currentButtonsState => this.setButtonsState(currentButtonsState)));
+        this.subscriptions.push(this.ngRedux.select(state => state.wineryState.sidebarContents.visible)
+            .subscribe(detailsSidebarVisible => this.detailsSidebarVisible = detailsSidebarVisible));
     }
 
     /**
@@ -97,23 +98,23 @@ export class WineryComponent implements OnInit, AfterViewInit {
             if (this.topologyModelerData.configuration.isReadonly) {
                 this.readonly = true;
             }
-            // If data is passed to the topologymodeler directly, rendering is initiated immediately without backend
-            // calls
+            // If data is passed to the topologymodeler directly,
+            //  rendering is initiated immediately without backend calls
             if (this.topologyModelerData.topologyTemplate) {
                 this.initiateLocalRendering(this.topologyModelerData);
             } else {
                 if (this.topologyModelerData.configuration.repositoryURL) {
-                    this.backendService.endpointConfiguration.next(this.topologyModelerData.configuration);
+                    this.backendService.configure(this.topologyModelerData.configuration);
                 } else {
                     this.activatedRoute.queryParams.subscribe((params: TopologyModelerConfiguration) => {
-                        this.backendService.endpointConfiguration.next(params);
+                        this.backendService.configure(params);
                     });
                     this.initiateData();
                 }
             }
         } else {
             this.activatedRoute.queryParams.subscribe((params: TopologyModelerConfiguration) => {
-                this.backendService.endpointConfiguration.next(params);
+                this.backendService.configure(params);
             });
             this.initiateData();
         }
@@ -123,151 +124,6 @@ export class WineryComponent implements OnInit, AfterViewInit {
         // auto layout when some nodes are missing coordinates
         if (this.someNodeMissingCoordinates) {
             this.ngRedux.dispatch(this.actions.executeLayout());
-        }
-    }
-
-    /**
-     * Save the received Array of Entity Types inside the respective variables in the entityTypes array of arrays
-     * which is getting passed to the palette and the topology renderer
-     */
-    initEntityType(entityTypeJSON: Array<any>, entityType: string): void {
-        if (!entityTypeJSON || entityTypeJSON.length === 0) {
-            this.alert.info('No ' + entityType + ' available!');
-        }
-
-        switch (entityType) {
-            case 'yamlPolicies': {
-                this.entityTypes.yamlPolicies = [];
-                entityTypeJSON.forEach(policy => {
-                    this.entityTypes.yamlPolicies.push(
-                        new TPolicy(
-                            policy.name,
-                            policy.policyRef,
-                            policy.policyType,
-                            policy.any,
-                            policy.documentation,
-                            policy.otherAttributes,
-                            policy.properties,
-                            policy.targets)
-                    );
-                });
-                break;
-            }
-            case 'artifactTypes': {
-                this.entityTypes.artifactTypes = [];
-                entityTypeJSON.forEach(artifactType => {
-
-                    this.entityTypes.artifactTypes
-                        .push(new TArtifactType(
-                            artifactType.id,
-                            artifactType.qName,
-                            artifactType.name,
-                            artifactType.namespace,
-                            artifactType.full,
-                            artifactType.properties,
-                            artifactType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].mimeType,
-                            artifactType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].fileExtensions
-                        ));
-                });
-                break;
-            }
-            case 'artifactTemplates': {
-                this.entityTypes.artifactTemplates = entityTypeJSON;
-                break;
-            }
-            case 'policyTypes': {
-                this.entityTypes.policyTypes = [];
-                entityTypeJSON.forEach(element => {
-                    const policyType = new TPolicyType(element.id,
-                        element.qName,
-                        element.name,
-                        element.namespace,
-                        element.properties,
-                        element.full);
-                    if (element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].appliesTo) {
-                        policyType.targets = element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].appliesTo
-                            .nodeTypeReference.map(ntr => ntr.typeRef);
-                    }
-                    this.entityTypes.policyTypes.push(policyType);
-                });
-                break;
-            }
-            case 'capabilityTypes': {
-                this.entityTypes.capabilityTypes = [];
-                entityTypeJSON.forEach(capabilityType => {
-                    this.entityTypes.capabilityTypes
-                        .push(new EntityType(
-                            capabilityType.id,
-                            capabilityType.qName,
-                            capabilityType.name,
-                            capabilityType.namespace,
-                            capabilityType.properties,
-                            capabilityType.full
-                        ));
-                });
-                break;
-            }
-            case 'requirementTypes': {
-                this.entityTypes.requirementTypes = [];
-                entityTypeJSON.forEach(requirementType => {
-                    this.entityTypes.requirementTypes
-                        .push(new EntityType(
-                            requirementType.id,
-                            requirementType.qName,
-                            requirementType.name,
-                            requirementType.namespace,
-                            requirementType.properties,
-                            requirementType.full
-                        ));
-                });
-                break;
-            }
-            case 'policyTemplates': {
-                this.entityTypes.policyTemplates = [];
-                entityTypeJSON.forEach(policyTemplate => {
-                    this.entityTypes.policyTemplates
-                        .push(new Entity(
-                            policyTemplate.id,
-                            policyTemplate.qName,
-                            policyTemplate.name,
-                            policyTemplate.namespace
-                        ));
-                });
-                break;
-            }
-            case 'groupedNodeTypes': {
-                this.entityTypes.groupedNodeTypes = entityTypeJSON as GroupedNodeTypeModel[];
-                break;
-            }
-            case 'versionElements': {
-                this.entityTypes.versionElements = [];
-                entityTypeJSON.forEach((versionElements => {
-                    this.entityTypes.versionElements.push(new VersionElement(versionElements.qName, versionElements.versions));
-                }));
-                break;
-            }
-            case 'unGroupedNodeTypes': {
-                this.entityTypes.unGroupedNodeTypes = entityTypeJSON;
-                break;
-            }
-            case 'relationshipTypes': {
-                this.entityTypes.relationshipTypes = [];
-                entityTypeJSON.forEach((relationshipType: EntityType) => {
-                    const visuals = this.entityTypes.relationshipVisuals
-                        .find(value => value.typeId === relationshipType.qName);
-                    this.entityTypes.relationshipTypes
-                        .push(new VisualEntityType(
-                            relationshipType.id,
-                            relationshipType.qName,
-                            relationshipType.name,
-                            relationshipType.namespace,
-                            relationshipType.properties,
-                            visuals.color,
-                            relationshipType.full)
-                        );
-                });
-                break;
-            }
         }
     }
 
@@ -283,6 +139,31 @@ export class WineryComponent implements OnInit, AfterViewInit {
         this.appReadyEvent.trigger();
     }
 
+    /**
+     * notifies the redux store of the sidebar with a given key being closed
+     * @param key The identifier for the sidebar that has been closed
+     */
+    notifyClose(key: string): void {
+        // FIXME this currently basically only supports the node-details sidebar
+        //  because none of the other sidebars are based off ng-sidebar
+        this.ngRedux.dispatch(this.uiActions.openSidebar({
+            sidebarContents: {
+                visible: false,
+                nodeClicked: '',
+                template: {
+                    id: '',
+                    name: '',
+                    type: '',
+                    properties: { kvproperties: { foo: 'bar' } },
+                },
+                minInstances: -1,
+                maxInstances: -1,
+                source: '',
+                target: '',
+            }
+        }));
+    }
+
     initTopologyTemplateForRendering(nodeTemplateArray: Array<TNodeTemplate>, relationshipTemplateArray: Array<TRelationshipTemplate>) {
         // init node templates
         this.nodeTemplates = TopologyTemplateUtil.initNodeTemplates(nodeTemplateArray, this.entityTypes.nodeVisuals,
@@ -293,66 +174,27 @@ export class WineryComponent implements OnInit, AfterViewInit {
     }
 
     initiateData(): void {
-        this.backendService.allEntities$.subscribe(JSON => {
-            // Grouped NodeTypes
-            this.initEntityType(JSON[0], 'groupedNodeTypes');
-
-            // Artifact Templates
-            this.initEntityType(JSON[1], 'artifactTemplates');
-
-            /**
-             * This subscriptionProperties receives an Observable of [string, string], the former value being
-             * the JSON representation of the topologyTemplate and the latter value being the JSON
-             * representation of the node types' visual appearances
-             * the backendService makes sure that both get requests finish before pushing data onto this Observable
-             * by using Observable.forkJoin(1$, 2$);
-             * */
-            const topologyData = JSON[2];
-            const topologyTemplate = topologyData[0];
-            this.entityTypes.nodeVisuals = topologyData[1];
-            this.entityTypes.relationshipVisuals = topologyData[2];
-            this.entityTypes.policyTemplateVisuals = topologyData[3];
-            this.entityTypes.policyTypeVisuals = topologyData[4];
-            if (topologyData.length === 7 && !isNullOrUndefined(topologyData[5]) && !isNullOrUndefined(topologyData[6])) {
-                this.topologyDifferences = [topologyData[5], topologyData[6]];
-            }
-
-            // init YAML policies if they exist
-            if (topologyTemplate.policies) {
-                this.initEntityType(topologyTemplate.policies.policy, 'yamlPolicies');
-            } else {
-                this.initEntityType([], 'yamlPolicies');
-            }
-
-            // Artifact types
-            this.initEntityType(JSON[3], 'artifactTypes');
-
-            // Policy types
-            this.initEntityType(JSON[4], 'policyTypes');
-
-            // Capability Types
-            this.initEntityType(JSON[5], 'capabilityTypes');
-
-            // Requirement Types
-            this.initEntityType(JSON[6], 'requirementTypes');
-
-            // PolicyTemplates
-            this.initEntityType(JSON[7], 'policyTemplates');
-
-            // Relationship Types
-            this.initEntityType(JSON[8], 'relationshipTypes');
-
-            // NodeTypes
-            this.initEntityType(JSON[9], 'unGroupedNodeTypes');
-
-            // Version Elements
-            this.initEntityType(JSON[10], 'versionElements');
-
-            // init the NodeTemplates and RelationshipTemplates to start their rendering
-            this.initTopologyTemplateForRendering(topologyTemplate.nodeTemplates, topologyTemplate.relationshipTemplates);
-
-            this.triggerLoaded('everything');
+        // TODO well, this is a mess
+        this.backendService.model$.subscribe(m => {
+            this.entityTypes = m;
+            this.ngRedux.dispatch(this.uiActions.addEntityTypes(this.entityTypes));
         });
+        this.backendService.topDiff$
+            .subscribe(diff => this.topologyDifferences = diff);
+        this.backendService.topTemplate$
+            .subscribe((template) => {
+                this.initTopologyTemplateForRendering(template.nodeTemplates, template.relationshipTemplates);
+                // init groups
+                this.ngRedux.dispatch(this.uiActions.updateGroupDefinitions(template.groups));
+                // init participants
+                this.ngRedux.dispatch(this.uiActions.updateParticipants(template.participants));
+            });
+        this.backendService.loaded$
+            .subscribe(l => {
+                if (l) {
+                    this.triggerLoaded('everything');
+                }
+            });
     }
 
     onReduxReady() {

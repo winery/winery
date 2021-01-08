@@ -16,9 +16,9 @@ package org.eclipse.winery.model.adaptation.substitution.refinement;
 
 import java.util.Map;
 
-import org.eclipse.winery.common.ids.definitions.PatternRefinementModelId;
-import org.eclipse.winery.model.tosca.OTPatternRefinementModel;
-import org.eclipse.winery.model.tosca.OTTopologyFragmentRefinementModel;
+import org.eclipse.winery.model.ids.extensions.PatternRefinementModelId;
+import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 

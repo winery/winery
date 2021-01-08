@@ -14,7 +14,7 @@
 package org.eclipse.winery.repository.rest.resources.entitytypes.properties.winery;
 
 import io.swagger.annotations.ApiOperation;
-import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;

@@ -92,12 +92,8 @@ export class InterfaceDefinitionsComponent implements OnInit {
         this.artifactsService.getArtifacts().subscribe(data => {
             data.forEach(item => this.selectableArtifacts.push({ ...item, ...{ id: item.name, text: `${item.name} / ${item.type}` } }));
         });
-        if (this.selectedInterface) {
-            this.onInterfaceSelected(this.selectedInterface);
-        }
-        if (this.selectedOperation) {
-            this.onOperationSelected(this.selectedOperation);
-        }
+        this.selectedInterface = null;
+        this.selectedOperation = null;
     }
 
     private handleError(error: HttpErrorResponse) {

@@ -28,6 +28,7 @@ import { SubMenuItem } from '../model/subMenuItem';
 
 @Component({
     templateUrl: 'instance.component.html',
+    styleUrls: ['instance.component.css'],
     providers: [
         InstanceService,
         RemoveWhiteSpacesPipe,

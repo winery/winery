@@ -17,10 +17,10 @@ package org.eclipse.winery.model.adaptation.substitution.refinement;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.winery.model.tosca.OTPatternRefinementModel;
-import org.eclipse.winery.model.tosca.OTPermutationMapping;
-import org.eclipse.winery.model.tosca.OTStringList;
-import org.eclipse.winery.model.tosca.OTTopologyFragmentRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTPermutationMapping;
+import org.eclipse.winery.model.tosca.extensions.OTStringList;
 
 import org.junit.jupiter.api.Test;
 
@@ -121,16 +121,16 @@ class PermutationGeneratorTest extends AbstractRefinementTest {
     void checkMutabilityOfComplexPrmWithoutPatternSet() {
         OTPatternRefinementModel refinementModel = generateComplexPrmWithPatternSet();
         addAllPermutationMappings(refinementModel);
-        refinementModel.getRelationMappings().removeIf(map -> map.getId().equals("p2_to_n15"));
+        refinementModel.getRelationMappings().removeIf(map -> map.getId().equals("rm-2--15"));
 
         PermutationGenerator permutationGenerator = new PermutationGenerator();
         assertFalse(permutationGenerator.checkMutability(refinementModel));
-        
-        assertEquals("There are relations that cannot be redirected during the generation: 2--3",
+
+        assertEquals("There are relations that cannot be redirected during the generation: con-2--3",
             permutationGenerator.getMutabilityErrorReason());
         assertEquals(6, refinementModel.getPermutationOptions().size());
     }
-    
+
     @Test
     void checkMutabilityOfNotMutablePrmBecauseOfARelationThatCannotBeRedirected() {
         OTPatternRefinementModel refinementModel = generateComplexPrmWithPatternSet();
@@ -138,7 +138,7 @@ class PermutationGeneratorTest extends AbstractRefinementTest {
 
         PermutationGenerator permutationGenerator = new PermutationGenerator();
         assertFalse(permutationGenerator.checkMutability(refinementModel));
-        assertEquals("There are relations that cannot be redirected during the generation: 1--2",
+        assertEquals("There are relations that cannot be redirected during the generation: con-1--2",
             permutationGenerator.getMutabilityErrorReason());
     }
 
@@ -147,7 +147,7 @@ class PermutationGeneratorTest extends AbstractRefinementTest {
         OTPatternRefinementModel refinementModel = generateComplexPrmWithPatternSet();
         addSomePermutationMappings(refinementModel);
 
-        refinementModel.getPermutationMappings().removeIf(map -> map.getId().equals("p2_to_n14"));
+        refinementModel.getPermutationMappings().removeIf(map -> map.getId().equals("pm-2--14"));
 
         PermutationGenerator permutationGenerator = new PermutationGenerator();
         assertFalse(permutationGenerator.checkMutability(refinementModel));
@@ -179,7 +179,7 @@ class PermutationGeneratorTest extends AbstractRefinementTest {
             permutationMap.getDetectorElement().getId().equals("2") && permutationMap.getRefinementElement().getId().equals("14")
         ));
         assertTrue(refinementModel.getPermutationMappings().removeIf(permutationMap ->
-            permutationMap.getDetectorElement().getId().equals("1--2") && permutationMap.getRefinementElement().getId().equals("13")
+            permutationMap.getDetectorElement().getId().equals("con-1--2") && permutationMap.getRefinementElement().getId().equals("13")
         ));
     }
 
@@ -208,7 +208,7 @@ class PermutationGeneratorTest extends AbstractRefinementTest {
             permutationMap.getDetectorElement().getId().equals("2") && permutationMap.getRefinementElement().getId().equals("15")
         ));
         assertTrue(refinementModel.getPermutationMappings().removeIf(permutationMap ->
-            permutationMap.getDetectorElement().getId().equals("1--2") && permutationMap.getRefinementElement().getId().equals("14")
+            permutationMap.getDetectorElement().getId().equals("con-1--2") && permutationMap.getRefinementElement().getId().equals("14")
         ));
     }
 
@@ -250,7 +250,7 @@ class PermutationGeneratorTest extends AbstractRefinementTest {
 
         List<OTPermutationMapping> permutationMappings = refinementModel.getPermutationMappings();
         assertEquals(7, permutationMappings.size());
-        
+
         assertTrue(permutationMappings.removeIf(mapping -> mapping.getDetectorElement().getId().equals("1")
             && mapping.getRefinementElement().getId().equals("11")));
         assertTrue(permutationMappings.removeIf(mapping -> mapping.getDetectorElement().getId().equals("3")
@@ -259,11 +259,11 @@ class PermutationGeneratorTest extends AbstractRefinementTest {
             && mapping.getRefinementElement().getId().equals("13")));
         assertTrue(permutationMappings.removeIf(mapping -> mapping.getDetectorElement().getId().equals("2")
             && mapping.getRefinementElement().getId().equals("14")));
-        assertTrue(permutationMappings.removeIf(mapping -> mapping.getDetectorElement().getId().equals("1--3")
+        assertTrue(permutationMappings.removeIf(mapping -> mapping.getDetectorElement().getId().equals("con-1--3")
             && mapping.getRefinementElement().getId().equals("12")));
-        assertTrue(permutationMappings.removeIf(mapping -> mapping.getDetectorElement().getId().equals("1--2")
+        assertTrue(permutationMappings.removeIf(mapping -> mapping.getDetectorElement().getId().equals("con-1--2")
             && mapping.getRefinementElement().getId().equals("13")));
-        assertTrue(permutationMappings.removeIf(mapping -> mapping.getDetectorElement().getId().equals("3--2")
+        assertTrue(permutationMappings.removeIf(mapping -> mapping.getDetectorElement().getId().equals("con-3--2")
             && mapping.getRefinementElement().getId().equals("13")));
     }
 }

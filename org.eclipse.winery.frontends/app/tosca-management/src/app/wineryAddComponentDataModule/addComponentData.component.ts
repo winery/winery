@@ -74,10 +74,16 @@ export class WineryAddComponentDataComponent {
 
     onInputChange() {
         this.validation = new AddComponentValidation();
+
+        if (!this.newComponentName) {
+            this.validFormEvent.emit(false);
+            return { noNameAvailable: true };
+        }
         this.newComponentFinalName = this.newComponentName;
 
         if (this.typeRequired && !this.newComponentSelectedType) {
             this.validation.noTypeAvailable = true;
+            this.validFormEvent.emit(false);
             return { noTypeAvailable: true };
         }
 
@@ -86,6 +92,7 @@ export class WineryAddComponentDataComponent {
         if (this.newComponentVersion.componentVersion && this.useComponentVersion) {
             this.validation.noUnderscoresAllowed = this.newComponentVersion.componentVersion.includes('_');
             if (this.validation.noUnderscoresAllowed) {
+                this.validFormEvent.emit(false);
                 return { noUnderscoresAllowed: true };
             }
         }
@@ -129,14 +136,17 @@ export class WineryAddComponentDataComponent {
     }
 
     createUrlAndCheck() {
-        this.artifactUrl = backendBaseURL + '/' + this.toscaType + '/' + encodeURIComponent(encodeURIComponent(
-            this.newComponentNamespace)) + '/' + this.newComponentFinalName + '/';
+        const namespace = encodeURIComponent(encodeURIComponent(this.newComponentNamespace));
+        if (this.toscaType && namespace && this.newComponentFinalName) {
+            this.artifactUrl = backendBaseURL + '/' + this.toscaType + '/' + encodeURIComponent(encodeURIComponent(
+                this.newComponentNamespace)) + '/' + this.newComponentFinalName + '/';
 
-        this.existService.check(this.artifactUrl)
-            .subscribe(
-                () => this.validate(false),
-                () => this.validate(true)
-            );
+            this.existService.check(this.artifactUrl)
+                .subscribe(
+                    () => this.validate(false),
+                    () => this.validate(true)
+                );
+        }
         this.newComponentNameEvent.emit(this.newComponentFinalName);
         this.newComponentNamespaceEvent.emit(this.newComponentNamespace);
     }
@@ -156,12 +166,11 @@ export class WineryAddComponentDataComponent {
     }
 
     createNoteTypeImplementationName(fullName: SelectData) {
-        const name = fullName.text.substring(0, fullName.text.lastIndexOf('_'));
-        const newVersion = fullName.text.slice(fullName.text.indexOf('_'), fullName.text.length);
-        this.newComponentVersion.componentVersion = newVersion.substring(1, newVersion.indexOf('-'));
-        this.newComponentName = name + '-Impl';
-        this.newComponentFinalName = this.newComponentName + newVersion;
-        this.createUrlAndCheck();
+        const version = Utils.getVersionFromString(fullName.text);
+        this.newComponentVersion.componentVersion = version ? version.toString() : '';
+        // we need to set both as it is required in the determineFinalName
+        this.newComponentFinalName = this.newComponentName = Utils.getNameWithoutVersion(fullName.text) + '-Impl';
+        this.determineFinalName();
     }
 
     createArtifactName(toscaComponent: ToscaComponent, nodeTypeQName: string, operation: string,

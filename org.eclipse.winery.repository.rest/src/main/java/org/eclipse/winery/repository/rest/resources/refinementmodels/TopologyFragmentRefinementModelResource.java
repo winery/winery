@@ -22,14 +22,14 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.adaptation.substitution.refinement.PermutationGenerator;
-import org.eclipse.winery.model.tosca.OTAttributeMapping;
-import org.eclipse.winery.model.tosca.OTDeploymentArtifactMapping;
-import org.eclipse.winery.model.tosca.OTPatternRefinementModel;
-import org.eclipse.winery.model.tosca.OTPermutationMapping;
-import org.eclipse.winery.model.tosca.OTStayMapping;
-import org.eclipse.winery.model.tosca.OTTopologyFragmentRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTPermutationMapping;
+import org.eclipse.winery.model.tosca.extensions.OTAttributeMapping;
+import org.eclipse.winery.model.tosca.extensions.OTDeploymentArtifactMapping;
+import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTStayMapping;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelResource;
 import org.eclipse.winery.repository.rest.resources.apiData.PermutationsResponse;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates.TopologyTemplateResource;
@@ -42,7 +42,7 @@ public class TopologyFragmentRefinementModelResource extends AbstractRefinementM
 
     @Override
     protected OTPatternRefinementModel createNewElement() {
-        return new OTPatternRefinementModel();
+        return new OTPatternRefinementModel(new OTPatternRefinementModel.Builder());
     }
 
     public OTTopologyFragmentRefinementModel getTRefinementModel() {

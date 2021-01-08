@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Definitions targetNamespace="http://plain.winery.opentosca.org/test/patternrefinementmodels" id="winery-defs-for_patternrefinementmodels-MyCoolPRM_w1-wip1" xmlns="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12"
     xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" xmlns:testwineryopentoscaorg="http://test.winery.opentosca.org">
-    <PatternRefinementModel name="MyCoolPRM_w1-wip1" targetNamespace="http://plain.winery.opentosca.org/test/patternrefinementmodels" />
+    <PatternRefinementModel name="MyCoolPRM_w1-wip1" targetNamespace="http://plain.winery.opentosca.org/test/patternrefinementmodels">
+        <Detector/>
+        <RelationMappings/>
+        <RefinementStructure/>
+        <AttributeMappings/>
+        <StayMappings/>
+        <DeploymentArtifactMappings/>
+    </PatternRefinementModel>
 </Definitions>

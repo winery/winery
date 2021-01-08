@@ -17,8 +17,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
 
 import org.apache.commons.io.IOUtils;
 
@@ -26,9 +26,11 @@ import org.apache.commons.io.IOUtils;
  * Provides access to an entry type that represents a file referenced in the repository.
  */
 public class RepositoryRefBasedCsarEntry implements CsarEntry {
-    private RepositoryFileReference reference;
+    private final IRepository repository;
+    private final RepositoryFileReference reference;
 
-    public RepositoryRefBasedCsarEntry(RepositoryFileReference reference) {
+    public RepositoryRefBasedCsarEntry(IRepository repository, RepositoryFileReference reference) {
+        this.repository = repository;
         this.reference = reference;
     }
 
@@ -38,7 +40,7 @@ public class RepositoryRefBasedCsarEntry implements CsarEntry {
 
     @Override
     public InputStream getInputStream() throws IOException {
-        return RepositoryFactory.getRepository().newInputStream(reference);
+        return repository.newInputStream(reference);
     }
 
     @Override

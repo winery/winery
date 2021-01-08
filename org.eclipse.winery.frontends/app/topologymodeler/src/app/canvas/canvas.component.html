@@ -386,16 +386,15 @@
             <div class="form-group" *ngIf="showPropertiesOfSelectedYamlPolicy()">
                 <h5>Properties of {{selectedYamlPolicy.name}}:</h5>
                 <form>
-                    <div *ngFor="let prop of selectedYamlPolicy.properties.kvproperties | keysPipe">
+                    <div *ngFor="let prop of selectedYamlPolicy.properties.properties | keysPipe">
                         <label class="control-label">{{prop.key}}</label>
-                        <textarea
-                            style="width:100%; overflow-y: scroll;"
-                            rows="1"
-                            placeholder="Edit your value here."
-                            #YamlPolicyProperties
-                            [value]="prop.value">
-                        
-                    </textarea>
+                        <textarea rows="1"
+                                  placeholder="Edit your value here."
+                                  style="width:100%; overflow-y: scroll;"
+                                  [(ngModel)]="prop.value"
+                                  [ngModelOptions]="{standalone: true}"
+                                  #YamlPolicyProperties>
+                        </textarea>
                     </div>
                     <button type="submit" class="btn btn-primary"
                             (click)="savePolicyProperties()"> Save Properties
@@ -480,7 +479,8 @@
                         <p>Click on a Mitigation to directly add it to the topology</p>
                         <button class="btn btn-primary" style="margin-right:10px;margin-bottom:10px"
                                 *ngFor="let mitigation of this.threatModelingData.mitigations"
-                                (click)="addMitigationToTopology(mitigation)">{{mitigation.localName}}</button>
+                                (click)="addMitigationToTopology(mitigation)">{{mitigation.localName}}
+                        </button>
                     </div>
                 </div>
             </div>

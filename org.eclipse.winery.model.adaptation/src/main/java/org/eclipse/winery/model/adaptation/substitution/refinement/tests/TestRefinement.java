@@ -17,13 +17,13 @@ package org.eclipse.winery.model.adaptation.substitution.refinement.tests;
 import java.util.Map;
 import java.util.Objects;
 
-import org.eclipse.winery.common.ids.definitions.TestRefinementModelId;
+import org.eclipse.winery.model.ids.extensions.TestRefinementModelId;
 import org.eclipse.winery.model.adaptation.substitution.refinement.AbstractRefinement;
 import org.eclipse.winery.model.adaptation.substitution.refinement.DefaultRefinementChooser;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementChooser;
-import org.eclipse.winery.model.tosca.OTRefinementModel;
-import org.eclipse.winery.model.tosca.OTRelationDirection;
+import org.eclipse.winery.model.tosca.extensions.OTRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTRelationDirection;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.backend.BackendUtils;

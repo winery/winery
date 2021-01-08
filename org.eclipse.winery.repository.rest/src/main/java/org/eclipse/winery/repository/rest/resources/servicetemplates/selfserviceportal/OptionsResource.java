@@ -24,7 +24,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.model.selfservice.ApplicationOption;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.rest.RestUtils;

@@ -21,6 +21,7 @@
         </div>
         <winery-table [columns]="columns"
                       [data]="artifactsData"
+                      [disableButtons]="!sharedData?.currentVersion?.editable"
                       (addBtnClicked)="onAddClick()"
                       (removeBtnClicked)="onRemoveClick($event)">
         </winery-table>

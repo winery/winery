@@ -13,9 +13,9 @@
  ********************************************************************************/
 
 textarea {
+    overflow: hidden;
     pointer-events: auto;
     resize: none;
     margin-left: 5px;
     width: 100%;
-    overflow: hidden !important;
 }

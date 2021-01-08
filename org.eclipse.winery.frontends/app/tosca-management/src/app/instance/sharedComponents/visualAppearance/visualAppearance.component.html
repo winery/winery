@@ -19,7 +19,11 @@
     <div class="colorPickerArea" *ngIf="!loading && isNodeType">
         <div class="floatContent">
             <b>Bordercolor:</b><br>
-            <input class="colorInput" name="eventColor" type="color" [(ngModel)]="borderColorLocal" [disabled]="!sharedData?.currentVersion?.editable">
+            <input class="colorInput" name="eventColor" type="color" [(ngModel)]="borderColorLocal"
+                   [disabled]="!sharedData?.currentVersion?.editable">
+            <button (click)="saveToServer()" [disabled]="!sharedData?.currentVersion?.editable"
+                    class="btn btn-primary btn-sm save">Save
+            </button>
             <br/>click on the area above to change border color<br/>
         </div>
     </div>
@@ -27,15 +31,21 @@
         <div class="floatContent">
             <b>Line color:</b><br>
             <input class="colorInput" name="eventColor" type="color" [(ngModel)]="colorLocal">
+            <button (click)="saveToServer()" [disabled]="!sharedData?.currentVersion?.editable"
+                    class="btn btn-primary btn-sm save">Save
+            </button>
             <br/> click on the area above to change line color<br/>
         </div>
         <div class="floatContent">
             <b>Color when hovered:</b><br>
             <input class="colorInput" name="eventColor" type="color" [(ngModel)]="hoverColorLocal">
+            <button (click)="saveToServer()" [disabled]="!sharedData?.currentVersion?.editable"
+                    class="btn btn-primary btn-sm save">Save
+            </button>
             <br/>click on the area above to change hover color<br/>
         </div>
     </div>
-    <div class="uploadImgArea">
+    <div class="uploadImgArea" *ngIf="!isRelationshipType">
         <div>
             <b>Icon (50x50) used in the node template shapes</b><br/>
             <div class="typeIcon"><img src="{{img50Path}}" height="50" width="50"></div>
@@ -103,7 +113,9 @@
             </div>
         </div>
         <br>
-        <button *ngIf="relationshipData" (click)="saveToServer()" [disabled]="!sharedData?.currentVersion?.editable" class="btn btn-primary btn-sm save">Save</button>
+        <button *ngIf="relationshipData" (click)="saveToServer()" [disabled]="!sharedData?.currentVersion?.editable"
+                class="btn btn-primary btn-sm">Save
+        </button>
     </div>
 </div>
 

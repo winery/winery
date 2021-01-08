@@ -43,7 +43,6 @@ export class SectionService {
 
     createComponent(newComponentName: string, newComponentNamespace: string, newComponentSelectedType: string): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-
         const saveObject: any = { localname: newComponentName, namespace: newComponentNamespace };
 
         if (newComponentSelectedType && newComponentSelectedType.length > 0) {

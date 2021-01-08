@@ -14,7 +14,6 @@
 package org.eclipse.winery.repository.rest.resources.servicetemplates.plans;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TParameter;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
@@ -60,19 +59,19 @@ public class ParametersResource extends EntityWithIdCollectionResource<Parameter
         TParameter param = new TParameter();
         param.setName(name);
         param.setType(type);
-        TBoolean tb;
+        boolean tb;
         if (required == null) {
             // The specification states that the default value is "yes"
             // We assume "no", because Chrome does not send the checkbox data if a checkbox is not checked
-            tb = TBoolean.NO;
+            tb = false;
         } else {
             if (required.equalsIgnoreCase("on")) {
-                tb = TBoolean.YES;
+                tb = true;
             } else if (required.equalsIgnoreCase("off")) {
-                tb = TBoolean.NO;
+                tb = false;
             } else {
                 try {
-                    tb = TBoolean.valueOf(required);
+                    tb = required.equalsIgnoreCase("yes");
                 } catch (java.lang.IllegalArgumentException e) {
                     return Response.status(Status.BAD_REQUEST).entity("Wrong format of required").build();
                 }

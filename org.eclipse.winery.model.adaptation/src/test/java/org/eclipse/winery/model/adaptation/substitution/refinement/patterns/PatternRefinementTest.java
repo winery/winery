@@ -16,7 +16,6 @@ package org.eclipse.winery.model.adaptation.substitution.refinement.patterns;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,15 +28,15 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.model.adaptation.substitution.refinement.AbstractRefinementTest;
 import org.eclipse.winery.model.adaptation.substitution.refinement.DefaultRefinementChooser;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
-import org.eclipse.winery.model.tosca.OTAttributeMapping;
-import org.eclipse.winery.model.tosca.OTAttributeMappingType;
-import org.eclipse.winery.model.tosca.OTPatternRefinementModel;
-import org.eclipse.winery.model.tosca.OTPrmModelElementType;
-import org.eclipse.winery.model.tosca.OTStayMapping;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.extensions.OTAttributeMapping;
+import org.eclipse.winery.model.tosca.extensions.OTAttributeMappingType;
+import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTStayMapping;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.topologygraph.matching.ToscaIsomorphismMatcher;
 import org.eclipse.winery.topologygraph.matching.ToscaTypeMatcher;
@@ -302,8 +301,8 @@ class PatternRefinementTest extends AbstractRefinementTest {
         // region *** setup the PRM ***
         TNodeTemplate nt13 = candidateForTopology.getRefinementModel().getRefinementTopology().getNodeTemplate("13");
         assert nt13 != null;
-        TEntityTemplate.Properties nt13Props = new TEntityTemplate.Properties();
-        HashMap<String, String> nt13PropsMap = new HashMap<>();
+        TEntityTemplate.WineryKVProperties nt13Props = new TEntityTemplate.WineryKVProperties();
+        LinkedHashMap<String, String> nt13PropsMap = new LinkedHashMap<>();
         nt13PropsMap.put("a", null);
         nt13PropsMap.put("b", null);
         nt13PropsMap.put("c", "0");
@@ -312,33 +311,33 @@ class PatternRefinementTest extends AbstractRefinementTest {
 
         TNodeTemplate nt12 = candidateForTopology.getRefinementModel().getRefinementTopology().getNodeTemplate("12");
         assert nt12 != null;
-        TEntityTemplate.Properties nt12Props = new TEntityTemplate.Properties();
-        HashMap<String, String> nt12PropsMap = new HashMap<>();
+        TEntityTemplate.WineryKVProperties nt12Props = new TEntityTemplate.WineryKVProperties();
+        LinkedHashMap<String, String> nt12PropsMap = new LinkedHashMap<>();
         nt12PropsMap.put("j", null);
         nt12Props.setKVProperties(nt12PropsMap);
         nt12.setProperties(nt12Props);
 
         TNodeTemplate nt11 = candidateForTopology.getRefinementModel().getRefinementTopology().getNodeTemplate("11");
         assert nt11 != null;
-        TEntityTemplate.Properties nt11Props = new TEntityTemplate.Properties();
-        HashMap<String, String> nt11PropsMap = new HashMap<>();
+        TEntityTemplate.WineryKVProperties nt11Props = new TEntityTemplate.WineryKVProperties();
+        LinkedHashMap<String, String> nt11PropsMap = new LinkedHashMap<>();
         nt11PropsMap.put("k", null);
         nt11Props.setKVProperties(nt11PropsMap);
         nt11.setProperties(nt11Props);
 
-        OTAttributeMapping allOn4to13 = new OTAttributeMapping();
+        OTAttributeMapping allOn4to13 = new OTAttributeMapping(new OTAttributeMapping.Builder());
         allOn4to13.setType(OTAttributeMappingType.ALL);
         allOn4to13.setDetectorElement(candidateForTopology.getRefinementModel().getDetector().getNodeTemplate("8"));
         allOn4to13.setRefinementElement(nt13);
 
-        OTAttributeMapping pIn2_to_jIn12 = new OTAttributeMapping();
+        OTAttributeMapping pIn2_to_jIn12 = new OTAttributeMapping(new OTAttributeMapping.Builder());
         pIn2_to_jIn12.setType(OTAttributeMappingType.SELECTIVE);
         pIn2_to_jIn12.setDetectorElement(candidateForTopology.getRefinementModel().getDetector().getNodeTemplate("7"));
         pIn2_to_jIn12.setRefinementElement(nt12);
         pIn2_to_jIn12.setDetectorProperty("p");
         pIn2_to_jIn12.setRefinementProperty("j");
 
-        OTAttributeMapping xIn2_to_kIn11 = new OTAttributeMapping();
+        OTAttributeMapping xIn2_to_kIn11 = new OTAttributeMapping(new OTAttributeMapping.Builder());
         xIn2_to_kIn11.setType(OTAttributeMappingType.SELECTIVE);
         xIn2_to_kIn11.setDetectorElement(candidateForTopology.getRefinementModel().getDetector().getNodeTemplate("7"));
         xIn2_to_kIn11.setRefinementElement(nt11);
@@ -356,8 +355,8 @@ class PatternRefinementTest extends AbstractRefinementTest {
         // region *** setup the topology ***
         TNodeTemplate nt2 = topology.getNodeTemplate("2");
         assert nt2 != null;
-        TEntityTemplate.Properties nt2Props = new TEntityTemplate.Properties();
-        HashMap<String, String> nt2PropsMap = new HashMap<>();
+        TEntityTemplate.WineryKVProperties nt2Props = new TEntityTemplate.WineryKVProperties();
+        LinkedHashMap<String, String> nt2PropsMap = new LinkedHashMap<>();
         nt2PropsMap.put("p", "1");
         nt2PropsMap.put("x", "2");
         nt2Props.setKVProperties(nt2PropsMap);
@@ -365,8 +364,8 @@ class PatternRefinementTest extends AbstractRefinementTest {
 
         TNodeTemplate nt4 = topology.getNodeTemplate("4");
         assert nt4 != null;
-        TEntityTemplate.Properties nt4Props = new TEntityTemplate.Properties();
-        HashMap<String, String> nt4PropsMap = new HashMap<>();
+        TEntityTemplate.WineryKVProperties nt4Props = new TEntityTemplate.WineryKVProperties();
+        LinkedHashMap<String, String> nt4PropsMap = new LinkedHashMap<>();
         nt4PropsMap.put("a", "3");
         nt4PropsMap.put("b", "4");
         nt4Props.setKVProperties(nt4PropsMap);
@@ -380,34 +379,31 @@ class PatternRefinementTest extends AbstractRefinementTest {
 
         PatternRefinement patternRefinement = new PatternRefinement();
 
-        TNodeTemplate node13 = topology.getNodeTemplate("13");
-
         patternRefinement.applyPropertyMappings(candidateForTopology, "8", nt4, topology, idMapping);
+
+        TNodeTemplate node13 = topology.getNodeTemplate("13");
         assertNotNull(node13);
-        assertNotNull(node13.getProperties());
-
-        LinkedHashMap<String, String> node13Props = node13.getProperties().getKVProperties();
-        assertNotNull(node13Props);
-        assertEquals(3, node13Props.size());
-        assertEquals("3", node13Props.get("a"));
-        assertEquals("4", node13Props.get("b"));
-        assertEquals("0", node13Props.get("c"));
-
-        TNodeTemplate node11 = topology.getNodeTemplate("11");
+        Map<String, String> properties13 = ModelUtilities.getPropertiesKV(node13);
+        assertNotNull(properties13);
+        assertEquals(3, properties13.size());
+        assertEquals("3", properties13.get("a"));
+        assertEquals("4", properties13.get("b"));
+        assertEquals("0", properties13.get("c"));
 
         patternRefinement.applyPropertyMappings(candidateForTopology, "7", nt2, topology, idMapping);
+        TNodeTemplate node11 = topology.getNodeTemplate("11");
         assertNotNull(node11);
-        assertNotNull(node11.getProperties());
-        assertNotNull(node11.getProperties().getKVProperties());
-        assertEquals(1, node11.getProperties().getKVProperties().size());
-        assertEquals("2", node11.getProperties().getKVProperties().get("k"));
-
+        Map<String, String> properties11 = ModelUtilities.getPropertiesKV(node11);
         TNodeTemplate node12 = topology.getNodeTemplate("12");
         assertNotNull(node12);
-        assertNotNull(node12.getProperties());
-        assertNotNull(node12.getProperties().getKVProperties());
-        assertEquals(1, node12.getProperties().getKVProperties().size());
-        assertEquals("1", node12.getProperties().getKVProperties().get("j"));
+        Map<String, String> properties12 = ModelUtilities.getPropertiesKV(node12);
+
+        assertNotNull(properties11);
+        assertEquals(1, properties11.size());
+        assertEquals("2", properties11.get("k"));
+        assertNotNull(properties12);
+        assertEquals(1, properties12.size());
+        assertEquals("1", properties12.get("j"));
 
         TNodeTemplate node10 = topology.getNodeTemplate("10");
         assertNotNull(node10);
@@ -455,11 +451,10 @@ class PatternRefinementTest extends AbstractRefinementTest {
         nt12.setType("{http://ex.org}nodeType_4");
         TNodeTemplate nt4 = detector.getNodeTemplate("8");
 
-        OTStayMapping nt4staysAsNt12 = new OTStayMapping();
-        nt4staysAsNt12.setModelElementType(OTPrmModelElementType.NODE);
-        nt4staysAsNt12.setId("stay1");
-        nt4staysAsNt12.setDetectorElement(nt4);
-        nt4staysAsNt12.setRefinementElement(nt12);
+        OTStayMapping nt4staysAsNt12 = new OTStayMapping.Builder("stay1")
+            .setDetectorElement(nt4)
+            .setRefinementElement(nt12)
+            .build();
         ((OTPatternRefinementModel) candidateForTopology.getRefinementModel())
             .setStayMappings(Collections.singletonList(nt4staysAsNt12));
         // endregion

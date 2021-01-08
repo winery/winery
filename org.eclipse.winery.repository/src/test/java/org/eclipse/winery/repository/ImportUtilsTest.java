@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.winery.repository;
 
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XmlId;
-import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.XmlId;
+import org.eclipse.winery.model.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.repository.backend.ImportUtils;
 
 import java.util.Optional;
@@ -33,7 +33,7 @@ public class ImportUtilsTest extends TestWithGitBackedRepository {
         XSDImportId id = new XSDImportId(
             new Namespace("http://opentosca.org/nodetypes", false),
             new XmlId("CloudProviderProperties", false));
-        Optional<String> importLocation = ImportUtils.getLocation(id);
+        Optional<String> importLocation = ImportUtils.getLocation(repository, id);
 
         assertEquals(true, importLocation.isPresent());
     }

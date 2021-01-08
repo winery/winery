@@ -5,6 +5,7 @@
 >
     <ArtifactType name="JAR" abstract="no" final="no"
                   targetNamespace="http://winery.opentosca.org/test/artifacttypes/fruits">
+        <DerivedFrom typeRef="fruits1:WAR" xmlns:fruits1="http://winery.opentosca.org/test/artifacttypes/fruits"/>
         <winery:PropertiesDefinition elementname="properties"
                                      namespace="http://winery.opentosca.org/test/artifacttypes/fruits/properties">
             <winery:properties>
@@ -16,6 +17,5 @@
                 <winery:type>xsd:string</winery:type>
             </winery:properties>
         </winery:PropertiesDefinition>
-        <DerivedFrom typeRef="fruits1:WAR" xmlns:fruits1="http://winery.opentosca.org/test/artifacttypes/fruits"/>
     </ArtifactType>
 </Definitions>

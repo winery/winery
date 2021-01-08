@@ -23,24 +23,13 @@
     <version>1.0-SNAPSHOT</version>
     <name>Implementation Artifact IA_CLASS_NAME</name>
 
-    <repositories>
-        <repository>
-            <id>opentosca</id>
-            <url>https://raw.github.com/OpenTOSCA/mvn-repo/ustutt/</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
-        </repository>
-    </repositories>
-
     <properties>
         <run.HttpPort>9090</run.HttpPort>
         <winery.upload.url>IA_ARTIFACT_TEMPLATE_UPLOAD_URL</winery.upload.url>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <winery.version>2.0.0-SNAPSHOT</winery.version>
+        <winery.version>3.0.0-SNAPSHOT</winery.version>
         <spring.version>3.0.7.RELEASE</spring.version>
         <cxf.version>2.7.6</cxf.version>
     </properties>

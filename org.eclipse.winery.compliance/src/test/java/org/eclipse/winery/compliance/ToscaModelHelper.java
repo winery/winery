@@ -17,13 +17,8 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.ComplianceRuleId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.topologygraph.model.ToscaEdge;
-import org.eclipse.winery.topologygraph.model.ToscaGraph;
-import org.eclipse.winery.topologygraph.model.ToscaNode;
-import org.eclipse.winery.topologygraph.transformation.ToscaTransformer;
-import org.eclipse.winery.model.tosca.OTComplianceRule;
+import org.eclipse.winery.model.ids.extensions.ComplianceRuleId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -31,6 +26,11 @@ import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
+import org.eclipse.winery.topologygraph.model.ToscaEdge;
+import org.eclipse.winery.topologygraph.model.ToscaGraph;
+import org.eclipse.winery.topologygraph.model.ToscaNode;
+import org.eclipse.winery.topologygraph.transformation.ToscaTransformer;
 
 public class ToscaModelHelper {
 
@@ -44,10 +44,10 @@ public class ToscaModelHelper {
     }
 
     public static TTopologyTemplate createTTopologyTemplate(List<TNodeTemplate> nodeTemplates, List<TRelationshipTemplate> relationshipTemplates) {
-        TTopologyTemplate template = new TTopologyTemplate();
-        template.setNodeTemplates(nodeTemplates);
-        template.setRelationshipTemplates(relationshipTemplates);
-        return template;
+        return new TTopologyTemplate.Builder()
+            .addNodeTemplates(nodeTemplates)
+            .addRelationshipTemplates(relationshipTemplates)
+            .build();
     }
 
     public static TNodeType createTNodeType(NodeTypeId nodeTypeIdAbstractA) {
@@ -85,13 +85,14 @@ public class ToscaModelHelper {
         template.setName(name);
         ToscaNode node = new ToscaNode();
         node.setNodeTemplate(template);
+        node.setId(id);
         return node;
     }
 
-    public static ToscaNode createTOSCANodeOnlyProperties(ToscaModelPropertiesBuilder bldr) {
+    public static ToscaNode createTOSCANodeOnlyProperties(ToscaModelPropertiesBuilder propertiesBuilder) {
         ToscaNode node = new ToscaNode();
         node.setNodeTemplate(new TNodeTemplate());
-        node.getTemplate().setProperties(bldr.build());
+        node.getTemplate().setProperties(propertiesBuilder.build());
         return node;
     }
 
@@ -147,9 +148,7 @@ public class ToscaModelHelper {
     }
 
     public static OTComplianceRule createTComplianceRule(String id, String ns) {
-        OTComplianceRule rule = new OTComplianceRule();
-        rule.setId(id);
-        rule.setTargetNamespace(ns);
-        return rule;
+        return new OTComplianceRule(new OTComplianceRule.Builder(id)
+            .setTargetNamespace(ns));
     }
 }

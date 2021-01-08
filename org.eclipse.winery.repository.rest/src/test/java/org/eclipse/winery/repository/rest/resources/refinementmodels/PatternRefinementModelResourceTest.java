@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 public class PatternRefinementModelResourceTest extends AbstractResourceTest {
 
     @Test
+    @Disabled // TODO
     public void getJsonPRM() throws Exception {
         this.setRevisionTo("origin/plain");
         this.assertGet("patternrefinementmodels/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fconcrete%252Fpatternrefinementmodels/myExample_w1-wip1/",
@@ -29,6 +30,7 @@ public class PatternRefinementModelResourceTest extends AbstractResourceTest {
     }
 
     @Test
+    @Disabled // TODO
     public void getXmlPRM() throws Exception {
         this.setRevisionTo("origin/plain");
         this.assertGet("patternrefinementmodels/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fconcrete%252Fpatternrefinementmodels/myExample_w1-wip1/",

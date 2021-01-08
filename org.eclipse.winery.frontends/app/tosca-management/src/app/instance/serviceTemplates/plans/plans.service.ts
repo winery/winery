@@ -30,7 +30,7 @@ export class PlansService {
     }
 
     getPlansData(url?: string): Observable<PlansApiData[]> {
-        return this.getJson(url ? backendBaseURL + url : this.path);
+        return this.getJson(url ? url : this.path);
     }
 
     getPlanTypes(): Observable<SelectData[]> {

@@ -11,9 +11,9 @@
                           winery:location="Provider1/Germany" winery:x="712" winery:y="475"
                           xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
                 <Properties>
-                    <Properties xmlns="http://www.example.org">
-                        <State>Running</State>
-                    </Properties>
+                    <ex:Properties xmlns:ex="http://www.example.org">
+                        <ex:State>Running</ex:State>
+                    </ex:Properties>
                 </Properties>
             </NodeTemplate>
             <NodeTemplate name="DataSource_w1-wip1" minInstances="1" maxInstances="1"
@@ -21,10 +21,10 @@
                           winery:location="Provider1/Germany" winery:x="711" winery:y="265" winery:region="Germany"
                           xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
                 <Properties>
-                    <Properties xmlns="http://www.example.org">
-                        <State>Running</State>
-                        <DataSize>10</DataSize>
-                    </Properties>
+                    <ex:Properties xmlns:ex="http://www.example.org">
+                        <ex:State>Running</ex:State>
+                        <ex:DataSize>10</ex:DataSize>
+                    </ex:Properties>
                 </Properties>
             </NodeTemplate>
             <NodeTemplate name="CloudProvider2_w1-wip1" minInstances="1" maxInstances="1"
@@ -32,9 +32,9 @@
                           winery:location="Provider2/US-East" winery:x="680" winery:y="450"
                           xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
                 <Properties>
-                    <Properties xmlns="http://www.example.org">
-                        <State>Running</State>
-                    </Properties>
+                    <ex:Properties xmlns:ex="http://www.example.org">
+                        <ex:State>Running</ex:State>
+                    </ex:Properties>
                 </Properties>
             </NodeTemplate>
             <NodeTemplate name="DataSource_w1-wip1" minInstances="1" maxInstances="1"
@@ -42,10 +42,10 @@
                           winery:location="Provider2/US-East" winery:x="681" winery:y="284" winery:region="US-East"
                           xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
                 <Properties>
-                    <Properties xmlns="http://www.example.org">
-                        <State>Running</State>
-                        <DataSize>50</DataSize>
-                    </Properties>
+                    <ex:Properties xmlns:ex="http://www.example.org">
+                        <ex:State>Running</ex:State>
+                        <ex:DataSize>50</ex:DataSize>
+                    </ex:Properties>
                 </Properties>
             </NodeTemplate>
             <NodeTemplate minInstances="1" maxInstances="1" type="ntyIgeneral1:DataProcessingComponent_w1-wip1"
@@ -63,9 +63,9 @@
                           winery:region="Germany"
                           xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
                 <Properties>
-                    <Properties xmlns="http://www.example.org">
-                        <DataFactor>1.0</DataFactor>
-                    </Properties>
+                    <ex:Properties xmlns:ex="http://www.example.org">
+                        <ex:DataFactor>1.0</ex:DataFactor>
+                    </ex:Properties>
                 </Properties>
                 <Requirements>
                     <Requirement name="ReqCanHostProcessingComponent" type="rtyIgeneral:ReqCanHostProcessingComponent"
@@ -78,15 +78,61 @@
                           winery:region="US-East"
                           xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
                 <Properties>
-                    <Properties xmlns="http://www.example.org">
-                        <DataFactor>0.1</DataFactor>
-                    </Properties>
+                    <ex:Properties xmlns:ex="http://www.example.org">
+                        <ex:DataFactor>0.1</ex:DataFactor>
+                    </ex:Properties>
                 </Properties>
                 <Requirements>
                     <Requirement name="ReqCanHostProcessingComponent" type="rtyIgeneral:ReqCanHostProcessingComponent"
                                  id="Adapter-2-ReqCanHostProcessingComponent"
                                  xmlns:rtyIgeneral="http://plain.winery.opentosca.org/placement/requirementtypes"/>
                 </Requirements>
+            </NodeTemplate>
+            <NodeTemplate name="Ubuntu_w1-wip1" minInstances="1" maxInstances="1" type="ntyIgeneral1:Ubuntu_w1-wip1"
+                          id="Ubuntu_w1-wip1" winery:location="Provider1/Germany" winery:x="552" winery:y="115"
+                          xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
+                <Requirements>
+                    <Requirement name="ReqCanHostUbuntuVM" type="rtyIgeneral:ReqCanHostUbuntuVM" id="ReqCanHostUbuntuVM"
+                                 xmlns:rtyIgeneral="http://plain.winery.opentosca.org/placement/requirementtypes"/>
+                </Requirements>
+                <Capabilities>
+                    <Capability name="CapCanHostProcessingComponent" type="ctyIgeneral:CapCanHostProcessingComponent"
+                                id="CapCanHostProcessingComponent"
+                                xmlns:ctyIgeneral="http://plain.winery.opentosca.org/placement/capabilitytypes"/>
+                </Capabilities>
+            </NodeTemplate>
+            <NodeTemplate name="Ubuntu_w1-wip1" minInstances="1" maxInstances="1" type="ntyIgeneral1:Ubuntu_w1-wip1"
+                          id="Ubuntu_w1-wip1_1" winery:location="Provider2/US-East" winery:x="552" winery:y="115"
+                          xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
+                <Requirements>
+                    <Requirement name="ReqCanHostUbuntuVM" type="rtyIgeneral:ReqCanHostUbuntuVM"
+                                 id="ReqCanHostUbuntuVM_3"
+                                 xmlns:rtyIgeneral="http://plain.winery.opentosca.org/placement/requirementtypes"/>
+                </Requirements>
+                <Capabilities>
+                    <Capability name="CapCanHostProcessingComponent" type="ctyIgeneral:CapCanHostProcessingComponent"
+                                id="CapCanHostProcessingComponent_2"
+                                xmlns:ctyIgeneral="http://plain.winery.opentosca.org/placement/capabilitytypes"/>
+                </Capabilities>
+            </NodeTemplate>
+            <NodeTemplate name="CloudProvider1_w1-wip1" minInstances="1" maxInstances="1"
+                          type="ntyIgeneral1:CloudProvider1_w1-wip1" id="CloudProvider1_w1-wip1_4"
+                          winery:location="provider1/germany" winery:x="546" winery:y="381"
+                          xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
+                <Capabilities>
+                    <Capability name="CapCanHostUbuntuVM" type="ctyIgeneral:CapCanHostUbuntuVM" id="CapCanHostUbuntuVM"
+                                xmlns:ctyIgeneral="http://plain.winery.opentosca.org/placement/capabilitytypes"/>
+                </Capabilities>
+            </NodeTemplate>
+            <NodeTemplate name="CloudProvider2_w1-wip1" minInstances="1" maxInstances="1"
+                          type="ntyIgeneral1:CloudProvider2_w1-wip1" id="CloudProvider2_w1-wip1_5"
+                          winery:location="provider2/us-east" winery:x="546" winery:y="381"
+                          xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
+                <Capabilities>
+                    <Capability name="CapCanHostUbuntuVM" type="ctyIgeneral:CapCanHostUbuntuVM"
+                                id="CapCanHostUbuntuVM_6"
+                                xmlns:ctyIgeneral="http://plain.winery.opentosca.org/placement/capabilitytypes"/>
+                </Capabilities>
             </NodeTemplate>
             <RelationshipTemplate name="HostedOn" type="ToscaBaseTypes:HostedOn" id="con_HostedOn_0"
                                   xmlns:ToscaBaseTypes="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
@@ -122,38 +168,11 @@
                 <SourceElement ref="Adapter-1"/>
                 <TargetElement ref="AnalyticsService"/>
             </RelationshipTemplate>
-            <NodeTemplate name="Ubuntu_w1-wip1" minInstances="1" maxInstances="1" type="ntyIgeneral1:Ubuntu_w1-wip1"
-                          id="Ubuntu_w1-wip1" winery:location="Provider1/Germany" winery:x="552" winery:y="115"
-                          xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
-                <Requirements>
-                    <Requirement name="ReqCanHostUbuntuVM" type="rtyIgeneral:ReqCanHostUbuntuVM" id="ReqCanHostUbuntuVM"
-                                 xmlns:rtyIgeneral="http://plain.winery.opentosca.org/placement/requirementtypes"/>
-                </Requirements>
-                <Capabilities>
-                    <Capability name="CapCanHostProcessingComponent" type="ctyIgeneral:CapCanHostProcessingComponent"
-                                id="CapCanHostProcessingComponent"
-                                xmlns:ctyIgeneral="http://plain.winery.opentosca.org/placement/capabilitytypes"/>
-                </Capabilities>
-            </NodeTemplate>
             <RelationshipTemplate name="con_100" type="ToscaBaseTypes:HostedOn" id="con_100"
                                   xmlns:ToscaBaseTypes="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
                 <SourceElement ref="Adapter-1"/>
                 <TargetElement ref="Ubuntu_w1-wip1"/>
             </RelationshipTemplate>
-            <NodeTemplate name="Ubuntu_w1-wip1" minInstances="1" maxInstances="1" type="ntyIgeneral1:Ubuntu_w1-wip1"
-                          id="Ubuntu_w1-wip1_1" winery:location="Provider2/US-East" winery:x="552" winery:y="115"
-                          xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
-                <Requirements>
-                    <Requirement name="ReqCanHostUbuntuVM" type="rtyIgeneral:ReqCanHostUbuntuVM"
-                                 id="ReqCanHostUbuntuVM_3"
-                                 xmlns:rtyIgeneral="http://plain.winery.opentosca.org/placement/requirementtypes"/>
-                </Requirements>
-                <Capabilities>
-                    <Capability name="CapCanHostProcessingComponent" type="ctyIgeneral:CapCanHostProcessingComponent"
-                                id="CapCanHostProcessingComponent_2"
-                                xmlns:ctyIgeneral="http://plain.winery.opentosca.org/placement/capabilitytypes"/>
-                </Capabilities>
-            </NodeTemplate>
             <RelationshipTemplate name="con_101" type="ToscaBaseTypes:HostedOn" id="con_101"
                                   xmlns:ToscaBaseTypes="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
                 <SourceElement ref="Adapter-2"/>
@@ -164,30 +183,11 @@
                 <SourceElement ref="AnalyticsService"/>
                 <TargetElement ref="Ubuntu_w1-wip1"/>
             </RelationshipTemplate>
-            <NodeTemplate name="CloudProvider1_w1-wip1" minInstances="1" maxInstances="1"
-                          type="ntyIgeneral1:CloudProvider1_w1-wip1" id="CloudProvider1_w1-wip1_4"
-                          winery:location="provider1/germany" winery:x="546" winery:y="381"
-                          xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
-                <Capabilities>
-                    <Capability name="CapCanHostUbuntuVM" type="ctyIgeneral:CapCanHostUbuntuVM" id="CapCanHostUbuntuVM"
-                                xmlns:ctyIgeneral="http://plain.winery.opentosca.org/placement/capabilitytypes"/>
-                </Capabilities>
-            </NodeTemplate>
             <RelationshipTemplate name="con_103" type="ToscaBaseTypes:HostedOn" id="con_103"
                                   xmlns:ToscaBaseTypes="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
                 <SourceElement ref="Ubuntu_w1-wip1"/>
                 <TargetElement ref="CloudProvider1_w1-wip1_4"/>
             </RelationshipTemplate>
-            <NodeTemplate name="CloudProvider2_w1-wip1" minInstances="1" maxInstances="1"
-                          type="ntyIgeneral1:CloudProvider2_w1-wip1" id="CloudProvider2_w1-wip1_5"
-                          winery:location="provider2/us-east" winery:x="546" winery:y="381"
-                          xmlns:ntyIgeneral1="http://plain.winery.opentosca.org/placement/nodetypes">
-                <Capabilities>
-                    <Capability name="CapCanHostUbuntuVM" type="ctyIgeneral:CapCanHostUbuntuVM"
-                                id="CapCanHostUbuntuVM_6"
-                                xmlns:ctyIgeneral="http://plain.winery.opentosca.org/placement/capabilitytypes"/>
-                </Capabilities>
-            </NodeTemplate>
             <RelationshipTemplate name="con_104" type="ToscaBaseTypes:HostedOn" id="con_104"
                                   xmlns:ToscaBaseTypes="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
                 <SourceElement ref="Ubuntu_w1-wip1_1"/>

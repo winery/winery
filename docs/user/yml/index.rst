@@ -73,3 +73,19 @@ Search for your service template and open it.
 In the *Service Template Detail* view you can click on *Export* either to *Download* the CSAR or to save it to the filesystem (``<repository>/csars`` on your host system).
 
 .. image:: 5-ExportCsar.gif
+
+
+
+Node Type Development
+#####################
+
+Start Eclipse Winery as described in "Use a custom TOSCA model repository" of the :ref:`Getting Started<_getting_started>` page.
+This way, newly created Node Types will be reflected in the filesystem which is mounted into Winery's Docker container.
+
+Before you start, create a new branch: 
+
+.. code-block::
+
+   git checkout -b <name>
+
+You can push this branch to a Git origin to share your work with others or you could propose a pull-request to the original Git repository.

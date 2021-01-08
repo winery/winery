@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -42,7 +42,7 @@ class CsarImporterValidationTest extends TestWithGitBackedRepository {
     @BeforeEach
     void setUp() throws Exception {
         this.setRevisionTo("bbb39cdb32cbcf38bd691abe6a66ae62f4aba428");
-        csarImporter = new CsarImporter();
+        csarImporter = new CsarImporter(repository);
     }
 
     @Test

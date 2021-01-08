@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.datatypes.ids.elements;
 
-import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.XmlId;
-import org.eclipse.winery.common.ids.elements.ToscaElementId;
+import org.eclipse.winery.model.ids.GenericId;
+import org.eclipse.winery.model.ids.XmlId;
+import org.eclipse.winery.model.ids.elements.ToscaElementId;
 
 public abstract class DirectoryId extends ToscaElementId {
 

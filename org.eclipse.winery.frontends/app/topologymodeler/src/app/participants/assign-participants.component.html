@@ -1,0 +1,42 @@
+<!--
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+-->
+
+<div *ngIf="isEmpty()" style="color: dimgray; text-align: center">
+    <span>No participants defined <br> for this Topology Template.</span>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th style="width: 60px">Is Member?</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let p of participants">
+        <td class="table-td"
+            [class.cell-with-comment]="isEllipsisActive(name)">
+            <div #name>{{ p.name }}</div>
+            <span class="cell-comment">{{ p.name }}</span>
+        </td>
+        <td class="table-td">
+            <div style="margin-left: 2px; margin-top: 4px;">
+                <input type="checkbox" id="isMemberCheckbox" [checked]="isMember(p)"
+                       (change)="toggleMembership(p)">
+                <label for="isMemberCheckbox"></label>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>

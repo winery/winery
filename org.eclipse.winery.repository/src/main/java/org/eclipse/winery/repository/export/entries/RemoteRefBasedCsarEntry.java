@@ -17,14 +17,21 @@ package org.eclipse.winery.repository.export.entries;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 
 /**
  * Provides access to an entry type that represents a remote file referenced using a valid URL.
  */
 public class RemoteRefBasedCsarEntry implements CsarEntry {
+
     public final URL url;
 
     public RemoteRefBasedCsarEntry(URL url) {
@@ -33,7 +40,17 @@ public class RemoteRefBasedCsarEntry implements CsarEntry {
 
     @Override
     public InputStream getInputStream() throws IOException {
-        return url.openStream();
+        URI uri;
+        try {
+            uri = url.toURI();
+        } catch (Exception e) {
+            throw new IOException("Could not determine URI", e);
+        }
+        CloseableHttpClient client = HttpClientBuilder.create().build();
+        HttpGet request = new HttpGet(uri);
+        HttpResponse response = client.execute(request);
+        HttpEntity entity = response.getEntity();
+        return entity.getContent();
     }
 
     @Override

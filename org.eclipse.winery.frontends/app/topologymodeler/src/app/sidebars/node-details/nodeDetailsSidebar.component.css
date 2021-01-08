@@ -1,0 +1,39 @@
+/********************************************************************************
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ ********************************************************************************/
+
+/* need specific selector here to overwrite .sidebar-root max-width */
+#NTPropertiesView.sidebar-root {
+    width: 40vw;
+    /* use all of the available height of the viewport */
+    height: 100vh;
+    min-width: 300px;
+    max-width: 600px;
+}
+
+input {
+    overflow-y: auto;
+}
+
+input[type='number'] {
+    -moz-appearance: textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+a {
+    overflow-y: auto;
+}

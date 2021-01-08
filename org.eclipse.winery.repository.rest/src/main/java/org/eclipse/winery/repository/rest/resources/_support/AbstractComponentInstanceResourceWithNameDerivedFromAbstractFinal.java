@@ -23,10 +23,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.HasInheritance;
 import org.eclipse.winery.model.tosca.HasType;
-import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
@@ -37,6 +36,7 @@ import org.eclipse.winery.repository.rest.resources.apiData.InheritanceResourceA
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;
+import org.eclipse.winery.repository.rest.resources.yaml.DataTypeResource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,19 +101,15 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
     public String getTBoolean(String methodName) {
         // see getAvailableSuperClasses for verbose comments
         Method method;
-        TBoolean tBoolean;
+        boolean tBoolean;
         try {
             method = this.getElement().getClass().getMethod(methodName);
-            tBoolean = (TBoolean) method.invoke(this.getElement());
+            tBoolean = (boolean)method.invoke(this.getElement());
         } catch (Exception e) {
             AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.LOGGER.error("Could not get boolean " + methodName, e);
             throw new IllegalStateException(e);
         }
-        if (tBoolean == null) {
-            return null;
-        } else {
-            return tBoolean.value();
-        }
+        return tBoolean ? "yes" : "no";
     }
 
     /**
@@ -131,6 +127,8 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
                 derivedFrom = new TRelationshipTypeImplementation.DerivedFrom();
             } else if (this instanceof NodeTypeImplementationResource) {
                 derivedFrom = new TNodeTypeImplementation.DerivedFrom();
+            } else if (this instanceof DataTypeResource) {
+                derivedFrom = new TEntityType.DerivedFrom();
             } else {
                 return Response.status(Response.Status.BAD_REQUEST).entity("Type does not support inheritance!").build();
             }
@@ -139,8 +137,8 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 
         HasInheritance element = (HasInheritance) this.getElement();
         element.setDerivedFrom(derivedFrom);
-        element.setAbstract(TBoolean.fromValue(json.isAbstract));
-        element.setFinal(TBoolean.fromValue(json.isFinal));
+        element.setAbstract(json.isAbstract.equalsIgnoreCase("yes"));
+        element.setFinal(json.isFinal.equalsIgnoreCase("yes"));
 
         return RestUtils.persist(this);
     }

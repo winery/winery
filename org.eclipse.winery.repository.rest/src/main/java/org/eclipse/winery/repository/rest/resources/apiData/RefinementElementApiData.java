@@ -16,7 +16,7 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 
 import java.util.List;
 
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 

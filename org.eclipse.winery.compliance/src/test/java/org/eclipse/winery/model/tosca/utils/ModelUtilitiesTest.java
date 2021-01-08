@@ -18,7 +18,8 @@ import java.util.HashMap;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -82,7 +83,6 @@ public class ModelUtilitiesTest extends TestWithGitBackedRepository {
 
         assertNotNull(nodeTemplate);
         assertNotNull(nodeTemplate.getProperties());
-        assertNotNull(nodeTemplate.getProperties().getKVProperties());
-        assertEquals(8, nodeTemplate.getProperties().getKVProperties().size());
+        assertEquals(8, ((TEntityTemplate.WineryKVProperties) nodeTemplate.getProperties()).getKVProperties().size());
     }
 }

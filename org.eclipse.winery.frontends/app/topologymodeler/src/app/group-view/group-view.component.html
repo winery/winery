@@ -1,0 +1,52 @@
+<div *ngIf="showGroupView" class="sidebar-root">
+    <div>
+        <h5 class="pull-left">Groups</h5>
+        <div class="button-bar pull-right">
+            <button (click)="addGroup()" class="btn btn-sm btn-primary">
+                Add
+            </button>
+        </div>
+    </div>
+    <div *ngIf="isEmpty()" style="color: dimgray; text-align: center">
+        <span>No groups defined <br> for this Topology Template.</span>
+    </div>
+    <table class="table table-striped table-bordered table-condensed" *ngIf="!isEmpty()">
+        <tr>
+            <th style="width: 25px"></th>
+            <th>Name</th>
+            <th>Description</th>
+            <th style="width: 25px"></th>
+        </tr>
+        <tbody *ngFor="let definition of groups">
+        <tr (click)="toggleCollapse(definition)">
+            <td>
+                <button class="btn btn-default btn-sm">
+                    <i class="pull-sm-0 float-sm-right fa icon-styling padding-top--2px"
+                       [ngClass]="{'fa-chevron-down': !isCollapsed(definition), 'fa-chevron-right': isCollapsed(definition)}">
+                    </i>
+                </button>
+            </td>
+            <td>{{definition.name}}</td>
+            <td>{{definition.description}}</td>
+            <td>
+                <button (click)="removeGroup(definition)" class="btn btn-sm btn-danger">
+                    <i class="fa fa-remove"></i>
+                </button>
+            </td>
+        </tr>
+        <tr [hidden]="isCollapsed(definition)">
+            <td colspan="4">
+                <div [collapse]="isCollapsed(definition)" style="width: 100%">
+                    <winery-group-view-policies [definition]="definition" style="width: 100%">
+                    </winery-group-view-policies>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <winery-dynamic-form-modal #generatedModal
+                               [config]="formMetadata"
+                               [modalTitle]="'Add Group Definition'"
+                               (saveClicked)="onSaveClicked($event)">
+    </winery-dynamic-form-modal>
+</div>

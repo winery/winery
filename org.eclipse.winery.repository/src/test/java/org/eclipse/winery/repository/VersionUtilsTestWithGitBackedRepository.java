@@ -15,11 +15,11 @@ package org.eclipse.winery.repository;
 
 import java.util.Map;
 
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.version.ToscaDiff;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.version.ToscaDiff;
 import org.eclipse.winery.common.version.VersionState;
-import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.model.version.VersionSupport;
 
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +37,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         ServiceTemplateId oldVersion = new ServiceTemplateId("http://plain.winery.opentosca.org/servicetemplates", "ServiceTemplateWithFourPolicies", false);
         ServiceTemplateId newVersion = new ServiceTemplateId("http://plain.winery.opentosca.org/servicetemplates", "ServiceTemplateWithFourPolicies_w1-wip1", false);
 
-        ToscaDiff diffNode = VersionUtils.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
+        ToscaDiff diffNode = VersionSupport.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
         ToscaDiff name = diffNode.getChildrenMap().get("name");
         ToscaDiff id = diffNode.getChildrenMap().get("id");
         ToscaDiff topology = diffNode.getChildrenMap().get("topologyTemplate");
@@ -63,7 +63,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         ServiceTemplateId oldVersion = new ServiceTemplateId("http://plain.winery.opentosca.org/servicetemplates", "ServiceTemplateWithFourPolicies_w1-wip1", false);
         ServiceTemplateId newVersion = new ServiceTemplateId("http://plain.winery.opentosca.org/servicetemplates", "ServiceTemplateWithFourPolicies_w1-wip1", false);
 
-        ToscaDiff diffNode = VersionUtils.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
+        ToscaDiff diffNode = VersionSupport.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
 
         assertEquals(VersionState.UNCHANGED, diffNode.getState());
     }
@@ -77,7 +77,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         ServiceTemplateId newVersion = new ServiceTemplateId("http://plain.winery.opentosca.org/servicetemplates",
             "ServiceTemplateWithFourPolicies_w1-wip1", false);
 
-        ToscaDiff diffNode = VersionUtils.calculateDifferences(repository.getElement(oldVersion).getTopologyTemplate().getRelationshipTemplate("con_129"),
+        ToscaDiff diffNode = VersionSupport.calculateDifferences(repository.getElement(oldVersion).getTopologyTemplate().getRelationshipTemplate("con_129"),
             repository.getElement(newVersion).getTopologyTemplate().getRelationshipTemplate("con_129"));
 
         assertEquals(VersionState.UNCHANGED, diffNode.getState());
@@ -92,7 +92,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         ServiceTemplateId newVersion = new ServiceTemplateId("http://plain.winery.opentosca.org/servicetemplates",
             "ServiceTemplateWithOneNodeTemplate_w1-wip1", false);
 
-        ToscaDiff diffNode = VersionUtils.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
+        ToscaDiff diffNode = VersionSupport.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
 
         assertEquals(VersionState.UNCHANGED, diffNode.getState());
     }
@@ -106,7 +106,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         ServiceTemplateId newVersion = new ServiceTemplateId("http://plain.winery.opentosca.org/servicetemplates",
             "ServiceTemplateWithTwoNodeTemplates_w1-wip1", false);
 
-        ToscaDiff diffNode = VersionUtils.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
+        ToscaDiff diffNode = VersionSupport.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
 
         assertEquals(VersionState.UNCHANGED, diffNode.getState());
     }
@@ -120,7 +120,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         ServiceTemplateId newVersion = new ServiceTemplateId("http://plain.winery.opentosca.org/servicetemplates",
             "ServiceTemplateWithTwoNodeTemplates_w1-wip2", false);
 
-        ToscaDiff diffNode = VersionUtils.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
+        ToscaDiff diffNode = VersionSupport.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
         Map<String, ToscaDiff> nodeTemplateDiff = diffNode.getChildrenMap().get("topologyTemplate")
             .getChildrenMap().get("nodeTemplates").getChildrenMap();
         ToscaDiff element1 = nodeTemplateDiff.get("0");
@@ -144,7 +144,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         ServiceTemplateId newVersion = new ServiceTemplateId("http://plain.winery.opentosca.org/servicetemplates",
             "ServiceTemplateWithTwoNodeTemplates_w1-wip1", false);
 
-        ToscaDiff diffNode = VersionUtils.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
+        ToscaDiff diffNode = VersionSupport.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
         Map<String, ToscaDiff> nodeTemplateDiff = diffNode.getChildrenMap().get("topologyTemplate")
             .getChildrenMap().get("nodeTemplates").getChildrenMap();
         ToscaDiff element1 = nodeTemplateDiff.get("0");
@@ -168,7 +168,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         ServiceTemplateId newVersion = new ServiceTemplateId("http://plain.winery.opentosca.org/servicetemplates",
             "ServiceTemplateWithTwoNodeTemplates_w1-wip4", false);
 
-        ToscaDiff diffNode = VersionUtils.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
+        ToscaDiff diffNode = VersionSupport.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
 
         Map<String, ToscaDiff> nodeTemplateDiff = diffNode.getChildrenMap().get("topologyTemplate").getChildrenMap().get("nodeTemplates").getChildrenMap();
         ToscaDiff element1 = nodeTemplateDiff.get("2");
@@ -186,7 +186,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         ServiceTemplateId newVersion = new ServiceTemplateId("http://plain.winery.opentosca.org/servicetemplates",
             "ServiceTemplateWithTwoNodeTemplates_w1-wip4", false);
 
-        ToscaDiff diffNode = VersionUtils.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
+        ToscaDiff diffNode = VersionSupport.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
 
         assertEquals("## Changes from version w1-wip3 to w1-wip4\n" +
                 "\n" +
@@ -218,7 +218,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         NodeTypeId oldVersion = new NodeTypeId("http://opentosca.org/nodetypes", "NodeTypeWith5Versions_0.3.0-w2", false);
         NodeTypeId newVersion = new NodeTypeId("http://opentosca.org/nodetypes", "NodeTypeWith5Versions_0.3.4-w1", false);
 
-        ToscaDiff toscaDiff = VersionUtils.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
+        ToscaDiff toscaDiff = VersionSupport.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
 
         assertEquals("## Changes from version 0.3.0-w2 to 0.3.4-w1\n" +
                 "\n" +
@@ -239,7 +239,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         ServiceTemplateId newVersion = new ServiceTemplateId("http://plain.winery.opentosca.org/servicetemplates",
             "ServiceTemplateMinimalExampleWithAllPropertyVariants_w1-wip1", false);
 
-        ToscaDiff toscaDiff = VersionUtils.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
+        ToscaDiff toscaDiff = VersionSupport.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
 
         assertEquals("## Changes from version  to w1-wip1\n" +
                 "\n" +
@@ -278,7 +278,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         ServiceTemplateId newVersion = new ServiceTemplateId("http://plain.winery.opentosca.org/servicetemplates",
             "ServiceTemplateWithTwoNodeTemplates_w2-wip2", false);
 
-        ToscaDiff toscaDiff = VersionUtils.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
+        ToscaDiff toscaDiff = VersionSupport.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
 
         assertEquals("## Changes from version w2-wip1 to w2-wip2\n" +
                 "\n" +

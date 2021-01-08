@@ -12,7 +12,6 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { AfterContentInit, AfterViewInit, Component, ContentChild, HostBinding, Input } from '@angular/core';
-import { deprecate, isNullOrUndefined } from 'util';
 import { WineryModalFooterComponent } from './winery.modal.footer.component';
 import { WineryModalHeaderComponent } from './winery.modal.header.component';
 import { ModalDirective } from 'ngx-bootstrap';
@@ -37,7 +36,6 @@ import { WineryModalSize } from './wineryModalSize';
     selector: 'winery-modal',
     templateUrl: 'winery.modal.component.html',
 })
-
 export class WineryModalComponent implements AfterViewInit, AfterContentInit {
 
     @Input() modalRef: ModalDirective;
@@ -56,10 +54,10 @@ export class WineryModalComponent implements AfterViewInit, AfterContentInit {
     private cssClass = '';
 
     ngAfterContentInit(): void {
-        if (!isNullOrUndefined(this.headerContent)) {
+        if (this.headerContent) {
             this.headerContent.modalRef = this.modalRef;
         }
-        if (!isNullOrUndefined(this.footerContent)) {
+        if (this.footerContent) {
             this.footerContent.modalRef = this.modalRef;
         }
     }

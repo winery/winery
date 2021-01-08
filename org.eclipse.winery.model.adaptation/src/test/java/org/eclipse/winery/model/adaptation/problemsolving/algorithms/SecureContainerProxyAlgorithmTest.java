@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.adaptation.problemsolving.ComponentFinding;
 import org.eclipse.winery.model.adaptation.problemsolving.SolutionInputData;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
@@ -55,27 +55,27 @@ class SecureContainerProxyAlgorithmTest extends TestWithGitBackedRepository {
         assertNotNull(topologyTemplate.getNodeTemplate("sourceNode_proxy"));
         assertNotNull(topologyTemplate.getNodeTemplate("targetNode_proxy"));
 
-        TRelationshipTemplate sourceToProxy = topologyTemplate.getRelationshipTemplate("sourceNode-connectsTo-sourceNode_proxy");
+        TRelationshipTemplate sourceToProxy = topologyTemplate.getRelationshipTemplate("con-sourceNode-connectsTo-sourceNode_proxy");
         assertNotNull(sourceToProxy);
         assertEquals("sourceNode", sourceToProxy.getSourceElement().getRef().getId());
         assertEquals("sourceNode_proxy", sourceToProxy.getTargetElement().getRef().getId());
 
-        TRelationshipTemplate proxyToProxy = topologyTemplate.getRelationshipTemplate("sourceNode_proxy-securely-connectsTo-targetNode_proxy");
+        TRelationshipTemplate proxyToProxy = topologyTemplate.getRelationshipTemplate("con-sourceNode_proxy-securely-connectsTo-targetNode_proxy");
         assertNotNull(proxyToProxy);
         assertEquals("sourceNode_proxy", proxyToProxy.getSourceElement().getRef().getId());
         assertEquals("targetNode_proxy", proxyToProxy.getTargetElement().getRef().getId());
 
-        TRelationshipTemplate targetProxyToTarget = topologyTemplate.getRelationshipTemplate("targetNode_proxy-connectsTo-targetNode");
+        TRelationshipTemplate targetProxyToTarget = topologyTemplate.getRelationshipTemplate("con-targetNode_proxy-connectsTo-targetNode");
         assertNotNull(targetProxyToTarget);
         assertEquals("targetNode_proxy", targetProxyToTarget.getSourceElement().getRef().getId());
         assertEquals("targetNode", targetProxyToTarget.getTargetElement().getRef().getId());
 
-        TRelationshipTemplate sourceProxyOnDocker = topologyTemplate.getRelationshipTemplate("sourceNode_proxy-hostedOn-DockerEngine");
+        TRelationshipTemplate sourceProxyOnDocker = topologyTemplate.getRelationshipTemplate("con-sourceNode_proxy-hostedOn-DockerEngine");
         assertNotNull(sourceProxyOnDocker);
         assertEquals("sourceNode_proxy", sourceProxyOnDocker.getSourceElement().getRef().getId());
         assertEquals("DockerEngine", sourceProxyOnDocker.getTargetElement().getRef().getId());
 
-        TRelationshipTemplate targetProxyOnDocker2 = topologyTemplate.getRelationshipTemplate("targetNode_proxy-hostedOn-DockerEngine_2");
+        TRelationshipTemplate targetProxyOnDocker2 = topologyTemplate.getRelationshipTemplate("con-targetNode_proxy-hostedOn-DockerEngine_2");
         assertNotNull(targetProxyOnDocker2);
         assertEquals("targetNode_proxy", targetProxyOnDocker2.getSourceElement().getRef().getId());
         assertEquals("DockerEngine_2", targetProxyOnDocker2.getTargetElement().getRef().getId());

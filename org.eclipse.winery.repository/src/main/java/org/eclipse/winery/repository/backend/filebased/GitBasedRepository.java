@@ -36,53 +36,53 @@ import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.model.tosca.TDefinitions;
+import org.eclipse.winery.repository.backend.IWrappingRepository;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
-import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
-import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
-import org.eclipse.winery.common.ids.definitions.ComplianceRuleId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.HasInheritanceId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.PatternRefinementModelId;
-import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
-import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
-import org.eclipse.winery.common.ids.definitions.RefinementId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.definitions.TestRefinementModelId;
-import org.eclipse.winery.common.ids.definitions.TopologyFragmentRefinementModelId;
-import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
-import org.eclipse.winery.common.ids.elements.ToscaElementId;
-import org.eclipse.winery.model.tosca.Definitions;
-import org.eclipse.winery.model.tosca.OTTopologyFragmentRefinementModel;
+import org.eclipse.winery.model.ids.GenericId;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.model.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.model.ids.extensions.ComplianceRuleId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.HasInheritanceId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.model.ids.extensions.PatternRefinementModelId;
+import org.eclipse.winery.model.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
+import org.eclipse.winery.model.ids.extensions.RefinementId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
+import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.extensions.TestRefinementModelId;
+import org.eclipse.winery.model.ids.extensions.TopologyFragmentRefinementModelId;
+import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
+import org.eclipse.winery.model.ids.elements.ToscaElementId;
+import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TCapabilityType;
-import org.eclipse.winery.model.tosca.OTComplianceRule;
+import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
-import org.eclipse.winery.model.tosca.OTPatternRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TPolicyType;
-import org.eclipse.winery.model.tosca.OTRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTRefinementModel;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
-import org.eclipse.winery.model.tosca.OTTestRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTTestRefinementModel;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.EdmmManager;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
@@ -112,7 +112,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Allows to reset repository to a certain commit id
  */
-public class GitBasedRepository extends AbstractFileBasedRepository {
+public class GitBasedRepository extends AbstractFileBasedRepository implements IWrappingRepository {
 
     /**
      * Used for synchronizing the method {@link GitBasedRepository#addCommit(RepositoryFileReference)}
@@ -417,6 +417,29 @@ public class GitBasedRepository extends AbstractFileBasedRepository {
     @Override
     public void putContentToFile(RepositoryFileReference ref, String content, MediaType mediaType) throws IOException {
         repository.putContentToFile(ref, content, mediaType);
+        try {
+            if (configuration.isAutoCommit()) {
+                this.addCommit(ref);
+            } else {
+                postEventMap();
+            }
+        } catch (GitAPIException e) {
+            LOGGER.trace(e.getMessage(), e);
+        }
+    }
+    
+    @Override
+    public void putDefinition(RepositoryFileReference ref, TDefinitions definitions) throws IOException {
+        repository.putDefinition(ref, definitions);
+        try {
+            if (configuration.isAutoCommit()) {
+                this.addCommit(ref);
+            } else {
+                postEventMap();
+            }
+        } catch (GitAPIException e) {
+            LOGGER.trace(e.getMessage(), e);
+        }
     }
 
     @Override
@@ -425,7 +448,7 @@ public class GitBasedRepository extends AbstractFileBasedRepository {
     }
 
     @Override
-    public Definitions definitionsFromRef(RepositoryFileReference ref) throws IOException {
+    public TDefinitions definitionsFromRef(RepositoryFileReference ref) throws IOException {
         return repository.definitionsFromRef(ref);
     }
 
@@ -649,11 +672,6 @@ public class GitBasedRepository extends AbstractFileBasedRepository {
     }
 
     @Override
-    public EdmmManager getEdmmManager() {
-        return repository.getEdmmManager();
-    }
-
-    @Override
     public XsdImportManager getXsdImportManager() {
         return repository.getXsdImportManager();
     }
@@ -689,7 +707,7 @@ public class GitBasedRepository extends AbstractFileBasedRepository {
     }
 
     @Override
-    public Definitions getDefinitions(DefinitionsChildId id) {
+    public TDefinitions getDefinitions(DefinitionsChildId id) {
         return repository.getDefinitions(id);
     }
 
@@ -818,7 +836,13 @@ public class GitBasedRepository extends AbstractFileBasedRepository {
         repository.doImport(in);
     }
 
+    @Override
     public AbstractFileBasedRepository getRepository() {
         return repository;
+    }
+
+    @Override
+    public void serialize(TDefinitions definitions, OutputStream target) throws IOException {
+        repository.serialize(definitions, target);
     }
 }

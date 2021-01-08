@@ -15,7 +15,6 @@ package org.eclipse.winery.compliance;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,24 +26,18 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.ComplianceRuleId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.compliance.checking.ComplianceCheckingException;
-import org.eclipse.winery.compliance.checking.ComplianceRuleChecker;
 import org.eclipse.winery.compliance.checking.ServiceTemplateCheckingResult;
 import org.eclipse.winery.compliance.checking.ServiceTemplateComplianceRuleRuleChecker;
 import org.eclipse.winery.compliance.checking.ToscaComplianceRuleMatcher;
-import org.eclipse.winery.model.tosca.OTComplianceRule;
+import org.eclipse.winery.model.ids.extensions.ComplianceRuleId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
-import org.eclipse.winery.model.tosca.TRelationshipTemplate;
-import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
-import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.topologygraph.matching.ToscaIsomorphismMatcher;
@@ -52,9 +45,7 @@ import org.eclipse.winery.topologygraph.model.ToscaEdge;
 import org.eclipse.winery.topologygraph.model.ToscaGraph;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jgrapht.GraphMapping;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -67,25 +58,14 @@ import static org.eclipse.winery.compliance.ToscaModelHelper.createTNodeType;
 import static org.eclipse.winery.compliance.ToscaModelHelper.createTOSCANode;
 import static org.eclipse.winery.compliance.ToscaModelHelper.createTOSCANodeOnlyProperties;
 import static org.eclipse.winery.compliance.ToscaModelHelper.createTOSCANodeOnlyTypes;
-import static org.eclipse.winery.compliance.ToscaModelHelper.createTRelationshipTemplate;
-import static org.eclipse.winery.compliance.ToscaModelHelper.createTRelationshipType;
 import static org.eclipse.winery.compliance.ToscaModelHelper.createTServiceTemplate;
 import static org.eclipse.winery.compliance.ToscaModelHelper.createTTopologyTemplate;
 import static org.eclipse.winery.compliance.ToscaModelHelper.setDerivedFrom;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ToscaGraphIsomorphismTest extends TestWithGitBackedRepository {
-
-    // TODO revise
-//    private final IRepository repository = initializeRepository();
-//
-//    private IRepository initializeRepository() {
-//        Path path = Paths.get(System.getProperty("java.io.tmpdir")).resolve("test-repository");
-//        return RepositoryFactory.getRepository(new FileBasedRepositoryConfiguration(path));
-//    }
 
     private void persist(HashMap<DefinitionsChildId, TExtensibleElements> allEntities) throws IOException {
         for (Map.Entry<DefinitionsChildId, TExtensibleElements> entry : allEntities.entrySet()) {
@@ -93,15 +73,9 @@ public class ToscaGraphIsomorphismTest extends TestWithGitBackedRepository {
         }
     }
 
-    // TODO revise
-//    @BeforeEach
-//    public void cleanUp() {
-//        repository.doClear();
-//    }
-
     @Test
     public void testTComplianceRulePersistence() throws Exception {
-        OTComplianceRule rule = new OTComplianceRule();
+        OTComplianceRule rule = new OTComplianceRule(new OTComplianceRule.Builder());
         rule.setName("test");
         rule.setTargetNamespace(TEST_TARGET_NAMESPACE);
 
@@ -196,25 +170,12 @@ public class ToscaGraphIsomorphismTest extends TestWithGitBackedRepository {
 
         // other way round
         assertFalse(matcher.isPropertiesCompatible(createTOSCANodeOnlyProperties(bldrRight), createTOSCANodeOnlyProperties(bldrLeft)));
-
-//		String repositoryURI = "http://localhost:8080/winery";
-//
-//		boolean USE_PROXY = false;
-//
-//		IWineryRepositoryClient client = new WineryRepositoryClient(USE_PROXY);
-//
-//		client.addRepository(repositoryURI);
-//
-//		TTopologyTemplate testTemplate = client.getTopologyTemplate(new QName( "http://opentosca.org/compliancerules","TestTemplate"));
-//		
-//		TNodeTemplate.Policies leftPolicies;
-//		TPolicy policy;
-
     }
 
     @Test
-    @Disabled // TODO Fix this test using the repo test superclass
-    public void testServiceTemplateComplianceRuleChecker() throws IOException {
+    public void testServiceTemplateComplianceRuleChecker() throws Exception {
+        this.setRevisionTo("origin/plain");
+
         HashMap<DefinitionsChildId, TExtensibleElements> allEntities = new HashMap<>();
 
         TServiceTemplate tServiceTemplate = createTServiceTemplate("ServiceTemplateTestId", TEST_TARGET_NAMESPACE);
@@ -295,229 +256,6 @@ public class ToscaGraphIsomorphismTest extends TestWithGitBackedRepository {
         } catch (JAXBException e) {
             e.printStackTrace();
         }
-    }
-
-    @Test
-    public void testTOSCAComplianceRuleChecker() throws IOException, ComplianceCheckingException {
-
-        HashMap<DefinitionsChildId, TExtensibleElements> allEntities = new HashMap<>();
-
-        ToscaModelPropertiesBuilder bldr = new ToscaModelPropertiesBuilder(TEST_TARGET_NAMESPACE, "MyProperties");
-        bldr.addProperty("key1", "value1");
-        bldr.addProperty("key2", "value2");
-
-        //create NodeTypes A B 
-        String idNodeTypeA = "idA";
-        TNodeType nodeTypeA = createTNodeType(idNodeTypeA, TEST_TARGET_NAMESPACE);
-        String idNodeTypeB = "idB";
-        TNodeType nodeTypeB = createTNodeType(idNodeTypeB, TEST_TARGET_NAMESPACE);
-        String idNodeTypeC = "idC";
-        TNodeType nodeTypeC = createTNodeType(idNodeTypeC, TEST_TARGET_NAMESPACE);
-
-        NodeTypeId idA = createNodeTypeId(idNodeTypeA);
-        NodeTypeId idB = createNodeTypeId(idNodeTypeB);
-        NodeTypeId idC = createNodeTypeId(idNodeTypeC);
-
-        allEntities.put(idA, nodeTypeA);
-        allEntities.put(idB, nodeTypeB);
-        allEntities.put(idC, nodeTypeC);
-
-        //createRelationshipTypes
-        String relTypeIdAString = "adRelA";
-        RelationshipTypeId relTypeIdA = new RelationshipTypeId(new QName(TEST_TARGET_NAMESPACE, relTypeIdAString));
-        TRelationshipType relTypeA = createTRelationshipType(relTypeIdAString, TEST_TARGET_NAMESPACE);
-
-        allEntities.put(relTypeIdA, relTypeA);
-
-        //createNodeTemplates
-        TNodeTemplate nodeTemplate1 = createTNodeTemplate("01");
-        nodeTemplate1.setType(idA.getQName());
-
-        TNodeTemplate nodeTemplate2 = createTNodeTemplate("02");
-        nodeTemplate2.setType(idB.getQName());
-
-        TNodeTemplate nodeTemplate3 = createTNodeTemplate("03");
-        nodeTemplate3.setType(idA.getQName());
-        nodeTemplate3.setProperties(bldr.build());
-
-        TNodeTemplate nodeTemplate4 = createTNodeTemplate("04");
-        nodeTemplate4.setType(idB.getQName());
-
-        TNodeTemplate nodeTemplate5 = createTNodeTemplate("05");
-        nodeTemplate5.setType(idA.getQName());
-
-        TNodeTemplate nodeTemplate6 = createTNodeTemplate("06");
-        nodeTemplate6.setType(idB.getQName());
-
-        TNodeTemplate nodeTemplate7 = createTNodeTemplate("07");
-        nodeTemplate7.setType(idA.getQName());
-        nodeTemplate7.setProperties(bldr.build());
-
-        TNodeTemplate nodeTemplate8 = createTNodeTemplate("08");
-        nodeTemplate8.setType(idB.getQName());
-
-        TNodeTemplate nodeTemplate9 = createTNodeTemplate("CompletelyUnrelated");
-        nodeTemplate9.setType(idC.getQName());
-
-        //create RelationshipTemplates
-        TRelationshipTemplate relTemplate1 = createTRelationshipTemplate("1");
-        relTemplate1.setSourceNodeTemplate(nodeTemplate1);
-        relTemplate1.setTargetNodeTemplate(nodeTemplate2);
-        relTemplate1.setType(relTypeIdA.getQName());
-
-        TRelationshipTemplate relTemplate2 = createTRelationshipTemplate("2");
-        relTemplate2.setSourceNodeTemplate(nodeTemplate3);
-        relTemplate2.setTargetNodeTemplate(nodeTemplate4);
-        relTemplate2.setType(relTypeIdA.getQName());
-
-        TRelationshipTemplate relTemplate3 = createTRelationshipTemplate("3");
-        relTemplate3.setSourceNodeTemplate(nodeTemplate5);
-        relTemplate3.setTargetNodeTemplate(nodeTemplate6);
-        relTemplate3.setType(relTypeIdA.getQName());
-
-        TRelationshipTemplate relTemplate4 = createTRelationshipTemplate("4");
-        relTemplate4.setSourceNodeTemplate(nodeTemplate7);
-        relTemplate4.setTargetNodeTemplate(nodeTemplate8);
-        relTemplate4.setType(relTypeIdA.getQName());
-
-        //create TopologyTemplates
-        List<TNodeTemplate> nodeTemplates = new ArrayList<>();
-        List<TRelationshipTemplate> relationshipTemplates = new ArrayList<>();
-
-        // create identifier
-        nodeTemplates.add(nodeTemplate1);
-        nodeTemplates.add(nodeTemplate2);
-        relationshipTemplates.add(relTemplate1);
-        TTopologyTemplate identifier = createTTopologyTemplate(nodeTemplates, relationshipTemplates);
-        identifier.setNodeTemplates(nodeTemplates);
-        identifier.setRelationshipTemplates(relationshipTemplates);
-        nodeTemplates.clear();
-        relationshipTemplates.clear();
-
-        //create required structure
-        nodeTemplates.add(nodeTemplate3);
-        nodeTemplates.add(nodeTemplate4);
-        relationshipTemplates.add(relTemplate2);
-        TTopologyTemplate requiredStructure = createTTopologyTemplate(nodeTemplates, relationshipTemplates);
-        requiredStructure.setNodeTemplates(nodeTemplates);
-        requiredStructure.setRelationshipTemplates(relationshipTemplates);
-        nodeTemplates.clear();
-        relationshipTemplates.clear();
-
-        //create topologyToSearchIn
-        nodeTemplates.add(nodeTemplate5);
-        nodeTemplates.add(nodeTemplate6);
-        nodeTemplates.add(nodeTemplate7);
-        nodeTemplates.add(nodeTemplate8);
-        relationshipTemplates.add(relTemplate3);
-        relationshipTemplates.add(relTemplate4);
-        TTopologyTemplate topologyTemplateToSearchIn = createTTopologyTemplate(nodeTemplates, relationshipTemplates);
-        topologyTemplateToSearchIn.setNodeTemplates(nodeTemplates);
-        topologyTemplateToSearchIn.setRelationshipTemplates(relationshipTemplates);
-        nodeTemplates.clear();
-        relationshipTemplates.clear();
-
-        //create unrelated topology
-        nodeTemplates.add(nodeTemplate9);
-        TTopologyTemplate unrelatedTopology = createTTopologyTemplate(nodeTemplates, relationshipTemplates);
-        unrelatedTopology.setNodeTemplates(nodeTemplates);
-        unrelatedTopology.setRelationshipTemplates(relationshipTemplates);
-        nodeTemplates.clear();
-        relationshipTemplates.clear();
-
-        persist(allEntities);
-
-        // **************** //
-        // Test starts here //
-        // **************** //
-
-        ComplianceRuleChecker checker;
-
-        // test null topologyTemplateToCheck
-        checker = new ComplianceRuleChecker(null, null, null);
-        ComplianceCheckingException expected = null;
-        try {
-            checker.checkComplianceRule();
-        } catch (ComplianceCheckingException e) {
-            expected = e;
-        }
-        assertNotNull(expected);
-        assertTrue(StringUtils.equals(ComplianceCheckingException.NO_TEMPLATE_TO_CHECK, expected.getMessage()));
-
-        checker.setToCheckTemplate(topologyTemplateToSearchIn);
-
-        // test empty rule
-        expected = null;
-        try {
-            checker.checkComplianceRule();
-        } catch (ComplianceCheckingException e) {
-            expected = e;
-        }
-        assertNotNull(expected);
-        assertTrue(StringUtils.equals(ComplianceCheckingException.EMPTY_COMPLIANCE_RULE, expected.getMessage()));
-
-        // test Whitelist
-        checker.setRequiredStructureTemplate(requiredStructure);
-        expected = null;
-        try {
-            checker.checkComplianceRule();
-        } catch (ComplianceCheckingException e) {
-            expected = e;
-        }
-        assertNotNull(expected);
-        assertTrue(StringUtils.equals(ComplianceCheckingException.WHITELISTING_NOT_YET_IMPLEMENTED, expected.getMessage()));
-
-        // test blacklist
-        checker.setRequiredStructureTemplate(null);
-        checker.setIdentifierTemplate(identifier);
-        List<GraphMapping> blacklistResult = checker.checkComplianceRule();
-        assertEquals(2, blacklistResult.size());
-
-        // test completeRule
-        // invalid Rule: identifier and required structure have no mapping
-        checker.setIdentifierTemplate(unrelatedTopology);
-        checker.setRequiredStructureTemplate(requiredStructure);
-        expected = null;
-        try {
-            checker.checkComplianceRule();
-        } catch (ComplianceCheckingException e) {
-            expected = e;
-        }
-        assertNotNull(expected);
-        assertTrue(StringUtils.equals(ComplianceCheckingException.IDENTIFIER_NOT_IN_REQUIREDSTRUCTURE, expected.getMessage()));
-
-        // valid Rule: identifier in required structure
-        // finds one violation
-        checker.setIdentifierTemplate(identifier);
-        checker.setRequiredStructureTemplate(requiredStructure);
-        List<GraphMapping> violatingMappings = checker.checkComplianceRule();
-        assertEquals(1, violatingMappings.size());
-
-        // check the mapping. 
-        // must contain nodesTemplates 5 & 6 and relTemplate3
-
-        ToscaNode identifierNode1 = checker.getIdentifierGraph().getNode("01");
-        ToscaNode identifierNode2 = checker.getIdentifierGraph().getNode("02");
-        ToscaEdge identifierEdge = checker.getIdentifierGraph().getEdge(identifierNode1, identifierNode2);
-
-        GraphMapping violatingMapping = violatingMappings.stream().findFirst().get();
-
-        assertNotNull(violatingMapping);
-        Map<ToscaNode, ToscaNode> resultMap = checker.getSubGraphMappingAsMap(violatingMapping, checker.getIdentifierGraph());
-
-        assertTrue(resultMap.get(identifierNode1).getId().matches("05"));
-        assertTrue(resultMap.get(identifierNode2).getId().matches("06"));
-        assertTrue(((ToscaEdge) violatingMapping.getEdgeCorrespondence(identifierEdge, false)).getId().matches("3"));
-
-        //finds no violation
-        checker.setRequiredStructureTemplate(identifier);
-        assertEquals(0, checker.checkComplianceRule().size());
-
-        OTComplianceRule rule = new OTComplianceRule();
-        rule.setName("test");
-        rule.setTargetNamespace(TEST_TARGET_NAMESPACE);
-        rule.setIdentifier(identifier);
-        rule.setRequiredStructure(requiredStructure);
     }
 
     @Test

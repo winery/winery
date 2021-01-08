@@ -12,11 +12,15 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
 -->
 
-<winery-toscatype-table
-    [tableType]="tableTypes.Policies"
-    [currentNodeData]="currentNodeData"
-    [toscaTypeData]="policies"
-    (showYamlPolicyManagementModal)="handleShowYamlPolicyModalEvent()">
+<div *ngIf="isEmpty()" style="color: dimgray; text-align: center">
+    <span>No policies defined <br> for this Topology Template.</span>
+</div>
+
+<winery-toscatype-table *ngIf="!isEmpty()"
+                        [tableType]="tableTypes.Policies"
+                        [currentNodeData]="currentNodeData"
+                        [toscaTypeData]="policies"
+                        (showYamlPolicyManagementModal)="handleShowYamlPolicyModalEvent()">
 </winery-toscatype-table>
 
 <div *wineryRepositoryHideOnFeature="features.Yaml">
@@ -24,7 +28,3 @@
         Add new Policy
     </div>
 </div>
-
-
-
-

@@ -16,8 +16,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BackendService } from '../services/backend.service';
 import { WineryVersion } from '../../../../tosca-management/src/app/model/wineryVersion';
-import { Observable } from 'rxjs';
 import { TTopologyTemplate } from '../models/ttopology-template';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
 
 @Injectable()
 export class VersionSliderService {

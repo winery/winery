@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TDefinitions;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.model.tosca.TImport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,14 +32,13 @@ public class ImportUtils {
     /**
      * SIDE EFFECT: persists the import when something is changed
      */
-    public static Optional<TImport> getTheImport(GenericImportId id) {
+    public static Optional<TImport> getTheImport(IRepository repository, GenericImportId id) {
         Objects.requireNonNull(id);
 
         TImport theImport;
         boolean needsPersistence = false;
 
-        final IRepository repository = RepositoryFactory.getRepository();
-        final Definitions definitions = repository.getDefinitions(id);
+        final TDefinitions definitions = repository.getDefinitions(id);
 
         if (!repository.exists(id)) {
             return Optional.empty();
@@ -87,7 +86,7 @@ public class ImportUtils {
 
         if (needsPersistence) {
             try {
-                BackendUtils.persist(id, definitions);
+                BackendUtils.persist(repository, id, definitions);
             } catch (IOException e) {
                 LOGGER.error("Could not persist changes", e);
             }
@@ -96,7 +95,7 @@ public class ImportUtils {
         return Optional.of(theImport);
     }
 
-    public static Optional<String> getLocation(GenericImportId id) {
-        return getTheImport(id).map(TImport::getLocation).filter(Objects::nonNull);
+    public static Optional<String> getLocation(IRepository repository, GenericImportId id) {
+        return getTheImport(repository, id).map(TImport::getLocation).filter(Objects::nonNull);
     }
 }

@@ -13,8 +13,8 @@
  *******************************************************************************/
 import { Component, OnInit, Input } from '@angular/core';
 import { ThreatAssessmentService } from './threatAssessment.service';
-import { QName } from '../../../model/qName';
 import { Utils } from '../../../wineryUtils/utils';
+import { QName } from '../../../../../../shared/src/app/model/qName';
 
 export interface ThreatProperties {
     description?: string;
@@ -79,7 +79,7 @@ export class ThreatAssessmentComponent implements OnInit {
     }
 
     isMitigated(mitigation: QName): boolean {
-        const mitigationSVNF = this.svnfs.find(svnf => svnf.namespace === mitigation.namespace && svnf.localPart === mitigation.localPart);
+        const mitigationSVNF = this.svnfs.find(svnf => svnf.nameSpace === mitigation.nameSpace && svnf.localName === mitigation.localName);
         const exists = typeof mitigationSVNF === 'undefined';
         return !exists;
     }

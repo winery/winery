@@ -30,20 +30,21 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
-import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.model.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.model.ids.definitions.DataTypeId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.filebased.MultiRepositoryManager;
 import org.eclipse.winery.repository.backend.filebased.RepositoryProperties;
+import org.eclipse.winery.repository.filebased.MultiRepositoryManager;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -114,14 +115,21 @@ public class RepositoryAdminResource {
     @Path("touch")
     public Response touchAllDefinitions() {
         IRepository repository = RepositoryFactory.getRepository();
-        SortedSet<DefinitionsChildId> definitionIds = Stream.of(ArtifactTypeId.class, CapabilityTypeId.class,
-            NodeTypeId.class, PolicyTypeId.class, RelationshipTypeId.class, RequirementTypeId.class, ServiceTemplateId.class)
-            .flatMap(id -> repository.getAllDefinitionsChildIds(id).stream())
+        SortedSet<DefinitionsChildId> definitionIds = Stream.of(
+            ArtifactTypeId.class,
+            CapabilityTypeId.class,
+            NodeTypeId.class,
+            PolicyTypeId.class,
+            RelationshipTypeId.class,
+            RequirementTypeId.class,
+            ServiceTemplateId.class,
+            DataTypeId.class
+        ).flatMap(id -> repository.getAllDefinitionsChildIds(id).stream())
             .collect(Collectors.toCollection(TreeSet::new));
         for (DefinitionsChildId id : definitionIds) {
             try {
-                Definitions definitions = repository.getDefinitions(id);
-                BackendUtils.persist(id, definitions);
+                TDefinitions definitions = repository.getDefinitions(id);
+                BackendUtils.persist(repository, id, definitions);
             } catch (Exception e) {
                 LOGGER.error("Could not persist definition: {}", id);
                 return Response.serverError().build();

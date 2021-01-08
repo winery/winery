@@ -18,28 +18,42 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Objects;
 
 import javax.xml.bind.JAXBException;
 
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.xml.XTDefinitions;
 import org.eclipse.winery.repository.JAXBSupport;
+import org.eclipse.winery.repository.backend.IRepository;
 
 /**
  * Provides access to an entry that represents a TOSCA definition.
+ * @deprecated to be replaced with {@link DefinitionsBasedCsarEntry}
  */
+// FIXME this needs to be moved to the xml repository module.
+//  CSAR Entries are inherently dependent on the Standard to which the CSAR is serialized
+@Deprecated
 public class XMLDefinitionsBasedCsarEntry implements CsarEntry {
-    private Definitions definitions;
+    private static final boolean INCLUDE_PROCESSING = true;
+    
+    private XTDefinitions definitions;
+    private IRepository repository;
 
-    public XMLDefinitionsBasedCsarEntry(Definitions definitions) {
-        assert (definitions != null);
-        this.definitions = definitions;
+    public XMLDefinitionsBasedCsarEntry(XTDefinitions definitions, IRepository repository) {
+        this.repository = Objects.requireNonNull(repository);
+        this.definitions = Objects.requireNonNull(definitions);
+    }
+
+    public XTDefinitions getDefinitions() {
+        return definitions;
     }
 
     @Override
     public InputStream getInputStream() throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try {
-            JAXBSupport.createMarshaller(true).marshal(definitions, byteArrayOutputStream);
+            JAXBSupport.createMarshaller(INCLUDE_PROCESSING, repository.getNamespaceManager().asPrefixMapper())
+                .marshal(definitions, byteArrayOutputStream);
             return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
         } catch (JAXBException e) {
             throw new IOException(e);
@@ -49,7 +63,8 @@ public class XMLDefinitionsBasedCsarEntry implements CsarEntry {
     @Override
     public void writeToOutputStream(OutputStream outputStream) throws IOException {
         try {
-            JAXBSupport.createMarshaller(true).marshal(definitions, outputStream);
+            JAXBSupport.createMarshaller(INCLUDE_PROCESSING, repository.getNamespaceManager().asPrefixMapper())
+                .marshal(definitions, outputStream);
         } catch (JAXBException e) {
             throw new IOException(e);
         }

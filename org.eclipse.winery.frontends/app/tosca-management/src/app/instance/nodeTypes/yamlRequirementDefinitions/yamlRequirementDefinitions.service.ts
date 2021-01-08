@@ -58,4 +58,9 @@ export class YamlRequirementDefinitionsService {
         const url = backendBaseURL + this.path;
         return this.http.post<any>(url, postData);
     }
+
+    deleteRequirementDefinition(reqDef: { name: string }): Observable<any> {
+        const url = backendBaseURL + this.path + '/' + reqDef.name;
+        return this.http.delete<any>(url);
+    }
 }

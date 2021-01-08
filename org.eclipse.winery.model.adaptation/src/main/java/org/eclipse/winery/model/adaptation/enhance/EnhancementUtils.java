@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -25,13 +26,12 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
-import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TInterfaces;
@@ -45,15 +45,15 @@ import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.model.tosca.constants.OpenToscaInterfaces;
 import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
-import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
-import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.NamespaceProperties;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -280,15 +280,15 @@ public class EnhancementUtils {
                 TNodeType generatedNodeType = createFeatureNodeType(nodeTemplate, featureMap.get(nodeTemplate.getId()));
                 nodeTemplate.setType(generatedNodeType.getQName());
                 if (Objects.nonNull(generatedNodeType.getWinerysPropertiesDefinition())) {
-                    PropertyDefinitionKVList definedProperties = generatedNodeType.getWinerysPropertiesDefinition().getPropertyDefinitionKVList();
+                    List<PropertyDefinitionKV> definedProperties = generatedNodeType.getWinerysPropertiesDefinition()
+                        .getPropertyDefinitions();
 
-                    // todo: think about moving this code to a separate ModelUtilities method.
-                    Map<String, String> kvProperties = Objects.nonNull(nodeTemplate.getProperties())
-                        && Objects.nonNull(nodeTemplate.getProperties().getKVProperties())
-                        ? nodeTemplate.getProperties().getKVProperties()
-                        : new HashMap<>();
+                    final @NonNull LinkedHashMap<String, String> kvProperties = ModelUtilities.getPropertiesKV(nodeTemplate) == null
+                        ? new LinkedHashMap<>()
+                        : ModelUtilities.getPropertiesKV(nodeTemplate);
                     if (kvProperties.isEmpty()) {
-                        definedProperties.forEach(propertyDefinition -> kvProperties.put(propertyDefinition.getKey(), ""));
+                        definedProperties.stream().map(PropertyDefinitionKV::getKey)
+                            .forEach(k -> kvProperties.put(k, ""));
                     } else {
                         definedProperties.forEach(propertyDefinition -> {
                             if (Objects.isNull(kvProperties.get(propertyDefinition.getKey()))) {
@@ -300,9 +300,7 @@ public class EnhancementUtils {
                     // We need to set new Properties because the {@link TEntityTemplate#setProperties} is implemented
                     // badly and does not add new properties. Due to time constraints we do it that way for now.
                     if (!kvProperties.isEmpty()) {
-                        TEntityTemplate.Properties p = new TEntityTemplate.Properties();
-                        p.setKVProperties(kvProperties);
-                        nodeTemplate.setProperties(p);
+                        ModelUtilities.setPropertiesKV(nodeTemplate, kvProperties);
                     }
                 }
             });
@@ -344,12 +342,11 @@ public class EnhancementUtils {
         // prepare Properties
         if (Objects.isNull(featureEnrichedNodeType.getWinerysPropertiesDefinition())) {
             WinerysPropertiesDefinition props = new WinerysPropertiesDefinition();
-            props.setPropertyDefinitionKVList(new PropertyDefinitionKVList());
+            props.setPropertyDefinitions(new ArrayList<>());
             ModelUtilities.replaceWinerysPropertiesDefinition(featureEnrichedNodeType, props);
         }
         List<PropertyDefinitionKV> baseProperties = featureEnrichedNodeType.getWinerysPropertiesDefinition()
-            .getPropertyDefinitionKVList()
-            .getPropertyDefinitionKVs();
+            .getPropertyDefinitions();
 
         // prepare Interfaces
         if (Objects.isNull(featureEnrichedNodeType.getInterfaces())) {
@@ -392,7 +389,7 @@ public class EnhancementUtils {
 
             // merge Properties
             if (Objects.nonNull(nodeType.getWinerysPropertiesDefinition())) {
-                PropertyDefinitionKVList kvList = nodeType.getWinerysPropertiesDefinition().getPropertyDefinitionKVList();
+                List<PropertyDefinitionKV> kvList = nodeType.getWinerysPropertiesDefinition().getPropertyDefinitions();
                 if (Objects.nonNull(kvList) && !kvList.isEmpty()) {
                     for (PropertyDefinitionKV kv : kvList) {
                         boolean listContainsProperty = baseProperties.stream()
@@ -419,8 +416,8 @@ public class EnhancementUtils {
         // In the case that neither the basic type, nor the feature types define properties,
         // remove them from the type to ensure a compliant XML.
         if (Objects.nonNull(featureEnrichedNodeType.getWinerysPropertiesDefinition())
-            && Objects.nonNull(featureEnrichedNodeType.getWinerysPropertiesDefinition().getPropertyDefinitionKVList())
-            && featureEnrichedNodeType.getWinerysPropertiesDefinition().getPropertyDefinitionKVList().isEmpty()) {
+            && Objects.nonNull(featureEnrichedNodeType.getWinerysPropertiesDefinition().getPropertyDefinitions())
+            && featureEnrichedNodeType.getWinerysPropertiesDefinition().getPropertyDefinitions().isEmpty()) {
             ModelUtilities.removeWinerysPropertiesDefinition(featureEnrichedNodeType);
         }
 

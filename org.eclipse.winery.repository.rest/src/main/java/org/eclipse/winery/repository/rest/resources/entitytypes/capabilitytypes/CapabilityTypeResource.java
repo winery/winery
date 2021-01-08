@@ -20,12 +20,12 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.model.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
-import org.eclipse.winery.repository.rest.resources.apiData.ValidSourceTypesApiData;
+import org.eclipse.winery.repository.rest.resources.apiData.ValidTypesListApiData;
 import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;
 
 import org.slf4j.Logger;
@@ -58,13 +58,13 @@ public final class CapabilityTypeResource extends EntityTypeResource {
 
     @GET
     @Path("constraints/")
-    public ValidSourceTypesApiData getValidSourceTypes() {
-        return new ValidSourceTypesApiData(getCapabilityType().getValidNodeTypes());
+    public ValidTypesListApiData getValidSourceTypes() {
+        return new ValidTypesListApiData(getCapabilityType().getValidNodeTypes());
     }
 
     @PUT
     @Path("constraints/")
-    public Response saveValidSourceTypes(ValidSourceTypesApiData newValidSourceTypes) {
+    public Response saveValidSourceTypes(ValidTypesListApiData newValidSourceTypes) {
         TCapabilityType t = this.getCapabilityType();
         t.setValidNodeTypes(newValidSourceTypes
             .getNodes()

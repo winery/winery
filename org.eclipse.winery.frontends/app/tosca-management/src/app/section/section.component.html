@@ -43,15 +43,15 @@
                 (click)="addCsarModal.show()">
             Import CSAR
         </button>
-        <button class="btn btn-default sidebar-btn sectionBtn" id="sectionsImportYamlBtn"
-                (click)="addYamlModal.show();" *wineryRepositoryHideOnFeature="'yaml'">
-            Import YAML
-        </button>
         <div *ngIf="toscaType === toscaTypes.ServiceTemplate" class="sectionBtn">
+            <!-- FIXME seems the component does not query the artifact types properly
             <winery-xaas-packager *wineryRepositoryHideOnFeature="'yaml'"
-                                  id="sectionCreateFromArtifactBtn"></winery-xaas-packager>
+                                  id="sectionCreateFromArtifactBtn">
+            </winery-xaas-packager>
+            -->
             <winery-placement *wineryRepositoryFeatureToggle="configEnum.Placement"
-                              id="sectionCreateFromDataFlowBtn"></winery-placement>
+                              id="sectionCreateFromDataFlowBtn">
+            </winery-placement>
         </div>
         <button class="btn btn-default sidebar-btn sectionBtn" id="sectionsGroupBtn" (click)="onChangeView()"
                 [disabled]="showSpecificNamespaceOnly()">

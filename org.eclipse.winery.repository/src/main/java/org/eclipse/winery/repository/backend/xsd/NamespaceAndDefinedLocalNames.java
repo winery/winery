@@ -15,7 +15,7 @@ package org.eclipse.winery.repository.backend.xsd;
 
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.impl.factory.Lists;
-import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.model.ids.Namespace;
 
 import java.util.List;
 

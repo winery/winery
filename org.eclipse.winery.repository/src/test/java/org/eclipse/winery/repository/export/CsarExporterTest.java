@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -27,9 +27,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.eclipse.winery.common.HashingUtil;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileAttributes;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -52,9 +52,9 @@ public class CsarExporterTest extends TestWithGitBackedRepository {
 
     private ByteArrayInputStream createOutputAndInputStream(String commitId, DefinitionsChildId id, Map<String, Object> exportConfiguration) throws Exception {
         setRevisionTo(commitId);
-        CsarExporter exporter = new CsarExporter();
+        CsarExporter exporter = new CsarExporter(repository);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        exporter.writeCsar(RepositoryFactory.getRepository(), id, os, exportConfiguration);
+        exporter.writeCsar(id, os, exportConfiguration);
         return new ByteArrayInputStream(os.toByteArray());
     }
 
@@ -218,11 +218,11 @@ public class CsarExporterTest extends TestWithGitBackedRepository {
     // todo check how to enable
     public void testPutCsarInBlockchainAndImmutableStorage() throws Exception {
         setRevisionTo("origin/plain");
-        CsarExporter exporter = new CsarExporter();
+        CsarExporter exporter = new CsarExporter(repository);
         DefinitionsChildId id = new ServiceTemplateId("http://plain.winery.opentosca.org/servicetemplates", "ServiceTemplateWithAllReqCapVariants", false);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
 
-        CompletableFuture<String> future = exporter.writeCsarAndSaveManifestInProvenanceLayer(RepositoryFactory.getRepository(), id, os);
+        CompletableFuture<String> future = exporter.writeCsarAndSaveManifestInProvenanceLayer(id, os);
         String transactionHash = future.get();
 
         assertNotNull(transactionHash);

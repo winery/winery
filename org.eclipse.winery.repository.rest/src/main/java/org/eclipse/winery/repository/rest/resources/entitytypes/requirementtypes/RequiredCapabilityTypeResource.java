@@ -24,7 +24,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.model.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;

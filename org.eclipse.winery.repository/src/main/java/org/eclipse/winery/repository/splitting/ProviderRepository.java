@@ -27,8 +27,8 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TDocumentation;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -176,7 +176,6 @@ public class ProviderRepository {
         } else {
             for (TNodeTemplate nodeWithoutIncomingRel : nodeTemplatesWithoutIncomingRelationship) {
                 if (!visitedNodeTemplates.contains(nodeWithoutIncomingRel)) {
-                    TTopologyTemplate topologyFragment = new TTopologyTemplate();
                     TDocumentation documentation = new TDocumentation();
                     Optional<String> targetLabel = ModelUtilities.getTargetLabel(nodeWithoutIncomingRel);
                     String label;
@@ -187,7 +186,9 @@ public class ProviderRepository {
                     }
                     documentation.getContent().add("Stack of Node Template " + nodeWithoutIncomingRel.getId()
                         + " from Provider Repository " + label);
-                    topologyFragment.getDocumentation().add(documentation);
+                    TTopologyTemplate topologyFragment = new TTopologyTemplate.Builder()
+                        .addDocumentation(documentation)
+                        .build();
                     topologyFragment.getNodeTemplateOrRelationshipTemplate().addAll(breadthFirstSearch(nodeWithoutIncomingRel, topologyTemplate));
                     topologyFragments.add(topologyFragment);
 

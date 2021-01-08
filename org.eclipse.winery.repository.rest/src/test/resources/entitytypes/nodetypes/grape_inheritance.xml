@@ -4,9 +4,6 @@
     <Import importType="http://docs.oasis-open.org/tosca/ns/2011/12"
             location="http://localhost:9080/winery/nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/?definitions"
             namespace="http://winery.opentosca.org/test/nodetypes/fruits"/>
-    <Import importType="http://www.w3.org/2001/XMLSchema"
-            location="http://localhost:9080/winery/nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/grape/propertiesdefinition/xsd"
-            namespace="http://winery.opentosca.org/test/nodetypes/fruits" winery:wpd="true"/>
     <NodeType abstract="no" final="yes" name="grape" targetNamespace="http://winery.opentosca.org/test/nodetypes/fruits"
               winery:bordercolor="#89ee01">
         <winery:PropertiesDefinition elementname="GrapeProperties"
@@ -33,6 +30,5 @@
             </winery:properties>
         </winery:PropertiesDefinition>
         <DerivedFrom xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" typeRef="wfn:baobab"/>
-        <PropertiesDefinition xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" type="wfn:GrapeProperties"/>
     </NodeType>
 </Definitions>

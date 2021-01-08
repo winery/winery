@@ -27,24 +27,24 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.PatternRefinementModelId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.ids.definitions.TopologyFragmentRefinementModelId;
-import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.extensions.PatternRefinementModelId;
+import org.eclipse.winery.model.ids.extensions.TopologyFragmentRefinementModelId;
 import org.eclipse.winery.model.tosca.HasId;
-import org.eclipse.winery.model.tosca.OTPatternRefinementModel;
-import org.eclipse.winery.model.tosca.OTPermutationMapping;
-import org.eclipse.winery.model.tosca.OTPrmMapping;
-import org.eclipse.winery.model.tosca.OTStayMapping;
-import org.eclipse.winery.model.tosca.OTStringList;
-import org.eclipse.winery.model.tosca.OTTopologyFragmentRefinementModel;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTPermutationMapping;
+import org.eclipse.winery.model.tosca.extensions.OTPrmMapping;
+import org.eclipse.winery.model.tosca.extensions.OTStayMapping;
+import org.eclipse.winery.model.tosca.extensions.OTStringList;
+import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.model.version.VersionSupport;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
@@ -111,6 +111,11 @@ public class PermutationGenerator {
                 );
 
             ModelUtilities.getIncomingRelationshipTemplates(refinementModel.getDetector(), detectorNode)
+                .stream()
+                .filter(relation -> refinementModel.getComponentSets().stream()
+                    .noneMatch(setList -> setList.getValues().contains(relation.getTargetElement().getRef().getId())
+                        && setList.getValues().contains(relation.getSourceElement().getRef().getId()))
+                )
                 .forEach(relation -> {
                     TNodeTemplate dependantNode = (TNodeTemplate) relation.getSourceElement().getRef();
                     if (refinementModel.getRelationMappings() != null) {
@@ -333,7 +338,7 @@ public class PermutationGenerator {
         }
 
         for (OTStringList options : refinementModel.getPermutationOptions()) {
-            String permutationName = VersionUtils.getNewComponentVersionId(refinementModelId,
+            String permutationName = VersionSupport.getNewComponentVersionId(refinementModelId,
                 "permutation-" + String.join("-", options.getValues()).replaceAll("_", "-"));
             QName permutationQName = new QName(refinementModel.getTargetNamespace(), permutationName);
 

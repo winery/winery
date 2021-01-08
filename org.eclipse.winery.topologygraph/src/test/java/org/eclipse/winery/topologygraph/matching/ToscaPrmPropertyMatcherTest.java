@@ -15,6 +15,7 @@ package org.eclipse.winery.topologygraph.matching;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -26,6 +27,7 @@ import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicy;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
 
@@ -38,29 +40,29 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ToscaPrmPropertyMatcherTest {
 
     private static Stream<Arguments> compatiblePropertiesArguments() {
-        Map<String, String> allInOneLeftProperties = new HashMap<>();
+        Map<String, String> allInOneLeftProperties = new LinkedHashMap<>();
         allInOneLeftProperties.put("key0", null);
         allInOneLeftProperties.put("key1", "*");
         allInOneLeftProperties.put("key2", "");
         allInOneLeftProperties.put("key3", "special");
-        Map<String, String> allInOneRightProperties = new HashMap<>();
+        Map<String, String> allInOneRightProperties = new LinkedHashMap<>();
         allInOneRightProperties.put("key0", "");
         allInOneRightProperties.put("key1", "I must be set");
         allInOneRightProperties.put("key2", "I can have anything");
         allInOneRightProperties.put("key3", "special");
 
-        Map<String, String> mustBeSetLeftProperties = new HashMap<>();
+        Map<String, String> mustBeSetLeftProperties = new LinkedHashMap<>();
         mustBeSetLeftProperties.put("key", "*");
-        Map<String, String> mustBeSetRightProperties = new HashMap<>();
+        Map<String, String> mustBeSetRightProperties = new LinkedHashMap<>();
         mustBeSetRightProperties.put("key", "isSet");
-        Map<String, String> mustBeSetButIsNotRightProperties = new HashMap<>();
+        Map<String, String> mustBeSetButIsNotRightProperties = new LinkedHashMap<>();
         mustBeSetButIsNotRightProperties.put("key", "");
 
-        Map<String, String> mustBeEqualsLeftProperties = new HashMap<>();
+        Map<String, String> mustBeEqualsLeftProperties = new LinkedHashMap<>();
         mustBeEqualsLeftProperties.put("key", "must be equals");
-        Map<String, String> mustBeEqualsRightProperties = new HashMap<>();
+        Map<String, String> mustBeEqualsRightProperties = new LinkedHashMap<>();
         mustBeEqualsRightProperties.put("key", "must Be equals");
-        Map<String, String> mustBeEqualsButIsNotRightProperties = new HashMap<>();
+        Map<String, String> mustBeEqualsButIsNotRightProperties = new LinkedHashMap<>();
         mustBeEqualsButIsNotRightProperties.put("key", "who cares?");
 
         return Stream.of(
@@ -75,13 +77,11 @@ public class ToscaPrmPropertyMatcherTest {
 
     @ParameterizedTest(name = "{index} => ''{3}''")
     @MethodSource("compatiblePropertiesArguments")
-    public void compatibleProperties(Map<String, String> leftProperties, Map<String, String> rightProperties, boolean expected, String description) {
+    public void compatibleProperties(LinkedHashMap<String, String> leftProperties, LinkedHashMap<String, String> rightProperties, boolean expected, String description) {
         // region ***** left *****
         TNodeTemplate left = new TNodeTemplate();
         if (Objects.nonNull(leftProperties)) {
-            TEntityTemplate.Properties properties = new TNodeTemplate.Properties();
-            properties.setKVProperties(leftProperties);
-            left.setProperties(properties);
+            ModelUtilities.setPropertiesKV(left, leftProperties);
         }
 
         ToscaNode leftEntity = new ToscaNode();
@@ -94,9 +94,7 @@ public class ToscaPrmPropertyMatcherTest {
         // region ***** right *****
         TNodeTemplate right = new TNodeTemplate();
         if (Objects.nonNull(leftProperties)) {
-            TEntityTemplate.Properties properties2 = new TNodeTemplate.Properties();
-            properties2.setKVProperties(rightProperties);
-            right.setProperties(properties2);
+            ModelUtilities.setPropertiesKV(right, rightProperties);
         }
 
         ToscaNode rightEntity = new ToscaNode();

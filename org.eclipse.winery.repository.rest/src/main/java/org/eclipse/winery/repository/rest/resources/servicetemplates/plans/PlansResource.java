@@ -32,13 +32,14 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.Util;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.common.configuration.Environments;
-import org.eclipse.winery.common.ids.XmlId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.elements.PlanId;
-import org.eclipse.winery.common.ids.elements.PlansId;
+import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.model.ids.XmlId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.elements.PlanId;
+import org.eclipse.winery.model.ids.elements.PlansId;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlan.PlanModelReference;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
@@ -95,7 +96,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 
         Response response = this.saveFile(newPlan, null, null, null);
         if (response.getStatus() == 204) {
-            return Response.created(URI.create(Util.URLencode(xmlId))).entity(newPlan).build();
+            return Response.created(URI.create(EncodingUtil.URLencode(xmlId))).entity(newPlan).build();
         }
 
         return response;
@@ -151,7 +152,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
             } else {
                 // We use the filename also as local file name. Alternatively, we could use the xml id
                 // With URL encoding, this should not be an issue
-                fileName = Util.URLencode(fileDetail.getFileName());
+                fileName = EncodingUtil.URLencode(fileDetail.getFileName());
 
                 // Really store it
                 RepositoryFileReference ref = new RepositoryFileReference(planId, fileName);

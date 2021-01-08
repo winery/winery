@@ -13,7 +13,6 @@
  *******************************************************************************/
 import { Component, Input, OnInit } from '@angular/core';
 import { ExistService } from '../wineryUtils/existService';
-import { isNullOrUndefined } from 'util';
 import { ModalDirective } from 'ngx-bootstrap';
 import { backendBaseURL } from '../configuration';
 import { ToscaTypes } from '../model/enums';
@@ -48,7 +47,7 @@ export class WineryComponentExistsComponent implements OnInit {
     }
 
     ngOnInit() {
-        if (!isNullOrUndefined(this.modalRef)) {
+        if (this.modalRef) {
             this.modalRef.onShow.subscribe(() => this.checkImplementationExists());
         }
     }
@@ -67,7 +66,7 @@ export class WineryComponentExistsComponent implements OnInit {
             this.generateData.url += '/';
         }
 
-        if (!this.generateData.namespace.endsWith('/')) {
+        if (this.generateData && this.generateData.namespace && !this.generateData.namespace.endsWith('/')) {
             this.existService.check(this.generateData.url)
                 .subscribe(
                     () => this.generateData.createComponent = false,

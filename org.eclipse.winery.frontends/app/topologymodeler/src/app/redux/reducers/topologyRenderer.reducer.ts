@@ -38,12 +38,19 @@ export interface TopologyRendererState {
         refinePatternsButton?: boolean;
         refineTopologyButton?: boolean;
         refineTopologyWithTestsButton?: boolean;
+        generateGDM?: boolean;
+        extractLDM?: boolean;
+        generatePlaceholderSubs?: boolean;
         determineStatefulComponents?: boolean;
         determineFreezableComponentsButton?: boolean;
         cleanFreezableComponentsButton?: boolean;
         placeComponentsButton?: boolean;
         manageYamlPoliciesButton?: boolean;
         versionSliderButton?: boolean;
+        manageYamlGroupsButton?: boolean;
+        yamlGroupsButton?: boolean;
+        manageParticipantsButton?: boolean;
+        assignParticipantsButton?: boolean;
     };
     nodesToSelect?: string[];
 }
@@ -72,12 +79,18 @@ export const INITIAL_TOPOLOGY_RENDERER_STATE: TopologyRendererState = {
         refineTopologyButton: false,
         refineTopologyWithTestsButton: false,
         determineStatefulComponents: false,
+        generateGDM: false,
+        extractLDM: false,
+        generatePlaceholderSubs: false,
         determineFreezableComponentsButton: false,
         cleanFreezableComponentsButton: false,
         placeComponentsButton: false,
         manageYamlPoliciesButton: false,
-        versionSliderButton: false
-    }
+        versionSliderButton: false,
+        manageYamlGroupsButton: false,
+        yamlGroupsButton: false,
+        manageParticipantsButton: false,
+    },
 };
 /**
  * Reducer for the TopologyRenderer
@@ -85,6 +98,46 @@ export const INITIAL_TOPOLOGY_RENDERER_STATE: TopologyRendererState = {
 export const TopologyRendererReducer =
     function (lastState: TopologyRendererState = INITIAL_TOPOLOGY_RENDERER_STATE, action: Action): TopologyRendererState {
         switch (action.type) {
+            case TopologyRendererActions.TOGGLE_YAML_GROUPS:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        yamlGroupsButton: !lastState.buttonsState.yamlGroupsButton
+                    }
+                };
+            case TopologyRendererActions.SHOW_MANAGE_YAML_GROUPS:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        manageYamlGroupsButton: true
+                    }
+                };
+            case TopologyRendererActions.TOGGLE_MANAGE_YAML_GROUPS:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        manageYamlGroupsButton: !lastState.buttonsState.manageYamlGroupsButton
+                    }
+                };
+            case TopologyRendererActions.TOGGLE_MANAGE_PARTICIPANTS:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        manageParticipantsButton: !lastState.buttonsState.manageParticipantsButton
+                    }
+                };
+            case TopologyRendererActions.TOGGLE_ASSIGN_PARTICIPANTS:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        assignParticipantsButton: !lastState.buttonsState.assignParticipantsButton
+                    }
+                };
             case TopologyRendererActions.TOGGLE_POLICIES:
                 return {
                     ...lastState,
@@ -107,6 +160,14 @@ export const TopologyRendererReducer =
                     buttonsState: {
                         ...lastState.buttonsState,
                         propertiesButton: !lastState.buttonsState.propertiesButton
+                    }
+                };
+            case TopologyRendererActions.EXTRACT_LDM:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        extractLDM: !lastState.buttonsState.extractLDM
                     }
                 };
             case TopologyRendererActions.TOGGLE_REQUIREMENTS_CAPABILITIES:
@@ -251,6 +312,22 @@ export const TopologyRendererReducer =
                     buttonsState: {
                         ...lastState.buttonsState,
                         refineTopologyWithTestsButton: !lastState.buttonsState.refineTopologyWithTestsButton
+                    }
+                };
+            case TopologyRendererActions.GENERATE_GDM:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        generateGDM: !lastState.buttonsState.generateGDM
+                    }
+                };
+            case TopologyRendererActions.GENERATE_PLACEHOLDER_SUBS:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        generatePlaceholderSubs: !lastState.buttonsState.generatePlaceholderSubs
                     }
                 };
             case TopologyRendererActions.HIGHLIGHT_NODES:

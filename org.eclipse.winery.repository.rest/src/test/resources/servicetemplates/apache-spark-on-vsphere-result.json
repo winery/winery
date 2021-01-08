@@ -83,6 +83,7 @@
                 "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "631"
             },
             "properties": {
+                "propertyType": "KV",
                 "kvproperties": {
                     "HypervisorEndpoint": "https://iaasvc.informatik.uni-stuttgart.de/sdk",
                     "HypervisorTenantID": "smartservices",
@@ -106,6 +107,7 @@
                 "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "514"
             },
             "properties": {
+                "propertyType": "KV",
                 "kvproperties": {
                     "VMIP": "",
                     "VMInstanceID": "",

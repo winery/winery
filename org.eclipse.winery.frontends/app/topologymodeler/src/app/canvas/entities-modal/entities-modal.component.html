@@ -263,12 +263,12 @@
                                 <label>
                                     <input id="fileRemote" name="fileRemote"
                                            [(ngModel)]="deploymentArtifactOrPolicyModalData.isFileRemote"
-                                           (change)="yamlArtifactFileSelected(null)" type="checkbox">
+                                           (change)="yamlArtifactFileSelected(null)" type="checkbox"
+                                           [disabled]="deploymentArtifactOrPolicyModalData.isRepositoryType">
                                     Specify URL
                                 </label>
                             </div>
                         </div>
-
                     </div>
                     <div class="row">
                         <div class="col-md-12">
@@ -281,7 +281,7 @@
                         </div>
                     </div>
                 </fieldset>
-                <fieldset id="yamlDeployPathFieldset">
+                <fieldset id="yamlDeployPathFieldset" *ngIf="!deploymentArtifactOrPolicyModalData.isRepositoryType">
                     <div class="form-group" id="artifactDeployPathDiv">
                         <label for="artifactDeployPathInput">
                             Deploy Path
@@ -291,7 +291,6 @@
                                name="artifactDeployPathInput"
                                [disabled]="modalVariantForEditDeleteTasks !== '(none)'"
                                id="artifactDeployPathInput" type="text"/>
-
                     </div>
                 </fieldset>
             </div>

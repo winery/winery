@@ -14,7 +14,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { VersionSliderService } from './version-slider.service';
-import { Options } from '@angular-slider/ngx-slider';
+import { Options } from '@angular-slider/ngx-slider/options';
 import { WineryVersion } from '../../../../tosca-management/src/app/model/wineryVersion';
 import { BackendService } from '../services/backend.service';
 import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
@@ -23,6 +23,7 @@ import { IWineryState } from '../redux/store/winery.store';
 import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { EntityTypesModel } from '../models/entityTypesModel';
 
 @Component({
     selector: 'winery-version-slider',
@@ -30,7 +31,10 @@ import { WineryRepositoryConfigurationService } from '../../../../tosca-manageme
     styleUrls: ['./version-slider.component.css']
 })
 export class VersionSliderComponent implements OnInit {
+
     private static readonly LEGEND_CHAR_LIMIT = 15;
+
+    entityTypes: EntityTypesModel;
 
     sliderValue: number;
     versions: WineryVersion[];
@@ -48,6 +52,12 @@ export class VersionSliderComponent implements OnInit {
                 private configurationService: WineryRepositoryConfigurationService) {
         this.versionSliderService.getVersions()
             .subscribe(versions => this.init(versions));
+        this.ngRedux.select(state => state.wineryState.entityTypes)
+            .subscribe(data => {
+                if (data) {
+                    this.entityTypes = data;
+                }
+            });
     }
 
     ngOnInit() {
@@ -81,6 +91,7 @@ export class VersionSliderComponent implements OnInit {
                         this.ngRedux,
                         this.wineryActions,
                         topologyTemplate,
+                        this.entityTypes,
                         this.configurationService.isYaml()
                     );
                 }

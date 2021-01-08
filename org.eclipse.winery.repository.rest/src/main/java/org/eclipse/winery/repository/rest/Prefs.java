@@ -20,6 +20,8 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.eclipse.winery.common.ToscaDocumentBuilderFactory;
+import org.eclipse.winery.common.configuration.Environments;
+import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.rest.websockets.GitWebSocket;
@@ -84,34 +86,19 @@ public class Prefs implements ServletContextListener {
         ServletContext context = servletContextEvent.getServletContext();
         Objects.requireNonNull(context);
 
-        // first set default URLs
-        // they will be overwritten with the configuration later
-        initializeUrlConfigurationWithDefaultValues(context);
-
         try {
             this.doRepositoryInitialization();
         } catch (Exception e) {
             LOGGER.error("Could not initialize", e);
         }
 
-        // Initialize XSD validation in the background. Takes up a few seconds.
-        // If we do not do it here, the first save by a user takes a few seconds, which is inconvenient
-        LOGGER.debug("Initializing XML validation");
-        @SuppressWarnings("unused")
-        ToscaDocumentBuilderFactory tdbf = ToscaDocumentBuilderFactory.INSTANCE;
-        LOGGER.debug("Initialized XML validation");
-    }
-
-    private void initializeUrlConfigurationWithDefaultValues(ServletContext ctx) {
-        String basePath = ctx.getContextPath();
-        if (basePath.endsWith("/")) {
-            basePath = basePath.substring(0, basePath.length() - 1);
-        }
-        int pos = basePath.lastIndexOf("/");
-        if (pos <= 0) {
-            basePath = "/";
-        } else {
-            basePath = basePath.substring(0, pos);
+        if (Environments.getInstance().getRepositoryConfig().getProvider() != RepositoryConfigurationObject.RepositoryProvider.YAML) {
+            // Initialize XSD validation in the background. Takes up a few seconds.
+            // If we do not do it here, the first save by a user takes a few seconds, which is inconvenient
+            LOGGER.debug("Initializing XML validation");
+            @SuppressWarnings("unused")
+            ToscaDocumentBuilderFactory builderFactory = ToscaDocumentBuilderFactory.INSTANCE;
+            LOGGER.debug("Initialized XML validation");
         }
     }
 

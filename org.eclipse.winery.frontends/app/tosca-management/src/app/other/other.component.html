@@ -50,6 +50,11 @@
     <a class="btn btn-default"
        [routerLink]="['/imports/http%3A%2F%2Fschemas.xmlsoap.org%2Fwsdl%2F']">WSDLs</a>
     </span>
+    <hr>
+    <div *wineryRepositoryShowOnFeature="configEnum.Yaml">
+        <h4>YAML Simple Profile</h4>
+        <a class="btn btn-default" [routerLink]="['/datatypes']">Custom YAML Datatypes</a>
+    </div>
     <div *wineryRepositoryFeatureToggle="configEnum.PatternRefinement">
         <hr>
         <h4>Refinement Models</h4>

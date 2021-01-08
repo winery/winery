@@ -27,6 +27,7 @@ import { PropertyDiffList } from '../../models/propertyDiffList';
 import { Utils } from '../../../../../tosca-management/src/app/wineryUtils/utils';
 import { WineryVersion } from '../../../../../tosca-management/src/app/model/wineryVersion';
 import { WineryRepositoryConfigurationService } from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { EntityTypesModel } from '../../models/entityTypesModel';
 
 @Component({
     selector: 'winery-versions',
@@ -55,6 +56,8 @@ export class VersionsComponent implements OnInit {
     @Input() aVersionElement: VersionElement;
     @Input() nodeTemplateId: string;
     @Input() nodeType: string;
+    @Input() entityTypes: EntityTypesModel;
+
     qNamePrefix: string;
     versions: WineryVersion[];
     kvComparison: any;
@@ -62,6 +65,7 @@ export class VersionsComponent implements OnInit {
 
     propertyDiff: PropertyDiffList;
     saveAfterUpdate: boolean;
+    private topologyTemplate: TTopologyTemplate;
 
     constructor(private modalService: BsModalService,
                 private updateService: UpdateService,
@@ -69,6 +73,8 @@ export class VersionsComponent implements OnInit {
                 private ngRedux: NgRedux<IWineryState>,
                 private configurationService: WineryRepositoryConfigurationService,
                 private wineryActions: WineryActions) {
+        this.ngRedux.select(state => state.wineryState.currentJsonTopology)
+            .subscribe(topology => this.topologyTemplate = topology);
     }
 
     ngOnInit() {
@@ -95,9 +101,7 @@ export class VersionsComponent implements OnInit {
 
     openProperty() {
         this.updatePropertyModalRef = this.modalService.show(this.updatePropertyModal);
-
         this.continueOrMap = this.CONTINUE;
-
     }
 
     matchProperties() {
@@ -125,7 +129,8 @@ export class VersionsComponent implements OnInit {
             this.matchedProperties,
             this.propertyDiff.newProperties,
             this.propertyDiff.resolvedProperties,
-            this.saveAfterUpdate
+            this.saveAfterUpdate,
+            this.topologyTemplate,
         );
 
         this.updateService.update(updateInfo)
@@ -152,7 +157,7 @@ export class VersionsComponent implements OnInit {
     }
 
     updateTopology(topology: TTopologyTemplate) {
-        TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, topology, this.configurationService.isYaml());
+        TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, topology, this.entityTypes, this.configurationService.isYaml());
     }
 
     showKVComparison() {

@@ -33,8 +33,8 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
-import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.json.JacksonProvider;
+import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.rest.datatypes.GitData;
@@ -113,7 +113,7 @@ public class GitWebSocket {
                                         repository.getStatus().getModified());
 
                                     for (QNameWithTypeApiData name : data.itemsToCommit) {
-                                        String pattern = name.type + "/" + Util.URLencode(name.namespace) + "/" + name.localname;
+                                        String pattern = name.type + "/" + EncodingUtil.URLencode(name.namespace) + "/" + name.localname;
                                         for (String item : iterable) {
                                             if (item.startsWith(pattern)) {
                                                 list.add(item);

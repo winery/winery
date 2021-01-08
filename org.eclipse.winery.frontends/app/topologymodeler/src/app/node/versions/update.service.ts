@@ -40,7 +40,6 @@ export class UpdateService {
 
     update(updateInfo: UpdateInfo): Observable<TTopologyTemplate> {
         const url = this.url + '/update';
-        console.log(updateInfo);
         return this.http.post<TTopologyTemplate>(url, updateInfo, { headers: this.headers });
     }
 

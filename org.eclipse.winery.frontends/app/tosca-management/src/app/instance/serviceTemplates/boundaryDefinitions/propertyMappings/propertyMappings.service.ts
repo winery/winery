@@ -71,7 +71,7 @@ export class PropertyMappingService {
         const newPath: string = this.path.replace('propertymappings', 'properties');
 
         return this.http
-            .get(newPath + '/',
+            .get(newPath,
                 { headers: headers, responseType: 'text' }
             );
     }

@@ -42,6 +42,7 @@ export class ArtifactsComponent implements OnInit {
     @ViewChild('removeModal') removeModal: ModalDirective;
     validatorObject: WineryValidatorObject;
 
+    isRepositoryType = false;
     isFileRemote = false;
     selectedFile: File;
     allowedTypes = '';
@@ -106,6 +107,12 @@ export class ArtifactsComponent implements OnInit {
         this.allowedTypes = ''; // TODO
         if (this.selectedArtifact) {
             this.selectedArtifact.type = value;
+            if (value === '{radon.artifacts}Repository') {
+                this.isRepositoryType = true;
+                this.isFileRemote = true;
+            } else {
+                this.isRepositoryType = false;
+            }
         }
     }
 

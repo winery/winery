@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.requirementtypes;
 
-import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
+import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;

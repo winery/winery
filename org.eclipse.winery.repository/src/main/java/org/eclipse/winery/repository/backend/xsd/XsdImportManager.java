@@ -16,8 +16,8 @@ package org.eclipse.winery.repository.backend.xsd;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.model.ids.Namespace;
 
 public interface XsdImportManager {
 

@@ -102,7 +102,10 @@ export class WineryIoParameterComponent {
         this.modalTitle = 'Input Parameter';
         this.validatorObject = new WineryValidatorObject(this.inputParameters, 'name');
         this.addIntParametersModalRef = this.modalService.show(this.addIntParametersModal);
-        this.parameterForm.reset();
+
+        if (this.parameterForm) {
+            this.parameterForm.reset();
+        }
     }
 
     onAddInputParam(name: string, type: string, required: boolean) {
@@ -134,7 +137,10 @@ export class WineryIoParameterComponent {
         this.modalTitle = 'Output Parameter';
         this.validatorObject = new WineryValidatorObject(this.outputParameters, 'name');
         this.addIntParametersModalRef = this.modalService.show(this.addIntParametersModal);
-        this.parameterForm.reset();
+
+        if (this.parameterForm) {
+            this.parameterForm.reset();
+        }
     }
 
     onAddOutputParam(name: string, type: string, required: boolean) {

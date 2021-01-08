@@ -21,7 +21,8 @@ import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class TagService {
-    private path: string;
+
+    private readonly path: string;
 
     constructor(private http: HttpClient,
                 private route: Router) {
@@ -35,7 +36,7 @@ export class TagService {
     removeTagData(data: TagsAPIData): Observable<HttpResponse<string>> {
         return this.http
             .delete(
-                this.path + '/' + data.id + '/',
+                this.path + data.id + '/',
                 { observe: 'response', responseType: 'text' }
             );
     }
