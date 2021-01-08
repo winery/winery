@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
@@ -30,13 +29,13 @@ import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.extensions.OTDeploymentArtifactMapping;
+import org.eclipse.winery.model.tosca.extensions.OTPermutationMapping;
 import org.eclipse.winery.model.tosca.extensions.OTPrmMapping;
 import org.eclipse.winery.model.tosca.extensions.OTRelationDirection;
 import org.eclipse.winery.model.tosca.extensions.OTRelationMapping;
 import org.eclipse.winery.model.tosca.extensions.OTStayMapping;
-import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.model.tosca.extensions.OTPermutationMapping;
 import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 
 public abstract class RefinementUtils {
 
@@ -139,7 +138,7 @@ public abstract class RefinementUtils {
 
         mapping.setDetectorElement(detectorNode);
         mapping.setRefinementElement(refinementNode);
-        mapping.setId(UUID.randomUUID().toString());
+        mapping.setId("pm-" + Math.random());
         mappings.add(mapping);
 
         return mappings;

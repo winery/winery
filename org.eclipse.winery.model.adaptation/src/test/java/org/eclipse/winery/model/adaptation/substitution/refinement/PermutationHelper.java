@@ -702,7 +702,7 @@ public abstract class PermutationHelper {
         addSomePermutationMappings(refinementModel);
 
         OTPermutationMapping relation1to2_to_relation12to14 = new OTPermutationMapping.Builder("pm-1-2--14")
-            .setDetectorElement(refinementModel.getDetector().getRelationshipTemplate("1--2"))
+            .setDetectorElement(refinementModel.getDetector().getRelationshipTemplate("con-1--2"))
             .setRefinementElement(refinementModel.getRefinementStructure().getNodeTemplate("14"))
             .build();
         refinementModel.getPermutationMappings().add(relation1to2_to_relation12to14);

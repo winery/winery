@@ -126,7 +126,7 @@ class PermutationGeneratorTest extends AbstractRefinementTest {
         PermutationGenerator permutationGenerator = new PermutationGenerator();
         assertFalse(permutationGenerator.checkMutability(refinementModel));
 
-        assertEquals("There are relations that cannot be redirected during the generation: 2--3",
+        assertEquals("There are relations that cannot be redirected during the generation: con-2--3",
             permutationGenerator.getMutabilityErrorReason());
         assertEquals(6, refinementModel.getPermutationOptions().size());
     }
@@ -138,7 +138,7 @@ class PermutationGeneratorTest extends AbstractRefinementTest {
 
         PermutationGenerator permutationGenerator = new PermutationGenerator();
         assertFalse(permutationGenerator.checkMutability(refinementModel));
-        assertEquals("There are relations that cannot be redirected during the generation: 1--2",
+        assertEquals("There are relations that cannot be redirected during the generation: con-1--2",
             permutationGenerator.getMutabilityErrorReason());
     }
 
@@ -179,7 +179,7 @@ class PermutationGeneratorTest extends AbstractRefinementTest {
             permutationMap.getDetectorElement().getId().equals("2") && permutationMap.getRefinementElement().getId().equals("14")
         ));
         assertTrue(refinementModel.getPermutationMappings().removeIf(permutationMap ->
-            permutationMap.getDetectorElement().getId().equals("1--2") && permutationMap.getRefinementElement().getId().equals("13")
+            permutationMap.getDetectorElement().getId().equals("con-1--2") && permutationMap.getRefinementElement().getId().equals("13")
         ));
     }
 
@@ -208,7 +208,7 @@ class PermutationGeneratorTest extends AbstractRefinementTest {
             permutationMap.getDetectorElement().getId().equals("2") && permutationMap.getRefinementElement().getId().equals("15")
         ));
         assertTrue(refinementModel.getPermutationMappings().removeIf(permutationMap ->
-            permutationMap.getDetectorElement().getId().equals("1--2") && permutationMap.getRefinementElement().getId().equals("14")
+            permutationMap.getDetectorElement().getId().equals("con-1--2") && permutationMap.getRefinementElement().getId().equals("14")
         ));
     }
 
@@ -259,11 +259,11 @@ class PermutationGeneratorTest extends AbstractRefinementTest {
             && mapping.getRefinementElement().getId().equals("13")));
         assertTrue(permutationMappings.removeIf(mapping -> mapping.getDetectorElement().getId().equals("2")
             && mapping.getRefinementElement().getId().equals("14")));
-        assertTrue(permutationMappings.removeIf(mapping -> mapping.getDetectorElement().getId().equals("1--3")
+        assertTrue(permutationMappings.removeIf(mapping -> mapping.getDetectorElement().getId().equals("con-1--3")
             && mapping.getRefinementElement().getId().equals("12")));
-        assertTrue(permutationMappings.removeIf(mapping -> mapping.getDetectorElement().getId().equals("1--2")
+        assertTrue(permutationMappings.removeIf(mapping -> mapping.getDetectorElement().getId().equals("con-1--2")
             && mapping.getRefinementElement().getId().equals("13")));
-        assertTrue(permutationMappings.removeIf(mapping -> mapping.getDetectorElement().getId().equals("3--2")
+        assertTrue(permutationMappings.removeIf(mapping -> mapping.getDetectorElement().getId().equals("con-3--2")
             && mapping.getRefinementElement().getId().equals("13")));
     }
 }
