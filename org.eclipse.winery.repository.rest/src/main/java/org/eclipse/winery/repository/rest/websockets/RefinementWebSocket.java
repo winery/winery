@@ -46,7 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ServerEndpoint(value = "/refinetopology")
-public class RefinementWebSocket implements RefinementChooser {
+public class RefinementWebSocket extends AbstractWebSocket implements RefinementChooser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsistencyCheckWebSocket.class);
 
@@ -79,18 +79,6 @@ public class RefinementWebSocket implements RefinementChooser {
 
         this.onClose(this.session);
         LOGGER.debug("Closed session due to missing or incompatible refinement type!");
-    }
-
-    @OnClose
-    public void onClose(Session session) throws IOException {
-        LOGGER.info("Closing session " + session.getId());
-        this.session.close();
-        this.session = null;
-    }
-
-    @OnError
-    public void onError(Throwable t) throws Throwable {
-        LOGGER.error("Error in session " + session.getId(), t);
     }
 
     @OnMessage

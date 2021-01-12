@@ -206,6 +206,15 @@
                 Refine Topology with Tests
             </button>
         </div>
+        
+        <div *wineryRepositoryFeatureToggle="configEnum.InstanceModelRefinement" class="btn-group button-group"
+             data-toggle="buttons">
+            <button class="btn btn-sm align-middle dark-button-style" id="instanceModelRefinement"
+                    (click)="toggleButton($event)"
+                    [style.background-color]="getStyle(navbarButtonsState.buttonsState.refineInstanceModelButton)">
+                Refine Instance Model
+            </button>
+        </div>
 
         <div class="btn-group button-group" data-toggle="buttons" *wineryRepositoryShowOnFeature="configEnum.Yaml">
             <button class="btn btn-sm align-middle dark-button-style" id="manageYamlGroups"

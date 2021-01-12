@@ -41,6 +41,7 @@ export class TopologyRendererActions {
     static SPLIT_TOPOLOGY = 'SPLIT_TOPOLOGY';
     static MATCH_TOPOLOGY = 'MATCH_TOPOLOGY';
     static SUBSTITUTE_TOPOLOGY = 'SUBSTITUTE_TOPOLOGY';
+    static REFINE_INSTANCE_MODEL = 'REFINE_INSTANCE_MODEL';
     static REFINE_TOPOLOGY = 'REFINE_TOPOLOGY';
     static REFINE_PATTERNS = 'REFINE_PATTERNS';
     static REFINE_TOPOLOGY_WITH_TESTS = 'REFINE_TOPOLOGY_WITH_TESTS';
@@ -214,5 +215,9 @@ export class TopologyRendererActions {
 
     toggleAssignParticipants(): Action {
         return { type: TopologyRendererActions.TOGGLE_ASSIGN_PARTICIPANTS };
+    }
+
+    refineInstanceModel(): Action {
+        return { type: TopologyRendererActions.REFINE_INSTANCE_MODEL };
     }
 }
