@@ -29,7 +29,6 @@ import { TTopologyTemplate } from '../models/ttopology-template';
 })
 export class EdmmTransformationCheckComponent {
 
-    isVisible = false;
     loading = false;
     checkResult: EdmmTechnologyTransformationCheck[];
 
@@ -54,7 +53,6 @@ export class EdmmTransformationCheckComponent {
     }
 
     init() {
-        this.isVisible = true;
         this.changeSubscription = this.ngRedux.select(state => state.wineryState.currentJsonTopology)
             .subscribe(element => {
                 if (element.relationshipTemplates && element.relationshipTemplates.length !== this.numberRelations
@@ -67,7 +65,6 @@ export class EdmmTransformationCheckComponent {
     }
 
     hide() {
-        this.isVisible = false;
         if (this.changeSubscription) {
             this.changeSubscription.unsubscribe();
         }

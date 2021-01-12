@@ -12,7 +12,8 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 import {
-    AfterViewInit, Component, ElementRef, HostListener, Input, KeyValueDiffers, NgZone, OnChanges, OnDestroy, OnInit, QueryList, Renderer2, SimpleChanges,
+    AfterViewInit, Component, ElementRef, HostListener, Input, KeyValueDiffers, NgZone, OnChanges, OnDestroy, OnInit,
+    QueryList, Renderer2, SimpleChanges,
     ViewChild, ViewChildren
 } from '@angular/core';
 import { JsPlumbService } from '../services/jsPlumb.service';
@@ -59,6 +60,7 @@ import { WineryRowData } from '../../../../tosca-management/src/app/wineryTableM
 import { InheritanceUtils } from '../models/InheritanceUtils';
 import { PolicyService } from '../services/policy.service';
 import { QName } from '../../../../shared/src/app/model/qName';
+import { DetailsSidebarState } from '../sidebars/node-details/node-details-sidebar';
 
 @Component({
     selector: 'winery-canvas',
@@ -1537,21 +1539,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * Hides the Sidebar on the right.
      */
     hideSidebar() {
-        this.ngRedux.dispatch(this.actions.openSidebar({
-            sidebarContents: {
-                visible: false,
-                nodeClicked: false,
-                template: {
-                    id: '',
-                    name: '',
-                    type: '',
-                    properties: '',
-                },
-                relationshipTemplate: undefined,
-                source: '',
-                target: '',
-            }
-        }));
+        this.ngRedux.dispatch(this.actions.triggerSidebar(
+            { sidebarContents: new DetailsSidebarState(false) }));
     }
 
     /**
@@ -1976,7 +1965,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 // Workaround to support old topology templates with the real name
                 name = currentRel.type.substring(currentRel.type.indexOf('}') + 1);
             }
-            this.ngRedux.dispatch(this.actions.openSidebar({
+            this.ngRedux.dispatch(this.actions.triggerSidebar({
                 sidebarContents: {
                     visible: true,
                     nodeClicked: false,

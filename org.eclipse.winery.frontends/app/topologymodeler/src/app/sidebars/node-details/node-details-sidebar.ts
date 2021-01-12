@@ -14,16 +14,34 @@
 import { TRelationshipTemplate } from '../../models/ttopology-template';
 
 export class DetailsSidebarState {
-    visible: boolean;
-    nodeClicked: boolean;
-    template: SidebarEntityTemplate;
-    relationshipTemplate?: TRelationshipTemplate;
-    minInstances: number;
-    // this shoehorns the possibility of unicode infinity into the type
-    maxInstances: number | '\u221E';
-    // relationship editing information
-    source: any;
-    target: any;
+    constructor(
+        public visible: boolean,
+        public nodeClicked?: boolean,
+        public template?: SidebarEntityTemplate,
+        public relationshipTemplate?: TRelationshipTemplate,
+        public minInstances?: number,
+        // this shoehorns the possibility of unicode infinity into the type
+        public maxInstances?: number | '\u221E',
+        // relationship editing information
+        public source?: any,
+        public target?: any) {
+
+        if (!template) {
+            this.template = {
+                id: '',
+                name: '',
+                type: '',
+                properties: {}
+            };
+        }
+
+        if (!minInstances) {
+            this.minInstances = -1;
+        }
+        if (!maxInstances) {
+            this.maxInstances = -1;
+        }
+    }
 }
 
 export class SidebarEntityTemplate {

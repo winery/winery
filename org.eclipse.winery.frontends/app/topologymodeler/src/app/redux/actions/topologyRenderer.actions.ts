@@ -59,8 +59,13 @@ export class TopologyRendererActions {
     static SHOW_MANAGE_YAML_GROUPS = 'SHOW_MANAGE_YAML_GROUPS';
     static TOGGLE_MANAGE_YAML_GROUPS = 'TOGGLE_MANAGE_YAML_GROUPS';
     static TOGGLE_YAML_GROUPS = 'TOGGLE_YAML_GROUPS';
+    static DISABLE_RESEARCH_PLUGIN = 'DISABLE_RESEARCH_PLUGIN';
     static TOGGLE_MANAGE_PARTICIPANTS = 'TOGGLE_MANAGE_PARTICIPANTS';
     static TOGGLE_ASSIGN_PARTICIPANTS = 'TOGGLE_ASSIGN_PARTICIPANTS';
+
+    disableResearchPlugin(): Action {
+        return { type: TopologyRendererActions.DISABLE_RESEARCH_PLUGIN };
+    }
 
     togglePolicies(): Action {
         return { type: TopologyRendererActions.TOGGLE_POLICIES };

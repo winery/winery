@@ -11,7 +11,7 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<div id="RefinementView" class="sidebar-root" *ngIf="isVisible">
+<div id="RefinementView">
     <div class="refinementContainer">
         <div class="loader" *ngIf="loading; else showResult"></div>
         <ng-template #showResult>
@@ -29,7 +29,7 @@
                     </div>
                 </li>
             </ul>
-<!--            <button (click)="doTransformationCheck()">Do Check</button>-->
+            <!--            <button (click)="doTransformationCheck()">Do Check</button>-->
         </ng-template>
     </div>
 </div>

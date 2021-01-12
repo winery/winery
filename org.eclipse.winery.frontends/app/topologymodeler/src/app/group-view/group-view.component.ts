@@ -14,7 +14,6 @@ import { WineryDynamicFormModalComponent } from '../../../../tosca-management/sr
 })
 export class GroupViewComponent implements OnInit {
 
-    showGroupView = false;
     groups: TGroupDefinition[] = [];
     formMetadata: Array<WineryDynamicTableMetadata> = [];
 
@@ -24,8 +23,6 @@ export class GroupViewComponent implements OnInit {
 
     constructor(private ngRedux: NgRedux<IWineryState>,
                 private ngActions: WineryActions) {
-        this.ngRedux.select((state) => state.topologyRendererState.buttonsState.manageYamlGroupsButton)
-            .subscribe((showGroupView) => this.showGroupView = showGroupView);
         this.ngRedux.select((state) => state.wineryState.currentJsonTopology)
             .subscribe((topology) => this.groups = topology.groups);
     }

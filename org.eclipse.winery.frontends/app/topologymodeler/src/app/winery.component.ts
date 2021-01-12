@@ -26,11 +26,12 @@ import { EntityTypesModel, TopologyModelerInputDataFormat } from './models/entit
 import { ActivatedRoute } from '@angular/router';
 import { TopologyModelerConfiguration } from './models/topologyModelerConfiguration';
 import { ToastrService } from 'ngx-toastr';
-import { TopologyRendererState } from './redux/reducers/topologyRenderer.reducer';
+import { ResearchPlugin, TopologyRendererState } from './redux/reducers/topologyRenderer.reducer';
 import { VersionElement } from './models/versionElement';
 import { TopologyRendererActions } from './redux/actions/topologyRenderer.actions';
 import { WineryRepositoryConfigurationService } from '../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { WineryActions } from './redux/actions/winery.actions';
+import { DetailsSidebarState } from './sidebars/node-details/node-details-sidebar';
 
 /**
  * This is the root component of the topology modeler.
@@ -54,13 +55,14 @@ export class WineryComponent implements OnInit, AfterViewInit {
     subscriptions: Array<Subscription> = [];
     someNodeMissingCoordinates = false;
 
-    // This variable is set via the topologyModelerData input and decides if the editing functionalities are enabled
-    readonly: boolean;
-    refiningType: string;
-
     topologyDifferences: [ToscaDiff, TTopologyTemplate];
 
     detailsSidebarVisible: boolean;
+
+    activeResearchPlugin: ResearchPlugin = undefined;
+
+    // This variable is set via the topologyModelerData input and decides if the editing functionalities are enabled
+    readonly: boolean;
 
     showVersionSlider: boolean;
 
@@ -82,7 +84,14 @@ export class WineryComponent implements OnInit, AfterViewInit {
         this.subscriptions.push(this.ngRedux.select(state => state.topologyRendererState)
             .subscribe(currentButtonsState => this.setButtonsState(currentButtonsState)));
         this.subscriptions.push(this.ngRedux.select(state => state.wineryState.sidebarContents.visible)
-            .subscribe(detailsSidebarVisible => this.detailsSidebarVisible = detailsSidebarVisible));
+            .subscribe(detailsSidebarVisible => {
+                // prevent opening sidebar if research plugin is active
+                if (!this.activeResearchPlugin) {
+                    this.detailsSidebarVisible = detailsSidebarVisible;
+                }
+            }));
+        this.subscriptions.push(this.ngRedux.select(state => state.topologyRendererState.activeResearchPlugin)
+            .subscribe(activeResearchPlugin => this.activeResearchPlugin = activeResearchPlugin));
     }
 
     /**
@@ -146,22 +155,8 @@ export class WineryComponent implements OnInit, AfterViewInit {
     notifyClose(key: string): void {
         // FIXME this currently basically only supports the node-details sidebar
         //  because none of the other sidebars are based off ng-sidebar
-        this.ngRedux.dispatch(this.uiActions.openSidebar({
-            sidebarContents: {
-                visible: false,
-                nodeClicked: '',
-                template: {
-                    id: '',
-                    name: '',
-                    type: '',
-                    properties: { kvproperties: { foo: 'bar' } },
-                },
-                minInstances: -1,
-                maxInstances: -1,
-                source: '',
-                target: '',
-            }
-        }));
+        this.ngRedux.dispatch(this.uiActions.triggerSidebar(
+            { sidebarContents: new DetailsSidebarState(false) }));
     }
 
     initTopologyTemplateForRendering(nodeTemplateArray: Array<TNodeTemplate>, relationshipTemplateArray: Array<TRelationshipTemplate>) {
@@ -217,15 +212,6 @@ export class WineryComponent implements OnInit, AfterViewInit {
     }
 
     private setButtonsState(currentButtonsState: TopologyRendererState) {
-        if (currentButtonsState.buttonsState.refineTopologyButton) {
-            this.refiningType = 'topology';
-        } else if (currentButtonsState.buttonsState.refinePatternsButton) {
-            this.refiningType = 'patterns';
-        } else if (currentButtonsState.buttonsState.refineTopologyWithTestsButton) {
-            this.refiningType = 'tests';
-        } else {
-            delete this.refiningType;
-        }
         this.showVersionSlider = currentButtonsState.buttonsState.versionSliderButton;
     }
 }
