@@ -19,11 +19,25 @@ import java.util.Set;
 
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
-public interface InstanceModelRefinementPlugin {
-    
-    TTopologyTemplate apply(TTopologyTemplate template, Map<String, String> additionalInputs);
-    
-    Set<String> determineAdditionalInputs(TTopologyTemplate template);
-    
-    boolean isApplicable(TTopologyTemplate template);
+public abstract class InstanceModelRefinementPlugin {
+
+    private String id;
+
+    public InstanceModelRefinementPlugin(String id) {
+        this.id = id;
+    }
+
+    public abstract TTopologyTemplate apply(TTopologyTemplate template, Map<String, String> additionalInputs);
+
+    public abstract Set<String> determineAdditionalInputs(TTopologyTemplate template);
+
+    public abstract boolean isApplicable(TTopologyTemplate template);
+
+    public String getId() {
+        return id;
+    }
+
+    public void setUserInputs(Map<String, String> userInputs) {
+        
+    }
 }

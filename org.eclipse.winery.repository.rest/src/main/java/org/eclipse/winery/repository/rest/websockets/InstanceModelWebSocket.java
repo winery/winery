@@ -15,16 +15,25 @@
 package org.eclipse.winery.repository.rest.websockets;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
-import javax.websocket.OnMessage;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
+import javax.xml.namespace.QName;
 
+import org.eclipse.winery.common.json.JacksonProvider;
 import org.eclipse.winery.model.adaptation.instance.InstanceModelPluginChooser;
+import org.eclipse.winery.model.adaptation.instance.InstanceModelRefinement;
 import org.eclipse.winery.model.adaptation.instance.InstanceModelRefinementPlugin;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,20 +41,97 @@ import org.slf4j.LoggerFactory;
 public class InstanceModelWebSocket extends AbstractWebSocket implements InstanceModelPluginChooser {
 
     private static final Logger logger = LoggerFactory.getLogger(InstanceModelWebSocket.class);
-    private Session session;
 
-    @OnMessage
+    private InstanceModelRefinement instanceModelRefiner;
+    private boolean running;
+    private CompletableFuture<ReceivedData> runPlugin;
+
+    protected void onOpen() {
+    }
+
     public void onMessage(String message, Session session) throws IOException {
-        // todo
+        ReceivedData data = JacksonProvider.mapper.readValue(message, ReceivedData.class);
+
+        switch (data.task) {
+            case START:
+                if (instanceModelRefiner != null) {
+                    this.startInstanceModelRefinement(data.serviceTemplate);
+                }
+                break;
+            case APPLY_PLUGIN:
+                runPlugin.complete(data);
+                break;
+            case STOP:
+                if (runPlugin != null) {
+                    runPlugin.complete(null);
+                }
+                this.onClose(session);
+                break;
+        }
     }
-    
-    @Override
-    public InstanceModelRefinementPlugin selectPlugin(Set<InstanceModelRefinementPlugin> plugins) {
-        return null;
+
+    private void startInstanceModelRefinement(QName serviceTemplate) {
+        Thread thread = new Thread(() -> {
+            this.instanceModelRefiner = new InstanceModelRefinement(this);
+
+            DataToSend dataToSend = new DataToSend();
+            dataToSend.topologyTemplate = this.instanceModelRefiner.refine(new ServiceTemplateId(serviceTemplate));
+
+            try {
+                this.sendAsync(dataToSend);
+                this.onClose(this.session);
+            } catch (JsonProcessingException e) {
+                logger.error("Error while sending final topology template!", e);
+            } catch (IOException e) {
+                logger.error("Error while closing web socket!", e);
+            }
+        });
+        thread.start();
     }
 
     @Override
-    public Map<String, String> getUserInputs(Set<String> requiredInputs) {
+    public InstanceModelRefinementPlugin selectPlugin(List<InstanceModelRefinementPlugin> plugins, Set<String> requiredInputs) {
+        if (plugins != null) {
+            try {
+                DataToSend dataToSend = new DataToSend();
+                dataToSend.plugins = plugins;
+                dataToSend.requiredUserInputs = requiredInputs;
+                this.sendAsync(dataToSend);
+
+                this.runPlugin = new CompletableFuture<>();
+                ReceivedData data = this.runPlugin.get();
+                Optional<InstanceModelRefinementPlugin> first = plugins.stream()
+                    .filter(plugin -> plugin.getId().equals(data.pluginId))
+                    .findFirst();
+                if (first.isPresent()) {
+                    InstanceModelRefinementPlugin instanceModelRefinementPlugin = first.get();
+                    instanceModelRefinementPlugin.setUserInputs(data.userInputs);
+                    return instanceModelRefinementPlugin;
+                }
+            } catch (JsonProcessingException | InterruptedException | ExecutionException e) {
+                logger.error("Error while waiting for plugin to be selected", e);
+            }
+        }
+
         return null;
+    }
+
+    public static class ReceivedData {
+        public WebSocketTasks task;
+        public QName serviceTemplate;
+        public Map<String, String> userInputs;
+        public String pluginId;
+    }
+
+    public static class DataToSend {
+        public TTopologyTemplate topologyTemplate;
+        public Set<String> requiredUserInputs;
+        public List<InstanceModelRefinementPlugin> plugins;
+    }
+
+    public enum WebSocketTasks {
+        START,
+        APPLY_PLUGIN,
+        STOP
     }
 }

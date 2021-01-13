@@ -48,7 +48,7 @@ export interface PatternRefinementModel {
 @Injectable()
 export class RefinementWebSocketService extends AbstractRefinementWebSocketService<RefinementElement> {
 
-    constructor(private bs: BackendService) {
+    constructor(bs: BackendService) {
         super(bs);
     }
 

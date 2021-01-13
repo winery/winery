@@ -18,9 +18,13 @@ import java.io.IOException;
 
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
+import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 
+import org.eclipse.winery.common.json.JacksonProvider;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +37,14 @@ public abstract class AbstractWebSocket {
     public void onOpen(Session session) throws IOException {
         this.session = session;
         logger.info("Opened consistency check web-socket with id: " + session.getId());
+
+        this.onOpen();
     }
+
+    protected abstract void onOpen() throws IOException;
+
+    @OnMessage
+    public abstract void onMessage(String message, Session session) throws IOException;
 
     @OnClose
     public void onClose(Session session) throws IOException {
@@ -43,7 +54,11 @@ public abstract class AbstractWebSocket {
     }
 
     @OnError
-    public void onError(Throwable t) throws Throwable {
-        logger.trace("Error in session " + session.getId(), t);
+    public void onError(Throwable t) {
+        logger.error("Error in session " + session.getId(), t);
+    }
+
+    protected void sendAsync(Object element) throws JsonProcessingException {
+        this.session.getAsyncRemote().sendText(JacksonProvider.mapper.writeValueAsString(element));
     }
 }

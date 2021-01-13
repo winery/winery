@@ -20,7 +20,12 @@ import java.util.Set;
 import org.eclipse.winery.model.adaptation.instance.InstanceModelRefinementPlugin;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
-public class SpringWebApp implements InstanceModelRefinementPlugin {
+public class SpringWebApp extends InstanceModelRefinementPlugin {
+    
+    public SpringWebApp() {
+        super("SpringWebApplication");
+    }
+    
     @Override
     public TTopologyTemplate apply(TTopologyTemplate template, Map<String, String> additionalInputs) {
         return null;

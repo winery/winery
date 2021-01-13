@@ -20,7 +20,12 @@ import java.util.Set;
 import org.eclipse.winery.model.adaptation.instance.InstanceModelRefinementPlugin;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
-public class Tomcat implements InstanceModelRefinementPlugin {
+public class Tomcat extends InstanceModelRefinementPlugin {
+    
+    public Tomcat() {
+        super("Tomcat");
+    }
+    
     @Override
     public TTopologyTemplate apply(TTopologyTemplate template, Map<String, String> additionalInputs) {
         return null;

@@ -21,4 +21,10 @@ public class RefinementWebSocketApiData {
     public RefinementTasks task;
     public QName serviceTemplate;
     public int refineWith;
+
+    public enum RefinementTasks {
+        START,
+        REFINE_WITH,
+        STOP
+    }
 }

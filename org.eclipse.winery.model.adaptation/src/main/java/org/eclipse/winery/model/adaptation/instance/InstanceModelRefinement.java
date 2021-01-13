@@ -14,5 +14,18 @@
 
 package org.eclipse.winery.model.adaptation.instance;
 
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
+
 public class InstanceModelRefinement {
+
+    private final InstanceModelPluginChooser pluginChooser;
+
+    public InstanceModelRefinement(InstanceModelPluginChooser chooser) {
+        this.pluginChooser = chooser;
+    }
+
+    public TTopologyTemplate refine(ServiceTemplateId serviceTemplateId) {
+        return null;
+    }
 }

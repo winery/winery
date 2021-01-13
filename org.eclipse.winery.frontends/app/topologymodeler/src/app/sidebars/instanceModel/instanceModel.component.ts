@@ -14,7 +14,6 @@
 import { Component } from '@angular/core';
 import { InstanceModelService } from './instanceModel.service';
 
-
 @Component({
     selector: 'winery-instance-model',
     templateUrl: './instanceModel.component.html',
@@ -23,5 +22,5 @@ import { InstanceModelService } from './instanceModel.service';
     ]
 })
 export class InstanceModelComponent {
-    
+
 }

@@ -13,13 +13,12 @@
  *******************************************************************************/
 import { Injectable } from '@angular/core';
 import { BackendService } from '../../services/backend.service';
-import { BehaviorSubject } from 'rxjs';
 import { AbstractRefinementWebSocketService } from '../refinement/abstractRefinementWebSocket.service';
 
 @Injectable()
 export class InstanceModelService extends AbstractRefinementWebSocketService<any> {
 
-    constructor(private bs: BackendService) {
+    constructor(bs: BackendService) {
         super(bs);
     }
 
