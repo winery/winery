@@ -90,12 +90,11 @@ public class InstanceModelWebSocket extends AbstractWebSocket implements Instanc
     }
 
     @Override
-    public InstanceModelRefinementPlugin selectPlugin(List<InstanceModelRefinementPlugin> plugins, Set<String> requiredInputs) {
+    public InstanceModelRefinementPlugin selectPlugin(List<InstanceModelRefinementPlugin> plugins) {
         if (plugins != null) {
             try {
                 DataToSend dataToSend = new DataToSend();
                 dataToSend.plugins = plugins;
-                dataToSend.requiredUserInputs = requiredInputs;
                 this.sendAsync(dataToSend);
 
                 this.runPlugin = new CompletableFuture<>();
@@ -106,6 +105,7 @@ public class InstanceModelWebSocket extends AbstractWebSocket implements Instanc
                 if (first.isPresent()) {
                     InstanceModelRefinementPlugin instanceModelRefinementPlugin = first.get();
                     instanceModelRefinementPlugin.setUserInputs(data.userInputs);
+                    instanceModelRefinementPlugin.setSelectedMatchId(data.matchId);
                     return instanceModelRefinementPlugin;
                 }
             } catch (JsonProcessingException | InterruptedException | ExecutionException e) {
@@ -121,6 +121,7 @@ public class InstanceModelWebSocket extends AbstractWebSocket implements Instanc
         public QName serviceTemplate;
         public Map<String, String> userInputs;
         public String pluginId;
+        public int matchId;
     }
 
     public static class DataToSend {

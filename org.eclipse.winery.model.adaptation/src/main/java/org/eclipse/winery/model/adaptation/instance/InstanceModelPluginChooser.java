@@ -15,9 +15,8 @@
 package org.eclipse.winery.model.adaptation.instance;
 
 import java.util.List;
-import java.util.Set;
 
 public interface InstanceModelPluginChooser {
 
-    InstanceModelRefinementPlugin selectPlugin(List<InstanceModelRefinementPlugin> plugins, Set<String> requiredInputs);
+    InstanceModelRefinementPlugin selectPlugin(List<InstanceModelRefinementPlugin> plugins);
 }

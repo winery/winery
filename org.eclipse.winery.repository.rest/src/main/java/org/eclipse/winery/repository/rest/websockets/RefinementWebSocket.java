@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import javax.ws.rs.NotFoundException;
+import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.json.JacksonProvider;
 import org.eclipse.winery.model.adaptation.substitution.refinement.AbstractRefinement;
@@ -35,7 +36,6 @@ import org.eclipse.winery.model.adaptation.substitution.refinement.topologyrefin
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.rest.resources.apiData.RefinementElementApiData;
-import org.eclipse.winery.repository.rest.resources.apiData.RefinementWebSocketApiData;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
@@ -135,5 +135,17 @@ public class RefinementWebSocket extends AbstractWebSocket implements Refinement
         }
 
         return null;
+    }
+
+    public static class RefinementWebSocketApiData {
+        public RefinementTasks task;
+        public QName serviceTemplate;
+        public int refineWith;
+    }
+
+    public enum RefinementTasks {
+        START,
+        REFINE_WITH,
+        STOP
     }
 }

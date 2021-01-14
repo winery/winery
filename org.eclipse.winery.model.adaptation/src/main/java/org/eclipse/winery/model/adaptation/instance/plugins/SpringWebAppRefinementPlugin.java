@@ -14,30 +14,30 @@
 
 package org.eclipse.winery.model.adaptation.instance.plugins;
 
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.Set;
 
 import org.eclipse.winery.model.adaptation.instance.InstanceModelRefinementPlugin;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
-public class MySQL extends InstanceModelRefinementPlugin {
+public class SpringWebAppRefinementPlugin extends InstanceModelRefinementPlugin {
     
-    public MySQL() {
-        super("MySQL");
+    public SpringWebAppRefinementPlugin() {
+        super("SpringWebApplication");
     }
     
     @Override
-    public TTopologyTemplate apply(TTopologyTemplate template, Map<String, String> additionalInputs) {
+    public TTopologyTemplate apply(TTopologyTemplate template) {
         return null;
     }
 
     @Override
-    public Set<String> determineAdditionalInputs(TTopologyTemplate template) {
+    public Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced) {
         return null;
     }
 
     @Override
-    public boolean isApplicable(TTopologyTemplate template) {
-        return false;
+    protected TTopologyTemplate getDetectorGraph() {
+        return null;
     }
 }
