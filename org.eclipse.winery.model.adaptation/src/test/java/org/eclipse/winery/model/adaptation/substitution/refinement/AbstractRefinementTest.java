@@ -110,10 +110,10 @@ public class AbstractRefinementTest {
                        #######
          */
         topology = new TTopologyTemplate.Builder()
-            .addNodeTemplates(nt1)
-            .addNodeTemplates(nt2)
-            .addNodeTemplates(nt3)
-            .addNodeTemplates(nt4)
+            .addNodeTemplate(nt1)
+            .addNodeTemplate(nt2)
+            .addNodeTemplate(nt3)
+            .addNodeTemplate(nt4)
             .addRelationshipTemplate(rt21)
             .addRelationshipTemplate(rt32)
             .addRelationshipTemplate(rt24)
@@ -132,9 +132,9 @@ public class AbstractRefinementTest {
                        #######
          */
         topology2 = new TTopologyTemplate.Builder()
-            .addNodeTemplates(nt1)
-            .addNodeTemplates(nt2)
-            .addNodeTemplates(nt4)
+            .addNodeTemplate(nt1)
+            .addNodeTemplate(nt2)
+            .addNodeTemplate(nt4)
             .addRelationshipTemplate(rt21)
             .addRelationshipTemplate(rt24)
             .build();
@@ -174,9 +174,9 @@ public class AbstractRefinementTest {
         nt30.setDeploymentArtifacts(das);
 
         topology3 = new TTopologyTemplate.Builder()
-            .addNodeTemplates(nt1)
-            .addNodeTemplates(nt2)
-            .addNodeTemplates(nt30)
+            .addNodeTemplate(nt1)
+            .addNodeTemplate(nt2)
+            .addNodeTemplate(nt30)
             .addRelationshipTemplate(rt21)
             .addRelationshipTemplate(rt230)
             .build();
@@ -200,10 +200,10 @@ public class AbstractRefinementTest {
         #######       #######
         */
         topology4 = new TTopologyTemplate.Builder()
-            .addNodeTemplates(nt1)
-            .addNodeTemplates(nt2)
-            .addNodeTemplates(nt3)
-            .addNodeTemplates(nt4)
+            .addNodeTemplate(nt1)
+            .addNodeTemplate(nt2)
+            .addNodeTemplate(nt3)
+            .addNodeTemplate(nt4)
             .addRelationshipTemplate(rt32)
             .addRelationshipTemplate(rt14)
             .addRelationshipTemplate(rt24)
@@ -237,8 +237,8 @@ public class AbstractRefinementTest {
         #######
          */
         TTopologyTemplate detector = new TTopologyTemplate.Builder()
-            .addNodeTemplates(nt7)
-            .addNodeTemplates(nt8)
+            .addNodeTemplate(nt7)
+            .addNodeTemplate(nt8)
             .addRelationshipTemplate(rt78)
             .build();
         // endregion
@@ -303,10 +303,10 @@ public class AbstractRefinementTest {
                 ########
          */
         TTopologyTemplate refinementStructure = new TTopologyTemplate.Builder()
-            .addNodeTemplates(nt10)
-            .addNodeTemplates(nt11)
-            .addNodeTemplates(nt12)
-            .addNodeTemplates(nt13)
+            .addNodeTemplate(nt10)
+            .addNodeTemplate(nt11)
+            .addNodeTemplate(nt12)
+            .addNodeTemplate(nt13)
             .addRelationshipTemplate(rt1012)
             .addRelationshipTemplate(rt1112)
             .addRelationshipTemplate(rt1213)

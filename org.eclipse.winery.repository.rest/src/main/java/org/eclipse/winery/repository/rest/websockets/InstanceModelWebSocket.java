@@ -103,10 +103,10 @@ public class InstanceModelWebSocket extends AbstractWebSocket implements Instanc
                     .filter(plugin -> plugin.getId().equals(data.pluginId))
                     .findFirst();
                 if (first.isPresent()) {
-                    InstanceModelRefinementPlugin instanceModelRefinementPlugin = first.get();
-                    instanceModelRefinementPlugin.setUserInputs(data.userInputs);
-                    instanceModelRefinementPlugin.setSelectedMatchId(data.matchId);
-                    return instanceModelRefinementPlugin;
+                    InstanceModelRefinementPlugin plugin = first.get();
+                    plugin.setUserInputs(data.userInputs);
+                    plugin.setSelectedMatchId(data.matchId);
+                    return plugin;
                 }
             } catch (JsonProcessingException | InterruptedException | ExecutionException e) {
                 logger.error("Error while waiting for plugin to be selected", e);

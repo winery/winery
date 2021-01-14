@@ -13,6 +13,10 @@
  *******************************************************************************/
 import { Component } from '@angular/core';
 import { InstanceModelService } from './instanceModel.service';
+import { PatternRefinementModel } from '../refinement/refinementWebSocket.service';
+import { NgRedux } from '@angular-redux/store';
+import { IWineryState } from '../../redux/store/winery.store';
+import { TopologyRendererActions } from '../../redux/actions/topologyRenderer.actions';
 
 @Component({
     selector: 'winery-instance-model',
@@ -23,4 +27,16 @@ import { InstanceModelService } from './instanceModel.service';
 })
 export class InstanceModelComponent {
 
+    constructor(private ngRedux: NgRedux<IWineryState>,
+                private rendererActions: TopologyRendererActions,
+                private service: InstanceModelService) {
+    }
+
+    start() {
+        this.service.start();
+    }
+
+    onHoverOver(candidate: PatternRefinementModel) {
+        this.ngRedux.dispatch(this.rendererActions.highlightNodes(candidate.nodeIdsToBeReplaced));
+    }
 }

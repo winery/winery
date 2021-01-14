@@ -11,10 +11,8 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { BackendService } from '../../services/backend.service';
-import { TTopologyTemplate } from '../../models/ttopology-template';
 import { Observable } from 'rxjs/Rx';
 
 export enum RefinementTasks {

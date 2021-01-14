@@ -78,9 +78,9 @@ public class TopologyMappingsWrapperTest extends TestWithGitBackedRepository {
         TNodeTemplate two = new TNodeTemplate("id2");
         TNodeTemplate three = new TNodeTemplate("id3");
         TTopologyTemplate topologyTemplate = new TTopologyTemplate.Builder()
-            .addNodeTemplates(one)
-            .addNodeTemplates(two)
-            .addNodeTemplates(three)
+            .addNodeTemplate(one)
+            .addNodeTemplate(two)
+            .addNodeTemplate(three)
             .build();
         assertEquals(3, topologyTemplate.getNodeTemplates().size());
         TopologyWrapper topology = new TopologyWrapper(topologyTemplate);
@@ -94,9 +94,9 @@ public class TopologyMappingsWrapperTest extends TestWithGitBackedRepository {
         TNodeTemplate two = new TNodeTemplate("id2");
         TNodeTemplate three = new TNodeTemplate("id3");
         TTopologyTemplate topologyTemplate = new TTopologyTemplate.Builder()
-            .addNodeTemplates(one)
-            .addNodeTemplates(two)
-            .addNodeTemplates(three)
+            .addNodeTemplate(one)
+            .addNodeTemplate(two)
+            .addNodeTemplate(three)
             .build();
         assertEquals(3, topologyTemplate.getNodeTemplates().size());
         TopologyWrapper topology = new TopologyWrapper(topologyTemplate);

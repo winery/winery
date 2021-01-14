@@ -14,15 +14,20 @@
 import { Injectable } from '@angular/core';
 import { BackendService } from '../../services/backend.service';
 import { AbstractRefinementWebSocketService } from '../refinement/abstractRefinementWebSocket.service';
+import { Observable } from 'rxjs/Rx';
+
+export interface InstanceModelReceiveData {
+    
+}
 
 @Injectable()
-export class InstanceModelService extends AbstractRefinementWebSocketService<any> {
+export class InstanceModelService extends AbstractRefinementWebSocketService<InstanceModelReceiveData> {
 
     constructor(bs: BackendService) {
         super(bs);
     }
 
-    start() {
-        this.startRefinementSocket('refineInstanceModel');
+    start(): Observable<InstanceModelReceiveData> {
+        return this.startRefinementSocket('refineInstanceModel');
     }
 }
