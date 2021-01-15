@@ -71,14 +71,17 @@ public abstract class InstanceModelRefinementPlugin {
                 nodeIdsToBeReplaced.add(match.getVertexCorrespondence(toscaNode, false).getTemplate().getId())
             );
 
-            Set<String> additionalInputs = this.determineAdditionalInputs(template, nodeIdsToBeReplaced);
+            if (!nodeIdsToBeReplaced.isEmpty()) {
+                Set<String> additionalInputs = this.determineAdditionalInputs(template, nodeIdsToBeReplaced);
 
-            this.subGraphs.add(new RefineableSubgraph(match, detectorGraph, nodeIdsToBeReplaced, additionalInputs, ids[0]++));
+                this.subGraphs.add(new RefineableSubgraph(match, detectorGraph, nodeIdsToBeReplaced, additionalInputs, ids[0]++));
+            }
         });
 
         return !this.subGraphs.isEmpty();
     }
 
+    @JsonIgnore
     protected abstract TTopologyTemplate getDetectorGraph();
 
     public String getId() {
@@ -86,6 +89,10 @@ public abstract class InstanceModelRefinementPlugin {
     }
 
     public void setUserInputs(Map<String, String> userInputs) {
+    }
+
+    public ArrayList<RefineableSubgraph> getSubGraphs() {
+        return subGraphs;
     }
 
     public Set<String> getRequiredInputs() {
@@ -100,9 +107,9 @@ public abstract class InstanceModelRefinementPlugin {
 
     public static class RefineableSubgraph {
 
-        int id;
-        ArrayList<String> nodeIdsToBeReplaced;
-        Set<String> additionalInputs;
+        public int id;
+        public ArrayList<String> nodeIdsToBeReplaced;
+        public Set<String> additionalInputs;
 
         @JsonIgnore
         private final GraphMapping<ToscaNode, ToscaEdge> graphMapping;

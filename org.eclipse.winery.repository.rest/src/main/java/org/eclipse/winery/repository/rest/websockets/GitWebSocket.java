@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Stream;
 
+import javax.websocket.OnMessage;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
@@ -60,6 +61,7 @@ public class GitWebSocket extends AbstractWebSocket {
         }
     }
 
+    @OnMessage
     public void onMessage(String message, Session session) {
         try {
             GitData data = JacksonProvider.mapper.readValue(message, GitData.class);

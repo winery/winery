@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import javax.websocket.OnMessage;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import javax.xml.namespace.QName;
@@ -49,12 +50,13 @@ public class InstanceModelWebSocket extends AbstractWebSocket implements Instanc
     protected void onOpen() {
     }
 
+    @OnMessage
     public void onMessage(String message, Session session) throws IOException {
         ReceivedData data = JacksonProvider.mapper.readValue(message, ReceivedData.class);
 
         switch (data.task) {
             case START:
-                if (instanceModelRefiner != null) {
+                if (instanceModelRefiner == null) {
                     this.startInstanceModelRefinement(data.serviceTemplate);
                 }
                 break;

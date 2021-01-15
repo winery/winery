@@ -38,6 +38,6 @@ public class MySQLRefinementPlugin extends InstanceModelRefinementPlugin {
 
     @Override
     protected TTopologyTemplate getDetectorGraph() {
-        return null;
+        return new TTopologyTemplate();
     }
 }

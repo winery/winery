@@ -16,7 +16,6 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewContaine
 import { ToastrService } from 'ngx-toastr';
 import { DifferenceStates, ToscaDiff } from '../models/ToscaDiff';
 import { TNodeTemplate, TRelationshipTemplate, TTopologyTemplate } from '../models/ttopology-template';
-import { isNullOrUndefined } from 'util';
 import { NgRedux } from '@angular-redux/store';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { IWineryState } from '../redux/store/winery.store';
@@ -63,14 +62,14 @@ export class TopologyRendererComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.loader = { loadedData: true, generatedReduxState: false };
-        if (!isNullOrUndefined(this.differencesData)) {
+        if (this.differencesData) {
             this.diffMode = true;
             this.topologyDiff = this.differencesData[0];
             this.oldTopology = this.differencesData[1];
 
-            if (!isNullOrUndefined(this.topologyDiff.children)) {
+            if (this.topologyDiff.children) {
                 this.topologyDiff = this.topologyDiff.children.find(value => value.element === 'topologyTemplate');
-                if (isNullOrUndefined(this.topologyDiff) || isNullOrUndefined(this.topologyDiff.children)) {
+                if (!this.topologyDiff || !this.topologyDiff.children) {
                     this.notify.info('No differences in the topology!');
                 } else {
                     this.generateDiffTopology();

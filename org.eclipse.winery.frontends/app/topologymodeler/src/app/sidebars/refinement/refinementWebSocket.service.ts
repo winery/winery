@@ -20,6 +20,7 @@ import { AbstractRefinementWebSocketService, RefinementWebSocketData } from './a
 export enum RefinementTasks {
     START = 'START',
     REFINE_WITH = 'REFINE_WITH',
+    APPLY_PLUGIN = 'APPLY_PLUGIN',
     STOP = 'STOP'
 }
 

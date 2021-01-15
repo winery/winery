@@ -11,5 +11,28 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-
-TODO
+<div>
+    <button class="btn btn-primary" (click)="start()" *ngIf="!started; else showIsRunning">
+        Start Instance Model Refinement
+    </button>
+    <ng-template #showIsRunning>
+        <div class="loader" *ngIf="running; else showInputs"></div>
+        <ng-template #showInputs>
+            <ul>
+               <li *ngFor="let plugin of applicablePlugins.plugins">
+                   {{ plugin.id }}
+                   <ul>
+                       <li *ngFor="let subGraph of plugin.subGraphs" 
+                           (mouseover)="highlight(subGraph.nodeIdsToBeReplaced)"
+                           (mouseleave)="hoverOut()">
+                           {{ subGraph.id }}
+                           <button style="btn btn-primary" (click)="select(plugin, subGraph)">
+                               Select
+                           </button>
+                       </li>
+                   </ul>
+               </li>
+            </ul>
+        </ng-template>
+    </ng-template>
+</div>

@@ -15,9 +15,27 @@ import { Injectable } from '@angular/core';
 import { BackendService } from '../../services/backend.service';
 import { AbstractRefinementWebSocketService } from '../refinement/abstractRefinementWebSocket.service';
 import { Observable } from 'rxjs/Rx';
+import { RefinementTasks } from '../refinement/refinementWebSocket.service';
+
+export interface SubGraphData {
+    id: string;
+    nodeIdsToBeReplaced: string[];
+}
+
+export interface InstanceModelPlugin {
+    id: string;
+    subGraphs: SubGraphData[];
+}
 
 export interface InstanceModelReceiveData {
-    
+    plugins: InstanceModelPlugin[];
+}
+
+export interface SendData {
+    task?: RefinementTasks;
+    pluginId: string;
+    matchId: string;
+    userInputs: any;
 }
 
 @Injectable()
@@ -28,6 +46,11 @@ export class InstanceModelService extends AbstractRefinementWebSocketService<Ins
     }
 
     start(): Observable<InstanceModelReceiveData> {
-        return this.startRefinementSocket('refineInstanceModel');
+        return this.startRefinementSocket('/refineInstanceModel');
+    }
+
+    send(data: SendData) {
+        data.task = RefinementTasks.APPLY_PLUGIN;
+        this.socket.send(JSON.stringify(data));
     }
 }

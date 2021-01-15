@@ -24,6 +24,7 @@ import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
@@ -60,9 +61,15 @@ public class TomcatRefinementPlugin extends InstanceModelRefinementPlugin {
 
         TNodeType tomcat7Type = repository.getElement(new NodeTypeId(tomcat7QName));
         TNodeTemplate tomcat7 = ModelUtilities.instantiateNodeTemplate(tomcat7Type);
+        TNodeType ubuntuType = repository.getElement(new NodeTypeId(OpenToscaBaseTypes.Ubuntu18NodeType));
+        TNodeTemplate ubuntu = ModelUtilities.instantiateNodeTemplate(ubuntuType);
 
         return new TTopologyTemplate.Builder()
             .addNodeTemplate(tomcat7)
+            .addNodeTemplate(ubuntu)
+            .addRelationshipTemplate(
+                ModelUtilities.createRelationshipTemplate(tomcat7, ubuntu, ToscaBaseTypes.hostedOnRelationshipType)
+            )
             .build();
     }
 }

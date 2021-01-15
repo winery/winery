@@ -15,6 +15,7 @@ package org.eclipse.winery.repository.rest.websockets;
 
 import java.io.IOException;
 
+import javax.websocket.OnMessage;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
@@ -36,6 +37,8 @@ public class ConsistencyCheckWebSocket extends AbstractWebSocket implements Cons
     protected void onOpen() {
     }
 
+    @Override
+    @OnMessage
     public void onMessage(String message, Session session) throws IOException {
         ConsistencyCheckerConfiguration config = JacksonProvider.mapper.readValue(message, ConsistencyCheckerConfiguration.class);
 

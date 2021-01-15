@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import javax.websocket.OnMessage;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import javax.ws.rs.NotFoundException;
@@ -46,14 +47,13 @@ public class RefinementWebSocket extends AbstractWebSocket implements Refinement
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsistencyCheckWebSocket.class);
 
-    private Session session;
     private AbstractRefinement refinement;
     private CompletableFuture<Integer> future;
     private boolean running = false;
     private ServiceTemplateId refinementServiceTemplate;
 
     protected void onOpen() throws IOException {
-        Map<String, List<String>> requestParameterMap = session.getRequestParameterMap();
+        Map<String, List<String>> requestParameterMap = this.session.getRequestParameterMap();
 
         List<String> refinementType = requestParameterMap.get("type");
         if (Objects.nonNull(refinementType)) {
@@ -75,6 +75,8 @@ public class RefinementWebSocket extends AbstractWebSocket implements Refinement
         LOGGER.debug("Closed session due to missing or incompatible refinement type!");
     }
 
+    @Override
+    @OnMessage
     public void onMessage(String message, Session session) throws IOException {
         RefinementWebSocketApiData data = JacksonProvider.mapper.readValue(message, RefinementWebSocketApiData.class);
 
