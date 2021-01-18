@@ -15,6 +15,8 @@
 package org.eclipse.winery.model.adaptation.instance.plugins;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -48,14 +50,13 @@ public class SpringWebAppRefinementPlugin extends InstanceModelRefinementPlugin 
     }
 
     @Override
-    protected ArrayList<TTopologyTemplate> getDetectorGraphs() {
+    protected List<TTopologyTemplate> getDetectorGraphs() {
         IRepository repository = RepositoryFactory.getRepository();
 
-        ArrayList<TTopologyTemplate> detectors = new ArrayList<>();
-        detectors.add(createSpringWebAppDetector(repository));
-        detectors.add(createPetClinicDetector(repository));
-
-        return detectors;
+        return Arrays.asList(
+            createSpringWebAppDetector(repository),
+            createPetClinicDetector(repository)
+        );
     }
 
     private TTopologyTemplate createSpringWebAppDetector(IRepository repository) {
