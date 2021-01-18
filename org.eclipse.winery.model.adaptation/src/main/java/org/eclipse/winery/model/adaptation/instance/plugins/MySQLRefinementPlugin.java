@@ -16,6 +16,7 @@ package org.eclipse.winery.model.adaptation.instance.plugins;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -104,7 +105,7 @@ public class MySQLRefinementPlugin extends InstanceModelRefinementPlugin {
         TNodeType mySQLType = repository.getElement(new NodeTypeId(mySQLQName));
         TNodeTemplate mySQL_DBMS = ModelUtilities.instantiateNodeTemplate(mySQLType);
 
-        return Arrays.asList(
+        return Collections.singletonList(
             new TTopologyTemplate.Builder()
                 .addNodeTemplate(mySQL_DBMS)
                 .build()

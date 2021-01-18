@@ -22,13 +22,17 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.adaptation.instance.InstanceModelRefinementPlugin;
+import org.eclipse.winery.model.adaptation.instance.InstanceModelUtils;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+
+import com.jcraft.jsch.Session;
 
 public class SpringWebAppRefinementPlugin extends InstanceModelRefinementPlugin {
 
@@ -41,12 +45,30 @@ public class SpringWebAppRefinementPlugin extends InstanceModelRefinementPlugin 
 
     @Override
     public TTopologyTemplate apply(TTopologyTemplate template) {
-        return null;
+        Session session = InstanceModelUtils.createJschSession(template, this.matchToBeRefined.nodeIdsToBeReplaced);
+        String contextPath = InstanceModelUtils.executeCommand(
+            session,
+            "sudo find /opt/tomcat/latest/webapps -name *.war -not -path \"*docs/*\" | sed -r 's/.*\\/(.+)\\.war/\\1/'"
+        );
+
+        template.getNodeTemplates().stream()
+            .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
+                && (springWebApp.equals(node.getType()) || petClinic.equals(node.getType())))
+            .findFirst()
+            .ifPresent(app -> {
+                if (app.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
+                    TEntityTemplate.WineryKVProperties properties = (TEntityTemplate.WineryKVProperties) app.getProperties();
+                    properties.getKVProperties().put("context", contextPath);
+                }
+            });
+        
+        return template;
     }
 
     @Override
     public Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced) {
-        return null;
+        Set<String> inputs = InstanceModelUtils.getRequiredSSHInputs(template, nodeIdsToBeReplaced);
+        return inputs.isEmpty() ? null : inputs;
     }
 
     @Override

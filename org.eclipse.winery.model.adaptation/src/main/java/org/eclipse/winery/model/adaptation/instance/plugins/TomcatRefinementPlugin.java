@@ -16,6 +16,7 @@ package org.eclipse.winery.model.adaptation.instance.plugins;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -112,7 +113,7 @@ public class TomcatRefinementPlugin extends InstanceModelRefinementPlugin {
         TNodeType tomcatType = repository.getElement(new NodeTypeId(tomcatQName));
         TNodeTemplate tomcat = ModelUtilities.instantiateNodeTemplate(tomcatType);
 
-        return Arrays.asList(
+        return Collections.singletonList(
             new TTopologyTemplate.Builder()
                 .addNodeTemplate(tomcat)
                 .build()
