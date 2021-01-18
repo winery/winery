@@ -15,6 +15,8 @@
 package org.eclipse.winery.model.adaptation.instance.plugins;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -96,14 +98,16 @@ public class MySQLRefinementPlugin extends InstanceModelRefinementPlugin {
     }
 
     @Override
-    protected TTopologyTemplate getDetectorGraph() {
+    protected List<TTopologyTemplate> getDetectorGraphs() {
         IRepository repository = RepositoryFactory.getRepository();
 
         TNodeType mySQLType = repository.getElement(new NodeTypeId(mySQLQName));
         TNodeTemplate mySQL_DBMS = ModelUtilities.instantiateNodeTemplate(mySQLType);
 
-        return new TTopologyTemplate.Builder()
-            .addNodeTemplate(mySQL_DBMS)
-            .build();
+        return Arrays.asList(
+            new TTopologyTemplate.Builder()
+                .addNodeTemplate(mySQL_DBMS)
+                .build()
+        );
     }
 }

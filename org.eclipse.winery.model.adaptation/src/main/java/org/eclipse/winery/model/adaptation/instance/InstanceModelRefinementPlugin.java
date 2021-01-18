@@ -16,6 +16,7 @@ package org.eclipse.winery.model.adaptation.instance;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -56,33 +57,36 @@ public abstract class InstanceModelRefinementPlugin {
     public abstract Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced);
 
     public boolean isApplicable(TTopologyTemplate template, ToscaGraph topologyGraph) {
-        TTopologyTemplate detector = getDetectorGraph();
-        ToscaGraph detectorGraph = ToscaTransformer.createTOSCAGraph(detector);
+        List<TTopologyTemplate> detectors = getDetectorGraphs();
+        this.subGraphs = new ArrayList<>();
         IToscaMatcher matcher = new ToscaPropertyMatcher();
 
-        Iterator<GraphMapping<ToscaNode, ToscaEdge>> matches = this.isomorphismMatcher
-            .findMatches(detectorGraph, topologyGraph, matcher);
+        detectors.forEach(detector -> {
+            ToscaGraph detectorGraph = ToscaTransformer.createTOSCAGraph(detector);
 
-        this.subGraphs = new ArrayList<>();
-        int[] ids = {0};
-        matches.forEachRemaining(match -> {
-            ArrayList<String> nodeIdsToBeReplaced = new ArrayList<>();
-            detectorGraph.vertexSet().forEach(toscaNode ->
-                nodeIdsToBeReplaced.add(match.getVertexCorrespondence(toscaNode, false).getTemplate().getId())
-            );
+            Iterator<GraphMapping<ToscaNode, ToscaEdge>> matches = this.isomorphismMatcher
+                .findMatches(detectorGraph, topologyGraph, matcher);
 
-            if (!nodeIdsToBeReplaced.isEmpty()) {
-                Set<String> additionalInputs = this.determineAdditionalInputs(template, nodeIdsToBeReplaced);
+            int[] ids = {0};
+            matches.forEachRemaining(match -> {
+                ArrayList<String> nodeIdsToBeReplaced = new ArrayList<>();
+                detectorGraph.vertexSet().forEach(toscaNode ->
+                    nodeIdsToBeReplaced.add(match.getVertexCorrespondence(toscaNode, false).getTemplate().getId())
+                );
 
-                this.subGraphs.add(new RefineableSubgraph(match, detectorGraph, nodeIdsToBeReplaced, additionalInputs, ids[0]++));
-            }
+                if (!nodeIdsToBeReplaced.isEmpty()) {
+                    Set<String> additionalInputs = this.determineAdditionalInputs(template, nodeIdsToBeReplaced);
+
+                    this.subGraphs.add(new RefineableSubgraph(match, detectorGraph, nodeIdsToBeReplaced, additionalInputs, ids[0]++));
+                }
+            });
         });
 
         return !this.subGraphs.isEmpty();
     }
 
     @JsonIgnore
-    protected abstract TTopologyTemplate getDetectorGraph();
+    protected abstract List<TTopologyTemplate> getDetectorGraphs();
 
     public String getId() {
         return id;

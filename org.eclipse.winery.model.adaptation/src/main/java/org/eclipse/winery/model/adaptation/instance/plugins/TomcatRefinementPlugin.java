@@ -15,6 +15,8 @@
 package org.eclipse.winery.model.adaptation.instance.plugins;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -104,14 +106,16 @@ public class TomcatRefinementPlugin extends InstanceModelRefinementPlugin {
     }
 
     @Override
-    protected TTopologyTemplate getDetectorGraph() {
+    protected List<TTopologyTemplate> getDetectorGraphs() {
         IRepository repository = RepositoryFactory.getRepository();
 
         TNodeType tomcatType = repository.getElement(new NodeTypeId(tomcatQName));
         TNodeTemplate tomcat = ModelUtilities.instantiateNodeTemplate(tomcatType);
 
-        return new TTopologyTemplate.Builder()
-            .addNodeTemplate(tomcat)
-            .build();
+        return Arrays.asList(
+            new TTopologyTemplate.Builder()
+                .addNodeTemplate(tomcat)
+                .build()
+        );
     }
 }
