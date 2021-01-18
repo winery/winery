@@ -53,10 +53,6 @@ public class TomcatRefinementPlugin extends InstanceModelRefinementPlugin {
 
     @Override
     public TTopologyTemplate apply(TTopologyTemplate template) {
-        // matcher ohne version
-        // get version und tausche aus, wenn nötig
-        // getPort --> sed auf server.xml --> conector ODER/UND netstat
-
         try {
             Session session = InstanceModelUtils.createJschSession(template, this.matchToBeRefined.nodeIdsToBeReplaced);
             String tomcatVersion = InstanceModelUtils.executeCommand(
