@@ -15,6 +15,7 @@ import { Injectable } from '@angular/core';
 import { BackendService } from '../../services/backend.service';
 import { AbstractRefinementWebSocketService, RefinementTasks } from '../refinement/abstractRefinementWebSocket.service';
 import { Observable } from 'rxjs/Rx';
+import { TTopologyTemplate } from '../../models/ttopology-template';
 
 export interface SubGraphData {
     id: string;
@@ -27,6 +28,7 @@ export interface InstanceModelPlugin {
 }
 
 export interface InstanceModelReceiveData {
+    topologyTemplate: TTopologyTemplate;
     plugins: InstanceModelPlugin[];
 }
 

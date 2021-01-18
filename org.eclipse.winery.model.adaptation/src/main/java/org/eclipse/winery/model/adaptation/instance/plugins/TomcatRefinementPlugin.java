@@ -19,9 +19,12 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.adaptation.instance.InstanceModelRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.InstanceModelUtils;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
@@ -61,12 +64,36 @@ public class TomcatRefinementPlugin extends InstanceModelRefinementPlugin {
                 "sudo cat /opt/tomcat/latest/RELEASE-NOTES | grep 'Apache Tomcat Version' | awk '{print $4}'"
             );
             logger.info("Retrieved Tomcat version: {}", tomcatVersion);
-            
+
             String tomcatPort = InstanceModelUtils.executeCommand(
                 session,
                 "sudo cat /opt/tomcat/latest/conf/server.xml | grep '<Connector port=\".*\" protocol=\"HTTP/1.1\"' | awk '{print $2}' | sed -r 's/.*\"([0-9]+)\"$/\\1/'"
             );
             logger.info("Retrieved Tomcat port: {}", tomcatPort);
+
+            template.getNodeTemplates().stream()
+                .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
+                    && node.getType().getLocalPart().toLowerCase().startsWith("Tomcat".toLowerCase()))
+                .findFirst()
+                .ifPresent(tomcat -> {
+                    WineryVersion version = VersionUtils.getVersion(tomcat.getType().getLocalPart());
+                    String[] split = tomcatVersion.split("\\.");
+
+                    if (version.getComponentVersion() == null || !version.getComponentVersion().startsWith(split[0])) {
+                        if ("7".equals(split[0])) {
+                            tomcat.setType(tomcat7QName);
+                        } else if ("8".equals(split[0])) {
+                            tomcat.setType(tomcat8QName);
+                        } else if ("9".equals(split[0])) {
+                            tomcat.setType(tomcat9QName);
+                        }
+                    }
+
+                    if (tomcat.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
+                        TEntityTemplate.WineryKVProperties properties = (TEntityTemplate.WineryKVProperties) tomcat.getProperties();
+                        properties.getKVProperties().put("Port", tomcatPort);
+                    }
+                });
         } catch (RuntimeException e) {
             logger.error("Error while retrieving Tomcat information...", e);
         }

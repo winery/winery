@@ -18,20 +18,20 @@
     <ng-template #showIsRunning>
         <div class="loader" *ngIf="running; else showInputs"></div>
         <ng-template #showInputs>
-            <ul>
-               <li *ngFor="let plugin of applicablePlugins.plugins">
-                   {{ plugin.id }}
-                   <ul>
-                       <li *ngFor="let subGraph of plugin.subGraphs" 
-                           (mouseover)="highlight(subGraph.nodeIdsToBeReplaced)"
-                           (mouseleave)="hoverOut()">
-                           {{ subGraph.id }}
-                           <button class="btn btn-primary" (click)="select(plugin, subGraph)">
-                               Select
-                           </button>
-                       </li>
-                   </ul>
-               </li>
+            <ul *ngIf="applicablePlugins?.plugins">
+                <li *ngFor="let plugin of applicablePlugins.plugins">
+                    {{ plugin.id }}
+                    <ul>
+                        <li *ngFor="let subGraph of plugin.subGraphs"
+                            (mouseover)="highlight(subGraph.nodeIdsToBeReplaced)"
+                            (mouseleave)="hoverOut()">
+                            {{ subGraph.id }}
+                            <button class="btn btn-primary" (click)="select(plugin, subGraph)">
+                                Select
+                            </button>
+                        </li>
+                    </ul>
+                </li>
             </ul>
         </ng-template>
     </ng-template>

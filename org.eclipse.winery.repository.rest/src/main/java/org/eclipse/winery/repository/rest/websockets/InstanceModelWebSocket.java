@@ -92,11 +92,12 @@ public class InstanceModelWebSocket extends AbstractWebSocket implements Instanc
     }
 
     @Override
-    public InstanceModelRefinementPlugin selectPlugin(List<InstanceModelRefinementPlugin> plugins) {
+    public InstanceModelRefinementPlugin selectPlugin(TTopologyTemplate template, List<InstanceModelRefinementPlugin> plugins) {
         if (plugins != null) {
             try {
                 DataToSend dataToSend = new DataToSend();
                 dataToSend.plugins = plugins;
+                dataToSend.topologyTemplate = template;
                 this.sendAsync(dataToSend);
 
                 this.runPlugin = new CompletableFuture<>();

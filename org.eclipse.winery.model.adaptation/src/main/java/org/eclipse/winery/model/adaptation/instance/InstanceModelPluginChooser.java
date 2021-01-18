@@ -16,7 +16,9 @@ package org.eclipse.winery.model.adaptation.instance;
 
 import java.util.List;
 
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
+
 public interface InstanceModelPluginChooser {
 
-    InstanceModelRefinementPlugin selectPlugin(List<InstanceModelRefinementPlugin> plugins);
+    InstanceModelRefinementPlugin selectPlugin(TTopologyTemplate template, List<InstanceModelRefinementPlugin> plugins);
 }

@@ -21,6 +21,10 @@ import { IWineryState } from '../../redux/store/winery.store';
 import { TopologyRendererActions } from '../../redux/actions/topologyRenderer.actions';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs/Subscription';
+import { TopologyTemplateUtil } from '../../models/topologyTemplateUtil';
+import { WineryActions } from '../../redux/actions/winery.actions';
+import { EntityTypesModel } from '../../models/entityTypesModel';
+import { WineryRepositoryConfigurationService } from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 @Component({
     selector: 'winery-instance-model',
@@ -35,9 +39,12 @@ export class InstanceModelComponent implements OnDestroy {
     running = false;
     started = false;
     private subscription: Subscription;
+    private entityTypes: EntityTypesModel;
 
     constructor(private ngRedux: NgRedux<IWineryState>,
                 private rendererActions: TopologyRendererActions,
+                private wineryActions: WineryActions,
+                private configurationService: WineryRepositoryConfigurationService,
                 private notify: ToastrService,
                 private service: InstanceModelService) {
         this.subscription = this.ngRedux.select(state => state.topologyRendererState.buttonsState)
@@ -46,6 +53,8 @@ export class InstanceModelComponent implements OnDestroy {
                     this.stop();
                 }
             });
+        this.ngRedux.select(state => state.wineryState.entityTypes)
+            .subscribe(types => this.entityTypes = types);
     }
 
     start() {
@@ -73,6 +82,10 @@ export class InstanceModelComponent implements OnDestroy {
     private handleInput(value: InstanceModelReceiveData) {
         this.applicablePlugins = value;
         this.running = false;
+        if (value && value.topologyTemplate) {
+            TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, value.topologyTemplate,
+                this.entityTypes, this.configurationService.isYaml());
+        }
     }
 
     private handleComplete() {
@@ -97,6 +110,6 @@ export class InstanceModelComponent implements OnDestroy {
     }
 
     select(plugin: InstanceModelPlugin, subGraph: SubGraphData, userInputs?: any) {
-        this.service.send({ pluginId: plugin.id, matchId: subGraph.id, userInputs});
+        this.service.send({ pluginId: plugin.id, matchId: subGraph.id, userInputs });
     }
 }

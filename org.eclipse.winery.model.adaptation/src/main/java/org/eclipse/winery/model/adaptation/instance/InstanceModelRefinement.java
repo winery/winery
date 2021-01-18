@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.adaptation.instance;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,10 +65,15 @@ public class InstanceModelRefinement {
             List<InstanceModelRefinementPlugin> executablePlugins = this.plugins.stream()
                 .filter(plugin -> plugin.isApplicable(topologyTemplate, topologyGraph))
                 .collect(Collectors.toList());
-            InstanceModelRefinementPlugin selectedPlugin = pluginChooser.selectPlugin(executablePlugins);
+            InstanceModelRefinementPlugin selectedPlugin = pluginChooser.selectPlugin(topologyTemplate, executablePlugins);
 
             if (selectedPlugin != null) {
                 selectedPlugin.apply(topologyTemplate);
+                try {
+                    repository.setElement(serviceTemplateId, serviceTemplate);
+                } catch (IOException e) {
+                    logger.error("Error persisting Service Template {}", serviceTemplateId.toReadableString());
+                }
             } else {
                 pluginsAreAvailable = false;
             }
