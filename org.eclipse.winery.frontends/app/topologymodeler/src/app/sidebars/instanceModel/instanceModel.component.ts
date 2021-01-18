@@ -96,7 +96,7 @@ export class InstanceModelComponent implements OnDestroy {
         this.ngRedux.dispatch(this.rendererActions.highlightNodes([]));
     }
 
-    select(plugin: InstanceModelPlugin, subGraph: SubGraphData, userInputs: any) {
+    select(plugin: InstanceModelPlugin, subGraph: SubGraphData, userInputs?: any) {
         this.service.send({ pluginId: plugin.id, matchId: subGraph.id, userInputs});
     }
 }
