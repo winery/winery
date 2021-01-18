@@ -12,17 +12,11 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 import { BackendService } from '../../services/backend.service';
 import { TTopologyTemplate } from '../../models/ttopology-template';
-import { AbstractRefinementWebSocketService, RefinementWebSocketData } from './abstractRefinementWebSocket.service';
-
-export enum RefinementTasks {
-    START = 'START',
-    REFINE_WITH = 'REFINE_WITH',
-    APPLY_PLUGIN = 'APPLY_PLUGIN',
-    STOP = 'STOP'
-}
+import {
+    AbstractRefinementWebSocketService, RefinementTasks, RefinementWebSocketData
+} from './abstractRefinementWebSocket.service';
 
 export interface RefinementElement {
     refinementCandidates: PatternRefinementModel[];

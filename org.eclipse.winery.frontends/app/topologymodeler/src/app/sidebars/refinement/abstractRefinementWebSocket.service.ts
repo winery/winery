@@ -18,6 +18,7 @@ import { Observable } from 'rxjs/Rx';
 export enum RefinementTasks {
     START = 'START',
     REFINE_WITH = 'REFINE_WITH',
+    APPLY_PLUGIN = 'APPLY_PLUGIN',
     STOP = 'STOP'
 }
 

@@ -13,9 +13,8 @@
  *******************************************************************************/
 import { Injectable } from '@angular/core';
 import { BackendService } from '../../services/backend.service';
-import { AbstractRefinementWebSocketService } from '../refinement/abstractRefinementWebSocket.service';
+import { AbstractRefinementWebSocketService, RefinementTasks } from '../refinement/abstractRefinementWebSocket.service';
 import { Observable } from 'rxjs/Rx';
-import { RefinementTasks } from '../refinement/refinementWebSocket.service';
 
 export interface SubGraphData {
     id: string;

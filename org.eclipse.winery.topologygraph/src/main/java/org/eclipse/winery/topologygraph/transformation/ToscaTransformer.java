@@ -34,8 +34,6 @@ import org.eclipse.winery.topologygraph.model.ToscaEntity;
 import org.eclipse.winery.topologygraph.model.ToscaGraph;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
 
-import org.eclipse.jdt.annotation.NonNull;
-
 public class ToscaTransformer {
 
     public static ToscaGraph createTOSCAGraph(TTopologyTemplate topologyTemplate) {
