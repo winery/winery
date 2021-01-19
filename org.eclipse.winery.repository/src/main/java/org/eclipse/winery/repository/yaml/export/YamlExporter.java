@@ -27,20 +27,20 @@ import org.eclipse.winery.accountability.exceptions.AccountabilityException;
 import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.constants.MimeTypes;
-import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
+import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.export.CsarContentProperties;
 import org.eclipse.winery.repository.export.CsarExporter;
 import org.eclipse.winery.repository.export.ExportedState;
-import org.eclipse.winery.repository.export.entries.DefinitionsBasedCsarEntry;
-import org.eclipse.winery.repository.yaml.YamlRepository;
-import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
-import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.export.entries.CsarEntry;
+import org.eclipse.winery.repository.export.entries.DefinitionsBasedCsarEntry;
 import org.eclipse.winery.repository.export.entries.DocumentBasedCsarEntry;
 import org.eclipse.winery.repository.export.entries.RemoteRefBasedCsarEntry;
 import org.eclipse.winery.repository.export.entries.RepositoryRefBasedCsarEntry;
 import org.eclipse.winery.repository.export.entries.XMLDefinitionsBasedCsarEntry;
+import org.eclipse.winery.repository.yaml.YamlRepository;
 import org.eclipse.winery.repository.yaml.export.entries.YAMLDefinitionsBasedCsarEntry;
 
 import org.apache.commons.io.IOUtils;
@@ -50,9 +50,11 @@ import org.slf4j.LoggerFactory;
 import static org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileAttributes.CONTENT_TYPE;
 import static org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileAttributes.CREATED_BY;
 import static org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileAttributes.CSAR_VERSION;
+import static org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileAttributes.CSAR_VERSION_VALUE_FOR_YAML;
 import static org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileAttributes.ENTRY_DEFINITIONS;
 import static org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileAttributes.NAME;
-import static org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileAttributes.TOSCA_META_VERSION;
+import static org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileAttributes.TOSCA_META_FILE_VERSION;
+import static org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileAttributes.TOSCA_META_FILE_VERSION_VALUE;
 
 public class YamlExporter extends CsarExporter {
 
@@ -161,8 +163,8 @@ public class YamlExporter extends CsarExporter {
         StringBuilder stringBuilder = new StringBuilder();
 
         // Setting Versions
-        stringBuilder.append(TOSCA_META_VERSION).append(": 1.0").append("\n");
-        stringBuilder.append(CSAR_VERSION).append(": 1.1").append("\n");
+        stringBuilder.append(TOSCA_META_FILE_VERSION).append(": ").append(TOSCA_META_FILE_VERSION_VALUE).append("\n");
+        stringBuilder.append(CSAR_VERSION).append(": ").append(CSAR_VERSION_VALUE_FOR_YAML).append("\n");
         stringBuilder.append(CREATED_BY).append(": Winery ").append(Environments.getInstance().getVersion()).append("\n");
 
         // Winery currently is unaware of tDefinitions, therefore, we use the

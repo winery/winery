@@ -21,9 +21,11 @@ public class TOSCAMetaFileAttributes {
     // of block 0
     final public static String TOSCA_META_VERSION = "TOSCA-Meta-Version";
     final public static String TOSCA_META_VERSION_VALUE = "1.0";
+    final public static String TOSCA_META_FILE_VERSION = "TOSCA-Meta-File-Version";
+    final public static String TOSCA_META_FILE_VERSION_VALUE = "1.1";
     final public static String CSAR_VERSION = "CSAR-Version";
     final public static String CSAR_VERSION_VALUE = "1.0";
-    final public static String YAML_CSAR_VERSION_VALUE = "1.1";
+    final public static String CSAR_VERSION_VALUE_FOR_YAML = "1.1";
     final public static String CREATED_BY = "Created-By";
     final public static String ENTRY_DEFINITIONS = "Entry-Definitions";
     final public static String TOPOLOGY = "Topology";
