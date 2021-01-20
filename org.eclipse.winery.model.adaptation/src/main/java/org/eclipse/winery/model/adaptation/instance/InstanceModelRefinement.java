@@ -19,7 +19,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.eclipse.winery.model.adaptation.instance.plugins.MySQLRefinementPlugin;
+import org.eclipse.winery.model.adaptation.instance.plugins.MySqlDbRefinementPlugin;
+import org.eclipse.winery.model.adaptation.instance.plugins.MySqlDbmsRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.SpringWebAppRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.TomcatRefinementPlugin;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
@@ -44,7 +45,8 @@ public class InstanceModelRefinement {
         this.pluginChooser = chooser;
         this.plugins = Arrays.asList(
             new TomcatRefinementPlugin(),
-            new MySQLRefinementPlugin(),
+            new MySqlDbRefinementPlugin(),
+            new MySqlDbmsRefinementPlugin(),
             new SpringWebAppRefinementPlugin()
         );
     }

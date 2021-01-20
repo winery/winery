@@ -15,7 +15,6 @@
 package org.eclipse.winery.model.adaptation.instance.plugins;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -39,16 +38,16 @@ import com.jcraft.jsch.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MySQLRefinementPlugin extends InstanceModelRefinementPlugin {
+public class MySqlDbmsRefinementPlugin extends InstanceModelRefinementPlugin {
 
-    private static final Logger logger = LoggerFactory.getLogger(MySQLRefinementPlugin.class);
+    private static final Logger logger = LoggerFactory.getLogger(MySqlDbmsRefinementPlugin.class);
 
-    private static final QName mySQLQName = QName.valueOf("{http://opentosca.org/nodetypes}MySQL-DBMS");
-    private static final QName mySQL_5_5_QName = QName.valueOf("{http://opentosca.org/nodetypes}MySQL-DBMS_5.5-w1");
-    private static final QName mySQL_5_7_QName = QName.valueOf("{http://opentosca.org/nodetypes}MySQL-DBMS_5.7-w1");
+    private static final QName mySqlName = QName.valueOf("{http://opentosca.org/nodetypes}MySQL-DBMS");
+    private static final QName mySql_5_5_QName = QName.valueOf("{http://opentosca.org/nodetypes}MySQL-DBMS_5.5-w1");
+    private static final QName mySql_5_7_QName = QName.valueOf("{http://opentosca.org/nodetypes}MySQL-DBMS_5.7-w1");
 
-    public MySQLRefinementPlugin() {
-        super("MySQL");
+    public MySqlDbmsRefinementPlugin() {
+        super("MySQL-DBMS");
     }
 
     @Override
@@ -74,9 +73,9 @@ public class MySQLRefinementPlugin extends InstanceModelRefinementPlugin {
 
                     if (version.getComponentVersion() == null || !version.getComponentVersion().startsWith(split[0])) {
                         if ("5".equals(split[0]) && "5".equals(split[1])) {
-                            mySQL.setType(mySQL_5_5_QName);
+                            mySQL.setType(mySql_5_5_QName);
                         } else if ("5".equals(split[0]) && "7".equals(split[1])) {
-                            mySQL.setType(mySQL_5_7_QName);
+                            mySQL.setType(mySql_5_7_QName);
                         }
                     }
 
@@ -102,7 +101,7 @@ public class MySQLRefinementPlugin extends InstanceModelRefinementPlugin {
     protected List<TTopologyTemplate> getDetectorGraphs() {
         IRepository repository = RepositoryFactory.getRepository();
 
-        TNodeType mySQLType = repository.getElement(new NodeTypeId(mySQLQName));
+        TNodeType mySQLType = repository.getElement(new NodeTypeId(mySqlName));
         TNodeTemplate mySQL_DBMS = ModelUtilities.instantiateNodeTemplate(mySQLType);
 
         return Collections.singletonList(
