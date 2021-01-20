@@ -73,6 +73,11 @@ public class PetClinicRefinementPlugin extends InstanceModelRefinementPlugin {
                         "sudo cat /opt/tomcat/latest/webapps/" + kvProperties.get("context").trim()
                             + "/WEB-INF/classes/db/mysql/schema.sql | grep USE | sed -r 's/USE (.*);$/\\1/'"
                     );
+                    String dbUser = InstanceModelUtils.executeCommand(
+                        session,
+                        " sudo cat /opt/tomcat/latest/webapps/petclinic-pet_clinic/WEB-INF/classes/db/mysql/schema.sql"
+                            + " | grep 'IDENTIFIED BY' | sed -r 's/(.*)IDENTIFIED BY (.*);$/\\2/'"
+                    );
 
                     topology.getNodeTemplates().stream()
                         .filter(node -> node.getType().equals(mySqlDbQName))
@@ -82,11 +87,13 @@ public class PetClinicRefinementPlugin extends InstanceModelRefinementPlugin {
                             && ((TEntityTemplate.WineryKVProperties) node.getProperties()).getKVProperties().get("DBName").equals(dbName)
                         )
                         .findFirst()
-                        .ifPresent(db ->
+                        .ifPresent(db -> {
+                            ((TEntityTemplate.WineryKVProperties) db.getProperties()).getKVProperties()
+                                .put("DBUser", dbUser.replaceAll("(')|(\")", ""));
                             ModelUtilities.createRelationshipTemplateAndAddToTopology(
                                 petClinicNode, db, ToscaBaseTypes.connectsToRelationshipType, topology
-                            )
-                        );
+                            );
+                        });
                 }
 
                 session.disconnect();
