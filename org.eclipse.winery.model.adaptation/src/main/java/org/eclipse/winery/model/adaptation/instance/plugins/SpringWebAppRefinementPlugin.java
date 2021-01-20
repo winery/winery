@@ -34,10 +34,11 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import com.jcraft.jsch.Session;
 
+import static org.eclipse.winery.model.adaptation.instance.plugins.PetClinicRefinementPlugin.petClinic;
+
 public class SpringWebAppRefinementPlugin extends InstanceModelRefinementPlugin {
 
     private static final QName springWebApp = QName.valueOf("{http://opentosca.org/nodetypes}SpringWebApp_w1");
-    private static final QName petClinic = QName.valueOf("{https://examples.opentosca.org/edmm/nodetypes}Pet_Clinic_w1");
 
     public SpringWebAppRefinementPlugin() {
         super("SpringWebApplication");
@@ -51,6 +52,8 @@ public class SpringWebAppRefinementPlugin extends InstanceModelRefinementPlugin 
             "sudo find /opt/tomcat/latest/webapps -name *.war -not -path \"*docs/*\" | sed -r 's/.*\\/(.+)\\.war/\\1/'"
         );
 
+        session.disconnect();
+
         template.getNodeTemplates().stream()
             .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
                 && (springWebApp.equals(node.getType()) || petClinic.equals(node.getType())))
@@ -58,10 +61,10 @@ public class SpringWebAppRefinementPlugin extends InstanceModelRefinementPlugin 
             .ifPresent(app -> {
                 if (app.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
                     TEntityTemplate.WineryKVProperties properties = (TEntityTemplate.WineryKVProperties) app.getProperties();
-                    properties.getKVProperties().put("context", contextPath);
+                    properties.getKVProperties().put("context", contextPath.trim());
                 }
             });
-        
+
         return template;
     }
 

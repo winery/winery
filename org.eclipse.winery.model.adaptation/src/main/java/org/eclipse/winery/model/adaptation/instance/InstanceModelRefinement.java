@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.winery.model.adaptation.instance.plugins.MySqlDbRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.MySqlDbmsRefinementPlugin;
+import org.eclipse.winery.model.adaptation.instance.plugins.PetClinicRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.SpringWebAppRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.TomcatRefinementPlugin;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
@@ -47,6 +48,7 @@ public class InstanceModelRefinement {
             new TomcatRefinementPlugin(),
             new MySqlDbRefinementPlugin(),
             new MySqlDbmsRefinementPlugin(),
+            new PetClinicRefinementPlugin(),
             new SpringWebAppRefinementPlugin()
         );
     }
@@ -60,7 +62,7 @@ public class InstanceModelRefinement {
             logger.error("Cannot refine empty instance model!");
             return null;
         }
-        
+
         boolean pluginsAreAvailable = true;
         do {
             ToscaGraph topologyGraph = ToscaTransformer.createTOSCAGraph(topologyTemplate);
@@ -80,7 +82,7 @@ public class InstanceModelRefinement {
                 pluginsAreAvailable = false;
             }
         } while (pluginsAreAvailable);
-        
+
         return topologyTemplate;
     }
 }

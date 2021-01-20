@@ -63,6 +63,8 @@ public class MySqlDbmsRefinementPlugin extends InstanceModelRefinementPlugin {
                 "sudo netstat -tulpen | grep mysqld | awk '{print $4}' | sed -r 's/.*:([0-9]+)$/\\1/'"
             );
 
+            session.disconnect();
+            
             template.getNodeTemplates().stream()
                 .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
                     && node.getType().getLocalPart().toLowerCase().startsWith("MySQL-DBMS".toLowerCase()))

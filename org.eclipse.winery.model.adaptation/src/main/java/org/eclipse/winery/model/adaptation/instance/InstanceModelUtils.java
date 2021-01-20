@@ -166,7 +166,7 @@ public abstract class InstanceModelUtils {
 
             logger.info("\"{}\" exited with code '{}'", command, channelExec.getExitStatus());
 
-            return outputBuffer.toString();
+            return outputBuffer.toString().trim();
         } catch (JSchException | InterruptedException | IOException e) {
             throw new RuntimeException("Failed to execute command \"" + command + "\"");
         } finally {

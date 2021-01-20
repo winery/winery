@@ -38,9 +38,9 @@ import org.slf4j.LoggerFactory;
 
 public class MySqlDbRefinementPlugin extends InstanceModelRefinementPlugin {
 
-    private static final Logger logger = LoggerFactory.getLogger(MySqlDbRefinementPlugin.class);
+    public static final QName mySqlDbQName = QName.valueOf("{http://opentosca.org/nodetypes}MySQL-DB");
 
-    private static final QName mySqlDbQName = QName.valueOf("{http://opentosca.org/nodetypes}MySQL-DB");
+    private static final Logger logger = LoggerFactory.getLogger(MySqlDbRefinementPlugin.class);
 
     public MySqlDbRefinementPlugin() {
         super("MySQL-DB");
@@ -55,6 +55,8 @@ public class MySqlDbRefinementPlugin extends InstanceModelRefinementPlugin {
                 ", 'sys');\""
         );
         logger.info("Found MySqlDatabases: {}", mySqlDatabases);
+
+        session.disconnect();
 
         if (!mySqlDatabases.isEmpty()) {
             String[] identifiedDBs = mySqlDatabases.split("\\n");

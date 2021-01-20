@@ -15,7 +15,6 @@
 package org.eclipse.winery.model.adaptation.instance.plugins;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -69,6 +68,8 @@ public class TomcatRefinementPlugin extends InstanceModelRefinementPlugin {
                 "sudo cat /opt/tomcat/latest/conf/server.xml | grep '<Connector port=\".*\" protocol=\"HTTP/1.1\"' | awk '{print $2}' | sed -r 's/.*\"([0-9]+)\"$/\\1/'"
             );
             logger.info("Retrieved Tomcat port: {}", tomcatPort);
+
+            session.disconnect();
 
             template.getNodeTemplates().stream()
                 .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
