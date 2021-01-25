@@ -1,0 +1,21 @@
+{
+    "depends_on": "DependsOn",
+    "aws_aurora": "AWS_Aurora",
+    "tomcat": "Tomcat",
+    "auth0": "Auth0",
+    "web_server": "Web_Server",
+    "dbms": "DBMS",
+    "platform": "Platform",
+    "compute": "Compute",
+    "aws_beanstalk": "AWS_Beanstalk",
+    "web_application": "Web_Application",
+    "database": "Database",
+    "saas": "SaaS",
+    "paas": "PaaS",
+    "dbaas": "DBaaS",
+    "hosted_on": "HostedOn",
+    "software_component": "Software_Component",
+    "mysql_dbms": "MySQL_DBMS",
+    "connects_to": "ConnectsTo",
+    "mysql_database": "MySQL_Database"
+}

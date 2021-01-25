@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -85,19 +85,24 @@ public class GenericFileResource {
         if (StringUtils.isEmpty(fileName)) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
-        RepositoryFileReference ref = this.fileName2fileRef(fileName, false);
 
-        // TODO: instead of fixing the media type, we could overwrite the browser's mediatype by using some user configuration
-        BufferedInputStream bis = new BufferedInputStream(uploadedInputStream);
-        org.apache.tika.mime.MediaType mediaType = BackendUtils.getFixedMimeType(bis, fileName, org.apache.tika.mime.MediaType.parse(body.getMediaType().toString()));
-
-        Response response = RestUtils.putContentToFile(ref, bis, mediaType);
+        Response response = this.putContentToFile(fileName,uploadedInputStream, body.getMediaType().toString());
         if (response.getStatus() == Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
             return response;
         }
 
         String URL = RestUtils.getAbsoluteURL(this.fileDir) + EncodingUtil.URLencode(fileName);
         return Response.created(URI.create(URL)).entity(this.getAllFileMetas()).build();
+    }
+
+    public Response putContentToFile(String fileName,InputStream uploadedInputStream, String mediaTypeString) {
+        RepositoryFileReference ref = this.fileName2fileRef(fileName, false);
+
+        // TODO: instead of fixing the media type, we could overwrite the browser's mediatype by using some user configuration
+        BufferedInputStream bis = new BufferedInputStream(uploadedInputStream);
+        org.apache.tika.mime.MediaType mediaType = BackendUtils.getFixedMimeType(bis, fileName, org.apache.tika.mime.MediaType.parse(mediaTypeString));
+
+        return RestUtils.putContentToFile(ref, bis, mediaType);
     }
 
     /**
@@ -109,7 +114,7 @@ public class GenericFileResource {
         return new MetaDataApiData(this.getAllFileMetas(), this.getAllFilePaths());
     }
 
-    private List<FileMeta> getAllFileMetas() {
+    public List<FileMeta> getAllFileMetas() {
         return RepositoryFactory.getRepository()
             .getContainedFiles(this.fileDir)
             .stream()
