@@ -3,6 +3,10 @@
 [![License](https://img.shields.io/badge/License-EPL%202.0-blue.svg)](https://opensource.org/licenses/EPL-2.0)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
+[![Winery CI](https://github.com/eclipse/winery/workflows/Winery%20CI/badge.svg)](https://github.com/eclipse/winery/actions?query=workflow%3A%22Winery+CI%22)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/4f342f5d0f534d84b40f2fe5143f412e)](https://www.codacy.com/gh/OpenTOSCA/winery/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=OpenTOSCA/winery&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/4f342f5d0f534d84b40f2fe5143f412e)](https://www.codacy.com/gh/OpenTOSCA/winery/dashboard?utm_source=github.com&utm_medium=referral&utm_content=OpenTOSCA/winery&utm_campaign=Badge_Coverage)
+
 This is a fork of [Eclipse Winery](https://github.com/eclipse/winery) and might include current research results not yet approved by Eclipse legal.
 Find out more about the OpenTOSCA eco system at [www.opentosca.org](http://www.opentosca.org/).
 
