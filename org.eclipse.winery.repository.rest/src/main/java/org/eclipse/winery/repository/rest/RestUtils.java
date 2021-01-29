@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -295,7 +295,8 @@ public class RestUtils {
             .build();
     }
 
-    public static Response getEdmmModel(TServiceTemplate element, boolean useAbsolutPaths) {
+    public static EntityGraph getEdmmEntityGraph(TServiceTemplate element, boolean useAbsolutPaths) {
+
         IRepository repository = RepositoryFactory.getRepository();
 
         Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
@@ -316,6 +317,14 @@ public class RestUtils {
         EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations,
             artifactTemplates, typeMappings, oneToOneMappings, useAbsolutPaths);
         EntityGraph transform = edmmConverter.transform(element);
+
+        return transform;
+    }
+
+    public static Response getEdmmModel(TServiceTemplate element, boolean useAbsolutPaths) {
+
+        EntityGraph transform = getEdmmEntityGraph(element, useAbsolutPaths);
+
         StringWriter stringWriter = new StringWriter();
         transform.generateYamlOutput(stringWriter);
 
