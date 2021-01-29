@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { NgRedux } from '@angular-redux/store';
@@ -25,6 +25,7 @@ import { EntityTypesModel } from '../models/entityTypesModel';
 import { NodeTypeModel } from '../models/groupedNodeTypeModel';
 import { Visuals } from '../models/visuals';
 import { BackendService } from '../services/backend.service';
+import { ManageTopologyService } from '../services/manage-topology.service';
 import { InheritanceUtils } from '../models/InheritanceUtils';
 
 /**
@@ -72,7 +73,7 @@ import { InheritanceUtils } from '../models/InheritanceUtils';
         ])
     ]
 })
-export class PaletteComponent implements OnDestroy {
+export class PaletteComponent implements OnInit, OnDestroy {
 
     @Input() entityTypes: EntityTypesModel;
 
@@ -87,11 +88,16 @@ export class PaletteComponent implements OnDestroy {
 
     constructor(private ngRedux: NgRedux<IWineryState>,
                 private backendService: BackendService,
-                private actions: WineryActions) {
+                private actions: WineryActions,
+                private generateTopologyService: ManageTopologyService) {
         this.subscriptions.push(ngRedux.select(wineryState => wineryState.wineryState.currentJsonTopology.nodeTemplates)
             .subscribe(currentNodes => this.updateNodes(currentNodes)));
         this.subscriptions.push(ngRedux.select(wineryState => wineryState.wineryState.currentPaletteOpenedState)
             .subscribe(currentPaletteOpened => this.updateState(currentPaletteOpened)));
+    }
+
+    ngOnInit(): void {
+        this.generateTopologyService.subscribePalette(this);
     }
 
     /**
@@ -134,9 +140,14 @@ export class PaletteComponent implements OnDestroy {
      * @param $event
      * @param child
      */
-    generateNewNode($event: MouseEvent, child: NodeTypeModel): void {
+    generateNewNodeFromMouseEvent($event: MouseEvent, child: NodeTypeModel): void {
         const x = $event.pageX - this.newNodePositionOffsetX;
         const y = $event.pageY - this.newNodePositionOffsetY;
+
+        this.generateNewNode(x, y, child);
+    }
+
+    generateNewNode(x: number, y: number, child: any): TNodeTemplate {
         const newIdTypeColorProperties = this.generateIdTypeAndProperties(child);
         const nodeVisuals: Visuals = TopologyTemplateUtil.getNodeVisualsForNodeTemplate(newIdTypeColorProperties.type, this.entityTypes.nodeVisuals);
         const newNode: TNodeTemplate = new TNodeTemplate(
@@ -158,6 +169,7 @@ export class PaletteComponent implements OnDestroy {
             null
         );
         this.ngRedux.dispatch(this.actions.saveNodeTemplate(newNode));
+        return newNode;
     }
 
     /**

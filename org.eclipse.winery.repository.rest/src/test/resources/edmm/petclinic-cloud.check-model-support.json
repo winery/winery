@@ -1,0 +1,868 @@
+[
+    {
+        "id": "ansible",
+        "name": "Ansible",
+        "supports": 0.4,
+        "replacementRules": [
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "Auth0"
+                ],
+                "toTopology": {
+                    "WebServer": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "web_server"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    },
+                    "WebApplication": {
+                        "relations": [
+                            {
+                                "hosted_on": "WebServer"
+                            }
+                        ],
+                        "type": "web_application"
+                    }
+                },
+                "unsupported": true
+            },
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "AWS_Aurora"
+                ],
+                "toTopology": {
+                    "Dbms": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "dbms"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    }
+                },
+                "unsupported": true
+            },
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "AWS_Beanstalk"
+                ],
+                "toTopology": {
+                    "WebServer": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "web_server"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    }
+                },
+                "unsupported": true
+            }
+        ]
+    },
+    {
+        "id": "azure",
+        "name": "Azure",
+        "supports": 0.4,
+        "replacementRules": [
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "Auth0"
+                ],
+                "toTopology": {
+                    "WebServer": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "web_server"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    },
+                    "WebApplication": {
+                        "relations": [
+                            {
+                                "hosted_on": "WebServer"
+                            }
+                        ],
+                        "type": "web_application"
+                    }
+                },
+                "unsupported": true
+            },
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "AWS_Aurora"
+                ],
+                "toTopology": {
+                    "Dbms": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "dbms"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    }
+                },
+                "unsupported": true
+            },
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "AWS_Beanstalk"
+                ],
+                "toTopology": {
+                    "WebServer": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "web_server"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    }
+                },
+                "unsupported": true
+            }
+        ]
+    },
+    {
+        "id": "cfn",
+        "name": "AWS CloudFormation",
+        "supports": 0.8,
+        "replacementRules": [
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "Auth0"
+                ],
+                "toTopology": {
+                    "WebServer": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "web_server"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    },
+                    "WebApplication": {
+                        "relations": [
+                            {
+                                "hosted_on": "WebServer"
+                            }
+                        ],
+                        "type": "web_application"
+                    }
+                },
+                "unsupported": true
+            }
+        ]
+    },
+    {
+        "id": "chef",
+        "name": "Chef",
+        "supports": 0.4,
+        "replacementRules": [
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "Auth0"
+                ],
+                "toTopology": {
+                    "WebServer": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "web_server"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    },
+                    "WebApplication": {
+                        "relations": [
+                            {
+                                "hosted_on": "WebServer"
+                            }
+                        ],
+                        "type": "web_application"
+                    }
+                },
+                "unsupported": true
+            },
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "AWS_Aurora"
+                ],
+                "toTopology": {
+                    "Dbms": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "dbms"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    }
+                },
+                "unsupported": true
+            },
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "AWS_Beanstalk"
+                ],
+                "toTopology": {
+                    "WebServer": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "web_server"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    }
+                },
+                "unsupported": true
+            }
+        ]
+    },
+    {
+        "id": "cloudify",
+        "name": "Cloudify",
+        "supports": 0.4,
+        "replacementRules": [
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "Auth0"
+                ],
+                "toTopology": {
+                    "WebServer": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "web_server"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    },
+                    "WebApplication": {
+                        "relations": [
+                            {
+                                "hosted_on": "WebServer"
+                            }
+                        ],
+                        "type": "web_application"
+                    }
+                },
+                "unsupported": true
+            },
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "AWS_Aurora"
+                ],
+                "toTopology": {
+                    "Dbms": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "dbms"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    }
+                },
+                "unsupported": true
+            },
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "AWS_Beanstalk"
+                ],
+                "toTopology": {
+                    "WebServer": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "web_server"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    }
+                },
+                "unsupported": true
+            }
+        ]
+    },
+    {
+        "id": "compose",
+        "name": "Docker Compose",
+        "supports": 0.4,
+        "replacementRules": [
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "Auth0"
+                ],
+                "toTopology": {
+                    "WebServer": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "web_server"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    },
+                    "WebApplication": {
+                        "relations": [
+                            {
+                                "hosted_on": "WebServer"
+                            }
+                        ],
+                        "type": "web_application"
+                    }
+                },
+                "unsupported": true
+            },
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "AWS_Aurora"
+                ],
+                "toTopology": {
+                    "Dbms": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "dbms"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    }
+                },
+                "unsupported": true
+            },
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "AWS_Beanstalk"
+                ],
+                "toTopology": {
+                    "WebServer": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "web_server"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    }
+                },
+                "unsupported": true
+            }
+        ]
+    },
+    {
+        "id": "heat",
+        "name": "Heat Orchestration Template",
+        "supports": 0.4,
+        "replacementRules": [
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "Auth0"
+                ],
+                "toTopology": {
+                    "WebServer": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "web_server"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    },
+                    "WebApplication": {
+                        "relations": [
+                            {
+                                "hosted_on": "WebServer"
+                            }
+                        ],
+                        "type": "web_application"
+                    }
+                },
+                "unsupported": true
+            },
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "AWS_Aurora"
+                ],
+                "toTopology": {
+                    "Dbms": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "dbms"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    }
+                },
+                "unsupported": true
+            },
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "AWS_Beanstalk"
+                ],
+                "toTopology": {
+                    "WebServer": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "web_server"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    }
+                },
+                "unsupported": true
+            }
+        ]
+    },
+    {
+        "id": "kubernetes",
+        "name": "Kubernetes",
+        "supports": 0.4,
+        "replacementRules": [
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "Auth0"
+                ],
+                "toTopology": {
+                    "WebServer": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "web_server"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    },
+                    "WebApplication": {
+                        "relations": [
+                            {
+                                "hosted_on": "WebServer"
+                            }
+                        ],
+                        "type": "web_application"
+                    }
+                },
+                "unsupported": true
+            },
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "AWS_Aurora"
+                ],
+                "toTopology": {
+                    "Dbms": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "dbms"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    }
+                },
+                "unsupported": true
+            },
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "AWS_Beanstalk"
+                ],
+                "toTopology": {
+                    "WebServer": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "web_server"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    }
+                },
+                "unsupported": true
+            }
+        ]
+    },
+    {
+        "id": "puppet",
+        "name": "Puppet",
+        "supports": 0.4,
+        "replacementRules": [
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "Auth0"
+                ],
+                "toTopology": {
+                    "WebServer": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "web_server"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    },
+                    "WebApplication": {
+                        "relations": [
+                            {
+                                "hosted_on": "WebServer"
+                            }
+                        ],
+                        "type": "web_application"
+                    }
+                },
+                "unsupported": true
+            },
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "AWS_Aurora"
+                ],
+                "toTopology": {
+                    "Dbms": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "dbms"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    }
+                },
+                "unsupported": true
+            },
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "AWS_Beanstalk"
+                ],
+                "toTopology": {
+                    "WebServer": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "web_server"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    }
+                },
+                "unsupported": true
+            }
+        ]
+    },
+    {
+        "id": "terraform",
+        "name": "Terraform",
+        "supports": 1,
+        "replacementRules": []
+    },
+    {
+        "id": "juju",
+        "name": "Juju",
+        "supports": 0.4,
+        "replacementRules": [
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "Auth0"
+                ],
+                "toTopology": {
+                    "WebServer": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "web_server"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    },
+                    "WebApplication": {
+                        "relations": [
+                            {
+                                "hosted_on": "WebServer"
+                            }
+                        ],
+                        "type": "web_application"
+                    }
+                },
+                "unsupported": true
+            },
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "AWS_Aurora"
+                ],
+                "toTopology": {
+                    "Dbms": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "dbms"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    }
+                },
+                "unsupported": true
+            },
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "AWS_Beanstalk"
+                ],
+                "toTopology": {
+                    "WebServer": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "web_server"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    }
+                },
+                "unsupported": true
+            }
+        ]
+    },
+    {
+        "id": "saltstack",
+        "name": "Saltstack",
+        "supports": 0.4,
+        "replacementRules": [
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "Auth0"
+                ],
+                "toTopology": {
+                    "WebServer": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "web_server"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    },
+                    "WebApplication": {
+                        "relations": [
+                            {
+                                "hosted_on": "WebServer"
+                            }
+                        ],
+                        "type": "web_application"
+                    }
+                },
+                "unsupported": true
+            },
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "AWS_Aurora"
+                ],
+                "toTopology": {
+                    "Dbms": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "dbms"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    }
+                },
+                "unsupported": true
+            },
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "AWS_Beanstalk"
+                ],
+                "toTopology": {
+                    "WebServer": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "web_server"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    }
+                },
+                "unsupported": true
+            }
+        ]
+    },
+    {
+        "id": "cfengine",
+        "name": "CFEngine",
+        "supports": 0.4,
+        "replacementRules": [
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "Auth0"
+                ],
+                "toTopology": {
+                    "WebServer": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "web_server"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    },
+                    "WebApplication": {
+                        "relations": [
+                            {
+                                "hosted_on": "WebServer"
+                            }
+                        ],
+                        "type": "web_application"
+                    }
+                },
+                "unsupported": true
+            },
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "AWS_Aurora"
+                ],
+                "toTopology": {
+                    "Dbms": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "dbms"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    }
+                },
+                "unsupported": true
+            },
+            {
+                "reason": "unsupported",
+                "unsupportedComponents": [
+                    "AWS_Beanstalk"
+                ],
+                "toTopology": {
+                    "WebServer": {
+                        "relations": [
+                            {
+                                "hosted_on": "Compute"
+                            }
+                        ],
+                        "type": "web_server"
+                    },
+                    "Compute": {
+                        "type": "compute"
+                    }
+                },
+                "unsupported": true
+            }
+        ]
+    }
+]

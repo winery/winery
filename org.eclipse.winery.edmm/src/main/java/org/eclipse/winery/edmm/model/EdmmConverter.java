@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -100,7 +100,7 @@ public class EdmmConverter {
     }
 
     private void createRelation(TRelationshipTemplate relationship, EntityGraph entityGraph) {
-        EntityId sourceComponentEntityId = EntityGraph.COMPONENTS.extend(relationship.getSourceElement().getRef().getName());
+        EntityId sourceComponentEntityId = EntityGraph.COMPONENTS.extend(relationship.getSourceElement().getRef().getId());
         // the entity will always be in the graph since we first transform the NodeTemplates 
         entityGraph.getEntity(sourceComponentEntityId).ifPresent(entity -> {
             EntityId relationTypeEntityId = createType(
@@ -120,7 +120,7 @@ public class EdmmConverter {
                 entityGraph.addEntity(new MappingEntity(relationEntityId, entityGraph));
                 createProperties(relationship, relationEntityId, entityGraph);
             } else {
-                String targetComponent = relationship.getTargetElement().getRef().getName();
+                String targetComponent = relationship.getTargetElement().getRef().getId();
                 entityGraph.addEntity(new ScalarEntity(targetComponent, relationEntityId, entityGraph));
             }
         });
@@ -128,7 +128,7 @@ public class EdmmConverter {
 
     private void createNode(TNodeTemplate nodeTemplate, EntityGraph entityGraph) {
         // create the component inside the topology.
-        EntityId componentNodeId = EntityGraph.COMPONENTS.extend(nodeTemplate.getName());
+        EntityId componentNodeId = EntityGraph.COMPONENTS.extend(nodeTemplate.getId());
         entityGraph.addEntity(new MappingEntity(componentNodeId, entityGraph));
 
         // add the type to the model
@@ -161,14 +161,8 @@ public class EdmmConverter {
                 EntityId artifactEntityId = artifactsEntityId.extend(
                     artifact.getArtifactType().getLocalPart().toLowerCase()
                 );
-                
+
                 createPathReferenceEntity(entityGraph, path, artifactEntityId);
-                
-                entityGraph.addEntity(new ScalarEntity(
-                    path != null && this.useAbsolutePaths ? Environments.getInstance().getRepositoryConfig().getRepositoryRoot() + "/" + path : path,
-                    artifactEntityId,
-                    entityGraph
-                ));
             }
         }
     }
@@ -313,7 +307,8 @@ public class EdmmConverter {
 
             if (artifacts.size() == 1 && artifacts.get(0).getArtifactRef() != null) {
                 TArtifactTemplate artifactTemplate = artifactTemplates.get(artifacts.get(0).getArtifactRef());
-                if (artifactTemplate.getArtifactReferences().getArtifactReference().size() > 0) {
+                if (artifactTemplate.getArtifactReferences() != null &&
+                    artifactTemplate.getArtifactReferences().getArtifactReference().size() > 0) {
                     return artifactTemplate.getArtifactReferences().getArtifactReference().get(0).getReference();
                 }
             }
@@ -321,7 +316,9 @@ public class EdmmConverter {
             for (TImplementationArtifacts.ImplementationArtifact artifact : artifacts) {
                 if (artifact.getOperationName().equals(operationName)) {
                     TArtifactTemplate artifactTemplate = artifactTemplates.get(artifact.getArtifactRef());
-                    if (artifactTemplate != null && artifactTemplate.getArtifactReferences().getArtifactReference().size() > 0) {
+                    if (artifactTemplate != null &&
+                        artifactTemplate.getArtifactReferences() != null &&
+                        artifactTemplate.getArtifactReferences().getArtifactReference().size() > 0) {
                         return artifactTemplate.getArtifactReferences().getArtifactReference().get(0).getReference();
                     }
                 }
