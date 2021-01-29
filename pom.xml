@@ -65,6 +65,8 @@
         <checkstyle.addons.version>6.0.1</checkstyle.addons.version>
         <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jacoco.reportPath>${project.build.directory}/jacoco.exec</jacoco.reportPath>
+        <jacoco.append>false</jacoco.append>
 
         <!-- versions of all used libraries -->
         <ch.qos.logback.logback-classic.version>1.2.3</ch.qos.logback.logback-classic.version>
@@ -121,6 +123,7 @@
                 <module>org.eclipse.winery.model.csar.toscametafile</module>
                 <module>org.eclipse.winery.model.selfservice</module>
                 <module>org.eclipse.winery.model.threatmodeling</module>
+                <module>org.eclipse.winery.reporting</module>
                 <module>org.eclipse.winery.repository</module>
                 <module>org.eclipse.winery.repository.client</module>
                 <module>org.eclipse.winery.repository.rest</module>
@@ -153,6 +156,7 @@
                 <module>org.eclipse.winery.model.csar.toscametafile</module>
                 <module>org.eclipse.winery.model.selfservice</module>
                 <module>org.eclipse.winery.model.threatmodeling</module>
+                <module>org.eclipse.winery.reporting</module>
                 <module>org.eclipse.winery.repository</module>
                 <module>org.eclipse.winery.repository.client</module>
                 <module>org.eclipse.winery.repository.rest</module>
@@ -163,6 +167,25 @@
         </profile>
     </profiles>
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.6</version>
+                <configuration>
+                    <append>${jacoco.append}</append>
+                    <destFile>${jacoco.reportPath}</destFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>jacoco-initialize</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
         <pluginManagement>
             <plugins>
                 <plugin>

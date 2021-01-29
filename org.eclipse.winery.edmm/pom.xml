@@ -24,6 +24,10 @@
     </parent>
     <artifactId>org.eclipse.winery.edmm</artifactId>
 
+    <properties>
+        <checkstyle.config.location>../checkstyle.xml</checkstyle.config.location>
+    </properties>
+
     <repositories>
         <repository>
             <id>jitpack.io</id>
@@ -75,5 +79,31 @@
             <version>${org.eclipse.jdt.annotation}</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven.checkstyle.version}</version>
+                <executions>
+                    <execution>
+                        <id>checkstyle</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.thomasjensen.checkstyle.addons</groupId>
+                        <artifactId>checkstyle-addons</artifactId>
+                        <version>${checkstyle.addons.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
