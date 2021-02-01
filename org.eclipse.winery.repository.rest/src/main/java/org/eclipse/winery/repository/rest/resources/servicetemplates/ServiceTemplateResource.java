@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -88,6 +88,7 @@ import org.eclipse.winery.repository.backend.YamlArtifactsSynchronizer;
 import org.eclipse.winery.repository.driverspecificationandinjection.DASpecification;
 import org.eclipse.winery.repository.driverspecificationandinjection.DriverInjection;
 import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.rest.resources.edmm.EdmmResource;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceContainingATopology;
 import org.eclipse.winery.repository.rest.resources._support.IHasName;
 import org.eclipse.winery.repository.rest.resources._support.ResourceResult;
@@ -834,5 +835,10 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     @GET
     public Map<String, Object> getToscaLightCompatibility() {
         return EdmmUtils.checkToscaLightCompatibility(this.getServiceTemplate());
+    }
+
+    @Path("edmm")
+    public EdmmResource edmmResource() {
+        return new EdmmResource(this.getServiceTemplate());
     }
 }

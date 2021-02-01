@@ -186,7 +186,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
         LOGGER.info("Generating plans for Service Template...");
         // Only if plan builder endpoint is available
         String planBuilderBaseUrl =
-            Environments.getInstance().getUiConfig().getEndpoints().get("container") + "/containerapi/planbuilder";
+            Environments.getInstance().getUiConfig().getEndpoints().get("container") + "/planbuilder";
         if (RestUtils.isResourceAvailable(planBuilderBaseUrl)) {
             // Determine URIs
             String plansURI = uriInfo.getAbsolutePath().resolve("../plans").toString();

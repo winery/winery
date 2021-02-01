@@ -1202,7 +1202,7 @@ input.qnameinput {
     grid-row: 3;
 }
 
-span.cursorpointer {
+span.cursorPointer {
     cursor: pointer;
 }
 
@@ -1375,7 +1375,7 @@ div.policiesContainer > div.content > div.policy > textarea.policy_xml {
     border-color: #dbdbdb;
 }
 
-.cursorpointer {
+.cursorPointer {
     cursor: pointer;
 }
 

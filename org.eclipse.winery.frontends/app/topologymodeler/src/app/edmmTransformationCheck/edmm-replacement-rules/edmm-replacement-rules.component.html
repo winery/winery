@@ -1,0 +1,28 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2021 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div *ngIf="currentCandidate == pluginResult.id" class="sidebar-root">
+    <div (mouseover)="onMouseOver()" (mouseleave)="onMouseLeave()">
+        <span> {{pluginName}}'s rules </span> <br>
+        <div [ngClass]="getColorClass()">
+            <span> {{components}} </span>
+        </div>
+        replace it with the topology:
+        <div class="applicable">
+            <pre>{{toTopology}}</pre>
+        </div>
+    <button class="dark-button-style" (click)="prevRule()"> prev </button>
+    <button class="dark-button-style" (click)="applyRule()"> apply </button>
+    <button class="dark-button-style" (click)="nextRule()"> next </button>
+    </div>
+</div>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -95,6 +95,7 @@ public abstract class EdmmDependantTest {
         WinerysPropertiesDefinition wpd = new WinerysPropertiesDefinition();
         wpd.setPropertyDefinitions(kvList);
         ModelUtilities.replaceWinerysPropertiesDefinition(nodeType3, wpd);
+        nodeType3.setProperties(wpd);
         nodeTypes.put(nodeType3QName, nodeType3);
 
         QName nodeType4QName = QName.valueOf("{" + NAMESPACE + "}" + "test_node_type_4");

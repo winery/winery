@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -52,6 +52,8 @@ import { MultiParticipantsComponent } from './multi-participants/multi-participa
 import { ReqCapRelationshipService } from './services/req-cap-relationship.service';
 import { WineryTableModule } from '../../../tosca-management/src/app/wineryTableModule/wineryTable.module';
 import { EdmmTransformationCheckComponent } from './edmmTransformationCheck/edmmTransformationCheck.component';
+import { EdmmReplacementRulesComponent } from './edmmTransformationCheck/edmm-replacement-rules/edmm-replacement-rules.component';
+import { ManageTopologyService } from './services/manage-topology.service';
 import { PolicyService } from './services/policy.service';
 import { SidebarModule } from 'ng-sidebar';
 import { NodeDetailsSidebarComponent } from './sidebars/node-details/nodeDetailsSidebar.component';
@@ -87,6 +89,7 @@ import { InstanceModelComponent } from './sidebars/instanceModel/instanceModel.c
         GroupViewPoliciesComponent,
         ManageParticipantsComponent,
         ResearchPluginsComponent,
+        EdmmReplacementRulesComponent,
     ],
     exports: [WineryComponent],
     imports: [
@@ -133,6 +136,7 @@ import { InstanceModelComponent } from './sidebars/instanceModel/instanceModel.c
         TagService,
         ExistsService,
         EntitiesModalService,
+        ManageTopologyService,
         ImportTopologyService,
         SplitMatchTopologyService,
         ErrorHandlerService,

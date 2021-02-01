@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -53,6 +53,7 @@ import { ThreatCreation } from '../models/threatCreation';
 import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 import { ReqCapRelationshipService } from '../services/req-cap-relationship.service';
 import { TPolicy } from '../models/policiesModalData';
+import { ManageTopologyService } from '../services/manage-topology.service';
 import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { RequirementDefinitionModel } from '../models/requirementDefinitonModel';
 import { CapabilityDefinitionModel } from '../models/capabilityDefinitionModel';
@@ -189,7 +190,9 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 private policyService: PolicyService,
                 private reqCapRelationshipService: ReqCapRelationshipService,
                 private notify: ToastrService,
+                private generateTopologyService: ManageTopologyService,
                 private configuration: WineryRepositoryConfigurationService) {
+
         this.newJsPlumbInstance = this.jsPlumbService.getJsPlumbInstance();
         this.newJsPlumbInstance.setContainer('container');
 
@@ -1647,6 +1650,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         this.policyService.policyEventListener().subscribe(data => this.toggleModalHandler(data));
         this.reqCapRelationshipService.sourceSelectedEvent.subscribe(source => this.setSource(source));
         this.reqCapRelationshipService.sendSelectedRelationshipTypeEvent.subscribe(relationship => this.setSelectedRelationshipType(relationship));
+
+        this.generateTopologyService.subscribeCanvas(this);
     }
 
     /**
@@ -2120,34 +2125,41 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 const currentTypeValid = this.entityTypes.relationshipTypes.some(relType => relType.qName === this.selectedRelationshipType.qName);
                 const currentSourceIdValid = this.allNodeTemplates.some(node => node.id === sourceElement);
                 if (sourceElement && currentTypeValid && currentSourceIdValid) {
-                    const prefix = this.backendService.configuration.relationshipPrefix;
-                    const relName = this.selectedRelationshipType.name;
-                    let relNumber = 0;
-                    let relationshipId: string;
-
-                    do {
-                        relationshipId = prefix + '_' + relName + '_' + relNumber++;
-                    } while (this.allRelationshipTemplates.find(value => value.id === relationshipId));
-
-                    if (sourceElement !== info.targetId) {
-                        const newRelationship = new TRelationshipTemplate(
-                            { ref: sourceElement },
-                            { ref: info.targetId },
-                            this.selectedRelationshipType.name,
-                            relationshipId,
-                            this.selectedRelationshipType.qName,
-                            InheritanceUtils.getDefaultPropertiesFromEntityTypes(this.selectedRelationshipType.qName, this.entityTypes.relationshipTypes),
-                            [],
-                            [],
-                            {}
-                        );
-                        this.ngRedux.dispatch(this.actions.saveRelationship(newRelationship));
-                    }
+                    this.generateNewRelationship(sourceElement, info.targetId, this.selectedRelationshipType);
                 }
                 this.unbindConnection();
                 this.revalidateContainer();
             });
         }
+    }
+
+    generateNewRelationship(sourceElement: string, targetId: string, selectedRelationshipType: EntityType): TRelationshipTemplate {
+        const prefix = this.backendService.configuration.relationshipPrefix;
+        const relName = selectedRelationshipType.name;
+        let relNumber = 0;
+        let relationshipId: string;
+
+        do {
+            relationshipId = prefix + '_' + relName + '_' + relNumber++;
+        } while (this.allRelationshipTemplates.find(value => value.id === relationshipId));
+
+        if (sourceElement !== targetId) {
+            const newRelationship = new TRelationshipTemplate(
+                { ref: sourceElement },
+                { ref: targetId },
+                selectedRelationshipType.name,
+                relationshipId,
+                selectedRelationshipType.qName,
+                InheritanceUtils.getDefaultPropertiesFromEntityTypes(selectedRelationshipType.name, this.entityTypes.relationshipTypes),
+                [],
+                [],
+                {}
+            );
+            this.ngRedux.dispatch(this.actions.saveRelationship(newRelationship));
+
+            return newRelationship;
+        }
+        return null;
     }
 
     bindReqCapConnection() {

@@ -65,9 +65,12 @@
         <checkstyle.addons.version>6.0.1</checkstyle.addons.version>
         <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jacoco.reportPath>${project.build.directory}/jacoco.exec</jacoco.reportPath>
+        <jacoco.append>false</jacoco.append>
 
         <!-- versions of all used libraries -->
         <ch.qos.logback.logback-classic.version>1.2.3</ch.qos.logback.logback-classic.version>
+        <com.fasterxml.jackson>2.10.1</com.fasterxml.jackson>
         <de.danielbechler.java-object-diff>0.95</de.danielbechler.java-object-diff>
         <io.github.adr.e-adr.version>1.0.0</io.github.adr.e-adr.version>
         <org.apache.commons.configuration>2.3</org.apache.commons.configuration>
@@ -83,6 +86,7 @@
         <org.skyscreamer.jsonassert>1.5.0</org.skyscreamer.jsonassert>
         <io.rest-assured>3.0.2</io.rest-assured>
         <xerces.xercesImpl.version>2.12.0</xerces.xercesImpl.version>
+        <snakeyaml.version>1.25</snakeyaml.version>
 
         <!-- grouped libraries -->
         <org.apache.cxf.version>2.7.6</org.apache.cxf.version>
@@ -119,6 +123,7 @@
                 <module>org.eclipse.winery.model.csar.toscametafile</module>
                 <module>org.eclipse.winery.model.selfservice</module>
                 <module>org.eclipse.winery.model.threatmodeling</module>
+                <module>org.eclipse.winery.reporting</module>
                 <module>org.eclipse.winery.repository</module>
                 <module>org.eclipse.winery.repository.client</module>
                 <module>org.eclipse.winery.repository.rest</module>
@@ -151,6 +156,7 @@
                 <module>org.eclipse.winery.model.csar.toscametafile</module>
                 <module>org.eclipse.winery.model.selfservice</module>
                 <module>org.eclipse.winery.model.threatmodeling</module>
+                <module>org.eclipse.winery.reporting</module>
                 <module>org.eclipse.winery.repository</module>
                 <module>org.eclipse.winery.repository.client</module>
                 <module>org.eclipse.winery.repository.rest</module>
@@ -161,6 +167,25 @@
         </profile>
     </profiles>
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.6</version>
+                <configuration>
+                    <append>${jacoco.append}</append>
+                    <destFile>${jacoco.reportPath}</destFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>jacoco-initialize</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
         <pluginManagement>
             <plugins>
                 <plugin>
