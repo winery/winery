@@ -126,6 +126,9 @@ export const TopologyRendererReducer =
                         enrichmentButton: false,
                         edmmTransformationCheck: false,
                         refineInstanceModelButton: false,
+                        refinePatternsButton: false,
+                        refineTopologyButton: false,
+                        refineTopologyWithTestsButton: false,
                     },
                     activeResearchPlugin: undefined
                 };

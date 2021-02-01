@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ResearchPlugin, TopologyRendererState } from '../../redux/reducers/topologyRenderer.reducer';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../../redux/store/winery.store';
@@ -19,6 +19,7 @@ export class ResearchPluginsComponent {
 
     refiningType: string;
     subscriptions: Array<Subscription> = [];
+    private open: boolean;
 
     constructor(private ngRedux: NgRedux<IWineryState>,
                 private actions: TopologyRendererActions) {
@@ -28,17 +29,24 @@ export class ResearchPluginsComponent {
 
     closeSidebar() {
         this.ngRedux.dispatch(this.actions.disableResearchPlugin());
+        this.open = false;
     }
 
     private setButtonsState(currentButtonsState: TopologyRendererState) {
         if (currentButtonsState.buttonsState.refineTopologyButton) {
             this.refiningType = 'topology';
+            this.open = true;
         } else if (currentButtonsState.buttonsState.refinePatternsButton) {
             this.refiningType = 'patterns';
+            this.open = true;
         } else if (currentButtonsState.buttonsState.refineTopologyWithTestsButton) {
             this.refiningType = 'tests';
+            this.open = true;
         } else {
             delete this.refiningType;
+            if (this.open) {
+                this.closeSidebar();
+            }
         }
     }
 }
