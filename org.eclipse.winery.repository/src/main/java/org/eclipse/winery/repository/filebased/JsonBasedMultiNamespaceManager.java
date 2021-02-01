@@ -17,21 +17,20 @@ package org.eclipse.winery.repository.filebased;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.winery.common.json.JacksonProvider;
-import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
-import org.eclipse.winery.repository.backend.filebased.JsonBasedNamespaceManager;
-import org.eclipse.winery.repository.backend.filebased.NamespaceProperties;
-import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.model.ids.admin.NamespacesId;
 import org.eclipse.winery.repository.backend.AbstractNamespaceManager;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
+import org.eclipse.winery.repository.backend.filebased.JsonBasedNamespaceManager;
+import org.eclipse.winery.repository.backend.filebased.NamespaceProperties;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.eclipse.jdt.annotation.NonNull;
@@ -96,7 +95,7 @@ public class JsonBasedMultiNamespaceManager extends AbstractNamespaceManager {
                 prop.setUpstreamRepository(((GitBasedRepository) repository).getRepositoryUrl());
             }
 
-            repository.getNamespaceManager().addAllPermanent(Collections.singletonList(prop));
+            repository.getNamespaceManager().setNamespaceProperties(prop.getNamespace(), prop);
         });
         this.repository.updateNamespaces();
     }
