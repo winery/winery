@@ -25,6 +25,7 @@ import { TopologyTemplateUtil } from '../../models/topologyTemplateUtil';
 import { WineryActions } from '../../redux/actions/winery.actions';
 import { EntityTypesModel } from '../../models/entityTypesModel';
 import { WineryRepositoryConfigurationService } from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'winery-instance-model',
@@ -38,8 +39,12 @@ export class InstanceModelComponent implements OnDestroy {
     applicablePlugins: InstanceModelReceiveData;
     running = false;
     started = false;
+    inputs: string[];
+    inputMap: Map<string, string>;
     private subscription: Subscription;
     private entityTypes: EntityTypesModel;
+    private selectedPlugin: InstanceModelPlugin;
+    private selectedMatch: string;
 
     constructor(private ngRedux: NgRedux<IWineryState>,
                 private rendererActions: TopologyRendererActions,
@@ -75,7 +80,7 @@ export class InstanceModelComponent implements OnDestroy {
         this.running = false;
     }
 
-    private handleError(error: any) {
+    private handleError(error: HttpErrorResponse) {
         this.running = false;
     }
 
@@ -109,7 +114,23 @@ export class InstanceModelComponent implements OnDestroy {
         this.ngRedux.dispatch(this.rendererActions.highlightNodes([]));
     }
 
-    select(plugin: InstanceModelPlugin, subGraph: SubGraphData, userInputs?: any) {
-        this.service.send({ pluginId: plugin.id, matchId: subGraph.id, userInputs });
+    selectPlugin(plugin: InstanceModelPlugin, subGraph: SubGraphData) {
+        this.selectedPlugin = plugin;
+        this.selectedMatch = subGraph.id;
+
+        if (subGraph.additionalInputs && subGraph.additionalInputs.length > 0) {
+            this.inputs = subGraph.additionalInputs;
+            this.inputMap = new Map<string, string>();
+            // subGraph.additionalInputs.forEach( input => this.inputMap[input] = '');
+        } else {
+            this.sendRequest();
+        }
+    }
+
+    sendRequest() {
+        this.service.send({ pluginId: this.selectedPlugin.id, matchId: this.selectedMatch, userInputs: this.inputMap });
+        this.inputMap = null;
+        this.inputs = null;
+        this.running = true;
     }
 }

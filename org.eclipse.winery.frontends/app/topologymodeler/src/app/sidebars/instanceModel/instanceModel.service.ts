@@ -20,6 +20,7 @@ import { TTopologyTemplate } from '../../models/ttopology-template';
 export interface SubGraphData {
     id: string;
     nodeIdsToBeReplaced: string[];
+    additionalInputs: string[];
 }
 
 export interface InstanceModelPlugin {
@@ -36,7 +37,7 @@ export interface SendData {
     task?: RefinementTasks;
     pluginId: string;
     matchId: string;
-    userInputs: any;
+    userInputs: Map<string, string>;
 }
 
 @Injectable()

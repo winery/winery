@@ -18,7 +18,7 @@
     <ng-template #showIsRunning>
         <div class="loader" *ngIf="running; else showInputs"></div>
         <ng-template #showInputs>
-            <ul *ngIf="applicablePlugins?.plugins">
+            <ul *ngIf="applicablePlugins?.plugins && !inputMap">
                 <li *ngFor="let plugin of applicablePlugins.plugins">
                     {{ plugin.id }}
                     <ul>
@@ -26,13 +26,32 @@
                             (mouseover)="highlight(subGraph.nodeIdsToBeReplaced)"
                             (mouseleave)="hoverOut()">
                             {{ subGraph.id }}
-                            <button class="btn btn-primary" (click)="select(plugin, subGraph)">
+                            <button class="btn btn-primary" (click)="selectPlugin(plugin, subGraph)">
                                 Select
                             </button>
                         </li>
                     </ul>
                 </li>
             </ul>
+            <div *ngIf="inputs">
+                <h6>This operation requires some more input parameters:</h6>
+                <form #inputVarsFrom="ngForm" id="inputVarsForm">
+                    <ul>
+                        <li *ngFor="let input of inputs">
+                            <label for="{{ input + 'inputVar' }}" class="control-label">{{ input }}</label>
+                            <input id="{{ input + 'inputVar' }}" name="{{ input }}"
+                                   [(ngModel)]="inputMap[input]"
+                                   class="form-control"
+                                   type="text"
+                                   required/>
+                        </li>
+                    </ul>
+                    <button class="btn btn-primary" (click)="sendRequest()"
+                            [disabled]="!inputVarsFrom?.form.valid">
+                        Perform refinement
+                    </button>
+                </form>
+            </div>
         </ng-template>
     </ng-template>
 </div>

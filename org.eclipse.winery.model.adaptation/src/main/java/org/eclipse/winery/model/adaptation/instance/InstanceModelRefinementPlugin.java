@@ -20,7 +20,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.topologygraph.matching.IToscaMatcher;
 import org.eclipse.winery.topologygraph.matching.ToscaIsomorphismMatcher;
 import org.eclipse.winery.topologygraph.matching.ToscaPropertyMatcher;
@@ -92,7 +95,24 @@ public abstract class InstanceModelRefinementPlugin {
         return id;
     }
 
-    public void setUserInputs(Map<String, String> userInputs) {
+    public void setUserInputs(Map<String, String> userInputs, TTopologyTemplate template, int matchId) {
+        RefineableSubgraph refineableSubgraph = this.subGraphs.get(matchId);
+        refineableSubgraph.nodeIdsToBeReplaced.forEach(nodeId -> {
+            TNodeTemplate node = template.getNodeTemplate(nodeId);
+            ArrayList<TNodeTemplate> nodes = ModelUtilities.getHostedOnSuccessors(template, node);
+            nodes.add(node);
+
+            nodes.forEach(nodeTemplate -> {
+                if (nodeTemplate.getProperties() != null && nodeTemplate.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
+                    Map<String, String> kvProperties = ((TEntityTemplate.WineryKVProperties) nodeTemplate.getProperties()).getKVProperties();
+                    userInputs.forEach((key, value) -> {
+                        if (kvProperties.containsKey(key)) {
+                            kvProperties.put(key, value);
+                        }
+                    });
+                }
+            });
+        });
     }
 
     public ArrayList<RefineableSubgraph> getSubGraphs() {

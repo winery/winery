@@ -107,7 +107,7 @@ public class InstanceModelWebSocket extends AbstractWebSocket implements Instanc
                     .findFirst();
                 if (first.isPresent()) {
                     InstanceModelRefinementPlugin plugin = first.get();
-                    plugin.setUserInputs(data.userInputs);
+                    plugin.setUserInputs(data.userInputs, template, data.matchId);
                     plugin.setSelectedMatchId(data.matchId);
                     return plugin;
                 }
