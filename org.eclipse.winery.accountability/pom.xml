@@ -127,9 +127,9 @@
                 <version>${maven.surefire.version}</version>
                 <dependencies>
                     <dependency>
-                        <groupId>org.apache.maven.surefire</groupId>
-                        <artifactId>maven-surefire-common</artifactId>
-                        <version>${maven.surefire.version}</version>
+                        <groupId>org.junit.jupiter</groupId>
+                        <artifactId>junit-jupiter-engine</artifactId>
+                        <version>${junit.jupiter.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>

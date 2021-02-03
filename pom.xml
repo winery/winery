@@ -60,7 +60,7 @@
         <java.version>1.8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <maven.surefire.version>3.0.0-M4</maven.surefire.version>
+        <maven.surefire.version>3.0.0-M5</maven.surefire.version>
         <maven.checkstyle.version>3.1.1</maven.checkstyle.version>
         <checkstyle.addons.version>6.0.1</checkstyle.addons.version>
         <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>

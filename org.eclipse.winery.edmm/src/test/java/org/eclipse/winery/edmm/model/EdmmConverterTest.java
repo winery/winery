@@ -212,8 +212,8 @@ public class EdmmConverterTest extends EdmmDependantTest {
             "  test_node_1:\n" +
             "    type: software_component\n" +
             "    relations:\n" +
-            "    - hosted_on: test_node_3\n" +
             "    - connects_to: test_node_2\n" +
+            "    - hosted_on: test_node_3\n" +
             "    artifacts:\n" +
             "    - war: /artifacttemplates/https%3A%2F%2Fex.org%2Ftosca%2Fto%2Fedmm/startTestNode4/files/script.sh\n" +
             "  test_node_3:\n" +
@@ -223,9 +223,9 @@ public class EdmmConverterTest extends EdmmDependantTest {
             "      ssh_port: '22'\n" +
             "      os_family: ubuntu\n" +
             "  test_node_2:\n" +
-            "    type: https_ex.orgtoscatoedmm__test_node_type_2\n" +
             "    relations:\n" +
             "    - hosted_on: test_node_3\n" +
+            "    type: https_ex.orgtoscatoedmm__test_node_type_2\n" +
             "  test_node_4:\n" +
             "    operations:\n" +
             "      stop: /artifacttemplates/https%3A%2F%2Fex.org%2Ftosca%2Fto%2Fedmm/startTestNode4/files/script.sh\n" +
