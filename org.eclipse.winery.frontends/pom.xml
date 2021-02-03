@@ -112,7 +112,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <phase>install</phase>
+                        <phase>generate-resources</phase>
                         <id>install npm dependencies</id>
                         <goals>
                             <goal>npm</goal>
