@@ -97,19 +97,26 @@ public abstract class InstanceModelRefinementPlugin {
         InstanceModelUtils.setUserInputs(userInputs, template, refineableSubgraph.nodeIdsToBeReplaced);
     }
 
-    public ArrayList<RefineableSubgraph> getSubGraphs() {
-        return subGraphs;
-    }
-
-    public Set<String> getRequiredInputs() {
-        return this.requiredInputs;
-    }
-
     public void setSelectedMatchId(int matchId) {
         if (subGraphs != null) {
             this.matchToBeRefined = subGraphs.get(matchId);
         }
     }
+
+    // region ***** Serialization Helper Methods *****
+    // he following methods are used for serializing the subgraph and the inputs in JSON. 
+
+    @SuppressWarnings("unused")
+    public ArrayList<RefineableSubgraph> getSubGraphs() {
+        return subGraphs;
+    }
+
+    @SuppressWarnings("unused")
+    public Set<String> getRequiredInputs() {
+        return this.requiredInputs;
+    }
+
+    // endregion
 
     public static class RefineableSubgraph {
 
