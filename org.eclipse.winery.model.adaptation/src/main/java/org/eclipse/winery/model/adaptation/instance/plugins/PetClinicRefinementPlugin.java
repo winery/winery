@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -51,11 +52,15 @@ public class PetClinicRefinementPlugin extends InstanceModelRefinementPlugin {
     public TTopologyTemplate apply(TTopologyTemplate topology) {
         Optional<TNodeTemplate> first = topology.getNodeTemplates().stream()
             .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
-                && node.getType().equals(petClinic))
+                && Objects.requireNonNull(node.getType()).equals(petClinic))
             .findFirst();
 
         if (first.isPresent()) {
             TNodeTemplate petClinicNode = first.get();
+            if (petClinicNode.getProperties() == null) {
+                petClinicNode.setProperties(new TEntityTemplate.WineryKVProperties());
+            }
+
             if (petClinicNode.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
                 LinkedHashMap<String, String> kvProperties = ((TEntityTemplate.WineryKVProperties) petClinicNode.getProperties()).getKVProperties();
 
@@ -75,12 +80,13 @@ public class PetClinicRefinementPlugin extends InstanceModelRefinementPlugin {
                     );
                     String dbUser = InstanceModelUtils.executeCommand(
                         session,
-                        " sudo cat /opt/tomcat/latest/webapps/petclinic-pet_clinic/WEB-INF/classes/db/mysql/schema.sql"
+                        "sudo cat /opt/tomcat/latest/webapps/" + kvProperties.get("context").trim()
+                            + "/WEB-INF/classes/db/mysql/schema.sql"
                             + " | grep 'IDENTIFIED BY' | sed -r 's/(.*)IDENTIFIED BY (.*);$/\\2/'"
                     );
 
                     topology.getNodeTemplates().stream()
-                        .filter(node -> node.getType().equals(mySqlDbQName))
+                        .filter(node -> Objects.requireNonNull(node.getType()).equals(mySqlDbQName))
                         .filter(node -> node.getProperties() != null
                             && node.getProperties() instanceof TEntityTemplate.WineryKVProperties
                             && ((TEntityTemplate.WineryKVProperties) node.getProperties()).getKVProperties().get("DBName") != null
@@ -88,6 +94,9 @@ public class PetClinicRefinementPlugin extends InstanceModelRefinementPlugin {
                         )
                         .findFirst()
                         .ifPresent(db -> {
+                            if (db.getProperties() == null) {
+                                db.setProperties(new TEntityTemplate.WineryKVProperties());
+                            }
                             ((TEntityTemplate.WineryKVProperties) db.getProperties()).getKVProperties()
                                 .put("DBUser", dbUser.replaceAll("(')|(\")", ""));
                             ModelUtilities.createRelationshipTemplateAndAddToTopology(

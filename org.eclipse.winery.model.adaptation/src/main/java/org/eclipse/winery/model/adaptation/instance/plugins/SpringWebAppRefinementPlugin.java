@@ -59,6 +59,9 @@ public class SpringWebAppRefinementPlugin extends InstanceModelRefinementPlugin 
                 && (springWebApp.equals(node.getType()) || petClinic.equals(node.getType())))
             .findFirst()
             .ifPresent(app -> {
+                if (app.getProperties() == null) {
+                    app.setProperties(new TEntityTemplate.WineryKVProperties());
+                }
                 if (app.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
                     TEntityTemplate.WineryKVProperties properties = (TEntityTemplate.WineryKVProperties) app.getProperties();
                     properties.getKVProperties().put("context", contextPath.trim());

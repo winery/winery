@@ -34,7 +34,6 @@ import org.jgrapht.GraphMapping;
 
 public abstract class InstanceModelRefinementPlugin {
 
-    protected Set<String> requiredInputs;
     protected RefineableSubgraph matchToBeRefined;
 
     private final ToscaIsomorphismMatcher isomorphismMatcher;
@@ -103,20 +102,9 @@ public abstract class InstanceModelRefinementPlugin {
         }
     }
 
-    // region ***** Serialization Helper Methods *****
-    // he following methods are used for serializing the subgraph and the inputs in JSON. 
-
-    @SuppressWarnings("unused")
     public ArrayList<RefineableSubgraph> getSubGraphs() {
         return subGraphs;
     }
-
-    @SuppressWarnings("unused")
-    public Set<String> getRequiredInputs() {
-        return this.requiredInputs;
-    }
-
-    // endregion
 
     public static class RefineableSubgraph {
 

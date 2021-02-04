@@ -17,6 +17,7 @@ package org.eclipse.winery.model.adaptation.instance.plugins;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -73,10 +74,10 @@ public class TomcatRefinementPlugin extends InstanceModelRefinementPlugin {
 
             template.getNodeTemplates().stream()
                 .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
-                    && node.getType().getLocalPart().toLowerCase().startsWith("Tomcat".toLowerCase()))
+                    && Objects.requireNonNull(node.getType()).getLocalPart().toLowerCase().startsWith("Tomcat".toLowerCase()))
                 .findFirst()
                 .ifPresent(tomcat -> {
-                    WineryVersion version = VersionUtils.getVersion(tomcat.getType().getLocalPart());
+                    WineryVersion version = VersionUtils.getVersion(Objects.requireNonNull(tomcat.getType()).getLocalPart());
                     String[] split = tomcatVersion.split("\\.");
 
                     if (version.getComponentVersion() == null || !version.getComponentVersion().startsWith(split[0])) {
@@ -88,7 +89,9 @@ public class TomcatRefinementPlugin extends InstanceModelRefinementPlugin {
                             tomcat.setType(tomcat9QName);
                         }
                     }
-
+                    if (tomcat.getProperties() == null) {
+                        tomcat.setProperties(new TEntityTemplate.WineryKVProperties());
+                    }
                     if (tomcat.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
                         TEntityTemplate.WineryKVProperties properties = (TEntityTemplate.WineryKVProperties) tomcat.getProperties();
                         properties.getKVProperties().put("Port", tomcatPort);

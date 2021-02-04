@@ -17,6 +17,7 @@ package org.eclipse.winery.model.adaptation.instance.plugins;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -64,13 +65,13 @@ public class MySqlDbmsRefinementPlugin extends InstanceModelRefinementPlugin {
             );
 
             session.disconnect();
-            
+
             template.getNodeTemplates().stream()
                 .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
-                    && node.getType().getLocalPart().toLowerCase().startsWith("MySQL-DBMS".toLowerCase()))
+                    && Objects.requireNonNull(node.getType()).getLocalPart().toLowerCase().startsWith("MySQL-DBMS".toLowerCase()))
                 .findFirst()
                 .ifPresent(mySQL -> {
-                    WineryVersion version = VersionUtils.getVersion(mySQL.getType().getLocalPart());
+                    WineryVersion version = VersionUtils.getVersion(Objects.requireNonNull(mySQL.getType()).getLocalPart());
                     String[] split = mySQL_DBMS_version.split("\\.");
 
                     if (version.getComponentVersion() == null || !version.getComponentVersion().startsWith(split[0])) {
@@ -80,7 +81,9 @@ public class MySqlDbmsRefinementPlugin extends InstanceModelRefinementPlugin {
                             mySQL.setType(mySql_5_7_QName);
                         }
                     }
-
+                    if (mySQL.getProperties() == null) {
+                        mySQL.setProperties(new TEntityTemplate.WineryKVProperties());
+                    }
                     if (mySQL.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
                         TEntityTemplate.WineryKVProperties properties = (TEntityTemplate.WineryKVProperties) mySQL.getProperties();
                         properties.getKVProperties().put("DBMSPort", mySQL_DBMS_port);

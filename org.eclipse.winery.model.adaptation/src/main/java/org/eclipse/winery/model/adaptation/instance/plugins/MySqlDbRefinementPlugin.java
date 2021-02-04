@@ -17,6 +17,7 @@ package org.eclipse.winery.model.adaptation.instance.plugins;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -63,9 +64,12 @@ public class MySqlDbRefinementPlugin extends InstanceModelRefinementPlugin {
 
             template.getNodeTemplates().stream()
                 .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
-                    && node.getType().getLocalPart().toLowerCase().startsWith(mySqlDbQName.getLocalPart().toLowerCase()))
+                    && Objects.requireNonNull(node.getType()).getLocalPart().toLowerCase().startsWith(mySqlDbQName.getLocalPart().toLowerCase()))
                 .findFirst()
                 .ifPresent(db -> {
+                    if (db.getProperties() == null) {
+                        db.setProperties(new TEntityTemplate.WineryKVProperties());
+                    }
                     if (db.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
                         TEntityTemplate.WineryKVProperties properties = (TEntityTemplate.WineryKVProperties) db.getProperties();
                         properties.getKVProperties().put("DBName", identifiedDBs[0]);
