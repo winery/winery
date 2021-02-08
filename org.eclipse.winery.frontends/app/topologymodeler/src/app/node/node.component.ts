@@ -37,6 +37,7 @@ import { WineryRepositoryConfigurationService } from '../../../../tosca-manageme
 import { Subscription } from 'rxjs';
 import { InheritanceUtils } from '../models/InheritanceUtils';
 import { QName } from '../../../../shared/src/app/model/qName';
+import { DetailsSidebarState } from '../sidebars/node-details/node-details-sidebar';
 
 /**
  * Every node has its own component and gets created dynamically.
@@ -472,22 +473,10 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         // close sidebar when longpressing a node template
         if (this.longpress) {
             this.sendPaletteStatus.emit('close Sidebar');
-            this.$ngRedux.dispatch(this.actions.openSidebar({
-                sidebarContents: {
-                    visible: false,
-                    nodeClicked: true,
-                    template: {
-                        id: '',
-                        name: '',
-                        type: '',
-                        properties: {},
-                    },
-                    minInstances: -1,
-                    maxInstances: -1
-                }
-            }));
+            this.$ngRedux.dispatch(this.actions.triggerSidebar(
+                { sidebarContents: new DetailsSidebarState(false, true) }));
         } else {
-            this.$ngRedux.dispatch(this.actions.openSidebar({
+            this.$ngRedux.dispatch(this.actions.triggerSidebar({
                 sidebarContents: {
                     visible: true,
                     nodeClicked: true,

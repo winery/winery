@@ -66,9 +66,9 @@ public class TestRefinementTest {
         webShopToDatabase.setType("{ns}connectsTo");
 
         TTopologyTemplate topologyTemplate = new TTopologyTemplate.Builder()
-            .addNodeTemplates(tomcat)
-            .addNodeTemplates(webShop)
-            .addNodeTemplates(database)
+            .addNodeTemplate(tomcat)
+            .addNodeTemplate(webShop)
+            .addNodeTemplate(database)
             .addRelationshipTemplate(webShopOnTomcat)
             .addRelationshipTemplate(webShopToDatabase)
             .build();
@@ -79,7 +79,7 @@ public class TestRefinementTest {
         mySqlConnectorTest.setId("sqlConnectorTest");
         mySqlConnectorTest.setType("{ns}sqlConnectorTest");
         TTopologyTemplate refinementTopology = new TTopologyTemplate.Builder()
-            .addNodeTemplates(mySqlConnectorTest)
+            .addNodeTemplate(mySqlConnectorTest)
             .build();
 
         OTRelationMapping testHostedOn = new OTRelationMapping(new OTRelationMapping.Builder()

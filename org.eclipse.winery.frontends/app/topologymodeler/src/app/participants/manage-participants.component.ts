@@ -14,7 +14,6 @@ import { WineryDynamicFormModalComponent } from '../../../../tosca-management/sr
 })
 export class ManageParticipantsComponent implements OnInit {
 
-    visible = false;
     participants: OTParticipant[] = [];
     formMetadata: Array<WineryDynamicTableMetadata> = [];
 
@@ -22,8 +21,6 @@ export class ManageParticipantsComponent implements OnInit {
 
     constructor(private ngRedux: NgRedux<IWineryState>,
                 private ngActions: WineryActions) {
-        this.ngRedux.select((state) => state.topologyRendererState.buttonsState.manageParticipantsButton)
-            .subscribe((visible) => this.visible = visible);
         this.ngRedux.select((state) => state.wineryState.currentJsonTopology)
             .subscribe((topology) => this.participants = topology.participants);
     }

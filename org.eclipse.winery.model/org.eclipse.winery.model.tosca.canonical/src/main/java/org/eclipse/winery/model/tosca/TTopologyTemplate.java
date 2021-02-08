@@ -275,13 +275,13 @@ public class TTopologyTemplate extends TExtensibleElements {
             return this;
         }
 
-        public Builder addNodeTemplates(TNodeTemplate nodeTemplates) {
-            if (nodeTemplates == null) {
+        public Builder addNodeTemplate(TNodeTemplate nodeTemplate) {
+            if (nodeTemplate == null) {
                 return this;
             }
 
             List<TNodeTemplate> tmp = new ArrayList<>();
-            tmp.add(nodeTemplates);
+            tmp.add(nodeTemplate);
             return addNodeTemplates(tmp);
         }
 

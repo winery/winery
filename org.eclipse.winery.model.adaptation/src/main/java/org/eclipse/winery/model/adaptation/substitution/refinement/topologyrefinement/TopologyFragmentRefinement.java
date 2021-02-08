@@ -94,7 +94,7 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
 
     @Override
     public IToscaMatcher getMatcher(OTRefinementModel prm) {
-        return new ToscaPrmPropertyMatcher(prm.getDetector().getNodeTemplateOrRelationshipTemplate(), repository.getNamespaceManager());
+        return new ToscaPrmPropertyMatcher(repository.getNamespaceManager());
     }
 
     @Override

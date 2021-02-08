@@ -149,7 +149,7 @@
              data-toggle="buttons">
             <button class="btn btn-sm align-middle dark-button-style"
                     type="button"
-                    id="problemdetection"
+                    id="problemDetection"
                     (click)="toggleButton($event)"
                     [style.background-color]="getStyle(navbarButtonsState.buttonsState.problemDetectionButton)">
                 Detect Problems
@@ -204,6 +204,15 @@
                     (click)="toggleButton($event)"
                     [style.background-color]="getStyle(navbarButtonsState.buttonsState.refineTopologyWithTestsButton)">
                 Refine Topology with Tests
+            </button>
+        </div>
+        
+        <div *wineryRepositoryFeatureToggle="configEnum.InstanceModelRefinement" class="btn-group button-group"
+             data-toggle="buttons">
+            <button class="btn btn-sm align-middle dark-button-style" id="instanceModelRefinement"
+                    (click)="toggleButton($event)"
+                    [style.background-color]="getStyle(navbarButtonsState.buttonsState.refineInstanceModelButton)">
+                Refine Instance Model
             </button>
         </div>
 

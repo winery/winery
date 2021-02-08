@@ -106,7 +106,7 @@ class ThreatModelingTestWithGitBackedRepository extends TestWithGitBackedReposit
             .addPolicies(nodeTemplateThreat)
             .build();
 
-        TTopologyTemplate myTopology = new TTopologyTemplate.Builder().addNodeTemplates(myNodeTemplate).build();
+        TTopologyTemplate myTopology = new TTopologyTemplate.Builder().addNodeTemplate(myNodeTemplate).build();
 
         TServiceTemplate myService = new TServiceTemplate.Builder("MyService", myTopology)
             .setTargetNamespace(demoNamespace)

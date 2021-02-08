@@ -43,7 +43,7 @@ public class EdmmConverterTest extends EdmmDependantTest {
     void transformOneNodeTemplate() {
         // region *** build the TopologyTemplate ***
         TTopologyTemplate.Builder topology = new TTopologyTemplate.Builder();
-        topology.addNodeTemplates(nodeTemplates.get("test_node_1"));
+        topology.addNodeTemplate(nodeTemplates.get("test_node_1"));
         // endregion
 
         TServiceTemplate serviceTemplate = new TServiceTemplate();
@@ -61,7 +61,7 @@ public class EdmmConverterTest extends EdmmDependantTest {
     void transformDerivedFrom() {
         // region *** build the TopologyTemplate ***
         TTopologyTemplate.Builder topology = new TTopologyTemplate.Builder();
-        topology.addNodeTemplates(nodeTemplates.get("test_node_2"));
+        topology.addNodeTemplate(nodeTemplates.get("test_node_2"));
         // endregion
 
         TServiceTemplate serviceTemplate = new TServiceTemplate();
@@ -83,7 +83,7 @@ public class EdmmConverterTest extends EdmmDependantTest {
     void transformProperties() {
         // region *** build the TopologyTemplate ***
         TTopologyTemplate.Builder topology = new TTopologyTemplate.Builder();
-        topology.addNodeTemplates(nodeTemplates.get("test_node_3"));
+        topology.addNodeTemplate(nodeTemplates.get("test_node_3"));
         // endregion
 
         TServiceTemplate serviceTemplate = new TServiceTemplate();
@@ -123,9 +123,9 @@ public class EdmmConverterTest extends EdmmDependantTest {
     void transformTopologyWithRelationsAndRelationTypes() {
         // region *** build the TopologyTemplate ***
         TTopologyTemplate.Builder topology = new TTopologyTemplate.Builder();
-        topology.addNodeTemplates(nodeTemplates.get("test_node_1"));
-        topology.addNodeTemplates(nodeTemplates.get("test_node_2"));
-        topology.addNodeTemplates(nodeTemplates.get("test_node_3"));
+        topology.addNodeTemplate(nodeTemplates.get("test_node_1"));
+        topology.addNodeTemplate(nodeTemplates.get("test_node_2"));
+        topology.addNodeTemplate(nodeTemplates.get("test_node_3"));
         topology.addRelationshipTemplate(relationshipTemplates.get("1_hosted_on_3"));
         topology.addRelationshipTemplate(relationshipTemplates.get("2_hosted_on_3"));
         topology.addRelationshipTemplate(relationshipTemplates.get("1_connects_to_2"));
@@ -160,7 +160,7 @@ public class EdmmConverterTest extends EdmmDependantTest {
     void transformTopologyWithOperations() {
         // region *** build the TopologyTemplate ***
         TTopologyTemplate.Builder topology = new TTopologyTemplate.Builder();
-        topology.addNodeTemplates(nodeTemplates.get("test_node_4"));
+        topology.addNodeTemplate(nodeTemplates.get("test_node_4"));
         // endregion
 
         TServiceTemplate serviceTemplate = new TServiceTemplate();
@@ -189,10 +189,10 @@ public class EdmmConverterTest extends EdmmDependantTest {
     void transformTopology() {
         // region *** build the TopologyTemplate ***
         TTopologyTemplate.Builder topology = new TTopologyTemplate.Builder();
-        topology.addNodeTemplates(nodeTemplates.get("test_node_1"));
-        topology.addNodeTemplates(nodeTemplates.get("test_node_2"));
-        topology.addNodeTemplates(nodeTemplates.get("test_node_3"));
-        topology.addNodeTemplates(nodeTemplates.get("test_node_4"));
+        topology.addNodeTemplate(nodeTemplates.get("test_node_1"));
+        topology.addNodeTemplate(nodeTemplates.get("test_node_2"));
+        topology.addNodeTemplate(nodeTemplates.get("test_node_3"));
+        topology.addNodeTemplate(nodeTemplates.get("test_node_4"));
         topology.addRelationshipTemplate(relationshipTemplates.get("1_hosted_on_3"));
         topology.addRelationshipTemplate(relationshipTemplates.get("2_hosted_on_3"));
         topology.addRelationshipTemplate(relationshipTemplates.get("4_hosted_on_1"));
@@ -212,8 +212,8 @@ public class EdmmConverterTest extends EdmmDependantTest {
             "  test_node_1:\n" +
             "    type: software_component\n" +
             "    relations:\n" +
-            "    - hosted_on: test_node_3\n" +
             "    - connects_to: test_node_2\n" +
+            "    - hosted_on: test_node_3\n" +
             "    artifacts:\n" +
             "    - war: /artifacttemplates/https%3A%2F%2Fex.org%2Ftosca%2Fto%2Fedmm/startTestNode4/files/script.sh\n" +
             "  test_node_3:\n" +
@@ -223,9 +223,9 @@ public class EdmmConverterTest extends EdmmDependantTest {
             "      ssh_port: '22'\n" +
             "      os_family: ubuntu\n" +
             "  test_node_2:\n" +
-            "    type: https_ex.orgtoscatoedmm__test_node_type_2\n" +
             "    relations:\n" +
             "    - hosted_on: test_node_3\n" +
+            "    type: https_ex.orgtoscatoedmm__test_node_type_2\n" +
             "  test_node_4:\n" +
             "    operations:\n" +
             "      stop: /artifacttemplates/https%3A%2F%2Fex.org%2Ftosca%2Fto%2Fedmm/startTestNode4/files/script.sh\n" +

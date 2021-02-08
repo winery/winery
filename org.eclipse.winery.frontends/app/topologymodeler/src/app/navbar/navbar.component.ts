@@ -218,6 +218,10 @@ export class NavbarComponent implements OnDestroy {
                 this.ngRedux.dispatch(this.actions.enrichNodeTemplates());
                 break;
             }
+            case 'instanceModelRefinement': {
+                this.ngRedux.dispatch(this.actions.refineInstanceModel());
+                break;
+            }
             case 'substituteTopology':
                 this.ngRedux.dispatch(this.actions.substituteTopology());
                 break;

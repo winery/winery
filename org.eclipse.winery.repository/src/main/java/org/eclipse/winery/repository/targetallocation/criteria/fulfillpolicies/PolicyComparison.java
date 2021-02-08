@@ -64,7 +64,7 @@ public class PolicyComparison {
     private static List<TTopologyTemplate> toFragments(Collection<TNodeTemplate> nodeTemplates) {
         List<TTopologyTemplate> fragments = new ArrayList<>();
         for (TNodeTemplate nodeTemplate : nodeTemplates) {
-            fragments.add(new TTopologyTemplate.Builder().addNodeTemplates(nodeTemplate).build());
+            fragments.add(new TTopologyTemplate.Builder().addNodeTemplate(nodeTemplate).build());
         }
         return fragments;
     }

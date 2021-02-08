@@ -290,18 +290,24 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
             EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), "OpenStackHeat");
         assertEquals(1, openStackFeatures.size());
         Map<QName, String> openStackFeature = openStackFeatures.get("NodeTypeWithDifferentFeatures_w1-wip1_0");
-        assertEquals(1, openStackFeature.size());
+        assertEquals(2, openStackFeature.size());
         assertEquals("scalable AWS and Heat", openStackFeature.get(QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes}ScaleFeature_AWS-OpenStack-w1-wip1")));
+        assertEquals("ping", openStackFeature.get(QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes}TechIndependentFeature_w1-wip1")));
 
         Map<String, Map<QName, String>> kubernetesFeatures =
             EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), "Kubernetes");
         assertEquals(1, kubernetesFeatures.size());
         Map<QName, String> kubernetesFeature = kubernetesFeatures.get("NodeTypeWithDifferentFeatures_w1-wip1_0");
-        assertEquals(1, kubernetesFeature.size());
+        assertEquals(2, kubernetesFeature.size());
         assertEquals("scalable Kubernetes", kubernetesFeature.get(QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes}ScaleFeature_Kubernetes-w1-wip1")));
+        assertEquals("ping", kubernetesFeature.get(QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes}TechIndependentFeature_w1-wip1")));
 
-        Map<String, Map<QName, String>> nonExisting =
+        Map<String, Map<QName, String>> chefFeatures =
             EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), "Chef");
-        assertEquals(0, nonExisting.size());
+        assertEquals(1, chefFeatures.size());
+        Map<QName, String> chefFeature = chefFeatures.get("NodeTypeWithDifferentFeatures_w1-wip1_0");
+        assertEquals(1, chefFeature.size());
+        assertEquals("ping", chefFeature.get(QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes}TechIndependentFeature_w1-wip1")));
+
     }
 }

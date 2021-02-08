@@ -129,7 +129,7 @@ public class AllocationUtils {
 
         for (TNodeTemplate nodeTemplate : topologyTemplate.getNodeTemplates()) {
             TNodeTemplate clonedNT = clone(nodeTemplate, changeNames);
-            clone.addNodeTemplates(clonedNT);
+            clone.addNodeTemplate(clonedNT);
             clonedNTsByIds.put(clonedNT.getId(), clonedNT);
         }
 

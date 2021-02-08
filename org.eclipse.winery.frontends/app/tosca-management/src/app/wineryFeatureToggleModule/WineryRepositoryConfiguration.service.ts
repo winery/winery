@@ -22,6 +22,7 @@ export interface WineryConfiguration {
         completion: boolean;
         compliance: boolean;
         freezeAndDefrost: boolean;
+        instanceModelRefinement: boolean;
         managementFeatureEnrichment: boolean;
         nfv: boolean; // deprecated
         patternRefinement: boolean;

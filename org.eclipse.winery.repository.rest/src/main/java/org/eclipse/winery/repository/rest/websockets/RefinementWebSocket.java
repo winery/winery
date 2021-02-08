@@ -21,45 +21,39 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
 import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import javax.ws.rs.NotFoundException;
+import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.json.JacksonProvider;
-import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.adaptation.substitution.refinement.AbstractRefinement;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementChooser;
 import org.eclipse.winery.model.adaptation.substitution.refinement.patterns.PatternRefinement;
 import org.eclipse.winery.model.adaptation.substitution.refinement.tests.TestRefinement;
 import org.eclipse.winery.model.adaptation.substitution.refinement.topologyrefinement.TopologyFragmentRefinement;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.rest.resources.apiData.RefinementElementApiData;
-import org.eclipse.winery.repository.rest.resources.apiData.RefinementWebSocketApiData;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ServerEndpoint(value = "/refinetopology")
-public class RefinementWebSocket implements RefinementChooser {
+public class RefinementWebSocket extends AbstractWebSocket implements RefinementChooser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsistencyCheckWebSocket.class);
 
-    private Session session;
     private AbstractRefinement refinement;
     private CompletableFuture<Integer> future;
     private boolean running = false;
     private ServiceTemplateId refinementServiceTemplate;
 
-    @OnOpen
-    public void onOpen(Session session) throws IOException {
-        this.session = session;
-        Map<String, List<String>> requestParameterMap = session.getRequestParameterMap();
+    protected void onOpen() throws IOException {
+        Map<String, List<String>> requestParameterMap = this.session.getRequestParameterMap();
 
         List<String> refinementType = requestParameterMap.get("type");
         if (Objects.nonNull(refinementType)) {
@@ -81,20 +75,9 @@ public class RefinementWebSocket implements RefinementChooser {
         LOGGER.debug("Closed session due to missing or incompatible refinement type!");
     }
 
-    @OnClose
-    public void onClose(Session session) throws IOException {
-        LOGGER.info("Closing session " + session.getId());
-        this.session.close();
-        this.session = null;
-    }
-
-    @OnError
-    public void onError(Throwable t) throws Throwable {
-        LOGGER.error("Error in session " + session.getId(), t);
-    }
-
+    @Override
     @OnMessage
-    public void onMessage(String message) throws IOException {
+    public void onMessage(String message, Session session) throws IOException {
         RefinementWebSocketApiData data = JacksonProvider.mapper.readValue(message, RefinementWebSocketApiData.class);
 
         switch (data.task) {
@@ -104,9 +87,9 @@ public class RefinementWebSocket implements RefinementChooser {
                         RefinementElementApiData element = new RefinementElementApiData();
                         element.serviceTemplateContainingRefinements = refinement.refineServiceTemplate(new ServiceTemplateId(data.serviceTemplate));
                         try {
-                            this.send(element);
-                            session.close();
-                            session = null;
+                            this.sendAsync(element);
+                            this.session.close();
+                            this.session = null;
                         } catch (JsonProcessingException e) {
                             LOGGER.error("Error while sending refinement result", e);
                         } catch (IOException e) {
@@ -123,7 +106,7 @@ public class RefinementWebSocket implements RefinementChooser {
                 break;
             case STOP:
                 this.future.complete(-1);
-                this.send(new RefinementElementApiData(null, this.refinementServiceTemplate, null));
+                this.sendAsync(new RefinementElementApiData(null, this.refinementServiceTemplate, null));
                 this.onClose(this.session);
                 break;
         }
@@ -137,7 +120,7 @@ public class RefinementWebSocket implements RefinementChooser {
             this.future = new CompletableFuture<>();
 
             RefinementElementApiData element = new RefinementElementApiData(candidates, refinementServiceTemplate, topology);
-            this.send(element);
+            this.sendAsync(element);
 
             int id = future.get();
 
@@ -156,7 +139,15 @@ public class RefinementWebSocket implements RefinementChooser {
         return null;
     }
 
-    private void send(RefinementElementApiData element) throws JsonProcessingException {
-        this.session.getAsyncRemote().sendText(JacksonProvider.mapper.writeValueAsString(element));
+    public static class RefinementWebSocketApiData {
+        public RefinementTasks task;
+        public QName serviceTemplate;
+        public int refineWith;
+    }
+
+    public enum RefinementTasks {
+        START,
+        REFINE_WITH,
+        STOP
     }
 }

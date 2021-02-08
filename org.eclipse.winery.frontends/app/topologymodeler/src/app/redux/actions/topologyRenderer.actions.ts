@@ -41,6 +41,7 @@ export class TopologyRendererActions {
     static SPLIT_TOPOLOGY = 'SPLIT_TOPOLOGY';
     static MATCH_TOPOLOGY = 'MATCH_TOPOLOGY';
     static SUBSTITUTE_TOPOLOGY = 'SUBSTITUTE_TOPOLOGY';
+    static REFINE_INSTANCE_MODEL = 'REFINE_INSTANCE_MODEL';
     static REFINE_TOPOLOGY = 'REFINE_TOPOLOGY';
     static REFINE_PATTERNS = 'REFINE_PATTERNS';
     static REFINE_TOPOLOGY_WITH_TESTS = 'REFINE_TOPOLOGY_WITH_TESTS';
@@ -59,8 +60,13 @@ export class TopologyRendererActions {
     static SHOW_MANAGE_YAML_GROUPS = 'SHOW_MANAGE_YAML_GROUPS';
     static TOGGLE_MANAGE_YAML_GROUPS = 'TOGGLE_MANAGE_YAML_GROUPS';
     static TOGGLE_YAML_GROUPS = 'TOGGLE_YAML_GROUPS';
+    static DISABLE_RESEARCH_PLUGIN = 'DISABLE_RESEARCH_PLUGIN';
     static TOGGLE_MANAGE_PARTICIPANTS = 'TOGGLE_MANAGE_PARTICIPANTS';
     static TOGGLE_ASSIGN_PARTICIPANTS = 'TOGGLE_ASSIGN_PARTICIPANTS';
+
+    disableResearchPlugin(): Action {
+        return { type: TopologyRendererActions.DISABLE_RESEARCH_PLUGIN };
+    }
 
     togglePolicies(): Action {
         return { type: TopologyRendererActions.TOGGLE_POLICIES };
@@ -209,5 +215,9 @@ export class TopologyRendererActions {
 
     toggleAssignParticipants(): Action {
         return { type: TopologyRendererActions.TOGGLE_ASSIGN_PARTICIPANTS };
+    }
+
+    refineInstanceModel(): Action {
+        return { type: TopologyRendererActions.REFINE_INSTANCE_MODEL };
     }
 }

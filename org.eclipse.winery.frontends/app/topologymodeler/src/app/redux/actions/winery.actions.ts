@@ -235,7 +235,7 @@ export class WineryActions {
     static DELETE_NODE_TEMPLATE = 'DELETE_NODE_TEMPLATE';
     static DELETE_RELATIONSHIP_TEMPLATE = 'DELETE_RELATIONSHIP_TEMPLATE';
     static CHANGE_NODE_NAME = 'CHANGE_NODE_NAME';
-    static OPEN_SIDEBAR = 'OPEN_SIDEBAR';
+    static TRIGGER_SIDEBAR = 'TRIGGER_SIDEBAR';
     static UPDATE_NODE_COORDINATES = 'UPDATE_NODE_COORDINATES';
     static UPDATE_REL_DATA = 'UPDATE_REL_DATA';
     static CHANGE_MIN_INSTANCES = 'CHANGE_MIN_INSTANCES';
@@ -278,9 +278,9 @@ export class WineryActions {
             type: WineryActions.HIDE_NAVBAR_AND_PALETTE,
             hideNavBarAndPalette: hideNavBarAndPalette
         }));
-    openSidebar: ActionCreator<SidebarStateAction> =
+    triggerSidebar: ActionCreator<SidebarStateAction> =
         ((newSidebarData) => ({
-            type: WineryActions.OPEN_SIDEBAR,
+            type: WineryActions.TRIGGER_SIDEBAR,
             sidebarContents: newSidebarData.sidebarContents
         }));
     changeNodeName: ActionCreator<SidebarChangeNodeName> =

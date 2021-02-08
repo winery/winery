@@ -24,6 +24,14 @@
                                      class="sidebar">
         </winery-node-details-sidebar>
     </ng-sidebar>
+    <ng-sidebar class="winery-sidebar"
+                *ngIf="activeResearchPlugin != undefined"
+                [opened]="activeResearchPlugin != undefined"
+                [position]="'right'">
+        <winery-research-plugins class="sidebar"
+                                 [selectedPlugin]="activeResearchPlugin">
+        </winery-research-plugins>
+    </ng-sidebar>
 
     <div ng-sidebar-content>
 
@@ -47,16 +55,6 @@
                                           [entityTypes]="this.entityTypes">
                 </winery-palette-component>
             </div>
-        </div>
-
-        <div class="sidebar-container">
-            <winery-refinement *ngIf="refiningType" [refinementType]="refiningType"></winery-refinement>
-            <winery-problem-detection></winery-problem-detection>
-            <winery-enricher></winery-enricher>
-            <winery-edmm-transformation-check></winery-edmm-transformation-check>
-            <winery-group-view></winery-group-view>
-            <winery-manage-participants></winery-manage-participants>
-            <winery-multi-participants></winery-multi-participants>
         </div>
 
         <winery-version-slider *ngIf="showVersionSlider"></winery-version-slider>

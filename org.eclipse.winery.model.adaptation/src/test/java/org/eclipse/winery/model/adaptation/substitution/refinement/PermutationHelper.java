@@ -85,10 +85,10 @@ public abstract class PermutationHelper {
             refinementNode_15, refinementNode_16, QName.valueOf("{http://ex.org}relType_hostedOn"));
 
         TTopologyTemplate refinementStructure = new TTopologyTemplate.Builder()
-            .addNodeTemplates(refinementNode_11)
-            .addNodeTemplates(refinementNode_13)
-            .addNodeTemplates(refinementNode_15)
-            .addNodeTemplates(refinementNode_16)
+            .addNodeTemplate(refinementNode_11)
+            .addNodeTemplate(refinementNode_13)
+            .addNodeTemplate(refinementNode_15)
+            .addNodeTemplate(refinementNode_16)
             .addRelationshipTemplate(node11_hostedOn_node13)
             .addRelationshipTemplate(node13_hostedOn_node15)
             .addRelationshipTemplate(node15_hostedOn_node16)
@@ -191,11 +191,11 @@ public abstract class PermutationHelper {
             refinementNode_11, refinementNode_12, QName.valueOf("{http://ex.org}relType_connectsTo"));
 
         TTopologyTemplate refinementStructure = new TTopologyTemplate.Builder()
-            .addNodeTemplates(refinementNode_11)
-            .addNodeTemplates(refinementNode_12)
-            .addNodeTemplates(refinementNode_13)
-            .addNodeTemplates(refinementNode_14)
-            .addNodeTemplates(refinementNode_15)
+            .addNodeTemplate(refinementNode_11)
+            .addNodeTemplate(refinementNode_12)
+            .addNodeTemplate(refinementNode_13)
+            .addNodeTemplate(refinementNode_14)
+            .addNodeTemplate(refinementNode_15)
             .addRelationshipTemplate(node11_hostedOn_node13)
             .addRelationshipTemplate(node12_hostedOn_node13)
             .addRelationshipTemplate(node13_hostedOn_node14)
@@ -283,10 +283,10 @@ public abstract class PermutationHelper {
             refinementNode_11, refinementNode_12, QName.valueOf("{http://ex.org}relType_connectsTo"));
 
         TTopologyTemplate refinementStructure = new TTopologyTemplate.Builder()
-            .addNodeTemplates(refinementNode_11)
-            .addNodeTemplates(refinementNode_12)
-            .addNodeTemplates(refinementNode_13)
-            .addNodeTemplates(refinementNode_14)
+            .addNodeTemplate(refinementNode_11)
+            .addNodeTemplate(refinementNode_12)
+            .addNodeTemplate(refinementNode_13)
+            .addNodeTemplate(refinementNode_14)
             .addRelationshipTemplate(node11_hostedOn_node13)
             .addRelationshipTemplate(node12_hostedOn_node13)
             .addRelationshipTemplate(node13_hostedOn_node14)
@@ -369,10 +369,10 @@ public abstract class PermutationHelper {
             refinementNode_11, refinementNode_12, QName.valueOf("{http://ex.org}relType_connectsTo"));
 
         TTopologyTemplate refinementStructure = new TTopologyTemplate.Builder()
-            .addNodeTemplates(refinementNode_11)
-            .addNodeTemplates(refinementNode_12)
-            .addNodeTemplates(refinementNode_13)
-            .addNodeTemplates(refinementNode_14)
+            .addNodeTemplate(refinementNode_11)
+            .addNodeTemplate(refinementNode_12)
+            .addNodeTemplate(refinementNode_13)
+            .addNodeTemplate(refinementNode_14)
             .addRelationshipTemplate(node11_hostedOn_node13)
             .addRelationshipTemplate(node12_hostedOn_node13)
             .addRelationshipTemplate(node13_hostedOn_node14)
@@ -469,11 +469,11 @@ public abstract class PermutationHelper {
             refinementNode_11, refinementNode_12, QName.valueOf("{http://ex.org}relType_connectsTo"));
 
         TTopologyTemplate refinementStructure = new TTopologyTemplate.Builder()
-            .addNodeTemplates(refinementNode_11)
-            .addNodeTemplates(refinementNode_12)
-            .addNodeTemplates(refinementNode_13)
-            .addNodeTemplates(refinementNode_14)
-            .addNodeTemplates(refinementNode_15)
+            .addNodeTemplate(refinementNode_11)
+            .addNodeTemplate(refinementNode_12)
+            .addNodeTemplate(refinementNode_13)
+            .addNodeTemplate(refinementNode_14)
+            .addNodeTemplate(refinementNode_15)
             .addRelationshipTemplate(node11_hostedOn_node13)
             .addRelationshipTemplate(node12_hostedOn_node13)
             .addRelationshipTemplate(node13_hostedOn_node14)
@@ -575,12 +575,12 @@ public abstract class PermutationHelper {
             refinementNode_15, refinementNode_16, QName.valueOf("{http://ex.org}relType_hostedOn"));
 
         TTopologyTemplate refinementStructure = new TTopologyTemplate.Builder()
-            .addNodeTemplates(refinementNode_11)
-            .addNodeTemplates(refinementNode_12)
-            .addNodeTemplates(refinementNode_13)
-            .addNodeTemplates(refinementNode_14)
-            .addNodeTemplates(refinementNode_15)
-            .addNodeTemplates(refinementNode_16)
+            .addNodeTemplate(refinementNode_11)
+            .addNodeTemplate(refinementNode_12)
+            .addNodeTemplate(refinementNode_13)
+            .addNodeTemplate(refinementNode_14)
+            .addNodeTemplate(refinementNode_15)
+            .addNodeTemplate(refinementNode_16)
             .addRelationshipTemplate(node11_connectsTo_node12)
             .addRelationshipTemplate(node11_hostedOn_node13)
             .addRelationshipTemplate(node12_hostedOn_node14)
@@ -657,8 +657,8 @@ public abstract class PermutationHelper {
             pattern_1, pattern_2, QName.valueOf("{http://ex.org}relType_hostedOn"));
 
         TTopologyTemplate detector = new TTopologyTemplate.Builder()
-            .addNodeTemplates(pattern_1)
-            .addNodeTemplates(pattern_2)
+            .addNodeTemplate(pattern_1)
+            .addNodeTemplate(pattern_2)
             .addRelationshipTemplate(pattern1_hostedOn_pattern2)
             .build();
 
