@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { EdmmTechnologyTransformationCheck, EdmmTransformationCheckService } from './edmmTransformationCheck.service';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
@@ -26,7 +26,7 @@ import { TTopologyTemplate } from '../models/ttopology-template';
         EdmmTransformationCheckService
     ]
 })
-export class EdmmTransformationCheckComponent {
+export class EdmmTransformationCheckComponent implements OnInit, OnDestroy {
 
     loading = false;
     checkResult: EdmmTechnologyTransformationCheck[];
@@ -35,31 +35,22 @@ export class EdmmTransformationCheckComponent {
     // this allows to show the replacement rules of the plugin selected
     currentCandidate: string = null;
 
-    private changeSubscription: Subscription;
+    private subscription: Subscription;
     public topologyTemplate: TTopologyTemplate;
     private numberRelations = 0;
     private numberNodes = 0;
 
     constructor(private service: EdmmTransformationCheckService,
                 private ngRedux: NgRedux<IWineryState>) {
-        this.ngRedux.select(state => state.topologyRendererState.buttonsState.edmmTransformationCheck)
-            .subscribe(value => {
-                if (value) {
-                    this.init();
-                } else {
-                    this.hide();
-                }
-            });
-        this.ngRedux.select(currentState => currentState.wineryState.currentJsonTopology)
-            .subscribe(topologyTemplate => this.topologyTemplate = topologyTemplate);
     }
 
-    init() {
+    ngOnInit(): void {
         this.service.getOneToOneMap().subscribe(map => {
             this.oneToOneMap = map;
         });
-        this.changeSubscription = this.ngRedux.select(state => state.wineryState.currentJsonTopology)
+        this.subscription = this.ngRedux.select(state => state.wineryState.currentJsonTopology)
             .subscribe(element => {
+                this.topologyTemplate = element;
                 if (element.relationshipTemplates && element.relationshipTemplates.length !== this.numberRelations
                     || element.nodeTemplates && element.nodeTemplates.length !== this.numberNodes) {
                     this.numberRelations = element.relationshipTemplates.length;
@@ -69,11 +60,11 @@ export class EdmmTransformationCheckComponent {
             });
     }
 
-    hide() {
-        if (this.changeSubscription) {
-            this.changeSubscription.unsubscribe();
+    ngOnDestroy(): void {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
         }
-        this.changeSubscription = null;
+        this.subscription = null;
     }
 
     doTransformationCheck() {

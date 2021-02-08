@@ -11,32 +11,33 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<div id="RefinementView">
-    <div class="refinementContainer">
-        <div class="loader" *ngIf="loading; else showResult"></div>
-        <ng-template #showResult>
-            <winery-edmm-replacement-rules *ngFor="let candidate of checkResult"
-                                           [pluginResult]="candidate"
-                                           [currentCandidate] = "currentCandidate"
-                                           [topologyTemplate]="topologyTemplate"
-                                           [oneToOneMap]="oneToOneMap">
-            </winery-edmm-replacement-rules>
-            <div class="sidebar-root">
-                <ul>
-                    <li *ngFor="let candidate of checkResult"
-                        [id]="candidate.id" [ngClass]="getColorClass(candidate)">
-                        <div>
-                            <span>{{ candidate.name }} supports: {{ (candidate.supports * 100) | number : '1.1-2'  }}%</span><br>
-                            <button *ngIf="candidate.replacementRules.length > 0" (click)="showReplacementRules(candidate)" class="dark-button-style" >
-                                show replacements
-                            </button>
-                            <button *ngIf="isApplicable(candidate)" (click)="doTransformation(candidate)" class="dark-button-style">
-                                do transformation
-                            </button>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </ng-template>
+
+<div class="loader" *ngIf="loading; else showResult"></div>
+<ng-template #showResult>
+    <winery-edmm-replacement-rules *ngFor="let candidate of checkResult"
+                                   [pluginResult]="candidate"
+                                   [currentCandidate]="currentCandidate"
+                                   [topologyTemplate]="topologyTemplate"
+                                   [oneToOneMap]="oneToOneMap">
+    </winery-edmm-replacement-rules>
+    <div>
+        <ul>
+            <li *ngFor="let candidate of checkResult"
+                [id]="candidate.id" [ngClass]="getColorClass(candidate)">
+                <div>
+                    <span>{{ candidate.name }} supports: {{ (candidate.supports * 100) | number : '1.1-2'  }}
+                        %</span><br>
+                    <button *ngIf="candidate.replacementRules.length > 0" (click)="showReplacementRules(candidate)"
+                            class="dark-button-style">
+                        show replacements
+                    </button>
+                    <button *ngIf="isApplicable(candidate)" (click)="doTransformation(candidate)"
+                            class="dark-button-style">
+                        do transformation
+                    </button>
+                </div>
+            </li>
+        </ul>
     </div>
-</div>
+</ng-template>
+
