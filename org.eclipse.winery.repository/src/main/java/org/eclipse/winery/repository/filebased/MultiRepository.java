@@ -588,7 +588,7 @@ public class MultiRepository implements IWrappingRepository {
 
     @Override
     public void serialize(TDefinitions definitions, OutputStream target) throws IOException {
-        // FIXME serialization is integral to dealing with CSAR exports, but the current design pushes export into the repository, which is incorrect
-        throw new UnsupportedOperationException("Multirepository can not be aware which TOSCA standard is requested for serialization. As such this operation is not supported");
+        RepositoryUtils.getRepositoryByNamespace(definitions.getTargetNamespace(), this)
+            .serialize(definitions, target);
     }
 }

@@ -15,7 +15,6 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { RequirementOrCapability } from './requirementsOrCapabilitiesApiData';
 import { RequirementsOrCapabilitiesService } from './requirementsOrCapabilities.service';
 import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
-import { isNullOrUndefined } from 'util';
 import { ModalDirective } from 'ngx-bootstrap';
 import { InstanceService } from '../../../instance.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -69,7 +68,7 @@ export class RequirementsOrCapabilitiesComponent implements OnInit {
     }
 
     onEditClick(reqOrCap: RequirementOrCapability) {
-        if (!isNullOrUndefined(reqOrCap)) {
+        if (reqOrCap) {
             this.addOrChange = 'Change ';
             this.edit = true;
             this.reqOrCapToBeAdded.name = reqOrCap.name;
@@ -82,7 +81,7 @@ export class RequirementsOrCapabilitiesComponent implements OnInit {
     }
 
     onDeleteClick() {
-        if (!isNullOrUndefined(this.currentSelected)) {
+        if (this.currentSelected) {
             this.confirmDeleteModal.show();
         } else {
             return;
@@ -90,7 +89,7 @@ export class RequirementsOrCapabilitiesComponent implements OnInit {
     }
 
     onRemoveClick(reqOrCap: RequirementOrCapability) {
-        if (!isNullOrUndefined(reqOrCap)) {
+        if (reqOrCap) {
             this.currentSelected = reqOrCap;
             this.confirmDeleteModal.show();
         } else {

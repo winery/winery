@@ -122,7 +122,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <phase>compile</phase>
+                        <phase>test</phase>
                         <id>lint tosca-management app</id>
                         <goals>
                             <goal>npm</goal>
@@ -132,7 +132,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <phase>compile</phase>
+                        <phase>test</phase>
                         <id>lint topologymodeler</id>
                         <goals>
                             <goal>npm</goal>
@@ -142,7 +142,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <phase>compile</phase>
+                        <phase>test</phase>
                         <id>lint workflowmodeler app</id>
                         <goals>
                             <goal>npm</goal>
@@ -152,7 +152,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <phase>compile</phase>
+                        <phase>prepare-package</phase>
                         <id>build tosca-management</id>
                         <goals>
                             <goal>npm</goal>
@@ -162,7 +162,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <phase>compile</phase>
+                        <phase>prepare-package</phase>
                         <id>build topologymodeler</id>
                         <goals>
                             <goal>npm</goal>
@@ -172,7 +172,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <phase>compile</phase>
+                        <phase>prepare-package</phase>
                         <id>build workflowmodeler</id>
                         <goals>
                             <goal>npm</goal>

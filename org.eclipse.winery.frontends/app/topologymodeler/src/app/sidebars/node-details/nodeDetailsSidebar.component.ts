@@ -23,7 +23,6 @@ import { urlElement } from '../../models/enums';
 import { BackendService } from '../../services/backend.service';
 import { PolicyService } from '../../services/policy.service';
 import { DetailsSidebarState } from './node-details-sidebar';
-import { WineryRepositoryConfigurationService } from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { QName } from '../../../../../shared/src/app/model/qName';
 
 /**
@@ -32,7 +31,7 @@ import { QName } from '../../../../../shared/src/app/model/qName';
 @Component({
     selector: 'winery-node-details-sidebar',
     templateUrl: './nodeDetailsSidebar.component.html',
-    styleUrls: ['./nodeDetailsSidebar.component.css'],
+    styleUrls: ['../sidebar.css'],
 })
 export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
     // ngRedux sidebarSubscription
@@ -51,8 +50,7 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
     constructor(private $ngRedux: NgRedux<IWineryState>,
                 private actions: WineryActions,
                 private backendService: BackendService,
-                private policyService: PolicyService,
-                private repoConfiguration: WineryRepositoryConfigurationService) {
+                private policyService: PolicyService) {
     }
 
     deleteButtonSidebarClicked($event) {
@@ -66,21 +64,8 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
      * Closes the sidebar.
      */
     closeSidebar() {
-        this.$ngRedux.dispatch(this.actions.openSidebar({
-            sidebarContents: {
-                visible: false,
-                nodeClicked: false,
-                template: {
-                    id: '',
-                    name: '',
-                    type: '',
-                    properties: {}
-                },
-                relationshipTemplate: undefined,
-                minInstances: -1,
-                maxInstances: -1,
-            }
-        }));
+        this.$ngRedux.dispatch(this.actions.triggerSidebar(
+            { sidebarContents: new DetailsSidebarState(false) }));
     }
 
     /**
@@ -96,14 +81,14 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.sidebarSubscription = this.$ngRedux.select<DetailsSidebarState>(
-                wineryState => wineryState.wineryState.sidebarContents
-            ).subscribe(sidebarContents => {
-                    this.sidebarState = sidebarContents;
-                    if (!this.sidebarState.template.name) {
-                        this.sidebarState.template.name = this.sidebarState.template.id;
-                    }
+            wineryState => wineryState.wineryState.sidebarContents
+        ).subscribe(sidebarContents => {
+                this.sidebarState = sidebarContents;
+                if (!this.sidebarState.template.name) {
+                    this.sidebarState.template.name = this.sidebarState.template.id;
                 }
-            );
+            }
+        );
         // apply changes to the node name <input> field with a debounceTime of 300ms
         this.subscription = this.nodeNameKeyUp.pipe(
             debounceTime(300),
@@ -128,7 +113,7 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
                     }));
                 }
                 // refresh
-                this.$ngRedux.dispatch(this.actions.openSidebar({
+                this.$ngRedux.dispatch(this.actions.triggerSidebar({
                     sidebarContents: {
                         visible: true,
                         nodeClicked: this.sidebarState.nodeClicked,
@@ -161,7 +146,7 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
                     }));
                 }
                 // refresh
-                this.$ngRedux.dispatch(this.actions.openSidebar({
+                this.$ngRedux.dispatch(this.actions.triggerSidebar({
                     sidebarContents: {
                         visible: true,
                         nodeClicked: this.sidebarState.nodeClicked,
@@ -188,7 +173,7 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
                     }));
                 }
                 // refresh
-                this.$ngRedux.dispatch(this.actions.openSidebar({
+                this.$ngRedux.dispatch(this.actions.triggerSidebar({
                     sidebarContents: {
                         visible: true,
                         nodeClicked: this.sidebarState.nodeClicked,
@@ -230,7 +215,7 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
             }
         }
         // refresh
-        this.$ngRedux.dispatch(this.actions.openSidebar({
+        this.$ngRedux.dispatch(this.actions.triggerSidebar({
             sidebarContents: {
                 visible: true,
                 nodeClicked: this.sidebarState.nodeClicked,
@@ -290,7 +275,7 @@ export class NodeDetailsSidebarComponent implements OnInit, OnDestroy {
             this.maxInputEnabled = true;
         }
         // refresh
-        this.$ngRedux.dispatch(this.actions.openSidebar({
+        this.$ngRedux.dispatch(this.actions.triggerSidebar({
             sidebarContents: {
                 visible: true,
                 nodeClicked: this.sidebarState.nodeClicked,

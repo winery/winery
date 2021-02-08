@@ -38,7 +38,6 @@ import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateSour
 
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
-import org.xmlunit.matchers.CompareMatcher;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -57,9 +56,9 @@ public class BackendUtilsTest {
         nt3.setId("NT3");
 
         TTopologyTemplate topologyTemplate = new TTopologyTemplate.Builder()
-            .addNodeTemplates(nt1)
-            .addNodeTemplates(nt2)
-            .addNodeTemplates(nt3)
+            .addNodeTemplate(nt1)
+            .addNodeTemplate(nt2)
+            .addNodeTemplate(nt3)
             .build();
         TTopologyTemplate clone = BackendUtils.clone(topologyTemplate);
 
@@ -73,10 +72,10 @@ public class BackendUtilsTest {
         TTopologyTemplate.Builder minimalTopologyTemplate = new TTopologyTemplate.Builder();
 
         TNodeTemplate nt1 = new TNodeTemplate("nt1");
-        minimalTopologyTemplate.addNodeTemplates(nt1);
+        minimalTopologyTemplate.addNodeTemplate(nt1);
 
         TNodeTemplate nt2 = new TNodeTemplate("nt2");
-        minimalTopologyTemplate.addNodeTemplates(nt2);
+        minimalTopologyTemplate.addNodeTemplate(nt2);
 
         TRelationshipTemplate rt = new TRelationshipTemplate("rt");
         minimalTopologyTemplate.addRelationshipTemplate(rt);
@@ -105,10 +104,10 @@ public class BackendUtilsTest {
         TTopologyTemplate.Builder minimalTopologyTemplate = new TTopologyTemplate.Builder();
 
         TNodeTemplate nt1 = new TNodeTemplate("nt1");
-        minimalTopologyTemplate.addNodeTemplates(nt1);
+        minimalTopologyTemplate.addNodeTemplate(nt1);
 
         TNodeTemplate nt2 = new TNodeTemplate("nt2");
-        minimalTopologyTemplate.addNodeTemplates(nt2);
+        minimalTopologyTemplate.addNodeTemplate(nt2);
 
         TRelationshipTemplate rt = new TRelationshipTemplate("rt");
         minimalTopologyTemplate.addRelationshipTemplate(rt);
@@ -265,7 +264,7 @@ public class BackendUtilsTest {
         nt2.setId("java8_1.0-w2-wip2");
         nt2.setType(new QName("namespace", "java8_1.0-w2-wip2"));
 
-        topologyTemplate.addNodeTemplates(nt1);
+        topologyTemplate.addNodeTemplate(nt1);
 
         TTopologyTemplate resultTopologyTemplate = BackendUtils.updateVersionOfNodeTemplate(topologyTemplate.build(), "java8_1.0-w1-wip1_3", "{namespace}java8_1.0-w2-wip2");
         List<TEntityTemplate> entityTemplates = topologyTemplate.getNodeTemplateOrRelationshipTemplate();

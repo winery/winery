@@ -90,7 +90,7 @@ export const WineryReducer =
                     ...lastState,
                     hideNavBarAndPaletteState: hideNavBarAndPalette
                 };
-            case WineryActions.OPEN_SIDEBAR:
+            case WineryActions.TRIGGER_SIDEBAR:
                 const newSidebarData: DetailsSidebarState = (<SidebarStateAction>action).sidebarContents;
 
                 return <WineryState>{

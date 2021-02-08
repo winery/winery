@@ -23,6 +23,9 @@ public class OpenToscaBaseTypes {
     public static final QName DockerEngineNodeType = QName.valueOf("{http://opentosca.org/baseelements/nodetypes}DockerEngine");
     // endregion
 
+    public static final QName OperatingSystem = QName.valueOf("{http://opentosca.org/nodetypes}OperatingSystem");
+    public static final QName Ubuntu18NodeType = QName.valueOf("{http://opentosca.org/nodetypes}Ubuntu-VM_18.04-w1");
+    
     // region ********** secure elements **********
     public static final QName secureProxyContainer = QName.valueOf("{http://opentosca.org/secureelements/nodetypes}SecureProxyContainer");
     public static final QName secureProxy = QName.valueOf("{http://opentosca.org/secureelements/nodetypes}SecureProxy");

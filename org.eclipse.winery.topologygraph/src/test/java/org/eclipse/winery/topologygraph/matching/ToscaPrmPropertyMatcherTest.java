@@ -86,9 +86,6 @@ public class ToscaPrmPropertyMatcherTest {
 
         ToscaNode leftEntity = new ToscaNode();
         leftEntity.setNodeTemplate(left);
-
-        List<TEntityTemplate> detectorElements = new ArrayList<>();
-        detectorElements.add(left);
         // endregion
 
         // region ***** right *****
@@ -103,7 +100,7 @@ public class ToscaPrmPropertyMatcherTest {
 
         assertEquals(
             expected,
-            new ToscaPrmPropertyMatcher(detectorElements, new MockNamespaceManager())
+            new ToscaPrmPropertyMatcher(new MockNamespaceManager())
                 .propertiesCompatible(leftEntity, rightEntity)
         );
     }
@@ -161,9 +158,6 @@ public class ToscaPrmPropertyMatcherTest {
 
         ToscaNode leftEntity = new ToscaNode();
         leftEntity.setNodeTemplate(left);
-
-        List<TEntityTemplate> detectorElements = new ArrayList<>();
-        detectorElements.add(left);
         // endregion
 
         // region ***** right *****
@@ -178,7 +172,7 @@ public class ToscaPrmPropertyMatcherTest {
 
         assertEquals(
             expected,
-            new ToscaPrmPropertyMatcher(detectorElements, namespaceManager)
+            new ToscaPrmPropertyMatcher(namespaceManager)
                 .characterizingPatternsCompatible(leftEntity, rightEntity)
         );
     }

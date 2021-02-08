@@ -26,10 +26,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Stream;
 
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
 import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
@@ -50,32 +47,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ServerEndpoint(value = "/git")
-public class GitWebSocket {
+public class GitWebSocket extends AbstractWebSocket {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GitWebSocket.class);
     private static final Set<GitWebSocket> connections = new CopyOnWriteArraySet<>();
-    private Session session;
 
-    @OnOpen
-    public void start(Session session) {
-        this.session = session;
+    protected void onOpen() {
         connections.add(this);
-        LOGGER.debug(session.getId() + " has opened a connection");
         if (Stream.of(System.getenv("PATH").split(File.pathSeparator))
             .map(Paths::get)
             .anyMatch(path -> Files.exists(path.resolve("git-lfs.exe")) || Files.exists(path.resolve("git-lfs")))) {
             writeInSession(session, "{ \"lfsAvailable\": true }");
         }
-    }
-
-    @OnClose
-    public void onClose(Session session) {
-        LOGGER.debug("Session " + session.getId() + " has ended");
-    }
-
-    @OnError
-    public void onError(Throwable t) throws Throwable {
-        LOGGER.trace("", t);
     }
 
     @OnMessage
