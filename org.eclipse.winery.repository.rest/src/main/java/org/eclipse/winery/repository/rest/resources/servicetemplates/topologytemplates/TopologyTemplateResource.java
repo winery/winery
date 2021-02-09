@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -146,7 +146,7 @@ public class TopologyTemplateResource {
         "@return The JSON representation of the topology template <em>without</em> associated artifacts and without the parent service template")
     @Produces(MediaType.APPLICATION_JSON)
     // @formatter:on
-    public TTopologyTemplate getTopologyTempalte() {
+    public TTopologyTemplate getTopologyTemplate() {
         return this.topologyTemplate;
     }
 

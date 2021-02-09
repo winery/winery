@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -37,12 +37,12 @@ public class StayMappingsResource extends AbstractRefinementModelMappingsResourc
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public List<OTStayMapping> addPropertyMappingFromApi(PrmStayMappingApiData mapping) {
-        TEntityTemplate detectorElement = this.res.getDetectorResource().getTopologyTempalte()
+        TEntityTemplate detectorElement = this.res.getDetectorResource().getTopologyTemplate()
             .getNodeTemplateOrRelationshipTemplate().stream()
             .filter(element -> element.getId().equals(mapping.detectorElement))
             .findFirst()
             .orElseThrow(IllegalArgumentException::new);
-        TEntityTemplate refinementElement = this.res.getRefinementTopologyResource().getTopologyTempalte()
+        TEntityTemplate refinementElement = this.res.getRefinementTopologyResource().getTopologyTemplate()
             .getNodeTemplateOrRelationshipTemplate().stream()
             .filter(element -> element.getId().equals(mapping.refinementElement))
             .findFirst()

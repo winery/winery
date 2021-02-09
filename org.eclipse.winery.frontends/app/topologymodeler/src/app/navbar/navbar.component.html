@@ -1,5 +1,5 @@
 <!--
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -206,7 +206,7 @@
                 Refine Topology with Tests
             </button>
         </div>
-        
+
         <div *wineryRepositoryFeatureToggle="configEnum.InstanceModelRefinement" class="btn-group button-group"
              data-toggle="buttons">
             <button class="btn btn-sm align-middle dark-button-style" id="instanceModelRefinement"
@@ -332,6 +332,26 @@
                 <!--<li role="menuitem"><a class="dropdown-item" (click)="checkCompliance()">Check Compliance</a></li>-->
                 <li role="menuitem"><a class="dropdown-item" href="#">About</a></li>
             </ul>
+        </div>
+
+        <div *ngIf="!readonly && templateParameter.elementPath == 'grafikprmmodelling'" class="btn-group button-group"
+             dropdown>
+            Only show selected Mapping Types:
+            <select (change)="selectRelationshipType($event)"
+                    class="btn btn-sm dark-button-style align-middle dropdown-toggle">
+                <label>Mapping Type</label>
+                <ng-container>
+                    <option>All</option>
+                    <option *ngFor="let mappingType of entityTypes.relationshipTypes" [value]="mappingType.id">
+                        {{mappingType.id}}
+                    </option>
+                </ng-container>
+            </select>
+        </div>
+
+        <div *ngIf="!readonly && templateParameter.elementPath == 'grafikprmmodelling'">
+            <p style="color:red;">Note: It's only possible to edit PRM Mappings here. Detector and Refinement Structure
+                must be defined separately </p>
         </div>
     </form>
 </nav>

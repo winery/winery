@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,6 +24,7 @@ import { Subscription } from 'rxjs';
 import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 import { EntityTypesModel } from '../models/entityTypesModel';
 import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { TopologyModelerConfiguration } from '../models/topologyModelerConfiguration';
 
 /**
  * This is the parent component of the canvas and navbar component.
@@ -41,6 +42,7 @@ export class TopologyRendererComponent implements OnInit, OnDestroy {
     @Input() nodeTemplates: Array<TNodeTemplate>;
     @Input() relationshipTemplates: Array<TRelationshipTemplate>;
     @Input() sidebarDeleteButtonClickEvent: any;
+    @Input() templateParameter: TopologyModelerConfiguration;
     @Output() generatedReduxState = new EventEmitter();
     hideNavBarState: boolean;
     subscriptions: Array<Subscription> = [];

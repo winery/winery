@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -19,6 +19,9 @@ export interface HighlightNodesAction extends Action {
     nodesToHighlight: string[];
 }
 
+export interface ShowSelectedMappingAction extends Action {
+    mappingType: string;
+}
 /**
  * Actions of the topologyRenderer
  */
@@ -63,6 +66,7 @@ export class TopologyRendererActions {
     static DISABLE_RESEARCH_PLUGIN = 'DISABLE_RESEARCH_PLUGIN';
     static TOGGLE_MANAGE_PARTICIPANTS = 'TOGGLE_MANAGE_PARTICIPANTS';
     static TOGGLE_ASSIGN_PARTICIPANTS = 'TOGGLE_ASSIGN_PARTICIPANTS';
+    static SHOW_ONLY_MAPPINGS_OF_SELECTED_TYPE = 'SHOW_ONLY_MAPPINGS_OF_SELECTED_TYPE';
 
     disableResearchPlugin(): Action {
         return { type: TopologyRendererActions.DISABLE_RESEARCH_PLUGIN };
@@ -219,5 +223,12 @@ export class TopologyRendererActions {
 
     refineInstanceModel(): Action {
         return { type: TopologyRendererActions.REFINE_INSTANCE_MODEL };
+    }
+
+    showOnlyMappingsOfSelectedType(type: string): ShowSelectedMappingAction {
+        return {
+            type: TopologyRendererActions.SHOW_ONLY_MAPPINGS_OF_SELECTED_TYPE,
+            mappingType: type
+        };
     }
 }
