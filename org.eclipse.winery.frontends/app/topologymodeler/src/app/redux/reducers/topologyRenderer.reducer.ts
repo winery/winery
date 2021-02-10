@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,7 +13,9 @@
  ********************************************************************************/
 
 import { Action } from 'redux';
-import { HighlightNodesAction, TopologyRendererActions } from '../actions/topologyRenderer.actions';
+import {
+    HighlightNodesAction, ShowSelectedMappingAction, TopologyRendererActions
+} from '../actions/topologyRenderer.actions';
 
 export enum ResearchPlugin {
     REFINEMENT = 'REFINEMENT',
@@ -67,6 +69,7 @@ export interface TopologyRendererState {
     activeResearchPlugin: ResearchPlugin;
     nodesToSelect?: string[];
 
+    mappingType?: string;
 }
 
 export const INITIAL_TOPOLOGY_RENDERER_STATE: TopologyRendererState = {
@@ -441,6 +444,16 @@ export const TopologyRendererReducer =
                         versionSliderButton: !lastState.buttonsState.versionSliderButton
                     }
                 };
+            case TopologyRendererActions.SHOW_ONLY_MAPPINGS_OF_SELECTED_TYPE:
+                const actionData = <ShowSelectedMappingAction>action;
+                if (actionData.mappingType) {
+                    return {
+                        ...lastState,
+                        mappingType: actionData.mappingType
+                    };
+                } else {
+                    delete lastState.mappingType;
+                }
         }
         return lastState;
     };

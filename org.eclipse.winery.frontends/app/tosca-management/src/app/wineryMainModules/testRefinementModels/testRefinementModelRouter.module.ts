@@ -23,6 +23,7 @@ import { EditXMLComponent } from '../../instance/sharedComponents/editXML/editXM
 import { NgModule } from '@angular/core';
 import { RelationMappingsComponent } from '../../instance/refinementModels/relationshipMappings/relationMappings.component';
 import { TopologyTemplateComponent } from '../../instance/sharedComponents/topologyTemplate/topologyTemplate.component';
+import { SubMenuItems } from '../../model/subMenuItem';
 
 const toscaType = ToscaTypes.TestRefinementModel;
 
@@ -38,6 +39,7 @@ const testRefinementRoutes: Routes = [
             { path: 'license', component: WineryLicenseComponent },
             { path: 'detector', component: TopologyTemplateComponent },
             { path: 'testfragment', component: TopologyTemplateComponent },
+            { path: SubMenuItems.graficPrmModelling.urlFragment, component: TopologyTemplateComponent },
             { path: 'relationmappings', component: RelationMappingsComponent },
             { path: 'xml', component: EditXMLComponent },
             { path: '', redirectTo: 'readme', pathMatch: 'full' }

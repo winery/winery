@@ -39,7 +39,7 @@ import { RequirementModel } from '../models/requirementModel';
 import { EntityTypesModel } from '../models/entityTypesModel';
 import { ExistsService } from '../services/exists.service';
 import { ModalVariant, ModalVariantAndState } from './entities-modal/modal-model';
-import { align, toggleModalType } from '../models/enums';
+import { align, PropertyDefinitionType, toggleModalType } from '../models/enums';
 import { ImportTopologyModalData } from '../models/importTopologyModalData';
 import { ImportTopologyService } from '../services/import-topology.service';
 import { SplitMatchTopologyService } from '../services/split-match-topology.service';
@@ -61,6 +61,11 @@ import { WineryRowData } from '../../../../tosca-management/src/app/wineryTableM
 import { InheritanceUtils } from '../models/InheritanceUtils';
 import { PolicyService } from '../services/policy.service';
 import { QName } from '../../../../shared/src/app/model/qName';
+import { TopologyModelerConfiguration } from '../models/topologyModelerConfiguration';
+import { SubMenuItems } from '../../../../tosca-management/src/app/model/subMenuItem';
+import { AttributeMappingType } from '../../../../tosca-management/src/app/instance/refinementModels/attributeMappings/attributeMapping';
+// tslint:disable-next-line:max-line-length
+import { PropertiesDefinitionKVElement } from '../../../../tosca-management/src/app/instance/sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
 import { DetailsSidebarState } from '../sidebars/node-details/node-details-sidebar';
 
 @Component({
@@ -83,14 +88,17 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     @ViewChild('threatModelingModal') threatModelingModal: ModalDirective;
     @ViewChild('manageYamlPoliciesModal') manageYamlPoliciesModal: ModalDirective;
     @ViewChild('addYamlPolicyModal') addYamlPolicyModal: ModalDirective;
+    @ViewChild('prmPropertiesModal') prmPropertiesModal: ModalDirective;
     @Input() readonly: boolean;
     @Input() entityTypes: EntityTypesModel;
     @Input() diffMode = false;
     @Input() sidebarDeleteButtonClickEvent: any;
+    @Input() templateParameter: TopologyModelerConfiguration;
 
     readonly draggingThreshold = 300;
     readonly newNodePositionOffsetX = 108;
     readonly newNodePositionOffsetY = 30;
+    readonly attributeMappingType = AttributeMappingType;
 
     allNodeTemplates: Array<TNodeTemplate> = [];
     allRelationshipTemplates: Array<TRelationshipTemplate> = [];
@@ -100,7 +108,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     currentModalData: any;
     dragSourceActive = false;
     event: any;
-    selectedRelationshipType: EntityType;
+    selectedRelationshipType: EntityType = new EntityType();
     jsPlumbBindConnection = false;
     newNode: TNodeTemplate;
     paletteOpened: boolean;
@@ -114,6 +122,18 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     subscriptions: Array<Subscription> = [];
     // unbind mouse move and up functions
     unbindMouseActions: Array<Function> = [];
+    prmModellingUrlFragment = SubMenuItems.graficPrmModelling.urlFragment;
+    relationshipTypes: TRelationshipTemplate;
+    newRelationship: TRelationshipTemplate;
+    detectorNodeProperties: PropertiesDefinitionKVElement[];
+    refinementNodeProperties: PropertiesDefinitionKVElement[];
+    direction: string;
+    applicableRelationshipType: string;
+    validEndpointType: string;
+    requiredDeploymentArtifactType: string;
+    type: string;
+    detectorProperty: string;
+    refinementProperty: string;
 
     // variables which hold their corresponding modal data
     capabilities: CapabilitiesModalData;
@@ -493,6 +513,21 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 this.capabilitiesModal.show();
                 break;
         }
+    }
+
+    onSavePrmProperties() {
+        const properties: {} = {};
+        properties['direction'] = this.direction;
+        properties['applicableRelationshipType'] = this.applicableRelationshipType;
+        properties['validEndpointType'] = this.validEndpointType;
+        properties['requiredDeploymentArtifactType'] = this.requiredDeploymentArtifactType;
+        properties['type'] = this.type;
+        properties['detectorProperty'] = this.detectorProperty;
+        properties['refinementProperty'] = this.refinementProperty;
+
+        const propertyData = { kvproperties: properties, propertyType: PropertyDefinitionType.KV };
+        this.newRelationship.properties = propertyData;
+        this.ngRedux.dispatch(this.actions.saveRelationship(this.newRelationship));
     }
 
     /**
@@ -1073,6 +1108,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 // show manageYamlPoliciesModal
                 this.copyOfYamlPolicies = this.getYamlPoliciesTableData();
                 this.manageYamlPoliciesModal.show();
+            } else if (this.topologyRendererState.mappingType) {
+                this.selectMappingTypesToDisplay(this.topologyRendererState.mappingType);
             }
 
             setTimeout(() => {
@@ -1650,6 +1687,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         this.policyService.policyEventListener().subscribe(data => this.toggleModalHandler(data));
         this.reqCapRelationshipService.sourceSelectedEvent.subscribe(source => this.setSource(source));
         this.reqCapRelationshipService.sendSelectedRelationshipTypeEvent.subscribe(relationship => this.setSelectedRelationshipType(relationship));
+        this.backendService.requestRelationshipTypes().subscribe(data => this.relationshipTypes = data);
 
         this.generateTopologyService.subscribeCanvas(this);
     }
@@ -2155,8 +2193,11 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 [],
                 {}
             );
-            this.ngRedux.dispatch(this.actions.saveRelationship(newRelationship));
-
+            if (this.templateParameter.elementPath === this.prmModellingUrlFragment) {
+                this.addNewPrmMapping(newRelationship);
+            } else {
+                this.ngRedux.dispatch(this.actions.saveRelationship(newRelationship));
+            }
             return newRelationship;
         }
         return null;
@@ -2505,5 +2546,91 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         // no need to encode the namespace since we assume dotted namespaces in YAML mode
         const absoluteURL = `${this.backendService.configuration.uiURL}${refType}/${typeQName.nameSpace}/${typeQName.localName}`;
         return '<a href="' + absoluteURL + '">' + typeQName.localName + '</a>';
+    }
+
+    addNewPrmMapping(newRelationship: TRelationshipTemplate) {
+        this.getDetectorNodeproperties(newRelationship.sourceElement);
+        this.getRefinementNodeproperties(newRelationship.targetElement);
+        this.newRelationship = newRelationship;
+        this.direction = undefined;
+        this.applicableRelationshipType = undefined;
+        this.validEndpointType = undefined;
+        this.requiredDeploymentArtifactType = undefined;
+        this.type = undefined;
+        this.detectorProperty = undefined;
+        this.refinementProperty = undefined;
+        if (newRelationship.type === '{http://opentosca.org/prmMappingTypes}StayMapping'
+            || newRelationship.type === '{http://opentosca.org/prmMappingTypes}PermutationMapping') {
+            this.onSavePrmProperties();
+        } else {
+            this.prmPropertiesModal.show();
+        }
+    }
+
+    setRequiredDAType(data: string) {
+        this.requiredDeploymentArtifactType = data;
+    }
+
+    setApplicableRelationshipType(data: string) {
+        this.applicableRelationshipType = data;
+    }
+
+    setValidEndpointType(data: string) {
+        this.validEndpointType = data;
+    }
+
+    setDetectorNodeProperty(data: string) {
+        this.detectorProperty = data;
+    }
+
+    setRefinementNodeProperty(data: string) {
+        this.refinementProperty = data;
+    }
+
+    /**
+     * only show selected mapping type
+     * @param mappingType
+     */
+    selectMappingTypesToDisplay(mappingType: string) {
+        if (this.newJsPlumbInstance.getAllConnections()) {
+            for (const con of this.newJsPlumbInstance.getAllConnections()) {
+                con.setVisible(true);
+                const id: string = con.id;
+                if (!(id.includes(mappingType) || id.includes('d_') || id.includes('rs_')) && mappingType !== 'All') {
+                    con.setVisible(false);
+                }
+            }
+        }
+    }
+
+    private getDetectorNodeproperties(sourceElement: { ref: string }) {
+        const source = this.entityTypes.unGroupedNodeTypes.find(element => sourceElement.ref.includes(element.id));
+        if (source.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition) {
+            this.detectorNodeProperties = source.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.propertyDefinitionKVList;
+        }
+    }
+
+    private getRefinementNodeproperties(targetElement: { ref: string }) {
+        const target = this.entityTypes.unGroupedNodeTypes.find(element => targetElement.ref.includes(element.id));
+        if (target.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition) {
+            this.refinementNodeProperties = target.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.propertyDefinitionKVList;
+        }
+    }
+
+    checkDisableButton() {
+        if (this.newRelationship) {
+            if (this.newRelationship.type === '{http://opentosca.org/prmMappingTypes}RelationshipMapping'
+                && this.direction && this.validEndpointType && this.applicableRelationshipType) {
+                return false;
+            } else if (this.newRelationship.type === '{http://opentosca.org/prmMappingTypes}DeploymentArtifactMapping'
+                && this.requiredDeploymentArtifactType) {
+                return false;
+            } else if (this.newRelationship.type === '{http://opentosca.org/prmMappingTypes}AttributeMapping'
+                && this.type === this.attributeMappingType.ALL || (this.type && this.detectorProperty && this.refinementProperty)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
     }
 }

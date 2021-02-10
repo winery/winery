@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -32,6 +32,7 @@ import { TopologyRendererActions } from './redux/actions/topologyRenderer.action
 import { WineryRepositoryConfigurationService } from '../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { WineryActions } from './redux/actions/winery.actions';
 import { DetailsSidebarState } from './sidebars/node-details/node-details-sidebar';
+import { SubMenuItems } from '../../../tosca-management/src/app/model/subMenuItem';
 
 /**
  * This is the root component of the topology modeler.
@@ -54,6 +55,8 @@ export class WineryComponent implements OnInit, AfterViewInit {
     hideNavBarState: boolean;
     subscriptions: Array<Subscription> = [];
     someNodeMissingCoordinates = false;
+    templateParameter: TopologyModelerConfiguration;
+    prmModellingUrlFragment = SubMenuItems.graficPrmModelling.urlFragment;
 
     topologyDifferences: [ToscaDiff, TTopologyTemplate];
 
@@ -116,14 +119,14 @@ export class WineryComponent implements OnInit, AfterViewInit {
                     this.backendService.configure(this.topologyModelerData.configuration);
                 } else {
                     this.activatedRoute.queryParams.subscribe((params: TopologyModelerConfiguration) => {
-                        this.backendService.configure(params);
+                        this.configure(params);
                     });
                     this.initiateData();
                 }
             }
         } else {
             this.activatedRoute.queryParams.subscribe((params: TopologyModelerConfiguration) => {
-                this.backendService.configure(params);
+                this.configure(params);
             });
             this.initiateData();
         }
@@ -166,6 +169,15 @@ export class WineryComponent implements OnInit, AfterViewInit {
         // init relationship templates
         this.relationshipTemplates = TopologyTemplateUtil.initRelationTemplates(relationshipTemplateArray, this.nodeTemplates,
             this.configurationService.isYaml(), this.topologyDifferences);
+    }
+
+    private configure(params: TopologyModelerConfiguration) {
+        this.backendService.configure(params);
+        this.templateParameter = params;
+        // change readonly to true, so that the properties of the PRM-mappings cannot be changed afterwards
+        if (this.templateParameter.elementPath === this.prmModellingUrlFragment) {
+            this.readonly = true;
+        }
     }
 
     initiateData(): void {

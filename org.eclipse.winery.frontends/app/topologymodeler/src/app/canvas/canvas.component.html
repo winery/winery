@@ -1,5 +1,5 @@
 <!--
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -49,7 +49,7 @@
                      (unmarkConnections)="unmarkConnections()"
                      (relationshipTemplateIdClicked)="onClickRelationshipTemplateName($event)"
                      (sendNodeData)="toggleModalHandler($event)"
-                     (showYamlPolicyManagementModal)="showYamlPolicyManagementModal();">
+                     (showYamlPolicyManagementModal)="showYamlPolicyManagementModal()">
         </winery-node>
     </div>
     <!-- workaround for a jsPlumb connection bug, where upon loading node templates without relationships
@@ -516,6 +516,115 @@
     </winery-modal-footer>
 </winery-modal>
 
+<winery-modal bsModal #prmPropertiesModal="bs-modal" [modalRef]="prmPropertiesModal">
+    <winery-modal-header title="Add Properties"></winery-modal-header>
+    <winery-modal-body>
+        <div *ngIf="selectedRelationshipType.id == 'DeploymentArtifactMapping'">
+            <label>Required Deployment Artifact Type</label>
+            <select
+                name="artifactTypeChooser"
+                class="form-control"
+                id="artifactTypeChooser"
+                type="text"
+                required="required"
+                (change)="setRequiredDAType($event.target.value)">
+                <ng-container>
+                    <option *ngFor="let artifactType of entityTypes.artifactTypes"
+                            [value]="artifactType.qName">{{artifactType.name}}
+                    </option>
+                </ng-container>
+            </select>
+        </div>
+        <div *ngIf="selectedRelationshipType.id == 'RelationshipMapping'">
+            <div class="form-group">
+                <span><b>Relation Direction</b></span>
+                <br>
+                <input type="radio" name="direction" id="ingoing" (click)="direction = 'ingoing'">
+                <label for="ingoing">Ingoing</label>
+                <br>
+                <input type="radio" name="direction" id="outgoing" (click)="direction = 'outgoing'">
+                <label for="outgoing">Outgoing</label>
+            </div>
+
+            <label>Applicable Relationship Type</label>
+            <select
+                name="relationshipTypeChooser"
+                class="form-control"
+                id="relationshipTypeChooser"
+                type="text"
+                required="required"
+                (change)="setApplicableRelationshipType($event.target.value)">
+                <ng-container>
+                    <option *ngFor="let relationshipType of relationshipTypes"
+                            [value]="relationshipType.qName">{{relationshipType.name}}
+                    </option>
+                </ng-container>
+            </select>
+
+            <label>Valid Endpoint Type</label>
+            <select
+                name="nodeTypeChooser"
+                class="form-control"
+                id="nodeTypeChooser"
+                type="text"
+                required="required"
+                (change)="setValidEndpointType($event.target.value)">
+                <ng-container>
+                    <option *ngFor="let nodeType of entityTypes.unGroupedNodeTypes"
+                            [value]="nodeType.qName">{{nodeType.name}}
+                    </option>
+                </ng-container>
+            </select>
+        </div>
+        <div *ngIf="selectedRelationshipType.id == 'AttributeMapping'">
+            <div class="form-group">
+                <span><b>Attribute Mapping Type</b></span>
+                <br>
+                <input type="radio" name="type" id="all" (click)="type = attributeMappingType.ALL">
+                <label for="all">All</label>
+                <br>
+                <input type="radio" name="type" id="selective" (click)="type = attributeMappingType.SELECTIVE">
+                <label for="selective">Selective</label>
+            </div>
+            <div *ngIf="type == attributeMappingType.SELECTIVE">
+                <label>Detector Node Property</label>
+                <select
+                    name="detectorNodePropertyChooser"
+                    class="form-control"
+                    id="detectorNodePropertyChooser"
+                    type="text"
+                    required="required"
+                    (change)="setDetectorNodeProperty($event.target.value)">
+                    <ng-container>
+                        <option *ngFor="let property of detectorNodeProperties"
+                                [value]="property.key">{{property.key}}
+                        </option>
+                    </ng-container>
+                </select>
+
+                <label>Refinement Node Property</label>
+                <select
+                    name="refinementNodePropertyChooser"
+                    class="form-control"
+                    id="refinementNodePropertyChooser"
+                    type="text"
+                    required="required"
+                    (change)="setRefinementNodeProperty($event.target.value)">
+                    <ng-container>
+                        <option *ngFor="let property of refinementNodeProperties"
+                                [value]="property.key">{{property.key}}
+                        </option>
+                    </ng-container>
+                </select>
+            </div>
+        </div>
+    </winery-modal-body>
+    <winery-modal-footer closeButtonLabel="Cancel"
+                         okButtonLabel="Add"
+                         [disableOkButton]="checkDisableButton()"
+                         (onOk)="onSavePrmProperties()">
+    </winery-modal-footer>
+</winery-modal>
 
 <!-- XML Policies and Deployment Artifacts Modal -->
 <winery-entities-modal *ngIf="!readonly"

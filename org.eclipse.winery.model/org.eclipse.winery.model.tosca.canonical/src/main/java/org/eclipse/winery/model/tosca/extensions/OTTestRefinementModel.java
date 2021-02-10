@@ -14,6 +14,8 @@
 
 package org.eclipse.winery.model.tosca.extensions;
 
+import java.util.ArrayList;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -33,7 +35,8 @@ public class OTTestRefinementModel extends OTRefinementModel {
     private TTopologyTemplate testFragment;
 
     @Deprecated // used for XML deserialization of API request content
-    public OTTestRefinementModel() { }
+    public OTTestRefinementModel() {
+    }
 
     public OTTestRefinementModel(Builder builder) {
         super(builder);
@@ -54,6 +57,11 @@ public class OTTestRefinementModel extends OTRefinementModel {
         this.testFragment = refinementStructure;
     }
 
+    @Override
+    public void resetAllMappings() {
+        setRelationMappings(new ArrayList<>());
+    }
+
     public TTopologyTemplate getTestFragment() {
         return getRefinementTopology();
     }
@@ -62,7 +70,8 @@ public class OTTestRefinementModel extends OTRefinementModel {
 
         private TTopologyTemplate testFragment;
 
-        public Builder() { }
+        public Builder() {
+        }
 
         public Builder setTestFragment(TTopologyTemplate testFragment) {
             this.testFragment = testFragment;

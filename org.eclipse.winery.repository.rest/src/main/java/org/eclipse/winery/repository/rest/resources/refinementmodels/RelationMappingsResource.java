@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -42,8 +42,8 @@ public class RelationMappingsResource extends AbstractRefinementModelMappingsRes
       Therefore, we do it manually.
      */
     public List<OTRelationMapping> addRelationMappingFromApi(RelationMappingApiData mapping) {
-        TNodeTemplate detectorElement = this.res.getDetectorResource().getTopologyTempalte().getNodeTemplate(mapping.detectorElement);
-        TNodeTemplate refinementElement = this.res.getRefinementTopologyResource().getTopologyTempalte().getNodeTemplate(mapping.refinementElement);
+        TNodeTemplate detectorElement = this.res.getDetectorResource().getTopologyTemplate().getNodeTemplate(mapping.detectorElement);
+        TNodeTemplate refinementElement = this.res.getRefinementTopologyResource().getTopologyTemplate().getNodeTemplate(mapping.refinementElement);
         return this.addMapping(mapping.createTRelationMapping(detectorElement, refinementElement));
     }
 }

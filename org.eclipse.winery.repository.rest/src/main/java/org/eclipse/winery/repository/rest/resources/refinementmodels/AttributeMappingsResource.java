@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -36,12 +36,12 @@ public class AttributeMappingsResource extends AbstractRefinementModelMappingsRe
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public List<OTAttributeMapping> addPropertyMappingFromApi(PrmAttributeMappingApiData mapping) {
-        TEntityTemplate refinementElement = this.res.getRefinementTopologyResource().getTopologyTempalte().getNodeTemplateOrRelationshipTemplate().stream()
+    public List<OTAttributeMapping> addAttributeMappingFromApi(PrmAttributeMappingApiData mapping) {
+        TEntityTemplate refinementElement = this.res.getRefinementTopologyResource().getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().stream()
             .filter(entityTemplate -> entityTemplate.getId().equals(mapping.refinementElement))
             .findFirst()
             .orElse(null);
-        TEntityTemplate detectorElement = this.res.getDetectorResource().getTopologyTempalte().getNodeTemplateOrRelationshipTemplate().stream()
+        TEntityTemplate detectorElement = this.res.getDetectorResource().getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().stream()
             .filter(entityTemplate -> entityTemplate.getId().equals(mapping.detectorElement))
             .findFirst()
             .orElse(null);

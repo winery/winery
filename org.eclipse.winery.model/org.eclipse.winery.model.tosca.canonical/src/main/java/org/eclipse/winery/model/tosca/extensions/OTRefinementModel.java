@@ -104,6 +104,8 @@ public abstract class OTRefinementModel extends TExtensibleElements implements H
 
     public abstract void setRefinementTopology(TTopologyTemplate topology);
 
+    public abstract void resetAllMappings();
+
     public List<OTRelationMapping> getRelationMappings() {
         return relationMappings;
     }

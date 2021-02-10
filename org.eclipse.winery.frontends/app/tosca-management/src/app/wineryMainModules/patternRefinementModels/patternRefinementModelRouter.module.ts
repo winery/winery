@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -28,6 +28,7 @@ import { AttributeMappingsComponent } from '../../instance/refinementModels/attr
 import { DeploymentArtifactsMappingsComponent } from '../../instance/refinementModels/deploymentArtifactsMappings/deploymentArtifactsMappings.component';
 import { PermutationMappingsComponent } from '../../instance/refinementModels/permutationMappings/permutationMappings.component';
 import { PermutationsComponent } from '../../instance/refinementModels/permutations/permutations.component';
+import { SubMenuItems } from '../../model/subMenuItem';
 
 const toscaType = ToscaTypes.PatternRefinementModel;
 
@@ -43,6 +44,7 @@ const patternRefinementRoutes: Routes = [
             { path: 'license', component: WineryLicenseComponent },
             { path: 'detector', component: TopologyTemplateComponent },
             { path: 'refinementstructure', component: TopologyTemplateComponent },
+            { path: SubMenuItems.graficPrmModelling.urlFragment, component: TopologyTemplateComponent },
             { path: 'relationmappings', component: RelationMappingsComponent },
             { path: 'attributemappings', component: AttributeMappingsComponent },
             { path: 'staymappings', component: StayMappingsComponent },

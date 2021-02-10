@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -140,13 +140,13 @@ export class InstanceService {
                 break;
             case ToscaTypes.PatternRefinementModel:
             case ToscaTypes.TopologyFragmentRefinementModel:
-                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.detector, SubMenuItems.refinementStructure, SubMenuItems.relationMappings,
-                    SubMenuItems.attributeMappings, SubMenuItems.stayMappings, SubMenuItems.deploymentArtifactMappings, SubMenuItems.permutationMappings,
-                    SubMenuItems.permutations, SubMenuItems.xml];
+                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.detector, SubMenuItems.refinementStructure, SubMenuItems.graficPrmModelling,
+                    SubMenuItems.relationMappings, SubMenuItems.attributeMappings, SubMenuItems.stayMappings, SubMenuItems.deploymentArtifactMappings,
+                    SubMenuItems.permutationMappings, SubMenuItems.permutations, SubMenuItems.xml];
                 break;
             case ToscaTypes.TestRefinementModel:
-                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.detector, SubMenuItems.testFragment, SubMenuItems.relationMappings,
-                    SubMenuItems.xml];
+                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.detector, SubMenuItems.testFragment, SubMenuItems.graficPrmModelling,
+                    SubMenuItems.relationMappings, SubMenuItems.xml];
                 break;
             case ToscaTypes.DataType:
                 subMenu = [SubMenuItems.readme, SubMenuItems.inheritance, SubMenuItems.constraints, SubMenuItems.properties];
