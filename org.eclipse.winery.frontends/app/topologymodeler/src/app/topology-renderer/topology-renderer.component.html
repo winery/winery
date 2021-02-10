@@ -1,5 +1,5 @@
 <!--
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,13 +14,16 @@
 <div *ngIf="loader?.generatedReduxState">
     <winery-navbar
         [readonly]="readonly"
-        [hideNavBarState]="hideNavBarState">
+        [hideNavBarState]="hideNavBarState"
+        [templateParameter]="templateParameter"
+        [entityTypes]="entityTypes">
     </winery-navbar>
 
     <winery-canvas [readonly]="readonly"
                    [entityTypes]="entityTypes"
                    [diffMode]="diffMode"
-                   [sidebarDeleteButtonClickEvent]="sidebarDeleteButtonClickEvent">
+                   [sidebarDeleteButtonClickEvent]="sidebarDeleteButtonClickEvent"
+                   [templateParameter]="templateParameter">
     </winery-canvas>
 
     <div *ngIf="diffMode" style="position: fixed; right: 0;" class="sidebar-root">

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca.extensions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -88,6 +89,18 @@ public class OTTopologyFragmentRefinementModel extends OTRefinementModel {
 
     public void setRefinementTopology(TTopologyTemplate refinementStructure) {
         this.refinementStructure = refinementStructure;
+    }
+
+    /**
+     * remove all mappings so that delete works when modeling graphically
+     */
+    @Override
+    public void resetAllMappings() {
+        setDeploymentArtifactMappings(new ArrayList<>());
+        setPermutationMappings(new ArrayList<>());
+        setRelationMappings(new ArrayList<>());
+        setAttributeMappings(new ArrayList<>());
+        setStayMappings(new ArrayList<>());
     }
 
     @Nullable

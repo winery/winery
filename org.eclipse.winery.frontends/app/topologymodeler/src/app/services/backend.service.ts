@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright(c) 2018-2020 Contributors to the Eclipse Foundation
+ * Copyright(c) 2018-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -37,6 +37,7 @@ import { TPolicy } from '../models/policiesModalData';
 import { EntityTypesModel } from '../models/entityTypesModel';
 import { ToscaUtils } from '../models/toscaUtils';
 import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
+import { SubMenuItems } from '../../../../tosca-management/src/app/model/subMenuItem';
 
 /**
  * Responsible for interchanging data between the app and the server.
@@ -152,35 +153,66 @@ export class BackendService {
      */
     private requestAllEntitiesAtOnce(): Observable<[any, any, boolean]> {
         if (this.configuration) {
-            // TODO latest rxjs allows passing a dictionary to forkJoin to get a strongly typed object instead
-            //  that would allow us to change this mess to an Observable[TTopologyTemplate, EntityTypesModel, [ToscaDiff, TTopologyTemplate], boolean]
-            //  or even encapsulate that complication into a single type
-            return forkJoin<any, any, boolean>([
-                forkJoin<TTopologyTemplate, any[], [ToscaDiff, TTopologyTemplate]>([
-                    this.requestTopologyTemplate(),
-                    forkJoin([
-                        this.requestNodeVisuals(),
-                        this.requestRelationshipVisuals(),
-                        this.requestPolicyVisuals(),
-                        this.requestPolicyTypesVisuals(),
+            // request data for graphicPrmModeling
+            if (this.configuration.elementPath === SubMenuItems.graficPrmModelling.urlFragment) {
+                return forkJoin<any, any, boolean>([
+                    forkJoin<TTopologyTemplate, any[], [ToscaDiff, TTopologyTemplate]>([
+                        this.requestTopologyTemplate(),
+                        forkJoin([
+                            this.requestNodeVisuals(),
+                            this.requestPrmMappingVisuals(),
+                            this.requestPolicyVisuals(),
+                            this.requestPolicyTypesVisuals(),
+                        ]),
+                        this.requestTopologyDiff(),
                     ]),
-                    this.requestTopologyDiff(),
-                ]),
-                forkJoin<any[]>([
-                    this.requestGroupedNodeTypes(),
-                    this.requestArtifactTemplates(),
-                    this.requestArtifactTypes(),
-                    this.requestPolicyTypes(),
-                    this.requestCapabilityTypes(),
-                    this.requestRequirementTypes(),
-                    this.requestPolicyTemplates(),
-                    this.requestRelationshipTypes(),
-                    this.requestNodeTypes(),
-                    this.requestVersionElements(),
-                    this.requestDataTypes(),
-                ]),
-                this.configurationService.getConfigurationFromBackend(this.configuration.repositoryURL),
-            ]);
+                    forkJoin<any[]>([
+                        this.requestGroupedNodeTypes(),
+                        this.requestArtifactTemplates(),
+                        this.requestArtifactTypes(),
+                        this.requestPolicyTypes(),
+                        this.requestCapabilityTypes(),
+                        this.requestRequirementTypes(),
+                        this.requestPolicyTemplates(),
+                        this.requestPrmMappingTypes(),
+                        this.requestNodeTypes(),
+                        this.requestVersionElements(),
+                        this.requestDataTypes(),
+                    ]),
+                    this.configurationService.getConfigurationFromBackend(this.configuration.repositoryURL),
+                ]);
+            } else {
+                // request data for standard topology modeling
+                // TODO latest rxjs allows passing a dictionary to forkJoin to get a strongly typed object instead
+                //  that would allow us to change this mess to an Observable[TTopologyTemplate, EntityTypesModel, [ToscaDiff, TTopologyTemplate], boolean]
+                //  or even encapsulate that complication into a single type
+                return forkJoin<any, any, boolean>([
+                    forkJoin<TTopologyTemplate, any[], [ToscaDiff, TTopologyTemplate]>([
+                        this.requestTopologyTemplate(),
+                        forkJoin([
+                            this.requestNodeVisuals(),
+                            this.requestRelationshipVisuals(),
+                            this.requestPolicyVisuals(),
+                            this.requestPolicyTypesVisuals(),
+                        ]),
+                        this.requestTopologyDiff(),
+                    ]),
+                    forkJoin<any[]>([
+                        this.requestGroupedNodeTypes(),
+                        this.requestArtifactTemplates(),
+                        this.requestArtifactTypes(),
+                        this.requestPolicyTypes(),
+                        this.requestCapabilityTypes(),
+                        this.requestRequirementTypes(),
+                        this.requestPolicyTemplates(),
+                        this.requestRelationshipTypes(),
+                        this.requestNodeTypes(),
+                        this.requestVersionElements(),
+                        this.requestDataTypes(),
+                    ]),
+                    this.configurationService.getConfigurationFromBackend(this.configuration.repositoryURL),
+                ]);
+            }
         }
     }
 
@@ -312,6 +344,9 @@ export class BackendService {
             case 'relationshipTypes': {
                 this.storedModel.relationshipTypes = [];
                 entityTypeJSON.forEach((relationshipType: EntityType) => {
+                    if (this.configuration.elementPath === SubMenuItems.graficPrmModelling.urlFragment) {
+                        relationshipType = this.createPrmRelationshipType(relationshipType);
+                    }
                     const visuals = this.storedModel.relationshipVisuals
                         .find(value => value.typeId === relationshipType.qName);
                     this.storedModel.relationshipTypes
@@ -352,6 +387,25 @@ export class BackendService {
         }
     }
 
+    createPrmRelationshipType(relationshipType: EntityType): EntityType {
+        const serviceTemplateOrNodeTypeOrNodeTypeImplementation = relationshipType;
+        // @ts-ignore
+        relationshipType.namespace = relationshipType.targetNamespace;
+        relationshipType.qName = '{' + relationshipType.namespace + '}' + relationshipType.name;
+        relationshipType.id = relationshipType.name;
+        const newRelationshipType = new EntityType(relationshipType.id, relationshipType.qName, relationshipType.name,
+            relationshipType.namespace, null, { serviceTemplateOrNodeTypeOrNodeTypeImplementation: [EntityType] });
+        newRelationshipType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation.push(serviceTemplateOrNodeTypeOrNodeTypeImplementation);
+        return newRelationshipType;
+    }
+
+    /**
+     * Request all Prm Mapping Types as Relationship Types for graphic prm modelling
+     */
+    requestPrmMappingTypes(): Observable<any> {
+        return this.http.get(this.configuration.parentElementUrl + 'mappingTypes');
+    }
+
     /**
      * Requests all namespaces from the backend
      */
@@ -390,8 +444,14 @@ export class BackendService {
      */
     saveTopologyTemplate(topologyTemplate: TTopologyTemplate): Observable<HttpResponse<string>> {
         if (this.configuration) {
+            let url = '';
+            if (this.configuration.elementPath === SubMenuItems.graficPrmModelling.urlFragment) {
+                url = this.configuration.parentElementUrl + 'graphicPrmTopology';
+            } else {
+                url = this.configuration.elementUrl;
+            }
             const headers = new HttpHeaders().set('Content-Type', 'application/json');
-            return this.http.put(this.configuration.elementUrl,
+            return this.http.put(url,
                 TopologyTemplateUtil.prepareSave(topologyTemplate),
                 { headers: headers, responseType: 'text', observe: 'response' }
             );
@@ -654,7 +714,7 @@ export class BackendService {
     /**
      * Requests all relationship types from the backend
      */
-    private requestRelationshipTypes(): Observable<any> {
+    requestRelationshipTypes(): Observable<any> {
         if (this.configuration) {
             return this.http.get(this.configuration.repositoryURL + '/relationshiptypes?full', { headers: this.headers });
         }
@@ -720,6 +780,12 @@ export class BackendService {
             } else {
                 return of<[ToscaDiff, TTopologyTemplate]>([undefined, undefined]);
             }
+        }
+    }
+
+    private requestPrmMappingVisuals() {
+        if (this.configuration) {
+            return this.http.get<Visuals>(this.configuration.parentElementUrl + 'mappingVisuals');
         }
     }
 }

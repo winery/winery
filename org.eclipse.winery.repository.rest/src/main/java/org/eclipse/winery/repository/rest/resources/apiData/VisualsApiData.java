@@ -55,4 +55,9 @@ public class VisualsApiData {
 
     public VisualsApiData() {
     }
+
+    public VisualsApiData(String color, QName typeId) {
+        this.color = color;
+        this.typeId = typeId;
+    }
 }

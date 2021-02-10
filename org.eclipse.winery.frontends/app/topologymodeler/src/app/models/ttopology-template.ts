@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -178,10 +178,10 @@ export class Entity {
  * This is the datamodel for the Entity Types
  */
 export class EntityType extends Entity {
-    constructor(id: string,
-                qName: string,
-                name: string,
-                namespace: string,
+    constructor(id: string = '',
+                qName: string = '',
+                name: string = '',
+                namespace: string = '',
                 properties?: any,
                 public full?: any) {
         super(id, qName, name, namespace, properties);

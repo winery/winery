@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -40,6 +40,7 @@ export class SubMenuItems {
     static readonly documentation: SubMenuItem = { displayName: 'Documentation', urlFragment: 'documentation' };
     static readonly edmmTypeMappings: SubMenuItem = { displayName: 'EDMM Type Mappings', urlFragment: 'edmmtypemappings' };
     static readonly files: SubMenuItem = { displayName: 'Files', urlFragment: 'files' };
+    static readonly graficPrmModelling: SubMenuItem = { displayName: 'Grafic Modeling', urlFragment: 'grafikprmmodelling' };
     static readonly identifier: SubMenuItem = { displayName: 'Identifier', urlFragment: 'identifier' };
     static readonly implementationArtifacts: SubMenuItem = { displayName: 'Implementation Artifacts', urlFragment: 'implementationartifacts' };
     static readonly implementations: SubMenuItem = { displayName: 'Implementations', urlFragment: 'implementations' };

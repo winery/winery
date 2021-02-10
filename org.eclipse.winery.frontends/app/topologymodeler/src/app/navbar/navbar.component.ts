@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -29,6 +29,8 @@ import { WineryRepositoryConfigurationService } from '../../../../tosca-manageme
 import { TTopologyTemplate } from '../models/ttopology-template';
 import { VersionSliderService } from '../version-slider/version-slider.service';
 import { CheService } from '../services/che.service';
+import { TopologyModelerConfiguration } from '../models/topologyModelerConfiguration';
+import { EntityTypesModel } from '../models/entityTypesModel';
 
 /**
  * The navbar of the topologymodeler.
@@ -53,7 +55,8 @@ export class NavbarComponent implements OnDestroy {
 
     @Input() hideNavBarState: boolean;
     @Input() readonly: boolean;
-
+    @Input() templateParameter: TopologyModelerConfiguration;
+    @Input() entityTypes: EntityTypesModel;
     @ViewChild('exportCsarButton')
     private exportCsarButtonRef: ElementRef;
 
@@ -283,6 +286,10 @@ export class NavbarComponent implements OnDestroy {
                 this.ngRedux.dispatch(this.actions.toggleAssignParticipants());
                 break;
         }
+    }
+
+    selectRelationshipType(event) {
+        this.ngRedux.dispatch(this.actions.showOnlyMappingsOfSelectedType(event.target.value));
     }
 
     /**

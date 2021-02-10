@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -39,8 +39,10 @@ public class PropertiesDefinitionSerializer extends StdSerializer<TEntityType.Pr
             jsonGenerator.writeStringField("elementName", wpd.getElementName());
             jsonGenerator.writeArrayFieldStart("propertyDefinitionKVList");
             JsonSerializer<Object> defSerializer = serializerProvider.findValueSerializer(PropertyDefinitionKV.class);
-            for (PropertyDefinitionKV propDef : wpd.getPropertyDefinitions()) {
-                defSerializer.serialize(propDef, jsonGenerator, serializerProvider);
+            if (wpd.getPropertyDefinitions() != null) {
+                for (PropertyDefinitionKV propDef : wpd.getPropertyDefinitions()) {
+                    defSerializer.serialize(propDef, jsonGenerator, serializerProvider);
+                }
             }
             jsonGenerator.writeEndArray();
             if (wpd.getIsDerivedFromXSD() != null && wpd.getIsDerivedFromXSD()) {
