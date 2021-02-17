@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support.collections.withoutid;
 
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.EntityResource;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
@@ -29,7 +30,7 @@ public abstract class EntityWithoutIdResource<EntityT> extends EntityResource<En
      */
     @SuppressWarnings("unchecked")
     public EntityWithoutIdResource(EntityT o, int idx, List<EntityT> list, IPersistable res) {
-        super((IIdDetermination<EntityT>) IdDeterminationWithHashCode.INSTANCE, o, idx, list, res);
+        super((IIdDetermination<EntityT>) new IdDeterminationWithHashCode(RepositoryFactory.getRepository()), o, idx, list, res);
     }
 
 }

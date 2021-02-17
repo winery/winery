@@ -14,8 +14,8 @@
 
 package org.eclipse.winery.repository.datatypes.ids.elements;
 
-import org.eclipse.winery.common.ids.IdNames;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.IdNames;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 
 public class ServiceTemplateSelfServiceFilesDirectoryId extends DirectoryId {
 

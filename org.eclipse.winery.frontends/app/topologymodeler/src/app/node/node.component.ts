@@ -13,14 +13,14 @@
  ********************************************************************************/
 
 import {
-    AfterViewInit, Component, ComponentRef, DoCheck, ElementRef, EventEmitter, Input, KeyValueDiffers, NgZone, OnDestroy, OnInit, Output, Renderer2, ViewChild
+    AfterViewInit, Component, ComponentRef, DoCheck, ElementRef, EventEmitter, Input, KeyValueDiffers, NgZone,
+    OnDestroy, OnInit, Output, Renderer2, ViewChild
 } from '@angular/core';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { WineryActions } from '../redux/actions/winery.actions';
-import { EntityType, TNodeTemplate } from '../models/ttopology-template';
-import { QName } from '../models/qname';
+import { EntityType, OTParticipant, TGroupDefinition, TNodeTemplate } from '../models/ttopology-template';
 import { PropertyDefinitionType, urlElement } from '../models/enums';
 import { BackendService } from '../services/backend.service';
 import { GroupedNodeTypeModel } from '../models/groupedNodeTypeModel';
@@ -36,6 +36,8 @@ import { FeatureEnum } from '../../../../tosca-management/src/app/wineryFeatureT
 import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { Subscription } from 'rxjs';
 import { InheritanceUtils } from '../models/InheritanceUtils';
+import { QName } from '../../../../shared/src/app/model/qName';
+import { DetailsSidebarState } from '../sidebars/node-details/node-details-sidebar';
 
 /**
  * Every node has its own component and gets created dynamically.
@@ -72,12 +74,14 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     policyTemplates: any;
     artifactTypes: any;
     removeZIndex: any;
-    propertyDefinitionType: string;
+    propertyDefinitionType: PropertyDefinitionType;
     policyIcons: string[];
     configEnum = FeatureEnum;
     policiesOfNode: TPolicy[];
     private policyChangeSubscription: Subscription;
     private artifactsChangedSubscription: Subscription;
+    groupDefinitions: TGroupDefinition[];
+    participants: OTParticipant[];
 
     @Input() readonly: boolean;
     @Input() entityTypes: EntityTypesModel;
@@ -162,6 +166,11 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                 }
             });
         }
+        this.$ngRedux.select((store) => store.wineryState.currentJsonTopology)
+            .subscribe((topology) => {
+                this.groupDefinitions = topology.groups;
+                this.participants = topology.participants;
+            });
         this.$ngRedux.subscribe(() => this.setPolicyIcons());
     }
 
@@ -170,7 +179,6 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
      */
     get nodeTypeLocalName() {
         return this.nodeTemplate.type.split('}').pop();
-        // return this.nodeTemplate.type ? new QName(this.nodeTemplate.type).localName : JSON.stringify({});
     }
 
     public addItem(): void {
@@ -179,7 +187,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
 
     /**
      * This function determines which kind of properties the nodeType embodies.
-     * We have 3 possibilities: none, XML element, or Key value pairs.
+     * We have 4 possibilities: none, XML element, Key value pairs or yaml-datatypes.
      */
     findOutPropertyDefinitionTypeForProperties(type: string, groupedNodeTypes: Array<GroupedNodeTypeModel>): void {
         let propertyDefinitionTypeAssigned: boolean;
@@ -197,7 +205,8 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                     } else {
                         // if no XML element inside PropertiesDefinition then it must be of type Key Value
                         if (!node.propertiesDefinition.element) {
-                            this.propertyDefinitionType = PropertyDefinitionType.KV;
+                            this.propertyDefinitionType = this.configurationService.isYaml() ?
+                                PropertyDefinitionType.YAML : PropertyDefinitionType.KV;
                             propertyDefinitionTypeAssigned = true;
                         } else {
                             // else we have XML
@@ -220,13 +229,13 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
             if (entry.qName === parentType) {
                 parentFound = true;
                 const node = entry.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0];
-                if (!node.propertiesDefinition && node.derivedFrom) {
+                if (!node.properties && node.derivedFrom) {
                     this.checkParentPropertyDefinitions(node.derivedFrom.typeRef);
-                } else if (!node.propertiesDefinition) {
+                } else if (!node.properties) {
                     this.propertyDefinitionType = PropertyDefinitionType.NONE;
                     return true;
                 } else {
-                    if (!node.propertiesDefinition.element) {
+                    if (!node.properties.element) {
                         this.propertyDefinitionType = PropertyDefinitionType.KV;
                     } else {
                         this.propertyDefinitionType = PropertyDefinitionType.XML;
@@ -464,27 +473,17 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         // close sidebar when longpressing a node template
         if (this.longpress) {
             this.sendPaletteStatus.emit('close Sidebar');
-            this.$ngRedux.dispatch(this.actions.openSidebar({
-                sidebarContents: {
-                    sidebarVisible: false,
-                    nodeClicked: true,
-                    id: '',
-                    nameTextFieldValue: '',
-                    type: '',
-                    minInstances: -1,
-                    maxInstances: -1
-                }
-            }));
+            this.$ngRedux.dispatch(this.actions.triggerSidebar(
+                { sidebarContents: new DetailsSidebarState(false, true) }));
         } else {
-            this.$ngRedux.dispatch(this.actions.openSidebar({
+            this.$ngRedux.dispatch(this.actions.triggerSidebar({
                 sidebarContents: {
-                    sidebarVisible: true,
+                    visible: true,
                     nodeClicked: true,
-                    id: this.nodeTemplate.id,
-                    nameTextFieldValue: this.nodeTemplate.name,
-                    type: this.nodeTemplate.type,
+                    template: this.nodeTemplate,
+                    // special handling for instance restrictions due to infinity
                     minInstances: this.nodeTemplate.minInstances,
-                    maxInstances: this.nodeTemplate.maxInstances
+                    maxInstances: this.nodeTemplate.maxInstances,
                 }
             }));
         }

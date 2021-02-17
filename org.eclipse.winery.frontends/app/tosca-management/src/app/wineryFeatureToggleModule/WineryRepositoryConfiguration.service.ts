@@ -22,12 +22,14 @@ export interface WineryConfiguration {
         completion: boolean;
         compliance: boolean;
         freezeAndDefrost: boolean;
+        instanceModelRefinement: boolean;
         managementFeatureEnrichment: boolean;
-        nfv: boolean;
+        nfv: boolean; // deprecated
         patternRefinement: boolean;
         problemDetection: boolean;
         radon: boolean;
         splitting: boolean;
+        multiParticipant: boolean;
         testRefinement: boolean;
         topologyFragmentRefinementModel: boolean;
         placement: boolean;
@@ -40,7 +42,12 @@ export interface WineryConfiguration {
         topologymodeler: string;
         workflowmodeler: string;
         edmmTransformationTool: string;
+        eclipseChe: string;
     };
+}
+
+export interface WineryRepositoryConfiguration {
+    repositoryRoot: String;
 }
 
 @Injectable()
@@ -69,6 +76,10 @@ export class WineryRepositoryConfigurationService {
                 }
             );
         return subject.asObservable();
+    }
+
+    getRepositoryConfiguration(): Observable<WineryRepositoryConfiguration> {
+        return this.http.get<WineryRepositoryConfiguration>(backendBaseURL + '/admin/repository-config');
     }
 
     isYaml(): boolean {

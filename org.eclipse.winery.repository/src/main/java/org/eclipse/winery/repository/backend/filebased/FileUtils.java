@@ -33,7 +33,7 @@ import static java.nio.file.FileVisitResult.CONTINUE;
 
 public class FileUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
     /**
      * Deletes given path. If path a file, it is directly deleted. If it is a directory, the directory is recursively
@@ -55,34 +55,34 @@ public class FileUtils {
                         try {
                             Files.delete(file);
                         } catch (IOException e) {
-                            FileUtils.LOGGER.debug("Could not delete file", e.getMessage());
+                            logger.debug("Could not delete file: {}", e.getMessage());
                         }
                         return CONTINUE;
                     }
 
                     @Override
-                    public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    public FileVisitResult postVisitDirectory(Path dir, IOException exc) {
                         if (exc == null) {
                             try {
                                 Files.delete(dir);
-                            } catch (IOException e) {
-                                FileUtils.LOGGER.debug("Could not delete dir", e);
+                            } catch (Exception e) {
+                                logger.debug("Could not delete dir: {}", e.getMessage());
                             }
                             return CONTINUE;
                         } else {
-                            FileUtils.LOGGER.debug("Could not delete file", exc);
+                            logger.debug("Could not delete file: {}", exc.getMessage());
                             return CONTINUE;
                         }
                     }
                 });
             } catch (IOException e) {
-                FileUtils.LOGGER.debug("Could not delete dir", e);
+                logger.debug("Could not delete dir: {}", e.getMessage());
             }
         } else {
             try {
                 Files.delete(path);
             } catch (IOException e) {
-                FileUtils.LOGGER.debug("Could not delete file", e.getMessage());
+                logger.debug("Could not delete file: {}", e.getMessage());
             }
         }
     }
@@ -164,13 +164,13 @@ public class FileUtils {
                     }
                 });
             } catch (IOException e) {
-                FileUtils.LOGGER.debug("Could not copy dir", e);
+                logger.debug("Could not copy dir", e);
             }
         } else {
             try {
                 Files.delete(source);
             } catch (IOException e) {
-                FileUtils.LOGGER.debug("Could not copy file", e.getMessage());
+                logger.debug("Could not copy file: {}", e.getMessage());
             }
         }
     }
@@ -183,7 +183,6 @@ public class FileUtils {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                 try {
-
                     if (!ignoreFiles.contains(file.getFileName().toString())) {
                         forceDelete(file);
                     }
@@ -204,10 +203,4 @@ public class FileUtils {
     public static boolean isPresent(Path path) {
         return Files.exists(path);
     }
-
-    // public static Response readContentFromFile(RepositoryFileReference ref) {
-    // try {
-    // RepositoryFactory.getRepository().readContentFromFile(ref);
-    // }
-    // }
 }

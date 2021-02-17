@@ -35,7 +35,8 @@ public class FileBasedRepositoryConfiguration {
         this(repositoryPath, Environments.getInstance().getRepositoryConfig().getProvider());
     }
 
-    private FileBasedRepositoryConfiguration(@NonNull Path repositoryPath, RepositoryConfigurationObject.RepositoryProvider repositoryProvider) {
+    // We are making the access public here to enable proper testing.
+    public FileBasedRepositoryConfiguration(@NonNull Path repositoryPath, RepositoryConfigurationObject.RepositoryProvider repositoryProvider) {
         this.repositoryPath = Objects.requireNonNull(repositoryPath);
         this.repositoryProvider = Objects.requireNonNull(repositoryProvider);
     }

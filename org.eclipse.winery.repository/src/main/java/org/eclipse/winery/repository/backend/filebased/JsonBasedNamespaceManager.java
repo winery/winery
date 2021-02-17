@@ -52,6 +52,9 @@ public class JsonBasedNamespaceManager extends AbstractNamespaceManager {
             this.namespaceProperties.put(Namespaces.TOSCA_NAMESPACE,
                 new NamespaceProperties(Namespaces.TOSCA_NAMESPACE, "tosca", "Predefined TOSCA elements", "", false)
             );
+            this.namespaceProperties.put(org.eclipse.winery.model.converter.support.Namespaces.TOSCA_YAML_NS,
+                new NamespaceProperties(org.eclipse.winery.model.converter.support.Namespaces.TOSCA_YAML_NS, "yml", "Predefined TOSCA YAML Simple Profile elements", "", false)
+            );
             this.namespaceProperties.put(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE,
                 new NamespaceProperties(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "winery", "TOSCA extension by Eclipse Winery", "", false)
             );

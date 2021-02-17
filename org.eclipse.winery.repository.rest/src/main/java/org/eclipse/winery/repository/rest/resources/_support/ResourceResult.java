@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support;
 
-import org.eclipse.winery.common.ids.GenericId;
+import org.eclipse.winery.model.ids.GenericId;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;

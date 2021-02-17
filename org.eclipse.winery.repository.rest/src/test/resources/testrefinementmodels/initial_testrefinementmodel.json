@@ -41,7 +41,9 @@
                 ],
                 "relationshipTemplates": [
                 ]
-            }
+            },
+            "permutationMappings": [
+            ]
         }
     ],
     "targetNamespace": "http://plain.winery.opentosca.org/test/testrefinementmodels",

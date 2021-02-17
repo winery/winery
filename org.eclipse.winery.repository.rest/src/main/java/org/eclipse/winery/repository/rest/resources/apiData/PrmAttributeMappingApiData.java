@@ -14,9 +14,9 @@
 
 package org.eclipse.winery.repository.rest.resources.apiData;
 
-import org.eclipse.winery.model.tosca.OTAttributeMapping;
-import org.eclipse.winery.model.tosca.OTAttributeMappingType;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.extensions.OTAttributeMapping;
+import org.eclipse.winery.model.tosca.extensions.OTAttributeMappingType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -31,14 +31,12 @@ public class PrmAttributeMappingApiData extends AbstractPrmMappingElement {
 
     @JsonIgnore
     public OTAttributeMapping createTPrmPropertyMapping(TEntityTemplate detectorNodeTemplate, TEntityTemplate refinementNodeTemplate) {
-        OTAttributeMapping mapping = new OTAttributeMapping();
-        mapping.setId(this.id);
-        mapping.setDetectorElement(detectorNodeTemplate);
-        mapping.setRefinementElement(refinementNodeTemplate);
-        mapping.setType(this.type);
-        mapping.setDetectorProperty(this.detectorProperty);
-        mapping.setRefinementProperty(this.refinementProperty);
-
-        return mapping;
+        return new OTAttributeMapping(new OTAttributeMapping.Builder(this.id)
+            .setDetectorElement(detectorNodeTemplate)
+            .setRefinementElement(refinementNodeTemplate)
+            .setType(this.type)
+            .setDetectorProperty(this.detectorProperty)
+            .setRefinementProperty(this.refinementProperty)
+        );
     }
 }

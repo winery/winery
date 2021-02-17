@@ -14,7 +14,7 @@
 package org.eclipse.winery.repository.rest.resources.imports.xsdimports;
 
 import io.swagger.annotations.ApiOperation;
-import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithoutTypeReferenceResource;
 

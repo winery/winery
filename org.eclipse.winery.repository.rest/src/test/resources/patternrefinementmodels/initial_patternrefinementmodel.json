@@ -58,7 +58,16 @@
                 "nodeTemplates": [
 
                 ]
-            }
+            },
+            "attributeMappings": [
+                
+            ],
+            "deploymentArtifactMappings": [
+                
+            ],
+            "stayMappings": [
+                
+            ]
         }
     ],
     "targetNamespace": "http://plain.winery.opentosca.org/test/patternrefinementmodels",

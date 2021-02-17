@@ -18,16 +18,16 @@
     <parent>
         <groupId>org.eclipse.winery</groupId>
         <artifactId>winery</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>org.eclipse.winery.cli</artifactId>
     <packaging>jar</packaging>
-    
+
     <properties>
         <checkstyle.config.location>../checkstyle.xml</checkstyle.config.location>
         <main.basedir>${project.parent.basedir}</main.basedir>
     </properties>
-    
+
     <dependencies>
         <dependency>
             <groupId>commons-cli</groupId>
@@ -42,12 +42,12 @@
         <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.repository</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.tools.copybaragenerator</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -60,6 +60,7 @@
             <version>${org.slf4j}</version>
         </dependency>
     </dependencies>
+
     <build>
         <resources>
             <resource>
@@ -106,9 +107,9 @@
                 <version>${maven.surefire.version}</version>
                 <dependencies>
                     <dependency>
-                        <groupId>org.apache.maven.surefire</groupId>
-                        <artifactId>maven-surefire-common</artifactId>
-                        <version>${maven.surefire.version}</version>
+                        <groupId>org.junit.jupiter</groupId>
+                        <artifactId>junit-jupiter-engine</artifactId>
+                        <version>${junit.jupiter.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -133,7 +134,7 @@
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <transformers>
                                 <transformer
-                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>org.eclipse.winery.cli.WineryCli</mainClass>
                                 </transformer>
                             </transformers>

@@ -11,8 +11,8 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<button class="btn btn-default sidebar-btn" id="sectionCreateFromArtifactBtn" (click)="onCreateFromArtifact()">Create
-    from Artifact
+<button class="btn btn-default sidebar-btn" id="sectionCreateFromArtifactBtn" (click)="onCreateFromArtifact()">
+    Create from Artifact
 </button>
 <winery-modal *ngIf="isModalShown" [config]="{ show: true }" (onHidden)="onHidden()" id="createFromArtifactModal"
               bsModal #createFromArtifactModal="bs-modal"

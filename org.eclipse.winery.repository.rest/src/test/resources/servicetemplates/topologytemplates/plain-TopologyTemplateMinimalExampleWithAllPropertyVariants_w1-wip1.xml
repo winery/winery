@@ -20,10 +20,10 @@
     </NodeTemplate>
     <NodeTemplate xmlns:nodetypes="http://plain.winery.opentosca.org/nodetypes" id="NodeTypeWithTwoKVProperties" maxInstances="1" minInstances="1" name="NodeTypeWithTwoKVProperties" type="nodetypes:NodeTypeWithTwoKVProperties" winery:location="" winery:x="387" winery:y="461">
         <Properties>
-            <Properties xmlns="http://www.example.org">
-                <key1>testValue</key1>
-                <key2/>
-            </Properties>
+            <ex:Properties xmlns:ex="http://www.example.org">
+                <ex:key1>testValue</ex:key1>
+                <ex:key2/>
+            </ex:Properties>
         </Properties>
     </NodeTemplate>
     <RelationshipTemplate xmlns:relationshiptypes="http://plain.winery.opentosca.org/relationshiptypes" id="NodeTypeWithoutProperties_RelationshipTypeWithoutProperties_NodeTypeWithTwoKVProperties" name="con_16" type="relationshiptypes:RelationshipTypeWithoutProperties">

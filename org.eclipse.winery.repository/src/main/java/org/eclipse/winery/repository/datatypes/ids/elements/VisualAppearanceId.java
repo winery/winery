@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.datatypes.ids.elements;
 
-import org.eclipse.winery.common.ids.XmlId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.elements.ToscaElementId;
+import org.eclipse.winery.model.ids.XmlId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.elements.ToscaElementId;
 
 /**
  * ID for a pseudo-TOSCA-Element holding the data for the visual appearance (e.g., icons for node types)

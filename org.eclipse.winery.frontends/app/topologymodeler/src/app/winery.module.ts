@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,7 +24,6 @@ import { WineryComponent } from './winery.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { PaletteComponent } from './palette/palette.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
 import { TopologyRendererModule } from './topology-renderer/topology-renderer.module';
 import { PrintViewComponent } from './print-view/print-view.component';
 import { DevToolsExtension, NgRedux, NgReduxModule } from '@angular-redux/store';
@@ -42,7 +41,6 @@ import { ImportTopologyService } from './services/import-topology.service';
 import { SplitMatchTopologyService } from './services/split-match-topology.service';
 import { ErrorHandlerService } from './services/error-handler.service';
 import { PopoverModule } from 'ngx-bootstrap/popover';
-import { RefinementSidebarComponent } from './refinementSidebar/refinementSidebar.component';
 import { ProblemDetectionComponent } from './problemDetection/problemDetection.component';
 import { PropertiesModule } from './properties/properties.module';
 import { StatefulAnnotationsService } from './services/statefulAnnotations.service';
@@ -50,28 +48,52 @@ import { WineryModalModule } from '../../../tosca-management/src/app/wineryModal
 import { EnricherComponent } from './enricher/enricher.component';
 import { WineryFeatureToggleModule } from '../../../tosca-management/src/app/wineryFeatureToggleModule/winery-feature-toggle.module';
 import { PlaceComponentsService } from './services/placement.service';
+import { MultiParticipantsComponent } from './multi-participants/multi-participants.component';
 import { ReqCapRelationshipService } from './services/req-cap-relationship.service';
 import { WineryTableModule } from '../../../tosca-management/src/app/wineryTableModule/wineryTable.module';
 import { EdmmTransformationCheckComponent } from './edmmTransformationCheck/edmmTransformationCheck.component';
+import { EdmmReplacementRulesComponent } from './edmmTransformationCheck/edmm-replacement-rules/edmm-replacement-rules.component';
+import { ManageTopologyService } from './services/manage-topology.service';
 import { PolicyService } from './services/policy.service';
+import { SidebarModule } from 'ng-sidebar';
+import { NodeDetailsSidebarComponent } from './sidebars/node-details/nodeDetailsSidebar.component';
+import { RefinementSidebarComponent } from './sidebars/refinement/refinementSidebar.component';
+import { GroupViewComponent } from './group-view/group-view.component';
+import { TagService } from '../../../tosca-management/src/app/instance/sharedComponents/tag/tag.service';
+import { WineryDynamicTableModule } from '../../../tosca-management/src/app/wineryDynamicTable/wineryDynamicTable.module';
+import { WineryDuplicateValidatorModule } from '../../../tosca-management/src/app/wineryValidators/wineryDuplicateValidator.module';
+import { CollapseModule } from 'ngx-bootstrap';
+import { GroupViewPoliciesComponent } from './group-view/policies/policies.component';
 import { VersionSliderComponent } from './version-slider/version-slider.component';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { VersionSliderService } from './version-slider/version-slider.service';
+import { MultiParticipantsService } from './services/multi-participants.service';
+import { ManageParticipantsComponent } from './participants/manage-participants.component';
+import { ResearchPluginsComponent } from './sidebars/research-plugins/research-plugins.component';
+import { InstanceModelComponent } from './sidebars/instanceModel/instanceModel.component';
 
 @NgModule({
     declarations: [
         WineryComponent,
         PaletteComponent,
-        SidebarComponent,
+        NodeDetailsSidebarComponent,
         PrintViewComponent,
         RefinementSidebarComponent,
         ProblemDetectionComponent,
         EnricherComponent,
+        MultiParticipantsComponent,
         EdmmTransformationCheckComponent,
         VersionSliderComponent,
+        GroupViewComponent,
+        InstanceModelComponent,
+        GroupViewPoliciesComponent,
+        ManageParticipantsComponent,
+        ResearchPluginsComponent,
+        EdmmReplacementRulesComponent,
     ],
     exports: [WineryComponent],
     imports: [
+        SidebarModule.forRoot(),
         BrowserModule,
         FormsModule,
         HttpClientModule,
@@ -97,6 +119,10 @@ import { VersionSliderService } from './version-slider/version-slider.service';
         PropertiesModule,
         WineryFeatureToggleModule,
         WineryTableModule,
+        WineryDynamicTableModule,
+        WineryDuplicateValidatorModule,
+        CollapseModule,
+        WineryTableModule,
         NgxSliderModule
     ],
     providers: [
@@ -107,8 +133,10 @@ import { VersionSliderService } from './version-slider/version-slider.service';
         LoadedService,
         AppReadyEventService,
         BackendService,
+        TagService,
         ExistsService,
         EntitiesModalService,
+        ManageTopologyService,
         ImportTopologyService,
         SplitMatchTopologyService,
         ErrorHandlerService,
@@ -116,7 +144,8 @@ import { VersionSliderService } from './version-slider/version-slider.service';
         PlaceComponentsService,
         ReqCapRelationshipService,
         PolicyService,
-        VersionSliderService
+        VersionSliderService,
+        MultiParticipantsService
     ],
     bootstrap: [WineryComponent]
 })

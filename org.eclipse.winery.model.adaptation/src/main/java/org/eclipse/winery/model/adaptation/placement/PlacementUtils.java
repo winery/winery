@@ -29,8 +29,7 @@ import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPolicy;
@@ -40,6 +39,7 @@ import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.model.version.VersionSupport;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.splitting.Splitting;
@@ -130,7 +130,7 @@ public class PlacementUtils {
         try {
             // create new temporary ServiceTemplate as working copy
             ServiceTemplateId placementId = new ServiceTemplateId(serviceTemplateId.getNamespace().getDecoded(),
-                VersionUtils.getNewComponentVersionId(serviceTemplateId, "placement"), false);
+                VersionSupport.getNewComponentVersionId(serviceTemplateId, "placement"), false);
             repo.forceDelete(placementId);
             TServiceTemplate placementServiceTemplate = new TServiceTemplate();
             placementServiceTemplate.setTargetNamespace(serviceTemplateId.getNamespace().getDecoded());
@@ -478,12 +478,12 @@ public class PlacementUtils {
 
     private static LinkedHashMap<String, String> getKVProperties(TNodeTemplate node) {
         TEntityTemplate.Properties props = node.getProperties();
-        if (Objects.isNull(props) || Objects.isNull(props.getKVProperties())) {
+        if (Objects.isNull(props) || Objects.isNull(ModelUtilities.getPropertiesKV(node))) {
             throw new InvalidParameterException("NodeTemplate " + node.getId() + " has no properties defined but all " +
                 "NodeTemplates corresponding to filters of the data flow model need either a DataFactor or a DataSize" +
                 " property!");
         }
-        return props.getKVProperties();
+        return ModelUtilities.getPropertiesKV(node);
     }
 
     /**

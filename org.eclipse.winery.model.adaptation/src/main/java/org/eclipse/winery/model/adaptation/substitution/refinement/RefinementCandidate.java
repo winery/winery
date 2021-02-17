@@ -17,7 +17,7 @@ package org.eclipse.winery.model.adaptation.substitution.refinement;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import org.eclipse.winery.model.tosca.OTRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTRefinementModel;
 import org.eclipse.winery.topologygraph.model.ToscaEdge;
 import org.eclipse.winery.topologygraph.model.ToscaGraph;
 import org.eclipse.winery.topologygraph.model.ToscaNode;

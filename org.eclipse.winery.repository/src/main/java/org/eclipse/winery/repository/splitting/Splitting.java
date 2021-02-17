@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,7 +11,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-
 package org.eclipse.winery.repository.splitting;
 
 import java.io.IOException;
@@ -29,15 +28,19 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.model.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityType;
+import org.eclipse.winery.model.tosca.TInterface;
+import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TOperation;
+import org.eclipse.winery.model.tosca.TParameter;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRequirement;
@@ -45,9 +48,11 @@ import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.model.version.VersionSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.repository.driverspecificationandinjection.DASpecification;
 import org.eclipse.winery.repository.driverspecificationandinjection.DriverInjection;
 
@@ -59,8 +64,8 @@ public class Splitting {
 
     // counter for relationships starts at 100 because all TRelationshipTemplate should have a 3 digit number in their id
     private static int newRelationshipIdCounter = 100;
-    private static int nodeTemplateIdCounter = 1;
     private static int IdCounter = 1;
+    private static int newCapabilityCounter = 1;
 
     // Required variables for the following computation of the transitive closure of a given topology
     private Map<TNodeTemplate, Set<TNodeTemplate>> initDirectSuccessors = new HashMap<>();
@@ -84,7 +89,7 @@ public class Splitting {
         // create wrapper service template
         ServiceTemplateId splitServiceTemplateId = new ServiceTemplateId(
             id.getNamespace().getDecoded(),
-            VersionUtils.getNewComponentVersionId(id, "split"),
+            VersionSupport.getNewComponentVersionId(id, "split"),
             false);
 
         repository.forceDelete(splitServiceTemplateId);
@@ -103,7 +108,7 @@ public class Splitting {
         // create wrapper service template
         ServiceTemplateId matchedServiceTemplateId = new ServiceTemplateId(
             id.getNamespace().getDecoded(),
-            VersionUtils.getNewComponentVersionId(id, "split-matched"),
+            VersionSupport.getNewComponentVersionId(id, "split-matched"),
             false);
 
         repository.forceDelete(matchedServiceTemplateId);
@@ -187,7 +192,7 @@ public class Splitting {
         // create wrapper service template
         ServiceTemplateId matchedServiceTemplateId = new ServiceTemplateId(
             id.getNamespace().getDecoded(),
-            VersionUtils.getNewComponentVersionId(id, "matched"),
+            VersionSupport.getNewComponentVersionId(id, "matched"),
             false);
 
         RepositoryFactory.getRepository().forceDelete(matchedServiceTemplateId);
@@ -220,6 +225,107 @@ public class Splitting {
                 && Objects.nonNull(node.getOtherAttributes().get(ModelUtilities.QNAME_LOCATION)));
     }
 
+    public TNodeType createPlaceholderNodeType(String nameOfNodeTemplateGettingPlaceholder) {
+        TNodeType placeholderNodeType = new TNodeType();
+        placeholderNodeType.setName(nameOfNodeTemplateGettingPlaceholder + "_placeholder");
+        placeholderNodeType.setId(nameOfNodeTemplateGettingPlaceholder + "_placeholder");
+        placeholderNodeType.setTargetNamespace("http://www.example.org/tosca/placeholdertypes");
+
+        return placeholderNodeType;
+    }
+
+    public TNodeTemplate createPlaceholderNodeTemplate(TTopologyTemplate topologyTemplate, String nameOfNodeTemplateGettingPlaceholder, QName placeholderQName) {
+        TNodeTemplate placeholderNodeTemplate = new TNodeTemplate();
+        String id;
+        List<String> ids = new ArrayList<>();
+        for (TNodeTemplate nt : topologyTemplate.getNodeTemplates()) {
+            ids.add(nt.getId());
+        }
+        boolean uniqueID = false;
+        id = nameOfNodeTemplateGettingPlaceholder + "_placeholder";
+        while (!uniqueID) {
+            if (!ids.contains(id + IdCounter)) {
+                id = id + IdCounter;
+                IdCounter++;
+                uniqueID = true;
+            } else {
+                IdCounter++;
+            }
+        }
+        placeholderNodeTemplate.setId(id);
+        placeholderNodeTemplate.setName(id);
+        placeholderNodeTemplate.setType(placeholderQName);
+
+        return placeholderNodeTemplate;
+    }
+
+    public List<TParameter> getInputParamListofIncomingRelationshipTemplates(TTopologyTemplate topologyTemplate, List<TRelationshipTemplate> listOfIncomingRelationshipTemplates) {
+        List<TParameter> listOfInputs = new ArrayList<>();
+        IRepository repo = RepositoryFactory.getRepository();
+        for (TRelationshipTemplate incomingRelationshipTemplate : listOfIncomingRelationshipTemplates) {
+            TNodeTemplate incomingNodetemplate = ModelUtilities.getSourceNodeTemplateOfRelationshipTemplate(topologyTemplate, incomingRelationshipTemplate);
+            NodeTypeId incomingNodeTypeId = new NodeTypeId(incomingNodetemplate.getType());
+            TNodeType incomingNodeType = repo.getElement(incomingNodeTypeId);
+            TInterfaces incomingNodeTypeInterfaces = incomingNodeType.getInterfaces();
+            RelationshipTypeId incomingRelationshipTypeId = new RelationshipTypeId(incomingRelationshipTemplate.getType());
+            TRelationshipType incomingRelationshipType = repo.getElement(incomingRelationshipTypeId);
+            TInterface relevantInterface = new TInterface();
+
+            if (!incomingNodeTypeInterfaces.getInterface().isEmpty()) {
+                List<TInterface> connectionInterfaces = incomingNodeTypeInterfaces.getInterface().stream().filter(tInterface -> tInterface.getIdFromIdOrNameField().contains("connection")).collect(Collectors.toList());
+                if (connectionInterfaces.size() > 1) {
+                    TNodeTemplate targetNodeTemplate = ModelUtilities.getTargetNodeTemplateOfRelationshipTemplate(topologyTemplate, incomingRelationshipTemplate);
+                    for (TInterface tInterface : connectionInterfaces) {
+                        int separator = tInterface.getIdFromIdOrNameField().lastIndexOf("/");
+                        String prefixRelation = tInterface.getIdFromIdOrNameField().substring(separator + 1);
+                        if (targetNodeTemplate.getName().toLowerCase().contains(prefixRelation.toLowerCase())) {
+                            relevantInterface = tInterface;
+                        }
+                    }
+                } else {
+                    relevantInterface = connectionInterfaces.get(0);
+                }
+
+                for (TOperation tOperation : relevantInterface.getOperation()) {
+                    TOperation.InputParameters inputParameters = tOperation.getInputParameters();
+                    if (inputParameters != null) {
+                        for (TParameter param : inputParameters.getInputParameter()) {
+                            listOfInputs.add(param);
+                        }
+                    }
+                }
+            }
+        }
+        return listOfInputs;
+    }
+
+    public TCapability createPlaceholderCapability(TTopologyTemplate topologyTemplate, QName capabilityType) {
+        TCapability capa = new TCapability();
+        // unique id for capability
+        String id;
+        List<String> ids = new ArrayList<>();
+        for (TNodeTemplate nt : topologyTemplate.getNodeTemplates()) {
+            if (nt.getCapabilities() != null) {
+                nt.getCapabilities().getCapability().stream().forEach(cap -> ids.add(cap.getId()));
+            }
+        }
+        boolean uniqueID = false;
+        id = "0";
+        while (!uniqueID) {
+            if (!ids.contains("cap" + newCapabilityCounter)) {
+                id = "cap_" + newCapabilityCounter;
+                newCapabilityCounter++;
+                uniqueID = true;
+            } else {
+                newCapabilityCounter++;
+            }
+        }
+        capa.setId(id);
+        capa.setName(id);
+        capa.setType(capabilityType);
+        return capa;
+    }
+
     /**
      *
      */
@@ -241,7 +347,7 @@ public class Splitting {
         repository.setElement(composedServiceTemplateId, composedServiceTemplate);
         //add all node and relationship templates from the solution fragements to the composed topology template
         for (ServiceTemplateId id : serviceTemplateIds) {
-            BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(id, composedServiceTemplateId);
+            BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(id, composedServiceTemplateId, repository);
         }
         composedServiceTemplate = repository.getElement(composedServiceTemplateId);
         composedTopologyTemplate = composedServiceTemplate.getTopologyTemplate();
@@ -275,8 +381,6 @@ public class Splitting {
 
     /**
      *
-     * @param serviceTemplateId
-     * @throws SplittingException
      */
     public void resolveTopologyTemplate(ServiceTemplateId serviceTemplateId) throws SplittingException, IOException {
         IRepository repository = RepositoryFactory.getRepository();
@@ -647,6 +751,21 @@ public class Splitting {
         return injectConnectionNodeTemplates(topologyTemplate, defaultConnectorSelection);
     }
 
+    public String calculateChoreographyTag(List<TNodeTemplate> nodeTemplateList, String participantName) {
+        String choreoValue = "";
+        // iterate over node templates and check if their target location == current participant
+        for (TNodeTemplate tNodeTemplate : nodeTemplateList) {
+            Optional<String> nodeOwner = ModelUtilities.getParticipant(tNodeTemplate);
+            if (nodeOwner.isPresent() && nodeOwner.get().contains(participantName)) {
+                choreoValue += tNodeTemplate.getId() + ",";
+            }
+        }
+
+        choreoValue = choreoValue.substring(0, choreoValue.length() - 1);
+
+        return choreoValue;
+    }
+
     /**
      * Replaces the host of each key by the value of the map. Adds new relationships between the nodes and their new
      * hosts
@@ -859,10 +978,6 @@ public class Splitting {
 
     /**
      *
-     *
-     * @param topologyTemplate
-     * @return
-     * @throws SplittingException
      */
     public Map<String, List<TTopologyTemplate>> getConnectionInjectionOptions(TTopologyTemplate topologyTemplate) throws SplittingException {
         ProviderRepository providerRepository = new ProviderRepository();
@@ -903,10 +1018,6 @@ public class Splitting {
 
     /**
      *
-     * @param topologyTemplate
-     * @param selectedConnectionFragments
-     * @return
-     * @throws SplittingException
      */
 
     public TTopologyTemplate injectConnectionNodeTemplates(TTopologyTemplate topologyTemplate, Map<String, TTopologyTemplate> selectedConnectionFragments)
@@ -953,9 +1064,49 @@ public class Splitting {
 
     /**
      *
-     * @param requirement
-     * @param capability
-     * @return
+     */
+    public Map<TRequirement, TNodeTemplate> getOpenRequirementsAndItsNodeTemplate(TTopologyTemplate topologyTemplate) {
+        Map<TRequirement, TNodeTemplate> openRequirementsAndItsNodeTemplates = new HashMap<>();
+        List<TNodeTemplate> nodeTemplates = ModelUtilities.getAllNodeTemplates(topologyTemplate);
+
+        for (TNodeTemplate nodeTemplate : nodeTemplates) {
+            if (nodeTemplate.getRequirements() != null) {
+                List<TRequirement> containedRequirements = nodeTemplate.getRequirements().getRequirement();
+                List<TNodeTemplate> successorsOfNodeTemplate = new ArrayList<>();
+                List<TRelationshipTemplate> outgoingRelationships = ModelUtilities.getOutgoingRelationshipTemplates(topologyTemplate, nodeTemplate);
+                if (outgoingRelationships != null && !outgoingRelationships.isEmpty()) {
+                    for (TRelationshipTemplate relationshipTemplate : outgoingRelationships) {
+                        if (relationshipTemplate.getSourceElement().getRef() instanceof TNodeTemplate) {
+                            successorsOfNodeTemplate.add((TNodeTemplate) relationshipTemplate.getTargetElement().getRef());
+                        } else {
+                            TCapability targetElement = (TCapability) relationshipTemplate.getTargetElement().getRef();
+                            successorsOfNodeTemplate.add(nodeTemplates.stream()
+                                .filter(nt -> nt.getCapabilities() != null)
+                                .filter(nt -> nt.getCapabilities().getCapability().stream().anyMatch(c -> c.getId().equals(targetElement.getId()))).findAny().get());
+                        }
+                    }
+                }
+                for (TRequirement requirement : containedRequirements) {
+                    QName requiredCapabilityTypeQName = getRequiredCapabilityTypeQNameOfRequirement(requirement);
+
+                    if (!successorsOfNodeTemplate.isEmpty()) {
+                        boolean existingCap = successorsOfNodeTemplate.stream()
+                            .filter(x -> x.getCapabilities() != null)
+                            .anyMatch(x -> x.getCapabilities().getCapability().stream().anyMatch(y -> y.getType().equals(requiredCapabilityTypeQName)));
+                        if (!existingCap) {
+                            openRequirementsAndItsNodeTemplates.put(requirement, nodeTemplate);
+                        }
+                    } else {
+                        openRequirementsAndItsNodeTemplates.put(requirement, nodeTemplate);
+                    }
+                }
+            }
+        }
+        return openRequirementsAndItsNodeTemplates;
+    }
+
+    /**
+     *
      */
     private TRelationshipType getMatchingRelationshipType(TRequirement requirement, TCapability capability) {
 
@@ -970,13 +1121,14 @@ public class Splitting {
         Map<String, String> requirementProperties = ModelUtilities.getPropertiesKV(requirement);
         Map<String, String> capabilityProperties = ModelUtilities.getPropertiesKV(capability);
 
-		/* If the property "requiredRelationshipType" is defined for the requirement and the capability this relationship type
+        /* If the property "requiredRelationshipType" is defined for the requirement and the capability this relationship type
            has to be taken - if the specified relationship type is not available, no relationship type is chosen */
         if (requirementProperties != null && capabilityProperties != null &&
             requirementProperties.containsKey("requiredRelationshipType") && capabilityProperties.containsKey("requiredRelationshipType")
             && requirementProperties.get("requiredRelationshipType").equals(capabilityProperties.get("requiredRelationshipType"))
             && requirementProperties.get("requiredRelationshipType") != null) {
-            QName referencedRelationshipType = QName.valueOf(requirementProperties.get("requiredRelationshipType"));
+            // Assumption: We work on basic KV properties here
+            QName referencedRelationshipType = QName.valueOf((String) requirementProperties.get("requiredRelationshipType"));
             RelationshipTypeId relTypeId = new RelationshipTypeId(referencedRelationshipType);
             if (relTypeIds.stream().anyMatch(rti -> rti.equals(relTypeId))) {
                 return RepositoryFactory.getRepository().getElement(relTypeId);
@@ -1284,8 +1436,6 @@ public class Splitting {
 
     /**
      *
-     * @param topologyTemplate
-     * @return
      */
     public List<TRequirement> getOpenRequirements(TTopologyTemplate topologyTemplate) {
         List<TRequirement> openRequirements = new ArrayList<>();
@@ -1347,7 +1497,7 @@ public class Splitting {
         return basisCapabilityType;
     }
 
-    private QName getRequiredCapabilityTypeQNameOfRequirement(TRequirement requirement) {
+    public QName getRequiredCapabilityTypeQNameOfRequirement(TRequirement requirement) {
         QName reqTypeQName = requirement.getType();
         RequirementTypeId reqTypeId = new RequirementTypeId(reqTypeQName);
         TRequirementType requirementType = RepositoryFactory.getRepository().getElement(reqTypeId);
@@ -1427,10 +1577,10 @@ public class Splitting {
 
         // check properties if they are defined (just equals on properties does not seem to work)
         if (Objects.nonNull(node1.getProperties()) && Objects.nonNull(node2.getProperties())
-            && Objects.nonNull(node1.getProperties().getKVProperties())
-            && Objects.nonNull(node2.getProperties().getKVProperties())) {
-            LinkedHashMap<String, String> properties1 = node1.getProperties().getKVProperties();
-            LinkedHashMap<String, String> properties2 = node1.getProperties().getKVProperties();
+            && Objects.nonNull(ModelUtilities.getPropertiesKV(node1))
+            && Objects.nonNull(ModelUtilities.getPropertiesKV(node2))) {
+            LinkedHashMap<String, String> properties1 = ModelUtilities.getPropertiesKV(node1);
+            LinkedHashMap<String, String> properties2 = ModelUtilities.getPropertiesKV(node2);
             if (!properties1.equals(properties2)) {
                 return false;
             }

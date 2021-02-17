@@ -20,23 +20,23 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.IdNames;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.converter.support.Namespaces;
+import org.eclipse.winery.model.converter.support.exception.MultiException;
 import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFile;
 import org.eclipse.winery.model.csar.toscametafile.YamlTOSCAMetaFileParser;
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.ids.IdNames;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TArtifact;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
@@ -44,28 +44,37 @@ import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
+import org.eclipse.winery.model.tosca.yaml.YTServiceTemplate;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
-import org.eclipse.winery.repository.backend.filebased.YamlRepository;
-import org.eclipse.winery.repository.converter.X2YConverter;
-import org.eclipse.winery.repository.converter.Y2XConverter;
-import org.eclipse.winery.repository.converter.support.Namespaces;
-import org.eclipse.winery.repository.converter.support.exception.MultiException;
-import org.eclipse.winery.repository.converter.support.reader.YamlReader;
-import org.eclipse.winery.repository.converter.support.writer.YamlWriter;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.Util;
+import org.eclipse.winery.repository.converter.reader.YamlReader;
+import org.eclipse.winery.repository.converter.writer.YamlWriter;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.GenericDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
+import org.eclipse.winery.repository.yaml.YamlRepository;
+import org.eclipse.winery.repository.yaml.converter.FromCanonical;
+import org.eclipse.winery.repository.yaml.converter.ToCanonical;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class YamlCsarImporter extends CsarImporter {
     private static final Logger LOGGER = LoggerFactory.getLogger(YamlCsarImporter.class);
+
+    private final YamlRepository targetRepository;
+
+    private final Set<TImport> handledImports = new HashSet<>();
+
+    public YamlCsarImporter(YamlRepository target) {
+        super(target);
+        this.targetRepository = target;
+    }
 
     /**
      * Parse TOSCA Meta File
@@ -81,7 +90,7 @@ public class YamlCsarImporter extends CsarImporter {
     @Override
     protected Optional<TDefinitions> parseDefinitionsElement(Path entryDefinitionsPath, final List<String> errors) {
         YamlReader reader = new YamlReader();
-        TServiceTemplate serviceTemplate;
+        YTServiceTemplate serviceTemplate;
         try {
             serviceTemplate = reader.parse(new FileInputStream(entryDefinitionsPath.toFile()));
 
@@ -91,8 +100,8 @@ public class YamlCsarImporter extends CsarImporter {
                 entryDefinitionsPath.toString().indexOf(".tosca")
             );
 
-            Y2XConverter converter = new Y2XConverter();
-            return Optional.of(converter.convert(serviceTemplate, serviceTemplateName, serviceTemplate.getMetadata().get("targetNamespace")));
+            ToCanonical converter = new ToCanonical(targetRepository);
+            return Optional.of(converter.convert(serviceTemplate, serviceTemplateName, serviceTemplate.getMetadata().get("targetNamespace"), true));
         } catch (MultiException | FileNotFoundException e) {
             e.printStackTrace();
             LOGGER.error("Could not read the given entry definition " + e.getMessage());
@@ -123,9 +132,8 @@ public class YamlCsarImporter extends CsarImporter {
         List<TExtensibleElements> componentInstanceList = defs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation();
 
         for (final TExtensibleElements ci : componentInstanceList) {
-            if (ci instanceof org.eclipse.winery.model.tosca.TServiceTemplate &&
-                Objects.isNull(((org.eclipse.winery.model.tosca.TServiceTemplate) ci).getTopologyTemplate())
-            ) {
+            if (ci instanceof org.eclipse.winery.model.tosca.TServiceTemplate
+                && Objects.isNull(((org.eclipse.winery.model.tosca.TServiceTemplate) ci).getTopologyTemplate())) {
                 continue;
             }
 
@@ -136,9 +144,9 @@ public class YamlCsarImporter extends CsarImporter {
 
             final DefinitionsChildId wid = determineWineryId(ci, namespace, id);
 
-            if (RepositoryFactory.getRepository().exists(wid)) {
+            if (targetRepository.exists(wid)) {
                 if (options.isOverwrite()) {
-                    RepositoryFactory.getRepository().forceDelete(wid);
+                    targetRepository.forceDelete(wid);
                     String msg = String.format("Deleted %1$s %2$s to enable replacement", ci.getClass().getName(), wid.getQName().toString());
                     LOGGER.debug(msg);
                 } else {
@@ -150,7 +158,7 @@ public class YamlCsarImporter extends CsarImporter {
             }
 
             // Create a fresh definitions object without the other data.
-            final Definitions newDefs = BackendUtils.createWrapperDefinitions(wid);
+            final TDefinitions newDefs = BackendUtils.createWrapperDefinitions(wid, targetRepository);
             // add the current TExtensibleElements as the only content to it
             newDefs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().add(ci);
 
@@ -184,7 +192,7 @@ public class YamlCsarImporter extends CsarImporter {
                             .getArtifact()
                             .stream()
                             .map(this::fixForwardSlash)
-                            .filter(a -> this.isImportable(rootPath, a, errors))
+                            .filter(a -> this.isImportable(rootPath, a))
                             .forEach(a -> {
                                 DirectoryId stFilesDir = new GenericDirectoryId(wid, IdNames.FILES_DIRECTORY);
                                 DirectoryId ntFilesDir = new GenericDirectoryId(stFilesDir, node.getId());
@@ -204,7 +212,7 @@ public class YamlCsarImporter extends CsarImporter {
                     .getArtifact()
                     .stream()
                     .map(this::fixForwardSlash)
-                    .filter(a -> this.isImportable(rootPath, a, errors))
+                    .filter(a -> this.isImportable(rootPath, a))
                     .forEach(a -> {
                         DirectoryId typeFilesDir = new GenericDirectoryId(wid, IdNames.FILES_DIRECTORY);
                         DirectoryId artifactDir = new GenericDirectoryId(typeFilesDir, a.getName());
@@ -264,20 +272,24 @@ public class YamlCsarImporter extends CsarImporter {
         }
     }
 
-    private boolean isImportable(Path rootPath, TArtifact a, List<String> errors) {
-        Path path = rootPath.resolve(a.getFile());
-        if (!Files.exists(path)) {
-            errors.add(String.format("Reference %1$s not found", a.getFile()));
+    private boolean isImportable(Path rootPath, TArtifact a) {
+        String filename = a.getFile();
+        if (filename.matches(".*[/\n\r\t\0\f`?*\\\\<>|\":].*")) {
+            LOGGER.debug("Invalid filename ({}), skipping it", filename);
             return false;
         }
-
+        Path path = rootPath.resolve(filename);
+        if (!Files.exists(path)) {
+            LOGGER.warn("Reference {} not found, skipping it", filename);
+            return false;
+        }
         return Files.isRegularFile(path);
     }
 
     private void importArtifact(Path rootPath, TArtifact a, DirectoryId artifactDir, TOSCAMetaFile tmf, final List<String> errors) {
         String fileName = rootPath.resolve(a.getFile()).getFileName().toString();
-        RepositoryFileReference fref = new RepositoryFileReference(artifactDir, fileName);
-        importFile(rootPath.resolve(a.getFile()), fref, tmf, rootPath, errors);
+        RepositoryFileReference ref = new RepositoryFileReference(artifactDir, fileName);
+        importFile(rootPath.resolve(a.getFile()), ref, tmf, rootPath, errors);
     }
 
     /**
@@ -287,39 +299,38 @@ public class YamlCsarImporter extends CsarImporter {
      * @param options  the set of options applicable while importing a CSAR
      */
     private void importImports(Path basePath, TOSCAMetaFile tmf, List<TImport> imports, final List<String> errors, CsarImportOptions options) throws IOException {
-        Iterator<TImport> iterator = imports.iterator();
-        while (iterator.hasNext()) {
-            TImport imp = iterator.next();
+        for (TImport imp : imports) {
+            if (handledImports.contains(imp)) {
+                continue;
+            }
+            handledImports.add(imp);
             String importType = imp.getImportType();
-            String loc = imp.getLocation();
-
-            if (Namespaces.TOSCA_NS.equals(importType)) {
-                Path defsPath = basePath.resolve(loc);
+            String location = imp.getLocation();
+            if (Namespaces.TOSCA_YAML_NS.equals(importType)) {
+                Path defsPath = basePath.resolve(location);
                 // fallback for older CSARs, where the location is given from the root
                 if (Files.exists(defsPath)) {
                     this.importDefinitions(tmf, defsPath, errors, options);
                     // imports of definitions don't have to be kept as these are managed by Winery
-
                 }
             }
-            iterator.remove();
         }
     }
 
     private void storeDefs(DefinitionsChildId id, TDefinitions defs) {
         RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
         IRepository repo = RepositoryFactory.getRepository();
-        X2YConverter converter = null;
+        FromCanonical converter = null;
         if (repo instanceof GitBasedRepository) {
             GitBasedRepository wrapper = (GitBasedRepository) RepositoryFactory.getRepository();
-            converter = new X2YConverter((YamlRepository) wrapper.getRepository());
+            converter = new FromCanonical((YamlRepository) wrapper.getRepository());
         } else if (repo instanceof YamlRepository) {
-            converter = new X2YConverter((YamlRepository) repo);
+            converter = new FromCanonical((YamlRepository) repo);
         }
 
         if (Objects.nonNull(converter)) {
             YamlWriter writer = new YamlWriter();
-            writer.write(converter.convert((Definitions) defs), repo.ref2AbsolutePath(ref));
+            writer.write(converter.convert((TDefinitions) defs), repo.ref2AbsolutePath(ref));
         }
     }
 

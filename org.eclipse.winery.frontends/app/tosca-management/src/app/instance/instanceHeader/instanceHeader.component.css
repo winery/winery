@@ -31,3 +31,7 @@
     margin-left: 21px;
     max-height: 53px;
 }
+
+.managementButtons .btn {
+    margin-right: 5px;
+}

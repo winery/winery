@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -22,8 +22,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.winery.model.tosca.TEntityTemplate;
-import org.eclipse.winery.model.tosca.OTPrmModelElementType;
-import org.eclipse.winery.model.tosca.OTStayMapping;
+import org.eclipse.winery.model.tosca.extensions.OTStayMapping;
 import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelMappingsResource;
 import org.eclipse.winery.repository.rest.resources.apiData.PrmStayMappingApiData;
 
@@ -38,15 +37,16 @@ public class StayMappingsResource extends AbstractRefinementModelMappingsResourc
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public List<OTStayMapping> addPropertyMappingFromApi(PrmStayMappingApiData mapping) {
-        TEntityTemplate detectorElement, refinementElement;
-
-        if (mapping.modelElementType == OTPrmModelElementType.NODE) {
-            detectorElement = this.res.getDetectorResource().getTopologyTempalte().getNodeTemplate(mapping.detectorElement);
-            refinementElement = this.res.getRefinementTopologyResource().getTopologyTempalte().getNodeTemplate(mapping.refinementElement);
-        } else {
-            detectorElement = this.res.getDetectorResource().getTopologyTempalte().getRelationshipTemplate(mapping.detectorElement);
-            refinementElement = this.res.getRefinementTopologyResource().getTopologyTempalte().getRelationshipTemplate(mapping.refinementElement);
-        }
+        TEntityTemplate detectorElement = this.res.getDetectorResource().getTopologyTemplate()
+            .getNodeTemplateOrRelationshipTemplate().stream()
+            .filter(element -> element.getId().equals(mapping.detectorElement))
+            .findFirst()
+            .orElseThrow(IllegalArgumentException::new);
+        TEntityTemplate refinementElement = this.res.getRefinementTopologyResource().getTopologyTemplate()
+            .getNodeTemplateOrRelationshipTemplate().stream()
+            .filter(element -> element.getId().equals(mapping.refinementElement))
+            .findFirst()
+            .orElseThrow(IllegalArgumentException::new);
 
         return this.addMapping(mapping.createOTPrmStayMapping(detectorElement, refinementElement));
     }

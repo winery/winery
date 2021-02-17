@@ -35,10 +35,6 @@
            [checked]="config.features.managementFeatureEnrichment">
     <label for="managementFeatureEnrichment">Management Feature Enrichment</label>
     <br>
-    <input type="checkbox" [(ngModel)]="config.features.nfv" id="nfv" name="nfv"
-           [checked]="config.features.nfv">
-    <label for="nfv">NFV</label>
-    <br>
     <input type="checkbox" [(ngModel)]="config.features.patternRefinement" id="patternRefinement"
            name="patternRefinement"
            [checked]="config.features.patternRefinement">
@@ -57,6 +53,10 @@
            [checked]="config.features.splitting">
     <label for="splitting">Splitting</label>
     <br>
+    <input type="checkbox" [(ngModel)]="config.features.multiParticipant" id="multiParticipant" name="multiParticipant"
+           [checked]="config.features.multiParticipant">
+    <label for="multiParticipant">Multi-Participant Support</label>
+    <br>
     <input type="checkbox" [(ngModel)]="config.features.testRefinement" id="testRefinement" name="testRefinement"
            [checked]="config.features.testRefinement">
     <label for="testRefinement">Test Refinement</label>
@@ -64,6 +64,10 @@
     <input type="checkbox" [(ngModel)]="config.features.edmmModeling" id="edmmModeling" name="edmmModeling"
            [checked]="config.features.edmmModeling">
     <label for="edmmModeling">EDMM Modeling</label>
+    <br>
+    <input type="checkbox" [(ngModel)]="config.features.instanceModelRefinement" id="instanceModelRefinement" name="instanceModelRefinement"
+           [checked]="config.features.instanceModelRefinement">
+    <label for="instanceModelRefinement">Instance Modeling</label>
     <br>
     <input type="checkbox" [(ngModel)]="config.features.updateTemplates" id="updateTemplates" name="updateTemplates"
            [checked]="config.features.updateTemplates">

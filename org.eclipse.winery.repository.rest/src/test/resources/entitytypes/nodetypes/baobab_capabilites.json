@@ -10,38 +10,35 @@
             "documentation": [
             ],
             "any": [
-                {
-                    "namespace": "http://winery.opentosca.org/test/nodetypes/fruits",
-                    "elementName": "BaobabProperties",
-                    "propertyDefinitionKVList": [
-                        {
-                            "key": "Antioxidants",
-                            "type": "xsd:string"
-                        },
-                        {
-                            "key": "VitaminC",
-                            "type": "xsd:decimal"
-                        },
-                        {
-                            "key": "Potassium",
-                            "type": "xsd:float"
-                        },
-                        {
-                            "key": "Superfood",
-                            "type": "xsd:boolean"
-                        },
-                        {
-                            "key": "HarvestedAt",
-                            "type": "xsd:anyURI"
-                        }
-                    ]
-                }
             ],
             "otherAttributes": {
                 "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}bordercolor": "#89ee01"
             },
             "propertiesDefinition": {
-                "type": "{http://winery.opentosca.org/test/nodetypes/fruits}BaobabProperties"
+                "namespace": "http://winery.opentosca.org/test/nodetypes/fruits",
+                "elementName": "BaobabProperties",
+                "propertyDefinitionKVList": [
+                    {
+                        "key": "Antioxidants",
+                        "type": "xsd:string"
+                    },
+                    {
+                        "key": "VitaminC",
+                        "type": "xsd:decimal"
+                    },
+                    {
+                        "key": "Potassium",
+                        "type": "xsd:float"
+                    },
+                    {
+                        "key": "Superfood",
+                        "type": "xsd:boolean"
+                    },
+                    {
+                        "key": "HarvestedAt",
+                        "type": "xsd:anyURI"
+                    }
+                ]
             },
             "name": "baobab",
             "targetNamespace": "http://winery.opentosca.org/test/nodetypes/fruits",
@@ -85,18 +82,6 @@
             "namespace": "http://winery.opentosca.org/test/capabilitytypes/fruits",
             "location": "ns0__Healthy.tosca",
             "importType": "http://docs.oasis-open.org/tosca/ns/2011/12"
-        },
-        {
-            "documentation": [
-            ],
-            "any": [
-            ],
-            "otherAttributes": {
-                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}wpd": "true"
-            },
-            "namespace": "http://winery.opentosca.org/test/nodetypes/fruits",
-            "location": "../nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/propertiesdefinition/BaobabProperties.xsd",
-            "importType": "http://www.w3.org/2001/XMLSchema"
         }
     ]
 }

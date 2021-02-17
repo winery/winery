@@ -19,8 +19,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Scanner;
 
-import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
 import org.eclipse.winery.common.json.JacksonProvider;
+import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.rest.server.WineryUsingHttpServer;
 
@@ -52,6 +53,14 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
         SLF4JBridgeHandler.install();
     }
 
+    public AbstractResourceTest() {
+        super();
+    }
+
+    public AbstractResourceTest(RepositoryConfigurationObject.RepositoryProvider provider) {
+        super(provider);
+    }
+
     @BeforeAll
     public static void init() throws Exception {
         server = WineryUsingHttpServer.createHttpServer(9080);
@@ -80,7 +89,7 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
     }
 
     protected String callURL(String restURL) {
-        return PREFIX + Util.URLdecode(restURL);
+        return PREFIX + EncodingUtil.URLdecode(restURL);
     }
 
     private boolean isXml(String fileName) {

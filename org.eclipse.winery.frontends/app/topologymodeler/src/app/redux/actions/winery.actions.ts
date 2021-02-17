@@ -14,10 +14,14 @@
 
 import { Action, ActionCreator } from 'redux';
 import { Injectable } from '@angular/core';
-import { TArtifact, TNodeTemplate, TRelationshipTemplate } from '../../models/ttopology-template';
+import {
+    OTParticipant, TArtifact, TGroupDefinition, TNodeTemplate, TRelationshipTemplate
+} from '../../models/ttopology-template';
 import { TDeploymentArtifact } from '../../models/artifactsModalData';
 import { TPolicy } from '../../models/policiesModalData';
 import { Visuals } from '../../models/visuals';
+import { DetailsSidebarState } from '../../sidebars/node-details/node-details-sidebar';
+import { EntityTypesModel } from '../../models/entityTypesModel';
 
 export interface SendPaletteOpenedAction extends Action {
     paletteOpened: boolean;
@@ -28,21 +32,14 @@ export interface HideNavBarAndPaletteAction extends Action {
 }
 
 export interface SidebarStateAction extends Action {
-    sidebarContents: {
-        sidebarVisible: boolean,
-        nodeClicked: boolean,
-        id: string,
-        nameTextFieldValue: string,
-        type: string,
-        minInstances: string,
-        maxInstances: string,
-        properties: string,
-        source: string,
-        target: string
-    };
+    sidebarContents: DetailsSidebarState;
 }
 
-export interface SidebarNodeNamechange extends Action {
+export interface AddEntityTypesAction extends Action {
+    types: EntityTypesModel;
+}
+
+export interface SidebarChangeNodeName extends Action {
     nodeNames: {
         newNodeName: string,
         id: string
@@ -115,14 +112,19 @@ export interface UpdateRelationshipNameAction extends Action {
 }
 
 export interface SetPropertyAction extends Action {
-    nodeProperty: {
-        newProperty: any,
-        propertyType: string,
-        nodeId: string,
+    propertyData: {
+        newProperty: {
+            propertyType: string,
+            properties?: any[],
+            kvproperties?: any[],
+            any?: any
+        },
+        nodeId?: string,
+        relationId?: string
     };
 }
 
-export interface SetCababilityAction extends Action {
+export interface SetCapabilityAction extends Action {
     nodeCapability: {
         nodeId: string,
         color: string,
@@ -185,6 +187,19 @@ export interface ChangeYamlPoliciesAction extends Action {
     };
 }
 
+export interface UpdateParticipantsAction extends Action {
+    participants: OTParticipant[];
+}
+
+export interface AssignParticipantAction extends Action {
+    node: TNodeTemplate;
+    participant: string;
+}
+
+export interface UpdateGroupDefinitionAction extends Action {
+    groups: TGroupDefinition[];
+}
+
 export interface SetTargetLocation extends Action {
     nodeTargetLocation: {
         nodeId: string,
@@ -220,15 +235,14 @@ export class WineryActions {
     static DELETE_NODE_TEMPLATE = 'DELETE_NODE_TEMPLATE';
     static DELETE_RELATIONSHIP_TEMPLATE = 'DELETE_RELATIONSHIP_TEMPLATE';
     static CHANGE_NODE_NAME = 'CHANGE_NODE_NAME';
-    static OPEN_SIDEBAR = 'OPEN_SIDEBAR';
+    static TRIGGER_SIDEBAR = 'TRIGGER_SIDEBAR';
     static UPDATE_NODE_COORDINATES = 'UPDATE_NODE_COORDINATES';
     static UPDATE_REL_DATA = 'UPDATE_REL_DATA';
     static CHANGE_MIN_INSTANCES = 'CHANGE_MIN_INSTANCES';
     static CHANGE_MAX_INSTANCES = 'CHANGE_MAX_INSTANCES';
-
+    static ADD_ENTITY_TYPES = 'ADD_ENTITY_TYPES';
     static INC_MIN_INSTANCES = 'INC_MIN_INSTANCES';
     static DEC_MIN_INSTANCES = 'DEC_MIN_INSTANCES';
-
     static INC_MAX_INSTANCES = 'INC_MAX_INSTANCES';
     static DEC_MAX_INSTANCES = 'DEC_MAX_INSTANCES';
     static SET_PROPERTY = 'SET_PROPERTY';
@@ -245,6 +259,14 @@ export class WineryActions {
     static DELETE_POLICY = 'DELETE_POLICY';
     static SEND_CURRENT_NODE_ID = 'SEND_CURRENT_NODE_ID';
     static SET_NODE_VISUALS = 'SET_NODE_VISUALS';
+    static UPDATE_GROUP_DEFINITIONS = 'UPDATE_GROUP_DEFINITIONS';
+    static UPDATE_PARTICIPANTS = 'UPDATE_PARTICIPANTS';
+    static ASSIGN_PARTICIPANT = 'ASSIGN_PARTICIPANT';
+
+    addEntityTypes: ActionCreator<AddEntityTypesAction> = ((entityTypes) => ({
+        type: WineryActions.ADD_ENTITY_TYPES,
+        types: entityTypes,
+    }));
 
     sendPaletteOpened: ActionCreator<SendPaletteOpenedAction> =
         ((paletteOpened) => ({
@@ -256,12 +278,12 @@ export class WineryActions {
             type: WineryActions.HIDE_NAVBAR_AND_PALETTE,
             hideNavBarAndPalette: hideNavBarAndPalette
         }));
-    openSidebar: ActionCreator<SidebarStateAction> =
+    triggerSidebar: ActionCreator<SidebarStateAction> =
         ((newSidebarData) => ({
-            type: WineryActions.OPEN_SIDEBAR,
+            type: WineryActions.TRIGGER_SIDEBAR,
             sidebarContents: newSidebarData.sidebarContents
         }));
-    changeNodeName: ActionCreator<SidebarNodeNamechange> =
+    changeNodeName: ActionCreator<SidebarChangeNodeName> =
         ((nodeNames) => ({
             type: WineryActions.CHANGE_NODE_NAME,
             nodeNames: nodeNames.nodeNames
@@ -327,12 +349,11 @@ export class WineryActions {
             relData: currentRelData.relData
         }));
     setProperty: ActionCreator<SetPropertyAction> =
-        ((newProperty) => ({
+        ((data) => ({
             type: WineryActions.SET_PROPERTY,
-            nodeProperty: newProperty.nodeProperty,
-            propertyType: newProperty.propertyType
+            propertyData: data,
         }));
-    setCapability: ActionCreator<SetCababilityAction> =
+    setCapability: ActionCreator<SetCapabilityAction> =
         ((newCapability) => ({
             type: WineryActions.SET_CAPABILITY,
             nodeCapability: newCapability
@@ -380,6 +401,22 @@ export class WineryActions {
                     policy: policies
                 }
             }
+        }));
+    updateGroupDefinitions: ActionCreator<UpdateGroupDefinitionAction> =
+        ((groups) => ({
+            type: WineryActions.UPDATE_GROUP_DEFINITIONS,
+            groups,
+        }));
+    updateParticipants: ActionCreator<UpdateParticipantsAction> =
+        ((participants) => ({
+            type: WineryActions.UPDATE_PARTICIPANTS,
+            participants,
+        }));
+    assignParticipant: ActionCreator<AssignParticipantAction> =
+        ((node, participant) => ({
+            type: WineryActions.ASSIGN_PARTICIPANT,
+            node: node,
+            participant: participant,
         }));
     setTargetLocation: ActionCreator<SetTargetLocation> =
         ((newTargetLocation) => ({

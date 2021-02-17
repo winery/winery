@@ -13,11 +13,12 @@
  *******************************************************************************/
 package org.eclipse.winery.compliance.checking;
 
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.topologygraph.matching.IToscaMatcher;
 import org.eclipse.winery.topologygraph.model.ToscaEdge;
 import org.eclipse.winery.topologygraph.model.ToscaEntity;
@@ -61,21 +62,43 @@ public class ToscaComplianceRuleMatcher implements IToscaMatcher {
     }
 
     public boolean isPropertiesCompatible(ToscaNode left, ToscaNode right) {
-        if (left.getTemplate().getProperties() != null) {
-            if (right.getTemplate().getProperties() != null) {
-                for (Entry<String, String> leftEntry : left.getTemplate().getProperties().getKVProperties().entrySet()) {
-                    if (!isPropertyCompatible(leftEntry, right.getTemplate().getProperties().getKVProperties())) {
-                        return false;
-                    }
-                }
-            } else {
-                return false;
-            }
+        TEntityTemplate.Properties leftProps = left.getTemplate().getProperties();
+        TEntityTemplate.Properties rightProps = right.getTemplate().getProperties();
+        if (leftProps == null) {
+            // no constraints on the properties, so all rightProps are valid
+            return true;
         }
-        return true;
+        if (rightProps == null) {
+            // there are property requirements, so right must have a value
+            return false;
+        }
+        // property types are different
+        if (leftProps.getClass() != rightProps.getClass()) {
+            return false;
+        }
+        if (leftProps instanceof TEntityTemplate.WineryKVProperties) {
+            assert (rightProps instanceof TEntityTemplate.WineryKVProperties);
+
+            Map<String, String> leftMap = ((TEntityTemplate.WineryKVProperties) leftProps).getKVProperties();
+            Map<String, String> rightMap = ((TEntityTemplate.WineryKVProperties) rightProps).getKVProperties();
+
+            for (Entry<String, String> leftEntry : leftMap.entrySet()) {
+                if (!isPropertyCompatible(leftEntry, rightMap)) {
+                    return false;
+                }
+            }
+            return true;
+        } else if (leftProps instanceof TEntityTemplate.XmlProperties) {
+            assert (rightProps instanceof TEntityTemplate.XmlProperties);
+
+            return ((TEntityTemplate.XmlProperties) leftProps).getAny().equals(((TEntityTemplate.XmlProperties) rightProps).getAny());
+        } else {
+            // There's no ComplianceRules in YAML mode
+            return false;
+        }
     }
 
-    public boolean isPropertyCompatible(Entry<String, String> leftEntry, @ADR(12) LinkedHashMap<String, String> rightProperties) {
+    public boolean isPropertyCompatible(Entry<String, String> leftEntry, @ADR(12) Map<String, String> rightProperties) {
         return rightProperties.containsKey(leftEntry.getKey()) &&
             rightProperties.get(leftEntry.getKey()) != null &&
             isPropertyValueCompatible(leftEntry.getValue(), rightProperties.get(leftEntry.getKey()));
@@ -102,7 +125,8 @@ public class ToscaComplianceRuleMatcher implements IToscaMatcher {
     }
 
     public boolean equals(TEntityType lType, TEntityType rType) {
-        return StringUtils.equals(lType.getIdFromIdOrNameField(), rType.getIdFromIdOrNameField()) && StringUtils.equals(lType.getTargetNamespace(), rType.getTargetNamespace());
+        return StringUtils.equals(lType.getIdFromIdOrNameField(), rType.getIdFromIdOrNameField())
+            && StringUtils.equals(lType.getTargetNamespace(), rType.getTargetNamespace());
     }
 
     @Override

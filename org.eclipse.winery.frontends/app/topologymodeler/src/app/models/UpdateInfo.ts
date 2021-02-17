@@ -11,13 +11,16 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
+import { TTopologyTemplate } from './ttopology-template';
+
 export class UpdateInfo {
     constructor(public nodeTemplateId: string,
                 public newComponentType: string,
                 public propertyMatchingList?: PropertyMatching[],
                 public newList?: string[],
                 public resolvedList?: string[],
-                public saveAfterUpdate = false) {
+                public saveAfterUpdate = false,
+                public topologyTemplate?: TTopologyTemplate) {
 
     }
 }

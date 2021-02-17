@@ -20,8 +20,8 @@ import java.util.Optional;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -34,23 +34,21 @@ import org.eclipse.winery.topologygraph.model.ToscaEntity;
 import org.eclipse.winery.topologygraph.model.ToscaGraph;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
 
-import org.eclipse.jdt.annotation.NonNull;
-
 public class ToscaTransformer {
 
     public static ToscaGraph createTOSCAGraph(TTopologyTemplate topologyTemplate) {
         ToscaGraph graph = new ToscaGraph();
-        @NonNull List<TRelationshipTemplate> relationshipTemplates = topologyTemplate.getRelationshipTemplates();
-        @NonNull List<TNodeTemplate> nodeTemplates = topologyTemplate.getNodeTemplates();
-        Map<TNodeTemplate, ToscaNode> nodes = new HashMap<>();
+        List<TRelationshipTemplate> relationshipTemplates = topologyTemplate.getRelationshipTemplates();
+        List<TNodeTemplate> nodeTemplates = topologyTemplate.getNodeTemplates();
+        Map<String, ToscaNode> nodes = new HashMap<>();
         for (TNodeTemplate nodeTemplate : nodeTemplates) {
             ToscaNode node = createAndInitializeTOSCANode(nodeTemplate);
-            nodes.put(nodeTemplate, node);
+            nodes.put(nodeTemplate.getId(), node);
             graph.addVertex(node);
         }
         for (TRelationshipTemplate tRelationshipTemplate : relationshipTemplates) {
-            ToscaNode source = nodes.get(tRelationshipTemplate.getSourceElement().getRef());
-            ToscaNode target = nodes.get(tRelationshipTemplate.getTargetElement().getRef());
+            ToscaNode source = nodes.get(tRelationshipTemplate.getSourceElement().getRef().getId());
+            ToscaNode target = nodes.get(tRelationshipTemplate.getTargetElement().getRef().getId());
             ToscaEdge edge = new ToscaEdge(source, target);
             graph.addEdge(source, target, edge);
             initializeTOSCAEdge(tRelationshipTemplate, edge);
@@ -73,8 +71,7 @@ public class ToscaTransformer {
     public static void addTEntityTypes(QName nodeTypeQName, ToscaEntity entity, Class<? extends TEntityType> tEntityTypeClass) {
         TEntityType entityType = getEntityType(nodeTypeQName, tEntityTypeClass);
         entity.addTEntityType(entityType);
-
-        Optional.of(entityType).map(TEntityType::getDerivedFrom)
+        Optional.ofNullable(entityType).map(TEntityType::getDerivedFrom)
             .map(TEntityType.DerivedFrom::getTypeRef)
             .ifPresent(qName -> addTEntityTypes(qName, entity, tEntityTypeClass));
     }

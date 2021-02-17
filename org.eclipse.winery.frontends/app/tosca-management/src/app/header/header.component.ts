@@ -48,7 +48,7 @@ export class HeaderComponent implements OnInit {
                     others.includes('admin'))
             ) {
                 this.otherActive = true;
-                this.selectedOtherComponent = ': ' + Utils.getToscaTypeNameFromToscaType(Utils.getToscaTypeFromString(others), true);
+                this.selectedOtherComponent = Utils.getToscaTypeNameFromToscaType(Utils.getToscaTypeFromString(others), true);
             } else {
                 this.otherActive = others.includes('other');
                 this.selectedOtherComponent = '';

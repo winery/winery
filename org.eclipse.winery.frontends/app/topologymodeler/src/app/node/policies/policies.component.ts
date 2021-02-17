@@ -56,4 +56,8 @@ export class PoliciesComponent implements OnInit {
     handleShowYamlPolicyModalEvent() {
         this.showYamlPolicyManagementModal.emit();
     }
+
+    isEmpty(): boolean {
+        return !this.policies || this.policies.length === 0;
+    }
 }

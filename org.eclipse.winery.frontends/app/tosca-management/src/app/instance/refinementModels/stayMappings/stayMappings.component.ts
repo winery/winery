@@ -37,7 +37,6 @@ export class StayMappingsComponent implements OnInit {
     loading = true;
     loadingElements = false;
     columns: Array<WineryTableColumn> = [
-        { title: 'Element Type', name: 'modelElementType', sort: true },
         { title: 'Detector Element', name: 'detectorElement', sort: true },
         { title: 'Refinement Element', name: 'refinementElement', sort: true },
     ];
@@ -88,6 +87,7 @@ export class StayMappingsComponent implements OnInit {
     // region ********** Add Modal Callbacks **********
     onAddPrmPropertyMapping() {
         this.loading = true;
+        delete this.mapping.modelElementType;
         this.service.addStayMapping(this.mapping)
             .subscribe(
                 data => this.handleSave('Added', data),

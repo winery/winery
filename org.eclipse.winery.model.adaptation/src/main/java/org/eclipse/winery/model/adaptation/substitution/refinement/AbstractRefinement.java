@@ -21,12 +21,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.eclipse.winery.common.ids.definitions.RefinementId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.adaptation.substitution.AbstractSubstitution;
-import org.eclipse.winery.model.tosca.OTRefinementModel;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.extensions.RefinementId;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.extensions.OTRefinementModel;
 import org.eclipse.winery.topologygraph.matching.IToscaMatcher;
 import org.eclipse.winery.topologygraph.matching.ToscaIsomorphismMatcher;
 import org.eclipse.winery.topologygraph.model.ToscaEdge;
@@ -78,20 +78,18 @@ public abstract class AbstractRefinement extends AbstractSubstitution {
             ToscaGraph topologyGraph = ToscaTransformer.createTOSCAGraph(topology);
 
             List<RefinementCandidate> candidates = new ArrayList<>();
-            this.refinementModels
-                .forEach(prm -> {
-                    ToscaGraph detectorGraph = ToscaTransformer.createTOSCAGraph(prm.getDetector());
-                    IToscaMatcher matcher = getMatcher(prm);
-                    Iterator<GraphMapping<ToscaNode, ToscaEdge>> matches = isomorphismMatcher.findMatches(detectorGraph, topologyGraph, matcher);
+            this.refinementModels.forEach(prm -> {
+                ToscaGraph detectorGraph = ToscaTransformer.createTOSCAGraph(prm.getDetector());
+                IToscaMatcher matcher = this.getMatcher(prm);
+                Iterator<GraphMapping<ToscaNode, ToscaEdge>> matches = isomorphismMatcher.findMatches(detectorGraph, topologyGraph, matcher);
 
-                    matches.forEachRemaining(mapping -> {
-                        RefinementCandidate candidate = new RefinementCandidate(prm, mapping, detectorGraph, id[0]++);
-
-                        if (isApplicable(candidate, topology)) {
-                            candidates.add(candidate);
-                        }
-                    });
+                matches.forEachRemaining(mapping -> {
+                    RefinementCandidate candidate = new RefinementCandidate(prm, mapping, detectorGraph, id[0]++);
+                    if (isApplicable(candidate, topology)) {
+                        candidates.add(candidate);
+                    }
                 });
+            });
 
             if (candidates.size() == 0) {
                 break;

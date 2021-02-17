@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.winery.model.adaptation.substitution.refinement.patterns;
 
-import org.eclipse.winery.common.ids.definitions.PatternRefinementModelId;
+import org.eclipse.winery.model.ids.extensions.PatternRefinementModelId;
 import org.eclipse.winery.model.adaptation.substitution.SubstitutionUtils;
 import org.eclipse.winery.model.adaptation.substitution.refinement.DefaultRefinementChooser;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementChooser;

@@ -47,6 +47,10 @@
     user-select: none;
 }
 
+.panel-group {
+    padding-bottom: 100px;
+}
+
 .accordion-root {
 }
 
@@ -54,7 +58,6 @@ accordion-group {
     font-size: x-small;
     max-width: 300px;
     text-overflow: ellipsis;
-    overflow: scroll;
     white-space: nowrap !important;
     text-align: start !important;
 }

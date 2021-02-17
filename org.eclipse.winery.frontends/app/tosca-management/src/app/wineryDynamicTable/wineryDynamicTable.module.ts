@@ -36,7 +36,8 @@ import { DynamicConstraintsComponent } from './formComponents/dynamicConstraints
         DynamicConstraintsComponent,
         WineryDynamicFieldDirective],
     exports: [
-        WineryDynamicTableComponent
+        WineryDynamicTableComponent,
+        WineryDynamicFormModalComponent
     ],
     imports: [
         CommonModule, ReactiveFormsModule, BrowserModule, WineryTableModule, WineryModalModule

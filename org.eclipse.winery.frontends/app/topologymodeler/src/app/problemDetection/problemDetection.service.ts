@@ -17,44 +17,41 @@ import { BackendService } from '../services/backend.service';
 import { Observable } from 'rxjs/Observable';
 import { ProblemFindings, ProblemOccurrence } from './problemEntity';
 import { SolutionInputData } from './solutionEntity';
-import { TopologyModelerConfiguration } from '../models/topologyModelerConfiguration';
 import { TTopologyTemplate } from '../models/ttopology-template';
 
 @Injectable()
 export class ProblemDetectionService {
 
-    private readonly configuration: TopologyModelerConfiguration;
     private readonly postHeaders: HttpHeaders;
 
     constructor(private http: HttpClient,
-                backendService: BackendService) {
-        this.configuration = backendService.configuration;
+                private backendService: BackendService) {
         this.postHeaders = new HttpHeaders().set('Accept', 'application/json');
         this.postHeaders.set('Content-Type', 'application/json');
     }
 
     detectProblems(): Observable<ProblemFindings[]> {
         const header = new HttpHeaders().set('Accept', 'application/json');
-        const url = this.configuration.topologyProDecURL + '/checkProblems?'
-            + 'wineryURL=' + encodeURIComponent(this.configuration.repositoryURL)
-            + '&serviceTemplateNS=' + encodeURIComponent(this.configuration.ns)
-            + '&serviceTemplateID=' + encodeURIComponent(this.configuration.id);
+        const url = this.backendService.configuration.topologyProDecURL + '/checkProblems?'
+            + 'wineryURL=' + encodeURIComponent(this.backendService.configuration.repositoryURL)
+            + '&serviceTemplateNS=' + encodeURIComponent(this.backendService.configuration.ns)
+            + '&serviceTemplateID=' + encodeURIComponent(this.backendService.configuration.id);
 
         return this.http.get<ProblemFindings[]>(url, { headers: header });
     }
 
     findSolutions(selectedProblem: ProblemOccurrence): Observable<SolutionInputData[]> {
-        const url = this.configuration.topologyProDecURL + '/findSolutions';
+        const url = this.backendService.configuration.topologyProDecURL + '/findSolutions';
         return this.http.post<SolutionInputData[]>(url, selectedProblem, { headers: this.postHeaders });
     }
 
     applySolution(selectedSolution: SolutionInputData) {
         let url;
         if (selectedSolution.csi.serviceEndpoint.endsWith('eclipse/winery')) {
-            url = this.configuration.repositoryURL + '/' + this.configuration.parentPath + '/'
-                + encodeURIComponent(encodeURIComponent(this.configuration.ns)) + '/'
-                + encodeURIComponent(encodeURIComponent(this.configuration.id)) + '/'
-                + this.configuration.elementPath
+            url = this.backendService.configuration.repositoryURL + '/' + this.backendService.configuration.parentPath + '/'
+                + encodeURIComponent(encodeURIComponent(this.backendService.configuration.ns)) + '/'
+                + encodeURIComponent(encodeURIComponent(this.backendService.configuration.id)) + '/'
+                + this.backendService.configuration.elementPath
                 + '/applysolution';
         } else {
             url = selectedSolution.csi.serviceEndpoint;

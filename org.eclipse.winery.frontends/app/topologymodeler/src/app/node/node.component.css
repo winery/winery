@@ -45,13 +45,25 @@ div.pattern {
 .patternImage {
     margin-top: 10px;
     margin-left: 3px;
+    max-width: 50px;
+    max-height: 50px;
 }
 
-img {
+.winery-image {
+    height: 50px;
+    position: relative;
+}
+
+.winery-image img {
     max-width: 50px;
     max-height: 50px;
     margin-top: 0.1em;
     border-radius: 10%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
 }
 
 .padding-top--2px {

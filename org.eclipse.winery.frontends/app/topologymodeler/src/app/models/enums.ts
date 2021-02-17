@@ -54,5 +54,6 @@ export enum toggleModalType {
 export enum PropertyDefinitionType {
     NONE = 'NONE',
     KV = 'KV',
-    XML = 'XML'
+    XML = 'XML',
+    YAML = 'YAML',
 }

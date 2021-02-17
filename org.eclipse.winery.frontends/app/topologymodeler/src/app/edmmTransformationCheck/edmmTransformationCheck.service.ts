@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,40 +12,62 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BackendService } from '../services/backend.service';
-import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { TTopologyTemplate } from '../models/ttopology-template';
+import 'rxjs/add/operator/mergeMap';
 
 export interface EdmmTechnologyTransformationCheck {
     id: string;
     name: string;
     supports: number;
+    replacementRules: ReplacementRules[];
+}
+
+interface ReplacementRules {
+    reason: string;
     unsupportedComponents: string[];
+    toTopology: Map<string, any>;
 }
 
 @Injectable()
 export class EdmmTransformationCheckService {
 
     constructor(private http: HttpClient,
-                private backendService: BackendService,
-                private config: WineryRepositoryConfigurationService) {
+                private backendService: BackendService) {
     }
 
     doTransformationCheck(topologyTemplate: TTopologyTemplate): Observable<EdmmTechnologyTransformationCheck[]> {
-        const edmmUrl = this.backendService.configuration.parentElementUrl + '?edmm';
-
+        const edmmUrl = this.backendService.configuration.parentElementUrl + 'edmm/check-model-support';
         return this.backendService.saveTopologyTemplate(topologyTemplate)
             .flatMap(() =>
-                this.http.get(edmmUrl, { headers: new HttpHeaders('Accept: text/xml'), responseType: 'text' })
-                    .flatMap(edmmText =>
-                        this.http.post<EdmmTechnologyTransformationCheck[]>(
-                            this.config.configuration.endpoints.edmmTransformationTool,
-                            edmmText,
-                            { headers: new HttpHeaders('Content-Type: text/plain') }
-                        )
-                    )
+                // this will directly return the info about the supported technologies
+                this.http.get<EdmmTechnologyTransformationCheck[]>(edmmUrl)
             );
+    }
+
+    /**
+     * The function will call the transformation util of edmm and it will give back a zip
+     * with the deployment specific files
+     */
+    doTransformation(target: String) {
+        const edmmUrl = this.backendService.configuration.parentElementUrl
+            + 'edmm/transform?target=' + target;
+        window.open(edmmUrl, '_blank');
+    }
+
+    /**
+     * Returns a map with the edmm types as keys and the qname types
+     * as values, e.g., { hosted_on: HostedOn, web_server: Web_Server } etc.
+     */
+    getOneToOneMap(): Observable<Map<string, string>> {
+        const edmmUrl = this.backendService.configuration.parentElementUrl + 'edmm/one-to-one-map';
+        return this.http.get<Map<string, string>>(edmmUrl);
+    }
+
+    createPlaceholderScripts(componentType: string) {
+        const edmmUrl = this.backendService.configuration.parentElementUrl + 'edmm/create-placeholders-scripts';
+        this.http.post(edmmUrl, componentType).subscribe();
     }
 }

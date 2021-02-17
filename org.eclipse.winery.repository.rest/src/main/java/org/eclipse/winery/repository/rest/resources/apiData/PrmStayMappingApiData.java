@@ -15,26 +15,20 @@
 package org.eclipse.winery.repository.rest.resources.apiData;
 
 import org.eclipse.winery.model.tosca.TEntityTemplate;
-import org.eclipse.winery.model.tosca.OTPrmModelElementType;
-import org.eclipse.winery.model.tosca.OTStayMapping;
+import org.eclipse.winery.model.tosca.extensions.OTStayMapping;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class PrmStayMappingApiData extends AbstractPrmMappingElement {
-
-    public OTPrmModelElementType modelElementType;
 
     public PrmStayMappingApiData() {
     }
 
     @JsonIgnore
     public OTStayMapping createOTPrmStayMapping(TEntityTemplate detectorNodeTemplate, TEntityTemplate refinementNodeTemplate) {
-        OTStayMapping mapping = new OTStayMapping();
-        mapping.setId(this.id);
-        mapping.setDetectorElement(detectorNodeTemplate);
-        mapping.setRefinementElement(refinementNodeTemplate);
-        mapping.setModelElementType(this.modelElementType);
-
-        return mapping;
+        return new OTStayMapping.Builder(this.id)
+            .setDetectorElement(detectorNodeTemplate)
+            .setRefinementElement(refinementNodeTemplate)
+            .build();
     }
 }

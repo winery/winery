@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,34 +15,51 @@
 package org.eclipse.winery.repository.rest.resources.refinementmodels;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.MediaType;
+import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.adaptation.substitution.refinement.PermutationGenerator;
-import org.eclipse.winery.model.tosca.OTAttributeMapping;
-import org.eclipse.winery.model.tosca.OTDeploymentArtifactMapping;
-import org.eclipse.winery.model.tosca.OTPatternRefinementModel;
-import org.eclipse.winery.model.tosca.OTPermutationMapping;
-import org.eclipse.winery.model.tosca.OTStayMapping;
-import org.eclipse.winery.model.tosca.OTTopologyFragmentRefinementModel;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.extensions.OTAttributeMapping;
+import org.eclipse.winery.model.tosca.extensions.OTAttributeMappingType;
+import org.eclipse.winery.model.tosca.extensions.OTDeploymentArtifactMapping;
+import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTPermutationMapping;
+import org.eclipse.winery.model.tosca.extensions.OTRelationDirection;
+import org.eclipse.winery.model.tosca.extensions.OTRelationMapping;
+import org.eclipse.winery.model.tosca.extensions.OTStayMapping;
+import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelResource;
 import org.eclipse.winery.repository.rest.resources.apiData.PermutationsResponse;
+import org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates.RefinementTopologyTemplateResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates.TopologyTemplateResource;
 
 public class TopologyFragmentRefinementModelResource extends AbstractRefinementModelResource {
 
     public TopologyFragmentRefinementModelResource(DefinitionsChildId id) {
         super(id);
+        this.mappingTypes = new
+            ArrayList<>(Arrays.asList("PermutationMapping", "RelationshipMapping", "DeploymentArtifactMapping",
+            "AttributeMapping", "StayMapping"));
     }
 
     @Override
     protected OTPatternRefinementModel createNewElement() {
-        return new OTPatternRefinementModel();
+        return new OTPatternRefinementModel(new OTPatternRefinementModel.Builder());
     }
 
     public OTTopologyFragmentRefinementModel getTRefinementModel() {
@@ -54,8 +71,66 @@ public class TopologyFragmentRefinementModelResource extends AbstractRefinementM
         return new TopologyTemplateResource(this, this.getTRefinementModel().getRefinementTopology(), REFINEMENT_TOPOLOGY);
     }
 
+    @PUT
+    @Path("graphicPrmTopology")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Override
+    public TopologyTemplateResource savePrmMappingTopology(TTopologyTemplate topologyTemplate) {
+        this.getTRefinementModel().resetAllMappings();
+        RestUtils.persist(this);
+        for (TRelationshipTemplate relTemplate : topologyTemplate.getRelationshipTemplates()) {
+            String mappingId;
+            // necessary for topologymodeler to create the IDs
+            if (relTemplate.getId().startsWith("con")) {
+                mappingId = relTemplate.getId().substring(relTemplate.getId().indexOf("_") + 1);
+            } else {
+                mappingId = relTemplate.getId();
+            }
+            if (relTemplate.getType().getLocalPart().startsWith("PermutationMapping")) {
+                this.getPermutationMappings().addMapping(new OTPermutationMapping(new OTPermutationMapping.Builder(mappingId)
+                    .setDetectorElement(relTemplate.getSourceElement().getRef())
+                    .setRefinementElement(relTemplate.getTargetElement().getRef())
+                ));
+            }
+            if (relTemplate.getType().getLocalPart().startsWith("RelationshipMapping")) {
+                Map<String, String> propertiesMap = ((TEntityTemplate.WineryKVProperties) relTemplate.getProperties()).getKVProperties();
+                this.getRelationMappings().addMapping(new OTRelationMapping(new OTRelationMapping.Builder(mappingId)
+                    .setDetectorElement(relTemplate.getSourceElement().getRef())
+                    .setRefinementElement(relTemplate.getTargetElement().getRef())
+                    .setDirection(OTRelationDirection.fromValue(propertiesMap.get("direction")))
+                    .setRelationType(QName.valueOf(propertiesMap.get("applicableRelationshipType")))
+                    .setValidSourceOrTarget(QName.valueOf(propertiesMap.get("validEndpointType")))));
+            }
+            if (relTemplate.getType().getLocalPart().startsWith("StayMapping")) {
+                this.getStayMappings().addMapping(new OTStayMapping(new OTStayMapping.Builder(mappingId)
+                    .setDetectorElement(relTemplate.getSourceElement().getRef())
+                    .setRefinementElement(relTemplate.getTargetElement().getRef())
+                ));
+            }
+            if (relTemplate.getType().getLocalPart().startsWith("AttributeMapping")) {
+                Map<String, String> propertiesMap = ((TEntityTemplate.WineryKVProperties) relTemplate.getProperties()).getKVProperties();
+                this.getAttributeMappings().addMapping(new OTAttributeMapping(new OTAttributeMapping.Builder(mappingId)
+                    .setDetectorElement(relTemplate.getSourceElement().getRef())
+                    .setRefinementElement(relTemplate.getTargetElement().getRef())
+                    .setType(OTAttributeMappingType.fromValue(propertiesMap.get("type")))
+                    .setDetectorProperty(propertiesMap.get("detectorProperty"))
+                    .setRefinementProperty(propertiesMap.get("refinementProperty"))
+                ));
+            }
+            if (relTemplate.getType().getLocalPart().startsWith("DeploymentArtifactMapping")) {
+                Map<String, String> propertiesMap = ((TEntityTemplate.WineryKVProperties) relTemplate.getProperties()).getKVProperties();
+                this.getDeploymentArtifactMappings().addMapping(new OTDeploymentArtifactMapping(new OTDeploymentArtifactMapping.Builder(mappingId)
+                    .setDetectorElement(relTemplate.getSourceElement().getRef())
+                    .setRefinementElement(relTemplate.getTargetElement().getRef())
+                    .setArtifactType(QName.valueOf(propertiesMap.get("requiredDeploymentArtifactType")))
+                ));
+            }
+        }
+        return new RefinementTopologyTemplateResource(this, this.getTRefinementModel(), GRAFIC_PRM_MODEL);
+    }
+
     @Path("attributemappings")
-    public AttributeMappingsResource getPropertyMappings() {
+    public AttributeMappingsResource getAttributeMappings() {
         List<OTAttributeMapping> propertyMappings = this.getTRefinementModel().getAttributeMappings();
 
         if (Objects.isNull(propertyMappings)) {

@@ -17,6 +17,7 @@ package org.eclipse.winery.repository.rest.resources.servicetemplates.boundaryde
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 import org.junit.jupiter.api.Test;
 
+// TODO these tests rely on the hardcoded hashes of known policies, which may change!
 public class PoliciesResourceTest extends AbstractResourceTest {
 
     @Test
@@ -35,7 +36,9 @@ public class PoliciesResourceTest extends AbstractResourceTest {
     @Test
     public void deletePolicies() throws Exception {
         this.setRevisionTo("3cad4e459a8af6082097eab8f978c80b4f5a512e");
-        this.assertDelete("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/boundarydefinitions/policies/1400281569/");
+        // TODO make this more resilient against changes in the serialization of the working model
+        //  by obtaining the id of the solitary policy with an additional request
+        this.assertDelete("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/boundarydefinitions/policies/1793006451/");
         this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/boundarydefinitions/policies/", "entitytypes/empty_array.json");
     }
 }

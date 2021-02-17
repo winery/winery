@@ -20,12 +20,12 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.version.VersionSupport;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
@@ -63,7 +63,7 @@ public class AbstractSubstitution {
         try {
             ServiceTemplateId substitutedServiceTemplateId = new ServiceTemplateId(
                 serviceTemplateId.getNamespace().getDecoded(),
-                VersionUtils.getNewComponentVersionId(serviceTemplateId, versionAppendix),
+                VersionSupport.getNewComponentVersionId(serviceTemplateId, versionAppendix),
                 false
             );
 

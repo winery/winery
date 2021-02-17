@@ -37,10 +37,11 @@ import org.slf4j.LoggerFactory;
  */
 final class Environment {
 
+    static final String TEST_CONFIG_NAME = "wineryTest.yml";
     private static final Logger LOGGER = LoggerFactory.getLogger(Environment.class);
 
     private static final String DEFAULT_CONFIG_NAME = "winery.yml";
-    private static final String TEST_CONFIG_NAME = "wineryTest.yml";
+    // Visible for test classes
     private static final File DEFAULT_CONFIG_DIRECTORY = new File(System.getProperty("user.home"), ".winery");
     private static final File DEFAULT_CONFIG_FILE = new File(DEFAULT_CONFIG_DIRECTORY, DEFAULT_CONFIG_NAME);
     private static final File LINUX_CONFIG_FILE = new File("/opt/winery/.winery", DEFAULT_CONFIG_NAME);
@@ -164,6 +165,7 @@ final class Environment {
             if (defaultConfigInputStream == null) {
                 throw new NullPointerException();
             }
+            LOGGER.info("Copying default configuration to user home");
             FileUtils.copyInputStreamToFile(defaultConfigInputStream, Environment.DEFAULT_CONFIG_FILE);
         } catch (IOException | NullPointerException e) {
             LOGGER.debug("Error while copying the default config file into the winery directory", e);

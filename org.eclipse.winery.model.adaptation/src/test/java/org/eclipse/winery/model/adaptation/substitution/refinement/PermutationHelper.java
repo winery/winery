@@ -21,17 +21,17 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.OTAttributeMapping;
-import org.eclipse.winery.model.tosca.OTAttributeMappingType;
-import org.eclipse.winery.model.tosca.OTDeploymentArtifactMapping;
-import org.eclipse.winery.model.tosca.OTPatternRefinementModel;
-import org.eclipse.winery.model.tosca.OTPermutationMapping;
-import org.eclipse.winery.model.tosca.OTRelationDirection;
-import org.eclipse.winery.model.tosca.OTRelationMapping;
-import org.eclipse.winery.model.tosca.OTStayMapping;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.extensions.OTAttributeMapping;
+import org.eclipse.winery.model.tosca.extensions.OTAttributeMappingType;
+import org.eclipse.winery.model.tosca.extensions.OTDeploymentArtifactMapping;
+import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTPermutationMapping;
+import org.eclipse.winery.model.tosca.extensions.OTRelationDirection;
+import org.eclipse.winery.model.tosca.extensions.OTRelationMapping;
+import org.eclipse.winery.model.tosca.extensions.OTStayMapping;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 
 public abstract class PermutationHelper {
@@ -84,57 +84,57 @@ public abstract class PermutationHelper {
         TRelationshipTemplate node15_hostedOn_node16 = ModelUtilities.createRelationshipTemplate(
             refinementNode_15, refinementNode_16, QName.valueOf("{http://ex.org}relType_hostedOn"));
 
-        TTopologyTemplate refinementStructure = new TTopologyTemplate();
-        refinementStructure.addNodeTemplate(refinementNode_11);
-        refinementStructure.addNodeTemplate(refinementNode_13);
-        refinementStructure.addNodeTemplate(refinementNode_15);
-        refinementStructure.addNodeTemplate(refinementNode_16);
-        refinementStructure.addRelationshipTemplate(node11_hostedOn_node13);
-        refinementStructure.addRelationshipTemplate(node13_hostedOn_node15);
-        refinementStructure.addRelationshipTemplate(node15_hostedOn_node16);
+        TTopologyTemplate refinementStructure = new TTopologyTemplate.Builder()
+            .addNodeTemplate(refinementNode_11)
+            .addNodeTemplate(refinementNode_13)
+            .addNodeTemplate(refinementNode_15)
+            .addNodeTemplate(refinementNode_16)
+            .addRelationshipTemplate(node11_hostedOn_node13)
+            .addRelationshipTemplate(node13_hostedOn_node15)
+            .addRelationshipTemplate(node15_hostedOn_node16)
+            .build();
         // endregion
 
         // region mappings
-        OTStayMapping pattern1_to_node11 = new OTStayMapping();
-        pattern1_to_node11.setId("p1_to_n11");
-        pattern1_to_node11.setDetectorElement(detector.getNodeTemplate("1"));
-        pattern1_to_node11.setRefinementElement(refinementNode_11);
+        OTStayMapping pattern1_to_node11 = new OTStayMapping.Builder("sm-1--11")
+            .setDetectorElement(detector.getNodeTemplate("1"))
+            .setRefinementElement(refinementNode_11)
+            .build();
 
-        OTRelationMapping pattern2_to_node13 = new OTRelationMapping();
-        pattern2_to_node13.setId("p2_to_n13");
-        pattern2_to_node13.setRelationType(QName.valueOf("{http://ex.org}relType_hostedOn"));
-        pattern2_to_node13.setDirection(OTRelationDirection.INGOING);
-        pattern2_to_node13.setDetectorElement(detector.getNodeTemplate("2"));
-        pattern2_to_node13.setRefinementElement(refinementNode_13);
+        OTRelationMapping pattern2_to_node13 = new OTRelationMapping.Builder("pm-2--13")
+            .setRelationType("{http://ex.org}relType_hostedOn")
+            .setDirection(OTRelationDirection.INGOING)
+            .setDetectorElement(detector.getNodeTemplate("2"))
+            .setRefinementElement(refinementNode_13)
+            .build();
 
-        OTPermutationMapping pattern2_to_node15 = new OTPermutationMapping();
-        pattern2_to_node15.setId("p2_to_n15");
-        pattern2_to_node15.setDetectorElement(detector.getNodeTemplate("2"));
-        pattern2_to_node15.setRefinementElement(refinementNode_15);
+        OTPermutationMapping pattern2_to_node15 = new OTPermutationMapping.Builder("pm-2--15")
+            .setDetectorElement(detector.getNodeTemplate("2"))
+            .setRefinementElement(refinementNode_15)
+            .build();
 
-        OTRelationMapping pattern3_to_node16 = new OTRelationMapping();
-        pattern3_to_node16.setId("p3_to_n16");
-        pattern3_to_node16.setRelationType(QName.valueOf("{http://ex.org}relType_connectsTo"));
-        pattern3_to_node16.setDirection(OTRelationDirection.INGOING);
-        pattern3_to_node16.setDetectorElement(detector.getNodeTemplate("3"));
-        pattern3_to_node16.setRefinementElement(refinementNode_16);
+        OTRelationMapping pattern3_to_node16 = new OTRelationMapping.Builder("pm-3--16")
+            .setRelationType(QName.valueOf("{http://ex.org}relType_connectsTo"))
+            .setDirection(OTRelationDirection.INGOING)
+            .setDetectorElement(detector.getNodeTemplate("3"))
+            .setRefinementElement(refinementNode_16)
+            .build();
         // endregion
 
         // region prm
-        OTPatternRefinementModel refinementModel = new OTPatternRefinementModel();
-        refinementModel.setId("PrmWithStaying");
-        refinementModel.setName("PrmWithStaying");
-        refinementModel.setTargetNamespace("http://ex.org");
-        refinementModel.setDetector(detector);
-        refinementModel.setRefinementTopology(refinementStructure);
-        refinementModel.setRelationMappings(Arrays.asList(pattern2_to_node13, pattern3_to_node16));
-        refinementModel.setStayMappings(Collections.singletonList(pattern1_to_node11));
         ArrayList<OTPermutationMapping> mappings = new ArrayList<>();
         mappings.add(pattern2_to_node15);
-        refinementModel.setPermutationMappings(mappings);
         // endregion
 
-        return refinementModel;
+        return new OTPatternRefinementModel.Builder()
+            .setName("PrmWithStaying")
+            .setTargetNamespace("http://ex.org")
+            .setDetector(detector)
+            .setRefinementStructure(refinementStructure)
+            .setRelationMappings(Arrays.asList(pattern2_to_node13, pattern3_to_node16))
+            .setStayMappings(Collections.singletonList(pattern1_to_node11))
+            .setPermutationMappings(mappings)
+            .build();
     }
 
     static OTPatternRefinementModel generatePrmWithoutPermutationMaps() {
@@ -190,53 +190,51 @@ public abstract class PermutationHelper {
         TRelationshipTemplate node11_connectsTo_node12 = ModelUtilities.createRelationshipTemplate(
             refinementNode_11, refinementNode_12, QName.valueOf("{http://ex.org}relType_connectsTo"));
 
-        TTopologyTemplate refinementStructure = new TTopologyTemplate();
-        refinementStructure.addNodeTemplate(refinementNode_11);
-        refinementStructure.addNodeTemplate(refinementNode_12);
-        refinementStructure.addNodeTemplate(refinementNode_13);
-        refinementStructure.addNodeTemplate(refinementNode_14);
-        refinementStructure.addNodeTemplate(refinementNode_15);
-        refinementStructure.addRelationshipTemplate(node11_hostedOn_node13);
-        refinementStructure.addRelationshipTemplate(node12_hostedOn_node13);
-        refinementStructure.addRelationshipTemplate(node13_hostedOn_node14);
-        refinementStructure.addRelationshipTemplate(node14_hostedOn_node15);
-        refinementStructure.addRelationshipTemplate(node11_connectsTo_node12);
+        TTopologyTemplate refinementStructure = new TTopologyTemplate.Builder()
+            .addNodeTemplate(refinementNode_11)
+            .addNodeTemplate(refinementNode_12)
+            .addNodeTemplate(refinementNode_13)
+            .addNodeTemplate(refinementNode_14)
+            .addNodeTemplate(refinementNode_15)
+            .addRelationshipTemplate(node11_hostedOn_node13)
+            .addRelationshipTemplate(node12_hostedOn_node13)
+            .addRelationshipTemplate(node13_hostedOn_node14)
+            .addRelationshipTemplate(node14_hostedOn_node15)
+            .addRelationshipTemplate(node11_connectsTo_node12)
+            .build();
         // endregion
 
         // region mappings
-        OTRelationMapping pattern1_to_node11 = new OTRelationMapping();
-        pattern1_to_node11.setId("p1_to_n11");
-        pattern1_to_node11.setRelationType(QName.valueOf("{http://ex.org}relType_connectsTo"));
-        pattern1_to_node11.setDirection(OTRelationDirection.INGOING);
-        pattern1_to_node11.setDetectorElement(detector.getNodeTemplate("1"));
-        pattern1_to_node11.setRefinementElement(refinementNode_11);
+        OTRelationMapping pattern1_to_node11 = new OTRelationMapping.Builder("rm-1--11")
+            .setRelationType(QName.valueOf("{http://ex.org}relType_connectsTo"))
+            .setDirection(OTRelationDirection.INGOING)
+            .setDetectorElement(detector.getNodeTemplate("1"))
+            .setRefinementElement(refinementNode_11)
+            .build();
 
-        OTRelationMapping pattern2_to_node13 = new OTRelationMapping();
-        pattern2_to_node13.setId("p2_to_n13");
-        pattern2_to_node13.setRelationType(QName.valueOf("{http://ex.org}relType_hostedOn"));
-        pattern2_to_node13.setDirection(OTRelationDirection.INGOING);
-        pattern2_to_node13.setDetectorElement(detector.getNodeTemplate("2"));
-        pattern2_to_node13.setRefinementElement(refinementNode_13);
+        OTRelationMapping pattern2_to_node13 = new OTRelationMapping.Builder("rm-2--13")
+            .setRelationType(QName.valueOf("{http://ex.org}relType_hostedOn"))
+            .setDirection(OTRelationDirection.INGOING)
+            .setDetectorElement(detector.getNodeTemplate("2"))
+            .setRefinementElement(refinementNode_13)
+            .build();
 
-        OTRelationMapping pattern3_to_node14 = new OTRelationMapping();
-        pattern3_to_node14.setId("p3_to_n14");
-        pattern3_to_node14.setRelationType(QName.valueOf("{http://ex.org}relType_connectsTo"));
-        pattern3_to_node14.setDirection(OTRelationDirection.INGOING);
-        pattern3_to_node14.setDetectorElement(detector.getNodeTemplate("3"));
-        pattern3_to_node14.setRefinementElement(refinementNode_14);
+        OTRelationMapping pattern3_to_node14 = new OTRelationMapping.Builder(
+            "rm-3-14")
+            .setRelationType(QName.valueOf("{http://ex.org}relType_connectsTo"))
+            .setDirection(OTRelationDirection.INGOING)
+            .setDetectorElement(detector.getNodeTemplate("3"))
+            .setRefinementElement(refinementNode_14)
+            .build();
         // endregion
 
-        // region prm
-        OTPatternRefinementModel refinementModel = new OTPatternRefinementModel();
-        refinementModel.setId("SimplePrm");
-        refinementModel.setName("SimplePrm");
-        refinementModel.setTargetNamespace("http://ex.org");
-        refinementModel.setDetector(detector);
-        refinementModel.setRefinementTopology(refinementStructure);
-        refinementModel.setRelationMappings(Arrays.asList(pattern1_to_node11, pattern2_to_node13, pattern3_to_node14));
-        // endregion
-
-        return refinementModel;
+        return new OTPatternRefinementModel.Builder()
+            .setName("SimplePrm")
+            .setTargetNamespace("http://ex.org")
+            .setDetector(detector)
+            .setRefinementStructure(refinementStructure)
+            .setRelationMappings(Arrays.asList(pattern1_to_node11, pattern2_to_node13, pattern3_to_node14))
+            .build();
     }
 
     static OTPatternRefinementModel generatePrmWithComplexRelationMaps() {
@@ -284,43 +282,43 @@ public abstract class PermutationHelper {
         TRelationshipTemplate node11_connectsTo_node12 = ModelUtilities.createRelationshipTemplate(
             refinementNode_11, refinementNode_12, QName.valueOf("{http://ex.org}relType_connectsTo"));
 
-        TTopologyTemplate refinementStructure = new TTopologyTemplate();
-        refinementStructure.addNodeTemplate(refinementNode_11);
-        refinementStructure.addNodeTemplate(refinementNode_12);
-        refinementStructure.addNodeTemplate(refinementNode_13);
-        refinementStructure.addNodeTemplate(refinementNode_14);
-        refinementStructure.addRelationshipTemplate(node11_hostedOn_node13);
-        refinementStructure.addRelationshipTemplate(node12_hostedOn_node13);
-        refinementStructure.addRelationshipTemplate(node13_hostedOn_node14);
-        refinementStructure.addRelationshipTemplate(node11_connectsTo_node12);
+        TTopologyTemplate refinementStructure = new TTopologyTemplate.Builder()
+            .addNodeTemplate(refinementNode_11)
+            .addNodeTemplate(refinementNode_12)
+            .addNodeTemplate(refinementNode_13)
+            .addNodeTemplate(refinementNode_14)
+            .addRelationshipTemplate(node11_hostedOn_node13)
+            .addRelationshipTemplate(node12_hostedOn_node13)
+            .addRelationshipTemplate(node13_hostedOn_node14)
+            .addRelationshipTemplate(node11_connectsTo_node12)
+            .build();
         // endregion
 
         // region mappings
-        OTPermutationMapping pattern1_to_node11 = new OTPermutationMapping();
-        pattern1_to_node11.setId("1_to_11");
-        pattern1_to_node11.setRefinementElement(refinementNode_11);
-        pattern1_to_node11.setDetectorElement(detector.getNodeTemplate("1"));
+        OTPermutationMapping pattern1_to_node11 = new OTPermutationMapping.Builder("pm-1--11")
+            .setRefinementElement(refinementNode_11)
+            .setDetectorElement(detector.getNodeTemplate("1"))
+            .build();
 
-        OTPermutationMapping pattern2_to_node13 = new OTPermutationMapping();
-        pattern2_to_node13.setId("2_to_13");
-        pattern2_to_node13.setDetectorElement(detector.getNodeTemplate("2"));
-        pattern2_to_node13.setRefinementElement(refinementNode_13);
+        OTPermutationMapping pattern2_to_node13 = new OTPermutationMapping.Builder("pm-2--13")
+            .setDetectorElement(detector.getNodeTemplate("2"))
+            .setRefinementElement(refinementNode_13)
+            .build();
         // endregion
 
         // region prm
-        OTPatternRefinementModel refinementModel = new OTPatternRefinementModel();
-        refinementModel.setId("PrmWithComplexRelationMappings");
-        refinementModel.setName("PrmWithComplexRelationMappings");
-        refinementModel.setTargetNamespace("http://ex.org");
-        refinementModel.setDetector(detector);
-        refinementModel.setRefinementTopology(refinementStructure);
         List<OTPermutationMapping> list = new ArrayList<>();
         list.add(pattern1_to_node11);
         list.add(pattern2_to_node13);
-        refinementModel.setPermutationMappings(list);
         // endregion
 
-        return refinementModel;
+        return new OTPatternRefinementModel.Builder()
+            .setName("PrmWithComplexRelationMappings")
+            .setTargetNamespace("http://ex.org")
+            .setDetector(detector)
+            .setRefinementStructure(refinementStructure)
+            .setPermutationMappings(list)
+            .build();
     }
 
     static OTPatternRefinementModel generatePrmWithTwoPatternsHostedOnAThird() {
@@ -370,49 +368,49 @@ public abstract class PermutationHelper {
         TRelationshipTemplate node11_connectsTo_node12 = ModelUtilities.createRelationshipTemplate(
             refinementNode_11, refinementNode_12, QName.valueOf("{http://ex.org}relType_connectsTo"));
 
-        TTopologyTemplate refinementStructure = new TTopologyTemplate();
-        refinementStructure.addNodeTemplate(refinementNode_11);
-        refinementStructure.addNodeTemplate(refinementNode_12);
-        refinementStructure.addNodeTemplate(refinementNode_13);
-        refinementStructure.addNodeTemplate(refinementNode_14);
-        refinementStructure.addRelationshipTemplate(node11_hostedOn_node13);
-        refinementStructure.addRelationshipTemplate(node12_hostedOn_node13);
-        refinementStructure.addRelationshipTemplate(node13_hostedOn_node14);
-        refinementStructure.addRelationshipTemplate(node11_connectsTo_node12);
+        TTopologyTemplate refinementStructure = new TTopologyTemplate.Builder()
+            .addNodeTemplate(refinementNode_11)
+            .addNodeTemplate(refinementNode_12)
+            .addNodeTemplate(refinementNode_13)
+            .addNodeTemplate(refinementNode_14)
+            .addRelationshipTemplate(node11_hostedOn_node13)
+            .addRelationshipTemplate(node12_hostedOn_node13)
+            .addRelationshipTemplate(node13_hostedOn_node14)
+            .addRelationshipTemplate(node11_connectsTo_node12)
+            .build();
         // endregion
 
         // region mappings
-        OTPermutationMapping pattern1_to_node11 = new OTPermutationMapping();
-        pattern1_to_node11.setId("1_to_11");
-        pattern1_to_node11.setRefinementElement(refinementNode_11);
-        pattern1_to_node11.setDetectorElement(detector.getNodeTemplate("1"));
+        OTPermutationMapping pattern1_to_node11 = new OTPermutationMapping.Builder("pm-1--11")
+            .setRefinementElement(refinementNode_11)
+            .setDetectorElement(detector.getNodeTemplate("1"))
+            .build();
 
-        OTPermutationMapping pattern2_to_node13 = new OTPermutationMapping();
-        pattern2_to_node13.setId("2_to_13");
-        pattern2_to_node13.setDetectorElement(detector.getNodeTemplate("2"));
-        pattern2_to_node13.setRefinementElement(refinementNode_13);
+        OTPermutationMapping pattern2_to_node13 = new OTPermutationMapping.Builder("pm-2--13")
+            .setDetectorElement(detector.getNodeTemplate("2"))
+            .setRefinementElement(refinementNode_13)
+            .build();
 
-        OTPermutationMapping pattern3_to_node12 = new OTPermutationMapping();
-        pattern3_to_node12.setId("3_to_12");
-        pattern3_to_node12.setDetectorElement(detector.getNodeTemplate("3"));
-        pattern3_to_node12.setRefinementElement(refinementNode_12);
+        OTPermutationMapping pattern3_to_node12 = new OTPermutationMapping.Builder("pm-3--12")
+            .setDetectorElement(detector.getNodeTemplate("3"))
+            .setRefinementElement(refinementNode_12)
+            .build();
         // endregion
 
         // region prm
-        OTPatternRefinementModel refinementModel = new OTPatternRefinementModel();
-        refinementModel.setId("PrmWithComplexRelationMappings");
-        refinementModel.setName("PrmWithComplexRelationMappings");
-        refinementModel.setTargetNamespace("http://ex.org");
-        refinementModel.setDetector(detector);
-        refinementModel.setRefinementTopology(refinementStructure);
         List<OTPermutationMapping> list = new ArrayList<>();
         list.add(pattern1_to_node11);
         list.add(pattern2_to_node13);
         list.add(pattern3_to_node12);
-        refinementModel.setPermutationMappings(list);
         // endregion
 
-        return refinementModel;
+        return new OTPatternRefinementModel.Builder()
+            .setName("PrmWithComplexRelationMappings")
+            .setTargetNamespace("http://ex.org")
+            .setDetector(detector)
+            .setRefinementStructure(refinementStructure)
+            .setPermutationMappings(list)
+            .build();
     }
 
     static OTPatternRefinementModel generatePrmWithComplexRelationMaps2() {
@@ -470,45 +468,45 @@ public abstract class PermutationHelper {
         TRelationshipTemplate node11_connectsTo_node12 = ModelUtilities.createRelationshipTemplate(
             refinementNode_11, refinementNode_12, QName.valueOf("{http://ex.org}relType_connectsTo"));
 
-        TTopologyTemplate refinementStructure = new TTopologyTemplate();
-        refinementStructure.addNodeTemplate(refinementNode_11);
-        refinementStructure.addNodeTemplate(refinementNode_12);
-        refinementStructure.addNodeTemplate(refinementNode_13);
-        refinementStructure.addNodeTemplate(refinementNode_14);
-        refinementStructure.addNodeTemplate(refinementNode_15);
-        refinementStructure.addRelationshipTemplate(node11_hostedOn_node13);
-        refinementStructure.addRelationshipTemplate(node12_hostedOn_node13);
-        refinementStructure.addRelationshipTemplate(node13_hostedOn_node14);
-        refinementStructure.addRelationshipTemplate(node14_hostedOn_node15);
-        refinementStructure.addRelationshipTemplate(node11_connectsTo_node12);
+        TTopologyTemplate refinementStructure = new TTopologyTemplate.Builder()
+            .addNodeTemplate(refinementNode_11)
+            .addNodeTemplate(refinementNode_12)
+            .addNodeTemplate(refinementNode_13)
+            .addNodeTemplate(refinementNode_14)
+            .addNodeTemplate(refinementNode_15)
+            .addRelationshipTemplate(node11_hostedOn_node13)
+            .addRelationshipTemplate(node12_hostedOn_node13)
+            .addRelationshipTemplate(node13_hostedOn_node14)
+            .addRelationshipTemplate(node14_hostedOn_node15)
+            .addRelationshipTemplate(node11_connectsTo_node12)
+            .build();
         // endregion
 
         //region mappings
-        OTPermutationMapping pattern1_to_node11 = new OTPermutationMapping();
-        pattern1_to_node11.setId("1_to_11");
-        pattern1_to_node11.setRefinementElement(refinementNode_11);
-        pattern1_to_node11.setDetectorElement(detector.getNodeTemplate("1"));
+        OTPermutationMapping pattern1_to_node11 = new OTPermutationMapping.Builder("pm-1--11")
+            .setRefinementElement(refinementNode_11)
+            .setDetectorElement(detector.getNodeTemplate("1"))
+            .build();
 
-        OTPermutationMapping pattern2_to_node14 = new OTPermutationMapping();
-        pattern2_to_node14.setId("2_to_14");
-        pattern2_to_node14.setDetectorElement(detector.getNodeTemplate("2"));
-        pattern2_to_node14.setRefinementElement(refinementNode_14);
+        OTPermutationMapping pattern2_to_node14 = new OTPermutationMapping.Builder("pm-2--14")
+            .setDetectorElement(detector.getNodeTemplate("2"))
+            .setRefinementElement(refinementNode_14)
+            .build();
         // endregion
 
-        // region prm
-        OTPatternRefinementModel refinementModel = new OTPatternRefinementModel();
-        refinementModel.setId("PrmWithComplexRelationMappings2");
-        refinementModel.setName("PrmWithComplexRelationMappings2");
-        refinementModel.setTargetNamespace("http://ex.org");
-        refinementModel.setDetector(detector);
-        refinementModel.setRefinementTopology(refinementStructure);
+        // region permutation mapping
         List<OTPermutationMapping> list = new ArrayList<>();
         list.add(pattern1_to_node11);
         list.add(pattern2_to_node14);
-        refinementModel.setPermutationMappings(list);
         // endregion
 
-        return refinementModel;
+        return new OTPatternRefinementModel.Builder()
+            .setName("PrmWithComplexRelationMappings2")
+            .setTargetNamespace("http://ex.org")
+            .setDetector(detector)
+            .setRefinementStructure(refinementStructure)
+            .setPermutationMappings(list)
+            .build();
     }
 
     static OTPatternRefinementModel generateComplexPrmWithPatternSet() {
@@ -576,74 +574,74 @@ public abstract class PermutationHelper {
         TRelationshipTemplate node15_hostedOn_node16 = ModelUtilities.createRelationshipTemplate(
             refinementNode_15, refinementNode_16, QName.valueOf("{http://ex.org}relType_hostedOn"));
 
-        TTopologyTemplate refinementStructure = new TTopologyTemplate();
-        refinementStructure.addNodeTemplate(refinementNode_11);
-        refinementStructure.addNodeTemplate(refinementNode_12);
-        refinementStructure.addNodeTemplate(refinementNode_13);
-        refinementStructure.addNodeTemplate(refinementNode_14);
-        refinementStructure.addNodeTemplate(refinementNode_15);
-        refinementStructure.addNodeTemplate(refinementNode_16);
-        refinementStructure.addRelationshipTemplate(node11_connectsTo_node12);
-        refinementStructure.addRelationshipTemplate(node11_hostedOn_node13);
-        refinementStructure.addRelationshipTemplate(node12_hostedOn_node14);
-        refinementStructure.addRelationshipTemplate(node13_connectsTo_node14);
-        refinementStructure.addRelationshipTemplate(node13_hostedOn_node15);
-        refinementStructure.addRelationshipTemplate(node14_hostedOn_node16);
-        refinementStructure.addRelationshipTemplate(node15_hostedOn_node16);
+        TTopologyTemplate refinementStructure = new TTopologyTemplate.Builder()
+            .addNodeTemplate(refinementNode_11)
+            .addNodeTemplate(refinementNode_12)
+            .addNodeTemplate(refinementNode_13)
+            .addNodeTemplate(refinementNode_14)
+            .addNodeTemplate(refinementNode_15)
+            .addNodeTemplate(refinementNode_16)
+            .addRelationshipTemplate(node11_connectsTo_node12)
+            .addRelationshipTemplate(node11_hostedOn_node13)
+            .addRelationshipTemplate(node12_hostedOn_node14)
+            .addRelationshipTemplate(node13_connectsTo_node14)
+            .addRelationshipTemplate(node13_hostedOn_node15)
+            .addRelationshipTemplate(node14_hostedOn_node16)
+            .addRelationshipTemplate(node15_hostedOn_node16)
+            .build();
         // endregion
 
         // region mappings
-        OTRelationMapping pattern1_to_node11 = new OTRelationMapping();
-        pattern1_to_node11.setId("p1_to_n11");
-        pattern1_to_node11.setRelationType(QName.valueOf("{http://ex.org}relType_connectsTo"));
-        pattern1_to_node11.setDirection(OTRelationDirection.INGOING);
-        pattern1_to_node11.setDetectorElement(detector.getNodeTemplate("1"));
-        pattern1_to_node11.setRefinementElement(refinementNode_11);
+        OTRelationMapping pattern1_to_node11 = new OTRelationMapping.Builder("rm-1--11")
+            .setRelationType("{http://ex.org}relType_connectsTo")
+            .setDirection(OTRelationDirection.INGOING)
+            .setDetectorElement(detector.getNodeTemplate("1"))
+            .setRefinementElement(refinementNode_11)
+            .build();
 
-        OTDeploymentArtifactMapping pattern1_to_node12 = new OTDeploymentArtifactMapping();
-        pattern1_to_node11.setId("p1_to_n12");
-        pattern1_to_node12.setDetectorElement(detector.getNodeTemplate("1"));
-        pattern1_to_node12.setRefinementElement(refinementNode_12);
-        pattern1_to_node12.setArtifactType(QName.valueOf("{http://ex.org}artType_war"));
+        OTDeploymentArtifactMapping pattern1_to_node12 = new OTDeploymentArtifactMapping.Builder("dam-1--12")
+            .setDetectorElement(detector.getNodeTemplate("1"))
+            .setRefinementElement(refinementNode_12)
+            .setArtifactType(QName.valueOf("{http://ex.org}artType_war"))
+            .build();
 
-        OTAttributeMapping pattern2_to_node13 = new OTAttributeMapping();
-        pattern2_to_node13.setId("p2_to_n13");
-        pattern2_to_node13.setType(OTAttributeMappingType.ALL);
-        pattern2_to_node13.setDetectorElement(detector.getNodeTemplate("2"));
-        pattern2_to_node13.setRefinementElement(refinementNode_13);
+        OTAttributeMapping pattern2_to_node13 = new OTAttributeMapping.Builder("am-2--13")
+            .setType(OTAttributeMappingType.ALL)
+            .setDetectorElement(detector.getNodeTemplate("2"))
+            .setRefinementElement(refinementNode_13)
+            .build();
 
-        OTRelationMapping pattern2_to_node15 = new OTRelationMapping();
-        pattern2_to_node15.setId("p2_to_n15");
-        pattern2_to_node15.setRelationType(QName.valueOf("{http://ex.org}relType_connectsTo"));
-        pattern2_to_node15.setDirection(OTRelationDirection.INGOING);
-        pattern2_to_node15.setDetectorElement(detector.getNodeTemplate("2"));
-        pattern2_to_node15.setRefinementElement(refinementNode_15);
+        OTRelationMapping pattern2_to_node15 = new OTRelationMapping.Builder("rm-2--15")
+            .setRelationType("{http://ex.org}relType_connectsTo")
+            .setDirection(OTRelationDirection.INGOING)
+            .setDetectorElement(detector.getNodeTemplate("2"))
+            .setRefinementElement(refinementNode_15)
+            .build();
 
-        OTRelationMapping pattern3_to_node15 = new OTRelationMapping();
-        pattern3_to_node15.setId("p3_to_n15");
-        pattern3_to_node15.setRelationType(QName.valueOf("{http://ex.org}relType_connectsTo"));
-        pattern3_to_node15.setDirection(OTRelationDirection.INGOING);
-        pattern3_to_node15.setDetectorElement(detector.getNodeTemplate("3"));
-        pattern3_to_node15.setRefinementElement(refinementNode_15);
+        OTRelationMapping pattern3_to_node15 = new OTRelationMapping.Builder("rm-3--15")
+            .setRelationType(QName.valueOf("{http://ex.org}relType_connectsTo"))
+            .setDirection(OTRelationDirection.INGOING)
+            .setDetectorElement(detector.getNodeTemplate("3"))
+            .setRefinementElement(refinementNode_15)
+            .build();
         // endregion
 
-        // region prm
-        OTPatternRefinementModel refinementModel = new OTPatternRefinementModel();
-        refinementModel.setId("ComplexPrmWithPatternSet");
-        refinementModel.setName("ComplexPrmWithPatternSet");
-        refinementModel.setTargetNamespace("http://ex.org");
-        refinementModel.setDetector(detector);
-        refinementModel.setRefinementTopology(refinementStructure);
-        refinementModel.setAttributeMappings(Collections.singletonList(pattern2_to_node13));
+        // region relation mappings
         ArrayList<OTRelationMapping> relationMappings = new ArrayList<>();
         relationMappings.add(pattern1_to_node11);
         relationMappings.add(pattern2_to_node15);
         relationMappings.add(pattern3_to_node15);
-        refinementModel.setRelationMappings(relationMappings);
-        refinementModel.setDeploymentArtifactMappings(Collections.singletonList(pattern1_to_node12));
         // endregion
 
-        return refinementModel;
+        return new OTPatternRefinementModel.Builder()
+            .setName("ComplexPrmWithPatternSet")
+            .setTargetNamespace("http://ex.org")
+            .setDetector(detector)
+            .setRefinementStructure(refinementStructure)
+            .setAttributeMappings(Collections.singletonList(pattern2_to_node13))
+            .setRelationMappings(relationMappings)
+            .setDeploymentArtifactMappings(Collections.singletonList(pattern1_to_node12))
+            .build();
     }
 
     private static TTopologyTemplate generateDetectorWithTwoPatterns() {
@@ -658,10 +656,11 @@ public abstract class PermutationHelper {
         TRelationshipTemplate pattern1_hostedOn_pattern2 = ModelUtilities.createRelationshipTemplate(
             pattern_1, pattern_2, QName.valueOf("{http://ex.org}relType_hostedOn"));
 
-        TTopologyTemplate detector = new TTopologyTemplate();
-        detector.addNodeTemplate(pattern_1);
-        detector.addNodeTemplate(pattern_2);
-        detector.addRelationshipTemplate(pattern1_hostedOn_pattern2);
+        TTopologyTemplate detector = new TTopologyTemplate.Builder()
+            .addNodeTemplate(pattern_1)
+            .addNodeTemplate(pattern_2)
+            .addRelationshipTemplate(pattern1_hostedOn_pattern2)
+            .build();
 
         return detector;
     }
@@ -702,28 +701,28 @@ public abstract class PermutationHelper {
     static void addAllPermutationMappings(OTPatternRefinementModel refinementModel) {
         addSomePermutationMappings(refinementModel);
 
-        OTPermutationMapping relation1to2_to_relation12to14 = new OTPermutationMapping();
-        relation1to2_to_relation12to14.setDetectorElement(refinementModel.getDetector().getRelationshipTemplate("1--2"));
-        relation1to2_to_relation12to14.setRefinementElement(refinementModel.getRefinementStructure().getNodeTemplate("14"));
-        relation1to2_to_relation12to14.setId("p1-p2_to_n14");
+        OTPermutationMapping relation1to2_to_relation12to14 = new OTPermutationMapping.Builder("pm-1-2--14")
+            .setDetectorElement(refinementModel.getDetector().getRelationshipTemplate("con-1--2"))
+            .setRefinementElement(refinementModel.getRefinementStructure().getNodeTemplate("14"))
+            .build();
         refinementModel.getPermutationMappings().add(relation1to2_to_relation12to14);
     }
 
     static void addSomePermutationMappings(OTPatternRefinementModel refinementModel) {
-        OTPermutationMapping pattern2_to_node14 = new OTPermutationMapping();
-        pattern2_to_node14.setDetectorElement(refinementModel.getDetector().getNodeTemplate("2"));
-        pattern2_to_node14.setRefinementElement(refinementModel.getRefinementStructure().getNodeTemplate("14"));
-        pattern2_to_node14.setId("p2_to_n14");
+        OTPermutationMapping pattern2_to_node14 = new OTPermutationMapping.Builder("pm-2--14")
+            .setDetectorElement(refinementModel.getDetector().getNodeTemplate("2"))
+            .setRefinementElement(refinementModel.getRefinementStructure().getNodeTemplate("14"))
+            .build();
 
-        OTPermutationMapping pattern3_to_node15 = new OTPermutationMapping();
-        pattern3_to_node15.setDetectorElement(refinementModel.getDetector().getNodeTemplate("3"));
-        pattern3_to_node15.setRefinementElement(refinementModel.getRefinementStructure().getNodeTemplate("15"));
-        pattern3_to_node15.setId("p3_to_n15");
+        OTPermutationMapping pattern3_to_node15 = new OTPermutationMapping.Builder("pm-3--15")
+            .setDetectorElement(refinementModel.getDetector().getNodeTemplate("3"))
+            .setRefinementElement(refinementModel.getRefinementStructure().getNodeTemplate("15"))
+            .build();
 
-        OTPermutationMapping pattern3_to_node16 = new OTPermutationMapping();
-        pattern3_to_node16.setDetectorElement(refinementModel.getDetector().getNodeTemplate("3"));
-        pattern3_to_node16.setRefinementElement(refinementModel.getRefinementStructure().getNodeTemplate("16"));
-        pattern3_to_node16.setId("p3_to_n16");
+        OTPermutationMapping pattern3_to_node16 = new OTPermutationMapping.Builder("pm-3--16")
+            .setDetectorElement(refinementModel.getDetector().getNodeTemplate("3"))
+            .setRefinementElement(refinementModel.getRefinementStructure().getNodeTemplate("16"))
+            .build();
 
         ArrayList<OTPermutationMapping> permutationMaps = new ArrayList<>(Arrays.asList(pattern2_to_node14, pattern3_to_node15, pattern3_to_node16));
         refinementModel.setPermutationMappings(permutationMaps);

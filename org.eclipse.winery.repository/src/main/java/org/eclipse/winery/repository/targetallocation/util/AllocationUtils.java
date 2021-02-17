@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.model.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
@@ -124,7 +124,7 @@ public class AllocationUtils {
      * Still no complete copy of all TOSCA constructs.
      */
     public static TTopologyTemplate deepcopy(TTopologyTemplate topologyTemplate, boolean changeNames) {
-        TTopologyTemplate clone = new TTopologyTemplate();
+        TTopologyTemplate.Builder clone = new TTopologyTemplate.Builder();
         Map<String, TNodeTemplate> clonedNTsByIds = new HashMap<>();
 
         for (TNodeTemplate nodeTemplate : topologyTemplate.getNodeTemplates()) {
@@ -153,7 +153,7 @@ public class AllocationUtils {
             }
             clone.addRelationshipTemplate(clonedRT);
         }
-        return clone;
+        return clone.build();
     }
 
     /**

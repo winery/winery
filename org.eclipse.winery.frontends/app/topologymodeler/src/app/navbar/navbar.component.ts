@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -28,6 +28,9 @@ import { FeatureEnum } from '../../../../tosca-management/src/app/wineryFeatureT
 import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { TTopologyTemplate } from '../models/ttopology-template';
 import { VersionSliderService } from '../version-slider/version-slider.service';
+import { CheService } from '../services/che.service';
+import { TopologyModelerConfiguration } from '../models/topologyModelerConfiguration';
+import { EntityTypesModel } from '../models/entityTypesModel';
 
 /**
  * The navbar of the topologymodeler.
@@ -52,7 +55,8 @@ export class NavbarComponent implements OnDestroy {
 
     @Input() hideNavBarState: boolean;
     @Input() readonly: boolean;
-
+    @Input() templateParameter: TopologyModelerConfiguration;
+    @Input() entityTypes: EntityTypesModel;
     @ViewChild('exportCsarButton')
     private exportCsarButtonRef: ElementRef;
 
@@ -74,7 +78,8 @@ export class NavbarComponent implements OnDestroy {
                 private statefulService: StatefulAnnotationsService,
                 private hotkeysService: HotkeysService,
                 private versionSliderService: VersionSliderService,
-                public configurationService: WineryRepositoryConfigurationService) {
+                public configurationService: WineryRepositoryConfigurationService,
+                private che: CheService) {
         this.subscriptions.push(ngRedux.select(state => state.topologyRendererState)
             .subscribe(newButtonsState => this.setButtonsState(newButtonsState)));
         this.subscriptions.push(ngRedux.select(currentState => currentState.wineryState.currentJsonTopology)
@@ -208,12 +213,16 @@ export class NavbarComponent implements OnDestroy {
                 this.matchingOngoing = true;
                 break;
             }
-            case 'problemdetection': {
+            case 'problemDetection': {
                 this.ngRedux.dispatch(this.actions.detectProblems());
                 break;
             }
             case 'enrichment': {
                 this.ngRedux.dispatch(this.actions.enrichNodeTemplates());
+                break;
+            }
+            case 'instanceModelRefinement': {
+                this.ngRedux.dispatch(this.actions.refineInstanceModel());
                 break;
             }
             case 'substituteTopology':
@@ -233,6 +242,15 @@ export class NavbarComponent implements OnDestroy {
                 this.readonly = true;
                 this.ngRedux.dispatch(this.wineryActions.sendPaletteOpened(false));
                 this.ngRedux.dispatch(this.actions.addTestRefinements());
+                break;
+            case 'generateGDM':
+                this.ngRedux.dispatch(this.actions.generatePlaceholder());
+                break;
+            case 'extractLDM':
+                this.ngRedux.dispatch(this.actions.extractLDM());
+                break;
+            case 'generatePlaceholderSubs':
+                this.ngRedux.dispatch(this.actions.generatePlaceholderSubs());
                 break;
             case 'determineStatefulComponents':
                 this.ngRedux.dispatch(this.actions.determineStatefulComponents());
@@ -255,7 +273,23 @@ export class NavbarComponent implements OnDestroy {
                 this.ngRedux.dispatch(this.wineryActions.sendPaletteOpened(false));
                 this.ngRedux.dispatch(this.actions.toggleVersionSlider());
                 break;
+            case 'manageYamlGroups':
+                this.ngRedux.dispatch(this.actions.toggleManageYamlGroups());
+                break;
+            case 'yamlGroups':
+                this.ngRedux.dispatch(this.actions.toggleYamlGroups());
+                break;
+            case 'manageParticipants':
+                this.ngRedux.dispatch(this.actions.toggleManageParticipants());
+                break;
+            case 'assignParticipants':
+                this.ngRedux.dispatch(this.actions.toggleAssignParticipants());
+                break;
         }
+    }
+
+    selectRelationshipType(event) {
+        this.ngRedux.dispatch(this.actions.showOnlyMappingsOfSelectedType(event.target.value));
     }
 
     /**
@@ -281,5 +315,14 @@ export class NavbarComponent implements OnDestroy {
 
     openManagementUi() {
         window.open(this.backendService.serviceTemplateUiUrl, '_blank');
+    }
+
+    openChe() {
+        this.che.openChe(
+            this.backendService.configuration.repositoryURL,
+            this.backendService.configuration.id,
+            this.backendService.configuration.ns,
+            'servicetemplates'
+        );
     }
 }

@@ -15,20 +15,19 @@ package org.eclipse.winery.model.threatmodeling;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
-import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
-import org.eclipse.winery.model.tosca.Definitions;
-import org.eclipse.winery.model.tosca.TBoolean;
+import org.eclipse.winery.repository.common.Util;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TPolicies;
@@ -36,9 +35,8 @@ import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TPolicyType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
-import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
-import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
@@ -110,7 +108,7 @@ public class ThreatModelingUtils {
         TNodeType nodeType = repository.getElement(id);
 
         // check if node type is abstract
-        if (nodeType.getAbstract().value().equals("yes")) {
+        if (nodeType.getAbstract()) {
             return nodeTypeName;
         } else if (Objects.nonNull(nodeType.getDerivedFrom())) { // check if node type inherits from other node type
             return findFirstAbstractType(nodeType.getDerivedFrom().getTypeAsQName());
@@ -172,7 +170,7 @@ public class ThreatModelingUtils {
             .map((TPolicyTemplate policyTemplate) -> {
                 Threat threat = new Threat();
                 if (Objects.nonNull(policyTemplate.getProperties())) {
-                    threat.setProperties(policyTemplate.getProperties().getKVProperties());
+                    threat.setProperties(ModelUtilities.getPropertiesKV(policyTemplate));
                 }
                 threat.setTemplateName(policyTemplate.getName());
                 threat.setNamespace(policyTemplate.getTypeAsQName().getNamespaceURI());
@@ -208,19 +206,19 @@ public class ThreatModelingUtils {
         threat.setName(threatName);
         threat.setType(threatTypeQName);
 
-        TPolicyTemplate.Properties threatProps = new TPolicyTemplate.Properties();
-        Map<String, String> propMap = new HashMap<>();
+        TPolicyTemplate.WineryKVProperties threatProps = new TPolicyTemplate.WineryKVProperties();
+        LinkedHashMap<String, String> propMap = new LinkedHashMap<>();
         propMap.put(ThreatModelingProperties.description.toString(), data.getDescription());
         propMap.put(ThreatModelingProperties.strideClassification.toString(), data.getStride());
         propMap.put(ThreatModelingProperties.severity.toString(), data.getSeverity());
         threatProps.setKVProperties(propMap);
         threat.setProperties(threatProps);
 
-        Definitions threatDefinitions = BackendUtils.createWrapperDefinitions(threatID);
+        TDefinitions threatDefinitions = BackendUtils.createWrapperDefinitions(threatID, repository);
         threatDefinitions.setElement(threat);
 
         try {
-            BackendUtils.persist(threatID, threatDefinitions);
+            BackendUtils.persist(repository, threatID, threatDefinitions);
         } catch (IOException i) {
             LOGGER.debug("Could not save new threat", i);
             return "Could not save new threat";
@@ -235,19 +233,19 @@ public class ThreatModelingUtils {
         mitigation.setName(mitigationName);
         mitigation.setType(mitigationTypeQName);
 
-        TPolicyTemplate.Properties mitigationProps = new TPolicyTemplate.Properties();
-        Map<String, String> mitigationPropMap = new HashMap<>();
+        TPolicyTemplate.WineryKVProperties mitigationProps = new TPolicyTemplate.WineryKVProperties();
+        LinkedHashMap<String, String> mitigationPropMap = new LinkedHashMap<>();
 
         mitigationPropMap.put(ThreatModelingProperties.ThreatReference.toString(), threatID.getQName().toString());
 
         mitigationProps.setKVProperties(mitigationPropMap);
         mitigation.setProperties(mitigationProps);
 
-        Definitions mitigationDefinitions = BackendUtils.createWrapperDefinitions(threatID);
+        TDefinitions mitigationDefinitions = BackendUtils.createWrapperDefinitions(threatID, repository);
         mitigationDefinitions.setElement(mitigation);
 
         try {
-            BackendUtils.persist(mitigationID, mitigationDefinitions);
+            BackendUtils.persist(repository, mitigationID, mitigationDefinitions);
         } catch (IOException i) {
             LOGGER.debug("Could not save new threat", i);
             return "Could not save new mitigation";
@@ -283,27 +281,28 @@ public class ThreatModelingUtils {
         TPolicyType threat = new TPolicyType();
         threat.setId(ThreatModelingConstants.THREAT_POLICY_NAME);
         threat.setName(ThreatModelingConstants.THREAT_POLICY_NAME);
-        threat.setAbstract(TBoolean.NO);
-        threat.setFinal(TBoolean.NO);
+        threat.setAbstract(false);
+        threat.setFinal(false);
 
         threat.setTargetNamespace(ThreatModelingConstants.THREATMODELING_NAMESPACE);
 
-        threat.setPropertiesDefinition(null);
+        threat.setProperties(null);
 
         WinerysPropertiesDefinition threatProps = new WinerysPropertiesDefinition();
-        PropertyDefinitionKVList threatPropList = new PropertyDefinitionKVList();
         threatProps.setElementName("properties");
         threatProps.setNamespace(ThreatModelingConstants.THREATMODELING_NAMESPACE.concat("/propertiesdefinition/winery"));
 
-        threatPropList.add(new PropertyDefinitionKV(ThreatModelingProperties.description.toString(), "xsd:string"));
-        threatPropList.add(new PropertyDefinitionKV(ThreatModelingProperties.strideClassification.toString(), "xsd:string"));
-        threatPropList.add(new PropertyDefinitionKV(ThreatModelingProperties.severity.toString(), "xsd:string"));
-        threatProps.setPropertyDefinitionKVList(threatPropList);
+        List<PropertyDefinitionKV> threatPropList = new ArrayList<>(Arrays.asList(
+            new PropertyDefinitionKV(ThreatModelingProperties.description.toString(), "xsd:string"),
+            new PropertyDefinitionKV(ThreatModelingProperties.strideClassification.toString(), "xsd:string"),
+            new PropertyDefinitionKV(ThreatModelingProperties.severity.toString(), "xsd:string")
+        ));
+        threatProps.setPropertyDefinitions(threatPropList);
 
         ModelUtilities.replaceWinerysPropertiesDefinition(threat, threatProps);
 
         PolicyTypeId threatID = BackendUtils.getDefinitionsChildId(PolicyTypeId.class, ThreatModelingConstants.THREATMODELING_NAMESPACE, ThreatModelingConstants.THREAT_POLICY_NAME, false);
-        Definitions threatDefinitions = BackendUtils.createWrapperDefinitions(threatID);
+        TDefinitions threatDefinitions = BackendUtils.createWrapperDefinitions(threatID, repository);
 
         threatDefinitions.setElement(threat);
 
@@ -311,41 +310,41 @@ public class ThreatModelingUtils {
 
         mitigation.setId(ThreatModelingConstants.MITIGATION_POLICY_NAME);
         mitigation.setName(ThreatModelingConstants.MITIGATION_POLICY_NAME);
-        mitigation.setAbstract(TBoolean.NO);
-        mitigation.setFinal(TBoolean.NO);
+        mitigation.setAbstract(false);
+        mitigation.setFinal(false);
 
         mitigation.setTargetNamespace(ThreatModelingConstants.THREATMODELING_NAMESPACE);
 
-        mitigation.setPropertiesDefinition(null);
+        mitigation.setProperties(null);
 
         WinerysPropertiesDefinition mitigationProps = new WinerysPropertiesDefinition();
-        PropertyDefinitionKVList mitigationPropList = new PropertyDefinitionKVList();
+        List<PropertyDefinitionKV> mitigationPropList = new ArrayList<>();
         mitigationProps.setElementName("properties");
         mitigationProps.setNamespace(ThreatModelingConstants.THREATMODELING_NAMESPACE.concat("/propertiesdefinition/winery"));
 
         mitigationPropList.add(new PropertyDefinitionKV(ThreatModelingProperties.ThreatReference.toString(), "xsd:string"));
-        mitigationProps.setPropertyDefinitionKVList(mitigationPropList);
+        mitigationProps.setPropertyDefinitions(mitigationPropList);
 
         ModelUtilities.replaceWinerysPropertiesDefinition(mitigation, mitigationProps);
 
         PolicyTypeId mitigationID = BackendUtils.getDefinitionsChildId(PolicyTypeId.class, ThreatModelingConstants.THREATMODELING_NAMESPACE, ThreatModelingConstants.MITIGATION_POLICY_NAME, false);
-        Definitions mitigationDefinitions = BackendUtils.createWrapperDefinitions(mitigationID);
+        TDefinitions mitigationDefinitions = BackendUtils.createWrapperDefinitions(mitigationID, repository);
 
         mitigationDefinitions.setElement(mitigation);
 
         TNodeType svnf = new TNodeType.Builder("S-VNF-w1_wip1")
             .setTargetNamespace(ThreatModelingConstants.SECURITY_NAMESPACE)
-            .setAbstract(TBoolean.YES)
+            .setAbstract(true)
             .build();
 
         NodeTypeId svnfID = new NodeTypeId(QName.valueOf(ThreatModelingConstants.SVNF_NODE_TYPE));
-        Definitions svnfDefinitions = BackendUtils.createWrapperDefinitions(svnfID);
+        TDefinitions svnfDefinitions = BackendUtils.createWrapperDefinitions(svnfID, repository);
         svnfDefinitions.setElement(svnf);
 
         try {
-            BackendUtils.persist(threatID, threatDefinitions);
-            BackendUtils.persist(mitigationID, mitigationDefinitions);
-            BackendUtils.persist(svnfID, svnfDefinitions);
+            BackendUtils.persist(repository, threatID, threatDefinitions);
+            BackendUtils.persist(repository, mitigationID, mitigationDefinitions);
+            BackendUtils.persist(repository, svnfID, svnfDefinitions);
         } catch (IOException i) {
             LOGGER.debug("Could not set up threat modeling", i);
         }

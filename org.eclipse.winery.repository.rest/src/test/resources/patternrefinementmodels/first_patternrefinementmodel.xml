@@ -16,5 +16,8 @@
                 <TargetElement ref="NodeTypeWith5Versions_0.3.4-w3-wip3"/>
             </RelationshipTemplate>
         </RefinementStructure>
+        <AttributeMappings/>
+        <StayMappings/>
+        <DeploymentArtifactMappings/>
     </PatternRefinementModel>
 </Definitions>

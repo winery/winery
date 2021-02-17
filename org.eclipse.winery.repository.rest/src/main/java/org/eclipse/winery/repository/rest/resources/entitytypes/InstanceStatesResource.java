@@ -28,7 +28,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.winery.common.Util;
+import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates.InstanceState;
 import org.eclipse.winery.repository.rest.RestUtils;
@@ -74,7 +74,7 @@ public class InstanceStatesResource {
         if (StringUtils.isEmpty(instanceStateToRemove)) {
             return Response.status(Status.BAD_REQUEST).entity("null instance to remove").build();
         }
-        instanceStateToRemove = Util.URLdecode(instanceStateToRemove);
+        instanceStateToRemove = EncodingUtil.URLdecode(instanceStateToRemove);
 
         // InstanceState does not override "equals()", therefore we have to manually remove it
 

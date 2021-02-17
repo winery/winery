@@ -98,6 +98,7 @@ label {
 
 .panel-heading.card-header {
     cursor: pointer;
+    padding: 0;
 }
 
 .card-header:first-child {
@@ -477,25 +478,16 @@ tr.row.col-sm-12 {
 }
 
 .sidebar-root {
+    margin-bottom: 10px;
     border: 1px solid #000000;
     border-radius: 0.25rem;
-    /*color: #FFFFFF;*/
     color: black;
-    top: 48px;
     z-index: 999;
     position: relative;
     box-shadow: 2px 2px 10px -2px rgba(0, 0, 0, 0.75);
-    /*background-color: #424242;*/
     background-color: #dddcdc;
-    width: 300px;
-    max-width: 300px;
+    width: 100%;
 }
-
-/*.opentoscalogo {
-  background: url(http://www.opentosca.org/image/openTOSCA_Logo.png) no-repeat center center;
-  height: 245px;
-  width: 369px;
-}*/
 
 .loader {
     border: 5px solid #f3f3f3; /* Light grey */
@@ -513,4 +505,14 @@ tr.row.col-sm-12 {
     100% {
         transform: rotate(360deg);
     }
+}
+
+.ng-invalid {
+    border-color: #a94442;
+    border-width: 5px;
+    border-style: solid;
+}
+
+.modal-backdrop {
+    z-index: 900 !important;
 }

@@ -22,10 +22,13 @@
                                 [multipleVersionsAvailable]="versions?.length > 0"></winery-property-rename>
     </div>
     <div class="managementButtons row" *ngIf="showManagementButtons">
-        <button class="btn btn-danger col-lg-4" (click)="openDeleteConfirmationModel()">Delete</button>
+        <button class="btn btn-danger" (click)="openDeleteConfirmationModel()">Delete</button>
+        <button *wineryRepositoryShowOnFeature="'radon'" (click)="openChe()" class="btn btn-info">
+            Open in IDE
+        </button>
         <div *ngIf="!this.configurationService.isYaml(); then xmlExport else yamlExport"></div>
         <ng-template #xmlExport>
-            <div class="btn-group col-lg-4" dropdown>
+            <div class="btn-group" dropdown>
                 <button dropdownToggle type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split">
                     Export <span class="caret"></span>
                 </button>
@@ -33,21 +36,15 @@
                     <li>
                         <a target="_blank" href="{{ toscaComponent.xmlPath }}">XML</a>
                     </li>
-                    <li>
-                        <a target="_blank" href="{{ toscaComponent.yamlPath }}">YAML</a>
-                    </li>
                     <li class="divider dropdown-divider"></li>
                     <li>
-                        <a target="_blank" href="{{ toscaComponent.yamlCsarPath }}">CSAR (YAML)</a>
-                    </li>
-                    <li>
-                        <a target="_blank" href="{{ toscaComponent.xmlCsarPath }}">CSAR (XML)</a>
+                        <a target="_blank" href="{{ toscaComponent.xmlCsarPath }}">CSAR</a>
                     </li>
                     <li>
                         <a target="_blank" href="{{ toscaComponent.includeDependencies }}">CSAR (XML) with Dependencies</a>
                     </li>
                     <li *ngIf="accountabilityEnabled">
-                        <a target="_blank" href="{{ toscaComponent.provenanceCsarPath }}">Provenance CSAR (XML)</a>
+                        <a target="_blank" href="{{ toscaComponent.provenanceCsarPath }}">Provenance CSAR</a>
                     </li>
                     <li *ngIf="showEdmmExport">
                         <a target="_blank" href="{{ toscaComponent.edmmExportPath }}"
@@ -61,7 +58,7 @@
             </div>
         </ng-template>
         <ng-template #yamlExport>
-            <div class="btn-group col-lg-4" dropdown>
+            <div class="btn-group" dropdown>
                 <button dropdownToggle type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split">
                     Export <span class="caret"></span>
                 </button>
@@ -69,13 +66,16 @@
                     <li>
                         <a target="_blank" href="{{ toscaComponent.yamlCsarPath }}">Download</a>
                     </li>
-                    <li>
+                    <li *wineryRepositoryHideOnFeature="'radon'">
                         <a (click)="exportToFilesystem()">Export to Filesystem</a>
+                    </li>
+                    <li *wineryRepositoryShowOnFeature="'radon'">
+                        <a (click)="exportToFilesystem()">Export to IDE</a>
                     </li>
                 </ul>
             </div>
         </ng-template>
-        <winery-version class="col-lg-4" [versions]="versions"></winery-version>
+        <winery-version class="" [versions]="versions"></winery-version>
         <div *ngIf="typeUrl">
             <span style="white-space: pre">{{ typeOf }} <a [routerLink]="typeUrl">{{ typeId }}</a></span>
         </div>
@@ -83,6 +83,7 @@
     <div class="subMenu">
         <a *ngFor="let item of subMenu; index as i"
            class="styledTabMenuButton styledTabMenuButton2ndlevel"
+           [ngClass]="{'tab-menu-fix': requiresTabFix}"
            [routerLink]="['./' + item.urlFragment]"
            [routerLinkActive]="'selected'"
            (click)="selectedTab = item.displayName">

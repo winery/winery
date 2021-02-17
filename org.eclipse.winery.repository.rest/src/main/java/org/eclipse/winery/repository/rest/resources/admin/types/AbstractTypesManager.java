@@ -33,8 +33,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.admin.TypesId;
+import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.model.ids.admin.TypesId;
 import org.eclipse.winery.repository.rest.datatypes.TypeWithShortName;
 import org.eclipse.winery.repository.rest.datatypes.select2.Select2DataItem;
 import org.eclipse.winery.repository.rest.resources.admin.AbstractAdminResource;
@@ -100,7 +100,7 @@ public abstract class AbstractTypesManager extends AbstractAdminResource {
     @DELETE
     @Path("{type}")
     public Response removeTypeWithResponse(@PathParam("type") String type) {
-        type = Util.URLdecode(type);
+        type = EncodingUtil.URLdecode(type);
         if (this.configuration.containsKey(type)) {
             this.hashTypeStringToType.remove(type);
             this.configuration.clearProperty(type);
@@ -177,8 +177,8 @@ public abstract class AbstractTypesManager extends AbstractAdminResource {
         if (StringUtils.isEmpty(newType.type)) {
             return Response.status(Status.BAD_REQUEST).entity("type has to be given").build();
         }
-        String shortName = Util.URLdecode(newType.shortName);
-        String type = Util.URLdecode(newType.type);
+        String shortName = EncodingUtil.URLdecode(newType.shortName);
+        String type = EncodingUtil.URLdecode(newType.type);
         TypeWithShortName tws = new TypeWithShortName(type, shortName);
         this.addTypeWithShortName(tws);
         return Response.noContent().build();

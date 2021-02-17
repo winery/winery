@@ -18,8 +18,8 @@ import java.io.IOException;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.model.tosca.OTComplianceRule;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.rest.RestUtils;
@@ -44,16 +44,16 @@ public class ComplianceRuleResource extends AbstractComponentInstanceResourceCon
 
     @Override
     protected TExtensibleElements createNewElement() {
-        return new OTComplianceRule();
+        return new OTComplianceRule(new OTComplianceRule.Builder());
     }
 
-    public OTComplianceRule getCompliancerule() {
+    public OTComplianceRule getComplianceRule() {
         return (OTComplianceRule) this.getElement();
     }
 
     @Override
     public String getName() {
-        String name = this.getCompliancerule().getName();
+        String name = this.getComplianceRule().getName();
         if (name == null) {
             // place default
             name = this.getId().getXmlId().getDecoded();
@@ -63,32 +63,38 @@ public class ComplianceRuleResource extends AbstractComponentInstanceResourceCon
 
     @Override
     public Response setName(String name) {
-        this.getCompliancerule().setName(name);
+        this.getComplianceRule().setName(name);
         return RestUtils.persist(this);
     }
 
     @Path("identifier/")
     public TopologyTemplateResource getIdentifier() {
-        return new TopologyTemplateResource(this, this.getCompliancerule().getIdentifier(), IDENTIFIER);
+        return new TopologyTemplateResource(this, this.getComplianceRule().getIdentifier(), IDENTIFIER);
     }
 
     @Path("requiredstructure/")
     public TopologyTemplateResource getRequiredStructure() {
-        return new TopologyTemplateResource(this, this.getCompliancerule().getRequiredStructure(), REQUIRED_STRUCTURE);
+        return new TopologyTemplateResource(this, this.getComplianceRule().getRequiredStructure(), REQUIRED_STRUCTURE);
     }
 
     @Override
     public void setTopology(TTopologyTemplate topologyTemplate, String type) {
         switch (type) {
             case IDENTIFIER:
-                this.getCompliancerule().setIdentifier(topologyTemplate);
+                this.getComplianceRule().setIdentifier(topologyTemplate);
                 break;
             case REQUIRED_STRUCTURE:
-                this.getCompliancerule().setRequiredStructure(topologyTemplate);
+                this.getComplianceRule().setRequiredStructure(topologyTemplate);
                 break;
             default:
                 break;
         }
+    }
+
+    @Override
+    public TTopologyTemplate getTopology() {
+        // TODO this is only here to have SOME implementation
+        return this.getComplianceRule().getIdentifier();
     }
 
     @Override

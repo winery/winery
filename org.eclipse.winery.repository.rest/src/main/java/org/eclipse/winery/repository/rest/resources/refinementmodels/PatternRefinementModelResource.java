@@ -14,7 +14,7 @@
 
 package org.eclipse.winery.repository.rest.resources.refinementmodels;
 
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 
 public class PatternRefinementModelResource extends TopologyFragmentRefinementModelResource {
 

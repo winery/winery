@@ -20,14 +20,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -44,6 +42,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -59,50 +58,53 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+//import javax.xml.parsers.DocumentBuilderFactory;
+//import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.IdNames;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XmlId;
-import org.eclipse.winery.common.ids.admin.AdminId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
-import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
-import org.eclipse.winery.common.ids.definitions.ComplianceRuleId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.EntityTypeId;
-import org.eclipse.winery.common.ids.definitions.InterfaceTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.PatternRefinementModelId;
-import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
-import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.definitions.TestRefinementModelId;
-import org.eclipse.winery.common.ids.definitions.TopologyFragmentRefinementModelId;
-import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
-import org.eclipse.winery.common.ids.elements.PlanId;
-import org.eclipse.winery.common.ids.elements.PlansId;
-import org.eclipse.winery.common.ids.elements.ToscaElementId;
-import org.eclipse.winery.common.version.ToscaDiff;
-import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.model.ids.IdNames;
+import org.eclipse.winery.model.ids.definitions.DataTypeId;
+import org.eclipse.winery.model.ids.extensions.TopologyFragmentRefinementModelId;
+import org.eclipse.winery.model.tosca.TDataType;
+import org.eclipse.winery.model.version.VersionSupport;
+import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.Util;
+import org.eclipse.winery.model.ids.GenericId;
+import org.eclipse.winery.model.ids.IdUtil;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.XmlId;
+import org.eclipse.winery.model.ids.admin.AdminId;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.model.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.model.ids.extensions.ComplianceRuleId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.EntityTypeId;
+import org.eclipse.winery.model.ids.definitions.InterfaceTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.model.ids.extensions.PatternRefinementModelId;
+import org.eclipse.winery.model.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
+import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.extensions.TestRefinementModelId;
+import org.eclipse.winery.model.ids.definitions.imports.XSDImportId;
+import org.eclipse.winery.model.ids.elements.PlanId;
+import org.eclipse.winery.model.ids.elements.PlansId;
+import org.eclipse.winery.model.ids.elements.ToscaElementId;
+import org.eclipse.winery.model.version.ToscaDiff;
 import org.eclipse.winery.common.version.WineryVersion;
-import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.model.tosca.HasName;
 import org.eclipse.winery.model.tosca.HasTargetNamespace;
-import org.eclipse.winery.model.tosca.OTComplianceRule;
-import org.eclipse.winery.model.tosca.OTPatternRefinementModel;
-import org.eclipse.winery.model.tosca.OTTestRefinementModel;
-import org.eclipse.winery.model.tosca.OTTopologyFragmentRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
+import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTTestRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
 import org.eclipse.winery.model.tosca.RelationshipSourceOrTarget;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
@@ -114,7 +116,6 @@ import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
-import org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
@@ -135,17 +136,13 @@ import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
-import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
-import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.GitInfo;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.constants.Filename;
-import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
-import org.eclipse.winery.repository.backend.filebased.MultiRepository;
-import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.GenericDirectoryId;
@@ -175,7 +172,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
+//import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.ls.LSInput;
 import org.xml.sax.ErrorHandler;
@@ -273,9 +270,9 @@ public class BackendUtils {
      * <p>
      * We return the complete definitions to allow the user changes to it, such as adding imports, etc.
      */
-    public static String getDefinitionsAsXMLString(TDefinitions definitions) {
+    public static String getDefinitionsAsXMLString(TDefinitions definitions, IRepository repository) {
         StringWriter w = new StringWriter();
-        Marshaller m = JAXBSupport.createMarshaller(true);
+        Marshaller m = JAXBSupport.createMarshaller(true, repository.getNamespaceManager().asPrefixMapper());
         try {
             m.marshal(definitions, w);
         } catch (JAXBException e) {
@@ -285,12 +282,11 @@ public class BackendUtils {
         return w.toString();
     }
 
-    public static String getName(DefinitionsChildId instanceId) throws RepositoryCorruptException {
-        IRepository repository = RepositoryFactory.getRepository();
-        if (!repository.exists(instanceId)) {
+    public static String getName(DefinitionsChildId instanceId, IRepository repo) throws RepositoryCorruptException {
+        if (!repo.exists(instanceId)) {
             throw new RepositoryCorruptException("Definitions does not exist for instance");
         }
-        TExtensibleElements instanceElement = RepositoryFactory.getRepository().getDefinitions(instanceId).getElement();
+        TExtensibleElements instanceElement = repo.getDefinitions(instanceId).getElement();
         return ModelUtilities.getNameWithIdFallBack(instanceElement);
     }
 
@@ -332,6 +328,14 @@ public class BackendUtils {
         }
     }
 
+    public static DefinitionsChildId getIdForRef(RepositoryFileReference ref) {
+        GenericId stored = ref.getParent();
+        if (stored instanceof DefinitionsChildId) {
+            return (DefinitionsChildId) stored;
+        }
+        return null;
+    }
+
     /**
      * Returns the reference to the definitions XML storing the TOSCA for the given id
      *
@@ -347,7 +351,7 @@ public class BackendUtils {
     }
 
     public static <T extends DefinitionsChildId> String getFileNameOfDefinitions(Class<T> id) {
-        String name = Util.getTypeForComponentId(id);
+        String name = IdUtil.getTypeForComponentId(id);
         name = name + Constants.SUFFIX_TOSCA_DEFINITIONS;
         return name;
     }
@@ -356,7 +360,7 @@ public class BackendUtils {
      * @return Singular type name for the given id. E.g., "ServiceTemplateId" gets "ServiceTemplate"
      */
     public static String getTypeForAdminId(Class<? extends AdminId> idClass) {
-        return Util.getEverythingBetweenTheLastDotAndBeforeId(idClass);
+        return IdUtil.getEverythingBetweenTheLastDotAndBeforeId(idClass);
     }
 
     /**
@@ -369,7 +373,7 @@ public class BackendUtils {
         String name;
         // Hack to determine file name
         if (id instanceof DefinitionsChildId) {
-            name = Util.getTypeForComponentId(((DefinitionsChildId) id).getClass());
+            name = IdUtil.getTypeForComponentId(((DefinitionsChildId) id).getClass());
             name = name + Constants.SUFFIX_PROPERTIES;
         } else if (id instanceof AdminId) {
             name = BackendUtils.getTypeForAdminId(((AdminId) id).getClass());
@@ -455,7 +459,7 @@ public class BackendUtils {
         return res;
     }
 
-    public static Collection<QName> getArtifactTemplatesOfReferencedDeploymentArtifacts(TNodeTemplate nodeTemplate) {
+    public static Collection<QName> getArtifactTemplatesOfReferencedDeploymentArtifacts(TNodeTemplate nodeTemplate, IRepository repo) {
         List<QName> l = new ArrayList<>();
 
         // DAs may be assigned directly to a node template
@@ -464,9 +468,9 @@ public class BackendUtils {
 
         // DAs may be assigned via node type implementations
         QName nodeTypeQName = nodeTemplate.getType();
-        Collection<NodeTypeImplementationId> allNodeTypeImplementations = RepositoryFactory.getRepository().getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
+        Collection<NodeTypeImplementationId> allNodeTypeImplementations = repo.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
         for (NodeTypeImplementationId nodeTypeImplementationId : allNodeTypeImplementations) {
-            TDeploymentArtifacts deploymentArtifacts = RepositoryFactory.getRepository().getElement(nodeTypeImplementationId).getDeploymentArtifacts();
+            TDeploymentArtifacts deploymentArtifacts = repo.getElement(nodeTypeImplementationId).getDeploymentArtifacts();
             allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(deploymentArtifacts);
             l.addAll(allReferencedArtifactTemplates);
         }
@@ -474,14 +478,14 @@ public class BackendUtils {
         return l;
     }
 
-    public static Collection<QName> getArtifactTemplatesOfReferencedImplementationArtifacts(TNodeTemplate nodeTemplate) {
+    public static Collection<QName> getArtifactTemplatesOfReferencedImplementationArtifacts(TNodeTemplate nodeTemplate, IRepository repo) {
         List<QName> l = new ArrayList<>();
 
         // IAs may be assigned via node type implementations
         QName nodeTypeQName = nodeTemplate.getType();
-        Collection<NodeTypeImplementationId> allNodeTypeImplementations = RepositoryFactory.getRepository().getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
+        Collection<NodeTypeImplementationId> allNodeTypeImplementations = repo.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
         for (NodeTypeImplementationId nodeTypeImplementationId : allNodeTypeImplementations) {
-            TImplementationArtifacts implementationArtifacts = RepositoryFactory.getRepository().getElement(nodeTypeImplementationId).getImplementationArtifacts();
+            TImplementationArtifacts implementationArtifacts = repo.getElement(nodeTypeImplementationId).getImplementationArtifacts();
             Collection<QName> allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(implementationArtifacts);
             l.addAll(allReferencedArtifactTemplates);
         }
@@ -498,7 +502,7 @@ public class BackendUtils {
      * @param defs the definitions to update
      * @return a definitions element prepared for wrapping a definition child
      */
-    public static Definitions updateWrapperDefinitions(DefinitionsChildId tcId, Definitions defs) {
+    public static TDefinitions updateWrapperDefinitions(DefinitionsChildId tcId, TDefinitions defs, IRepository repo) {
         // set target namespace
         // an internal namespace is not possible
         //   a) tPolicyTemplate and tArtfactTemplate do NOT support the "targetNamespace" attribute
@@ -507,7 +511,7 @@ public class BackendUtils {
 
         // set a unique id to create a valid definitions element
         // we do not use UUID to be more human readable and deterministic (for debugging)
-        String prefix = RepositoryFactory.getRepository().getNamespaceManager().getPrefix(tcId.getNamespace());
+        String prefix = repo.getNamespaceManager().getPrefix(tcId.getNamespace());
         String elId = tcId.getXmlId().getDecoded();
         String id = "winery-defs-for_" + prefix + "-" + elId;
         defs.setId(id);
@@ -519,20 +523,11 @@ public class BackendUtils {
      * @return Copy od topologyTemplate
      */
     public static TTopologyTemplate clone(TTopologyTemplate topologyTemplate) {
+        @SuppressWarnings("deprecated")
         TTopologyTemplate topologyTemplateClone = new TTopologyTemplate();
         List<TEntityTemplate> entityTemplate = topologyTemplate.getNodeTemplateOrRelationshipTemplate();
         topologyTemplateClone.getNodeTemplateOrRelationshipTemplate().addAll(entityTemplate);
         return topologyTemplateClone;
-
-        //Copy based on http://stackoverflow.com/a/3899882
-		/*try {
-			JAXBContext sourceJAXBContext = JAXBSupport.context.newInstance(element.getClass());
-			JAXBContext targetJAXBContext = JAXBSupport.context.newInstance(element.getClass());
-			return (T) targetJAXBContext.createUnmarshaller().unmarshal(new JAXBSource(sourceJAXBContext, element));
-		} catch (JAXBException e) {
-			logger.error("Cannot clone object", e);
-			return null;
-		}*/
     }
 
     /**
@@ -611,13 +606,13 @@ public class BackendUtils {
      * @param tcId the id of the element the wrapper is used for
      * @return a definitions element prepared for wrapping a definition child instance
      */
-    public static Definitions createWrapperDefinitions(DefinitionsChildId tcId) {
-        Definitions defs = new Definitions();
-        return updateWrapperDefinitions(tcId, defs);
+    public static TDefinitions createWrapperDefinitions(DefinitionsChildId tcId, IRepository repo) {
+        TDefinitions defs = new TDefinitions();
+        return updateWrapperDefinitions(tcId, defs, repo);
     }
 
-    public static Definitions createWrapperDefinitionsAndInitialEmptyElement(IRepository repository, DefinitionsChildId id) {
-        final Definitions definitions = createWrapperDefinitions(id);
+    public static TDefinitions createWrapperDefinitionsAndInitialEmptyElement(IRepository repository, DefinitionsChildId id) {
+        final TDefinitions definitions = createWrapperDefinitions(id, repository);
         HasIdInIdOrNameField element;
         if (id instanceof RelationshipTypeImplementationId) {
             element = new TRelationshipTypeImplementation();
@@ -631,6 +626,8 @@ public class BackendUtils {
             element = new TRelationshipType();
         } else if (id instanceof CapabilityTypeId) {
             element = new TCapabilityType();
+        } else if (id instanceof DataTypeId) { 
+            element = new TDataType();
         } else if (id instanceof ArtifactTypeId) {
             element = new TArtifactType();
         } else if (id instanceof PolicyTypeId) {
@@ -642,13 +639,13 @@ public class BackendUtils {
         } else if (id instanceof ArtifactTemplateId) {
             element = new TArtifactTemplate();
         } else if (id instanceof ComplianceRuleId) {
-            element = new OTComplianceRule();
+            element = new OTComplianceRule(new OTComplianceRule.Builder(id.getXmlId().getDecoded()));
         } else if (id instanceof PatternRefinementModelId) {
-            element = new OTPatternRefinementModel();
+            element = new OTPatternRefinementModel(new OTPatternRefinementModel.Builder());
         } else if (id instanceof TopologyFragmentRefinementModelId) {
-            element = new OTTopologyFragmentRefinementModel();
+            element = new OTTopologyFragmentRefinementModel(new OTPatternRefinementModel.Builder());
         } else if (id instanceof TestRefinementModelId) {
-            element = new OTTestRefinementModel();
+            element = new OTTestRefinementModel(new OTTestRefinementModel.Builder());
         } else if (id instanceof InterfaceTypeId) {
             element = new TInterfaceType();
         } else if (id instanceof XSDImportId) {
@@ -681,27 +678,14 @@ public class BackendUtils {
         if (winerysPropertiesDefinition == null) {
             return;
         }
-        Document document;
-        try {
-            document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-        } catch (ParserConfigurationException e) {
-            LOGGER.error("Could not create document", e);
-            return;
+        final LinkedHashMap<String, String> emptyKVProperties = new LinkedHashMap<>();
+        for (PropertyDefinitionKV definitionKV : winerysPropertiesDefinition.getPropertyDefinitions()) {
+            emptyKVProperties.put(definitionKV.getKey(), "");
         }
-
-        final String namespace = winerysPropertiesDefinition.getNamespace();
-        final Element wrapperElement = document.createElementNS(namespace, winerysPropertiesDefinition.getElementName());
-        document.appendChild(wrapperElement);
-
-        // we produce the serialization in the same order the XSD would be generated (because of the usage of xsd:sequence)
-        for (PropertyDefinitionKV propertyDefinitionKV : winerysPropertiesDefinition.getPropertyDefinitionKVList()) {
-            // we always write the element tag as the XSD forces that
-            final Element valueElement = document.createElementNS(namespace, propertyDefinitionKV.getKey());
-            wrapperElement.appendChild(valueElement);
-        }
-
-        TEntityTemplate.Properties properties = new TEntityTemplate.Properties();
-        properties.setAny(document.getDocumentElement());
+        TEntityTemplate.WineryKVProperties properties = new TEntityTemplate.WineryKVProperties();
+        properties.setNamespace(winerysPropertiesDefinition.getNamespace());
+        properties.setElementName(winerysPropertiesDefinition.getElementName());
+        properties.setKVProperties(emptyKVProperties);
         entityTemplate.setProperties(properties);
     }
 
@@ -717,34 +701,36 @@ public class BackendUtils {
 
     /**
      * Persists the given definitions
-     *
-     * @param id          the id of the definition child to persist
+     *  @param id          the id of the definition child to persist
      * @param definitions the definitions to persist
      */
-    public static void persist(DefinitionsChildId id, Definitions definitions) throws IOException {
-        RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
-        NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
-        namespaceManager.addPermanentNamespace(id.getNamespace().getDecoded());
-        BackendUtils.persist(definitions, ref, MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
+    public static void persist(IRepository repository, DefinitionsChildId id, TDefinitions definitions) throws IOException {
+        repository.putDefinition(id, definitions);
+    }
+
+    public static void persist(IRepository repository, RepositoryFileReference ref, TDefinitions definitions) throws IOException {
+        repository.putDefinition(ref, definitions);
     }
 
     // todo this should not depend on JAXB !
 
     /**
+     * @deprecated Instead use {@link IRepository#putDefinition(DefinitionsChildId, TDefinitions)} or {@link IRepository#putContentToFile(RepositoryFileReference, InputStream, MediaType)}
      * @throws IOException           if content could not be updated in the repository
      * @throws IllegalStateException if an JAXBException occurred. This should never happen.
      */
-    public static void persist(Object o, RepositoryFileReference ref, MediaType mediaType) throws IOException {
+    @Deprecated
+    public static void persist(Object o, RepositoryFileReference ref, MediaType mediaType, IRepository repo) throws IOException {
         // We assume that the object is not too large
         // Otherwise, http://io-tools.googlecode.com/svn/www/easystream/apidocs/index.html should be used
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            Marshaller m = JAXBSupport.createMarshaller(true);
+            Marshaller m = JAXBSupport.createMarshaller(true, repo.getNamespaceManager().asPrefixMapper());
             m.marshal(o, out);
             byte[] data = out.toByteArray();
             try (ByteArrayInputStream in = new ByteArrayInputStream(data)) {
                 // String xml = IOUtils.toString(in);
                 // this may throw an IOException. We propagate this exception.
-                RepositoryFactory.getRepository().putContentToFile(ref, in, mediaType);
+                repo.putContentToFile(ref, in, mediaType);
             }
         } catch (JAXBException e) {
             BackendUtils.LOGGER.error("Could not put content to file", e);
@@ -754,10 +740,11 @@ public class BackendUtils {
 
     /**
      * @param ref the file to read from
+     * @param repo
      */
-    public static Optional<XSModel> getXSModel(final RepositoryFileReference ref) {
+    public static Optional<XSModel> getXSModel(final RepositoryFileReference ref, IRepository repo) {
         Objects.requireNonNull(ref);
-        try (final InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
+        try (final InputStream is = repo.newInputStream(ref)) {
             // we rely on xerces to parse the XSD
             // idea based on http://stackoverflow.com/a/5165177/873282
             XSImplementation impl = new XSImplementationImpl();
@@ -852,113 +839,118 @@ public class BackendUtils {
 
     /**
      * Derives Winery's Properties Definition from an existing properties definition
-     *
-     * @param ci     the entity type to try to modify the WPDs
+     *  @param ci     the entity type to try to modify the WPDs
      * @param errors the list to add errors to
+     * @param repository
      */
-    public static void deriveWPD(TEntityType ci, List<String> errors) {
+    // FIXME this is specifically for xml backends and therefore broken under the new canonical model
+    public static void deriveWPD(TEntityType ci, List<String> errors, IRepository repository) {
         BackendUtils.LOGGER.trace("deriveWPD");
-        PropertiesDefinition propertiesDefinition = ci.getPropertiesDefinition();
-        QName element = propertiesDefinition.getElement();
-        if (element == null) {
+        TEntityType.PropertiesDefinition propertiesDefinition = ci.getProperties();
+        if (propertiesDefinition == null) {
+            // if there's no properties definition, there's nothing to derive because we're in YAML mode
+            return;
+        }
+        if (!(propertiesDefinition instanceof TEntityType.XmlElementDefinition)) {
             BackendUtils.LOGGER.debug("only works for an element definition, not for types");
-        } else {
-            BackendUtils.LOGGER.debug("Looking for the definition of {" + element.getNamespaceURI() + "}" + element.getLocalPart());
-            // fetch the XSD defining the element
-            final XsdImportManager xsdImportManager = RepositoryFactory.getRepository().getXsdImportManager();
-            Map<String, RepositoryFileReference> mapFromLocalNameToXSD = xsdImportManager.getMapFromLocalNameToXSD(new Namespace(element.getNamespaceURI(), false), false);
-            RepositoryFileReference ref = mapFromLocalNameToXSD.get(element.getLocalPart());
-            if (ref == null) {
-                String msg = "XSD not found for " + element.getNamespaceURI() + " / " + element.getLocalPart();
-                BackendUtils.LOGGER.debug(msg);
-                errors.add(msg);
-                return;
-            }
+            return;
+        }
+        final QName element = ((TEntityType.XmlElementDefinition) propertiesDefinition).getElement();
+        BackendUtils.LOGGER.debug("Looking for the definition of {" + element.getNamespaceURI() + "}" + element.getLocalPart());
+        // fetch the XSD defining the element
+        final XsdImportManager xsdImportManager = repository.getXsdImportManager();
+        Map<String, RepositoryFileReference> mapFromLocalNameToXSD = xsdImportManager.getMapFromLocalNameToXSD(new Namespace(element.getNamespaceURI(), false), false);
+        RepositoryFileReference ref = mapFromLocalNameToXSD.get(element.getLocalPart());
+        if (ref == null) {
+            String msg = "XSD not found for " + element.getNamespaceURI() + " / " + element.getLocalPart();
+            BackendUtils.LOGGER.debug(msg);
+            errors.add(msg);
+            return;
+        }
 
-            final Optional<XSModel> xsModelOptional = BackendUtils.getXSModel(ref);
-            if (!xsModelOptional.isPresent()) {
-                LOGGER.error("no XSModel found");
-            }
-            XSModel xsModel = xsModelOptional.get();
-            XSElementDeclaration elementDeclaration = xsModel.getElementDeclaration(element.getLocalPart(), element.getNamespaceURI());
-            if (elementDeclaration == null) {
-                String msg = "XSD model claimed to contain declaration for {" + element.getNamespaceURI() + "}" + element.getLocalPart() + ", but it did not.";
-                BackendUtils.LOGGER.debug(msg);
-                errors.add(msg);
-                return;
-            }
+        final Optional<XSModel> xsModelOptional = BackendUtils.getXSModel(ref, repository);
+        if (!xsModelOptional.isPresent()) {
+            LOGGER.error("no XSModel found");
+        }
+        XSModel xsModel = xsModelOptional.get();
+        XSElementDeclaration elementDeclaration = xsModel.getElementDeclaration(element.getLocalPart(), element.getNamespaceURI());
+        if (elementDeclaration == null) {
+            String msg = "XSD model claimed to contain declaration for {" + element.getNamespaceURI() + "}" + element.getLocalPart() + ", but it did not.";
+            BackendUtils.LOGGER.debug(msg);
+            errors.add(msg);
+            return;
+        }
 
-            // go through the XSD definition and
-            XSTypeDefinition typeDefinition = elementDeclaration.getTypeDefinition();
-            if (typeDefinition instanceof XSComplexTypeDefinition) {
-                XSComplexTypeDefinition cTypeDefinition = (XSComplexTypeDefinition) typeDefinition;
-                XSParticle particle = cTypeDefinition.getParticle();
-                if (particle == null) {
-                    BackendUtils.LOGGER.debug("XSD does not follow the requirements put by winery: Complex type does not contain particles");
-                } else {
-                    XSTerm term = particle.getTerm();
-                    if (term instanceof XSModelGroup) {
-                        XSModelGroup modelGroup = (XSModelGroup) term;
-                        if (modelGroup.getCompositor() == XSModelGroup.COMPOSITOR_SEQUENCE) {
-                            XSObjectList particles = modelGroup.getParticles();
-                            int len = particles.getLength();
-                            boolean everyThingIsASimpleType = true;
-                            PropertyDefinitionKVList list = new PropertyDefinitionKVList();
-                            if (len != 0) {
-                                for (int i = 0; i < len; i++) {
-                                    XSParticle innerParticle = (XSParticle) particles.item(i);
-                                    XSTerm innerTerm = innerParticle.getTerm();
-                                    if (innerTerm instanceof XSElementDeclaration) {
-                                        XSElementDeclaration innerElementDeclaration = (XSElementDeclaration) innerTerm;
-                                        String name = innerElementDeclaration.getName();
-                                        XSTypeDefinition innerTypeDefinition = innerElementDeclaration.getTypeDefinition();
-                                        if (innerTypeDefinition instanceof XSSimpleType) {
-                                            XSSimpleType xsSimpleType = (XSSimpleType) innerTypeDefinition;
-                                            String typeNS = xsSimpleType.getNamespace();
-                                            String typeName = xsSimpleType.getName();
-                                            if (typeNS.equals(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
-                                                PropertyDefinitionKV def = new PropertyDefinitionKV();
-                                                def.setKey(name);
-                                                // convention at WPD: use "xsd" as prefix for XML Schema Definition
-                                                def.setType("xsd:" + typeName);
-                                                list.add(def);
-                                            } else {
-                                                everyThingIsASimpleType = false;
-                                                break;
-                                            }
-                                        } else {
-                                            everyThingIsASimpleType = false;
-                                            break;
-                                        }
-                                    } else {
-                                        everyThingIsASimpleType = false;
-                                        break;
-                                    }
-                                }
-                            }
-                            if (everyThingIsASimpleType) {
-                                // everything went allright, we can add a WPD
-                                WinerysPropertiesDefinition wpd = new WinerysPropertiesDefinition();
-                                wpd.setIsDerivedFromXSD(Boolean.TRUE);
-                                wpd.setElementName(element.getLocalPart());
-                                wpd.setNamespace(element.getNamespaceURI());
-                                wpd.setPropertyDefinitionKVList(list);
-                                ModelUtilities.replaceWinerysPropertiesDefinition(ci, wpd);
-                                BackendUtils.LOGGER.debug("Successfully generated WPD");
-                            } else {
-                                BackendUtils.LOGGER.debug("XSD does not follow the requirements put by winery: Not all types in the sequence are simple types");
-                            }
+        // go through the XSD definition and
+        XSTypeDefinition typeDefinition = elementDeclaration.getTypeDefinition();
+        if (!(typeDefinition instanceof XSComplexTypeDefinition)) {
+            BackendUtils.LOGGER.debug("XSD does not follow the requirements put by winery: No Complex Type Definition");
+            return;
+        }
+        XSComplexTypeDefinition cTypeDefinition = (XSComplexTypeDefinition) typeDefinition;
+        XSParticle particle = cTypeDefinition.getParticle();
+        if (particle == null) {
+            BackendUtils.LOGGER.debug("XSD does not follow the requirements put by winery: Complex type does not contain particles");
+            return;
+        }
+        XSTerm term = particle.getTerm();
+        if (!(term instanceof XSModelGroup)) {
+            BackendUtils.LOGGER.debug("XSD does not follow the requirements put by winery: Not a model group");
+            return;
+        }
+        XSModelGroup modelGroup = (XSModelGroup) term;
+        if (modelGroup.getCompositor() != XSModelGroup.COMPOSITOR_SEQUENCE) {
+            BackendUtils.LOGGER.debug("XSD does not follow the requirements put by winery: Model group is not a sequence");
+            return;
+        }
+        XSObjectList particles = modelGroup.getParticles();
+        int len = particles.getLength();
+        boolean everyThingIsASimpleType = true;
+        List<PropertyDefinitionKV> list = new ArrayList<>();
+        if (len != 0) {
+            for (int i = 0; i < len; i++) {
+                XSParticle innerParticle = (XSParticle) particles.item(i);
+                XSTerm innerTerm = innerParticle.getTerm();
+                if (innerTerm instanceof XSElementDeclaration) {
+                    XSElementDeclaration innerElementDeclaration = (XSElementDeclaration) innerTerm;
+                    String name = innerElementDeclaration.getName();
+                    XSTypeDefinition innerTypeDefinition = innerElementDeclaration.getTypeDefinition();
+                    if (innerTypeDefinition instanceof XSSimpleType) {
+                        XSSimpleType xsSimpleType = (XSSimpleType) innerTypeDefinition;
+                        String typeNS = xsSimpleType.getNamespace();
+                        String typeName = xsSimpleType.getName();
+                        if (typeNS.equals(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
+                            PropertyDefinitionKV def = new PropertyDefinitionKV();
+                            def.setKey(name);
+                            // convention at WPD: use "xsd" as prefix for XML Schema Definition
+                            def.setType("xsd:" + typeName);
+                            list.add(def);
                         } else {
-                            BackendUtils.LOGGER.debug("XSD does not follow the requirements put by winery: Model group is not a sequence");
+                            everyThingIsASimpleType = false;
+                            break;
                         }
                     } else {
-                        BackendUtils.LOGGER.debug("XSD does not follow the requirements put by winery: Not a model group");
+                        everyThingIsASimpleType = false;
+                        break;
                     }
+                } else {
+                    everyThingIsASimpleType = false;
+                    break;
                 }
-            } else {
-                BackendUtils.LOGGER.debug("XSD does not follow the requirements put by winery: No Complex Type Definition");
             }
         }
+        if (!everyThingIsASimpleType) {
+            BackendUtils.LOGGER.debug("XSD does not follow the requirements put by winery: Not all types in the sequence are simple types");
+            return;
+        }
+        // everything went alright, we can add a WPD
+        WinerysPropertiesDefinition wpd = new WinerysPropertiesDefinition();
+        wpd.setIsDerivedFromXSD(Boolean.TRUE);
+        wpd.setElementName(element.getLocalPart());
+        wpd.setNamespace(element.getNamespaceURI());
+        wpd.setPropertyDefinitions(list);
+        ModelUtilities.replaceWinerysPropertiesDefinition(ci, wpd);
+        BackendUtils.LOGGER.debug("Successfully generated WPD");
     }
 
     /**
@@ -1059,29 +1051,26 @@ public class BackendUtils {
      * @return The URL and the branch/tag that contains the files for the ArtifactTemplate. null if no git information
      * is given.
      */
-    public static GitInfo getGitInformation(DirectoryId directoryId) {
+    public static GitInfo getGitInformation(DirectoryId directoryId, IRepository repo) {
         if (!(directoryId.getParent() instanceof ArtifactTemplateId)) {
             return null;
         }
         RepositoryFileReference ref = BackendUtils.getRefOfDefinitions((ArtifactTemplateId) directoryId.getParent());
-        try (InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
-            Unmarshaller u = JAXBSupport.createUnmarshaller();
-            Definitions defs = ((Definitions) u.unmarshal(is));
+        try {
+            TDefinitions defs = repo.definitionsFromRef(ref);
             Map<QName, String> atts = defs.getOtherAttributes();
             String src = atts.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "gitsrc"));
             String branch = atts.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "gitbranch"));
-            // ^ is the XOR operator
-            if (src == null ^ branch == null) {
-                LOGGER.error("Git information not complete, URL or branch missing");
+            if (src == null && branch == null) {
                 return null;
-            } else if (src == null && branch == null) {
+            }
+            if (src == null || branch == null) {
+                LOGGER.error("Git information not complete, URL or branch missing");
                 return null;
             }
             return new GitInfo(src, branch);
         } catch (IOException e) {
             LOGGER.error("Error reading definitions of " + directoryId.getParent() + " at " + ref.getFileName(), e);
-        } catch (JAXBException e) {
-            LOGGER.error("Error in XML in " + ref.getFileName(), e);
         }
         return null;
     }
@@ -1090,11 +1079,11 @@ public class BackendUtils {
      * @param directoryId DirectoryID of the TArtifactTemplate that should be returned.
      * @return The TArtifactTemplate corresponding to the directoryId.
      */
-    public static TArtifactTemplate getTArtifactTemplate(DirectoryId directoryId) {
+    public static TArtifactTemplate getTArtifactTemplate(DirectoryId directoryId, IRepository repo) {
         RepositoryFileReference ref = BackendUtils.getRefOfDefinitions((ArtifactTemplateId) directoryId.getParent());
-        try (InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
+        try (InputStream is = repo.newInputStream(ref)) {
             Unmarshaller u = JAXBSupport.createUnmarshaller();
-            Definitions defs = ((Definitions) u.unmarshal(is));
+            TDefinitions defs = ((TDefinitions) u.unmarshal(is));
             for (TExtensibleElements elem : defs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation()) {
                 if (elem instanceof TArtifactTemplate) {
                     return (TArtifactTemplate) elem;
@@ -1132,10 +1121,10 @@ public class BackendUtils {
         return matcher.matches(path);
     }
 
-    public static boolean injectArtifactTemplateIntoDeploymentArtifact(ServiceTemplateId serviceTemplate, String nodeTemplateId, String deploymentArtifactId, ArtifactTemplateId artifactTemplate) throws IOException {
-        TServiceTemplate element = RepositoryFactory.getRepository().getElement(serviceTemplate);
+    public static boolean injectArtifactTemplateIntoDeploymentArtifact(ServiceTemplateId serviceTemplate, String nodeTemplateId, String deploymentArtifactId, ArtifactTemplateId artifactTemplate, IRepository repo) throws IOException {
+        TServiceTemplate element = repo.getElement(serviceTemplate);
         element.getTopologyTemplate().getNodeTemplate(nodeTemplateId).getDeploymentArtifacts().getDeploymentArtifact(deploymentArtifactId).setArtifactRef(artifactTemplate.getQName());
-        RepositoryFactory.getRepository().setElement(serviceTemplate, element);
+        repo.setElement(serviceTemplate, element);
         return true;
     }
 
@@ -1249,8 +1238,7 @@ public class BackendUtils {
      * Synchronizes the known plans with the data in the XML. When there is a stored file, but no known entry in the
      * XML, we guess "BPEL" as language and "buildProvenanceSmartContract plan" as type.
      */
-    public static void synchronizeReferences(ServiceTemplateId id) throws IOException {
-        final IRepository repository = RepositoryFactory.getRepository();
+    public static void synchronizeReferences(ServiceTemplateId id, IRepository repository) throws IOException {
         final TServiceTemplate serviceTemplate = repository.getElement(id);
         // locally stored plans
         TPlans plans = serviceTemplate.getPlans();
@@ -1338,30 +1326,30 @@ public class BackendUtils {
             serviceTemplate.setPlans(null);
         }
 
-        RepositoryFactory.getRepository().setElement(id, serviceTemplate);
+        repository.setElement(id, serviceTemplate);
     }
 
-    public static String getXMLAsString(Object obj) {
+    public static String getXMLAsString(Object obj, IRepository repository) {
         if (obj instanceof Element) {
             // in case the object is a DOM element, we use the DOM functionality
             return Util.getXMLAsString((Element) obj);
         } else {
-            return BackendUtils.getXMLAsString(obj, false);
+            return BackendUtils.getXMLAsString(obj, false, repository);
         }
     }
 
-    public static <T> String getXMLAsString(T obj, boolean includeProcessingInstruction) {
+    public static <T> String getXMLAsString(T obj, boolean includeProcessingInstruction, IRepository repository) {
         if (obj == null) {
             return "";
         }
         @SuppressWarnings("unchecked")
-        Class<T> clazz = (Class<T>) obj.getClass();
-        return BackendUtils.getXMLAsString(clazz, obj, includeProcessingInstruction);
+        Class<? super T> clazz = (Class<T>) obj.getClass();
+        return BackendUtils.getXMLAsString(clazz, obj, includeProcessingInstruction, repository);
     }
 
-    public static <T> String getXMLAsString(Class<T> clazz, T obj, boolean includeProcessingInstruction) {
+    public static <T> String getXMLAsString(Class<T> clazz, T obj, boolean includeProcessingInstruction, IRepository repository) {
         JAXBElement<T> rootElement = Util.getJAXBElement(clazz, obj);
-        Marshaller m = JAXBSupport.createMarshaller(includeProcessingInstruction);
+        Marshaller m = JAXBSupport.createMarshaller(includeProcessingInstruction, repository.getNamespaceManager().asPrefixMapper());
         StringWriter w = new StringWriter();
         try {
             m.marshal(rootElement, w);
@@ -1433,29 +1421,18 @@ public class BackendUtils {
         });
     }
 
-    public static Definitions getDefinitionsHavingCorrectImports(IRepository repository, DefinitionsChildId id) throws Exception {
-        // idea: get the XML, parse it, return it
-        // the conversion to JSON is made by Jersey automatically
-        // TODO: future work: force TOSCAExportUtil to return TDefinitions directly
-
-        // Have to use TOScAExportUtil to have the imports correctly set
-
+    /**
+     * Uses a ToscaExportUtil object to create a TDefinitions object that has imports resolved to the point of being exportable as a CSAR.
+     */
+    public static TDefinitions getDefinitionsHavingCorrectImports(IRepository repository, DefinitionsChildId id) throws IOException, RepositoryCorruptException {
         ToscaExportUtil exporter = new ToscaExportUtil();
-        // we include everything related
-        Map<String, Object> conf = new HashMap<>();
-        try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-            exporter.writeTOSCA(repository, id, conf, bos);
-            String xmlRepresentation = bos.toString(StandardCharsets.UTF_8.toString());
-            Unmarshaller u = JAXBSupport.createUnmarshaller();
-            return ((Definitions) u.unmarshal(new StringReader(xmlRepresentation)));
-        }
+        return exporter.getExportableDefinitions(repository, id);
     }
 
-    public static void mergeTopologyTemplateAinTopologyTemplateB(ServiceTemplateId serviceTemplateIdA, ServiceTemplateId serviceTemplateIdB) throws IOException {
+    public static void mergeTopologyTemplateAinTopologyTemplateB(ServiceTemplateId serviceTemplateIdA, ServiceTemplateId serviceTemplateIdB, IRepository repository) throws IOException {
         Objects.requireNonNull(serviceTemplateIdA);
         Objects.requireNonNull(serviceTemplateIdB);
-
-        IRepository repository = RepositoryFactory.getRepository();
+        
         TTopologyTemplate topologyTemplateA = repository.getElement(serviceTemplateIdA).getTopologyTemplate();
         TServiceTemplate serviceTemplateB = repository.getElement(serviceTemplateIdB);
         TTopologyTemplate topologyTemplateB = serviceTemplateB.getTopologyTemplate();
@@ -1497,6 +1474,7 @@ public class BackendUtils {
         Objects.requireNonNull(topologyTemplateA);
         Objects.requireNonNull(topologyTemplateB);
 
+        @SuppressWarnings("deprecated")
         TTopologyTemplate topologyTemplateToBeMerged = new TTopologyTemplate();
         Map<String, String> idMapping = new HashMap<>();
 
@@ -1610,129 +1588,17 @@ public class BackendUtils {
         return topologyTemplate;
     }
 
-    /**
-     * Collects all the definitions which describe the same component in different versions.
-     *
-     * @param id The {@link DefinitionsChildId} for which all versions should be collected.
-     * @return A set of definitions describing the same component in different versions.
-     */
-    public static SortedSet<? extends DefinitionsChildId> getOtherVersionDefinitionsFromDefinition(DefinitionsChildId id) {
-        IRepository repository = RepositoryFactory.getRepository();
-        SortedSet<? extends DefinitionsChildId> allDefinitionsChildIds = repository.getAllDefinitionsChildIds(id.getClass());
-
-        final String componentName = VersionUtils.getNameWithoutVersion(id.getXmlId().getDecoded());
-
-        allDefinitionsChildIds.removeIf(definition -> {
-            if (definition.getNamespace().compareTo(id.getNamespace()) == 0) {
-                String name = VersionUtils.getNameWithoutVersion(definition);
-                return !name.equals(componentName);
-            }
-            return true;
-        });
-
-        return allDefinitionsChildIds;
-    }
-
-    /**
-     * Collects the versions of the given definition and sets editable flags
-     *
-     * @param id the {@link DefinitionsChildId} describing the "base" component.
-     * @return A list of available versions of the specified component.
-     */
-    public static List<WineryVersion> getAllVersionsOfOneDefinition(DefinitionsChildId id) {
-        return getVersionsList(id, new WineryVersion[1]);
-    }
-
-    public static WineryVersion getCurrentVersionWithAllFlags(DefinitionsChildId id) {
-        WineryVersion[] currentVersionWithFlags = new WineryVersion[1];
-        getVersionsList(id, currentVersionWithFlags);
-        return currentVersionWithFlags[0];
-    }
-
-    /**
-     * @param current returns the current version in element [0] of this variable. Has to be non-null.
-     * @return a list of available versions
-     */
-    private static List<WineryVersion> getVersionsList(DefinitionsChildId id, final WineryVersion[] current) {
-        List<WineryVersion> versionList = getOtherVersionDefinitionsFromDefinition(id)
-            .stream()
-            .map(element -> {
-                WineryVersion version = VersionUtils.getVersionWithCurrentFlag(element, id);
-                if (version.isCurrentVersion()) {
-                    current[0] = version;
-                }
-                return version;
-            })
-            // sort descending, so that the latest version comes first
-            .sorted(Comparator.reverseOrder())
-            .collect(Collectors.toList());
-
-        // explicitly set the latest version and releasable flag
-        versionList.get(0).setLatestVersion(true);
-        versionList.get(0).setReleasable(true);
-
-        boolean changesInFile = false;
-        // Check for MultiRepository
-        if (current[0].isVersionedInWinery() && RepositoryFactory.getRepository() instanceof MultiRepository) {
-            for (IRepository repository : ((MultiRepository) RepositoryFactory.getRepository()).getRepositories()) {
-                if (repository.getClass().equals(GitBasedRepository.class)) {
-                    GitBasedRepository gitRepo = (GitBasedRepository) repository;
-                    if (gitRepo.hasChangesInFile(BackendUtils.getRefOfDefinitions(id))) {
-                        changesInFile = true;
-                    }
-                }
-            }
-        }
-        if (current[0].isVersionedInWinery() && RepositoryFactory.getRepository() instanceof GitBasedRepository) {
-            GitBasedRepository gitRepo = (GitBasedRepository) RepositoryFactory.getRepository();
-            if (gitRepo.hasChangesInFile(BackendUtils.getRefOfDefinitions(id))) {
-                changesInFile = true;
-            }
-        }
-        // Check if element is unversioned
-        if (!current[0].isVersionedInWinery()) {
-            changesInFile = true;
-        }
-        if (!current[0].isLatestVersion()) {
-            // The current version may still be releasable, if it's the latest WIP version of a component version.
-            List<WineryVersion> collect = versionList.stream()
-                .filter(version -> version.getComponentVersion().equals(current[0].getComponentVersion()))
-                .sorted(Comparator.reverseOrder())
-                .collect(Collectors.toList());
-            current[0].setReleasable(collect.get(0).isCurrentVersion());
-            // And if there are changes, it's also editable.
-            current[0].setEditable(changesInFile && current[0].isReleasable());
-        } else {
-            current[0].setEditable(changesInFile);
-        }
-
-        return versionList;
-    }
-
-    public static WineryVersion getPredecessor(DefinitionsChildId id) {
-        WineryVersion[] current = new WineryVersion[1];
-        List<WineryVersion> versionList = getVersionsList(id, current);
-        int index = versionList.indexOf(current[0]);
-
-        if (index < versionList.size()) {
-            return versionList.get(index);
-        } else {
-            return null;
-        }
-    }
-
-    public static ToscaDiff compare(DefinitionsChildId id, WineryVersion versionToCompareTo) {
-        IRepository repository = RepositoryFactory.getRepository();
-        DefinitionsChildId versionToCompare = VersionUtils.getDefinitionInTheGivenVersion(id, versionToCompareTo);
+    public static ToscaDiff compare(DefinitionsChildId id, WineryVersion versionToCompareTo, IRepository repository) {
+        DefinitionsChildId versionToCompare = VersionSupport.getDefinitionInTheGivenVersion(id, versionToCompareTo);
 
         TExtensibleElements workingVersion = repository.getDefinitions(id).getElement();
         TExtensibleElements baseVersion = repository.getDefinitions(versionToCompare).getElement();
-        return VersionUtils.calculateDifferences(baseVersion, workingVersion);
+        return VersionSupport.calculateDifferences(baseVersion, workingVersion);
     }
 
-    public static void commit(DefinitionsChildId componentToCommit, String commitMessagePrefix) throws GitAPIException {
-        if (RepositoryFactory.getRepository() instanceof GitBasedRepository) {
-            GitBasedRepository gitRepo = (GitBasedRepository) RepositoryFactory.getRepository();
+    public static void commit(DefinitionsChildId componentToCommit, String commitMessagePrefix, IRepository repository) throws GitAPIException {
+        if (repository instanceof GitBasedRepository) {
+            GitBasedRepository gitRepo = (GitBasedRepository) repository;
             List<String> filePatternsToCommit = new ArrayList<>();
 
             if (gitRepo.hasChangesInFile(BackendUtils.getRefOfDefinitions(componentToCommit))) {

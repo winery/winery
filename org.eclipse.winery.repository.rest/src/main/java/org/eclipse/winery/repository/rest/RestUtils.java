@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -49,29 +49,31 @@ import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.edmm.EdmmManager;
+import org.eclipse.winery.edmm.model.EdmmConverter;
+import org.eclipse.winery.edmm.model.EdmmType;
+import org.eclipse.winery.repository.backend.WineryVersionUtils;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.configuration.UiConfigurationObject;
 import org.eclipse.winery.common.constants.MimeTypes;
-import org.eclipse.winery.common.edmm.EdmmConverter;
-import org.eclipse.winery.common.edmm.EdmmType;
-import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XmlId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.elements.ToscaElementId;
-import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.model.ids.GenericId;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.XmlId;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.model.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.elements.ToscaElementId;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.selfservice.Application;
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TConstraint;
@@ -86,7 +88,6 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.EdmmManager;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -96,8 +97,8 @@ import org.eclipse.winery.repository.backend.xsd.NamespaceAndDefinedLocalNames;
 import org.eclipse.winery.repository.export.CsarExportOptions;
 import org.eclipse.winery.repository.export.CsarExporter;
 import org.eclipse.winery.repository.export.ToscaExportUtil;
-import org.eclipse.winery.repository.export.YamlExporter;
 import org.eclipse.winery.repository.rest.datatypes.ComponentId;
+import org.eclipse.winery.repository.yaml.export.YamlExporter;
 import org.eclipse.winery.repository.rest.datatypes.LocalNameForAngular;
 import org.eclipse.winery.repository.rest.datatypes.NamespaceAndDefinedLocalNamesForAngular;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
@@ -225,7 +226,7 @@ public class RestUtils {
      */
     public static Response getCsarOfSelectedResource(final AbstractComponentInstanceResource resource, CsarExportOptions options, boolean includeDependencies) {
         LocalDateTime start = LocalDateTime.now();
-        final CsarExporter exporter = new CsarExporter();
+        final CsarExporter exporter = new CsarExporter(RepositoryFactory.getRepository());
         Map<String, Object> exportConfiguration = new HashMap<>();
 
         StreamingOutput so = output -> {
@@ -233,12 +234,12 @@ public class RestUtils {
                 // check which options are chosen
                 if (options.isAddToProvenance()) {
                     // We wait for the accountability layer to confirm the transaction
-                    String result = exporter.writeCsarAndSaveManifestInProvenanceLayer(RepositoryFactory.getRepository(), resource.getId(), output)
+                    String result = exporter.writeCsarAndSaveManifestInProvenanceLayer(resource.getId(), output)
                         .get();
                     LOGGER.debug("Stored state in accountability layer in transaction " + result);
                     LOGGER.debug("CSAR export (provenance) lasted {}", Duration.between(LocalDateTime.now(), start).toString());
                 } else {
-                    exporter.writeCsar(RepositoryFactory.getRepository(), resource.getId(), output, exportConfiguration, includeDependencies);
+                    exporter.writeCsar(resource.getId(), output, exportConfiguration, includeDependencies);
                     LOGGER.debug("CSAR export lasted {}", Duration.between(LocalDateTime.now(), start).toString());
                 }
             } catch (Exception e) {
@@ -271,12 +272,12 @@ public class RestUtils {
 
     public static Response getYamlCSARofSelectedResource(final AbstractComponentInstanceResource resource) {
         LocalDateTime start = LocalDateTime.now();
-        final YamlExporter exporter = new YamlExporter();
+        final YamlExporter exporter = new YamlExporter(RepositoryFactory.getRepository());
         Map<String, Object> exportConfiguration = new HashMap<>();
 
         StreamingOutput so = output -> {
             try {
-                exporter.writeCsar(RepositoryFactory.getRepository(), resource.getId(), output, exportConfiguration, false);
+                exporter.writeCsar(resource.getId(), output, exportConfiguration, false);
                 LOGGER.debug("CSAR export lasted {}", Duration.between(LocalDateTime.now(), start).toString());
             } catch (Exception e) {
                 LOGGER.error("Error while exporting CSAR", e);
@@ -294,7 +295,8 @@ public class RestUtils {
             .build();
     }
 
-    public static Response getEdmmModel(TServiceTemplate element, boolean useAbsolutPaths) {
+    public static EntityGraph getEdmmEntityGraph(TServiceTemplate element, boolean useAbsolutPaths) {
+
         IRepository repository = RepositoryFactory.getRepository();
 
         Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
@@ -302,7 +304,7 @@ public class RestUtils {
         Map<QName, TNodeTypeImplementation> nodeTypeImplementations = repository.getQNameToElementMapping(NodeTypeImplementationId.class);
         Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations = repository.getQNameToElementMapping(RelationshipTypeImplementationId.class);
         Map<QName, TArtifactTemplate> artifactTemplates = repository.getQNameToElementMapping(ArtifactTemplateId.class);
-        EdmmManager edmmManager = repository.getEdmmManager();
+        EdmmManager edmmManager = EdmmManager.forRepository(repository);
         Map<QName, EdmmType> oneToOneMappings = edmmManager.getOneToOneMap();
         Map<QName, EdmmType> typeMappings = edmmManager.getTypeMap();
 
@@ -315,6 +317,14 @@ public class RestUtils {
         EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations,
             artifactTemplates, typeMappings, oneToOneMappings, useAbsolutPaths);
         EntityGraph transform = edmmConverter.transform(element);
+
+        return transform;
+    }
+
+    public static Response getEdmmModel(TServiceTemplate element, boolean useAbsolutPaths) {
+
+        EntityGraph transform = getEdmmEntityGraph(element, useAbsolutPaths);
+
         StringWriter stringWriter = new StringWriter();
         transform.generateYamlOutput(stringWriter);
 
@@ -409,6 +419,9 @@ public class RestUtils {
             location = "compliancerules";
         } else if (type.contains("RefinementModel")) {
             location = "refinementmodels";
+        } else if (type.contains("DataType")) {
+            // FIXME Intermediate location, may be subject to change!
+            location = "yaml";
         } else {
             if (type.contains("TypeImplementation")) {
                 location = "entitytypeimplementations";
@@ -433,16 +446,16 @@ public class RestUtils {
      * <p>
      * We cannot use {@literal Class<? extends TExtensibleElements>} as, for instance, {@link TConstraint} does not
      * inherit from {@link TExtensibleElements}
-     *
-     * @param clazz the Class of the passed object, required if obj is null
+     *  @param clazz the Class of the passed object, required if obj is null
      * @param obj   the object to serialize
+     * @param repository
      */
-    public static <T> Response getXML(Class<T> clazz, T obj) {
+    public static <T> Response getXML(Class<T> clazz, T obj, IRepository repository) {
         // see commit ab4b5c547619c058990 for an implementation using getJAXBElement,
         // which can be directly passed as entity
         // the issue is that we want to have a *formatted* XML
         // Therefore, we serialize "by hand".
-        String xml = BackendUtils.getXMLAsString(clazz, obj, false);
+        String xml = BackendUtils.getXMLAsString(clazz, obj, false, repository);
 
         return Response.ok().type(MediaType.TEXT_XML).entity(xml).build();
     }
@@ -502,7 +515,7 @@ public class RestUtils {
 
         RepositoryFileReference fileRef = new RepositoryFileReference(newServiceTemplateId, "ServiceTemplate.tosca");
 
-        Definitions defs = new ServiceTemplateResource(serviceTemplate).getDefinitions();
+        TDefinitions defs = new ServiceTemplateResource(serviceTemplate).getDefinitions();
 
         defs.setId(newName + "Definitions");
         defs.setName(newName + "Definitions generated from Artifact " + artifactName);
@@ -537,7 +550,7 @@ public class RestUtils {
             oldSTModel.getTags().getTag().removeAll(toRemove);
         }
 
-        JAXBContext context = JAXBContext.newInstance(Definitions.class);
+        JAXBContext context = JAXBContext.newInstance(TDefinitions.class);
         Marshaller m = context.createMarshaller();
         StringWriter sw = new StringWriter();
         m.marshal(defs, sw);
@@ -636,7 +649,7 @@ public class RestUtils {
      */
     public static Response persist(Application application, RepositoryFileReference data_xml_ref, String mimeType) {
         try {
-            BackendUtils.persist(application, data_xml_ref, org.apache.tika.mime.MediaType.parse(mimeType));
+            BackendUtils.persist(application, data_xml_ref, org.apache.tika.mime.MediaType.parse(mimeType), RepositoryFactory.getRepository());
         } catch (IOException e) {
             LOGGER.debug("Could not persist resource", e);
             throw new WebApplicationException(e);
@@ -648,7 +661,7 @@ public class RestUtils {
         try {
             NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
             namespaceManager.addPermanentNamespace(res.getDefinitions().getTargetNamespace());
-            BackendUtils.persist(res.getDefinitions(), res.getRepositoryFileReference(), MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
+            BackendUtils.persist(RepositoryFactory.getRepository(), res.getRepositoryFileReference(), res.getDefinitions());
         } catch (IOException e) {
             LOGGER.debug("Could not persist resource", e);
             throw new WebApplicationException(e);
@@ -659,12 +672,12 @@ public class RestUtils {
     public static ResourceResult rename(DefinitionsChildId oldId, DefinitionsChildId newId) {
         ResourceResult result = new ResourceResult();
         IRepository repo = RepositoryFactory.getRepository();
-        WineryVersion version = VersionUtils.getVersion(oldId);
+        WineryVersion version = oldId.getVersion();
         DefinitionsChildId id = newId;
 
         if (version.toString().length() > 0) {
             // ensure that the version isn't changed by the user
-            String componentName = VersionUtils.getNameWithoutVersion(newId) + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
+            String componentName = newId.getNameWithoutVersion() + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
             id = BackendUtils.getDefinitionsChildId(oldId.getClass(), newId.getNamespace().getDecoded(), componentName, false);
         }
 
@@ -693,7 +706,7 @@ public class RestUtils {
     }
 
     public static Response renameAllVersionsOfOneDefinition(DefinitionsChildId oldId, DefinitionsChildId newId) {
-        SortedSet<? extends DefinitionsChildId> definitions = BackendUtils.getOtherVersionDefinitionsFromDefinition(oldId);
+        SortedSet<? extends DefinitionsChildId> definitions = WineryVersionUtils.getOtherVersionDefinitionsFromDefinition(oldId, RepositoryFactory.getRepository());
         Response finalResponse = null;
 
         for (DefinitionsChildId definition : definitions) {
@@ -979,19 +992,20 @@ public class RestUtils {
 
     public static Response releaseVersion(DefinitionsChildId releasableComponent) {
         ResourceResult result = new ResourceResult();
-        WineryVersion version = BackendUtils.getCurrentVersionWithAllFlags(releasableComponent);
+        final IRepository repository = RepositoryFactory.getRepository();
+        WineryVersion version = WineryVersionUtils.getCurrentVersionWithAllFlags(releasableComponent, repository);
 
         if (version.isReleasable()) {
-            if (RepositoryFactory.getRepository() instanceof GitBasedRepository) {
+            if (repository instanceof GitBasedRepository) {
                 try {
                     freezeVersion(releasableComponent);
 
                     version.setWorkInProgressVersion(0);
-                    String newId = VersionUtils.getNameWithoutVersion(releasableComponent) + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
+                    String newId = releasableComponent.getNameWithoutVersion() + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
                     DefinitionsChildId newComponent = BackendUtils.getDefinitionsChildId(releasableComponent.getClass(), releasableComponent.getNamespace().getDecoded(), newId, false);
                     result = duplicate(releasableComponent, newComponent);
 
-                    BackendUtils.commit(newComponent, "Release");
+                    BackendUtils.commit(newComponent, "Release", repository);
                 } catch (GitAPIException e) {
                     result.setStatus(Status.INTERNAL_SERVER_ERROR);
                 }
@@ -1009,7 +1023,7 @@ public class RestUtils {
         ResourceResult result = new ResourceResult();
 
         try {
-            BackendUtils.commit(componentToCommit, "Freeze");
+            BackendUtils.commit(componentToCommit, "Freeze", RepositoryFactory.getRepository());
             result.setStatus(Status.OK);
         } catch (Exception e) {
             LOGGER.error("Error freezing component", e);
@@ -1034,7 +1048,7 @@ public class RestUtils {
             .sorted()
             .map(id -> {
                 String name = id.getXmlId().getDecoded();
-                Definitions definitions = null;
+                TDefinitions definitions = null;
                 WineryVersion version = null;
                 if (Util.instanceSupportsNameAttribute(id.getClass())) {
                     TExtensibleElements element = RepositoryFactory.getRepository().getElement(id);
@@ -1053,7 +1067,7 @@ public class RestUtils {
             .collect(Collectors.toList());
     }
 
-    public static Definitions getFullComponentData(DefinitionsChildId id) {
+    public static TDefinitions getFullComponentData(DefinitionsChildId id) {
         try {
             return BackendUtils.getDefinitionsHavingCorrectImports(RepositoryFactory.getRepository(), id);
         } catch (Exception e) {

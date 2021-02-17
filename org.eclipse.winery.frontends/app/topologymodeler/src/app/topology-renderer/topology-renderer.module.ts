@@ -45,6 +45,8 @@ import { WineryModalModule } from '../../../../tosca-management/src/app/wineryMo
 import { WineryFeatureToggleModule } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/winery-feature-toggle.module';
 import { WineryTableModule } from '../../../../tosca-management/src/app/wineryTableModule/wineryTable.module';
 import { Ng2TableModule } from 'ng2-table';
+import { GroupsComponent } from '../node/groups/groups.component';
+import { AssignParticipantsComponent } from '../participants/assign-participants.component';
 
 @NgModule({
     imports: [
@@ -80,11 +82,14 @@ import { Ng2TableModule } from 'ng2-table';
         ToscatypeTableComponent,
         EntitiesModalComponent,
         LocalnamePipe,
-        VersionsComponent
+        VersionsComponent,
+        GroupsComponent,
+        AssignParticipantsComponent,
     ],
     exports: [
         TopologyRendererComponent,
         PoliciesComponent,
+        LocalnamePipe,
     ],
 })
 export class TopologyRendererModule {

@@ -1,6 +1,7 @@
 <?xml version="1.0" standalone="no"?>
 <NodeType xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"
           xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" name="baobab"
+          abstract="no" final="no"
           targetNamespace="http://winery.opentosca.org/test/nodetypes/fruits" winery:bordercolor="#89ee01">
     <winery:PropertiesDefinition elementname="BaobabProperties"
                                  namespace="http://winery.opentosca.org/test/nodetypes/fruits">

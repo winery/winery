@@ -1,6 +1,6 @@
 TOSCA-Meta-Version: 1.0
 CSAR-Version: 1.0
-Created-By: Winery 2.0.0-SNAPSHOT
+Created-By: Winery 3.0.0-SNAPSHOT
 Entry-Definitions: Definitions/servicetemplates1__MyTinyToDo_Bare_Docker.tosca
 
 Name: myTestFile.tosca

@@ -23,7 +23,6 @@ import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 
@@ -65,14 +64,14 @@ class SubstitutionUtilsTest {
         nodeTypes.put(
             grandFather,
             new TNodeType.Builder(GRANDFATHER)
-                .setAbstract(TBoolean.YES)
+                .setAbstract(true)
                 .build()
         );
         nodeTypes.put(
             parent,
             new TNodeType.Builder(PARENT)
                 .setDerivedFrom(grandFather)
-                .setAbstract(TBoolean.YES)
+                .setAbstract(true)
                 .build()
         );
         nodeTypes.put(
@@ -84,7 +83,7 @@ class SubstitutionUtilsTest {
             child,
             new TNodeType.Builder(CHILD)
                 .setDerivedFrom(parent)
-                .setAbstract(TBoolean.YES)
+                .setAbstract(true)
                 .build()
 
         );

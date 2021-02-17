@@ -34,8 +34,8 @@ export class TagComponent implements OnInit {
     validatorObject: WineryValidatorObject;
 
     columns: Array<any> = [
-        { title: 'name', name: 'name', sort: true },
-        { title: 'value', name: 'value', sort: true },
+        { title: 'Name', name: 'name', sort: true },
+        { title: 'Value', name: 'value', sort: true },
     ];
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
     @ViewChild('addModal') addModal: ModalDirective;

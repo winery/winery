@@ -20,7 +20,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Properties;
 
 import org.apache.commons.configuration2.YAMLConfiguration;
@@ -182,9 +181,9 @@ public final class Environments {
      *
      * @return an instance of GitBasedRepositoryConfiguration
      */
-    public Optional<GitBasedRepositoryConfiguration> getGitBasedRepositoryConfiguration() {
+    public GitBasedRepositoryConfiguration getGitBasedRepositoryConfiguration() {
         final FileBasedRepositoryConfiguration filebasedRepositoryConfiguration = getFilebasedRepositoryConfiguration();
-        return Optional.of(new GitBasedRepositoryConfiguration(this.getGitConfig().isAutocommit(), filebasedRepositoryConfiguration));
+        return new GitBasedRepositoryConfiguration(this.getGitConfig().isAutocommit(), filebasedRepositoryConfiguration);
     }
 
     /**
@@ -210,5 +209,12 @@ public final class Environments {
             Environment.getInstance().reloadAccountabilityConfiguration(inputStream);
         }
     }
+
+    public static boolean isFeatureEnabled(String name) {
+        Boolean value = getInstance().getUiConfig().getFeatures().get(name);
+        if (value == null) {
+            return false;
+        }
+        return value;
+    }
 }
- 

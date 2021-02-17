@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.adaptation.problemsolving.ComponentFinding;
 import org.eclipse.winery.model.adaptation.problemsolving.SolutionInputData;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
@@ -54,11 +54,11 @@ class IpSecAlgorithmTest extends TestWithGitBackedRepository {
         assertEquals(QName.valueOf("{http://plain.winery.opentosca.org/secure/nodetypes}ubuntu_18-secure-w1-wip1"), topologyTemplate.getNodeTemplate("replaceableNode_1").getType());
         assertEquals(QName.valueOf("{http://plain.winery.opentosca.org/secure/nodetypes}ubuntu_18-secure-w1-wip1"), topologyTemplate.getNodeTemplate("replaceableNode_2").getType());
         assertEquals(5, topologyTemplate.getRelationshipTemplates().size());
-        TRelationshipTemplate forward = topologyTemplate.getRelationshipTemplate("replaceableNode_2-securely_connectsTo-replaceableNode_1");
+        TRelationshipTemplate forward = topologyTemplate.getRelationshipTemplate("con-replaceableNode_2-securely_connectsTo-replaceableNode_1");
         assertNotNull(forward);
         assertEquals("replaceableNode_2", forward.getSourceElement().getRef().getId());
         assertEquals("replaceableNode_1", forward.getTargetElement().getRef().getId());
-        TRelationshipTemplate backward = topologyTemplate.getRelationshipTemplate("replaceableNode_1-securely_connectsTo-replaceableNode_2");
+        TRelationshipTemplate backward = topologyTemplate.getRelationshipTemplate("con-replaceableNode_1-securely_connectsTo-replaceableNode_2");
         assertNotNull(backward);
         assertEquals("replaceableNode_1", backward.getSourceElement().getRef().getId());
         assertEquals("replaceableNode_2", backward.getTargetElement().getRef().getId());

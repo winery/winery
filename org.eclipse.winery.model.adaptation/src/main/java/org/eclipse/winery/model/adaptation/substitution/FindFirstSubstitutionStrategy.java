@@ -18,14 +18,13 @@ import java.util.List;
 
 import org.eclipse.winery.model.tosca.HasInheritance;
 import org.eclipse.winery.model.tosca.HasType;
-import org.eclipse.winery.model.tosca.TBoolean;
 
 public class FindFirstSubstitutionStrategy<R extends HasType, T extends HasInheritance> extends SubstitutionStrategy<R, T> {
 
     @Override
     protected T selectElement(List<T> subtypes) {
         return subtypes.stream()
-            .filter(o -> TBoolean.NO.equals(o.getAbstract()))
+            .filter(o -> !o.getAbstract())
             .findFirst()
             .orElse(null);
     }

@@ -27,11 +27,11 @@ import { ExistsService } from '../../services/exists.service';
 import { ToastrService } from 'ngx-toastr';
 import { DeploymentArtifactOrPolicyModalData, ModalVariant, ModalVariantAndState } from './modal-model';
 import { EntitiesModalService, OpenModalEvent } from './entities-modal.service';
-import { QName } from '../../models/qname';
 import { urlElement } from '../../models/enums';
 import { TArtifact, TTopologyTemplate } from '../../models/ttopology-template';
 import { WineryRepositoryConfigurationService } from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { Subscription } from 'rxjs';
+import { QName } from '../../../../../shared/src/app/model/qName';
 
 @Component({
     selector: 'winery-entities-modal',
@@ -533,8 +533,14 @@ export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
                     if (this.selectedYamlArtifactAllowedTypes.length > 0) {
                         this.selectedYamlArtifactAllowedTypes += ',';
                     }
-
                     this.selectedYamlArtifactAllowedTypes += selectedYamlArtifactType.mimeType;
+                }
+                // in this case we only allow referencing the artifact as URL
+                if (selectedYamlArtifactType.qName === '{radon.artifacts}Repository') {
+                    this.deploymentArtifactOrPolicyModalData.isRepositoryType = true;
+                    this.deploymentArtifactOrPolicyModalData.isFileRemote = true;
+                } else {
+                    this.deploymentArtifactOrPolicyModalData.isRepositoryType = false;
                 }
             }
         }

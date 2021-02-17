@@ -37,7 +37,10 @@ ENV WINERY_FEATURE_RADON false
 ENV WINERY_FEATURE_SPLITTING false
 ENV WINERY_FEATURE_TEST_REFINEMENT false
 ENV WINERY_FEATURE_EDMM_MODELING false
+ENV WINERY_FEATURE_UPDATE_TEMPLATES false
 ENV DOCKERIZE_VERSION v0.6.1
+ENV CHE_URL "che.localhost"
+ENV CHE_URL_PROTOCOL "http"
 
 RUN rm /dev/random && ln -s /dev/urandom /dev/random \
     && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \

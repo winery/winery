@@ -40,10 +40,9 @@
                 <label for="validNodeTypes" class="control-label">Node Types</label>
                 <ng-select id="validNodeTypes"
                            [disabled]="!sharedData?.currentVersion?.editable"
-                           [items]="currentNodeTypes"
+                           [items]="allPossibleValidTypes"
                            (selected)="onSelectedValueChanged($event)"
-                           [active]="initialActiveItem"
-                >
+                           [active]="initialActiveItem">
                 </ng-select>
             </div>
 

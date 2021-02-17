@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources;
 
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XmlId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.XmlId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 
 public class TestIds {
 

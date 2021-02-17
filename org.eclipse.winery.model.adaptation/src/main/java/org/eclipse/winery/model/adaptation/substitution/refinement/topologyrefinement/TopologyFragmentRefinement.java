@@ -15,6 +15,7 @@
 package org.eclipse.winery.model.adaptation.substitution.refinement.topologyrefinement;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -23,26 +24,26 @@ import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
-import org.eclipse.winery.common.ids.definitions.RefinementId;
-import org.eclipse.winery.common.ids.definitions.TopologyFragmentRefinementModelId;
 import org.eclipse.winery.model.adaptation.substitution.refinement.AbstractRefinement;
 import org.eclipse.winery.model.adaptation.substitution.refinement.DefaultRefinementChooser;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementChooser;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementUtils;
-import org.eclipse.winery.model.tosca.OTAttributeMapping;
-import org.eclipse.winery.model.tosca.OTAttributeMappingType;
-import org.eclipse.winery.model.tosca.OTDeploymentArtifactMapping;
-import org.eclipse.winery.model.tosca.OTRefinementModel;
-import org.eclipse.winery.model.tosca.OTStayMapping;
-import org.eclipse.winery.model.tosca.OTTopologyFragmentRefinementModel;
+import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.model.ids.extensions.RefinementId;
+import org.eclipse.winery.model.ids.extensions.TopologyFragmentRefinementModelId;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.extensions.OTAttributeMapping;
+import org.eclipse.winery.model.tosca.extensions.OTAttributeMappingType;
+import org.eclipse.winery.model.tosca.extensions.OTDeploymentArtifactMapping;
+import org.eclipse.winery.model.tosca.extensions.OTRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTStayMapping;
+import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.topologygraph.matching.IToscaMatcher;
@@ -93,7 +94,7 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
 
     @Override
     public IToscaMatcher getMatcher(OTRefinementModel prm) {
-        return new ToscaPrmPropertyMatcher(prm.getDetector().getNodeTemplateOrRelationshipTemplate(), repository.getNamespaceManager());
+        return new ToscaPrmPropertyMatcher(repository.getNamespaceManager());
     }
 
     @Override
@@ -132,28 +133,25 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
             );
 
         // iterate over the detector nodes
-        refinement.getDetectorGraph().vertexSet()
-            .forEach(vertex -> {
-                // get the matching node in the topology
-                TNodeTemplate matchingNode = refinement.getGraphMapping().getVertexCorrespondence(vertex, false).getTemplate();
+        refinement.getDetectorGraph().vertexSet().forEach(vertex -> {
+            // get the matching node in the topology
+            TNodeTemplate matchingNode = refinement.getGraphMapping().getVertexCorrespondence(vertex, false).getTemplate();
 
-                this.redirectInternalRelations(prm, vertex.getTemplate(), matchingNode, topology);
-                this.redirectExternalRelations(refinement, vertex.getTemplate(), matchingNode, topology, idMapping);
+            this.redirectInternalRelations(prm, vertex.getTemplate(), matchingNode, topology);
+            this.redirectExternalRelations(refinement, vertex.getTemplate(), matchingNode, topology, idMapping);
 
-                this.applyPropertyMappings(refinement, vertex.getId(), matchingNode, topology, idMapping);
-                this.applyDeploymentArtifactMapping(refinement, vertex.getTemplate(), matchingNode, topology, idMapping);
+            this.applyPropertyMappings(refinement, vertex.getId(), matchingNode, topology, idMapping);
+            this.applyDeploymentArtifactMapping(refinement, vertex.getTemplate(), matchingNode, topology, idMapping);
 
-                if (!getStayMappingsOfCurrentElement(prm, vertex.getTemplate()).findFirst().isPresent()) {
-                    topology.getNodeTemplateOrRelationshipTemplate()
-                        .remove(matchingNode);
-                } else if (vertex.getTemplate().getPolicies() != null && matchingNode.getPolicies() != null) {
-                    vertex.getTemplate().getPolicies().getPolicy()
-                        .forEach(detectorPolicy ->
-                            matchingNode.getPolicies().getPolicy()
-                                .removeIf(matchingPolicy -> matchingPolicy.getPolicyType().equals(detectorPolicy.getPolicyType()))
-                        );
-                }
-            });
+            if (!getStayMappingsOfCurrentElement(prm, vertex.getTemplate()).findFirst().isPresent()) {
+                topology.getNodeTemplateOrRelationshipTemplate().remove(matchingNode);
+            } else if (vertex.getTemplate().getPolicies() != null && matchingNode.getPolicies() != null) {
+                vertex.getTemplate().getPolicies().getPolicy().forEach(detectorPolicy ->
+                    matchingNode.getPolicies().getPolicy()
+                        .removeIf(matchingPolicy -> matchingPolicy.getPolicyType().equals(detectorPolicy.getPolicyType()))
+                );
+            }
+        });
         refinement.getDetectorGraph().edgeSet()
             .forEach(edge -> {
                 TRelationshipTemplate relationshipTemplate = refinement.getGraphMapping().getEdgeCorrespondence(edge, false).getTemplate();
@@ -161,8 +159,7 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                 this.applyPropertyMappings(refinement, edge.getId(), relationshipTemplate, topology, idMapping);
 
                 if (!getStayMappingsOfCurrentElement(prm, edge.getTemplate()).findFirst().isPresent()) {
-                    topology.getNodeTemplateOrRelationshipTemplate()
-                        .remove(relationshipTemplate);
+                    topology.getNodeTemplateOrRelationshipTemplate().remove(relationshipTemplate);
                 }
             });
     }
@@ -211,14 +208,14 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                 .filter(mapping -> mapping.getDetectorElement().getId().equals(detectorNodeId))
                 .forEach(mapping -> {
                     if (Objects.nonNull(matchingEntity.getProperties())) {
-                        Map<String, String> sourceProperties = matchingEntity.getProperties().getKVProperties();
+                        Map<String, String> sourceProperties = ModelUtilities.getPropertiesKV(matchingEntity);
                         topology.getNodeTemplateOrRelationshipTemplate()
                             .stream()
                             .filter(element -> element.getId().equals(idMapping.get(mapping.getRefinementElement().getId())))
                             .findFirst()
                             .ifPresent(addedElement -> {
                                 if (addedElement.getProperties() != null) {
-                                    Map<String, String> targetProperties = addedElement.getProperties().getKVProperties();
+                                    LinkedHashMap<String, String> targetProperties = ModelUtilities.getPropertiesKV(addedElement);
 
                                     if (Objects.nonNull(sourceProperties) && !sourceProperties.isEmpty()
                                         && Objects.nonNull(targetProperties)) {
@@ -230,7 +227,7 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                                             targetProperties.put(mapping.getRefinementProperty(), sourceValue);
                                         }
                                         // because of the dynamical generation of the KV properties, we must set them again to persist them...
-                                        addedElement.getProperties().setKVProperties(targetProperties);
+                                        ModelUtilities.setPropertiesKV(addedElement, targetProperties);
                                     }
                                 }
                             });

@@ -26,6 +26,7 @@ import { TTopologyTemplate } from '../models/ttopology-template';
 import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { EntityTypesModel } from '../models/entityTypesModel';
 
 @Component({
     selector: 'winery-problem-detection',
@@ -42,6 +43,7 @@ export class ProblemDetectionComponent {
     selectedFinding: ProblemOccurrence;
     possibleSolutions: SolutionInputData[];
     selectedSolution: SolutionInputData;
+    entityTypes: EntityTypesModel;
 
     constructor(private ngRedux: NgRedux<IWineryState>,
                 private actions: TopologyRendererActions,
@@ -52,6 +54,12 @@ export class ProblemDetectionComponent {
                 private backendService: BackendService) {
         this.ngRedux.select(state => state.topologyRendererState)
             .subscribe(currentButtonsState => this.checkButtonsState(currentButtonsState));
+        this.ngRedux.select(state => state.wineryState.entityTypes)
+            .subscribe(data => {
+                if (data) {
+                    this.entityTypes = data;
+                }
+            });
     }
 
     private checkButtonsState(currentButtonsState: TopologyRendererState) {
@@ -133,7 +141,7 @@ export class ProblemDetectionComponent {
     }
 
     private solutionApplied(data: TTopologyTemplate) {
-        TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, data, this.configurationService.isYaml());
+        TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, data, this.entityTypes, this.configurationService.isYaml());
         this.loading = false;
     }
 }

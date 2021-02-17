@@ -48,9 +48,12 @@ export class FilesService {
         if (!url.startsWith('http')) {
             url = hostURL + fileToRemove.deleteUrl;
         }
+        if (fileToRemove.subDirectory) {
+            url += '?path=' + fileToRemove.subDirectory;
+        }
         return this.http
             .delete(
-                url + '?path=' + fileToRemove.subDirectory,
+                url,
                 { observe: 'response', responseType: 'text' }
             );
     }

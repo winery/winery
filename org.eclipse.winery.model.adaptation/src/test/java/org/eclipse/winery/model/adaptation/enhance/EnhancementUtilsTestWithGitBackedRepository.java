@@ -21,9 +21,9 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -33,6 +33,7 @@ import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
@@ -224,7 +225,7 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
         assertEquals(1, listOfNodeTypes.size() - previousListOfNodeTypes.size());
         assertEquals(expectedMergedUbuntuQName, generatedFeatureEnrichedNodeType.getQName());
         assertNotNull(generatedFeatureEnrichedNodeType.getWinerysPropertiesDefinition());
-        assertEquals(9, generatedFeatureEnrichedNodeType.getWinerysPropertiesDefinition().getPropertyDefinitionKVList().size());
+        assertEquals(9, generatedFeatureEnrichedNodeType.getWinerysPropertiesDefinition().getPropertyDefinitions().size());
 
         TNodeTypeImplementation generatedUbuntuImpl = this.repository.getElement(
             new ArrayList<>(this.repository.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, expectedMergedUbuntuQName))
@@ -265,10 +266,10 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
                 + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_VERSION_PREFIX + "1"),
             topology.getNodeTemplate(mySqlNodeTemplateId).getType()
         );
-        assertNotNull(topology.getNodeTemplate(ubuntuNodeTemplateId).getProperties());
-        assertEquals(9, topology.getNodeTemplate(ubuntuNodeTemplateId).getProperties().getKVProperties().size());
-        assertNotNull(topology.getNodeTemplate(mySqlNodeTemplateId).getProperties());
-        assertEquals(3, topology.getNodeTemplate(mySqlNodeTemplateId).getProperties().getKVProperties().size());
+        assertNotNull(ModelUtilities.getPropertiesKV(topology.getNodeTemplate(ubuntuNodeTemplateId)));
+        assertEquals(9, ModelUtilities.getPropertiesKV(topology.getNodeTemplate(ubuntuNodeTemplateId)).size());
+        assertNotNull(ModelUtilities.getPropertiesKV(topology.getNodeTemplate(mySqlNodeTemplateId)));
+        assertEquals(3, ModelUtilities.getPropertiesKV(topology.getNodeTemplate(mySqlNodeTemplateId)).size());
     }
 
     @Test
@@ -289,18 +290,24 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
             EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), "OpenStackHeat");
         assertEquals(1, openStackFeatures.size());
         Map<QName, String> openStackFeature = openStackFeatures.get("NodeTypeWithDifferentFeatures_w1-wip1_0");
-        assertEquals(1, openStackFeature.size());
+        assertEquals(2, openStackFeature.size());
         assertEquals("scalable AWS and Heat", openStackFeature.get(QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes}ScaleFeature_AWS-OpenStack-w1-wip1")));
+        assertEquals("ping", openStackFeature.get(QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes}TechIndependentFeature_w1-wip1")));
 
         Map<String, Map<QName, String>> kubernetesFeatures =
             EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), "Kubernetes");
         assertEquals(1, kubernetesFeatures.size());
         Map<QName, String> kubernetesFeature = kubernetesFeatures.get("NodeTypeWithDifferentFeatures_w1-wip1_0");
-        assertEquals(1, kubernetesFeature.size());
+        assertEquals(2, kubernetesFeature.size());
         assertEquals("scalable Kubernetes", kubernetesFeature.get(QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes}ScaleFeature_Kubernetes-w1-wip1")));
+        assertEquals("ping", kubernetesFeature.get(QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes}TechIndependentFeature_w1-wip1")));
 
-        Map<String, Map<QName, String>> nonExisting =
+        Map<String, Map<QName, String>> chefFeatures =
             EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), "Chef");
-        assertEquals(0, nonExisting.size());
+        assertEquals(1, chefFeatures.size());
+        Map<QName, String> chefFeature = chefFeatures.get("NodeTypeWithDifferentFeatures_w1-wip1_0");
+        assertEquals(1, chefFeature.size());
+        assertEquals("ping", chefFeature.get(QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes}TechIndependentFeature_w1-wip1")));
+
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Definitions xmlns="http://docs.oasis-open.org/tosca/ns/2011/12" id="winery-defs-for_wfa-WAR"
              targetNamespace="http://winery.opentosca.org/test/artifacttypes/fruits">
-    <ArtifactType name="WAR" targetNamespace="http://winery.opentosca.org/test/artifacttypes/fruits">
+    <ArtifactType name="WAR" targetNamespace="http://winery.opentosca.org/test/artifacttypes/fruits" abstract="no" final="no">
         <PropertiesDefinition xmlns:schemaexampleasp="https://www.w3schools.com/xml/schema_example.asp"
                               type="schemaexampleasp:shipordertype"/>
     </ArtifactType>

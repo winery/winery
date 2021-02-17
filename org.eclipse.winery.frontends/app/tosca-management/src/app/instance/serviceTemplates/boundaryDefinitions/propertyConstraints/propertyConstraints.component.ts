@@ -72,7 +72,6 @@ export class PropertyConstraintsComponent implements OnInit {
     addNewConstraint() {
         this.addLoad();
         this.newConstraint.fragments = this.propertyConstraintEditor.getData();
-        console.log(this.newConstraint);
         this.service.postConstraint(this.newConstraint).subscribe(
             data => this.handlePostResponse(data),
             error => this.handleError(error)

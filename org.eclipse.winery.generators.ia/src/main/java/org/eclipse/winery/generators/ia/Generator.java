@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TOperation;
 import org.eclipse.winery.model.tosca.TParameter;
@@ -256,7 +255,7 @@ public class Generator {
             if (outputParamsExist) {
                 for (TParameter outputParam : op.getOutputParameters().getOutputParameter()) {
                     sb.append("\n\n\t\t// Output Parameter '").append(outputParam.getName()).append("' ");
-                    if (outputParam.getRequired().equals(TBoolean.YES)) {
+                    if (outputParam.getRequired()) {
                         sb.append("(required)");
                     } else {
                         sb.append("(optional)");

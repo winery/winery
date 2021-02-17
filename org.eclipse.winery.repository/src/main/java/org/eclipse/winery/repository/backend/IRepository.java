@@ -27,10 +27,13 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Queue;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -38,41 +41,39 @@ import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.configuration.Environments;
-import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
-import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
-import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
-import org.eclipse.winery.common.ids.definitions.ComplianceRuleId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.HasInheritanceId;
-import org.eclipse.winery.common.ids.definitions.InterfaceTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.PatternRefinementModelId;
-import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
-import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.definitions.TestRefinementModelId;
-import org.eclipse.winery.common.ids.definitions.TopologyFragmentRefinementModelId;
-import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
-import org.eclipse.winery.common.ids.elements.ToscaElementId;
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.ids.GenericId;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.model.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.model.ids.extensions.ComplianceRuleId;
+import org.eclipse.winery.model.ids.definitions.DataTypeId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.HasInheritanceId;
+import org.eclipse.winery.model.ids.definitions.InterfaceTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.model.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
+import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
+import org.eclipse.winery.model.ids.elements.ToscaElementId;
+import org.eclipse.winery.model.ids.extensions.PatternRefinementModelId;
+import org.eclipse.winery.model.ids.extensions.TestRefinementModelId;
+import org.eclipse.winery.model.ids.extensions.TopologyFragmentRefinementModelId;
 import org.eclipse.winery.model.tosca.HasInheritance;
 import org.eclipse.winery.model.tosca.HasType;
-import org.eclipse.winery.model.tosca.OTComplianceRule;
 import org.eclipse.winery.model.tosca.TAppliesTo;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifacts;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
+import org.eclipse.winery.model.tosca.TDataType;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
@@ -94,10 +95,13 @@ import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.model.tosca.TRequirementType;
+import org.eclipse.winery.model.tosca.TSchema;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
 import org.eclipse.winery.repository.backend.xsd.RepositoryBasedXsdImportManager;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 import org.eclipse.winery.repository.export.entries.RemoteRefBasedCsarEntry;
@@ -110,7 +114,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Enables access to the winery repository via Ids defined in package {@link org.eclipse.winery.common.ids}
+ * Enables access to the winery repository via Ids defined in package {@link org.eclipse.winery.model.ids}
  * <p>
  * In contrast to {@link org.eclipse.winery.repository.backend.IRepository}, this is NOT dependent on a particular
  * storage format for the properties. These two classes exist to make the need for reengineering explicit.
@@ -125,6 +129,18 @@ import org.slf4j.LoggerFactory;
 public interface IRepository extends IWineryRepositoryCommon {
 
     final Logger LOGGER = LoggerFactory.getLogger(IRepository.class);
+
+    /**
+     * Serializes a given canonical Definitions Object to the targeted Output Stream according to the TOSCA-Standard of
+     * the underlying repository. Not all repository implementations must support this operation
+     *
+     * @param definitions A canonical TDefinitions object to be serialized for more or less permanent storage.
+     * @param target      An output stream that the serialized definition is written to.
+     * @throws IOException If writing to the given target fails.
+     * @deprecated FIXME Serialization according to a given standard should not be the repository's responsibility!
+     */
+    @Deprecated
+    void serialize(TDefinitions definitions, OutputStream target) throws IOException;
 
     /**
      * Flags the given TOSCA element as existing. The respective resource itself creates appropriate data files.
@@ -158,11 +174,16 @@ public interface IRepository extends IWineryRepositoryCommon {
      * Puts the given content to the given file. Replaces existing content.
      * <p>
      * If the parent of the reference does not exist, it is created.
+     * <p>
+     * This method should not be used to write Definitions, calling it with the well-known Media Type {@link
+     * org.eclipse.winery.repository.backend.constants.MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS} will result in a warning.
+     * For such cases use {@link #putDefinition(DefinitionsChildId, TDefinitions)} instead.
      *
      * @param ref       the reference to the file. Must not be null.
      * @param content   the content to put into the file. Must not be null.
      * @param mediaType the media type of the file. Must not be null.
      * @throws IOException if something goes wrong
+     * @see #putDefinition(DefinitionsChildId, TDefinitions)
      */
     void putContentToFile(RepositoryFileReference ref, String content, MediaType mediaType) throws IOException;
 
@@ -170,12 +191,34 @@ public interface IRepository extends IWineryRepositoryCommon {
      * Puts the given content to the given file. Replaces existing content.
      * <p>
      * If the parent of the reference does not exist, it is created.
+     * <p>
+     * This method should not be used to write Definitions, calling it with the well-known Media Type {@link
+     * org.eclipse.winery.repository.backend.constants.MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS} will result in a warning.
+     * For such cases use {@link #putDefinition(DefinitionsChildId, TDefinitions)} instead.
      *
      * @param ref         the reference to the file
      * @param inputStream the content to put into the file
      * @throws IOException if something goes wrong
+     * @see #putDefinition(DefinitionsChildId, TDefinitions)
      */
     void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException;
+
+    /**
+     * Serializes the given content at a location that the repository makes as belonging to the given id. This acts as a
+     * replacement for all invocations of {@link #putContentToFile} for the media type {@link
+     * org.eclipse.winery.repository.backend.constants.MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS}.
+     *
+     * @param id      The id of the definitions child encapsulated in the content to be put into the repository
+     * @param content The content to be put into the repository at the given id.
+     * @throws IOException if something goes wrong
+     * @see #putContentToFile(RepositoryFileReference, String, MediaType)
+     * @see #putContentToFile(RepositoryFileReference, InputStream, MediaType)
+     */
+    default void putDefinition(DefinitionsChildId id, TDefinitions content) throws IOException {
+        putDefinition(BackendUtils.getRefOfDefinitions(id), content);
+    }
+
+    void putDefinition(RepositoryFileReference ref, TDefinitions content) throws IOException;
 
     /**
      * Creates an opened inputStream of the contents referenced by ref. The stream has to be closed by the caller.
@@ -187,13 +230,13 @@ public interface IRepository extends IWineryRepositoryCommon {
     InputStream newInputStream(RepositoryFileReference ref) throws IOException;
 
     /**
-     * Creates {@link Definitions} object from a {@link RepositoryFileReference}.
+     * Creates {@link TDefinitions} object from a {@link RepositoryFileReference}.
      *
      * @param ref the {@link RepositoryFileReference} to use
-     * @return the {@link Definitions} object
+     * @return the {@link TDefinitions} object
      * @throws IOException if something goes wrong
      */
-    Definitions definitionsFromRef(RepositoryFileReference ref) throws IOException;
+    TDefinitions definitionsFromRef(RepositoryFileReference ref) throws IOException;
 
     /**
      * Creates a stream of a ZIP file containing all files contained in the given id
@@ -420,13 +463,13 @@ public interface IRepository extends IWineryRepositoryCommon {
      * @return the definitions belonging to the id
      * @throws IllegalStateException if repository cannot provide the content (e.g., due to file reading errors)
      */
-    default Definitions getDefinitions(DefinitionsChildId id) {
+    default TDefinitions getDefinitions(DefinitionsChildId id) {
         RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
         if (!exists(ref)) {
             return BackendUtils.createWrapperDefinitionsAndInitialEmptyElement(this, id);
         }
         try {
-            Definitions output = this.definitionsFromRef(ref);
+            TDefinitions output = this.definitionsFromRef(ref);
             if (output != null) {
                 return output;
             } else {
@@ -556,10 +599,36 @@ public interface IRepository extends IWineryRepositoryCommon {
                 }
 
                 if (!referencesGivenQName && element instanceof TEntityType) {
-                    TEntityType.PropertiesDefinition propertiesDefinition = ((TEntityType) element).getPropertiesDefinition();
+                    TEntityType.PropertiesDefinition propertiesDefinition = ((TEntityType) element).getProperties();
                     if (Objects.nonNull(propertiesDefinition)) {
-                        referencesGivenQName = Objects.nonNull(propertiesDefinition.getElement()) && propertiesDefinition.getElement().equals(qNameOfTheType)
-                            || Objects.nonNull(propertiesDefinition.getType()) && qNameOfTheType.equals(propertiesDefinition.getType());
+                        if (propertiesDefinition instanceof TEntityType.XmlTypeDefinition) {
+                            referencesGivenQName = ((TEntityType.XmlTypeDefinition) propertiesDefinition).getType().equals(qNameOfTheType);
+                        } else if (propertiesDefinition instanceof TEntityType.XmlElementDefinition) {
+                            // while it's not strictly a type, it's still a QName reference, so err on the side of caution here
+                            referencesGivenQName = ((TEntityType.XmlElementDefinition) propertiesDefinition).getElement().equals(qNameOfTheType);
+                        } else if (propertiesDefinition instanceof TEntityType.YamlPropertiesDefinition) {
+                            TEntityType.YamlPropertiesDefinition def = (TEntityType.YamlPropertiesDefinition) propertiesDefinition;
+                            if (def.getProperties().stream().anyMatch(prop -> prop.getType().equals(qNameOfTheType))) {
+                                referencesGivenQName = true;
+                            }
+                            Queue<TSchema> schemata = new LinkedList<>();
+                            for (TEntityType.YamlPropertyDefinition prop : def.getProperties()) {
+                                schemata.add(prop.getEntrySchema());
+                                schemata.add(prop.getKeySchema());
+                            }
+                            while (!schemata.isEmpty()) {
+                                TSchema current = schemata.poll();
+                                if (current == null) {
+                                    continue;
+                                }
+                                if (current.getType().equals(qNameOfTheType)) {
+                                    referencesGivenQName = true;
+                                    break;
+                                }
+                                schemata.add(current.getEntrySchema());
+                                schemata.add(current.getKeySchema());
+                            }
+                        }
                     }
                 }
 
@@ -624,16 +693,20 @@ public interface IRepository extends IWineryRepositoryCommon {
         if (reqDefsContainer != null) {
             List<TRequirementDefinition> reqDefs = reqDefsContainer.getRequirementDefinition();
             for (TRequirementDefinition reqDef : reqDefs) {
-                if (!Environments.getInstance().getUiConfig().getFeatures().get("yaml")) {
-                    RequirementTypeId reqTypeId = new RequirementTypeId(reqDef.getRequirementType());
-                    ids.add(reqTypeId);
-                } else {
+                // if either of these is set, we're dealing with a type defined in YAML
+                if (Objects.nonNull(reqDef.getRelationship()) || Objects.nonNull(reqDef.getCapability()) || Objects.nonNull(reqDef.getNode())) {
                     if (Objects.nonNull(reqDef.getRelationship())) {
                         ids.add(new RelationshipTypeId(reqDef.getRelationship()));
                     }
                     if (Objects.nonNull(reqDef.getCapability())) {
                         ids.add(new CapabilityTypeId(reqDef.getCapability()));
                     }
+                    if (Objects.nonNull(reqDef.getNode())) {
+                        ids.add(new NodeTypeId(reqDef.getNode()));
+                    }
+                } else {
+                    RequirementTypeId reqTypeId = new RequirementTypeId(reqDef.getRequirementType());
+                    ids.add(reqTypeId);
                 }
             }
         }
@@ -658,6 +731,35 @@ public interface IRepository extends IWineryRepositoryCommon {
         TArtifacts artifacts = nodeType.getArtifacts();
         if (Objects.nonNull(artifacts)) {
             artifacts.getArtifact().forEach(a -> ids.add(new ArtifactTypeId(a.getType())));
+        }
+
+        TEntityType.PropertiesDefinition properties = nodeType.getProperties();
+        if (Objects.nonNull(properties)) {
+            if (properties instanceof TEntityType.XmlElementDefinition
+                || properties instanceof TEntityType.XmlTypeDefinition) {
+                // nothing to do here, since these are not referring to TDefinitions
+            } else if (properties instanceof TEntityType.YamlPropertiesDefinition) {
+                List<TEntityType.YamlPropertyDefinition> props = ((TEntityType.YamlPropertiesDefinition) properties).getProperties();
+                Queue<TSchema> schemata = new LinkedList<>();
+                for (TEntityType.YamlPropertyDefinition def : props) {
+                    if (!def.getType().getNamespaceURI().isEmpty()) {
+                        ids.add(new DataTypeId(def.getType()));
+                    }
+                    schemata.add(def.getKeySchema());
+                    schemata.add(def.getEntrySchema());
+                }
+                while (!schemata.isEmpty()) {
+                    TSchema current = schemata.poll();
+                    if (current == null) {
+                        continue;
+                    }
+                    if (!current.getType().getNamespaceURI().isEmpty()) {
+                        ids.add(new DataTypeId(current.getType()));
+                    }
+                    schemata.add(current.getKeySchema());
+                    schemata.add(current.getEntrySchema());
+                }
+            }
         }
 
         return ids;
@@ -781,6 +883,45 @@ public interface IRepository extends IWineryRepositoryCommon {
             }
         }
 
+        List<QName> validTargetList = relationshipType.getValidTargetList();
+        if (validTargetList != null) {
+            for (QName typeRef : validTargetList) {
+                CapabilityTypeId capId = new CapabilityTypeId(typeRef);
+                if (this.exists(capId)) {
+                    ids.add(capId);
+                }
+            }
+        }
+
+        TEntityType.PropertiesDefinition properties = relationshipType.getProperties();
+        if (Objects.nonNull(properties)) {
+            if (properties instanceof TEntityType.XmlElementDefinition
+                || properties instanceof TEntityType.XmlTypeDefinition) {
+                // nothing to do here, since these are not referring to TDefinitions
+            } else if (properties instanceof TEntityType.YamlPropertiesDefinition) {
+                List<TEntityType.YamlPropertyDefinition> props = ((TEntityType.YamlPropertiesDefinition) properties).getProperties();
+                Queue<TSchema> schemata = new LinkedList<>();
+                for (TEntityType.YamlPropertyDefinition def : props) {
+                    if (!def.getType().getNamespaceURI().isEmpty()) {
+                        ids.add(new DataTypeId(def.getType()));
+                    }
+                    schemata.add(def.getKeySchema());
+                    schemata.add(def.getEntrySchema());
+                }
+                while (!schemata.isEmpty()) {
+                    TSchema current = schemata.poll();
+                    if (current == null) {
+                        continue;
+                    }
+                    if (!current.getType().getNamespaceURI().isEmpty()) {
+                        ids.add(new DataTypeId(current.getType()));
+                    }
+                    schemata.add(current.getKeySchema());
+                    schemata.add(current.getEntrySchema());
+                }
+            }
+        }
+
         return ids;
     }
 
@@ -829,11 +970,11 @@ public interface IRepository extends IWineryRepositoryCommon {
             // reqs and caps don't have to be exported here as they are references to existing reqs/caps (of nested node templates)
         }
 
-        if (serviceTemplate.getTopologyTemplate() != null) {
+        final TTopologyTemplate topology = serviceTemplate.getTopologyTemplate();
+        if (topology != null) {
 
-            if (Objects.nonNull(serviceTemplate.getTopologyTemplate().getPolicies()) &&
-                Environments.getInstance().getUiConfig().getFeatures().get(RepositoryConfigurationObject.RepositoryProvider.YAML.toString())) {
-                serviceTemplate.getTopologyTemplate()
+            if (Objects.nonNull(topology.getPolicies())) {
+                topology
                     .getPolicies()
                     .getPolicy()
                     .stream().filter(Objects::nonNull)
@@ -844,14 +985,13 @@ public interface IRepository extends IWineryRepositoryCommon {
                     });
             }
 
-            for (TEntityTemplate entityTemplate : serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate()) {
+            for (TEntityTemplate entityTemplate : topology.getNodeTemplateOrRelationshipTemplate()) {
                 QName qname = entityTemplate.getType();
                 if (entityTemplate instanceof TNodeTemplate) {
                     ids.add(new NodeTypeId(qname));
                     TNodeTemplate n = (TNodeTemplate) entityTemplate;
 
                     // crawl through policies
-                    // TODO: this is relevant only for XML mode 
                     TPolicies policies = n.getPolicies();
                     if (policies != null) {
                         for (TPolicy pol : policies.getPolicy()) {
@@ -867,50 +1007,50 @@ public interface IRepository extends IWineryRepositoryCommon {
                         }
                     }
 
-                    if (!Environments.getInstance().getUiConfig().getFeatures()
-                        .get(RepositoryConfigurationObject.RepositoryProvider.YAML.toString())) {
-                        // TODO: this information is collected differently for YAML and XML modes         
-                        // crawl through deployment artifacts
-                        TDeploymentArtifacts deploymentArtifacts = n.getDeploymentArtifacts();
-                        if (deploymentArtifacts != null) {
-                            List<TDeploymentArtifact> das = deploymentArtifacts.getDeploymentArtifact();
-                            for (TDeploymentArtifact da : das) {
+                    // Crawl RequirementTypes and Capabilities for their references
+                    getReferencedRequirementTypeIds(ids, n);
+                    TNodeTemplate.Capabilities capabilities = n.getCapabilities();
+                    if (capabilities != null) {
+                        for (TCapability cap : capabilities.getCapability()) {
+                            QName type = cap.getType();
+                            CapabilityTypeId ctId = new CapabilityTypeId(type);
+                            ids.add(ctId);
+                        }
+                    }
+
+                    // TODO: this information is collected differently for YAML and XML modes
+                    // crawl through deployment artifacts
+                    TDeploymentArtifacts deploymentArtifacts = n.getDeploymentArtifacts();
+                    if (deploymentArtifacts != null) {
+                        List<TDeploymentArtifact> das = deploymentArtifacts.getDeploymentArtifact();
+                        for (TDeploymentArtifact da : das) {
+                            if (da.getArtifactType() != null) {
+                                // TODO This is considered Nullable, because the test case ConsistencyCheckerTest#hasError
+                                //  for revision 20f6d0afd4395ab83f059cb5fabbb08218c9fcbd assumes that that can be nullable
                                 ids.add(new ArtifactTypeId(da.getArtifactType()));
-                                if ((qname = da.getArtifactRef()) != null) {
-                                    ids.add(new ArtifactTemplateId(qname));
+                            }
+                            if (da.getArtifactRef() != null) {
+                                ids.add(new ArtifactTemplateId(da.getArtifactRef()));
+                            }
+                        }
+                    }
+                    // Store all referenced artifact types
+                    TArtifacts artifacts = n.getArtifacts();
+                    if (Objects.nonNull(artifacts)) {
+                        artifacts.getArtifact().forEach(a -> ids.add(new ArtifactTypeId(a.getType())));
+                    }
+
+                    TNodeType nodeType = this.getElement(new NodeTypeId(qname));
+                    if (Objects.nonNull(nodeType.getInterfaceDefinitions())) {
+                        nodeType
+                            .getInterfaceDefinitions()
+                            .stream()
+                            .filter(Objects::nonNull)
+                            .forEach(iDef -> {
+                                if (Objects.nonNull(iDef.getType())) {
+                                    ids.add(new InterfaceTypeId(iDef.getType()));
                                 }
-                            }
-                        }
-
-                        // TODO: this information is also collected from NodeTypes -> not needed for YAML mode                    
-                        getReferencedRequirementTypeIds(ids, n);
-                        TNodeTemplate.Capabilities capabilities = n.getCapabilities();
-                        if (capabilities != null) {
-                            for (TCapability cap : capabilities.getCapability()) {
-                                QName type = cap.getType();
-                                CapabilityTypeId ctId = new CapabilityTypeId(type);
-                                ids.add(ctId);
-                            }
-                        }
-                    } else {
-                        // Store all referenced artifact types 
-                        TArtifacts artifacts = n.getArtifacts();
-                        if (Objects.nonNull(artifacts)) {
-                            artifacts.getArtifact().forEach(a -> ids.add(new ArtifactTypeId(a.getType())));
-                        }
-
-                        TNodeType nodeType = this.getElement(new NodeTypeId(qname));
-                        if (Objects.nonNull(nodeType.getInterfaceDefinitions())) {
-                            nodeType
-                                .getInterfaceDefinitions()
-                                .stream()
-                                .filter(Objects::nonNull)
-                                .forEach(iDef -> {
-                                    if (Objects.nonNull(iDef.getType())) {
-                                        ids.add(new InterfaceTypeId(iDef.getType()));
-                                    }
-                                });
-                        }
+                            });
                     }
                 } else {
                     assert (entityTemplate instanceof TRelationshipTemplate);
@@ -925,13 +1065,47 @@ public interface IRepository extends IWineryRepositoryCommon {
     default void getReferencedRequirementTypeIds(Collection<DefinitionsChildId> ids, TNodeTemplate n) {
         // crawl through reqs/caps
         TNodeTemplate.Requirements requirements = n.getRequirements();
-        if (requirements != null && Environments.getInstance().getRepositoryConfig().getProvider() == RepositoryConfigurationObject.RepositoryProvider.FILE) {
+        if (requirements != null) {
             for (TRequirement req : requirements.getRequirement()) {
                 QName type = req.getType();
-                RequirementTypeId rtId = new RequirementTypeId(type);
-                ids.add(rtId);
+                if (type != null) {
+                    // ... in case of YAML, the type is always empty
+                    RequirementTypeId rtId = new RequirementTypeId(type);
+                    ids.add(rtId);
+                }
             }
         }
+    }
+
+    default Collection<DefinitionsChildId> getReferencedDefinitionsChildIds(DataTypeId id) {
+        Set<DefinitionsChildId> ids = new HashSet<>();
+        TDataType definition = this.getElement(id);
+
+        // cast is safe because TDataType can only use YamlPropertiesDefinitions
+        final TEntityType.YamlPropertiesDefinition properties = (TEntityType.YamlPropertiesDefinition) definition.getProperties();
+        if (properties != null) {
+            List<TEntityType.YamlPropertyDefinition> propDefs = properties.getProperties();
+            Queue<TSchema> schemata = new LinkedList<>();
+            for (TEntityType.YamlPropertyDefinition def : propDefs) {
+                if (!def.getType().getNamespaceURI().isEmpty()) {
+                    ids.add(new DataTypeId(def.getType()));
+                }
+                schemata.add(def.getKeySchema());
+                schemata.add(def.getEntrySchema());
+            }
+            while (!schemata.isEmpty()) {
+                TSchema current = schemata.poll();
+                if (current == null) {
+                    continue;
+                }
+                if (!current.getType().getNamespaceURI().isEmpty()) {
+                    ids.add(new DataTypeId(current.getType()));
+                }
+                schemata.add(current.getKeySchema());
+                schemata.add(current.getEntrySchema());
+            }
+        }
+        return ids;
     }
 
     default Collection<DefinitionsChildId> getReferencedDefinitionsChildIds(PatternRefinementModelId id) {
@@ -1046,6 +1220,8 @@ public interface IRepository extends IWineryRepositoryCommon {
             referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((TopologyFragmentRefinementModelId) id);
         } else if (id instanceof TestRefinementModelId) {
             referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((TestRefinementModelId) id);
+        } else if (id instanceof DataTypeId) {
+            referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((DataTypeId) id);
         } else {
             throw new IllegalStateException("Unhandled id class " + id.getClass());
         }
@@ -1090,6 +1266,11 @@ public interface IRepository extends IWineryRepositoryCommon {
     default Collection<DefinitionsChildId> getReferencingDefinitionsChildIds(RelationshipTypeImplementationId id) {
         // RelationshipTypeImplementations
         return new HashSet<>(this.getAllElementsReferencingGivenType(RelationshipTypeImplementationId.class, id.getQName()));
+    }
+
+    default Collection<DefinitionsChildId> getReferencingDefinitionsChildIds(DataTypeId id) {
+        // RelationshipTypeImplementations
+        return new HashSet<>(this.getAllElementsReferencingGivenType(DataTypeId.class, id.getQName()));
     }
 
     default Collection<DefinitionsChildId> getReferencingDefinitionsChildIds(RelationshipTypeId id) {
@@ -1222,6 +1403,8 @@ public interface IRepository extends IWineryRepositoryCommon {
             referencedDefinitionsChildIds = this.getReferencingDefinitionsChildIds((RelationshipTypeImplementationId) id);
         } else if (id instanceof RequirementTypeId) {
             referencedDefinitionsChildIds = this.getReferencingDefinitionsChildIds((RequirementTypeId) id);
+        } else if (id instanceof DataTypeId) {
+            referencedDefinitionsChildIds = this.getReferencingDefinitionsChildIds((DataTypeId) id);
         } else if (id instanceof ArtifactTypeId) {
             referencedDefinitionsChildIds = this.getReferencingDefinitionsChildIds((ArtifactTypeId) id);
         } else if (id instanceof ArtifactTemplateId) {
@@ -1242,10 +1425,8 @@ public interface IRepository extends IWineryRepositoryCommon {
 
     NamespaceManager getNamespaceManager();
 
-    EdmmManager getEdmmManager();
-
     default XsdImportManager getXsdImportManager() {
-        return new RepositoryBasedXsdImportManager();
+        return new RepositoryBasedXsdImportManager(this);
     }
 
     /**
@@ -1259,9 +1440,9 @@ public interface IRepository extends IWineryRepositoryCommon {
     default void setElement(DefinitionsChildId id, TExtensibleElements element) throws IOException {
         // default implementation on the server side
         // the client side has to use the REST method
-        Definitions definitions = BackendUtils.createWrapperDefinitions(id);
+        TDefinitions definitions = BackendUtils.createWrapperDefinitions(id, this);
         definitions.setElement(element);
-        BackendUtils.persist(id, definitions);
+        BackendUtils.persist(this, id, definitions);
     }
 
     default int getReferenceCount(ArtifactTemplateId id) {

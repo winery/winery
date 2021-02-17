@@ -15,13 +15,23 @@
 package org.eclipse.winery.common.configuration;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.Constants;
 
 import org.apache.commons.configuration2.YAMLConfiguration;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RepositoryConfigurationObject extends AbstractConfigurationObject {
-
+    // this class shares the responsibility of the Environment class in abstracting 
+    // over interactions with the configuration file. Loggers are therefore shared.
+    private static final Logger LOGGER = LoggerFactory.getLogger(Environment.class);
+    
     private static final String key = "repository.";
     private GitConfigurationObject gitConfiguration;
 
@@ -99,7 +109,7 @@ public class RepositoryConfigurationObject extends AbstractConfigurationObject {
     public String getRepositoryRoot() {
         String repositoryRoot = this.repositoryRoot;
         if (repositoryRoot == null || repositoryRoot.isEmpty()) {
-            repositoryRoot = Util.determineAndCreateRepositoryPath().toString();
+            repositoryRoot = determineAndCreateRepositoryPath().toString();
         }
         setRepositoryRoot(repositoryRoot);
         return repositoryRoot;
@@ -116,7 +126,7 @@ public class RepositoryConfigurationObject extends AbstractConfigurationObject {
             csarOutputPath = getRepositoryRoot() + File.separator + "csars";
         }
         setCsarOutputPath(csarOutputPath);
-        Util.createCsarOutputPath(csarOutputPath);
+        createCsarOutputPath(csarOutputPath);
         return csarOutputPath;
     }
 
@@ -131,5 +141,62 @@ public class RepositoryConfigurationObject extends AbstractConfigurationObject {
 
     public void setGitConfiguration(GitConfigurationObject gitConfiguration) {
         this.gitConfiguration = gitConfiguration;
+    }
+
+    private static Path determineAndCreateRepositoryPath() {
+        Path repositoryPath;
+        if (SystemUtils.IS_OS_WINDOWS) {
+            if (Files.exists(Constants.GLOBAL_REPO_PATH_WINDOWS)) {
+                repositoryPath = Constants.GLOBAL_REPO_PATH_WINDOWS;
+            } else {
+                repositoryPath = createDefaultRepositoryPath();
+            }
+        } else {
+            repositoryPath = createDefaultRepositoryPath();
+        }
+        return repositoryPath;
+    }
+
+    private static Path createDefaultRepositoryPath() {
+        File repo = null;
+        boolean operationalFileSystemAccess;
+        try {
+            repo = new File(FileUtils.getUserDirectory(), Constants.DEFAULT_REPO_NAME);
+            operationalFileSystemAccess = true;
+        } catch (NullPointerException e) {
+            // it seems, we run at a system, where we do not have any filesystem
+            // access
+            operationalFileSystemAccess = false;
+        }
+
+        // operationalFileSystemAccess = false;
+
+        Path repositoryPath;
+        if (operationalFileSystemAccess) {
+            try {
+                FileUtils.forceMkdir(repo);
+            } catch (IOException e) {
+                LOGGER.debug("Error while creating directory.", e);
+            }
+            repositoryPath = repo.toPath();
+        } else {
+            // we do not have access to the file system
+            throw new IllegalStateException("No write access to file system");
+        }
+
+        return repositoryPath;
+    }
+
+    private static void createCsarOutputPath(String csarOutputPath) {
+        File outputPath = new File(csarOutputPath);
+        if (outputPath.exists() && outputPath.isDirectory()) {
+            return;
+        }
+        try {
+            org.apache.commons.io.FileUtils.forceMkdir(outputPath);
+        } catch (IOException e) {
+            LOGGER.error("Error while creating directory: {}", e.getMessage(), e);
+            throw new IllegalStateException(e);
+        }
     }
 }

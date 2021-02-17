@@ -16,7 +16,7 @@ import { EntityTypesModel } from './entityTypesModel';
 import { CapabilityDefinitionModel } from './capabilityDefinitionModel';
 import { RequirementDefinitionModel } from './requirementDefinitonModel';
 import { EntityType, TPolicyType } from './ttopology-template';
-import { QName } from './qname';
+import { PropertyDefinitionType } from './enums';
 
 export class InheritanceUtils {
 
@@ -28,8 +28,8 @@ export class InheritanceUtils {
         return null;
     }
 
-    static getInheritanceAncestry(entityType: string, entityTypes: EntityType[]): EntityType[] {
-        const entity = entityTypes.find(type => type.qName === entityType);
+    static getInheritanceAncestry<T extends EntityType>(entityType: string, entityTypes: T[]): T[] {
+        const entity = entityTypes.find(type => type.qName === entityType || type.id === entityType);
         const result = [];
 
         if (entity) {
@@ -150,21 +150,26 @@ export class InheritanceUtils {
         return result;
     }
 
-    static getEffectiveKVPropertiesOfTemplateElement(templateElementProperties: any, typeQName: string, entityTypes: EntityType[]): any {
+    static getEffectivePropertiesOfTemplateElement(templateElementProperties: any, typeQName: string, entityTypes: EntityType[]): any {
         const defaultTypeProperties = this.getDefaultPropertiesFromEntityTypes(typeQName, entityTypes);
         const result = {};
-        if (defaultTypeProperties && defaultTypeProperties.kvproperties) {
-            Object.keys(defaultTypeProperties.kvproperties).forEach(currentPropKey => {
-
-                if (templateElementProperties && templateElementProperties.kvproperties &&
-                    Object.keys(templateElementProperties.kvproperties).some(tempPropertyKey => tempPropertyKey === currentPropKey)) {
-                    result[currentPropKey] = templateElementProperties.kvproperties[currentPropKey];
-                } else {
-                    result[currentPropKey] = defaultTypeProperties.kvproperties[currentPropKey];
-                }
-            });
+        if (!defaultTypeProperties) {
+            console.log('Could not find default type properties for type ' + typeQName);
+            return { propertyType: PropertyDefinitionType.NONE };
         }
-        return { kvproperties: result };
+        if (defaultTypeProperties.propertyType === PropertyDefinitionType.KV) {
+            Object.assign(result, defaultTypeProperties.kvproperties);
+        }
+        if (defaultTypeProperties.propertyType === PropertyDefinitionType.YAML) {
+            Object.assign(result, defaultTypeProperties.properties);
+        }
+        // overwrite defaults from the entity type with the properties of the element
+        if (templateElementProperties && templateElementProperties.properties) {
+            Object.assign(result, templateElementProperties.properties);
+        }
+        // FIXME: because this method is only used for Yaml Policies this forced mapping to YAML-properties is doable
+        //  This is highly likely to break for anything beyond that specific usecase!
+        return { propertyType: PropertyDefinitionType.YAML, properties: result };
     }
 
     /**
@@ -173,8 +178,8 @@ export class InheritanceUtils {
      * @returns newKVProperties: KV Properties as Object
      */
     static getKVProperties(type: any): any {
-        const newKVProperies = {};
-        const kvProperties = type.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any[0].propertyDefinitionKVList;
+        const newKVProperties = {};
+        const kvProperties = type.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.propertyDefinitionKVList;
         for (const obj of kvProperties) {
             const key = obj.key;
             let value;
@@ -185,17 +190,38 @@ export class InheritanceUtils {
             } else {
                 value = obj.value;
             }
-            newKVProperies[key] = value;
+            newKVProperties[key] = value;
         }
-        return newKVProperies;
+        return newKVProperties;
     }
 
     static hasKVPropDefinition(element: EntityType): boolean {
         return (element && element.full &&
-            element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any &&
-            element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any.length > 0 &&
-            element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any[0].propertyDefinitionKVList
+            element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition &&
+            element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.propertyDefinitionKVList &&
+            element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.propertyDefinitionKVList.length > 0
         );
+    }
+
+    static hasYamlPropDefinition(element: EntityType): boolean {
+        return (element && element.full &&
+            element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition &&
+            element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.properties
+        );
+    }
+
+    static getYamlProperties(type: EntityType): any {
+        const newProperties = {};
+        const definedProperties = type.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.properties;
+        for (const obj of definedProperties) {
+            // set default value, regardless of whether the property is required
+            try {
+                newProperties[obj.name] = JSON.parse(obj.defaultValue);
+            } catch (e) {
+                newProperties[obj.name] = obj.defaultValue;
+            }
+        }
+        return newProperties;
     }
 
     /**
@@ -209,17 +235,61 @@ export class InheritanceUtils {
      */
     static getDefaultPropertiesFromEntityTypes(qName: string, entities: EntityType[]): any {
         for (const element of entities) {
+            const selectedType = element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0];
             if (element.qName === qName) {
                 // if propertiesDefinition is defined it's a XML property
-                if (element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition
-                    && element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element) {
+                // FIXME this needs to correctly handle the type option for defining XML properties
+                if (selectedType.propertiesDefinition
+                    && selectedType.propertiesDefinition.element) {
                     return {
-                        any: element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element
+                        propertyType: PropertyDefinitionType.XML,
+                        any: selectedType.propertiesDefinition.element
+                    };
+                    // properties definition contains yaml properties
+                } else if (selectedType.propertiesDefinition
+                    && selectedType.propertiesDefinition.properties) {
+                    let inheritedProperties = {};
+                    if (InheritanceUtils.hasParentType(element)) {
+                        let parent = selectedType.derivedFrom.typeRef;
+                        let continueFlag;
+
+                        while (parent) {
+                            continueFlag = false;
+                            for (const parentElement of entities) {
+                                if (parentElement.qName === parent) {
+                                    if (InheritanceUtils.hasYamlPropDefinition(parentElement)) {
+                                        inheritedProperties = {
+                                            ...inheritedProperties, ...InheritanceUtils.getYamlProperties(parentElement)
+                                        };
+                                    }
+                                    if (InheritanceUtils.hasParentType(parentElement)) {
+                                        parent = parentElement.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].derivedFrom.typeRef;
+                                        continueFlag = true;
+                                    }
+                                    break;
+                                }
+                            }
+                            if (!continueFlag) {
+                                break;
+                            }
+                        }
+                    }
+
+                    let typeProperties = {};
+                    if (InheritanceUtils.hasYamlPropDefinition(element)) {
+                        typeProperties = InheritanceUtils.getYamlProperties(element);
+                    }
+
+                    const mergedProperties = { ...inheritedProperties, ...typeProperties };
+
+                    return {
+                        propertyType: PropertyDefinitionType.YAML,
+                        properties: { ...mergedProperties }
                     };
                 } else { // otherwise KV properties or no properties at all
                     let inheritedProperties = {};
                     if (InheritanceUtils.hasParentType(element)) {
-                        let parent = element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].derivedFrom.typeRef;
+                        let parent = selectedType.derivedFrom.typeRef;
                         let continueFlag;
 
                         while (parent) {
@@ -252,9 +322,19 @@ export class InheritanceUtils {
 
                     const mergedProperties = { ...inheritedProperties, ...typeProperties };
 
-                    return {
-                        kvproperties: { ...mergedProperties }
+                    const properties = {
+                        propertyType: PropertyDefinitionType.KV,
+                        kvproperties: { ...mergedProperties },
                     };
+
+                    return InheritanceUtils.hasKVPropDefinition(element) && selectedType.propertiesDefinition.elementName
+                                && selectedType.propertiesDefinition.namespace
+                        ? {
+                            ...properties,
+                            elementName: selectedType.propertiesDefinition.elementName,
+                            namespace: selectedType.propertiesDefinition.namespace
+                        }
+                        : properties;
                 }
             }
         }
@@ -270,16 +350,17 @@ export class InheritanceUtils {
      * @param capabilityTypes The list of all Capability Types
      */
     static getValidSourceTypes(capabilityDefinition: CapabilityDefinitionModel, capabilityTypes: EntityType[]): string[] {
-        if (capabilityDefinition.validSourceTypes) {
+        if (capabilityDefinition.validSourceTypes && capabilityDefinition.validSourceTypes.length) {
             return capabilityDefinition.validSourceTypes;
         } else {
             const ancestry: EntityType[] = InheritanceUtils.getInheritanceAncestry(capabilityDefinition.capabilityType, capabilityTypes);
             for (const ancestor of ancestry) {
                 const listOfValidSourceTypes = ancestor.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].validNodeTypes;
-                if (listOfValidSourceTypes) {
+                if (listOfValidSourceTypes && listOfValidSourceTypes.length) {
                     return listOfValidSourceTypes;
                 }
             }
         }
+        return [];
     }
 }

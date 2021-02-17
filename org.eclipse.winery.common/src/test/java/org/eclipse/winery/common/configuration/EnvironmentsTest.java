@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Disabled("This test seems to fail transiently on test infrastructure")
@@ -147,5 +148,17 @@ public class EnvironmentsTest {
         object.save();
         UiConfigurationObject result = Environments.getInstance().getUiConfig();
         assertEquals("", result.getEndpoints().get("quaz"));
+    }
+
+    @Test
+    public void testIsFeatureEnabled() {
+        UiConfigurationObject object = Environments.getInstance().getUiConfig();
+        object.getFeatures().put("test1", true);
+        object.getFeatures().put("test2", false);
+        object.save();
+        UiConfigurationObject result = Environments.getInstance().getUiConfig();
+        assertTrue(result.getFeatures().get("test1"));
+        assertFalse(result.getFeatures().get("test2"));
+        assertNull(result.getFeatures().get("test3"));
     }
 }

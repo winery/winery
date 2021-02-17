@@ -20,9 +20,9 @@ import java.util.SortedSet;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.exceptions.QNameAlreadyExistsException;
-import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.interfaces.QNameWithName;
+import org.eclipse.winery.model.ids.GenericId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;

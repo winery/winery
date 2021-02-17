@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
@@ -24,6 +24,7 @@ import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 import { EnricherService } from './enricher.service';
 import { Enrichment, FeatureEntity } from './enrichmentEntity';
 import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { EntityTypesModel } from '../models/entityTypesModel';
 
 @Component({
     selector: 'winery-enricher',
@@ -31,6 +32,8 @@ import { WineryRepositoryConfigurationService } from '../../../../tosca-manageme
     styleUrls: ['./enricher.component.css']
 })
 export class EnricherComponent {
+
+    entityTypes: EntityTypesModel;
 
     // enrichment object containing available features
     availableFeatures: Enrichment;
@@ -45,6 +48,12 @@ export class EnricherComponent {
                 private enricherService: EnricherService) {
         this.ngRedux.select(state => state.topologyRendererState)
             .subscribe(currentButtonsState => this.checkButtonsState(currentButtonsState));
+        this.ngRedux.select(state => state.wineryState.entityTypes)
+            .subscribe(data => {
+                if (data) {
+                    this.entityTypes = data;
+                }
+            });
     }
 
     /**
@@ -207,7 +216,7 @@ export class EnricherComponent {
      * @param data: topology template that was updated
      */
     private enrichmentApplied(data: TTopologyTemplate) {
-        TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, data, this.configurationService.isYaml());
+        TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, data, this.entityTypes, this.configurationService.isYaml());
         // reset available features since they are no longer valid
         this.availableFeatures = null;
         this.alert.success('Updated Topology Template!');
