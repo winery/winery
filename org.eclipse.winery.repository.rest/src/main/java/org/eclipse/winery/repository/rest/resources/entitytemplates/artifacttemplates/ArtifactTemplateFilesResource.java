@@ -108,7 +108,7 @@ public class ArtifactTemplateFilesResource extends GenericFileResource {
             if (artifactList == null || artifactList.contains(ref.getFileName())) {
                 try (InputStream inputStream = RepositoryFactory.getRepository().newInputStream(ref)) {
                     String fileName = ref.getFileName();
-                    String subDirectory = ref.getSubDirectory().map(s -> s.toString()).orElse("");
+                    String subDirectory = ref.getSubDirectory().map(java.nio.file.Path::toString).orElse("");
                     this.destinationDir.putFile(fileName, subDirectory, inputStream);
                 } catch (IOException e) {
                     LOGGER.debug("The artifact source " + ref.getFileName() + " could not be copied to the files directory.", e);

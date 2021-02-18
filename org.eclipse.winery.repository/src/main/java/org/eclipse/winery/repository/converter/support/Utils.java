@@ -15,20 +15,33 @@ package org.eclipse.winery.repository.converter.support;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.filebased.FileUtils;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 
+import com.google.common.io.ByteStreams;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
+import org.apache.tika.mime.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,28 +80,143 @@ public class Utils {
         return dir;
     }
 
-    public static InputStream zipPath(Path path) {
-        File zipFile = new File(path.getParent().toString() + File.separator + "tmp.zip");
-        try (
-            FileOutputStream fos = new FileOutputStream(zipFile);
-            ZipOutputStream zos = new ZipOutputStream(fos)
-        ) {
-            Files.walk(path)
-                .filter(Files::isRegularFile)
-                .forEach(file -> {
-                    try {
-                        zos.putNextEntry(new ZipEntry(path.relativize(file).toString()));
-                        Files.copy(file, zos);
-                        zos.closeEntry();
-                    } catch (Exception e) {
+    static public List<String> getFileListFromZip(final ZipInputStream zipFile, final String outputFolder) throws IOException {
+        List<String> unpackedFileList = new LinkedList<>();
 
+        // create output directory if not exists
+        final File folder = new File(outputFolder);
+        folder.mkdir();
+
+        // get the zipped file list entry
+        ZipEntry entry;
+
+        try {
+            entry = zipFile.getNextEntry();
+
+            while (entry != null) {
+                final String fileName = entry.getName();
+                final File newFile = new File(outputFolder + File.separator + fileName);
+                if (!entry.isDirectory()) {
+                    unpackedFileList.add(entry.getName());
+                    // create all non exists folders
+                    new File(newFile.getParent()).mkdirs();
+
+                    // fill file
+                    try (FileOutputStream fos = new FileOutputStream(newFile)) {
+                        byte[] buffer = new byte[1024];
+                        int len;
+                        while ((len = zipFile.read(buffer)) > 0) {
+                            fos.write(buffer, 0, len);
+                        }
+                    } catch (IOException e) {
+                        logger.error("Error while reading file, {}", entry.getName(), e);
                     }
-                });
-            return new FileInputStream(zipFile);
-        } catch (Exception e) {
-            logger.error("Create zip tmp file error: ", e);
+                } else {
+                    newFile.mkdirs();
+                }
+
+                entry = zipFile.getNextEntry();
+            }
+        } catch (IOException e) {
+            logger.error("Error while reading zip entry!", e);
+        } finally {
+            zipFile.closeEntry();
+            zipFile.close();
         }
-        return null;
+
+        return unpackedFileList;
+    }
+
+    /**
+     * recursively delete files, folders and all subfolders
+     */
+    static public void delete(final File f) throws IOException {
+        if (!f.exists()) {
+            return;
+        }
+        if (f.isDirectory()) {
+            for (final File c : f.listFiles()) {
+                delete(c);
+            }
+        }
+        if (!f.delete()) {
+            throw new FileNotFoundException("Failed to delete file: " + f);
+        }
+    }
+
+    /**
+     * recursively delete files, folders and all subfolders with exception of files with the specified file ending in
+     * the specified folder
+     */
+    static public void deleteFilesInFolder(final File f, final String ending) throws IOException {
+        if (!f.exists()) {
+            return;
+        }
+        if (f.isDirectory()) {
+            for (final File c : f.listFiles()) {
+                if (!getFileExtension(c).equals(ending)) {
+                    delete(c);
+                }
+            }
+        }
+    }
+
+    public static String getFileExtension(final File file) {
+        final String fileName = file.getName();
+        if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0) {
+            return fileName.substring(fileName.lastIndexOf(".") + 1);
+        } else {
+            return "";
+        }
+    }
+
+    public static String compressTarFile(final File tarFile) {
+        try (InputStream in = Files.newInputStream(Paths.get(tarFile.getAbsolutePath()));
+             GzipCompressorOutputStream gzOut = new GzipCompressorOutputStream(Files.newOutputStream(Paths.get(tarFile.getAbsolutePath() + ".gz")))
+        ) {
+            ByteStreams.copy(in, gzOut);
+        } catch (IOException e) {
+            logger.error("Error wile compressing tar bal", e);
+        }
+
+        return tarFile.getAbsolutePath() + ".gz";
+    }
+
+    public static void compressTarBallAndAddToArtifact(Path tempDirectory, IRepository repository,
+                                                       ArtifactTemplateId generatedArtifactTemplateId, String tarball) throws IOException {
+        Path compressedFile = Paths.get(Utils.compressTarFile(tempDirectory.resolve(tarball).toFile()));
+
+        ArtifactTemplateFilesDirectoryId filesDirectoryId = new ArtifactTemplateFilesDirectoryId(generatedArtifactTemplateId);
+        try (FileInputStream inputStream = new FileInputStream(compressedFile.toFile())) {
+            repository.putContentToFile(
+                new RepositoryFileReference(filesDirectoryId, compressedFile.getFileName().toString()),
+                inputStream,
+                MediaType.parse("application/x-gzip")
+            );
+        }
+
+        BackendUtils.synchronizeReferences(repository, generatedArtifactTemplateId);
+    }
+
+    public static void execute(final String directoryPath, final String... command) throws IOException, InterruptedException {
+        ProcessBuilder pb = new ProcessBuilder(command);
+        pb.directory(new File(directoryPath));
+
+        pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+        pb.redirectError(ProcessBuilder.Redirect.INHERIT);
+        pb.redirectInput(ProcessBuilder.Redirect.INHERIT);
+
+        int i = pb.start().waitFor();
+
+        if (i != 0) {
+            throw new IOException("Error while executing command!");
+        }
+    }
+
+    public static String findFileLocation(TArtifactTemplate artifactTemplate, IRepository repository) throws UnsupportedEncodingException {
+        String fileName = artifactTemplate.getArtifactReferences().getArtifactReference().get(0).getReference();
+        String repositoryPath = repository.getRepositoryRoot().toString();
+        return repositoryPath + "/" + URLDecoder.decode(fileName, "utf-8");
     }
 
     public static Path getTmpDir(Path path) {
@@ -107,14 +235,6 @@ public class Utils {
             logger.error("Failed to create tmp dir '{}':\n {}", result, e);
         }
         return result;
-    }
-
-    public static void deleteTmpDir(Path path) {
-        try {
-            Files.deleteIfExists(tmpBase);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public static byte[] getHashValueOfFile(File file) throws IOException {
