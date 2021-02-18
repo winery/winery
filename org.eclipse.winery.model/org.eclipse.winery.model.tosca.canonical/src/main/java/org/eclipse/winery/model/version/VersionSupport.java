@@ -42,6 +42,8 @@ import de.danielbechler.diff.identity.IdentityStrategy;
 import de.danielbechler.diff.node.DiffNode;
 
 public class VersionSupport {
+
+    public static final String SELF_CONTAINMENT_VERSION_SUFFIX = WineryVersion.WINERY_VERSION_SEPARATOR + "selfContained";
     private static final String REFERENCING_OBJECT = "referencingObject";
 
     public static String getQNameWithComponentVersionOnly(DefinitionsChildId id) {
@@ -141,19 +143,48 @@ public class VersionSupport {
         return ToscaDiff.convertDiffToToscaDiff(diffNode, oldVersion, newVersion);
     }
 
+    public static String getNewComponentVersionId(QName oldId, String appendixName) {
+        return getNewComponentVersion(VersionUtils.getVersion(oldId.getLocalPart()),
+            VersionUtils.getNameWithoutVersion(oldId.getLocalPart()), appendixName);
+    }
+
     public static String getNewComponentVersionId(DefinitionsChildId oldId, String appendixName) {
-        WineryVersion version = oldId.getVersion();
+        return getNewComponentVersion(oldId.getVersion(), oldId.getNameWithoutVersion(), appendixName);
+    }
+    
+    private static String getNewComponentVersion(WineryVersion version, String nameWithoutVersion, String appendixName) {
         String oldVersion = version.toString();
 
-        if (Objects.nonNull(oldVersion) && !oldVersion.isEmpty()) {
-            version.setComponentVersion(oldVersion + "-" + appendixName);
-        } else {
-            version.setComponentVersion(appendixName);
+        if (appendixName != null && !appendixName.isEmpty()) {
+            if (Objects.nonNull(oldVersion) && !oldVersion.isEmpty()) {
+                if (appendixName.startsWith("-")) {
+                    version.setComponentVersion(oldVersion + appendixName);
+                } else {
+                    version.setComponentVersion(oldVersion + "-" + appendixName);
+                }
+            } else {
+                if (appendixName.startsWith("-")) {
+                    version.setComponentVersion(appendixName);
+                } else {
+                    version.setComponentVersion(appendixName);
+                }
+            }
         }
 
         version.setWineryVersion(1);
         version.setWorkInProgressVersion(1);
 
-        return oldId.getNameWithoutVersion() + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
+        return nameWithoutVersion + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
+    }
+
+    public static QName getSelfContainedVersion(DefinitionsChildId element) {
+        if (element.isSelfContained()) {
+            return element.getQName();
+        }
+
+        return new QName(
+            element.getQName().getNamespaceURI(),
+            getNewComponentVersionId(element, SELF_CONTAINMENT_VERSION_SUFFIX)
+        );
     }
 }

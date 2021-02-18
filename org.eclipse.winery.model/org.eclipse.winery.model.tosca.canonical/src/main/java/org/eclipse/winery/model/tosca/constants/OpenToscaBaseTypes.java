@@ -27,6 +27,8 @@ public class OpenToscaBaseTypes {
     public static final QName Ubuntu18NodeType = QName.valueOf("{http://opentosca.org/nodetypes}Ubuntu-VM_18.04-w1");
     
     public static final QName ubuntuNodeTypeImpl = QName.valueOf("{http://opentosca.org/nodetypeimplementations}Ubuntu-VM");
+    public static final QName ubuntuNodeType = QName.valueOf("{http://opentosca.org/nodetypes}Ubuntu-VM");
+    public static final QName dockerContainerNodeType = QName.valueOf("{http://opentosca.org/nodetypes}DockerContainer");
     public static final QName dockerContainerArtifactType = QName.valueOf("{http://opentosca.org/artifacttypes}DockerContainerArtifact");
 
     // region ********** secure elements **********
@@ -45,4 +47,7 @@ public class OpenToscaBaseTypes {
     // region ********** management features **********
     public static final QName managementFeatureRequirement = QName.valueOf("{http://opentosca.org/management/features/requirementtypes}FeatureRequirement");
     // endregion
+    
+    public static final String namespaceBase = "http://opentosca.org/";
+    public static final String artifactTemplateNamespace = namespaceBase + "artifacttemplates";
 }

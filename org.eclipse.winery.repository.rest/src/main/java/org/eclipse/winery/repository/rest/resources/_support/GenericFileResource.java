@@ -118,7 +118,7 @@ public class GenericFileResource {
         return RepositoryFactory.getRepository()
             .getContainedFiles(this.fileDir)
             .stream()
-            .map(ref -> new FileMeta(ref))
+            .map(FileMeta::new)
             .collect(Collectors.toList());
     }
 

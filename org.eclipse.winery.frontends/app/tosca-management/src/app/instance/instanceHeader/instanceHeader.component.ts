@@ -59,6 +59,7 @@ export class InstanceHeaderComponent implements OnInit {
     showEdmmExport: boolean;
     requiresTabFix = false;
     radon: boolean;
+    toscaTypes = ToscaTypes;
 
     toscaLightCompatibilityErrorReportModalRef: BsModalRef;
     toscaLightErrorKeys: string[];

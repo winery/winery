@@ -19,13 +19,9 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.xml.bind.JAXBException;
-
-import org.eclipse.winery.accountability.exceptions.AccountabilityException;
 import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.constants.MimeTypes;
@@ -93,8 +89,8 @@ public class YamlExporter extends CsarExporter {
      * @return the TOSCA meta file for the generated Csar
      */
     @Override
-    public String writeCsar(DefinitionsChildId entryId, OutputStream out, Map<String, Object> exportConfiguration, boolean includeDependencies)
-        throws IOException, RepositoryCorruptException, InterruptedException, AccountabilityException, ExecutionException, JAXBException {
+    public String writeCsar(DefinitionsChildId entryId,
+                            OutputStream out, Map<String, Object> exportConfiguration) throws IOException, RepositoryCorruptException {
         LOGGER.trace("Starting CSAR export with {}", entryId.toString());
 
         Map<CsarContentProperties, CsarEntry> refMap = new HashMap<>();
@@ -108,7 +104,7 @@ public class YamlExporter extends CsarExporter {
             String definitionsPathInsideCSAR = getDefinitionsPathInsideCSAR(repository, currentId);
             CsarContentProperties definitionsFileProperties = new CsarContentProperties(definitionsPathInsideCSAR);
             if (!YamlRepository.ROOT_TYPE_QNAME.equals(currentId.getQName())) {
-                referencedIds = exporter.processTOSCA(repository, currentId, definitionsFileProperties, refMap, exportConfiguration, false);
+                referencedIds = exporter.processTOSCA(repository, currentId, definitionsFileProperties, refMap, exportConfiguration);
                 // for each entryId add license and readme files (if they exist) to the refMap
                 addLicenseAndReadmeFiles(currentId, refMap);
 
@@ -190,7 +186,7 @@ public class YamlExporter extends CsarExporter {
 
             stringBuilder.append(NAME).append(": ").append(fileProperties.getPathInsideCsar()).append("\n");
 
-            String mimeType = "";
+            String mimeType;
 
             if (csarEntry instanceof DocumentBasedCsarEntry) {
                 mimeType = MimeTypes.MIMETYPE_XSD;

@@ -93,7 +93,9 @@ import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
+import org.eclipse.winery.repository.backend.selfcontainmentpackager.SelfContainmentPackager;
 import org.eclipse.winery.repository.backend.xsd.NamespaceAndDefinedLocalNames;
+import org.eclipse.winery.repository.export.CsarExportConfiguration;
 import org.eclipse.winery.repository.export.CsarExportOptions;
 import org.eclipse.winery.repository.export.CsarExporter;
 import org.eclipse.winery.repository.export.ToscaExportUtil;
@@ -133,11 +135,11 @@ public class RestUtils {
     // RegExp inspired by http://stackoverflow.com/a/5396246/873282
     // NameStartChar without ":"
     // stackoverflow: -dfff, standard: d7fff
-    private static final String RANGE_NCNAMESTARTCHAR = "A-Z_a-z\\u00C0\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02ff\\u0370-\\u037d" + "\\u037f-\\u1fff\\u200c\\u200d\\u2070-\\u218f\\u2c00-\\u2fef\\u3001-\\ud7ff" + "\\uf900-\\ufdcf\\ufdf0-\\ufffd\\x10000-\\xEFFFF";
-    private static final String REGEX_NCNAMESTARTCHAR = "[" + RestUtils.RANGE_NCNAMESTARTCHAR + "]";
+    private static final String RANGE_NCNAME_START_CHAR = "A-Z_a-z\\u00C0\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02ff\\u0370-\\u037d" + "\\u037f-\\u1fff\\u200c\\u200d\\u2070-\\u218f\\u2c00-\\u2fef\\u3001-\\ud7ff" + "\\uf900-\\ufdcf\\ufdf0-\\ufffd\\x10000-\\xEFFFF";
+    private static final String REGEX_NCNAME_START_CHAR = "[" + RestUtils.RANGE_NCNAME_START_CHAR + "]";
 
-    private static final String RANGE_NCNAMECHAR = RestUtils.RANGE_NCNAMESTARTCHAR + "\\-\\.0-9\\u00b7\\u0300-\\u036f\\u203f-\\u2040";
-    private static final String REGEX_INVALIDNCNAMESCHAR = "[^" + RestUtils.RANGE_NCNAMECHAR + "]";
+    private static final String RANGE_NCNAME_CHAR = RestUtils.RANGE_NCNAME_START_CHAR + "\\-\\.0-9\\u00b7\\u0300-\\u036f\\u203f-\\u2040";
+    private static final String REGEX_INVALID_NCNAMES_CHAR = "[^" + RestUtils.RANGE_NCNAME_CHAR + "]";
 
     static {
         if (Locale.getDefault() != Locale.ENGLISH) {
@@ -173,7 +175,7 @@ public class RestUtils {
      */
     public static String createXmlIdAsString(String name) {
         String id = name;
-        if (!id.substring(0, 1).matches(RestUtils.REGEX_NCNAMESTARTCHAR)) {
+        if (!id.substring(0, 1).matches(RestUtils.REGEX_NCNAME_START_CHAR)) {
             id = "-".concat(id);
         }
         // id starts with a valid character
@@ -183,10 +185,10 @@ public class RestUtils {
         id = id.replace(' ', '-');
 
         // keep length of ID, only wipe out invalid characters
-        // alternative: replace invalid characters by URLencoded version. As the
+        // alternative: replace invalid characters by URL encoded version. As the
         // ID is visible only in the URL, this quick hack should be OK
         // ID is visible only in the URL, this quick hack should be OK
-        id = id.replaceAll(RestUtils.REGEX_INVALIDNCNAMESCHAR, "-");
+        id = id.replaceAll(RestUtils.REGEX_INVALID_NCNAMES_CHAR, "-");
 
         return id;
     }
@@ -198,7 +200,7 @@ public class RestUtils {
         final ToscaExportUtil exporter = new ToscaExportUtil();
         StreamingOutput so = output -> {
             Map<String, Object> conf = new HashMap<>();
-            conf.put(ToscaExportUtil.ExportProperties.REPOSITORY_URI.toString(), uri);
+            conf.put(CsarExportConfiguration.REPOSITORY_URI.toString(), uri);
             try {
                 exporter.writeTOSCA(RepositoryFactory.getRepository(), resource.getId(), conf, output);
             } catch (Exception e) {
@@ -224,8 +226,8 @@ public class RestUtils {
     /**
      * @param options the set of options that are applicable for exporting a csar
      */
-    public static Response getCsarOfSelectedResource(final AbstractComponentInstanceResource resource, CsarExportOptions options, boolean includeDependencies) {
-        LocalDateTime start = LocalDateTime.now();
+    public static Response getCsarOfSelectedResource(final AbstractComponentInstanceResource resource, CsarExportOptions options) {
+        long start = System.currentTimeMillis();
         final CsarExporter exporter = new CsarExporter(RepositoryFactory.getRepository());
         Map<String, Object> exportConfiguration = new HashMap<>();
 
@@ -237,11 +239,15 @@ public class RestUtils {
                     String result = exporter.writeCsarAndSaveManifestInProvenanceLayer(resource.getId(), output)
                         .get();
                     LOGGER.debug("Stored state in accountability layer in transaction " + result);
-                    LOGGER.debug("CSAR export (provenance) lasted {}", Duration.between(LocalDateTime.now(), start).toString());
+                } else if (options.isIncludeDependencies() && resource.getId() instanceof ServiceTemplateId) {
+                    SelfContainmentPackager packager = new SelfContainmentPackager(RepositoryFactory.getRepository());
+                    DefinitionsChildId selfContainedVersion = packager.createSelfContainedVersion(resource.getId());
+                    exporter.writeSelfContainedCsar(RepositoryFactory.getRepository(), selfContainedVersion, output, exportConfiguration);
                 } else {
-                    exporter.writeCsar(resource.getId(), output, exportConfiguration, includeDependencies);
-                    LOGGER.debug("CSAR export lasted {}", Duration.between(LocalDateTime.now(), start).toString());
+                    exporter.writeCsar(resource.getId(), output, exportConfiguration);
                 }
+                long duration = (System.currentTimeMillis() - start) / 1000;
+                LOGGER.debug("CSAR export lasted {} min {} s", (int) duration / 60, duration % 60);
             } catch (Exception e) {
                 LOGGER.error("Error while exporting CSAR", e);
                 throw new WebApplicationException(e);
@@ -277,7 +283,7 @@ public class RestUtils {
 
         StreamingOutput so = output -> {
             try {
-                exporter.writeCsar(resource.getId(), output, exportConfiguration, false);
+                exporter.writeCsar(resource.getId(), output, exportConfiguration);
                 LOGGER.debug("CSAR export lasted {}", Duration.between(LocalDateTime.now(), start).toString());
             } catch (Exception e) {
                 LOGGER.error("Error while exporting CSAR", e);
@@ -850,7 +856,7 @@ public class RestUtils {
      * This is not repository specific, but we leave it close to the only caller
      * <p>
      * If the passed ref is newer than the modified date (or the modified date is null), an OK response with an
-     * inputstream pointing to the path is returned
+     * input stream pointing to the path is returned
      */
     private static Response.ResponseBuilder returnRefAsResponseBuilder(RepositoryFileReference ref, String modified) {
         if (!RepositoryFactory.getRepository().exists(ref)) {
@@ -902,7 +908,7 @@ public class RestUtils {
      *
      * @param ref     Reference to the File to write to (overwrite)
      * @param content the data to write
-     * @return a JAX-RS Response containing the result. NOCONTENT if successful, InternalSeverError otherwise
+     * @return a JAX-RS Response containing the result. NO_CONTENT if successful, InternalSeverError otherwise
      */
     public static Response putContentToFile(RepositoryFileReference ref, String content, MediaType mediaType) {
         try {

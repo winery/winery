@@ -161,4 +161,9 @@ public class EnvironmentsTest {
         assertFalse(result.getFeatures().get("test2"));
         assertNull(result.getFeatures().get("test3"));
     }
+
+    @AfterAll
+    static void reset() {
+        Environment.getInstance().copyDefaultConfigFile();
+    }
 }

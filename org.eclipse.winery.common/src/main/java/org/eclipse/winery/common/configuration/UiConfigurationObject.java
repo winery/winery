@@ -44,16 +44,6 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
     private Map<String, Boolean> features;
     private Map<String, String> endpoints;
 
-    /**
-     * Required for REST API
-     */
-    public UiConfigurationObject() {
-        if (Environment.getInstance().checkConfigurationForUpdate()) {
-            Environment.getInstance().updateConfig();
-        }
-        this.configuration = Environment.getInstance().getConfiguration();
-    }
-
     UiConfigurationObject(YAMLConfiguration configuration) {
         this.update(configuration);
         initialize();

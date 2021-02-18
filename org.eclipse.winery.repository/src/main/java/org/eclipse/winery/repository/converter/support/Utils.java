@@ -30,14 +30,18 @@ import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
-import org.eclipse.winery.repository.backend.filebased.AbstractFileBasedRepository;
 import org.eclipse.winery.repository.backend.filebased.FileUtils;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 
 import com.google.common.io.ByteStreams;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
+import org.apache.tika.mime.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,7 +95,7 @@ public class Utils {
 
             while (entry != null) {
                 final String fileName = entry.getName();
-                final File newFile = new File(outputFolder + fileName);
+                final File newFile = new File(outputFolder + File.separator + fileName);
                 if (!entry.isDirectory()) {
                     unpackedFileList.add(entry.getName());
                     // create all non exists folders
@@ -168,19 +172,50 @@ public class Utils {
 
     public static String compressTarFile(final File tarFile) {
         try (InputStream in = Files.newInputStream(Paths.get(tarFile.getAbsolutePath()));
-             GzipCompressorOutputStream gzOut = new GzipCompressorOutputStream(Files.newOutputStream(Paths.get(tarFile.getAbsolutePath() + ".gz")));
+             GzipCompressorOutputStream gzOut = new GzipCompressorOutputStream(Files.newOutputStream(Paths.get(tarFile.getAbsolutePath() + ".gz")))
         ) {
             ByteStreams.copy(in, gzOut);
         } catch (IOException e) {
             logger.error("Error wile compressing tar bal", e);
         }
 
-        return tarFile.getName() + ".gz";
+        return tarFile.getAbsolutePath() + ".gz";
+    }
+
+    public static void compressTarBallAndAddToArtifact(Path tempDirectory, IRepository repository,
+                                                       ArtifactTemplateId generatedArtifactTemplateId, String tarball) throws IOException {
+        Path compressedFile = Paths.get(Utils.compressTarFile(tempDirectory.resolve(tarball).toFile()));
+
+        ArtifactTemplateFilesDirectoryId filesDirectoryId = new ArtifactTemplateFilesDirectoryId(generatedArtifactTemplateId);
+        try (FileInputStream inputStream = new FileInputStream(compressedFile.toFile())) {
+            repository.putContentToFile(
+                new RepositoryFileReference(filesDirectoryId, compressedFile.getFileName().toString()),
+                inputStream,
+                MediaType.parse("application/x-gzip")
+            );
+        }
+
+        BackendUtils.synchronizeReferences(repository, generatedArtifactTemplateId);
+    }
+
+    public static void execute(final String directoryPath, final String... command) throws IOException, InterruptedException {
+        ProcessBuilder pb = new ProcessBuilder(command);
+        pb.directory(new File(directoryPath));
+
+        pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+        pb.redirectError(ProcessBuilder.Redirect.INHERIT);
+        pb.redirectInput(ProcessBuilder.Redirect.INHERIT);
+
+        int i = pb.start().waitFor();
+
+        if (i != 0) {
+            throw new IOException("Error while executing command!");
+        }
     }
 
     public static String findFileLocation(TArtifactTemplate artifactTemplate, IRepository repository) throws UnsupportedEncodingException {
         String fileName = artifactTemplate.getArtifactReferences().getArtifactReference().get(0).getReference();
-        String repositoryPath = ((AbstractFileBasedRepository) repository).getRepositoryRoot().toString();
+        String repositoryPath = repository.getRepositoryRoot().toString();
         return repositoryPath + "/" + URLDecoder.decode(fileName, "utf-8");
     }
 

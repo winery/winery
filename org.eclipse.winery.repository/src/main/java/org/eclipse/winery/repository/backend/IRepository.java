@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
@@ -46,7 +47,6 @@ import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.model.ids.definitions.CapabilityTypeId;
-import org.eclipse.winery.model.ids.extensions.ComplianceRuleId;
 import org.eclipse.winery.model.ids.definitions.DataTypeId;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.ids.definitions.HasInheritanceId;
@@ -61,6 +61,7 @@ import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.model.ids.elements.ToscaElementId;
+import org.eclipse.winery.model.ids.extensions.ComplianceRuleId;
 import org.eclipse.winery.model.ids.extensions.PatternRefinementModelId;
 import org.eclipse.winery.model.ids.extensions.TestRefinementModelId;
 import org.eclipse.winery.model.ids.extensions.TopologyFragmentRefinementModelId;
@@ -128,7 +129,7 @@ import org.slf4j.LoggerFactory;
  */
 public interface IRepository extends IWineryRepositoryCommon {
 
-    final Logger LOGGER = LoggerFactory.getLogger(IRepository.class);
+    Logger LOGGER = LoggerFactory.getLogger(IRepository.class);
 
     /**
      * Serializes a given canonical Definitions Object to the targeted Output Stream according to the TOSCA-Standard of
@@ -332,7 +333,7 @@ public interface IRepository extends IWineryRepositoryCommon {
         String mimeType;
         if (this.exists(mimeFileRef)) {
             InputStream is = this.newInputStream(mimeFileRef);
-            mimeType = IOUtils.toString(is, "UTF-8");
+            mimeType = IOUtils.toString(is, StandardCharsets.UTF_8);
             is.close();
         } else {
             // repository has been manipulated manually,
@@ -398,7 +399,7 @@ public interface IRepository extends IWineryRepositoryCommon {
      * @param idClass class of the Ids to search for
      * @return empty set if no ids are available
      */
-    public <T extends DefinitionsChildId> SortedSet<T> getStableDefinitionsChildIdsOnly(Class<T> idClass);
+    <T extends DefinitionsChildId> SortedSet<T> getStableDefinitionsChildIdsOnly(Class<T> idClass);
 
     /**
      * Returns all component instances existing in the repository
@@ -409,7 +410,7 @@ public interface IRepository extends IWineryRepositoryCommon {
         return DefinitionsChildId.ALL_TOSCA_COMPONENT_ID_CLASSES
             .stream()
             .flatMap(idClass -> this.getAllDefinitionsChildIds(idClass).stream())
-            .collect(Collectors.toCollection(() -> new TreeSet<>()));
+            .collect(Collectors.toCollection(TreeSet::new));
     }
 
     default <T extends DefinitionsChildId, S extends TExtensibleElements> Map<QName, S> getQNameToElementMapping(Class<T> idClass) {
@@ -1211,7 +1212,7 @@ public interface IRepository extends IWineryRepositoryCommon {
         } else if (id instanceof ArtifactTypeId || id instanceof GenericImportId || id instanceof PolicyTypeId || id instanceof CapabilityTypeId || id instanceof InterfaceTypeId) {
             // in case of artifact types, imports, policy types, and capability types, there are no other ids referenced
             // Collections.emptyList() cannot be used as we add elements later on in the case of inheritance
-            referencedDefinitionsChildIds = new ArrayList();
+            referencedDefinitionsChildIds = new HashSet<>();
         } else if (id instanceof ComplianceRuleId) {
             referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((ComplianceRuleId) id);
         } else if (id instanceof PatternRefinementModelId) {

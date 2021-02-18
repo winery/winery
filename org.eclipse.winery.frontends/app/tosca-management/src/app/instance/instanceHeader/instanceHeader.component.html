@@ -12,9 +12,9 @@
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <div class="top" [class.twolines]="needTwoLines">
-    <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIcon">
+    <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIcon" alt="Icon of the Node Type.">
     <img *ngIf="toscaLightCompatibilityData?.isToscaLightCompatible" src="../../../assets/images/toscaLight.png"
-         class="toscaLightCompatible">
+         class="toscaLightCompatible" alt="This Service Tempalte is TOSCALight compatible.">
     <div class="informationContainer">
         <winery-property-rename [toscaComponent]="toscaComponent" [propertyName]="'localName'"
                                 [multipleVersionsAvailable]="versions?.length > 0"></winery-property-rename>
@@ -40,7 +40,7 @@
                     <li>
                         <a target="_blank" href="{{ toscaComponent.xmlCsarPath }}">CSAR</a>
                     </li>
-                    <li>
+                    <li *ngIf="toscaComponent.toscaType === toscaTypes.ServiceTemplate">
                         <a target="_blank" href="{{ toscaComponent.includeDependencies }}">CSAR (XML) with Dependencies</a>
                     </li>
                     <li *ngIf="accountabilityEnabled">
