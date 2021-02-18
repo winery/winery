@@ -22,11 +22,24 @@ public class CsarExportOptions {
      */
     private boolean addToProvenance;
 
+    /**
+     * Indicates that the exported CSAR will resolve all external dependencies an attach them as DAs.
+     */
+    private boolean includeDependencies;
+
     public boolean isAddToProvenance() {
         return addToProvenance;
     }
 
     public void setAddToProvenance(boolean addToProvenance) {
         this.addToProvenance = addToProvenance;
+    }
+
+    public boolean isIncludeDependencies() {
+        return includeDependencies;
+    }
+
+    public void setIncludeDependencies(boolean includeDependencies) {
+        this.includeDependencies = includeDependencies;
     }
 }

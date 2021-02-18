@@ -66,7 +66,7 @@ public class EnvironmentTest {
      * properties in the config file are found.
      */
     @Test
-    public void testConfigValues() throws IOException {
+    public void testConfigValues() {
         YAMLConfiguration tested = Environment.getInstance().getConfiguration();
         assertTrue(tested.getBoolean("ui.features.foo"));
         assertFalse(tested.getBoolean("ui.features.bar"));
@@ -113,5 +113,10 @@ public class EnvironmentTest {
         assertEquals("test2.url", Environment.getInstance().getConfiguration().getString("accountability.geth-url"));
         Environment.getInstance().reloadAccountabilityConfiguration(Environment.getTestConfigInputStream());
         assertEquals("test.url", Environment.getInstance().getConfiguration().getString("accountability.geth-url"));
+    }
+
+    @AfterAll
+    static void reset() {
+        Environment.getInstance().copyDefaultConfigFile();
     }
 }

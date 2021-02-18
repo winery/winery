@@ -63,6 +63,7 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.SelfServiceMetaDataUtils;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.backend.selfcontainmentpackager.SelfContainmentPackager;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ServiceTemplateSelfServiceFilesDirectoryId;
@@ -100,7 +101,7 @@ public class CsarExporter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CsarExporter.class);
 
-    private static final String DEFINITONS_PATH_PREFIX = "Definitions/";
+    private static final String DEFINITIONS_PATH_PREFIX = "Definitions/";
     private static final String WINERY_TEMP_DIR_PREFIX = "winerytmp";
 
     private final IRepository repository;
@@ -122,8 +123,8 @@ public class CsarExporter {
         return CsarExporter.getDefinitionsName(repository, id) + Constants.SUFFIX_TOSCA_DEFINITIONS;
     }
 
-    private static String getDefinitionsPathInsideCSAR(IRepository repository, DefinitionsChildId id) {
-        return CsarExporter.DEFINITONS_PATH_PREFIX + CsarExporter.getDefinitionsFileName(repository, id);
+    public static String getDefinitionsPathInsideCSAR(IRepository repository, DefinitionsChildId id) {
+        return CsarExporter.DEFINITIONS_PATH_PREFIX + CsarExporter.getDefinitionsFileName(repository, id);
     }
 
     public CompletableFuture<String> writeCsarAndSaveManifestInProvenanceLayer(DefinitionsChildId entryId, OutputStream out)
@@ -158,6 +159,10 @@ public class CsarExporter {
         ExportedState exportedState = new ExportedState();
         DefinitionsChildId currentId = entryId;
         Collection<DefinitionsChildId> referencedIds;
+
+        if (entryId.isSelfContained()) {
+            exportConfiguration.put(CsarExportConfiguration.INCLUDE_HASHES.name(), true);
+        }
 
         // Process definitions and referenced files
         do {
@@ -252,9 +257,9 @@ public class CsarExporter {
             .storeState(filesMap)
             .get();
 
-        filesToStore.keySet().forEach((CsarContentProperties properties) -> {
-            properties.setImmutableAddress(addressMap.get(properties.getPathInsideCsar()));
-        });
+        filesToStore.keySet().forEach((CsarContentProperties properties) ->
+            properties.setImmutableAddress(addressMap.get(properties.getPathInsideCsar()))
+        );
     }
 
     /**
@@ -376,29 +381,31 @@ public class CsarExporter {
             boolean foundInclude = false;
             boolean included = false;
             boolean excluded = false;
-            for (TArtifactReference artifactReference : template.getArtifactReferences().getArtifactReference()) {
-                for (Object includeOrExclude : artifactReference.getIncludeOrExclude()) {
-                    if (includeOrExclude instanceof TArtifactReference.Include) {
-                        foundInclude = true;
-                        TArtifactReference.Include include = (TArtifactReference.Include) includeOrExclude;
-                        String reference = artifactReference.getReference();
-                        if (reference.endsWith("/")) {
-                            reference += include.getPattern();
-                        } else {
-                            reference += "/" + include.getPattern();
+            if (template.getArtifactReferences() != null) {
+                for (TArtifactReference artifactReference : template.getArtifactReferences().getArtifactReference()) {
+                    for (Object includeOrExclude : artifactReference.getIncludeOrExclude()) {
+                        if (includeOrExclude instanceof TArtifactReference.Include) {
+                            foundInclude = true;
+                            TArtifactReference.Include include = (TArtifactReference.Include) includeOrExclude;
+                            String reference = artifactReference.getReference();
+                            if (reference.endsWith("/")) {
+                                reference += include.getPattern();
+                            } else {
+                                reference += "/" + include.getPattern();
+                            }
+                            reference = reference.substring(1);
+                            included |= BackendUtils.isGlobMatch(reference, rootDir.relativize(file.toPath()));
+                        } else if (includeOrExclude instanceof TArtifactReference.Exclude) {
+                            TArtifactReference.Exclude exclude = (TArtifactReference.Exclude) includeOrExclude;
+                            String reference = artifactReference.getReference();
+                            if (reference.endsWith("/")) {
+                                reference += exclude.getPattern();
+                            } else {
+                                reference += "/" + exclude.getPattern();
+                            }
+                            reference = reference.substring(1);
+                            excluded |= BackendUtils.isGlobMatch(reference, rootDir.relativize(file.toPath()));
                         }
-                        reference = reference.substring(1);
-                        included |= BackendUtils.isGlobMatch(reference, rootDir.relativize(file.toPath()));
-                    } else if (includeOrExclude instanceof TArtifactReference.Exclude) {
-                        TArtifactReference.Exclude exclude = (TArtifactReference.Exclude) includeOrExclude;
-                        String reference = artifactReference.getReference();
-                        if (reference.endsWith("/")) {
-                            reference += exclude.getPattern();
-                        } else {
-                            reference += "/" + exclude.getPattern();
-                        }
-                        reference = reference.substring(1);
-                        excluded |= BackendUtils.isGlobMatch(reference, rootDir.relativize(file.toPath()));
                     }
                 }
             }
@@ -422,7 +429,7 @@ public class CsarExporter {
      * This is kind of a quick hack. TODO: during the import, the prefixes should be extracted using JAXB and stored in
      * the NamespacesResource
      */
-    private void addNamespacePrefixes(Map<CsarContentProperties, CsarEntry> refMap) throws IOException {
+    private void addNamespacePrefixes(Map<CsarContentProperties, CsarEntry> refMap) {
         // ensure that the namespaces are saved as json
         SortedSet<RepositoryFileReference> references = repository.getContainedFiles(new NamespacesId());
 
@@ -587,7 +594,7 @@ public class CsarExporter {
 
             stringBuilder.append(NAME).append(": ").append(fileProperties.getPathInsideCsar()).append("\n");
 
-            String mimeType = "";
+            String mimeType;
 
             if (csarEntry instanceof DocumentBasedCsarEntry) {
                 mimeType = MimeTypes.MIMETYPE_XSD;
@@ -618,5 +625,12 @@ public class CsarExporter {
         out.closeEntry();
 
         return manifestString;
+    }
+
+    public void writeSelfContainedCsar(IRepository repository, DefinitionsChildId entryId, OutputStream output, Map<String, Object> exportConfiguration) throws IOException, RepositoryCorruptException, InterruptedException, AccountabilityException, ExecutionException {
+        SelfContainmentPackager selfContainmentPackager = new SelfContainmentPackager(repository);
+        DefinitionsChildId newServiceTemplateId = selfContainmentPackager.createSelfContainedVersion(entryId);
+        exportConfiguration.put(CsarExportConfiguration.INCLUDE_DEPENDENCIES.name(), true);
+        this.writeCsar(newServiceTemplateId, output, exportConfiguration);
     }
 }

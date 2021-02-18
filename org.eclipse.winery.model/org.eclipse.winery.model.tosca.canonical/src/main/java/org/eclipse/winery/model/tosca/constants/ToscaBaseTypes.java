@@ -21,6 +21,8 @@ public class ToscaBaseTypes {
     public static final QName hostedOnRelationshipType = QName.valueOf("{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}HostedOn");
     public static final QName connectsToRelationshipType = QName.valueOf("{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}ConnectsTo");
     public static final QName dependsOnRelationshipType = QName.valueOf("{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}DependsOn");
+    public static final QName scriptArtifactType = QName.valueOf("{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}ScriptArtifact");
+    public static final QName archiveArtifactType = QName.valueOf("{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}ArchiveArtifact");
     
     public static final QName webserver = QName.valueOf("{http://docs.oasis-open.org/tosca/ToscaNormativeTypes/nodetypes}WebServer");
 }

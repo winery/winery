@@ -20,19 +20,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
+import java.util.stream.Collectors;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.ids.IdUtil;
-import org.eclipse.winery.repository.common.RepositoryFileReference;
-import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.model.ids.IdUtil;
 import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.ids.definitions.EntityTypeId;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.ids.definitions.TopologyGraphElementEntityTypeId;
@@ -49,6 +50,8 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.constants.Filename;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
@@ -114,10 +117,6 @@ public class ToscaExportUtil {
             .orElseThrow(() -> new RepositoryCorruptException("Definition not found!"));
     }
 
-    public enum ExportProperties {
-        REPOSITORY_URI
-    }
-
     /**
      * Completes the tosca xml in preparation to write it
      *
@@ -125,16 +124,11 @@ public class ToscaExportUtil {
      * @param exportConfiguration the configuration map for the export.
      * @return a collection of DefinitionsChildIds referenced by the given component
      */
-    public Collection<DefinitionsChildId> processTOSCA(IRepository repository, DefinitionsChildId id, CsarContentProperties definitionsFileProperties
-        , Map<String, Object> exportConfiguration) throws IOException, RepositoryCorruptException {
+    public Collection<DefinitionsChildId> processTOSCA(IRepository repository, DefinitionsChildId id,
+                                                       CsarContentProperties definitionsFileProperties,
+                                                       Map<String, Object> exportConfiguration) throws IOException, RepositoryCorruptException {
         this.exportConfiguration = exportConfiguration;
         return this.processDefinitionsElement(repository, id, definitionsFileProperties);
-    }
-
-    private void checkConfig(ExportProperties propKey, Boolean bo) {
-        if (!this.exportConfiguration.containsKey(propKey.toString())) {
-            this.exportConfiguration.put(propKey.toString(), bo);
-        }
     }
 
     /**
@@ -148,8 +142,8 @@ public class ToscaExportUtil {
      */
     // marked as public to allow access to the overridden implementation in YamlToscaExportUtil from YamlExporter
     public Collection<DefinitionsChildId> processTOSCA(IRepository repository, DefinitionsChildId id, CsarContentProperties definitionsFileProperties,
-                                                          Map<CsarContentProperties, CsarEntry> referencesToPathInCSARMap,
-                                                          Map<String, Object> exportConfiguration) throws IOException, RepositoryCorruptException {
+                                                       Map<CsarContentProperties, CsarEntry> referencesToPathInCSARMap,
+                                                       Map<String, Object> exportConfiguration) throws IOException, RepositoryCorruptException {
         this.referencesToPathInCSARMap = referencesToPathInCSARMap;
         return this.processTOSCA(repository, id, definitionsFileProperties, exportConfiguration);
     }
@@ -160,8 +154,8 @@ public class ToscaExportUtil {
      * @return a collection of DefinitionsChildIds referenced by the given component
      * @throws RepositoryCorruptException if tcId does not exist
      */
-    protected Collection<DefinitionsChildId> processDefinitionsElement(IRepository repository, DefinitionsChildId tcId, CsarContentProperties definitionsFileProperties)
-        throws RepositoryCorruptException, IOException {
+    protected Collection<DefinitionsChildId> processDefinitionsElement(IRepository repository, DefinitionsChildId tcId,
+                                                                       CsarContentProperties definitionsFileProperties) throws RepositoryCorruptException, IOException {
         if (!repository.exists(tcId)) {
             String error = "Component instance " + tcId.toReadableString() + " does not exist.";
             ToscaExportUtil.LOGGER.error(error);
@@ -189,7 +183,7 @@ public class ToscaExportUtil {
         // we modify the internal definitions object directly. It is not written back to the storage. Therefore, we do not need to clone it
 
         // the imports (pointing to not-definitions (xsd, wsdl, ...)) already have a correct relative URL. (quick hack)
-        URI uri = (URI) this.exportConfiguration.get(ExportProperties.REPOSITORY_URI.toString());
+        URI uri = (URI) this.exportConfiguration.get(CsarExportConfiguration.REPOSITORY_URI.name());
         if (uri != null) {
             // we are in the plain-XML mode, the URLs of the imports have to be adjusted
             for (TImport i : entryDefinitions.getImport()) {
@@ -215,6 +209,25 @@ public class ToscaExportUtil {
                 fileName = EncodingUtil.URLdecode(fileName);
                 RepositoryFileReference ref = new RepositoryFileReference(iid, fileName);
                 putRefAsReferencedItemInCsar(repository, ref);
+            }
+        }
+
+        Set<DefinitionsChildId> collect = referencedDefinitionsChildIds.stream()
+            .filter(id -> id instanceof NodeTypeImplementationId)
+            .collect(Collectors.toSet());
+        if (collect.stream().anyMatch(DefinitionsChildId::isSelfContained)) {
+            if (this.exportConfiguration.containsKey(CsarExportConfiguration.INCLUDE_DEPENDENCIES.name())) {
+                referencedDefinitionsChildIds.removeAll(
+                    collect.stream()
+                        .filter(id -> !id.isSelfContained())
+                        .collect(Collectors.toList())
+                );
+            } else if (collect.size() > 1 && collect.stream().anyMatch(id -> !id.isSelfContained())) {
+                referencedDefinitionsChildIds.removeAll(
+                    collect.stream()
+                        .filter(DefinitionsChildId::isSelfContained)
+                        .collect(Collectors.toList())
+                );
             }
         }
 
@@ -262,7 +275,7 @@ public class ToscaExportUtil {
                     // XSD has to be put into the CSAR
                     Document document = ModelUtilities.getWinerysPropertiesDefinitionXsdAsDocument(wpd);
 
-                    // loc in import is URLencoded, loc on filesystem isn't
+                    // loc in import is URL encoded, loc on filesystem isn't
                     String locInCSAR = EncodingUtil.URLdecode(loc);
                     // furthermore, the path has to start from the root of the CSAR; currently, it starts from Definitions/
                     locInCSAR = locInCSAR.substring(3);
@@ -287,7 +300,6 @@ public class ToscaExportUtil {
 
                 // END: generate TOSCA conforming PropertiesDefinition
             } else {
-                //noinspection StatementWithEmptyBody
                 // otherwise WPD exists, but is derived from XSD
                 // we DO NOT have to remove the winery properties definition from the output to allow "debugging" of the CSAR
             }
@@ -297,7 +309,7 @@ public class ToscaExportUtil {
     /**
      * Prepares the given id for export. Mostly, the contained files are added to the CSAR.
      */
-    private void getPrepareForExport(IRepository repository, DefinitionsChildId id) throws RepositoryCorruptException, IOException {
+    private void getPrepareForExport(IRepository repository, DefinitionsChildId id) throws IOException {
         // prepareForExport adds the contained files to the CSAR, not the referenced ones.
         // These are added later
         if (id instanceof ServiceTemplateId) {
@@ -318,7 +330,7 @@ public class ToscaExportUtil {
         TImport imp = new TImport();
         imp.setImportType(Namespaces.TOSCA_NAMESPACE);
         imp.setNamespace(id.getNamespace().getDecoded());
-        URI uri = (URI) this.exportConfiguration.get(ToscaExportUtil.ExportProperties.REPOSITORY_URI.toString());
+        URI uri = (URI) this.exportConfiguration.get(CsarExportConfiguration.REPOSITORY_URI.name());
         if (uri == null) {
             // self-contained mode
             // all Definitions are contained in "Definitions" directory, therefore, we provide the filename only
@@ -372,7 +384,7 @@ public class ToscaExportUtil {
      *
      * @return a collection of referenced definition child Ids
      */
-    protected void prepareForExport(IRepository repository, ArtifactTemplateId id) throws RepositoryCorruptException, IOException {
+    protected void prepareForExport(IRepository repository, ArtifactTemplateId id) throws IOException {
         // Export files
 
         // This method is called BEFORE the concrete definitions element is written.

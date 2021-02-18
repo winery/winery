@@ -26,6 +26,11 @@ public class OpenToscaBaseTypes {
     public static final QName OperatingSystem = QName.valueOf("{http://opentosca.org/nodetypes}OperatingSystem");
     public static final QName Ubuntu18NodeType = QName.valueOf("{http://opentosca.org/nodetypes}Ubuntu-VM_18.04-w1");
     
+    public static final QName ubuntuNodeTypeImpl = QName.valueOf("{http://opentosca.org/nodetypeimplementations}Ubuntu-VM");
+    public static final QName ubuntuNodeType = QName.valueOf("{http://opentosca.org/nodetypes}Ubuntu-VM");
+    public static final QName dockerContainerNodeType = QName.valueOf("{http://opentosca.org/nodetypes}DockerContainer");
+    public static final QName dockerContainerArtifactType = QName.valueOf("{http://opentosca.org/artifacttypes}DockerContainerArtifact");
+
     // region ********** secure elements **********
     public static final QName secureProxyContainer = QName.valueOf("{http://opentosca.org/secureelements/nodetypes}SecureProxyContainer");
     public static final QName secureProxy = QName.valueOf("{http://opentosca.org/secureelements/nodetypes}SecureProxy");
@@ -33,6 +38,8 @@ public class OpenToscaBaseTypes {
 
     // region ********** freeze and defrost **********
     public static final QName stateArtifactType = QName.valueOf("{http://opentosca.org/artifacttypes}State");
+    public static final QName isoArtifactType = QName.valueOf("{http://opentosca.org/artifacttypes}ISO");
+    public static final QName cloudImageArtifactType = QName.valueOf("{http://opentosca.org/artifacttypes}CloudImage");
     public static final QName statefulComponentPolicyType = QName.valueOf("{http://opentosca.org/policytypes}StatefulComponent");
     public static final QName freezableComponentPolicyType = QName.valueOf("{http://opentosca.org/policytypes}FreezableComponent");
     // endregion
@@ -40,4 +47,7 @@ public class OpenToscaBaseTypes {
     // region ********** management features **********
     public static final QName managementFeatureRequirement = QName.valueOf("{http://opentosca.org/management/features/requirementtypes}FeatureRequirement");
     // endregion
+    
+    public static final String namespaceBase = "http://opentosca.org/";
+    public static final String artifactTemplateNamespace = namespaceBase + "artifacttemplates";
 }

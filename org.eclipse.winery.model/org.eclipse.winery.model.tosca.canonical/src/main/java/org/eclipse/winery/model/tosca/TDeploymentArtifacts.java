@@ -55,7 +55,8 @@ public class TDeploymentArtifacts implements Serializable {
     protected List<TDeploymentArtifact> deploymentArtifact;
 
     @Deprecated // used for XML deserialization of API request content
-    public TDeploymentArtifacts() { }
+    public TDeploymentArtifacts() {
+    }
 
     public TDeploymentArtifacts(Builder builder) {
         this.deploymentArtifact = builder.deploymentArtifact;
@@ -65,10 +66,9 @@ public class TDeploymentArtifacts implements Serializable {
      * Gets the value of the deploymentArtifact property.
      * <p>
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the deploymentArtifact property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to
+     * the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for
+     * the deploymentArtifact property.
      * <p>
      * <p>
      * For example, to add a new item, do as follows:
@@ -78,13 +78,12 @@ public class TDeploymentArtifacts implements Serializable {
      * <p>
      * <p>
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link TDeploymentArtifact }
+     * Objects of the following type(s) are allowed in the list {@link TDeploymentArtifact }
      */
     @NonNull
     public List<TDeploymentArtifact> getDeploymentArtifact() {
         if (deploymentArtifact == null) {
-            deploymentArtifact = new ArrayList<TDeploymentArtifact>();
+            deploymentArtifact = new ArrayList<>();
         }
         return this.deploymentArtifact;
     }
@@ -117,6 +116,10 @@ public class TDeploymentArtifacts implements Serializable {
     public static class Builder {
         private final List<TDeploymentArtifact> deploymentArtifact;
 
+        public Builder() {
+            this(new ArrayList<>());
+        }
+        
         public Builder(List<TDeploymentArtifact> deploymentArtifact) {
             this.deploymentArtifact = deploymentArtifact;
         }

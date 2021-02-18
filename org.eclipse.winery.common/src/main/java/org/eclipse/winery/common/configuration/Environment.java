@@ -140,7 +140,7 @@ final class Environment {
             try {
                 lastChange = Files.getLastModifiedTime(DEFAULT_CONFIG_FILE.toPath());
             } catch (IOException e) {
-                LOGGER.debug("Error while accessing the last changed time.", e);
+                LOGGER.error("Error while accessing the last changed time.", e);
             }
             configFile = DEFAULT_CONFIG_FILE;
         }
@@ -150,7 +150,7 @@ final class Environment {
             config = new YAMLConfiguration();
             config.read(reader);
         } catch (ConfigurationException | IOException ex) {
-            LOGGER.debug("Error while reading configuration file.", ex);
+            LOGGER.error("Error while reading configuration file.", ex);
         }
         this.config = config;
         this.configFile = configFile;
@@ -160,7 +160,7 @@ final class Environment {
      * Method copies the default winery.yml file (all flags are true) into the config directory of the winery in
      * HOME/.winery. If the directory doesn't exist it will be created.
      */
-    private void copyDefaultConfigFile() {
+    void copyDefaultConfigFile() {
         try (InputStream defaultConfigInputStream = getDefaultConfigInputStream()) {
             if (defaultConfigInputStream == null) {
                 throw new NullPointerException();

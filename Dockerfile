@@ -1,7 +1,7 @@
 FROM maven:3-jdk-8 as builder
 COPY . /tmp/winery
 WORKDIR /tmp/winery
-RUN mvn package -DskipTests=true -Dmaven.javadoc.skip=true -B
+RUN mvn package -DskipTests=true -Dcheckstyle.skip=true -Dmaven.javadoc.skip=true -B
 
 FROM tomcat:9-jdk8
 LABEL maintainer = "Oliver Kopp <kopp.dev@gmail.com>, Michael Wurster <miwurster@gmail.com>, Lukas Harzenetter <lharzenetter@gmx.de>"

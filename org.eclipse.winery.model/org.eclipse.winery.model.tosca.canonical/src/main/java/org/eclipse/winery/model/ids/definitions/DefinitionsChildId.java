@@ -29,6 +29,7 @@ import org.eclipse.winery.model.ids.extensions.ComplianceRuleId;
 import org.eclipse.winery.model.ids.extensions.PatternRefinementModelId;
 import org.eclipse.winery.model.ids.extensions.TestRefinementModelId;
 import org.eclipse.winery.model.ids.extensions.TopologyFragmentRefinementModelId;
+import org.eclipse.winery.model.version.VersionSupport;
 
 /**
  * Identifies a definitions child. Each component is required to be identified subclasses this class
@@ -169,5 +170,11 @@ public abstract class DefinitionsChildId extends GenericId {
     
     public WineryVersion getVersion() {
         return VersionUtils.getVersion(getXmlId().getDecoded());
+    }
+
+    public boolean isSelfContained() {
+        WineryVersion version = getVersion();
+        return version.getComponentVersion() != null
+            && version.getComponentVersion().endsWith(VersionSupport.SELF_CONTAINMENT_VERSION_SUFFIX);
     }
 }

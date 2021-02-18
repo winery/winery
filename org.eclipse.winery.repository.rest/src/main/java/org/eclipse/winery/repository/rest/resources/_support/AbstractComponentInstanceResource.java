@@ -249,12 +249,13 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 
     @GET
     @Produces(MimeTypes.MIMETYPE_ZIP)
-    public final Response getCSAR(@QueryParam(value = "addToProvenance") String addToProvenance) {
+    public final Response getCSAR(@QueryParam(value = "addToProvenance") String addToProvenance, @QueryParam(value = "includeDependencies") String includeDependencies) {
         if (!requestRepository.exists(this.id)) {
             return Response.status(Status.NOT_FOUND).build();
         }
         CsarExportOptions options = new CsarExportOptions();
         options.setAddToProvenance(Objects.nonNull(addToProvenance));
+        options.setIncludeDependencies(Objects.nonNull(includeDependencies));
         return RestUtils.getCsarOfSelectedResource(this, options);
     }
 
@@ -271,6 +272,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         @QueryParam(value = "edmm") String edmm,
         @QueryParam(value = "edmmUseAbsolutePaths") String edmmUseAbsolutePaths,
         @QueryParam(value = "addToProvenance") String addToProvenance,
+        @QueryParam(value = "includeDependencies") String includeDependencies,
         @Context UriInfo uriInfo
     ) {
         if (!requestRepository.exists(this.id)) {
@@ -294,7 +296,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         } else {
             CsarExportOptions options = new CsarExportOptions();
             options.setAddToProvenance(Objects.nonNull(addToProvenance));
-
+            options.setIncludeDependencies(Objects.nonNull(includeDependencies));
             return RestUtils.getCsarOfSelectedResource(this, options);
         }
     }
@@ -328,6 +330,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         @QueryParam(value = "yaml") String yaml,
         @QueryParam(value = "edmm") String edmm,
         @QueryParam(value = "addToProvenance") String addToProvenance,
+        @QueryParam(value = "includeDependencies") String includeDependencies,
         @QueryParam(value = "edmmUseAbsolutePaths") String edmmUseAbsolutePaths,
         @QueryParam(value = "xml") String xml,
         @Context UriInfo uriInfo) {
@@ -335,7 +338,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         // thus, there is the hack with ?csar and ?yaml
         // the hack is implemented at getDefinitionsAsResponse
         if ((csar != null) || (yaml != null) || (xml != null) || (edmm != null)) {
-            return this.getDefinitionsAsResponse(csar, yaml, edmm, edmmUseAbsolutePaths, addToProvenance, uriInfo);
+            return this.getDefinitionsAsResponse(csar, yaml, edmm, edmmUseAbsolutePaths, addToProvenance, includeDependencies, uriInfo);
         }
         String repositoryUiUrl = Environments.getInstance().getUiConfig().getEndpoints().get("repositoryUiUrl");
         String uiUrl = uriInfo.getAbsolutePath().toString().replaceAll(Environments.getInstance().getUiConfig().getEndpoints().get("repositoryApiUrl"), repositoryUiUrl);
