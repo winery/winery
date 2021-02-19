@@ -25,6 +25,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.xml.namespace.QName;
 
@@ -74,6 +75,7 @@ public class TopologyFragmentRefinementModelResource extends AbstractRefinementM
     @PUT
     @Path("graphicPrmTopology")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Override
     public TopologyTemplateResource savePrmMappingTopology(TTopologyTemplate topologyTemplate) {
         this.getTRefinementModel().resetAllMappings();

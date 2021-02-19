@@ -43,4 +43,20 @@ public class PatternRefinementModelResourceTest extends AbstractResourceTest {
         this.assertGet("patternrefinementmodels/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fpatternrefinementmodels/PropertyMappingsTest_w1-wip1/attributemappings",
             "patternrefinementmodels/prmRelationMappings.json");
     }
+
+    @Test
+    public void getPrmForTopologyModeler() throws Exception {
+        this.setRevisionTo("origin/plain");
+        this.assertGet("patternrefinementmodels/http%253A%252F%252Fopentosca.org%252Fpatternrefinementmodels/graficModelingTest_w1-wip1/grafikprmmodelling",
+            "patternrefinementmodels/loadPrmToTopologymodeler.xml");
+    }
+
+    @Test
+    public void saveGraphicPrmToFile() throws Exception {
+        this.setRevisionTo("origin/plain");
+        this.assertPutWithResponse("patternrefinementmodels/http%253A%252F%252Fopentosca.org%252Fpatternrefinementmodels/graficModelingSaveTest/graphicPrmTopology",
+            "patternrefinementmodels/createPrmMappingsFromTopologymodeler.json");
+        this.assertGet("patternrefinementmodels/http%253A%252F%252Fopentosca.org%252Fpatternrefinementmodels/graficModelingSaveTest/xml",
+            "patternrefinementmodels/graphicModelingTest.xml");
+    }
 }
