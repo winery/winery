@@ -271,15 +271,19 @@ public class YamlToscaExportUtil extends ToscaExportUtil {
                                 String pathInsideRepo = putRemoteRefAsReferencedItemInCsar(new URL(a.getFile()), serviceTemplatePath, templateArtifactPath);
                                 updatePathsInTopologyTemplateArtifacts(entryDefinitions, nodeTemplate, a, pathInsideRepo);
                             } catch (MalformedURLException e) {
-                                e.printStackTrace();
+                                LOGGER.warn("Supplied URL is invalid: {}", e.getMessage());
                             }
                         } else {
                             Path p = Paths.get("files", nodeTemplate.getId(), a.getId());
                             RepositoryFileReference ref = new RepositoryFileReference(id, p, a.getFile());
-                            if (repository.exists(ref)) {
-                                putRefAsReferencedItemInCsar(repository, ref);
-                                String pathInsideRepo = BackendUtils.getPathInsideRepo(ref);
-                                updatePathsInTopologyTemplateArtifacts(entryDefinitions, nodeTemplate, a, pathInsideRepo);
+                            try {
+                                if (repository.exists(ref)) {
+                                    putRefAsReferencedItemInCsar(repository, ref);
+                                    String pathInsideRepo = BackendUtils.getPathInsideRepo(ref);
+                                    updatePathsInTopologyTemplateArtifacts(entryDefinitions, nodeTemplate, a, pathInsideRepo);
+                                }
+                            } catch (Exception e) {
+                                LOGGER.warn("Could not add artifact reference: {}", e.getMessage());
                             }
                         }
                     });
