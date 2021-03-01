@@ -94,7 +94,7 @@ public class YamlCsarImporter extends CsarImporter {
         try {
             serviceTemplate = reader.parse(new FileInputStream(entryDefinitionsPath.toFile()));
 
-            String name= serviceTemplate.getMetadata().get("name");
+            String name = serviceTemplate.getMetadata().get("name");
             if (name == null) {
                 // fallback to filename
                 name = entryDefinitionsPath.toString().substring(entryDefinitionsPath.toString().indexOf("__") + 2, entryDefinitionsPath.toString().indexOf(".tosca"));
