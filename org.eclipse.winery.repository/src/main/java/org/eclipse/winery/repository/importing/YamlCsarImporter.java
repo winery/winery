@@ -94,14 +94,14 @@ public class YamlCsarImporter extends CsarImporter {
         try {
             serviceTemplate = reader.parse(new FileInputStream(entryDefinitionsPath.toFile()));
 
-            // TODO: store service template's name in metadata to simplify the import
-            String serviceTemplateName = entryDefinitionsPath.toString().substring(
-                entryDefinitionsPath.toString().indexOf("__") + 2,
-                entryDefinitionsPath.toString().indexOf(".tosca")
-            );
+            String name = serviceTemplate.getMetadata().get("name");
+            if (name == null) {
+                // fallback to filename
+                name = entryDefinitionsPath.toString().substring(entryDefinitionsPath.toString().indexOf("__") + 2, entryDefinitionsPath.toString().indexOf(".tosca"));
+            }
 
             ToCanonical converter = new ToCanonical(targetRepository);
-            return Optional.of(converter.convert(serviceTemplate, serviceTemplateName, serviceTemplate.getMetadata().get("targetNamespace"), true));
+            return Optional.of(converter.convert(serviceTemplate, name, serviceTemplate.getMetadata().get("targetNamespace"), true));
         } catch (MultiException | FileNotFoundException e) {
             e.printStackTrace();
             LOGGER.error("Could not read the given entry definition " + e.getMessage());
