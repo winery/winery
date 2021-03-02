@@ -63,7 +63,7 @@ export class ConstraintChecking {
                 return checked >= constraint.value[0]
                     && (checked <= constraint.value[1] || constraint.value[1] === 'UNBOUNDED');
             case ConstraintOperator.valid_values:
-                return constraint.value.some(v => checked === v);
+                return constraint.value.some(v => String(checked) === v);
             case ConstraintOperator.length:
                 return checked.length === constraint.value;
             case ConstraintOperator.min_length:
