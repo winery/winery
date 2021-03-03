@@ -114,27 +114,27 @@ public class RepositoryAdminResource {
     @POST
     @Path("touch")
     public Response touchAllDefinitions() {
-        IRepository repository = RepositoryFactory.getRepository();
-        SortedSet<DefinitionsChildId> definitionIds = Stream.of(
-            ArtifactTypeId.class,
-            CapabilityTypeId.class,
-            NodeTypeId.class,
-            PolicyTypeId.class,
-            RelationshipTypeId.class,
-            RequirementTypeId.class,
-            ServiceTemplateId.class,
-            DataTypeId.class
-        ).flatMap(id -> repository.getAllDefinitionsChildIds(id).stream())
-            .collect(Collectors.toCollection(TreeSet::new));
-        for (DefinitionsChildId id : definitionIds) {
-            try {
+        try {
+            IRepository repository = RepositoryFactory.getRepository();
+            SortedSet<DefinitionsChildId> definitionIds = Stream.of(
+                ArtifactTypeId.class,
+                CapabilityTypeId.class,
+                NodeTypeId.class,
+                PolicyTypeId.class,
+                RelationshipTypeId.class,
+                RequirementTypeId.class,
+                ServiceTemplateId.class,
+                DataTypeId.class
+            ).flatMap(id -> repository.getAllDefinitionsChildIds(id).stream())
+                .collect(Collectors.toCollection(TreeSet::new));
+            for (DefinitionsChildId id : definitionIds) {
                 TDefinitions definitions = repository.getDefinitions(id);
                 BackendUtils.persist(repository, id, definitions);
-            } catch (Exception e) {
-                LOGGER.error("Could not persist definition: {}", id);
-                return Response.serverError().build();
             }
+            return Response.ok().build();
+        } catch (Exception e) {
+            LOGGER.error("Error touching types: {}", e.getMessage(), e);
+            return Response.serverError().build();
         }
-        return Response.ok().build();
     }
 }
