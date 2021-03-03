@@ -656,8 +656,8 @@ public abstract class ModelUtilities {
         if (relationshipTemplate.getTargetElement().getRef() instanceof TCapability) {
             TCapability capability = (TCapability) relationshipTemplate.getTargetElement().getRef();
             return topologyTemplate.getNodeTemplates().stream()
-                .filter(nt -> nt.getRequirements() != null
-                    && nt.getRequirements().getRequirement().contains(capability))
+                .filter(nt -> nt.getCapabilities() != null
+                    && nt.getCapabilities().getCapability().contains(capability))
                 .findAny().get();
         } else {
             return (TNodeTemplate) relationshipTemplate.getTargetElement().getRef();
