@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -77,6 +77,12 @@ public class EdmmTypeProperties {
                 entityGraph.addEntity(new ScalarEntity(EdmmType.SOFTWARE_COMPONENT.getValue(), webServerId.extend(DefaultKeys.EXTENDS), entityGraph));
                 getDefaultConfiguration(EdmmType.SOFTWARE_COMPONENT, entityGraph);
                 break;
+            case GO:
+                EntityId goId = EntityGraph.COMPONENT_TYPES.extend(EdmmType.GO.getValue());
+                entityGraph.addEntity(new MappingEntity(goId, entityGraph));
+                entityGraph.addEntity(new ScalarEntity(EdmmType.WEB_SERVER.getValue(), goId.extend(DefaultKeys.EXTENDS), entityGraph));
+                getDefaultConfiguration(EdmmType.WEB_SERVER, entityGraph);
+                break;
             case CONNECTS_TO:
                 EntityId connectsToId = EntityGraph.RELATION_TYPES.extend(EdmmType.CONNECTS_TO.getValue());
                 entityGraph.addEntity(new MappingEntity(connectsToId, entityGraph));
@@ -135,6 +141,30 @@ public class EdmmTypeProperties {
                 entityGraph.addEntity(new ScalarEntity(EdmmType.SAAS.getValue(), e.extend(DefaultKeys.EXTENDS), entityGraph));
                 getDefaultConfiguration(EdmmType.SAAS, entityGraph);
                 break;
+            case MOM:
+                EntityId momId = EntityGraph.COMPONENT_TYPES.extend(EdmmType.MOM.getValue());
+                entityGraph.addEntity(new MappingEntity(momId, entityGraph));
+                entityGraph.addEntity(new ScalarEntity(EdmmType.SOFTWARE_COMPONENT.getValue(), momId.extend(DefaultKeys.EXTENDS), entityGraph));
+                getDefaultConfiguration(EdmmType.SOFTWARE_COMPONENT, entityGraph);
+                break;
+            case RABBITMQ:
+                EntityId rabbitMqId = EntityGraph.COMPONENT_TYPES.extend(EdmmType.RABBITMQ.getValue());
+                entityGraph.addEntity(new MappingEntity(rabbitMqId, entityGraph));
+                entityGraph.addEntity(new ScalarEntity(EdmmType.MOM.getValue(), rabbitMqId.extend(DefaultKeys.EXTENDS), entityGraph));
+                getDefaultConfiguration(EdmmType.MOM, entityGraph);
+                break;
+            case MONGODB:
+                EntityId mongoId = EntityGraph.COMPONENT_TYPES.extend(EdmmType.MONGODB.getValue());
+                entityGraph.addEntity(new MappingEntity(mongoId, entityGraph));
+                entityGraph.addEntity(new ScalarEntity(EdmmType.DBMS.getValue(), mongoId.extend(DefaultKeys.EXTENDS), entityGraph));
+                getDefaultConfiguration(EdmmType.DBMS, entityGraph);
+                break;
+            case MONGODB_SCHEMA:
+                EntityId mongoSchemaId = EntityGraph.COMPONENT_TYPES.extend(EdmmType.MONGODB_SCHEMA.getValue());
+                entityGraph.addEntity(new MappingEntity(mongoSchemaId, entityGraph));
+                entityGraph.addEntity(new ScalarEntity(EdmmType.DATABASE.getValue(), mongoSchemaId.extend(DefaultKeys.EXTENDS), entityGraph));
+                getDefaultConfiguration(EdmmType.DATABASE, entityGraph);
+                break;                
         }
     }
 }

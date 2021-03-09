@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,7 +15,8 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { InstanceService } from '../../instance.service';
 import { PropertiesDefinitionService } from './propertiesDefinition.service';
 import {
-    PropertiesDefinition, PropertiesDefinitionEnum, PropertiesDefinitionKVElement, PropertiesDefinitionsResourceApiData, WinerysPropertiesDefinition
+    PropertiesDefinition, PropertiesDefinitionEnum, PropertiesDefinitionKVElement, PropertiesDefinitionsResourceApiData,
+    WinerysPropertiesDefinition
 } from './propertiesDefinitionsResourceApiData';
 import { SelectData } from '../../../model/selectData';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
@@ -27,7 +28,7 @@ import { DynamicTextData } from '../../../wineryDynamicTable/formComponents/dyna
 import { Validators } from '@angular/forms';
 import { DynamicDropdownData } from '../../../wineryDynamicTable/formComponents/dynamicDropdown.component';
 import { DynamicConstraintsData } from '../../../wineryDynamicTable/formComponents/dynamicConstraints/dynamicConstraints.component';
-import { XmlTypes, YamlTypes } from '../../../model/parameters';
+import { XmlTypes } from '../../../model/parameters';
 import { WineryRowData, WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
 import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
@@ -48,7 +49,7 @@ const winery_properties_columns: Array<WineryTableColumn> = [
     { title: 'Required', name: 'required' },
     { title: 'Default Value', name: 'defaultValue' },
     { title: 'Description', name: 'description' },
-    { title: 'Constraints', name: 'constraints', display: joinList},
+    { title: 'Constraints', name: 'constraints', display: joinList },
 ];
 const yaml_columns: Array<WineryTableColumn> = [
     { title: 'Name', name: 'name', sort: true },
@@ -95,7 +96,7 @@ export class PropertiesDefinitionComponent implements OnInit {
     validatorObject: WineryValidatorObject;
     availableTypes: string[] = [];
     private yamlTypes: string[] = [];
-    private xmlTypes: string[] = ['xsd:string', 'xsd:float', 'xsd:decimal', 'xsd:anyURI', 'xsd:QName'];
+    private xmlTypes: string[] = ['xsd:string', 'xsd:float', 'xsd:decimal', 'xsd:anyURI', 'xsd:QName', 'xsd:integer'];
 
     @ViewChild('confirmDeleteModal')
     confirmDeleteModal: ModalDirective;
@@ -160,12 +161,13 @@ export class PropertiesDefinitionComponent implements OnInit {
                 { label: 'xsd:float', value: 'xsd:float' },
                 { label: 'xsd:decimal', value: 'xsd:decimal' },
                 { label: 'xsd:anyURI', value: 'xsd:anyURI' },
-                { label: 'xsd:QName', value: 'xsd:QName' }
+                { label: 'xsd:QName', value: 'xsd:QName' },
+                { label: 'xsd:integer', value: 'xsd:integer' },
             ];
             this.dynamicTableData.push(new DynamicDropdownData<XmlTypes>('type', 'Type', options, 1));
         } else {
-        // FIXME the dynamic table form generation currently has no way of dealing with Yaml's type system that includes key_schema and entry_schema
-        //  So we're just going to loudly complain and leave it at that
+            // FIXME the dynamic table form generation currently has no way of dealing with Yaml's type system that includes key_schema and entry_schema
+            //  So we're just going to loudly complain and leave it at that
             console.warn('attempting to initialize dynamic winery table with a yaml repository. This DOES NOT WORK right now!');
         }
         // else {
@@ -473,6 +475,7 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.save();
         this.copyToTable();
     }
+
     // region ########## Table Callbacks ##########
     onChangeProperty() {
         this.save();
@@ -634,6 +637,7 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.loading = false;
         this.notify.error(error.message, 'Error');
     }
+
     // endregion
 }
 

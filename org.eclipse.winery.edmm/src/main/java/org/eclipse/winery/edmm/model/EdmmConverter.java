@@ -186,9 +186,10 @@ public class EdmmConverter {
     }
 
     private void createProperties(TEntityTemplate toscaTemplate, EntityId componentNodeId, EntityGraph entityGraph) {
+        EntityId propertiesEntityId = componentNodeId.extend(DefaultKeys.PROPERTIES);
+        entityGraph.addEntity(new MappingEntity(propertiesEntityId, entityGraph));
+
         if (Objects.nonNull(toscaTemplate.getProperties()) && Objects.nonNull(ModelUtilities.getPropertiesKV(toscaTemplate))) {
-            EntityId propertiesEntityId = componentNodeId.extend(DefaultKeys.PROPERTIES);
-            entityGraph.addEntity(new MappingEntity(propertiesEntityId, entityGraph));
 
             ModelUtilities.getPropertiesKV(toscaTemplate)
                 .forEach((key, value) -> {
@@ -196,6 +197,14 @@ public class EdmmConverter {
                     entityGraph.addEntity(new ScalarEntity(value, propertyEntityId, entityGraph));
                 });
         }
+
+        // add name as property
+        String name = toscaTemplate.getName();
+        if (name == null) {
+            name = toscaTemplate.getId();
+        }
+        EntityId propertyEntityId = propertiesEntityId.extend("name");
+        entityGraph.addEntity(new ScalarEntity(name, propertyEntityId, entityGraph));
     }
 
     private EntityId createType(TEntityType toscaType, EntityId parentEntityId, EntityGraph entityGraph) {
