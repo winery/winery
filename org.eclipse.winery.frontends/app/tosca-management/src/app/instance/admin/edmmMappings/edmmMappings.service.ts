@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -37,6 +37,12 @@ export enum EdmmType {
     AWS_AURORA = 'aws_aurora',
     SAAS = 'saas',
     AUTH0 = 'auth0',
+    GO = 'go',
+    MOM = 'mom',
+    RABBITMQ = 'rabbitmq',
+    MONGODB = 'mongodb',
+    MONGODB_SCHEMA = 'mongodb_schema',
+
     // relation types
     CONNECTS_TO = 'connects_to',
     DEPENDS_ON = 'depends_on',

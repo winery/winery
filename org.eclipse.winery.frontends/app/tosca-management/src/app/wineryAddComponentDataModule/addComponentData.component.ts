@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -180,13 +180,13 @@ export class WineryAddComponentDataComponent {
         const newVersion = WineryVersion.WINERY_VERSION_PREFIX + 1 + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_WORK_IN_PROGRESS_PREFIX + 1;
         this.newComponentFinalName = nodeType;
         if (operation) {
-            this.newComponentVersion.componentVersion = (wineryVersion.componentVersion
+            this.newComponentVersion.componentVersion = (wineryVersion && wineryVersion.componentVersion
                 ? wineryVersion.componentVersion + WineryVersion.WINERY_VERSION_SEPARATOR
                 : '')
                 + operation
                 + (isImplementationArtifact ? '' : '-' + artifactType);
         } else {
-            this.newComponentVersion.componentVersion = (wineryVersion.getComponentVersion()
+            this.newComponentVersion.componentVersion = (wineryVersion && wineryVersion.getComponentVersion()
                 ? wineryVersion.componentVersion + WineryVersion.WINERY_VERSION_SEPARATOR
                 : '')
                 + artifactType;
