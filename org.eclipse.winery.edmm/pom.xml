@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2020 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2020-2021 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>com.github.UST-EDMM.edmm</groupId>
             <artifactId>edmm-core</artifactId>
-            <version>v1.0.9</version>
+            <version>${edmm.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.winery</groupId>

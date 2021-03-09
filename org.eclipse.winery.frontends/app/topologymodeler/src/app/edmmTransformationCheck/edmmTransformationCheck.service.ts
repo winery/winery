@@ -65,9 +65,4 @@ export class EdmmTransformationCheckService {
         const edmmUrl = this.backendService.configuration.parentElementUrl + 'edmm/one-to-one-map';
         return this.http.get<Map<string, string>>(edmmUrl);
     }
-
-    createPlaceholderScripts(componentType: string) {
-        const edmmUrl = this.backendService.configuration.parentElementUrl + 'edmm/create-placeholders-scripts';
-        this.http.post(edmmUrl, componentType).subscribe();
-    }
 }

@@ -487,69 +487,21 @@
     {
         "id": "kubernetes",
         "name": "Kubernetes",
-        "supports": 0.4,
+        "supports": 0.8,
         "replacementRules": [
-            {
-                "reason": "unsupported",
-                "unsupportedComponents": [
-                    "Auth0"
-                ],
-                "toTopology": {
-                    "WebServer": {
-                        "relations": [
-                            {
-                                "hosted_on": "Compute"
-                            }
-                        ],
-                        "type": "web_server"
-                    },
-                    "Compute": {
-                        "type": "compute"
-                    },
-                    "WebApplication": {
-                        "relations": [
-                            {
-                                "hosted_on": "WebServer"
-                            }
-                        ],
-                        "type": "web_application"
-                    }
-                },
-                "unsupported": true
-            },
-            {
-                "reason": "unsupported",
-                "unsupportedComponents": [
-                    "AWS_Aurora"
-                ],
-                "toTopology": {
-                    "Dbms": {
-                        "relations": [
-                            {
-                                "hosted_on": "Compute"
-                            }
-                        ],
-                        "type": "dbms"
-                    },
-                    "Compute": {
-                        "type": "compute"
-                    }
-                },
-                "unsupported": true
-            },
             {
                 "reason": "unsupported",
                 "unsupportedComponents": [
                     "AWS_Beanstalk"
                 ],
                 "toTopology": {
-                    "WebServer": {
+                    "Tomcat": {
                         "relations": [
                             {
                                 "hosted_on": "Compute"
                             }
                         ],
-                        "type": "web_server"
+                        "type": "tomcat"
                     },
                     "Compute": {
                         "type": "compute"

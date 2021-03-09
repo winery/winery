@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -54,7 +54,7 @@ public class EdmmConverterTest extends EdmmDependantTest {
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
-        assertEquals(9, transform.vertexSet().size());
+        assertEquals(11, transform.vertexSet().size());
     }
 
     @Test
@@ -72,7 +72,7 @@ public class EdmmConverterTest extends EdmmDependantTest {
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
-        assertEquals(9, transform.vertexSet().size());
+        assertEquals(11, transform.vertexSet().size());
         assertTrue(transform.vertexSet().stream().anyMatch(entity ->
             entity instanceof ScalarEntity
                 && entity.getName().equals("extends")
@@ -94,7 +94,7 @@ public class EdmmConverterTest extends EdmmDependantTest {
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
-        assertEquals(20, transform.vertexSet().size());
+        assertEquals(21, transform.vertexSet().size());
         assertTrue(transform.vertexSet().stream().anyMatch(entity ->
             entity instanceof MappingEntity
                 && entity.getName().equals("properties")
@@ -139,7 +139,7 @@ public class EdmmConverterTest extends EdmmDependantTest {
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
-        assertEquals(42, transform.vertexSet().size());
+        assertEquals(47, transform.vertexSet().size());
         assertTrue(transform.vertexSet().stream().anyMatch(entity ->
             entity instanceof ScalarEntity
                 && entity.getName().equals("hosted_on")
@@ -171,7 +171,7 @@ public class EdmmConverterTest extends EdmmDependantTest {
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
-        assertEquals(12, transform.vertexSet().size());
+        assertEquals(14, transform.vertexSet().size());
 
         Optional<Entity> operations = transform.getEntity(Arrays.asList("0", "components", "test_node_4", "operations"));
         assertTrue(operations.isPresent());
@@ -214,6 +214,8 @@ public class EdmmConverterTest extends EdmmDependantTest {
             "    relations:\n" +
             "    - connects_to: test_node_2\n" +
             "    - hosted_on: test_node_3\n" +
+            "    properties:\n" +
+            "      name: test_node_1\n" +
             "    artifacts:\n" +
             "    - war: /artifacttemplates/https%3A%2F%2Fex.org%2Ftosca%2Fto%2Fedmm/startTestNode4/files/script.sh\n" +
             "  test_node_3:\n" +
@@ -222,10 +224,13 @@ public class EdmmConverterTest extends EdmmDependantTest {
             "      public_key: '-----BEGIN PUBLIC KEY----- ... -----END PUBLIC KEY-----'\n" +
             "      ssh_port: '22'\n" +
             "      os_family: ubuntu\n" +
+            "      name: test_node_3\n" +
             "  test_node_2:\n" +
             "    relations:\n" +
             "    - hosted_on: test_node_3\n" +
             "    type: https_ex.orgtoscatoedmm__test_node_type_2\n" +
+            "    properties:\n" +
+            "      name: test_node_2\n" +
             "  test_node_4:\n" +
             "    operations:\n" +
             "      stop: /artifacttemplates/https%3A%2F%2Fex.org%2Ftosca%2Fto%2Fedmm/startTestNode4/files/script.sh\n" +
@@ -233,6 +238,8 @@ public class EdmmConverterTest extends EdmmDependantTest {
             "    type: https_ex.orgtoscatoedmm__test_node_type_4\n" +
             "    relations:\n" +
             "    - hosted_on: test_node_1\n" +
+            "    properties:\n" +
+            "      name: test_node_4\n" +
             "relation_types:\n" +
             "  depends_on:\n" +
             "    extends: null\n" +

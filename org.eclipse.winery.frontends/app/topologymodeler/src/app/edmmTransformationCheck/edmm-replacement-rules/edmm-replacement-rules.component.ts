@@ -46,9 +46,7 @@ export class EdmmReplacementRulesComponent implements OnInit {
 
     constructor(private ngRedux: NgRedux<IWineryState>,
                 private actions: TopologyRendererActions,
-                private manageTopologyService: ManageTopologyService,
-                private service: EdmmTransformationCheckService,
-                private backendService: BackendService) {
+                private manageTopologyService: ManageTopologyService) {
     }
 
     ngOnInit(): void {
@@ -119,17 +117,29 @@ export class EdmmReplacementRulesComponent implements OnInit {
         // the center point of the nodes to be deleted will be the starting point to draw new nodes
         let x = 0;
         let y = 0;
+        let nodeToBeReplaced;
+        const relationsToBeReplaced = [];
+
         const unsupportedComponents = this.pluginResult.replacementRules[this.ruleIndex].unsupportedComponents;
         for (const node of this.topologyTemplate.nodeTemplates) {
             for (const componentId of unsupportedComponents) {
                 if (node.id === componentId) {
                     x = x + node.x;
                     y = y + node.y;
+                    nodeToBeReplaced = node;
                     // deleting the node
                     this.manageTopologyService.deleteNode(node.id);
                 }
             }
         }
+
+        for (const rel of this.topologyTemplate.relationshipTemplates) {
+            if (rel.sourceElement.ref === nodeToBeReplaced.id ||
+                rel.targetElement.ref === nodeToBeReplaced.id) {
+                relationsToBeReplaced.push(rel);
+            }
+        }
+
         x = x / unsupportedComponents.length;
         y = y / unsupportedComponents.length;
 
@@ -140,11 +150,6 @@ export class EdmmReplacementRulesComponent implements OnInit {
                 // because it's the first time we meet it
                 const sourceNode: TNodeTemplate = this.manageTopologyService.newNode(x, y, this.oneToOneMap[topology[component]['type']]);
                 topology[component]['_id'] = sourceNode.id;
-
-                if (this.oneToOneMap[topology[component]['type']] !== 'Compute') {
-                    // calling backend to create the placeholders scripts
-                    this.service.createPlaceholderScripts(this.oneToOneMap[topology[component]['type']]);
-                }
             }
         };
 
@@ -159,7 +164,20 @@ export class EdmmReplacementRulesComponent implements OnInit {
             }
         );
 
-        this.backendService.saveTopologyTemplate(this.topologyTemplate).subscribe();
+        const newTopologyMap = this.pluginResult.replacementRules[this.ruleIndex].toTopology;
+        const key = Object.keys(newTopologyMap)[0];
+        const newTargetNode = newTopologyMap[key];
+
+        for (const rel of relationsToBeReplaced) {
+            if (rel.sourceElement.ref === nodeToBeReplaced.id) {
+                this.manageTopologyService.newRelationship(newTargetNode._id, rel.targetElement.ref, rel.type);
+            }
+            if (rel.targetElement.ref === nodeToBeReplaced.id) {
+                this.manageTopologyService.newRelationship(rel.sourceElement.ref, newTargetNode._id, rel.type);
+            }
+        }
+
+        this.ngRedux.dispatch(this.actions.executeLayout());
     }
 
     getColorClass(): string {
