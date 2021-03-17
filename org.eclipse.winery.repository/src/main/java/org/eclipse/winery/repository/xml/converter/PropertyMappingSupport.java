@@ -16,7 +16,6 @@ package org.eclipse.winery.repository.xml.converter;
 
 import java.util.LinkedHashMap;
 
-import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.xml.XTEntityTemplate;
 
 import org.slf4j.Logger;
