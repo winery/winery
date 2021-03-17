@@ -97,8 +97,8 @@ public class PropertyMappingSupport {
         org.eclipse.winery.model.tosca.TEntityTemplate.WineryKVProperties result = new org.eclipse.winery.model.tosca.TEntityTemplate.WineryKVProperties();
         result.setKVProperties(properties);
         // remove defaults required for serialization
-        result.setElementName(elementName.equals("Properties") ? null : elementName);
-        result.setNamespace(namespace == null || namespace.equals(Namespaces.EXAMPLE_NAMESPACE_URI) ? null : namespace);
+        result.setElementName(elementName);
+        result.setNamespace(namespace);
         return result;
     }
 
