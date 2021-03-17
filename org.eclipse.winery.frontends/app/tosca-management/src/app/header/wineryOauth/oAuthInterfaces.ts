@@ -30,3 +30,7 @@ export interface LoginData {
     userName?: string;
     message?: string;
 }
+
+export interface User {
+    name: string;
+}

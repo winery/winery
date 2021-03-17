@@ -24,6 +24,7 @@ import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
+import org.eclipse.winery.repository.filebased.MultiRepository;
 import org.eclipse.winery.repository.rest.websockets.GitWebSocket;
 
 import org.slf4j.Logger;
@@ -75,6 +76,9 @@ public class Prefs implements ServletContextListener {
         if (RepositoryFactory.getRepository() instanceof GitBasedRepository) {
             GitWebSocket socket = new GitWebSocket();
             ((GitBasedRepository) RepositoryFactory.getRepository()).registerForEvents(socket);
+        } else if (RepositoryFactory.getRepository() instanceof MultiRepository) {
+            GitWebSocket socket = new GitWebSocket();
+            ((MultiRepository) RepositoryFactory.getRepository()).registerForEvents(socket);
         }
     }
 

@@ -47,6 +47,7 @@ import org.eclipse.winery.repository.rest.resources.admin.types.che.Server;
 import org.eclipse.winery.repository.rest.resources.admin.types.che.WorkspaceResponse;
 import org.eclipse.winery.repository.rest.resources.apiData.OAuthStateAndCodeApiData;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
@@ -58,6 +59,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 
 @Api(tags = "Admin")
 public class AdminTopResource {
@@ -182,10 +184,39 @@ public class AdminTopResource {
         httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
         HttpResponse response = httpclient.execute(httppost);
+        String responseContent = null;
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+
+            responseContent = EntityUtils.toString(response.getEntity());
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode actualObj = mapper.readTree(responseContent);
+
+            if (actualObj.get("token_type").asText().equals("bearer")) {
+                Environments.getInstance().getGitConfig().setAccessToken(actualObj.get("access_token").asText());
+                Environments.getInstance().getGitConfig().setTokenType(actualObj.get("token_type").asText());
+                Environments.save(Environments.getInstance().getGitConfig());
+            }
+        }
 
         return Response
             .status(response.getStatusLine().getStatusCode())
-            .entity(response.getEntity().getContent())
+            .entity(responseContent)
+            .build();
+    }
+
+    @POST
+    @Path("githublogout")
+    public Response logoutGitHub() {
+
+        Environments.getInstance().getGitConfig().setAccessToken(null);
+        Environments.getInstance().getGitConfig().setTokenType(null);
+        Environments.getInstance().getGitConfig().setUsername(null);
+        Environments.save(Environments.getInstance().getGitConfig());
+
+        return Response
+            .status(200)
             .build();
     }
 

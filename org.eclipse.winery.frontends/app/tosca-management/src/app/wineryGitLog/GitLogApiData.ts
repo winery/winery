@@ -11,19 +11,30 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {QNameWithTypeApiData} from '../model/qNameWithTypeApiData';
 
 export class GitData {
+    pull: boolean;
+    push: boolean;
     reset: boolean;
     refresh: boolean;
-    commitMessage: boolean;
-    itemsToCommit: QNameWithTypeApiData[];
+    commit: boolean;
+    branches: boolean;
+    checkout: string;
+    commitMessage: string;
+    itemsToCommit: string[];
+    repository: string;
+}
+
+export class Repos {
+    name: string;
+    changes: GitChange[];
 }
 
 export class GitResponseData {
     error: string;
     success: string;
-    changes: GitChange[];
+    repos: Repos[];
+    branches: String[];
     resetSuccess: boolean;
     lfsAvailable: boolean;
 }

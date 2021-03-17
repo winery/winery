@@ -19,7 +19,6 @@ import { backendBaseURL } from '../../../configuration';
 import { ModalDirective } from 'ngx-bootstrap';
 import { HttpErrorResponse } from '@angular/common/http';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
-import { isNullOrUndefined } from 'util';
 import { WineryRepositoryConfigurationService } from '../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 @Component({
@@ -55,13 +54,13 @@ export class RepositoryComponent implements OnInit {
 
     getRepositories() {
         this.service.getAllRepositories().subscribe(
-            data => {
+            (data: Repository[]) => {
                 this.repositories = data;
                 this.validatorObjectName = new WineryValidatorObject(this.repositories, 'name');
                 this.validatorObjectUrl = new WineryValidatorObject(this.repositories, 'url');
                 this.validatorObjectBranch = new WineryValidatorObject(this.repositories, 'branch');
             },
-            error => this.notify.error(error.toString())
+            (error: HttpErrorResponse) => this.notify.error(error.toString())
         );
     }
 
@@ -82,7 +81,7 @@ export class RepositoryComponent implements OnInit {
     }
 
     onRemoveClick(data: any) {
-        if (isNullOrUndefined(data)) {
+        if (!data) {
             return;
         } else {
             this.elementToRemove = data;
@@ -93,16 +92,17 @@ export class RepositoryComponent implements OnInit {
     save() {
         this.cloning = true;
         this.service.postRepositories(this.repositories).subscribe(
-            data => this.handleSave(),
-            error => this.handleError(error)
+            () => this.handleSave(),
+            (error: HttpErrorResponse) => this.handleError(error)
         );
     }
 
-    deleteRepository() {
+    deleteRepository(repository: Repository) {
         this.confirmDeleteModal.hide();
-        this.deleteItem(this.elementToRemove);
-        this.elementToRemove = null;
-        this.save();
+        this.service.deleteRepository(repository).subscribe(
+            () => this.handleRemove(),
+            (error: HttpErrorResponse) => this.handleError(error)
+        );
     }
 
     private deleteItem(itemToDelete: Repository): void {
@@ -121,7 +121,9 @@ export class RepositoryComponent implements OnInit {
     }
 
     private handleRemove() {
-        this.handleSuccess('Removed repository from server');
+        this.deleteItem(this.elementToRemove);
+        this.elementToRemove = null;
+        this.save();
         this.getRepositories();
     }
 
@@ -129,7 +131,7 @@ export class RepositoryComponent implements OnInit {
         this.loading = true;
         this.service.clearRepository().subscribe(
             () => this.handleSuccess('Repository cleared'),
-            error => this.handleError(error)
+            (error: HttpErrorResponse) => this.handleError(error)
         );
     }
 
@@ -144,7 +146,7 @@ export class RepositoryComponent implements OnInit {
 
     touchAllDefinitions() {
         this.loading = true;
-        this.service.touchAllDefinitions().subscribe((response) => {
+        this.service.touchAllDefinitions().subscribe(() => {
             this.loading = false;
             this.notify.success('Touch all definitions completed');
         });

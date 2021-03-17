@@ -14,7 +14,7 @@
 
 <!--<div id="mainContainer" class="notoverflown" (click)="onClick()">-->
 <div id="mainContainer" class="notoverflown">
-    <winery-header></winery-header>
+    <winery-header *ngIf="!loading"></winery-header>
     <div *ngIf="backendState === backendAvailabilityStates.Available" id="mainContent">
         <router-outlet *ngIf="!loading"></router-outlet>
     </div>

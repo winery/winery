@@ -25,6 +25,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -43,8 +44,10 @@ import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.filebased.RepositoryProperties;
+import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
+import org.eclipse.winery.repository.filebased.MultiRepository;
 import org.eclipse.winery.repository.filebased.MultiRepositoryManager;
+import org.eclipse.winery.repository.backend.filebased.RepositoryProperties;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -82,6 +85,44 @@ public class RepositoryAdminResource {
     }
 
     /**
+     * Deletes given repository
+     *
+     * @param name of repository to delete.
+     */
+    @DELETE
+    @Path("repositories/{repository}")
+    public Response deleteRepository(@PathParam("repository") String name) {
+        String repositoryUrl = "";
+
+        if (RepositoryFactory.getRepository() instanceof MultiRepository) {
+            IRepository gitRepo;
+            MultiRepositoryManager multiRepositoryManager = new MultiRepositoryManager();
+
+            for (RepositoryProperties repo : multiRepositoryManager.getRepositoriesAsList()) {
+                if (repo.getName().equals(name)) {
+                    repositoryUrl = repo.getUrl();
+                    break;
+                }
+            }
+
+            for (IRepository repo : ((MultiRepository) RepositoryFactory.getRepository()).getRepositories()) {
+                gitRepo = repo;
+
+                if (gitRepo instanceof GitBasedRepository) {
+                    if (((GitBasedRepository) gitRepo).getRepositoryUrl() != null) {
+                        if (((GitBasedRepository) gitRepo).getRepositoryUrl().equals(repositoryUrl)) {
+                            ((GitBasedRepository) gitRepo).forceClear();
+                            ((MultiRepository) RepositoryFactory.getRepository()).removeRepository(repositoryUrl);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return Response.ok().build();
+    }
+
+    /**
      * returns List of Repositories to frontend
      *
      * @return List of Repositories
@@ -106,6 +147,7 @@ public class RepositoryAdminResource {
                 .entity("Repositories list must be given.")
                 .build();
         }
+
         MultiRepositoryManager multiRepositoryManager = new MultiRepositoryManager();
         multiRepositoryManager.addRepositoryToFile(repositoriesList);
         return Response.ok().build();

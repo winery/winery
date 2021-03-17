@@ -17,6 +17,7 @@ import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Repository } from './repository';
+import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 
 @Injectable()
 export class RepositoryService {
@@ -26,6 +27,14 @@ export class RepositoryService {
     constructor(private http: HttpClient,
                 private route: Router) {
         this.path = decodeURIComponent(this.route.url);
+    }
+
+    deleteRepository(repository: Repository): Observable<HttpResponse<string>> {
+        return this.http
+            .delete(
+                backendBaseURL + this.path + '/repositories/' + repository.name,
+                { observe: 'response', responseType: 'text' }
+            );
     }
 
     clearRepository(): Observable<HttpResponse<string>> {

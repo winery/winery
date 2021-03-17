@@ -31,6 +31,8 @@ repository:
     clientID: id
     autocommit: false
     username: default
+    accessToken: token
+    tokenType: type
 #accountability:
 #  geth-url: http://localhost:8545
 #  # Ethereum credentials

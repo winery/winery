@@ -16,8 +16,7 @@ import { WineryNotificationService } from '../wineryNotificationModule/wineryNot
 import { ModalDirective } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { webSocketURL } from '../configuration';
-import { GitChange, GitData, GitResponseData } from './GitLogApiData';
-import { isNullOrUndefined } from 'util';
+import { GitChange, GitData, Repos, GitResponseData } from './GitLogApiData';
 
 @Component({
     selector: 'winery-gitlog',
@@ -31,12 +30,19 @@ export class WineryGitLogComponent implements OnInit {
     webSocket: WebSocket;
     isExpanded = false;
     lfsAvailable = false;
-    files: GitChange[] = [];
+    repos: Repos[] = [];
+    branches: String[] = [];
+    selectedBranch: string;
+    selectedRepo: string;
     selectedFile: GitChange;
     commitMsg = '';
     show = false;
+    command = '';
+    filesToCommit: string[] = [];
 
     @ViewChild('confirmDiscardModal') confirmDiscardModal: ModalDirective;
+    @ViewChild('confirmMassExecution') confirmMassExecution: ModalDirective;
+    @ViewChild('selectBranch') selectBranch: ModalDirective;
 
     constructor(private notify: WineryNotificationService,
                 private router: Router) {
@@ -52,23 +58,28 @@ export class WineryGitLogComponent implements OnInit {
         this.webSocket.onmessage = event => {
             const data: GitResponseData = JSON.parse(event.data);
 
-            if (!isNullOrUndefined(data.changes)) {
-                this.files = data.changes;
+            if (data.repos) {
+                this.repos = data.repos;
+                this.filesToCommit.length = 0;
             }
 
-            if (!isNullOrUndefined(data.success)) {
+            if (data.branches) {
+                this.branches = data.branches;
+            }
+
+            if (data.success) {
                 this.notify.success(data.success);
             }
 
-            if (!isNullOrUndefined(data.error)) {
+            if (data.error) {
                 this.notify.error(data.error);
             }
 
-            if (!isNullOrUndefined(data.resetSuccess)) {
+            if (data.resetSuccess) {
                 this.router.navigate(['/']);
             }
 
-            if (!isNullOrUndefined(data.lfsAvailable)) {
+            if (data.lfsAvailable) {
                 this.lfsAvailable = data.lfsAvailable;
             }
 
@@ -82,12 +93,29 @@ export class WineryGitLogComponent implements OnInit {
     }
 
     commit() {
-        if (this.files === null || this.files.length === 0) {
-            this.notify.error('A commit must contain at least one change!');
+        if (this.selectedRepo == null) {
+            this.notify.error('Select the Repository you want to create a commit to!');
         } else if (this.commitMsg === '') {
             this.notify.error('Please enter a valid commit message!');
+        } else if (this.repos === null || this.repos.length === 0) {
+            this.notify.error('A commit must contain at least one change!');
         } else {
-            this.webSocket.send(JSON.stringify({ commitMessage: this.commitMsg }));
+
+            for (const repo of this.repos) {
+                if (repo.name === this.selectedRepo) {
+                    if (repo.changes.length === 0) {
+                        this.notify.error('A commit must contain at least one change!');
+                    } else {
+                        const data = new GitData();
+                        data.commit = true;
+                        data.commitMessage = this.commitMsg;
+                        data.repository = this.selectedRepo;
+                        data.itemsToCommit = this.filesToCommit;
+
+                        this.webSocket.send(JSON.stringify(data));
+                    }
+                }
+            }
         }
     }
 
@@ -101,12 +129,20 @@ export class WineryGitLogComponent implements OnInit {
         this.commitMsg = data.target.value;
     }
 
-    select(file: GitChange) {
+    select(file: GitChange, repoName: string) {
+
         if (this.selectedFile === file) {
+
+
             this.selectedFile = null;
+            if (this.selectedRepo === repoName) {
+                this.selectedRepo = null;
+            }
         } else {
             this.selectedFile = file;
+            this.selectedRepo = repoName;
         }
+
     }
 
     onExpand() {
@@ -117,12 +153,80 @@ export class WineryGitLogComponent implements OnInit {
     discardChanges() {
         const data = new GitData();
         data.reset = true;
+        data.repository = this.selectedRepo;
         this.webSocket.send(JSON.stringify(data));
-        this.hide();
     }
 
     hide() {
         this.selectedFile = null;
         this.isExpanded = false;
+    }
+
+    multipleRepositoryCheck(command: string) {
+        if (this.selectedRepo == null) {
+            this.command = command;
+            this.confirmMassExecution.show();
+        } else {
+            if (command === 'push') {
+                this.push();
+            } else if (command === 'pull') {
+                this.pull();
+            }
+        }
+    }
+
+    selectRepo(repoName: string) {
+        if (this.selectedRepo === repoName && this.selectedFile == null) {
+            this.selectedRepo = null;
+        } else {
+            this.selectedRepo = repoName;
+        }
+    }
+
+    pull() {
+        const data = new GitData();
+        data.pull = true;
+        data.repository = this.selectedRepo;
+        this.webSocket.send(JSON.stringify(data));
+    }
+
+    push() {
+        const data = new GitData();
+        data.push = true;
+        data.repository = this.selectedRepo;
+        this.webSocket.send(JSON.stringify(data));
+    }
+
+    selectFileToCommit(file: GitChange, repoName: string, event: any) {
+
+        if (event.target.checked) {
+
+            if (this.selectedRepo !== repoName) {
+                this.filesToCommit = [];
+            }
+
+            this.selectedRepo = repoName;
+            this.filesToCommit.push(file.name);
+
+        } else {
+
+            this.filesToCommit = this.filesToCommit.filter((value) => value !== file.name);
+
+        }
+    }
+
+    checkout() {
+        const data = new GitData();
+        data.checkout = this.selectedBranch;
+        data.repository = this.selectedRepo;
+        this.webSocket.send(JSON.stringify(data));
+    }
+
+    getBranches() {
+        const data = new GitData();
+        data.branches = true;
+        data.repository = this.selectedRepo;
+        this.webSocket.send(JSON.stringify(data));
+        this.selectBranch.show();
     }
 }

@@ -30,6 +30,7 @@ export class WineryOAuthComponent implements OnInit {
 
     buttonLabel = 'Login with GitHub';
     loggedIn = false;
+    gitClientId: string;
 
     constructor(private service: WineryOAuthService) {
     }
