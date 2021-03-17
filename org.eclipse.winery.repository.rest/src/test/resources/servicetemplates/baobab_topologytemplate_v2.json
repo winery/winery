@@ -23,6 +23,8 @@
             },
             "properties": {
                 "propertyType": "KV",
+                "namespace" : "http://www.example.org",
+                "elementName" : "Properties",
                 "kvproperties": {
                     "Antioxidants": "",
                     "VitaminC": "",

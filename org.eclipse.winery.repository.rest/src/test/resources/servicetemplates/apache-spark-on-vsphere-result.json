@@ -84,6 +84,8 @@
             },
             "properties": {
                 "propertyType": "KV",
+                "namespace" : "http://www.example.org",
+                "elementName" : "Properties",
                 "kvproperties": {
                     "HypervisorEndpoint": "https://iaasvc.informatik.uni-stuttgart.de/sdk",
                     "HypervisorTenantID": "smartservices",
@@ -108,6 +110,8 @@
             },
             "properties": {
                 "propertyType": "KV",
+                "namespace" : "http://www.example.org",
+                "elementName" : "Properties",
                 "kvproperties": {
                     "VMIP": "",
                     "VMInstanceID": "",
