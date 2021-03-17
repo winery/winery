@@ -55,7 +55,7 @@ public class MultiRepositoryManager {
                 objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
                 objectMapper.writeValue(repositoryConfiguration, repositoryList);
             } catch (IOException exception) {
-                exception.printStackTrace();
+                LOGGER.error("Failed to create repository folder {}.", repositoryConfiguration.getPath(), exception);
             }
             createMultiRepositoryFileStructure(Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()),
                 Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), Constants.DEFAULT_LOCAL_REPO_NAME));
@@ -67,7 +67,7 @@ public class MultiRepositoryManager {
         }
     }
 
-    boolean isMultiRepositoryFileStuctureEstablished(Path repoPath) {
+    boolean isMultiRepositoryFileStructureEstablished(Path repoPath) {
         return FileUtils.isPresent(repoPath.resolve(Constants.DEFAULT_LOCAL_REPO_NAME));
     }
 
@@ -83,13 +83,17 @@ public class MultiRepositoryManager {
             try {
                 Files.createDirectory(newPath);
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.error("Failed to create directory {}", newPath, e);
             }
         }
         ignoreFiles.add(Constants.DEFAULT_LOCAL_REPO_NAME);
         ignoreFiles.add(Filename.FILENAME_JSON_REPOSITORIES);
         FileUtils.copyFiles(oldPath, newPath, ignoreFiles);
-        ignoreFiles.add(".git");
+        try {
+            FileUtils.forceDeleteFile(oldPath.resolve(".git").toFile());
+        } catch (Exception e) {
+            LOGGER.error("Failed to delete .git directory in root folder of the MultiRepository");
+        }
         FileUtils.deleteFiles(oldPath, ignoreFiles);
     }
 

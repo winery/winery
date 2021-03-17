@@ -22,7 +22,7 @@
 #wineryGitLogContainer {
     display: inline-grid;
     grid-template-columns: 91px auto auto;
-    grid-template-rows: 500px 30px 300px;
+    grid-template-rows: 500px 60px 300px;
 }
 
 #wineryGitLogExpander {
@@ -75,6 +75,8 @@
     pointer-events: auto;
     grid-column: 3/ span 1;
     background-color: #f3f3f3;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 #wineryGitLogCommit {
@@ -123,9 +125,13 @@ tr.selected {
 
 td {
     padding: 8px;
-    line-height: 0;
+    line-height: 5pt;
     vertical-align: center;
     white-space: nowrap;
+}
+
+th {
+    cursor: default;
 }
 
 #srcNameCell {
@@ -133,9 +139,10 @@ td {
 }
 
 #filesList {
-    width: 318px;
-    height: 500px;
+    width: 400px;
+    height: auto;
     overflow: auto;
+    padding: 10px;
 }
 
 p {
@@ -144,4 +151,36 @@ p {
     -webkit-margin-after: 1em;
     -webkit-margin-start: 0px;
     -webkit-margin-end: 0px;
+}
+
+.files {
+    height: auto;
+    overflow-y: auto;
+}
+
+.repoNameRow {
+    background-color: lightskyblue;
+}
+
+.repoName {
+    font-size: medium;
+    white-space: nowrap;
+    width: auto;
+    display: block;
+    overflow: visible;
+    visibility: visible;
+    padding: 5px;
+}
+
+.repoName.selected {
+    background-color: #8c8c8c;
+}
+
+.gitTable {
+    height: auto;
+    width: 100%;
+    overflow-y: scroll;
+    margin: 5px 5px 10px;
+    padding: 20px;
+    background-color: #fff;
 }

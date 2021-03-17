@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Constants;
+import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.repository.backend.IWrappingRepository;
 import org.eclipse.winery.repository.common.RepositoryFileReference;
@@ -93,9 +94,13 @@ import com.google.common.eventbus.EventBus;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.tika.mime.MediaType;
 import org.eclipse.jgit.api.AddCommand;
+import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.CleanCommand;
 import org.eclipse.jgit.api.CommitCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ListBranchCommand;
+import org.eclipse.jgit.api.PullCommand;
+import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
 import org.eclipse.jgit.api.RmCommand;
@@ -104,8 +109,10 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.errors.NoWorkTreeException;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -158,6 +165,7 @@ public class GitBasedRepository extends AbstractFileBasedRepository implements I
             if (configuration.isAutoCommit() && !git.status().call().isClean()) {
                 this.addCommit("Files changed externally.");
             }
+            git.getRepository().close();
         } catch (IOException | GitAPIException ex) {
             LOGGER.error("Error initializing Git.", ex);
             throw ex;
@@ -245,6 +253,7 @@ public class GitBasedRepository extends AbstractFileBasedRepository implements I
                     CommitCommand commit = git.commit();
                     commit.setMessage(message);
                     commit.call();
+                    commit.getRepository().close();
                 } catch (IOException e) {
                     LOGGER.error("Error initializing Git.", e);
                 }
@@ -253,28 +262,32 @@ public class GitBasedRepository extends AbstractFileBasedRepository implements I
         postEventMap();
     }
 
-    public void postEventMap() throws GitAPIException {
+    public Map<DiffEntry, String> postEventMap() throws GitAPIException {
         Map<DiffEntry, String> diffMap = new HashMap<>();
-        try (OutputStream stream = new ByteArrayOutputStream();
-             Git git = getGit()) {
+        try (OutputStream stream = new ByteArrayOutputStream(); Git git = getGit()) {
             List<DiffEntry> list = git.diff().setOutputStream(stream).call();
             BufferedReader reader = new BufferedReader(new StringReader(stream.toString()));
+            String line = reader.readLine();
             for (DiffEntry entry : list) {
-                String line = reader.readLine();
                 StringWriter diff = new StringWriter();
-                while (line != null && !line.startsWith("diff")) {
-                    diff.append(line);
-                    diff.write('\n');
-                    line = reader.readLine();
+                if (line != null) {
+                    do {
+                        diff.append(line);
+                        diff.write('\n');
+                        line = reader.readLine();
+                    } while (line != null && !line.startsWith("diff"));
                 }
+
                 diffMap.put(entry, diff.toString());
             }
+            git.getRepository().close();
         } catch (IOException exc) {
             LOGGER.trace("Reading of git information failed!", exc);
         } catch (JGitInternalException gitException) {
             LOGGER.trace("Could not create Diff!", gitException);
         }
         this.eventBus.post(diffMap);
+        return diffMap;
     }
 
     /**
@@ -293,6 +306,52 @@ public class GitBasedRepository extends AbstractFileBasedRepository implements I
                 message = ref.toString() + " was updated";
             }
             addCommit(message);
+        }
+    }
+
+    public void pull() throws GitAPIException {
+        try (Git git = getGit()) {
+            PullCommand pull = git.pull();
+            if (Environments.getInstance().getGitConfig().getAccessToken() != null) {
+                pull.setCredentialsProvider(new UsernamePasswordCredentialsProvider(Environments.getInstance().getGitConfig().getAccessToken(), ""));
+            }
+            pull.call();
+            pull.getRepository().close();
+        } catch (IOException e) {
+            LOGGER.error("Error pulling Repository.", e);
+        }
+    }
+
+    public void push() throws GitAPIException {
+        try (Git git = getGit()) {
+            PushCommand push = git.push();
+            if (Environments.getInstance().getGitConfig().getAccessToken() != null) {
+                push.setCredentialsProvider(new UsernamePasswordCredentialsProvider(Environments.getInstance().getGitConfig().getAccessToken(), ""));
+            }
+            push.call();
+            push.getRepository().close();
+        } catch (IOException e) {
+            LOGGER.error("Error pushing Repository.", e);
+        }
+    }
+
+    public List<Ref> listBranches() throws GitAPIException {
+        try (Git git = getGit()) {
+            ListBranchCommand branchList = git.branchList();
+            return branchList.call();
+        } catch (IOException e) {
+            LOGGER.error("Error checking out.", e);
+            return null;
+        }
+    }
+
+    public void checkout(String branchName) throws GitAPIException {
+        try (Git git = getGit()) {
+            CheckoutCommand checkout = git.checkout();
+            checkout.setName(branchName);
+            checkout.call();
+        } catch (IOException e) {
+            LOGGER.error("Error checking out.", e);
         }
     }
 
@@ -359,6 +418,7 @@ public class GitBasedRepository extends AbstractFileBasedRepository implements I
                     // -> check if any file in the folder is changed
                     .filter(item -> item.getNewPath().startsWith(BackendUtils.getPathInsideRepo(ref.getParent())))
                     .collect(Collectors.toList());
+                git.getRepository().close();
                 return entries.size() > 0;
             }
         } catch (GitAPIException e) {
@@ -372,7 +432,9 @@ public class GitBasedRepository extends AbstractFileBasedRepository implements I
 
     public Status getStatus() {
         try (Git git = getGit()) {
-            return git.status().call();
+            Status status = git.status().call();
+            git.getRepository().close();
+            return status;
         } catch (GitAPIException e) {
             LOGGER.trace(e.getMessage(), e);
             return null;
@@ -390,6 +452,7 @@ public class GitBasedRepository extends AbstractFileBasedRepository implements I
         return Git.cloneRepository()
             .setURI(repoUrl)
             .setDirectory(this.repository.getRepositoryRoot().toFile())
+            .setCredentialsProvider(new UsernamePasswordCredentialsProvider(Environments.getInstance().getGitConfig().getAccessToken(), ""))
             .setBranch(branch)
             .call();
     }
@@ -427,7 +490,7 @@ public class GitBasedRepository extends AbstractFileBasedRepository implements I
             LOGGER.trace(e.getMessage(), e);
         }
     }
-    
+
     @Override
     public void putDefinition(RepositoryFileReference ref, TDefinitions definitions) throws IOException {
         repository.putDefinition(ref, definitions);

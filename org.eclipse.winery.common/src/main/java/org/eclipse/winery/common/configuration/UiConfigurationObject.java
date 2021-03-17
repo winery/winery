@@ -43,6 +43,7 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
 
     private Map<String, Boolean> features;
     private Map<String, String> endpoints;
+    private Map<String, String> git;
 
     /**
      * Required for proper Jackson (de)serialization
@@ -67,6 +68,10 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
         return endpoints;
     }
 
+    public Map<String, String> getGit() {
+        return git;
+    }
+
     @Override
     void save() {
         this.features.keySet().stream()
@@ -82,10 +87,16 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
         this.configuration = configuration;
         Map<String, Boolean> features = new HashMap<>();
         Map<String, String> endpoints = new HashMap<>();
+        Map<String, String> git = new HashMap<>();
         Iterator<String> featureIterator = this.configuration.getKeys(featurePrefix);
         Iterator<String> endpointIterator = this.configuration.getKeys(endpointPrefix);
         featureIterator.forEachRemaining(key -> features.put(key.replace(featurePrefix, ""), this.configuration.getBoolean((key))));
         endpointIterator.forEachRemaining(key -> endpoints.put(key.replace(endpointPrefix, ""), this.configuration.getString(key)));
+        git.put("clientId", this.configuration.getString("repository.git.clientID"));
+        git.put("accessToken", this.configuration.getString("repository.git.accessToken"));
+        git.put("tokenType", this.configuration.getString("repository.git.tokenType"));
+        git.put("username", this.configuration.getString("repository.git.username"));
+
         final String providerAsString = this.configuration.getString(RepositoryConfigurationObject.getProviderConfigurationKey());
 
         if (YAML.toString().equals(providerAsString)) {
@@ -97,6 +108,7 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
 
         this.features = features;
         this.endpoints = endpoints;
+        this.git = git;
     }
 
     @Override

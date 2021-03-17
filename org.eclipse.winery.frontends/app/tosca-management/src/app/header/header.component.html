@@ -13,8 +13,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <div id="header" class="header">
     <div id="showabout">
-        <!--Include this when oauth becomes necessary.-->
-        <!--<winery-oauth></winery-oauth>-->
+        <winery-oauth></winery-oauth>
         <button class="btn btn-default btn-xs orderRight" type="button" (click)="aboutModal.show()">about</button>
     </div>
     <nav id="mainMenuContainer">
@@ -43,8 +42,9 @@
            [routerLink]="['/other']"
            [class.selected]="otherActive" title="{{ selectedOtherComponent }}">
             <div class="left"></div>
-            <div class="center" style="max-width: 310px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">
-                Other Elements{{ !selectedOtherComponent ? '' : ': '  + selectedOtherComponent }}
+            <div class="center"
+                 style="max-width: 310px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">
+                Other Elements{{ !selectedOtherComponent ? '' : ': ' + selectedOtherComponent }}
             </div>
             <div class="right"></div>
         </a>
