@@ -12,15 +12,16 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Router, RouterModule, Routes } from '@angular/router';
 import { NotFoundComponent } from './404/notFound.component';
 import { OtherComponent } from './other/other.component';
 import { SectionResolver } from './section/section.resolver';
+import { HashLocationStrategy, LocationStrategy, PathLocationStrategy } from '@angular/common';
 
 const appRoutes: Routes = [
     { path: 'other', component: OtherComponent },
     { path: 'notfound', component: NotFoundComponent },
-    { path: '', redirectTo: '/servicetemplates', pathMatch: 'full' },
+    { path: '', redirectTo: 'servicetemplates', pathMatch: 'full' },
     { path: '**', component: NotFoundComponent },
 ];
 
@@ -36,8 +37,18 @@ const appRoutes: Routes = [
         RouterModule
     ],
     providers: [
-        SectionResolver
+        SectionResolver,
+        PathLocationStrategy,
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
     ]
 })
 export class WineryRepositoryRoutingModule {
+    constructor(router: Router, pathLocationStrategy: PathLocationStrategy, hashLocationStrategy: LocationStrategy) {
+        const basePath = pathLocationStrategy.getBaseHref();
+        const absolutePathWithParams = pathLocationStrategy.path().substr(1);
+        const absolutePathWithParams2 = hashLocationStrategy.path();
+        if (basePath !== absolutePathWithParams) {
+            router.navigateByUrl(absolutePathWithParams2 + absolutePathWithParams, { replaceUrl: true });
+        }
+    }
 }

@@ -64,6 +64,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.google.common.eventbus.EventBus;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.tika.mime.MediaType;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -83,6 +84,7 @@ public class MultiRepository implements IWrappingRepository {
     private List<RepositoryProperties> repositoriesList = new ArrayList<>();
     private GitBasedRepository localRepository;
     private Path repositoryRoot;
+    private final EventBus eventBus;
 
     /**
      * Initializes a local Git Repository at repositoryRoot/workspace. The repository root points to the directory of
@@ -91,19 +93,20 @@ public class MultiRepository implements IWrappingRepository {
      */
     public MultiRepository(Path repositoryRoot) throws IOException, GitAPIException {
         this.repositoryRoot = repositoryRoot;
+        this.eventBus = new EventBus();
         try {
             LOGGER.debug("Trying to initialize local repository...");
             File localRepoPath = new File(repositoryRoot.toString(), Constants.DEFAULT_LOCAL_REPO_NAME);
             FileBasedRepositoryConfiguration localRepoConfig = new FileBasedRepositoryConfiguration(localRepoPath.toPath());
+            repositoryConfiguration = new File(this.getRepositoryRoot().toString(), Filename.FILENAME_JSON_REPOSITORIES);
+            readRepositoriesConfig();
             GitBasedRepositoryConfiguration gitConfig = new GitBasedRepositoryConfiguration(false, localRepoConfig);
             this.localRepository = new GitBasedRepository(gitConfig, RepositoryFactory.createXmlOrYamlRepository(localRepoConfig, localRepoPath.toPath()));
             LOGGER.debug("Local repo has been initialized at {}", localRepoPath.getAbsolutePath());
-            repositoryConfiguration = new File(this.getRepositoryRoot().toString(), Filename.FILENAME_JSON_REPOSITORIES);
         } catch (IOException | GitAPIException e) {
             LOGGER.error("Error while initializing local repository of the Multi Repository!", e);
             throw e;
         }
-        readRepositoriesConfig();
         repositoryGlobal.put(localRepository, new HashSet<>());
         updateNamespaces();
     }
@@ -132,11 +135,16 @@ public class MultiRepository implements IWrappingRepository {
         registerRepository(repository);
     }
 
-    protected void removeRepository(String urlToRepository) {
+    public void removeRepository(String urlToRepository) {
         for (IRepository repo : repositoryGlobal.keySet()) {
-            if (((GitBasedRepository) repo).getRepositoryUrl().equals(urlToRepository)) {
-                unregisterRepository(repo);
-                break;
+            if (((GitBasedRepository) repo).getRepositoryUrl() != null) {
+                if (((GitBasedRepository) repo).getRepositoryUrl().equals(urlToRepository)) {
+
+                    //[TODO] Check if any other Repository is dependent on this Repository, if so, can't remove Repository (overwrite allowed with warning)
+
+                    unregisterRepository(repo);
+                    break;
+                }
             }
         }
     }
@@ -271,7 +279,7 @@ public class MultiRepository implements IWrappingRepository {
             LOGGER.info("Found Repositories file");
             loadConfiguration(repositoryConfiguration);
             MultiRepositoryManager multiRepositoryManager = new MultiRepositoryManager();
-            if (!multiRepositoryManager.isMultiRepositoryFileStuctureEstablished(Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()))) {
+            if (!multiRepositoryManager.isMultiRepositoryFileStructureEstablished(Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()))) {
                 multiRepositoryManager.createMultiRepositoryFileStructure(Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()),
                     Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), Constants.DEFAULT_LOCAL_REPO_NAME));
             }
@@ -584,6 +592,24 @@ public class MultiRepository implements IWrappingRepository {
     @Override
     public void forceDelete(RepositoryFileReference ref) throws IOException {
         RepositoryUtils.getRepositoryByRef(ref, this).forceDelete(ref);
+    }
+
+    /**
+     * This method registers an Object on the repositories {@link EventBus}
+     *
+     * @param eventListener an objects that contains methods annotated with the @{@link com.google.common.eventbus.Subscribe}
+     */
+    public void registerForEvents(Object eventListener) {
+        this.eventBus.register(eventListener);
+    }
+
+    /**
+     * This method unregisters an Object on the repositories {@link EventBus}
+     *
+     * @param eventListener an objects that contains methods annotated with the @{@link com.google.common.eventbus.Subscribe}
+     */
+    public void unregisterForEvents(Object eventListener) {
+        this.eventBus.register(eventListener);
     }
 
     @Override

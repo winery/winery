@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.filebased;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileVisitOption;
@@ -84,6 +85,25 @@ public class FileUtils {
             } catch (IOException e) {
                 logger.debug("Could not delete file: {}", e.getMessage());
             }
+        }
+    }
+
+    /**
+     * Deletes given file. If it is a file, it is directly deleted. If it is a directory, the directory is recursively
+     * deleted.
+     *
+     * @param file the file to delete
+     */
+    public static void forceDeleteFile(File file) {
+        if (file.isDirectory()) {
+            for (File recFile : file.listFiles()) {
+                forceDeleteFile(recFile);
+            }
+        }
+        try {
+            file.delete();
+        } catch (SecurityException e) {
+            logger.debug("Could not delete file", e.getMessage());
         }
     }
 

@@ -22,6 +22,8 @@ public class GitConfigurationObject extends AbstractConfigurationObject {
     private String clientSecret;
     private String password;
     private String clientID;
+    private String accessToken;
+    private String tokenType;
     private String username;
     private boolean autocommit;
 
@@ -35,6 +37,8 @@ public class GitConfigurationObject extends AbstractConfigurationObject {
         configuration.setProperty(key + "clientSecret", this.getClientSecret());
         configuration.setProperty(key + "password", this.getPassword());
         configuration.setProperty(key + "clientID", this.getClientID());
+        configuration.setProperty(key + "accessToken", this.getAccessToken());
+        configuration.setProperty(key + "tokenType", this.getTokenType());
         configuration.setProperty(key + "username", this.getUsername());
         configuration.setProperty(key + "autocommit", this.isAutocommit());
         Environment.getInstance().save();
@@ -46,6 +50,8 @@ public class GitConfigurationObject extends AbstractConfigurationObject {
         this.setClientSecret(configuration.getString(key + "clientSecret"));
         this.setPassword(configuration.getString(key + "password"));
         this.setClientID(configuration.getString(key + "clientID"));
+        this.setAccessToken(configuration.getString(key + "accessToken"));
+        this.setTokenType(configuration.getString(key + "tokenType"));
         this.setUsername(configuration.getString(key + "username"));
         this.setAutocommit(configuration.getBoolean(key + "autocommit", false));
     }
@@ -93,5 +99,21 @@ public class GitConfigurationObject extends AbstractConfigurationObject {
 
     public void setAutocommit(boolean autocommit) {
         this.autocommit = autocommit;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public String getTokenType() {
+        return tokenType;
+    }
+
+    public void setTokenType(String tokenType) {
+        this.tokenType = tokenType;
     }
 }

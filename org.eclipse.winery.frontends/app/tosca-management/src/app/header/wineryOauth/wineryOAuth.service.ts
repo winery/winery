@@ -11,25 +11,23 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
-import { isNullOrUndefined } from 'util';
 import { Utils } from '../../wineryUtils/utils';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { backendBaseURL } from '../../configuration';
 import { Observable } from 'rxjs';
 import { Subscriber } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { LoginData, StorageElements, Token } from './oAuthInterfaces';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { LoginData, StorageElements, Token, User } from './oAuthInterfaces';
+import { WineryRepositoryConfigurationService } from '../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 /**
  * This service provides OAuth login service. If the credentials are not set, it defaults
  * to login with GitHub.
  */
 @Injectable()
-export class WineryOAuthService {
-
-    public clientId = 'b106f7f4e3393fad0529';
+export class WineryOAuthService implements OnInit {
 
     public loginUrl = 'https://github.com/login/oauth/authorize';
     public redirectUri = '';
@@ -39,8 +37,12 @@ export class WineryOAuthService {
     private storage: Storage = localStorage;
     private observer: Subscriber<LoginData>;
 
-    constructor(private http: HttpClient, private activatedRoute: ActivatedRoute,
-                private notify: WineryNotificationService) {
+    constructor(private http: HttpClient, private activatedRoute: ActivatedRoute, private router: Router,
+                private notify: WineryNotificationService, private config: WineryRepositoryConfigurationService) {
+
+    }
+
+    ngOnInit(): void {
     }
 
     /**
@@ -51,14 +53,14 @@ export class WineryOAuthService {
         return new Observable(observer => {
             this.observer = observer;
 
-            if (!isNullOrUndefined(this.storage.getItem(StorageElements.accessToken))) {
+            if (this.config.configuration.git.accessToken) {
                 this.getUserInformation();
-            } else if (isNullOrUndefined(this.storage.getItem(StorageElements.state))) {
+            } else if (!this.storage.getItem(StorageElements.state)) {
                 observer.next({ success: false });
                 observer.complete();
             } else {
-                const subscription = this.activatedRoute.queryParams
-                    .subscribe(params => this.parseParamsAndGetToken(params));
+                this.activatedRoute.queryParams
+                    .subscribe((params: Params) => this.parseParamsAndGetToken(params));
             }
         });
     }
@@ -69,15 +71,16 @@ export class WineryOAuthService {
      *  - user needs to approve the requested scopes
      */
     login() {
-        this.logout();
+        this.storage.removeItem(StorageElements.state);
+        this.storage.removeItem(StorageElements.userName);
         this.storage.setItem(StorageElements.state, Utils.generateRandomString());
 
         if (this.alwaysUseCurrentUrlAsRedirect) {
-            this.redirectUri = location.origin + location.pathname;
+            this.redirectUri = location.href;
         }
 
         location.href = this.loginUrl
-            + '?client_id=' + encodeURIComponent(this.clientId)
+            + '?client_id=' + encodeURIComponent(this.config.configuration.git.clientId)
             + '&state=' + encodeURIComponent(this.storage.getItem(StorageElements.state))
             + '&redirect_uri=' + encodeURIComponent(this.redirectUri)
             + '&scope=' + encodeURIComponent(this.scope);
@@ -87,33 +90,43 @@ export class WineryOAuthService {
      * Logs the user out by deleting all saved key values paris in the local storage.
      */
     logout() {
-        this.storage.removeItem(StorageElements.state);
-        this.storage.removeItem(StorageElements.accessToken);
-        this.storage.removeItem(StorageElements.tokenType);
-        this.storage.removeItem(StorageElements.userName);
+        this.http
+            .post(
+                backendBaseURL + '/admin/githublogout', {},
+            )
+            .subscribe(
+                () => this.handleLogout(),
+                (error: HttpErrorResponse) => this.handleError(error)
+            );
     }
 
     getUserInformation() {
-        if (isNullOrUndefined(this.storage.getItem(StorageElements.accessToken))) {
+        if (!this.config.configuration.git.accessToken) {
             this.observer.next({ success: false });
             this.observer.complete();
             return;
         }
+        if (this.storage.getItem(StorageElements.userName)) {
+            this.observer.next({ success: true, userName: this.storage.getItem(StorageElements.userName) });
+            this.observer.complete();
+            return;
+        }
 
-        const headers = new HttpHeaders({ 'Accept': 'application/json' });
+        const headers = new HttpHeaders({
+            'Accept': 'application/json', 'Authorization': 'token ' + this.config.configuration.git.accessToken
+        });
 
-        this.http.get('https://api.github.com/user?access_token=' + this.storage.getItem(StorageElements.accessToken))
+        this.http.get('https://api.github.com/user', { headers })
             .subscribe(
-                data => this.handleUserInformation(data),
-                error => this.handleError(error)
+                (data: User) => this.handleUserInformation(data),
+                (error: HttpErrorResponse) => this.handleError(error)
             );
     }
 
     private parseParamsAndGetToken(params: Params) {
-        if (!isNullOrUndefined(params['code']) && !isNullOrUndefined(params['state'])) {
+        if (params['code'] && params['state']) {
             if (params['state'] === this.storage.getItem(StorageElements.state)) {
                 const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-
                 const payload = {
                     code: params['code'],
                     state: params['state']
@@ -126,8 +139,8 @@ export class WineryOAuthService {
                         { headers: headers }
                     )
                     .subscribe(
-                        data => this.processAccessToken(data),
-                        error => this.handleError(error)
+                        (data: Token) => this.processAccessToken(data),
+                        (error: HttpErrorResponse) => this.handleError(error)
                     );
             } else {
                 this.observer.error(false);
@@ -137,28 +150,35 @@ export class WineryOAuthService {
     }
 
     private processAccessToken(token: Token) {
-        this.storage.setItem(StorageElements.accessToken, token.access_token);
-        this.storage.setItem(StorageElements.tokenType, token.token_type);
-
+        this.config.configuration.git.accessToken = token.access_token;
+        this.config.configuration.git.tokenType = token.access_token;
         this.getUserInformation();
     }
 
-    private handleUserInformation(data: any) {
+    private handleUserInformation(data: User) {
         this.storage.setItem(StorageElements.userName, data.name);
-
         this.observer.next({ success: true, userName: data.name });
         this.observer.complete();
+        this.router.navigate([], {
+            queryParams: { code: null, state: null }, queryParamsHandling: 'merge', replaceUrl: true
+        });
     }
 
-    private handleError(error: any) {
-        this.observer.error('An error happened in the communication with GitHub.');
+    private handleLogout() {
+        this.storage.removeItem(StorageElements.state);
+        this.storage.removeItem(StorageElements.userName);
         this.observer.complete();
-        this.notify.error('Login failed!');
-        this.logout();
+        this.notify.success('Logout Successful!');
+    }
+
+    private handleError(error: HttpErrorResponse) {
+        this.observer.error(`An error happened in the communication with GitHub. Status: ${error.status}`);
+        this.observer.complete();
+        this.notify.error(`Login failed! Status: ${error.status}`);
     }
 
     get accessToken(): string {
-        return this.storage.getItem(StorageElements.accessToken);
+        return this.config.configuration.git.accessToken;
     }
 
 }

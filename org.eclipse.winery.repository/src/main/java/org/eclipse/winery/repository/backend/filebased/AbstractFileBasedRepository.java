@@ -81,7 +81,6 @@ public abstract class AbstractFileBasedRepository implements IRepository {
     FileSystemProvider provider;
     private Path repositoryRoot;
 
-
     /**
      * @param repositoryRoot Root to the repository
      */
@@ -261,13 +260,7 @@ public abstract class AbstractFileBasedRepository implements IRepository {
      * Removes the repository completely, even with the .git directory
      */
     public void forceClear() {
-        try (DirectoryStream<Path> ds = Files.newDirectoryStream(this.getRepositoryRoot())) {
-            for (Path p : ds) {
-                FileUtils.forceDelete(p);
-            }
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage());
-        }
+        FileUtils.forceDeleteFile(this.getRepositoryRoot().toFile());
     }
 
     @Override
@@ -502,7 +495,7 @@ public abstract class AbstractFileBasedRepository implements IRepository {
 
         return manager;
     }
-    
+
     public Collection<? extends DefinitionsChildId> getAllIdsInNamespace(Class<? extends DefinitionsChildId> clazz, Namespace namespace) {
         Collection<DefinitionsChildId> result = new HashSet<>();
         String rootPathFragment = IdUtil.getRootPathFragment(clazz);
