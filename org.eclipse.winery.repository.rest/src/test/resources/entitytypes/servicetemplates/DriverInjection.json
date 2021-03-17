@@ -139,6 +139,7 @@
             "properties": {
                 "propertyType": "KV",
                 "namespace": "http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery",
+                "elementName" : "Properties",
                 "kvproperties": {
                     "Driver": ""
                 }
