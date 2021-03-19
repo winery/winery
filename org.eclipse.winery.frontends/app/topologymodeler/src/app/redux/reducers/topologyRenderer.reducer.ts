@@ -65,6 +65,7 @@ export interface TopologyRendererState {
         yamlGroupsButton?: boolean;
         manageParticipantsButton?: boolean;
         assignParticipantsButton?: boolean;
+        hideDependsOnRelations?: boolean;
     };
     activeResearchPlugin: ResearchPlugin;
     nodesToSelect?: string[];
@@ -176,6 +177,14 @@ export const TopologyRendererReducer =
                     buttonsState: {
                         ...lastState.buttonsState,
                         assignParticipantsButton: !lastState.buttonsState.assignParticipantsButton
+                    }
+                };
+            case TopologyRendererActions.TOGGLE_HIDE_DEPENDSON_RELATIONS:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        hideDependsOnRelations: !lastState.buttonsState.hideDependsOnRelations
                     }
                 };
             case TopologyRendererActions.TOGGLE_POLICIES:
