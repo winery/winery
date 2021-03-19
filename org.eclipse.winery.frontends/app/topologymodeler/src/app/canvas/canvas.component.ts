@@ -13,8 +13,7 @@
  ********************************************************************************/
 import {
     AfterViewInit, Component, ElementRef, HostListener, Input, KeyValueDiffers, NgZone, OnChanges, OnDestroy, OnInit,
-    QueryList, Renderer2, SimpleChanges,
-    ViewChild, ViewChildren
+    QueryList, Renderer2, SimpleChanges, ViewChild, ViewChildren
 } from '@angular/core';
 import { JsPlumbService } from '../services/jsPlumb.service';
 import { EntityType, TNodeTemplate, TRelationshipTemplate, VisualEntityType } from '../models/ttopology-template';
@@ -224,6 +223,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             .subscribe(currentRelationships => this.updateRelationships(currentRelationships)));
         this.subscriptions.push(this.ngRedux.select(state => state.topologyRendererState)
             .subscribe(currentButtonsState => this.setRendererState(currentButtonsState)));
+        this.subscriptions.push(this.ngRedux.select(state => state.topologyRendererState.buttonsState.hideDependsOnRelations)
+            .subscribe(hideDependsOnRelations => this.handleHideDependsOnRelations(hideDependsOnRelations)));
 
         this.gridTemplate = new GridTemplate(100, false, false, 30);
         this.hotkeysService.add(new Hotkey('mod+a', (event: KeyboardEvent): boolean => {
@@ -930,6 +931,19 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     }
 
     /**
+     * RADON feature to hide/show "DependsOn" relations
+     *
+     * @param visible
+     */
+    handleHideDependsOnRelations(visible: boolean) {
+        this.newJsPlumbInstance.getAllConnections().forEach(c => {
+            if (c.getOverlay('DependsOn')) {
+                c.setVisible(!visible);
+            }
+        });
+    }
+
+    /**
      * Gets called if relationships get created, loaded from the server/ a JSON, deleted or updated and calls the
      * correct handler.
      * @param currentRelationships  List of all displayed relationships.
@@ -1313,7 +1327,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 overlays: [['Arrow', { width: 15, length: 15, location: 1, id: 'arrow', direction: 1 }],
                     ['Label', {
                         label: labelString,
-                        id: 'label',
+                        id: labelString,
                         events: {
                             click: function (labelOverlay, originalEvent) {
                                 setTimeout(() => me.onClickJsPlumbConnection(conn, newRelationship), 1);

@@ -285,6 +285,9 @@ export class NavbarComponent implements OnDestroy {
             case 'assignParticipants':
                 this.ngRedux.dispatch(this.actions.toggleAssignParticipants());
                 break;
+            case 'hideDependsOnRelations':
+                this.ngRedux.dispatch(this.actions.toggleHideDependsOnRelations());
+                break;
         }
     }
 

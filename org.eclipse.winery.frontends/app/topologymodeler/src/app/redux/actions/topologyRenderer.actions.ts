@@ -22,6 +22,7 @@ export interface HighlightNodesAction extends Action {
 export interface ShowSelectedMappingAction extends Action {
     mappingType: string;
 }
+
 /**
  * Actions of the topologyRenderer
  */
@@ -66,6 +67,7 @@ export class TopologyRendererActions {
     static DISABLE_RESEARCH_PLUGIN = 'DISABLE_RESEARCH_PLUGIN';
     static TOGGLE_MANAGE_PARTICIPANTS = 'TOGGLE_MANAGE_PARTICIPANTS';
     static TOGGLE_ASSIGN_PARTICIPANTS = 'TOGGLE_ASSIGN_PARTICIPANTS';
+    static TOGGLE_HIDE_DEPENDSON_RELATIONS = 'TOGGLE_HIDE_DEPENDSON_RELATIONS';
     static SHOW_ONLY_MAPPINGS_OF_SELECTED_TYPE = 'SHOW_ONLY_MAPPINGS_OF_SELECTED_TYPE';
 
     disableResearchPlugin(): Action {
@@ -219,6 +221,10 @@ export class TopologyRendererActions {
 
     toggleAssignParticipants(): Action {
         return { type: TopologyRendererActions.TOGGLE_ASSIGN_PARTICIPANTS };
+    }
+
+    toggleHideDependsOnRelations(): Action {
+        return { type: TopologyRendererActions.TOGGLE_HIDE_DEPENDSON_RELATIONS };
     }
 
     refineInstanceModel(): Action {
