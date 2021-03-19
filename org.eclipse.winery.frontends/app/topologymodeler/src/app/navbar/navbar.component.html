@@ -306,6 +306,11 @@
                         (click)="openChe()">
                     Open in IDE
                 </button>
+                <button class="btn btn-sm align-middle dark-button-style" id="hideDependsOnRelations"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.hideDependsOnRelations)">
+                    Hide DependsOn Relations
+                </button>
             </div>
 
             <div *ngIf="showVersionSliderButton" class="btn-group button-group" data-toggle="buttons">
