@@ -41,6 +41,8 @@ ENV WINERY_FEATURE_UPDATE_TEMPLATES false
 ENV DOCKERIZE_VERSION v0.6.1
 ENV CHE_URL "che.localhost"
 ENV CHE_URL_PROTOCOL "http"
+ENV GITHUB_CLIENT_ID ""
+ENV GITHUB_CLIENT_SECRET ""
 
 RUN rm /dev/random && ln -s /dev/urandom /dev/random \
     && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \
