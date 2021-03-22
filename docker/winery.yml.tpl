@@ -26,8 +26,8 @@ repository:
   repositoryRoot: {{ .Env.WINERY_REPOSITORY_PATH }}
   csarOutputPath: {{ .Env.WINERY_CSAR_OUTPUT_PATH }}
   git:
-    clientSecret: secret
+    clientSecret: {{ .Env.GITHUB_CLIENT_SECRET }}
     password: default
-    clientID: id
+    clientID: {{ .Env.GITHUB_CLIENT_ID }}
     autocommit: false
     username: default
