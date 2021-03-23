@@ -52,6 +52,8 @@ import io.github.edmm.core.parser.ScalarEntity;
 import io.github.edmm.core.parser.SequenceEntity;
 import io.github.edmm.core.parser.support.DefaultKeys;
 
+import static org.eclipse.winery.model.tosca.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE;
+
 public class EdmmConverter {
 
     private final Map<QName, TNodeType> nodeTypes;
@@ -122,7 +124,7 @@ public class EdmmConverter {
         Map<String, List<TNodeTemplate>> deploymentTechnologyMapping = new HashMap<>();
         for (TNodeTemplate nodeTemplate : nodeTemplates) {
             Map<QName, String> attributes = nodeTemplate.getOtherAttributes();
-            String key = attributes.get(QName.valueOf("{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}deployment-technology"));
+            String key = attributes.get(new QName(TOSCA_WINERY_EXTENSIONS_NAMESPACE, "deployment-technology"));
             if (key != null) {
                 deploymentTechnologyMapping.computeIfAbsent(key, k -> new ArrayList<>());
                 deploymentTechnologyMapping.get(key).add(nodeTemplate);
@@ -156,7 +158,7 @@ public class EdmmConverter {
 
         for (TNodeTemplate nodeTemplate : nodeTemplates) {
             Map<QName, String> attributes = nodeTemplate.getOtherAttributes();
-            String name = attributes.get(QName.valueOf("{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}participant"));
+            String name = attributes.get(new QName(TOSCA_WINERY_EXTENSIONS_NAMESPACE, "participant"));
             if (participant.getName().equals(name)) {
                 EntityId valueEntity = componentsEntityId.extend(nodeTemplate.getId());
                 entityGraph.addEntity(new ScalarEntity(nodeTemplate.getId(), valueEntity, entityGraph));

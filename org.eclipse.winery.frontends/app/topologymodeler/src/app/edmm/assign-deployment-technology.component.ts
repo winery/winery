@@ -52,7 +52,6 @@ export class AssignDeploymentTechnologyComponent implements OnInit {
     }
 
     toggleMembership(dt: DeploymentTechnology) {
-        console.log('toggleMembership', dt);
         this.ngRedux.dispatch(this.ngActions.assignDeploymentTechnology(this.node, dt.id));
     }
 

@@ -93,14 +93,10 @@ public class EdmmResource {
     @GET
     @Path("supportedTechnologies")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPlugins() {
-        List<DeploymentTechnology> entity = PluginManager.getInstance().getPluginsList().stream()
+    public List<DeploymentTechnology> getPlugins() {
+        return PluginManager.getInstance().getPluginsList().stream()
             .map(TransformationPlugin::getDeploymentTechnology)
             .collect(Collectors.toList());
-        return Response.ok()
-            .type(MediaType.APPLICATION_JSON)
-            .entity(entity)
-            .build();
     }
 
     @GET
