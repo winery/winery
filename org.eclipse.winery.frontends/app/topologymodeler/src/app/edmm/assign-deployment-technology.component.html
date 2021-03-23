@@ -32,12 +32,12 @@
         </td>
         <td class="table-td">
             <div style="margin-left: 2px; margin-top: 4px;">
-                <input type="radio" id="isMemberCheckbox"
+                <input type="radio" id="{{ node.id }}--{{ p.id }}"
                        [name]="node.id"
                        [value]="p.id"
                        (change)="toggleMembership(p)"
                        [checked]="isMember(p)">
-                <label for="isMemberCheckbox"></label>
+                <label for="{{ node.id }}--{{ p.id }}"></label>
             </div>
         </td>
     </tr>
