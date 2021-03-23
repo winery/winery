@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -73,6 +73,7 @@ export abstract class TopologyTemplateUtil {
         let providerKey: string;
         let regionKey: string;
         let participantKey: string;
+        let deploymentTechnologyKey: string;
         let otherAttributes;
         for (const key in node.otherAttributes) {
             if (node.otherAttributes.hasOwnProperty(key)) {
@@ -90,11 +91,15 @@ export abstract class TopologyTemplateUtil {
                     if (key.substring(key.indexOf('}') + 1) === 'participant') {
                         participantKey = key;
                     }
+                    if (key.substring(key.indexOf('}') + 1) === 'deployment-technology') {
+                        deploymentTechnologyKey = key;
+                    }
                     otherAttributes = {
                         [nameSpace + 'location']: node.otherAttributes[targetLocationKey],
                         [nameSpace + 'provider']: node.otherAttributes[providerKey],
                         [nameSpace + 'region']: node.otherAttributes[regionKey],
                         [nameSpace + 'participant']: node.otherAttributes[participantKey],
+                        [nameSpace + 'deployment-technology']: node.otherAttributes[deploymentTechnologyKey],
                         [nameSpace + 'x']: node.x,
                         [nameSpace + 'y']: node.y
                     };

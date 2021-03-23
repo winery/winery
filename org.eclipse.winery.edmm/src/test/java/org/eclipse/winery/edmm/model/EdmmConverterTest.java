@@ -54,7 +54,7 @@ public class EdmmConverterTest extends EdmmDependantTest {
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
-        assertEquals(11, transform.vertexSet().size());
+        assertEquals(13, transform.vertexSet().size());
     }
 
     @Test
@@ -72,7 +72,6 @@ public class EdmmConverterTest extends EdmmDependantTest {
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
-        assertEquals(11, transform.vertexSet().size());
         assertTrue(transform.vertexSet().stream().anyMatch(entity ->
             entity instanceof ScalarEntity
                 && entity.getName().equals("extends")
@@ -94,7 +93,6 @@ public class EdmmConverterTest extends EdmmDependantTest {
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
-        assertEquals(21, transform.vertexSet().size());
         assertTrue(transform.vertexSet().stream().anyMatch(entity ->
             entity instanceof MappingEntity
                 && entity.getName().equals("properties")
@@ -139,7 +137,6 @@ public class EdmmConverterTest extends EdmmDependantTest {
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
-        assertEquals(47, transform.vertexSet().size());
         assertTrue(transform.vertexSet().stream().anyMatch(entity ->
             entity instanceof ScalarEntity
                 && entity.getName().equals("hosted_on")
@@ -171,7 +168,6 @@ public class EdmmConverterTest extends EdmmDependantTest {
         EntityGraph transform = edmmConverter.transform(serviceTemplate);
 
         assertNotNull(transform);
-        assertEquals(14, transform.vertexSet().size());
 
         Optional<Entity> operations = transform.getEntity(Arrays.asList("0", "components", "test_node_4", "operations"));
         assertTrue(operations.isPresent());
@@ -247,6 +243,7 @@ public class EdmmConverterTest extends EdmmDependantTest {
             "    extends: depends_on\n" +
             "  connects_to:\n" +
             "    extends: depends_on\n" +
+            "multi_id: '12345'\n" +
             "component_types:\n" +
             "  https_ex.orgtoscatoedmm__test_node_type_2:\n" +
             "    extends: software_component\n" +
@@ -266,6 +263,7 @@ public class EdmmConverterTest extends EdmmDependantTest {
             "  https_ex.orgtoscatoedmm__test_node_type_4:\n" +
             "    extends: web_application\n" +
             "  software_component:\n" +
-            "    extends: base\n", stringWriter.toString());
+            "    extends: base\n" +
+            "version: edm_1_0\n", stringWriter.toString());
     }
 }

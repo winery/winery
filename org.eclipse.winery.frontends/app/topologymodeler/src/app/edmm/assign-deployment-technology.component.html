@@ -1,5 +1,5 @@
 <!--
- * Copyright (c) 2020-2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,18 +13,18 @@
 -->
 
 <div *ngIf="isEmpty()" style="color: dimgray; text-align: center">
-    <span>No participants defined <br> for this Topology Template.</span>
+    <span>No deployment technologies available.</span>
 </div>
 
 <table>
     <thead>
     <tr>
         <th>Name</th>
-        <th style="width: 60px">Member</th>
+        <th style="width: 60px">Use</th>
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let p of participants">
+    <tr *ngFor="let p of deploymentTechnologies">
         <td class="table-td"
             [class.cell-with-comment]="isEllipsisActive(name)">
             <div #name>{{ p.name }}</div>

@@ -140,6 +140,21 @@ export class TNodeTemplate extends AbstractTEntity {
                     }
                 }
             }
+        } else if (updatedAttribute === 'deployment-technology') {
+            let nameSpace: string;
+            for (const key in nodeTemplate.otherAttributes) {
+                if (nodeTemplate.otherAttributes.hasOwnProperty(key)) {
+                    nameSpace = key.substring(key.indexOf('{'), key.indexOf('}') + 1);
+                    if (updatedValue.length === 0) {
+                        delete nodeTemplate.otherAttributes[nameSpace + 'deployment-technology'];
+                        break;
+                    }
+                    if (nameSpace) {
+                        nodeTemplate.otherAttributes[nameSpace + 'deployment-technology'] = updatedValue;
+                        break;
+                    }
+                }
+            }
         } else {
             nodeTemplate[updatedAttribute] = updatedValue;
         }

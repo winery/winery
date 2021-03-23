@@ -65,6 +65,7 @@ export interface TopologyRendererState {
         yamlGroupsButton?: boolean;
         manageParticipantsButton?: boolean;
         assignParticipantsButton?: boolean;
+        assignDeploymentTechnologyButton?: boolean;
         hideDependsOnRelations?: boolean;
     };
     activeResearchPlugin: ResearchPlugin;
@@ -109,6 +110,7 @@ export const INITIAL_TOPOLOGY_RENDERER_STATE: TopologyRendererState = {
         manageYamlGroupsButton: false,
         yamlGroupsButton: false,
         manageParticipantsButton: false,
+        assignDeploymentTechnologyButton: false,
     },
     activeResearchPlugin: undefined,
 };
@@ -177,6 +179,14 @@ export const TopologyRendererReducer =
                     buttonsState: {
                         ...lastState.buttonsState,
                         assignParticipantsButton: !lastState.buttonsState.assignParticipantsButton
+                    }
+                };
+            case TopologyRendererActions.TOGGLE_ASSIGN_DEPLOYMENT_TECHNOLOGY:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        assignDeploymentTechnologyButton: !lastState.buttonsState.assignDeploymentTechnologyButton
                     }
                 };
             case TopologyRendererActions.TOGGLE_HIDE_DEPENDSON_RELATIONS:
