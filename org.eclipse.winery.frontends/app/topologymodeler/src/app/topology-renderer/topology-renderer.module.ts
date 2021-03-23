@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -47,6 +47,7 @@ import { WineryTableModule } from '../../../../tosca-management/src/app/wineryTa
 import { Ng2TableModule } from 'ng2-table';
 import { GroupsComponent } from '../node/groups/groups.component';
 import { AssignParticipantsComponent } from '../participants/assign-participants.component';
+import { AssignDeploymentTechnologyComponent } from '../edmm/assign-deployment-technology.component';
 
 @NgModule({
     imports: [
@@ -85,6 +86,7 @@ import { AssignParticipantsComponent } from '../participants/assign-participants
         VersionsComponent,
         GroupsComponent,
         AssignParticipantsComponent,
+        AssignDeploymentTechnologyComponent,
     ],
     exports: [
         TopologyRendererComponent,

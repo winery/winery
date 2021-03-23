@@ -38,6 +38,7 @@ import { EntityTypesModel } from '../models/entityTypesModel';
 import { ToscaUtils } from '../models/toscaUtils';
 import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 import { SubMenuItems } from '../../../../tosca-management/src/app/model/subMenuItem';
+import { DeploymentTechnology } from '../models/deployment-technology';
 
 /**
  * Responsible for interchanging data between the app and the server.
@@ -708,6 +709,12 @@ export class BackendService {
     requestPolicyTemplates(): Observable<Entity[]> {
         if (this.configuration) {
             return this.http.get<Entity[]>(this.configuration.repositoryURL + '/policytemplates', { headers: this.headers });
+        }
+    }
+
+    requestSupportedDeploymentTechnologies(): Observable<DeploymentTechnology[]> {
+        if (this.configuration) {
+            return this.http.get<Entity[]>(this.serviceTemplateURL + '/edmm/supportedTechnologies', { headers: this.headers });
         }
     }
 

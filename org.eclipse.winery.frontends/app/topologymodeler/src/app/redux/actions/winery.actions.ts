@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -196,6 +196,11 @@ export interface AssignParticipantAction extends Action {
     participant: string;
 }
 
+export interface AssignDeploymentTechnologyAction extends Action {
+    node: TNodeTemplate;
+    deploymentTechnology: string;
+}
+
 export interface UpdateGroupDefinitionAction extends Action {
     groups: TGroupDefinition[];
 }
@@ -262,6 +267,7 @@ export class WineryActions {
     static UPDATE_GROUP_DEFINITIONS = 'UPDATE_GROUP_DEFINITIONS';
     static UPDATE_PARTICIPANTS = 'UPDATE_PARTICIPANTS';
     static ASSIGN_PARTICIPANT = 'ASSIGN_PARTICIPANT';
+    static ASSIGN_DEPLOYMENT_TECHNOLOGY = 'ASSIGN_DEPLOYMENT_TECHNOLOGY';
 
     addEntityTypes: ActionCreator<AddEntityTypesAction> = ((entityTypes) => ({
         type: WineryActions.ADD_ENTITY_TYPES,
@@ -417,6 +423,12 @@ export class WineryActions {
             type: WineryActions.ASSIGN_PARTICIPANT,
             node: node,
             participant: participant,
+        }));
+    assignDeploymentTechnology: ActionCreator<AssignDeploymentTechnologyAction> =
+        ((node, deploymentTechnology) => ({
+            type: WineryActions.ASSIGN_DEPLOYMENT_TECHNOLOGY,
+            node: node,
+            deploymentTechnology: deploymentTechnology,
         }));
     setTargetLocation: ActionCreator<SetTargetLocation> =
         ((newTargetLocation) => ({

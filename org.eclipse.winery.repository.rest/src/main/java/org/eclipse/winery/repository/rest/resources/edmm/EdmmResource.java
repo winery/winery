@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -59,9 +60,11 @@ import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.no
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypesResource;
 
+import io.github.edmm.core.DeploymentTechnology;
 import io.github.edmm.core.parser.EntityGraph;
 import io.github.edmm.core.parser.support.GraphNormalizer;
 import io.github.edmm.core.plugin.PluginService;
+import io.github.edmm.core.plugin.TransformationPlugin;
 import io.github.edmm.model.DeploymentModel;
 import io.github.edmm.model.PluginSupportResult;
 import org.apache.commons.io.FileUtils;
@@ -85,6 +88,15 @@ public class EdmmResource {
 
     public EdmmResource(TServiceTemplate element) {
         this.element = element;
+    }
+
+    @GET
+    @Path("supportedTechnologies")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<DeploymentTechnology> getPlugins() {
+        return PluginManager.getInstance().getPluginsList().stream()
+            .map(TransformationPlugin::getDeploymentTechnology)
+            .collect(Collectors.toList());
     }
 
     @GET

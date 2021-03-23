@@ -67,6 +67,7 @@ export class TopologyRendererActions {
     static DISABLE_RESEARCH_PLUGIN = 'DISABLE_RESEARCH_PLUGIN';
     static TOGGLE_MANAGE_PARTICIPANTS = 'TOGGLE_MANAGE_PARTICIPANTS';
     static TOGGLE_ASSIGN_PARTICIPANTS = 'TOGGLE_ASSIGN_PARTICIPANTS';
+    static TOGGLE_ASSIGN_DEPLOYMENT_TECHNOLOGY = 'TOGGLE_ASSIGN_DEPLOYMENT_TECHNOLOGY';
     static TOGGLE_HIDE_DEPENDSON_RELATIONS = 'TOGGLE_HIDE_DEPENDSON_RELATIONS';
     static SHOW_ONLY_MAPPINGS_OF_SELECTED_TYPE = 'SHOW_ONLY_MAPPINGS_OF_SELECTED_TYPE';
 
@@ -221,6 +222,10 @@ export class TopologyRendererActions {
 
     toggleAssignParticipants(): Action {
         return { type: TopologyRendererActions.TOGGLE_ASSIGN_PARTICIPANTS };
+    }
+
+    toggleAssignDeploymentTechnology(): Action {
+        return { type: TopologyRendererActions.TOGGLE_ASSIGN_DEPLOYMENT_TECHNOLOGY };
     }
 
     toggleHideDependsOnRelations(): Action {

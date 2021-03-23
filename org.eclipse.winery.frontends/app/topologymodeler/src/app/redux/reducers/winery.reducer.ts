@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,12 +14,12 @@
 
 import { Action } from 'redux';
 import {
-    AddEntityTypesAction, AssignParticipantAction, ChangeYamlPoliciesAction, DecMaxInstances, DecMinInstances,
-    DeleteDeploymentArtifactAction, DeleteNodeAction, DeletePolicyAction, DeleteRelationshipAction,
-    DeleteYamlArtifactAction, HideNavBarAndPaletteAction, IncMaxInstances, IncMinInstances, SaveNodeTemplateAction,
-    SaveRelationshipAction, SendCurrentNodeIdAction, SendPaletteOpenedAction, SetCapabilityAction,
-    SetDeploymentArtifactAction, SetNodeVisuals, SetPolicyAction, SetPropertyAction, SetRequirementAction,
-    SetTargetLocation, SetYamlArtifactAction, SidebarChangeNodeName, SidebarMaxInstanceChanges,
+    AddEntityTypesAction, AssignDeploymentTechnologyAction, AssignParticipantAction, ChangeYamlPoliciesAction,
+    DecMaxInstances, DecMinInstances, DeleteDeploymentArtifactAction, DeleteNodeAction, DeletePolicyAction,
+    DeleteRelationshipAction, DeleteYamlArtifactAction, HideNavBarAndPaletteAction, IncMaxInstances, IncMinInstances,
+    SaveNodeTemplateAction, SaveRelationshipAction, SendCurrentNodeIdAction, SendPaletteOpenedAction,
+    SetCapabilityAction, SetDeploymentArtifactAction, SetNodeVisuals, SetPolicyAction, SetPropertyAction,
+    SetRequirementAction, SetTargetLocation, SetYamlArtifactAction, SidebarChangeNodeName, SidebarMaxInstanceChanges,
     SidebarMinInstanceChanges, SidebarStateAction, UpdateGroupDefinitionAction, UpdateNodeCoordinatesAction,
     UpdateParticipantsAction, UpdateRelationshipNameAction, WineryActions
 } from '../actions/winery.actions';
@@ -185,6 +185,20 @@ export const WineryReducer =
                         nodeTemplates: lastState.currentJsonTopology.nodeTemplates
                             .map(nodeTemplate => nodeTemplate.id === node.id ?
                                 nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('participant', participant)
+                                : nodeTemplate
+                            )
+                    }
+                };
+            case WineryActions.ASSIGN_DEPLOYMENT_TECHNOLOGY:
+                const node1 = (<AssignDeploymentTechnologyAction>action).node;
+                const deploymentTechnology = (<AssignDeploymentTechnologyAction>action).deploymentTechnology;
+                return <WineryState>{
+                    ...lastState,
+                    currentJsonTopology: {
+                        ...lastState.currentJsonTopology,
+                        nodeTemplates: lastState.currentJsonTopology.nodeTemplates
+                            .map(nodeTemplate => nodeTemplate.id === node1.id ?
+                                nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('deployment-technology', deploymentTechnology)
                                 : nodeTemplate
                             )
                     }
