@@ -19,6 +19,8 @@ import { IWineryState } from '../redux/store/winery.store';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { BackendService } from '../services/backend.service';
 import { DeploymentTechnology } from '../models/deployment-technology';
+import { QName } from '../../../../shared/src/app/model/qName';
+import { TOSCA_WINERY_EXTENSIONS_NAMESPACE } from '../models/namespaces';
 
 @Component({
     selector: 'winery-assign-deployment-technology',
@@ -27,7 +29,7 @@ import { DeploymentTechnology } from '../models/deployment-technology';
 })
 export class AssignDeploymentTechnologyComponent implements OnInit {
 
-    static QNAME = '{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}deployment-technology';
+    static QNAME_DEPLOYMENT_TECHNOLOGY = QName.create(TOSCA_WINERY_EXTENSIONS_NAMESPACE, 'deployment-technology').qName;
 
     @Input() readonly: boolean;
     @Input() deploymentTechnologies: DeploymentTechnology[];
@@ -47,7 +49,7 @@ export class AssignDeploymentTechnologyComponent implements OnInit {
     }
 
     isMember(dt: DeploymentTechnology) {
-        const value = this.node.otherAttributes[AssignDeploymentTechnologyComponent.QNAME];
+        const value = this.node.otherAttributes[AssignDeploymentTechnologyComponent.QNAME_DEPLOYMENT_TECHNOLOGY];
         return value && dt.id === value;
     }
 
