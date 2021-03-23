@@ -16,8 +16,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NgRedux } from '@angular-redux/store';
 import { OTParticipant, TNodeTemplate } from '../models/ttopology-template';
 import { IWineryState } from '../redux/store/winery.store';
-import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
 import { WineryActions } from '../redux/actions/winery.actions';
+import { QName } from '../../../../shared/src/app/model/qName';
+import { TOSCA_WINERY_EXTENSIONS_NAMESPACE } from '../models/namespaces';
 
 @Component({
     selector: 'winery-assign-participants',
@@ -26,15 +27,14 @@ import { WineryActions } from '../redux/actions/winery.actions';
 })
 export class AssignParticipantsComponent implements OnInit {
 
-    static NAMESPACE = '{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}';
+    static QNAME_PARTICIPANT = QName.create(TOSCA_WINERY_EXTENSIONS_NAMESPACE, 'participant').qName;
 
     @Input() readonly: boolean;
     @Input() participants: OTParticipant[];
     @Input() node: TNodeTemplate;
 
     constructor(private ngRedux: NgRedux<IWineryState>,
-                private ngActions: WineryActions,
-                private rendererActions: TopologyRendererActions) {
+                private ngActions: WineryActions) {
     }
 
     ngOnInit() {
@@ -45,7 +45,7 @@ export class AssignParticipantsComponent implements OnInit {
     }
 
     isMember(participant: OTParticipant) {
-        const value = this.node.otherAttributes[AssignParticipantsComponent.NAMESPACE + 'participant'];
+        const value = this.node.otherAttributes[AssignParticipantsComponent.QNAME_PARTICIPANT];
         if (value) {
             if (value.indexOf(',') > -1) {
                 return value.split(',').indexOf(participant.name) > -1;
@@ -57,7 +57,7 @@ export class AssignParticipantsComponent implements OnInit {
     }
 
     toggleMembership(participant: OTParticipant) {
-        const value = this.node.otherAttributes[AssignParticipantsComponent.NAMESPACE + 'participant'];
+        const value = this.node.otherAttributes[AssignParticipantsComponent.QNAME_PARTICIPANT];
         if (this.isMember(participant)) {
             if (value.indexOf(',') > -1) {
                 const arr = value.split(',');

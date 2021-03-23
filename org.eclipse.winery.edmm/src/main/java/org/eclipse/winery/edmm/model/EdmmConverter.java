@@ -16,6 +16,8 @@ package org.eclipse.winery.edmm.model;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -39,6 +41,7 @@ import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.extensions.OTParticipant;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 
 import io.github.edmm.core.parser.Entity;
@@ -48,6 +51,8 @@ import io.github.edmm.core.parser.MappingEntity;
 import io.github.edmm.core.parser.ScalarEntity;
 import io.github.edmm.core.parser.SequenceEntity;
 import io.github.edmm.core.parser.support.DefaultKeys;
+
+import static org.eclipse.winery.model.tosca.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE;
 
 public class EdmmConverter {
 
@@ -85,18 +90,80 @@ public class EdmmConverter {
     }
 
     public EntityGraph transform(TServiceTemplate serviceTemplate) {
+
         EntityGraph entityGraph = new EntityGraph();
+
+        setMetadata(entityGraph);
 
         List<TNodeTemplate> nodeTemplates = serviceTemplate.getTopologyTemplate().getNodeTemplates();
         List<TRelationshipTemplate> relationshipTemplates = serviceTemplate.getTopologyTemplate().getRelationshipTemplates();
         if (!nodeTemplates.isEmpty()) {
             entityGraph.addEntity(new MappingEntity(EntityGraph.COMPONENTS, entityGraph));
         }
-
         nodeTemplates.forEach(nodeTemplate -> createNode(nodeTemplate, entityGraph));
         relationshipTemplates.forEach(relationship -> createRelation(relationship, entityGraph));
 
+        List<OTParticipant> participants = serviceTemplate.getTopologyTemplate().getParticipants();
+        if (participants != null && !participants.isEmpty()) {
+            entityGraph.addEntity(new MappingEntity(EntityGraph.PARTICIPANTS, entityGraph));
+            participants.forEach(participant -> createParticipant(participant, nodeTemplates, entityGraph));
+        }
+
+        createTechnologyMapping(nodeTemplates, entityGraph);
+
         return entityGraph;
+    }
+
+    private void setMetadata(EntityGraph entityGraph) {
+        entityGraph.addEntity(new ScalarEntity("edm_1_0", EntityGraph.VERSION, entityGraph));
+        entityGraph.addEntity(new ScalarEntity("12345", EntityGraph.MULTI_ID, entityGraph));
+    }
+
+    private void createTechnologyMapping(List<TNodeTemplate> nodeTemplates, EntityGraph entityGraph) {
+
+        Map<String, List<TNodeTemplate>> deploymentTechnologyMapping = new HashMap<>();
+        for (TNodeTemplate nodeTemplate : nodeTemplates) {
+            Map<QName, String> attributes = nodeTemplate.getOtherAttributes();
+            String key = attributes.get(new QName(TOSCA_WINERY_EXTENSIONS_NAMESPACE, "deployment-technology"));
+            if (key != null) {
+                deploymentTechnologyMapping.computeIfAbsent(key, k -> new ArrayList<>());
+                deploymentTechnologyMapping.get(key).add(nodeTemplate);
+            }
+        }
+
+        if (!deploymentTechnologyMapping.isEmpty()) {
+            entityGraph.addEntity(new MappingEntity(EntityGraph.ORCHESTRATION_TECHNOLOGY, entityGraph));
+
+            deploymentTechnologyMapping.forEach((key, nodes) -> {
+                EntityId entity = EntityGraph.ORCHESTRATION_TECHNOLOGY.extend(key);
+                entityGraph.addEntity(new SequenceEntity(entity, entityGraph));
+                for (TNodeTemplate nodeTemplate : nodes) {
+                    EntityId valueEntity = entity.extend(nodeTemplate.getId());
+                    entityGraph.addEntity(new ScalarEntity(nodeTemplate.getId(), valueEntity, entityGraph));
+                }
+            });
+        }
+    }
+
+    private void createParticipant(OTParticipant participant, List<TNodeTemplate> nodeTemplates, EntityGraph entityGraph) {
+
+        EntityId participantEntity = EntityGraph.PARTICIPANTS.extend(participant.getName());
+        entityGraph.addEntity(new MappingEntity(participantEntity, entityGraph));
+
+        EntityId endpointEntityId = participantEntity.extend(DefaultKeys.ENDPOINT);
+        entityGraph.addEntity(new ScalarEntity(participant.getUrl(), endpointEntityId, entityGraph));
+
+        EntityId componentsEntityId = participantEntity.extend(DefaultKeys.COMPONENTS);
+        entityGraph.addEntity(new SequenceEntity(componentsEntityId, entityGraph));
+
+        for (TNodeTemplate nodeTemplate : nodeTemplates) {
+            Map<QName, String> attributes = nodeTemplate.getOtherAttributes();
+            String name = attributes.get(new QName(TOSCA_WINERY_EXTENSIONS_NAMESPACE, "participant"));
+            if (participant.getName().equals(name)) {
+                EntityId valueEntity = componentsEntityId.extend(nodeTemplate.getId());
+                entityGraph.addEntity(new ScalarEntity(nodeTemplate.getId(), valueEntity, entityGraph));
+            }
+        }
     }
 
     private void createRelation(TRelationshipTemplate relationship, EntityGraph entityGraph) {

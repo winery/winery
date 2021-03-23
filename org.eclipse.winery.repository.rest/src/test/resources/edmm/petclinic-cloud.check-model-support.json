@@ -75,41 +75,6 @@
         ]
     },
     {
-        "id": "cfn",
-        "name": "AWS CloudFormation",
-        "supports": 0.8,
-        "replacementRules": [
-            {
-                "reason": "unsupported",
-                "unsupportedComponents": [
-                    "Auth0"
-                ],
-                "toTopology": {
-                    "WebServer": {
-                        "relations": [
-                            {
-                                "hosted_on": "Compute"
-                            }
-                        ],
-                        "type": "web_server"
-                    },
-                    "Compute": {
-                        "type": "compute"
-                    },
-                    "WebApplication": {
-                        "relations": [
-                            {
-                                "hosted_on": "WebServer"
-                            }
-                        ],
-                        "type": "web_application"
-                    }
-                },
-                "unsupported": true
-            }
-        ]
-    },
-    {
         "id": "compose",
         "name": "Docker Compose",
         "supports": 0.4,

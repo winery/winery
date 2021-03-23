@@ -87,7 +87,7 @@
         <io.rest-assured>3.0.2</io.rest-assured>
         <xerces.xercesImpl.version>2.12.0</xerces.xercesImpl.version>
         <snakeyaml.version>1.25</snakeyaml.version>
-        <edmm.version>v1.0.15</edmm.version>
+        <edmm.version>1.0.18</edmm.version>
 
         <!-- grouped libraries -->
         <org.apache.cxf.version>2.7.6</org.apache.cxf.version>

@@ -137,7 +137,8 @@
                 </button>
             </div>
 
-            <div *wineryRepositoryFeatureToggle="configEnum.Placement" class="btn-group button-group" data-toggle="buttons">
+            <div *wineryRepositoryFeatureToggle="configEnum.Placement" class="btn-group button-group"
+                 data-toggle="buttons">
                 <button class="btn btn-sm align-middle dark-button-style"
                         type="button"
                         id="placement"
@@ -248,7 +249,8 @@
                     Refine Patterns
                 </button>
             </div>
-            <div *wineryRepositoryFeatureToggle="configEnum.TopologyFragmentRefinementModel" class="btn-group button-group"
+            <div *wineryRepositoryFeatureToggle="configEnum.TopologyFragmentRefinementModel"
+                 class="btn-group button-group"
                  data-toggle="buttons">
                 <button class="btn btn-sm align-middle dark-button-style" id="refineTopology"
                         (click)="toggleButton($event)"
@@ -297,6 +299,31 @@
                 <button class="btn btn-sm align-middle dark-button-style" id="edmmExport"
                         (click)="exportCsar($event, 'edmm')">
                     Export EDMM
+                </button>
+            </div>
+            <div *wineryRepositoryFeatureToggle="configEnum.EdmmModeling" class="btn-group button-group"
+                 data-toggle="buttons">
+                <button id="assignDeploymentTechnology" class="btn btn-sm align-middle dark-button-style"
+                        tooltip="Assign which nodes should be deployed using a certain deployment technology"
+                        tooltipPlacement="bottom"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.assignDeploymentTechnologyButton)">
+                    Assign Deployment Technology
+                </button>
+            </div>
+            <div *wineryRepositoryFeatureToggle="configEnum.EdmmModeling" class="btn-group button-group"
+                 data-toggle="buttons">
+                <button id="manageParticipants" class="btn btn-sm align-middle dark-button-style"
+                        tooltip="Add or remove participants to the Topology" tooltipPlacement="bottom"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.manageParticipantsButton)">
+                    Manage Participants
+                </button>
+                <button id="assignParticipants" class="btn btn-sm align-middle dark-button-style"
+                        tooltip="Assign which nodes belong to which participant" tooltipPlacement="bottom"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.assignParticipantsButton)">
+                    Assign Participants
                 </button>
             </div>
 

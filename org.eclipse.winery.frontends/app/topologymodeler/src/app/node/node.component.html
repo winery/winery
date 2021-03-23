@@ -1,5 +1,5 @@
 <!--
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -246,6 +246,19 @@
             <winery-assign-participants [readonly]="readonly" 
                                         [participants]="participants" [node]="nodeTemplate">
             </winery-assign-participants>
+        </accordion-group>
+
+        <!-- Deployment Technology -->
+        <accordion-group #deploymenttechnologygroup panelClass="accordionGroupPanel"
+                         *ngIf="navbarButtonsState.buttonsState.assignDeploymentTechnologyButton">
+            <div accordion-heading>
+                Deployment Technologies
+                <i class="pull-sm-0 float-sm-right fa icon-styling padding-top--2px"
+                   [ngClass]="{'fa-chevron-down': deploymenttechnologygroup?.isOpen, 'fa-chevron-right': !deploymenttechnologygroup?.isOpen}">
+                </i>
+            </div>
+            <winery-assign-deployment-technology [readonly]="readonly" [node]="nodeTemplate">
+            </winery-assign-deployment-technology>
         </accordion-group>
 
         <!-- POLICIES -->
