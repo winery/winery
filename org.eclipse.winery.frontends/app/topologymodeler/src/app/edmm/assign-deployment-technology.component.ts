@@ -48,44 +48,12 @@ export class AssignDeploymentTechnologyComponent implements OnInit {
 
     isMember(dt: DeploymentTechnology) {
         const value = this.node.otherAttributes[AssignDeploymentTechnologyComponent.QNAME];
-        if (value) {
-            if (value.indexOf(',') > -1) {
-                return value.split(',').indexOf(dt.id) > -1;
-            } else {
-                return dt.id === value;
-            }
-        }
-        return false;
+        return value && dt.id === value;
     }
 
     toggleMembership(dt: DeploymentTechnology) {
-        const value = this.node.otherAttributes[AssignDeploymentTechnologyComponent.QNAME];
-        if (this.isMember(dt)) {
-            if (value.indexOf(',') > -1) {
-                const arr = value.split(',');
-                const index = arr.findIndex((p) => p === dt.id);
-                arr.splice(index, 1);
-                this.ngRedux.dispatch(this.ngActions.assignDeploymentTechnology(this.node, arr.join(',')));
-            } else {
-                this.ngRedux.dispatch(this.ngActions.assignDeploymentTechnology(this.node, ''));
-            }
-        } else {
-            if (value) {
-                if (value.indexOf(',') > -1) {
-                    const arr = value.split(',');
-                    arr.push(dt.id);
-                    this.ngRedux.dispatch(this.ngActions.assignDeploymentTechnology(
-                        this.node, arr.join(',')
-                    ));
-                } else {
-                    this.ngRedux.dispatch(this.ngActions.assignDeploymentTechnology(
-                        this.node, value + ',' + dt.id
-                    ));
-                }
-            } else {
-                this.ngRedux.dispatch(this.ngActions.assignDeploymentTechnology(this.node, dt.id));
-            }
-        }
+        console.log('toggleMembership', dt);
+        this.ngRedux.dispatch(this.ngActions.assignDeploymentTechnology(this.node, dt.id));
     }
 
     isEmpty(): boolean {
