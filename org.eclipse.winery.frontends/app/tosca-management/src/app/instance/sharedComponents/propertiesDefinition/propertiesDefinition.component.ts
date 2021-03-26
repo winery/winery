@@ -388,13 +388,22 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.editedProperty.required = required;
         this.editedProperty.description = description;
         this.editedProperty.constraints = this.editedConstraints;
-        // no need to update resourceApiData for edit operation because the editedProperty is a reference
         if (this.propertyOperation === 'Add') {
             if (this.isYaml) {
                 this.resourceApiData.propertiesDefinition.properties.push(this.editedProperty);
             } else {
                 this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList.push(this.editedProperty);
             }
+        }
+        if (this.propertyOperation === 'Edit') {
+            let arr: any[];
+            if (this.isYaml) {
+                arr = this.resourceApiData.propertiesDefinition.properties;
+            } else {
+                arr = this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList;
+            }
+            const index = arr.findIndex((el) => el.name === this.editedProperty.name);
+            arr[index] = this.editedProperty;
         }
         this.editorModalRef.hide();
         this.clearEditedProperty();

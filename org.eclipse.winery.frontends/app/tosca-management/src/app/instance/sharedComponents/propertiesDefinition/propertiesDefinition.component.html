@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -107,16 +107,16 @@
             <div class="form-group">
                 <label class="control-label" for="name">Name</label>
                 <input #nameInput
-                    #propName="ngModel"
-                    id="name"
-                    class="form-control"
-                    type="text"
-                    [name]="isYaml ? 'name' : 'key'"
-                    autocomplete=off
-                    required
-                    [(ngModel)]="isYaml ? editedProperty.name : editedProperty.key"
-                    [wineryDuplicateValidator]="validatorObject"/>
-
+                       #propName="ngModel"
+                       id="name"
+                       class="form-control"
+                       type="text"
+                       [name]="isYaml ? 'name' : 'key'"
+                       autocomplete=off
+                       required
+                       [disabled]="propertyOperation === 'Edit'"
+                       [(ngModel)]="isYaml ? editedProperty.name : editedProperty.key"
+                       [wineryDuplicateValidator]="validatorObject"/>
                 <div *ngIf="propName.errors && (propName.dirty || propName.touched)"
                      class="alert alert-danger">
                     <div [hidden]="!propName.errors.wineryDuplicateValidator">
@@ -140,7 +140,8 @@
             <div class="form-group" [hidden]="typeSelect.value !== 'map' && typeSelect.value !== 'list'">
                 <label class="control-label" for="entrySchema">Entry Schema</label>
                 <!-- for now we do not support or condone nesting maps or lists -->
-                <select #entrySchemaSelect name="entrySchema" class="form-control" id="entrySchema" [value]="editedProperty.entrySchema.type">
+                <select #entrySchemaSelect name="entrySchema" class="form-control" id="entrySchema"
+                        [value]="editedProperty.entrySchema.type">
                     <option *ngFor="let type of availableTypes" value="{{ type }}">
                         {{ type }}
                     </option>
@@ -149,7 +150,8 @@
             <div class="form-group" [hidden]="typeSelect.value !== 'map'">
                 <label class="control-label" for="keySchema">Key Schema</label>
                 <!-- for now we do not support or condone nesting maps or lists -->
-                <select #keySchemaSelect name="keySchema" class="form-control" id="keySchema" [value]="editedProperty.keySchema.type">
+                <select #keySchemaSelect name="keySchema" class="form-control" id="keySchema"
+                        [value]="editedProperty.keySchema.type">
                     <option *ngFor="let type of availableTypes" value="{{ type }}">
                         {{ type }}
                     </option>
@@ -157,15 +159,18 @@
             </div>
             <div class="form-group">
                 <label class="control-label" for="defaultValue">Default Value</label>
-                <input #defaultValueInput id="defaultValue" class="form-control" type="text" [value]="editedProperty.defaultValue"/>
+                <input #defaultValueInput id="defaultValue" class="form-control" type="text"
+                       [value]="editedProperty.defaultValue"/>
             </div>
             <div class="form-group">
-                <input #requiredCheckbox type="checkbox" id="isRequired" style="margin-right: 7px" [checked]="editedProperty.required"/>
+                <input #requiredCheckbox type="checkbox" id="isRequired" style="margin-right: 7px"
+                       [checked]="editedProperty.required"/>
                 <label class="control-label" for="isRequired">Is required</label>
             </div>
             <div class="form-group">
                 <label class="control-label" for="description">Description</label>
-                <input #descriptionInput id="description" class="form-control" type="text" [value]="editedProperty.description"/>
+                <input #descriptionInput id="description" class="form-control" type="text"
+                       [value]="editedProperty.description"/>
             </div>
             <div class="form-group">
                 <label class="control-label" for="constraints">Constraints</label>
@@ -174,7 +179,8 @@
             <span><b>{{constraintClause.key}}</b>:
                 <span *ngIf="constraintClause.value != null">{{constraintClause.value}}</span>
                 <span *ngIf="constraintClause.list != null">{{constraintClause.list.toString()}}</span>
-                <button class="rightbutton btn btn-danger btn-xs" (click)="removeConstraint(constraintClause)">Delete</button>
+                <button class="rightbutton btn btn-danger btn-xs"
+                        (click)="removeConstraint(constraintClause)">Delete</button>
             </span>
                 </div>
             </div>
@@ -202,7 +208,7 @@
         [closeButtonLabel]="'Cancel'"
         [okButtonLabel]="propertyOperation"
         [modalRef]="editorModalRef"
-        [disableOkButton]="!propName.valid">
+        [disableOkButton]="!propName.valid && !propName.disabled">
     </winery-modal-footer>
 </ng-template>
 
