@@ -170,16 +170,6 @@ export class PropertiesDefinitionComponent implements OnInit {
             //  So we're just going to loudly complain and leave it at that
             console.warn('attempting to initialize dynamic winery table with a yaml repository. This DOES NOT WORK right now!');
         }
-        // else {
-        //     const options = [
-        //         { label: 'string', value: 'string' },
-        //         { label: 'integer', value: 'integer' },
-        //         { label: 'float', value: 'float' },
-        //         { label: 'boolean', value: 'boolean' },
-        //         { label: 'timestamp', value: 'timestamp' }
-        //     ];
-        //     this.dynamicTableData.push(new DynamicDropdownData<YamlTypes>('type', 'Type', options, 1));
-        // }
     }
 
     copyToTable() {
@@ -362,19 +352,10 @@ export class PropertiesDefinitionComponent implements OnInit {
         if (this.editedProperty.entrySchema === undefined) {
             this.editedProperty.entrySchema = { type: '' };
         }
-        if (this.isYaml) {
-            this.validatorObject = new WineryValidatorObject(
-                this.resourceApiData.propertiesDefinition.properties,
-                'name',
-                this.editedProperty);
-        } else {
-            this.validatorObject = new WineryValidatorObject(
-                this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList,
-                'key',
-                this.editedProperty
-            );
+        this.validatorObject = undefined;
+        if (this.editedProperty.constraints) {
+            this.editedProperty.constraints.forEach((c: Constraint) => this.editedConstraints.push(c));
         }
-        this.editedProperty.constraints.forEach((c: Constraint) => this.editedConstraints.push(c));
         this.editorModalRef = this.modalService.show(this.editorModal);
     }
 
@@ -407,13 +388,22 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.editedProperty.required = required;
         this.editedProperty.description = description;
         this.editedProperty.constraints = this.editedConstraints;
-        // no need to update resourceApiData for edit operation because the editedProperty is a reference
         if (this.propertyOperation === 'Add') {
             if (this.isYaml) {
                 this.resourceApiData.propertiesDefinition.properties.push(this.editedProperty);
             } else {
                 this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList.push(this.editedProperty);
             }
+        }
+        if (this.propertyOperation === 'Edit') {
+            let arr: any[];
+            if (this.isYaml) {
+                arr = this.resourceApiData.propertiesDefinition.properties;
+            } else {
+                arr = this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList;
+            }
+            const index = arr.findIndex((el) => el.name === this.editedProperty.name);
+            arr[index] = this.editedProperty;
         }
         this.editorModalRef.hide();
         this.clearEditedProperty();
