@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -120,6 +120,7 @@ import org.eclipse.winery.repository.yaml.converter.support.InheritanceUtils;
 import org.eclipse.winery.repository.yaml.converter.support.TypeConverter;
 import org.eclipse.winery.repository.yaml.converter.support.extension.YTImplementationArtifactDefinition;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
@@ -1233,16 +1234,22 @@ public class ToCanonical {
     }
 
     private TEntityType.YamlPropertyDefinition convert(YTPropertyDefinition node, String name) {
-        return new TEntityType.YamlPropertyDefinition.Builder(name)
+        TEntityType.YamlPropertyDefinition.Builder builder = new TEntityType.YamlPropertyDefinition.Builder(name)
             .setType(node.getType())
             .setDescription(node.getDescription())
             .setRequired(node.getRequired())
-            .setDefaultValue(ValueHelper.toString(node.getDefault()))
             .setStatus(TEntityType.YamlPropertyDefinition.Status.getStatus(node.getStatus().toString()))
             .setConstraints(convertList(node.getConstraints(), this::convert))
             .setEntrySchema(convert(node.getEntrySchema()))
-            .setKeySchema(convert(node.getKeySchema()))
-            .build();
+            .setKeySchema(convert(node.getKeySchema()));
+        // special handling to keep empty string values
+        if (node.getType() != null && node.getType().toString().equals("string")
+            && node.getDefault() != null && StringUtils.isEmpty(node.getDefault().toString())) {
+            builder.setDefaultValue("\"\"");
+        } else {
+            builder.setDefaultValue(ValueHelper.toString(node.getDefault()));
+        }
+        return builder.build();
     }
 
     @Nullable
