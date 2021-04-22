@@ -76,7 +76,7 @@
             <artifactId>org.eclipse.winery.model.tosca.canonical</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
+        <!-- <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.model.tosca.xml</artifactId>
             <version>${project.version}</version>
@@ -85,7 +85,7 @@
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.model.tosca.yaml</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.model.adaptation</artifactId>
@@ -101,11 +101,11 @@
             <artifactId>org.eclipse.winery.model.csar.toscametafile</artifactId>
             <version>${project.version}</version>
         </dependency> -->
-        <dependency>
+        <!-- <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.model.selfservice</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.model.threatmodeling</artifactId>
