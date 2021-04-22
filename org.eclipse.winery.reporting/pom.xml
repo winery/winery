@@ -26,21 +26,21 @@
     <artifactId>org.eclipse.winery.reporting</artifactId>
 
     <dependencies>
-        <dependency>
+        <!-- <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.accountability</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.bpmn4tosca.converter.tobpel</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
+        <!-- <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.cli</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.common</artifactId>
@@ -66,11 +66,11 @@
             <artifactId>org.eclipse.winery.generators.ia</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
+        <!-- <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.highlevelrestapi</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.model.tosca.canonical</artifactId>
@@ -96,11 +96,11 @@
             <artifactId>org.eclipse.winery.model.bpmn4tosca</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
+        <!-- <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.model.csar.toscametafile</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.model.selfservice</artifactId>
@@ -127,11 +127,11 @@
             <version>${project.version}</version>
             <classifier>classes</classifier>
         </dependency>
-        <dependency>
+        <!-- <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.tools.copybaragenerator</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.tools.deployablecomponents</artifactId>
