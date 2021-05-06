@@ -21,6 +21,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -43,11 +44,9 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.eclipse.winery.model.ids.Namespace;
-import org.eclipse.winery.repository.backend.IRepository;
-import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.common.ToscaDocumentBuilderFactory;
 import org.eclipse.winery.model.ids.IdUtil;
+import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.ids.definitions.EntityTemplateId;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
@@ -61,6 +60,8 @@ import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinition
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.export.CsarExporter;
 
@@ -75,9 +76,9 @@ public class ConsistencyChecker {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsistencyChecker.class);
     private static final String ARTEFACT_BE = "artefact";
-    
+
     private final ConsistencyCheckerConfiguration configuration;
-    
+
     private ConsistencyCheckerProgressListener progressListener;
     private final List<DefinitionsChildId> allDefinitionsChildIds;
 
@@ -105,7 +106,7 @@ public class ConsistencyChecker {
             if (configuration.isTestMode()) {
                 // we need a predictable ordering
                 // in the current implementation, the set is sorted --> just convert it to a list
-                this.allDefinitionsChildIds = allDefinitionsChildIds.stream().collect(Collectors.toList());
+                this.allDefinitionsChildIds = new ArrayList<>(allDefinitionsChildIds);
             } else {
                 // Random sorting of definitions ids to have the progressbar running at the same speed (and not being VERY slow at the end)
                 this.allDefinitionsChildIds = allDefinitionsChildIds.stream().sorted(Comparator.comparingInt(DefinitionsChildId::hashCode)).collect(Collectors.toList());
@@ -126,16 +127,10 @@ public class ConsistencyChecker {
      */
     public void checkCorruption() {
         if (configuration.getVerbosity().contains(ConsistencyCheckerVerbosity.OUTPUT_NUMBER_OF_TOSCA_COMPONENTS)) {
-            System.out.format("Number of TOSCA definitions to check: %d\n", numberOfDefinitionsToCheck());
+            LOGGER.info("Number of TOSCA definitions to check: {}", numberOfDefinitionsToCheck());
         }
 
         checkAllDefinitions(configuration.getRepository());
-
-        // some console output cleanup
-        if (configuration.getVerbosity().contains(ConsistencyCheckerVerbosity.OUTPUT_ERRORS)
-            && !configuration.getVerbosity().contains(ConsistencyCheckerVerbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
-            System.out.println();
-        }
     }
 
     /**
@@ -147,7 +142,8 @@ public class ConsistencyChecker {
     }
 
     /**
-     * Checks whether the given filename exists within the given defintions child id and if the size is above a threshold (currently 100 bytes)
+     * Checks whether the given filename exists within the given defintions child id and if the size is above a
+     * threshold (currently 100 bytes)
      */
     private void checkFileExistenceAndSize(DefinitionsChildId id, String filename) {
         RepositoryFileReference repositoryFileReference = new RepositoryFileReference(id, filename);
@@ -160,7 +156,7 @@ public class ConsistencyChecker {
             size = configuration.getRepository().getSize(repositoryFileReference);
         } catch (IOException e) {
             LOGGER.debug("Could not determine size for {}", id.toReadableString(), e);
-            printAndAddError(id, "Could not determine size, because " + e.toString());
+            printAndAddError(id, "Could not determine size, because " + e);
             return;
         }
         if (size < 100) {
@@ -263,6 +259,10 @@ public class ConsistencyChecker {
 
     private void validate(RepositoryFileReference xmlSchemaFileReference, @Nullable Object any, DefinitionsChildId id) {
         if (!(any instanceof Element)) {
+            if (any == null) {
+                printAndAddError(id, "any is not an Object!");
+                return;
+            }
             printAndAddError(id, "any is not instance of Document, but " + any.getClass());
             return;
         }
@@ -274,7 +274,7 @@ public class ConsistencyChecker {
             Validator validator = schema.newValidator();
             validator.validate(new DOMSource(element));
         } catch (Exception e) {
-            printAndAddError(id, "error during validating XML schema " + e.getMessage());
+            printAndAddError(id, "Error during validating XML schema " + e.getMessage());
         }
     }
 
@@ -335,7 +335,7 @@ public class ConsistencyChecker {
                 return;
             }
             if (def instanceof TEntityType.XmlElementDefinition) {
-                final QName element = ((TEntityType.XmlElementDefinition) def).getElement(); 
+                final QName element = ((TEntityType.XmlElementDefinition) def).getElement();
                 final Map<String, RepositoryFileReference> mapFromLocalNameToXSD = configuration.getRepository().getXsdImportManager().getMapFromLocalNameToXSD(new Namespace(element.getNamespaceURI(), false), false);
                 final RepositoryFileReference repositoryFileReference = mapFromLocalNameToXSD.get(element.getLocalPart());
                 if (repositoryFileReference == null) {
@@ -367,13 +367,14 @@ public class ConsistencyChecker {
             }
         } else if (definedProps instanceof TEntityTemplate.YamlProperties) {
             // FIXME todo
+            LOGGER.debug("YAML Properties checking is not yet implemented!");
         }
     }
 
     private static boolean requiresProperties(TEntityType type) {
         return type.getProperties() != null;
     }
-    
+
     private void checkId(DefinitionsChildId id) {
         checkNamespaceUri(id);
         checkNcname(id, id.getXmlId().getDecoded());
@@ -434,11 +435,12 @@ public class ConsistencyChecker {
                 final String lowerCaseIdClass = IdUtil.getTypeForComponentId(definitionsChildIdClass).toLowerCase();
                 return Stream.of(lowerCaseIdClass + "s", lowerCaseIdClass + "/");
             })
-            .anyMatch(definitionsChildName -> uriStr.contains(definitionsChildName));
+            .anyMatch(uriStr::contains);
         if (namespaceUriContainsDifferentType) {
             if ((id instanceof ServiceTemplateId) && (id.getNamespace().getDecoded().contains("compliance"))) {
-                // special case, becaue TComplianceRule models a service template, but Compliance Rules are treated as Service Template during modeling
+                // special case, because TComplianceRule models a service template, but Compliance Rules are treated as Service Template during modeling
                 // example: class org.eclipse.winery.common.ids.definitions.ServiceTemplateId / {http://www.compliance.opentosca.org/compliancerules}Satisfied_Compliance_Rule_Example_w1
+                printAndAddWarning(id, "Cannot perform checks for compliance rules...");
             } else {
                 printAndAddError(id, "Namespace URI contains tosca definitions name from other type. E.g., Namespace is ...servicetemplates..., but the type is an artifact template");
             }
@@ -475,15 +477,14 @@ public class ConsistencyChecker {
              ZipInputStream zis = new ZipInputStream(inputStream)) {
             ZipEntry entry;
             while ((entry = zis.getNextEntry()) != null) {
-                if (entry.getName() == null) {
-                    printAndAddError(id, "Empty filename in zip file");
+                if (configuration.getVerbosity().contains(ConsistencyCheckerVerbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
+                    LOGGER.info("Identified item in CSAR: {}", entry.getName());
                 }
             }
         } catch (Exception e) {
             final String error = "Could not read from temp CSAR file";
             LOGGER.debug(error, e);
             printAndAddError(id, error);
-            return;
         }
     }
 
@@ -524,21 +525,22 @@ public class ConsistencyChecker {
     }
 
     private void printAndAddError(DefinitionsChildId id, String error) {
-        printError(error);
+        printError(id, error);
         errorCollector.error(id, error);
     }
 
     private void printAndAddWarning(DefinitionsChildId id, String error) {
-        printError(error);
+        printError(id, error);
         errorCollector.warning(id, error);
     }
 
-    private void printError(String error) {
+    private void printError(DefinitionsChildId id, String error) {
         if (configuration.getVerbosity().contains(ConsistencyCheckerVerbosity.OUTPUT_ERRORS)) {
-            if (!configuration.getVerbosity().contains(ConsistencyCheckerVerbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
-                System.out.println();
+            if (configuration.getVerbosity().contains(ConsistencyCheckerVerbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
+                LOGGER.info("Currently handling {}, errors: {}", id, error);
+            } else {
+                LOGGER.info("Found Error: {}", error);
             }
-            System.out.println(error);
         }
     }
 

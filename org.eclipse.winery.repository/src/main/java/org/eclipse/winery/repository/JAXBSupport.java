@@ -47,15 +47,13 @@ public class JAXBSupport {
         try {
             // For winery classes, eventually the package+jaxb.index method could be better.
             // See http://stackoverflow.com/a/3628525/873282
-            context = JAXBContext.newInstance(new Class[] {
+            context = JAXBContext.newInstance(
                 TDefinitions.class, // all other elements are referred by "@XmlSeeAlso"
                 WinerysPropertiesDefinition.class,
                 Application.class,
-                MockXMLElement.class,
-                // required because we're not XmlSeeAlso referring it
-                TEntityTemplate.XmlProperties.class,
-            });
-                // MockXMLElement is added for testing purposes only.
+                MockXMLElement.class, // MockXMLElement is added for testing purposes only.
+                TEntityTemplate.XmlProperties.class // required because we're not XmlSeeAlso referring it
+            );
         } catch (JAXBException e) {
             LOGGER.error("Could not initialize JAXBContext", e);
             throw new IllegalStateException(e);

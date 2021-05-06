@@ -48,9 +48,10 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
     /**
      * Required for proper Jackson (de)serialization
      */
+    @SuppressWarnings("unused")
     public UiConfigurationObject() {
         if (Environment.getInstance().checkConfigurationForUpdate()) {
-            Environment.getInstance().updateConfig();
+            Environment.getInstance().getConfigFromFile();
         }
         this.configuration = Environment.getInstance().getConfiguration();
     }

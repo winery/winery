@@ -16,15 +16,16 @@
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36}:%line %method - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %-40logger{40}:%-4line %-35method - %msg%n</pattern>
         </encoder>
     </appender>
 
     <logger name="org.eclipse.winery" level="DEBUG"/>
     <logger name="org.glassfish.jersey" level="DEBUG"/>
     <logger name="org.apache.catalina.core.ApplicationDispatcher" level="SEVERE"/>
+    <logger name="org.eclipse.jgit" level="INFO"/>
 
-    <root level="info">
+    <root level="DEBUG">
         <appender-ref ref="STDOUT"/>
     </root>
 </configuration>

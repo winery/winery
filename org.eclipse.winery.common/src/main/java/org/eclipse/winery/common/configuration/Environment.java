@@ -112,10 +112,10 @@ final class Environment {
      */
     boolean checkConfigurationForUpdate() {
         try {
-            if (lastChange == null) {
+            if (this.lastChange == null) {
                 return true;
             } else {
-                return !lastChange.equals(Files.getLastModifiedTime(DEFAULT_CONFIG_FILE.toPath()));
+                return !this.lastChange.equals(Files.getLastModifiedTime(DEFAULT_CONFIG_FILE.toPath()));
             }
         } catch (IOException e) {
             LOGGER.warn("Error while accessing the last changed time", e);
@@ -128,7 +128,7 @@ final class Environment {
      * Configuration Instance of the existing winery.yml file. Else it calls createDefaultConfigFile(). Is protected for
      * testing purposes.
      */
-    private void getConfigFromFile() {
+    void getConfigFromFile() {
         File configFile = null;
         if (SystemUtils.IS_OS_LINUX && LINUX_CONFIG_FILE.exists()) {
             configFile = LINUX_CONFIG_FILE;
@@ -138,7 +138,7 @@ final class Environment {
                 copyDefaultConfigFile();
             }
             try {
-                lastChange = Files.getLastModifiedTime(DEFAULT_CONFIG_FILE.toPath());
+                this.lastChange = Files.getLastModifiedTime(DEFAULT_CONFIG_FILE.toPath());
             } catch (IOException e) {
                 LOGGER.error("Error while accessing the last changed time.", e);
             }
@@ -212,12 +212,5 @@ final class Environment {
                 LOGGER.warn("Error saving the config file: {}", e.getMessage(), e);
             }
         }
-    }
-
-    /**
-     * Reloads configuration from file.
-     */
-    void updateConfig() {
-        this.getConfigFromFile();
     }
 }
