@@ -119,11 +119,16 @@ public class RepositoryFactory {
      */
     public static IRepository getRepository(Path path) {
         Objects.requireNonNull(path);
-        FileBasedRepositoryConfiguration config = new GitBasedRepositoryConfiguration(
+        GitBasedRepositoryConfiguration config = new GitBasedRepositoryConfiguration(
             false,
             new FileBasedRepositoryConfiguration(path)
         );
-        return getRepository(config);
+        try {
+            reconfigure(config);
+        } catch (IOException | GitAPIException e) {
+            LOGGER.error("Error while reconfiguring the repository", e);
+        }
+        return repository;
     }
 
     public static IRepository getRepository(FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
