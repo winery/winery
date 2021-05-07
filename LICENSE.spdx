@@ -1,5 +1,5 @@
 SPDXVersion: SPDX-2.1
-PackageName: Eclipse Winery
-PackageOriginator: Eclipse Foundation
-PackageHomePage: https://github.com/ecipse/winery
+PackageName: OpenTOSCA Winery
+PackageOriginator: University of Stuttgart
+PackageHomePage: https://github.com/OpenTOSCA/winery
 PackageLicenseDeclared: Apache-2.0 OR EPL-2.0
