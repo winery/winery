@@ -70,10 +70,11 @@ import org.apache.commons.io.IOUtils;
 import org.apache.tika.mime.MediaType;
 import org.eclipse.jgit.dircache.InvalidPathException;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractFileBasedRepository implements IRepository {
 
-    private final Logger LOGGER;
+    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
     private final Path repositoryRoot;
 
     private final boolean isLocal;
@@ -83,8 +84,7 @@ public abstract class AbstractFileBasedRepository implements IRepository {
     /**
      * @param repositoryRoot Root to the repository
      */
-    public AbstractFileBasedRepository(Path repositoryRoot, Logger logger) {
-        LOGGER = logger;
+    public AbstractFileBasedRepository(Path repositoryRoot) {
         Objects.requireNonNull(repositoryRoot);
 
         this.repositoryRoot = repositoryRoot;

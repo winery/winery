@@ -91,7 +91,7 @@ public class YamlRepository extends AbstractFileBasedRepository {
     private static final Pattern namePattern = Pattern.compile("(.*)@(.*)@(.*)");
 
     public YamlRepository(Path repositoryRoot) {
-        super(repositoryRoot, LOGGER);
+        super(repositoryRoot);
     }
 
     /**

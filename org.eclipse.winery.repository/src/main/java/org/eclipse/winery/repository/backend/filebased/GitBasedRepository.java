@@ -142,7 +142,7 @@ public class GitBasedRepository extends AbstractFileBasedRepository implements I
      * @throws NoWorkTreeException thrown if the directory is not a git work tree
      */
     public GitBasedRepository(GitBasedRepositoryConfiguration repositoryConfiguration, AbstractFileBasedRepository repository) throws IOException, NoWorkTreeException, GitAPIException {
-        super(repository.getRepositoryRoot(), LOGGER);
+        super(repository.getRepositoryRoot());
         this.configuration = repositoryConfiguration;
         this.repository = repository;
 
