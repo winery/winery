@@ -66,7 +66,7 @@ public class XmlRepository extends AbstractFileBasedRepository {
      * @param repositoryRoot root of the filebased repository
      */
     public XmlRepository(Path repositoryRoot) {
-        super(repositoryRoot);
+        super(repositoryRoot, LOGGER);
     }
 
     @Override

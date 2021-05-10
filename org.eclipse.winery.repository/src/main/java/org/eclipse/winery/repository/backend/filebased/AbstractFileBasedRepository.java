@@ -46,8 +46,6 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.repository.common.RepositoryFileReference;
-import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.model.ids.GenericId;
 import org.eclipse.winery.model.ids.IdUtil;
 import org.eclipse.winery.model.ids.Namespace;
@@ -55,11 +53,13 @@ import org.eclipse.winery.model.ids.XmlId;
 import org.eclipse.winery.model.ids.admin.NamespacesId;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.ids.elements.ToscaElementId;
-import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.NamespaceManager;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 
 import org.apache.commons.configuration2.Configuration;
@@ -70,21 +70,21 @@ import org.apache.commons.io.IOUtils;
 import org.apache.tika.mime.MediaType;
 import org.eclipse.jgit.dircache.InvalidPathException;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class AbstractFileBasedRepository implements IRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractFileBasedRepository.class);
+    private final Logger LOGGER;
+    private final Path repositoryRoot;
 
-    boolean isLocal;
-    FileSystem fileSystem;
-    FileSystemProvider provider;
-    private Path repositoryRoot;
+    private final boolean isLocal;
+    private final FileSystem fileSystem;
+    private final FileSystemProvider provider;
 
     /**
      * @param repositoryRoot Root to the repository
      */
-    public AbstractFileBasedRepository(Path repositoryRoot) {
+    public AbstractFileBasedRepository(Path repositoryRoot, Logger logger) {
+        LOGGER = logger;
         Objects.requireNonNull(repositoryRoot);
 
         this.repositoryRoot = repositoryRoot;
@@ -94,17 +94,6 @@ public abstract class AbstractFileBasedRepository implements IRepository {
 
         this.isLocal = this.repositoryRoot.getFileName().toString().equals(Constants.DEFAULT_LOCAL_REPO_NAME);
         LOGGER.debug("Repository root: {}", this.repositoryRoot);
-    }
-
-    public static Path makeAbsoluteAndCreateRepositoryPath(final Path configuredRepositoryPath) {
-        Objects.requireNonNull(configuredRepositoryPath);
-        Path repositoryPath = configuredRepositoryPath.toAbsolutePath().normalize();
-        try {
-            org.apache.commons.io.FileUtils.forceMkdir(repositoryPath.toFile());
-        } catch (IOException ioex) {
-            LOGGER.debug("Error creating directory", ioex);
-        }
-        return repositoryPath;
     }
 
     public void forceDelete(RepositoryFileReference ref) throws IOException {
@@ -419,7 +408,7 @@ public abstract class AbstractFileBasedRepository implements IRepository {
                 } else {
                     return new RepositoryFileReference(id, relativePath, f.getFileName().toString());
                 }
-            }).forEach(ref -> res.add(ref));
+            }).forEach(res::add);
         } catch (IOException e1) {
             LOGGER.debug("Error during crawling", e1);
         }
@@ -503,14 +492,13 @@ public abstract class AbstractFileBasedRepository implements IRepository {
         dir = dir.resolve(namespace.getEncoded());
         if (Files.exists(dir) && Files.isDirectory(dir)) {
 
-            DirectoryStream<Path> directoryStream = null;
+            DirectoryStream<Path> directoryStream;
             try {
                 directoryStream = Files.newDirectoryStream(dir);
 
                 for (Path path : directoryStream) {
-                    Constructor<? extends DefinitionsChildId> constructor = null;
-
-                    constructor = clazz.getConstructor(String.class, String.class, boolean.class);
+                    Constructor<? extends DefinitionsChildId> constructor =
+                        clazz.getConstructor(String.class, String.class, boolean.class);
 
                     DefinitionsChildId definitionsChildId = constructor.newInstance(namespace.getDecoded(), path.getFileName().toString(), false);
                     result.add(definitionsChildId);

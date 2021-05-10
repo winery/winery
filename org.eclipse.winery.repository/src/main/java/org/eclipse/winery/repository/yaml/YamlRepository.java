@@ -53,8 +53,8 @@ import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
-import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.yaml.YTArtifactDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTImplementation;
@@ -91,7 +91,7 @@ public class YamlRepository extends AbstractFileBasedRepository {
     private static final Pattern namePattern = Pattern.compile("(.*)@(.*)@(.*)");
 
     public YamlRepository(Path repositoryRoot) {
-        super(repositoryRoot);
+        super(repositoryRoot, LOGGER);
     }
 
     /**
@@ -347,40 +347,36 @@ public class YamlRepository extends AbstractFileBasedRepository {
      **/
     private YTRelationshipType removeRelationshipArtifact(YTRelationshipType relationshipType, String targetArtifactName) {
         Map<String, YTInterfaceDefinition> interfaces = relationshipType.getInterfaces();
-        if (interfaces != null) {
-            for (Map.Entry<String, YTInterfaceDefinition> interfaceDefinition : interfaces.entrySet()) {
-                Map<String, YTOperationDefinition> operations = interfaceDefinition.getValue().getOperations();
-                if (operations != null) {
-                    YTOperationDefinition operationWithImplementation = operations.get(targetArtifactName);
-                    if (operationWithImplementation != null) {
-                        operationWithImplementation.setImplementation(null);
-                        operations.replace(targetArtifactName, operationWithImplementation);
-                    } else {
-                        for (Map.Entry<String, YTOperationDefinition> operation : operations.entrySet()) {
-                            YTOperationDefinition operationDefinition = operation.getValue();
-                            if (operationDefinition != null) {
-                                YTImplementation implementation = operationDefinition.getImplementation();
-                                if (implementation != null) {
-                                    if (implementation.getPrimaryArtifactName() != null) {
-                                        if (implementation.getPrimaryArtifactName().equalsIgnoreCase(targetArtifactName)) {
-                                            operationDefinition.setImplementation(null);
-                                        } else {
-                                            if (implementation.getDependencyArtifactNames() != null) {
-                                                List<String> names = implementation.getDependencyArtifactNames();
-                                                for (String name : implementation.getDependencyArtifactNames()) {
-                                                    if (name.equalsIgnoreCase(targetArtifactName)) {
-                                                        names.remove(name);
-                                                    }
-                                                }
-                                                implementation.setDependencyArtifactNames(names);
+        for (Map.Entry<String, YTInterfaceDefinition> interfaceDefinition : interfaces.entrySet()) {
+            Map<String, YTOperationDefinition> operations = interfaceDefinition.getValue().getOperations();
+            YTOperationDefinition operationWithImplementation = operations.get(targetArtifactName);
+            if (operationWithImplementation != null) {
+                operationWithImplementation.setImplementation(null);
+                operations.replace(targetArtifactName, operationWithImplementation);
+            } else {
+                for (Map.Entry<String, YTOperationDefinition> operation : operations.entrySet()) {
+                    YTOperationDefinition operationDefinition = operation.getValue();
+                    if (operationDefinition != null) {
+                        YTImplementation implementation = operationDefinition.getImplementation();
+                        if (implementation != null) {
+                            if (implementation.getPrimaryArtifactName() != null) {
+                                if (implementation.getPrimaryArtifactName().equalsIgnoreCase(targetArtifactName)) {
+                                    operationDefinition.setImplementation(null);
+                                } else {
+                                    if (implementation.getDependencyArtifactNames() != null) {
+                                        List<String> names = implementation.getDependencyArtifactNames();
+                                        for (String name : implementation.getDependencyArtifactNames()) {
+                                            if (name.equalsIgnoreCase(targetArtifactName)) {
+                                                names.remove(name);
                                             }
                                         }
+                                        implementation.setDependencyArtifactNames(names);
                                     }
-                                    operationDefinition.setImplementation(implementation);
                                 }
+                                operationDefinition.setImplementation(implementation);
                             }
-                            operation.setValue(operationDefinition);
                         }
+                        operation.setValue(operationDefinition);
                     }
                 }
                 YTInterfaceDefinition tInterfaceDefinition = interfaceDefinition.getValue();
@@ -401,43 +397,39 @@ public class YamlRepository extends AbstractFileBasedRepository {
      **/
     private YTNodeType removeImplementation(YTNodeType nodeType, String targetArtifactName) {
         Map<String, YTInterfaceDefinition> interfaces = nodeType.getInterfaces();
-        if (interfaces != null) {
-            for (Map.Entry<String, YTInterfaceDefinition> interfaceDefinition : interfaces.entrySet()) {
-                Map<String, YTOperationDefinition> operations = interfaceDefinition.getValue().getOperations();
-                if (operations != null) {
-                    for (Map.Entry<String, YTOperationDefinition> operation : operations.entrySet()) {
-                        YTOperationDefinition operationDefinition = operation.getValue();
-                        if (operationDefinition != null) {
-                            YTImplementation implementation = operationDefinition.getImplementation();
-                            if (implementation != null) {
-                                if (implementation.getPrimaryArtifactName() != null) {
-                                    // TODO
-                                    if (implementation.getPrimaryArtifactName().equalsIgnoreCase(targetArtifactName)) {
-                                        operationDefinition.setImplementation(null);
-                                    } else {
-                                        if (implementation.getDependencyArtifactNames() != null) {
-                                            List<String> names = implementation.getDependencyArtifactNames();
-                                            for (String name : implementation.getDependencyArtifactNames()) {
-                                                if (name.equalsIgnoreCase(targetArtifactName)) {
-                                                    names.remove(name);
-                                                }
-                                            }
-                                            implementation.setDependencyArtifactNames(names);
+        for (Map.Entry<String, YTInterfaceDefinition> interfaceDefinition : interfaces.entrySet()) {
+            Map<String, YTOperationDefinition> operations = interfaceDefinition.getValue().getOperations();
+            for (Map.Entry<String, YTOperationDefinition> operation : operations.entrySet()) {
+                YTOperationDefinition operationDefinition = operation.getValue();
+                if (operationDefinition != null) {
+                    YTImplementation implementation = operationDefinition.getImplementation();
+                    if (implementation != null) {
+                        if (implementation.getPrimaryArtifactName() != null) {
+                            // TODO
+                            if (implementation.getPrimaryArtifactName().equalsIgnoreCase(targetArtifactName)) {
+                                operationDefinition.setImplementation(null);
+                            } else {
+                                if (implementation.getDependencyArtifactNames() != null) {
+                                    List<String> names = implementation.getDependencyArtifactNames();
+                                    for (String name : implementation.getDependencyArtifactNames()) {
+                                        if (name.equalsIgnoreCase(targetArtifactName)) {
+                                            names.remove(name);
                                         }
                                     }
+                                    implementation.setDependencyArtifactNames(names);
                                 }
-                                operationDefinition.setImplementation(implementation);
                             }
                         }
-                        operation.setValue(operationDefinition);
+                        operationDefinition.setImplementation(implementation);
                     }
+                    operation.setValue(operationDefinition);
                 }
-                YTInterfaceDefinition tInterfaceDefinition = interfaceDefinition.getValue();
-                tInterfaceDefinition.setOperations(operations);
-                interfaceDefinition.setValue(tInterfaceDefinition);
             }
-            nodeType.setInterfaces(interfaces);
+            YTInterfaceDefinition tInterfaceDefinition = interfaceDefinition.getValue();
+            tInterfaceDefinition.setOperations(operations);
+            interfaceDefinition.setValue(tInterfaceDefinition);
         }
+        nodeType.setInterfaces(interfaces);
         return nodeType;
     }
 
@@ -539,11 +531,9 @@ public class YamlRepository extends AbstractFileBasedRepository {
         try {
             TDefinitions xmlDefinitions = convertToDefinitions(targetPath, getNameOfTypeFromArtifactName(qName.getLocalPart()), qName.getNamespaceURI());
             List<TArtifactTemplate> artifacts = xmlDefinitions.getArtifactTemplates();
-            if (artifacts != null) {
-                for (TArtifactTemplate artifact : artifacts) {
-                    if (artifact.getId().equalsIgnoreCase(getNameOfArtifactFromArtifactName(qName.getLocalPart()))) {
-                        return true;
-                    }
+            for (TArtifactTemplate artifact : artifacts) {
+                if (artifact.getId().equalsIgnoreCase(getNameOfArtifactFromArtifactName(qName.getLocalPart()))) {
+                    return true;
                 }
             }
         } catch (IOException | MultiException e) {
@@ -617,10 +607,8 @@ public class YamlRepository extends AbstractFileBasedRepository {
             target = target.resolve(fileName);
             TDefinitions definitions = convertToDefinitions(target, id, targetNamespace);
             List<TArtifactTemplate> artifactTemplates = definitions.getArtifactTemplates();
-            if (artifactTemplates != null) {
-                for (TArtifactTemplate artifactTemplate : artifactTemplates) {
-                    output.add(artifactTemplate.getId() + "@" + id);
-                }
+            for (TArtifactTemplate artifactTemplate : artifactTemplates) {
+                output.add(artifactTemplate.getId() + "@" + id);
             }
         } catch (MultiException | IOException e) {
             LOGGER.debug("Internal error", e);
@@ -650,7 +638,7 @@ public class YamlRepository extends AbstractFileBasedRepository {
     }
 
     @Override
-    public void putDefinition(RepositoryFileReference ref, TDefinitions content) throws IOException {
+    public void putDefinition(RepositoryFileReference ref, TDefinitions content) {
         try {
             YTServiceTemplate yaml = convertToYamlModel(ref, content);
             YamlWriter writer = new YamlWriter();

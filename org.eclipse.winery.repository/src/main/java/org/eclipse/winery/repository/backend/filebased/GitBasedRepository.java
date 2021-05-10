@@ -142,7 +142,7 @@ public class GitBasedRepository extends AbstractFileBasedRepository implements I
      * @throws NoWorkTreeException thrown if the directory is not a git work tree
      */
     public GitBasedRepository(GitBasedRepositoryConfiguration repositoryConfiguration, AbstractFileBasedRepository repository) throws IOException, NoWorkTreeException, GitAPIException {
-        super(repository.getRepositoryRoot());
+        super(repository.getRepositoryRoot(), LOGGER);
         this.configuration = repositoryConfiguration;
         this.repository = repository;
 
@@ -303,7 +303,7 @@ public class GitBasedRepository extends AbstractFileBasedRepository implements I
             if (ref == null) {
                 message = "Files changed externally.";
             } else {
-                message = ref.toString() + " was updated";
+                message = ref + " was updated";
             }
             addCommit(message);
         }
