@@ -80,10 +80,10 @@ public class MultiRepository implements IWrappingRepository {
 
     private final Map<IRepository, Set<String>> repositoryGlobal = new HashMap<>();
     private final Map<IRepository, Set<Namespace>> repositoryCommonNamespace = new HashMap<>();
-    private File repositoryConfiguration;
+    private File dependantRepositories;
     private List<RepositoryProperties> repositoriesList = new ArrayList<>();
     private GitBasedRepository localRepository;
-    private Path repositoryRoot;
+    private final Path repositoryRoot;
     private final EventBus eventBus;
 
     /**
@@ -96,12 +96,20 @@ public class MultiRepository implements IWrappingRepository {
         this.eventBus = new EventBus();
         try {
             LOGGER.debug("Trying to initialize local repository...");
+
             File localRepoPath = new File(repositoryRoot.toString(), Constants.DEFAULT_LOCAL_REPO_NAME);
-            FileBasedRepositoryConfiguration localRepoConfig = new FileBasedRepositoryConfiguration(localRepoPath.toPath());
-            repositoryConfiguration = new File(this.getRepositoryRoot().toString(), Filename.FILENAME_JSON_REPOSITORIES);
+            this.dependantRepositories = new File(repositoryRoot.toString(), Filename.FILENAME_JSON_REPOSITORIES);
             readRepositoriesConfig();
-            GitBasedRepositoryConfiguration gitConfig = new GitBasedRepositoryConfiguration(false, localRepoConfig);
-            this.localRepository = new GitBasedRepository(gitConfig, RepositoryFactory.createXmlOrYamlRepository(localRepoConfig, localRepoPath.toPath()));
+
+            GitBasedRepositoryConfiguration gitBasedRepositoryConfiguration = new GitBasedRepositoryConfiguration(
+                false,
+                new FileBasedRepositoryConfiguration(localRepoPath.toPath())
+            );
+            this.localRepository = new GitBasedRepository(
+                gitBasedRepositoryConfiguration,
+                RepositoryFactory.createXmlOrYamlRepository(gitBasedRepositoryConfiguration, localRepoPath.toPath())
+            );
+
             LOGGER.debug("Local repo has been initialized at {}", localRepoPath.getAbsolutePath());
         } catch (IOException | GitAPIException e) {
             LOGGER.error("Error while initializing local repository of the Multi Repository!", e);
@@ -277,11 +285,12 @@ public class MultiRepository implements IWrappingRepository {
     private void readRepositoriesConfig() throws IOException {
         if (repoContainsConfigFile()) {
             LOGGER.info("Found Repositories file");
-            loadConfiguration(repositoryConfiguration);
+            loadConfiguration(dependantRepositories);
             MultiRepositoryManager multiRepositoryManager = new MultiRepositoryManager();
-            if (!multiRepositoryManager.isMultiRepositoryFileStructureEstablished(Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()))) {
-                multiRepositoryManager.createMultiRepositoryFileStructure(Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()),
-                    Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), Constants.DEFAULT_LOCAL_REPO_NAME));
+            Path repoPath = Paths.get(this.repositoryRoot.toString());
+            if (!multiRepositoryManager.isMultiRepositoryFileStructureEstablished(repoPath)) {
+                multiRepositoryManager.createMultiRepositoryFileStructure(repoPath,
+                    Paths.get(this.repositoryRoot.toString(), Constants.DEFAULT_LOCAL_REPO_NAME));
             }
             loadRepositoriesByList();
         } else {
@@ -299,7 +308,7 @@ public class MultiRepository implements IWrappingRepository {
             ObjectMapper objectMapper = new ObjectMapper();
             try {
                 objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-                objectMapper.writeValue(repositoryConfiguration, repositoriesList);
+                objectMapper.writeValue(dependantRepositories, repositoriesList);
             } catch (IOException e) {
                 e.printStackTrace();
             }
