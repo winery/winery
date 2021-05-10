@@ -60,6 +60,7 @@ import org.slf4j.LoggerFactory;
  */
 // FIXME this needs to start conversions between the canonical and the xml model
 public class XmlRepository extends AbstractFileBasedRepository {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(XmlRepository.class);
 
     /**
@@ -102,7 +103,7 @@ public class XmlRepository extends AbstractFileBasedRepository {
             LOGGER.warn("Attempting to write definitions with putContentToFile. Redirecting call to putDefinitions");
             try {
                 // convert the InputStream to an object that we can throw at putDefinitions
-                org.eclipse.winery.model.tosca.TDefinitions canonical = (org.eclipse.winery.model.tosca.TDefinitions) 
+                org.eclipse.winery.model.tosca.TDefinitions canonical = (org.eclipse.winery.model.tosca.TDefinitions)
                     JAXBSupport.createUnmarshaller().unmarshal(inputStream);
                 putDefinition(BackendUtils.getIdForRef(ref), canonical);
             } catch (JAXBException e) {

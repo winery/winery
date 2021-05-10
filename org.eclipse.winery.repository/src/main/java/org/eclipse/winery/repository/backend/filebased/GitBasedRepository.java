@@ -303,7 +303,7 @@ public class GitBasedRepository extends AbstractFileBasedRepository implements I
             if (ref == null) {
                 message = "Files changed externally.";
             } else {
-                message = ref.toString() + " was updated";
+                message = ref + " was updated";
             }
             addCommit(message);
         }
