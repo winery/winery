@@ -624,15 +624,6 @@ public interface IRepository extends IWineryRepositoryCommon {
                     }
                 }
 
-//                TODO
-//                if (!referencesGivenQName && element instanceof TServiceTemplate) {
-//                    TTopologyTemplate topologyTemplate = ((TServiceTemplate) element).getTopologyTemplate();
-//
-//                    topologyTemplate.getRelationshipTemplates()
-//                        .stream()
-//                        .anyMatch(tRelationshipTemplate -> tRelationshipTemplate.)
-//                }
-
                 return referencesGivenQName;
             })
             .collect(Collectors.toList());
