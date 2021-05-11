@@ -42,7 +42,7 @@ public class QNameValidator extends Visitor {
         if (qname != null && StringUtils.isEmpty(qname.getNamespaceURI())) {
             errorLogger.log(String.format("Referenced element \"%s\" is not a full QName", qname));
         }
-        if (!allQNameToElementMapping.containsKey(qname)) {
+        if (qname != null && !allQNameToElementMapping.containsKey(qname)) {
             errorLogger.log(String.format("Referenced element \"%s\" does not exist!", qname));
         }
     }
