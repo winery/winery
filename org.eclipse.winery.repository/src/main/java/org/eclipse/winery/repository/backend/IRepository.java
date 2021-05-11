@@ -422,6 +422,17 @@ public interface IRepository extends IWineryRepositoryCommon {
         return elements;
     }
 
+    default <T extends DefinitionsChildId, S extends TExtensibleElements> Map<QName, S> getAllQNameToElementMapping() {
+        Map<QName, S> elements = new HashMap<>();
+        DefinitionsChildId.ALL_TOSCA_COMPONENT_ID_CLASSES.forEach((idClass) ->
+            getAllDefinitionsChildIds(idClass)
+                .forEach(id ->
+                    elements.put(id.getQName(), getElement(id))
+                )
+        );
+        return elements;
+    }
+
     /**
      * Returns the set of <em>all</em> ids nested in the given reference
      * <p>
@@ -542,7 +553,7 @@ public interface IRepository extends IWineryRepositoryCommon {
 
                 if (!referencesGivenQName && element instanceof HasInheritance) {
                     HasType derivedFrom = ((HasInheritance) element).getDerivedFrom();
-                    referencesGivenQName = Objects.nonNull(derivedFrom) && qNameOfTheType.equals(derivedFrom);
+                    referencesGivenQName = Objects.nonNull(derivedFrom) && qNameOfTheType.equals(derivedFrom.getTypeAsQName());
                 }
 
                 if (!referencesGivenQName && element instanceof TRelationshipType) {
@@ -608,37 +619,9 @@ public interface IRepository extends IWineryRepositoryCommon {
                             // while it's not strictly a type, it's still a QName reference, so err on the side of caution here
                             referencesGivenQName = ((TEntityType.XmlElementDefinition) propertiesDefinition).getElement().equals(qNameOfTheType);
                         } else if (propertiesDefinition instanceof TEntityType.YamlPropertiesDefinition) {
-                            TEntityType.YamlPropertiesDefinition def = (TEntityType.YamlPropertiesDefinition) propertiesDefinition;
-                            if (def.getProperties().stream().anyMatch(prop -> prop.getType().equals(qNameOfTheType))) {
-                                referencesGivenQName = true;
-                            }
-                            Queue<TSchema> schemata = new LinkedList<>();
-                            for (TEntityType.YamlPropertyDefinition prop : def.getProperties()) {
-                                schemata.add(prop.getEntrySchema());
-                                schemata.add(prop.getKeySchema());
-                            }
-                            while (!schemata.isEmpty()) {
-                                TSchema current = schemata.poll();
-                                if (current == null) {
-                                    continue;
-                                }
-                                if (current.getType().equals(qNameOfTheType)) {
-                                    referencesGivenQName = true;
-                                    break;
-                                }
-                                schemata.add(current.getEntrySchema());
-                                schemata.add(current.getKeySchema());
-                            }
+                            getReferencedDefinitionsOfProperties(new ArrayList<>(), propertiesDefinition);
                         }
                     }
-                }
-
-                if (!referencesGivenQName && element instanceof TServiceTemplate) {
-                 /*   TTopologyTemplate topologyTemplate = ((TServiceTemplate) element).getTopologyTemplate();
-
-                    topologyTemplate.getRelationshipTemplates()
-                        .stream()
-                        .anyMatch(tRelationshipTemplate -> tRelationshipTemplate.)*/
                 }
 
                 return referencesGivenQName;
@@ -734,12 +717,15 @@ public interface IRepository extends IWineryRepositoryCommon {
             artifacts.getArtifact().forEach(a -> ids.add(new ArtifactTypeId(a.getType())));
         }
 
-        TEntityType.PropertiesDefinition properties = nodeType.getProperties();
+        getReferencedDefinitionsOfProperties(ids, nodeType.getProperties());
+
+        return ids;
+    }
+
+    default void getReferencedDefinitionsOfProperties(Collection<DefinitionsChildId> ids, TEntityType.PropertiesDefinition properties) {
         if (Objects.nonNull(properties)) {
-            if (properties instanceof TEntityType.XmlElementDefinition
-                || properties instanceof TEntityType.XmlTypeDefinition) {
-                // nothing to do here, since these are not referring to TDefinitions
-            } else if (properties instanceof TEntityType.YamlPropertiesDefinition) {
+            // Only the YamlPropertiesDefinitions are referencing additional elements
+            if (properties instanceof TEntityType.YamlPropertiesDefinition) {
                 List<TEntityType.YamlPropertyDefinition> props = ((TEntityType.YamlPropertiesDefinition) properties).getProperties();
                 Queue<TSchema> schemata = new LinkedList<>();
                 for (TEntityType.YamlPropertyDefinition def : props) {
@@ -762,8 +748,6 @@ public interface IRepository extends IWineryRepositoryCommon {
                 }
             }
         }
-
-        return ids;
     }
 
     default Collection<DefinitionsChildId> getReferencedDefinitionsChildIds(NodeTypeImplementationId id) {
@@ -847,10 +831,10 @@ public interface IRepository extends IWineryRepositoryCommon {
     }
 
     default Collection<DefinitionsChildId> getReferencedDefinitionsChildIds(RelationshipTypeId id) {
-        Collection<DefinitionsChildId> ids = new ArrayList<>();
-
         // add all implementations
-        ids.addAll(this.getAllElementsReferencingGivenType(RelationshipTypeImplementationId.class, id.getQName()));
+        Collection<DefinitionsChildId> ids = new ArrayList<>(
+            this.getAllElementsReferencingGivenType(RelationshipTypeImplementationId.class, id.getQName())
+        );
 
         final TRelationshipType relationshipType = this.getElement(id);
 
@@ -894,34 +878,7 @@ public interface IRepository extends IWineryRepositoryCommon {
             }
         }
 
-        TEntityType.PropertiesDefinition properties = relationshipType.getProperties();
-        if (Objects.nonNull(properties)) {
-            if (properties instanceof TEntityType.XmlElementDefinition
-                || properties instanceof TEntityType.XmlTypeDefinition) {
-                // nothing to do here, since these are not referring to TDefinitions
-            } else if (properties instanceof TEntityType.YamlPropertiesDefinition) {
-                List<TEntityType.YamlPropertyDefinition> props = ((TEntityType.YamlPropertiesDefinition) properties).getProperties();
-                Queue<TSchema> schemata = new LinkedList<>();
-                for (TEntityType.YamlPropertyDefinition def : props) {
-                    if (!def.getType().getNamespaceURI().isEmpty()) {
-                        ids.add(new DataTypeId(def.getType()));
-                    }
-                    schemata.add(def.getKeySchema());
-                    schemata.add(def.getEntrySchema());
-                }
-                while (!schemata.isEmpty()) {
-                    TSchema current = schemata.poll();
-                    if (current == null) {
-                        continue;
-                    }
-                    if (!current.getType().getNamespaceURI().isEmpty()) {
-                        ids.add(new DataTypeId(current.getType()));
-                    }
-                    schemata.add(current.getKeySchema());
-                    schemata.add(current.getEntrySchema());
-                }
-            }
-        }
+        getReferencedDefinitionsOfProperties(ids, relationshipType.getProperties());
 
         return ids;
     }
@@ -1010,14 +967,7 @@ public interface IRepository extends IWineryRepositoryCommon {
 
                     // Crawl RequirementTypes and Capabilities for their references
                     getReferencedRequirementTypeIds(ids, n);
-                    TNodeTemplate.Capabilities capabilities = n.getCapabilities();
-                    if (capabilities != null) {
-                        for (TCapability cap : capabilities.getCapability()) {
-                            QName type = cap.getType();
-                            CapabilityTypeId ctId = new CapabilityTypeId(type);
-                            ids.add(ctId);
-                        }
-                    }
+                    getCapabilitiesReferences(ids, n);
 
                     // TODO: this information is collected differently for YAML and XML modes
                     // crawl through deployment artifacts
@@ -1083,29 +1033,8 @@ public interface IRepository extends IWineryRepositoryCommon {
         TDataType definition = this.getElement(id);
 
         // cast is safe because TDataType can only use YamlPropertiesDefinitions
-        final TEntityType.YamlPropertiesDefinition properties = (TEntityType.YamlPropertiesDefinition) definition.getProperties();
-        if (properties != null) {
-            List<TEntityType.YamlPropertyDefinition> propDefs = properties.getProperties();
-            Queue<TSchema> schemata = new LinkedList<>();
-            for (TEntityType.YamlPropertyDefinition def : propDefs) {
-                if (!def.getType().getNamespaceURI().isEmpty()) {
-                    ids.add(new DataTypeId(def.getType()));
-                }
-                schemata.add(def.getKeySchema());
-                schemata.add(def.getEntrySchema());
-            }
-            while (!schemata.isEmpty()) {
-                TSchema current = schemata.poll();
-                if (current == null) {
-                    continue;
-                }
-                if (!current.getType().getNamespaceURI().isEmpty()) {
-                    ids.add(new DataTypeId(current.getType()));
-                }
-                schemata.add(current.getKeySchema());
-                schemata.add(current.getEntrySchema());
-            }
-        }
+        getReferencedDefinitionsOfProperties(ids, definition.getProperties());
+
         return ids;
     }
 
@@ -1153,14 +1082,7 @@ public interface IRepository extends IWineryRepositoryCommon {
                     }
 
                     getReferencedRequirementTypeIds(ids, n);
-                    TNodeTemplate.Capabilities capabilities = n.getCapabilities();
-                    if (capabilities != null) {
-                        for (TCapability cap : capabilities.getCapability()) {
-                            QName type = cap.getType();
-                            CapabilityTypeId ctId = new CapabilityTypeId(type);
-                            ids.add(ctId);
-                        }
-                    }
+                    getCapabilitiesReferences(ids, n);
 
                     // crawl through policies
                     TPolicies policies = n.getPolicies();
@@ -1179,6 +1101,17 @@ public interface IRepository extends IWineryRepositoryCommon {
         }
 
         return ids;
+    }
+
+    default void getCapabilitiesReferences(Collection<DefinitionsChildId> ids, TNodeTemplate n) {
+        TNodeTemplate.Capabilities capabilities = n.getCapabilities();
+        if (capabilities != null) {
+            for (TCapability cap : capabilities.getCapability()) {
+                QName type = cap.getType();
+                CapabilityTypeId ctId = new CapabilityTypeId(type);
+                ids.add(ctId);
+            }
+        }
     }
 
     /**
@@ -1231,11 +1164,9 @@ public interface IRepository extends IWineryRepositoryCommon {
         // Currently, it is EntityType and EntityTypeImplementation only
         // Since the latter does not exist in the TOSCA MetaModel, we just handle EntityType here
         if (id instanceof HasInheritanceId) {
-            Optional<DefinitionsChildId> parentId = this.getDefinitionsChildIdOfParent((HasInheritanceId) id);
-            if (parentId.isPresent()) {
-                // add the parent id itself. The referenced definitions are included by recursion
-                referencedDefinitionsChildIds.add(parentId.get());
-            }
+            // add the parent id itself. The referenced definitions are included by recursion
+            this.getDefinitionsChildIdOfParent((HasInheritanceId) id)
+                .ifPresent(referencedDefinitionsChildIds::add);
         }
 
         return referencedDefinitionsChildIds;

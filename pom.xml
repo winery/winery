@@ -89,6 +89,7 @@
         <xerces.xercesImpl.version>2.12.0</xerces.xercesImpl.version>
         <snakeyaml.version>1.25</snakeyaml.version>
         <edmm.version>1.0.18</edmm.version>
+        <tika.version>1.26</tika.version>
 
         <!-- grouped libraries -->
         <org.apache.cxf.version>2.7.6</org.apache.cxf.version>
