@@ -53,6 +53,7 @@ import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
@@ -223,10 +224,11 @@ public class ConsistencyChecker {
     /**
      * Checks all references QNames whether they are valid
      */
-    private void checkReferencedQNames(DefinitionsChildId id) {
-        final QNameValidator qNameValidator = new QNameValidator(error -> printAndAddError(id, error));
+    private void checkReferencedQNames(DefinitionsChildId id, Map<QName, TExtensibleElements> allQNameToElementMapping) {
+        final QNameValidator qNameValidator = new QNameValidator(error -> printAndAddError(id, error), allQNameToElementMapping);
         try {
-            configuration.getRepository().getDefinitions(id).getElement().accept(qNameValidator);
+            configuration.getRepository().getDefinitions(id).getElement()
+                .accept(qNameValidator);
         } catch (IllegalStateException e) {
             LOGGER.debug("Illegal State Exception during reading of id {}", id.toReadableString(), e);
             printAndAddError(id, "Reading error " + e.getMessage());
@@ -501,6 +503,7 @@ public class ConsistencyChecker {
 
         float elementsChecked = 0;
         int size = allDefinitionsChildIds.size();
+        Map<QName, TExtensibleElements> allQNameToElementMapping = repository.getAllQNameToElementMapping();
         for (DefinitionsChildId id : allDefinitionsChildIds) {
             float progress = ++elementsChecked / size;
             if (configuration.getVerbosity().contains(ConsistencyCheckerVerbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
@@ -511,7 +514,7 @@ public class ConsistencyChecker {
 
             checkId(id);
             checkXmlSchemaValidation(id);
-            checkReferencedQNames(id);
+            checkReferencedQNames(id, allQNameToElementMapping);
             checkPropertiesValidation(id);
             if (id instanceof ServiceTemplateId) {
                 checkServiceTemplate((ServiceTemplateId) id);

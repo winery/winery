@@ -30,10 +30,13 @@ import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TDocumentation;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TEntityTypeImplementation;
 import org.eclipse.winery.model.tosca.TExportedInterface;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImplementationArtifact;
+import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TParameter;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlans;
@@ -107,13 +110,16 @@ public abstract class Visitor {
         if (precondition != null) {
             precondition.accept(this);
         }
-        final TPlan.InputParameters inputParameters = plan.getInputParameters();
-        if (inputParameters != null) {
-            for (TParameter parameter : inputParameters.getInputParameter()) {
+        if (plan.getInputParameters() != null) {
+            for (TParameter parameter : plan.getInputParameters().getInputParameter()) {
                 parameter.accept(this);
             }
         }
-        plan.getOutputParameters();
+        if (plan.getOutputParameters() != null) {
+            for (TParameter parameter : plan.getOutputParameters().getOutputParameter()) {
+                parameter.accept(this);
+            }
+        }
     }
 
     public void visit(TTopologyTemplate topologyTemplate) {
@@ -127,6 +133,28 @@ public abstract class Visitor {
             relationshipTemplate.accept(this);
         }
         // meta model does not offer more children
+    }
+
+    public void visit(TNodeTypeImplementation nodeTypeImplementation) {
+        Objects.requireNonNull(nodeTypeImplementation);
+        visit((TEntityTypeImplementation) nodeTypeImplementation);
+
+        if (nodeTypeImplementation.getDeploymentArtifacts() != null) {
+            for (TDeploymentArtifact da : nodeTypeImplementation.getDeploymentArtifacts().getDeploymentArtifact()) {
+                da.accept(this);
+            }
+        }
+    }
+
+    public void visit(TEntityTypeImplementation implementation) {
+        Objects.requireNonNull(implementation);
+        visit((TExtensibleElements) implementation);
+
+        if (implementation.getImplementationArtifacts() != null) {
+            for (TImplementationArtifacts.ImplementationArtifact ia : implementation.getImplementationArtifacts().getImplementationArtifact()) {
+                ia.accept(this);
+            }
+        }
     }
 
     public void visit(TExtensibleElements extensibleElement) {
