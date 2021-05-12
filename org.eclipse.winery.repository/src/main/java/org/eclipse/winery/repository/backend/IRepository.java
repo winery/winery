@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -67,7 +67,6 @@ import org.eclipse.winery.model.ids.extensions.TestRefinementModelId;
 import org.eclipse.winery.model.ids.extensions.TopologyFragmentRefinementModelId;
 import org.eclipse.winery.model.tosca.HasInheritance;
 import org.eclipse.winery.model.tosca.HasType;
-import org.eclipse.winery.model.tosca.TAppliesTo;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifacts;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
@@ -587,8 +586,7 @@ public interface IRepository extends IWineryRepositoryCommon {
                 }
 
                 if (!referencesGivenQName && element instanceof TPolicyType) {
-                    TAppliesTo appliesTo = ((TPolicyType) element).getAppliesTo();
-                    referencesGivenQName = Objects.nonNull(appliesTo) && appliesTo.getNodeTypeReference()
+                    referencesGivenQName = ((TPolicyType) element).getAppliesTo()
                         .stream()
                         .anyMatch(nodeTypeReference -> qNameOfTheType.equals(nodeTypeReference.getTypeRef()));
                 }

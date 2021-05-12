@@ -35,7 +35,6 @@ import org.eclipse.winery.model.converter.support.Namespaces;
 import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.HasInheritance;
-import org.eclipse.winery.model.tosca.TAppliesTo;
 import org.eclipse.winery.model.tosca.TArtifact;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
@@ -969,21 +968,14 @@ public class ToCanonical {
      * @param targetList list of TOSCA YAML PolicyType targets
      * @return TOSCA XML PolicyType AppliesTo
      */
-    private TAppliesTo convertTargets(List<QName> targetList) {
+    private List<TPolicyType.NodeTypeReference> convertTargets(List<QName> targetList) {
         if (targetList == null || targetList.size() == 0) {
             return null;
         }
 
-        List<TAppliesTo.NodeTypeReference> references = new ArrayList<>();
-        for (QName nodeRef : targetList) {
-            TAppliesTo.NodeTypeReference ref = new TAppliesTo.NodeTypeReference();
-            ref.setTypeRef(nodeRef);
-            references.add(ref);
-        }
-
-        TAppliesTo appliesTo = new TAppliesTo();
-        appliesTo.getNodeTypeReference().addAll(references);
-        return appliesTo;
+        return targetList.stream()
+            .map(TPolicyType.NodeTypeReference::new)
+            .collect(Collectors.toList());
     }
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -38,7 +38,6 @@ import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
-import org.eclipse.winery.model.tosca.TAppliesTo;
 import org.eclipse.winery.model.tosca.TArtifact;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
@@ -528,15 +527,13 @@ public class FromCanonical {
             return new LinkedHashMap<>();
         }
         YTPolicyType.Builder builder = new YTPolicyType.Builder();
-
-        if (node.getAppliesTo() != null) {
-            builder = builder.setTargets(node
-                .getAppliesTo()
-                .getNodeTypeReference()
+        builder = builder.setTargets(
+            node.getAppliesTo()
                 .stream()
-                .map(TAppliesTo.NodeTypeReference::getTypeRef)
-                .collect(Collectors.toList()));
-        }
+                .map(TPolicyType.NodeTypeReference::getTypeRef)
+                .collect(Collectors.toList())
+        );
+
         String nodeFullName = this.getFullName(node);
         return Collections.singletonMap(
             nodeFullName,
@@ -1204,7 +1201,7 @@ public class FromCanonical {
         if (Objects.isNull(node)) {
             return new HashMap<>();
         }
-        String nodeFullName = this.getFullName(node);        
+        String nodeFullName = this.getFullName(node);
         YTDataType.Builder builder = convert(node, new YTDataType.Builder(), TDataType.class);
         return Collections.singletonMap(
             nodeFullName,

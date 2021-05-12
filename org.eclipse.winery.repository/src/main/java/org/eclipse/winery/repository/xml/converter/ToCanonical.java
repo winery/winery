@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,7 +25,6 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.HasId;
 import org.eclipse.winery.model.tosca.RelationshipSourceOrTarget;
-import org.eclipse.winery.model.tosca.TAppliesTo;
 import org.eclipse.winery.model.tosca.TArtifact;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
@@ -409,17 +408,12 @@ public class ToCanonical {
 
     private TPolicyType convert(XTPolicyType xml) {
         TPolicyType.Builder builder = new TPolicyType.Builder(xml.getName());
-        if (xml.getAppliesTo() != null) {
-            TAppliesTo appliesTo = new TAppliesTo();
-            appliesTo.getNodeTypeReference().addAll(xml.getAppliesTo().getNodeTypeReference().stream()
-                .map(c -> {
-                    TAppliesTo.NodeTypeReference result = new TAppliesTo.NodeTypeReference();
-                    result.setTypeRef(c.getTypeRef());
-                    return result;
-                })
-                .collect(Collectors.toList()));
-            builder.setAppliesTo(appliesTo);
-        }
+        builder.setAppliesTo(
+            xml.getAppliesTo().stream()
+                .map(c -> new TPolicyType.NodeTypeReference(c.getTypeRef()))
+                .collect(Collectors.toList())
+        );
+
         fillEntityTypeProperties(builder, xml);
         return builder.build();
     }

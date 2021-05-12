@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -87,7 +87,6 @@ import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesD
 import org.eclipse.winery.model.tosca.xml.XDefinitions;
 import org.eclipse.winery.model.tosca.xml.XHasId;
 import org.eclipse.winery.model.tosca.xml.XRelationshipSourceOrTarget;
-import org.eclipse.winery.model.tosca.xml.XTAppliesTo;
 import org.eclipse.winery.model.tosca.xml.XTArtifact;
 import org.eclipse.winery.model.tosca.xml.XTArtifactReference;
 import org.eclipse.winery.model.tosca.xml.XTArtifactTemplate;
@@ -314,8 +313,7 @@ public class FromCanonical {
     }
 
     private XTRequiredContainerFeature convert(TRequiredContainerFeature canonical) {
-        XTRequiredContainerFeature result = new XTRequiredContainerFeature(canonical.getFeature());
-        return result;
+        return new XTRequiredContainerFeature(canonical.getFeature());
     }
 
     private XTPolicyTemplate convert(TPolicyTemplate canonical) {
@@ -327,17 +325,11 @@ public class FromCanonical {
 
     private XTPolicyType convert(TPolicyType canonical) {
         XTPolicyType.Builder builder = new XTPolicyType.Builder(canonical.getName());
-        if (canonical.getAppliesTo() != null) {
-            XTAppliesTo appliesTo = new XTAppliesTo();
-            appliesTo.getNodeTypeReference().addAll(canonical.getAppliesTo().getNodeTypeReference().stream()
-                .map(c -> {
-                    XTAppliesTo.NodeTypeReference result = new XTAppliesTo.NodeTypeReference();
-                    result.setTypeRef(c.getTypeRef());
-                    return result;
-                })
-                .collect(Collectors.toList()));
-            builder.setAppliesTo(appliesTo);
-        }
+        builder.setAppliesTo(
+            canonical.getAppliesTo().stream()
+                .map(c -> new XTPolicyType.XNodeTypeReference(c.getTypeRef()))
+                .collect(Collectors.toList())
+        );
         fillEntityTypeProperties(builder, canonical);
         return builder.build();
     }

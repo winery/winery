@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,7 +21,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.TAppliesTo;
 import org.eclipse.winery.model.tosca.TPolicyType;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
@@ -34,39 +33,25 @@ public class AppliesToResource {
     public AppliesToResource(PolicyTypeResource policyTypeResource) {
         this.policyTypeResource = policyTypeResource;
     }
-    
+
     @GET
     public ValidTypesListApiData getValidSourceTypes() {
-        List<QName> qNames = null;
+        List<QName> qNames = getPolicyType()
+            .getAppliesTo()
+            .stream()
+            .map(TPolicyType.NodeTypeReference::getTypeRef)
+            .collect(Collectors.toList());
 
-        if (getPolicyType().getAppliesTo() != null) {
-            qNames = getPolicyType()
-                .getAppliesTo()
-                .getNodeTypeReference()
-                .stream()
-                .map(TAppliesTo.NodeTypeReference::getTypeRef)
-                .collect(Collectors.toList());
-        }
         return new ValidTypesListApiData(qNames);
     }
-    
+
     @PUT
     public Response saveValidSourceTypes(ValidTypesListApiData newValidSourceTypes) {
-        TPolicyType t = this.getPolicyType();
-        List<TAppliesTo.NodeTypeReference> references = newValidSourceTypes
-            .getNodes()
-            .stream()
+        List<TPolicyType.NodeTypeReference> references = newValidSourceTypes.getNodes().stream()
             .map(QNameApiData::asQName)
-            .map(qName -> {
-                    TAppliesTo.NodeTypeReference ntr = new TAppliesTo.NodeTypeReference();
-                    ntr.setTypeRef(qName);
-                    return ntr;
-                }
-            )
+            .map(TPolicyType.NodeTypeReference::new)
             .collect(Collectors.toList());
-        TAppliesTo appliesTo = new TAppliesTo();
-        appliesTo.getNodeTypeReference().addAll(references);
-        t.setAppliesTo(appliesTo);
+        this.getPolicyType().setAppliesTo(references);
 
         return RestUtils.persist(this.policyTypeResource);
     }
