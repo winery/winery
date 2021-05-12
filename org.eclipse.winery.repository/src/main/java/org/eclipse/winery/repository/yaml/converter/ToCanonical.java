@@ -969,7 +969,7 @@ public class ToCanonical {
      * @return TOSCA XML PolicyType AppliesTo
      */
     private List<TPolicyType.NodeTypeReference> convertTargets(List<QName> targetList) {
-        if (targetList == null || targetList.size() == 0) {
+        if (targetList == null || targetList.isEmpty()) {
             return null;
         }
 

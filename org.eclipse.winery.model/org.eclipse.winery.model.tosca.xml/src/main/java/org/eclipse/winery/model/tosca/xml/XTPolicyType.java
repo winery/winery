@@ -72,11 +72,8 @@ public class XTPolicyType extends XTEntityType {
         return Objects.hash(super.hashCode(), appliesTo, policyLanguage);
     }
 
-    @NonNull
+    @Nullable
     public List<XNodeTypeReference> getAppliesTo() {
-        if (appliesTo == null) {
-            this.appliesTo = new ArrayList<>();
-        }
         return appliesTo;
     }
 

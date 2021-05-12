@@ -523,9 +523,10 @@ public class FromCanonical {
 
     @NonNull
     public Map<String, YTPolicyType> convert(TPolicyType node) {
-        if (Objects.isNull(node)) {
+        if (Objects.isNull(node) || node.getAppliesTo().isEmpty()) {
             return new LinkedHashMap<>();
         }
+
         YTPolicyType.Builder builder = new YTPolicyType.Builder();
         builder = builder.setTargets(
             node.getAppliesTo()

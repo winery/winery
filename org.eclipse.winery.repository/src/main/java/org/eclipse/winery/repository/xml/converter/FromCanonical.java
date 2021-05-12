@@ -325,11 +325,13 @@ public class FromCanonical {
 
     private XTPolicyType convert(TPolicyType canonical) {
         XTPolicyType.Builder builder = new XTPolicyType.Builder(canonical.getName());
-        builder.setAppliesTo(
-            canonical.getAppliesTo().stream()
-                .map(c -> new XTPolicyType.XNodeTypeReference(c.getTypeRef()))
-                .collect(Collectors.toList())
-        );
+        if (!canonical.getAppliesTo().isEmpty()) {
+            builder.setAppliesTo(
+                canonical.getAppliesTo().stream()
+                    .map(c -> new XTPolicyType.XNodeTypeReference(c.getTypeRef()))
+                    .collect(Collectors.toList())
+            );
+        }
         fillEntityTypeProperties(builder, canonical);
         return builder.build();
     }

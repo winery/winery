@@ -408,11 +408,13 @@ public class ToCanonical {
 
     private TPolicyType convert(XTPolicyType xml) {
         TPolicyType.Builder builder = new TPolicyType.Builder(xml.getName());
-        builder.setAppliesTo(
-            xml.getAppliesTo().stream()
-                .map(c -> new TPolicyType.NodeTypeReference(c.getTypeRef()))
-                .collect(Collectors.toList())
-        );
+        if (xml.getAppliesTo() != null) {
+            builder.setAppliesTo(
+                xml.getAppliesTo().stream()
+                    .map(c -> new TPolicyType.NodeTypeReference(c.getTypeRef()))
+                    .collect(Collectors.toList())
+            );
+        }
 
         fillEntityTypeProperties(builder, xml);
         return builder.build();
