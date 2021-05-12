@@ -15,7 +15,6 @@
 package org.eclipse.winery.model.tosca.xml;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
