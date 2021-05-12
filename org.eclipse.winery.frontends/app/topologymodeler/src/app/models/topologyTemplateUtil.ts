@@ -195,8 +195,8 @@ export abstract class TopologyTemplateUtil {
     static getNodeVisualsForNodeTemplate(nodeType: string, nodeVisuals: Visuals[], state?: DifferenceStates): Visuals {
         for (const visual of nodeVisuals) {
             const qName = new QName(visual.typeId);
-            const localName = qName.localName;
-            if (localName === new QName(nodeType).localName) {
+            const nodeTypeQName = new QName(nodeType);
+            if (qName.localName === nodeTypeQName.localName && qName.nameSpace === nodeTypeQName.nameSpace) {
                 const color = !state ? visual.color : VersionUtils.getElementColorByDiffState(state);
                 return <Visuals>{
                     color: color,
