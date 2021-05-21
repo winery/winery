@@ -23,6 +23,9 @@ Thus, when hosting Eclipse Winery, make it accessible to trustworthy parties onl
 Both development and user documentation is available at <https://eclipse.github.io/winery>.
 The source for the documentation can be found in the [docs](docs) directory.
 
+## Video
+
+[![](docs/user/figures/video.png)](https://youtu.be/hj7iBadt7D8)
 
 ## Acknowledgements
 
