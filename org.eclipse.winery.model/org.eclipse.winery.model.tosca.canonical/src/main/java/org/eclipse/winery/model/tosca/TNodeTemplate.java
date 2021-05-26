@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
@@ -52,20 +53,28 @@ import org.eclipse.jdt.annotation.Nullable;
     property = "fakeJacksonType")
 public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPolicies {
 
-    @XmlElement(name = "Requirements")
-    protected TNodeTemplate.Requirements requirements;
+    @XmlElementWrapper(name = "Requirements")
+    @XmlElement(name = "Requirement")
+    protected List<TRequirement> requirements;
+    
     @XmlElement(name = "Capabilities")
     protected TNodeTemplate.Capabilities capabilities;
+    
     @XmlElement(name = "Policies")
     protected TPolicies policies;
+    
     @XmlElement(name = "DeploymentArtifacts")
     protected TDeploymentArtifacts deploymentArtifacts;
+    
     @XmlAttribute(name = "name")
     protected String name;
+    
     @XmlAttribute(name = "minInstances")
     protected Integer minInstances;
+    
     @XmlAttribute(name = "maxInstances")
     protected String maxInstances;
+    
     // this element is added to support YAML mode
     @XmlElement(name = "Artifacts", required = false)
     protected TArtifacts artifacts;
@@ -122,11 +131,11 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
         return "nodetemplate";
     }
 
-    public TNodeTemplate.@Nullable Requirements getRequirements() {
+    public List<TRequirement> getRequirements() {
         return requirements;
     }
 
-    public void setRequirements(TNodeTemplate.@Nullable Requirements value) {
+    public void setRequirements(List<TRequirement> value) {
         this.requirements = value;
     }
 
@@ -298,43 +307,9 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
         }
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "requirement"
-    })
-    public static class Requirements implements Serializable {
-
-        @XmlElement(name = "Requirement", required = true)
-        protected List<TRequirement> requirement;
-
-        @NonNull
-        public List<TRequirement> getRequirement() {
-            if (requirement == null) {
-                requirement = new ArrayList<TRequirement>();
-            }
-            return this.requirement;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Requirements that = (Requirements) o;
-            return Objects.equals(requirement, that.requirement);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(requirement);
-        }
-
-        public void accept(Visitor visitor) {
-            visitor.visit(this);
-        }
-    }
-
     public static class Builder extends RelationshipSourceOrTarget.Builder<Builder> {
-        private Requirements requirements;
+        
+        private List<TRequirement> requirements;
         private Capabilities capabilities;
         private TPolicies policies;
         private TDeploymentArtifacts deploymentArtifacts;
@@ -353,7 +328,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
             super(entityTemplate);
         }
 
-        public Builder setRequirements(TNodeTemplate.Requirements requirements) {
+        public Builder setRequirements(List<TRequirement> requirements) {
             this.requirements = requirements;
             return this;
         }
@@ -398,27 +373,17 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
             return this;
         }
 
-        public Builder addRequirements(TNodeTemplate.Requirements requirements) {
-            if (requirements == null || requirements.getRequirement().isEmpty()) {
+        public Builder addRequirements(List<TRequirement> requirements) {
+            if (requirements == null || requirements.isEmpty()) {
                 return this;
             }
 
             if (this.requirements == null) {
                 this.requirements = requirements;
             } else {
-                this.requirements.getRequirement().addAll(requirements.getRequirement());
+                this.requirements.addAll(requirements);
             }
             return this;
-        }
-
-        public Builder addRequirements(List<TRequirement> requirements) {
-            if (requirements == null) {
-                return this;
-            }
-
-            TNodeTemplate.Requirements tmp = new TNodeTemplate.Requirements();
-            tmp.getRequirement().addAll(requirements);
-            return addRequirements(tmp);
         }
 
         public Builder addRequirements(TRequirement requirements) {
@@ -426,8 +391,8 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
                 return this;
             }
 
-            TNodeTemplate.Requirements tmp = new TNodeTemplate.Requirements();
-            tmp.getRequirement().add(requirements);
+            List<TRequirement> tmp = new ArrayList<>();
+            tmp.add(requirements);
             return addRequirements(tmp);
         }
 

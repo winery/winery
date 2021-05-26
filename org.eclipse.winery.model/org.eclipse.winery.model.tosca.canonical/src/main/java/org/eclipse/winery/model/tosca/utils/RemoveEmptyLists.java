@@ -13,12 +13,15 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.utils;
 
+import java.util.List;
+
 import org.eclipse.winery.model.tosca.TArtifacts;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
@@ -62,8 +65,8 @@ public class RemoveEmptyLists extends Visitor {
 
     @Override
     public void visit(TNodeTemplate nodeTemplate) {
-        final TNodeTemplate.Requirements requirements = nodeTemplate.getRequirements();
-        if ((requirements != null) && requirements.getRequirement().isEmpty()) {
+        final List<TRequirement> requirements = nodeTemplate.getRequirements();
+        if ((requirements != null) && requirements.isEmpty()) {
             nodeTemplate.setRequirements(null);
         }
         final TNodeTemplate.Capabilities capabilities = nodeTemplate.getCapabilities();

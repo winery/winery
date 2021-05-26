@@ -13,10 +13,13 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.xml.utils;
 
+import java.util.List;
+
 import org.eclipse.winery.model.tosca.xml.XTEntityTemplate;
 import org.eclipse.winery.model.tosca.xml.XTNodeTemplate;
 import org.eclipse.winery.model.tosca.xml.XTPolicies;
 import org.eclipse.winery.model.tosca.xml.XTRelationshipTemplate;
+import org.eclipse.winery.model.tosca.xml.XTRequirement;
 import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
 import org.eclipse.winery.model.tosca.xml.XTDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.xml.XTTopologyTemplate;
@@ -49,8 +52,8 @@ public class RemoveEmptyLists extends Visitor {
 
     @Override
     public void visit(XTNodeTemplate nodeTemplate) {
-        final XTNodeTemplate.Requirements requirements = nodeTemplate.getRequirements();
-        if ((requirements != null) && requirements.getRequirement().isEmpty()) {
+        final List<XTRequirement> requirements = nodeTemplate.getRequirements();
+        if (requirements != null && requirements.isEmpty()) {
             nodeTemplate.setRequirements(null);
         }
         final XTNodeTemplate.Capabilities capabilities = nodeTemplate.getCapabilities();

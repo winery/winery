@@ -35,8 +35,8 @@ import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
@@ -376,9 +376,8 @@ public class DataFlowResource {
         }
 
         // add all requirements which are defined by the corresponding NodeType
-        TNodeType.RequirementDefinitions def = nodeType.getRequirementDefinitions();
-        if (Objects.nonNull(def)) {
-            for (TRequirementDefinition requirementDef : def.getRequirementDefinition()) {
+        if (nodeType.getRequirementDefinitions() != null) {
+            for (TRequirementDefinition requirementDef : nodeType.getRequirementDefinitions()) {
                 String requirementId = templateName + "-" + requirementDef.getName();
                 templateBuilder.addRequirements(new TRequirement.Builder(requirementId, requirementDef.getName(),
                     requirementDef.getRequirementType()).build());

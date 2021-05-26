@@ -27,21 +27,19 @@
                     },
                     "id": "straw",
                     "type": "{http://winery.opentosca.org/test/ponyuniverse}straw",
-                    "requirements": {
-                        "requirement": [
-                            {
-                                "documentation": [
-                                ],
-                                "any": [
-                                ],
-                                "otherAttributes": {
-                                },
-                                "id": "hosting",
-                                "type": "{http://winery.opentosca.org/test/ponyuniverse}ReqCanHostStraw",
-                                "name": "ReqCanHostStraw"
-                            }
-                        ]
-                    },
+                    "requirements": [
+                        {
+                            "documentation": [
+                            ],
+                            "any": [
+                            ],
+                            "otherAttributes": {
+                            },
+                            "id": "hosting",
+                            "type": "{http://winery.opentosca.org/test/ponyuniverse}ReqCanHostStraw",
+                            "name": "ReqCanHostStraw"
+                        }
+                    ],
                     "capabilities": {
                         "capability": [
                             {

@@ -35,8 +35,7 @@
                             "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "451"
                         },
                         "type": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithThreeReqCapPairsCoveringAllReqCapVariants",
-                        "requirements": {
-                            "requirement": [
+                        "requirements": [
                                 {
                                     "id": "req1",
                                     "documentation": [
@@ -83,8 +82,7 @@
                                     "type": "{http://plain.winery.opentosca.org/requirementtypes}RequirementTypeWithXmlElementProperty",
                                     "name": "RequirementDefinition-RequirementTypeWithXmlElementProperty"
                                 }
-                            ]
-                        },
+                            ],
                         "capabilities": {
                             "capability": [
                                 {

@@ -176,7 +176,7 @@ public class Substitution extends AbstractSubstitution {
                                 topologyToImport.getNodeTemplates().stream()
                                     .filter(tNodeTemplate ->
                                         Objects.nonNull(tNodeTemplate.getRequirements()) &&
-                                            tNodeTemplate.getRequirements().getRequirement()
+                                            tNodeTemplate.getRequirements()
                                                 .stream()
                                                 .anyMatch(tRequirement -> tRequirement.equals(requirementRef.getRef()))
                                     )

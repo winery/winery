@@ -83,7 +83,7 @@ public class XmlRepository extends AbstractFileBasedRepository {
             LOGGER.info("Failed to read definitions from reference {}", ref, e);
             return null;
         }
-        ToCanonical converter = new ToCanonical(this);
+        ToCanonical converter = new ToCanonical();
         return converter.convert((XDefinitions) definition);
     }
 

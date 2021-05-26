@@ -168,10 +168,7 @@
                 "capability": [
                 ]
             },
-            "requirements": {
-                "requirement": [
-                ]
-            },
+            "requirements": [],
             "deploymentArtifacts": {
             },
             "policies": {
@@ -207,10 +204,7 @@
                 "capability": [
                 ]
             },
-            "requirements": {
-                "requirement": [
-                ]
-            },
+            "requirements": [],
             "deploymentArtifacts": {
             },
             "policies": {
@@ -246,10 +240,7 @@
                 "capability": [
                 ]
             },
-            "requirements": {
-                "requirement": [
-                ]
-            },
+            "requirements": [],
             "deploymentArtifacts": {
             },
             "policies": {

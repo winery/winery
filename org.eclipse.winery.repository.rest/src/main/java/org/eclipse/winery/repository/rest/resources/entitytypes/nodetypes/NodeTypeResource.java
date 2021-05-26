@@ -34,7 +34,6 @@ import org.eclipse.winery.model.tosca.TArtifacts;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TNodeType;
-import org.eclipse.winery.model.tosca.TNodeType.RequirementDefinitions;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.GenericDirectoryId;
@@ -94,12 +93,10 @@ public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
 
     @Path("requirementdefinitions/")
     public RequirementDefinitionsResource getRequirementDefinitions() {
-        RequirementDefinitions definitions = this.getNodeType().getRequirementDefinitions();
-        if (definitions == null) {
-            definitions = new RequirementDefinitions();
-            this.getNodeType().setRequirementDefinitions(definitions);
+        if (this.getNodeType().getRequirementDefinitions() == null) {
+            this.getNodeType().setRequirementDefinitions(new ArrayList<>());
         }
-        return new RequirementDefinitionsResource(this, definitions.getRequirementDefinition());
+        return new RequirementDefinitionsResource(this, this.getNodeType().getRequirementDefinitions());
     }
 
     @Path("capabilitydefinitions/")

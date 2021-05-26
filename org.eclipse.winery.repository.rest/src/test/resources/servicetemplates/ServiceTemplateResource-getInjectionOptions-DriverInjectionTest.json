@@ -56,21 +56,19 @@
                     "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "137"
                 },
                 "type": "{http://winery.opentosca.org/test/ponyuniverse}ponycompetition",
-                "requirements": {
-                    "requirement": [
-                        {
-                            "id": "ReqEquipment",
-                            "documentation": [
-                            ],
-                            "any": [
-                            ],
-                            "otherAttributes": {
-                            },
-                            "type": "{http://winery.opentosca.org/test/ponyuniverse}ReqEquipment",
-                            "name": "ReqEquipment"
-                        }
-                    ]
-                },
+                "requirements": [
+                    {
+                        "id": "ReqEquipment",
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
+                        "type": "{http://winery.opentosca.org/test/ponyuniverse}ReqEquipment",
+                        "name": "ReqEquipment"
+                    }
+                ],
                 "capabilities": {
                     "capability": [
                         {
@@ -104,8 +102,8 @@
                 },
                 "properties": {
                     "propertyType": "KV",
-                    "namespace" : "http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery",
-                    "elementName" : "Properties",
+                    "namespace": "http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery",
+                    "elementName": "Properties",
                     "kvproperties": {
                         "Driver": ""
                     }

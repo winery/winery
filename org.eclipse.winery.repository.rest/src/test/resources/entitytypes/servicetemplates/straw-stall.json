@@ -25,21 +25,19 @@
                 "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "62"
             },
             "type": "{http://winery.opentosca.org/test/ponyuniverse}straw",
-            "requirements": {
-                "requirement": [
-                    {
-                        "id": "hosting",
-                        "documentation": [
-                        ],
-                        "any": [
-                        ],
-                        "otherAttributes": {
-                        },
-                        "type": "{http://winery.opentosca.org/test/ponyuniverse}ReqCanHostStraw",
-                        "name": "ReqCanHostStraw"
-                    }
-                ]
-            },
+            "requirements": [
+                {
+                    "id": "hosting",
+                    "documentation": [
+                    ],
+                    "any": [
+                    ],
+                    "otherAttributes": {
+                    },
+                    "type": "{http://winery.opentosca.org/test/ponyuniverse}ReqCanHostStraw",
+                    "name": "ReqCanHostStraw"
+                }
+            ],
             "capabilities": {
                 "capability": [
                     {

@@ -21,32 +21,30 @@
                     "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "166"
                 },
                 "type": "{http://winery.opentosca.org/test/ponyuniverse}shetland_pony",
-                "requirements": {
-                    "requirement": [
-                        {
-                            "id": "requiresWarmFloor",
-                            "documentation": [
-                            ],
-                            "any": [
-                            ],
-                            "otherAttributes": {
-                            },
-                            "type": "{http://winery.opentosca.org/test/ponyuniverse}ReqWarmFloor",
-                            "name": "ReqWarmFloor"
+                "requirements": [
+                    {
+                        "id": "requiresWarmFloor",
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
                         },
-                        {
-                            "id": "requiresDryFood",
-                            "documentation": [
-                            ],
-                            "any": [
-                            ],
-                            "otherAttributes": {
-                            },
-                            "type": "{http://winery.opentosca.org/test/ponyuniverse}ReqDryFood",
-                            "name": "ReqDryFood"
-                        }
-                    ]
-                },
+                        "type": "{http://winery.opentosca.org/test/ponyuniverse}ReqWarmFloor",
+                        "name": "ReqWarmFloor"
+                    },
+                    {
+                        "id": "requiresDryFood",
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
+                        "type": "{http://winery.opentosca.org/test/ponyuniverse}ReqDryFood",
+                        "name": "ReqDryFood"
+                    }
+                ],
                 "name": "shetland_pony",
                 "minInstances": 1,
                 "maxInstances": "1",
@@ -151,21 +149,19 @@
                             "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "62"
                         },
                         "type": "{http://winery.opentosca.org/test/ponyuniverse}straw",
-                        "requirements": {
-                            "requirement": [
-                                {
-                                    "id": "hosting",
-                                    "documentation": [
-                                    ],
-                                    "any": [
-                                    ],
-                                    "otherAttributes": {
-                                    },
-                                    "type": "{http://winery.opentosca.org/test/ponyuniverse}ReqCanHostStraw",
-                                    "name": "ReqCanHostStraw"
-                                }
-                            ]
-                        },
+                        "requirements": [
+                            {
+                                "id": "hosting",
+                                "documentation": [
+                                ],
+                                "any": [
+                                ],
+                                "otherAttributes": {
+                                },
+                                "type": "{http://winery.opentosca.org/test/ponyuniverse}ReqCanHostStraw",
+                                "name": "ReqCanHostStraw"
+                            }
+                        ],
                         "capabilities": {
                             "capability": [
                                 {

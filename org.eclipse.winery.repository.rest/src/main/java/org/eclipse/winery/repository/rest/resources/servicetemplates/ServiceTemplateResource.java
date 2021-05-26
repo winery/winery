@@ -19,8 +19,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -81,20 +81,20 @@ import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinition
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.NamespaceManager;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.YamlArtifactsSynchronizer;
 import org.eclipse.winery.repository.driverspecificationandinjection.DASpecification;
 import org.eclipse.winery.repository.driverspecificationandinjection.DriverInjection;
 import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources.edmm.EdmmResource;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceContainingATopology;
 import org.eclipse.winery.repository.rest.resources._support.IHasName;
 import org.eclipse.winery.repository.rest.resources._support.ResourceResult;
 import org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionadapter.InjectorReplaceData;
 import org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionadapter.InjectorReplaceOptions;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
+import org.eclipse.winery.repository.rest.resources.edmm.EdmmResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.BoundaryDefinitionsResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.plans.PlansResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.selfserviceportal.SelfServicePortalResource;
@@ -145,18 +145,19 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
             } catch (IOException e) {
                 LOGGER.error("Failed to delete yaml artifact files from disk. Reason {}", e.getMessage());
             }
-            if (topologyTemplate.getNodeTemplates().stream().anyMatch(nt -> nt.getRequirements() != null
-                && nt.getRequirements().getRequirement().stream().anyMatch(req -> req.getRelationship() != null))) {
+            if (topologyTemplate.getNodeTemplates().stream()
+                .filter(nt -> nt.getRequirements() != null)
+                .anyMatch(nt -> nt.getRequirements().stream().anyMatch(req -> req.getRelationship() != null))) {
                 // filter unused requirements
                 // (1) get a list of requirement template ids
                 // (2) filter requirement entry on node template if there is relations assigned
                 Set<String> usedRelationshipTemplateIds = topologyTemplate.getRelationshipTemplates()
                     .stream().map(HasId::getId).collect(Collectors.toSet());
-                topologyTemplate.getNodeTemplates().forEach(node -> {
-                    if (node.getRequirements() == null) return;
-                    node.getRequirements().getRequirement()
-                        .removeIf(r -> !usedRelationshipTemplateIds.contains(r.getRelationship()));
-                });
+                topologyTemplate.getNodeTemplates().stream()
+                    .filter(node -> node.getRequirements() != null)
+                    .forEach(node -> node.getRequirements()
+                        .removeIf(r -> !usedRelationshipTemplateIds.contains(r.getRelationship()))
+                );
             }
         }
         this.getServiceTemplate().setTopologyTemplate(topologyTemplate);
@@ -215,8 +216,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
 
     private static boolean containsRequirement(TTopologyTemplate topology, TRequirement target) {
         return topology.getNodeTemplates().stream()
-            .anyMatch(nt -> nt.getRequirements() != null
-                && nt.getRequirements().getRequirement().contains(target));
+            .anyMatch(nt -> nt.getRequirements().contains(target));
     }
 
     /**

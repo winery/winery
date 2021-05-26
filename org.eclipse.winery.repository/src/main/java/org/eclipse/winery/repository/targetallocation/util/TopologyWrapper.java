@@ -192,7 +192,7 @@ public class TopologyWrapper {
 
     public List<TRequirement> getRequirements(TNodeTemplate nodeTemplate) {
         if (nodeTemplate.getRequirements() != null) {
-            return nodeTemplate.getRequirements().getRequirement();
+            return nodeTemplate.getRequirements();
         }
         return new ArrayList<>();
     }

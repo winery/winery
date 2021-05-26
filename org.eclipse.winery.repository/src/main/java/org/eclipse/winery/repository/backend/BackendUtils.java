@@ -1506,7 +1506,7 @@ public class BackendUtils {
             // patch ids of reqs change them if required
             topologyTemplateToBeMerged.getNodeTemplates().stream()
                 .filter(nt -> nt.getRequirements() != null)
-                .forEach(nt -> nt.getRequirements().getRequirement().forEach(oldReq -> {
+                .forEach(nt -> nt.getRequirements().forEach(oldReq -> {
                     TRequirement req = SerializationUtils.clone(oldReq);
                     ModelUtilities.generateNewIdOfTemplate(req, idMapping);
 

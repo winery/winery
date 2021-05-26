@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca.visitor;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -193,9 +194,9 @@ public abstract class Visitor {
 
     public void visit(TNodeTemplate nodeTemplate) {
         this.visit((RelationshipSourceOrTarget) nodeTemplate);
-        final TNodeTemplate.Requirements requirements = nodeTemplate.getRequirements();
+        final List<TRequirement> requirements = nodeTemplate.getRequirements();
         if (requirements != null) {
-            requirements.accept(this);
+            requirements.forEach(requirement -> requirement.accept(this));
         }
         final TNodeTemplate.Capabilities capabilities = nodeTemplate.getCapabilities();
         if (capabilities != null) {
@@ -245,13 +246,6 @@ public abstract class Visitor {
     public void visit(TNodeTemplate.Capabilities capabilities) {
         for (TCapability capability : capabilities.getCapability()) {
             capability.accept(this);
-        }
-        // meta model does not offer more children
-    }
-
-    public void visit(TNodeTemplate.Requirements requirements) {
-        for (TRequirement requirement : requirements.getRequirement()) {
-            requirement.accept(this);
         }
         // meta model does not offer more children
     }

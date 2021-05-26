@@ -592,10 +592,9 @@ public interface IRepository extends IWineryRepositoryCommon {
                 }
 
                 if (!referencesGivenQName && element instanceof TNodeType) {
-                    TNodeType.RequirementDefinitions requirementDefinitions = ((TNodeType) element).getRequirementDefinitions();
+                    List<TRequirementDefinition> requirementDefinitions = ((TNodeType) element).getRequirementDefinitions();
                     referencesGivenQName = Objects.nonNull(requirementDefinitions) &&
-                        requirementDefinitions.getRequirementDefinition()
-                            .stream()
+                        requirementDefinitions.stream()
                             .anyMatch(tRequirementDefinition -> qNameOfTheType.equals(tRequirementDefinition.getRequirementType()));
 
                     if (!referencesGivenQName) {
@@ -671,9 +670,8 @@ public interface IRepository extends IWineryRepositoryCommon {
 
         // Add all referenced requirement types, but only in XML mode. 
         // For YAML mode add referenced RelationshipType and CapabilityType, if present
-        TNodeType.RequirementDefinitions reqDefsContainer = nodeType.getRequirementDefinitions();
-        if (reqDefsContainer != null) {
-            List<TRequirementDefinition> reqDefs = reqDefsContainer.getRequirementDefinition();
+        List<TRequirementDefinition> reqDefs = nodeType.getRequirementDefinitions();
+        if (reqDefs != null) {
             for (TRequirementDefinition reqDef : reqDefs) {
                 // if either of these is set, we're dealing with a type defined in YAML
                 if (Objects.nonNull(reqDef.getRelationship()) || Objects.nonNull(reqDef.getCapability()) || Objects.nonNull(reqDef.getNode())) {
@@ -1013,9 +1011,9 @@ public interface IRepository extends IWineryRepositoryCommon {
 
     default void getReferencedRequirementTypeIds(Collection<DefinitionsChildId> ids, TNodeTemplate n) {
         // crawl through reqs/caps
-        TNodeTemplate.Requirements requirements = n.getRequirements();
+        List<TRequirement> requirements = n.getRequirements();
         if (requirements != null) {
-            for (TRequirement req : requirements.getRequirement()) {
+            for (TRequirement req : requirements) {
                 QName type = req.getType();
                 if (type != null) {
                     // ... in case of YAML, the type is always empty

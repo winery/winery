@@ -204,7 +204,8 @@ public class TopologyMappingsWrapperTest extends TestWithGitBackedRepository {
     @Test
     public void getRequirements() {
         TNodeTemplate nodeTemplate = policiesTopology.getTopology().getNodeTemplate("shetland_pony");
-        List<TRequirement> requirements = policiesTopology.getRequirements(nodeTemplate);
+        assertNotNull(nodeTemplate);
+        List<TRequirement> requirements = nodeTemplate.getRequirements();
         assertEquals(1, requirements.size());
         assertEquals("ReqWarmFloor", requirements.get(0).getType().getLocalPart());
     }

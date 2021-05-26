@@ -22,6 +22,7 @@ import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
@@ -37,17 +38,23 @@ import org.eclipse.jdt.annotation.Nullable;
     "interfaces"
 })
 public class XTNodeType extends XTEntityType {
-    @XmlElement(name = "RequirementDefinitions")
-    protected XTNodeType.RequirementDefinitions requirementDefinitions;
+
+    @XmlElementWrapper(name = "RequirementDefinitions")
+    @XmlElement(name = "RequirementDefinition", required = true)
+    protected List<XTRequirementDefinition> requirementDefinitions;
+
     @XmlElement(name = "CapabilityDefinitions")
     protected XTNodeType.CapabilityDefinitions capabilityDefinitions;
+
     @XmlElement(name = "InstanceStates")
     protected XTTopologyElementInstanceStates instanceStates;
+
     @XmlElement(name = "Interfaces")
     protected XTInterfaces interfaces;
 
     @Deprecated // required for XML deserialization
-    public XTNodeType() { }
+    public XTNodeType() {
+    }
 
     public XTNodeType(Builder builder) {
         super(builder);
@@ -74,11 +81,11 @@ public class XTNodeType extends XTEntityType {
         return Objects.hash(super.hashCode(), requirementDefinitions, capabilityDefinitions, instanceStates, interfaces);
     }
 
-    public XTNodeType.@Nullable RequirementDefinitions getRequirementDefinitions() {
+    public List<XTRequirementDefinition> getRequirementDefinitions() {
         return requirementDefinitions;
     }
 
-    public void setRequirementDefinitions(XTNodeType.@Nullable RequirementDefinitions value) {
+    public void setRequirementDefinitions(List<XTRequirementDefinition> value) {
         this.requirementDefinitions = value;
     }
 
@@ -143,39 +150,8 @@ public class XTNodeType extends XTEntityType {
         }
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "requirementDefinition"
-    })
-    public static class RequirementDefinitions implements Serializable {
-
-        @XmlElement(name = "RequirementDefinition", required = true)
-        protected List<XTRequirementDefinition> requirementDefinition;
-
-        @NonNull
-        public List<XTRequirementDefinition> getRequirementDefinition() {
-            if (requirementDefinition == null) {
-                requirementDefinition = new ArrayList<XTRequirementDefinition>();
-            }
-            return this.requirementDefinition;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            RequirementDefinitions that = (RequirementDefinitions) o;
-            return Objects.equals(requirementDefinition, that.requirementDefinition);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(requirementDefinition);
-        }
-    }
-
     public static class Builder extends XTEntityType.Builder<Builder> {
-        private RequirementDefinitions requirementDefinitions;
+        private List<XTRequirementDefinition> requirementDefinitions;
         private CapabilityDefinitions capabilityDefinitions;
         private XTTopologyElementInstanceStates instanceStates;
         private XTInterfaces interfaces;
@@ -188,7 +164,7 @@ public class XTNodeType extends XTEntityType {
             super(entityType);
         }
 
-        public Builder setRequirementDefinitions(XTNodeType.RequirementDefinitions requirementDefinitions) {
+        public Builder setRequirementDefinitions(List<XTRequirementDefinition> requirementDefinitions) {
             this.requirementDefinitions = requirementDefinitions;
             return this;
         }
@@ -206,72 +182,6 @@ public class XTNodeType extends XTEntityType {
         public Builder setInterfaces(XTInterfaces interfaces) {
             this.interfaces = interfaces;
             return this;
-        }
-
-        public Builder addRequirementDefinitions(XTNodeType.RequirementDefinitions requirementDefinitions) {
-            if (requirementDefinitions == null || requirementDefinitions.getRequirementDefinition().isEmpty()) {
-                return this;
-            }
-
-            if (this.requirementDefinitions == null) {
-                this.requirementDefinitions = requirementDefinitions;
-            } else {
-                this.requirementDefinitions.getRequirementDefinition().addAll(requirementDefinitions.getRequirementDefinition());
-            }
-            return this;
-        }
-
-        public Builder addRequirementDefinitions(List<XTRequirementDefinition> requirementDefinitions) {
-            if (requirementDefinitions == null) {
-                return this;
-            }
-
-            XTNodeType.RequirementDefinitions tmp = new XTNodeType.RequirementDefinitions();
-            tmp.getRequirementDefinition().addAll(requirementDefinitions);
-            return addRequirementDefinitions(tmp);
-        }
-
-        public Builder addRequirementDefinitions(XTRequirementDefinition requirementDefinition) {
-            if (requirementDefinition == null) {
-                return this;
-            }
-
-            XTNodeType.RequirementDefinitions tmp = new XTNodeType.RequirementDefinitions();
-            tmp.getRequirementDefinition().add(requirementDefinition);
-            return addRequirementDefinitions(tmp);
-        }
-
-        public Builder addCapabilityDefinitions(XTNodeType.CapabilityDefinitions capabilityDefinitions) {
-            if (capabilityDefinitions == null || capabilityDefinitions.getCapabilityDefinition().isEmpty()) {
-                return this;
-            }
-
-            if (this.capabilityDefinitions == null) {
-                this.capabilityDefinitions = capabilityDefinitions;
-            } else {
-                this.capabilityDefinitions.getCapabilityDefinition().addAll(capabilityDefinitions.getCapabilityDefinition());
-            }
-            return this;
-        }
-
-        public Builder addCapabilityDefinitions(List<XTCapabilityDefinition> capabilityDefinitions) {
-            if (capabilityDefinitions == null) {
-                return this;
-            }
-
-            XTNodeType.CapabilityDefinitions tmp = new XTNodeType.CapabilityDefinitions();
-            tmp.getCapabilityDefinition().addAll(capabilityDefinitions);
-            return addCapabilityDefinitions(tmp);
-        }
-
-        public Builder addCapabilityDefinitions(XTCapabilityDefinition capabilityDefinitions) {
-            if (capabilityDefinitions == null) {
-                return this;
-            }
-
-            XTNodeType.CapabilityDefinitions tmp = new XTNodeType.CapabilityDefinitions();
-            tmp.getCapabilityDefinition().add(capabilityDefinitions);
-            return addCapabilityDefinitions(tmp);
         }
 
         public Builder addInterfaces(XTInterfaces interfaces) {

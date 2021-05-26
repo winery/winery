@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca.xml.visitor;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -166,9 +167,9 @@ public abstract class Visitor {
 
     public void visit(XTNodeTemplate nodeTemplate) {
         this.visit((XRelationshipSourceOrTarget) nodeTemplate);
-        final XTNodeTemplate.Requirements requirements = nodeTemplate.getRequirements();
+        final List<XTRequirement> requirements = nodeTemplate.getRequirements();
         if (requirements != null) {
-            requirements.accept(this);
+            requirements.forEach(requirement -> requirement.accept(this));
         }
         final XTNodeTemplate.Capabilities capabilities = nodeTemplate.getCapabilities();
         if (capabilities != null) {

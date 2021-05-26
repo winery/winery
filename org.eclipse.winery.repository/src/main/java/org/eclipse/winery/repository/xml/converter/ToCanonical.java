@@ -155,7 +155,6 @@ import org.eclipse.winery.model.tosca.xml.extensions.XOTStayMapping;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTStringList;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTTestRefinementModel;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTTopologyFragmentRefinementModel;
-import org.eclipse.winery.repository.xml.XmlRepository;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -166,20 +165,14 @@ import org.slf4j.LoggerFactory;
 public class ToCanonical {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ToCanonical.class);
-    private final XmlRepository repository;
 
-    public ToCanonical(XmlRepository repository) {
-        this.repository = repository;
-    }
-
-    public TDefinitions convert(XTDefinitions xml) {
-        return convert(xml, false);
+    public ToCanonical() {
     }
 
     /**
      * Converts an XML TDefinitions collection to canonical TDefinitions.
      */
-    public TDefinitions convert(XTDefinitions xml, boolean convertImports) {
+    public TDefinitions convert(XTDefinitions xml) {
         // FIXME need to correctly deal with convertImports flag to create a self-contained Definitions to export as CSAR if it is set.
         TDefinitions.Builder builder = new TDefinitions.Builder(xml.getId(), xml.getTargetNamespace())
             .setName(xml.getName())
@@ -290,8 +283,8 @@ public class ToCanonical {
 
     private TRequirement resolveRequirement(TRequirement incomplete, TTopologyTemplate topology) {
         return topology.getNodeTemplates().stream()
-            .flatMap(nt -> nt.getRequirements() == null ? Stream.empty()
-                : nt.getRequirements().getRequirement().stream())
+            .filter(nt -> nt.getRequirements() != null)
+            .flatMap(nt -> nt.getRequirements().stream())
             .filter(req -> req.getId().equals(incomplete.getId()))
             .findFirst()
             .orElseGet(() -> {
@@ -504,9 +497,8 @@ public class ToCanonical {
     private TNodeType convert(XTNodeType xml) {
         TNodeType.Builder builder = new TNodeType.Builder(xml.getName());
         if (xml.getRequirementDefinitions() != null) {
-            TNodeType.RequirementDefinitions reqDefs = new TNodeType.RequirementDefinitions();
-            reqDefs.getRequirementDefinition().addAll(xml.getRequirementDefinitions().getRequirementDefinition()
-                .stream().map(this::convert).collect(Collectors.toList()));
+            List<TRequirementDefinition> reqDefs = xml.getRequirementDefinitions()
+                .stream().map(this::convert).collect(Collectors.toList());
             builder.setRequirementDefinitions(reqDefs);
         }
         if (xml.getCapabilityDefinitions() != null) {
@@ -952,9 +944,7 @@ public class ToCanonical {
     private TNodeTemplate convert(XTNodeTemplate xml) {
         TNodeTemplate.Builder builder = new TNodeTemplate.Builder(xml.getId(), xml.getType());
         if (xml.getRequirements() != null) {
-            TNodeTemplate.Requirements reqs = new TNodeTemplate.Requirements();
-            reqs.getRequirement().addAll(convertList(xml.getRequirements().getRequirement(), this::convert));
-            builder.setRequirements(reqs);
+            builder.setRequirements(convertList(xml.getRequirements(), this::convert));
         }
         if (xml.getCapabilities() != null) {
             TNodeTemplate.Capabilities caps = new TNodeTemplate.Capabilities();

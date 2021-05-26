@@ -22,6 +22,7 @@ import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
@@ -39,14 +40,20 @@ import org.eclipse.jdt.annotation.Nullable;
     "artifacts"
 })
 public class TNodeType extends TEntityType {
-    @XmlElement(name = "RequirementDefinitions")
-    protected TNodeType.RequirementDefinitions requirementDefinitions;
+
+    @XmlElementWrapper(name = "RequirementDefinitions")
+    @XmlElement(name = "RequirementDefinition", required = true)
+    protected List<TRequirementDefinition> requirementDefinitions;
+
     @XmlElement(name = "CapabilityDefinitions")
     protected TNodeType.CapabilityDefinitions capabilityDefinitions;
+
     @XmlElement(name = "InstanceStates")
     protected TTopologyElementInstanceStates instanceStates;
+
     @XmlElement(name = "Interfaces")
     protected TInterfaces interfaces;
+
     @XmlElement(name = "Artifacts")
     protected TArtifacts artifacts;
 
@@ -54,7 +61,8 @@ public class TNodeType extends TEntityType {
     protected List<TInterfaceDefinition> interfaceDefinitions;
 
     @Deprecated // used for XML deserialization of API request content
-    public TNodeType() { }
+    public TNodeType() {
+    }
 
     public TNodeType(Builder builder) {
         super(builder);
@@ -84,11 +92,11 @@ public class TNodeType extends TEntityType {
         return Objects.hash(super.hashCode(), requirementDefinitions, capabilityDefinitions, instanceStates, interfaces);
     }
 
-    public TNodeType.@Nullable RequirementDefinitions getRequirementDefinitions() {
+    public List<TRequirementDefinition> getRequirementDefinitions() {
         return requirementDefinitions;
     }
 
-    public void setRequirementDefinitions(TNodeType.@Nullable RequirementDefinitions value) {
+    public void setRequirementDefinitions(List<TRequirementDefinition> value) {
         this.requirementDefinitions = value;
     }
 
@@ -116,7 +124,7 @@ public class TNodeType extends TEntityType {
     public void setInterfaces(@Nullable TInterfaces value) {
         this.interfaces = value;
     }
-    
+
     @Nullable
     public List<TInterfaceDefinition> getInterfaceDefinitions() {
         return interfaceDefinitions;
@@ -170,39 +178,8 @@ public class TNodeType extends TEntityType {
         }
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "requirementDefinition"
-    })
-    public static class RequirementDefinitions implements Serializable {
-
-        @XmlElement(name = "RequirementDefinition", required = true)
-        protected List<TRequirementDefinition> requirementDefinition;
-
-        @NonNull
-        public List<TRequirementDefinition> getRequirementDefinition() {
-            if (requirementDefinition == null) {
-                requirementDefinition = new ArrayList<TRequirementDefinition>();
-            }
-            return this.requirementDefinition;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            RequirementDefinitions that = (RequirementDefinitions) o;
-            return Objects.equals(requirementDefinition, that.requirementDefinition);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(requirementDefinition);
-        }
-    }
-
     public static class Builder extends TEntityType.Builder<Builder> {
-        private RequirementDefinitions requirementDefinitions;
+        private List<TRequirementDefinition> requirementDefinitions;
         private CapabilityDefinitions capabilityDefinitions;
         private TTopologyElementInstanceStates instanceStates;
         private TInterfaces interfaces;
@@ -217,7 +194,7 @@ public class TNodeType extends TEntityType {
             super(entityType);
         }
 
-        public Builder setRequirementDefinitions(TNodeType.RequirementDefinitions requirementDefinitions) {
+        public Builder setRequirementDefinitions(List<TRequirementDefinition> requirementDefinitions) {
             this.requirementDefinitions = requirementDefinitions;
             return this;
         }
@@ -242,27 +219,17 @@ public class TNodeType extends TEntityType {
             return this;
         }
 
-        public Builder addRequirementDefinitions(TNodeType.RequirementDefinitions requirementDefinitions) {
-            if (requirementDefinitions == null || requirementDefinitions.getRequirementDefinition().isEmpty()) {
+        public Builder addRequirementDefinitions(List<TRequirementDefinition> requirementDefinitions) {
+            if (requirementDefinitions == null || requirementDefinitions.isEmpty()) {
                 return this;
             }
 
             if (this.requirementDefinitions == null) {
                 this.requirementDefinitions = requirementDefinitions;
             } else {
-                this.requirementDefinitions.getRequirementDefinition().addAll(requirementDefinitions.getRequirementDefinition());
+                this.requirementDefinitions.addAll(requirementDefinitions);
             }
             return this;
-        }
-
-        public Builder addRequirementDefinitions(List<TRequirementDefinition> requirementDefinitions) {
-            if (requirementDefinitions == null) {
-                return this;
-            }
-
-            TNodeType.RequirementDefinitions tmp = new TNodeType.RequirementDefinitions();
-            tmp.getRequirementDefinition().addAll(requirementDefinitions);
-            return addRequirementDefinitions(tmp);
         }
 
         public Builder addRequirementDefinitions(TRequirementDefinition requirementDefinition) {
@@ -270,9 +237,9 @@ public class TNodeType extends TEntityType {
                 return this;
             }
 
-            TNodeType.RequirementDefinitions tmp = new TNodeType.RequirementDefinitions();
-            tmp.getRequirementDefinition().add(requirementDefinition);
-            return addRequirementDefinitions(tmp);
+            List<TRequirementDefinition> requirements = new ArrayList<>();
+            requirements.add(requirementDefinition);
+            return addRequirementDefinitions(requirements);
         }
 
         public Builder addCapabilityDefinitions(TNodeType.CapabilityDefinitions capabilityDefinitions) {

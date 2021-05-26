@@ -41,8 +41,8 @@ class CookbookConfigurationToscaConverterTest {
         assertEquals(2, nodeTypes.size());
         assertEquals(true, nodeTypes.get(0).getCapabilityDefinitions().getCapabilityDefinition().get(0).getCapabilityType().toString().endsWith("myapp-1.1"));
         assertEquals(true, nodeTypes.get(0).getCapabilityDefinitions().getCapabilityDefinition().get(1).getCapabilityType().toString().endsWith("myappaddon-1.2"));
-        assertEquals(true, nodeTypes.get(0).getRequirementDefinitions().getRequirementDefinition().get(1).getRequirementType().toString().endsWith("openjdk-8-jdk"));
-        assertEquals(true, nodeTypes.get(0).getRequirementDefinitions().getRequirementDefinition().get(2).getRequirementType().toString().endsWith("openjdk-8-jre-headless"));
+        assertEquals(true, nodeTypes.get(0).getRequirementDefinitions().get(1).getRequirementType().toString().endsWith("openjdk-8-jdk"));
+        assertEquals(true, nodeTypes.get(0).getRequirementDefinitions().get(2).getRequirementType().toString().endsWith("openjdk-8-jre-headless"));
 
         assertEquals(true, nodeTypes.get(1).getCapabilityDefinitions().getCapabilityDefinition().get(0).getCapabilityType().toString().endsWith("ubuntu_16.04" + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_VERSION_PREFIX + "1"));
     }

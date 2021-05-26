@@ -45,7 +45,6 @@ import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate.Capabilities;
-import org.eclipse.winery.model.tosca.TNodeTemplate.Requirements;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlans;
@@ -55,7 +54,6 @@ import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate.SourceOrTargetElement;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRequirement;
-import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
@@ -377,11 +375,11 @@ public abstract class ModelUtilities {
                 }
                 TNodeTemplate nt = (TNodeTemplate) t;
 
-                Requirements requirements = nt.getRequirements();
+                List<TRequirement> requirements = nt.getRequirements();
                 if (requirements != null) {
-                    for (TRequirement req : requirements.getRequirement()) {
-                        if (req.getId().equals(targetObjectRef)) {
-                            return req;
+                    for (TRequirement req : requirements) {
+                    if (req.getId().equals(targetObjectRef)) {
+                        return req;
                         }
                     }
                 }
@@ -442,11 +440,11 @@ public abstract class ModelUtilities {
         for (TEntityTemplate tmpl : serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate()) {
             if (tmpl instanceof TNodeTemplate) {
                 TNodeTemplate n = (TNodeTemplate) tmpl;
-                Requirements requirements = n.getRequirements();
+                List<TRequirement> requirements = n.getRequirements();
                 if (requirements != null) {
-                    for (TRequirement req : n.getRequirements().getRequirement()) {
-                        if (req.getId().equals(reference)) {
-                            resolved = req;
+                    for (TRequirement req : requirements) {
+                    if (req.getId().equals(reference)) {
+                        resolved = req;
                         }
                     }
                 }
@@ -548,16 +546,16 @@ public abstract class ModelUtilities {
 
         // add requirements
         if (nodeType.getRequirementDefinitions() != null) {
-            nodeType.getRequirementDefinitions().getRequirementDefinition();
-            Requirements requirementsNode = new Requirements();
-            nodeTemplate.setRequirements(requirementsNode);
-            for (TRequirementDefinition definition : nodeType.getRequirementDefinitions().getRequirementDefinition()) {
-                TRequirement newRequirement = new TRequirement();
-                newRequirement.setName(definition.getName());
-                newRequirement.setId(definition.getName() + nodeTemplate.getId());
-                newRequirement.setType(definition.getRequirementType());
-                nodeTemplate.getRequirements().getRequirement().add(newRequirement);
-            }
+            nodeTemplate.setRequirements(
+                nodeType.getRequirementDefinitions().stream()
+                    .map(tRequirementDefinition -> new TRequirement.Builder(
+                            tRequirementDefinition.getName() + nodeTemplate.getId(),
+                            tRequirementDefinition.getName(),
+                            tRequirementDefinition.getRequirementType()
+                        ).build()
+                    )
+                    .collect(Collectors.toList())
+            );
         }
 
         // add properties
@@ -589,7 +587,7 @@ public abstract class ModelUtilities {
                                                                         TNodeTemplate targetNodeTemplate) {
 
         TRelationshipTemplate relationshipTemplate = new TRelationshipTemplate();
-        relationshipTemplate.setId("con-" + UUID.randomUUID().toString());
+        relationshipTemplate.setId("con-" + UUID.randomUUID());
         relationshipTemplate.setName(relationshipType.getName());
         relationshipTemplate.setType(new QName(relationshipType.getTargetNamespace(), relationshipType.getName()));
 
@@ -643,9 +641,10 @@ public abstract class ModelUtilities {
         if (relationshipTemplate.getSourceElement().getRef() instanceof TRequirement) {
             TRequirement requirement = (TRequirement) relationshipTemplate.getSourceElement().getRef();
             return topologyTemplate.getNodeTemplates().stream()
-                .filter(nt -> nt.getRequirements() != null
-                    && nt.getRequirements().getRequirement().contains(requirement))
-                .findAny().get();
+                .filter(nt -> nt.getRequirements() != null)
+                .filter(nt -> nt.getRequirements().contains(requirement))
+                .findAny()
+                .orElse(null);
         } else {
             return (TNodeTemplate) relationshipTemplate.getSourceElement().getRef();
         }
@@ -915,10 +914,8 @@ public abstract class ModelUtilities {
         } else if (relationshipSourceOrTarget instanceof TRequirement) {
             nodeTemplate = topologyTemplate.getNodeTemplates().stream()
                 .filter(node -> Objects.nonNull(node.getRequirements()))
-                .filter(node ->
-                    node.getRequirements()
-                        .getRequirement().stream().anyMatch(requirement -> requirement.getId().equals(relationshipSourceOrTarget.getId())
-                    )
+                .filter(node -> node.getRequirements().stream()
+                    .anyMatch(requirement -> requirement.getId().equals(relationshipSourceOrTarget.getId()))
                 ).findFirst();
         }
 
@@ -934,9 +931,10 @@ public abstract class ModelUtilities {
         // collect existing requirement ids
         topologyTemplateB.getNodeTemplates().stream()
             .filter(nt -> nt.getRequirements() != null)
-            .forEach(nt -> nt.getRequirements().getRequirement()
+            .forEach(nt -> nt.getRequirements()
                 // the existing ids are left unchanged
-                .forEach(x -> idMapping.put(x.getId(), x.getId())));
+                .forEach(x -> idMapping.put(x.getId(), x.getId()))
+            );
 
         //collect existing capability ids
         topologyTemplateB.getNodeTemplates().stream()

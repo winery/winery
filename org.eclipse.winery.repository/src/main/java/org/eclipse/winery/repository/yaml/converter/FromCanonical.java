@@ -308,7 +308,7 @@ public class FromCanonical {
                 ))
                 .setProperties(convert(node.getProperties()))
                 .setMetadata(meta)
-                .setRequirements(convert(node.getRequirements()))
+                .setRequirements(convertRequirements(node.getRequirements()))
                 .setCapabilities(convert(node.getCapabilities()))
                 .setArtifacts(convert(node.getArtifacts()))
                 .build()
@@ -457,7 +457,7 @@ public class FromCanonical {
         return Collections.singletonMap(
             nodeFullName,
             convert(node, new YTNodeType.Builder(), TNodeType.class)
-                .setRequirements(convert(node.getRequirementDefinitions()))
+                .setRequirements(convertRequirementsDefinition(node.getRequirementDefinitions()))
                 .setCapabilities(convert(node.getCapabilityDefinitions()))
                 .setInterfaces(convert(node.getInterfaceDefinitions()))
                 .setArtifacts(convert(node.getArtifacts()))
@@ -791,11 +791,22 @@ public class FromCanonical {
         return interfaces;
     }
 
-    public List<YTMapRequirementDefinition> convert(TNodeType.RequirementDefinitions node) {
+    public List<YTMapRequirementDefinition> convertRequirementsDefinition(List<TRequirementDefinition> node) {
         if (Objects.isNull(node)) {
             return null;
         }
-        return node.getRequirementDefinition().stream()
+        return node.stream()
+            .filter(Objects::nonNull)
+            .map(this::convert)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
+    }
+    
+    public List<YTMapRequirementAssignment> convertRequirements(List<TRequirement> node) {
+        if (Objects.isNull(node)) {
+            return null;
+        }
+        return node.stream()
             .filter(Objects::nonNull)
             .map(this::convert)
             .filter(Objects::nonNull)
@@ -1101,17 +1112,6 @@ public class FromCanonical {
                 .setProperties(convert(node.getProperties()))
                 .build()
         );
-    }
-
-    public List<YTMapRequirementAssignment> convert(TNodeTemplate.Requirements node) {
-        if (Objects.isNull(node)) {
-            return null;
-        }
-        return node.getRequirement().stream()
-            .filter(Objects::nonNull)
-            .map(this::convert)
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
     }
 
     public YTMapRequirementAssignment convert(TRequirement node) {

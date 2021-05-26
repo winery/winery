@@ -161,6 +161,8 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.eclipse.winery.common.ListUtils.listIsNotNullOrEmpty;
+
 @SuppressWarnings("DuplicatedCode")
 @NonNullByDefault
 public class FromCanonical {
@@ -410,10 +412,8 @@ public class FromCanonical {
 
     private XTNodeType convert(TNodeType canonical) {
         XTNodeType.Builder builder = new XTNodeType.Builder(canonical.getName());
-        if (canonical.getRequirementDefinitions() != null) {
-            XTNodeType.RequirementDefinitions reqDefs = new XTNodeType.RequirementDefinitions();
-            reqDefs.getRequirementDefinition().addAll(convertList(canonical.getRequirementDefinitions().getRequirementDefinition(), this::convert));
-            builder.setRequirementDefinitions(reqDefs);
+        if (listIsNotNullOrEmpty(canonical.getRequirementDefinitions())) {
+            builder.setRequirementDefinitions(convertList(canonical.getRequirementDefinitions(), this::convert));
         }
         if (canonical.getCapabilityDefinitions() != null) {
             XTNodeType.CapabilityDefinitions capDefs = new XTNodeType.CapabilityDefinitions();
@@ -864,10 +864,8 @@ public class FromCanonical {
 
     private XTNodeTemplate convert(TNodeTemplate canonical) {
         XTNodeTemplate.Builder builder = new XTNodeTemplate.Builder(canonical.getId(), canonical.getType());
-        if (canonical.getRequirements() != null) {
-            XTNodeTemplate.Requirements reqs = new XTNodeTemplate.Requirements();
-            reqs.getRequirement().addAll(convertList(canonical.getRequirements().getRequirement(), this::convert));
-            builder.setRequirements(reqs);
+        if (listIsNotNullOrEmpty(canonical.getRequirements())) {
+            builder.setRequirements(convertList(canonical.getRequirements(), this::convert));
         }
         if (canonical.getCapabilities() != null) {
             XTNodeTemplate.Capabilities caps = new XTNodeTemplate.Capabilities();

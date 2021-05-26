@@ -73,28 +73,34 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
 
     @XmlElement(name = "Tags")
     protected TTags tags;
+    
     @XmlElement(name = "DerivedFrom")
     protected TEntityType.DerivedFrom derivedFrom;
+    
     @XmlElementRef(name = "PropertiesDefinition")
     @JsonProperty("propertiesDefinition")
     @JsonSerialize(using = PropertiesDefinitionSerializer.class)
     protected TEntityType.PropertiesDefinition properties;
+    
     @XmlAttribute(name = "name", required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlSchemaType(name = "NCName")
     protected String name;
+    
     @XmlAttribute(name = "abstract")
     @XmlJavaTypeAdapter(type = boolean.class, value = BooleanToYesNo.class)
     @JsonProperty("abstract")
     @JsonSerialize(using = YesNo.Serializer.class)
     @JsonDeserialize(using = YesNo.Deserializer.class)
     protected boolean _abstract;
+    
     @XmlAttribute(name = "final")
     @XmlJavaTypeAdapter(type = boolean.class, value = BooleanToYesNo.class)
     @JsonProperty("final")
     @JsonSerialize(using = YesNo.Serializer.class)
     @JsonDeserialize(using = YesNo.Deserializer.class)
     protected boolean _final;
+    
     @XmlAttribute(name = "targetNamespace")
     @XmlSchemaType(name = "anyURI")
     protected String targetNamespace;

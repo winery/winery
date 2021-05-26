@@ -57,6 +57,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.eclipse.winery.common.ListUtils.listIsNotNullOrEmpty;
+
 /**
  * This class exposes utility functions which enhance a given topology. It also provides some semantic utilities as,
  * e.g., returning the hostedOn relation of a NodeTemplate.
@@ -224,8 +226,8 @@ public class EnhancementUtils {
 
             // Check requirements
             featureChildren.forEach((featureType, value) -> {
-                if (Objects.nonNull(featureType.getRequirementDefinitions())) {
-                    List<TRequirementDefinition> requirements = featureType.getRequirementDefinitions().getRequirementDefinition().stream()
+                if (listIsNotNullOrEmpty(featureType.getRequirementDefinitions())) {
+                    List<TRequirementDefinition> requirements = featureType.getRequirementDefinitions().stream()
                         .filter(req -> req.getRequirementType().equals(OpenToscaBaseTypes.managementFeatureRequirement))
                         .collect(Collectors.toList());
 
