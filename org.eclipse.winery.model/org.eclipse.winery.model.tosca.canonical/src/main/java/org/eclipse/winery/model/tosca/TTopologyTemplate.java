@@ -109,6 +109,16 @@ public class TTopologyTemplate extends TExtensibleElements {
         return this.nodeTemplateOrRelationshipTemplate;
     }
 
+    @JsonIgnore
+    @Nullable
+    public TEntityTemplate getNodeTemplateOrRelationshipTemplate(String id) {
+        Objects.requireNonNull(id);
+        return this.getNodeTemplateOrRelationshipTemplate().stream()
+            .filter(x -> id.equals(x.getId()))
+            .findAny()
+            .orElse(null);
+    }
+
     /**
      * @return all nodes templates of the topologyTemplate
      */

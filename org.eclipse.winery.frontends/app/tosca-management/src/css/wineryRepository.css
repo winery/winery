@@ -361,7 +361,11 @@ div.mainContentContainer.xSDImport div.bottom {
 }
 
 div.mainContentContainer.patternRefinementModel div.top {
-    background: url('../assets/img/containers/admin/FrameTopLarge.jpg');
+    background: url('../assets/img/containers/admin/FrameTopThreeRows.jpg');
+}
+
+div.mainContentContainer.patternRefinementModel div.top.twolines {
+    height: 208px;
 }
 
 div.mainContentContainer.patternRefinementModel div.middle {
@@ -373,7 +377,11 @@ div.mainContentContainer.patternRefinementModel div.bottom {
 }
 
 div.mainContentContainer.topologyFragmentRefinementModel div.top {
-    background: url('../assets/img/containers/admin/FrameTopLarge.jpg');
+    background: url('../assets/img/containers/admin/FrameTopThreeRows.jpg');
+}
+
+div.mainContentContainer.topologyFragmentRefinementModel div.top.twolines {
+    height: 208px;
 }
 
 div.mainContentContainer.topologyFragmentRefinementModel div.middle {

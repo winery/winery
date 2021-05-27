@@ -55,11 +55,11 @@
         <h4>YAML Simple Profile</h4>
         <a class="btn btn-default" [routerLink]="['/datatypes']">Custom YAML Datatypes</a>
     </div>
-    <div *wineryRepositoryFeatureToggle="configEnum.PatternRefinement">
+    <div *wineryRepositoryFeatureToggle="[configEnum.PatternRefinement, configEnum.PatternDetection]">
         <hr>
         <h4>Refinement Models</h4>
         <a class="btn btn-default right-margin-10" [routerLink]="['/patternrefinementmodels']"
-           *wineryRepositoryFeatureToggle="configEnum.PatternRefinement">
+           *wineryRepositoryFeatureToggle="[configEnum.PatternRefinement, configEnum.PatternDetection]">
             Pattern Refinement Models
         </a>
         <a class="btn btn-default" [routerLink]="['/topologyfragmentrefinementmodels']"

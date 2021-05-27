@@ -16,10 +16,12 @@
     <div class="refinementContainer">
         <div class="informationContainer" *ngIf="!refinementIsRunning; else showIsRunning">
             <div *ngIf="refinementIsDone; else showStart">
-                <h5>Refinement successful!</h5>
+                <h5>{{refinementType === 'patternDetection' ? 'Detection' : 'Refinement'}} successful!</h5>
             </div>
             <ng-template #showStart>
-                <button class="btn btn-primary" (click)="startRefinement($event)">Start Refinement</button>
+                <button class="btn btn-primary" (click)="startRefinement($event)">
+                    Start {{refinementType === 'patternDetection' ? 'Detection' : 'Refinement'}}
+                </button>
             </ng-template>
         </div>
         <ng-template #showIsRunning>
@@ -31,17 +33,27 @@
                         {{ candidate.refinementModel.name }}
                         <br>
                         <div class="btn-group">
-                            <button class="btn btn-sm btn-info"
-                                    (click)="openModeler($event, candidate.refinementModel.name, candidate.refinementModel.targetNamespace)">
+                            <button *ngIf="refinementType !== 'patternDetection'; else detectionButton"
+                                    class="btn btn-sm btn-info"
+                                    (click)="openModeler($event, candidate.refinementModel.name, 
+                                    candidate.refinementModel.targetNamespace, 'refinementstructure')">
                                 Show Refinement Structure
                             </button>
+                            <ng-template #detectionButton>
+                                <button class="btn btn-sm btn-info"
+                                        (click)="openModeler($event, candidate.refinementModel.name, 
+                                        candidate.refinementModel.targetNamespace, 'detector')">
+                                    Show Detector
+                                </button>
+                            </ng-template>
                             <br>
-                            <button class="btn btn-sm btn-primary" (click)="prmChosen($event, candidate)">Choose
+                            <button class="btn btn-sm btn-primary" (click)="prmChosen($event, candidate)">
+                                Choose
                             </button>
                         </div>
                     </li>
                 </ul>
-                <button class="btn btn-sm btn-danger" *ngIf="refinementType === 'tests'" (click)="stopRefinement()">
+                <button class="btn btn-sm btn-danger" *ngIf="showStopButton()" (click)="stopRefinement()">
                     Stop
                 </button>
             </ng-template>

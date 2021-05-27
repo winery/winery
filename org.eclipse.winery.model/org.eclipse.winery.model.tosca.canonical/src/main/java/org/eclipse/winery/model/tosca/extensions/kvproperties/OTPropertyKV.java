@@ -16,12 +16,29 @@ package org.eclipse.winery.model.tosca.extensions.kvproperties;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class PropertyKV implements Serializable {
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 
+import org.eclipse.jdt.annotation.NonNull;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "otPropertyKv")
+public class OTPropertyKV implements Serializable {
+
+    @XmlAttribute(name = "key", required = true)
+    @NonNull
     private String key;
+    @XmlAttribute(name = "value", required = true)
+    @NonNull
     private String value;
 
-    public PropertyKV(String key, String value) {
+    @Deprecated // used for XML deserialization of API request content
+    public OTPropertyKV() {
+    }
+
+    public OTPropertyKV(String key, String value) {
         this.key = key;
         this.value = value;
     }
@@ -53,9 +70,9 @@ public class PropertyKV implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof PropertyKV)) return false;
+        if (!(o instanceof OTPropertyKV)) return false;
 
-        PropertyKV that = (PropertyKV) o;
+        OTPropertyKV that = (OTPropertyKV) o;
 
         if (key != null ? !key.equals(that.key) : that.key != null) return false;
         return value != null ? value.equals(that.value) : that.value == null;
@@ -65,5 +82,4 @@ public class PropertyKV implements Serializable {
     public int hashCode() {
         return Objects.hash(key, value);
     }
-
 }

@@ -67,6 +67,7 @@ export interface TopologyRendererState {
         assignParticipantsButton?: boolean;
         assignDeploymentTechnologyButton?: boolean;
         hideDependsOnRelations?: boolean;
+        detectPatternsButton?: boolean;
     };
     activeResearchPlugin: ResearchPlugin;
     nodesToSelect?: string[];
@@ -111,6 +112,7 @@ export const INITIAL_TOPOLOGY_RENDERER_STATE: TopologyRendererState = {
         yamlGroupsButton: false,
         manageParticipantsButton: false,
         assignDeploymentTechnologyButton: false,
+        detectPatternsButton: false,
     },
     activeResearchPlugin: undefined,
 };
@@ -135,6 +137,7 @@ export const TopologyRendererReducer =
                         refinePatternsButton: false,
                         refineTopologyButton: false,
                         refineTopologyWithTestsButton: false,
+                        detectPatternsButton: false,
                     },
                     activeResearchPlugin: undefined
                 };
@@ -462,6 +465,15 @@ export const TopologyRendererReducer =
                         ...lastState.buttonsState,
                         versionSliderButton: !lastState.buttonsState.versionSliderButton
                     }
+                };
+            case TopologyRendererActions.DETECT_PATTERNS:
+                return {
+                    ...lastState,
+                    buttonsState: {
+                        ...lastState.buttonsState,
+                        detectPatternsButton: !lastState.buttonsState.detectPatternsButton
+                    },
+                    activeResearchPlugin: ResearchPlugin.REFINEMENT,
                 };
             case TopologyRendererActions.SHOW_ONLY_MAPPINGS_OF_SELECTED_TYPE:
                 const actionData = <ShowSelectedMappingAction>action;

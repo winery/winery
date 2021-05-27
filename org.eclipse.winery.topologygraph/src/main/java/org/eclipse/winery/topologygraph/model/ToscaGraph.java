@@ -13,6 +13,11 @@
  ********************************************************************************/
 package org.eclipse.winery.topologygraph.model;
 
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jgrapht.graph.SimpleDirectedGraph;
 
@@ -30,5 +35,18 @@ public class ToscaGraph extends SimpleDirectedGraph<ToscaNode, ToscaEdge> {
 
     public ToscaNode getReferenceNode() {
         return vertexSet().stream().findAny().orElse(null);
+    }
+
+    public Set<ToscaEntity> vertexAndEdgeSet() {
+        return Stream.concat(
+            vertexSet().stream().map(v -> (ToscaEntity) v),
+            edgeSet().stream().map(e -> (ToscaEntity) e)
+        ).collect(Collectors.toSet());
+    }
+
+    public Optional<ToscaEntity> getVertexOrEdge(String id) {
+        return vertexAndEdgeSet().stream()
+            .filter(e -> e.getId().equals(id))
+            .findFirst();
     }
 }

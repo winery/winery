@@ -21,17 +21,19 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.extensions.OTAttributeMapping;
+import org.eclipse.winery.model.tosca.extensions.OTBehaviorPatternMapping;
 import org.eclipse.winery.model.tosca.extensions.OTDeploymentArtifactMapping;
+import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
 import org.eclipse.winery.model.tosca.extensions.OTPermutationMapping;
 import org.eclipse.winery.model.tosca.extensions.OTPrmMapping;
 import org.eclipse.winery.model.tosca.extensions.OTRefinementModel;
 import org.eclipse.winery.model.tosca.extensions.OTRelationMapping;
 import org.eclipse.winery.model.tosca.extensions.OTStayMapping;
 import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TRelationshipTemplate;
-import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceContainingATopology;
 
 public class RefinementTopologyTemplateResource extends TopologyTemplateResource {
@@ -135,6 +137,16 @@ public class RefinementTopologyTemplateResource extends TopologyTemplateResource
                 properties.setKVProperties(kvproperties);
                 builder.setProperties(properties);
             }
+            if (mapping instanceof OTBehaviorPatternMapping) {
+                builder.setName("BehaviorPatternMapping");
+                LinkedHashMap<String, String> kvproperties = new LinkedHashMap<>();
+                kvproperties.put("refinementProperty", ((OTBehaviorPatternMapping) mapping).getProperty().getKey());
+                kvproperties.put("refinementPropertyValue", ((OTBehaviorPatternMapping) mapping).getProperty().getValue());
+                kvproperties.put("behaviorPattern", ((OTBehaviorPatternMapping) mapping).getBehaviorPattern());
+                TEntityTemplate.WineryKVProperties properties = new TEntityTemplate.WineryKVProperties();
+                properties.setKVProperties(kvproperties);
+                builder.setProperties(properties);
+            }
             TRelationshipTemplate templateForMapping = new TRelationshipTemplate(builder);
             prmModellingTopologyTemplate.addRelationshipTemplate(templateForMapping);
         }
@@ -149,6 +161,9 @@ public class RefinementTopologyTemplateResource extends TopologyTemplateResource
             allPrmMappings.addAll(model.getStayMappings());
             allPrmMappings.addAll(model.getDeploymentArtifactMappings());
             allPrmMappings.addAll(model.getPermutationMappings());
+            if (model instanceof OTPatternRefinementModel) {
+                allPrmMappings.addAll(((OTPatternRefinementModel) model).getBehaviorPatternMappings());
+            }
         }
         return allPrmMappings;
     }

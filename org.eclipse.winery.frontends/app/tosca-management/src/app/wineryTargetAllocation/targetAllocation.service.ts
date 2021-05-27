@@ -17,6 +17,7 @@ import { Observable } from 'rxjs/Observable';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { backendBaseURL } from '../configuration';
 import { AllocationRequest } from './request';
+import { NodeTemplate, Policy } from '../model/wineryComponent';
 
 @Injectable()
 export class TargetAllocationService {
@@ -47,18 +48,4 @@ export class TargetAllocationService {
         return this.http.get<any>(backendBaseURL + '/policytemplates/' +
             encodeURIComponent(encodeURIComponent(qName[0])) + '/' + qName[1] + '/properties');
     }
-}
-
-export class NodeTemplate {
-    policies: NodeTemplatePolicy;
-}
-
-export class NodeTemplatePolicy {
-    policy: Policy[];
-}
-
-export class Policy {
-    name: string;
-    policyType: string;
-    policyRef: string;
 }

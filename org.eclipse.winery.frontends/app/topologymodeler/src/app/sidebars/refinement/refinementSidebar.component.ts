@@ -84,13 +84,18 @@ export class RefinementSidebarComponent implements OnDestroy {
         this.ngRedux.dispatch(this.rendererActions.highlightNodes([]));
     }
 
-    openModeler(event: MouseEvent, name: string, targetNamespace: string) {
+    openModeler(event: MouseEvent, name: string, targetNamespace: string, element: string) {
         event.stopPropagation();
-        this.openModelerFor(name, targetNamespace);
+        this.openModelerFor(name, targetNamespace, 'patternrefinementmodels', element, true);
     }
 
     stopRefinement(): void {
         this.webSocketService.cancel();
+    }
+
+    showStopButton(): boolean {
+        return this.refinementType === 'tests'
+            || this.refinementType === 'patternDetection';
     }
 
     private handleWebSocketData(value: RefinementElement) {
@@ -127,7 +132,7 @@ export class RefinementSidebarComponent implements OnDestroy {
         this.refinementIsLoading = false;
     }
 
-    private openModelerFor(id: string, ns: string, type = 'patternrefinementmodels', elment = 'refinementstructure', readonly = true) {
+    private openModelerFor(id: string, ns: string, type: string, elment: string, readonly: boolean) {
         let editorConfig = '?repositoryURL=' + encodeURIComponent(this.backendService.configuration.repositoryURL)
             + '&uiURL=' + encodeURIComponent(this.backendService.configuration.uiURL)
             + '&ns=' + encodeURIComponent(ns)

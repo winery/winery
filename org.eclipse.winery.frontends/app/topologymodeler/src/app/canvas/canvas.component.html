@@ -609,14 +609,45 @@
                     id="refinementNodePropertyChooser"
                     type="text"
                     required="required"
-                    (change)="setRefinementNodeProperty($event.target.value)">
+                    [(ngModel)]="refinementProperty">
                     <ng-container>
                         <option *ngFor="let property of refinementNodeProperties"
-                                [value]="property.key">{{property.key}}
+                                [ngValue]="property">{{property}}
                         </option>
                     </ng-container>
                 </select>
             </div>
+        </div>
+        <div *ngIf="selectedRelationshipType.id == 'BehaviorPatternMapping'">
+            <label>Behavior Pattern</label>
+            <select
+                name="behaviorPatternChooser"
+                class="form-control"
+                id="behaviorPatternChooser"
+                type="text"
+                required="required"
+                [(ngModel)]="behaviorPattern">
+                <ng-container>
+                    <option *ngFor="let behaviorPattern of behaviorPatterns"
+                            [ngValue]="behaviorPattern">{{behaviorPattern.name}}
+                    </option>
+                </ng-container>
+            </select>
+
+            <label>Refinement Element Property</label>
+            <select
+                name="refinementElementPropertyChooser"
+                class="form-control"
+                id="refinementElementPropertyChooser"
+                type="text"
+                required="required"
+                [(ngModel)]="refinementProperty">
+                <ng-container>
+                    <option *ngFor="let property of refinementNodeProperties"
+                            [ngValue]="property">{{property}}
+                    </option>
+                </ng-container>
+            </select>
         </div>
     </winery-modal-body>
     <winery-modal-footer closeButtonLabel="Cancel"

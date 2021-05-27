@@ -15,6 +15,7 @@
 package org.eclipse.winery.model.tosca.extensions;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -125,6 +126,24 @@ public abstract class OTRefinementModel extends TExtensibleElements implements H
 
     public void setPermutationMappings(List<OTPermutationMapping> permutationMappings) {
         this.permutationMappings = permutationMappings;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        OTRefinementModel that = (OTRefinementModel) o;
+        return Objects.equals(name, that.name)
+            && Objects.equals(targetNamespace, that.targetNamespace)
+            && Objects.equals(detector, that.detector)
+            && Objects.equals(relationMappings, that.relationMappings)
+            && Objects.equals(permutationMappings, that.permutationMappings);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), name, targetNamespace, detector, relationMappings, permutationMappings);
     }
 
     public static abstract class Builder<T extends Builder<T>> extends TExtensibleElements.Builder<T> {

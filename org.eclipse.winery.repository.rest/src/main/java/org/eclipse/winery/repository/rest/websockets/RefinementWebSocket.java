@@ -28,6 +28,7 @@ import javax.ws.rs.NotFoundException;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.json.JacksonProvider;
+import org.eclipse.winery.model.adaptation.substitution.patterndetection.PatternDetection;
 import org.eclipse.winery.model.adaptation.substitution.refinement.AbstractRefinement;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementChooser;
@@ -64,6 +65,8 @@ public class RefinementWebSocket extends AbstractWebSocket implements Refinement
                 this.refinement = new TopologyFragmentRefinement(this);
             } else if ("tests".equals(type)) {
                 this.refinement = new TestRefinement(this);
+            } else if ("patternDetection".equals(type)) {
+                this.refinement = new PatternDetection(this);
             }
             if (Objects.nonNull(this.refinement)) {
                 LOGGER.info("Opened consistency check web-socket with id: " + session.getId());
