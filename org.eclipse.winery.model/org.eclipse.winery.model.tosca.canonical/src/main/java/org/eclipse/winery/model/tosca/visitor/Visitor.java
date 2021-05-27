@@ -198,9 +198,9 @@ public abstract class Visitor {
         if (requirements != null) {
             requirements.forEach(requirement -> requirement.accept(this));
         }
-        final TNodeTemplate.Capabilities capabilities = nodeTemplate.getCapabilities();
+        final List<TCapability> capabilities = nodeTemplate.getCapabilities();
         if (capabilities != null) {
-            capabilities.accept(this);
+            capabilities.forEach(capability -> capability.accept(this));
         }
         final TDeploymentArtifacts deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
         if (deploymentArtifacts != null) {
@@ -241,13 +241,6 @@ public abstract class Visitor {
 
     public void visit(TRelationshipTemplate.RelationshipConstraints.RelationshipConstraint relationshipConstraint) {
         // this is a leaf, so no action to take
-    }
-
-    public void visit(TNodeTemplate.Capabilities capabilities) {
-        for (TCapability capability : capabilities.getCapability()) {
-            capability.accept(this);
-        }
-        // meta model does not offer more children
     }
 
     public void visit(TRequirement requirement) {

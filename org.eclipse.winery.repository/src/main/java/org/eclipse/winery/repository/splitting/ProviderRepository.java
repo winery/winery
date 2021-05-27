@@ -61,7 +61,7 @@ public class ProviderRepository {
             .filter(tf -> {
                 Optional<TNodeTemplate> nodeTemplate = ModelUtilities.getAllNodeTemplates(tf).stream()
                     .filter(nt -> nt.getCapabilities() != null)
-                    .filter(nt -> nt.getCapabilities().getCapability().stream()
+                    .filter(nt -> nt.getCapabilities().stream()
                         .anyMatch(cap -> cap.getType().equals(requiredCapabilityType))
                     ).findAny();
                 if (nodeTemplate.isPresent()) {

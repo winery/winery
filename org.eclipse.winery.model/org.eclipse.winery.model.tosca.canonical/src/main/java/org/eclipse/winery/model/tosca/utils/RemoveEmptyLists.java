@@ -16,6 +16,7 @@ package org.eclipse.winery.model.tosca.utils;
 import java.util.List;
 
 import org.eclipse.winery.model.tosca.TArtifacts;
+import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -69,8 +70,8 @@ public class RemoveEmptyLists extends Visitor {
         if ((requirements != null) && requirements.isEmpty()) {
             nodeTemplate.setRequirements(null);
         }
-        final TNodeTemplate.Capabilities capabilities = nodeTemplate.getCapabilities();
-        if ((capabilities != null) && capabilities.getCapability().isEmpty()) {
+        final List<TCapability> capabilities = nodeTemplate.getCapabilities();
+        if ((capabilities != null) && capabilities.isEmpty()) {
             nodeTemplate.setCapabilities(null);
         }
         final TDeploymentArtifacts deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();

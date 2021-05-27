@@ -42,29 +42,27 @@
             },
             "name": "baobab",
             "targetNamespace": "http://winery.opentosca.org/test/nodetypes/fruits",
-            "capabilityDefinitions": {
-                "capabilityDefinition": [
-                    {
-                        "documentation": [
-                        ],
-                        "any": [
-                        ],
-                        "otherAttributes": {
-                        },
-                        "constraints": {
-                            "constraint": [
-                                {
-                                    "constraintType": "http://winery.opentosca.org/test/constrainttypes/fruits/healthy"
-                                }
-                            ]
-                        },
-                        "name": "ImportConstraintsHealthy",
-                        "capabilityType": "{http://winery.opentosca.org/test/capabilitytypes/fruits}Healthy",
-                        "lowerBound": 1,
-                        "upperBound": "1"
-                    }
-                ]
-            },
+            "capabilityDefinitions": [
+                {
+                    "documentation": [
+                    ],
+                    "any": [
+                    ],
+                    "otherAttributes": {
+                    },
+                    "constraints": {
+                        "constraint": [
+                            {
+                                "constraintType": "http://winery.opentosca.org/test/constrainttypes/fruits/healthy"
+                            }
+                        ]
+                    },
+                    "name": "ImportConstraintsHealthy",
+                    "capabilityType": "{http://winery.opentosca.org/test/capabilitytypes/fruits}Healthy",
+                    "lowerBound": 1,
+                    "upperBound": "1"
+                }
+            ],
             "final": "NO",
             "abstract": "NO"
         }

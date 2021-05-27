@@ -44,7 +44,6 @@ import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TNodeTemplate.Capabilities;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlans;
@@ -369,33 +368,20 @@ public abstract class ModelUtilities {
         // We cannot use XMLs id pointing capabilities as we work on the Java model
         // Other option: modify the stored XML directly. This is more error prune than walking through the whole topology
         for (TEntityTemplate t : topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
+            if (t.getId().equals(targetObjectRef)) {
+                return t;
+            }
             if (t instanceof TNodeTemplate) {
-                if (t.getId().equals(targetObjectRef)) {
-                    return t;
-                }
                 TNodeTemplate nt = (TNodeTemplate) t;
 
-                List<TRequirement> requirements = nt.getRequirements();
-                if (requirements != null) {
-                    for (TRequirement req : requirements) {
-                    if (req.getId().equals(targetObjectRef)) {
-                        return req;
-                        }
-                    }
+                TRequirement req = resolveRequirement(targetObjectRef, nt);
+                if (req != null) {
+                    return req;
                 }
 
-                Capabilities capabilities = nt.getCapabilities();
-                if (capabilities != null) {
-                    for (TCapability cap : capabilities.getCapability()) {
-                        if (cap.getId().equals(targetObjectRef)) {
-                            return cap;
-                        }
-                    }
-                }
-            } else {
-                assert (t instanceof TRelationshipTemplate);
-                if (t.getId().equals(targetObjectRef)) {
-                    return t;
+                TCapability cap = resolveCapability(targetObjectRef, nt);
+                if (cap != null) {
+                    return cap;
                 }
             }
         }
@@ -435,87 +421,89 @@ public abstract class ModelUtilities {
      *
      * @return null if not found
      */
-    public static TRequirement resolveRequirement(TServiceTemplate serviceTemplate, String reference) {
-        TRequirement resolved = null;
-        for (TEntityTemplate tmpl : serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate()) {
-            if (tmpl instanceof TNodeTemplate) {
-                TNodeTemplate n = (TNodeTemplate) tmpl;
-                List<TRequirement> requirements = n.getRequirements();
-                if (requirements != null) {
-                    for (TRequirement req : requirements) {
-                    if (req.getId().equals(reference)) {
-                        resolved = req;
-                        }
-                    }
+    public static TRequirement resolveRequirement(TServiceTemplate serviceTemplate, String referenceId) {
+        if (serviceTemplate.getTopologyTemplate() != null) {
+            for (TNodeTemplate nt : serviceTemplate.getTopologyTemplate().getNodeTemplates()) {
+                TRequirement req = resolveRequirement(referenceId, nt);
+                if (req != null) {
+                    return req;
                 }
             }
         }
-        return resolved;
+        return null;
     }
 
-    public static TCapability resolveCapability(TServiceTemplate serviceTemplate, String reference) {
-        TCapability resolved = null;
-        if (serviceTemplate.getTopologyTemplate() != null) {
-            for (TEntityTemplate tmpl : serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate()) {
-                if (tmpl instanceof TNodeTemplate) {
-                    TNodeTemplate n = (TNodeTemplate) tmpl;
-                    Capabilities capabilities = n.getCapabilities();
-                    if (capabilities != null) {
-                        for (TCapability cap : n.getCapabilities().getCapability()) {
-                            if (cap.getId().equals(reference)) {
-                                resolved = cap;
-                            }
-                        }
-                    }
+    private static TRequirement resolveRequirement(String reference, TNodeTemplate nt) {
+        List<TRequirement> requirements = nt.getRequirements();
+        if (requirements != null) {
+            for (TRequirement req : requirements) {
+                if (req.getId().equals(reference)) {
+                    return req;
                 }
             }
         }
-        return resolved;
+        return null;
+    }
+
+    public static TCapability resolveCapability(TServiceTemplate serviceTemplate, String referenceId) {
+        if (serviceTemplate.getTopologyTemplate() != null) {
+            for (TNodeTemplate nt : serviceTemplate.getTopologyTemplate().getNodeTemplates()) {
+                TCapability cap = resolveCapability(referenceId, nt);
+                if (cap != null) {
+                    return cap;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static TCapability resolveCapability(String referenceId, TNodeTemplate nt) {
+        List<TCapability> capabilities = nt.getCapabilities();
+        if (capabilities != null) {
+            for (TCapability cap : capabilities) {
+                if (cap.getId().equals(referenceId)) {
+                    return cap;
+                }
+            }
+        }
+        return null;
     }
 
     public static TNodeTemplate resolveNodeTemplate(TServiceTemplate serviceTemplate, String reference) {
-        TNodeTemplate resolved = null;
         if (serviceTemplate.getTopologyTemplate() != null) {
-            for (TEntityTemplate tmpl : serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate()) {
-                if (tmpl instanceof TNodeTemplate) {
-                    TNodeTemplate n = (TNodeTemplate) tmpl;
-                    if (n.getId().equals(reference)) {
-                        resolved = n;
-                    }
+            for (TNodeTemplate nodeTemplate : serviceTemplate.getTopologyTemplate().getNodeTemplates()) {
+                if (nodeTemplate.getId().equals(reference)) {
+                    return nodeTemplate;
                 }
             }
         }
-        return resolved;
+        return null;
     }
 
-    public static TRelationshipTemplate resolveRelationshipTemplate(TServiceTemplate serviceTemplate, String
-        reference) {
-        TRelationshipTemplate resolved = null;
+    public static TRelationshipTemplate resolveRelationshipTemplate(TServiceTemplate serviceTemplate, String reference) {
         if (serviceTemplate.getTopologyTemplate() != null) {
             for (TEntityTemplate tmpl : serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate()) {
                 if (tmpl instanceof TRelationshipTemplate) {
-                    TRelationshipTemplate n = (TRelationshipTemplate) tmpl;
-                    if (n.getId().equals(reference)) {
-                        resolved = n;
+                    TRelationshipTemplate relationshipTemplate = (TRelationshipTemplate) tmpl;
+                    if (relationshipTemplate.getId().equals(reference)) {
+                        return relationshipTemplate;
                     }
                 }
             }
         }
-        return resolved;
+        return null;
     }
 
     public static TPlan resolvePlan(TServiceTemplate serviceTemplate, String reference) {
-        TPlan resolved = null;
         TPlans plans = serviceTemplate.getPlans();
-        if (plans == null) {
-            return null;
-        }
-        for (TPlan p : plans.getPlan()) {
-            if (p.getId().equals(reference)) {
-                resolved = p;
+        if (plans != null) {
+            for (TPlan p : plans.getPlan()) {
+                if (p.getId().equals(reference)) {
+                    return p;
+                }
             }
         }
-        return resolved;
+        return null;
     }
 
     /**
@@ -525,36 +513,32 @@ public abstract class ModelUtilities {
      * @return the instantiated {@link TNodeTemplate}
      */
     public static TNodeTemplate instantiateNodeTemplate(TNodeType nodeType) {
-
-        TNodeTemplate nodeTemplate = new TNodeTemplate();
-
-        nodeTemplate.setId(nodeType.getIdFromIdOrNameField() + Math.random());
-        nodeTemplate.setName(nodeType.getName());
-        nodeTemplate.setType(new QName(nodeType.getTargetNamespace(), nodeType.getName()));
+        String nodeTemplateId = nodeType.getIdFromIdOrNameField() + Math.random();
+        TNodeTemplate.Builder builder = new TNodeTemplate.Builder(nodeTemplateId, nodeType.getQName());
+        builder.setName(nodeType.getName());
 
         // add capabilities to the NodeTemplate
         if (nodeType.getCapabilityDefinitions() != null) {
-            for (TCapabilityDefinition cd : nodeType.getCapabilityDefinitions().getCapabilityDefinition()) {
-                TCapability capa = new TCapability();
-                capa.setId(cd.getName() + nodeTemplate.getId());
-                capa.setName(cd.getCapabilityType().getLocalPart());
-                capa.setType(new QName(cd.getCapabilityType().getNamespaceURI(), cd.getCapabilityType().getLocalPart()));
-                nodeTemplate.setCapabilities(new Capabilities());
-                nodeTemplate.getCapabilities().getCapability().add(capa);
+            for (TCapabilityDefinition cd : nodeType.getCapabilityDefinitions()) {
+                TCapability capability = new TCapability.Builder(
+                    cd.getName() + nodeTemplateId,
+                    cd.getCapabilityType(),
+                    cd.getName()
+                ).build();
+                builder.addCapability(capability);
             }
         }
 
         // add requirements
         if (nodeType.getRequirementDefinitions() != null) {
-            nodeTemplate.setRequirements(
-                nodeType.getRequirementDefinitions().stream()
-                    .map(tRequirementDefinition -> new TRequirement.Builder(
-                            tRequirementDefinition.getName() + nodeTemplate.getId(),
-                            tRequirementDefinition.getName(),
-                            tRequirementDefinition.getRequirementType()
-                        ).build()
-                    )
-                    .collect(Collectors.toList())
+            nodeType.getRequirementDefinitions().forEach(tRequirementDefinition -> {
+                    TRequirement requirement = new TRequirement.Builder(
+                        tRequirementDefinition.getName() + nodeTemplateId,
+                        tRequirementDefinition.getName(),
+                        tRequirementDefinition.getRequirementType()
+                    ).build();
+                    builder.addRequirement(requirement);
+                }
             );
         }
 
@@ -567,10 +551,10 @@ public abstract class ModelUtilities {
             });
             TEntityTemplate.WineryKVProperties tProps = new TEntityTemplate.WineryKVProperties();
             tProps.setKVProperties(new LinkedHashMap<>(properties));
-            nodeTemplate.setProperties(tProps);
+            builder.setProperties(tProps);
         }
 
-        return nodeTemplate;
+        return builder.build();
     }
 
     /**
@@ -650,24 +634,25 @@ public abstract class ModelUtilities {
         }
     }
 
-    public static TNodeTemplate getTargetNodeTemplateOfRelationshipTemplate(TTopologyTemplate
-                                                                                topologyTemplate, TRelationshipTemplate relationshipTemplate) {
+    public static TNodeTemplate getTargetNodeTemplateOfRelationshipTemplate(TTopologyTemplate topologyTemplate,
+                                                                            TRelationshipTemplate relationshipTemplate) {
         if (relationshipTemplate.getTargetElement().getRef() instanceof TCapability) {
             TCapability capability = (TCapability) relationshipTemplate.getTargetElement().getRef();
             return topologyTemplate.getNodeTemplates().stream()
-                .filter(nt -> nt.getCapabilities() != null
-                    && nt.getCapabilities().getCapability().contains(capability))
-                .findAny().get();
-        } else {
-            return (TNodeTemplate) relationshipTemplate.getTargetElement().getRef();
+                .filter(nt -> nt.getCapabilities() != null)
+                .filter(nt -> nt.getCapabilities().contains(capability))
+                .findAny()
+                .orElse(null);
         }
+
+        return (TNodeTemplate) relationshipTemplate.getTargetElement().getRef();
     }
 
     /**
      * @return incoming relation ship templates <em>pointing to node templates</em>
      */
-    public static List<TRelationshipTemplate> getIncomingRelationshipTemplates(TTopologyTemplate
-                                                                                   topologyTemplate, TNodeTemplate nodeTemplate) {
+    public static List<TRelationshipTemplate> getIncomingRelationshipTemplates(TTopologyTemplate topologyTemplate,
+                                                                               TNodeTemplate nodeTemplate) {
         Objects.requireNonNull(topologyTemplate);
         Objects.requireNonNull(nodeTemplate);
         List<TRelationshipTemplate> incomingRelationshipTemplates = topologyTemplate.getRelationshipTemplates()
@@ -681,8 +666,8 @@ public abstract class ModelUtilities {
     /**
      * @return outgoing relation ship templates <em>pointing to node templates</em>
      */
-    public static List<TRelationshipTemplate> getOutgoingRelationshipTemplates(TTopologyTemplate
-                                                                                   topologyTemplate, TNodeTemplate nodeTemplate) {
+    public static List<TRelationshipTemplate> getOutgoingRelationshipTemplates(TTopologyTemplate topologyTemplate,
+                                                                               TNodeTemplate nodeTemplate) {
         Objects.requireNonNull(topologyTemplate);
         Objects.requireNonNull(nodeTemplate);
         List<TRelationshipTemplate> outgoingRelationshipTemplates = topologyTemplate.getRelationshipTemplates()
@@ -907,9 +892,8 @@ public abstract class ModelUtilities {
             nodeTemplate = topologyTemplate.getNodeTemplates().stream()
                 .filter(node -> Objects.nonNull(node.getCapabilities()))
                 .filter(node ->
-                    node.getCapabilities()
-                        .getCapability().stream().anyMatch(capability -> capability.getId().equals(relationshipSourceOrTarget.getId())
-                    )
+                    node.getCapabilities().stream()
+                        .anyMatch(capability -> capability.getId().equals(relationshipSourceOrTarget.getId()))
                 ).findFirst();
         } else if (relationshipSourceOrTarget instanceof TRequirement) {
             nodeTemplate = topologyTemplate.getNodeTemplates().stream()
@@ -939,9 +923,10 @@ public abstract class ModelUtilities {
         //collect existing capability ids
         topologyTemplateB.getNodeTemplates().stream()
             .filter(nt -> nt.getCapabilities() != null)
-            .forEach(nt -> nt.getCapabilities().getCapability()
+            .forEach(nt -> nt.getCapabilities()
                 // the existing ids are left unchanged
-                .forEach(x -> idMapping.put(x.getId(), x.getId())));
+                .forEach(x -> idMapping.put(x.getId(), x.getId()))
+            );
     }
 
     public static void generateNewIdOfTemplate(HasId element, TTopologyTemplate topologyTemplate) {

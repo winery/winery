@@ -61,7 +61,6 @@ import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TNodeTemplate.Capabilities;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TOperation;
 import org.eclipse.winery.model.tosca.TParameter;
@@ -157,7 +156,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
                     .filter(node -> node.getRequirements() != null)
                     .forEach(node -> node.getRequirements()
                         .removeIf(r -> !usedRelationshipTemplateIds.contains(r.getRelationship()))
-                );
+                    );
             }
         }
         this.getServiceTemplate().setTopologyTemplate(topologyTemplate);
@@ -211,7 +210,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     private static boolean containsCapability(TTopologyTemplate topology, TCapability target) {
         return topology.getNodeTemplates().stream()
             .anyMatch(nt -> nt.getCapabilities() != null
-                && nt.getCapabilities().getCapability().contains(target));
+                && nt.getCapabilities().contains(target));
     }
 
     private static boolean containsRequirement(TTopologyTemplate topology, TRequirement target) {
@@ -455,8 +454,12 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
                 TCapability capa = splitting.createPlaceholderCapability(topologyTemplate, capabilityType);
 
                 ModelUtilities.setPropertiesKV(placeholderNodeTemplate, placeholderNodeTemplateProperties);
-                placeholderNodeTemplate.setCapabilities(new Capabilities());
-                placeholderNodeTemplate.getCapabilities().getCapability().add(capa);
+                
+                if (placeholderNodeTemplate.getCapabilities() == null) {
+                    placeholderNodeTemplate.setCapabilities(new ArrayList<>());
+                }
+                placeholderNodeTemplate.getCapabilities().add(capa);
+                
                 for (Map.Entry<QName, String> targetLocation : nodeTemplateWithOpenReq.getOtherAttributes().entrySet()) {
                     placeholderNodeTemplate.getOtherAttributes().put(targetLocation.getKey(), targetLocation.getValue());
                 }

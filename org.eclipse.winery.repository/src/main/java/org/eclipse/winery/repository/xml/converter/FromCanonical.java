@@ -416,9 +416,7 @@ public class FromCanonical {
             builder.setRequirementDefinitions(convertList(canonical.getRequirementDefinitions(), this::convert));
         }
         if (canonical.getCapabilityDefinitions() != null) {
-            XTNodeType.CapabilityDefinitions capDefs = new XTNodeType.CapabilityDefinitions();
-            capDefs.getCapabilityDefinition().addAll(convertList(canonical.getCapabilityDefinitions().getCapabilityDefinition(), this::convert));
-            builder.setCapabilityDefinitions(capDefs);
+            builder.setCapabilityDefinitions(convertList(canonical.getCapabilityDefinitions(), this::convert));
         }
         if (canonical.getInstanceStates() != null) {
             XTTopologyElementInstanceStates instanceStates = new XTTopologyElementInstanceStates();
@@ -868,9 +866,7 @@ public class FromCanonical {
             builder.setRequirements(convertList(canonical.getRequirements(), this::convert));
         }
         if (canonical.getCapabilities() != null) {
-            XTNodeTemplate.Capabilities caps = new XTNodeTemplate.Capabilities();
-            caps.getCapability().addAll(convertList(canonical.getCapabilities().getCapability(), this::convert));
-            builder.setCapabilities(caps);
+            builder.setCapabilities(convertList(canonical.getCapabilities(), this::convert));
         }
         if (canonical.getPolicies() != null) {
             XTPolicies policies = new XTPolicies();

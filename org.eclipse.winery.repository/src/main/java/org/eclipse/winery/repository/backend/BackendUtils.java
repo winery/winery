@@ -1523,7 +1523,7 @@ public class BackendUtils {
             // patch ids of caps change them if required
             topologyTemplateToBeMerged.getNodeTemplates().stream()
                 .filter(nt -> nt.getCapabilities() != null)
-                .forEach(nt -> nt.getCapabilities().getCapability().forEach(oldCap -> {
+                .forEach(nt -> nt.getCapabilities().forEach(oldCap -> {
                     TCapability cap = SerializationUtils.clone(oldCap);
                     ModelUtilities.generateNewIdOfTemplate(cap, idMapping);
 

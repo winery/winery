@@ -86,21 +86,19 @@
                     "name": "ReqEquipment"
                 }
             ],
-            "capabilities": {
-                "capability": [
-                    {
-                        "id": "CapCompetition",
-                        "documentation": [
-                        ],
-                        "any": [
-                        ],
-                        "otherAttributes": {
-                        },
-                        "type": "{http://winery.opentosca.org/test/ponyuniverse}CapCompetition",
-                        "name": "CapCompetition"
-                    }
-                ]
-            },
+            "capabilities": [
+                {
+                    "id": "CapCompetition",
+                    "documentation": [
+                    ],
+                    "any": [
+                    ],
+                    "otherAttributes": {
+                    },
+                    "type": "{http://winery.opentosca.org/test/ponyuniverse}CapCompetition",
+                    "name": "CapCompetition"
+                }
+            ],
             "name": "ponycompetition",
             "minInstances": 1,
             "maxInstances": "1",

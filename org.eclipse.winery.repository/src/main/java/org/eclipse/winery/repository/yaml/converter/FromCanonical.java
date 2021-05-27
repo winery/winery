@@ -309,7 +309,7 @@ public class FromCanonical {
                 .setProperties(convert(node.getProperties()))
                 .setMetadata(meta)
                 .setRequirements(convertRequirements(node.getRequirements()))
-                .setCapabilities(convert(node.getCapabilities()))
+                .setCapabilities(convertCapabilities(node.getCapabilities()))
                 .setArtifacts(convert(node.getArtifacts()))
                 .build()
         );
@@ -458,7 +458,7 @@ public class FromCanonical {
             nodeFullName,
             convert(node, new YTNodeType.Builder(), TNodeType.class)
                 .setRequirements(convertRequirementsDefinition(node.getRequirementDefinitions()))
-                .setCapabilities(convert(node.getCapabilityDefinitions()))
+                .setCapabilities(convertCapabilitiesDefinition(node.getCapabilityDefinitions()))
                 .setInterfaces(convert(node.getInterfaceDefinitions()))
                 .setArtifacts(convert(node.getArtifacts()))
                 .build()
@@ -943,11 +943,11 @@ public class FromCanonical {
         );
     }
 
-    public Map<String, YTCapabilityDefinition> convert(TNodeType.CapabilityDefinitions node) {
-        if (Objects.isNull(node) || node.getCapabilityDefinition().isEmpty()) {
+    public Map<String, YTCapabilityDefinition> convertCapabilitiesDefinition(List<TCapabilityDefinition> node) {
+        if (Objects.isNull(node) || node.isEmpty()) {
             return null;
         }
-        return node.getCapabilityDefinition().stream()
+        return node.stream()
             .filter(Objects::nonNull)
             .collect(Collectors.toMap(TCapabilityDefinition::getName, this::convert));
     }
@@ -1051,11 +1051,11 @@ public class FromCanonical {
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    public Map<String, YTCapabilityAssignment> convert(TNodeTemplate.Capabilities node) {
-        if (Objects.isNull(node)) {
+    public Map<String, YTCapabilityAssignment> convertCapabilities(List<TCapability> capabilities) {
+        if (Objects.isNull(capabilities)) {
             return null;
         }
-        return node.getCapability().stream()
+        return capabilities.stream()
             .filter(Objects::nonNull)
             .map(this::convert)
             .filter(Objects::nonNull)

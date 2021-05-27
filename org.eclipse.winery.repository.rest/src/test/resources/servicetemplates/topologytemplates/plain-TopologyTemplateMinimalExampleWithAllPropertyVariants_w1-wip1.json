@@ -78,10 +78,7 @@
             "maxInstances": "1",
             "x": 617,
             "y": 44,
-            "capabilities": {
-                "capability": [
-                ]
-            },
+            "capabilities": [],
             "requirements": [],
             "deploymentArtifacts": {
             },
@@ -115,10 +112,7 @@
             "maxInstances": "1",
             "x": 874,
             "y": 462,
-            "capabilities": {
-                "capability": [
-                ]
-            },
+            "capabilities": [],
             "requirements": [],
             "deploymentArtifacts": {
             },
@@ -155,10 +149,7 @@
             "maxInstances": "1",
             "x": 387,
             "y": 461,
-            "capabilities": {
-                "capability": [
-                ]
-            },
+            "capabilities": [],
             "requirements": [],
             "deploymentArtifacts": {
             },

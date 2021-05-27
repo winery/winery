@@ -14,8 +14,6 @@
 
 package org.eclipse.winery.model.tosca.xml;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,7 +25,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -43,8 +40,9 @@ public class XTNodeType extends XTEntityType {
     @XmlElement(name = "RequirementDefinition", required = true)
     protected List<XTRequirementDefinition> requirementDefinitions;
 
-    @XmlElement(name = "CapabilityDefinitions")
-    protected XTNodeType.CapabilityDefinitions capabilityDefinitions;
+    @XmlElementWrapper(name = "CapabilityDefinitions")
+    @XmlElement(name = "CapabilityDefinition")
+    protected List<XTCapabilityDefinition> capabilityDefinitions;
 
     @XmlElement(name = "InstanceStates")
     protected XTTopologyElementInstanceStates instanceStates;
@@ -89,11 +87,11 @@ public class XTNodeType extends XTEntityType {
         this.requirementDefinitions = value;
     }
 
-    public XTNodeType.@Nullable CapabilityDefinitions getCapabilityDefinitions() {
+    public List<XTCapabilityDefinition> getCapabilityDefinitions() {
         return capabilityDefinitions;
     }
 
-    public void setCapabilityDefinitions(XTNodeType.@Nullable CapabilityDefinitions value) {
+    public void setCapabilityDefinitions(List<XTCapabilityDefinition> value) {
         this.capabilityDefinitions = value;
     }
 
@@ -119,40 +117,10 @@ public class XTNodeType extends XTEntityType {
         visitor.visit(this);
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "capabilityDefinition"
-    })
-    public static class CapabilityDefinitions implements Serializable {
-
-        @XmlElement(name = "CapabilityDefinition", required = true)
-        protected List<XTCapabilityDefinition> capabilityDefinition;
-
-        @NonNull
-        public List<XTCapabilityDefinition> getCapabilityDefinition() {
-            if (capabilityDefinition == null) {
-                capabilityDefinition = new ArrayList<XTCapabilityDefinition>();
-            }
-            return this.capabilityDefinition;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            CapabilityDefinitions that = (CapabilityDefinitions) o;
-            return Objects.equals(capabilityDefinition, that.capabilityDefinition);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(capabilityDefinition);
-        }
-    }
-
     public static class Builder extends XTEntityType.Builder<Builder> {
+
         private List<XTRequirementDefinition> requirementDefinitions;
-        private CapabilityDefinitions capabilityDefinitions;
+        private List<XTCapabilityDefinition> capabilityDefinitions;
         private XTTopologyElementInstanceStates instanceStates;
         private XTInterfaces interfaces;
 
@@ -169,7 +137,7 @@ public class XTNodeType extends XTEntityType {
             return this;
         }
 
-        public Builder setCapabilityDefinitions(XTNodeType.CapabilityDefinitions capabilityDefinitions) {
+        public Builder setCapabilityDefinitions(List<XTCapabilityDefinition> capabilityDefinitions) {
             this.capabilityDefinitions = capabilityDefinitions;
             return this;
         }

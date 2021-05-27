@@ -591,8 +591,8 @@ public class ToCanonical {
         String reqId = this.currentNodeTemplateName + "_" + id;
         TRequirement.Builder builder = new TRequirement.Builder(reqId, id, null);
 
-        if (node.getCapability() != null) {
-            builder = builder.setCapability(node.getCapability().toString());
+        if (node != null) {
+            builder = builder.setCapability(node.toString());
         } else {
             // when exporting, this must be caught, but while developing, it is tolerated
             // todo check if this is the case during export!
@@ -637,7 +637,7 @@ public class ToCanonical {
         for (HasInheritance currentNT : ancestry) {
             assert currentNT instanceof TNodeType;
             if (((TNodeType) currentNT).getCapabilityDefinitions() != null) {
-                currentCapDefs = ((TNodeType) currentNT).getCapabilityDefinitions().getCapabilityDefinition();
+                currentCapDefs = ((TNodeType) currentNT).getCapabilityDefinitions();
 
                 for (TCapabilityDefinition currentDef : currentCapDefs) {
                     if (currentDef.getName().equals(capName)) {

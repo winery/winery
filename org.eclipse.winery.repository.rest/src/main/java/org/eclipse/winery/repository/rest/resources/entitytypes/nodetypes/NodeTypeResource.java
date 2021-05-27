@@ -31,6 +31,7 @@ import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.model.tosca.TArtifact;
 import org.eclipse.winery.model.tosca.TArtifacts;
+import org.eclipse.winery.model.tosca.TCapabilityDefinition;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -101,12 +102,11 @@ public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
 
     @Path("capabilitydefinitions/")
     public CapabilityDefinitionsResource getCapabilityDefinitions() {
-        TNodeType.CapabilityDefinitions definitions = this.getNodeType().getCapabilityDefinitions();
-        if (definitions == null) {
-            definitions = new TNodeType.CapabilityDefinitions();
-            this.getNodeType().setCapabilityDefinitions(definitions);
+        List<TCapabilityDefinition> capabilityDefinitions = this.getNodeType().getCapabilityDefinitions();
+        if (capabilityDefinitions == null) {
+            this.getNodeType().setCapabilityDefinitions(new ArrayList<>());
         }
-        return new CapabilityDefinitionsResource(this, definitions.getCapabilityDefinition());
+        return new CapabilityDefinitionsResource(this, this.getNodeType().getCapabilityDefinitions());
     }
 
     @Path("appearance")

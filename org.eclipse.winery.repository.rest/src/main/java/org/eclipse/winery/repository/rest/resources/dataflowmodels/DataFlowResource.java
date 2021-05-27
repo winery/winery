@@ -379,8 +379,10 @@ public class DataFlowResource {
         if (nodeType.getRequirementDefinitions() != null) {
             for (TRequirementDefinition requirementDef : nodeType.getRequirementDefinitions()) {
                 String requirementId = templateName + "-" + requirementDef.getName();
-                templateBuilder.addRequirements(new TRequirement.Builder(requirementId, requirementDef.getName(),
-                    requirementDef.getRequirementType()).build());
+                templateBuilder.addRequirement(
+                    new TRequirement.Builder(requirementId, requirementDef.getName(),
+                    requirementDef.getRequirementType()).build()
+                );
             }
         }
 

@@ -15,6 +15,7 @@ package org.eclipse.winery.model.tosca.xml.utils;
 
 import java.util.List;
 
+import org.eclipse.winery.model.tosca.xml.XTCapability;
 import org.eclipse.winery.model.tosca.xml.XTEntityTemplate;
 import org.eclipse.winery.model.tosca.xml.XTNodeTemplate;
 import org.eclipse.winery.model.tosca.xml.XTPolicies;
@@ -56,8 +57,8 @@ public class RemoveEmptyLists extends Visitor {
         if (requirements != null && requirements.isEmpty()) {
             nodeTemplate.setRequirements(null);
         }
-        final XTNodeTemplate.Capabilities capabilities = nodeTemplate.getCapabilities();
-        if ((capabilities != null) && capabilities.getCapability().isEmpty()) {
+        final List<XTCapability> capabilities = nodeTemplate.getCapabilities();
+        if ((capabilities != null) && capabilities.isEmpty()) {
             nodeTemplate.setCapabilities(null);
         }
         final XTDeploymentArtifacts deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();

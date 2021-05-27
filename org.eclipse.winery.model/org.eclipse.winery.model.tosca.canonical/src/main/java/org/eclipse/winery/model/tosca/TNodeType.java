@@ -14,7 +14,6 @@
 
 package org.eclipse.winery.model.tosca;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -27,7 +26,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -45,8 +43,9 @@ public class TNodeType extends TEntityType {
     @XmlElement(name = "RequirementDefinition", required = true)
     protected List<TRequirementDefinition> requirementDefinitions;
 
-    @XmlElement(name = "CapabilityDefinitions")
-    protected TNodeType.CapabilityDefinitions capabilityDefinitions;
+    @XmlElementWrapper(name = "CapabilityDefinitions")
+    @XmlElement(name = "CapabilityDefinition", required = true)
+    protected List<TCapabilityDefinition> capabilityDefinitions;
 
     @XmlElement(name = "InstanceStates")
     protected TTopologyElementInstanceStates instanceStates;
@@ -100,11 +99,11 @@ public class TNodeType extends TEntityType {
         this.requirementDefinitions = value;
     }
 
-    public TNodeType.@Nullable CapabilityDefinitions getCapabilityDefinitions() {
+    public List<TCapabilityDefinition> getCapabilityDefinitions() {
         return capabilityDefinitions;
     }
 
-    public void setCapabilityDefinitions(TNodeType.@Nullable CapabilityDefinitions value) {
+    public void setCapabilityDefinitions(List<TCapabilityDefinition> value) {
         this.capabilityDefinitions = value;
     }
 
@@ -147,40 +146,9 @@ public class TNodeType extends TEntityType {
         visitor.visit(this);
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "capabilityDefinition"
-    })
-    public static class CapabilityDefinitions implements Serializable {
-
-        @XmlElement(name = "CapabilityDefinition", required = true)
-        protected List<TCapabilityDefinition> capabilityDefinition;
-
-        @NonNull
-        public List<TCapabilityDefinition> getCapabilityDefinition() {
-            if (capabilityDefinition == null) {
-                capabilityDefinition = new ArrayList<TCapabilityDefinition>();
-            }
-            return this.capabilityDefinition;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            CapabilityDefinitions that = (CapabilityDefinitions) o;
-            return Objects.equals(capabilityDefinition, that.capabilityDefinition);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(capabilityDefinition);
-        }
-    }
-
     public static class Builder extends TEntityType.Builder<Builder> {
         private List<TRequirementDefinition> requirementDefinitions;
-        private CapabilityDefinitions capabilityDefinitions;
+        private List<TCapabilityDefinition> capabilityDefinitions;
         private TTopologyElementInstanceStates instanceStates;
         private TInterfaces interfaces;
         private List<TInterfaceDefinition> interfaceDefinitions;
@@ -199,7 +167,7 @@ public class TNodeType extends TEntityType {
             return this;
         }
 
-        public Builder setCapabilityDefinitions(TNodeType.CapabilityDefinitions capabilityDefinitions) {
+        public Builder setCapabilityDefinitions(List<TCapabilityDefinition> capabilityDefinitions) {
             this.capabilityDefinitions = capabilityDefinitions;
             return this;
         }
@@ -242,27 +210,17 @@ public class TNodeType extends TEntityType {
             return addRequirementDefinitions(requirements);
         }
 
-        public Builder addCapabilityDefinitions(TNodeType.CapabilityDefinitions capabilityDefinitions) {
-            if (capabilityDefinitions == null || capabilityDefinitions.getCapabilityDefinition().isEmpty()) {
+        public Builder addCapabilityDefinitions(List<TCapabilityDefinition> capabilityDefinitions) {
+            if (capabilityDefinitions == null || capabilityDefinitions.isEmpty()) {
                 return this;
             }
 
             if (this.capabilityDefinitions == null) {
                 this.capabilityDefinitions = capabilityDefinitions;
             } else {
-                this.capabilityDefinitions.getCapabilityDefinition().addAll(capabilityDefinitions.getCapabilityDefinition());
+                this.capabilityDefinitions.addAll(capabilityDefinitions);
             }
             return this;
-        }
-
-        public Builder addCapabilityDefinitions(List<TCapabilityDefinition> capabilityDefinitions) {
-            if (capabilityDefinitions == null) {
-                return this;
-            }
-
-            TNodeType.CapabilityDefinitions tmp = new TNodeType.CapabilityDefinitions();
-            tmp.getCapabilityDefinition().addAll(capabilityDefinitions);
-            return addCapabilityDefinitions(tmp);
         }
 
         public Builder addCapabilityDefinitions(TCapabilityDefinition capabilityDefinitions) {
@@ -270,8 +228,8 @@ public class TNodeType extends TEntityType {
                 return this;
             }
 
-            TNodeType.CapabilityDefinitions tmp = new TNodeType.CapabilityDefinitions();
-            tmp.getCapabilityDefinition().add(capabilityDefinitions);
+            List<TCapabilityDefinition> tmp = new ArrayList<>();
+            tmp.add(capabilityDefinitions);
             return addCapabilityDefinitions(tmp);
         }
 

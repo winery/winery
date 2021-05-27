@@ -272,7 +272,7 @@ public class ToCanonical {
     private TCapability resolveCapability(TCapability incomplete, TTopologyTemplate topology) {
         return topology.getNodeTemplates().stream()
             .flatMap(nt -> nt.getCapabilities() == null ? Stream.empty()
-                : nt.getCapabilities().getCapability().stream())
+                : nt.getCapabilities().stream())
             .filter(cap -> cap.getId().equals(incomplete.getId()))
             .findFirst()
             .orElseGet(() -> {
@@ -502,9 +502,8 @@ public class ToCanonical {
             builder.setRequirementDefinitions(reqDefs);
         }
         if (xml.getCapabilityDefinitions() != null) {
-            TNodeType.CapabilityDefinitions capDefs = new TNodeType.CapabilityDefinitions();
-            capDefs.getCapabilityDefinition().addAll(xml.getCapabilityDefinitions().getCapabilityDefinition()
-                .stream().map(this::convert).collect(Collectors.toList()));
+            List<TCapabilityDefinition> capDefs = xml.getCapabilityDefinitions()
+                .stream().map(this::convert).collect(Collectors.toList());
             builder.setCapabilityDefinitions(capDefs);
         }
         if (xml.getInstanceStates() != null) {
@@ -947,9 +946,7 @@ public class ToCanonical {
             builder.setRequirements(convertList(xml.getRequirements(), this::convert));
         }
         if (xml.getCapabilities() != null) {
-            TNodeTemplate.Capabilities caps = new TNodeTemplate.Capabilities();
-            caps.getCapability().addAll(convertList(xml.getCapabilities().getCapability(), this::convert));
-            builder.setCapabilities(caps);
+            builder.setCapabilities(convertList(xml.getCapabilities(), this::convert));
         }
         if (xml.getPolicies() != null) {
             TPolicies policies = new TPolicies(convertList(xml.getPolicies().getPolicy(), this::convert));

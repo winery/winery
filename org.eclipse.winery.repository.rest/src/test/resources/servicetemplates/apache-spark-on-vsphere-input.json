@@ -98,9 +98,7 @@
             "maxInstances": "1",
             "x": 678,
             "y": 631,
-            "capabilities": {
-                "capability": []
-            },
+            "capabilities": [],
             "requirements": [],
             "deploymentArtifacts": {
                 "deploymentArtifact": []
@@ -136,9 +134,7 @@
             "maxInstances": "1",
             "x": 844,
             "y": 514,
-            "capabilities": {
-                "capability": []
-            },
+            "capabilities": [],
             "requirements": [],
             "deploymentArtifacts": {
                 "deploymentArtifact": []
@@ -162,9 +158,7 @@
             "maxInstances": "1",
             "x": 744,
             "y": 268,
-            "capabilities": {
-                "capability": []
-            },
+            "capabilities": [],
             "requirements": [],
             "deploymentArtifacts": {
                 "deploymentArtifact": []
@@ -188,9 +182,7 @@
             "maxInstances": "1",
             "x": 740,
             "y": 46,
-            "capabilities": {
-                "capability": []
-            },
+            "capabilities": [],
             "requirements": [],
             "deploymentArtifacts": {
                 "deploymentArtifact": [
@@ -223,9 +215,7 @@
             "maxInstances": "1",
             "x": 501,
             "y": 419,
-            "capabilities": {
-                "capability": []
-            },
+            "capabilities": [],
             "requirements": [],
             "deploymentArtifacts": {
                 "deploymentArtifact": []

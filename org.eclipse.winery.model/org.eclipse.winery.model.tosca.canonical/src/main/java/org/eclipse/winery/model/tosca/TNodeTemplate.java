@@ -14,7 +14,6 @@
 
 package org.eclipse.winery.model.tosca;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -57,8 +56,9 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
     @XmlElement(name = "Requirement")
     protected List<TRequirement> requirements;
     
-    @XmlElement(name = "Capabilities")
-    protected TNodeTemplate.Capabilities capabilities;
+    @XmlElementWrapper(name = "Capabilities")
+    @XmlElement(name = "Capability")
+    protected List<TCapability> capabilities;
     
     @XmlElement(name = "Policies")
     protected TPolicies policies;
@@ -139,11 +139,11 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
         this.requirements = value;
     }
 
-    public TNodeTemplate.@Nullable Capabilities getCapabilities() {
+    public List<TCapability> getCapabilities() {
         return capabilities;
     }
 
-    public void setCapabilities(TNodeTemplate.@Nullable Capabilities value) {
+    public void setCapabilities(List<TCapability> value) {
         this.capabilities = value;
     }
 
@@ -254,63 +254,10 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
         this.artifacts = artifacts;
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "capability"
-    })
-    public static class Capabilities implements Serializable {
-
-        @XmlElement(name = "Capability", required = true)
-        protected List<TCapability> capability;
-
-        /**
-         * Gets the value of the capability property.
-         * <p>
-         * <p>
-         * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you
-         * make to the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE>
-         * method for the capability property.
-         * <p>
-         * <p>
-         * For example, to add a new item, do as follows:
-         * <pre>
-         *    getCapability().add(newItem);
-         * </pre>
-         * <p>
-         * <p>
-         * <p>
-         * Objects of the following type(s) are allowed in the list {@link TCapability }
-         */
-        @NonNull
-        public List<TCapability> getCapability() {
-            if (capability == null) {
-                capability = new ArrayList<TCapability>();
-            }
-            return this.capability;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Capabilities that = (Capabilities) o;
-            return Objects.equals(capability, that.capability);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(capability);
-        }
-
-        public void accept(Visitor visitor) {
-            visitor.visit(this);
-        }
-    }
-
     public static class Builder extends RelationshipSourceOrTarget.Builder<Builder> {
         
         private List<TRequirement> requirements;
-        private Capabilities capabilities;
+        private List<TCapability> capabilities;
         private TPolicies policies;
         private TDeploymentArtifacts deploymentArtifacts;
         private String name;
@@ -333,7 +280,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
             return this;
         }
 
-        public Builder setCapabilities(TNodeTemplate.Capabilities capabilities) {
+        public Builder setCapabilities(List<TCapability> capabilities) {
             this.capabilities = capabilities;
             return this;
         }
@@ -386,7 +333,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
             return this;
         }
 
-        public Builder addRequirements(TRequirement requirements) {
+        public Builder addRequirement(TRequirement requirements) {
             if (requirements == null) {
                 return this;
             }
@@ -396,36 +343,26 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
             return addRequirements(tmp);
         }
 
-        public Builder addCapabilities(TNodeTemplate.Capabilities capabilities) {
-            if (capabilities == null || capabilities.getCapability().isEmpty()) {
+        public Builder addCapabilities(List<TCapability> capabilities) {
+            if (capabilities == null || capabilities.isEmpty()) {
                 return this;
             }
 
             if (this.capabilities == null) {
                 this.capabilities = capabilities;
             } else {
-                this.capabilities.getCapability().addAll(capabilities.getCapability());
+                this.capabilities.addAll(capabilities);
             }
             return this;
         }
 
-        public Builder addCapabilities(List<TCapability> capabilities) {
+        public Builder addCapability(TCapability capabilities) {
             if (capabilities == null) {
                 return this;
             }
 
-            TNodeTemplate.Capabilities tmp = new TNodeTemplate.Capabilities();
-            tmp.getCapability().addAll(capabilities);
-            return addCapabilities(tmp);
-        }
-
-        public Builder addCapabilities(TCapability capabilities) {
-            if (capabilities == null) {
-                return this;
-            }
-
-            TNodeTemplate.Capabilities tmp = new TNodeTemplate.Capabilities();
-            tmp.getCapability().add(capabilities);
+            ArrayList<TCapability> tmp = new ArrayList<>();
+            tmp.add(capabilities);
             return addCapabilities(tmp);
         }
 

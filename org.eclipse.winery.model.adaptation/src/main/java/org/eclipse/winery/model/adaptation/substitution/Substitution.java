@@ -151,9 +151,10 @@ public class Substitution extends AbstractSubstitution {
                         ingoingRelations.forEach(ingoing -> {
                             capabilities.forEach(tCapabilityRef -> {
                                 topologyToImport.getNodeTemplates().stream()
+                                    .filter(tNodeTemplate -> Objects.nonNull(tNodeTemplate.getCapabilities()))
                                     .filter(tNodeTemplate ->
                                         // find the node template which defines the capability in the boundaries
-                                        Objects.nonNull(tNodeTemplate.getCapabilities()) && tNodeTemplate.getCapabilities().getCapability()
+                                        tNodeTemplate.getCapabilities()
                                             .stream()
                                             .anyMatch(tCapability -> tCapability.equals(tCapabilityRef.getRef()))
                                     )

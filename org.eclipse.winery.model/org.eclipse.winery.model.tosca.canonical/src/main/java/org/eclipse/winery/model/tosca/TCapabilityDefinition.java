@@ -36,21 +36,28 @@ import org.eclipse.jdt.annotation.Nullable;
     "constraints"
 })
 public class TCapabilityDefinition extends TExtensibleElements {
+
     @XmlElement(name = "Constraints")
     protected TCapabilityDefinition.Constraints constraints;
+
     @XmlAttribute(name = "name", required = true)
     protected String name;
+
     @XmlAttribute(name = "capabilityType", required = true)
     protected QName capabilityType;
+
     @XmlAttribute(name = "lowerBound")
     protected Integer lowerBound;
+
     @XmlAttribute(name = "upperBound")
     protected String upperBound;
+
     @XmlAttribute(name = "validSourceTypes")
     protected List<QName> validSourceTypes;
 
     @Deprecated // used for XML deserialization of API request content
-    public TCapabilityDefinition() { }
+    public TCapabilityDefinition() {
+    }
 
     public TCapabilityDefinition(Builder builder) {
         super(builder);
@@ -140,7 +147,7 @@ public class TCapabilityDefinition extends TExtensibleElements {
     public void setValidSourceTypes(List<QName> value) {
         this.validSourceTypes = value;
     }
-    
+
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
@@ -186,7 +193,7 @@ public class TCapabilityDefinition extends TExtensibleElements {
         private String upperBound;
 
         private List<QName> validSourceTypes;
-        
+
         public Builder(String name, QName capabilityType) {
             this.name = name;
             this.capabilityType = capabilityType;

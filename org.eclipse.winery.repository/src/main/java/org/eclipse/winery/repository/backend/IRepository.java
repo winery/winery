@@ -598,11 +598,9 @@ public interface IRepository extends IWineryRepositoryCommon {
                             .anyMatch(tRequirementDefinition -> qNameOfTheType.equals(tRequirementDefinition.getRequirementType()));
 
                     if (!referencesGivenQName) {
-                        TNodeType.CapabilityDefinitions capabilityDefinitions = ((TNodeType) element).getCapabilityDefinitions();
+                        List<TCapabilityDefinition> capabilityDefinitions = ((TNodeType) element).getCapabilityDefinitions();
                         referencesGivenQName = Objects.nonNull(capabilityDefinitions) &&
-                            capabilityDefinitions
-                                .getCapabilityDefinition()
-                                .stream()
+                            capabilityDefinitions.stream()
                                 .anyMatch(tCapabilityDefinition -> qNameOfTheType.equals(tCapabilityDefinition.getCapabilityType()));
                     }
                 }
@@ -692,10 +690,9 @@ public interface IRepository extends IWineryRepositoryCommon {
         }
 
         // add all referenced capability types
-        TNodeType.CapabilityDefinitions capDefsContainer = nodeType.getCapabilityDefinitions();
-        if (capDefsContainer != null) {
-            List<TCapabilityDefinition> capDefs = capDefsContainer.getCapabilityDefinition();
-            for (TCapabilityDefinition capDef : capDefs) {
+        List<TCapabilityDefinition> capabilityDefinitions = nodeType.getCapabilityDefinitions();
+        if (capabilityDefinitions != null) {
+            for (TCapabilityDefinition capDef : capabilityDefinitions) {
                 CapabilityTypeId capTypeId = new CapabilityTypeId(capDef.getCapabilityType());
                 ids.add(capTypeId);
 
@@ -1100,9 +1097,9 @@ public interface IRepository extends IWineryRepositoryCommon {
     }
 
     default void getCapabilitiesReferences(Collection<DefinitionsChildId> ids, TNodeTemplate n) {
-        TNodeTemplate.Capabilities capabilities = n.getCapabilities();
+        List<TCapability> capabilities = n.getCapabilities();
         if (capabilities != null) {
-            for (TCapability cap : capabilities.getCapability()) {
+            for (TCapability cap : capabilities) {
                 QName type = cap.getType();
                 CapabilityTypeId ctId = new CapabilityTypeId(type);
                 ids.add(ctId);

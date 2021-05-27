@@ -29,21 +29,19 @@
                         "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "270"
                     },
                     "type": "{http://winery.opentosca.org/test/ponyuniverse}dressageequipment",
-                    "capabilities": {
-                        "capability": [
-                            {
-                                "id": "CapEquipment",
-                                "documentation": [
-                                ],
-                                "any": [
-                                ],
-                                "otherAttributes": {
-                                },
-                                "type": "{http://winery.opentosca.org/test/ponyuniverse}CapEquipment",
-                                "name": "CapEquipment"
-                            }
-                        ]
-                    },
+                    "capabilities": [
+                        {
+                            "id": "CapEquipment",
+                            "documentation": [
+                            ],
+                            "any": [
+                            ],
+                            "otherAttributes": {
+                            },
+                            "type": "{http://winery.opentosca.org/test/ponyuniverse}CapEquipment",
+                            "name": "CapEquipment"
+                        }
+                    ],
                     "deploymentArtifacts": {
                         "deploymentArtifact": [
                             {

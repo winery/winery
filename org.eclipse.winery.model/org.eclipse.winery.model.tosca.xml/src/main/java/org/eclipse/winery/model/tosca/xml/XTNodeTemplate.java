@@ -48,8 +48,9 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
     @XmlElement(name = "Requirement")
     protected List<XTRequirement> requirements;
     
-    @XmlElement(name = "Capabilities")
-    protected XTNodeTemplate.Capabilities capabilities;
+    @XmlElementWrapper(name = "Capabilities")
+    @XmlElement(name = "Capability")
+    protected List<XTCapability> capabilities;
     
     @XmlElement(name = "Policies")
     protected XTPolicies policies;
@@ -125,11 +126,11 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
         this.requirements = value;
     }
 
-    public XTNodeTemplate.@Nullable Capabilities getCapabilities() {
+    public List<XTCapability> getCapabilities() {
         return capabilities;
     }
 
-    public void setCapabilities(XTNodeTemplate.@Nullable Capabilities value) {
+    public void setCapabilities(List<XTCapability> value) {
         this.capabilities = value;
     }
 
@@ -234,59 +235,6 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
 
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "capability"
-    })
-    public static class Capabilities implements Serializable {
-
-        @XmlElement(name = "Capability", required = true)
-        protected List<XTCapability> capability;
-
-        /**
-         * Gets the value of the capability property.
-         * <p>
-         * <p>
-         * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you
-         * make to the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE>
-         * method for the capability property.
-         * <p>
-         * <p>
-         * For example, to add a new item, do as follows:
-         * <pre>
-         *    getCapability().add(newItem);
-         * </pre>
-         * <p>
-         * <p>
-         * <p>
-         * Objects of the following type(s) are allowed in the list {@link XTCapability }
-         */
-        @NonNull
-        public List<XTCapability> getCapability() {
-            if (capability == null) {
-                capability = new ArrayList<XTCapability>();
-            }
-            return this.capability;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Capabilities that = (Capabilities) o;
-            return Objects.equals(capability, that.capability);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(capability);
-        }
-
-        public void accept(Visitor visitor) {
-            visitor.visit(this);
-        }
-    }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
         "requirement"
     })
     public static class Requirements implements Serializable {
@@ -322,7 +270,7 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
 
     public static class Builder extends XRelationshipSourceOrTarget.Builder<Builder> {
         private List<XTRequirement> requirements;
-        private Capabilities capabilities;
+        private List<XTCapability> capabilities;
         private XTPolicies policies;
         private XTDeploymentArtifacts deploymentArtifacts;
         private String name;
@@ -344,7 +292,7 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
             return this;
         }
 
-        public Builder setCapabilities(XTNodeTemplate.Capabilities capabilities) {
+        public Builder setCapabilities(List<XTCapability> capabilities) {
             this.capabilities = capabilities;
             return this;
         }
@@ -397,15 +345,15 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
             return this;
         }
 
-        public Builder addCapabilities(XTNodeTemplate.Capabilities capabilities) {
-            if (capabilities == null || capabilities.getCapability().isEmpty()) {
+        public Builder addCapabilities(List<XTCapability> capabilities) {
+            if (capabilities == null || capabilities.isEmpty()) {
                 return this;
             }
 
             if (this.capabilities == null) {
                 this.capabilities = capabilities;
             } else {
-                this.capabilities.getCapability().addAll(capabilities.getCapability());
+                this.capabilities.addAll(capabilities);
             }
             return this;
         }

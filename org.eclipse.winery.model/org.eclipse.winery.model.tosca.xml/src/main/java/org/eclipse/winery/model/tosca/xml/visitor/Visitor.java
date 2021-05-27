@@ -171,9 +171,9 @@ public abstract class Visitor {
         if (requirements != null) {
             requirements.forEach(requirement -> requirement.accept(this));
         }
-        final XTNodeTemplate.Capabilities capabilities = nodeTemplate.getCapabilities();
+        final List<XTCapability> capabilities = nodeTemplate.getCapabilities();
         if (capabilities != null) {
-            capabilities.accept(this);
+            capabilities.forEach(capability -> capability.accept(this));
         }
         final XTDeploymentArtifacts deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
         if (deploymentArtifacts != null) {
@@ -214,13 +214,6 @@ public abstract class Visitor {
 
     public void visit(XTRelationshipTemplate.RelationshipConstraints.RelationshipConstraint relationshipConstraint) {
         // this is a leaf, so no action to take
-    }
-
-    public void visit(XTNodeTemplate.Capabilities capabilities) {
-        for (XTCapability capability : capabilities.getCapability()) {
-            capability.accept(this);
-        }
-        // meta model does not offer more children
     }
 
     public void visit(XTNodeTemplate.Requirements requirements) {
