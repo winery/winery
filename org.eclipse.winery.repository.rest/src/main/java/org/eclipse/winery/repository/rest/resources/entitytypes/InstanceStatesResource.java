@@ -14,7 +14,6 @@
 package org.eclipse.winery.repository.rest.resources.entitytypes;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -29,30 +28,26 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.model.ids.EncodingUtil;
-import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
-import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates.InstanceState;
+import org.eclipse.winery.model.tosca.TInstanceState;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.InstanceStateApiData;
 
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Resource for instance states.
- * Used by relationship types and node types
+ * Resource for instance states. Used by relationship types and node types
  */
 public class InstanceStatesResource {
 
     private TopologyGraphElementEntityTypeResource typeResource;
-    private TTopologyElementInstanceStates instanceStates;
-
+    private List<TInstanceState> instanceStates;
 
     /**
      * @param instanceStates the instanceStates to manage
-     * @param typeResource   the type resource, where the instance states are
-     *                       managed. This reference is required to fire "persist()" in
-     *                       case of updates
+     * @param typeResource   the type resource, where the instance states are managed. This reference is required to
+     *                       fire "persist()" in case of updates
      */
-    public InstanceStatesResource(TTopologyElementInstanceStates instanceStates, TopologyGraphElementEntityTypeResource typeResource) {
+    public InstanceStatesResource(List<TInstanceState> instanceStates, TopologyGraphElementEntityTypeResource typeResource) {
         this.instanceStates = instanceStates;
         this.typeResource = typeResource;
     }
@@ -60,9 +55,9 @@ public class InstanceStatesResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<InstanceStateApiData> getInstanceStates() {
-        List<InstanceState> instanceStates = this.instanceStates.getInstanceState();
+        List<TInstanceState> instanceStates = this.instanceStates;
         ArrayList<InstanceStateApiData> states = new ArrayList<>(instanceStates.size());
-        for (InstanceState instanceState : instanceStates) {
+        for (TInstanceState instanceState : instanceStates) {
             states.add(new InstanceStateApiData(instanceState.getState()));
         }
         return states;
@@ -74,24 +69,11 @@ public class InstanceStatesResource {
         if (StringUtils.isEmpty(instanceStateToRemove)) {
             return Response.status(Status.BAD_REQUEST).entity("null instance to remove").build();
         }
-        instanceStateToRemove = EncodingUtil.URLdecode(instanceStateToRemove);
+        String decodedInstanceState = EncodingUtil.URLdecode(instanceStateToRemove);
 
-        // InstanceState does not override "equals()", therefore we have to manually remove it
-
-        List<InstanceState> instanceStates = this.instanceStates.getInstanceState();
-        Iterator<InstanceState> iterator = instanceStates.iterator();
-        boolean found = false;
-        while (iterator.hasNext() && !found) {
-            if (iterator.next().getState().equals(instanceStateToRemove)) {
-                found = true;
-            }
-        }
-
-        if (!found) {
+        if (!this.instanceStates.removeIf(state -> state.getState().equals(decodedInstanceState))) {
             return Response.status(Status.NOT_FOUND).build();
         }
-
-        iterator.remove();
 
         return RestUtils.persist(this.typeResource);
     }
@@ -105,27 +87,13 @@ public class InstanceStatesResource {
             return Response.notAcceptable(null).build();
         }
 
-        // InstanceState does not override "equals()", therefore we have to manually check for existance
-
-        List<InstanceState> instanceStates = this.instanceStates.getInstanceState();
-        Iterator<InstanceState> iterator = instanceStates.iterator();
-        boolean found = false;
-        while (iterator.hasNext() && !found) {
-            if (iterator.next().getState().equals(state)) {
-                found = true;
-            }
-        }
-
-        if (found) {
+        if (!this.instanceStates.removeIf(instanceState -> instanceState.getState().equals(state))) {
             // no error, just return
             return Response.noContent().build();
         }
 
-        InstanceState instanceState = new InstanceState();
-        instanceState.setState(state);
-        instanceStates.add(instanceState);
+        instanceStates.add(new TInstanceState(state));
 
         return RestUtils.persist(this.typeResource);
     }
-
 }

@@ -35,7 +35,6 @@ import org.eclipse.winery.model.tosca.TCapabilityDefinition;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TNodeType;
-import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.GenericDirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
@@ -73,13 +72,11 @@ public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
 
     @Path("instancestates/")
     public InstanceStatesResource getInstanceStatesResource() {
-        TTopologyElementInstanceStates instanceStates = this.getNodeType().getInstanceStates();
-        if (instanceStates == null) {
+        if (this.getNodeType().getInstanceStates() == null) {
             // if an explicit (empty) list does not exist, create it
-            instanceStates = new TTopologyElementInstanceStates();
-            this.getNodeType().setInstanceStates(instanceStates);
+            this.getNodeType().setInstanceStates(new ArrayList<>());
         }
-        return new InstanceStatesResource(instanceStates, this);
+        return new InstanceStatesResource(this.getNodeType().getInstanceStates(), this);
     }
 
     @Path("interfaces/")

@@ -50,6 +50,7 @@ import org.eclipse.winery.model.tosca.TExtension;
 import org.eclipse.winery.model.tosca.TGroupDefinition;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TImport;
+import org.eclipse.winery.model.tosca.TInstanceState;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -75,7 +76,6 @@ import org.eclipse.winery.model.tosca.TRequirementRef;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
-import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.extensions.OTAttributeMapping;
 import org.eclipse.winery.model.tosca.extensions.OTAttributeMappingType;
@@ -305,13 +305,8 @@ public class ToCanonical {
             builder.setValidTarget(xml.getValidTarget().getTypeRef());
         }
         if (xml.getInstanceStates() != null) {
-            TTopologyElementInstanceStates instanceStates = new TTopologyElementInstanceStates();
-            instanceStates.getInstanceState().addAll(xml.getInstanceStates().getInstanceState().stream()
-                .map(c -> {
-                    TTopologyElementInstanceStates.InstanceState r = new TTopologyElementInstanceStates.InstanceState();
-                    r.setState(c.getState());
-                    return r;
-                }).collect(Collectors.toList()));
+            List<TInstanceState> instanceStates = xml.getInstanceStates().stream()
+                .map(c -> new TInstanceState(c.getState())).collect(Collectors.toList());
             builder.setInstanceStates(instanceStates);
         }
         fillEntityTypeProperties(builder, xml);
@@ -507,13 +502,8 @@ public class ToCanonical {
             builder.setCapabilityDefinitions(capDefs);
         }
         if (xml.getInstanceStates() != null) {
-            TTopologyElementInstanceStates instanceStates = new TTopologyElementInstanceStates();
-            instanceStates.getInstanceState().addAll(xml.getInstanceStates().getInstanceState().stream()
-                .map(c -> {
-                    TTopologyElementInstanceStates.InstanceState r = new TTopologyElementInstanceStates.InstanceState();
-                    r.setState(c.getState());
-                    return r;
-                }).collect(Collectors.toList()));
+            List<TInstanceState> instanceStates = xml.getInstanceStates().stream()
+                .map(c -> new TInstanceState(c.getState())).collect(Collectors.toList());
             builder.setInstanceStates(instanceStates);
         }
         if (xml.getInterfaces() != null) {

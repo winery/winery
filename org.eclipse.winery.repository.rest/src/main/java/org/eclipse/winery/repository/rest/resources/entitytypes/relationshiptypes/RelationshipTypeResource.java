@@ -33,7 +33,6 @@ import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipType.ValidSource;
 import org.eclipse.winery.model.tosca.TRelationshipType.ValidTarget;
-import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.GenericDirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
@@ -73,11 +72,9 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 
     @Path("instancestates/")
     public InstanceStatesResource getInstanceStatesResource() {
-        TTopologyElementInstanceStates instanceStates = this.getRelationshipType().getInstanceStates();
-        if (instanceStates == null) {
+        if (this.getRelationshipType().getInstanceStates() == null) {
             // if an explicit (empty) list does not exist, create it
-            instanceStates = new TTopologyElementInstanceStates();
-            this.getRelationshipType().setInstanceStates(instanceStates);
+            this.getRelationshipType().setInstanceStates(new ArrayList<>());
         }
         return new InstanceStatesResource(this.getRelationshipType().getInstanceStates(), this);
     }

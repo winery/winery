@@ -45,19 +45,26 @@ import org.eclipse.jdt.annotation.Nullable;
 public class TRelationshipType extends TEntityType {
 
     @XmlElement(name = "InstanceStates")
-    protected TTopologyElementInstanceStates instanceStates;
+    protected List<TInstanceState> instanceStates;
+
     @XmlElement(name = "Interfaces", namespace = Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE)
     protected TInterfaces interfaces;
+
     @XmlElement(name = "SourceInterfaces")
     protected TInterfaces sourceInterfaces;
+
     @XmlElement(name = "TargetInterfaces")
     protected TInterfaces targetInterfaces;
+
     @XmlElement(name = "InterfaceDefinitions")
     protected List<TInterfaceDefinition> interfaceDefinitions;
+
     @XmlElement(name = "ValidSource")
     protected TRelationshipType.ValidSource validSource;
+
     @XmlElement(name = "ValidTarget")
     protected TRelationshipType.ValidTarget validTarget;
+
     // related to YAML 1.3
     // https://docs.oasis-open.org/tosca/TOSCA-Simple-Profile-YAML/v1.3/os/TOSCA-Simple-Profile-YAML-v1.3-os.html#DEFN_ENTITY_RELATIONSHIP_TYPE
     @XmlElement(name = "ValidTargetList")
@@ -100,11 +107,11 @@ public class TRelationshipType extends TEntityType {
     }
 
     @Nullable
-    public TTopologyElementInstanceStates getInstanceStates() {
+    public List<TInstanceState> getInstanceStates() {
         return instanceStates;
     }
 
-    public void setInstanceStates(@Nullable TTopologyElementInstanceStates value) {
+    public void setInstanceStates(List<TInstanceState> value) {
         this.instanceStates = value;
     }
 
@@ -235,7 +242,7 @@ public class TRelationshipType extends TEntityType {
     }
 
     public static class Builder extends TEntityType.Builder<Builder> {
-        private TTopologyElementInstanceStates instanceStates;
+        private List<TInstanceState> instanceStates;
         private TInterfaces interfaces;
         private TInterfaces sourceInterfaces;
         private TInterfaces targetInterfaces;
@@ -252,7 +259,7 @@ public class TRelationshipType extends TEntityType {
             super(entityType);
         }
 
-        public Builder setInstanceStates(TTopologyElementInstanceStates instanceStates) {
+        public Builder setInstanceStates(List<TInstanceState> instanceStates) {
             this.instanceStates = instanceStates;
             return this;
         }

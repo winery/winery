@@ -113,6 +113,7 @@ import org.eclipse.winery.model.tosca.xml.XTExtensibleElements;
 import org.eclipse.winery.model.tosca.xml.XTExtension;
 import org.eclipse.winery.model.tosca.xml.XTImplementationArtifacts;
 import org.eclipse.winery.model.tosca.xml.XTImport;
+import org.eclipse.winery.model.tosca.xml.XTInstanceState;
 import org.eclipse.winery.model.tosca.xml.XTInterface;
 import org.eclipse.winery.model.tosca.xml.XTInterfaces;
 import org.eclipse.winery.model.tosca.xml.XTNodeTemplate;
@@ -138,7 +139,6 @@ import org.eclipse.winery.model.tosca.xml.XTRequirementRef;
 import org.eclipse.winery.model.tosca.xml.XTRequirementType;
 import org.eclipse.winery.model.tosca.xml.XTServiceTemplate;
 import org.eclipse.winery.model.tosca.xml.XTTag;
-import org.eclipse.winery.model.tosca.xml.XTTopologyElementInstanceStates;
 import org.eclipse.winery.model.tosca.xml.XTTopologyTemplate;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTAttributeMapping;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTAttributeMappingType;
@@ -223,13 +223,8 @@ public class FromCanonical {
             builder.setValidTarget(canonical.getValidTarget().getTypeRef());
         }
         if (canonical.getInstanceStates() != null) {
-            XTTopologyElementInstanceStates instanceStates = new XTTopologyElementInstanceStates();
-            instanceStates.getInstanceState().addAll(canonical.getInstanceStates().getInstanceState().stream()
-                .map(c -> {
-                    XTTopologyElementInstanceStates.InstanceState r = new XTTopologyElementInstanceStates.InstanceState();
-                    r.setState(c.getState());
-                    return r;
-                }).collect(Collectors.toList()));
+            List<XTInstanceState> instanceStates = canonical.getInstanceStates().stream()
+                .map(c -> new XTInstanceState(c.getState())).collect(Collectors.toList());
             builder.setInstanceStates(instanceStates);
         }
         if (canonical.getInterfaceDefinitions() != null) {
@@ -419,13 +414,8 @@ public class FromCanonical {
             builder.setCapabilityDefinitions(convertList(canonical.getCapabilityDefinitions(), this::convert));
         }
         if (canonical.getInstanceStates() != null) {
-            XTTopologyElementInstanceStates instanceStates = new XTTopologyElementInstanceStates();
-            instanceStates.getInstanceState().addAll(canonical.getInstanceStates().getInstanceState().stream()
-                .map(c -> {
-                    XTTopologyElementInstanceStates.InstanceState r = new XTTopologyElementInstanceStates.InstanceState();
-                    r.setState(c.getState());
-                    return r;
-                }).collect(Collectors.toList()));
+            List<XTInstanceState> instanceStates = canonical.getInstanceStates().stream()
+                .map(c -> new XTInstanceState(c.getState())).collect(Collectors.toList());
             builder.setInstanceStates(instanceStates);
         }
         if (canonical.getInterfaces() != null) {

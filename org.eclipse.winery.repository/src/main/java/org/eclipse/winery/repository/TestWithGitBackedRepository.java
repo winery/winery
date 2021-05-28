@@ -16,13 +16,15 @@ package org.eclipse.winery.repository;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
 import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
 import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.tosca.TInstanceState;
 import org.eclipse.winery.model.tosca.TNodeType;
-import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -117,11 +119,9 @@ public abstract class TestWithGitBackedRepository {
     protected void makeSomeChanges(NodeTypeId id) throws Exception {
         IRepository repo = RepositoryFactory.getRepository();
         TNodeType element = repo.getElement(id);
-        TTopologyElementInstanceStates states = new TTopologyElementInstanceStates();
-        TTopologyElementInstanceStates.InstanceState instanceState = new TTopologyElementInstanceStates.InstanceState();
-        instanceState.setState("mySuperExtraStateWhichNobodyWouldHaveGuessed");
-        states.getInstanceState().add(instanceState);
-        element.setInstanceStates(states);
+        List<TInstanceState> instanceState = new ArrayList<>();
+        instanceState.add(new TInstanceState("mySuperExtraStateWhichNobodyWouldHaveGuessed"));
+        element.setInstanceStates(instanceState);
         BackendUtils.persist(repo, id, element);
     }
 }

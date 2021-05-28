@@ -45,7 +45,7 @@ public class XTNodeType extends XTEntityType {
     protected List<XTCapabilityDefinition> capabilityDefinitions;
 
     @XmlElement(name = "InstanceStates")
-    protected XTTopologyElementInstanceStates instanceStates;
+    protected List<XTInstanceState> instanceStates;
 
     @XmlElement(name = "Interfaces")
     protected XTInterfaces interfaces;
@@ -96,11 +96,11 @@ public class XTNodeType extends XTEntityType {
     }
 
     @Nullable
-    public XTTopologyElementInstanceStates getInstanceStates() {
+    public List<XTInstanceState> getInstanceStates() {
         return instanceStates;
     }
 
-    public void setInstanceStates(@Nullable XTTopologyElementInstanceStates value) {
+    public void setInstanceStates(List<XTInstanceState> value) {
         this.instanceStates = value;
     }
 
@@ -121,7 +121,7 @@ public class XTNodeType extends XTEntityType {
 
         private List<XTRequirementDefinition> requirementDefinitions;
         private List<XTCapabilityDefinition> capabilityDefinitions;
-        private XTTopologyElementInstanceStates instanceStates;
+        private List<XTInstanceState> instanceStates;
         private XTInterfaces interfaces;
 
         public Builder(String name) {
@@ -142,7 +142,7 @@ public class XTNodeType extends XTEntityType {
             return this;
         }
 
-        public Builder setInstanceStates(XTTopologyElementInstanceStates instanceStates) {
+        public Builder setInstanceStates(List<XTInstanceState> instanceStates) {
             this.instanceStates = instanceStates;
             return this;
         }

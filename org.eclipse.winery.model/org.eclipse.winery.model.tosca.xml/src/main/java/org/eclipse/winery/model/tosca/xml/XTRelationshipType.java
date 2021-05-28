@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
@@ -42,21 +43,28 @@ import org.eclipse.jdt.annotation.Nullable;
 })
 public class XTRelationshipType extends XTEntityType {
 
-    @XmlElement(name = "InstanceStates")
-    protected XTTopologyElementInstanceStates instanceStates;
+    @XmlElementWrapper(name = "InstanceStates")
+    @XmlElement(name = "InstanceState", required = true)
+    protected List<XTInstanceState> instanceStates;
+
     @XmlElement(name = "Interfaces", namespace = Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE)
     protected XTInterfaces interfaces;
+
     @XmlElement(name = "SourceInterfaces")
     protected XTInterfaces sourceInterfaces;
+
     @XmlElement(name = "TargetInterfaces")
     protected XTInterfaces targetInterfaces;
+
     @XmlElement(name = "ValidSource")
     protected XTRelationshipType.ValidSource validSource;
+
     @XmlElement(name = "ValidTarget")
     protected XTRelationshipType.ValidTarget validTarget;
 
     @Deprecated // required for XML deserialization
-    public XTRelationshipType() { }
+    public XTRelationshipType() {
+    }
 
     public XTRelationshipType(Builder builder) {
         super(builder);
@@ -88,11 +96,11 @@ public class XTRelationshipType extends XTEntityType {
     }
 
     @Nullable
-    public XTTopologyElementInstanceStates getInstanceStates() {
+    public List<XTInstanceState> getInstanceStates() {
         return instanceStates;
     }
 
-    public void setInstanceStates(@Nullable XTTopologyElementInstanceStates value) {
+    public void setInstanceStates(List<XTInstanceState> value) {
         this.instanceStates = value;
     }
 
@@ -205,7 +213,8 @@ public class XTRelationshipType extends XTEntityType {
     }
 
     public static class Builder extends XTEntityType.Builder<Builder> {
-        private XTTopologyElementInstanceStates instanceStates;
+        
+        private List<XTInstanceState> instanceStates;
         private XTInterfaces interfaces;
         private XTInterfaces sourceInterfaces;
         private XTInterfaces targetInterfaces;
@@ -220,7 +229,7 @@ public class XTRelationshipType extends XTEntityType {
             super(entityType);
         }
 
-        public Builder setInstanceStates(XTTopologyElementInstanceStates instanceStates) {
+        public Builder setInstanceStates(List<XTInstanceState> instanceStates) {
             this.instanceStates = instanceStates;
             return this;
         }

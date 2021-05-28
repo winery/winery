@@ -47,8 +47,9 @@ public class TNodeType extends TEntityType {
     @XmlElement(name = "CapabilityDefinition", required = true)
     protected List<TCapabilityDefinition> capabilityDefinitions;
 
-    @XmlElement(name = "InstanceStates")
-    protected TTopologyElementInstanceStates instanceStates;
+    @XmlElementWrapper(name = "InstanceStates")
+    @XmlElement(name = "InstanceState", required = true)
+    protected List<TInstanceState> instanceStates;
 
     @XmlElement(name = "Interfaces")
     protected TInterfaces interfaces;
@@ -108,11 +109,11 @@ public class TNodeType extends TEntityType {
     }
 
     @Nullable
-    public TTopologyElementInstanceStates getInstanceStates() {
+    public List<TInstanceState> getInstanceStates() {
         return instanceStates;
     }
 
-    public void setInstanceStates(@Nullable TTopologyElementInstanceStates value) {
+    public void setInstanceStates(List<TInstanceState> value) {
         this.instanceStates = value;
     }
 
@@ -149,7 +150,7 @@ public class TNodeType extends TEntityType {
     public static class Builder extends TEntityType.Builder<Builder> {
         private List<TRequirementDefinition> requirementDefinitions;
         private List<TCapabilityDefinition> capabilityDefinitions;
-        private TTopologyElementInstanceStates instanceStates;
+        private List<TInstanceState> instanceStates;
         private TInterfaces interfaces;
         private List<TInterfaceDefinition> interfaceDefinitions;
         private TArtifacts artifacts;
@@ -172,7 +173,7 @@ public class TNodeType extends TEntityType {
             return this;
         }
 
-        public Builder setInstanceStates(TTopologyElementInstanceStates instanceStates) {
+        public Builder setInstanceStates(List<TInstanceState> instanceStates) {
             this.instanceStates = instanceStates;
             return this;
         }
