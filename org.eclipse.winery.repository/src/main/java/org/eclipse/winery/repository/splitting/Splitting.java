@@ -36,7 +36,6 @@ import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.TInterface;
-import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TOperation;
@@ -238,24 +237,24 @@ public class Splitting {
 
     public TNodeTemplate createPlaceholderNodeTemplate(TTopologyTemplate topologyTemplate, String nameOfNodeTemplateGettingPlaceholder, QName placeholderQName) {
         TNodeTemplate placeholderNodeTemplate = new TNodeTemplate();
-        String id;
+        StringBuilder id;
         List<String> ids = new ArrayList<>();
         for (TNodeTemplate nt : topologyTemplate.getNodeTemplates()) {
             ids.add(nt.getId());
         }
         boolean uniqueID = false;
-        id = nameOfNodeTemplateGettingPlaceholder + "_placeholder";
+        id = new StringBuilder(nameOfNodeTemplateGettingPlaceholder + "_placeholder");
         while (!uniqueID) {
-            if (!ids.contains(id + IdCounter)) {
-                id = id + IdCounter;
+            if (!ids.contains(id.toString() + IdCounter)) {
+                id.append(IdCounter);
                 IdCounter++;
                 uniqueID = true;
             } else {
                 IdCounter++;
             }
         }
-        placeholderNodeTemplate.setId(id);
-        placeholderNodeTemplate.setName(id);
+        placeholderNodeTemplate.setId(id.toString());
+        placeholderNodeTemplate.setName(id.toString());
         placeholderNodeTemplate.setType(placeholderQName);
 
         return placeholderNodeTemplate;
@@ -268,19 +267,18 @@ public class Splitting {
             TNodeTemplate incomingNodetemplate = ModelUtilities.getSourceNodeTemplateOfRelationshipTemplate(topologyTemplate, incomingRelationshipTemplate);
             NodeTypeId incomingNodeTypeId = new NodeTypeId(incomingNodetemplate.getType());
             TNodeType incomingNodeType = repo.getElement(incomingNodeTypeId);
-            TInterfaces incomingNodeTypeInterfaces = incomingNodeType.getInterfaces();
+            List<TInterface> incomingNodeTypeInterfaces = incomingNodeType.getInterfaces();
             RelationshipTypeId incomingRelationshipTypeId = new RelationshipTypeId(incomingRelationshipTemplate.getType());
-            TRelationshipType incomingRelationshipType = repo.getElement(incomingRelationshipTypeId);
-            TInterface relevantInterface = new TInterface();
 
-            if (!incomingNodeTypeInterfaces.getInterface().isEmpty()) {
-                List<TInterface> connectionInterfaces = incomingNodeTypeInterfaces.getInterface().stream().filter(tInterface -> tInterface.getIdFromIdOrNameField().contains("connection")).collect(Collectors.toList());
+            if (!incomingNodeTypeInterfaces.isEmpty()) {
+                TInterface relevantInterface = null;
+                List<TInterface> connectionInterfaces = incomingNodeTypeInterfaces.stream().filter(tInterface -> tInterface.getIdFromIdOrNameField().contains("connection")).collect(Collectors.toList());
                 if (connectionInterfaces.size() > 1) {
                     TNodeTemplate targetNodeTemplate = ModelUtilities.getTargetNodeTemplateOfRelationshipTemplate(topologyTemplate, incomingRelationshipTemplate);
                     for (TInterface tInterface : connectionInterfaces) {
                         int separator = tInterface.getIdFromIdOrNameField().lastIndexOf("/");
                         String prefixRelation = tInterface.getIdFromIdOrNameField().substring(separator + 1);
-                        if (targetNodeTemplate.getName().toLowerCase().contains(prefixRelation.toLowerCase())) {
+                        if (targetNodeTemplate.getName() != null && targetNodeTemplate.getName().toLowerCase().contains(prefixRelation.toLowerCase())) {
                             relevantInterface = tInterface;
                         }
                     }
@@ -288,11 +286,11 @@ public class Splitting {
                     relevantInterface = connectionInterfaces.get(0);
                 }
 
-                for (TOperation tOperation : relevantInterface.getOperation()) {
-                    TOperation.InputParameters inputParameters = tOperation.getInputParameters();
-                    if (inputParameters != null) {
-                        for (TParameter param : inputParameters.getInputParameter()) {
-                            listOfInputs.add(param);
+                if (relevantInterface != null) {
+                    for (TOperation tOperation : relevantInterface.getOperations()) {
+                        TOperation.InputParameters inputParameters = tOperation.getInputParameters();
+                        if (inputParameters != null) {
+                            listOfInputs.addAll(inputParameters.getInputParameter());
                         }
                     }
                 }
@@ -302,13 +300,12 @@ public class Splitting {
     }
 
     public TCapability createPlaceholderCapability(TTopologyTemplate topologyTemplate, QName capabilityType) {
-        TCapability capa = new TCapability();
         // unique id for capability
         String id;
         List<String> ids = new ArrayList<>();
         for (TNodeTemplate nt : topologyTemplate.getNodeTemplates()) {
             if (nt.getCapabilities() != null) {
-                nt.getCapabilities().stream().forEach(cap -> ids.add(cap.getId()));
+                nt.getCapabilities().forEach(cap -> ids.add(cap.getId()));
             }
         }
         boolean uniqueID = false;
@@ -322,10 +319,8 @@ public class Splitting {
                 newCapabilityCounter++;
             }
         }
-        capa.setId(id);
-        capa.setName(id);
-        capa.setType(capabilityType);
-        return capa;
+
+        return new TCapability.Builder(id, capabilityType, id).build();
     }
 
     /**

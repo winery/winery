@@ -15,6 +15,7 @@
 package org.eclipse.winery.model.tosca;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,6 +23,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
@@ -47,14 +49,17 @@ public class TRelationshipType extends TEntityType {
     @XmlElement(name = "InstanceStates")
     protected List<TInstanceState> instanceStates;
 
-    @XmlElement(name = "Interfaces", namespace = Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE)
-    protected TInterfaces interfaces;
+    @XmlElementWrapper(name = "Interfaces", namespace = Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE)
+    @XmlElement(name = "Interface", required = true)
+    protected List<TInterface> interfaces;
 
-    @XmlElement(name = "SourceInterfaces")
-    protected TInterfaces sourceInterfaces;
+    @XmlElementWrapper(name = "SourceInterfaces")
+    @XmlElement(name = "Interface")
+    protected List<TInterface> sourceInterfaces;
 
-    @XmlElement(name = "TargetInterfaces")
-    protected TInterfaces targetInterfaces;
+    @XmlElementWrapper(name = "TargetInterfaces")
+    @XmlElement(name = "Interface")
+    protected List<TInterface> targetInterfaces;
 
     @XmlElement(name = "InterfaceDefinitions")
     protected List<TInterfaceDefinition> interfaceDefinitions;
@@ -116,27 +121,29 @@ public class TRelationshipType extends TEntityType {
     }
 
     @Nullable
-    public TInterfaces getInterfaces() {
+    public List<TInterface> getInterfaces() {
         return interfaces;
     }
 
-    public void setInterfaces(@Nullable TInterfaces interfaces) {
+    public void setInterfaces(List<TInterface> interfaces) {
         this.interfaces = interfaces;
     }
 
-    public @Nullable TInterfaces getSourceInterfaces() {
+    @Nullable
+    public List<TInterface> getSourceInterfaces() {
         return sourceInterfaces;
     }
 
-    public void setSourceInterfaces(@Nullable TInterfaces value) {
+    public void setSourceInterfaces(List<TInterface> value) {
         this.sourceInterfaces = value;
     }
 
-    public @Nullable TInterfaces getTargetInterfaces() {
+    @Nullable
+    public List<TInterface> getTargetInterfaces() {
         return targetInterfaces;
     }
 
-    public void setTargetInterfaces(@Nullable TInterfaces value) {
+    public void setTargetInterfaces(List<TInterface> value) {
         this.targetInterfaces = value;
     }
 
@@ -243,9 +250,9 @@ public class TRelationshipType extends TEntityType {
 
     public static class Builder extends TEntityType.Builder<Builder> {
         private List<TInstanceState> instanceStates;
-        private TInterfaces interfaces;
-        private TInterfaces sourceInterfaces;
-        private TInterfaces targetInterfaces;
+        private List<TInterface> interfaces;
+        private List<TInterface> sourceInterfaces;
+        private List<TInterface> targetInterfaces;
         private List<TInterfaceDefinition> interfaceDefinitions;
         private ValidSource validSource;
         private ValidTarget validTarget;
@@ -264,12 +271,12 @@ public class TRelationshipType extends TEntityType {
             return this;
         }
 
-        public Builder setSourceInterfaces(TInterfaces sourceInterfaces) {
+        public Builder setSourceInterfaces(List<TInterface> sourceInterfaces) {
             this.sourceInterfaces = sourceInterfaces;
             return this;
         }
 
-        public Builder setTargetInterfaces(TInterfaces targetInterfaces) {
+        public Builder setTargetInterfaces(List<TInterface> targetInterfaces) {
             this.targetInterfaces = targetInterfaces;
             return this;
         }
@@ -309,48 +316,17 @@ public class TRelationshipType extends TEntityType {
             return this;
         }
 
-        public Builder addValidTargetsToList(List<QName> validTargetList) {
-            if (validTargetList == null) {
-                return this;
-            }
-            if (this.validTargetList == null) {
-                this.validTargetList = validTargetList;
-            } else {
-                this.validTargetList.addAll(validTargetList);
-            }
-            return this;
-        }
-
-        public Builder addValidTargetToList(QName validTarget) {
-            if (validTarget == null) {
-                return this;
-            }
-
-            this.validTargetList.add(validTarget);
-            return this;
-        }
-
-        public Builder addInterfaces(TInterfaces interfaces) {
-            if (interfaces == null || interfaces.getInterface().isEmpty()) {
+        public Builder addInterfaces(List<TInterface> interfaces) {
+            if (interfaces == null || interfaces.isEmpty()) {
                 return this;
             }
 
             if (this.interfaces == null) {
                 this.interfaces = interfaces;
             } else {
-                this.interfaces.getInterface().addAll(interfaces.getInterface());
+                this.interfaces.addAll(interfaces);
             }
             return this;
-        }
-
-        public Builder addInterfaces(List<TInterface> interfaces) {
-            if (interfaces == null) {
-                return this;
-            }
-
-            TInterfaces tmp = new TInterfaces();
-            tmp.getInterface().addAll(interfaces);
-            return addInterfaces(tmp);
         }
 
         public Builder addInterfaces(TInterface interfaces) {
@@ -358,75 +334,35 @@ public class TRelationshipType extends TEntityType {
                 return this;
             }
 
-            TInterfaces tmp = new TInterfaces();
-            tmp.getInterface().add(interfaces);
+            List<TInterface> tmp = new ArrayList<>();
+            tmp.add(interfaces);
             return addInterfaces(tmp);
         }
 
-        public Builder addSourceInterfaces(TInterfaces sourceInterfaces) {
-            if (sourceInterfaces == null || sourceInterfaces.getInterface().isEmpty()) {
+        public Builder addSourceInterfaces(List<TInterface> sourceInterfaces) {
+            if (sourceInterfaces == null || sourceInterfaces.isEmpty()) {
                 return this;
             }
 
             if (this.sourceInterfaces == null) {
                 this.sourceInterfaces = sourceInterfaces;
             } else {
-                this.sourceInterfaces.getInterface().addAll(sourceInterfaces.getInterface());
+                this.sourceInterfaces.addAll(sourceInterfaces);
             }
             return this;
         }
 
-        public Builder addSourceInterfaces(List<TInterface> sourceInterfaces) {
-            if (sourceInterfaces == null) {
-                return this;
-            }
-
-            TInterfaces tmp = new TInterfaces();
-            tmp.getInterface().addAll(sourceInterfaces);
-            return addSourceInterfaces(tmp);
-        }
-
-        public Builder addSourceInterfaces(TInterface sourceInterfaces) {
-            if (sourceInterfaces == null) {
-                return this;
-            }
-
-            TInterfaces tmp = new TInterfaces();
-            tmp.getInterface().add(sourceInterfaces);
-            return addSourceInterfaces(tmp);
-        }
-
-        public Builder addTargetInterfaces(TInterfaces targetInterfaces) {
-            if (targetInterfaces == null || targetInterfaces.getInterface().isEmpty()) {
+        public Builder addTargetInterfaces(List<TInterface> targetInterfaces) {
+            if (targetInterfaces == null || targetInterfaces.isEmpty()) {
                 return this;
             }
 
             if (this.targetInterfaces == null) {
                 this.targetInterfaces = targetInterfaces;
             } else {
-                this.targetInterfaces.getInterface().addAll(targetInterfaces.getInterface());
+                this.targetInterfaces.addAll(targetInterfaces);
             }
             return this;
-        }
-
-        public Builder addTargetInterfaces(List<TInterface> targetInterfaces) {
-            if (targetInterfaces == null) {
-                return this;
-            }
-
-            TInterfaces tmp = new TInterfaces();
-            tmp.getInterface().addAll(targetInterfaces);
-            return addTargetInterfaces(tmp);
-        }
-
-        public Builder addTargetInterfaces(TInterface targetInterfaces) {
-            if (targetInterfaces == null) {
-                return this;
-            }
-
-            TInterfaces tmp = new TInterfaces();
-            tmp.getInterface().add(targetInterfaces);
-            return addTargetInterfaces(tmp);
         }
 
         public Builder setInterfaceDefinitions(List<TInterfaceDefinition> interfaceDefinitions) {

@@ -388,19 +388,19 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
             || this.res instanceof NodeTypeImplementationsResource) {
             TNodeType nodeType = repository.getElement((NodeTypeId) id);
             if (nodeType.getInterfaces() != null) {
-                interfaces.addAll(nodeType.getInterfaces().getInterface());
+                interfaces.addAll(nodeType.getInterfaces());
             }
         } else if (this.res instanceof RelationshipTypeImplementationResource
             || this.res instanceof RelationshipTypeImplementationsResource) {
             TRelationshipType relationshipType = repository.getElement((RelationshipTypeId) id);
             if (relationshipType.getSourceInterfaces() != null) {
-                interfaces.addAll(relationshipType.getSourceInterfaces().getInterface());
+                interfaces.addAll(relationshipType.getSourceInterfaces());
             }
             if (relationshipType.getTargetInterfaces() != null) {
-                interfaces.addAll(relationshipType.getTargetInterfaces().getInterface());
+                interfaces.addAll(relationshipType.getTargetInterfaces());
             }
             if (relationshipType.getInterfaces() != null) {
-                interfaces.addAll(relationshipType.getInterfaces().getInterface());
+                interfaces.addAll(relationshipType.getInterfaces());
             }
         }
         Iterator<TInterface> it = interfaces.iterator();

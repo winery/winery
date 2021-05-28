@@ -52,7 +52,6 @@ import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.model.tosca.TInstanceState;
 import org.eclipse.winery.model.tosca.TInterface;
-import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
@@ -120,7 +119,6 @@ import org.eclipse.winery.model.tosca.xml.XTExtension;
 import org.eclipse.winery.model.tosca.xml.XTImplementationArtifacts;
 import org.eclipse.winery.model.tosca.xml.XTImport;
 import org.eclipse.winery.model.tosca.xml.XTInterface;
-import org.eclipse.winery.model.tosca.xml.XTInterfaces;
 import org.eclipse.winery.model.tosca.xml.XTNodeTemplate;
 import org.eclipse.winery.model.tosca.xml.XTNodeType;
 import org.eclipse.winery.model.tosca.xml.XTNodeTypeImplementation;
@@ -313,15 +311,15 @@ public class ToCanonical {
         return builder.build();
     }
 
-    private List<TInterface> convertInterfaces(XTInterfaces xml) {
+    private List<TInterface> convertInterfaces(List<XTInterface> xml) {
         if (xml == null) {
-            return Collections.emptyList();
+            return null;
         }
-        return xml.getInterface().stream().map(this::convertInterface).collect(Collectors.toList());
+        return xml.stream().map(this::convertInterface).collect(Collectors.toList());
     }
 
     private TInterface convertInterface(XTInterface xml) {
-        return new TInterface.Builder(xml.getName(), convertOperations(xml.getOperation())).build();
+        return new TInterface.Builder(xml.getName(), convertOperations(xml.getOperations())).build();
     }
 
     private List<TOperation> convertOperations(List<XTOperation> xml) {
@@ -507,8 +505,8 @@ public class ToCanonical {
             builder.setInstanceStates(instanceStates);
         }
         if (xml.getInterfaces() != null) {
-            TInterfaces interfaces = new TInterfaces();
-            interfaces.getInterface().addAll(convertInterfaces(xml.getInterfaces()));
+            List<TInterface> interfaces = xml.getInterfaces().stream()
+                .map(this::convertInterface).collect(Collectors.toList());
             builder.setInterfaces(interfaces);
         }
         fillEntityTypeProperties(builder, xml);

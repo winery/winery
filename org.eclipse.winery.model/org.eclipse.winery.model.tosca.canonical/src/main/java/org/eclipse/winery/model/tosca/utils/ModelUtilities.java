@@ -339,14 +339,14 @@ public abstract class ModelUtilities {
         if (x == null) {
             return Optional.empty();
         }
-        Float floatValue;
+        float floatValue;
         try {
             floatValue = Float.parseFloat(x);
         } catch (NumberFormatException e) {
             LOGGER.debug("Could not parse x value", e);
             return Optional.empty();
         }
-        return Optional.of(floatValue.intValue());
+        return Optional.of((int) floatValue);
     }
 
     /**
@@ -750,7 +750,7 @@ public abstract class ModelUtilities {
             return item;
         }
         if (item instanceof String) {
-            Document doc = null;
+            Document doc;
             try {
                 doc = DOCUMENT_BUILDER.parse(new InputSource(new StringReader((String) item)));
             } catch (SAXException e) {
@@ -821,7 +821,7 @@ public abstract class ModelUtilities {
                         && (tag.getValue().toLowerCase().contains(deploymentTechnology.toLowerCase())
                         || "*".equals(tag.getValue())))) {
                     list.stream()
-                        .filter(tag -> "feature".equals(tag.getName().toLowerCase()))
+                        .filter(tag -> "feature".equalsIgnoreCase(tag.getName()))
                         .findFirst()
                         .ifPresent(tTag -> features.put(elements.get(qName), tTag.getValue()));
                 }
@@ -975,7 +975,7 @@ public abstract class ModelUtilities {
     }
 
     public static boolean nodeTypeHasInterface(TNodeType nodeType, String interfaceName) {
-        return Objects.nonNull(nodeType.getInterfaces()) && nodeType.getInterfaces().getInterface().stream()
+        return Objects.nonNull(nodeType.getInterfaces()) && nodeType.getInterfaces().stream()
             .anyMatch(nodeInterface -> interfaceName.equals(nodeInterface.getName()));
     }
 

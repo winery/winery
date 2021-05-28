@@ -62,7 +62,6 @@ import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TInterfaceDefinition;
 import org.eclipse.winery.model.tosca.TInterfaceType;
-import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
@@ -491,11 +490,11 @@ public class FromCanonical {
         );
     }
 
-    public Map<String, YTInterfaceDefinition> convert(TInterfaces node, TRelationshipTypeImplementation implementation) {
+    public Map<String, YTInterfaceDefinition> convert(List<TInterface> node, TRelationshipTypeImplementation implementation) {
         if (Objects.isNull(node)) {
             return null;
         }
-        return node.getInterface().stream()
+        return node.stream()
             .filter(Objects::nonNull)
             .map(entry -> convert(
                 entry,
@@ -638,7 +637,7 @@ public class FromCanonical {
         return Collections.singletonMap(
             node.getName(),
             new YTInterfaceDefinition.Builder<>()
-                .setOperations(convertOperations(node.getOperation()))
+                .setOperations(convertOperations(node.getOperations()))
                 .build()
         );
     }
@@ -669,11 +668,11 @@ public class FromCanonical {
     }
 
     @Deprecated
-    public Map<String, YTInterfaceDefinition> convert(TInterfaces node, TNodeTypeImplementation implementation) {
+    public Map<String, YTInterfaceDefinition> convert(List<TInterface> node, TNodeTypeImplementation implementation) {
         if (Objects.isNull(node)) {
             return null;
         }
-        return node.getInterface().stream()
+        return node.stream()
             .filter(Objects::nonNull)
             .map(entry -> convert(
                 entry,
@@ -972,31 +971,31 @@ public class FromCanonical {
         );
     }
 
-    public Map<String, YTInterfaceDefinition> convert(TInterfaces node, String type) {
+    public Map<String, YTInterfaceDefinition> convert(List<TInterface> node, String type) {
         if (Objects.isNull(node)) {
             return null;
         }
-        return node.getInterface().stream()
+        return node.stream()
             .filter(Objects::nonNull)
             .collect(Collectors.toMap(
                 TInterface::getName,
                 entry -> new YTInterfaceDefinition.Builder()
                     .setType(new QName(type))
-                    .addOperations(convertOperations(entry.getOperation(), new ArrayList<>()))
+                    .addOperations(convertOperations(entry.getOperations(), new ArrayList<>()))
                     .build()
             ));
     }
 
-    public Map<String, YTInterfaceDefinition> convert(TInterfaces node) {
+    public Map<String, YTInterfaceDefinition> convertInterfaces(List<TInterface> node) {
         if (Objects.isNull(node)) {
             return null;
         }
-        return node.getInterface().stream()
+        return node.stream()
             .filter(Objects::nonNull)
             .collect(Collectors.toMap(
                 TInterface::getName,
                 entry -> new YTInterfaceDefinition.Builder()
-                    .addOperations(convertOperations(entry.getOperation(), new ArrayList<>()))
+                    .addOperations(convertOperations(entry.getOperations(), new ArrayList<>()))
                     .build()
             ));
     }

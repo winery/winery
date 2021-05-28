@@ -33,7 +33,6 @@ import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TInterface;
-import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
@@ -108,10 +107,10 @@ public abstract class EdmmDependantTest {
         stop.setName("stop");
         TInterface lifecycle = new TInterface();
         lifecycle.setName("lifecycle_interface");
-        lifecycle.getOperation().add(start);
-        lifecycle.getOperation().add(stop);
-        TInterfaces tInterfaces = new TInterfaces();
-        tInterfaces.getInterface().add(lifecycle);
+        lifecycle.getOperations().add(start);
+        lifecycle.getOperations().add(stop);
+        List<TInterface> tInterfaces = new ArrayList<>();
+        tInterfaces.add(lifecycle);
         nodeType4.setInterfaces(tInterfaces);
         nodeTypes.put(nodeType4QName, nodeType4);
         // endregion

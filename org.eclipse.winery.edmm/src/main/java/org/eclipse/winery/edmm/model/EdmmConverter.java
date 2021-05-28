@@ -33,7 +33,7 @@ import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TEntityTypeImplementation;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
-import org.eclipse.winery.model.tosca.TInterfaces;
+import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
@@ -354,9 +354,9 @@ public class EdmmConverter {
 
     private void createOperations(TEntityType type, EntityId nodeTypeEntityId, EntityGraph entityGraph) {
         if (type instanceof TNodeType && Objects.nonNull(((TNodeType) type).getInterfaces())) {
-            TInterfaces interfaces = ((TNodeType) type).getInterfaces();
-            interfaces.getInterface().forEach(anInterface -> {
-                anInterface.getOperation().forEach(operation -> {
+            List<TInterface> interfaces = ((TNodeType) type).getInterfaces();
+            interfaces.forEach(anInterface -> {
+                anInterface.getOperations().forEach(operation -> {
                     EntityId operationsEntityId = nodeTypeEntityId.extend(DefaultKeys.OPERATIONS);
                     entityGraph.addEntity(new MappingEntity(operationsEntityId, entityGraph));
 
@@ -378,6 +378,7 @@ public class EdmmConverter {
         if (implementation != null && implementation.getImplementationArtifacts() != null) {
             List<TImplementationArtifacts.ImplementationArtifact> artifacts = implementation.getImplementationArtifacts()
                 .getImplementationArtifact().stream()
+                .filter(artifact -> artifact.getInterfaceName() != null)
                 .filter(artifact -> artifact.getInterfaceName().equals(interfaceName))
                 .collect(Collectors.toList());
 
@@ -390,7 +391,7 @@ public class EdmmConverter {
             }
 
             for (TImplementationArtifacts.ImplementationArtifact artifact : artifacts) {
-                if (artifact.getOperationName().equals(operationName)) {
+                if (artifact.getOperationName() != null && artifact.getOperationName().equals(operationName)) {
                     TArtifactTemplate artifactTemplate = artifactTemplates.get(artifact.getArtifactRef());
                     if (artifactTemplate != null &&
                         artifactTemplate.getArtifactReferences() != null &&

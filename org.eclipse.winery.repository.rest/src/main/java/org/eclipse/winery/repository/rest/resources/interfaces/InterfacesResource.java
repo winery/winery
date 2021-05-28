@@ -25,7 +25,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.model.tosca.TInterface;
-import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TOperation;
 import org.eclipse.winery.model.tosca.TRelationshipType;
@@ -52,8 +51,8 @@ public class InterfacesResource {
     public Response onPost(List<TInterface> interfaceApiData) {
         if (!interfaceApiData.isEmpty()) {
             for (TInterface tInt : interfaceApiData) {
-                if (!tInt.getOperation().isEmpty()) {
-                    for (TOperation tOp : tInt.getOperation()) {
+                if (!tInt.getOperations().isEmpty()) {
+                    for (TOperation tOp : tInt.getOperations()) {
                         if (tOp.getInputParameters() == null || tOp.getInputParameters().getInputParameter().isEmpty()) {
                             tOp.setInputParameters(null);
                         }
@@ -67,9 +66,7 @@ public class InterfacesResource {
             }
         }
 
-        TInterfaces interfaces = new TInterfaces();
-        interfaces.getInterface().clear();
-        interfaces.getInterface().addAll(interfaceApiData);
+        List<TInterface> interfaces = new ArrayList<>(interfaceApiData);
         if (this.res instanceof RelationshipTypeResource) {
             TRelationshipType relationshipType = (TRelationshipType) this.res.getElement();
             switch (this.interfaceType) {
@@ -102,7 +99,7 @@ public class InterfacesResource {
         List<InterfacesSelectApiData> list = new ArrayList<>();
         for (TInterface item : this.interfaces) {
             List<String> ops = new ArrayList<>();
-            for (TOperation op : item.getOperation()) {
+            for (TOperation op : item.getOperations()) {
                 ops.add(op.getName());
             }
             list.add(new InterfacesSelectApiData(item.getName(), ops));

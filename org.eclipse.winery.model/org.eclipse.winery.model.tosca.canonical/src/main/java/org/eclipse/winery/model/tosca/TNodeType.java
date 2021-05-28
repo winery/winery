@@ -51,8 +51,9 @@ public class TNodeType extends TEntityType {
     @XmlElement(name = "InstanceState", required = true)
     protected List<TInstanceState> instanceStates;
 
-    @XmlElement(name = "Interfaces")
-    protected TInterfaces interfaces;
+    @XmlElementWrapper(name = "Interfaces")
+    @XmlElement(name = "Interface", required = true)
+    protected List<TInterface> interfaces;
 
     @XmlElement(name = "Artifacts")
     protected TArtifacts artifacts;
@@ -117,11 +118,11 @@ public class TNodeType extends TEntityType {
         this.instanceStates = value;
     }
 
-    public @Nullable TInterfaces getInterfaces() {
+    public List<TInterface> getInterfaces() {
         return interfaces;
     }
 
-    public void setInterfaces(@Nullable TInterfaces value) {
+    public void setInterfaces(List<TInterface> value) {
         this.interfaces = value;
     }
 
@@ -151,7 +152,7 @@ public class TNodeType extends TEntityType {
         private List<TRequirementDefinition> requirementDefinitions;
         private List<TCapabilityDefinition> capabilityDefinitions;
         private List<TInstanceState> instanceStates;
-        private TInterfaces interfaces;
+        private List<TInterface> interfaces;
         private List<TInterfaceDefinition> interfaceDefinitions;
         private TArtifacts artifacts;
 
@@ -178,7 +179,7 @@ public class TNodeType extends TEntityType {
             return this;
         }
 
-        public Builder setInterfaces(TInterfaces interfaces) {
+        public Builder setInterfaces(List<TInterface> interfaces) {
             this.interfaces = interfaces;
             return this;
         }
@@ -234,27 +235,17 @@ public class TNodeType extends TEntityType {
             return addCapabilityDefinitions(tmp);
         }
 
-        public Builder addInterfaces(TInterfaces interfaces) {
-            if (interfaces == null || interfaces.getInterface().isEmpty()) {
+        public Builder addInterfaces(List<TInterface> interfaces) {
+            if (interfaces == null || interfaces.isEmpty()) {
                 return this;
             }
 
             if (this.interfaces == null) {
                 this.interfaces = interfaces;
             } else {
-                this.interfaces.getInterface().addAll(interfaces.getInterface());
+                this.interfaces.addAll(interfaces);
             }
             return this;
-        }
-
-        public Builder addInterfaces(List<TInterface> interfaces) {
-            if (interfaces == null) {
-                return this;
-            }
-
-            TInterfaces tmp = new TInterfaces();
-            tmp.getInterface().addAll(interfaces);
-            return addInterfaces(tmp);
         }
 
         public Builder addInterfaces(TInterface interfaces) {
@@ -262,8 +253,8 @@ public class TNodeType extends TEntityType {
                 return this;
             }
 
-            TInterfaces tmp = new TInterfaces();
-            tmp.getInterface().add(interfaces);
+            List<TInterface> tmp = new ArrayList<>();
+            tmp.add(interfaces);
             return addInterfaces(tmp);
         }
 

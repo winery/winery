@@ -29,7 +29,6 @@ import org.eclipse.winery.model.ids.IdNames;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipType.ValidSource;
 import org.eclipse.winery.model.tosca.TRelationshipType.ValidTarget;
@@ -81,32 +80,26 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 
     @Path("interfaces/")
     public InterfacesResource getInterfaces() {
-        TInterfaces interfaces = this.getRelationshipType().getInterfaces();
-        if (interfaces == null) {
-            interfaces = new TInterfaces();
-            this.getRelationshipType().setInterfaces(interfaces);
+        if (this.getRelationshipType().getInterfaces() == null) {
+            this.getRelationshipType().setInterfaces(new ArrayList<>());
         }
-        return new InterfacesResource(this, interfaces.getInterface(), "yaml");
+        return new InterfacesResource(this, this.getRelationshipType().getInterfaces(), "yaml");
     }
 
     @Path("sourceinterfaces/")
     public InterfacesResource getSourceInterfaces() {
-        TInterfaces interfaces = this.getRelationshipType().getSourceInterfaces();
-        if (interfaces == null) {
-            interfaces = new TInterfaces();
-            this.getRelationshipType().setSourceInterfaces(interfaces);
+        if (this.getRelationshipType().getInterfaces() == null) {
+            this.getRelationshipType().setInterfaces(new ArrayList<>());
         }
-        return new InterfacesResource(this, interfaces.getInterface(), "source");
+        return new InterfacesResource(this, this.getRelationshipType().getInterfaces(), "source");
     }
 
     @Path("targetinterfaces/")
     public InterfacesResource getTargetInterfaces() {
-        TInterfaces interfaces = this.getRelationshipType().getTargetInterfaces();
-        if (interfaces == null) {
-            interfaces = new TInterfaces();
-            this.getRelationshipType().setTargetInterfaces(interfaces);
+        if (this.getRelationshipType().getInterfaces() == null) {
+            this.getRelationshipType().setInterfaces(new ArrayList<>());
         }
-        return new InterfacesResource(this, interfaces.getInterface(), "target");
+        return new InterfacesResource(this, this.getRelationshipType().getInterfaces(), "target");
     }
 
     @Path("interfacedefinitions")

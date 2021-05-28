@@ -59,7 +59,6 @@ import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityRef;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TInterface;
-import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TOperation;
@@ -375,21 +374,15 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
                 NodeTypeId id = new NodeTypeId(nodeTemplateWithOpenReq.getType());
                 TNodeType sourceNodeType = repo.getElement(id);
 
-                TInterfaces sourceNodeTypeInterfaces = sourceNodeType.getInterfaces();
+                List<TInterface> sourceNodeTypeInterfaces = sourceNodeType.getInterfaces();
                 if (sourceNodeTypeInterfaces != null) {
-                    for (TInterface tInterface : sourceNodeTypeInterfaces.getInterface()) {
+                    for (TInterface tInterface : sourceNodeTypeInterfaces) {
                         // TODO: make this more safe
-                        for (TOperation tOperation : tInterface.getOperation()) {
+                        for (TOperation tOperation : tInterface.getOperations()) {
                             TOperation.InputParameters inputParameters = tOperation.getInputParameters();
                             if (inputParameters != null) {
                                 for (TParameter inputParameter : inputParameters.getInputParameter()) {
-                                    PropertyDefinitionKV inputParamKV = new PropertyDefinitionKV(inputParameter.getName(), inputParameter.getType());
-                                    if (sourceNodeType.getWinerysPropertiesDefinition() != null &&
-                                        !sourceNodeType.getWinerysPropertiesDefinition().getPropertyDefinitions().contains(inputParamKV)
-                                        && !propertyDefinitionKVList.contains(inputParamKV)) {
-                                        propertyDefinitionKVList.add(inputParamKV);
-                                        placeholderNodeTemplateProperties.put(inputParameter.getName(), "get_input: " + inputParameter.getName());
-                                    }
+                                    generateInputParameters(propertyDefinitionKVList, placeholderNodeTemplateProperties, sourceNodeType, inputParameter);
                                 }
                             }
                         }
@@ -410,13 +403,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
                     }
                     inputParameter.setName(inputParamName);
 
-                    PropertyDefinitionKV inputParamKV = new PropertyDefinitionKV(inputParameter.getName(), inputParameter.getType());
-                    if (sourceNodeType.getWinerysPropertiesDefinition() != null &&
-                        !sourceNodeType.getWinerysPropertiesDefinition().getPropertyDefinitions().contains(inputParamKV)
-                        && !propertyDefinitionKVList.contains(inputParamKV)) {
-                        propertyDefinitionKVList.add(inputParamKV);
-                        placeholderNodeTemplateProperties.put(inputParameter.getName(), "get_input: " + inputParameter.getName());
-                    }
+                    generateInputParameters(propertyDefinitionKVList, placeholderNodeTemplateProperties, sourceNodeType, inputParameter);
                 }
 
                 // get required capability type of open requirement
@@ -476,6 +463,16 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
             Exception e) {
             LOGGER.error("Could not fetch requirements and capabilities", e);
             return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
+
+    private void generateInputParameters(List<PropertyDefinitionKV> propertyDefinitionKVList, LinkedHashMap<String, String> placeholderNodeTemplateProperties, TNodeType sourceNodeType, TParameter inputParameter) {
+        PropertyDefinitionKV inputParamKV = new PropertyDefinitionKV(inputParameter.getName(), inputParameter.getType());
+        if (sourceNodeType.getWinerysPropertiesDefinition() != null &&
+            !sourceNodeType.getWinerysPropertiesDefinition().getPropertyDefinitions().contains(inputParamKV)
+            && !propertyDefinitionKVList.contains(inputParamKV)) {
+            propertyDefinitionKVList.add(inputParamKV);
+            placeholderNodeTemplateProperties.put(inputParameter.getName(), "get_input: " + inputParameter.getName());
         }
     }
 

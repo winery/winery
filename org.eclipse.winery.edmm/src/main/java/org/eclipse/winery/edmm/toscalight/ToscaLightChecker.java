@@ -143,7 +143,7 @@ public class ToscaLightChecker {
         // todo: some inheritance or mapping check?
 
         if (nodeType.getInterfaces() != null) {
-            List<TInterface> interfaceList = nodeType.getInterfaces().getInterface();
+            List<TInterface> interfaceList = nodeType.getInterfaces();
             if (interfaceList.size() > 0) {
                 interfaceList.stream()
                     .filter(ToscaLightUtils::isNotLifecycleInterface)

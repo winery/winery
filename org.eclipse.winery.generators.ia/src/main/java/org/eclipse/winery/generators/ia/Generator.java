@@ -211,7 +211,7 @@ public class Generator {
         // Generate methods
         StringBuilder sb = new StringBuilder();
 
-        for (TOperation op : this.tInterface.getOperation()) {
+        for (TOperation op : this.tInterface.getOperations()) {
             // Annotations
             sb.append("\t@WebMethod\n");
             sb.append("\t@SOAPBinding\n");

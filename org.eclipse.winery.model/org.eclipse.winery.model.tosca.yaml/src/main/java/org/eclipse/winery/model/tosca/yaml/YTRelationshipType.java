@@ -29,6 +29,7 @@ import org.eclipse.winery.model.tosca.yaml.visitor.IVisitor;
 import org.eclipse.jdt.annotation.NonNull;
 
 public class YTRelationshipType extends YTEntityType {
+
     private List<QName> validTargetTypes;
     private Map<String, YTInterfaceDefinition> interfaces;
 

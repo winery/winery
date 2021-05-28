@@ -101,9 +101,9 @@ public class TInterface implements HasName, Serializable {
      * {@link TOperation }
      */
     @NonNull
-    public List<TOperation> getOperation() {
+    public List<TOperation> getOperations() {
         if (operation == null) {
-            operation = new ArrayList<TOperation>();
+            operation = new ArrayList<>();
         }
         return this.operation;
     }

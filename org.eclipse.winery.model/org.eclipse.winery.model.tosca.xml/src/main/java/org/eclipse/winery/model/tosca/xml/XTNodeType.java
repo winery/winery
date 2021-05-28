@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca.xml;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,8 +48,9 @@ public class XTNodeType extends XTEntityType {
     @XmlElement(name = "InstanceStates")
     protected List<XTInstanceState> instanceStates;
 
-    @XmlElement(name = "Interfaces")
-    protected XTInterfaces interfaces;
+    @XmlElementWrapper(name = "Interfaces")
+    @XmlElement(name = "Interface", required = true)
+    protected List<XTInterface> interfaces;
 
     @Deprecated // required for XML deserialization
     public XTNodeType() {
@@ -104,11 +106,12 @@ public class XTNodeType extends XTEntityType {
         this.instanceStates = value;
     }
 
-    public @Nullable XTInterfaces getInterfaces() {
+    @Nullable
+    public List<XTInterface> getInterfaces() {
         return interfaces;
     }
 
-    public void setInterfaces(@Nullable XTInterfaces value) {
+    public void setInterfaces(@Nullable List<XTInterface> value) {
         this.interfaces = value;
     }
 
@@ -122,7 +125,7 @@ public class XTNodeType extends XTEntityType {
         private List<XTRequirementDefinition> requirementDefinitions;
         private List<XTCapabilityDefinition> capabilityDefinitions;
         private List<XTInstanceState> instanceStates;
-        private XTInterfaces interfaces;
+        private List<XTInterface> interfaces;
 
         public Builder(String name) {
             super(name);
@@ -147,41 +150,31 @@ public class XTNodeType extends XTEntityType {
             return this;
         }
 
-        public Builder setInterfaces(XTInterfaces interfaces) {
+        public Builder setInterfaces(List<XTInterface> interfaces) {
             this.interfaces = interfaces;
             return this;
         }
 
-        public Builder addInterfaces(XTInterfaces interfaces) {
-            if (interfaces == null || interfaces.getInterface().isEmpty()) {
+        public Builder addInterfaces(List<XTInterface> interfaces) {
+            if (interfaces == null || interfaces.isEmpty()) {
                 return this;
             }
 
             if (this.interfaces == null) {
                 this.interfaces = interfaces;
             } else {
-                this.interfaces.getInterface().addAll(interfaces.getInterface());
+                this.interfaces.addAll(interfaces);
             }
             return this;
         }
 
-        public Builder addInterfaces(List<XTInterface> interfaces) {
+        public Builder addInterface(XTInterface interfaces) {
             if (interfaces == null) {
                 return this;
             }
 
-            XTInterfaces tmp = new XTInterfaces();
-            tmp.getInterface().addAll(interfaces);
-            return addInterfaces(tmp);
-        }
-
-        public Builder addInterfaces(XTInterface interfaces) {
-            if (interfaces == null) {
-                return this;
-            }
-
-            XTInterfaces tmp = new XTInterfaces();
-            tmp.getInterface().add(interfaces);
+            List<XTInterface> tmp = new ArrayList<>();
+            tmp.add(interfaces);
             return addInterfaces(tmp);
         }
 

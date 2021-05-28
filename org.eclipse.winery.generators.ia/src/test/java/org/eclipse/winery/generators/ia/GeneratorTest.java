@@ -52,7 +52,7 @@ public class GeneratorTest {
 
         op = new TOperation();
         op.setName("install");
-        i.getOperation().add(op);
+        i.getOperations().add(op);
 
         input = new TOperation.InputParameters();
         param = new TParameter();
@@ -74,7 +74,7 @@ public class GeneratorTest {
 
         op = new TOperation();
         op.setName("uninstall");
-        i.getOperation().add(op);
+        i.getOperations().add(op);
 
         input = new TOperation.InputParameters();
         param = new TParameter();
@@ -100,7 +100,7 @@ public class GeneratorTest {
 
         TOperation op = new TOperation();
         op.setName("install");
-        i.getOperation().add(op);
+        i.getOperations().add(op);
 
         Generator gen = new Generator(i, "org.opentosca.ia.test", new URL("http://test.com"), "TestOneOpNoParams", wd.toFile());
         gen.generateProject();

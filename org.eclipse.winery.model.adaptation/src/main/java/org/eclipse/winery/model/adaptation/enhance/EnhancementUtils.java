@@ -34,7 +34,6 @@ import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TInterface;
-import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
@@ -79,8 +78,8 @@ public class EnhancementUtils {
                     return type.getTags().getTag()
                         .stream()
                         .anyMatch(
-                            tag -> "stateful".equals(tag.getName().toLowerCase())
-                                || "isStateful".toLowerCase().equals(tag.getName().toLowerCase())
+                            tag -> "stateful".equalsIgnoreCase(tag.getName())
+                                || "isStateful".equalsIgnoreCase(tag.getName())
                         );
                 }
 
@@ -337,7 +336,7 @@ public class EnhancementUtils {
         TNodeType featureEnrichedNodeType = nodeTypes.get(nodeTemplate.getType());
         featureEnrichedNodeType.setTargetNamespace(namespace);
         featureEnrichedNodeType.setName(
-            nodeTemplate.getType().getLocalPart() + "-" + nodeTemplate.getId() + "-" + featureNames.toString()
+            nodeTemplate.getType().getLocalPart() + "-" + nodeTemplate.getId() + "-" + featureNames
                 + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_VERSION_PREFIX + "1"
         );
 
@@ -352,18 +351,17 @@ public class EnhancementUtils {
 
         // prepare Interfaces
         if (Objects.isNull(featureEnrichedNodeType.getInterfaces())) {
-            featureEnrichedNodeType.setInterfaces(new TInterfaces());
+            featureEnrichedNodeType.setInterfaces(new ArrayList<>());
         }
 
-        List<TInterface> baseInterfaces = featureEnrichedNodeType.getInterfaces().getInterface();
+        List<TInterface> baseInterfaces = featureEnrichedNodeType.getInterfaces();
 
         // merge impl accordingly
-        TNodeTypeImplementation generatedImplementation = new TNodeTypeImplementation();
-        generatedImplementation.setNodeType(featureEnrichedNodeType.getQName());
-        generatedImplementation.setName(
+        TNodeTypeImplementation generatedImplementation = new TNodeTypeImplementation.Builder(
             featureEnrichedNodeType.getName() + "_Impl"
-                + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_VERSION_PREFIX + "1"
-        );
+                + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_VERSION_PREFIX + "1",
+            featureEnrichedNodeType.getQName()
+        ).build();
 
         // ensure that the lists are initialized
         generatedImplementation.setImplementationArtifacts(new TImplementationArtifacts());
@@ -404,8 +402,8 @@ public class EnhancementUtils {
             }
 
             // merge Interfaces
-            if (Objects.nonNull(nodeType.getInterfaces()) && !nodeType.getInterfaces().getInterface().isEmpty()) {
-                baseInterfaces.addAll(nodeType.getInterfaces().getInterface());
+            if (Objects.nonNull(nodeType.getInterfaces()) && !nodeType.getInterfaces().isEmpty()) {
+                baseInterfaces.addAll(nodeType.getInterfaces());
             }
 
             // merge implementations

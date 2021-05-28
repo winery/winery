@@ -33,7 +33,6 @@ import org.eclipse.winery.model.tosca.TArtifact;
 import org.eclipse.winery.model.tosca.TArtifacts;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.GenericDirectoryId;
@@ -81,12 +80,10 @@ public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
 
     @Path("interfaces/")
     public InterfacesResource getInterfaces() {
-        TInterfaces interfaces = this.getNodeType().getInterfaces();
-        if (interfaces == null) {
-            interfaces = new TInterfaces();
-            this.getNodeType().setInterfaces(interfaces);
+        if (this.getNodeType().getInterfaces() == null) {
+            this.getNodeType().setInterfaces(new ArrayList<>());
         }
-        return new InterfacesResource(this, interfaces.getInterface(), "nodeType");
+        return new InterfacesResource(this, this.getNodeType().getInterfaces(),"nodeType");
     }
 
     @Path("requirementdefinitions/")

@@ -47,7 +47,6 @@ import org.eclipse.winery.model.tosca.TGroupDefinition;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.model.tosca.TInterface;
-import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
@@ -115,7 +114,6 @@ import org.eclipse.winery.model.tosca.xml.XTImplementationArtifacts;
 import org.eclipse.winery.model.tosca.xml.XTImport;
 import org.eclipse.winery.model.tosca.xml.XTInstanceState;
 import org.eclipse.winery.model.tosca.xml.XTInterface;
-import org.eclipse.winery.model.tosca.xml.XTInterfaces;
 import org.eclipse.winery.model.tosca.xml.XTNodeTemplate;
 import org.eclipse.winery.model.tosca.xml.XTNodeType;
 import org.eclipse.winery.model.tosca.xml.XTNodeTypeImplementation;
@@ -234,15 +232,17 @@ public class FromCanonical {
         return builder.build();
     }
 
-    private List<XTInterface> convertInterfaces(@Nullable TInterfaces interfaces) {
+    private List<XTInterface> convertInterfaces(@Nullable List<TInterface> interfaces) {
         if (interfaces == null) {
             return Collections.emptyList();
         }
-        return interfaces.getInterface().stream().map(this::convertInterface).collect(Collectors.toList());
+        return interfaces.stream()
+            .map(this::convert)
+            .collect(Collectors.toList());
     }
 
-    private XTInterface convertInterface(TInterface canonical) {
-        return new XTInterface.Builder(canonical.getName(), convertOperations(canonical.getOperation())).build();
+    private XTInterface convert(TInterface canonical) {
+        return new XTInterface.Builder(canonical.getName(), convertOperations(canonical.getOperations())).build();
     }
 
     private List<XTOperation> convertOperations(List<TOperation> operation) {
@@ -419,9 +419,7 @@ public class FromCanonical {
             builder.setInstanceStates(instanceStates);
         }
         if (canonical.getInterfaces() != null) {
-            XTInterfaces interfaces = new XTInterfaces();
-            interfaces.getInterface().addAll(convertInterfaces(canonical.getInterfaces()));
-            builder.setInterfaces(interfaces);
+            builder.setInterfaces(convertList(canonical.getInterfaces(), this::convert));
         }
         if (canonical.getInterfaceDefinitions() != null) {
             LOGGER.warn("Converting YAML InterfaceDefinitions to XML is currently not supported!");
