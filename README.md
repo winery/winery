@@ -58,3 +58,4 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   [RADON]: http://radon-h2020.eu
   [DFG]: http://www.dfg.de/en
   [PlanQK]: https://planqk.de
+  [SimTech]: https://www.simtech.uni-stuttgart.de/
