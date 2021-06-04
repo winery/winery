@@ -30,8 +30,9 @@ The source for the documentation can be found in the [docs](docs) directory.
 ## Acknowledgements
 
 The initial code contribution has been supported by the [Federal Ministry for Economic Affairs and Energy] as part of the [CloudCycle] project (01MD11023).
-Current development is supported by the Federal Ministry for Economic Affairs and Energy as part of the projects [SmartOrchestra] (01MD16001F) and [SePiA.Pro] (01MD16013F), as well as by the [DFG] (Deutsche Forschungsgemeinschaft) projects [SustainLife] (641730) and [ADDCompliance] (636503).
-Further development is also funded by the European Union’s Horizon 2020 project [RADON].
+Current development is supported by the Federal Ministry for Economic Affairs and Energy as part of the the [PlanQK] project (01MK20005N), and the DFG’s Excellence Initiative project [SimTech] (EXC 2075 - 390740016).
+Additional development has been funded by the Federal Ministry for Economic Affairs and Energy projects [SmartOrchestra] (01MD16001F) and [SePiA.Pro] (01MD16013F), as well as by the [DFG] (Deutsche Forschungsgemeinschaft) projects [SustainLife] (641730) and [ADDCompliance] (636503).
+Further development is also funded by the European Union’s Horizon 2020 project [RADON] (825040).
 
 ## License
 
@@ -56,3 +57,5 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   [SustainLife]: http://www.iaas.uni-stuttgart.de/forschung/projects/SustainLife
   [RADON]: http://radon-h2020.eu
   [DFG]: http://www.dfg.de/en
+  [PlanQK]: https://planqk.de
+  [SimTech]: https://www.simtech.uni-stuttgart.de/
