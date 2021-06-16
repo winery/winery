@@ -59,7 +59,7 @@ public class TestRefinement extends AbstractRefinement {
     }
 
     @Override
-    public void applyRefinement(RefinementCandidate refinement, TTopologyTemplate topology) {
+    public Map<String, String> applyRefinement(RefinementCandidate refinement, TTopologyTemplate topology) {
         // import the refinement structure
         Map<String, String> idMapping = BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(
             refinement.getRefinementModel().getRefinementTopology(),
@@ -99,6 +99,7 @@ public class TestRefinement extends AbstractRefinement {
                         topology.addRelationshipTemplate(relationshipTemplate);
                     })
             );
+        return idMapping;
     }
 
     @Override

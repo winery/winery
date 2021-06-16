@@ -30,9 +30,13 @@ import javax.ws.rs.core.MediaType;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.adaptation.substitution.refinement.PermutationGenerator;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.extensions.OTAttributeMapping;
 import org.eclipse.winery.model.tosca.extensions.OTAttributeMappingType;
+import org.eclipse.winery.model.tosca.extensions.OTBehaviorPatternMapping;
 import org.eclipse.winery.model.tosca.extensions.OTDeploymentArtifactMapping;
 import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
 import org.eclipse.winery.model.tosca.extensions.OTPermutationMapping;
@@ -40,9 +44,7 @@ import org.eclipse.winery.model.tosca.extensions.OTRelationDirection;
 import org.eclipse.winery.model.tosca.extensions.OTRelationMapping;
 import org.eclipse.winery.model.tosca.extensions.OTStayMapping;
 import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
-import org.eclipse.winery.model.tosca.TRelationshipTemplate;
-import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.OTPropertyKV;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelResource;
 import org.eclipse.winery.repository.rest.resources.apiData.PermutationsResponse;
@@ -55,7 +57,7 @@ public class TopologyFragmentRefinementModelResource extends AbstractRefinementM
         super(id);
         this.mappingTypes = new
             ArrayList<>(Arrays.asList("PermutationMapping", "RelationshipMapping", "DeploymentArtifactMapping",
-            "AttributeMapping", "StayMapping"));
+            "AttributeMapping", "StayMapping", "BehaviorPatternMapping"));
     }
 
     @Override
@@ -126,6 +128,16 @@ public class TopologyFragmentRefinementModelResource extends AbstractRefinementM
                     .setRefinementElement(relTemplate.getTargetElement().getRef())
                     .setArtifactType(QName.valueOf(propertiesMap.get("requiredDeploymentArtifactType")))
                 ));
+            }
+            if (relTemplate.getType().getLocalPart().startsWith("BehaviorPatternMapping")) {
+                Map<String, String> propertiesMap = ((TEntityTemplate.WineryKVProperties) relTemplate.getProperties()).getKVProperties();
+                ((PatternRefinementModelResource) this).getBehaviorPatternMappings()
+                    .addMapping(new OTBehaviorPatternMapping(new OTBehaviorPatternMapping.Builder(mappingId)
+                        .setDetectorElement(relTemplate.getSourceElement().getRef())
+                        .setRefinementElement(relTemplate.getTargetElement().getRef())
+                        .setProperty(new OTPropertyKV(propertiesMap.get("refinementProperty"), propertiesMap.get("refinementPropertyValue")))
+                        .setBehaviorPattern(propertiesMap.get("behaviorPattern"))
+                    ));
             }
         }
         return new RefinementTopologyTemplateResource(this, this.getTRefinementModel(), GRAFIC_PRM_MODEL);

@@ -1,0 +1,74 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2020 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<winery-loader *ngIf="loading || !behaviorPatternMappings; else content"></winery-loader>
+<ng-template #content>
+    <winery-table [columns]="columns" [data]="behaviorPatternMappings"
+                  [disableButtons]="!sharedData.currentVersion.editable"
+                  (addBtnClicked)="onAddButtonClicked()" (removeBtnClicked)="onRemoveButtonClicked($event)">
+    </winery-table>
+</ng-template>
+
+<ng-template #addModal>
+    <winery-modal-header [modalRef]="addModalRef" [title]="'Add Behavior Pattern Mapping'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <form>
+            <div class="form-group">
+                <label for="detectorNode" class="control-label">Detector Element</label>
+                <ng-select id="detectorNode" [items]="detectorTemplates" [textField]="'name'"
+                           (selected)="detectorElementSelected($event)">
+                </ng-select>
+            </div>
+            <div class="form-group" *ngIf="behaviorPatterns">
+                <label for="behaviorPattern" class="control-label">Behavior Pattern</label>
+                <ng-select id="behaviorPattern" [items]="behaviorPatterns" [textField]="'name'" [idField]="'name'"
+                           (selected)="mapping.behaviorPattern = $event.id">
+                </ng-select>
+            </div>
+            <hr>
+
+            <div class="form-group">
+                <label for="refinementNode" class="control-label">Refinement Structure Element</label>
+                <ng-select id="refinementNode" [items]="refinementTemplates" [textField]="'name'"
+                           (selected)="refinementElementSelected($event)">
+                </ng-select>
+            </div>
+            <div class="from-group" *ngIf="refinementProperties">
+                <label for="refinementNodePropertiesDropdown" class="control-label">Refinement Element Property</label>
+                <ng-select id="refinementNodePropertiesDropdown" [items]="refinementPropertiesAsString()"
+                           (selected)="refinementPropertySelected($event)">
+                </ng-select>
+            </div>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer [modalRef]="addModalRef"
+                         [okButtonLabel]="'Add'"
+                         [disableOkButton]="(!mapping.detectorElement || !mapping.behaviorPattern
+                                            || !mapping.refinementElement || !mapping.property)"
+                         (onOk)="onAddBehaviorPatternMapping()">
+    </winery-modal-footer>
+</ng-template>
+
+<ng-template #removeModal>
+    <winery-modal-header [modalRef]="removeModalRef" [title]="'Remove Behavior Pattern Mapping'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <p>Are you sure you want to delete <b>{{ mapping.id }}</b>?</p>
+    </winery-modal-body>
+    <winery-modal-footer [modalRef]="removeModalRef"
+                         [okButtonLabel]="'Delete'"
+                         (onOk)="onRemoveBehaviorPatternMapping()">
+    </winery-modal-footer>
+</ng-template>

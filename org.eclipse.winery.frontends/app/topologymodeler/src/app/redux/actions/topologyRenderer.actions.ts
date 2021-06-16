@@ -70,6 +70,7 @@ export class TopologyRendererActions {
     static TOGGLE_ASSIGN_DEPLOYMENT_TECHNOLOGY = 'TOGGLE_ASSIGN_DEPLOYMENT_TECHNOLOGY';
     static TOGGLE_HIDE_DEPENDSON_RELATIONS = 'TOGGLE_HIDE_DEPENDSON_RELATIONS';
     static SHOW_ONLY_MAPPINGS_OF_SELECTED_TYPE = 'SHOW_ONLY_MAPPINGS_OF_SELECTED_TYPE';
+    static DETECT_PATTERNS = 'DETECT_PATTERNS';
 
     disableResearchPlugin(): Action {
         return { type: TopologyRendererActions.DISABLE_RESEARCH_PLUGIN };
@@ -241,5 +242,9 @@ export class TopologyRendererActions {
             type: TopologyRendererActions.SHOW_ONLY_MAPPINGS_OF_SELECTED_TYPE,
             mappingType: type
         };
+    }
+
+    detectPatterns(): Action {
+        return { type: TopologyRendererActions.DETECT_PATTERNS };
     }
 }

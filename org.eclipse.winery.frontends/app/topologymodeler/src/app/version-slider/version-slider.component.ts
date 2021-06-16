@@ -23,6 +23,7 @@ import { IWineryState } from '../redux/store/winery.store';
 import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { Utils } from '../../../../tosca-management/src/app/wineryUtils/utils';
 import { EntityTypesModel } from '../models/entityTypesModel';
 
 @Component({
@@ -34,14 +35,17 @@ export class VersionSliderComponent implements OnInit {
 
     private static readonly LEGEND_CHAR_LIMIT = 15;
 
-    entityTypes: EntityTypesModel;
+    private versions: WineryVersion[];
+    private initialSliderValue: number;
+    private entityTypes: EntityTypesModel;
 
     sliderValue: number;
-    versions: WineryVersion[];
     options: Options = {
         showTicksValues: true,
         stepsArray: undefined,
-        translate: VersionSliderComponent.hideValues
+        translate: VersionSliderComponent.hideValues,
+        ticksTooltip: (index) => this.versions ? this.versions[index].toReadableString() : '',
+        ticksValuesTooltip: (index) => this.versions ? this.versions[index].toReadableString() : ''
     };
 
     constructor(private versionSliderService: VersionSliderService,
@@ -65,10 +69,10 @@ export class VersionSliderComponent implements OnInit {
 
     private init(versions: WineryVersion[]) {
         this.versions = versions;
-
         const id = this.backendService.configuration.id;
-        this.sliderValue = this.versions
+        this.initialSliderValue = this.versions
             .findIndex(v => this.toId(v) === id);
+        this.sliderValue = this.initialSliderValue;
 
         const stepsArray = [];
         this.versions.forEach((version, index) => {
@@ -81,21 +85,10 @@ export class VersionSliderComponent implements OnInit {
         this.options = newOptions;
     }
 
-    updateTopologyTemplate() {
+    changeVersionInPlace() {
         const version = this.getSelectedVersion();
         const id = this.toId(version);
-
-        this.versionSliderService.getTopologyTemplate(id)
-            .subscribe(topologyTemplate => {
-                    TopologyTemplateUtil.updateTopologyTemplate(
-                        this.ngRedux,
-                        this.wineryActions,
-                        topologyTemplate,
-                        this.entityTypes,
-                        this.configurationService.isYaml()
-                    );
-                }
-            );
+        this.updateTopologyTemplate(id);
     }
 
     selectedIsCurrent(): boolean {
@@ -114,6 +107,12 @@ export class VersionSliderComponent implements OnInit {
             editorConfig += '&isReadonly=true';
         }
         window.open(editorConfig, '_blank');
+        this.reset();
+    }
+
+    private reset() {
+        this.updateTopologyTemplate(this.backendService.configuration.id);
+        this.sliderValue = this.initialSliderValue;
     }
 
     private getSelectedVersion() {
@@ -121,13 +120,28 @@ export class VersionSliderComponent implements OnInit {
     }
 
     private toId(version: WineryVersion): string {
-        return VersionSliderComponent.getName(this.backendService.configuration.id)
-            + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR
-            + version.toString();
+        const id = this.backendService.configuration.id;
+        if (version.toReadableString() === WineryVersion.EMPTY_STRING) {
+            return Utils.getNameWithoutVersion(id);
+        } else {
+            return Utils.getNameWithoutVersion(id)
+                + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR
+                + version.toString();
+        }
     }
 
-    private static getName(id: string) {
-        return id.split(WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR)[0];
+    private updateTopologyTemplate(id: string) {
+        this.versionSliderService.getTopologyTemplate(id)
+            .subscribe(topologyTemplate => {
+                    TopologyTemplateUtil.updateTopologyTemplate(
+                        this.ngRedux,
+                        this.wineryActions,
+                        topologyTemplate,
+                        this.entityTypes,
+                        this.configurationService.isYaml()
+                    );
+                }
+            );
     }
 
     private static hideValues(): string {

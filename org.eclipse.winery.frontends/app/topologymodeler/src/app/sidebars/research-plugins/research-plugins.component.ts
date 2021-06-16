@@ -42,6 +42,9 @@ export class ResearchPluginsComponent {
         } else if (currentButtonsState.buttonsState.refineTopologyWithTestsButton) {
             this.refiningType = 'tests';
             this.open = true;
+        } else if (currentButtonsState.buttonsState.detectPatternsButton) {
+            this.refiningType = 'patternDetection';
+            this.open = true;
         } else {
             delete this.refiningType;
             if (this.open) {

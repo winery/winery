@@ -47,7 +47,7 @@ public class PatternRefinementModelResourceTest extends AbstractResourceTest {
     @Test
     public void getPrmForTopologyModeler() throws Exception {
         this.setRevisionTo("origin/plain");
-        this.assertGet("patternrefinementmodels/http%253A%252F%252Fopentosca.org%252Fpatternrefinementmodels/graficModelingTest_w1-wip1/grafikprmmodelling",
+        this.assertGet("patternrefinementmodels/http%253A%252F%252Fopentosca.org%252Fpatternrefinementmodels/graficModelingTest_w1-wip1/graficprmmodelling",
             "patternrefinementmodels/loadPrmToTopologymodeler.xml");
     }
 

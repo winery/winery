@@ -65,16 +65,29 @@ export class WineryTopologyTemplate extends WineryComponent {
     relationshipTemplates: RelationshipTemplate[];
 }
 
-export class NodeTemplate extends WineryTemplate {
+export class Policy {
+    name?: string;
+    policyType: string;
+    policyRef?: string;
+}
+
+export class Policies {
+    policy: Policy[];
+}
+
+export abstract class WineryTemplateWithPolicies extends WineryTemplate {
+    policies: Policies = null;
+}
+
+export class NodeTemplate extends WineryTemplateWithPolicies {
     requirements: Object = null;
     capabilities: Object = null;
-    policies: Object = null;
     deploymentArtifacts: Object = null;
     minInstances: number;
     maxInstances: string;
 }
 
-export class RelationshipTemplate extends WineryTemplate {
+export class RelationshipTemplate extends WineryTemplateWithPolicies {
     relationshipConstraing: Object = null;
     sourceElement: RelationshipElement;
     targetElement: RelationshipElement;

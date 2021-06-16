@@ -16,6 +16,7 @@ package org.eclipse.winery.model.tosca.extensions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -144,6 +145,26 @@ public class OTTopologyFragmentRefinementModel extends OTRefinementModel {
 
     public void setComponentSets(List<OTStringList> componentSets) {
         this.componentSets = componentSets;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        OTTopologyFragmentRefinementModel that = (OTTopologyFragmentRefinementModel) o;
+        return Objects.equals(refinementStructure, that.refinementStructure)
+            && Objects.equals(attributeMappings, that.attributeMappings)
+            && Objects.equals(stayMappings, that.stayMappings)
+            && Objects.equals(deploymentArtifactMappings, that.deploymentArtifactMappings)
+            && Objects.equals(permutationOptions, that.permutationOptions)
+            && Objects.equals(componentSets, that.componentSets);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), refinementStructure, attributeMappings, stayMappings,
+            deploymentArtifactMappings, permutationOptions, componentSets);
     }
 
     public abstract static class RefinementBuilder<T extends OTRefinementModel.Builder<T>> extends OTRefinementModel.Builder<T> {

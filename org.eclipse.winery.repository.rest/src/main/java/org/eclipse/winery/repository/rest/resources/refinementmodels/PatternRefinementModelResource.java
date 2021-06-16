@@ -14,11 +14,35 @@
 
 package org.eclipse.winery.repository.rest.resources.refinementmodels;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import javax.ws.rs.Path;
+
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.tosca.extensions.OTBehaviorPatternMapping;
+import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
 
 public class PatternRefinementModelResource extends TopologyFragmentRefinementModelResource {
 
     public PatternRefinementModelResource(DefinitionsChildId id) {
         super(id);
+    }
+
+    @Override
+    public OTPatternRefinementModel getTRefinementModel() {
+        return (OTPatternRefinementModel) this.getElement();
+    }
+
+    @Path("behaviorpatternmappings")
+    public BehaviorPatternMappingsResource getBehaviorPatternMappings() {
+        List<OTBehaviorPatternMapping> behaviorPatternMappings = this.getTRefinementModel().getBehaviorPatternMappings();
+
+        if (Objects.isNull(behaviorPatternMappings)) {
+            behaviorPatternMappings = new ArrayList<>();
+            this.getTRefinementModel().setBehaviorPatternMappings(behaviorPatternMappings);
+        }
+        return new BehaviorPatternMappingsResource(this, behaviorPatternMappings);
     }
 }

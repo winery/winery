@@ -1,5 +1,5 @@
 <Definitions xmlns="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" xmlns:ns0="http://docs.oasis-open.org/tosca/ns/simple/yaml/1.3" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:testwineryopentoscaorg="http://test.winery.opentosca.org" targetNamespace="http://winery.opentosca.org/test/concrete/patternrefinementmodels" id="winery-defs-for_patternrefinementmodels-myExample_w1-wip1">
-    <PatternRefinementModel name="graficModelingTest_w1-wip1" targetNamespace="http://opentosca.org/patternrefinementmodels">
+    <PatternRefinementModel isPdrm="no" name="graficModelingTest_w1-wip1" targetNamespace="http://opentosca.org/patternrefinementmodels">
         <winery:Detector>
             <NodeTemplate xmlns:ot-patterns="http://plain.winery.opentosca.org/patterns" name="FirstPattern_w1" minInstances="1" maxInstances="1" type="ot-patterns:FirstPattern_w1" id="d_FirstPattern_w1_0" winery:x="771" winery:y="400">
                 <Properties>
@@ -43,5 +43,6 @@
         </winery:DeploymentArtifactMappings>
         <winery:PermutationOptions/>
         <winery:ComponentSets/>
+        <winery:BehaviorPatternMappings xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12"/>
     </PatternRefinementModel>
 </Definitions>
