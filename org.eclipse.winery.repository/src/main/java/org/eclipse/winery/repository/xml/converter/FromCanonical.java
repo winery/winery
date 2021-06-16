@@ -71,6 +71,7 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.extensions.OTAttributeMapping;
+import org.eclipse.winery.model.tosca.extensions.OTBehaviorPatternMapping;
 import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
 import org.eclipse.winery.model.tosca.extensions.OTDeploymentArtifactMapping;
 import org.eclipse.winery.model.tosca.extensions.OTParticipant;
@@ -83,6 +84,7 @@ import org.eclipse.winery.model.tosca.extensions.OTStayMapping;
 import org.eclipse.winery.model.tosca.extensions.OTStringList;
 import org.eclipse.winery.model.tosca.extensions.OTTestRefinementModel;
 import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.OTPropertyKV;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.xml.XDefinitions;
 import org.eclipse.winery.model.tosca.xml.XHasId;
@@ -143,11 +145,13 @@ import org.eclipse.winery.model.tosca.xml.XTTopologyElementInstanceStates;
 import org.eclipse.winery.model.tosca.xml.XTTopologyTemplate;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTAttributeMapping;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTAttributeMappingType;
+import org.eclipse.winery.model.tosca.xml.extensions.XOTBehaviorPatternMapping;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTComplianceRule;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTDeploymentArtifactMapping;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTPatternRefinementModel;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTPermutationMapping;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTPrmMapping;
+import org.eclipse.winery.model.tosca.xml.extensions.XOTPropertyKV;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTRefinementModel;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTRelationDirection;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTRelationMapping;
@@ -1068,6 +1072,8 @@ public class FromCanonical {
 
     private XOTPatternRefinementModel convert(OTPatternRefinementModel canonical) {
         XOTPatternRefinementModel.Builder builder = new XOTPatternRefinementModel.Builder();
+        builder.setIsPdrm(canonical.isPdrm() ? XTBoolean.YES : XTBoolean.NO);
+        builder.setBehaviorPatternMappings(convertList(canonical.getBehaviorPatternMappings(), this::convert));
         fillOTTopologyFragmentRefinementModelProperties(builder, canonical);
         return builder.build();
     }
@@ -1109,5 +1115,17 @@ public class FromCanonical {
         XOTTopologyFragmentRefinementModel.Builder builder = new XOTTopologyFragmentRefinementModel.Builder();
         fillOTTopologyFragmentRefinementModelProperties(builder, canonical);
         return builder.build();
+    }
+
+    private XOTBehaviorPatternMapping convert(OTBehaviorPatternMapping canonical) {
+        XOTBehaviorPatternMapping.Builder builder = new XOTBehaviorPatternMapping.Builder(canonical.getId());
+        builder.setBehaviorPattern(canonical.getBehaviorPattern());
+        builder.setProperty(convert(canonical.getProperty()));
+        fillOTPrmMappingProperties(builder, canonical);
+        return builder.build();
+    }
+
+    private XOTPropertyKV convert(OTPropertyKV canonical) {
+        return new XOTPropertyKV(canonical.getKey(), canonical.getValue());
     }
 }

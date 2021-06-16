@@ -40,7 +40,8 @@
            [checked]="config.features.patternRefinement">
     <label for="patternRefinement">Pattern Refinement</label>
     <br>
-    <input type="checkbox" [(ngModel)]="config.features.topologyFragmentRefinementModel" id="topologyFragmentRefinementModel"
+    <input type="checkbox" [(ngModel)]="config.features.topologyFragmentRefinementModel"
+           id="topologyFragmentRefinementModel"
            name="topologyFragmentRefinementModel"
            [checked]="config.features.topologyFragmentRefinementModel">
     <label for="topologyFragmentRefinementModel">Topology Fragment Refinement</label>
@@ -81,6 +82,10 @@
            [checked]="config.features.radon">
     <label for="radon">RADON</label>
     <br>
+    <input type="checkbox" [(ngModel)]="config.features.patternDetection" id="patternDetection"
+           name="patternDetection"
+           [checked]="config.features.patternDetection">
+    <label for="patternDetection">Pattern Detection</label>
 </div>
 <div>
     <button class="btn btn-primary" (click)="saveChanges()">Save Changes</button>

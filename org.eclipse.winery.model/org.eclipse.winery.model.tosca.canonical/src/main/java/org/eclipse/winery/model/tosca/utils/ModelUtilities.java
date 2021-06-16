@@ -127,6 +127,11 @@ public abstract class ModelUtilities {
         }
     }
 
+    public static boolean hasKvProperties(TEntityTemplate entityTemplate) {
+        return Objects.nonNull(entityTemplate.getProperties())
+            && Objects.nonNull(ModelUtilities.getPropertiesKV(entityTemplate));
+    }
+
     /**
      * Generates a XSD when Winery's K/V properties are used. This method is put here instead of
      * WinerysPropertiesDefinitionResource to avoid generating the subresource

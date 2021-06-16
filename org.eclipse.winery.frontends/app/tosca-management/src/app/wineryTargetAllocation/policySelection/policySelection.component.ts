@@ -16,7 +16,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { WineryTableColumn } from '../../wineryTableModule/wineryTable.component';
 import { SelectComponent, SelectItem } from 'ng2-select';
 import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
-import { Policy, TargetAllocationService } from '../targetAllocation.service';
+import { TargetAllocationService } from '../targetAllocation.service';
+import { Policy } from '../../model/wineryComponent';
 
 @Component({
     selector: 'winery-target-allocation-policy-selection-component',

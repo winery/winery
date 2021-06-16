@@ -46,12 +46,15 @@ public class ToscaPrmPropertyMatcher extends ToscaPropertyMatcher {
     }
 
     public boolean characterizingPatternsCompatible(ToscaEntity left, ToscaEntity right) {
-        // if the detector has no patterns attached but the candidate has --> it's a match
-        boolean characterizingPatternsCompatible = true;
-
         // By convention, the left node is always the element to search in right.
         TEntityTemplate detectorEntityElement = left.getTemplate();
         TEntityTemplate candidateEntityElement = right.getTemplate();
+        return characterizingPatternsCompatible(detectorEntityElement, candidateEntityElement);
+    }
+
+    public boolean characterizingPatternsCompatible(TEntityTemplate detectorEntityElement, TEntityTemplate candidateEntityElement) {
+        // if the detector has no patterns attached but the candidate has --> it's a match
+        boolean characterizingPatternsCompatible = true;
 
         if (detectorEntityElement instanceof HasPolicies && candidateEntityElement instanceof HasPolicies) {
             HasPolicies detectorElement = (HasPolicies) detectorEntityElement;

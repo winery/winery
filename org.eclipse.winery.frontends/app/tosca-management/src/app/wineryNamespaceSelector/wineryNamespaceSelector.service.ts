@@ -23,14 +23,15 @@ export class WineryNamespaceSelectorService {
     constructor(private http: HttpClient) {
     }
 
-    getNamespaces(all: boolean = false): Observable<NamespaceProperties[]> {
+    getNamespaces(all: boolean = false, backendUrl?: string): Observable<NamespaceProperties[]> {
         const headers = new HttpHeaders({ 'Accept': 'application/json' });
 
+        const baseUrl = backendUrl ? backendUrl : backendBaseURL;
         let URL: string;
         if (all) {
-            URL = backendBaseURL + '/admin/namespaces/?all';
+            URL = baseUrl + '/admin/namespaces/?all';
         } else {
-            URL = backendBaseURL + '/admin/namespaces/';
+            URL = baseUrl + '/admin/namespaces/';
         }
 
         return this.http.get<NamespaceProperties[]>(URL, { headers: headers });

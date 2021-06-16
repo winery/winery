@@ -64,8 +64,10 @@ import { TopologyModelerConfiguration } from '../models/topologyModelerConfigura
 import { SubMenuItems } from '../../../../tosca-management/src/app/model/subMenuItem';
 import { AttributeMappingType } from '../../../../tosca-management/src/app/instance/refinementModels/attributeMappings/attributeMapping';
 // tslint:disable-next-line:max-line-length
-import { PropertiesDefinitionKVElement } from '../../../../tosca-management/src/app/instance/sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
 import { DetailsSidebarState } from '../sidebars/node-details/node-details-sidebar';
+import { Policy } from '../../../../tosca-management/src/app/model/wineryComponent';
+import { KvProperty } from '../../../../tosca-management/src/app/model/keyValueItem';
+import { WineryNamespaceSelectorService } from '../../../../tosca-management/src/app/wineryNamespaceSelector/wineryNamespaceSelector.service';
 
 @Component({
     selector: 'winery-canvas',
@@ -124,15 +126,18 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     prmModellingUrlFragment = SubMenuItems.graficPrmModelling.urlFragment;
     relationshipTypes: TRelationshipTemplate;
     newRelationship: TRelationshipTemplate;
-    detectorNodeProperties: PropertiesDefinitionKVElement[];
-    refinementNodeProperties: PropertiesDefinitionKVElement[];
+    detectorNodeProperties: KvProperty[];
+    refinementNodeProperties: KvProperty[];
+    behaviorPatterns: Policy[];
+    patternNamespaces: Set<string>;
     direction: string;
     applicableRelationshipType: string;
     validEndpointType: string;
     requiredDeploymentArtifactType: string;
     type: string;
     detectorProperty: string;
-    refinementProperty: string;
+    refinementProperty: KvProperty;
+    behaviorPattern: Policy;
 
     // variables which hold their corresponding modal data
     capabilities: CapabilitiesModalData;
@@ -210,7 +215,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 private reqCapRelationshipService: ReqCapRelationshipService,
                 private notify: ToastrService,
                 private generateTopologyService: ManageTopologyService,
-                private configuration: WineryRepositoryConfigurationService) {
+                private configuration: WineryRepositoryConfigurationService,
+                private namespacesService: WineryNamespaceSelectorService) {
 
         this.newJsPlumbInstance = this.jsPlumbService.getJsPlumbInstance();
         this.newJsPlumbInstance.setContainer('container');
@@ -240,6 +246,13 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         this.requirements = new RequirementsModalData();
         this.importTopologyData = new ImportTopologyModalData();
         this.threatModelingData = new ThreatModelingModalData();
+
+        this.namespacesService.getNamespaces(true, this.backendService.configuration.repositoryURL)
+            .subscribe(data => {
+                this.patternNamespaces = new Set<string>(data
+                    .filter((ns) => ns.patternCollection)
+                    .map((ns) => ns.namespace));
+            });
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -524,7 +537,13 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         properties['requiredDeploymentArtifactType'] = this.requiredDeploymentArtifactType;
         properties['type'] = this.type;
         properties['detectorProperty'] = this.detectorProperty;
-        properties['refinementProperty'] = this.refinementProperty;
+        if (this.refinementProperty) {
+            properties['refinementProperty'] = this.refinementProperty.key;
+            properties['refinementPropertyValue'] = this.refinementProperty.value;
+        }
+        if (this.behaviorPattern) {
+            properties['behaviorPattern'] = this.behaviorPattern.name;
+        }
 
         const propertyData = { kvproperties: properties, propertyType: PropertyDefinitionType.KV };
         this.newRelationship.properties = propertyData;
@@ -2565,6 +2584,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     addNewPrmMapping(newRelationship: TRelationshipTemplate) {
         this.getDetectorNodeproperties(newRelationship.sourceElement);
         this.getRefinementNodeproperties(newRelationship.targetElement);
+        this.getBehaviorPatterns(newRelationship.sourceElement);
         this.newRelationship = newRelationship;
         this.direction = undefined;
         this.applicableRelationshipType = undefined;
@@ -2573,6 +2593,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         this.type = undefined;
         this.detectorProperty = undefined;
         this.refinementProperty = undefined;
+        this.behaviorPattern = undefined;
         if (newRelationship.type === '{http://opentosca.org/prmMappingTypes}StayMapping'
             || newRelationship.type === '{http://opentosca.org/prmMappingTypes}PermutationMapping') {
             this.onSavePrmProperties();
@@ -2597,8 +2618,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         this.detectorProperty = data;
     }
 
-    setRefinementNodeProperty(data: string) {
-        this.refinementProperty = data;
+    setBehaviorPattern(data: Policy) {
+        this.behaviorPattern = data;
     }
 
     /**
@@ -2618,16 +2639,26 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     }
 
     private getDetectorNodeproperties(sourceElement: { ref: string }) {
-        const source = this.entityTypes.unGroupedNodeTypes.find(element => sourceElement.ref.includes(element.id));
-        if (source.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition) {
-            this.detectorNodeProperties = source.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.propertyDefinitionKVList;
+        const props = this.allNodeTemplates.find(element => element.id === sourceElement.ref).properties;
+        if (props && props.propertyType && props.propertyType === 'KV') {
+            this.detectorNodeProperties = Object.keys(props.kvproperties)
+                .map((key) => new KvProperty(key, props.kvproperties[key]));
         }
     }
 
     private getRefinementNodeproperties(targetElement: { ref: string }) {
-        const target = this.entityTypes.unGroupedNodeTypes.find(element => targetElement.ref.includes(element.id));
-        if (target.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition) {
-            this.refinementNodeProperties = target.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.propertyDefinitionKVList;
+        const props = this.allNodeTemplates.find(element => element.id === targetElement.ref).properties;
+        if (props && props.propertyType && props.propertyType === 'KV') {
+            this.refinementNodeProperties = Object.keys(props.kvproperties)
+                .map((key) => new KvProperty(key, props.kvproperties[key]));
+        }
+    }
+
+    private getBehaviorPatterns(sourceElement: { ref: string }) {
+        const source = this.allNodeTemplates.find(element => element.id === sourceElement.ref);
+        if (source.policies) {
+            this.behaviorPatterns = source.policies.policy
+                .filter((policy) => this.patternNamespaces.has(new QName(policy.policyType).nameSpace));
         }
     }
 
@@ -2641,6 +2672,9 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 return false;
             } else if (this.newRelationship.type === '{http://opentosca.org/prmMappingTypes}AttributeMapping'
                 && this.type === this.attributeMappingType.ALL || (this.type && this.detectorProperty && this.refinementProperty)) {
+                return false;
+            } else if (this.newRelationship.type === '{http://opentosca.org/prmMappingTypes}BehaviorPatternMapping'
+                && this.refinementProperty && this.behaviorPattern) {
                 return false;
             } else {
                 return true;

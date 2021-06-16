@@ -291,6 +291,11 @@ export class NavbarComponent implements OnDestroy {
             case 'assignDeploymentTechnology':
                 this.ngRedux.dispatch(this.actions.toggleAssignDeploymentTechnology());
                 break;
+            case 'detectPatterns':
+                this.readonly = true;
+                this.ngRedux.dispatch(this.wineryActions.sendPaletteOpened(false));
+                this.ngRedux.dispatch(this.actions.detectPatterns());
+                break;
         }
     }
 

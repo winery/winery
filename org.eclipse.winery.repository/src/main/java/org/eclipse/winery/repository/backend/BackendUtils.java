@@ -58,19 +58,11 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
-//import javax.xml.parsers.DocumentBuilderFactory;
-//import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.model.ids.IdNames;
-import org.eclipse.winery.model.ids.definitions.DataTypeId;
-import org.eclipse.winery.model.ids.extensions.TopologyFragmentRefinementModelId;
-import org.eclipse.winery.model.tosca.TDataType;
-import org.eclipse.winery.model.version.VersionSupport;
-import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
-import org.eclipse.winery.repository.common.RepositoryFileReference;
-import org.eclipse.winery.repository.common.Util;
+import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.ids.GenericId;
+import org.eclipse.winery.model.ids.IdNames;
 import org.eclipse.winery.model.ids.IdUtil;
 import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.XmlId;
@@ -78,39 +70,36 @@ import org.eclipse.winery.model.ids.admin.AdminId;
 import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.model.ids.definitions.CapabilityTypeId;
-import org.eclipse.winery.model.ids.extensions.ComplianceRuleId;
+import org.eclipse.winery.model.ids.definitions.DataTypeId;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.ids.definitions.EntityTypeId;
 import org.eclipse.winery.model.ids.definitions.InterfaceTypeId;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
-import org.eclipse.winery.model.ids.extensions.PatternRefinementModelId;
 import org.eclipse.winery.model.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.model.ids.extensions.TestRefinementModelId;
 import org.eclipse.winery.model.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.model.ids.elements.PlanId;
 import org.eclipse.winery.model.ids.elements.PlansId;
 import org.eclipse.winery.model.ids.elements.ToscaElementId;
-import org.eclipse.winery.model.version.ToscaDiff;
-import org.eclipse.winery.common.version.WineryVersion;
+import org.eclipse.winery.model.ids.extensions.ComplianceRuleId;
+import org.eclipse.winery.model.ids.extensions.PatternRefinementModelId;
+import org.eclipse.winery.model.ids.extensions.TestRefinementModelId;
+import org.eclipse.winery.model.ids.extensions.TopologyFragmentRefinementModelId;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.model.tosca.HasName;
 import org.eclipse.winery.model.tosca.HasTargetNamespace;
-import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
-import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
-import org.eclipse.winery.model.tosca.extensions.OTTestRefinementModel;
-import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
 import org.eclipse.winery.model.tosca.RelationshipSourceOrTarget;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityType;
+import org.eclipse.winery.model.tosca.TDataType;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
@@ -126,6 +115,7 @@ import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlans;
+import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TPolicyType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
@@ -136,13 +126,22 @@ import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
+import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
+import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTTestRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.model.version.ToscaDiff;
+import org.eclipse.winery.model.version.VersionSupport;
 import org.eclipse.winery.repository.GitInfo;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
+import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.GenericDirectoryId;
@@ -172,7 +171,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-//import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.ls.LSInput;
 import org.xml.sax.ErrorHandler;
@@ -544,7 +542,9 @@ public class BackendUtils {
         nodeTemplateClone.setMaxInstances(nodeTemplate.getMaxInstances());
         nodeTemplateClone.setMinInstances(nodeTemplate.getMinInstances());
         nodeTemplateClone.setName(nodeTemplate.getName());
-        nodeTemplateClone.setPolicies(nodeTemplate.getPolicies());
+        if (nodeTemplate.getPolicies() != null) {
+            nodeTemplateClone.setPolicies(new TPolicies(new ArrayList<>(nodeTemplate.getPolicies().getPolicy())));
+        }
         nodeTemplateClone.setRequirements(nodeTemplate.getRequirements());
         nodeTemplateClone.setCapabilities(nodeTemplate.getCapabilities());
         nodeTemplateClone.setProperties(nodeTemplate.getProperties());
@@ -587,6 +587,9 @@ public class BackendUtils {
         relationshipTemplateClone.setProperties(relationshipTemplate.getProperties());
         relationshipTemplateClone.setName(relationshipTemplate.getName());
         relationshipTemplateClone.setRelationshipConstraints(relationshipTemplate.getRelationshipConstraints());
+        if (relationshipTemplateClone.getPolicies() != null) {
+            relationshipTemplateClone.setPolicies(new TPolicies(new ArrayList<>(relationshipTemplate.getPolicies().getPolicy())));
+        }
 
         String transferType =
             relationshipTemplate.getOtherAttributes().get(ModelUtilities.RELATIONSHIP_TEMPLATE_TRANSFER_TYPE);
@@ -626,7 +629,7 @@ public class BackendUtils {
             element = new TRelationshipType();
         } else if (id instanceof CapabilityTypeId) {
             element = new TCapabilityType();
-        } else if (id instanceof DataTypeId) { 
+        } else if (id instanceof DataTypeId) {
             element = new TDataType();
         } else if (id instanceof ArtifactTypeId) {
             element = new TArtifactType();
@@ -701,7 +704,8 @@ public class BackendUtils {
 
     /**
      * Persists the given definitions
-     *  @param id          the id of the definition child to persist
+     *
+     * @param id          the id of the definition child to persist
      * @param definitions the definitions to persist
      */
     public static void persist(IRepository repository, DefinitionsChildId id, TDefinitions definitions) throws IOException {
@@ -715,9 +719,10 @@ public class BackendUtils {
     // todo this should not depend on JAXB !
 
     /**
-     * @deprecated Instead use {@link IRepository#putDefinition(DefinitionsChildId, TDefinitions)} or {@link IRepository#putContentToFile(RepositoryFileReference, InputStream, MediaType)}
      * @throws IOException           if content could not be updated in the repository
      * @throws IllegalStateException if an JAXBException occurred. This should never happen.
+     * @deprecated Instead use {@link IRepository#putDefinition(DefinitionsChildId, TDefinitions)} or {@link
+     * IRepository#putContentToFile(RepositoryFileReference, InputStream, MediaType)}
      */
     @Deprecated
     public static void persist(Object o, RepositoryFileReference ref, MediaType mediaType, IRepository repo) throws IOException {
@@ -839,7 +844,8 @@ public class BackendUtils {
 
     /**
      * Derives Winery's Properties Definition from an existing properties definition
-     *  @param ci     the entity type to try to modify the WPDs
+     *
+     * @param ci     the entity type to try to modify the WPDs
      * @param errors the list to add errors to
      * @param repository
      */
@@ -1422,7 +1428,8 @@ public class BackendUtils {
     }
 
     /**
-     * Uses a ToscaExportUtil object to create a TDefinitions object that has imports resolved to the point of being exportable as a CSAR.
+     * Uses a ToscaExportUtil object to create a TDefinitions object that has imports resolved to the point of being
+     * exportable as a CSAR.
      */
     public static TDefinitions getDefinitionsHavingCorrectImports(IRepository repository, DefinitionsChildId id) throws IOException, RepositoryCorruptException {
         ToscaExportUtil exporter = new ToscaExportUtil();
@@ -1432,7 +1439,7 @@ public class BackendUtils {
     public static void mergeTopologyTemplateAinTopologyTemplateB(ServiceTemplateId serviceTemplateIdA, ServiceTemplateId serviceTemplateIdB, IRepository repository) throws IOException {
         Objects.requireNonNull(serviceTemplateIdA);
         Objects.requireNonNull(serviceTemplateIdB);
-        
+
         TTopologyTemplate topologyTemplateA = repository.getElement(serviceTemplateIdA).getTopologyTemplate();
         TServiceTemplate serviceTemplateB = repository.getElement(serviceTemplateIdB);
         TTopologyTemplate topologyTemplateB = serviceTemplateB.getTopologyTemplate();
@@ -1466,11 +1473,11 @@ public class BackendUtils {
      *
      * @param topologyTemplateA the topology to merged into <code>topologyTemplateB</code>
      * @param topologyTemplateB the target topology in which <dode>topologyTemplateA</dode> should be merged in
-     * @param stayingElements   the TEntityTemplates that must not be merged from A to B.
+     * @param stayingElementIds the TEntityTemplates that must not be merged from A to B.
      * @return A mapping between the ids in the <code>topologyTemplateA</code> and their corresponding ids in
      * <code>topologyTemplateB</code>
      */
-    public static Map<String, String> mergeTopologyTemplateAinTopologyTemplateB(TTopologyTemplate topologyTemplateA, TTopologyTemplate topologyTemplateB, List<TEntityTemplate> stayingElements) {
+    public static Map<String, String> mergeTopologyTemplateAinTopologyTemplateB(TTopologyTemplate topologyTemplateA, TTopologyTemplate topologyTemplateB, List<String> stayingElementIds) {
         Objects.requireNonNull(topologyTemplateA);
         Objects.requireNonNull(topologyTemplateB);
 
@@ -1484,10 +1491,10 @@ public class BackendUtils {
             .max(Comparator.comparingInt(n -> ModelUtilities.getLeft(n).orElse(0)))
             .map(n -> ModelUtilities.getLeft(n).orElse(0));
 
-        if (Objects.nonNull(stayingElements)) {
+        if (Objects.nonNull(stayingElementIds)) {
             topologyTemplateA.getNodeTemplateOrRelationshipTemplate()
                 .forEach(entity -> {
-                    if (!stayingElements.contains(entity)) {
+                    if (!stayingElementIds.contains(entity.getId())) {
                         if (entity instanceof TNodeTemplate) {
                             topologyTemplateToBeMerged.addNodeTemplate((TNodeTemplate) entity);
                         } else if (entity instanceof TRelationshipTemplate) {
@@ -1560,14 +1567,14 @@ public class BackendUtils {
                 RelationshipSourceOrTarget source = rel.getSourceElement().getRef();
                 RelationshipSourceOrTarget target = rel.getTargetElement().getRef();
 
-                if (source instanceof TNodeTemplate && (stayingElements == null
-                    || stayingElements.stream().noneMatch(element -> element.getId().equals(source.getId())))) {
+                if (source instanceof TNodeTemplate && (stayingElementIds == null
+                    || stayingElementIds.stream().noneMatch(elementId -> elementId.equals(source.getId())))) {
                     TNodeTemplate newSource = topologyTemplateB.getNodeTemplate(idMapping.get(source.getId()));
                     rel.setSourceNodeTemplate(newSource);
                 }
 
-                if (target instanceof TNodeTemplate && (stayingElements == null
-                    || stayingElements.stream().noneMatch(element -> element.getId().equals(target.getId())))) {
+                if (target instanceof TNodeTemplate && (stayingElementIds == null
+                    || stayingElementIds.stream().noneMatch(elementId -> elementId.equals(target.getId())))) {
                     TNodeTemplate newTarget = topologyTemplateB.getNodeTemplate(idMapping.get(target.getId()));
                     rel.setTargetNodeTemplate(newTarget);
                 }
