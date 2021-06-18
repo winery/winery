@@ -511,8 +511,8 @@ public class BackendUtils {
         // we do not use UUID to be more human readable and deterministic (for debugging)
         String prefix = repo.getNamespaceManager().getPrefix(tcId.getNamespace());
         String elId = tcId.getXmlId().getDecoded();
-        String id = "winery-defs-for_" + prefix + "-" + elId;
-        defs.setId(id);
+        defs.setId(prefix + "-" + elId);
+
         return defs;
     }
 
@@ -745,7 +745,6 @@ public class BackendUtils {
 
     /**
      * @param ref the file to read from
-     * @param repo
      */
     public static Optional<XSModel> getXSModel(final RepositoryFileReference ref, IRepository repo) {
         Objects.requireNonNull(ref);
@@ -847,7 +846,6 @@ public class BackendUtils {
      *
      * @param ci     the entity type to try to modify the WPDs
      * @param errors the list to add errors to
-     * @param repository
      */
     // FIXME this is specifically for xml backends and therefore broken under the new canonical model
     public static void deriveWPD(TEntityType ci, List<String> errors, IRepository repository) {

@@ -5,7 +5,7 @@
     ],
     "otherAttributes": {
     },
-    "id": "winery-defs-for_servicetemplates-ServiceTemplateWithAllReqCapVariants_w1-wip1",
+    "id": "servicetemplates-ServiceTemplateWithAllReqCapVariants_w1-wip1",
     "serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
         {
             "documentation": [
