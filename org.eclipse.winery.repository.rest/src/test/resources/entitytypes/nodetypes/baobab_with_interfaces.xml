@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <tosca:Definitions xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12"
                    xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12"
-                   targetNamespace="http://winery.opentosca.org/test/nodetypes/fruits" id="winery-defs-for_wfn-baobab">
+                   targetNamespace="http://winery.opentosca.org/test/nodetypes/fruits" id="wfn-baobab">
     <tosca:NodeType name="baobab" abstract="no" final="no"
                     targetNamespace="http://winery.opentosca.org/test/nodetypes/fruits" winery:bordercolor="#89ee01">
         <winery:PropertiesDefinition elementname="BaobabProperties"

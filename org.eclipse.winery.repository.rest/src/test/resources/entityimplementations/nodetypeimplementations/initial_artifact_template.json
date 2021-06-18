@@ -5,7 +5,7 @@
     ],
     "otherAttributes": {
     },
-    "id": "winery-defs-for_fruitsats-baobab_bananaInterface_IA",
+    "id": "fruitsats-baobab_bananaInterface_IA",
     "serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
         {
             "documentation": [
