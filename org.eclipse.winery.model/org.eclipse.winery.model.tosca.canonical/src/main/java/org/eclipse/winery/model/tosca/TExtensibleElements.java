@@ -100,7 +100,7 @@ public abstract class TExtensibleElements implements Serializable {
     @NonNull
     public List<TDocumentation> getDocumentation() {
         if (documentation == null) {
-            documentation = new ArrayList<TDocumentation>();
+            documentation = new ArrayList<>();
         }
         return this.documentation;
     }
@@ -108,7 +108,7 @@ public abstract class TExtensibleElements implements Serializable {
     @NonNull
     public List<Object> getAny() {
         if (any == null) {
-            any = new ArrayList<Object>();
+            any = new ArrayList<>();
         }
         return this.any;
     }
@@ -134,7 +134,7 @@ public abstract class TExtensibleElements implements Serializable {
         public Builder() {
         }
 
-        public Builder(Builder builder) {
+        public Builder(Builder<?> builder) {
             this.documentation = builder.documentation;
             this.any = builder.any;
             this.otherAttributes = builder.otherAttributes;

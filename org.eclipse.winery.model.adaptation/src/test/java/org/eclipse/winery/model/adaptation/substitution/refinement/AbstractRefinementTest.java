@@ -85,17 +85,19 @@ public class AbstractRefinementTest extends TestWithGitBackedRepository {
             nt1
         ).build();
 
-        TRelationshipTemplate rt32 = new TRelationshipTemplate();
-        rt32.setType("{http://ex.org}relType_1");
-        rt32.setId("32");
-        rt32.setSourceNodeTemplate(nt3);
-        rt32.setTargetNodeTemplate(nt2);
+        TRelationshipTemplate rt32 = new TRelationshipTemplate.Builder(
+            "32",
+            QName.valueOf("{http://ex.org}relType_1"),
+            nt3,
+            nt2
+        ).build();
 
-        TRelationshipTemplate rt24 = new TRelationshipTemplate();
-        rt24.setType("{http://ex.org}relType_2");
-        rt24.setId("24");
-        rt24.setSourceNodeTemplate(nt2);
-        rt24.setTargetNodeTemplate(nt4);
+        TRelationshipTemplate rt24 = new TRelationshipTemplate.Builder(
+            "24",
+            QName.valueOf("{http://ex.org}relType_2"),
+            nt2,
+            nt4
+        ).build();
 
         /*
         #######   (1)  #######   (1)  #######
@@ -152,17 +154,17 @@ public class AbstractRefinementTest extends TestWithGitBackedRepository {
         QName artifactTypeFile = new QName("file", "http://example.org/tosca/at");
         QName test_da = new QName("test_da", "http://example.org/tosca/atemp/das");
 
-        TNodeTemplate nt30 = new TNodeTemplate();
-        nt30.setType("{http://ex.org}nodeType_4");
-        nt30.setId("30");
-        nt30.setX("110");
-        nt30.setY("110");
+        TNodeTemplate nt30 = new TNodeTemplate.Builder("30", QName.valueOf("{http://ex.org}nodeType_4"))
+            .setX("110")
+            .setY("110")
+            .build();
 
-        TRelationshipTemplate rt230 = new TRelationshipTemplate();
-        rt230.setType("{http://ex.org}relType_2");
-        rt230.setId("302");
-        rt230.setSourceNodeTemplate(nt2);
-        rt230.setTargetNodeTemplate(nt30);
+        TRelationshipTemplate rt230 = new TRelationshipTemplate.Builder(
+            "302",
+            QName.valueOf("{http://ex.org}relType_2"),
+            nt2,
+            nt30
+        ).build();
 
         TDeploymentArtifacts das = new TDeploymentArtifacts();
         TDeploymentArtifact da = new TDeploymentArtifact();
@@ -181,11 +183,12 @@ public class AbstractRefinementTest extends TestWithGitBackedRepository {
         // endregion
 
         // region *** topology4 ***
-        TRelationshipTemplate rt14 = new TRelationshipTemplate();
-        rt14.setType("{http://ex.org}relType_1");
-        rt14.setId("14");
-        rt14.setSourceNodeTemplate(nt1);
-        rt14.setTargetNodeTemplate(nt4);
+        TRelationshipTemplate rt14 = new TRelationshipTemplate.Builder(
+            "14",
+            QName.valueOf("{http://ex.org}relType_1"),
+            nt1,
+            nt4
+        ).build();
         
         /*
         #######  (1)  #######
@@ -210,19 +213,18 @@ public class AbstractRefinementTest extends TestWithGitBackedRepository {
 
         // region *** matching PRM ***
         // region *** detector ***
-        TNodeTemplate nt7 = new TNodeTemplate();
-        nt7.setType("{http://ex.org}nodeType_2");
-        nt7.setId("7");
+        TNodeTemplate nt7 = new TNodeTemplate.Builder("7", QName.valueOf("{http://ex.org}nodeType_2"))
+            .build();
 
-        TNodeTemplate nt8 = new TNodeTemplate();
-        nt8.setType("{http://ex.org}nodeType_4");
-        nt8.setId("8");
+        TNodeTemplate nt8 = new TNodeTemplate.Builder("8", QName.valueOf("{http://ex.org}nodeType_4"))
+            .build();
 
-        TRelationshipTemplate rt78 = new TRelationshipTemplate();
-        rt78.setType("{http://ex.org}relType_2");
-        rt78.setId("78");
-        rt78.setSourceNodeTemplate(nt7);
-        rt78.setTargetNodeTemplate(nt8);
+        TRelationshipTemplate rt78 = new TRelationshipTemplate.Builder(
+            "78",
+            QName.valueOf("{http://ex.org}relType_2"),
+            nt7,
+            nt8
+        ).build();
 
         /*
         #######
@@ -242,47 +244,46 @@ public class AbstractRefinementTest extends TestWithGitBackedRepository {
         // endregion
 
         // region *** refinement structure
-        TNodeTemplate nt10 = new TNodeTemplate();
-        nt10.setType("{http://ex.org}nodeType_10");
-        nt10.setId("10");
-        nt10.setX("5");
-        nt10.setY("10");
+        TNodeTemplate nt10 = new TNodeTemplate.Builder("10", QName.valueOf("{http://ex.org}nodeType_10"))
+            .setX("5")
+            .setY("10")
+            .build();
 
-        TNodeTemplate nt11 = new TNodeTemplate();
-        nt11.setType("{http://ex.org}nodeType_11");
-        nt11.setId("11");
-        nt11.setX("105");
-        nt11.setY("5");
+        TNodeTemplate nt11 = new TNodeTemplate.Builder("11", QName.valueOf("{http://ex.org}nodeType_11"))
+            .setX("105")
+            .setY("5")
+            .build();
 
-        TNodeTemplate nt12 = new TNodeTemplate();
-        nt12.setType("{http://ex.org}nodeType_12");
-        nt12.setId("12");
-        nt12.setX("55");
-        nt12.setY("105");
+        TNodeTemplate nt12 = new TNodeTemplate.Builder("12", QName.valueOf("{http://ex.org}nodeType_12"))
+            .setX("55")
+            .setY("105")
+            .build();
 
-        TNodeTemplate nt13 = new TNodeTemplate();
-        nt13.setType("{http://ex.org}nodeType_13");
-        nt13.setId("13");
-        nt13.setX("55");
-        nt13.setY("205");
+        TNodeTemplate nt13 = new TNodeTemplate.Builder("13", QName.valueOf("{http://ex.org}nodeType_13"))
+            .setX("55")
+            .setY("205")
+            .build();
 
-        TRelationshipTemplate rt1012 = new TRelationshipTemplate();
-        rt1012.setType("{http://ex.org}relType_2");
-        rt1012.setId("1012");
-        rt1012.setSourceNodeTemplate(nt10);
-        rt1012.setTargetNodeTemplate(nt12);
+        TRelationshipTemplate rt1012 = new TRelationshipTemplate.Builder(
+            "1012",
+            QName.valueOf("{http://ex.org}relType_2"),
+            nt10,
+            nt12
+        ).build();
 
-        TRelationshipTemplate rt1112 = new TRelationshipTemplate();
-        rt1112.setType("{http://ex.org}relType_2");
-        rt1112.setId("1112");
-        rt1112.setSourceNodeTemplate(nt11);
-        rt1112.setTargetNodeTemplate(nt12);
+        TRelationshipTemplate rt1112 = new TRelationshipTemplate.Builder(
+            "1112",
+            QName.valueOf("{http://ex.org}relType_2"),
+            nt11,
+            nt12
+        ).build();
 
-        TRelationshipTemplate rt1213 = new TRelationshipTemplate();
-        rt1213.setType("{http://ex.org}relType_2");
-        rt1213.setId("1213");
-        rt1213.setSourceNodeTemplate(nt12);
-        rt1213.setTargetNodeTemplate(nt13);
+        TRelationshipTemplate rt1213 = new TRelationshipTemplate.Builder(
+            "1213",
+            QName.valueOf("{http://ex.org}relType_2"),
+            nt12,
+            nt13
+        ).build();
 
         /*
         ########        ########
