@@ -74,12 +74,10 @@ public abstract class TExtensibleElements implements Serializable {
     @Deprecated // used for XML deserialization of API request content
     public TExtensibleElements() { }
 
-    public TExtensibleElements(Builder builder) {
+    public TExtensibleElements(Builder<?> builder) {
         this.documentation = builder.documentation;
         this.any = builder.any;
-        if (builder.otherAttributes == null) {
-            this.otherAttributes.clear();
-        } else {
+        if (builder.otherAttributes != null) {
             this.otherAttributes = builder.otherAttributes;
         }
     }

@@ -22,15 +22,16 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.extensions.OTDeploymentArtifactMapping;
-import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
-import org.eclipse.winery.model.tosca.extensions.OTRelationDirection;
-import org.eclipse.winery.model.tosca.extensions.OTRelationMapping;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.extensions.OTDeploymentArtifactMapping;
+import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTRelationDirection;
+import org.eclipse.winery.model.tosca.extensions.OTRelationMapping;
+import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.topologygraph.matching.ToscaIsomorphismMatcher;
 import org.eclipse.winery.topologygraph.matching.ToscaTypeMatcher;
 import org.eclipse.winery.topologygraph.model.ToscaEdge;
@@ -40,7 +41,7 @@ import org.eclipse.winery.topologygraph.transformation.ToscaTransformer;
 
 import org.jgrapht.GraphMapping;
 
-public class AbstractRefinementTest {
+public class AbstractRefinementTest extends TestWithGitBackedRepository {
 
     protected static TTopologyTemplate topology;
     protected static TTopologyTemplate topology2;
@@ -57,35 +58,32 @@ public class AbstractRefinementTest {
 
     protected static void setUp() {
         // region *** topology ***
-        TNodeTemplate nt1 = new TNodeTemplate();
-        nt1.setType("{http://ex.org}nodeType_1");
-        nt1.setId("1");
-        nt1.setX("10");
-        nt1.setY("10");
+        TNodeTemplate nt1 = new TNodeTemplate.Builder("1", QName.valueOf("{http://ex.org}nodeType_1"))
+            .setX("10")
+            .setY("10")
+            .build();
 
-        TNodeTemplate nt2 = new TNodeTemplate();
-        nt2.setType("{http://ex.org}nodeType_2");
-        nt2.setId("2");
-        nt2.setX("110");
-        nt2.setY("10");
+        TNodeTemplate nt2 = new TNodeTemplate.Builder("2", QName.valueOf("{http://ex.org}nodeType_2"))
+            .setX("110")
+            .setY("10")
+            .build();
 
-        TNodeTemplate nt3 = new TNodeTemplate();
-        nt3.setType("{http://ex.org}nodeType_3");
-        nt3.setId("3");
-        nt3.setX("210");
-        nt3.setY("10");
+        TNodeTemplate nt3 = new TNodeTemplate.Builder("3", QName.valueOf("{http://ex.org}nodeType_3"))
+            .setX("210")
+            .setY("10")
+            .build();
 
-        TNodeTemplate nt4 = new TNodeTemplate();
-        nt4.setType("{http://ex.org}nodeType_4");
-        nt4.setId("4");
-        nt4.setX("110");
-        nt4.setY("110");
+        TNodeTemplate nt4 = new TNodeTemplate.Builder("4", QName.valueOf("{http://ex.org}nodeType_4"))
+            .setX("110")
+            .setY("110")
+            .build();
 
-        TRelationshipTemplate rt21 = new TRelationshipTemplate();
-        rt21.setType("{http://ex.org}relType_1");
-        rt21.setId("21");
-        rt21.setSourceNodeTemplate(nt2);
-        rt21.setTargetNodeTemplate(nt1);
+        TRelationshipTemplate rt21 = new TRelationshipTemplate.Builder(
+            "21",
+            QName.valueOf("{http://ex.org}relType_1"),
+            nt2,
+            nt1
+        ).build();
 
         TRelationshipTemplate rt32 = new TRelationshipTemplate();
         rt32.setType("{http://ex.org}relType_1");

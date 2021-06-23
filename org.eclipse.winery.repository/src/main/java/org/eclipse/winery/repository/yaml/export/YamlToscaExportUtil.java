@@ -36,7 +36,6 @@ import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TArtifact;
-import org.eclipse.winery.model.tosca.TArtifacts;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -179,10 +178,9 @@ public class YamlToscaExportUtil extends ToscaExportUtil {
         //refMap.put(new CsarContentProperties(BackendUtils.getPathInsideRepo(licenseRef)), new RepositoryRefBasedCsarEntry(licenseRef));
         String nodeTypePath = BackendUtils.getPathInsideRepo(id);
         TNodeType node = repository.getElement(id);
-        TArtifacts artifacts = node.getArtifacts();
+        List<TArtifact> artifacts = node.getArtifacts();
         if (Objects.nonNull(artifacts)) {
-
-            artifacts.getArtifact().forEach(artifact -> {
+            artifacts.forEach(artifact -> {
                 UrlValidator customValidator = new UrlValidator();
                 if (customValidator.isValid(artifact.getFile())) {
                     LOGGER.info("Specified file is a valid URL, start processing the reference");
@@ -212,7 +210,7 @@ public class YamlToscaExportUtil extends ToscaExportUtil {
             .filter(nt -> nt.getQName().equals(node.getQName()))
             .forEach(nt -> {
                 if (nt.getArtifacts() != null) {
-                    nt.getArtifacts().getArtifact().stream()
+                    nt.getArtifacts().stream()
                         .filter(art -> art.getFile().equals(artifact.getFile()))
                         .forEach(art -> {
                             art.setFile("/" + FilenameUtils.separatorsToUnix(pathInsideRepo));
@@ -258,11 +256,11 @@ public class YamlToscaExportUtil extends ToscaExportUtil {
 
         if (Objects.nonNull(st.getTopologyTemplate())) {
             for (TNodeTemplate nodeTemplate : st.getTopologyTemplate().getNodeTemplates()) {
-                TArtifacts artifacts = nodeTemplate.getArtifacts();
+                List<TArtifact> artifacts = nodeTemplate.getArtifacts();
                 if (Objects.nonNull(artifacts)) {
 
                     // update file paths in the exported service template
-                    artifacts.getArtifact().forEach(a -> {
+                    artifacts.forEach(a -> {
                         UrlValidator customValidator = new UrlValidator();
                         if (customValidator.isValid(a.getFile())) {
                             LOGGER.info("Specified file is a valid URL, start processing the reference");
@@ -305,7 +303,6 @@ public class YamlToscaExportUtil extends ToscaExportUtil {
                         .stream()
                         .filter(node -> node.getId().equals(nodeTemplate.getId()))
                         .forEach(node -> node.getArtifacts()
-                            .getArtifact()
                             .stream()
                             .filter(art -> art.getFile().equals(artifact.getFile()))
                             .forEach(art -> {

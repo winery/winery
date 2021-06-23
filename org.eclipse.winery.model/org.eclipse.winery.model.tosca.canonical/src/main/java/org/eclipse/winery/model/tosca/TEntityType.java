@@ -111,7 +111,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     @Deprecated // used for XML deserialization of API request content
     public TEntityType() { }
 
-    public TEntityType(Builder builder) {
+    public TEntityType(Builder<?> builder) {
         super(builder);
         this.tags = builder.tags;
         this.derivedFrom = builder.derivedFrom;
@@ -204,7 +204,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     }
 
     public void setAbstract(@Nullable Boolean value) {
-        this._abstract = value == null ? false : value;
+        this._abstract = value != null && value;
     }
 
     public boolean getFinal() {
@@ -216,10 +216,9 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     }
 
     public void setFinal(@Nullable Boolean value) {
-        this._final = value == null ? false : value;
+        this._final = value != null && value;
     }
 
-    @Nullable
     public String getTargetNamespace() {
         return targetNamespace;
     }

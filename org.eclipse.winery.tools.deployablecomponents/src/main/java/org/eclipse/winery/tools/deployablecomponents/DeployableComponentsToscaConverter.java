@@ -41,9 +41,11 @@ class DeployableComponentsToscaConverter {
                 nodeBuilder.addCapabilityDefinitions(convertComponentToCapability(topEntry.getKey()));
 
                 // add top components to nodes with base component as requirement
-                TNodeType.Builder nodeBuilder2 = convertComponentToNode(topEntry.getKey());
-                nodeBuilder2.addRequirementDefinitions(convertComponentToRequirement(entry.getKey()));
-                nodes.add(nodeBuilder2.build());
+                nodes.add(
+                    convertComponentToNode(topEntry.getKey())
+                        .addRequirementDefinitions(convertComponentToRequirement(entry.getKey()))
+                        .build()
+                );
             }
             nodes.add(nodeBuilder.build());
         }

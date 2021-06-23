@@ -52,9 +52,9 @@ public class TRelationshipTemplate extends TEntityTemplate implements HasPolicie
 
     @XmlElement(name = "SourceElement", required = true)
     // AD: We need to combine source or target due to multi-inheritance
-    protected TRelationshipTemplate.@NonNull SourceOrTargetElement sourceElement;
+    protected TRelationshipTemplate.SourceOrTargetElement sourceElement;
     @XmlElement(name = "TargetElement", required = true)
-    protected TRelationshipTemplate.@NonNull SourceOrTargetElement targetElement;
+    protected TRelationshipTemplate.SourceOrTargetElement targetElement;
     @XmlElement(name = "RelationshipConstraints")
     protected TRelationshipTemplate.RelationshipConstraints relationshipConstraints;
     @XmlElement(name = "Policies")
@@ -160,7 +160,7 @@ public class TRelationshipTemplate extends TEntityTemplate implements HasPolicie
 
         public List<RelationshipConstraint> getRelationshipConstraint() {
             if (relationshipConstraint == null) {
-                relationshipConstraint = new ArrayList<RelationshipConstraint>();
+                relationshipConstraint = new ArrayList<>();
             }
             return this.relationshipConstraint;
         }
@@ -255,8 +255,14 @@ public class TRelationshipTemplate extends TEntityTemplate implements HasPolicie
         @XmlIDREF
         @XmlSchemaType(name = "IDREF")
         @JsonIdentityReference(alwaysAsId = true)
-        @NonNull
         private RelationshipSourceOrTarget ref;
+
+        public SourceOrTargetElement() {
+        }
+
+        public SourceOrTargetElement(@NonNull RelationshipSourceOrTarget ref) {
+            this.ref = ref;
+        }
 
         public RelationshipSourceOrTarget getRef() {
             return ref;
@@ -289,16 +295,20 @@ public class TRelationshipTemplate extends TEntityTemplate implements HasPolicie
     }
 
     public static class Builder extends TEntityTemplate.Builder<Builder> {
-        private final SourceOrTargetElement sourceElement;
-        private final SourceOrTargetElement targetElement;
+        private SourceOrTargetElement sourceElement;
+        private SourceOrTargetElement targetElement;
         private RelationshipConstraints relationshipConstraints;
         private String name;
         private TPolicies policies;
 
-        public Builder(String id, QName type, TRelationshipTemplate.SourceOrTargetElement sourceElement, TRelationshipTemplate.SourceOrTargetElement targetElement) {
+        public Builder(String id, QName type, RelationshipSourceOrTarget sourceElement, RelationshipSourceOrTarget targetElement) {
             super(id, type);
-            this.sourceElement = sourceElement;
-            this.targetElement = targetElement;
+            if (sourceElement != null) {
+                this.sourceElement = new SourceOrTargetElement(sourceElement);
+            }
+            if (targetElement != null) {
+                this.targetElement = new SourceOrTargetElement(targetElement);
+            }
         }
 
         public Builder setRelationshipConstraints(RelationshipConstraints relationshipConstraints) {

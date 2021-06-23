@@ -55,8 +55,9 @@ public class TNodeType extends TEntityType {
     @XmlElement(name = "Interface", required = true)
     protected List<TInterface> interfaces;
 
-    @XmlElement(name = "Artifacts")
-    protected TArtifacts artifacts;
+    @XmlElementWrapper(name = "Artifacts")
+    @XmlElement(name = "Artifact")
+    protected List<TArtifact> artifacts;
 
     // added to support TOSCA YAML
     protected List<TInterfaceDefinition> interfaceDefinitions;
@@ -135,11 +136,12 @@ public class TNodeType extends TEntityType {
         this.interfaceDefinitions = interfaceDefinitions;
     }
 
-    public @Nullable TArtifacts getArtifacts() {
+    @Nullable
+    public List<TArtifact> getArtifacts() {
         return artifacts;
     }
 
-    public void setArtifacts(@Nullable TArtifacts value) {
+    public void setArtifacts(List<TArtifact> value) {
         this.artifacts = value;
     }
 
@@ -149,12 +151,13 @@ public class TNodeType extends TEntityType {
     }
 
     public static class Builder extends TEntityType.Builder<Builder> {
+        
         private List<TRequirementDefinition> requirementDefinitions;
         private List<TCapabilityDefinition> capabilityDefinitions;
         private List<TInstanceState> instanceStates;
         private List<TInterface> interfaces;
         private List<TInterfaceDefinition> interfaceDefinitions;
-        private TArtifacts artifacts;
+        private List<TArtifact> artifacts;
 
         public Builder(String name) {
             super(name);
@@ -184,7 +187,7 @@ public class TNodeType extends TEntityType {
             return this;
         }
 
-        public Builder setArtifacts(TArtifacts artifacts) {
+        public Builder setArtifacts(List<TArtifact> artifacts) {
             this.artifacts = artifacts;
             return this;
         }
@@ -263,27 +266,17 @@ public class TNodeType extends TEntityType {
             return self();
         }
 
-        public Builder addArtifacts(TArtifacts artifacts) {
-            if (artifacts == null || artifacts.getArtifact().isEmpty()) {
+        public Builder addArtifacts(List<TArtifact> artifacts) {
+            if (artifacts == null || artifacts.isEmpty()) {
                 return this;
             }
 
             if (this.artifacts == null) {
                 this.artifacts = artifacts;
             } else {
-                this.artifacts.getArtifact().addAll(artifacts.getArtifact());
+                this.artifacts.addAll(artifacts);
             }
             return this;
-        }
-
-        public Builder addArtifacts(List<TArtifact> artifacts) {
-            if (artifacts == null) {
-                return this;
-            }
-
-            TArtifacts tmp = new TArtifacts();
-            tmp.getArtifact().addAll(artifacts);
-            return addArtifacts(tmp);
         }
 
         @Override

@@ -426,7 +426,7 @@ public class FromCanonical {
         }
         if (canonical.getArtifacts() != null) {
             XTArtifacts artifacts = new XTArtifacts();
-            artifacts.getArtifact().addAll(canonical.getArtifacts().getArtifact().stream()
+            artifacts.getArtifact().addAll(canonical.getArtifacts().stream()
                 .map(this::convert).collect(Collectors.toList()));
             builder.addToAny(artifacts);
         }

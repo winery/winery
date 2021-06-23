@@ -30,7 +30,6 @@ import org.eclipse.winery.model.ids.IdNames;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.model.tosca.TArtifact;
-import org.eclipse.winery.model.tosca.TArtifacts;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -83,7 +82,7 @@ public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
         if (this.getNodeType().getInterfaces() == null) {
             this.getNodeType().setInterfaces(new ArrayList<>());
         }
-        return new InterfacesResource(this, this.getNodeType().getInterfaces(),"nodeType");
+        return new InterfacesResource(this, this.getNodeType().getInterfaces(), "nodeType");
     }
 
     @Path("requirementdefinitions/")
@@ -117,11 +116,9 @@ public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
     @Path("artifacts/")
     @Produces(MediaType.APPLICATION_JSON)
     public List<TArtifact> getArtifacts() {
-        TArtifacts artifacts = this.getNodeType().getArtifacts();
-        if (artifacts == null) {
-            return new ArrayList<>();
-        }
-        return artifacts.getArtifact();
+        return this.getNodeType().getArtifacts() == null
+            ? new ArrayList<>()
+            : this.getNodeType().getArtifacts();
     }
 
     @POST
@@ -130,9 +127,9 @@ public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
     public Response addArtifact(TArtifact artifact) {
         TNodeType nodeType = this.getNodeType();
         if (nodeType.getArtifacts() == null) {
-            nodeType.setArtifacts(new TArtifacts());
+            nodeType.setArtifacts(new ArrayList<>());
         }
-        this.getNodeType().getArtifacts().addArtifact(artifact);
+        nodeType.getArtifacts().add(artifact);
         return RestUtils.persist(this);
     }
 
@@ -142,10 +139,10 @@ public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
     public Response deleteArtifact(@PathParam("name") String name) {
         TNodeType nodeType = this.getNodeType();
         if (nodeType.getArtifacts() == null) {
-            nodeType.setArtifacts(new TArtifacts());
+            nodeType.setArtifacts(new ArrayList<>());
         }
         TArtifact artifact = null;
-        for (TArtifact item : nodeType.getArtifacts().getArtifact()) {
+        for (TArtifact item : nodeType.getArtifacts()) {
             if (name.equalsIgnoreCase(item.getName())) {
                 artifact = item;
             }
@@ -153,9 +150,8 @@ public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
         if (artifact == null) {
             return Response.noContent().build();
         }
-        List<TArtifact> artifacts = nodeType.getArtifacts().getArtifact();
+        List<TArtifact> artifacts = nodeType.getArtifacts();
         artifacts.remove(artifact);
-        this.getNodeType().getArtifacts().setArtifact(artifacts);
         this.uploadArtifact(name).deleteFile(artifact.getFile(), null);
         return RestUtils.persist(this);
     }

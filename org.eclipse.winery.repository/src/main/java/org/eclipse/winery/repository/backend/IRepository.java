@@ -67,8 +67,8 @@ import org.eclipse.winery.model.ids.extensions.TestRefinementModelId;
 import org.eclipse.winery.model.ids.extensions.TopologyFragmentRefinementModelId;
 import org.eclipse.winery.model.tosca.HasInheritance;
 import org.eclipse.winery.model.tosca.HasType;
+import org.eclipse.winery.model.tosca.TArtifact;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
-import org.eclipse.winery.model.tosca.TArtifacts;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
@@ -705,9 +705,9 @@ public interface IRepository extends IWineryRepositoryCommon {
         }
 
         // Store all referenced artifact types 
-        TArtifacts artifacts = nodeType.getArtifacts();
+        List<TArtifact> artifacts = nodeType.getArtifacts();
         if (Objects.nonNull(artifacts)) {
-            artifacts.getArtifact().forEach(a -> ids.add(new ArtifactTypeId(a.getType())));
+            artifacts.forEach(a -> ids.add(new ArtifactTypeId(a.getType())));
         }
 
         getReferencedDefinitionsOfProperties(ids, nodeType.getProperties());
@@ -979,9 +979,9 @@ public interface IRepository extends IWineryRepositoryCommon {
                         }
                     }
                     // Store all referenced artifact types
-                    TArtifacts artifacts = n.getArtifacts();
+                    List<TArtifact> artifacts = n.getArtifacts();
                     if (Objects.nonNull(artifacts)) {
-                        artifacts.getArtifact().forEach(a -> ids.add(new ArtifactTypeId(a.getType())));
+                        artifacts.forEach(a -> ids.add(new ArtifactTypeId(a.getType())));
                     }
 
                     TNodeType nodeType = this.getElement(new NodeTypeId(qname));

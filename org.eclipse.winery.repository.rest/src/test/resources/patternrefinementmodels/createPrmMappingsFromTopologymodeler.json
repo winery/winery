@@ -172,10 +172,8 @@
                 "policy": [
                 ]
             },
-            "artifacts": {
-                "artifact": [
-                ]
-            }
+            "artifacts": [
+            ]
         },
         {
             "documentation": [
@@ -205,10 +203,7 @@
                 "policy": [
                 ]
             },
-            "artifacts": {
-                "artifact": [
-                ]
-            }
+            "artifacts": []
         },
         {
             "documentation": [
@@ -238,10 +233,7 @@
                 "policy": [
                 ]
             },
-            "artifacts": {
-                "artifact": [
-                ]
-            }
+            "artifacts": []
         }
     ],
     "policies": {

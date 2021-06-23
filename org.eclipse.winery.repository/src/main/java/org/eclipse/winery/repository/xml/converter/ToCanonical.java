@@ -958,7 +958,7 @@ public class ToCanonical {
 
     private TRelationshipTemplate convert(XTRelationshipTemplate xml) {
         TRelationshipTemplate.Builder builder = new TRelationshipTemplate.Builder(xml.getId(), xml.getType(),
-            convert(xml.getSourceElement()), convert(xml.getTargetElement()));
+            convert(xml.getSourceElement().getRef()), convert(xml.getTargetElement().getRef()));
         builder.setName(xml.getName());
         if (xml.getRelationshipConstraints() != null) {
             TRelationshipTemplate.RelationshipConstraints constraints = new TRelationshipTemplate.RelationshipConstraints();
@@ -978,12 +978,6 @@ public class ToCanonical {
         TRelationshipTemplate.RelationshipConstraints.RelationshipConstraint canonical = new TRelationshipTemplate.RelationshipConstraints.RelationshipConstraint();
         canonical.setAny(xml.getAny());
         canonical.setConstraintType(xml.getConstraintType());
-        return canonical;
-    }
-
-    private TRelationshipTemplate.SourceOrTargetElement convert(XTRelationshipTemplate.SourceOrTargetElement xml) {
-        TRelationshipTemplate.SourceOrTargetElement canonical = new TRelationshipTemplate.SourceOrTargetElement();
-        canonical.setRef(convert(xml.getRef()));
         return canonical;
     }
 

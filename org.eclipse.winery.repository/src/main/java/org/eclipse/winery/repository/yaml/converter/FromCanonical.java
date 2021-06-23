@@ -42,7 +42,6 @@ import org.eclipse.winery.model.tosca.TArtifact;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
-import org.eclipse.winery.model.tosca.TArtifacts;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
@@ -54,6 +53,7 @@ import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TDocumentation;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TEntityTypeImplementation;
 import org.eclipse.winery.model.tosca.TGroupDefinition;
 import org.eclipse.winery.model.tosca.TGroupType;
 import org.eclipse.winery.model.tosca.TImplementation;
@@ -308,7 +308,7 @@ public class FromCanonical {
                 .setProperties(convert(node.getProperties()))
                 .setMetadata(meta)
                 .setRequirements(convertRequirements(node.getRequirements()))
-                .setCapabilities(convertCapabilities(node.getCapabilities()))
+                .setCapabilities(convert(node.getCapabilities()))
                 .setArtifacts(convert(node.getArtifacts()))
                 .build()
         );
@@ -490,7 +490,7 @@ public class FromCanonical {
         );
     }
 
-    public Map<String, YTInterfaceDefinition> convert(List<TInterface> node, TRelationshipTypeImplementation implementation) {
+    public Map<String, YTInterfaceDefinition> convert(List<TInterface> node, TEntityTypeImplementation implementation) {
         if (Objects.isNull(node)) {
             return null;
         }
@@ -667,25 +667,6 @@ public class FromCanonical {
         );
     }
 
-    @Deprecated
-    public Map<String, YTInterfaceDefinition> convert(List<TInterface> node, TNodeTypeImplementation implementation) {
-        if (Objects.isNull(node)) {
-            return null;
-        }
-        return node.stream()
-            .filter(Objects::nonNull)
-            .map(entry -> convert(
-                entry,
-                Optional.ofNullable(implementation.getImplementationArtifacts()).orElse(new TImplementationArtifacts())
-                    .getImplementationArtifact().stream()
-                    .filter(impl -> Objects.nonNull(impl) && impl.getInterfaceName().equals(entry.getName()))
-                    .collect(Collectors.toList())
-                )
-            )
-            .flatMap(entry -> entry.entrySet().stream())
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
-
     @NonNull
     @Deprecated
     public Map<String, YTInterfaceDefinition> convert(TInterface node, @NonNull List<TImplementationArtifact> impl) {
@@ -800,7 +781,7 @@ public class FromCanonical {
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
     }
-    
+
     public List<YTMapRequirementAssignment> convertRequirements(List<TRequirement> node) {
         if (Objects.isNull(node)) {
             return null;
@@ -818,8 +799,13 @@ public class FromCanonical {
         }
         return node.getDeploymentArtifact().stream()
             .filter(Objects::nonNull)
-            .map(ia -> new LinkedHashMap.SimpleEntry<>(ia.getArtifactRef().getLocalPart(), convertArtifactReference(new QName(ia.getArtifactRef().getNamespaceURI(), ia.getArtifactRef().getLocalPart()))))
-            .filter(Objects::nonNull)
+            .filter(ia -> Objects.nonNull(ia.getArtifactRef()))
+            .map(ia -> new LinkedHashMap.SimpleEntry<>(
+                ia.getArtifactRef().getLocalPart(),
+                convertArtifactReference(
+                    new QName(ia.getArtifactRef().getNamespaceURI(), ia.getArtifactRef().getLocalPart())
+                )
+            ))
             .filter(entry -> Objects.nonNull(entry.getValue()))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
@@ -830,10 +816,15 @@ public class FromCanonical {
         }
         Map<String, YTArtifactDefinition> output = new LinkedHashMap<>();
         for (TDeploymentArtifact deploymentArtifact : node.getDeploymentArtifact()) {
-            if (artifacts.containsKey(deploymentArtifact.getArtifactRef().getLocalPart())) {
-                output.put(deploymentArtifact.getArtifactRef().getLocalPart(), artifacts.get(deploymentArtifact.getArtifactRef().getLocalPart()));
-            } else {
-                output.put(deploymentArtifact.getArtifactRef().getLocalPart(), convertArtifactReference(deploymentArtifact.getArtifactRef()));
+            if (deploymentArtifact.getArtifactRef() != null) {
+                if (artifacts.containsKey(deploymentArtifact.getArtifactRef().getLocalPart())) {
+                    output.put(
+                        deploymentArtifact.getArtifactRef().getLocalPart(),
+                        artifacts.get(deploymentArtifact.getArtifactRef().getLocalPart())
+                    );
+                } else {
+                    output.put(deploymentArtifact.getArtifactRef().getLocalPart(), convertArtifactReference(deploymentArtifact.getArtifactRef()));
+                }
             }
         }
 
@@ -846,10 +837,12 @@ public class FromCanonical {
         }
         Map<String, YTArtifactDefinition> output = new LinkedHashMap<>();
         for (TImplementationArtifact implementationArtifact : node.getImplementationArtifact()) {
-            if (artifacts.containsKey(implementationArtifact.getArtifactRef().getLocalPart())) {
-                output.put(implementationArtifact.getArtifactRef().getLocalPart(), artifacts.get(implementationArtifact.getArtifactRef().getLocalPart()));
-            } else {
-                output.put(implementationArtifact.getArtifactRef().getLocalPart(), convertArtifactReference(implementationArtifact.getArtifactRef()));
+            if (implementationArtifact.getArtifactRef() != null) {
+                if (artifacts.containsKey(implementationArtifact.getArtifactRef().getLocalPart())) {
+                    output.put(implementationArtifact.getArtifactRef().getLocalPart(), artifacts.get(implementationArtifact.getArtifactRef().getLocalPart()));
+                } else {
+                    output.put(implementationArtifact.getArtifactRef().getLocalPart(), convertArtifactReference(implementationArtifact.getArtifactRef()));
+                }
             }
         }
         return output;
@@ -899,17 +892,17 @@ public class FromCanonical {
         TArtifactTemplate.ArtifactReferences artifactReferences = node.getArtifactReferences();
         if (artifactReferences != null) {
             List<TArtifactReference> artifactReferenceList = artifactReferences.getArtifactReference();
-            if (artifactReferenceList != null) {
-                for (TArtifactReference artifactReference : artifactReferenceList) {
-                    files.add(artifactReference.getReference());
-                }
+            for (TArtifactReference artifactReference : artifactReferenceList) {
+                files.add(artifactReference.getReference());
             }
         }
-        return new YTArtifactDefinition.Builder(getQName(
-            new ArtifactTypeId(node.getType()),
-            node.getType().getNamespaceURI(),
-            node.getType().getLocalPart()
-        ), files.size() > 0 ? files.get(0) : null)
+        return new YTArtifactDefinition.Builder(
+            getQName(
+                new ArtifactTypeId(node.getType()),
+                node.getType().getNamespaceURI(),
+                node.getType().getLocalPart()
+            ),
+            files.size() > 0 ? files.get(0) : null)
             .build();
     }
 
@@ -1030,37 +1023,6 @@ public class FromCanonical {
 
     private QName convertType(String type) {
         return TypeConverter.INSTANCE.convert(type);
-    }
-
-    public Map<String, YTArtifactDefinition> convert(TArtifacts node) {
-        if (Objects.isNull(node)) {
-            return null;
-        }
-
-        if (Objects.isNull(node.getArtifact())) {
-            return new HashMap<>();
-        }
-
-        return node.getArtifact().stream()
-            .filter(Objects::nonNull)
-            .map(this::convert)
-            .filter(Objects::nonNull)
-            .flatMap(map -> map.entrySet().stream())
-            .filter(Objects::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
-
-    public Map<String, YTCapabilityAssignment> convertCapabilities(List<TCapability> capabilities) {
-        if (Objects.isNull(capabilities)) {
-            return null;
-        }
-        return capabilities.stream()
-            .filter(Objects::nonNull)
-            .map(this::convert)
-            .filter(Objects::nonNull)
-            .flatMap(map -> map.entrySet().stream())
-            .filter(Objects::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     public Map<String, YTArtifactDefinition> convert(TArtifact node) {
@@ -1189,6 +1151,8 @@ public class FromCanonical {
                     return convert((TGroupDefinition) node).entrySet().stream();
                 } else if (node instanceof TGroupType) {
                     return convert((TGroupType) node).entrySet().stream();
+                } else if (node instanceof TCapability) {
+                    return convert((TCapability) node).entrySet().stream();
                 }
                 throw new AssertionError();
             })

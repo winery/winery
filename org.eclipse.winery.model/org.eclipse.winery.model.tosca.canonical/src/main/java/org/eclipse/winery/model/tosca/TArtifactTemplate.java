@@ -118,7 +118,7 @@ public class TArtifactTemplate extends TEntityTemplate {
         @NonNull
         public List<TArtifactReference> getArtifactReference() {
             if (artifactReference == null) {
-                artifactReference = new ArrayList<TArtifactReference>();
+                artifactReference = new ArrayList<>();
             }
             return this.artifactReference;
         }

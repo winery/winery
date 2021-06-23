@@ -77,7 +77,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
     
     // this element is added to support YAML mode
     @XmlElement(name = "Artifacts", required = false)
-    protected TArtifacts artifacts;
+    protected List<TArtifact> artifacts;
 
     @Deprecated // used for XML deserialization of API request content
     public TNodeTemplate() {
@@ -173,7 +173,6 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
         this.name = value;
     }
 
-    @NonNull
     public int getMinInstances() {
         if (minInstances == null) {
             return 1;
@@ -246,11 +245,11 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
         visitor.visit(this);
     }
 
-    public TArtifacts getArtifacts() {
+    public List<TArtifact> getArtifacts() {
         return artifacts;
     }
 
-    public void setArtifacts(TArtifacts artifacts) {
+    public void setArtifacts(List<TArtifact> artifacts) {
         this.artifacts = artifacts;
     }
 
@@ -265,7 +264,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
         private String maxInstances;
         private String x;
         private String y;
-        private TArtifacts artifacts;
+        private List<TArtifact> artifacts;
 
         public Builder(String id, QName type) {
             super(id, type);
@@ -400,7 +399,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
         }
         
         public Builder setArtifacts(List<TArtifact> artifacts) {
-            this.artifacts = new TArtifacts(artifacts);
+            this.artifacts = artifacts;
             return self();
         }
 

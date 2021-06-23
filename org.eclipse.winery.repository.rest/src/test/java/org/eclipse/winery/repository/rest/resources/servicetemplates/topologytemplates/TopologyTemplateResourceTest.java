@@ -67,8 +67,10 @@ public class TopologyTemplateResourceTest extends AbstractResourceTest {
     public void emptyElementTagsInXML() throws Exception {
         this.setRevisionTo("origin/plain");
         // for testing an arbitrary existing service template is used
-        this.assertPut("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants_w1-wip1/topologytemplate/", "servicetemplates/topologytemplates/plain-TopologyTemplateMinimalExampleWithAllPropertyVariants_w1-wip1.json");
-        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants_w1-wip1/topologytemplate/", "servicetemplates/topologytemplates/plain-TopologyTemplateMinimalExampleWithAllPropertyVariants_w1-wip1.xml");
+        this.assertPut("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants_w1-wip1/topologytemplate/",
+            "servicetemplates/topologytemplates/plain-TopologyTemplateMinimalExampleWithAllPropertyVariants_w1-wip1.json");
+        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants_w1-wip1/topologytemplate/",
+            "servicetemplates/topologytemplates/plain-TopologyTemplateMinimalExampleWithAllPropertyVariants_w1-wip1.xml");
     }
 
     @Test

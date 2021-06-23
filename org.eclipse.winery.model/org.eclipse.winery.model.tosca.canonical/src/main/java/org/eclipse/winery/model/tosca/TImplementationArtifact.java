@@ -54,9 +54,10 @@ public class TImplementationArtifact extends TExtensibleElements implements HasN
     protected QName artifactRef;
 
     @Deprecated // used for XML deserialization of API request content
-    public TImplementationArtifact() { }
+    public TImplementationArtifact() {
+    }
 
-    public TImplementationArtifact(Builder builder) {
+    public TImplementationArtifact(TImplementationArtifact.Builder<?> builder) {
         super(builder);
         this.name = builder.name;
         this.interfaceName = builder.interfaceName;
@@ -99,7 +100,6 @@ public class TImplementationArtifact extends TExtensibleElements implements HasN
         this.name = value;
     }
 
-    @Nullable
     public String getInterfaceName() {
         return interfaceName;
     }

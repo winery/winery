@@ -48,8 +48,8 @@ public class YamlArtifactsSynchronizer {
                 this.deleteNodeTemplate(originalNT);
             } else {
                 if (originalNT.getArtifacts() != null) {
-                    List<TArtifact> toDelete = this.getDeleteList(originalNT.getArtifacts().getArtifact(),
-                        newNT.getArtifacts() != null ? newNT.getArtifacts().getArtifact() : null);
+                    List<TArtifact> toDelete = this.getDeleteList(originalNT.getArtifacts(),
+                        newNT.getArtifacts() != null ? newNT.getArtifacts() : null);
 
                     for (TArtifact artifact : toDelete) {
                         this.deleteYamlArtifact(originalNT, artifact);
