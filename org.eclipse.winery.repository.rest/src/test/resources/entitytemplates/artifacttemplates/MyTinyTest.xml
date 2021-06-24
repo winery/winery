@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Definitions xmlns="http://docs.oasis-open.org/tosca/ns/2011/12" id="winery-defs-for_artifacttemplates-MyTinyTest"
+<Definitions xmlns="http://docs.oasis-open.org/tosca/ns/2011/12" id="artifacttemplates-MyTinyTest"
              targetNamespace="http://opentosca.org/artifacttemplates">
     <Import importType="http://docs.oasis-open.org/tosca/ns/2011/12"
             location="http://localhost:9080/winery/artifacttypes/http%253A%252F%252Fopentosca.org%252Fartifacttypes/MiniArtifactType/?definitions"

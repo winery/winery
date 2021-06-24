@@ -1,6 +1,6 @@
 <tosca:Definitions
     xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12"
-    id="winery-defs-for_ns8-DressageEquipment_Pony"
+    id="ns8-DressageEquipment_Pony"
                    targetNamespace="http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier">
     <tosca:Import importType="http://docs.oasis-open.org/tosca/ns/2011/12" location="ns0__DressageEquipment_Pony.tosca"
                   namespace="http://winery.opentosca.org/test/ponyuniverse"/>
