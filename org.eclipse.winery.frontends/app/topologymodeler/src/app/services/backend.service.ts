@@ -86,7 +86,7 @@ export class BackendService {
                 params.compareTo ? true : params.isReadonly,
                 params.parentPath,
                 params.elementPath,
-                params.topologyProDecURL
+                decodeURIComponent(params.topologyProDecURL),
             );
 
             const url = this.configuration.parentPath + '/'

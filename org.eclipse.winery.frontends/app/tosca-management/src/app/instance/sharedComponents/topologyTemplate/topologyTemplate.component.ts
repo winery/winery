@@ -66,6 +66,10 @@ export class TopologyTemplateComponent implements OnInit {
             editorConfig += '&isReadonly=true';
         }
 
+        if (this.configurationService.configuration.endpoints.tops) {
+            editorConfig += '&topologyProDecURL=' + encodeURIComponent(this.configurationService.configuration.endpoints.tops);
+        }
+
         // Disabled next line since in most use cases we don't run the Topology Modeler in a separate instance
         // this.editorUrl = this.configurationService.configuration.endpoints.topologymodeler + editorConfig;
         this.editorUrl = editorURL + editorConfig;

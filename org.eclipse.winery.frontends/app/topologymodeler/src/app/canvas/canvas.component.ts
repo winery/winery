@@ -1034,6 +1034,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      */
     handleNewRelationship(currentRelationships: Array<TRelationshipTemplate>): void {
         const newRel = currentRelationships[currentRelationships.length - 1];
+        // define default properties of the node based on the type of the node
+        newRel.properties = InheritanceUtils.getDefaultPropertiesFromEntityTypes(newRel.type, this.entityTypes.relationshipTypes);
         this.allRelationshipTemplates.push(newRel);
         this.manageRelationships(newRel);
     }

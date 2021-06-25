@@ -44,6 +44,7 @@ export interface WineryConfiguration {
         workflowmodeler: string;
         edmmTransformationTool: string;
         eclipseChe: string;
+        tops: string;
     };
     git: {
         clientId: string;
