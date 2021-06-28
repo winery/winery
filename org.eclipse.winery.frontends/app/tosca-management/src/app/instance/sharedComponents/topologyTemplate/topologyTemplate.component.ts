@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -64,6 +64,10 @@ export class TopologyTemplateComponent implements OnInit {
 
         if (!this.sharedData.currentVersion.editable) {
             editorConfig += '&isReadonly=true';
+        }
+
+        if (this.configurationService.configuration.endpoints.tops) {
+            editorConfig += '&topologyProDecURL=' + encodeURIComponent(this.configurationService.configuration.endpoints.tops);
         }
 
         // Disabled next line since in most use cases we don't run the Topology Modeler in a separate instance

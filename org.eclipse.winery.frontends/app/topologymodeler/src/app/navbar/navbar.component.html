@@ -179,16 +179,6 @@
                     {{placingOngoing ? 'Placing...' : 'Place Components'}}
                 </button>
             </div>
-            <div *wineryRepositoryFeatureToggle="configEnum.ProblemDetection" class="btn-group button-group"
-                 data-toggle="buttons">
-                <button class="btn btn-sm align-middle dark-button-style"
-                        type="button"
-                        id="problemdetection"
-                        (click)="toggleButton($event)"
-                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.problemDetectionButton)">
-                    Detect Problems
-                </button>
-            </div>
             <div *wineryRepositoryFeatureToggle="configEnum.ManagementFeatureEnrichment" class="btn-group button-group"
                  data-toggle="buttons">
                 <button class="btn btn-sm align-middle dark-button-style"
