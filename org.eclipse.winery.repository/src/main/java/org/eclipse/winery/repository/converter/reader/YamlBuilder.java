@@ -589,12 +589,8 @@ public class YamlBuilder {
                 .setClazz(YTInterfaceType.class))
             .setInputs(buildMap(map, "inputs", this::buildPropertyDefinition,
                 YTPropertyDefinition.class, parameter))
-            .setOperations(buildMap(object,
-                new Parameter<YTOperationDefinition>(parameter.getContext()).addContext("(operations)")
-                    .setValue("TInterfaceType")
-                    .setBuilderOO(this::buildOperationDefinition)
-                    .setFilter(this::filterInterfaceTypeOperation)
-            ))
+            .setOperations(buildMap(map, "operations", this::buildOperationDefinition,
+                YTOperationDefinition.class, parameter))
             .setDerivedFrom(buildQName(stringValue(map.get("derived_from"))))
             .build();
     }
