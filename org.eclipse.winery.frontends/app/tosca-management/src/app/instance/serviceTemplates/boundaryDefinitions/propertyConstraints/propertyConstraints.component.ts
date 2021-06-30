@@ -103,14 +103,6 @@ export class PropertyConstraintsComponent implements OnInit {
         );
     }
 
-    private getConstraints() {
-        this.addLoad();
-        this.service.getConstraints().subscribe(
-            data => this.handleData(data),
-            error => this.handleError(error)
-        );
-    }
-
     handlePostResponse(data: HttpResponse<string>) {
         this.decreaseLoad();
         if (data.ok) {
@@ -129,6 +121,14 @@ export class PropertyConstraintsComponent implements OnInit {
         } else {
             this.notify.error('Failed to delete Property Constraint');
         }
+    }
+
+    private getConstraints() {
+        this.addLoad();
+        this.service.getConstraints().subscribe(
+            data => this.handleData(data),
+            error => this.handleError(error)
+        );
     }
 
     private handleData(data: PropertyConstraintApiData[]) {

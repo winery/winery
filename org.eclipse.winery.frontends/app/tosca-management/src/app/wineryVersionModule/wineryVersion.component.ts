@@ -120,27 +120,6 @@ export class WineryVersionComponent {
         ]);
     }
 
-    private handleSubComponents(data: QNameWithTypeApiData[]) {
-        this.modalConfig.loading = false;
-        this.referencedDefinitions = data;
-    }
-
-    private handleError(error: HttpErrorResponse) {
-        this.notify.error(error.message, 'Error');
-    }
-
-    private onShowModal() {
-        this.modalConfig = new WineryVersionModalConfig();
-        this.modalConfig.valid = true;
-        // Future Work: also update referencing definitions
-        /*this.modalConfig.loading = true;
-        this.service.getReferencedDefinitions()
-            .subscribe(
-                data => this.handleSubComponents(data),
-                error => this.handleError(error)
-            );*/
-    }
-
     componentVersionSelected() {
         this.newVersion = this.newComponentVersion;
         this.modalConfig.valid = true;
@@ -266,5 +245,26 @@ export class WineryVersionComponent {
 
         this.notify.success('Successfully ' + action + ' ' + newLocalName);
         this.router.navigate([url]);
+    }
+
+    private handleSubComponents(data: QNameWithTypeApiData[]) {
+        this.modalConfig.loading = false;
+        this.referencedDefinitions = data;
+    }
+
+    private handleError(error: HttpErrorResponse) {
+        this.notify.error(error.message, 'Error');
+    }
+
+    private onShowModal() {
+        this.modalConfig = new WineryVersionModalConfig();
+        this.modalConfig.valid = true;
+        // Future Work: also update referencing definitions
+        /*this.modalConfig.loading = true;
+        this.service.getReferencedDefinitions()
+            .subscribe(
+                data => this.handleSubComponents(data),
+                error => this.handleError(error)
+            );*/
     }
 }

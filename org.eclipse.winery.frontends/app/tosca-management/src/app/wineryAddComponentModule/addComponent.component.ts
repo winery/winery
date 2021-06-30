@@ -64,9 +64,10 @@ export class WineryAddComponent {
     @ViewChild('addComponentData') addComponentData: WineryAddComponentDataComponent;
     useStartNamespace = true;
 
-    private readonly storageKey = 'hideVersionHelp';
     collapseVersioning: boolean;
     valid: boolean;
+
+    private readonly storageKey = 'hideVersionHelp';
 
     constructor(private sectionService: SectionService,
                 private inheritanceService: InheritanceService,
@@ -77,7 +78,6 @@ export class WineryAddComponent {
     }
 
     onAdd(componentType?: SelectData) {
-        debugger
         const typesUrl = Utils.getTypeOfTemplateOrImplementation(this.toscaType);
         this.addModalType = Utils.getToscaTypeNameFromToscaType(this.toscaType);
         this.useStartNamespace = !(this.namespace && this.namespace.length > 0);
@@ -139,6 +139,18 @@ export class WineryAddComponent {
             this.storage.setItem(this.storageKey, 'true');
         }
         this.hideHelp = !this.hideHelp;
+    }
+
+    setNewComponentName(name: string) {
+        this.newComponentFinalName = name;
+    }
+
+    setNewComponentNamespace(namespace: string) {
+        this.newComponentNamespace = namespace;
+    }
+
+    setValid(valid: boolean) {
+        this.valid = !valid;
     }
 
     private handleTypes(types: SelectData[]): void {
@@ -206,17 +218,5 @@ export class WineryAddComponent {
         if (!this.typeRequired || this.types) {
             this.showModal();
         }
-    }
-
-    setNewComponentName(name: string) {
-        this.newComponentFinalName = name;
-    }
-
-    setNewComponentNamespace(namespace: string) {
-        this.newComponentNamespace = namespace;
-    }
-
-    setValid(valid: boolean) {
-        this.valid = !valid;
     }
 }

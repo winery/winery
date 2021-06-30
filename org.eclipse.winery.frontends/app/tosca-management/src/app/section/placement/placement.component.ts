@@ -136,12 +136,12 @@ export class PlacementComponent implements DoCheck, OnInit {
         this.file = null;
     }
 
-    private handleError(error: HttpErrorResponse) {
-        this.notify.error(error.message);
-    }
-
     toggleEditable(event: { target: { checked: any; }; }) {
         this.openInTab = event.target.checked;
+    }
+
+    private handleError(error: HttpErrorResponse) {
+        this.notify.error(error.message);
     }
 }
 

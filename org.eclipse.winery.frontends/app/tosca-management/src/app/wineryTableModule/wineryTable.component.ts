@@ -275,31 +275,6 @@ export class WineryTableComponent implements OnInit, DoCheck {
         this.refreshRowHighlighting();
     }
 
-    private refreshRowHighlighting(): void {
-        const tableRows = this.tableContainer.nativeElement.children[0].children[0].children[1].children;
-
-        for (let i = 0; i < tableRows.length; i++) {
-            tableRows[i].className = (i === this.selectedRow) ? 'active-row' : '';
-        }
-    }
-
-    private applyDisplay(row: any): any {
-        if (row === null || row === undefined) {
-            return row;
-        }
-        if (!this.columns.some(coldef => coldef.display !== undefined)) {
-            return row;
-        }
-        const result = {};
-        Object.assign(result, row);
-        for (const displayColumn of this.columns) {
-            if (displayColumn.display !== undefined) {
-                result[displayColumn.name] = displayColumn.display(row[displayColumn.name]);
-            }
-        }
-        return result;
-    }
-
     onAddClick($event: Event) {
         $event.stopPropagation();
         this.addBtnClicked.emit();
@@ -343,6 +318,30 @@ export class WineryTableComponent implements OnInit, DoCheck {
         }
     }
 
+    private refreshRowHighlighting(): void {
+        const tableRows = this.tableContainer.nativeElement.children[0].children[0].children[1].children;
+
+        for (let i = 0; i < tableRows.length; i++) {
+            tableRows[i].className = (i === this.selectedRow) ? 'active-row' : '';
+        }
+    }
+
+    private applyDisplay(row: any): any {
+        if (row === null || row === undefined) {
+            return row;
+        }
+        if (!this.columns.some(coldef => coldef.display !== undefined)) {
+            return row;
+        }
+        const result = {};
+        Object.assign(result, row);
+        for (const displayColumn of this.columns) {
+            if (displayColumn.display !== undefined) {
+                result[displayColumn.name] = displayColumn.display(row[displayColumn.name]);
+            }
+        }
+        return result;
+    }
 }
 
 /**

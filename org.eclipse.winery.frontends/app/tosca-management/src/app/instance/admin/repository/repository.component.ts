@@ -105,28 +105,6 @@ export class RepositoryComponent implements OnInit {
         );
     }
 
-    private deleteItem(itemToDelete: Repository): void {
-        const list = this.repositories;
-        for (let i = 0; i < list.length; i++) {
-            if (list[i].name === itemToDelete.name) {
-                list.splice(i, 1);
-            }
-        }
-    }
-
-    private handleSave() {
-        this.cloning = false;
-        this.handleSuccess('Saved changes on server');
-        this.getRepositories();
-    }
-
-    private handleRemove() {
-        this.deleteItem(this.elementToRemove);
-        this.elementToRemove = null;
-        this.save();
-        this.getRepositories();
-    }
-
     clearRepository() {
         this.loading = true;
         this.service.clearRepository().subscribe(
@@ -150,5 +128,27 @@ export class RepositoryComponent implements OnInit {
             this.loading = false;
             this.notify.success('Touch all definitions completed');
         });
+    }
+
+    private deleteItem(itemToDelete: Repository): void {
+        const list = this.repositories;
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].name === itemToDelete.name) {
+                list.splice(i, 1);
+            }
+        }
+    }
+
+    private handleSave() {
+        this.cloning = false;
+        this.handleSuccess('Saved changes on server');
+        this.getRepositories();
+    }
+
+    private handleRemove() {
+        this.deleteItem(this.elementToRemove);
+        this.elementToRemove = null;
+        this.save();
+        this.getRepositories();
     }
 }

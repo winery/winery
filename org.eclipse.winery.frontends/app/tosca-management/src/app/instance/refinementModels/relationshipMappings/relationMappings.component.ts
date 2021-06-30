@@ -130,6 +130,32 @@ export class RelationMappingsComponent implements OnInit {
 
     }
 
+    save(mapping: RelationMapping) {
+        this.loading = true;
+        const id = this.service.getNewMappingsId(this.relationshipMappings, RelationMapping.idPrefix);
+        const newMapping = new RelationMapping(id);
+        newMapping.detectorElement = mapping.detectorElement;
+        newMapping.refinementElement = mapping.refinementElement;
+        newMapping.direction = mapping.direction;
+        newMapping.relationType = mapping.relationType;
+        newMapping.validSourceOrTarget = mapping.validSourceOrTarget;
+
+        this.service.addRelationMapping(newMapping).subscribe(
+            data => this.handleSave('Added', data),
+            error => this.handleError(error)
+        );
+
+    }
+
+    remove(mapping: RelationMapping) {
+        this.loading = true;
+        this.service.deleteRelationMapping(mapping)
+            .subscribe(
+                data => this.handleSave('Removed', data),
+                error => this.handleError(error)
+            );
+    }
+
     private handleData(data: any) {
         this.loading = false;
         this.relationshipMappings = data[0];
@@ -162,32 +188,6 @@ export class RelationMappingsComponent implements OnInit {
                 });
             }
         );
-    }
-
-    save(mapping: RelationMapping) {
-        this.loading = true;
-        const id = this.service.getNewMappingsId(this.relationshipMappings, RelationMapping.idPrefix);
-        const newMapping = new RelationMapping(id);
-        newMapping.detectorElement = mapping.detectorElement;
-        newMapping.refinementElement = mapping.refinementElement;
-        newMapping.direction = mapping.direction;
-        newMapping.relationType = mapping.relationType;
-        newMapping.validSourceOrTarget = mapping.validSourceOrTarget;
-
-        this.service.addRelationMapping(newMapping).subscribe(
-            data => this.handleSave('Added', data),
-            error => this.handleError(error)
-        );
-
-    }
-
-    remove(mapping: RelationMapping) {
-        this.loading = true;
-        this.service.deleteRelationMapping(mapping)
-            .subscribe(
-                data => this.handleSave('Removed', data),
-                error => this.handleError(error)
-            );
     }
 
     private handleError(error: HttpErrorResponse) {

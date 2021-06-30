@@ -126,15 +126,6 @@ export class WineryAddComponentDataComponent {
         this.collapseVersioning = !this.collapseVersioning;
     }
 
-    private determineFinalName() {
-        if (this.newComponentFinalName && this.newComponentFinalName.length > 0) {
-            if (this.useComponentVersion) {
-                this.newComponentFinalName += WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + this.newComponentVersion.toString();
-            }
-            this.createUrlAndCheck();
-        }
-    }
-
     createUrlAndCheck() {
         const namespace = encodeURIComponent(encodeURIComponent(this.newComponentNamespace));
         if (this.toscaType && namespace && this.newComponentFinalName) {
@@ -149,20 +140,6 @@ export class WineryAddComponentDataComponent {
         }
         this.newComponentNameEvent.emit(this.newComponentFinalName);
         this.newComponentNamespaceEvent.emit(this.newComponentNamespace);
-    }
-
-    private validate(create: boolean) {
-        this.validation = new AddComponentValidation();
-        if (!create) {
-            this.validation.noDuplicatesAllowed = true;
-            this.validFormEvent.emit(false);
-            return { noDuplicatesAllowed: true };
-
-        } else {
-            this.validation.noDuplicatesAllowed = false;
-            this.validFormEvent.emit(true);
-            return { noDuplicatesAllowed: false };
-        }
     }
 
     createNoteTypeImplementationName(fullName: SelectData) {
@@ -196,5 +173,28 @@ export class WineryAddComponentDataComponent {
             + this.newComponentVersion.componentVersion : '')
             + WineryVersion.WINERY_VERSION_SEPARATOR + newVersion;
         this.createUrlAndCheck();
+    }
+
+    private validate(create: boolean) {
+        this.validation = new AddComponentValidation();
+        if (!create) {
+            this.validation.noDuplicatesAllowed = true;
+            this.validFormEvent.emit(false);
+            return { noDuplicatesAllowed: true };
+
+        } else {
+            this.validation.noDuplicatesAllowed = false;
+            this.validFormEvent.emit(true);
+            return { noDuplicatesAllowed: false };
+        }
+    }
+
+    private determineFinalName() {
+        if (this.newComponentFinalName && this.newComponentFinalName.length > 0) {
+            if (this.useComponentVersion) {
+                this.newComponentFinalName += WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + this.newComponentVersion.toString();
+            }
+            this.createUrlAndCheck();
+        }
     }
 }

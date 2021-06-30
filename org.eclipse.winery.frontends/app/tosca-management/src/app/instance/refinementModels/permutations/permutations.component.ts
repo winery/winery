@@ -52,6 +52,14 @@ export class PermutationsComponent implements OnInit {
         this.loading = true;
     }
 
+    checkMutability() {
+        this.service.checkMutability().subscribe(
+            data => this.handleData(data, 'Successfully checked mutability!'),
+            error => this.handleError(error)
+        );
+        this.loading = true;
+    }
+
     private handleData(data: PermutationsResponse, message: string) {
         this.permutationsResponse = data;
 
@@ -75,13 +83,5 @@ export class PermutationsComponent implements OnInit {
     private handleError(error: HttpErrorResponse) {
         this.loading = false;
         this.notify.error(error.message);
-    }
-
-    checkMutability() {
-        this.service.checkMutability().subscribe(
-            data => this.handleData(data, 'Successfully checked mutability!'),
-            error => this.handleError(error)
-        );
-        this.loading = true;
     }
 }

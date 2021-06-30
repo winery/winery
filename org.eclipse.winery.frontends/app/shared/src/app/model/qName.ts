@@ -14,30 +14,11 @@
 
 export class QName {
 
-    public static stringToQName(name: string): QName {
-        return new QName(name);
-    }
-
-    public static create(nameSpace: string, localName: string): QName {
-        return new QName(`{${nameSpace}}${localName}`);
-    }
-
     private _localName: string;
     private _nameSpace: string;
 
     constructor(private _qName?: string) {
         this.parseQName();
-    }
-
-    private parseQName() {
-        const regex = /\{(.*?)\}(.*)/g;
-        const res = regex.exec(this._qName);
-
-        if (!res || res.length !== 3) {
-            throw new Error();
-        }
-        this._nameSpace = res[1];
-        this._localName = res[2];
     }
 
     /**
@@ -91,13 +72,32 @@ export class QName {
         this.parseQName();
     }
 
+    public static stringToQName(name: string): QName {
+        return new QName(name);
+    }
+
+    public static create(nameSpace: string, localName: string): QName {
+        return new QName(`{${nameSpace}}${localName}`);
+    }
+
     /**
      * Another setter for when the QName has to be constructed
      * @param localname
      * @param namespace
      */
-    setQNameWithLocalNameAndNamespace(localname: string, namespace: string) {
+    public setQNameWithLocalNameAndNamespace(localname: string, namespace: string) {
         this._qName = '{' + namespace + '}' + localname;
         this.parseQName();
+    }
+
+    private parseQName() {
+        const regex = /\{(.*?)\}(.*)/g;
+        const res = regex.exec(this._qName);
+
+        if (!res || res.length !== 3) {
+            throw new Error();
+        }
+        this._nameSpace = res[1];
+        this._localName = res[2];
     }
 }
