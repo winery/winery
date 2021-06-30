@@ -52,7 +52,7 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
     private subscriptions: Array<Subscription> = [];
 
     constructor(private backend: BackendService) {
-        this.subscriptions.push(this.backend.model$.subscribe(
+        this.subscriptions.push(this.backend.model.subscribe(
             model => {
                 this.nodeTypes = model.unGroupedNodeTypes.concat(model.relationshipTypes);
             }

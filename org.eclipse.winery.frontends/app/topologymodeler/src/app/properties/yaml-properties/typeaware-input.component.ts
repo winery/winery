@@ -57,7 +57,7 @@ export class TypeawareInputComponent implements ControlValueAccessor, OnInit, On
     private availableDataTypes: TDataType[] = [];
 
     constructor(private dataTypes: BackendService) {
-        this.dataTypes.model$.subscribe(backendModel => {
+        this.dataTypes.model.subscribe(backendModel => {
             this.availableDataTypes = backendModel.dataTypes;
         });
     }

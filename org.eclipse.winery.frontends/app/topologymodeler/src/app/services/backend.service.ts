@@ -13,7 +13,6 @@
  ********************************************************************************/
 
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
 import {
     Entity, EntityType, TArtifactType, TDataType, TPolicyType, TTopologyTemplate, VisualEntityType
 } from '../models/ttopology-template';
@@ -51,23 +50,20 @@ export class BackendService {
     configuration: TopologyModelerConfiguration;
     serviceTemplateURL: string;
     serviceTemplateUiUrl: string;
-    loaded$ = this.loaded.asObservable();
+
     // BehaviourSubject allows caching the latest value for subscribers
-    model$ = new BehaviorSubject<EntityTypesModel>(this.storedModel);
-    topTemplate$ = this.topTemplate.asObservable();
-    topDiff$ = this.topDiff.asObservable();
-
-    private loaded = new Subject<boolean>();
-
+    private _loaded = new BehaviorSubject<boolean>(false);
     // use stored model to aggregate data
-    private storedModel: EntityTypesModel = new EntityTypesModel();
 
     // TODO avoid splitting the stored data into four different subjects including a loaded state
+    private storedModel: EntityTypesModel = new EntityTypesModel();
+    private _model = new BehaviorSubject<EntityTypesModel>(this.storedModel);
+
     private topologyTemplate: TTopologyTemplate;
-    private topTemplate = new Subject<TTopologyTemplate>();
+    private _topTemplate = new BehaviorSubject<TTopologyTemplate>(this.topologyTemplate);
 
     private topologyDifferences: [ToscaDiff, TTopologyTemplate];
-    private topDiff = new Subject<[ToscaDiff, TTopologyTemplate]>();
+    private _topDiff = new BehaviorSubject<[ToscaDiff, TTopologyTemplate]>(this.topologyDifferences);
 
     constructor(private http: HttpClient,
                 private alert: ToastrService,
@@ -385,6 +381,22 @@ export class BackendService {
         }
     }
 
+    get model(): Observable<EntityTypesModel> {
+        return this._model;
+    }
+
+    get topDiff(): Observable<[ToscaDiff, TTopologyTemplate]> {
+        return this._topDiff;
+    }
+
+    get topTemplate(): Observable<TTopologyTemplate> {
+        return this._topTemplate;
+    }
+
+    get loaded(): Observable<boolean> {
+        return this._loaded;
+    }
+
     private handleAllEntitiesResult(results: [any, any, boolean]) {
         const templateAndVisuals = results[0];
 
@@ -399,7 +411,7 @@ export class BackendService {
         this.topologyDifferences = diff;
         // FIXME EWWWWW!
         if (this.topologyDifferences[0] !== undefined && this.topologyDifferences[1] !== undefined) {
-            this.topDiff.next(this.topologyDifferences);
+            this._topDiff.next(this.topologyDifferences);
         }
 
         // entity types are encapsulated in a separate forkJoin
@@ -426,10 +438,10 @@ export class BackendService {
             }
         }
 
-        this.model$.next(this.storedModel);
+        this._model.next(this.storedModel);
         // FIXME there is currently some temporal coupling in winery component that requires us to push the model before the topologyTemplate
-        this.topTemplate.next(this.topologyTemplate);
-        this.loaded.next(true);
+        this._topTemplate.next(this.topologyTemplate);
+        this._loaded.next(true);
     }
 
     /**
