@@ -137,8 +137,14 @@ export class WineryArtifactComponent implements OnInit {
         this.artifact.name = this.nodeTypeName;
         this.artifact.toscaType = ToscaTypes.ArtifactTemplate;
         this.existCheck();
-        this.addComponentData.createArtifactName(this.sharedData.toscaComponent, this.nodeType,
-            this.selectedOperation, this.isImplementationArtifact, this.nodeTypeName);
+        this.addComponentData.createArtifactName(
+            this.sharedData.toscaComponent,
+            this.nodeType,
+            this.selectedInterface ? this.selectedInterface.text : null,
+            this.selectedOperation,
+            this.isImplementationArtifact,
+            this.nodeTypeName
+        );
         this.addArtifactModal.show();
     }
 
@@ -448,10 +454,10 @@ export class WineryArtifactComponent implements OnInit {
     interfaceAndOperation() {
         if (this.isImplementationArtifact) {
             this.addComponentData.createArtifactName(this.sharedData.toscaComponent, this.nodeType,
-                this.selectedOperation, this.isImplementationArtifact, this.nodeTypeName);
+                this.selectedInterface.text, this.selectedOperation, this.isImplementationArtifact, this.nodeTypeName);
         } else {
             this.addComponentData.createArtifactName(this.sharedData.toscaComponent, this.nodeType,
-                this.newArtifact.artifactName, this.isImplementationArtifact, this.nodeTypeName);
+                null, this.newArtifact.artifactName, this.isImplementationArtifact, this.nodeTypeName);
         }
     }
 

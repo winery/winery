@@ -56,7 +56,7 @@ export class ImplementationsComponent implements OnInit {
 
     // region ######## table methods ########
     onCellSelected(data: WineryRowData) {
-        if (!isNullOrUndefined(data)) {
+        if (data) {
             this.selectedCell = data.row;
         }
     }
@@ -70,9 +70,7 @@ export class ImplementationsComponent implements OnInit {
     }
 
     onRemoveClick(data: ImplementationAPIData) {
-        if (isNullOrUndefined(data)) {
-            return;
-        } else {
+        if (data) {
             this.elementToRemove = data;
             this.confirmDeleteModal.show();
         }

@@ -167,29 +167,30 @@ export class WineryAddComponentDataComponent {
 
     createNoteTypeImplementationName(fullName: SelectData) {
         const version = Utils.getVersionFromString(fullName.text);
-        this.newComponentVersion.componentVersion = version ? version.toString() : '';
+        this.newComponentVersion.componentVersion = version ? version.getComponentVersion() : '';
         // we need to set both as it is required in the determineFinalName
-        this.newComponentFinalName = this.newComponentName = Utils.getNameWithoutVersion(fullName.text) + '-Impl';
+        this.newComponentFinalName = this.newComponentName = Utils.getNameWithoutVersion(fullName.text) + '-Implementation';
         this.determineFinalName();
     }
 
-    createArtifactName(toscaComponent: ToscaComponent, nodeTypeQName: string, operation: string,
+    createArtifactName(toscaComponent: ToscaComponent, nodeTypeQName: string, interfaceName: string, operation: string,
                        isImplementationArtifact: boolean, nodeType: string) {
-        const artifactType = isImplementationArtifact ? 'IA' : 'DA';
         const wineryVersion = Utils.getVersionFromString(nodeTypeQName);
         const newVersion = WineryVersion.WINERY_VERSION_PREFIX + 1 + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_WORK_IN_PROGRESS_PREFIX + 1;
         this.newComponentFinalName = nodeType;
-        if (operation) {
+        if (isImplementationArtifact) {
+            const readableInterfaceName = interfaceName && interfaceName.includes('/')
+                ? interfaceName.substring(interfaceName.lastIndexOf('/') + 1)
+                : interfaceName ? interfaceName : '';
             this.newComponentVersion.componentVersion = (wineryVersion && wineryVersion.componentVersion
                 ? wineryVersion.componentVersion + WineryVersion.WINERY_VERSION_SEPARATOR
                 : '')
-                + operation
-                + (isImplementationArtifact ? '' : '-' + artifactType);
+                + (operation && operation.length > 0 ? operation : readableInterfaceName);
         } else {
             this.newComponentVersion.componentVersion = (wineryVersion && wineryVersion.getComponentVersion()
                 ? wineryVersion.componentVersion + WineryVersion.WINERY_VERSION_SEPARATOR
-                : '')
-                + artifactType;
+                : '-')
+                + 'DA';
         }
         this.newComponentFinalName += (this.newComponentVersion.componentVersion ? WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR
             + this.newComponentVersion.componentVersion : '')

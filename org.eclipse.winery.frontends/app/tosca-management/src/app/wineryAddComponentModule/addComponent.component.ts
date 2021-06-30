@@ -77,6 +77,7 @@ export class WineryAddComponent {
     }
 
     onAdd(componentType?: SelectData) {
+        debugger
         const typesUrl = Utils.getTypeOfTemplateOrImplementation(this.toscaType);
         this.addModalType = Utils.getToscaTypeNameFromToscaType(this.toscaType);
         this.useStartNamespace = !(this.namespace && this.namespace.length > 0);
