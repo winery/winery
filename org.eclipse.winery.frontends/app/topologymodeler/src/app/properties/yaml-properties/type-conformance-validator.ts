@@ -40,15 +40,6 @@ export class TypeConformanceValidator implements Validator {
         this.laxParsing =  this.determineParsingStandard(this.enforcedType);
     }
 
-    private determineParsingStandard(enforcedType: TDataType | YamlWellKnown): boolean {
-        if (isWellKnown(enforcedType)) {
-            // these known types need to be parseable as objects because they are
-            return enforcedType !== 'list' && enforcedType !== 'map' && enforcedType !== 'range';
-        }
-        const dataTypeInheritance = InheritanceUtils.getInheritanceAncestry(enforcedType.qName, this.dataTypes);
-        return !dataTypeInheritance.some(definesProperties);
-    }
-
     validate(control: AbstractControl): ValidationErrors | null {
         const structuredValue = this.parseValue(control.value);
         if (structuredValue === undefined && (this.propDef.required || control.value !== '')) {
@@ -65,6 +56,15 @@ export class TypeConformanceValidator implements Validator {
             results.push(error);
         }
         return results.length === 0 ? null : { 'typeConformance': results };
+    }
+
+    private determineParsingStandard(enforcedType: TDataType | YamlWellKnown): boolean {
+        if (isWellKnown(enforcedType)) {
+            // these known types need to be parseable as objects because they are
+            return enforcedType !== 'list' && enforcedType !== 'map' && enforcedType !== 'range';
+        }
+        const dataTypeInheritance = InheritanceUtils.getInheritanceAncestry(enforcedType.qName, this.dataTypes);
+        return !dataTypeInheritance.some(definesProperties);
     }
 
     private fulfilsTypeDefinition(type: TDataType | YamlWellKnown, valuePath: string, structuredValue: any): string[] {

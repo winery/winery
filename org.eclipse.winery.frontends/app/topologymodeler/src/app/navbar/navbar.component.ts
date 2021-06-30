@@ -57,8 +57,6 @@ export class NavbarComponent implements OnDestroy {
     @Input() readonly: boolean;
     @Input() templateParameter: TopologyModelerConfiguration;
     @Input() entityTypes: EntityTypesModel;
-    @ViewChild('exportCsarButton')
-    private exportCsarButtonRef: ElementRef;
 
     navbarButtonsState: TopologyRendererState;
     currentTopologyTemplate: TTopologyTemplate;
@@ -69,6 +67,8 @@ export class NavbarComponent implements OnDestroy {
     placingOngoing: boolean;
     showVersionSliderButton: boolean;
     configEnum = FeatureEnum;
+    @ViewChild('exportCsarButton')
+    private exportCsarButtonRef: ElementRef;
 
     constructor(private alert: ToastrService,
                 private ngRedux: NgRedux<IWineryState>,

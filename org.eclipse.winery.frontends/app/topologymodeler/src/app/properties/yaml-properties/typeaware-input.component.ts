@@ -49,16 +49,12 @@ export class TypeawareInputComponent implements ControlValueAccessor, OnInit, On
     errors: string[] = [];
     _value: any;
 
-    // storage for callbacks
-    private _onChange: any = e => {};
-    private _onTouch: any = e => {};
+    JSON: JSON;
     private desugaredValidator: Validator = undefined;
 
     // this subject helps reduce computation load by debouncing validation triggers while the user adds input.
     private validationDebouncer: Subject<any> = new Subject<any>();
     private availableDataTypes: TDataType[] = [];
-
-    JSON: JSON;
 
     constructor(private dataTypes: BackendService) {
         this.dataTypes.model$.subscribe(backendModel => {
@@ -124,4 +120,8 @@ export class TypeawareInputComponent implements ControlValueAccessor, OnInit, On
         }
         return value;
     }
+
+    // storage for callbacks
+    private _onChange: any = e => {};
+    private _onTouch: any = e => {};
 }

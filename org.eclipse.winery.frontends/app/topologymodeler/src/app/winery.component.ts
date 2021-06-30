@@ -171,15 +171,6 @@ export class WineryComponent implements OnInit, AfterViewInit {
             this.configurationService.isYaml(), this.topologyDifferences);
     }
 
-    private configure(params: TopologyModelerConfiguration) {
-        this.backendService.configure(params);
-        this.templateParameter = params;
-        // change readonly to true, so that the properties of the PRM-mappings cannot be changed afterwards
-        if (this.templateParameter.elementPath === this.prmModellingUrlFragment) {
-            this.readonly = true;
-        }
-    }
-
     initiateData(): void {
         // TODO well, this is a mess
         this.backendService.model$.subscribe(m => {
@@ -210,6 +201,15 @@ export class WineryComponent implements OnInit, AfterViewInit {
 
     sidebarDeleteButtonClicked($event) {
         this.sidebarDeleteButtonClickEvent = $event;
+    }
+
+    private configure(params: TopologyModelerConfiguration) {
+        this.backendService.configure(params);
+        this.templateParameter = params;
+        // change readonly to true, so that the properties of the PRM-mappings cannot be changed afterwards
+        if (this.templateParameter.elementPath === this.prmModellingUrlFragment) {
+            this.readonly = true;
+        }
     }
 
     private triggerLoaded(what?: string) {

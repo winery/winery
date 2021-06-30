@@ -502,14 +502,6 @@ export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
         }
     }
 
-    private makeArtifactUrl() {
-        this.artifactOrPolicyUrl = this.backendService.configuration.repositoryURL
-            + urlElement.ArtifactTemplateURL
-            + encodeURIComponent(encodeURIComponent(this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace))
-            + '/' + this.deploymentArtifactOrPolicyModalData.modalTemplateName + '/';
-        // TODO: add upload ability "this.uploadUrl = this.artifactOrPolicyUrl + 'files/';"
-    }
-
     yamlArtifactFileSelected(files: FileList) {
         if (files && files.length > 0) {
             this.selectedYamlArtifactFile = files[0];
@@ -557,5 +549,13 @@ export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
             anchor.href = url;
             anchor.click();
         });
+    }
+
+    private makeArtifactUrl() {
+        this.artifactOrPolicyUrl = this.backendService.configuration.repositoryURL
+            + urlElement.ArtifactTemplateURL
+            + encodeURIComponent(encodeURIComponent(this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace))
+            + '/' + this.deploymentArtifactOrPolicyModalData.modalTemplateName + '/';
+        // TODO: add upload ability "this.uploadUrl = this.artifactOrPolicyUrl + 'files/';"
     }
 }
