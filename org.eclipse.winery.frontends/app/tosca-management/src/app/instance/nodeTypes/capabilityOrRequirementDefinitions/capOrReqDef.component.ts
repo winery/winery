@@ -12,9 +12,10 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { isNullOrUndefined } from 'util';
 import { CapabilityOrRequirementDefinitionsService } from './capOrReqDef.service';
-import { CapabilityOrRequirementDefinition, CapOrRegDefinitionsResourceApiData, CapOrReqDefinition, Constraint } from './capOrReqDefResourceApiData';
+import {
+    CapabilityOrRequirementDefinition, CapOrRegDefinitionsResourceApiData, CapOrReqDefinition, Constraint
+} from './capOrReqDefResourceApiData';
 import { CapOrRegDefinitionsTableData } from './CapOrReqDefTableData';
 import { NameAndQNameApiData, NameAndQNameApiDataList } from '../../../wineryQNameSelector/wineryNameAndQNameApiData';
 import { Router } from '@angular/router';
@@ -142,7 +143,9 @@ export class CapOrReqDefComponent implements OnInit {
         this.capOrReqDefToBeAdded.validSourceTypes = [];
         this.validSourceTypesTableData = [];
         if (!this.noneSelected) {
-            this.validSourceTypesService.getValidSourceTypesForCapabilityDefinition(value.replace('{', '/').replace('}', '/'), 'capabilitydefinitions')
+            this.validSourceTypesService.getValidSourceTypesForCapabilityDefinition(
+                value.replace('{', '/').replace('}', '/'), 'capabilitydefinitions'
+            )
                 .subscribe(
                     (current) => {
                         if (current.nodes) {
@@ -207,7 +210,7 @@ export class CapOrReqDefComponent implements OnInit {
      * @param capDefinition to which the constraints are to be displayed
      */
     editConstraints(capDefinition: CapabilityOrRequirementDefinition) {
-        if (isNullOrUndefined(this.constraintList)) {
+        if (!this.constraintList) {
             this.noConstraintsExistingFlag = true;
             this.activeCapOrRegDefinition = capDefinition;
         } else {
@@ -230,9 +233,7 @@ export class CapOrReqDefComponent implements OnInit {
      * @param capOrReqDefinition which is to be deleted
      */
     onRemoveClick(capOrReqDefinition: CapOrRegDefinitionsTableData) {
-        if (isNullOrUndefined(capOrReqDefinition)) {
-            return;
-        } else {
+        if (capOrReqDefinition) {
             this.elementToRemove = capOrReqDefinition;
             this.confirmDeleteModal.show();
         }
@@ -334,7 +335,7 @@ export class CapOrReqDefComponent implements OnInit {
         const constraintTypeElement: SelectData = this.constraintTypeItems
             .filter(item => item.id === this.activeConstraint.constraintType)[0];
 
-        if (isNullOrUndefined(constraintTypeElement)) {
+        if (!constraintTypeElement) {
             this.activeTypeElement = new SelectData();
             this.activeTypeElement.text = '';
             this.activeTypeElement.id = '';
@@ -433,10 +434,13 @@ export class CapOrReqDefComponent implements OnInit {
             const name = entry.name;
             const lowerBound = entry.lowerBound;
             const upperBound = entry.upperBound === 'UNBOUNDED' ? '∞' : entry.upperBound;
-            const type = this.capOrReqTypeToHref(isNullOrUndefined(entry.capabilityType)
-            === false ? entry.capabilityType : entry.requirementType);
+            const type = this.capOrReqTypeToHref(
+                !entry.capabilityType
+                    ? entry.capabilityType
+                    : entry.requirementType
+            );
             const constraint = '<button class="btn btn-xs" style="pointer-events: none;">Constraint...</button>';
-            const typeUri = this.getTypeURI(isNullOrUndefined(entry.capabilityType)
+            const typeUri = this.getTypeURI(!entry.capabilityType
             === false ? entry.capabilityType : entry.requirementType);
 
             this.tableData.push(new CapOrRegDefinitionsTableData(name, type, lowerBound, upperBound, constraint, typeUri));
@@ -495,7 +499,7 @@ export class CapOrReqDefComponent implements OnInit {
 
     private handleGetConstraints(data: Constraint[]): void {
         this.constraintList = data;
-        this.noConstraintsExistingFlag = isNullOrUndefined(data) || data.length === 0;
+        this.noConstraintsExistingFlag = !data || data.length === 0;
         this.loadingConstraints = false;
     }
 

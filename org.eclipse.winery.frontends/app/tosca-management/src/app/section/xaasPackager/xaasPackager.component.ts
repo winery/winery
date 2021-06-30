@@ -15,7 +15,6 @@ import { Component, DoCheck, ViewChild } from '@angular/core';
 import { ArtifactTypesAndInfrastructureNodetypes, PackagerService } from './xaasPackagerService';
 import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
 import { ModalDirective } from 'ngx-bootstrap';
-import { isNull, isNullOrUndefined } from 'util';
 import { SelectItem } from 'ng2-select';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -53,28 +52,24 @@ export class XaasPackagerComponent implements DoCheck {
     }
 
     ngDoCheck(): void {
-        if (!isNullOrUndefined(this.selectedNodeTypes) && (this.selectedNodeTypes.length !== 0) && !isNullOrUndefined(this.selectedArtifactType)) {
-            this.isFormValid = true;
-        } else {
-            this.isFormValid = false;
-        }
+        this.isFormValid = !!(this.selectedNodeTypes && (this.selectedNodeTypes.length !== 0) && this.selectedArtifactType);
     }
 
     onAddClick() {
         const formData: FormData = new FormData();
-        if (!isNullOrUndefined(this.file)) {
+        if (this.file) {
             formData.append('file', this.file, this.file.name);
         }
-        if (!isNull(this.selectedArtifactType)) {
+        if (this.selectedArtifactType) {
             formData.append('artifactType', this.selectedArtifactType);
         }
-        if (!isNullOrUndefined(this.selectedNodeTypes)) {
+        if (this.selectedNodeTypes) {
             for (const nodetype of this.selectedNodeTypes) {
                 formData.append('nodeTypes', nodetype);
             }
         }
 
-        if (!isNullOrUndefined(this.tagItems)) {
+        if (this.tagItems) {
             for (const tag of this.tagItems) {
                 formData.append('tags', tag);
             }
@@ -82,7 +77,7 @@ export class XaasPackagerComponent implements DoCheck {
             formData.append('tags', '');
         }
 
-        if (!isNullOrUndefined(this.selectedInfracstuctureNodeType)) {
+        if (this.selectedInfracstuctureNodeType) {
             formData.append('infrastructureNodeType', this.selectedInfracstuctureNodeType);
         }
 
@@ -99,7 +94,7 @@ export class XaasPackagerComponent implements DoCheck {
         this.service.getNodeTypes().subscribe(
             data => this.nodeTypes = data.map(
                 obj => {
-                    if (!isNullOrUndefined(obj.qName)) {
+                    if (obj.qName) {
                         return obj.qName;
                     }
                 }),

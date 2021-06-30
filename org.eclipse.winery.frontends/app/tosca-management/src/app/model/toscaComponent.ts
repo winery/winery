@@ -11,7 +11,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { isNullOrUndefined } from 'util';
 import { ToscaTypes } from './enums';
 import { backendBaseURL } from '../configuration';
 import { Utils } from '../wineryUtils/utils';

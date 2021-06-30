@@ -12,7 +12,6 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { isNullOrUndefined } from 'util';
 import { PropertyConstraintsService } from './propertyConstraints.service';
 import { PropertyConstraintApiData } from './propertyConstraintApiData';
 import { ConstraintTypeApiData } from './constraintTypesApiData';
@@ -58,7 +57,7 @@ export class PropertyConstraintsComponent implements OnInit {
 
     // region ######## table methods ########
     onCellSelected(data: any) {
-        if (!isNullOrUndefined(data)) {
+        if (data) {
             this.selectedCell = data.row;
         }
     }
@@ -79,9 +78,7 @@ export class PropertyConstraintsComponent implements OnInit {
     }
 
     onRemoveClick(data: any) {
-        if (isNullOrUndefined(data)) {
-            return;
-        } else {
+        if (data) {
             this.confirmDeleteModal.show();
         }
     }

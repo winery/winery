@@ -14,7 +14,6 @@
 import { Component, DoCheck, OnInit, ViewChild } from '@angular/core';
 import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
 import { ModalDirective } from 'ngx-bootstrap';
-import { isNullOrUndefined } from 'util';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PlacementService } from './placementService';
 import { AddComponentValidation } from '../../wineryAddComponentModule/addComponentValidation';
@@ -59,11 +58,8 @@ export class PlacementComponent implements DoCheck, OnInit {
     }
 
     ngDoCheck(): void {
-        if (!isNullOrUndefined(this.file) && (this.file.name.endsWith('.xml') || this.file.name.endsWith('.txt'))) {
-            this.isFormValid = true;
-        } else {
-            this.isFormValid = false;
-        }
+        this.isFormValid = this.file
+            && (this.file.name.endsWith('.xml') || this.file.name.endsWith('.txt'));
     }
 
     onAddClick() {

@@ -16,7 +16,6 @@ import { WineryRowData, WineryTableColumn } from '../../../wineryTableModule/win
 import { PlansApiData } from './plansApiData';
 import { PlansService } from './plans.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { isNullOrUndefined } from 'util';
 import { SelectData } from '../../../model/selectData';
 import { WineryUploaderComponent } from '../../../wineryUploader/wineryUploader.component';
 import { SelectItem } from 'ng2-select';

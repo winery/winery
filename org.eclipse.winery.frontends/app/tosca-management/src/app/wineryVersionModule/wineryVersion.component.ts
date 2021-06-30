@@ -24,7 +24,6 @@ import { WineryAddVersionService } from './wineryVersion.service';
 import { Router } from '@angular/router';
 import { ReferencedDefinitionsComponent } from './referencedDefinitions/referencedDefinitions.component';
 import { WineryVersionActions, WineryVersionModalConfig } from './wineryVersionModalConfig';
-import { isNullOrUndefined } from 'util';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -219,7 +218,7 @@ export class WineryVersionComponent {
             const duplicate = this.sharedData.versions.find(value => {
                 return value.componentVersion === this.newVersion.componentVersion && value.wineryVersion > 0;
             });
-            if (!isNullOrUndefined(duplicate)) {
+            if (duplicate) {
                 this.modalConfig.valid = false;
                 return { duplicateFound: true };
             } else if (this.newVersion.componentVersion.indexOf(' ') >= 0) {

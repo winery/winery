@@ -12,7 +12,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import {
+    Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild
+} from '@angular/core';
 import { ModalDirective } from 'ngx-bootstrap';
 import { TPolicy } from '../../models/policiesModalData';
 import { TDeploymentArtifact } from '../../models/artifactsModalData';
@@ -21,7 +23,6 @@ import { EntityTypesModel } from '../../models/entityTypesModel';
 import { BackendService } from '../../services/backend.service';
 import { IWineryState } from '../../redux/store/winery.store';
 import { NgRedux } from '@angular-redux/store';
-import { isNullOrUndefined } from 'util';
 import { WineryActions } from '../../redux/actions/winery.actions';
 import { ExistsService } from '../../services/exists.service';
 import { ToastrService } from 'ngx-toastr';
@@ -358,8 +359,8 @@ export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
         } else if (changedField === 'namespace') {
             this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace = event.target.value;
         }
-        if (!isNullOrUndefined(this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace &&
-            this.deploymentArtifactOrPolicyModalData.modalTemplateName)) {
+        if (this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace &&
+            this.deploymentArtifactOrPolicyModalData.modalTemplateName) {
             this.deploymentArtifactOrPolicyModalData.modalTemplateRef = '{' +
                 this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace + '}' + this.deploymentArtifactOrPolicyModalData.modalTemplateName;
 

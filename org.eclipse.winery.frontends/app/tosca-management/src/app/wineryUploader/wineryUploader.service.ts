@@ -13,7 +13,6 @@
  *******************************************************************************/
 import { Injectable } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
-import { isNullOrUndefined } from 'util';
 
 @Injectable()
 export class WineryUploaderService {
@@ -26,9 +25,9 @@ export class WineryUploaderService {
     }
 
     set uploadUrl(url: string) {
-        if (isNullOrUndefined(this.fileUploader)) {
+        if (!this.fileUploader) {
             this.fileUploader = new FileUploader({ url: url });
-            if (!isNullOrUndefined(this.method)) {
+            if (this.method) {
                 this.fileUploader.onAfterAddingFile = (item) => {
                     item.method = this.method;
                 };
@@ -41,7 +40,7 @@ export class WineryUploaderService {
     set uploadMethod(method: string) {
         this.method = method;
 
-        if (!isNullOrUndefined(this.fileUploader)) {
+        if (this.fileUploader) {
             this.fileUploader.onAfterAddingFile = (item) => {
                 item.method = this.method;
             };

@@ -12,7 +12,6 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Pipe, PipeTransform } from '@angular/core';
-import { isNullOrUndefined } from 'util';
 import { SectionData } from './sectionData';
 
 export interface SectionPipeInput {
@@ -35,16 +34,17 @@ export interface SectionPipeInput {
     name: 'filterSections'
 })
 export class SectionPipe implements PipeTransform {
+
     transform(value: SectionData[], args: SectionPipeInput): SectionData[] {
-        if (isNullOrUndefined(value)) {
+        if (!value) {
             return value;
         }
 
-        if (isNullOrUndefined(args.filterString)) {
+        if (!args.filterString) {
             args.filterString = '';
         }
 
-        if (isNullOrUndefined(args.showNamespaces) || args.showNamespaces === 'all') {
+        if (!args.showNamespaces || args.showNamespaces === 'all') {
             return value.filter(
                 (item: SectionData) => this.filter(item, args.filterString)
             );
@@ -60,7 +60,7 @@ export class SectionPipe implements PipeTransform {
 
             // Get all namespaces and count their appearance
             for (const item of value) {
-                if (isNullOrUndefined(distinctNamespaces[item.namespace])) {
+                if (!distinctNamespaces[item.namespace]) {
                     const o = new SectionData();
                     o.namespace = item.namespace;
                     o.count = 1;

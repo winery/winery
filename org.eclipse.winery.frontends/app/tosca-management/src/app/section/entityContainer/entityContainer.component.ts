@@ -17,7 +17,6 @@ import { SectionData } from '../sectionData';
 import { ToscaTypes } from '../../model/enums';
 import { Router } from '@angular/router';
 import { ExistService } from '../../wineryUtils/existService';
-import { isNullOrUndefined } from 'util';
 import { EntityService } from './entity.service';
 import { DifferencesData } from './differencesData';
 
@@ -66,7 +65,7 @@ export class EntityContainerComponent implements OnInit {
                 );
         }
 
-        if (!isNullOrUndefined(this.data.versionInstances)) {
+        if (this.data.versionInstances) {
             this.element = this.data.versionInstances[0];
         } else {
             this.element = this.data;

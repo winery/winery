@@ -13,7 +13,6 @@
  *******************************************************************************/
 
 import { Injectable } from '@angular/core';
-import { isNullOrUndefined } from 'util';
 
 import { Node } from '../model/workflow/node';
 import { BroadcastService } from './broadcast.service';
@@ -59,14 +58,14 @@ export class ModelService {
 
     public addConnection(sourceId: string, targetId: string) {
         const node = this.nodes.find(tmpNode => tmpNode.id === sourceId);
-        if (!isNullOrUndefined(node)) {
+        if (node) {
             this.nodeService.addConnection(node, targetId);
         }
     }
 
     public deleteConnection(sourceId: string, targetId: string) {
         const node = this.nodes.find(tmpNode => tmpNode.id === sourceId);
-        if (!isNullOrUndefined(node)) {
+        if (node) {
             this.nodeService.deleteConnection(node, targetId);
         }
     }
