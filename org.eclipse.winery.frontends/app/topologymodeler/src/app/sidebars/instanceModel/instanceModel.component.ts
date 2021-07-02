@@ -80,25 +80,6 @@ export class InstanceModelComponent implements OnDestroy {
         this.running = false;
     }
 
-    private handleError(error: HttpErrorResponse) {
-        this.running = false;
-    }
-
-    private handleInput(value: InstanceModelReceiveData) {
-        this.applicablePlugins = value;
-        this.running = false;
-        if (value && value.topologyTemplate) {
-            TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, value.topologyTemplate,
-                this.entityTypes, this.configurationService.isYaml());
-        }
-    }
-
-    private handleComplete() {
-        this.running = false;
-        this.started = false;
-        this.notify.success('Instance Model Refinement completed!');
-    }
-
     ngOnDestroy(): void {
         if (this.subscription) {
             this.subscription.unsubscribe();
@@ -132,5 +113,24 @@ export class InstanceModelComponent implements OnDestroy {
         this.inputMap = null;
         this.inputs = null;
         this.running = true;
+    }
+
+    private handleError(error: HttpErrorResponse) {
+        this.running = false;
+    }
+
+    private handleInput(value: InstanceModelReceiveData) {
+        this.applicablePlugins = value;
+        this.running = false;
+        if (value && value.topologyTemplate) {
+            TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, value.topologyTemplate,
+                this.entityTypes, this.configurationService.isYaml());
+        }
+    }
+
+    private handleComplete() {
+        this.running = false;
+        this.started = false;
+        this.notify.success('Instance Model Refinement completed!');
     }
 }

@@ -82,15 +82,6 @@ export class TypeWithShortNameComponent implements OnInit {
      */
     onRemoveClick(data: any) {
         this.notify.warning('Not yet implemented!');
-        // future functionality
-        // return;
-        // if (isNullOrUndefined(data)) {
-        //     this.notify.warning('Nothing to remove. Please select a element');
-        //     return;
-        // } else {
-        //     this.elementToRemove = data;
-        //     this.confirmDeleteModal.show();
-        // }
     }
 
     /**

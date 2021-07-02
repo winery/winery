@@ -57,23 +57,6 @@ export class EnricherComponent {
     }
 
     /**
-     * This method checks the current button state of Winery UI to take action when the Enrichment Button was clicked.
-     * @param currentButtonsState TopologyRendererState object containt state of Winery UI Buttons
-     */
-    private checkButtonsState(currentButtonsState: TopologyRendererState) {
-        // check if Enrichment Button is clicked and available features are pulled
-        if (currentButtonsState.buttonsState.enrichmentButton && !this.availableFeatures) {
-            this.enricherService.getAvailableFeatures().subscribe(
-                data => this.showAvailableFeatures(data),
-                error => this.handleError(error)
-            );
-            // if button is unclicked, reset available features
-        } else if (!currentButtonsState.buttonsState.enrichmentButton) {
-            this.availableFeatures = null;
-        }
-    }
-
-    /**
      * This method is called when the selection of a enrichment is changed.
      * It pushs/removes the selected/removed enrichment from the array of enrichments to be applied
      * @param feature: feature which changed
@@ -97,6 +80,61 @@ export class EnricherComponent {
             // if feature was unselected
         } else if (!event.target.checked && this.checkIfNodeTypeSelected(nodeTemplate)) {
             this.removeFeatureForNodeTemplate(feature, this.checkWhichIndexNodeType(nodeTemplate));
+        }
+    }
+
+    /**
+     * This method is called when clicking the "Apply" button.
+     * It starts the Enricher Service to apply the selected enrichments.
+     */
+    protected applyEnrichment() {
+        this.enricherService.applySelectedFeatures(this.toApply).subscribe(
+            data => this.enrichmentApplied(data),
+            error => this.handleError(error)
+        );
+    }
+
+    /**
+     * This method is called when the User hovers over a node template in the enrichment sidebar
+     * It highlights the respective node template in the topology modeler.
+     * @param entry: entry of available features displayed in the UI
+     */
+    protected onHoverOver(entry: Enrichment) {
+        const nodeTemplateIds: string[] = [];
+        nodeTemplateIds.push(entry.nodeTemplateId);
+        this.ngRedux.dispatch(this.actions.highlightNodes(nodeTemplateIds));
+    }
+
+    /**
+     * This method is called when the user hovers out of a node template.
+     */
+    protected hoverOut() {
+        this.ngRedux.dispatch(this.actions.highlightNodes([]));
+    }
+
+    /**
+     * This method is called when the User clicks "Cancel".
+     * It resets the available features, which lets the enrichment sidebar disappear.
+     */
+    protected cancel() {
+        this.availableFeatures = null;
+        this.ngRedux.dispatch(this.actions.enrichNodeTemplates());
+    }
+
+    /**
+     * This method checks the current button state of Winery UI to take action when the Enrichment Button was clicked.
+     * @param currentButtonsState TopologyRendererState object containt state of Winery UI Buttons
+     */
+    private checkButtonsState(currentButtonsState: TopologyRendererState) {
+        // check if Enrichment Button is clicked and available features are pulled
+        if (currentButtonsState.buttonsState.enrichmentButton && !this.availableFeatures) {
+            this.enricherService.getAvailableFeatures().subscribe(
+                data => this.showAvailableFeatures(data),
+                error => this.handleError(error)
+            );
+            // if button is unclicked, reset available features
+        } else if (!currentButtonsState.buttonsState.enrichmentButton) {
+            this.availableFeatures = null;
         }
     }
 
@@ -150,17 +188,6 @@ export class EnricherComponent {
     }
 
     /**
-     * This method is called when clicking the "Apply" button.
-     * It starts the Enricher Service to apply the selected enrichments.
-     */
-    protected applyEnrichment() {
-        this.enricherService.applySelectedFeatures(this.toApply).subscribe(
-            data => this.enrichmentApplied(data),
-            error => this.handleError(error)
-        );
-    }
-
-    /**
      * This method is called when available features are retrieved and fills the available features array with the
      * gathered data.
      * @param data: json response of backend containing available features for all node templates
@@ -181,33 +208,6 @@ export class EnricherComponent {
      */
     private handleError(error: HttpErrorResponse) {
         this.alert.error(error.message);
-    }
-
-    /**
-     * This method is called when the User hovers over a node template in the enrichment sidebar
-     * It highlights the respective node template in the topology modeler.
-     * @param entry: entry of available features displayed in the UI
-     */
-    protected onHoverOver(entry: Enrichment) {
-        const nodeTemplateIds: string[] = [];
-        nodeTemplateIds.push(entry.nodeTemplateId);
-        this.ngRedux.dispatch(this.actions.highlightNodes(nodeTemplateIds));
-    }
-
-    /**
-     * This method is called when the user hovers out of a node template.
-     */
-    protected hoverOut() {
-        this.ngRedux.dispatch(this.actions.highlightNodes([]));
-    }
-
-    /**
-     * This method is called when the User clicks "Cancel".
-     * It resets the available features, which lets the enrichment sidebar disappear.
-     */
-    protected cancel() {
-        this.availableFeatures = null;
-        this.ngRedux.dispatch(this.actions.enrichNodeTemplates());
     }
 
     /**

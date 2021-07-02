@@ -11,14 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {backendBaseURL} from '../../configuration';
-import {SectionData} from '../sectionData';
-import {ToscaTypes} from '../../model/enums';
-import {Router} from '@angular/router';
-import {ExistService} from '../../wineryUtils/existService';
-import {isNullOrUndefined} from 'util';
-import {EntityService} from './entity.service';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { backendBaseURL } from '../../configuration';
+import { SectionData } from '../sectionData';
+import { ToscaTypes } from '../../model/enums';
+import { Router } from '@angular/router';
+import { ExistService } from '../../wineryUtils/existService';
+import { EntityService } from './entity.service';
 import { DifferencesData } from './differencesData';
 
 @Component({
@@ -66,7 +65,7 @@ export class EntityContainerComponent implements OnInit {
                 );
         }
 
-        if (!isNullOrUndefined(this.data.versionInstances)) {
+        if (this.data.versionInstances) {
             this.element = this.data.versionInstances[0];
         } else {
             this.element = this.data;
@@ -122,25 +121,12 @@ export class EntityContainerComponent implements OnInit {
         this.calculateTreeHeight($event);
     }
 
-    private calculateTreeHeight(children = 0) {
-        let offset = 139;
-        let childrenCount = this.data.versionInstances.length - 1;
-        if (children > 0) {
-            childrenCount += children - 1;
-            offset = offset * 2 + 15;
-        }
-        if (!isNullOrUndefined(this.differences)) {
-            offset += 205;
-        }
-        this.treeHeight += (childrenCount * 126) + offset;
-    }
-
     isLastElementInList(item: SectionData) {
         return this.data.versionInstances.indexOf(item) < this.data.versionInstances.length - 1;
     }
 
     hasDifferences(item: SectionData): boolean {
-        return isNullOrUndefined(this.differences) ? false : this.differences.base === item;
+        return this.differences ? this.differences.base === item : false;
     }
 
     showOrHideDifferences(item: SectionData) {
@@ -174,5 +160,18 @@ export class EntityContainerComponent implements OnInit {
     closeDiffView() {
         this.differences = null;
         this.calculateTreeHeight();
+    }
+
+    private calculateTreeHeight(children = 0) {
+        let offset = 139;
+        let childrenCount = this.data.versionInstances.length - 1;
+        if (children > 0) {
+            childrenCount += children - 1;
+            offset = offset * 2 + 15;
+        }
+        if (this.differences) {
+            offset += 205;
+        }
+        this.treeHeight += (childrenCount * 126) + offset;
     }
 }

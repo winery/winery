@@ -94,32 +94,6 @@ export class YamlRequirementDefinitionsComponent implements OnInit {
         }, error => this.handleError(error));
     }
 
-    private handleError(error: HttpErrorResponse): void {
-        this.loading = false;
-        this.notify.error(error.message, 'Error');
-    }
-
-    private handleRequirementDefinitions(defs: YamlRequirementDefinitionApiData[]) {
-        this.requirementDefinitions = defs;
-
-        if (this.requirementDefinitions) {
-            this.tableData = this.requirementDefinitions.map(def => {
-                    const nodeHref = def.node ? this.typeToHref(QName.stringToQName(def.node), 'nodetypes') : 'ANY';
-                    const relationshipHref = def.relationship ? this.typeToHref(QName.stringToQName(def.relationship), 'relationshiptypes') : 'ANY';
-                    return new YamlRequirementDefinitionTableData(
-                        def.name,
-                        this.typeToHref(QName.stringToQName(def.capability), 'capabilitytypes'),
-                        def.lowerBound,
-                        def.upperBound,
-                        nodeHref,
-                        relationshipHref);
-                }
-            );
-        } else {
-            this.tableData = [];
-        }
-    }
-
     onRemoveClick(reqDef: YamlRequirementDefinitionTableData) {
         if (reqDef) {
             this.elementToRemove = reqDef;
@@ -130,14 +104,14 @@ export class YamlRequirementDefinitionsComponent implements OnInit {
     removeConfirmed() {
         this.service.deleteRequirementDefinition(this.elementToRemove)
             .subscribe(next => {
-                this.notify.success('Deleted Requirement Definition');
-                this.tableData = this.tableData.filter(item => item !== this.elementToRemove);
-                this.elementToRemove = null;
-            },
-            error => {
-                this.notify.error('Could not delete Requirement Definition');
-                this.elementToRemove = null;
-            });
+                    this.notify.success('Deleted Requirement Definition');
+                    this.tableData = this.tableData.filter(item => item !== this.elementToRemove);
+                    this.elementToRemove = null;
+                },
+                error => {
+                    this.notify.error('Could not delete Requirement Definition');
+                    this.elementToRemove = null;
+                });
     }
 
     onAddClick() {
@@ -169,12 +143,6 @@ export class YamlRequirementDefinitionsComponent implements OnInit {
             );
     }
 
-    private typeToHref(typeQName: QName, refType: string): string {
-        // no need to encode the namespace since we assume dotted namespaces in YAML mode
-        const absoluteURL = `/#/${refType}/${typeQName.nameSpace}/${typeQName.localName}`;
-        return '<a href="' + absoluteURL + '">' + typeQName.localName + '</a>';
-    }
-
     onSelectedCapTypeChanged(value: SelectItem) {
         this.reqDefToBeAdded.capability = value.id;
         this.enableAddItemButton = value.id !== '(none)';
@@ -190,5 +158,37 @@ export class YamlRequirementDefinitionsComponent implements OnInit {
 
     unboundedToggle() {
         this.isUnboundedSelected = !this.isUnboundedSelected;
+    }
+
+    private handleError(error: HttpErrorResponse): void {
+        this.loading = false;
+        this.notify.error(error.message, 'Error');
+    }
+
+    private handleRequirementDefinitions(defs: YamlRequirementDefinitionApiData[]) {
+        this.requirementDefinitions = defs;
+
+        if (this.requirementDefinitions) {
+            this.tableData = this.requirementDefinitions.map(def => {
+                    const nodeHref = def.node ? this.typeToHref(QName.stringToQName(def.node), 'nodetypes') : 'ANY';
+                    const relationshipHref = def.relationship ? this.typeToHref(QName.stringToQName(def.relationship), 'relationshiptypes') : 'ANY';
+                    return new YamlRequirementDefinitionTableData(
+                        def.name,
+                        this.typeToHref(QName.stringToQName(def.capability), 'capabilitytypes'),
+                        def.lowerBound,
+                        def.upperBound,
+                        nodeHref,
+                        relationshipHref);
+                }
+            );
+        } else {
+            this.tableData = [];
+        }
+    }
+
+    private typeToHref(typeQName: QName, refType: string): string {
+        // no need to encode the namespace since we assume dotted namespaces in YAML mode
+        const absoluteURL = `/#/${refType}/${typeQName.nameSpace}/${typeQName.localName}`;
+        return '<a href="' + absoluteURL + '">' + typeQName.localName + '</a>';
     }
 }

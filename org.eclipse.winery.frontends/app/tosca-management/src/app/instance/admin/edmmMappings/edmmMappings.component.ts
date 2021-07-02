@@ -109,6 +109,14 @@ export class EdmmMappingsComponent implements OnInit {
         this.save();
     }
 
+    edmmTypeSelected(data: SelectData) {
+        this.elementToEdit.edmmType = <EdmmType>data.id;
+    }
+
+    toscaTypeSelected(data: SelectItem) {
+        this.elementToEdit.toscaType = data.id;
+    }
+
     private handleData(data: EdmmMappingItem[], saved = false) {
         if (saved) {
             this.notify.success('Successfully saved EDMM Mappings!');
@@ -129,13 +137,5 @@ export class EdmmMappingsComponent implements OnInit {
                 data => this.handleData(data, true),
                 error => this.handleError(error)
             );
-    }
-
-    edmmTypeSelected(data: SelectData) {
-        this.elementToEdit.edmmType = <EdmmType>data.id;
-    }
-
-    toscaTypeSelected(data: SelectItem) {
-        this.elementToEdit.toscaType = data.id;
     }
 }

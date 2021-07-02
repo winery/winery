@@ -45,9 +45,10 @@ export interface SelfServiceApiData {
 @Injectable()
 export class SelfServicePortalService {
 
+    selfServiceData: SelfServiceApiData;
+
     private url: string;
     private path: string;
-    selfServiceData: SelfServiceApiData;
 
     constructor(private http: HttpClient,
                 private route: Router) {

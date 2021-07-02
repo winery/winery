@@ -14,7 +14,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PropertiesService } from './properties.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { isNullOrUndefined } from 'util';
 import { WineryEditorComponent } from '../../../wineryEditorModule/wineryEditor.component';
 import { InstanceService } from '../../instance.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -80,7 +79,7 @@ export class PropertiesComponent implements OnInit {
             this.properties = data.properties;
         } else {
             this.isXMLData = false;
-            if (!isNullOrUndefined(data.properties)) {
+            if (data.properties) {
                 this.propertyKeys = Object.keys(data.properties);
             }
             if (this.propertyKeys.length > 0) {

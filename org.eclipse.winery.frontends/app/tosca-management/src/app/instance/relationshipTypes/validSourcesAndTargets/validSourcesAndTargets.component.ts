@@ -16,7 +16,6 @@ import { WineryNotificationService } from '../../../wineryNotificationModule/win
 import { ValidService } from './validSourcesAndTargets.service';
 import { ValidEndingsApiDataSet, ValidEndingsData, ValidEndingsSelectionEnum } from './validEndingsApiData';
 import { SelectData } from '../../../model/selectData';
-import { isNullOrUndefined } from 'util';
 import { SelectItem } from 'ng2-select';
 import { InstanceService } from '../../instance.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -52,43 +51,6 @@ export class ValidSourcesAndTargetsComponent implements OnInit {
                 data => this.handleValidEndingsData(data),
                 error => this.handleError(error)
             );
-    }
-
-    private handleValidEndingsData(validEndingsData: ValidEndingsData) {
-        this.loading = false;
-        this.validEndingsData = validEndingsData;
-
-        if (isNullOrUndefined(this.validEndingsData.validSource)) {
-            this.validEndingsData.validSource = new ValidEndingsApiDataSet();
-        } else {
-            // convert validEndingsSelectionType to angular specific enum
-            switch (this.validEndingsData.validSource.validEndingsSelectionType) {
-                case this.selectedEnum.NODETYPE:
-                    this.loadingSrc = true;
-                    this.getSelectionData('/nodetypes?grouped=angularSelect', 'source');
-                    break;
-                case this.selectedEnum.REQTYPE:
-                    this.loadingSrc = true;
-                    this.getSelectionData('/requirementtypes?grouped=angularSelect', 'source');
-                    break;
-            }
-        }
-
-        if (isNullOrUndefined(this.validEndingsData.validTarget)) {
-            this.validEndingsData.validTarget = new ValidEndingsApiDataSet();
-        } else {
-            // convert validEndingsSelectionType to angular specific enum
-            switch (this.validEndingsData.validTarget.validEndingsSelectionType) {
-                case this.selectedEnum.NODETYPE:
-                    this.loadingTrg = true;
-                    this.getSelectionData('/nodetypes?grouped=angularSelect', 'target');
-                    break;
-                case this.selectedEnum.CAPTYPE:
-                    this.loadingTrg = true;
-                    this.getSelectionData('/capabilitytypes?grouped=angularSelect', 'target');
-                    break;
-            }
-        }
     }
 
     public onSelectedTrgValueChanged(event: SelectItem) {
@@ -167,6 +129,43 @@ export class ValidSourcesAndTargetsComponent implements OnInit {
                 },
                 error => this.handleError(error)
             );
+    }
+
+    private handleValidEndingsData(validEndingsData: ValidEndingsData) {
+        this.loading = false;
+        this.validEndingsData = validEndingsData;
+
+        if (!this.validEndingsData.validSource) {
+            this.validEndingsData.validSource = new ValidEndingsApiDataSet();
+        } else {
+            // convert validEndingsSelectionType to angular specific enum
+            switch (this.validEndingsData.validSource.validEndingsSelectionType) {
+                case this.selectedEnum.NODETYPE:
+                    this.loadingSrc = true;
+                    this.getSelectionData('/nodetypes?grouped=angularSelect', 'source');
+                    break;
+                case this.selectedEnum.REQTYPE:
+                    this.loadingSrc = true;
+                    this.getSelectionData('/requirementtypes?grouped=angularSelect', 'source');
+                    break;
+            }
+        }
+
+        if (!this.validEndingsData.validTarget) {
+            this.validEndingsData.validTarget = new ValidEndingsApiDataSet();
+        } else {
+            // convert validEndingsSelectionType to angular specific enum
+            switch (this.validEndingsData.validTarget.validEndingsSelectionType) {
+                case this.selectedEnum.NODETYPE:
+                    this.loadingTrg = true;
+                    this.getSelectionData('/nodetypes?grouped=angularSelect', 'target');
+                    break;
+                case this.selectedEnum.CAPTYPE:
+                    this.loadingTrg = true;
+                    this.getSelectionData('/capabilitytypes?grouped=angularSelect', 'target');
+                    break;
+            }
+        }
     }
 
     private handleTypes(types: SelectData[]): SelectData[] {

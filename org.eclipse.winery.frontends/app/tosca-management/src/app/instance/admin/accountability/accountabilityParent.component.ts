@@ -13,10 +13,9 @@
  *******************************************************************************/
 import { AccountabilityService } from './accountability.service';
 import { SelectData } from '../../../model/selectData';
-import { isNullOrUndefined } from 'util';
 import { HttpErrorResponse } from '@angular/common/http';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { Component, OnInit } from '@angular/core';
+import { OnInit } from '@angular/core';
 import { AuthorizationElement } from '../../../model/provenance';
 
 export class AccountabilityParentComponent implements OnInit {
@@ -24,8 +23,9 @@ export class AccountabilityParentComponent implements OnInit {
     serviceTemplateList: SelectData[];
     loading = true;
     error: string;
-    participant: AuthorizationElement = {identity: '', address: '', transactionHash: '', unixTimestamp: 0};
-    constructor (protected service: AccountabilityService, protected notify: WineryNotificationService ) {
+    participant: AuthorizationElement = { identity: '', address: '', transactionHash: '', unixTimestamp: 0 };
+
+    constructor(protected service: AccountabilityService, protected notify: WineryNotificationService) {
     }
 
     ngOnInit(): void {
@@ -42,7 +42,7 @@ export class AccountabilityParentComponent implements OnInit {
     }
 
     handleData(data: SelectData[]) {
-        if (!isNullOrUndefined(data) && data.length > 0) {
+        if (data && data.length > 0) {
             this.serviceTemplateList = data;
             this.selectedProvenanceId = data[0].children[0];
         } else {

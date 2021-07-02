@@ -12,7 +12,6 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
-import { isNullOrUndefined } from 'util';
 import { WineryUploaderService } from './wineryUploader.service';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
 import { FileUploader } from 'ng2-file-upload';
@@ -96,7 +95,7 @@ export class WineryUploaderComponent implements OnInit, OnChanges {
 
     dropFile(event?: any) {
         if (this.isEditable) {
-            if (!isNullOrUndefined(event) && isNullOrUndefined(this.service.uploader.queue[0])) {
+            if (event && !this.service.uploader.queue[0]) {
                 this.fileOver = event;
             } else {
                 this.fileOver = false;
@@ -110,7 +109,7 @@ export class WineryUploaderComponent implements OnInit, OnChanges {
 
     upload(uploadTo?: string) {
         this.loading = true;
-        if (!isNullOrUndefined(uploadTo) && uploadTo !== this.uploadUrl) {
+        if (uploadTo && uploadTo !== this.uploadUrl) {
             this.service.uploadUrl = uploadTo;
 
         }
@@ -124,7 +123,7 @@ export class WineryUploaderComponent implements OnInit, OnChanges {
 
             if (status >= 200 && status <= 204) {
                 this.notify.success('Successfully uploaded file ' + item.file.name);
-                if (!isNullOrUndefined(this.modalRef)) {
+                if (this.modalRef) {
                     this.modalRef.hide();
                 }
                 this.onSuccess.emit(response);

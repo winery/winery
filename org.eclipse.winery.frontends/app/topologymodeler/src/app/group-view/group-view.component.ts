@@ -17,9 +17,9 @@ export class GroupViewComponent implements OnInit {
     groups: TGroupDefinition[] = [];
     formMetadata: Array<WineryDynamicTableMetadata> = [];
 
-    private expandedDefinitions: TGroupDefinition[] = [];
-
     @ViewChild('generatedModal') generatedModal: WineryDynamicFormModalComponent;
+
+    private expandedDefinitions: TGroupDefinition[] = [];
 
     constructor(private ngRedux: NgRedux<IWineryState>,
                 private ngActions: WineryActions) {

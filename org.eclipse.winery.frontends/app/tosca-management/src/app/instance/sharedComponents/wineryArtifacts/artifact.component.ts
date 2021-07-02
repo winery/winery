@@ -78,16 +78,17 @@ export class WineryArtifactComponent implements OnInit {
     @ViewChild('removeElementModal') removeElementModal: ModalDirective;
     @ViewChild('addComponentData') addComponentData: WineryAddComponentDataComponent;
 
-    private implementationArtifactColumns = [
-        { title: 'Interface Name', name: 'interfaceName' },
-        { title: 'Operation Name', name: 'operationName' }
-    ];
     toscaType = ToscaTypes.ArtifactTemplate;
     valid: boolean;
     validation: any;
     hideHelp = true;
     typeRequired = false;
     types: SelectData[];
+
+    private implementationArtifactColumns = [
+        { title: 'Interface Name', name: 'interfaceName' },
+        { title: 'Operation Name', name: 'operationName' }
+    ];
     private createComponent: boolean;
     private nodeType: string;
     private nodeTypeName: string;
@@ -137,8 +138,14 @@ export class WineryArtifactComponent implements OnInit {
         this.artifact.name = this.nodeTypeName;
         this.artifact.toscaType = ToscaTypes.ArtifactTemplate;
         this.existCheck();
-        this.addComponentData.createArtifactName(this.sharedData.toscaComponent, this.nodeType,
-            this.selectedOperation, this.isImplementationArtifact, this.nodeTypeName);
+        this.addComponentData.createArtifactName(
+            this.sharedData.toscaComponent,
+            this.nodeType,
+            this.selectedInterface ? this.selectedInterface.text : null,
+            this.selectedOperation,
+            this.isImplementationArtifact,
+            this.nodeTypeName
+        );
         this.addArtifactModal.show();
     }
 
@@ -292,7 +299,7 @@ export class WineryArtifactComponent implements OnInit {
         this.fileService.getFiles(templateUrl)
             .subscribe(
                 data => this.filesList = data.files,
-                error => this.notify.error(error.message) + 'error while loading files!'
+                error => this.notify.error(error.message + 'error while loading files!')
             );
     }
 
@@ -308,6 +315,33 @@ export class WineryArtifactComponent implements OnInit {
                 data => this.handleDelete(),
                 error => this.showError(error)
             );
+    }
+
+    setNewArtifactName(name: string) {
+        this.newArtifact.artifactTemplateName = name;
+    }
+
+    setNewArtifactNamespace(namespace: string) {
+        this.artifact.namespace = namespace;
+    }
+
+    setValid(valid: boolean) {
+        this.valid = !valid;
+    }
+
+    clearOperation() {
+        this.selectedOperation = '';
+        this.interfaceAndOperation();
+    }
+
+    interfaceAndOperation() {
+        if (this.isImplementationArtifact) {
+            this.addComponentData.createArtifactName(this.sharedData.toscaComponent, this.nodeType,
+                this.selectedInterface.text, this.selectedOperation, this.isImplementationArtifact, this.nodeTypeName);
+        } else {
+            this.addComponentData.createArtifactName(this.sharedData.toscaComponent, this.nodeType,
+                null, this.newArtifact.artifactName, this.isImplementationArtifact, this.nodeTypeName);
+        }
     }
 
     private getLocalName(qName: string): string {
@@ -414,18 +448,6 @@ export class WineryArtifactComponent implements OnInit {
         this.loading = false;
     }
 
-    setNewArtifactName(name: string) {
-        this.newArtifact.artifactTemplateName = name;
-    }
-
-    setNewArtifactNamespace(namespace: string) {
-        this.artifact.namespace = namespace;
-    }
-
-    setValid(valid: boolean) {
-        this.valid = !valid;
-    }
-
     private existCheck() {
         const newComponentVersion: WineryVersion = new WineryVersion('', 1, 1);
         const newComponentFinalName = this.artifact.name + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + newComponentVersion.toString();
@@ -445,23 +467,8 @@ export class WineryArtifactComponent implements OnInit {
         this.validation.noDuplicatesAllowed = !this.createComponent;
     }
 
-    interfaceAndOperation() {
-        if (this.isImplementationArtifact) {
-            this.addComponentData.createArtifactName(this.sharedData.toscaComponent, this.nodeType,
-                this.selectedOperation, this.isImplementationArtifact, this.nodeTypeName);
-        } else {
-            this.addComponentData.createArtifactName(this.sharedData.toscaComponent, this.nodeType,
-                this.newArtifact.artifactName, this.isImplementationArtifact, this.nodeTypeName);
-        }
-    }
-
     private handleComponentData(compData: WineryInstance) {
         this.nodeType = compData.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].nodeType;
         this.nodeTypeName = this.nodeType.substring(this.nodeType.indexOf('}') + 1, this.nodeType.indexOf('_'));
-    }
-
-    clearOperation() {
-        this.selectedOperation = '';
-        this.interfaceAndOperation();
     }
 }

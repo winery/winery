@@ -15,11 +15,11 @@ import { QName } from '../../../../shared/src/app/model/qName';
 
 export class QNameApiData {
 
-    static fromQName(qName: QName) {
-        return new QNameApiData(qName.localName, qName.nameSpace);
+    constructor(public localname: string, public namespace: string) {
     }
 
-    constructor(public localname: string, public namespace: string) {
+    static fromQName(qName: QName) {
+        return new QNameApiData(qName.localName, qName.nameSpace);
     }
 
     equals(item: QNameApiData) {

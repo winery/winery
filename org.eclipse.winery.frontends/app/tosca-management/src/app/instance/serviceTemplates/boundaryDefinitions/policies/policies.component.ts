@@ -11,16 +11,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {PoliciesService, WineryPolicy} from './policies.service';
-import {WineryNotificationService} from '../../../../wineryNotificationModule/wineryNotification.service';
-import {WineryTableColumn} from '../../../../wineryTableModule/wineryTable.component';
-import {ModalDirective} from 'ngx-bootstrap';
-import {isNullOrUndefined} from 'util';
-import {WineryValidatorObject} from '../../../../wineryValidators/wineryDuplicateValidator.directive';
-import {SelectItem} from 'ng2-select';
-import {EditXMLComponent} from '../../../sharedComponents/editXML/editXML.component';
-import {Response} from '@angular/http';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { PoliciesService, WineryPolicy } from './policies.service';
+import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
+import { WineryTableColumn } from '../../../../wineryTableModule/wineryTable.component';
+import { ModalDirective } from 'ngx-bootstrap';
+import { WineryValidatorObject } from '../../../../wineryValidators/wineryDuplicateValidator.directive';
+import { SelectItem } from 'ng2-select';
+import { EditXMLComponent } from '../../../sharedComponents/editXML/editXML.component';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -41,9 +39,9 @@ export class PoliciesComponent implements OnInit {
     activePolicyTemplate: SelectItem = new SelectItem('');
 
     columnsArray: Array<WineryTableColumn> = [
-        {title: 'Name', name: 'name'},
-        {title: 'Type', name: 'policyType'},
-        {title: 'Template', name: 'policyRef'}
+        { title: 'Name', name: 'name' },
+        { title: 'Type', name: 'policyType' },
+        { title: 'Template', name: 'policyRef' }
     ];
     selectedCell: WineryPolicy;
     validator: WineryValidatorObject;
@@ -73,7 +71,7 @@ export class PoliciesComponent implements OnInit {
     }
 
     add() {
-        if (!isNullOrUndefined(this.policyTypes[0])) {
+        if (this.policyTypes[0]) {
             this.newPolicy = new WineryPolicy();
             this.validator = new WineryValidatorObject(this.policies, 'name');
             this.activePolicyType = this.policyTypes[0].children[0];
@@ -91,7 +89,7 @@ export class PoliciesComponent implements OnInit {
     }
 
     remove() {
-        if (!isNullOrUndefined(this.selectedCell)) {
+        if (this.selectedCell) {
             this.confirmDeleteModal.show();
         } else {
             this.notify.warning('You need to select a row to remove!', 'Nothing selected');

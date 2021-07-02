@@ -52,7 +52,7 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
     private subscriptions: Array<Subscription> = [];
 
     constructor(private backend: BackendService) {
-        this.subscriptions.push(this.backend.model$.subscribe(
+        this.subscriptions.push(this.backend.model.subscribe(
             model => {
                 this.nodeTypes = model.unGroupedNodeTypes.concat(model.relationshipTypes);
             }
@@ -85,6 +85,10 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
         });
     }
 
+    isEmpty(): boolean {
+        return !this.propertyDefinitions || this.propertyDefinitions.length === 0;
+    }
+
     private determineProperties(): void {
         const inheritance = InheritanceUtils.getInheritanceAncestry(this.templateType, this.nodeTypes);
         const definedProperties = [];
@@ -110,9 +114,5 @@ export class YamlPropertiesComponent implements OnChanges, OnDestroy {
                 this.propertyValues[propDefinition.name] = propDefinition.defaultValue || '';
             }
         }
-    }
-
-    isEmpty(): boolean {
-        return !this.propertyDefinitions || this.propertyDefinitions.length === 0;
     }
 }

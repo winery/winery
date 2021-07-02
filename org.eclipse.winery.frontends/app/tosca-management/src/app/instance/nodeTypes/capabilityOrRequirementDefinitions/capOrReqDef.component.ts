@@ -12,9 +12,10 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { isNullOrUndefined } from 'util';
 import { CapabilityOrRequirementDefinitionsService } from './capOrReqDef.service';
-import { CapabilityOrRequirementDefinition, CapOrRegDefinitionsResourceApiData, CapOrReqDefinition, Constraint } from './capOrReqDefResourceApiData';
+import {
+    CapabilityOrRequirementDefinition, CapOrRegDefinitionsResourceApiData, CapOrReqDefinition, Constraint
+} from './capOrReqDefResourceApiData';
 import { CapOrRegDefinitionsTableData } from './CapOrReqDefTableData';
 import { NameAndQNameApiData, NameAndQNameApiDataList } from '../../../wineryQNameSelector/wineryNameAndQNameApiData';
 import { Router } from '@angular/router';
@@ -142,7 +143,9 @@ export class CapOrReqDefComponent implements OnInit {
         this.capOrReqDefToBeAdded.validSourceTypes = [];
         this.validSourceTypesTableData = [];
         if (!this.noneSelected) {
-            this.validSourceTypesService.getValidSourceTypesForCapabilityDefinition(value.replace('{', '/').replace('}', '/'), 'capabilitydefinitions')
+            this.validSourceTypesService.getValidSourceTypesForCapabilityDefinition(
+                value.replace('{', '/').replace('}', '/'), 'capabilitydefinitions'
+            )
                 .subscribe(
                     (current) => {
                         if (current.nodes) {
@@ -202,46 +205,12 @@ export class CapOrReqDefComponent implements OnInit {
         }
     }
 
-    private capOrReqTypeToHref(type: string): string {
-        const name = type.split('}').pop();
-        const namespaceEncoded: string = encodeURIComponent(encodeURIComponent(
-            type.substring(type.lastIndexOf('{') + 1, type.lastIndexOf('}'))
-        ));
-        const absoluteURL = '/#/' + this.types + '/' + namespaceEncoded + '/' + name;
-        return '<a href="' + absoluteURL + '">' + name + '</a>';
-    }
-
-    private getTypeURI(type: string): string {
-        const name = type.split('}').pop();
-        const namespaceEncoded: string = encodeURIComponent(
-            type.substring(type.lastIndexOf('{') + 1, type.lastIndexOf('}'))
-        );
-        return '/' + this.types + '/' + namespaceEncoded + '/' + name;
-    }
-
-    private prepareTableData(apidata: CapOrRegDefinitionsResourceApiData) {
-        this.tableData = [];
-        for (const entry of apidata.capOrRegDefinitionsList) {
-            const name = entry.name;
-            const lowerBound = entry.lowerBound;
-            const upperBound = entry.upperBound === 'UNBOUNDED' ? '∞' : entry.upperBound;
-            const type = this.capOrReqTypeToHref(isNullOrUndefined(entry.capabilityType)
-            === false ? entry.capabilityType : entry.requirementType);
-            const constraint = '<button class="btn btn-xs" style="pointer-events: none;">Constraint...</button>';
-            const typeUri = this.getTypeURI(isNullOrUndefined(entry.capabilityType)
-            === false ? entry.capabilityType : entry.requirementType);
-
-            this.tableData.push(new CapOrRegDefinitionsTableData(name, type, lowerBound, upperBound, constraint, typeUri));
-        }
-        this.handleSuccess();
-    }
-
     /**
      * Opens show constraint list dialog of selected capability definition
      * @param capDefinition to which the constraints are to be displayed
      */
     editConstraints(capDefinition: CapabilityOrRequirementDefinition) {
-        if (isNullOrUndefined(this.constraintList)) {
+        if (!this.constraintList) {
             this.noConstraintsExistingFlag = true;
             this.activeCapOrRegDefinition = capDefinition;
         } else {
@@ -264,9 +233,7 @@ export class CapOrReqDefComponent implements OnInit {
      * @param capOrReqDefinition which is to be deleted
      */
     onRemoveClick(capOrReqDefinition: CapOrRegDefinitionsTableData) {
-        if (isNullOrUndefined(capOrReqDefinition)) {
-            return;
-        } else {
+        if (capOrReqDefinition) {
             this.elementToRemove = capOrReqDefinition;
             this.confirmDeleteModal.show();
         }
@@ -317,7 +284,7 @@ export class CapOrReqDefComponent implements OnInit {
         let constraintTypeElement: SelectData = null;
         let constraintEditorContent = this.defaultConstraintDataModel;
 
-        if (!isNullOrUndefined(constraint)) {
+        if (constraint) {
             this.activeConstraint = constraint;
             this.createNewConstraintFlag = false;
             constraintEditorContent = this.defaultConstraintDataModel.replace(re, constraint.any).replace(xmlDef, '');
@@ -329,7 +296,7 @@ export class CapOrReqDefComponent implements OnInit {
         }
 
         // check if constraint type exists and is defined
-        if (isNullOrUndefined(constraintTypeElement)) {
+        if (!constraintTypeElement) {
             constraintTypeElement = new SelectData();
             constraintTypeElement.text = '';
             constraintTypeElement.id = '';
@@ -368,7 +335,7 @@ export class CapOrReqDefComponent implements OnInit {
         const constraintTypeElement: SelectData = this.constraintTypeItems
             .filter(item => item.id === this.activeConstraint.constraintType)[0];
 
-        if (isNullOrUndefined(constraintTypeElement)) {
+        if (!constraintTypeElement) {
             this.activeTypeElement = new SelectData();
             this.activeTypeElement.text = '';
             this.activeTypeElement.id = '';
@@ -399,6 +366,87 @@ export class CapOrReqDefComponent implements OnInit {
     }
 
     // endregion
+
+    onAddSourceTypeClick() {
+        this.addModalRef = this.modalService.show(this.addValidNodeTypeModal);
+        this.validSourceTypesService.getAvailableValidSourceTypes().subscribe(available => this.handleNodeTypesData(available));
+
+    }
+
+    handleNodeTypesData(nodeTypes: SelectData[]) {
+        this.currentNodeTypes = nodeTypes;
+    }
+
+    onRemoveClicked(selected: QName) {
+        const toDelete: String = selected.qName;
+        if (selected) {
+            this.capOrReqDefToBeAdded.validSourceTypes = this.capOrReqDefToBeAdded.validSourceTypes.filter(item => item !== toDelete);
+            this.validSourceTypesTableData = this.validSourceTypesTableData.filter(item => item !== selected);
+            this.notify.success('Saved changes.');
+        }
+    }
+
+    onAddValidSourceType() {
+        this.capOrReqDefToBeAdded.validSourceTypes.push(this.selectedNodeType.qName);
+        this.validSourceTypesTableData.push(this.selectedNodeType);
+        this.notify.success('Saved changes.');
+    }
+
+    onSelectedNodeTypeChanged(value: SelectData) {
+        if (value.id !== null && value.id !== undefined) {
+            this.selectedNodeType = QName.stringToQName(value.id);
+        } else {
+            this.selectedNodeType = null;
+        }
+    }
+
+    showConstraints(capOrRegDefinition: CapabilityOrRequirementDefinition) {
+        this.validSourceTypesTableData = [];
+        const self = this;
+        if (capOrRegDefinition.validSourceTypes) {
+            capOrRegDefinition.validSourceTypes.forEach(function (value) {
+                self.validSourceTypesTableData.push(QName.stringToQName(value));
+            });
+        }
+        this.showYAMLConModal.show();
+    }
+
+    private capOrReqTypeToHref(type: string): string {
+        const name = type.split('}').pop();
+        const namespaceEncoded: string = encodeURIComponent(encodeURIComponent(
+            type.substring(type.lastIndexOf('{') + 1, type.lastIndexOf('}'))
+        ));
+        const absoluteURL = '/#/' + this.types + '/' + namespaceEncoded + '/' + name;
+        return '<a href="' + absoluteURL + '">' + name + '</a>';
+    }
+
+    private getTypeURI(type: string): string {
+        const name = type.split('}').pop();
+        const namespaceEncoded: string = encodeURIComponent(
+            type.substring(type.lastIndexOf('{') + 1, type.lastIndexOf('}'))
+        );
+        return '/' + this.types + '/' + namespaceEncoded + '/' + name;
+    }
+
+    private prepareTableData(apidata: CapOrRegDefinitionsResourceApiData) {
+        this.tableData = [];
+        for (const entry of apidata.capOrRegDefinitionsList) {
+            const name = entry.name;
+            const lowerBound = entry.lowerBound;
+            const upperBound = entry.upperBound === 'UNBOUNDED' ? '∞' : entry.upperBound;
+            const type = this.capOrReqTypeToHref(
+                !entry.capabilityType
+                    ? entry.capabilityType
+                    : entry.requirementType
+            );
+            const constraint = '<button class="btn btn-xs" style="pointer-events: none;">Constraint...</button>';
+            const typeUri = this.getTypeURI(!entry.capabilityType
+            === false ? entry.capabilityType : entry.requirementType);
+
+            this.tableData.push(new CapOrRegDefinitionsTableData(name, type, lowerBound, upperBound, constraint, typeUri));
+        }
+        this.handleSuccess();
+    }
 
     // region ########## Service Callbacks ##########
 
@@ -451,7 +499,7 @@ export class CapOrReqDefComponent implements OnInit {
 
     private handleGetConstraints(data: Constraint[]): void {
         this.constraintList = data;
-        this.noConstraintsExistingFlag = isNullOrUndefined(data) || data.length === 0;
+        this.noConstraintsExistingFlag = !data || data.length === 0;
         this.loadingConstraints = false;
     }
 
@@ -563,48 +611,4 @@ export class CapOrReqDefComponent implements OnInit {
     }
 
     // endregion
-
-    onAddSourceTypeClick() {
-        this.addModalRef = this.modalService.show(this.addValidNodeTypeModal);
-        this.validSourceTypesService.getAvailableValidSourceTypes().subscribe(available => this.handleNodeTypesData(available));
-
-    }
-
-    handleNodeTypesData(nodeTypes: SelectData[]) {
-        this.currentNodeTypes = nodeTypes;
-    }
-
-    onRemoveClicked(selected: QName) {
-        const toDelete: String = selected.qName;
-        if (selected) {
-            this.capOrReqDefToBeAdded.validSourceTypes = this.capOrReqDefToBeAdded.validSourceTypes.filter(item => item !== toDelete);
-            this.validSourceTypesTableData = this.validSourceTypesTableData.filter(item => item !== selected);
-            this.notify.success('Saved changes.');
-        }
-    }
-
-    onAddValidSourceType() {
-        this.capOrReqDefToBeAdded.validSourceTypes.push(this.selectedNodeType.qName);
-        this.validSourceTypesTableData.push(this.selectedNodeType);
-        this.notify.success('Saved changes.');
-    }
-
-    onSelectedNodeTypeChanged(value: SelectData) {
-        if (value.id !== null && value.id !== undefined) {
-            this.selectedNodeType = QName.stringToQName(value.id);
-        } else {
-            this.selectedNodeType = null;
-        }
-    }
-
-    showConstraints(capOrRegDefinition: CapabilityOrRequirementDefinition) {
-        this.validSourceTypesTableData = [];
-        const self = this;
-        if (capOrRegDefinition.validSourceTypes) {
-            capOrRegDefinition.validSourceTypes.forEach(function (value) {
-                self.validSourceTypesTableData.push(QName.stringToQName(value));
-            });
-        }
-        this.showYAMLConModal.show();
-    }
 }

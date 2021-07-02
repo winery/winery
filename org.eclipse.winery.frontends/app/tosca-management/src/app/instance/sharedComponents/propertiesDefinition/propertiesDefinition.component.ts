@@ -95,8 +95,6 @@ export class PropertiesDefinitionComponent implements OnInit {
     isYaml: boolean;
     validatorObject: WineryValidatorObject;
     availableTypes: string[] = [];
-    private yamlTypes: string[] = [];
-    private xmlTypes: string[] = ['xsd:string', 'xsd:float', 'xsd:decimal', 'xsd:anyURI', 'xsd:QName', 'xsd:integer'];
 
     @ViewChild('confirmDeleteModal')
     confirmDeleteModal: ModalDirective;
@@ -109,6 +107,8 @@ export class PropertiesDefinitionComponent implements OnInit {
 
     @ViewChild('nameInputForm') nameInputForm: ElementRef;
 
+    private yamlTypes: string[] = [];
+    private xmlTypes: string[] = ['xsd:string', 'xsd:float', 'xsd:decimal', 'xsd:anyURI', 'xsd:QName', 'xsd:integer'];
 
     constructor(public sharedData: InstanceService, private service: PropertiesDefinitionService,
                 private modalService: BsModalService, private dataTypes: DataTypesService,
@@ -331,17 +331,6 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.editorModalRef = this.modalService.show(this.editorModal);
     }
 
-    private clearEditedProperty() {
-        this.editedProperty = this.isYaml ? new YamlPropertyDefinition() : new PropertiesDefinitionKVElement();
-        this.editedConstraints = [];
-        if (this.editedProperty.entrySchema === undefined) {
-            this.editedProperty.entrySchema = { type: '' };
-        }
-        if (this.editedProperty.keySchema === undefined) {
-            this.editedProperty.keySchema = { type: '' };
-        }
-    }
-
     onEditClick(data: YamlPropertyDefinition | PropertiesDefinitionKVElement) {
         this.propertyOperation = 'Edit';
         this.editedProperty = data;
@@ -411,53 +400,6 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.copyToTable();
     }
 
-    private updateEditedProperty(name: string, type: string, entrySchema: string, keySchema: string) {
-        if (this.isYaml) {
-            this.editedProperty.name = name;
-            if (type === 'list' || type === 'map') {
-                // entrySchema should be defined now
-                if (this.editedProperty.entrySchema) {
-                    this.editedProperty.entrySchema.type = entrySchema || 'string';
-                } else {
-                    this.editedProperty.entrySchema = new SchemaDefinition(entrySchema || 'string', '', [], undefined, undefined);
-                }
-            } else {
-                this.editedProperty.entrySchema = undefined;
-            }
-            if (type === 'map' && keySchema !== '') {
-                if (this.editedProperty.keySchema) {
-                    this.editedProperty.keySchema.type = keySchema;
-                } else {
-                    this.editedProperty.keySchema = new SchemaDefinition(keySchema, '', [], undefined, undefined);
-                }
-            } else {
-                this.editedProperty.keySchema = undefined;
-            }
-        } else {
-            this.editedProperty.key = name;
-            delete this.editedProperty.entrySchema;
-            delete this.editedProperty.keySchema;
-        }
-    }
-
-    private createEditedProperty(name: string, type: string, entrySchema: string, keySchema: string) {
-        let newProp;
-        if (this.isYaml) {
-            newProp = new YamlPropertyDefinition(name);
-            if (type === 'list' || type === 'map') {
-                // entry schema should be defined now
-                newProp.entrySchema = new SchemaDefinition(entrySchema || 'string', '', [], undefined, undefined);
-            }
-            if (type === 'map' && keySchema !== '') {
-                newProp.keySchema = new SchemaDefinition(keySchema, '', [], undefined, undefined);
-            }
-        } else {
-            newProp = new PropertiesDefinitionKVElement();
-            newProp.key = name;
-        }
-        this.editedProperty = newProp;
-    }
-
     removeConfirmed() {
         this.confirmDeleteModalRef.hide();
         this.deleteItem(this.elementToRemove);
@@ -506,6 +448,64 @@ export class PropertiesDefinitionComponent implements OnInit {
     // endregion
 
     // region ########## Private Methods ##########
+    private clearEditedProperty() {
+        this.editedProperty = this.isYaml ? new YamlPropertyDefinition() : new PropertiesDefinitionKVElement();
+        this.editedConstraints = [];
+        if (this.editedProperty.entrySchema === undefined) {
+            this.editedProperty.entrySchema = { type: '' };
+        }
+        if (this.editedProperty.keySchema === undefined) {
+            this.editedProperty.keySchema = { type: '' };
+        }
+    }
+
+    private updateEditedProperty(name: string, type: string, entrySchema: string, keySchema: string) {
+        if (this.isYaml) {
+            this.editedProperty.name = name;
+            if (type === 'list' || type === 'map') {
+                // entrySchema should be defined now
+                if (this.editedProperty.entrySchema) {
+                    this.editedProperty.entrySchema.type = entrySchema || 'string';
+                } else {
+                    this.editedProperty.entrySchema = new SchemaDefinition(entrySchema || 'string', '', [], undefined, undefined);
+                }
+            } else {
+                this.editedProperty.entrySchema = undefined;
+            }
+            if (type === 'map' && keySchema !== '') {
+                if (this.editedProperty.keySchema) {
+                    this.editedProperty.keySchema.type = keySchema;
+                } else {
+                    this.editedProperty.keySchema = new SchemaDefinition(keySchema, '', [], undefined, undefined);
+                }
+            } else {
+                this.editedProperty.keySchema = undefined;
+            }
+        } else {
+            this.editedProperty.key = name;
+            delete this.editedProperty.entrySchema;
+            delete this.editedProperty.keySchema;
+        }
+    }
+
+    private createEditedProperty(name: string, type: string, entrySchema: string, keySchema: string) {
+        let newProp;
+        if (this.isYaml) {
+            newProp = new YamlPropertyDefinition(name);
+            if (type === 'list' || type === 'map') {
+                // entry schema should be defined now
+                newProp.entrySchema = new SchemaDefinition(entrySchema || 'string', '', [], undefined, undefined);
+            }
+            if (type === 'map' && keySchema !== '') {
+                newProp.keySchema = new SchemaDefinition(keySchema, '', [], undefined, undefined);
+            }
+        } else {
+            newProp = new PropertiesDefinitionKVElement();
+            newProp.key = name;
+        }
+        this.editedProperty = newProp;
+    }
+
     private getPropertiesDefinitionsResourceApiData(): void {
         this.loading = true;
         this.service.getPropertiesDefinitionsData()

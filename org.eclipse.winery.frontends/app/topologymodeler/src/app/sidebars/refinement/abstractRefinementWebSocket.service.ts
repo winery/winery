@@ -36,6 +36,12 @@ export abstract class AbstractRefinementWebSocketService<T> {
     protected constructor(protected backendService: BackendService) {
     }
 
+    cancel() {
+        if (this.socket && this.socket.readyState !== this.socket.CLOSING && this.socket.readyState !== this.socket.CLOSED) {
+            this.socket.send(JSON.stringify({ task: RefinementTasks.STOP }));
+        }
+    }
+
     protected startRefinementSocket(endpoint: string): Observable<T> {
         this.socket = new WebSocket(this.backendService.configuration.webSocketUrl + endpoint);
         this.listener = new BehaviorSubject<T>(null);
@@ -61,11 +67,5 @@ export abstract class AbstractRefinementWebSocketService<T> {
 
     private onClose(event: CloseEvent) {
         this.listener.complete();
-    }
-
-    cancel() {
-        if (this.socket && this.socket.readyState !== this.socket.CLOSING && this.socket.readyState !== this.socket.CLOSED) {
-            this.socket.send(JSON.stringify({ task: RefinementTasks.STOP }));
-        }
     }
 }

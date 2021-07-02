@@ -11,9 +11,10 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Directive, Input, OnChanges, SimpleChanges} from '@angular/core';
-import { AbstractControl, FormGroup, NG_VALIDATORS, ValidationErrors, Validator, ValidatorFn, Validators } from '@angular/forms';
-import {isNullOrUndefined} from 'util';
+import { Directive, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+    AbstractControl, FormGroup, NG_VALIDATORS, ValidationErrors, Validator, ValidatorFn, Validators
+} from '@angular/forms';
 
 export class WineryValidatorObject {
 
@@ -21,10 +22,6 @@ export class WineryValidatorObject {
     private active = true;
 
     constructor(private list: Array<any>, private property?: string, private element?: any) {
-    }
-
-    public setRegExp(regExp: RegExp) {
-        this.regEx = regExp;
     }
 
     static duplicateValidator(list?: Array<any>, property?: string, uuid?: string): ValidatorFn {
@@ -58,23 +55,27 @@ export class WineryValidatorObject {
         };
     }
 
+    public setRegExp(regExp: RegExp) {
+        this.regEx = regExp;
+    }
+
     // deprecated
     validate(compareObject: WineryValidatorObject): ValidatorFn {
         return (control: AbstractControl): { [key: string]: any } => {
-            if (isNullOrUndefined(compareObject) || isNullOrUndefined(compareObject.list) || !this.active) {
+            if (!compareObject || !compareObject.list || !this.active) {
                 return null;
             }
             const name = control.value;
             let no = false;
-            if (isNullOrUndefined(compareObject.property)) {
+            if (!compareObject.property) {
                 no = compareObject.list.find(item => item !== this.element && item === name);
             } else {
                 no = compareObject.list.find(item => item !== this.element && item[compareObject.property] === name);
             }
-            if (!isNullOrUndefined(compareObject.regEx)) {
+            if (compareObject.regEx) {
                 no = !compareObject.regEx.test(name);
             }
-            return no ? {wineryDuplicateValidator: {name}} : null;
+            return no ? { wineryDuplicateValidator: { name } } : null;
         };
     }
 
@@ -89,7 +90,7 @@ export class WineryValidatorObject {
 
 @Directive({
     selector: '[wineryDuplicateValidator]',
-    providers: [{provide: NG_VALIDATORS, useExisting: WineryDuplicateValidatorDirective, multi: true}]
+    providers: [{ provide: NG_VALIDATORS, useExisting: WineryDuplicateValidatorDirective, multi: true }]
 })
 export class WineryDuplicateValidatorDirective implements Validator, OnChanges {
 
@@ -99,7 +100,7 @@ export class WineryDuplicateValidatorDirective implements Validator, OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         const change = changes['wineryDuplicateValidator'];
-        if (change && !isNullOrUndefined(this.wineryDuplicateValidator)) {
+        if (change && this.wineryDuplicateValidator) {
             const val: WineryValidatorObject = change.currentValue;
             this.valFn = this.wineryDuplicateValidator.validate(val);
         } else {

@@ -126,15 +126,6 @@ export class WineryAddComponentDataComponent {
         this.collapseVersioning = !this.collapseVersioning;
     }
 
-    private determineFinalName() {
-        if (this.newComponentFinalName && this.newComponentFinalName.length > 0) {
-            if (this.useComponentVersion) {
-                this.newComponentFinalName += WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + this.newComponentVersion.toString();
-            }
-            this.createUrlAndCheck();
-        }
-    }
-
     createUrlAndCheck() {
         const namespace = encodeURIComponent(encodeURIComponent(this.newComponentNamespace));
         if (this.toscaType && namespace && this.newComponentFinalName) {
@@ -151,6 +142,39 @@ export class WineryAddComponentDataComponent {
         this.newComponentNamespaceEvent.emit(this.newComponentNamespace);
     }
 
+    createNoteTypeImplementationName(fullName: SelectData) {
+        const version = Utils.getVersionFromString(fullName.text);
+        this.newComponentVersion.componentVersion = version ? version.getComponentVersion() : '';
+        // we need to set both as it is required in the determineFinalName
+        this.newComponentFinalName = this.newComponentName = Utils.getNameWithoutVersion(fullName.text) + '-Implementation';
+        this.determineFinalName();
+    }
+
+    createArtifactName(toscaComponent: ToscaComponent, nodeTypeQName: string, interfaceName: string, operation: string,
+                       isImplementationArtifact: boolean, nodeType: string) {
+        const wineryVersion = Utils.getVersionFromString(nodeTypeQName);
+        const newVersion = WineryVersion.WINERY_VERSION_PREFIX + 1 + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_WORK_IN_PROGRESS_PREFIX + 1;
+        this.newComponentFinalName = nodeType;
+        if (isImplementationArtifact) {
+            const readableInterfaceName = interfaceName && interfaceName.includes('/')
+                ? interfaceName.substring(interfaceName.lastIndexOf('/') + 1)
+                : interfaceName ? interfaceName : '';
+            this.newComponentVersion.componentVersion = (wineryVersion && wineryVersion.componentVersion
+                ? wineryVersion.componentVersion + WineryVersion.WINERY_VERSION_SEPARATOR
+                : '')
+                + (operation && operation.length > 0 ? operation : readableInterfaceName);
+        } else {
+            this.newComponentVersion.componentVersion = (wineryVersion && wineryVersion.getComponentVersion()
+                ? wineryVersion.componentVersion + WineryVersion.WINERY_VERSION_SEPARATOR
+                : '-')
+                + 'DA';
+        }
+        this.newComponentFinalName += (this.newComponentVersion.componentVersion ? WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR
+            + this.newComponentVersion.componentVersion : '')
+            + WineryVersion.WINERY_VERSION_SEPARATOR + newVersion;
+        this.createUrlAndCheck();
+    }
+
     private validate(create: boolean) {
         this.validation = new AddComponentValidation();
         if (!create) {
@@ -165,35 +189,12 @@ export class WineryAddComponentDataComponent {
         }
     }
 
-    createNoteTypeImplementationName(fullName: SelectData) {
-        const version = Utils.getVersionFromString(fullName.text);
-        this.newComponentVersion.componentVersion = version ? version.toString() : '';
-        // we need to set both as it is required in the determineFinalName
-        this.newComponentFinalName = this.newComponentName = Utils.getNameWithoutVersion(fullName.text) + '-Impl';
-        this.determineFinalName();
-    }
-
-    createArtifactName(toscaComponent: ToscaComponent, nodeTypeQName: string, operation: string,
-                       isImplementationArtifact: boolean, nodeType: string) {
-        const artifactType = isImplementationArtifact ? 'IA' : 'DA';
-        const wineryVersion = Utils.getVersionFromString(nodeTypeQName);
-        const newVersion = WineryVersion.WINERY_VERSION_PREFIX + 1 + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_WORK_IN_PROGRESS_PREFIX + 1;
-        this.newComponentFinalName = nodeType;
-        if (operation) {
-            this.newComponentVersion.componentVersion = (wineryVersion && wineryVersion.componentVersion
-                ? wineryVersion.componentVersion + WineryVersion.WINERY_VERSION_SEPARATOR
-                : '')
-                + operation
-                + (isImplementationArtifact ? '' : '-' + artifactType);
-        } else {
-            this.newComponentVersion.componentVersion = (wineryVersion && wineryVersion.getComponentVersion()
-                ? wineryVersion.componentVersion + WineryVersion.WINERY_VERSION_SEPARATOR
-                : '')
-                + artifactType;
+    private determineFinalName() {
+        if (this.newComponentFinalName && this.newComponentFinalName.length > 0) {
+            if (this.useComponentVersion) {
+                this.newComponentFinalName += WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + this.newComponentVersion.toString();
+            }
+            this.createUrlAndCheck();
         }
-        this.newComponentFinalName += (this.newComponentVersion.componentVersion ? WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR
-            + this.newComponentVersion.componentVersion : '')
-            + WineryVersion.WINERY_VERSION_SEPARATOR + newVersion;
-        this.createUrlAndCheck();
     }
 }

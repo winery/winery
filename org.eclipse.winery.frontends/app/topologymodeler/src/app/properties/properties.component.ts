@@ -78,6 +78,27 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
         }
     }
 
+    ngOnDestroy() {
+        this.clearSubscriptions();
+    }
+
+    xmlPropertyEdit($event: string) {
+        this.templateProperties = $event;
+        this.dispatchRedux('any');
+    }
+
+    kvPropertyEdit($event: KeyValueItem) {
+        this.templateProperties[$event.key] = $event.value;
+        this.dispatchRedux('kvproperties');
+    }
+
+    // TODO? rewrite to have a "PathValueItem"
+    yamlPropertyEdit($event: KeyValueItem) {
+        // FIXME deal with the fact that yaml properties support complex datatypes, implying nesting
+        this.templateProperties[$event.key] = $event.value;
+        this.dispatchRedux('properties');
+    }
+
     private loadData(template: TNodeTemplate | TRelationshipTemplate): void {
         if (this.skipUpdate) {
             this.skipUpdate = false;
@@ -109,27 +130,6 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
 
     private clearSubscriptions() {
         this.subscriptions.forEach(s => s.unsubscribe());
-    }
-
-    ngOnDestroy() {
-        this.clearSubscriptions();
-    }
-
-    xmlPropertyEdit($event: string) {
-        this.templateProperties = $event;
-        this.dispatchRedux('any');
-    }
-
-    kvPropertyEdit($event: KeyValueItem) {
-        this.templateProperties[$event.key] = $event.value;
-        this.dispatchRedux('kvproperties');
-    }
-
-    // TODO? rewrite to have a "PathValueItem"
-    yamlPropertyEdit($event: KeyValueItem) {
-        // FIXME deal with the fact that yaml properties support complex datatypes, implying nesting
-        this.templateProperties[$event.key] = $event.value;
-        this.dispatchRedux('properties');
     }
 
     private dispatchRedux(member: string): void {
