@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -45,7 +44,7 @@ public class ProviderRepository {
     private static final String NS_NAME_START = "http://www.opentosca.org/providers/";
 
     /**
-     * Pointing to a concrete node template has to be done by putting this node template into a separeate namespace <p>
+     * Pointing to a concrete node template has to be done by putting this node template into a separate namespace <p>
      * The given targetLocation is appended to {@see NS_NAME_START} to gain the namespace. All NodeTemplates in this
      * namespace and all "lower" namespaces (e.g., starting with that string) are returned.
      *
@@ -58,18 +57,13 @@ public class ProviderRepository {
         QName requiredCapabilityType = RepositoryFactory.getRepository().getElement(reqTypeId).getRequiredCapabilityType();
 
         return getAllTopologyFragmentsForLocation(targetLocation).stream()
-            .filter(tf -> {
-                Optional<TNodeTemplate> nodeTemplate = ModelUtilities.getAllNodeTemplates(tf).stream()
+            .filter(tf ->
+                tf.getNodeTemplates().stream()
                     .filter(nt -> nt.getCapabilities() != null)
-                    .filter(nt -> nt.getCapabilities().stream()
+                    .anyMatch(nt -> nt.getCapabilities().stream()
                         .anyMatch(cap -> cap.getType().equals(requiredCapabilityType))
-                    ).findAny();
-                if (nodeTemplate.isPresent()) {
-                    return true;
-                } else {
-                    return false;
-                }
-            })
+                    )
+            )
             .collect(Collectors.toList());
     }
 
@@ -139,12 +133,16 @@ public class ProviderRepository {
             // get all contained node templates
             .flatMap(id -> {
                 TTopologyTemplate topologyTemplate = RepositoryFactory.getRepository().getElement(id).getTopologyTemplate();
-                List<TNodeTemplate> matchedNodeTemplates = topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream()
-                    .filter(t -> t instanceof TNodeTemplate)
-                    .map(TNodeTemplate.class::cast)
-                    .collect(Collectors.toList());
+                if (topologyTemplate != null) {
+                    List<TNodeTemplate> matchedNodeTemplates = topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream()
+                        .filter(t -> t instanceof TNodeTemplate)
+                        .map(TNodeTemplate.class::cast)
+                        .collect(Collectors.toList());
 
-                matchedNodeTemplates.forEach(t -> ModelUtilities.setTargetLabel(t, id.getNamespace().getDecoded().replace(NS_NAME_START, "")));
+                    matchedNodeTemplates.forEach(t ->
+                        ModelUtilities.setTargetLabel(t, id.getNamespace().getDecoded().replace(NS_NAME_START, ""))
+                    );
+                }
 
                 return getAllTopologyFragmentsFromServiceTemplate(topologyTemplate).stream();
             })
@@ -161,41 +159,38 @@ public class ProviderRepository {
 
         //It can only be one topology fragment contained in the service template
         if (nodeTemplatesWithoutIncomingRelationship.size() == 1) {
-            TDocumentation documentation = new TDocumentation();
-            Optional<String> targetLabel = ModelUtilities.getTargetLabel(nodeTemplatesWithoutIncomingRelationship.get(0));
-            String label;
-            if (!targetLabel.isPresent()) {
-                label = "unkown";
-            } else {
-                label = targetLabel.get();
-            }
-            documentation.getContent().add("Stack of Node Template " + nodeTemplatesWithoutIncomingRelationship.get(0).getId()
-                + " from Provider Repository " + label);
-            topologyTemplate.getDocumentation().add(documentation);
+            String targetLabel = ModelUtilities.getTargetLabel(nodeTemplatesWithoutIncomingRelationship.get(0))
+                .orElse("unknown");
+            topologyTemplate.getDocumentation().add(
+                new TDocumentation.Builder()
+                    .addContent("Stack of Node Template " + nodeTemplatesWithoutIncomingRelationship.get(0).getId()
+                        + " from Provider Repository " + targetLabel)
+                    .build()
+            );
             topologyFragments.add(topologyTemplate);
         } else {
             for (TNodeTemplate nodeWithoutIncomingRel : nodeTemplatesWithoutIncomingRelationship) {
                 if (!visitedNodeTemplates.contains(nodeWithoutIncomingRel)) {
-                    TDocumentation documentation = new TDocumentation();
-                    Optional<String> targetLabel = ModelUtilities.getTargetLabel(nodeWithoutIncomingRel);
-                    String label;
-                    if (!targetLabel.isPresent()) {
-                        label = "unkown";
-                    } else {
-                        label = targetLabel.get();
-                    }
-                    documentation.getContent().add("Stack of Node Template " + nodeWithoutIncomingRel.getId()
-                        + " from Provider Repository " + label);
+                    String targetLabel = ModelUtilities.getTargetLabel(nodeWithoutIncomingRel)
+                        .orElse("unknown");
                     TTopologyTemplate topologyFragment = new TTopologyTemplate.Builder()
-                        .addDocumentation(documentation)
+                        .addDocumentation(
+                            new TDocumentation.Builder()
+                                .addContent("Stack of Node Template " + nodeWithoutIncomingRel.getId()
+                                    + " from Provider Repository " + targetLabel)
+                                .build()
+                        )
                         .build();
-                    topologyFragment.getNodeTemplateOrRelationshipTemplate().addAll(breadthFirstSearch(nodeWithoutIncomingRel, topologyTemplate));
+                    topologyFragment.getNodeTemplateOrRelationshipTemplate()
+                        .addAll(
+                            breadthFirstSearch(nodeWithoutIncomingRel, topologyTemplate)
+                        );
                     topologyFragments.add(topologyFragment);
 
                     topologyFragment.getNodeTemplateOrRelationshipTemplate().stream()
                         .filter(et -> et instanceof TNodeTemplate)
                         .map(TNodeTemplate.class::cast)
-                        .forEach(nt -> visitedNodeTemplates.add(nt));
+                        .forEach(visitedNodeTemplates::add);
                 }
             }
         }

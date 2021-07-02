@@ -13,14 +13,15 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.documentation;
 
-import org.eclipse.winery.model.tosca.TDocumentation;
-import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
+import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.core.Response;
-import java.util.List;
+
+import org.eclipse.winery.model.tosca.TDocumentation;
+import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
 
 public class DocumentationResource {
 
@@ -48,10 +49,11 @@ public class DocumentationResource {
     @PUT
     public Response onPost(String documentation) {
         this.documentation.clear();
-        TDocumentation tDocumentation = new TDocumentation();
-        tDocumentation.getContent().add(documentation);
-        this.documentation.add(tDocumentation);
+        this.documentation.add(
+            new TDocumentation.Builder()
+                .addContent(documentation)
+                .build()
+        );
         return RestUtils.persist(this.abstractComponentInstanceResource);
     }
-
 }

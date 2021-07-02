@@ -616,11 +616,10 @@ public class ToCanonical {
     }
 
     private TDocumentation convert(XTDocumentation xml) {
-        TDocumentation canonical = new TDocumentation();
-        canonical.getContent().addAll(xml.getContent());
-        canonical.setSource(xml.getSource());
-        canonical.setLang(xml.getLang());
-        return canonical;
+        return new TDocumentation.Builder(xml.getContent())
+            .setSource(xml.getSource())
+            .setLang(xml.getLang())
+            .build();
     }
 
     private TCapabilityType convert(XTCapabilityType xml) {
