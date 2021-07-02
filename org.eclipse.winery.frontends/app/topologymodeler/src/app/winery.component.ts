@@ -71,7 +71,6 @@ export class WineryComponent implements OnInit, AfterViewInit {
 
     public loaded: ILoaded;
     private loadedRelationshipVisuals = 0;
-    private requiredRelationshipVisuals: number;
 
     constructor(private loadedService: LoadedService,
                 private appReadyEvent: AppReadyEventService,
@@ -173,7 +172,7 @@ export class WineryComponent implements OnInit, AfterViewInit {
 
     initiateData(): void {
         // TODO well, this is a mess
-        this.backendService.model.subscribe(m => {
+        this.backendService.model.subscribe((m) => {
             this.entityTypes = m;
             this.ngRedux.dispatch(this.uiActions.addEntityTypes(this.entityTypes));
         });
