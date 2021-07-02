@@ -17,6 +17,7 @@ import { CapabilityDefinitionModel } from './capabilityDefinitionModel';
 import { RequirementDefinitionModel } from './requirementDefinitonModel';
 import { EntityType, TPolicyType } from './ttopology-template';
 import { PropertyDefinitionType } from './enums';
+import { ToastrService } from 'ngx-toastr';
 
 export class InheritanceUtils {
 
@@ -150,11 +151,12 @@ export class InheritanceUtils {
         return result;
     }
 
-    static getEffectivePropertiesOfTemplateElement(templateElementProperties: any, typeQName: string, entityTypes: EntityType[]): any {
+    static getEffectivePropertiesOfTemplateElement(templateElementProperties: any, typeQName: string, entityTypes: EntityType[],
+                                                   notify: ToastrService): any {
         const defaultTypeProperties = this.getDefaultPropertiesFromEntityTypes(typeQName, entityTypes);
         const result = {};
         if (!defaultTypeProperties) {
-            console.log('Could not find default type properties for type ' + typeQName);
+            notify.info('Could not find default type properties for type ' + typeQName);
             return { propertyType: PropertyDefinitionType.NONE };
         }
         if (defaultTypeProperties.propertyType === PropertyDefinitionType.KV) {
@@ -174,7 +176,7 @@ export class InheritanceUtils {
 
     /**
      * This function gets KV properties of a type and sets their default values
-     * @param any type: the element type, e.g. capabilityType, requirementType etc.
+     * @param type: the element type, e.g. capabilityType, requirementType etc.
      * @returns newKVProperties: KV Properties as Object
      */
     static getKVProperties(type: any): any {

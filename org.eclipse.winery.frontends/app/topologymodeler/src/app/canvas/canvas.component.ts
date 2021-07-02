@@ -2132,7 +2132,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     handleYamlPolicySelected($event: WineryRowData) {
         this.selectedYamlPolicy = this.entityTypes.yamlPolicies.find(policy => policy.name === (<TPolicy>$event.row).name);
         this.selectedYamlPolicy.properties = InheritanceUtils.getEffectivePropertiesOfTemplateElement(this.selectedYamlPolicy.properties,
-            this.selectedYamlPolicy.policyType, this.entityTypes.policyTypes);
+            this.selectedYamlPolicy.policyType, this.entityTypes.policyTypes, this.notify);
     }
 
     savePolicyProperties(): void {
