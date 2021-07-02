@@ -103,31 +103,6 @@ export class DeploymentArtifactsMappingsComponent implements OnInit {
         ];
     }
 
-    private handleData(data: [DeploymentArtifactMapping[], NodeTemplate[], NodeTemplate[], SelectData[]]) {
-        this.loading = false;
-        this.deploymentArtifactMappings = data[0];
-        this.detectorNodes = data[1];
-        this.refinementNodes = data[2];
-        this.artifactTypes = data[3];
-
-        this.detectorNodes.forEach((element) => {
-                this.detectorElementsTableData.push({ label: element.name, value: element.id }
-                );
-            }
-        );
-        this.refinementNodes.forEach((element) => {
-                this.refinementElementsTableData.push({ label: element.name, value: element.id }
-                );
-            }
-        );
-        this.artifactTypes.forEach((element) => {
-            element.children.forEach((child) => {
-                this.artifactTypesTableData.push({ label: child.text, value: child.id }
-                );
-            });
-        });
-    }
-
     save(mapping: DeploymentArtifactMapping) {
         this.loading = true;
         const id = this.service.getNewMappingsId(this.deploymentArtifactMappings, DeploymentArtifactMapping.idPrefix);
@@ -161,5 +136,30 @@ export class DeploymentArtifactsMappingsComponent implements OnInit {
     private handleError(error: HttpErrorResponse) {
         this.loading = false;
         this.notify.error(error.message);
+    }
+
+    private handleData(data: [DeploymentArtifactMapping[], NodeTemplate[], NodeTemplate[], SelectData[]]) {
+        this.loading = false;
+        this.deploymentArtifactMappings = data[0];
+        this.detectorNodes = data[1];
+        this.refinementNodes = data[2];
+        this.artifactTypes = data[3];
+
+        this.detectorNodes.forEach((element) => {
+                this.detectorElementsTableData.push({ label: element.name, value: element.id }
+                );
+            }
+        );
+        this.refinementNodes.forEach((element) => {
+                this.refinementElementsTableData.push({ label: element.name, value: element.id }
+                );
+            }
+        );
+        this.artifactTypes.forEach((element) => {
+            element.children.forEach((child) => {
+                this.artifactTypesTableData.push({ label: child.text, value: child.id }
+                );
+            });
+        });
     }
 }

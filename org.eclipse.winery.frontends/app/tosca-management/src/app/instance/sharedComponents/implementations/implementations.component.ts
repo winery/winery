@@ -12,7 +12,6 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { isNullOrUndefined } from 'util';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { InstanceService } from '../../instance.service';
 import { ImplementationAPIData } from './implementationAPIData';
@@ -56,7 +55,7 @@ export class ImplementationsComponent implements OnInit {
 
     // region ######## table methods ########
     onCellSelected(data: WineryRowData) {
-        if (!isNullOrUndefined(data)) {
+        if (data) {
             this.selectedCell = data.row;
         }
     }
@@ -70,9 +69,7 @@ export class ImplementationsComponent implements OnInit {
     }
 
     onRemoveClick(data: ImplementationAPIData) {
-        if (isNullOrUndefined(data)) {
-            return;
-        } else {
+        if (data) {
             this.elementToRemove = data;
             this.confirmDeleteModal.show();
         }

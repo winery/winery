@@ -14,8 +14,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { InstanceStateService } from './instanceStates.service';
 import { InstanceStateApiData } from './InstanceStateApiData';
-import { Response } from '@angular/http';
-import { isNullOrUndefined } from 'util';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { ModalDirective } from 'ngx-bootstrap';
 import { InstanceService } from '../../instance.service';
@@ -49,15 +47,13 @@ export class InstanceStatesComponent implements OnInit {
 
     // region ######## table methods ########
     onCellSelected(data: any) {
-        if (!isNullOrUndefined(data)) {
+        if (data) {
             this.selectedCell = new InstanceStateApiData(data.row.state);
         }
     }
 
     onRemoveClick(data: any) {
-        if (isNullOrUndefined(data)) {
-            return;
-        } else {
+        if (data) {
             this.elementToRemove = new InstanceStateApiData(data.state);
             this.confirmDeleteModal.show();
         }

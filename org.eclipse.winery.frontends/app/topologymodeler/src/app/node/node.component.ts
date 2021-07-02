@@ -59,6 +59,13 @@ import { DetailsSidebarState } from '../sidebars/node-details/node-details-sideb
 })
 export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck {
 
+    /**
+     *  Parse the localName of the NodeType
+     */
+    get nodeTypeLocalName() {
+        return this.nodeTemplate.type.split('}').pop();
+    }
+
     public items: string[] = ['Item 1', 'Item 2', 'Item 3'];
     nodeClass: string;
     visibilityState = 'hidden';
@@ -78,8 +85,6 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     policyIcons: string[];
     configEnum = FeatureEnum;
     policiesOfNode: TPolicy[];
-    private policyChangeSubscription: Subscription;
-    private artifactsChangedSubscription: Subscription;
     groupDefinitions: TGroupDefinition[];
     participants: OTParticipant[];
 
@@ -119,6 +124,8 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     newerVersions: WineryVersion[];
     newerVersionExist: boolean;
     newVersionElement: VersionElement;
+    private policyChangeSubscription: Subscription;
+    private artifactsChangedSubscription: Subscription;
 
     constructor(private zone: NgZone,
                 private $ngRedux: NgRedux<IWineryState>,
@@ -172,13 +179,6 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                 this.participants = topology.participants;
             });
         this.$ngRedux.subscribe(() => this.setPolicyIcons());
-    }
-
-    /**
-     *  Parse the localName of the NodeType
-     */
-    get nodeTypeLocalName() {
-        return this.nodeTemplate.type.split('}').pop();
     }
 
     public addItem(): void {
@@ -526,6 +526,14 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         }
     }
 
+    public openVersionModal() {
+        this.versionModal.open();
+    }
+
+    handleShowYamlPolicyManagementModal() {
+        this.showYamlPolicyManagementModal.emit();
+    }
+
     /**
      * Checks if it was a click or a drag operation on the node.
      *  $event
@@ -564,10 +572,6 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
 
     }
 
-    public openVersionModal() {
-        this.versionModal.open();
-    }
-
     private getAllowedPolicies() {
         // get the ancestry of the node type
         const nodeTypeAncestry = InheritanceUtils.getInheritanceAncestry(this.nodeTemplate.type, this.entityTypes.unGroupedNodeTypes);
@@ -589,9 +593,5 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         });
 
         return result;
-    }
-
-    handleShowYamlPolicyManagementModal() {
-        this.showYamlPolicyManagementModal.emit();
     }
 }

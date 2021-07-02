@@ -99,29 +99,6 @@ export class LayoutDirective {
     }
 
     /**
-     * This applies the calculated positions to the actual node elements.
-     * Uses ELK.Js which implements sugiyama to layout nodes.
-     * @param data The data (relationships, nodes) used by the layouting algo.
-     * @param nodeTemplates The internal representation of the nodes.
-     * @param jsPlumbInstance
-     */
-    private applyPositions(data: any,
-                           nodeChildrenArray: Array<NodeComponent>): Promise<boolean> {
-        return new Promise(resolve => {
-
-            nodeChildrenArray.forEach((node, index) => {
-                // apply the new positions to the nodes
-                node.nodeTemplate.x = data.children[index].x + this.nodeXOffset;
-                node.nodeTemplate.y = data.children[index].y + this.nodeYOffset;
-            });
-
-            this.repaintEverything();
-            resolve(true);
-        });
-
-    }
-
-    /**
      * Aligns all selected elements horizontally or vertically.
      * If no element is selected, all elements get aligned horizontally or vertically.
      * @param nodeChildrenArray
@@ -159,6 +136,29 @@ export class LayoutDirective {
                 reject(this.alert.info('You have only one node selected.'));
             }
         });
+    }
+
+    /**
+     * This applies the calculated positions to the actual node elements.
+     * Uses ELK.Js which implements sugiyama to layout nodes.
+     * @param data The data (relationships, nodes) used by the layouting algo.
+     * @param nodeTemplates The internal representation of the nodes.
+     * @param jsPlumbInstance
+     */
+    private applyPositions(data: any,
+                           nodeChildrenArray: Array<NodeComponent>): Promise<boolean> {
+        return new Promise(resolve => {
+
+            nodeChildrenArray.forEach((node, index) => {
+                // apply the new positions to the nodes
+                node.nodeTemplate.x = data.children[index].x + this.nodeXOffset;
+                node.nodeTemplate.y = data.children[index].y + this.nodeYOffset;
+            });
+
+            this.repaintEverything();
+            resolve(true);
+        });
+
     }
 
     /**

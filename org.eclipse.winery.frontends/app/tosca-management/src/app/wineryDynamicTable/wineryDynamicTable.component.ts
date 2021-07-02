@@ -124,59 +124,6 @@ export class WineryDynamicTableComponent implements OnInit, DoCheck {
         }
     }
 
-    private refreshData() {
-        this.dynamicMetadata.sort((a, b) => a.order - b.order);
-        // generate table columns from model
-        this.tableColumns = this.dynamicMetadata.filter(function (element) {
-            return element.isVisible;
-        }).map(item => ({
-            title: item.label,
-            name: item.key,
-            sort: item.sortTableCol
-        }));
-        if (!this.dynamicDataMap) {
-            this.dynamicDataMap = new Map;
-            for (const dynamicData of this.dynamicMetadata) {
-                this.dynamicDataMap[dynamicData.key] = dynamicData;
-            }
-        }
-
-        /*
-         * insert uuids to match human readable table data to the real data
-         */
-        this.data.forEach((value: any, index: number, array: any[]) => {
-            // tslint:disable-next-line:no-bitwise
-            array[index]['uuid'] = (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-        });
-
-        this.convertToTableData();
-    }
-
-    /**
-     * try to map data arrays to human readable values according to
-     * toHumanReadable function in dynamicTableData class
-     *
-     * this is really hacky as data is still of type any[]
-     * we need a type for this.data in the future to do this properly.
-     * However ng2-table does not support this, migrating to a newer
-     * version of ng-table would be necessary
-     */
-    private convertToTableData() {
-        this.humanReadableTableData = [];
-        this.data.forEach((value: any, index: number, array: any[]) => {
-            const data = array[index];
-            const tmp = { 'uuid': data['uuid'] };
-            for (const key of Object.keys(data)) {
-                if (this.dynamicDataMap && this.dynamicDataMap[key]) {
-                    tmp[key] = this.dynamicDataMap[key].toHumanReadable(data[key]);
-                } else {
-                    tmp[key] = data[key];
-                }
-            }
-            this.humanReadableTableData.push(tmp);
-        });
-    }
-
     addOrEdit(param: any) {
         if (this.currentState === 'Edit' && this.selectedRow) {
             for (let i = 0; i < this.data.length; i++) {
@@ -231,5 +178,58 @@ export class WineryDynamicTableComponent implements OnInit, DoCheck {
     selectedCell(cell: WineryRowData) {
         // we only need the selected row
         this.selectedRow = this.data.find((item) => item['uuid'] === cell.row['uuid']);
+    }
+
+    private refreshData() {
+        this.dynamicMetadata.sort((a, b) => a.order - b.order);
+        // generate table columns from model
+        this.tableColumns = this.dynamicMetadata.filter(function (element) {
+            return element.isVisible;
+        }).map(item => ({
+            title: item.label,
+            name: item.key,
+            sort: item.sortTableCol
+        }));
+        if (!this.dynamicDataMap) {
+            this.dynamicDataMap = new Map;
+            for (const dynamicData of this.dynamicMetadata) {
+                this.dynamicDataMap[dynamicData.key] = dynamicData;
+            }
+        }
+
+        /*
+         * insert uuids to match human readable table data to the real data
+         */
+        this.data.forEach((value: any, index: number, array: any[]) => {
+            // tslint:disable-next-line:no-bitwise
+            array[index]['uuid'] = (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+        });
+
+        this.convertToTableData();
+    }
+
+    /**
+     * try to map data arrays to human readable values according to
+     * toHumanReadable function in dynamicTableData class
+     *
+     * this is really hacky as data is still of type any[]
+     * we need a type for this.data in the future to do this properly.
+     * However ng2-table does not support this, migrating to a newer
+     * version of ng-table would be necessary
+     */
+    private convertToTableData() {
+        this.humanReadableTableData = [];
+        this.data.forEach((value: any, index: number, array: any[]) => {
+            const data = array[index];
+            const tmp = { 'uuid': data['uuid'] };
+            for (const key of Object.keys(data)) {
+                if (this.dynamicDataMap && this.dynamicDataMap[key]) {
+                    tmp[key] = this.dynamicDataMap[key].toHumanReadable(data[key]);
+                } else {
+                    tmp[key] = data[key];
+                }
+            }
+            this.humanReadableTableData.push(tmp);
+        });
     }
 }

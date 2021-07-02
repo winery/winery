@@ -35,10 +35,6 @@ export class VersionSliderComponent implements OnInit {
 
     private static readonly LEGEND_CHAR_LIMIT = 15;
 
-    private versions: WineryVersion[];
-    private initialSliderValue: number;
-    private entityTypes: EntityTypesModel;
-
     sliderValue: number;
     options: Options = {
         showTicksValues: true,
@@ -47,6 +43,10 @@ export class VersionSliderComponent implements OnInit {
         ticksTooltip: (index) => this.versions ? this.versions[index].toReadableString() : '',
         ticksValuesTooltip: (index) => this.versions ? this.versions[index].toReadableString() : ''
     };
+
+    private versions: WineryVersion[];
+    private initialSliderValue: number;
+    private entityTypes: EntityTypesModel;
 
     constructor(private versionSliderService: VersionSliderService,
                 private backendService: BackendService,
@@ -64,25 +64,19 @@ export class VersionSliderComponent implements OnInit {
             });
     }
 
-    ngOnInit() {
+    private static hideValues(): string {
+        return '';
     }
 
-    private init(versions: WineryVersion[]) {
-        this.versions = versions;
-        const id = this.backendService.configuration.id;
-        this.initialSliderValue = this.versions
-            .findIndex(v => this.toId(v) === id);
-        this.sliderValue = this.initialSliderValue;
+    private static limitChars(str: string): string {
+        if (str.length < this.LEGEND_CHAR_LIMIT) {
+            return str;
+        } else {
+            return str.substr(0, this.LEGEND_CHAR_LIMIT) + '...';
+        }
+    }
 
-        const stepsArray = [];
-        this.versions.forEach((version, index) => {
-            const legend = VersionSliderComponent.limitChars(version.toReadableString());
-            stepsArray.push({ value: index, legend });
-        });
-        // trigger change detection
-        const newOptions: Options = Object.assign({}, this.options);
-        newOptions.stepsArray = stepsArray;
-        this.options = newOptions;
+    ngOnInit() {
     }
 
     changeVersionInPlace() {
@@ -108,6 +102,24 @@ export class VersionSliderComponent implements OnInit {
         }
         window.open(editorConfig, '_blank');
         this.reset();
+    }
+
+    private init(versions: WineryVersion[]) {
+        this.versions = versions;
+        const id = this.backendService.configuration.id;
+        this.initialSliderValue = this.versions
+            .findIndex(v => this.toId(v) === id);
+        this.sliderValue = this.initialSliderValue;
+
+        const stepsArray = [];
+        this.versions.forEach((version, index) => {
+            const legend = VersionSliderComponent.limitChars(version.toReadableString());
+            stepsArray.push({ value: index, legend });
+        });
+        // trigger change detection
+        const newOptions: Options = Object.assign({}, this.options);
+        newOptions.stepsArray = stepsArray;
+        this.options = newOptions;
     }
 
     private reset() {
@@ -142,17 +154,5 @@ export class VersionSliderComponent implements OnInit {
                     );
                 }
             );
-    }
-
-    private static hideValues(): string {
-        return '';
-    }
-
-    private static limitChars(str: string): string {
-        if (str.length < this.LEGEND_CHAR_LIMIT) {
-            return str;
-        } else {
-            return str.substr(0, this.LEGEND_CHAR_LIMIT) + '...';
-        }
     }
 }

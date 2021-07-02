@@ -97,19 +97,23 @@ export class InstanceComponent implements OnDestroy {
             );
     }
 
+    deleteComponent() {
+        this.service.deleteComponent().subscribe(
+            data => this.handleDelete(),
+            error => this.handleError(error)
+        );
+    }
+
+    ngOnDestroy(): void {
+        this.routeSub.unsubscribe();
+    }
+
     private getVersionInfo() {
         this.service.getVersions()
             .subscribe(
                 versions => this.handleVersions(versions),
                 error => this.handleError(error)
             );
-    }
-
-    deleteComponent() {
-        this.service.deleteComponent().subscribe(
-            data => this.handleDelete(),
-            error => this.handleError(error)
-        );
     }
 
     private handleComponentData(data: WineryInstance) {
@@ -175,10 +179,6 @@ export class InstanceComponent implements OnDestroy {
 
     private handleError(error: HttpErrorResponse) {
         this.notify.error(error.message, 'Error');
-    }
-
-    ngOnDestroy(): void {
-        this.routeSub.unsubscribe();
     }
 
     private getToscaLightCompatibility() {

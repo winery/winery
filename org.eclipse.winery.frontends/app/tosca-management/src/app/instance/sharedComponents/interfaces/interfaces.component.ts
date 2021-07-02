@@ -12,7 +12,6 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { isNullOrUndefined } from 'util';
 import { backendBaseURL } from '../../../configuration';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { ExistService } from '../../../wineryUtils/existService';
@@ -141,7 +140,7 @@ export class InterfacesComponent implements OnInit {
     }
 
     onAddOperation(name: string) {
-        if (!isNullOrUndefined(this.selectedInterface)) {
+        if (this.selectedInterface) {
             const tmp = new InterfaceOperationApiData(name);
 
             // if we are working on a target interface in servicetemplates, delete unnecessary attributes to
@@ -163,10 +162,10 @@ export class InterfacesComponent implements OnInit {
         this.selectedOperation = selectedOperation;
 
         if (!this.isServiceTemplate) {
-            if (isNullOrUndefined(selectedOperation.inputParameters)) {
+            if (!selectedOperation.inputParameters) {
                 selectedOperation.inputParameters = new InputParameters();
             }
-            if (isNullOrUndefined(selectedOperation.outputParameters)) {
+            if (!selectedOperation.outputParameters) {
                 selectedOperation.outputParameters = new OutputParameters();
             }
 
@@ -412,7 +411,7 @@ export class InterfacesComponent implements OnInit {
             this.generating = false;
             this.generateImplModal.hide();
         }
-        if (!isNullOrUndefined(data)) {
+        if (data) {
             this.notify.success('Successfully created Implementation!');
         }
     }

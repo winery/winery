@@ -25,6 +25,9 @@ export class CapabilityModel {
     public otherAttributes: any;
     public type: string;
     public properties?: any;
+
+    constructor() {
+    }
     static fromCapabilityDefinitionModel(def: CapabilityDefinitionModel): CapabilityModel {
         const result = new CapabilityModel();
         result.any = def.any;
@@ -34,8 +37,5 @@ export class CapabilityModel {
         result.type = def.capabilityType;
 
         return result;
-    }
-
-    constructor() {
     }
 }

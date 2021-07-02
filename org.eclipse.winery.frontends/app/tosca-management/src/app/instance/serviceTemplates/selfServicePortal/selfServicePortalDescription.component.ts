@@ -13,7 +13,6 @@
  *******************************************************************************/
 import { Component, OnInit } from '@angular/core';
 import { SelfServiceApiData, SelfServicePortalService } from './selfServicePortal.service';
-import { isNullOrUndefined } from 'util';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { InstanceService } from '../../instance.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -34,7 +33,7 @@ export class SelfServiceDescriptionComponent implements OnInit {
     }
 
     ngOnInit() {
-        if (!isNullOrUndefined(this.service.selfServiceData)) {
+        if (this.service.selfServiceData) {
             this.data = this.service.selfServiceData;
             this.loading = false;
         } else {

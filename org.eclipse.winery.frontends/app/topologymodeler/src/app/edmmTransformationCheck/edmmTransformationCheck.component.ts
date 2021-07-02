@@ -34,9 +34,9 @@ export class EdmmTransformationCheckComponent implements OnInit, OnDestroy {
     oneToOneMap: Map<string, string>;
     // this allows to show the replacement rules of the plugin selected
     currentCandidate: string = null;
+    public topologyTemplate: TTopologyTemplate;
 
     private subscription: Subscription;
-    public topologyTemplate: TTopologyTemplate;
     private numberRelations = 0;
     private numberNodes = 0;
 

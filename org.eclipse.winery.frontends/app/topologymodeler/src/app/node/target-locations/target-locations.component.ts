@@ -46,22 +46,6 @@ export class TargetLocationsComponent implements OnInit, OnChanges {
     }
 
     /**
-     * Assigns the target location value for display.
-     */
-    private checkForTargetLocations(): void {
-        let localName: string;
-        for (const key in this.currentNodeData.currentTargetLocation) {
-            if (this.currentNodeData.currentTargetLocation.hasOwnProperty(key)) {
-                localName = key.substring(key.indexOf('}') + 1);
-                if (localName === 'location' || key === 'location') {
-                    this.targetLocation = this.currentNodeData.currentTargetLocation[key];
-                    break;
-                }
-            }
-        }
-    }
-
-    /**
      * Angular lifecycle event.
      */
     ngOnInit() {
@@ -77,6 +61,22 @@ export class TargetLocationsComponent implements OnInit, OnChanges {
                     newTargetLocation: value
                 }));
             });
+    }
+
+    /**
+     * Assigns the target location value for display.
+     */
+    private checkForTargetLocations(): void {
+        let localName: string;
+        for (const key in this.currentNodeData.currentTargetLocation) {
+            if (this.currentNodeData.currentTargetLocation.hasOwnProperty(key)) {
+                localName = key.substring(key.indexOf('}') + 1);
+                if (localName === 'location' || key === 'location') {
+                    this.targetLocation = this.currentNodeData.currentTargetLocation[key];
+                    break;
+                }
+            }
+        }
     }
 
 }

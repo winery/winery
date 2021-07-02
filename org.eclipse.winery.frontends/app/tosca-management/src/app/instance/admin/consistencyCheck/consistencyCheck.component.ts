@@ -11,10 +11,9 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-import {Component} from '@angular/core';
-import {ConsistencyCheckConfiguration, ConsistencyCheckService, ConsistencyUpdate} from './consistencyCheck.service';
-import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
-import {isNullOrUndefined} from 'util';
+import { Component } from '@angular/core';
+import { ConsistencyCheckConfiguration, ConsistencyCheckService, ConsistencyUpdate } from './consistencyCheck.service';
+import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { KeyValueItem } from '../../../model/keyValueItem';
 
 @Component({
@@ -56,10 +55,10 @@ export class ConsistencyCheckComponent {
     }
 
     onData(data: ConsistencyUpdate) {
-        if (!isNullOrUndefined(data)) {
+        if (data) {
             this.data = data;
 
-            if (!isNullOrUndefined(data.progress)) {
+            if (data.progress) {
                 this.progress = Math.round(data.progress * 100);
             }
         }

@@ -13,7 +13,6 @@
  *******************************************************************************/
 import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { isNullOrUndefined } from 'util';
 import { EditorBuilderService } from './editor-builder.service';
 
 const noop = () => {
@@ -107,9 +106,9 @@ export class WineryEditorComponent implements ControlValueAccessor, OnInit {
 
     // From ControlValueAccessor interface
     writeValue(value: any) {
-        if (value !== this.innerValue && !isNullOrUndefined(value)) {
+        if (value !== this.innerValue && value) {
             this.innerValue = value;
-            if (!isNullOrUndefined(this.editorViewer)) {
+            if (this.editorViewer) {
                 this.editorViewer.setContents(this.innerValue, this.dataEditorLang);
             }
         }
@@ -126,14 +125,14 @@ export class WineryEditorComponent implements ControlValueAccessor, OnInit {
     }
 
     getData() {
-        if (!isNullOrUndefined(this.editorViewer)) {
+        if (this.editorViewer) {
             const textModel = this.editorViewer.editor.getModel();
             return textModel.getText();
         }
     }
 
     setData(value: string, language?: string) {
-        if (!isNullOrUndefined(this.editorViewer)) {
+        if (this.editorViewer) {
             this.value = value;
 
             if (language) {

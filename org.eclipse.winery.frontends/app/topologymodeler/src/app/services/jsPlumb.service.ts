@@ -13,7 +13,6 @@
  ********************************************************************************/
 
 import { Injectable } from '@angular/core';
-import { isNullOrUndefined } from 'util';
 import { jsPlumb, jsPlumbInstance } from 'jsplumb';
 
 /**
@@ -24,7 +23,7 @@ export class JsPlumbService {
     jsPlumbInstance: jsPlumbInstance;
 
     getJsPlumbInstance(): any {
-        if (isNullOrUndefined(this.jsPlumbInstance)) {
+        if (!this.jsPlumbInstance) {
 
             this.jsPlumbInstance = jsPlumb.getInstance({
                 PaintStyle: {
@@ -33,13 +32,13 @@ export class JsPlumbService {
                 },
                 Endpoint: 'Blank',
                 ConnectionOverlays: [
-                    ['Arrow', {location: 1}],
+                    ['Arrow', { location: 1 }],
                 ],
                 ConnectionsDetachable: false,
                 Anchor: 'Continuous'
             });
         }
-        this.jsPlumbInstance.importDefaults({Connector: 'Flowchart'});
+        this.jsPlumbInstance.importDefaults({ Connector: 'Flowchart' });
         return this.jsPlumbInstance;
     }
 }
