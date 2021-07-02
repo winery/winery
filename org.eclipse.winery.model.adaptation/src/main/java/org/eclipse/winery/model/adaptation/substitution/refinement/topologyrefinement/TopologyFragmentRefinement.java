@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
@@ -32,6 +33,7 @@ import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementUti
 import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.model.ids.extensions.RefinementId;
 import org.eclipse.winery.model.ids.extensions.TopologyFragmentRefinementModelId;
+import org.eclipse.winery.model.tosca.HasId;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
@@ -98,20 +100,22 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
     }
 
     @Override
-    public void applyRefinement(RefinementCandidate refinement, TTopologyTemplate topology) {
+    public Map<String, String> applyRefinement(RefinementCandidate refinement, TTopologyTemplate topology) {
         if (!(refinement.getRefinementModel() instanceof OTTopologyFragmentRefinementModel)) {
             throw new UnsupportedOperationException("The refinement candidate is not a PRM!");
         }
 
         // determine the elements that are staying
         OTTopologyFragmentRefinementModel prm = (OTTopologyFragmentRefinementModel) refinement.getRefinementModel();
-        List<TEntityTemplate> stayingRefinementElements = RefinementUtils.getStayingRefinementElements(prm);
+        List<String> stayingRefinementElementIds = RefinementUtils.getStayingRefinementElements(prm).stream()
+            .map(HasId::getId)
+            .collect(Collectors.toList());
 
         // import the refinement structure
         Map<String, String> idMapping = BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(
             refinement.getRefinementModel().getRefinementTopology(),
             topology,
-            stayingRefinementElements
+            stayingRefinementElementIds
         );
 
         // only for UI: position the imported nodes next to the nodes to be refined
@@ -121,7 +125,7 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
             refinement.getRefinementModel().getRefinementTopology()
         );
         refinement.getRefinementModel().getRefinementTopology().getNodeTemplates().stream()
-            .filter(element -> !stayingRefinementElements.contains(element))
+            .filter(element -> !stayingRefinementElementIds.contains(element.getId()))
             .forEach(node -> {
                     Map<String, Integer> newCoordinates = coordinates.get(node.getId());
                     TNodeTemplate nodeTemplate = topology.getNodeTemplate(idMapping.get(node.getId()));
@@ -145,7 +149,7 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
 
             if (!getStayMappingsOfCurrentElement(prm, vertex.getTemplate()).findFirst().isPresent()) {
                 topology.getNodeTemplateOrRelationshipTemplate().remove(matchingNode);
-            } else if (vertex.getTemplate().getPolicies() != null && matchingNode.getPolicies() != null) {
+            } else if (shouldRemoveBehaviorPatterns(vertex.getTemplate(), matchingNode)) {
                 vertex.getTemplate().getPolicies().getPolicy().forEach(detectorPolicy ->
                     matchingNode.getPolicies().getPolicy()
                         .removeIf(matchingPolicy -> matchingPolicy.getPolicyType().equals(detectorPolicy.getPolicyType()))
@@ -162,6 +166,12 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                     topology.getNodeTemplateOrRelationshipTemplate().remove(relationshipTemplate);
                 }
             });
+        return idMapping;
+    }
+
+    protected boolean shouldRemoveBehaviorPatterns(TNodeTemplate vertex, TNodeTemplate matchingNode) {
+        return vertex.getPolicies() != null
+            && matchingNode.getPolicies() != null;
     }
 
     private boolean applyDeploymentArtifactMapping(RefinementCandidate refinement, TNodeTemplate detectorNode, TNodeTemplate matchingNode,

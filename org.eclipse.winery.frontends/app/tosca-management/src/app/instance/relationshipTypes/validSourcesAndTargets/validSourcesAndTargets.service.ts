@@ -17,7 +17,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../../../configuration';
 import { ValidEndingsData } from './validEndingsApiData';
-import { isNullOrUndefined } from 'util';
 import { SelectData } from '../../../model/selectData';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 

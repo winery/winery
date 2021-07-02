@@ -64,6 +64,12 @@ export class ThreatAssessmentComponent implements OnInit {
         }
     }
 
+    isMitigated(mitigation: QName): boolean {
+        const mitigationSVNF = this.svnfs.find(svnf => svnf.nameSpace === mitigation.nameSpace && svnf.localName === mitigation.localName);
+        const exists = typeof mitigationSVNF === 'undefined';
+        return !exists;
+    }
+
     private handleThreatData(json: any) {
         this.loading = false;
         this.threatAssessmentData = json;
@@ -76,12 +82,6 @@ export class ThreatAssessmentComponent implements OnInit {
         });
 
         this.svnfs = parsed.svnfs.map(QName.stringToQName);
-    }
-
-    isMitigated(mitigation: QName): boolean {
-        const mitigationSVNF = this.svnfs.find(svnf => svnf.nameSpace === mitigation.nameSpace && svnf.localName === mitigation.localName);
-        const exists = typeof mitigationSVNF === 'undefined';
-        return !exists;
     }
 
     private handleError(json: any) {

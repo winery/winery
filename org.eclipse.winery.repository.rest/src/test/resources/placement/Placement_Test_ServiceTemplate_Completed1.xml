@@ -1,5 +1,5 @@
 <Definitions targetNamespace="http://plain.winery.opentosca.org/placement/servicetemplates"
-             id="winery-defs-for_steIgeneral3-Placement_Test_DataFlow"
+             id="steIgeneral3-Placement_Test_DataFlow"
              xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"
              xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12">
     <ServiceTemplate name="Placement_Test_DataFlow"

@@ -30,6 +30,9 @@ export class RequirementModel {
     public relationship?: string;
     public unbounded: boolean;
 
+    constructor() {
+    }
+
     static fromRequirementDefinition(def: RequirementDefinitionModel): RequirementModel {
         const result = new RequirementModel();
         result.any = def.any;
@@ -43,8 +46,5 @@ export class RequirementModel {
         result.unbounded = def.upperBound.trim().toLowerCase() === 'unbounded';
 
         return result;
-    }
-
-    constructor() {
     }
 }

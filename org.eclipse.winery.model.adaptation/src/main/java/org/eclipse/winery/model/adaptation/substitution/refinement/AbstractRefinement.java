@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -44,8 +45,8 @@ public abstract class AbstractRefinement extends AbstractSubstitution {
 
     protected ServiceTemplateId refinementServiceTemplateId;
 
-    private final List<OTRefinementModel> refinementModels;
-    private final RefinementChooser refinementChooser;
+    protected final List<OTRefinementModel> refinementModels;
+    protected final RefinementChooser refinementChooser;
 
     public AbstractRefinement(RefinementChooser refinementChooser, Class<? extends RefinementId> idClass, String versionAppendix) {
         this.refinementChooser = refinementChooser;
@@ -111,5 +112,5 @@ public abstract class AbstractRefinement extends AbstractSubstitution {
 
     public abstract boolean isApplicable(RefinementCandidate candidate, TTopologyTemplate topology);
 
-    public abstract void applyRefinement(RefinementCandidate refinement, TTopologyTemplate topology);
+    public abstract Map<String, String> applyRefinement(RefinementCandidate refinement, TTopologyTemplate topology);
 }

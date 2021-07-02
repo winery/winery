@@ -17,3 +17,17 @@ export interface KeyValueItem {
     value: any;
 }
 
+export class KvProperty implements KeyValueItem {
+
+    key: string;
+    value: any;
+
+    constructor(key: string, value: any) {
+        this.key = key;
+        this.value = value;
+    }
+
+    toString(): string {
+        return this.key + ': ' + this.value;
+    }
+}

@@ -82,6 +82,7 @@ import org.eclipse.winery.model.tosca.TEntityTypeImplementation;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
+import org.eclipse.winery.model.tosca.TInterfaceDefinition;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
@@ -701,6 +702,14 @@ public interface IRepository extends IWineryRepositoryCommon {
                     capDef.getValidSourceTypes()
                         .forEach(sourceType -> ids.add(new NodeTypeId(sourceType)));
                 }
+            }
+        }
+
+        List<TInterfaceDefinition> interfaceDefinitions = nodeType.getInterfaceDefinitions();
+        if (Objects.nonNull(interfaceDefinitions) && !interfaceDefinitions.isEmpty()) {
+            for (TInterfaceDefinition intDef : interfaceDefinitions) {
+                InterfaceTypeId interfaceTypeId = new InterfaceTypeId(intDef.getType());
+                ids.add(interfaceTypeId);
             }
         }
 

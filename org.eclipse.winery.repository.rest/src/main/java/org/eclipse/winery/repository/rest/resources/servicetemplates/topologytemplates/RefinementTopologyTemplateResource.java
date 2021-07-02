@@ -25,7 +25,9 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.extensions.OTAttributeMapping;
+import org.eclipse.winery.model.tosca.extensions.OTBehaviorPatternMapping;
 import org.eclipse.winery.model.tosca.extensions.OTDeploymentArtifactMapping;
+import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
 import org.eclipse.winery.model.tosca.extensions.OTPermutationMapping;
 import org.eclipse.winery.model.tosca.extensions.OTPrmMapping;
 import org.eclipse.winery.model.tosca.extensions.OTRefinementModel;
@@ -136,6 +138,16 @@ public class RefinementTopologyTemplateResource extends TopologyTemplateResource
                 properties.setKVProperties(kvproperties);
                 builder.setProperties(properties);
             }
+            if (mapping instanceof OTBehaviorPatternMapping) {
+                builder.setName("BehaviorPatternMapping");
+                LinkedHashMap<String, String> kvproperties = new LinkedHashMap<>();
+                kvproperties.put("refinementProperty", ((OTBehaviorPatternMapping) mapping).getProperty().getKey());
+                kvproperties.put("refinementPropertyValue", ((OTBehaviorPatternMapping) mapping).getProperty().getValue());
+                kvproperties.put("behaviorPattern", ((OTBehaviorPatternMapping) mapping).getBehaviorPattern());
+                TEntityTemplate.WineryKVProperties properties = new TEntityTemplate.WineryKVProperties();
+                properties.setKVProperties(kvproperties);
+                builder.setProperties(properties);
+            }
             TRelationshipTemplate templateForMapping = new TRelationshipTemplate(builder);
             prmModellingTopologyTemplate.addRelationshipTemplate(templateForMapping);
         }
@@ -156,6 +168,9 @@ public class RefinementTopologyTemplateResource extends TopologyTemplateResource
             }
             if (model.getPermutationMappings() != null) {
                 allPrmMappings.addAll(model.getPermutationMappings());
+            }
+            if (model instanceof OTPatternRefinementModel) {
+                allPrmMappings.addAll(((OTPatternRefinementModel) model).getBehaviorPatternMappings());
             }
         }
         return allPrmMappings;

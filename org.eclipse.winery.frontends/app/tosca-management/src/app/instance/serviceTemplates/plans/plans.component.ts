@@ -16,7 +16,6 @@ import { WineryRowData, WineryTableColumn } from '../../../wineryTableModule/win
 import { PlansApiData } from './plansApiData';
 import { PlansService } from './plans.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { isNullOrUndefined } from 'util';
 import { SelectData } from '../../../model/selectData';
 import { WineryUploaderComponent } from '../../../wineryUploader/wineryUploader.component';
 import { SelectItem } from 'ng2-select';
@@ -139,10 +138,10 @@ export class PlansComponent implements OnInit {
 
     onEditPlanIOParameters(selectedType: PlansApiData) {
         this.newPlan = selectedType;
-        if (isNullOrUndefined(this.newPlan.inputParameters)) {
+        if (!this.newPlan.inputParameters) {
             this.newPlan.inputParameters = new InputParameters();
         }
-        if (isNullOrUndefined(this.newPlan.outputParameters)) {
+        if (!this.newPlan.outputParameters) {
             this.newPlan.outputParameters = new OutputParameters();
         }
         this.ioModalRef = this.modalService.show(this.ioModal);
@@ -187,7 +186,7 @@ export class PlansComponent implements OnInit {
         if (event.id.includes(bpmn4tosca)) {
             this.fileDropped = true;
             this.showArchiveUpload = false;
-        } else if (!isNullOrUndefined(this.fileToUpload)) {
+        } else if (this.fileToUpload) {
             this.fileDropped = true;
             this.showArchiveUpload = true;
         } else {
@@ -241,6 +240,11 @@ export class PlansComponent implements OnInit {
             );
     }
 
+    handleError(error: HttpErrorResponse) {
+        this.notify.error(error.message);
+        this.loading = false;
+    }
+
     // endregion
 
     // region ########## Private Methods ##########
@@ -251,9 +255,9 @@ export class PlansComponent implements OnInit {
 
     private handlePlanTypes(types: SelectData[]) {
         this.planTypes = types;
-        this.selectedPlanType = isNullOrUndefined(types[0]) ? new SelectData() : types[0];
+        this.selectedPlanType = types[0] ? types[0] : new SelectData();
 
-        if (!isNullOrUndefined(this.planLanguages)) {
+        if (this.planLanguages) {
             this.loading = false;
             this.addPlanModal.show();
         }
@@ -261,9 +265,9 @@ export class PlansComponent implements OnInit {
 
     private handlePlanLanguages(languages: SelectData[]) {
         this.planLanguages = languages;
-        this.selectedPlanLanguage = isNullOrUndefined(languages[0]) ? new SelectData() : languages[0];
+        this.selectedPlanLanguage = languages[0] ? languages[0] : new SelectData();
 
-        if (!isNullOrUndefined(this.planTypes)) {
+        if (this.planTypes) {
             this.loading = false;
             this.addPlanModal.show();
         }
@@ -283,11 +287,6 @@ export class PlansComponent implements OnInit {
         this.loading = false;
         this.notify.success('Successfully added Plan!');
         this.getPlanTypesData();
-    }
-
-    handleError(error: HttpErrorResponse) {
-        this.notify.error(error.message);
-        this.loading = false;
     }
 
     // endregion

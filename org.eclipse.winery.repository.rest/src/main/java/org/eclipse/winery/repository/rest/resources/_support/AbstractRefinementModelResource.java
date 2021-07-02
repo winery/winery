@@ -27,9 +27,9 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.extensions.OTRefinementModel;
 import org.eclipse.winery.model.tosca.extensions.OTRelationMapping;
-import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.VisualsApiData;
 import org.eclipse.winery.repository.rest.resources.refinementmodels.RelationMappingsResource;
@@ -111,7 +111,7 @@ public abstract class AbstractRefinementModelResource extends AbstractComponentI
         return this.getTRefinementModel().getRefinementTopology();
     }
 
-    @Path("grafikprmmodelling")
+    @Path("graficprmmodelling")
     public TopologyTemplateResource getGraphicModelingData() {
         return new RefinementTopologyTemplateResource(this, getTRefinementModel(), GRAFIC_PRM_MODEL);
     }
@@ -152,6 +152,9 @@ public abstract class AbstractRefinementModelResource extends AbstractComponentI
                     break;
                 case "StayMapping":
                     color = "#ffd333";
+                    break;
+                case "BehaviorPatternMapping":
+                    color = "#3347ff";
                     break;
                 default:
                     color = "#000000";

@@ -14,7 +14,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { AccountabilityParticipant } from './AccountabilityParticipant';
 import { backendBaseURL } from '../../../configuration';
 import { SelectData } from '../../../model/selectData';
 import { ToscaTypes } from '../../../model/enums';
@@ -24,12 +23,12 @@ import { AuthorizationElement, FileProvenanceElement, ModelProvenanceElement } f
 export class AccountabilityService {
     private accountabilityUrl = backendBaseURL + '/API/accountability/';
 
+    constructor(private http: HttpClient) {
+    }
+
     static getDownloadURLForFile(fileAddress: string, fileName: string, accountabilityId: string) {
         return `${backendBaseURL}/API/accountability/${encodeURIComponent(encodeURIComponent(accountabilityId))}` +
             `/downloadFile?address=${fileAddress}&filename=${fileName}`;
-    }
-
-    constructor(private http: HttpClient) {
     }
 
     authorize(accountabilityProcessId: string, participant: AuthorizationElement): Observable<HttpResponse<string>> {
@@ -74,6 +73,5 @@ export class AccountabilityService {
 
         return this.http.get(url, { responseType: 'text' });
     }
-
 
 }

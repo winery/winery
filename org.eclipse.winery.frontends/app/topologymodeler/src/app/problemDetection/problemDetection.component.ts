@@ -62,27 +62,6 @@ export class ProblemDetectionComponent {
             });
     }
 
-    private checkButtonsState(currentButtonsState: TopologyRendererState) {
-        if (currentButtonsState.buttonsState.problemDetectionButton && !this.problemFindings) {
-            this.problemDetectionService.detectProblems()
-                .subscribe(
-                    data => this.showDetectedProblems(data),
-                    error => this.handleError(error)
-                );
-            this.loading = true;
-        }
-    }
-
-    private showDetectedProblems(problemFindings: ProblemFindings[]) {
-        this.problemFindings = problemFindings;
-        this.loading = false;
-    }
-
-    private handleError(error: HttpErrorResponse) {
-        this.loading = false;
-        this.alert.error(error.message);
-    }
-
     selectFinding(problem: ProblemEntity, finding: ComponentFinding[]) {
         this.selectedFinding = {
             problem: problem.problem,
@@ -106,11 +85,6 @@ export class ProblemDetectionComponent {
 
     selectSolution(solution: SolutionInputData) {
         this.selectedSolution = solution;
-    }
-
-    private showPossibleSolutions(possibleSolutions: SolutionInputData[]) {
-        this.possibleSolutions = possibleSolutions;
-        this.loading = false;
     }
 
     onHoverOver(findings: ComponentFinding[]) {
@@ -138,6 +112,32 @@ export class ProblemDetectionComponent {
                 error => this.handleError(error)
             );
         this.loading = true;
+    }
+
+    private checkButtonsState(currentButtonsState: TopologyRendererState) {
+        if (currentButtonsState.buttonsState.problemDetectionButton && !this.problemFindings) {
+            this.problemDetectionService.detectProblems()
+                .subscribe(
+                    data => this.showDetectedProblems(data),
+                    error => this.handleError(error)
+                );
+            this.loading = true;
+        }
+    }
+
+    private showDetectedProblems(problemFindings: ProblemFindings[]) {
+        this.problemFindings = problemFindings;
+        this.loading = false;
+    }
+
+    private handleError(error: HttpErrorResponse) {
+        this.loading = false;
+        this.alert.error(error.message);
+    }
+
+    private showPossibleSolutions(possibleSolutions: SolutionInputData[]) {
+        this.possibleSolutions = possibleSolutions;
+        this.loading = false;
     }
 
     private solutionApplied(data: TTopologyTemplate) {

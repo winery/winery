@@ -79,15 +79,6 @@ export class WineryFileComparisonComponent implements OnChanges {
         this.initializeSelection();
     }
 
-    private initializeSelection() {
-        this.leftVersion = this.convertProvenanceElementToSelectEntry(this.selectedFileProvenanceElement);
-        this.leftFile = this.selectedFileProvenanceElement;
-        this.leftFileText = null;
-        this.rightVersion = null;
-        this.rightFile = null;
-        this.rightFileText = null;
-    }
-
     leftFileVersionSelected(fileVersion: SelectItem) {
         this.leftVersion = fileVersion;
         this.leftFile = this.locateSelectedFileVersion(fileVersion);
@@ -170,5 +161,14 @@ export class WineryFileComparisonComponent implements OnChanges {
 
     handleError(error: HttpErrorResponse) {
         this.notify.error(error.message);
+    }
+
+    private initializeSelection() {
+        this.leftVersion = this.convertProvenanceElementToSelectEntry(this.selectedFileProvenanceElement);
+        this.leftFile = this.selectedFileProvenanceElement;
+        this.leftFileText = null;
+        this.rightVersion = null;
+        this.rightFile = null;
+        this.rightFileText = null;
     }
 }

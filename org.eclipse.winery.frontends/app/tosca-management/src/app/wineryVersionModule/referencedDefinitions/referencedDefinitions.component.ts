@@ -11,9 +11,8 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-import {Component, Input, OnInit} from '@angular/core';
-import {QNameWithTypeApiData} from '../../model/qNameWithTypeApiData';
-import {isNullOrUndefined} from 'util';
+import { Component, Input, OnInit } from '@angular/core';
+import { QNameWithTypeApiData } from '../../model/qNameWithTypeApiData';
 
 @Component({
     selector: 'winery-referenced-definitions',
@@ -33,7 +32,7 @@ export class ReferencedDefinitionsComponent implements OnInit {
     }
 
     selectedReference(item: QNameWithTypeApiData) {
-        if (isNullOrUndefined(this.updateReferencedDefinitions)) {
+        if (!this.updateReferencedDefinitions) {
             this.updateReferencedDefinitions = [];
         }
 

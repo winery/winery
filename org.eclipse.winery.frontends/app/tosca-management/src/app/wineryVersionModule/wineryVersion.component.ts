@@ -24,7 +24,6 @@ import { WineryAddVersionService } from './wineryVersion.service';
 import { Router } from '@angular/router';
 import { ReferencedDefinitionsComponent } from './referencedDefinitions/referencedDefinitions.component';
 import { WineryVersionActions, WineryVersionModalConfig } from './wineryVersionModalConfig';
-import { isNullOrUndefined } from 'util';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -118,27 +117,6 @@ export class WineryVersionComponent {
             encodeURIComponent(component.namespace) + '/' +
             componentName
         ]);
-    }
-
-    private handleSubComponents(data: QNameWithTypeApiData[]) {
-        this.modalConfig.loading = false;
-        this.referencedDefinitions = data;
-    }
-
-    private handleError(error: HttpErrorResponse) {
-        this.notify.error(error.message, 'Error');
-    }
-
-    private onShowModal() {
-        this.modalConfig = new WineryVersionModalConfig();
-        this.modalConfig.valid = true;
-        // Future Work: also update referencing definitions
-        /*this.modalConfig.loading = true;
-        this.service.getReferencedDefinitions()
-            .subscribe(
-                data => this.handleSubComponents(data),
-                error => this.handleError(error)
-            );*/
     }
 
     componentVersionSelected() {
@@ -240,7 +218,7 @@ export class WineryVersionComponent {
             const duplicate = this.sharedData.versions.find(value => {
                 return value.componentVersion === this.newVersion.componentVersion && value.wineryVersion > 0;
             });
-            if (!isNullOrUndefined(duplicate)) {
+            if (duplicate) {
                 this.modalConfig.valid = false;
                 return { duplicateFound: true };
             } else if (this.newVersion.componentVersion.indexOf(' ') >= 0) {
@@ -266,5 +244,26 @@ export class WineryVersionComponent {
 
         this.notify.success('Successfully ' + action + ' ' + newLocalName);
         this.router.navigate([url]);
+    }
+
+    private handleSubComponents(data: QNameWithTypeApiData[]) {
+        this.modalConfig.loading = false;
+        this.referencedDefinitions = data;
+    }
+
+    private handleError(error: HttpErrorResponse) {
+        this.notify.error(error.message, 'Error');
+    }
+
+    private onShowModal() {
+        this.modalConfig = new WineryVersionModalConfig();
+        this.modalConfig.valid = true;
+        // Future Work: also update referencing definitions
+        /*this.modalConfig.loading = true;
+        this.service.getReferencedDefinitions()
+            .subscribe(
+                data => this.handleSubComponents(data),
+                error => this.handleError(error)
+            );*/
     }
 }

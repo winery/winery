@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -36,6 +36,7 @@ export interface WineryConfiguration {
         edmmModeling: boolean;
         updateTemplates: boolean;
         yaml: boolean;
+        patternDetection: boolean;
     };
     endpoints: {
         container: string;
@@ -43,6 +44,7 @@ export interface WineryConfiguration {
         workflowmodeler: string;
         edmmTransformationTool: string;
         eclipseChe: string;
+        tops: string;
     };
     git: {
         clientId: string;

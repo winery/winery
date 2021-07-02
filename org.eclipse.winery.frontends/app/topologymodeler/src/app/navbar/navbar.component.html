@@ -23,7 +23,7 @@
         <button class="btn btn-sm align-middle btn-info button-group" (click)="openManagementUi()">
             Manage
         </button>
-        <div *ngIf="templateParameter.elementPath != 'grafikprmmodelling'">
+        <div *ngIf="templateParameter.elementPath != 'graficprmmodelling'">
             <div class="btn-group button-group" data-toggle="buttons">
                 <button class="btn btn-sm align-middle dark-button-style"
                         type="button"
@@ -109,7 +109,7 @@
             </button>-->
         </div>
 
-        <div *ngIf="templateParameter.elementPath != 'grafikprmmodelling'">
+        <div *ngIf="templateParameter.elementPath != 'graficprmmodelling'">
             <div *wineryRepositoryFeatureToggle="configEnum.Splitting" class="btn-group button-group"
                  data-toggle="buttons">
                 <button class="btn btn-sm align-middle dark-button-style"
@@ -177,16 +177,6 @@
                         [style.background-color]="getStyle(navbarButtonsState.buttonsState.placeComponentsButton)"
                         [disabled]="placingOngoing">
                     {{placingOngoing ? 'Placing...' : 'Place Components'}}
-                </button>
-            </div>
-            <div *wineryRepositoryFeatureToggle="configEnum.ProblemDetection" class="btn-group button-group"
-                 data-toggle="buttons">
-                <button class="btn btn-sm align-middle dark-button-style"
-                        type="button"
-                        id="problemdetection"
-                        (click)="toggleButton($event)"
-                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.problemDetectionButton)">
-                    Detect Problems
                 </button>
             </div>
             <div *wineryRepositoryFeatureToggle="configEnum.ManagementFeatureEnrichment" class="btn-group button-group"
@@ -273,6 +263,15 @@
                         (click)="toggleButton($event)"
                         [style.background-color]="getStyle(navbarButtonsState.buttonsState.refineInstanceModelButton)">
                     Refine Instance Model
+                </button>
+            </div>
+
+            <div *wineryRepositoryFeatureToggle="configEnum.PatternDetection" class="btn-group button-group"
+                 data-toggle="buttons">
+                <button class="btn btn-sm align-middle dark-button-style" id="detectPatterns"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.detectPatternsButton)">
+                    Detect Patterns
                 </button>
             </div>
 
@@ -425,7 +424,7 @@
             </div>
         </div>
 
-        <div *ngIf="!readonly && templateParameter.elementPath == 'grafikprmmodelling'" class="btn-group button-group"
+        <div *ngIf="!readonly && templateParameter.elementPath == 'graficprmmodelling'" class="btn-group button-group"
              dropdown>
             Only show selected Mapping Types:
             <select (change)="selectRelationshipType($event)"
@@ -440,7 +439,7 @@
             </select>
         </div>
 
-        <div *ngIf="!readonly && templateParameter.elementPath == 'grafikprmmodelling'">
+        <div *ngIf="!readonly && templateParameter.elementPath == 'graficprmmodelling'">
             <p style="color:red;">Note: It's only possible to edit PRM Mappings here. Detector and Refinement Structure
                 must be defined separately </p>
         </div>

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -30,7 +30,7 @@ export class TopologyModelerConfiguration {
                 public readonly isReadonly?: boolean,
                 public readonly parentPath = 'servicetemplates',
                 public readonly elementPath = 'topologytemplate',
-                public readonly topologyProDecURL = 'http://localhost:8090') {
+                public readonly topologyProDecURL = 'http://localhost:9090') {
         this.webSocketUrl = repositoryURL.replace(/(^https?)/, 'ws');
         this.definitionsElement = new QName('{' + ns + '}' + id);
 

@@ -819,6 +819,16 @@
  <xs:complexType name="otPatternRefinementModel">
   <xs:complexContent>
    <xs:extension base="otTopologyFragmentRefinementModel">
+    <xs:sequence>
+     <xs:element name="BehaviorPatternMappings">
+      <xs:complexType>
+       <xs:sequence>
+        <xs:element name="BehaviorPatternMapping" type="otBehaviorPatternMapping" maxOccurs="unbounded"/>
+       </xs:sequence>
+      </xs:complexType>
+     </xs:element>
+    </xs:sequence>
+    <xs:attribute name="isPdrm" type="tBoolean" default="no"/>
    </xs:extension>
   </xs:complexContent>
  </xs:complexType>
@@ -915,6 +925,19 @@
   <xs:attribute name="detectorNode" type="xs:string" use="required"/>
   <xs:attribute name="refinementNode" type="xs:string" use="required"/>
   <xs:attribute name="artifactType" type="xs:QName" use="required"/>
+ </xs:complexType>
+ <xs:complexType name="otBehaviorPatternMapping">
+  <xs:sequence>
+   <xs:element name="Property" type="otPropertyKv"/>
+  </xs:sequence>
+  <xs:attribute name="id" type="xs:ID" use="required"/>
+  <xs:attribute name="detectorNode" type="xs:string" use="required"/>
+  <xs:attribute name="refinementNode" type="xs:string" use="required"/>
+  <xs:attribute name="behaviorPattern" type="xs:string" use="required"/>
+ </xs:complexType>
+ <xs:complexType name="otPropertyKv">
+  <xs:attribute name="key" type="xs:string" use="required"/>
+  <xs:attribute name="value" type="xs:string" use="required"/>
  </xs:complexType>
  <xs:simpleType name="otDirection">
   <xs:restriction base="xs:string">

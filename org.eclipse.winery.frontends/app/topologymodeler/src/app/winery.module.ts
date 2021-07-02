@@ -71,6 +71,7 @@ import { MultiParticipantsService } from './services/multi-participants.service'
 import { ManageParticipantsComponent } from './participants/manage-participants.component';
 import { ResearchPluginsComponent } from './sidebars/research-plugins/research-plugins.component';
 import { InstanceModelComponent } from './sidebars/instanceModel/instanceModel.component';
+import { WineryNamespaceSelectorService } from '../../../tosca-management/src/app/wineryNamespaceSelector/wineryNamespaceSelector.service';
 
 @NgModule({
     declarations: [
@@ -145,7 +146,8 @@ import { InstanceModelComponent } from './sidebars/instanceModel/instanceModel.c
         ReqCapRelationshipService,
         PolicyService,
         VersionSliderService,
-        MultiParticipantsService
+        MultiParticipantsService,
+        WineryNamespaceSelectorService
     ],
     bootstrap: [WineryComponent]
 })

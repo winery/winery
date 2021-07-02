@@ -13,7 +13,9 @@
  *******************************************************************************/
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { InstanceService } from '../../instance.service';
-import { ConfigureInterface, Interface, Operation, OperationImplementation, StandardInterface } from '../../../model/interfaces';
+import {
+    ConfigureInterface, Interface, Operation, OperationImplementation, StandardInterface
+} from '../../../model/interfaces';
 import { ModalDirective } from 'ngx-bootstrap';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import { SelectableListComponent } from '../interfaces/selectableList/selectableList.component';
@@ -76,29 +78,6 @@ export class InterfaceDefinitionsComponent implements OnInit {
     ngOnInit() {
         this.loadInterfaces();
         this.fetchFiles();
-    }
-
-    private loadInterfaces() {
-        this.loading = true;
-        this.interfaceService.getInterfaces()
-            .subscribe(
-                data => {
-                    this.interfaces = [];
-                    data.forEach(item => this.interfaces.push({ ...new Interface(), ...item }));
-                    this.loading = false;
-                },
-                error => this.handleError(error)
-            );
-        this.artifactsService.getArtifacts().subscribe(data => {
-            data.forEach(item => this.selectableArtifacts.push({ ...item, ...{ id: item.name, text: `${item.name} / ${item.type}` } }));
-        });
-        this.selectedInterface = null;
-        this.selectedOperation = null;
-    }
-
-    private handleError(error: HttpErrorResponse) {
-        console.error(error);
-        this.loading = false;
     }
 
     save() {
@@ -222,6 +201,33 @@ export class InterfaceDefinitionsComponent implements OnInit {
             this.selectedOperation.implementation.dependencies = [];
         }
         this.selectedOperation.implementation.dependencies.push($event.name);
+    }
+
+    private loadInterfaces() {
+        this.loading = true;
+        this.interfaceService.getInterfaces()
+            .subscribe(
+                data => {
+                    this.interfaces = [];
+                    data.forEach(item => this.interfaces.push({ ...new Interface(), ...item }));
+                    this.loading = false;
+                },
+                error => this.handleError(error)
+            );
+        this.artifactsService.getArtifacts().subscribe(data => {
+            data.forEach(item => this.selectableArtifacts.push({
+                ...item, ...{
+                    id: item.name, text: `${item.name} / ${item.type}`
+                }
+            }));
+        });
+        this.selectedInterface = null;
+        this.selectedOperation = null;
+    }
+
+    private handleError(error: HttpErrorResponse) {
+        console.error(error);
+        this.loading = false;
     }
 
     /**

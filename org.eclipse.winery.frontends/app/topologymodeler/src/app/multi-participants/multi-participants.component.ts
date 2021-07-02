@@ -36,6 +36,9 @@ export class MultiParticipantsComponent implements OnInit {
         );
     }
 
+    ngOnInit() {
+    }
+
     private checkButtonsState(currentButtonsState: TopologyRendererState) {
         // check if Generate Placeholder Button is clicked
         if (currentButtonsState.buttonsState.generateGDM) {
@@ -94,9 +97,6 @@ export class MultiParticipantsComponent implements OnInit {
                 }
             );
         }
-    }
-
-    ngOnInit() {
     }
 
 }

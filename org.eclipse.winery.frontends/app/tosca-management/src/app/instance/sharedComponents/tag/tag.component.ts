@@ -15,7 +15,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { TagService } from './tag.service';
 import { TagsAPIData } from './tagsAPIData';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { isNullOrUndefined } from 'util';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import { ModalDirective } from 'ngx-bootstrap';
 import { InstanceService } from '../../instance.service';
@@ -54,7 +53,7 @@ export class TagComponent implements OnInit {
     }
 
     onRemoveClick() {
-        if (isNullOrUndefined(this.selectedCell)) {
+        if (!this.selectedCell) {
             this.noteService.error('no cell selected!');
         } else {
             this.confirmDeleteModal.show();

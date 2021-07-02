@@ -23,6 +23,7 @@ import { IWineryState } from '../redux/store/winery.store';
 import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { Utils } from '../../../../tosca-management/src/app/wineryUtils/utils';
 import { EntityTypesModel } from '../models/entityTypesModel';
 
 @Component({
@@ -34,15 +35,18 @@ export class VersionSliderComponent implements OnInit {
 
     private static readonly LEGEND_CHAR_LIMIT = 15;
 
-    entityTypes: EntityTypesModel;
-
     sliderValue: number;
-    versions: WineryVersion[];
     options: Options = {
         showTicksValues: true,
         stepsArray: undefined,
-        translate: VersionSliderComponent.hideValues
+        translate: VersionSliderComponent.hideValues,
+        ticksTooltip: (index) => this.versions ? this.versions[index].toReadableString() : '',
+        ticksValuesTooltip: (index) => this.versions ? this.versions[index].toReadableString() : ''
     };
+
+    private versions: WineryVersion[];
+    private initialSliderValue: number;
+    private entityTypes: EntityTypesModel;
 
     constructor(private versionSliderService: VersionSliderService,
                 private backendService: BackendService,
@@ -60,42 +64,25 @@ export class VersionSliderComponent implements OnInit {
             });
     }
 
+    private static hideValues(): string {
+        return '';
+    }
+
+    private static limitChars(str: string): string {
+        if (str.length < this.LEGEND_CHAR_LIMIT) {
+            return str;
+        } else {
+            return str.substr(0, this.LEGEND_CHAR_LIMIT) + '...';
+        }
+    }
+
     ngOnInit() {
     }
 
-    private init(versions: WineryVersion[]) {
-        this.versions = versions;
-
-        const id = this.backendService.configuration.id;
-        this.sliderValue = this.versions
-            .findIndex(v => this.toId(v) === id);
-
-        const stepsArray = [];
-        this.versions.forEach((version, index) => {
-            const legend = VersionSliderComponent.limitChars(version.toReadableString());
-            stepsArray.push({ value: index, legend });
-        });
-        // trigger change detection
-        const newOptions: Options = Object.assign({}, this.options);
-        newOptions.stepsArray = stepsArray;
-        this.options = newOptions;
-    }
-
-    updateTopologyTemplate() {
+    changeVersionInPlace() {
         const version = this.getSelectedVersion();
         const id = this.toId(version);
-
-        this.versionSliderService.getTopologyTemplate(id)
-            .subscribe(topologyTemplate => {
-                    TopologyTemplateUtil.updateTopologyTemplate(
-                        this.ngRedux,
-                        this.wineryActions,
-                        topologyTemplate,
-                        this.entityTypes,
-                        this.configurationService.isYaml()
-                    );
-                }
-            );
+        this.updateTopologyTemplate(id);
     }
 
     selectedIsCurrent(): boolean {
@@ -114,6 +101,30 @@ export class VersionSliderComponent implements OnInit {
             editorConfig += '&isReadonly=true';
         }
         window.open(editorConfig, '_blank');
+        this.reset();
+    }
+
+    private init(versions: WineryVersion[]) {
+        this.versions = versions;
+        const id = this.backendService.configuration.id;
+        this.initialSliderValue = this.versions
+            .findIndex(v => this.toId(v) === id);
+        this.sliderValue = this.initialSliderValue;
+
+        const stepsArray = [];
+        this.versions.forEach((version, index) => {
+            const legend = VersionSliderComponent.limitChars(version.toReadableString());
+            stepsArray.push({ value: index, legend });
+        });
+        // trigger change detection
+        const newOptions: Options = Object.assign({}, this.options);
+        newOptions.stepsArray = stepsArray;
+        this.options = newOptions;
+    }
+
+    private reset() {
+        this.updateTopologyTemplate(this.backendService.configuration.id);
+        this.sliderValue = this.initialSliderValue;
     }
 
     private getSelectedVersion() {
@@ -121,24 +132,27 @@ export class VersionSliderComponent implements OnInit {
     }
 
     private toId(version: WineryVersion): string {
-        return VersionSliderComponent.getName(this.backendService.configuration.id)
-            + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR
-            + version.toString();
-    }
-
-    private static getName(id: string) {
-        return id.split(WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR)[0];
-    }
-
-    private static hideValues(): string {
-        return '';
-    }
-
-    private static limitChars(str: string): string {
-        if (str.length < this.LEGEND_CHAR_LIMIT) {
-            return str;
+        const id = this.backendService.configuration.id;
+        if (version.toReadableString() === WineryVersion.EMPTY_STRING) {
+            return Utils.getNameWithoutVersion(id);
         } else {
-            return str.substr(0, this.LEGEND_CHAR_LIMIT) + '...';
+            return Utils.getNameWithoutVersion(id)
+                + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR
+                + version.toString();
         }
+    }
+
+    private updateTopologyTemplate(id: string) {
+        this.versionSliderService.getTopologyTemplate(id)
+            .subscribe(topologyTemplate => {
+                    TopologyTemplateUtil.updateTopologyTemplate(
+                        this.ngRedux,
+                        this.wineryActions,
+                        topologyTemplate,
+                        this.entityTypes,
+                        this.configurationService.isYaml()
+                    );
+                }
+            );
     }
 }

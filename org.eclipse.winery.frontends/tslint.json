@@ -29,7 +29,10 @@
         ],
         "member-access": false,
         "member-ordering": [
-            true
+            true,
+            {
+                "order": "fields-first"
+            }
         ],
         "no-arg": true,
         "no-bitwise": true,

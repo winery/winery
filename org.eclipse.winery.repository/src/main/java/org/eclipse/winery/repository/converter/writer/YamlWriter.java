@@ -39,7 +39,6 @@ import org.eclipse.winery.model.tosca.yaml.YTCapabilityType;
 import org.eclipse.winery.model.tosca.yaml.YTConstraintClause;
 import org.eclipse.winery.model.tosca.yaml.YTDataType;
 import org.eclipse.winery.model.tosca.yaml.YTEntityType;
-import org.eclipse.winery.model.tosca.yaml.YTSchemaDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTGroupDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTGroupType;
 import org.eclipse.winery.model.tosca.yaml.YTImplementation;
@@ -64,6 +63,7 @@ import org.eclipse.winery.model.tosca.yaml.YTRelationshipType;
 import org.eclipse.winery.model.tosca.yaml.YTRepositoryDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTRequirementAssignment;
 import org.eclipse.winery.model.tosca.yaml.YTRequirementDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTSchemaDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTServiceTemplate;
 import org.eclipse.winery.model.tosca.yaml.YTStatusValue;
 import org.eclipse.winery.model.tosca.yaml.YTSubstitutionMappings;
@@ -277,12 +277,7 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
 
     public YamlPrinter visit(YTInterfaceType node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .print(node.getOperations().entrySet().stream()
-                .map(entry ->
-                    printVisitorNode(entry.getValue(), new Parameter(parameter.getIndent()).addContext(entry.getKey()))
-                )
-                .reduce(YamlPrinter::print)
-            )
+            .print(printMap("operations", node.getOperations(), parameter))
             .print(printMap("inputs", node.getInputs(), parameter));
     }
 

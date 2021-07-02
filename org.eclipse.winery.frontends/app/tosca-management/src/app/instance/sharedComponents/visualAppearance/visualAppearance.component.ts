@@ -14,7 +14,6 @@
 import { Component, OnInit } from '@angular/core';
 import { VisualAppearanceService } from './visualAppearance.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { isNullOrUndefined } from 'util';
 import { RelationshipTypesVisualsApiData } from './relationshipTypesVisualsApiData';
 import { NodeTypesVisualsApiData } from './nodeTypesVisualsApiData';
 import { InstanceService } from '../../instance.service';
@@ -78,24 +77,24 @@ export class VisualAppearanceComponent implements OnInit {
      *              </ul>
      */
     selectArrowItem(type?: string, style?: string) {
-        const hasType = !isNullOrUndefined(type);
-        const hasStyle = !isNullOrUndefined(style);
+        const hasType = !!type;
+        const hasStyle = !!style;
         let dashSelected = false;
-        let sourcearrowheadSelected = false;
-        let targetarrowheadSelected = false;
+        let sourceArrowheadSelected = false;
+        let targetArrowheadSelected = false;
         if (hasType && type === 'dash') {
             this.relationshipData.dash = hasStyle ? style : this.relationshipData.dash;
             dashSelected = !this.relationshipData.boolData.dashSelected;
         } else if (hasType && type === 'sourceArrowHead') {
             this.relationshipData.sourceArrowHead = hasStyle ? style : this.relationshipData.sourceArrowHead;
-            sourcearrowheadSelected = !this.relationshipData.boolData.sourceArrowHeadSelected;
+            sourceArrowheadSelected = !this.relationshipData.boolData.sourceArrowHeadSelected;
         } else if (hasType && type === 'targetArrowHead') {
             this.relationshipData.targetArrowHead = hasStyle ? style : this.relationshipData.targetArrowHead;
-            targetarrowheadSelected = !this.relationshipData.boolData.targetArrowHeadSelected;
+            targetArrowheadSelected = !this.relationshipData.boolData.targetArrowHeadSelected;
         }
         this.relationshipData.boolData.dashSelected = dashSelected;
-        this.relationshipData.boolData.sourceArrowHeadSelected = sourcearrowheadSelected;
-        this.relationshipData.boolData.targetArrowHeadSelected = targetarrowheadSelected;
+        this.relationshipData.boolData.sourceArrowHeadSelected = sourceArrowheadSelected;
+        this.relationshipData.boolData.targetArrowHeadSelected = targetArrowheadSelected;
     }
 
     public saveToServer() {

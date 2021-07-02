@@ -193,6 +193,44 @@ export class SectionComponent implements OnInit, OnDestroy {
         });
     }
 
+    getVerificationClass(value: string): string {
+        if (value === 'VERIFIED') {
+            return 'green';
+        } else {
+            return 'red';
+        }
+    }
+
+    getProvenance(file: KeyValueItem) {
+        this.accountability.getFileProvenance(this.importMetadata.entryServiceTemplate.qname, file.key)
+            .subscribe(
+                value => this.fileProvenance[file.key] = value,
+                error => this.handleError(error)
+            );
+    }
+
+    getAuthorizedClass(authorized: boolean): string {
+        return this.getVerificationClass(authorized ? 'VERIFIED' : '');
+    }
+
+    onUploadError(response: string) {
+        if (this.validateInput) {
+            this.onUploadSuccess(response);
+        }
+    }
+
+    downloadFileFromImmutableStorage(fileAddress: string, fileName: string): void {
+        const provenanceId = this.importMetadata.entryServiceTemplate.qname;
+        const url = AccountabilityService.getDownloadURLForFile(fileAddress, fileName, provenanceId);
+        window.open(url, '_blank');
+    }
+
+    openFileComparisonModal(modalTemplate: TemplateRef<any>, file: FileProvenanceElement) {
+        this.selectedFile = file;
+        this.selectedFileProvenance = this.fileProvenance[file.fileName];
+        this.modalRef = this.modalService.show(modalTemplate);
+    }
+
     /**
      * Handle the resolved data.
      * @param data needs to be of type any because there is no specific type specified by angular
@@ -281,43 +319,4 @@ export class SectionComponent implements OnInit, OnDestroy {
         this.loading = false;
         this.notify.error(error.message);
     }
-
-    getVerificationClass(value: string): string {
-        if (value === 'VERIFIED') {
-            return 'green';
-        } else {
-            return 'red';
-        }
-    }
-
-    getProvenance(file: KeyValueItem) {
-        this.accountability.getFileProvenance(this.importMetadata.entryServiceTemplate.qname, file.key)
-            .subscribe(
-                value => this.fileProvenance[file.key] = value,
-                error => this.handleError(error)
-            );
-    }
-
-    getAuthorizedClass(authorized: boolean): string {
-        return this.getVerificationClass(authorized ? 'VERIFIED' : '');
-    }
-
-    onUploadError(response: string) {
-        if (this.validateInput) {
-            this.onUploadSuccess(response);
-        }
-    }
-
-    downloadFileFromImmutableStorage(fileAddress: string, fileName: string): void {
-        const provenanceId = this.importMetadata.entryServiceTemplate.qname;
-        const url = AccountabilityService.getDownloadURLForFile(fileAddress, fileName, provenanceId);
-        window.open(url, '_blank');
-    }
-
-    openFileComparisonModal(modalTemplate: TemplateRef<any>, file: FileProvenanceElement) {
-        this.selectedFile = file;
-        this.selectedFileProvenance = this.fileProvenance[file.fileName];
-        this.modalRef = this.modalService.show(modalTemplate);
-    }
-
 }

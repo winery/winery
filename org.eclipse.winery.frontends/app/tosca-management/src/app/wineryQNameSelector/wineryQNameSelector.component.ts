@@ -12,7 +12,6 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { isNullOrUndefined } from 'util';
 import { NameAndQNameApiDataList } from './wineryNameAndQNameApiData';
 import { ToscaTypes } from '../model/enums';
 
@@ -87,7 +86,7 @@ export class WineryQNameSelectorComponent implements OnInit {
     }
 
     private setButtonLink(): void {
-        if (isNullOrUndefined(this.selectedValue)) {
+        if (!this.selectedValue) {
             this.selectedValue = '(none)';
         }
 

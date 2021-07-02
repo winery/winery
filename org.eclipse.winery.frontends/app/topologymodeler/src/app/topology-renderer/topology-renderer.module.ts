@@ -96,6 +96,9 @@ import { AssignDeploymentTechnologyComponent } from '../edmm/assign-deployment-t
 })
 export class TopologyRendererModule {
 
+    constructor() {
+    }
+
     static forRoot(): ModuleWithProviders {
         return {
             ngModule: TopologyRendererModule,
@@ -104,8 +107,5 @@ export class TopologyRendererModule {
                 JsPlumbService
             ]
         };
-    }
-
-    constructor() {
     }
 }
