@@ -92,7 +92,6 @@ import org.eclipse.winery.model.tosca.xml.XTArtifact;
 import org.eclipse.winery.model.tosca.xml.XTArtifactReference;
 import org.eclipse.winery.model.tosca.xml.XTArtifactTemplate;
 import org.eclipse.winery.model.tosca.xml.XTArtifactType;
-import org.eclipse.winery.model.tosca.xml.XTArtifacts;
 import org.eclipse.winery.model.tosca.xml.XTBoolean;
 import org.eclipse.winery.model.tosca.xml.XTBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.xml.XTCapability;
@@ -158,7 +157,6 @@ import org.eclipse.winery.model.tosca.xml.extensions.XOTTestRefinementModel;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTTopologyFragmentRefinementModel;
 import org.eclipse.winery.repository.xml.XmlRepository;
 
-import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -166,7 +164,6 @@ import org.slf4j.LoggerFactory;
 import static org.eclipse.winery.common.ListUtils.listIsNotNullOrEmpty;
 
 @SuppressWarnings("DuplicatedCode")
-@NonNullByDefault
 public class FromCanonical {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FromCanonical.class);
@@ -429,10 +426,9 @@ public class FromCanonical {
             LOGGER.warn("Converting YAML InterfaceDefinitions to XML is currently not supported!");
         }
         if (canonical.getArtifacts() != null) {
-            XTArtifacts artifacts = new XTArtifacts();
-            artifacts.getArtifact().addAll(canonical.getArtifacts().stream()
-                .map(this::convert).collect(Collectors.toList()));
-            builder.addToAny(artifacts);
+            builder.addToAny(
+                this.convertList(canonical.getArtifacts(), this::convert)
+            );
         }
         fillEntityTypeProperties(builder, canonical);
         return builder.build();
@@ -482,7 +478,7 @@ public class FromCanonical {
     }
 
     private XTConstraint convert(TConstraint canonical) {
-        XTConstraint.Builder constraint = new XTConstraint.Builder();
+        XTConstraint.Builder<?> constraint = new XTConstraint.Builder<>();
         constraint.setAny(canonical.getAny());
         constraint.setConstraintType(canonical.getConstraintType());
         return constraint.build();

@@ -44,9 +44,10 @@ public class XTConstraint implements Serializable {
     protected String constraintType;
 
     @Deprecated // required for XML deserialization
-    public XTConstraint() { }
+    public XTConstraint() {
+    }
 
-    protected XTConstraint(Builder builder) {
+    protected XTConstraint(Builder<?> builder) {
         this.any = builder.any;
         this.constraintType = builder.constraintType;
     }
@@ -97,6 +98,7 @@ public class XTConstraint implements Serializable {
             return self();
         }
 
+        @SuppressWarnings("unchecked")
         public T self() {
             return (T) this;
         }
