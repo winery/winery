@@ -72,7 +72,7 @@ public class EnhancementUtils {
             .filter(nodeTemplate -> {
                 TNodeType type = nodeTypes.get(nodeTemplate.getType());
                 if (Objects.nonNull(type.getTags())) {
-                    return type.getTags().getTag()
+                    return type.getTags()
                         .stream()
                         .anyMatch(
                             tag -> "stateful".equalsIgnoreCase(tag.getName())

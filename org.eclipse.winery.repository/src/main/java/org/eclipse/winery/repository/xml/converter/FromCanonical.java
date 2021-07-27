@@ -167,8 +167,6 @@ public class FromCanonical {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FromCanonical.class);
 
-    private List<XTImport> rollingImportStorage;
-
     public FromCanonical(XmlRepository repository) {
     }
 
@@ -196,8 +194,7 @@ public class FromCanonical {
             .setPolicyTypes(convertList(canonical.getPolicyTypes(), this::convert))
             .setPolicyTemplate(convertList(canonical.getPolicyTemplates(), this::convert))
             .setRequirementTypes(convertList(canonical.getRequirementTypes(), this::convert))
-            .setName(canonical.getName())
-            .addImports(this.rollingImportStorage);
+            .setName(canonical.getName());
         // this handles the "conversion" – basically copying of data – required by the disjoint TExtensibleElements
         //  acting as baseclass for all the extensions we support
         builder.addNonStandardElements(convertList(canonical.getPatternRefinementModels(), this::convert))
@@ -282,7 +279,7 @@ public class FromCanonical {
                 .stream().map(this::convert).collect(Collectors.toList()));
         }
         if (canonical.getTags() != null) {
-            builder.addTags(convertList(canonical.getTags().getTag(), this::convert));
+            builder.addTags(convertList(canonical.getTags(), this::convert));
         }
         if (canonical.getImplementationArtifacts() != null) {
             builder.addImplementationArtifacts(canonical.getImplementationArtifacts().stream()
@@ -304,7 +301,8 @@ public class FromCanonical {
     }
 
     private XTTag convert(TTag canonical) {
-        return new XTTag.Builder().setName(canonical.getName()).setValue(canonical.getValue()).build();
+        return new XTTag.Builder(canonical.getName(), canonical.getValue())
+            .build();
     }
 
     private XTRequiredContainerFeature convert(TRequiredContainerFeature canonical) {
@@ -334,7 +332,7 @@ public class FromCanonical {
     private <Builder extends XTEntityType.Builder<Builder>, Value extends TEntityType>
     void fillEntityTypeProperties(Builder builder, Value canonical) {
         if (canonical.getTags() != null) {
-            builder.addTags(convertList(canonical.getTags().getTag(), this::convert));
+            builder.addTags(convertList(canonical.getTags(), this::convert));
         }
         if (canonical.getDerivedFrom() != null) {
             XTEntityType.DerivedFrom derived = new XTEntityType.DerivedFrom();
@@ -606,7 +604,7 @@ public class FromCanonical {
         builder.setName(canonical.getName());
         builder.setTargetNamespace(canonical.getTargetNamespace());
         if (canonical.getTags() != null) {
-            builder.addTags(convertList(canonical.getTags().getTag(), this::convert));
+            builder.addTags(convertList(canonical.getTags(), this::convert));
         }
         builder.setBoundaryDefinitions(convert(canonical.getBoundaryDefinitions()));
         if (canonical.getPlans() != null) {
@@ -639,7 +637,7 @@ public class FromCanonical {
         }
         String name = "group:" + group.getName();
         String value = group.getDescription() == null ? "" : group.getDescription();
-        return new XTTag.Builder().setName(name).setValue(value).build();
+        return new XTTag.Builder(name, value).build();
     }
 
     @Nullable
@@ -649,7 +647,7 @@ public class FromCanonical {
         }
         String name = "participant:" + participant.getName();
         String value = participant.getUrl() == null ? "" : participant.getUrl();
-        return new XTTag.Builder().setName(name).setValue(value).build();
+        return new XTTag.Builder(name, value).build();
     }
 
     private XTPlan convert(TPlan canonical) {

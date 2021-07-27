@@ -79,7 +79,6 @@ import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TSchema;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
-import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinition;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKV;
@@ -139,8 +138,8 @@ public class FromCanonical {
 
     private final YamlRepository repository;
 
-    private HashBiMap<String, String> prefixNamespace;
-    private Map<DefinitionsChildId, TDefinitions> importDefinitions;
+    private final HashBiMap<String, String> prefixNamespace;
+    private final Map<DefinitionsChildId, TDefinitions> importDefinitions;
 
     public FromCanonical(YamlRepository repository) {
         this.repository = repository;
@@ -231,7 +230,7 @@ public class FromCanonical {
         }
         if (node instanceof TEntityTemplate.YamlProperties) {
             Map<String, Object> propertiesKV = ((TEntityTemplate.YamlProperties) node).getProperties();
-            Map<String, YTPropertyAssignment> assignments = propertiesKV.entrySet().stream()
+            return propertiesKV.entrySet().stream()
                 .map(entry ->
                     new LinkedHashMap.SimpleEntry<>(
                         String.valueOf(entry.getKey()),
@@ -242,7 +241,6 @@ public class FromCanonical {
                     Map.Entry::getKey,
                     Map.Entry::getValue
                 ));
-            return assignments;
         }
         // FIXME deal with converting WineryKVProperties and XmlProperties
         return null;
@@ -335,7 +333,7 @@ public class FromCanonical {
 
         builder
             .setDerivedFrom(convert(node.getDerivedFrom(), clazz))
-            .setMetadata(convert(node.getTags()))
+            .setMetadata(convertTags(node.getTags()))
             .addMetadata("targetNamespace", node.getTargetNamespace())
             .addMetadata("abstract", node.getAbstract() ? "true" : "false")
             .addMetadata("final", node.getFinal() ? "true" : "false")
@@ -467,7 +465,6 @@ public class FromCanonical {
         if (Objects.isNull(node)) {
             return null;
         }
-        String suffix = "@" + node.getNodeType().getLocalPart() + "@" + "nodetypes";
         return Stream.of(convert(node.getDeploymentArtifacts(), artifacts), convert(node.getImplementationArtifacts(), artifacts))
             .filter(Objects::nonNull)
             .flatMap(entry -> entry.entrySet().stream())
@@ -616,11 +613,11 @@ public class FromCanonical {
             node.getTypeRef().getLocalPart());
     }
 
-    public Metadata convert(TTags node) {
-        if (Objects.isNull(node)) {
+    public Metadata convertTags(List<TTag> tags) {
+        if (Objects.isNull(tags)) {
             return null;
         }
-        return node.getTag().stream()
+        return tags.stream()
             .filter(Objects::nonNull)
             .collect(Collectors.toMap(
                 TTag::getName,
@@ -745,6 +742,7 @@ public class FromCanonical {
             for (Map.Entry<String, YTImportDefinition> existingImport : existingImports.entrySet()) {
                 if (newImport.getKey().equalsIgnoreCase(existingImport.getKey()) && newImport.getValue().equals(existingImport.getValue())) {
                     found = true;
+                    break;
                 }
             }
             if (!found) {
@@ -835,29 +833,6 @@ public class FromCanonical {
 
     public YTArtifactDefinition convert(ArtifactTemplateId id) {
         TArtifactTemplate node = repository.getElement(id);
-//        List<String> files = Optional.ofNullable(repository.getContainedFiles(new ArtifactTemplateFilesDirectoryId(id)))
-//            .orElse(new TreeSet<>())
-//            .stream()
-//            .map(ref -> {
-//                try {
-//                    InputStream inputStream = repository.newInputStream(ref);
-//                    Path path = this.path.resolve(id.getGroup())
-//                        .resolve(id.getNamespace().getEncoded())
-//                        .resolve(node.getIdFromIdOrNameField())
-//                        .resolve(ref.getFileName());
-//                    if (!path.toFile().exists()) {
-//                        //noinspection ResultOfMethodCallIgnored
-//                        path.getParent().toFile().mkdirs();
-//                        Files.copy(inputStream, path);
-//                    }
-//                    return this.path.relativize(path).toString();
-//                } catch (IOException e) {
-//                    LOGGER.error("Failed to copy Artifact file", e);
-//                    return null;
-//                }
-//            })
-//            .filter(Objects::nonNull)
-//            .collect(Collectors.toList());
         return convertArtifactTemplate(node);
     }
 
@@ -955,22 +930,8 @@ public class FromCanonical {
             .filter(Objects::nonNull)
             .collect(Collectors.toMap(
                 TInterface::getName,
-                entry -> new YTInterfaceDefinition.Builder()
+                entry -> new YTInterfaceDefinition.Builder<>()
                     .setType(new QName(type))
-                    .addOperations(convertOperations(entry.getOperations(), new ArrayList<>()))
-                    .build()
-            ));
-    }
-
-    public Map<String, YTInterfaceDefinition> convertInterfaces(List<TInterface> node) {
-        if (Objects.isNull(node)) {
-            return null;
-        }
-        return node.stream()
-            .filter(Objects::nonNull)
-            .collect(Collectors.toMap(
-                TInterface::getName,
-                entry -> new YTInterfaceDefinition.Builder()
                     .addOperations(convertOperations(entry.getOperations(), new ArrayList<>()))
                     .build()
             ));
@@ -1281,11 +1242,12 @@ public class FromCanonical {
             }
             if (value instanceof Map) {
                 builder.setValue(
-                    ((Map<String, Object>) value).entrySet().stream()
+                    ((Map<?, ?>) value).entrySet().stream()
                         .map(entry ->
                             new LinkedHashMap.SimpleEntry<>(
                                 String.valueOf(entry.getKey()),
-                                convert(entry.getValue()))
+                                convert(entry.getValue())
+                            )
                         )
                         .collect(Collectors.toMap(
                             Map.Entry::getKey,
@@ -1296,8 +1258,8 @@ public class FromCanonical {
             }
             if (value instanceof List) {
                 builder.setValue(
-                    ((List<Object>) value).stream()
-                        .map(entry -> convert(entry))
+                    ((List<?>) value).stream()
+                        .map(PropertyConverter::convert)
                         .collect(Collectors.toList())
                 );
                 return builder.build();

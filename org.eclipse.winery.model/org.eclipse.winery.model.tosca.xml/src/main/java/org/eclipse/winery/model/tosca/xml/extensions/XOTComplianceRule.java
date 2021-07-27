@@ -13,8 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.xml.extensions;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -22,11 +20,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.eclipse.winery.model.tosca.xml.XHasId;
+import org.eclipse.winery.model.tosca.xml.XHasIdAndTags;
 import org.eclipse.winery.model.tosca.xml.XHasName;
 import org.eclipse.winery.model.tosca.xml.XHasTargetNamespace;
-import org.eclipse.winery.model.tosca.xml.XTTag;
-import org.eclipse.winery.model.tosca.xml.XTTags;
 import org.eclipse.winery.model.tosca.xml.XTTopologyTemplate;
 import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
 
@@ -34,7 +30,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "otComplianceRule")
-public class XOTComplianceRule extends XHasId implements XHasName, XHasTargetNamespace {
+public class XOTComplianceRule extends XHasIdAndTags implements XHasName, XHasTargetNamespace {
 
     @XmlAttribute
     protected String name;
@@ -49,20 +45,17 @@ public class XOTComplianceRule extends XHasId implements XHasName, XHasTargetNam
     @XmlElement(name = "RequiredStructure")
     protected XTTopologyTemplate requiredStructure;
 
-    @XmlElement(name = "Tags")
-    protected XTTags tags;
-
     @Deprecated // required for XML deserialization
-    public XOTComplianceRule() { }
+    public XOTComplianceRule() {
+    }
 
     private XOTComplianceRule(Builder builder) {
         super(builder);
         this.name = builder.name;
         this.identifier = builder.identifier;
         this.requiredStructure = builder.requiredStructure;
-        this.tags = builder.tags;
     }
-    
+
     @Override
     public String getName() {
         return name;
@@ -90,7 +83,8 @@ public class XOTComplianceRule extends XHasId implements XHasName, XHasTargetNam
 
     public XTTopologyTemplate getIdentifier() {
         if (identifier == null) {
-            identifier = new XTTopologyTemplate();
+            identifier = new XTTopologyTemplate.Builder()
+                .build();
         }
         return identifier;
     }
@@ -110,25 +104,16 @@ public class XOTComplianceRule extends XHasId implements XHasName, XHasTargetNam
         this.requiredStructure = requiredStructure;
     }
 
-    public XTTags getTags() {
-        return tags;
-    }
-
-    public void setTags(XTTags tags) {
-        this.tags = tags;
-    }
-
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
     }
 
-    public static class Builder extends XHasId.Builder<Builder> {
+    public static class Builder extends XHasIdAndTags.Builder<Builder> {
 
         private String name;
         private XTTopologyTemplate identifier;
         private XTTopologyTemplate requiredStructure;
-        private XTTags tags;
 
         public Builder(String id) {
             super(id);
@@ -146,14 +131,6 @@ public class XOTComplianceRule extends XHasId implements XHasName, XHasTargetNam
 
         public Builder setRequiredStructure(XTTopologyTemplate requiredStructure) {
             this.requiredStructure = requiredStructure;
-            return self();
-        }
-
-        public Builder addTags(List<XTTag> tags) {
-            if (this.tags == null) {
-                this.tags = new XTTags();
-            }
-            this.tags.getTag().addAll(tags);
             return self();
         }
 

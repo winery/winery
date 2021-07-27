@@ -14,7 +14,6 @@
 
 package org.eclipse.winery.model.tosca.xml;
 
-import java.util.List;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -40,7 +39,7 @@ import org.eclipse.jdt.annotation.Nullable;
     "derivedFrom",
     "propertiesDefinition"
 })
-@XmlSeeAlso({
+@XmlSeeAlso( {
     XTNodeType.class,
     XTRelationshipType.class,
     XTRequirementType.class,
@@ -48,11 +47,8 @@ import org.eclipse.jdt.annotation.Nullable;
     XTArtifactType.class,
     XTPolicyType.class
 })
-public abstract class XTEntityType extends XTExtensibleElements implements XHasName, XHasInheritance, XHasTargetNamespace, XHasTags {
-    public static final String NS_SUFFIX_PROPERTIESDEFINITION_WINERY = "propertiesdefinition/winery";
+public abstract class XTEntityType extends XTExtensibleElementWithTags implements XHasName, XHasInheritance, XHasTargetNamespace {
 
-    @XmlElement(name = "Tags")
-    protected XTTags tags;
     @XmlElement(name = "DerivedFrom")
     protected XTEntityType.DerivedFrom derivedFrom;
     @XmlElement(name = "PropertiesDefinition")
@@ -70,11 +66,11 @@ public abstract class XTEntityType extends XTExtensibleElements implements XHasN
     protected String targetNamespace;
 
     @Deprecated // required for XML deserialization
-    public XTEntityType() { }
+    public XTEntityType() {
+    }
 
-    public XTEntityType(Builder builder) {
+    public XTEntityType(Builder<?> builder) {
         super(builder);
-        this.tags = builder.tags;
         this.derivedFrom = builder.derivedFrom;
         this.propertiesDefinition = builder.propertiesDefinition;
         this.name = builder.name;
@@ -100,15 +96,6 @@ public abstract class XTEntityType extends XTExtensibleElements implements XHasN
     @Override
     public int hashCode() {
         return Objects.hash(tags, derivedFrom, propertiesDefinition, name, _abstract, _final, targetNamespace);
-    }
-
-    @Nullable
-    public XTTags getTags() {
-        return tags;
-    }
-
-    public void setTags(@Nullable XTTags value) {
-        this.tags = value;
     }
 
     public XTEntityType.@Nullable DerivedFrom getDerivedFrom() {
@@ -275,10 +262,9 @@ public abstract class XTEntityType extends XTExtensibleElements implements XHasN
     }
 
     @ADR(11)
-    public abstract static class Builder<T extends Builder<T>> extends XTExtensibleElements.Builder<T> {
+    public abstract static class Builder<T extends Builder<T>> extends XTExtensibleElementWithTags.Builder<T> {
         private final String name;
 
-        private XTTags tags;
         private XTEntityType.DerivedFrom derivedFrom;
         private XTEntityType.PropertiesDefinition propertiesDefinition;
         private XTBoolean abstractValue;
@@ -293,16 +279,10 @@ public abstract class XTEntityType extends XTExtensibleElements implements XHasN
             super(entityType);
             this.name = entityType.getName();
             this.derivedFrom = entityType.getDerivedFrom();
-            this.addTags(entityType.getTags());
             this.abstractValue = entityType.getAbstract();
             this.finalValue = entityType.getFinal();
             this.targetNamespace = entityType.getTargetNamespace();
             this.propertiesDefinition = entityType.getPropertiesDefinition();
-        }
-
-        public T setTags(XTTags tags) {
-            this.tags = tags;
-            return self();
         }
 
         public T setDerivedFrom(XTEntityType.DerivedFrom derivedFrom) {
@@ -356,50 +336,6 @@ public abstract class XTEntityType extends XTExtensibleElements implements XHasN
         public T setTargetNamespace(String targetNamespace) {
             this.targetNamespace = targetNamespace;
             return self();
-        }
-
-        public T addTags(XTTags tags) {
-            if (tags == null || tags.getTag().isEmpty()) {
-                return self();
-            }
-
-            if (this.tags == null) {
-                this.tags = tags;
-            } else {
-                this.tags.getTag().addAll(tags.getTag());
-            }
-            return self();
-        }
-
-        public T addTags(List<XTTag> tags) {
-            if (tags == null) {
-                return self();
-            }
-
-            XTTags tmp = new XTTags();
-            tmp.getTag().addAll(tags);
-            return addTags(tmp);
-        }
-
-        public T addTags(XTTag tags) {
-            if (tags == null) {
-                return self();
-            }
-
-            XTTags tmp = new XTTags();
-            tmp.getTag().add(tags);
-            return addTags(tmp);
-        }
-
-        public T addTags(String key, String value) {
-            if (value == null) {
-                return self();
-            }
-
-            XTTag tag = new XTTag();
-            tag.setName(key);
-            tag.setValue(value);
-            return addTags(tag);
         }
 
         public XTEntityType build() {

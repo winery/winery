@@ -53,7 +53,7 @@ public class XTImplementationArtifact extends XTExtensibleElements implements XH
     public XTImplementationArtifact() {
     }
 
-    public XTImplementationArtifact(Builder<?> builder) {
+    public XTImplementationArtifact(Builder builder) {
         super(builder);
         this.name = builder.name;
         this.interfaceName = builder.interfaceName;
@@ -133,7 +133,8 @@ public class XTImplementationArtifact extends XTExtensibleElements implements XH
         this.artifactRef = value;
     }
 
-    public static class Builder<T extends Builder<T>> extends XTExtensibleElements.Builder<Builder<T>> {
+    public static class Builder extends XTExtensibleElements.Builder<Builder> {
+
         private final QName artifactType;
 
         private String name;
@@ -145,31 +146,30 @@ public class XTImplementationArtifact extends XTExtensibleElements implements XH
             this.artifactType = artifactType;
         }
 
-        public T setName(String name) {
+        public Builder setName(String name) {
             this.name = name;
             return self();
         }
 
-        public T setInterfaceName(String interfaceName) {
+        public Builder setInterfaceName(String interfaceName) {
             this.interfaceName = interfaceName;
             return self();
         }
 
-        public T setOperationName(String operationName) {
+        public Builder setOperationName(String operationName) {
             this.operationName = operationName;
             return self();
         }
 
-        public T setArtifactRef(QName artifactRef) {
+        public Builder setArtifactRef(QName artifactRef) {
             this.artifactRef = artifactRef;
             return self();
         }
 
         @ADR(11)
         @Override
-        @SuppressWarnings("unchecked")
-        public T self() {
-            return (T) this;
+        public Builder self() {
+            return this;
         }
 
         public XTImplementationArtifact build() {

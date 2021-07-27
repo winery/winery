@@ -73,7 +73,6 @@ import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TSchema;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
-import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinition;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKV;
@@ -255,17 +254,17 @@ public class ToCanonical {
             .setDerivedFrom(node.getDerivedFrom())
             .addTags(convertMetadata(node.getMetadata(), "targetNamespace", "abstract", "final"))
             .setTargetNamespace(node.getMetadata().get("targetNamespace"))
-            .setAbstract(Boolean.valueOf(node.getMetadata().get("abstract")))
-            .setFinal(Boolean.valueOf(node.getMetadata().get("final")))
+            .setAbstract(Boolean.parseBoolean(node.getMetadata().get("abstract")))
+            .setFinal(Boolean.parseBoolean(node.getMetadata().get("final")))
             .setAttributeDefinitions(convert(node.getAttributes()));
 
         if (node.getVersion() != null) {
             String version = node.getVersion().getVersion();
             if (version != null) {
-                TTag tag = new TTag();
-                tag.setName("version");
-                tag.setValue(version);
-                builder.addTags(tag);
+                builder.addTag(
+                    new TTag.Builder("version", version)
+                        .build()
+                );
             }
         }
 
@@ -301,18 +300,16 @@ public class ToCanonical {
      * @return TOSCA XML Tags
      */
     @NonNull
-    private TTags convertMetadata(Metadata metadata, String... excludedKeys) {
+    private List<TTag> convertMetadata(Metadata metadata, String... excludedKeys) {
         Set<String> exclusionSet = new HashSet<>(Arrays.asList(excludedKeys));
-        return new TTags.Builder()
-            .addTag(
-                metadata.entrySet().stream()
-                    .filter(Objects::nonNull)
-                    .filter(e -> !exclusionSet.contains(e.getKey()))
-                    .map(entry -> new TTag.Builder().setName(entry.getKey()).setValue(entry.getValue()).build())
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList())
-            )
-            .build();
+        return metadata.entrySet().stream()
+            .filter(Objects::nonNull)
+            .filter(e -> !exclusionSet.contains(e.getKey()))
+            .map(entry ->
+                new TTag.Builder(entry.getKey(), entry.getValue())
+                    .build())
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
     }
 
     /**

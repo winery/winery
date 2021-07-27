@@ -48,7 +48,6 @@ import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementRef;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
-import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -81,9 +80,9 @@ public abstract class Visitor {
             topologyTemplate.accept(this);
         }
 
-        final TTags tags = serviceTemplate.getTags();
+        final List<TTag> tags = serviceTemplate.getTags();
         if (tags != null) {
-            for (TTag tag : tags.getTag()) {
+            for (TTag tag : tags) {
                 tag.accept(this);
             }
         }

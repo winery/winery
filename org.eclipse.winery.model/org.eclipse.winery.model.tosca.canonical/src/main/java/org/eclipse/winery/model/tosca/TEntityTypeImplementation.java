@@ -48,10 +48,7 @@ import org.eclipse.jdt.annotation.Nullable;
     TRelationshipTypeImplementation.class,
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class TEntityTypeImplementation extends TExtensibleElements implements HasName, HasType, HasInheritance, HasTargetNamespace {
-
-    @XmlElement(name = "Tags")
-    protected TTags tags;
+public abstract class TEntityTypeImplementation extends TExtensibleElementWithTags implements HasName, HasType, HasInheritance, HasTargetNamespace {
 
     @XmlElement(name = "RequiredContainerFeatures")
     protected TRequiredContainerFeatures requiredContainerFeatures;
@@ -96,7 +93,6 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
         this.targetNamespace = builder.targetNamespace;
         this.name = builder.name;
         this.implementedType = builder.implementedType;
-        this.tags = builder.tags;
         this.requiredContainerFeatures = builder.requiredContainerFeatures;
         this.implementationArtifacts = builder.implementationArtifacts;
         this._abstract = builder._abstract;
@@ -126,15 +122,6 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
     @JsonIgnore
     public QName getQName() {
         return QName.valueOf("{" + this.targetNamespace + "}" + this.name);
-    }
-
-    @Nullable
-    public TTags getTags() {
-        return tags;
-    }
-
-    public void setTags(TTags value) {
-        this.tags = value;
     }
 
     @Nullable
@@ -210,11 +197,11 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
         this.implementedType = type;
     }
 
-    public static abstract class Builder<T extends Builder<T>> extends TExtensibleElements.Builder<T> {
+    public static abstract class Builder<T extends Builder<T>> extends TExtensibleElementWithTags.Builder<T> {
+
         private final QName implementedType;
         private String name;
         private String targetNamespace;
-        private TTags tags;
         private TRequiredContainerFeatures requiredContainerFeatures;
         private List<TImplementationArtifact> implementationArtifacts;
         private boolean _abstract;
@@ -242,11 +229,6 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
             return self();
         }
 
-        public T setTags(TTags tags) {
-            this.tags = tags;
-            return self();
-        }
-
         public T setRequiredContainerFeatures(TRequiredContainerFeatures requiredContainerFeatures) {
             this.requiredContainerFeatures = requiredContainerFeatures;
             return self();
@@ -270,50 +252,6 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
         public T setFinal(boolean _final) {
             this._final = _final;
             return self();
-        }
-
-        public T addTags(TTags tags) {
-            if (tags == null || tags.getTag().isEmpty()) {
-                return self();
-            }
-
-            if (this.tags == null) {
-                this.tags = tags;
-            } else {
-                this.tags.getTag().addAll(tags.getTag());
-            }
-            return self();
-        }
-
-        public T addTags(List<TTag> tags) {
-            if (tags == null) {
-                return self();
-            }
-
-            TTags tmp = new TTags();
-            tmp.getTag().addAll(tags);
-            return addTags(tmp);
-        }
-
-        public T addTags(TTag tags) {
-            if (tags == null) {
-                return self();
-            }
-
-            TTags tmp = new TTags();
-            tmp.getTag().add(tags);
-            return addTags(tmp);
-        }
-
-        public T addTags(String name, String value) {
-            if (name == null || name.isEmpty()) {
-                return self();
-            }
-
-            TTag tmp = new TTag();
-            tmp.setName(name);
-            tmp.setValue(value);
-            return addTags(tmp);
         }
 
         public T addRequiredContainerFeatures(TRequiredContainerFeatures requiredContainerFeatures) {

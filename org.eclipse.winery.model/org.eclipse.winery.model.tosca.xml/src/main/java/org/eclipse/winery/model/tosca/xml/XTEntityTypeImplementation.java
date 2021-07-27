@@ -38,15 +38,12 @@ import org.eclipse.jdt.annotation.Nullable;
     XTNodeTypeImplementation.class,
     XTRelationshipTypeImplementation.class,
 })
-public abstract class XTEntityTypeImplementation extends XTExtensibleElements implements XHasName, XHasType, XHasInheritance, XHasTargetNamespace {
-
-    @XmlElement(name = "Tags")
-    protected XTTags tags;
+public abstract class XTEntityTypeImplementation extends XTExtensibleElementWithTags implements XHasName, XHasType, XHasInheritance, XHasTargetNamespace {
 
     @XmlElement(name = "RequiredContainerFeatures")
     protected XTRequiredContainerFeatures requiredContainerFeatures;
 
-    @XmlElementWrapper(name = "ImplementationArtifacts")
+    @XmlElementWrapper(name = "ImplementationArtifacts") 
     @XmlElement(name = "ImplementationArtifact", required = true)
     protected List<XTImplementationArtifact> implementationArtifacts;
 
@@ -78,7 +75,6 @@ public abstract class XTEntityTypeImplementation extends XTExtensibleElements im
         this.targetNamespace = builder.targetNamespace;
         this.name = builder.name;
         this.implementedType = builder.implementedType;
-        this.tags = builder.tags;
         this.requiredContainerFeatures = builder.requiredContainerFeatures;
         this.implementationArtifacts = builder.implementationArtifacts;
         this._abstract = builder._abstract;
@@ -107,15 +103,6 @@ public abstract class XTEntityTypeImplementation extends XTExtensibleElements im
 
     public QName getQName() {
         return QName.valueOf("{" + this.targetNamespace + "}" + this.name);
-    }
-
-    @Nullable
-    public XTTags getTags() {
-        return tags;
-    }
-
-    public void setTags(XTTags value) {
-        this.tags = value;
     }
 
     @Nullable
@@ -194,11 +181,10 @@ public abstract class XTEntityTypeImplementation extends XTExtensibleElements im
         this.implementedType = type;
     }
 
-    public static abstract class Builder<T extends Builder<T>> extends XTExtensibleElements.Builder<T> {
+    public static abstract class Builder<T extends Builder<T>> extends XTExtensibleElementWithTags.Builder<T> {
         private final QName implementedType;
         private String name;
         private String targetNamespace;
-        private XTTags tags;
         private XTRequiredContainerFeatures requiredContainerFeatures;
         private List<XTImplementationArtifact> implementationArtifacts;
         private XTBoolean _abstract;
@@ -226,11 +212,6 @@ public abstract class XTEntityTypeImplementation extends XTExtensibleElements im
             return self();
         }
 
-        public T setTags(XTTags tags) {
-            this.tags = tags;
-            return self();
-        }
-
         public T setRequiredContainerFeatures(XTRequiredContainerFeatures requiredContainerFeatures) {
             this.requiredContainerFeatures = requiredContainerFeatures;
             return self();
@@ -254,50 +235,6 @@ public abstract class XTEntityTypeImplementation extends XTExtensibleElements im
         public T setFinal(XTBoolean _final) {
             this._final = _final;
             return self();
-        }
-
-        public T addTags(XTTags tags) {
-            if (tags == null || tags.getTag().isEmpty()) {
-                return self();
-            }
-
-            if (this.tags == null) {
-                this.tags = tags;
-            } else {
-                this.tags.getTag().addAll(tags.getTag());
-            }
-            return self();
-        }
-
-        public T addTags(List<XTTag> tags) {
-            if (tags == null) {
-                return self();
-            }
-
-            XTTags tmp = new XTTags();
-            tmp.getTag().addAll(tags);
-            return addTags(tmp);
-        }
-
-        public T addTags(XTTag tags) {
-            if (tags == null) {
-                return self();
-            }
-
-            XTTags tmp = new XTTags();
-            tmp.getTag().add(tags);
-            return addTags(tmp);
-        }
-
-        public T addTags(String name, String value) {
-            if (name == null || name.isEmpty()) {
-                return self();
-            }
-
-            XTTag tmp = new XTTag();
-            tmp.setName(name);
-            tmp.setValue(value);
-            return addTags(tmp);
         }
 
         public T addRequiredContainerFeatures(XTRequiredContainerFeatures requiredContainerFeatures) {

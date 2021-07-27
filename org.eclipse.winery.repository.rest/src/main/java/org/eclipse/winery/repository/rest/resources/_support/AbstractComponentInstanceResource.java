@@ -20,7 +20,9 @@ import java.io.InputStream;
 import java.net.URI;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -45,32 +47,31 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.repository.backend.WineryVersionUtils;
-import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.common.ToscaDocumentBuilderFactory;
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.constants.MimeTypes;
+import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.XmlId;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.model.version.ToscaDiff;
-import org.eclipse.winery.common.version.VersionUtils;
-import org.eclipse.winery.common.version.WineryVersion;
-import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
-import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
-import org.eclipse.winery.model.tosca.TTags;
+import org.eclipse.winery.model.tosca.TTag;
+import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
+import org.eclipse.winery.model.version.ToscaDiff;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.backend.WineryVersionUtils;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.repository.export.CsarExportOptions;
 import org.eclipse.winery.repository.filebased.RepositoryUtils;
 import org.eclipse.winery.repository.rest.RestUtils;
@@ -145,7 +146,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
             LOGGER.debug("data file exists");
             this.load();
         } else {
-            LOGGER.debug("Data file {} does not exist. Creating a new one.", this.ref.toString());
+            LOGGER.debug("Data file {} does not exist. Creating a new one.", this.ref);
             this.createNew();
         }
     }
@@ -353,7 +354,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Object getElementAsJson(@QueryParam("versions") @ApiParam("If set, a list of availbale versions is returned.") String versions,
+    public Object getElementAsJson(@QueryParam("versions") @ApiParam("If set, a list of available versions is returned.") String versions,
                                    @QueryParam("subComponents") String subComponents,
                                    @QueryParam("compareTo") String compareTo, @QueryParam("asChangeLog") String asChangeLog) {
         if (!requestRepository.exists(this.id)) {
@@ -400,10 +401,10 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         try {
             this.element = this.definitions.getElement();
         } catch (IndexOutOfBoundsException e) {
-            // everything allright:
+            // everything alright:
             // ImportResource is a quick hack using 99% of the functionality offered here
             // As only 1% has to be "quick hacked", we do that instead of a clean design
-            // Clean design: Introduce a class between this and AbstractComponentInstanceResource, where this class and ImportResource inhertis from
+            // Clean design: Introduce a class between this and AbstractComponentInstanceResource, where this class and ImportResource inherits from
             // A clean design introducing a super class AbstractDefinitionsBackedResource does not work, as we currently also support PropertiesBackedResources and such a super class would required multi-inheritance
             if (!(this instanceof GenericImportResource)) {
                 throw new IllegalStateException("Wrong storage format: No ServiceTemplateOrNodeTypeOrNodeTypeImplementation found.");
@@ -528,7 +529,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         BackendUtils.copyIdToFields((HasIdInIdOrNameField) element, this.getId());
 
         try {
-            BackendUtils.persist(this.getDefinitions(), this.getRepositoryFileReference(), MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS, requestRepository);
+            requestRepository.putDefinition(this.getId(), this.getDefinitions());
         } catch (IOException e) {
             throw new WebApplicationException(e);
         }
@@ -537,7 +538,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         if (validationError.isEmpty()) {
             return Response.noContent().build();
         } else {
-            // ADR-0005: well-formed XML, but non-schema-conforming XML is saved, but triggers warning at the iser
+            // ADR-0005: well-formed XML, but non-schema-conforming XML is saved, but triggers warning to the user
             return Response.ok().entity(validationError).build();
         }
     }
@@ -556,42 +557,42 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 
     @Path("tags/")
     public final TagsResource getTags() {
-        TTags tags;
+        List<TTag> tags;
         if (this.element instanceof TServiceTemplate) {
             tags = ((TServiceTemplate) this.element).getTags();
             if (tags == null) {
-                tags = new TTags();
+                tags = new ArrayList<>();
                 ((ServiceTemplateResource) this).getServiceTemplate().setTags(tags);
             }
         } else if (this.element instanceof TEntityType) {
             tags = ((TEntityType) this.element).getTags();
             if (tags == null) {
-                tags = new TTags();
+                tags = new ArrayList<>();
                 ((EntityTypeResource) this).getEntityType().setTags(tags);
             }
         } else if (this.element instanceof TNodeTypeImplementation) {
             tags = ((TNodeTypeImplementation) this.element).getTags();
             if (tags == null) {
-                tags = new TTags();
+                tags = new ArrayList<>();
                 ((NodeTypeImplementationResource) this).getNTI().setTags(tags);
             }
         } else if (this.element instanceof TRelationshipTypeImplementation) {
             tags = ((TRelationshipTypeImplementation) this.element).getTags();
             if (tags == null) {
-                tags = new TTags();
+                tags = new ArrayList<>();
                 ((RelationshipTypeImplementationResource) this).getRTI().setTags(tags);
             }
         } else if (this.element instanceof OTComplianceRule) {
             tags = ((OTComplianceRule) this.element).getTags();
             if (tags == null) {
-                tags = new TTags();
+                tags = new ArrayList<>();
                 ((ComplianceRuleResource) this).getComplianceRule().setTags(tags);
             }
         } else {
             throw new IllegalStateException("tags was called on a resource not supporting tags");
         }
 
-        return new TagsResource(this, tags.getTag());
+        return new TagsResource(this, tags);
     }
 
     @GET

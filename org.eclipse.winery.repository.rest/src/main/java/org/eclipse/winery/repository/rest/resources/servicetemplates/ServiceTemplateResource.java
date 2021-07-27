@@ -70,7 +70,6 @@ import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementRef;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
-import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
@@ -441,12 +440,12 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
                 TCapability capa = splitting.createPlaceholderCapability(topologyTemplate, capabilityType);
 
                 ModelUtilities.setPropertiesKV(placeholderNodeTemplate, placeholderNodeTemplateProperties);
-                
+
                 if (placeholderNodeTemplate.getCapabilities() == null) {
                     placeholderNodeTemplate.setCapabilities(new ArrayList<>());
                 }
                 placeholderNodeTemplate.getCapabilities().add(capa);
-                
+
                 for (Map.Entry<QName, String> targetLocation : nodeTemplateWithOpenReq.getOtherAttributes().entrySet()) {
                     placeholderNodeTemplate.getOtherAttributes().put(targetLocation.getKey(), targetLocation.getValue());
                 }
@@ -576,17 +575,17 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     @Produces( {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response createPlaceholderSubstituteVersion() throws IOException, SplittingException {
         TTopologyTemplate originTopologyTemplate = this.getServiceTemplate().getTopologyTemplate();
-        TTags tagsOfServiceTemplate = this.getServiceTemplate().getTags();
+        List<TTag> tagsOfServiceTemplate = this.getServiceTemplate().getTags();
         List<OTParticipant> participants = originTopologyTemplate.getParticipants();
 
         String participantId = "";
-        TTags newTagList = new TTags();
-        for (TTag tagOfServiceTemplate : tagsOfServiceTemplate.getTag()) {
+        List<TTag> newTagList = new ArrayList<>();
+        for (TTag tagOfServiceTemplate : tagsOfServiceTemplate) {
             if (tagOfServiceTemplate.getName().equals("participant")) {
                 participantId = tagOfServiceTemplate.getValue();
-                newTagList.getTag().add(tagOfServiceTemplate);
+                newTagList.add(tagOfServiceTemplate);
             } else if (!tagOfServiceTemplate.getName().equals("choreography")) {
-                newTagList.getTag().add(tagOfServiceTemplate);
+                newTagList.add(tagOfServiceTemplate);
             }
         }
         final String finalParticipantId = participantId;
@@ -597,8 +596,12 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
             //Multiple participants can be annotated on one node template
             Optional<String> nodeOwners = ModelUtilities.getParticipant(tNodeTemplate);
             if (nodeOwners.isPresent() && nodeOwners.get().contains(finalParticipantId)) {
-                for (TRelationshipTemplate tRelationshipTemplate : ModelUtilities.getIncomingRelationshipTemplates(originTopologyTemplate, tNodeTemplate)) {
-                    nodeTemplatesWithNewHost.add(ModelUtilities.getSourceNodeTemplateOfRelationshipTemplate(originTopologyTemplate, tRelationshipTemplate).getId());
+                for (TRelationshipTemplate tRelationshipTemplate :
+                    ModelUtilities.getIncomingRelationshipTemplates(originTopologyTemplate, tNodeTemplate)) {
+                    nodeTemplatesWithNewHost.add(
+                        ModelUtilities.getSourceNodeTemplateOfRelationshipTemplate(originTopologyTemplate, tRelationshipTemplate)
+                            .getId()
+                    );
                 }
             }
         }
@@ -650,7 +653,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
         choreoTag.setName("choreography");
         choreoTag.setValue(choreoValue);
 
-        newTagList.getTag().add(choreoTag);
+        newTagList.add(choreoTag);
         newServiceTemplate.setTags(newTagList);
 
         repo.setElement(newId, newServiceTemplate);
@@ -677,62 +680,57 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
         WineryVersion version = VersionUtils.getVersion(id.getXmlId().getDecoded());
         TTopologyTemplate topologyTemplate = this.getTopology();
 
-        TTags tagsOfServiceTemplate = this.getServiceTemplate().getTags();
-        List<TTag> tags = tagsOfServiceTemplate.getTag();
+        List<TTag> tags = new ArrayList<>();
 
         Splitting splitting = new Splitting();
         // iterate over tags of origin service template
 
-        for (OTParticipant participant : topologyTemplate.getParticipants()) {
-            // check if tag with partner in service template
-            WineryVersion newVersion = new WineryVersion(
-                participant.getName() + "-" + version.toString().replace("gdm", "ldm"),
-                1,
-                1
-            );
+        if (topologyTemplate.getParticipants() != null) {
+            for (OTParticipant participant : topologyTemplate.getParticipants()) {
+                // check if tag with partner in service template
+                WineryVersion newVersion = new WineryVersion(
+                    participant.getName() + "-" + version.toString().replace("gdm", "ldm"),
+                    1,
+                    1
+                );
 
-            List<OTParticipant> newParticipantList = new ArrayList<>();
-            newParticipantList.addAll(topologyTemplate.getParticipants());
+                List<OTParticipant> newParticipantList = new ArrayList<>(topologyTemplate.getParticipants());
 
-            // create list of tags to add to service template
-            TTags tTagList = new TTags();
-            tTagList.getTag().addAll(tags);
+                // new tag to define participant of service template
+                tags.add(
+                    new TTag.Builder("participant", participant.getName())
+                        .build()
+                );
 
-            // new tag to define participant of service template
-            TTag participantTag = new TTag();
-            participantTag.setName("participant");
-            participantTag.setValue(participant.getName());
-            tTagList.getTag().add(participantTag);
+                String choreoValue = splitting.calculateChoreographyTag(this.getServiceTemplate().getTopologyTemplate().getNodeTemplates(), participant.getName());
+                tags.add(
+                    new TTag.Builder("choreography", choreoValue)
+                        .build()
+                );
 
-            String choreoValue = splitting.calculateChoreographyTag(this.getServiceTemplate().getTopologyTemplate().getNodeTemplates(), participant.getName());
-            TTag choreoTag = new TTag();
-            choreoTag.setName("choreography");
-            choreoTag.setValue(choreoValue);
-            tTagList.getTag().add(choreoTag);
-            ServiceTemplateId newId = new ServiceTemplateId(id.getNamespace().getDecoded(),
-                VersionUtils.getNameWithoutVersion(id.getXmlId().getDecoded()) + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + newVersion.toString(),
-                false);
+                ServiceTemplateId newId = new ServiceTemplateId(id.getNamespace().getDecoded(),
+                    VersionUtils.getNameWithoutVersion(id.getXmlId().getDecoded()) + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + newVersion.toString(),
+                    false);
 
-            if (repo.exists(newId)) {
-                repo.forceDelete(newId);
+                if (repo.exists(newId)) {
+                    repo.forceDelete(newId);
+                }
+
+                ResourceResult response = RestUtils.duplicate(id, newId);
+
+                if (response.getStatus() == Status.CREATED) {
+                    response.setUri(null);
+                    response.setMessage(new QNameApiData(newId));
+                }
+
+                TServiceTemplate tempServiceTempl = repo.getElement(newId);
+                tempServiceTempl.setTags(tags);
+                tempServiceTempl.getTopologyTemplate().setParticipants(newParticipantList);
+
+                listOfResponses.add(response.getResponse());
+                // set element to propagate changed tags
+                repo.setElement(newId, tempServiceTempl);
             }
-
-            ResourceResult response = RestUtils.duplicate(id, newId);
-
-            if (response.getStatus() == Status.CREATED) {
-                response.setUri(null);
-                response.setMessage(new QNameApiData(newId));
-            }
-
-            TServiceTemplate tempServiceTempl = repo.getElement(newId);
-            // reset tags and set tags with respective entry
-            tempServiceTempl.setTags(null);
-            tempServiceTempl.setTags(tTagList);
-            tempServiceTempl.getTopologyTemplate().setParticipants(newParticipantList);
-
-            listOfResponses.add(response.getResponse());
-            // set element to propagate changed tags
-            repo.setElement(newId, tempServiceTempl);
         }
         return listOfResponses;
     }

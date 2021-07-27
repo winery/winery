@@ -14,7 +14,6 @@
 
 package org.eclipse.winery.model.tosca.xml;
 
-import java.util.List;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -37,10 +36,7 @@ import org.eclipse.jdt.annotation.Nullable;
     "topologyTemplate",
     "plans"
 })
-public class XTServiceTemplate extends XHasId implements XHasName, XHasTargetNamespace {
-
-    @XmlElement(name = "Tags")
-    protected XTTags tags;
+public class XTServiceTemplate extends XHasIdAndTags implements XHasName, XHasTargetNamespace {
 
     @XmlElement(name = "BoundaryDefinitions")
     protected XTBoundaryDefinitions boundaryDefinitions;
@@ -62,11 +58,11 @@ public class XTServiceTemplate extends XHasId implements XHasName, XHasTargetNam
     protected QName substitutableNodeType;
 
     @Deprecated // required for XML deserialization
-    public XTServiceTemplate() { }
+    public XTServiceTemplate() {
+    }
 
     public XTServiceTemplate(Builder builder) {
         super(builder);
-        this.tags = builder.tags;
         this.boundaryDefinitions = builder.boundaryDefinitions;
         this.topologyTemplate = builder.topologyTemplate;
         this.plans = builder.plans;
@@ -93,15 +89,6 @@ public class XTServiceTemplate extends XHasId implements XHasName, XHasTargetNam
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), tags, boundaryDefinitions, topologyTemplate, plans, name, targetNamespace, substitutableNodeType);
-    }
-
-    @Nullable
-    public XTTags getTags() {
-        return tags;
-    }
-
-    public void setTags(@Nullable XTTags value) {
-        this.tags = value;
     }
 
     @Nullable
@@ -170,16 +157,16 @@ public class XTServiceTemplate extends XHasId implements XHasName, XHasTargetNam
         visitor.visit(this);
     }
 
-    public static class Builder extends XHasId.Builder<Builder> {
+    public static class Builder extends XHasIdAndTags.Builder<Builder> {
+
         private final XTTopologyTemplate topologyTemplate;
 
-        private XTTags tags;
         private XTBoundaryDefinitions boundaryDefinitions;
         private XTPlans plans;
         private String name;
         private String targetNamespace;
         private QName substitutableNodeType;
-        
+
         public Builder(String id) {
             super(id);
             topologyTemplate = null;
@@ -188,11 +175,6 @@ public class XTServiceTemplate extends XHasId implements XHasName, XHasTargetNam
         public Builder(String id, XTTopologyTemplate topologyTemplate) {
             super(id);
             this.topologyTemplate = topologyTemplate;
-        }
-
-        public Builder setTags(XTTags tags) {
-            this.tags = tags;
-            return this;
         }
 
         public Builder setBoundaryDefinitions(XTBoundaryDefinitions boundaryDefinitions) {
@@ -218,39 +200,6 @@ public class XTServiceTemplate extends XHasId implements XHasName, XHasTargetNam
         public Builder setSubstitutableNodeType(QName substitutableNodeType) {
             this.substitutableNodeType = substitutableNodeType;
             return this;
-        }
-
-        public Builder addTags(XTTags tags) {
-            if (tags == null || tags.getTag().isEmpty()) {
-                return this;
-            }
-
-            if (this.tags == null) {
-                this.tags = tags;
-            } else {
-                this.tags.getTag().addAll(tags.getTag());
-            }
-            return this;
-        }
-
-        public Builder addTags(List<XTTag> tags) {
-            if (tags == null) {
-                return this;
-            }
-
-            XTTags tmp = new XTTags();
-            tmp.getTag().addAll(tags);
-            return addTags(tmp);
-        }
-
-        public Builder addTags(XTTag tags) {
-            if (tags == null) {
-                return this;
-            }
-
-            XTTags tmp = new XTTags();
-            tmp.getTag().add(tags);
-            return addTags(tmp);
         }
 
         @Override

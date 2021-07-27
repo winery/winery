@@ -46,7 +46,6 @@ import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
-import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
@@ -330,13 +329,13 @@ public class DataFlowResource {
      * Check if the ServiceTemplate contains the location and provider tags with matching values.
      */
     private boolean containsMatchingTags(TServiceTemplate serviceTemplate, String location, String provider) {
-        TTags tags = serviceTemplate.getTags();
+        List<TTag> tags = serviceTemplate.getTags();
         if (Objects.isNull(tags)) {
             return false;
         }
 
         int tests = 0;
-        for (TTag tag : tags.getTag()) {
+        for (TTag tag : tags) {
             if (tag.getName().equalsIgnoreCase(TAG_NAME_LOCATION) && tag.getValue().equalsIgnoreCase(location)
                 || tag.getName().equalsIgnoreCase(TAG_NAME_PROVIDER) && tag.getValue().equalsIgnoreCase(provider)) {
                 tests++;

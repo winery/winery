@@ -14,7 +14,6 @@
 
 package org.eclipse.winery.model.tosca;
 
-import java.util.List;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -37,10 +36,7 @@ import org.eclipse.jdt.annotation.Nullable;
     "topologyTemplate",
     "plans"
 })
-public class TServiceTemplate extends HasId implements HasName, HasTargetNamespace, HasTags {
-
-    @XmlElement(name = "Tags")
-    protected TTags tags;
+public class TServiceTemplate extends HasIdAndTags implements HasName, HasTargetNamespace {
 
     @XmlElement(name = "BoundaryDefinitions")
     protected TBoundaryDefinitions boundaryDefinitions;
@@ -67,7 +63,6 @@ public class TServiceTemplate extends HasId implements HasName, HasTargetNamespa
 
     public TServiceTemplate(Builder builder) {
         super(builder);
-        this.tags = builder.tags;
         this.boundaryDefinitions = builder.boundaryDefinitions;
         this.topologyTemplate = builder.topologyTemplate;
         this.plans = builder.plans;
@@ -98,16 +93,6 @@ public class TServiceTemplate extends HasId implements HasName, HasTargetNamespa
             tags, boundaryDefinitions, topologyTemplate,
             plans, name, targetNamespace, substitutableNodeType
         );
-    }
-
-    @Nullable
-    @Override
-    public TTags getTags() {
-        return tags;
-    }
-
-    public void setTags(@Nullable TTags value) {
-        this.tags = value;
     }
 
     @Nullable
@@ -175,10 +160,9 @@ public class TServiceTemplate extends HasId implements HasName, HasTargetNamespa
         visitor.visit(this);
     }
 
-    public static class Builder extends HasId.Builder<Builder> {
+    public static class Builder extends HasIdAndTags.Builder<Builder> {
         private final TTopologyTemplate topologyTemplate;
 
-        private TTags tags;
         private TBoundaryDefinitions boundaryDefinitions;
         private TPlans plans;
         private String name;
@@ -193,11 +177,6 @@ public class TServiceTemplate extends HasId implements HasName, HasTargetNamespa
         public Builder(String id, TTopologyTemplate topologyTemplate) {
             super(id);
             this.topologyTemplate = topologyTemplate;
-        }
-
-        public Builder setTags(TTags tags) {
-            this.tags = tags;
-            return this;
         }
 
         public Builder setBoundaryDefinitions(TBoundaryDefinitions boundaryDefinitions) {
@@ -223,39 +202,6 @@ public class TServiceTemplate extends HasId implements HasName, HasTargetNamespa
         public Builder setSubstitutableNodeType(QName substitutableNodeType) {
             this.substitutableNodeType = substitutableNodeType;
             return this;
-        }
-
-        public Builder addTags(TTags tags) {
-            if (tags == null || tags.getTag().isEmpty()) {
-                return this;
-            }
-
-            if (this.tags == null) {
-                this.tags = tags;
-            } else {
-                this.tags.getTag().addAll(tags.getTag());
-            }
-            return this;
-        }
-
-        public Builder addTags(List<TTag> tags) {
-            if (tags == null) {
-                return this;
-            }
-
-            TTags tmp = new TTags();
-            tmp.getTag().addAll(tags);
-            return addTags(tmp);
-        }
-
-        public Builder addTags(TTag tags) {
-            if (tags == null) {
-                return this;
-            }
-
-            TTags tmp = new TTags();
-            tmp.getTag().add(tags);
-            return addTags(tmp);
         }
 
         @Override

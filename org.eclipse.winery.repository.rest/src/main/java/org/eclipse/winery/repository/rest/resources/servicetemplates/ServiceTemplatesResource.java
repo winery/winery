@@ -38,7 +38,6 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TTag;
-import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
@@ -57,8 +56,8 @@ public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeRefer
     @Path("createfromartifact")
     @Produces(MediaType.APPLICATION_JSON)
     public CreateFromArtifactApiData getCreateFromArtifactData() {
-        Set<QName> artifactTypes = new HashSet<QName>();
-        Set<QName> infrastructureNodeTypes = new HashSet<QName>();
+        Set<QName> artifactTypes = new HashSet<>();
+        Set<QName> infrastructureNodeTypes = new HashSet<>();
         Collection<AbstractComponentInstanceResource> templates = this.getAll();
 
         for (AbstractComponentInstanceResource resource : templates) {
@@ -67,17 +66,15 @@ public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeRefer
                 if (stRes.getServiceTemplate().getTags() != null) {
                     int check = 0;
                     QName artifactType = null;
-                    for (TTag tag : stRes.getServiceTemplate().getTags().getTag()) {
+                    for (TTag tag : stRes.getServiceTemplate().getTags()) {
                         switch (tag.getName()) {
                             case "xaasPackageNode":
+                            case "xaasPackageDeploymentArtifact":
                                 check++;
                                 break;
                             case "xaasPackageArtifactType":
                                 check++;
                                 artifactType = QName.valueOf(tag.getValue());
-                                break;
-                            case "xaasPackageDeploymentArtifact":
-                                check++;
                                 break;
                             case "xaasPackageInfrastructure":
                                 // optional tag, hence no check++
@@ -99,7 +96,7 @@ public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeRefer
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response createFromArtifact(@FormDataParam("file") InputStream uploadedInputStream,
                                        @FormDataParam("file") FormDataContentDisposition fileDetail,
-                                       @FormDataParam("file") FormDataBodyPart body, 
+                                       @FormDataParam("file") FormDataBodyPart body,
                                        @FormDataParam("artifactType") QName artifactType,
                                        @FormDataParam("nodeTypes") List<FormDataBodyPart> nodeTypesList,
                                        @FormDataParam("infrastructureNodeType") QName infrastructureNodeType,
@@ -125,7 +122,7 @@ public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeRefer
         nodeTypes = RestUtils.cleanQNameSet(nodeTypes);
 
         Collection<ServiceTemplateId> xaasPackages = this.getXaaSPackageTemplates(artifactType);
-        Collection<ServiceTemplateId> toRemove = new ArrayList<ServiceTemplateId>();
+        Collection<ServiceTemplateId> toRemove = new ArrayList<>();
 
         // check whether the serviceTemplate contains all the given nodeTypes
         for (ServiceTemplateId serviceTemplate : xaasPackages) {
@@ -138,10 +135,12 @@ public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeRefer
                     toRemove.add(serviceTemplate);
                 } else {
                     String value = RestUtils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageInfrastructure");
-                    String localName = value.split("}")[1];
-                    String namespace = value.split("}")[0].substring(1);
-                    if (!infrastructureNodeType.equals(new QName(namespace, localName))) {
-                        toRemove.add(serviceTemplate);
+                    if (value != null) {
+                        String localName = value.split("}")[1];
+                        String namespace = value.split("}")[0].substring(1);
+                        if (!infrastructureNodeType.equals(new QName(namespace, localName))) {
+                            toRemove.add(serviceTemplate);
+                        }
                     }
                 }
             }
@@ -183,12 +182,17 @@ public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeRefer
     }
 
     private Collection<ServiceTemplateId> getXaaSPackageTemplates(QName artifactType) {
-        Collection<ServiceTemplateId> xaasPackages = new ArrayList<ServiceTemplateId>();
+        Collection<ServiceTemplateId> xaasPackages = new ArrayList<>();
         for (ServiceTemplateId serviceTemplate : this.getXaaSPackageTemplates()) {
-            String artifactTypeTagValue = RestUtils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageArtifactType");
-            QName taggedArtifactType = QName.valueOf(artifactTypeTagValue);
-            if (taggedArtifactType.equals(artifactType)) {
-                xaasPackages.add(serviceTemplate);
+            String artifactTypeTagValue = RestUtils.getTagValue(
+                new ServiceTemplateResource(serviceTemplate).getServiceTemplate(),
+                "xaasPackageArtifactType"
+            );
+            if (artifactTypeTagValue != null) {
+                QName taggedArtifactType = QName.valueOf(artifactTypeTagValue);
+                if (taggedArtifactType.equals(artifactType)) {
+                    xaasPackages.add(serviceTemplate);
+                }
             }
         }
         return xaasPackages;
@@ -196,19 +200,19 @@ public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeRefer
 
     private Collection<ServiceTemplateId> getXaaSPackageTemplates() {
         Collection<AbstractComponentInstanceResource> templates = this.getAll();
-        Collection<ServiceTemplateId> xaasPackages = new ArrayList<ServiceTemplateId>();
+        Collection<ServiceTemplateId> xaasPackages = new ArrayList<>();
         for (AbstractComponentInstanceResource resource : templates) {
             if (resource instanceof ServiceTemplateResource) {
                 ServiceTemplateResource stRes = (ServiceTemplateResource) resource;
 
-                TTags tags = stRes.getServiceTemplate().getTags();
+                List<TTag> tags = stRes.getServiceTemplate().getTags();
 
                 if (tags == null) {
                     continue;
                 }
 
                 int check = 0;
-                for (TTag tag : tags.getTag()) {
+                for (TTag tag : tags) {
                     switch (tag.getName()) {
                         case "xaasPackageNode":
                         case "xaasPackageArtifactType":

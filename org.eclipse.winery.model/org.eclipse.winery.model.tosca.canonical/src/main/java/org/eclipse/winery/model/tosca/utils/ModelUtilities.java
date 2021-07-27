@@ -50,7 +50,6 @@ import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
-import org.eclipse.winery.model.tosca.TRelationshipTemplate.SourceOrTargetElement;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
@@ -551,9 +550,9 @@ public abstract class ModelUtilities {
         WinerysPropertiesDefinition propDef = nodeType.getWinerysPropertiesDefinition();
         if (propDef != null && propDef.getPropertyDefinitions() != null) {
             Map<String, String> properties = new HashMap<>();
-            propDef.getPropertyDefinitions().forEach(propertyDefinition -> {
-                properties.put(propertyDefinition.getKey(), propertyDefinition.getDefaultValue());
-            });
+            propDef.getPropertyDefinitions().forEach(propertyDefinition ->
+                properties.put(propertyDefinition.getKey(), propertyDefinition.getDefaultValue())
+            );
             TEntityTemplate.WineryKVProperties tProps = new TEntityTemplate.WineryKVProperties();
             tProps.setKVProperties(new LinkedHashMap<>(properties));
             builder.setProperties(tProps);
@@ -574,21 +573,18 @@ public abstract class ModelUtilities {
     public static TRelationshipTemplate instantiateRelationshipTemplate(TRelationshipType relationshipType,
                                                                         TNodeTemplate sourceNodeTemplate,
                                                                         TNodeTemplate targetNodeTemplate) {
+        if (relationshipType == null || relationshipType.getName() == null) {
+            return null;
+        }
 
-        TRelationshipTemplate relationshipTemplate = new TRelationshipTemplate();
-        relationshipTemplate.setId("con-" + UUID.randomUUID());
-        relationshipTemplate.setName(relationshipType.getName());
-        relationshipTemplate.setType(new QName(relationshipType.getTargetNamespace(), relationshipType.getName()));
-
-        // connect the NodeTemplates
-        SourceOrTargetElement source = new SourceOrTargetElement();
-        source.setRef(sourceNodeTemplate);
-        relationshipTemplate.setSourceElement(source);
-        SourceOrTargetElement target = new SourceOrTargetElement();
-        target.setRef(targetNodeTemplate);
-        relationshipTemplate.setTargetElement(target);
-
-        return relationshipTemplate;
+        return new TRelationshipTemplate.Builder(
+            "con-" + UUID.randomUUID(),
+            new QName(relationshipType.getTargetNamespace(), relationshipType.getName()),
+            sourceNodeTemplate,
+            targetNodeTemplate
+        )
+            .setName(relationshipType.getName())
+            .build();
     }
 
     /**
@@ -660,12 +656,11 @@ public abstract class ModelUtilities {
                                                                                TNodeTemplate nodeTemplate) {
         Objects.requireNonNull(topologyTemplate);
         Objects.requireNonNull(nodeTemplate);
-        List<TRelationshipTemplate> incomingRelationshipTemplates = topologyTemplate.getRelationshipTemplates()
+
+        return topologyTemplate.getRelationshipTemplates()
             .stream()
             .filter(rt -> getTargetNodeTemplateOfRelationshipTemplate(topologyTemplate, rt).equals(nodeTemplate))
             .collect(Collectors.toList());
-
-        return incomingRelationshipTemplates;
     }
 
     /**
@@ -675,12 +670,11 @@ public abstract class ModelUtilities {
                                                                                TNodeTemplate nodeTemplate) {
         Objects.requireNonNull(topologyTemplate);
         Objects.requireNonNull(nodeTemplate);
-        List<TRelationshipTemplate> outgoingRelationshipTemplates = topologyTemplate.getRelationshipTemplates()
+
+        return topologyTemplate.getRelationshipTemplates()
             .stream()
             .filter(rt -> getSourceNodeTemplateOfRelationshipTemplate(topologyTemplate, rt).equals(nodeTemplate))
             .collect(Collectors.toList());
-
-        return outgoingRelationshipTemplates;
     }
 
     /**
@@ -743,7 +737,7 @@ public abstract class ModelUtilities {
 
             // Convert the String created by the JSON serialization back to a XML dom document
             TEntityTemplate.Properties properties = template.getProperties();
-            if (properties != null && properties instanceof TEntityTemplate.XmlProperties) {
+            if (properties instanceof TEntityTemplate.XmlProperties) {
                 TEntityTemplate.XmlProperties props = (TEntityTemplate.XmlProperties) properties;
                 props.setAny(patchAnyItem(props.getAny()));
             }
@@ -817,7 +811,7 @@ public abstract class ModelUtilities {
         HashMap<T, String> features = new HashMap<>();
         getChildrenOf(givenType, elements).forEach((qName, t) -> {
             if (Objects.nonNull(t.getTags())) {
-                List<TTag> list = t.getTags().getTag();
+                List<TTag> list = t.getTags();
 
                 if (deploymentTechnology == null
                     || list.stream().anyMatch(
@@ -838,16 +832,19 @@ public abstract class ModelUtilities {
     public static <T extends TEntityType> boolean isFeatureType(QName givenType, Map<QName, T> elements) {
         return Objects.nonNull(elements.get(givenType))
             && Objects.nonNull(elements.get(givenType).getTags())
-            && elements.get(givenType).getTags().getTag().stream()
+            && elements.get(givenType).getTags().stream()
             .anyMatch(tag -> "feature".equals(tag.getName()));
     }
 
     public static void updateNodeTemplate(TTopologyTemplate topology, String oldComponentId, QName
         newType, TNodeType newComponentType) {
         TNodeTemplate nodeTemplate = topology.getNodeTemplate(oldComponentId);
-        nodeTemplate.setType(newType);
-        nodeTemplate.setName(newType.getLocalPart());
-        // TODO: also make some more adjustments etc.
+
+        if (nodeTemplate != null) {
+            nodeTemplate.setType(newType);
+            nodeTemplate.setName(newType.getLocalPart());
+            // TODO: also make some more adjustments etc.
+        }
     }
 
     /**

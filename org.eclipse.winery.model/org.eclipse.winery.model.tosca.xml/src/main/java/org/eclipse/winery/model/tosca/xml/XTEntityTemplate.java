@@ -83,7 +83,7 @@ public abstract class XTEntityTemplate extends XHasId implements XHasType, XHasN
         super(id);
     }
 
-    public XTEntityTemplate(Builder builder) {
+    public XTEntityTemplate(Builder<?> builder) {
         super(builder);
         this.properties = builder.properties;
         this.propertyConstraints = builder.propertyConstraints;
@@ -272,7 +272,7 @@ public abstract class XTEntityTemplate extends XHasId implements XHasType, XHasN
         @NonNull
         public List<XTPropertyConstraint> getPropertyConstraint() {
             if (propertyConstraint == null) {
-                propertyConstraint = new ArrayList<XTPropertyConstraint>();
+                propertyConstraint = new ArrayList<>();
             }
             return this.propertyConstraint;
         }

@@ -261,7 +261,16 @@ public class ToCanonical {
         if (ref instanceof TCapability) {
             incomplete.setRef(resolveCapability((TCapability) ref, topology));
         } else if (ref instanceof TNodeTemplate) {
-            incomplete.setRef(topology.getNodeTemplate(ref.getId()));
+            if (topology != null) {
+                TNodeTemplate nodeTemplate = topology.getNodeTemplate(ref.getId());
+                if (nodeTemplate != null) {
+                    incomplete.setRef(nodeTemplate);
+                } else {
+                    LOGGER.error("Node Template could not be found!");
+                }
+            } else {
+                LOGGER.error("Topology Template was null!");
+            }
         } else if (ref instanceof TRequirement) {
             incomplete.setRef(resolveRequirement((TRequirement) ref, topology));
         } else {
@@ -364,7 +373,7 @@ public class ToCanonical {
                 .stream().map(this::convert).collect(Collectors.toList()));
         }
         if (xml.getTags() != null) {
-            builder.addTags(xml.getTags().getTag().stream().map(this::convert).collect(Collectors.toList()));
+            builder.addTags(xml.getTags().stream().map(this::convert).collect(Collectors.toList()));
         }
         if (xml.getImplementationArtifacts() != null) {
             builder.addImplementationArtifacts(xml.getImplementationArtifacts().stream()
@@ -386,7 +395,8 @@ public class ToCanonical {
     }
 
     private TTag convert(XTTag xml) {
-        return new TTag.Builder().setName(xml.getName()).setValue(xml.getValue()).build();
+        return new TTag.Builder(xml.getName(), xml.getValue())
+            .build();
     }
 
     private TRequiredContainerFeature convert(XTRequiredContainerFeature xml) {
@@ -412,7 +422,11 @@ public class ToCanonical {
     private <Builder extends TEntityType.Builder<Builder>, Value extends XTEntityType>
     void fillEntityTypeProperties(Builder builder, Value xml) {
         if (xml.getTags() != null) {
-            builder.addTags(xml.getTags().getTag().stream().map(this::convert).collect(Collectors.toList()));
+            builder.addTags(
+                xml.getTags().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         if (xml.getDerivedFrom() != null) {
             TEntityType.DerivedFrom derived = new TEntityType.DerivedFrom();
@@ -690,10 +704,11 @@ public class ToCanonical {
         builder.setName(xml.getName());
         builder.setTargetNamespace(xml.getTargetNamespace());
         if (xml.getTags() != null) {
-            xml.getTags().getTag().stream()
+            xml.getTags().stream()
                 .filter(t -> !t.getName().startsWith("group:")) // filter group definitions
                 .filter(t -> !t.getName().startsWith("participant:")) // filter participants
-                .map(this::convert).forEach(builder::addTags);
+                .map(this::convert)
+                .forEach(builder::addTag);
         }
         if (xml.getBoundaryDefinitions() != null) {
             builder.setBoundaryDefinitions(convert(xml.getBoundaryDefinitions()));
@@ -709,12 +724,12 @@ public class ToCanonical {
 
         // map group-related tags back to topology template
         if (topologyTemplate != null && xml.getTags() != null) {
-            topologyTemplate.setGroups(convertList(xml.getTags().getTag(), this::convertToGroup));
+            topologyTemplate.setGroups(convertList(xml.getTags(), this::convertToGroup));
         }
 
         // handle participant extension
         if (topologyTemplate != null && xml.getTags() != null) {
-            topologyTemplate.setParticipants(convertList(xml.getTags().getTag(), this::convertToParticipant));
+            topologyTemplate.setParticipants(convertList(xml.getTags(), this::convertToParticipant));
         }
 
         return builder.build();

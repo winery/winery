@@ -49,16 +49,14 @@ import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.common.version.VersionUtils;
-import org.eclipse.winery.edmm.EdmmManager;
-import org.eclipse.winery.edmm.model.EdmmConverter;
-import org.eclipse.winery.edmm.model.EdmmType;
-import org.eclipse.winery.repository.backend.WineryVersionUtils;
-import org.eclipse.winery.repository.common.RepositoryFileReference;
-import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.configuration.UiConfigurationObject;
 import org.eclipse.winery.common.constants.MimeTypes;
+import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.common.version.WineryVersion;
+import org.eclipse.winery.edmm.EdmmManager;
+import org.eclipse.winery.edmm.model.EdmmConverter;
+import org.eclipse.winery.edmm.model.EdmmType;
 import org.eclipse.winery.model.ids.GenericId;
 import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.XmlId;
@@ -71,12 +69,11 @@ import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.ids.elements.ToscaElementId;
-import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.selfservice.Application;
-import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TConstraint;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -91,16 +88,18 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.WineryVersionUtils;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.backend.selfcontainmentpackager.SelfContainmentPackager;
 import org.eclipse.winery.repository.backend.xsd.NamespaceAndDefinedLocalNames;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.repository.export.CsarExportConfiguration;
 import org.eclipse.winery.repository.export.CsarExportOptions;
 import org.eclipse.winery.repository.export.CsarExporter;
 import org.eclipse.winery.repository.export.ToscaExportUtil;
 import org.eclipse.winery.repository.rest.datatypes.ComponentId;
-import org.eclipse.winery.repository.yaml.export.YamlExporter;
 import org.eclipse.winery.repository.rest.datatypes.LocalNameForAngular;
 import org.eclipse.winery.repository.rest.datatypes.NamespaceAndDefinedLocalNamesForAngular;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
@@ -114,6 +113,7 @@ import org.eclipse.winery.repository.rest.resources.apiData.converter.QNameConve
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
+import org.eclipse.winery.repository.yaml.export.YamlExporter;
 
 import io.github.edmm.core.parser.EntityGraph;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -452,9 +452,9 @@ public class RestUtils {
      * <p>
      * We cannot use {@literal Class<? extends TExtensibleElements>} as, for instance, {@link TConstraint} does not
      * inherit from {@link TExtensibleElements}
-     *  @param clazz the Class of the passed object, required if obj is null
+     *
+     * @param clazz the Class of the passed object, required if obj is null
      * @param obj   the object to serialize
-     * @param repository
      */
     public static <T> Response getXML(Class<T> clazz, T obj, IRepository repository) {
         // see commit ab4b5c547619c058990 for an implementation using getJAXBElement,
@@ -541,7 +541,7 @@ public class RestUtils {
             // remove xaaspackager tags
             Collection<TTag> toRemove = new ArrayList<>();
 
-            for (TTag tag : oldSTModel.getTags().getTag()) {
+            for (TTag tag : oldSTModel.getTags()) {
                 switch (tag.getName()) {
                     case "xaasPackageNode":
                     case "xaasPackageArtifactType":
@@ -553,7 +553,7 @@ public class RestUtils {
                 }
             }
 
-            oldSTModel.getTags().getTag().removeAll(toRemove);
+            oldSTModel.getTags().removeAll(toRemove);
         }
 
         JAXBContext context = JAXBContext.newInstance(TDefinitions.class);
@@ -624,7 +624,7 @@ public class RestUtils {
 
     public static String getTagValue(TServiceTemplate serviceTemplate, String tagKey) {
         if (serviceTemplate.getTags() != null) {
-            for (TTag tag : serviceTemplate.getTags().getTag()) {
+            for (TTag tag : serviceTemplate.getTags()) {
                 if (tag.getName().equals(tagKey)) {
                     return tag.getValue();
                 }
@@ -855,8 +855,8 @@ public class RestUtils {
     /**
      * This is not repository specific, but we leave it close to the only caller
      * <p>
-     * If the passed ref is newer than the modified date (or the modified date is null), an OK response with an
-     * input stream pointing to the path is returned
+     * If the passed ref is newer than the modified date (or the modified date is null), an OK response with an input
+     * stream pointing to the path is returned
      */
     private static Response.ResponseBuilder returnRefAsResponseBuilder(RepositoryFileReference ref, String modified) {
         if (!RepositoryFactory.getRepository().exists(ref)) {

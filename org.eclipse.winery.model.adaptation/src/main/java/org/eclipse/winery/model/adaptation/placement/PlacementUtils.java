@@ -139,7 +139,7 @@ public class PlacementUtils {
             placementServiceTemplate.setId(placementServiceTemplate.getName());
 
             // resolve open requirements until the topology is completed
-            while (!splitting.getOpenRequirements(topology).isEmpty()) {
+            while (topology != null && !splitting.getOpenRequirements(topology).isEmpty()) {
                 // add a target label to the topology based on the provider and location assignment
                 assignNodesToTargetLabels(topology);
                 placementServiceTemplate.setTopologyTemplate(topology);
@@ -563,7 +563,7 @@ public class PlacementUtils {
      */
     private static boolean isUnsuitedProvider(TServiceTemplate template, TNodeTemplate node, String location,
                                               Map<String, List<String>> blackList) {
-        List<TTag> tags = template.getTags().getTag();
+        List<TTag> tags = template.getTags();
         TTag providerTag = getTag(tags, TAG_NAME_PROVIDER);
         TTag locationTag = getTag(tags, TAG_NAME_LOCATION);
 
@@ -614,13 +614,13 @@ public class PlacementUtils {
             if (Objects.nonNull(node.getPolicies())) {
                 for (TPolicy policy : node.getPolicies().getPolicy()) {
                     // check the tags of the provider for the policy name
-                    if (Objects.isNull(getTag(template.getTags().getTag(), policy.getPolicyType().toString()))) {
+                    if (Objects.isNull(getTag(template.getTags(), policy.getPolicyType().toString()))) {
                         continue template;
                     }
                 }
             }
 
-            providers.add(getTag(template.getTags().getTag(), TAG_NAME_PROVIDER).getValue());
+            providers.add(getTag(template.getTags(), TAG_NAME_PROVIDER).getValue());
         }
         return providers;
     }

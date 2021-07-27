@@ -46,7 +46,6 @@ import org.eclipse.winery.model.tosca.xml.XTRequirement;
 import org.eclipse.winery.model.tosca.xml.XTRequirementRef;
 import org.eclipse.winery.model.tosca.xml.XTServiceTemplate;
 import org.eclipse.winery.model.tosca.xml.XTTag;
-import org.eclipse.winery.model.tosca.xml.XTTags;
 import org.eclipse.winery.model.tosca.xml.XTTopologyTemplate;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTStringList;
 
@@ -80,9 +79,9 @@ public abstract class Visitor {
             topologyTemplate.accept(this);
         }
 
-        final XTTags tags = serviceTemplate.getTags();
+        final List<XTTag> tags = serviceTemplate.getTags();
         if (tags != null) {
-            for (XTTag tag : tags.getTag()) {
+            for (XTTag tag : tags) {
                 tag.accept(this);
             }
         }
