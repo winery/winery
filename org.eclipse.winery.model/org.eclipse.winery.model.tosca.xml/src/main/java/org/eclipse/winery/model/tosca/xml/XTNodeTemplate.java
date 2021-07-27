@@ -55,8 +55,8 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
     @XmlElement(name = "Policies")
     protected XTPolicies policies;
 
-    @XmlElementWrapper(name = "DeploymentArtifact")
-    @XmlElement(name = "DeploymentArtifacts", required = true)
+    @XmlElementWrapper(name = "DeploymentArtifacts")
+    @XmlElement(name = "DeploymentArtifact", required = true)
     protected List<XTDeploymentArtifact> deploymentArtifacts;
 
     @XmlAttribute(name = "name")
