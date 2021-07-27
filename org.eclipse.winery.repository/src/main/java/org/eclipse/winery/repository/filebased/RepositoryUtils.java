@@ -72,7 +72,7 @@ public class RepositoryUtils {
     public static boolean checkRepositoryDuplicate(String url, MultiRepository multiRepository) {
         for (IRepository frepo : multiRepository.getRepositoriesMap().keySet()) {
             if ((frepo instanceof GitBasedRepository) && (((GitBasedRepository) frepo).getRepositoryUrl() != null)) {
-                if (((GitBasedRepository) frepo).getRepositoryUrl().equals(url)) {
+                if (((GitBasedRepository) frepo).getRepositoryUrl().equalsIgnoreCase(url)) {
                     return true;
                 }
             }
