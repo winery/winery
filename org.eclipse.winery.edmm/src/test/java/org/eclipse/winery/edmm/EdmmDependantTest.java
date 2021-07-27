@@ -28,10 +28,9 @@ import org.eclipse.winery.edmm.model.EdmmType;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
-import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
-import org.eclipse.winery.model.tosca.TImplementationArtifacts;
+import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -85,8 +84,7 @@ public abstract class EdmmDependantTest {
         TNodeType nodeType3 = new TNodeType();
         nodeType3.setName(nodeType3QName.getLocalPart());
         nodeType3.setTargetNamespace(nodeType3QName.getNamespaceURI());
-        List<PropertyDefinitionKV> kvList = new ArrayList<>();
-        kvList.addAll(Arrays.asList(
+        List<PropertyDefinitionKV> kvList = new ArrayList<>(Arrays.asList(
             new PropertyDefinitionKV("os_family", "xsd:string"),
             new PropertyDefinitionKV("public_key", "xsd:string"),
             new PropertyDefinitionKV("ssh_port", "number")
@@ -139,33 +137,36 @@ public abstract class EdmmDependantTest {
         TArtifactReference deploymentArtifactArtifactReference = new TArtifactReference();
         deploymentArtifactArtifactReference.setReference("/artifacttemplates/" + NAMESPACE_DOUBLE_ENCODED + "/testNode1-DA/files/da.war");
         TArtifactTemplate deploymentArtifactTemplate = new TArtifactTemplate();
-        TArtifactTemplate.ArtifactReferences dploymentArtifactArtifactReferences = new TArtifactTemplate.ArtifactReferences();
-        dploymentArtifactArtifactReferences.getArtifactReference().add(startArtifactReference);
-        deploymentArtifactTemplate.setArtifactReferences(dploymentArtifactArtifactReferences);
+        TArtifactTemplate.ArtifactReferences deploymentArtifactArtifactReferences = new TArtifactTemplate.ArtifactReferences();
+        deploymentArtifactArtifactReferences.getArtifactReference().add(startArtifactReference);
+        deploymentArtifactTemplate.setArtifactReferences(deploymentArtifactArtifactReferences);
         QName deploymentArtifactIAQName = QName.valueOf("{" + NAMESPACE + "}" + "TestNode1-DA");
         deploymentArtifactTemplate.setName(deploymentArtifactIAQName.getLocalPart());
-        deploymentArtifactTemplate.setArtifactReferences(dploymentArtifactArtifactReferences);
+        deploymentArtifactTemplate.setArtifactReferences(deploymentArtifactArtifactReferences);
         artifactTemplates.put(deploymentArtifactIAQName, deploymentArtifactTemplate);
         // endregion
 
         // region *** NodeTypeImplementations setup ***
-        TImplementationArtifacts artifacts = new TImplementationArtifacts();
         QName nodeTypeImpl4QName = QName.valueOf("{" + NAMESPACE + "}" + "test_node_type_Impl_4");
-        TNodeTypeImplementation nodeTypeImpl4 = new TNodeTypeImplementation();
-        nodeTypeImpl4.setNodeType(nodeType4QName);
-        nodeTypeImpl4.setName(nodeTypeImpl4QName.getLocalPart());
-        TImplementationArtifacts.ImplementationArtifact startArtifact = new TImplementationArtifacts.ImplementationArtifact();
-        startArtifact.setArtifactRef(startArtifactIAQName);
-        startArtifact.setInterfaceName("lifecycle_interface");
-        startArtifact.setOperationName("start");
-        TImplementationArtifacts.ImplementationArtifact stopArtifact = new TImplementationArtifacts.ImplementationArtifact();
-        stopArtifact.setArtifactRef(deploymentArtifactIAQName);
-        stopArtifact.setInterfaceName("lifecycle_interface");
-        stopArtifact.setOperationName("stop");
-        artifacts.getImplementationArtifact().add(startArtifact);
-        artifacts.getImplementationArtifact().add(stopArtifact);
-        nodeTypeImpl4.setImplementationArtifacts(artifacts);
-        nodeTypeImplementations.put(nodeTypeImpl4QName, nodeTypeImpl4);
+
+        TImplementationArtifact startArtifact = new TImplementationArtifact.Builder(QName.valueOf("{ex.org}test"))
+            .setArtifactRef(startArtifactIAQName)
+            .setInterfaceName("lifecycle_interface")
+            .setOperationName("start")
+            .build();
+        TImplementationArtifact stopArtifact = new TImplementationArtifact.Builder(QName.valueOf("{ex.org}test"))
+            .setArtifactRef(deploymentArtifactIAQName)
+            .setInterfaceName("lifecycle_interface")
+            .setOperationName("stop")
+            .build();
+
+        nodeTypeImplementations.put(
+            nodeTypeImpl4QName,
+            new TNodeTypeImplementation.Builder(nodeTypeImpl4QName.getLocalPart(), nodeType4QName)
+                .addImplementationArtifact(startArtifact)
+                .addImplementationArtifact(stopArtifact)
+                .build()
+        );
 
         // endregion
 
@@ -184,16 +185,16 @@ public abstract class EdmmDependantTest {
         // endregion
 
         // region *** create NodeTemplates ***
-        TNodeTemplate nt1 = new TNodeTemplate();
-        nt1.setType(nodeType1QName);
-        nt1.setId("test_node_1");
-        nt1.setName("test_node_1");
-        TDeploymentArtifacts deploymentArtifacts = new TDeploymentArtifacts();
-        TDeploymentArtifact artifact = new TDeploymentArtifact();
-        artifact.setArtifactRef(deploymentArtifactIAQName);
-        artifact.setArtifactType(QName.valueOf("{" + NAMESPACE + "}" + "WAR"));
-        deploymentArtifacts.getDeploymentArtifact().add(artifact);
-        nt1.setDeploymentArtifacts(deploymentArtifacts);
+        TDeploymentArtifact artifact = new TDeploymentArtifact.Builder(
+            "test_artifact", QName.valueOf("{" + NAMESPACE + "}" + "WAR")
+        )
+            .setArtifactRef(deploymentArtifactIAQName)
+            .build();
+
+        TNodeTemplate nt1 = new TNodeTemplate.Builder("test_node_1", nodeType1QName)
+            .setName("test_node_1")
+            .addDeploymentArtifact(artifact)
+            .build();
         nodeTemplates.put(nt1.getId(), nt1);
 
         TNodeTemplate nt2 = new TNodeTemplate();

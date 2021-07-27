@@ -38,7 +38,6 @@ import org.eclipse.winery.model.tosca.TCondition;
 import org.eclipse.winery.model.tosca.TConstraint;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
-import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TDocumentation;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
@@ -48,7 +47,7 @@ import org.eclipse.winery.model.tosca.TExportedOperation;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TExtension;
 import org.eclipse.winery.model.tosca.TGroupDefinition;
-import org.eclipse.winery.model.tosca.TImplementationArtifacts;
+import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.model.tosca.TInstanceState;
 import org.eclipse.winery.model.tosca.TInterface;
@@ -118,7 +117,7 @@ import org.eclipse.winery.model.tosca.xml.XTExportedInterface;
 import org.eclipse.winery.model.tosca.xml.XTExportedOperation;
 import org.eclipse.winery.model.tosca.xml.XTExtensibleElements;
 import org.eclipse.winery.model.tosca.xml.XTExtension;
-import org.eclipse.winery.model.tosca.xml.XTImplementationArtifacts;
+import org.eclipse.winery.model.tosca.xml.XTImplementationArtifact;
 import org.eclipse.winery.model.tosca.xml.XTImport;
 import org.eclipse.winery.model.tosca.xml.XTInterface;
 import org.eclipse.winery.model.tosca.xml.XTNodeTemplate;
@@ -368,7 +367,7 @@ public class ToCanonical {
             builder.addTags(xml.getTags().getTag().stream().map(this::convert).collect(Collectors.toList()));
         }
         if (xml.getImplementationArtifacts() != null) {
-            builder.addImplementationArtifacts(xml.getImplementationArtifacts().getImplementationArtifact().stream()
+            builder.addImplementationArtifacts(xml.getImplementationArtifacts().stream()
                 .map(this::convert).collect(Collectors.toList()));
         }
         builder.setTargetNamespace(xml.getTargetNamespace());
@@ -377,8 +376,8 @@ public class ToCanonical {
         fillExtensibleElementsProperties(builder, xml);
     }
 
-    private TImplementationArtifacts.ImplementationArtifact convert(XTImplementationArtifacts.ImplementationArtifact xml) {
-        return new TImplementationArtifacts.ImplementationArtifact.Builder(xml.getArtifactType())
+    private TImplementationArtifact convert(XTImplementationArtifact xml) {
+        return new TImplementationArtifact.Builder(xml.getArtifactType())
             .setName(xml.getName())
             .setInterfaceName(xml.getInterfaceName())
             .setOperationName(xml.getOperationName())
@@ -471,9 +470,7 @@ public class ToCanonical {
     private TNodeTypeImplementation convert(XTNodeTypeImplementation xml) {
         TNodeTypeImplementation.Builder builder = new TNodeTypeImplementation.Builder(xml.getName(), xml.getNodeType());
         if (xml.getDeploymentArtifacts() != null) {
-            TDeploymentArtifacts artifacts = new TDeploymentArtifacts.Builder(xml.getDeploymentArtifacts()
-                .getDeploymentArtifact().stream().map(this::convert).collect(Collectors.toList())).build();
-            builder.setDeploymentArtifacts(artifacts);
+            builder.setDeploymentArtifacts(convertList(xml.getDeploymentArtifacts(), this::convert));
         }
         if (xml.getDerivedFrom() != null) {
             TNodeTypeImplementation.DerivedFrom derived = new TNodeTypeImplementation.DerivedFrom();
@@ -944,11 +941,7 @@ public class ToCanonical {
             builder.setPolicies(policies);
         }
         if (xml.getDeploymentArtifacts() != null) {
-            TDeploymentArtifacts artifacts = new TDeploymentArtifacts.Builder(
-                convertList(xml.getDeploymentArtifacts().getDeploymentArtifact(), this::convert)
-            )
-                .build();
-            builder.setDeploymentArtifacts(artifacts);
+            builder.addDeploymentArtifacts(convertList(xml.getDeploymentArtifacts(), this::convert));
         }
         builder.setName(xml.getName());
         builder.setMinInstances(xml.getMinInstances());

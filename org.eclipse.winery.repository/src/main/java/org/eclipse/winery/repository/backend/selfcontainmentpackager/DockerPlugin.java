@@ -108,7 +108,8 @@ public class DockerPlugin implements SelfContainmentPlugin {
     @Override
     public void downloadDependenciesBasedOnNodeType(TNodeTypeImplementation nodeTypeImplementation, IRepository repository) {
         if (nodeTypeImplementation.getDeploymentArtifacts() != null) {
-            nodeTypeImplementation.getDeploymentArtifacts().getDeploymentArtifact().stream()
+            nodeTypeImplementation.getDeploymentArtifacts().stream()
+                .filter(da -> da.getArtifactType() != null)
                 .filter(da -> da.getArtifactType().equals(OpenToscaBaseTypes.dockerContainerArtifactType))
                 .filter(da -> da.getArtifactRef() != null)
                 .forEach(da -> {

@@ -15,6 +15,7 @@
 package org.eclipse.winery.model.tosca;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -82,7 +83,7 @@ import org.eclipse.jdt.annotation.Nullable;
 public class TNodeTypeImplementation extends TEntityTypeImplementation {
 
     @XmlElement(name = "DeploymentArtifacts")
-    protected TDeploymentArtifacts deploymentArtifacts;
+    protected List<TDeploymentArtifact> deploymentArtifacts;
 
     @XmlElement(name = "DerivedFrom")
     protected TNodeTypeImplementation.DerivedFrom derivedFrom;
@@ -125,11 +126,11 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
     }
 
     @Nullable
-    public TDeploymentArtifacts getDeploymentArtifacts() {
+    public List<TDeploymentArtifact> getDeploymentArtifacts() {
         return deploymentArtifacts;
     }
 
-    public void setDeploymentArtifacts(TDeploymentArtifacts value) {
+    public void setDeploymentArtifacts(List<TDeploymentArtifact> value) {
         this.deploymentArtifacts = value;
     }
 
@@ -228,8 +229,8 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
     public static class Builder extends TEntityTypeImplementation.Builder<Builder> {
         private DerivedFrom derivedFrom;
         private TRequiredContainerFeatures requiredContainerFeatures;
-        private TImplementationArtifacts implementationArtifacts;
-        private TDeploymentArtifacts deploymentArtifacts;
+        private List<TImplementationArtifact> implementationArtifacts;
+        private List<TDeploymentArtifact> deploymentArtifacts;
 
         public Builder(TExtensibleElements extensibleElements, String name, QName implementedNodeType) {
             super(extensibleElements, name, implementedNodeType);
@@ -249,12 +250,12 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
             return this;
         }
 
-        public Builder setImplementationArtifacts(TImplementationArtifacts implementationArtifacts) {
+        public Builder setImplementationArtifacts(List<TImplementationArtifact> implementationArtifacts) {
             this.implementationArtifacts = implementationArtifacts;
             return this;
         }
 
-        public Builder setDeploymentArtifacts(TDeploymentArtifacts deploymentArtifacts) {
+        public Builder setDeploymentArtifacts(List<TDeploymentArtifact> deploymentArtifacts) {
             this.deploymentArtifacts = deploymentArtifacts;
             return this;
         }
@@ -292,70 +293,50 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
             return addRequiredContainerFeatures(tmp);
         }
 
-        public Builder addImplementationArtifacts(TImplementationArtifacts implementationArtifacts) {
-            if (implementationArtifacts == null || implementationArtifacts.getImplementationArtifact().isEmpty()) {
+        public Builder addImplementationArtifacts(List<TImplementationArtifact> implementationArtifacts) {
+            if (implementationArtifacts == null || implementationArtifacts.isEmpty()) {
                 return this;
             }
 
             if (this.implementationArtifacts == null) {
                 this.implementationArtifacts = implementationArtifacts;
             } else {
-                this.implementationArtifacts.getImplementationArtifact().addAll(implementationArtifacts.getImplementationArtifact());
+                this.implementationArtifacts.addAll(implementationArtifacts);
             }
             return this;
         }
 
-        public Builder addImplementationArtifacts(List<TImplementationArtifacts.ImplementationArtifact> implementationArtifacts) {
-            if (implementationArtifacts == null) {
-                return this;
-            }
-
-            TImplementationArtifacts tmp = new TImplementationArtifacts();
-            tmp.getImplementationArtifact().addAll(implementationArtifacts);
-            return addImplementationArtifacts(tmp);
-        }
-
-        public Builder addImplementationArtifacts(TImplementationArtifacts.ImplementationArtifact implementationArtifacts) {
-            if (implementationArtifacts == null) {
-                return this;
-            }
-
-            TImplementationArtifacts tmp = new TImplementationArtifacts();
-            tmp.getImplementationArtifact().add(implementationArtifacts);
-            return addImplementationArtifacts(tmp);
-        }
-
-        public Builder addDeploymentArtifacts(TDeploymentArtifacts deploymentArtifacts) {
-            if (deploymentArtifacts == null || deploymentArtifacts.getDeploymentArtifact().isEmpty()) {
+        public Builder addDeploymentArtifacts(List<TDeploymentArtifact> deploymentArtifacts) {
+            if (deploymentArtifacts == null || deploymentArtifacts.isEmpty()) {
                 return this;
             }
 
             if (this.deploymentArtifacts == null) {
                 this.deploymentArtifacts = deploymentArtifacts;
             } else {
-                this.deploymentArtifacts.getDeploymentArtifact().addAll(deploymentArtifacts.getDeploymentArtifact());
+                this.deploymentArtifacts.addAll(deploymentArtifacts);
             }
             return this;
         }
 
-        public Builder addDeploymentArtifacts(List<TDeploymentArtifact> deploymentArtifacts) {
-            if (deploymentArtifacts == null) {
+        public Builder addDeploymentArtifact(TDeploymentArtifact deploymentArtifact) {
+            if (deploymentArtifact == null) {
                 return this;
             }
 
-            TDeploymentArtifacts tmp = new TDeploymentArtifacts();
-            tmp.getDeploymentArtifact().addAll(deploymentArtifacts);
+            List<TDeploymentArtifact> tmp = new ArrayList<>();
+            tmp.add(deploymentArtifact);
             return addDeploymentArtifacts(tmp);
         }
-
-        public Builder addDeploymentArtifacts(TDeploymentArtifact deploymentArtifacts) {
-            if (deploymentArtifacts == null) {
+        
+        public Builder addImplementationArtifact(TImplementationArtifact implementationArtifact) {
+            if (implementationArtifact == null) {
                 return this;
             }
 
-            TDeploymentArtifacts tmp = new TDeploymentArtifacts();
-            tmp.getDeploymentArtifact().add(deploymentArtifacts);
-            return addDeploymentArtifacts(tmp);
+            List<TImplementationArtifact> tmp = new ArrayList<>();
+            tmp.add(implementationArtifact);
+            return addImplementationArtifacts(tmp);
         }
 
         @Override

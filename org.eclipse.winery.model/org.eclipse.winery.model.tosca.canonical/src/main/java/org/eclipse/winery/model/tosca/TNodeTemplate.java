@@ -63,8 +63,9 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
     @XmlElement(name = "Policies")
     protected TPolicies policies;
     
-    @XmlElement(name = "DeploymentArtifacts")
-    protected TDeploymentArtifacts deploymentArtifacts;
+    @XmlElementWrapper(name = "DeploymentArtifacts")
+    @XmlElement(name = "DeploymentArtifact", required = true)
+    protected List<TDeploymentArtifact> deploymentArtifacts;
     
     @XmlAttribute(name = "name")
     protected String name;
@@ -76,7 +77,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
     protected String maxInstances;
     
     // this element is added to support YAML mode
-    @XmlElement(name = "Artifacts", required = false)
+    @XmlElement(name = "Artifacts")
     protected List<TArtifact> artifacts;
 
     @Deprecated // used for XML deserialization of API request content
@@ -156,11 +157,11 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
     }
 
     @Nullable
-    public TDeploymentArtifacts getDeploymentArtifacts() {
+    public List<TDeploymentArtifact> getDeploymentArtifacts() {
         return deploymentArtifacts;
     }
 
-    public void setDeploymentArtifacts(TDeploymentArtifacts value) {
+    public void setDeploymentArtifacts(List<TDeploymentArtifact> value) {
         this.deploymentArtifacts = value;
     }
 
@@ -258,7 +259,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
         private List<TRequirement> requirements;
         private List<TCapability> capabilities;
         private TPolicies policies;
-        private TDeploymentArtifacts deploymentArtifacts;
+        private List<TDeploymentArtifact> deploymentArtifacts;
         private String name;
         private Integer minInstances;
         private String maxInstances;
@@ -289,8 +290,16 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
             return this;
         }
 
-        public Builder setDeploymentArtifacts(TDeploymentArtifacts deploymentArtifacts) {
-            this.deploymentArtifacts = deploymentArtifacts;
+        public Builder addDeploymentArtifacts(List<TDeploymentArtifact> deploymentArtifacts) {
+            if (deploymentArtifacts == null || deploymentArtifacts.isEmpty()) {
+                return this;
+            }
+
+            if (this.deploymentArtifacts == null) {
+                this.deploymentArtifacts = deploymentArtifacts;
+            } else {
+                this.deploymentArtifacts.addAll(deploymentArtifacts);
+            }
             return this;
         }
 
@@ -332,14 +341,14 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
             return this;
         }
 
-        public Builder addRequirement(TRequirement requirements) {
+        public void addRequirement(TRequirement requirements) {
             if (requirements == null) {
-                return this;
+                return;
             }
 
             List<TRequirement> tmp = new ArrayList<>();
             tmp.add(requirements);
-            return addRequirements(tmp);
+            addRequirements(tmp);
         }
 
         public Builder addCapabilities(List<TCapability> capabilities) {
@@ -355,14 +364,14 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
             return this;
         }
 
-        public Builder addCapability(TCapability capabilities) {
+        public void addCapability(TCapability capabilities) {
             if (capabilities == null) {
-                return this;
+                return;
             }
 
             ArrayList<TCapability> tmp = new ArrayList<>();
             tmp.add(capabilities);
-            return addCapabilities(tmp);
+            addCapabilities(tmp);
         }
 
         public Builder addPolicies(TPolicies policies) {
@@ -410,6 +419,16 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
 
         public TNodeTemplate build() {
             return new TNodeTemplate(this);
+        }
+
+        public Builder addDeploymentArtifact(TDeploymentArtifact deploymentArtifact) {
+            if (deploymentArtifact == null) {
+                return this;
+            }
+
+            List<TDeploymentArtifact> tmp = new ArrayList<>();
+            tmp.add(deploymentArtifact);
+            return addDeploymentArtifacts(tmp);
         }
     }
 }

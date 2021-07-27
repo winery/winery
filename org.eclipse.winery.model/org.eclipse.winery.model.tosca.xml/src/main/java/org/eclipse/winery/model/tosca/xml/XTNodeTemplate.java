@@ -47,23 +47,24 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
     @XmlElementWrapper(name = "Requirements")
     @XmlElement(name = "Requirement")
     protected List<XTRequirement> requirements;
-    
+
     @XmlElementWrapper(name = "Capabilities")
     @XmlElement(name = "Capability")
     protected List<XTCapability> capabilities;
-    
+
     @XmlElement(name = "Policies")
     protected XTPolicies policies;
-    
-    @XmlElement(name = "DeploymentArtifacts")
-    protected XTDeploymentArtifacts deploymentArtifacts;
-    
+
+    @XmlElementWrapper(name = "DeploymentArtifact")
+    @XmlElement(name = "DeploymentArtifacts", required = true)
+    protected List<XTDeploymentArtifact> deploymentArtifacts;
+
     @XmlAttribute(name = "name")
     protected String name;
-    
+
     @XmlAttribute(name = "minInstances")
     protected Integer minInstances;
-    
+
     @XmlAttribute(name = "maxInstances")
     protected String maxInstances;
 
@@ -143,11 +144,11 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
     }
 
     @Nullable
-    public XTDeploymentArtifacts getDeploymentArtifacts() {
+    public List<XTDeploymentArtifact> getDeploymentArtifacts() {
         return deploymentArtifacts;
     }
 
-    public void setDeploymentArtifacts(XTDeploymentArtifacts value) {
+    public void setDeploymentArtifacts(List<XTDeploymentArtifact> value) {
         this.deploymentArtifacts = value;
     }
 
@@ -160,7 +161,6 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
         this.name = value;
     }
 
-    @NonNull
     public int getMinInstances() {
         if (minInstances == null) {
             return 1;
@@ -173,7 +173,6 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
         this.minInstances = value;
     }
 
-    @NonNull
     public String getMaxInstances() {
         if (maxInstances == null) {
             return "1";
@@ -197,8 +196,8 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
     }
 
     /**
-     * Sets the top coordinate of a {@link XTNodeTemplate}. When receiving the JSON, this method ensures that (i) the "y"
-     * property can be handled and (ii) the Y coordinate is written correctly in the extension namespace.
+     * Sets the top coordinate of a {@link XTNodeTemplate}. When receiving the JSON, this method ensures that (i) the
+     * "y" property can be handled and (ii) the Y coordinate is written correctly in the extension namespace.
      *
      * @param x the value of the x-coordinate to be set
      */
@@ -219,8 +218,8 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
     }
 
     /**
-     * Sets the top coordinate of a {@link XTNodeTemplate}. When receiving the JSON, this method ensures that (i) the "y"
-     * property can be handled and (ii) the Y coordinate is written correctly in the extension namespace.
+     * Sets the top coordinate of a {@link XTNodeTemplate}. When receiving the JSON, this method ensures that (i) the
+     * "y" property can be handled and (ii) the Y coordinate is written correctly in the extension namespace.
      *
      * @param y the value of the coordinate to be set
      */
@@ -245,7 +244,7 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
         @NonNull
         public List<XTRequirement> getRequirement() {
             if (requirement == null) {
-                requirement = new ArrayList<XTRequirement>();
+                requirement = new ArrayList<>();
             }
             return this.requirement;
         }
@@ -272,7 +271,7 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
         private List<XTRequirement> requirements;
         private List<XTCapability> capabilities;
         private XTPolicies policies;
-        private XTDeploymentArtifacts deploymentArtifacts;
+        private List<XTDeploymentArtifact> deploymentArtifacts;
         private String name;
         private Integer minInstances;
         private String maxInstances;
@@ -302,7 +301,7 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
             return this;
         }
 
-        public Builder setDeploymentArtifacts(XTDeploymentArtifacts deploymentArtifacts) {
+        public Builder setDeploymentArtifacts(List<XTDeploymentArtifact> deploymentArtifacts) {
             this.deploymentArtifacts = deploymentArtifacts;
             return this;
         }

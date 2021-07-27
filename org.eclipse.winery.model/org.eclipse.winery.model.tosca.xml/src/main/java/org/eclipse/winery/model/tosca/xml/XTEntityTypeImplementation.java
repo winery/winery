@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
@@ -45,8 +46,9 @@ public abstract class XTEntityTypeImplementation extends XTExtensibleElements im
     @XmlElement(name = "RequiredContainerFeatures")
     protected XTRequiredContainerFeatures requiredContainerFeatures;
 
-    @XmlElement(name = "ImplementationArtifacts")
-    protected XTImplementationArtifacts implementationArtifacts;
+    @XmlElementWrapper(name = "ImplementationArtifacts")
+    @XmlElement(name = "ImplementationArtifact", required = true)
+    protected List<XTImplementationArtifact> implementationArtifacts;
 
     @XmlAttribute(name = "targetNamespace")
     @XmlSchemaType(name = "anyURI")
@@ -71,7 +73,7 @@ public abstract class XTEntityTypeImplementation extends XTExtensibleElements im
         super();
     }
 
-    public XTEntityTypeImplementation(Builder builder) {
+    public XTEntityTypeImplementation(Builder<?> builder) {
         super(builder);
         this.targetNamespace = builder.targetNamespace;
         this.name = builder.name;
@@ -126,11 +128,11 @@ public abstract class XTEntityTypeImplementation extends XTExtensibleElements im
     }
 
     @Nullable
-    public XTImplementationArtifacts getImplementationArtifacts() {
+    public List<XTImplementationArtifact> getImplementationArtifacts() {
         return implementationArtifacts;
     }
 
-    public void setImplementationArtifacts(XTImplementationArtifacts value) {
+    public void setImplementationArtifacts(List<XTImplementationArtifact> value) {
         this.implementationArtifacts = value;
     }
 
@@ -182,6 +184,7 @@ public abstract class XTEntityTypeImplementation extends XTExtensibleElements im
     }
 
     @Override
+    @NonNull
     public QName getTypeAsQName() {
         return this.implementedType;
     }
@@ -197,11 +200,11 @@ public abstract class XTEntityTypeImplementation extends XTExtensibleElements im
         private String targetNamespace;
         private XTTags tags;
         private XTRequiredContainerFeatures requiredContainerFeatures;
-        private XTImplementationArtifacts implementationArtifacts;
+        private List<XTImplementationArtifact> implementationArtifacts;
         private XTBoolean _abstract;
         private XTBoolean _final;
 
-        public Builder(Builder builder, String name, QName implementedType) {
+        public Builder(Builder<T> builder, String name, QName implementedType) {
             super(builder);
             this.name = name;
             this.implementedType = implementedType;
@@ -233,7 +236,7 @@ public abstract class XTEntityTypeImplementation extends XTExtensibleElements im
             return self();
         }
 
-        public T setImplementationArtifacts(XTImplementationArtifacts implementationArtifacts) {
+        public T setImplementationArtifacts(List<XTImplementationArtifact> implementationArtifacts) {
             this.implementationArtifacts = implementationArtifacts;
             return self();
         }
@@ -330,37 +333,17 @@ public abstract class XTEntityTypeImplementation extends XTExtensibleElements im
             return addRequiredContainerFeatures(tmp);
         }
 
-        public T addImplementationArtifacts(XTImplementationArtifacts implementationArtifacts) {
-            if (implementationArtifacts == null || implementationArtifacts.getImplementationArtifact().isEmpty()) {
+        public T addImplementationArtifacts(List<XTImplementationArtifact> implementationArtifacts) {
+            if (implementationArtifacts == null || implementationArtifacts.isEmpty()) {
                 return self();
             }
 
             if (this.implementationArtifacts == null) {
                 this.implementationArtifacts = implementationArtifacts;
             } else {
-                this.implementationArtifacts.getImplementationArtifact().addAll(implementationArtifacts.getImplementationArtifact());
+                this.implementationArtifacts.addAll(implementationArtifacts);
             }
             return self();
-        }
-
-        public T addImplementationArtifacts(List<XTImplementationArtifacts.ImplementationArtifact> implementationArtifacts) {
-            if (implementationArtifacts == null) {
-                return self();
-            }
-
-            XTImplementationArtifacts tmp = new XTImplementationArtifacts();
-            tmp.getImplementationArtifact().addAll(implementationArtifacts);
-            return addImplementationArtifacts(tmp);
-        }
-
-        public T addImplementationArtifacts(XTImplementationArtifacts.ImplementationArtifact implementationArtifacts) {
-            if (implementationArtifacts == null) {
-                return self();
-            }
-
-            XTImplementationArtifacts tmp = new XTImplementationArtifacts();
-            tmp.getImplementationArtifact().add(implementationArtifacts);
-            return addImplementationArtifacts(tmp);
         }
     }
 }

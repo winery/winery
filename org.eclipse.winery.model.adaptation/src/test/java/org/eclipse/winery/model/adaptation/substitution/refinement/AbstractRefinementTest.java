@@ -23,7 +23,6 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
-import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
@@ -165,13 +164,14 @@ public class AbstractRefinementTest extends TestWithGitBackedRepository {
             nt2,
             nt30
         ).build();
-
-        TDeploymentArtifacts das = new TDeploymentArtifacts();
-        TDeploymentArtifact da = new TDeploymentArtifact();
-        da.setArtifactRef(test_da);
-        da.setArtifactType(artifactTypeFile);
-        das.getDeploymentArtifact().add(da);
-        nt30.setDeploymentArtifacts(das);
+        
+        TDeploymentArtifact da = new TDeploymentArtifact.Builder("test_da", artifactTypeFile)
+          .setArtifactRef(test_da)
+            .build();
+        
+        nt30.setDeploymentArtifacts(
+            new ArrayList<>(Collections.singletonList(da))
+        );
 
         topology3 = new TTopologyTemplate.Builder()
             .addNodeTemplate(nt1)

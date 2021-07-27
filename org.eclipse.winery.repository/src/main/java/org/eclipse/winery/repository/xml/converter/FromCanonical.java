@@ -44,7 +44,7 @@ import org.eclipse.winery.model.tosca.TExportedOperation;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TExtension;
 import org.eclipse.winery.model.tosca.TGroupDefinition;
-import org.eclipse.winery.model.tosca.TImplementationArtifacts;
+import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -102,7 +102,6 @@ import org.eclipse.winery.model.tosca.xml.XTCondition;
 import org.eclipse.winery.model.tosca.xml.XTConstraint;
 import org.eclipse.winery.model.tosca.xml.XTDefinitions;
 import org.eclipse.winery.model.tosca.xml.XTDeploymentArtifact;
-import org.eclipse.winery.model.tosca.xml.XTDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.xml.XTDocumentation;
 import org.eclipse.winery.model.tosca.xml.XTEntityTemplate;
 import org.eclipse.winery.model.tosca.xml.XTEntityType;
@@ -111,7 +110,7 @@ import org.eclipse.winery.model.tosca.xml.XTExportedInterface;
 import org.eclipse.winery.model.tosca.xml.XTExportedOperation;
 import org.eclipse.winery.model.tosca.xml.XTExtensibleElements;
 import org.eclipse.winery.model.tosca.xml.XTExtension;
-import org.eclipse.winery.model.tosca.xml.XTImplementationArtifacts;
+import org.eclipse.winery.model.tosca.xml.XTImplementationArtifact;
 import org.eclipse.winery.model.tosca.xml.XTImport;
 import org.eclipse.winery.model.tosca.xml.XTInstanceState;
 import org.eclipse.winery.model.tosca.xml.XTInterface;
@@ -168,11 +167,9 @@ public class FromCanonical {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FromCanonical.class);
 
-    private final XmlRepository repository;
     private List<XTImport> rollingImportStorage;
 
     public FromCanonical(XmlRepository repository) {
-        this.repository = repository;
     }
 
     public XTDefinitions convert(TDefinitions canonical) {
@@ -288,7 +285,7 @@ public class FromCanonical {
             builder.addTags(convertList(canonical.getTags().getTag(), this::convert));
         }
         if (canonical.getImplementationArtifacts() != null) {
-            builder.addImplementationArtifacts(canonical.getImplementationArtifacts().getImplementationArtifact().stream()
+            builder.addImplementationArtifacts(canonical.getImplementationArtifacts().stream()
                 .map(this::convert).collect(Collectors.toList()));
         }
         builder.setTargetNamespace(canonical.getTargetNamespace());
@@ -297,8 +294,8 @@ public class FromCanonical {
         fillExtensibleElementsProperties(builder, canonical);
     }
 
-    private XTImplementationArtifacts.ImplementationArtifact convert(TImplementationArtifacts.ImplementationArtifact canonical) {
-        return new XTImplementationArtifacts.ImplementationArtifact.Builder(canonical.getArtifactType())
+    private XTImplementationArtifact convert(TImplementationArtifact canonical) {
+        return new XTImplementationArtifact.Builder(canonical.getArtifactType())
             .setName(canonical.getName())
             .setInterfaceName(canonical.getInterfaceName())
             .setOperationName(canonical.getOperationName())
@@ -386,9 +383,7 @@ public class FromCanonical {
     private XTNodeTypeImplementation convert(TNodeTypeImplementation canonical) {
         XTNodeTypeImplementation.Builder builder = new XTNodeTypeImplementation.Builder(canonical.getName(), canonical.getNodeType());
         if (canonical.getDeploymentArtifacts() != null) {
-            XTDeploymentArtifacts artifacts = new XTDeploymentArtifacts.Builder(canonical.getDeploymentArtifacts()
-                .getDeploymentArtifact().stream().map(this::convert).collect(Collectors.toList())).build();
-            builder.setDeploymentArtifacts(artifacts);
+            builder.setDeploymentArtifacts(convertList(canonical.getDeploymentArtifacts(), this::convert));
         }
         if (canonical.getDerivedFrom() != null) {
             XTNodeTypeImplementation.DerivedFrom derived = new XTNodeTypeImplementation.DerivedFrom();
@@ -862,9 +857,9 @@ public class FromCanonical {
             builder.setPolicies(policies);
         }
         if (canonical.getDeploymentArtifacts() != null) {
-            XTDeploymentArtifacts artifacts = new XTDeploymentArtifacts();
-            artifacts.getDeploymentArtifact().addAll(convertList(canonical.getDeploymentArtifacts().getDeploymentArtifact(), this::convert));
-            builder.setDeploymentArtifacts(artifacts);
+            builder.setDeploymentArtifacts(
+                convertList(canonical.getDeploymentArtifacts(), this::convert)
+            );
         }
         builder.setName(canonical.getName());
         builder.setMinInstances(canonical.getMinInstances());
@@ -987,7 +982,9 @@ public class FromCanonical {
         if (canonical == null) {
             return Collections.emptyList();
         }
-        return canonical.stream().map(convert).collect(Collectors.toList());
+        return canonical.stream()
+            .map(convert)
+            .collect(Collectors.toList());
     }
 
     private XOTComplianceRule convert(OTComplianceRule canonical) {

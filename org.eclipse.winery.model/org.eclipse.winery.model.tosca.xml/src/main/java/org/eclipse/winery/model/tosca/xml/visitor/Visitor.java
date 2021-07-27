@@ -26,6 +26,7 @@ import org.eclipse.winery.model.tosca.xml.XTBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.xml.XTCapability;
 import org.eclipse.winery.model.tosca.xml.XTCapabilityRef;
 import org.eclipse.winery.model.tosca.xml.XTCondition;
+import org.eclipse.winery.model.tosca.xml.XTDeploymentArtifact;
 import org.eclipse.winery.model.tosca.xml.XTDocumentation;
 import org.eclipse.winery.model.tosca.xml.XTEntityTemplate;
 import org.eclipse.winery.model.tosca.xml.XTEntityType;
@@ -41,13 +42,11 @@ import org.eclipse.winery.model.tosca.xml.XTPolicy;
 import org.eclipse.winery.model.tosca.xml.XTPropertyConstraint;
 import org.eclipse.winery.model.tosca.xml.XTPropertyMapping;
 import org.eclipse.winery.model.tosca.xml.XTRelationshipTemplate;
+import org.eclipse.winery.model.tosca.xml.XTRequirement;
 import org.eclipse.winery.model.tosca.xml.XTRequirementRef;
 import org.eclipse.winery.model.tosca.xml.XTServiceTemplate;
 import org.eclipse.winery.model.tosca.xml.XTTag;
 import org.eclipse.winery.model.tosca.xml.XTTags;
-import org.eclipse.winery.model.tosca.xml.XTDeploymentArtifact;
-import org.eclipse.winery.model.tosca.xml.XTDeploymentArtifacts;
-import org.eclipse.winery.model.tosca.xml.XTRequirement;
 import org.eclipse.winery.model.tosca.xml.XTTopologyTemplate;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTStringList;
 
@@ -175,9 +174,9 @@ public abstract class Visitor {
         if (capabilities != null) {
             capabilities.forEach(capability -> capability.accept(this));
         }
-        final XTDeploymentArtifacts deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
+        final List<XTDeploymentArtifact> deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
         if (deploymentArtifacts != null) {
-            for (XTDeploymentArtifact deploymentArtifact : deploymentArtifacts.getDeploymentArtifact()) {
+            for (XTDeploymentArtifact deploymentArtifact : deploymentArtifacts) {
                 deploymentArtifact.accept(this);
             }
         }

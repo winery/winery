@@ -75,13 +75,11 @@ import org.eclipse.winery.model.tosca.TCapabilityDefinition;
 import org.eclipse.winery.model.tosca.TDataType;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
-import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TEntityTypeImplementation;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImplementationArtifact;
-import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TInterfaceDefinition;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -292,7 +290,7 @@ public interface IRepository extends IWineryRepositoryCommon {
      * <p>
      * The returned configuration ensures that autoSave is activated
      *
-     * @param id may be a reference to a TOSCAcomponent or to a nested TOSCAelement
+     * @param id may be a reference to a TOSCA component or to a nested TOSCA element
      * @return a Configuration, where isAutoSave == true
      */
     default Configuration getConfiguration(GenericId id) {
@@ -422,7 +420,7 @@ public interface IRepository extends IWineryRepositoryCommon {
         return elements;
     }
 
-    default <T extends DefinitionsChildId, S extends TExtensibleElements> Map<QName, S> getAllQNameToElementMapping() {
+    default <S extends TExtensibleElements> Map<QName, S> getAllQNameToElementMapping() {
         Map<QName, S> elements = new HashMap<>();
         DefinitionsChildId.ALL_TOSCA_COMPONENT_ID_CLASSES.forEach((idClass) ->
             getAllDefinitionsChildIds(idClass)
@@ -565,9 +563,9 @@ public interface IRepository extends IWineryRepositoryCommon {
                 }
 
                 if (!referencesGivenQName && element instanceof TEntityTypeImplementation) {
-                    TImplementationArtifacts implementationArtifacts = ((TEntityTypeImplementation) element).getImplementationArtifacts();
+                    List<TImplementationArtifact> implementationArtifacts = ((TEntityTypeImplementation) element).getImplementationArtifacts();
                     referencesGivenQName = Objects.nonNull(implementationArtifacts) &&
-                        implementationArtifacts.getImplementationArtifact()
+                        implementationArtifacts
                             .stream()
                             .anyMatch(implementationArtifact ->
                                 qNameOfTheType.equals(implementationArtifact.getArtifactType()) ||
@@ -575,9 +573,9 @@ public interface IRepository extends IWineryRepositoryCommon {
                             );
 
                     if (!referencesGivenQName && element instanceof TNodeTypeImplementation) {
-                        TDeploymentArtifacts deploymentArtifacts = ((TNodeTypeImplementation) element).getDeploymentArtifacts();
+                        List<TDeploymentArtifact> deploymentArtifacts = ((TNodeTypeImplementation) element).getDeploymentArtifacts();
                         referencesGivenQName = Objects.nonNull(deploymentArtifacts) &&
-                            deploymentArtifacts.getDeploymentArtifact()
+                            deploymentArtifacts
                                 .stream()
                                 .anyMatch(tDeploymentArtifact ->
                                     qNameOfTheType.equals(tDeploymentArtifact.getArtifactType()) ||
@@ -760,9 +758,9 @@ public interface IRepository extends IWineryRepositoryCommon {
         final TNodeTypeImplementation element = this.getElement(id);
 
         // DAs
-        TDeploymentArtifacts deploymentArtifacts = element.getDeploymentArtifacts();
+        List<TDeploymentArtifact> deploymentArtifacts = element.getDeploymentArtifacts();
         if (deploymentArtifacts != null) {
-            for (TDeploymentArtifact da : deploymentArtifacts.getDeploymentArtifact()) {
+            for (TDeploymentArtifact da : deploymentArtifacts) {
                 QName qname;
                 if ((qname = da.getArtifactRef()) != null) {
                     ids.add(new ArtifactTemplateId(qname));
@@ -793,10 +791,11 @@ public interface IRepository extends IWineryRepositoryCommon {
      * @param implementationArtifacts the implementation artifacts belonging to the given id
      * @param id                      the id to handle
      */
-    default Collection<DefinitionsChildId> getReferencedTOSCAComponentImplementationArtifactIds
-    (Collection<DefinitionsChildId> ids, TImplementationArtifacts implementationArtifacts, DefinitionsChildId id) {
+    default Collection<DefinitionsChildId> getReferencedTOSCAComponentImplementationArtifactIds(Collection<DefinitionsChildId> ids,
+                                                                                                List<TImplementationArtifact> implementationArtifacts,
+                                                                                                DefinitionsChildId id) {
         if (implementationArtifacts != null) {
-            for (TImplementationArtifact ia : implementationArtifacts.getImplementationArtifact()) {
+            for (TImplementationArtifact ia : implementationArtifacts) {
                 QName qname;
                 if ((qname = ia.getArtifactRef()) != null) {
                     ids.add(new ArtifactTemplateId(qname));
@@ -973,13 +972,12 @@ public interface IRepository extends IWineryRepositoryCommon {
 
                     // TODO: this information is collected differently for YAML and XML modes
                     // crawl through deployment artifacts
-                    TDeploymentArtifacts deploymentArtifacts = n.getDeploymentArtifacts();
+                    List<TDeploymentArtifact> deploymentArtifacts = n.getDeploymentArtifacts();
                     if (deploymentArtifacts != null) {
-                        List<TDeploymentArtifact> das = deploymentArtifacts.getDeploymentArtifact();
-                        for (TDeploymentArtifact da : das) {
+                        for (TDeploymentArtifact da : deploymentArtifacts) {
                             if (da.getArtifactType() != null) {
-                                // TODO This is considered Nullable, because the test case ConsistencyCheckerTest#hasError
-                                //  for revision 20f6d0afd4395ab83f059cb5fabbb08218c9fcbd assumes that that can be nullable
+                                // This is considered Nullable, because the test case ConsistencyCheckerTest#hasError
+                                // expects an empty artifactType and thus it may be null.
                                 ids.add(new ArtifactTypeId(da.getArtifactType()));
                             }
                             if (da.getArtifactRef() != null) {
@@ -1072,10 +1070,9 @@ public interface IRepository extends IWineryRepositoryCommon {
                     TNodeTemplate n = (TNodeTemplate) entityTemplate;
 
                     // crawl through deployment artifacts
-                    TDeploymentArtifacts deploymentArtifacts = n.getDeploymentArtifacts();
+                    List<TDeploymentArtifact> deploymentArtifacts = n.getDeploymentArtifacts();
                     if (deploymentArtifacts != null) {
-                        List<TDeploymentArtifact> das = deploymentArtifacts.getDeploymentArtifact();
-                        for (TDeploymentArtifact da : das) {
+                        for (TDeploymentArtifact da : deploymentArtifacts) {
                             ids.add(new ArtifactTypeId(da.getArtifactType()));
                             if ((qname = da.getArtifactRef()) != null) {
                                 ids.add(new ArtifactTemplateId(qname));
@@ -1394,22 +1391,22 @@ public interface IRepository extends IWineryRepositoryCommon {
         SortedSet<NodeTypeImplementationId> nodeTypeImplementations = this.getAllDefinitionsChildIds(NodeTypeImplementationId.class);
         for (NodeTypeImplementationId ntiId : nodeTypeImplementations) {
             final TNodeTypeImplementation nodeTypeImplementation = this.getElement(ntiId);
-            TDeploymentArtifacts deploymentArtifacts = nodeTypeImplementation.getDeploymentArtifacts();
+            List<TDeploymentArtifact> deploymentArtifacts = nodeTypeImplementation.getDeploymentArtifacts();
             if (deploymentArtifacts != null) {
-                allDAs.addAll(deploymentArtifacts.getDeploymentArtifact());
+                allDAs.addAll(deploymentArtifacts);
             }
-            TImplementationArtifacts implementationArtifacts = nodeTypeImplementation.getImplementationArtifacts();
+            List<TImplementationArtifact> implementationArtifacts = nodeTypeImplementation.getImplementationArtifacts();
             if (implementationArtifacts != null) {
-                allIAs.addAll(implementationArtifacts.getImplementationArtifact());
+                allIAs.addAll(implementationArtifacts);
             }
         }
 
-        // check all Relationshiptype Implementations for IAs
+        // check all RelationshipTypeImplementations for IAs
         SortedSet<RelationshipTypeImplementationId> relationshipTypeImplementations = this.getAllDefinitionsChildIds(RelationshipTypeImplementationId.class);
         for (RelationshipTypeImplementationId rtiId : relationshipTypeImplementations) {
-            TImplementationArtifacts implementationArtifacts = this.getElement(rtiId).getImplementationArtifacts();
+            List<TImplementationArtifact> implementationArtifacts = this.getElement(rtiId).getImplementationArtifacts();
             if (implementationArtifacts != null) {
-                allIAs.addAll(implementationArtifacts.getImplementationArtifact());
+                allIAs.addAll(implementationArtifacts);
             }
         }
 
@@ -1422,9 +1419,9 @@ public interface IRepository extends IWineryRepositoryCommon {
                 for (TEntityTemplate template : nodeTemplateOrRelationshipTemplate) {
                     if (template instanceof TNodeTemplate) {
                         TNodeTemplate nodeTemplate = (TNodeTemplate) template;
-                        TDeploymentArtifacts deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
+                        List<TDeploymentArtifact> deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
                         if (deploymentArtifacts != null) {
-                            allDAs.addAll(deploymentArtifacts.getDeploymentArtifact());
+                            allDAs.addAll(deploymentArtifacts);
                         }
                     }
                 }

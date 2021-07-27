@@ -16,14 +16,14 @@ package org.eclipse.winery.model.tosca.xml.utils;
 import java.util.List;
 
 import org.eclipse.winery.model.tosca.xml.XTCapability;
+import org.eclipse.winery.model.tosca.xml.XTDeploymentArtifact;
 import org.eclipse.winery.model.tosca.xml.XTEntityTemplate;
 import org.eclipse.winery.model.tosca.xml.XTNodeTemplate;
 import org.eclipse.winery.model.tosca.xml.XTPolicies;
 import org.eclipse.winery.model.tosca.xml.XTRelationshipTemplate;
 import org.eclipse.winery.model.tosca.xml.XTRequirement;
-import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
-import org.eclipse.winery.model.tosca.xml.XTDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.xml.XTTopologyTemplate;
+import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
 
 import io.github.adr.embedded.ADR;
 
@@ -61,8 +61,8 @@ public class RemoveEmptyLists extends Visitor {
         if ((capabilities != null) && capabilities.isEmpty()) {
             nodeTemplate.setCapabilities(null);
         }
-        final XTDeploymentArtifacts deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
-        if ((deploymentArtifacts != null) && deploymentArtifacts.getDeploymentArtifact().isEmpty()) {
+        final List<XTDeploymentArtifact> deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
+        if ((deploymentArtifacts != null) && deploymentArtifacts.isEmpty()) {
             nodeTemplate.setDeploymentArtifacts(null);
         }
         final XTPolicies policies = nodeTemplate.getPolicies();

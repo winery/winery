@@ -15,9 +15,10 @@
 package org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates;
 
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
-import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
@@ -25,8 +26,9 @@ import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 import org.eclipse.jetty.toolchain.test.MavenTestingUtils;
 import org.junit.jupiter.api.Test;
 
-import static org.eclipse.jdt.annotation.Checks.assertNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class NodeTemplateResourceTest extends AbstractResourceTest {
 
@@ -45,11 +47,13 @@ public class NodeTemplateResourceTest extends AbstractResourceTest {
             TNodeTemplate.class
         );
 
-        TDeploymentArtifacts deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
-        assertNonNull(deploymentArtifacts);
-        TDeploymentArtifact deploymentArtifact = deploymentArtifacts.getDeploymentArtifact("state");
-        assertNonNull(deploymentArtifact);
-        assertEquals(OpenToscaBaseTypes.stateArtifactType, deploymentArtifact.getArtifactType());
+        List<TDeploymentArtifact> deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
+        assertNotNull(deploymentArtifacts);
+        Optional<TDeploymentArtifact> state = deploymentArtifacts.stream()
+            .filter(artifact -> artifact.getName().equals("state"))
+            .findFirst();
+        assertTrue(state.isPresent());
+        assertEquals(OpenToscaBaseTypes.stateArtifactType, state.get().getArtifactType());
     }
 
     @Test
@@ -67,14 +71,21 @@ public class NodeTemplateResourceTest extends AbstractResourceTest {
             TNodeTemplate.class
         );
 
-        TDeploymentArtifacts deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
-        assertNonNull(deploymentArtifacts);
-        assertEquals(2, deploymentArtifacts.getDeploymentArtifact().size());
+        List<TDeploymentArtifact> deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
+        assertNotNull(deploymentArtifacts);
+        assertEquals(2, deploymentArtifacts.size());
 
-        assertNonNull(deploymentArtifacts.getDeploymentArtifact("test-artifact"));
+        Optional<TDeploymentArtifact> testArtifact = deploymentArtifacts.stream()
+            .filter(artifact -> artifact.getName().equals("test-artifact"))
+            .findFirst();
+        assertTrue(testArtifact.isPresent());
+        assertNotNull(testArtifact.get());
 
-        TDeploymentArtifact deploymentArtifact = deploymentArtifacts.getDeploymentArtifact("state");
-        assertNonNull(deploymentArtifact);
-        assertEquals(OpenToscaBaseTypes.stateArtifactType, deploymentArtifact.getArtifactType());
+        assertNotNull(deploymentArtifacts);
+        Optional<TDeploymentArtifact> state = deploymentArtifacts.stream()
+            .filter(artifact -> artifact.getName().equals("state"))
+            .findFirst();
+        assertTrue(state.isPresent());
+        assertEquals(OpenToscaBaseTypes.stateArtifactType, state.get().getArtifactType());
     }
 }

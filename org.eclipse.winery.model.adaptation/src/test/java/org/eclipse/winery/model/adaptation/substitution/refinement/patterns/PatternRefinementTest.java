@@ -527,13 +527,13 @@ class PatternRefinementTest extends AbstractRefinementTest {
         TNodeTemplate refinedNt = topology3.getNodeTemplate("13");
         assertNotNull(refinedNt);
         assertNotNull(refinedNt.getDeploymentArtifacts());
-        assertEquals(1, refinedNt.getDeploymentArtifacts().getDeploymentArtifact().size());
+        assertEquals(1, refinedNt.getDeploymentArtifacts().size());
         assertEquals(
             new QName("test_da", "http://example.org/tosca/atemp/das"),
-            refinedNt.getDeploymentArtifacts().getDeploymentArtifact().get(0).getArtifactRef());
+            refinedNt.getDeploymentArtifacts().get(0).getArtifactRef());
         assertEquals(
             new QName("file", "http://example.org/tosca/at"),
-            refinedNt.getDeploymentArtifacts().getDeploymentArtifact().get(0).getArtifactType());
+            refinedNt.getDeploymentArtifacts().get(0).getArtifactType());
 
         // endregion
     }

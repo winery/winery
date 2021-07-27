@@ -15,6 +15,7 @@
 package org.eclipse.winery.repository.backend.selfcontainmentpackager;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -31,7 +32,7 @@ import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
-import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.version.VersionSupport;
@@ -115,11 +116,13 @@ public class SelfContainmentPackager {
                         if (generatedArtifacts != null && generatedArtifacts.selfContainedArtifactQName != null) {
                             // first, we need to identify the element that is referencing the artifact
                             serviceTemplate.getTopologyTemplate().getNodeTemplates().stream()
-                                .filter(node -> node.getDeploymentArtifacts() != null)
-                                .map(node -> node.getDeploymentArtifacts().getDeploymentArtifact())
-                                .filter(daList -> daList.stream().anyMatch(da -> da.getArtifactRef() != null
-                                    && da.getArtifactRef().equals(elementId.getQName())))
-                                .flatMap(Collection::stream)
+                                .map(TNodeTemplate::getDeploymentArtifacts)
+                                .filter(Objects::nonNull)
+                                .filter(daList -> daList.stream()
+                                    .anyMatch(da -> da.getArtifactRef() != null
+                                        && da.getArtifactRef().equals(elementId.getQName())
+                                    )
+                                ).flatMap(Collection::stream)
                                 .forEach(da -> da.setArtifactRef(generatedArtifacts.selfContainedArtifactQName));
                         }
                     }
@@ -135,7 +138,7 @@ public class SelfContainmentPackager {
 
     private void createSelfContainedNodeTypeImplementation(TNodeTypeImplementation impl) {
         if (impl.getImplementationArtifacts() != null) {
-            List<SelfContainmentPlugin.GeneratedArtifacts> generatedArtifacts = impl.getImplementationArtifacts().getImplementationArtifact().stream()
+            List<SelfContainmentPlugin.GeneratedArtifacts> generatedArtifacts = impl.getImplementationArtifacts().stream()
                 .filter(ia -> Objects.nonNull(ia.getArtifactRef()))
                 .filter(ia -> !new ArtifactTemplateId(ia.getArtifactRef()).isSelfContained())
                 .map(ia -> this.downloadArtifacts(ia.getArtifactRef(), ia.getArtifactType()))
@@ -151,7 +154,7 @@ public class SelfContainmentPackager {
 
                     generatedArtifacts.forEach(generatedArtifact -> {
                         if (implementation.getImplementationArtifacts() != null) {
-                            implementation.getImplementationArtifacts().getImplementationArtifact()
+                            implementation.getImplementationArtifacts()
                                 .forEach(ia -> {
                                     if (generatedArtifact.artifactToReplaceQName.equals(ia.getArtifactRef())) {
                                         ia.setArtifactRef(generatedArtifact.selfContainedArtifactQName);
@@ -168,23 +171,24 @@ public class SelfContainmentPackager {
                                         ia.setArtifactType(artifactTemplate.getType());
                                     }
                                 });
-                            TDeploymentArtifacts deploymentArtifacts = implementation.getDeploymentArtifacts();
+                            List<TDeploymentArtifact> deploymentArtifacts = implementation.getDeploymentArtifacts();
                             if (deploymentArtifacts == null) {
-                                deploymentArtifacts = new TDeploymentArtifacts.Builder().build();
+                                deploymentArtifacts = new ArrayList<>();
                                 implementation.setDeploymentArtifacts(deploymentArtifacts);
                             } else {
-                                deploymentArtifacts.getDeploymentArtifact()
-                                    .removeIf(da -> da.getArtifactRef() != null
-                                        && generatedArtifact.deploymentArtifactsToRemove.contains(da.getArtifactRef()));
+                                deploymentArtifacts.removeIf(da ->
+                                    da.getArtifactRef() != null
+                                        && generatedArtifact.deploymentArtifactsToRemove.contains(da.getArtifactRef())
+                                );
                             }
                             for (QName artifactTemplate : generatedArtifact.deploymentArtifactsToAdd) {
                                 TArtifactTemplate generatedAT = repository.getElement(new ArtifactTemplateId(artifactTemplate));
 
-                                TDeploymentArtifact da = new TDeploymentArtifact.Builder(artifactTemplate.getLocalPart(), generatedAT.getType())
-                                    .setArtifactRef(artifactTemplate)
-                                    .build();
-
-                                deploymentArtifacts.getDeploymentArtifact().add(da);
+                                deploymentArtifacts.add(
+                                    new TDeploymentArtifact.Builder(artifactTemplate.getLocalPart(), generatedAT.getType())
+                                        .setArtifactRef(artifactTemplate)
+                                        .build()
+                                );
                             }
                         }
                     });

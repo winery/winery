@@ -32,7 +32,7 @@ import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TEntityTypeImplementation;
-import org.eclipse.winery.model.tosca.TImplementationArtifacts;
+import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -213,11 +213,11 @@ public class EdmmConverter {
 
     private void createArtifact(TNodeTemplate nodeTemplate, EntityId componentNodeId, EntityGraph entityGraph) {
         if (nodeTemplate.getDeploymentArtifacts() != null
-            && nodeTemplate.getDeploymentArtifacts().getDeploymentArtifact().size() > 0) {
+            && nodeTemplate.getDeploymentArtifacts().size() > 0) {
             EntityId artifactsEntityId = componentNodeId.extend(DefaultKeys.ARTIFACTS);
             entityGraph.addEntity(new SequenceEntity(artifactsEntityId, entityGraph));
 
-            for (TDeploymentArtifact artifact : nodeTemplate.getDeploymentArtifacts().getDeploymentArtifact()) {
+            for (TDeploymentArtifact artifact : nodeTemplate.getDeploymentArtifacts()) {
                 String path = null;
 
                 TArtifactTemplate artifactTemplate = artifactTemplates.get(artifact.getArtifactRef());
@@ -376,8 +376,8 @@ public class EdmmConverter {
     private String getImplementationForOperation(TEntityTypeImplementation implementation,
                                                  String interfaceName, String operationName) {
         if (implementation != null && implementation.getImplementationArtifacts() != null) {
-            List<TImplementationArtifacts.ImplementationArtifact> artifacts = implementation.getImplementationArtifacts()
-                .getImplementationArtifact().stream()
+            List<TImplementationArtifact> artifacts = implementation.getImplementationArtifacts()
+                .stream()
                 .filter(artifact -> artifact.getInterfaceName() != null)
                 .filter(artifact -> artifact.getInterfaceName().equals(interfaceName))
                 .collect(Collectors.toList());
@@ -390,7 +390,7 @@ public class EdmmConverter {
                 }
             }
 
-            for (TImplementationArtifacts.ImplementationArtifact artifact : artifacts) {
+            for (TImplementationArtifact artifact : artifacts) {
                 if (artifact.getOperationName() != null && artifact.getOperationName().equals(operationName)) {
                     TArtifactTemplate artifactTemplate = artifactTemplates.get(artifact.getArtifactRef());
                     if (artifactTemplate != null &&

@@ -21,11 +21,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -102,12 +102,10 @@ import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.TDataType;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
-import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.model.tosca.TImplementationArtifacts;
-import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
+import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.model.tosca.TInterfaceType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -210,9 +208,7 @@ public class BackendUtils {
         if (modifiedDate != null) {
             // modifiedDate does not carry milliseconds, but fileDate does
             // therefore we have to do a range-based comparison
-            if ((millis - modifiedDate.getTime()) < DateUtils.MILLIS_PER_SECOND) {
-                return false;
-            }
+            return (millis - modifiedDate.getTime()) >= DateUtils.MILLIS_PER_SECOND;
         }
 
         return true;
@@ -232,7 +228,7 @@ public class BackendUtils {
         return BackendUtils.getDefinitionsChildId(idClass, qname.getNamespaceURI(), qname.getLocalPart(), false);
     }
 
-    public static <T extends DefinitionsChildId> T getDefinitionsChildId(Class<T> idClass, String namespace, String id, boolean URLencoded) {
+    public static <T extends DefinitionsChildId> T getDefinitionsChildId(Class<T> idClass, String namespace, String id, boolean urlEncoded) {
         Constructor<T> constructor;
         try {
             constructor = idClass.getConstructor(String.class, String.class, boolean.class);
@@ -242,7 +238,7 @@ public class BackendUtils {
         }
         T tcId;
         try {
-            tcId = constructor.newInstance(namespace, id, URLencoded);
+            tcId = constructor.newInstance(namespace, id, urlEncoded);
         } catch (InstantiationException | IllegalAccessException
             | IllegalArgumentException | InvocationTargetException e) {
             BackendUtils.LOGGER.error("Could not create id instance", e);
@@ -292,7 +288,7 @@ public class BackendUtils {
      * Do <em>not</em> use this for creating URLs. Use {@link Util#getUrlPath(java.lang.String)} or
      * RestUtils#getAbsoluteURL(org.eclipse.winery.common.ids.GenericId instead.
      *
-     * @return the path starting from the root element to the current element. Separated by "/", URLencoded, but
+     * @return the path starting from the root element to the current element. Separated by "/", URL-encoded, but
      * <b>not</b> double encoded. With trailing slash if sub-resources can exist
      * @throws IllegalStateException if id is of an unknown subclass of id
      */
@@ -304,7 +300,7 @@ public class BackendUtils {
      * Do <em>not</em> use this for creating URLs. Use {@link Util#getUrlPath(java.lang.String)} or
      * RestUtils#getAbsoluteURL(org.eclipse.winery.common.ids.GenericId) instead.
      *
-     * @return the path starting from the root element to the current element. Separated by "/", parent URLencoded.
+     * @return the path starting from the root element to the current element. Separated by "/", parent URL-encoded.
      * Without trailing slash.
      */
     public static String getPathInsideRepo(RepositoryFileReference ref) {
@@ -421,11 +417,7 @@ public class BackendUtils {
     }
 
     @NonNull
-    private static Collection<QName> getAllReferencedArtifactTemplates(TDeploymentArtifacts tDeploymentArtifacts) {
-        if (tDeploymentArtifacts == null) {
-            return Collections.emptyList();
-        }
-        List<TDeploymentArtifact> deploymentArtifacts = tDeploymentArtifacts.getDeploymentArtifact();
+    private static Collection<QName> getAllReferencedArtifactTemplatesInDAs(List<TDeploymentArtifact> deploymentArtifacts) {
         if (deploymentArtifacts == null) {
             return Collections.emptyList();
         }
@@ -439,16 +431,13 @@ public class BackendUtils {
         return res;
     }
 
-    private static Collection<QName> getAllReferencedArtifactTemplates(TImplementationArtifacts tImplementationArtifacts) {
-        if (tImplementationArtifacts == null) {
-            return Collections.emptyList();
-        }
-        List<ImplementationArtifact> implementationArtifacts = tImplementationArtifacts.getImplementationArtifact();
+    private static Collection<QName> getAllReferencedArtifactTemplatesInIAs(List<TImplementationArtifact> implementationArtifacts) {
         if (implementationArtifacts == null) {
             return Collections.emptyList();
         }
+
         Collection<QName> res = new ArrayList<>();
-        for (ImplementationArtifact ia : implementationArtifacts) {
+        for (TImplementationArtifact ia : implementationArtifacts) {
             QName artifactRef = ia.getArtifactRef();
             if (artifactRef != null) {
                 res.add(artifactRef);
@@ -458,22 +447,21 @@ public class BackendUtils {
     }
 
     public static Collection<QName> getArtifactTemplatesOfReferencedDeploymentArtifacts(TNodeTemplate nodeTemplate, IRepository repo) {
-        List<QName> l = new ArrayList<>();
 
         // DAs may be assigned directly to a node template
-        Collection<QName> allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(nodeTemplate.getDeploymentArtifacts());
-        l.addAll(allReferencedArtifactTemplates);
+        Collection<QName> allReferencedArtifactTemplates = getAllReferencedArtifactTemplatesInDAs(nodeTemplate.getDeploymentArtifacts());
+        List<QName> list = new ArrayList<>(allReferencedArtifactTemplates);
 
         // DAs may be assigned via node type implementations
         QName nodeTypeQName = nodeTemplate.getType();
         Collection<NodeTypeImplementationId> allNodeTypeImplementations = repo.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
         for (NodeTypeImplementationId nodeTypeImplementationId : allNodeTypeImplementations) {
-            TDeploymentArtifacts deploymentArtifacts = repo.getElement(nodeTypeImplementationId).getDeploymentArtifacts();
-            allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(deploymentArtifacts);
-            l.addAll(allReferencedArtifactTemplates);
+            List<TDeploymentArtifact> deploymentArtifacts = repo.getElement(nodeTypeImplementationId).getDeploymentArtifacts();
+            allReferencedArtifactTemplates = getAllReferencedArtifactTemplatesInDAs(deploymentArtifacts);
+            list.addAll(allReferencedArtifactTemplates);
         }
 
-        return l;
+        return list;
     }
 
     public static Collection<QName> getArtifactTemplatesOfReferencedImplementationArtifacts(TNodeTemplate nodeTemplate, IRepository repo) {
@@ -483,8 +471,8 @@ public class BackendUtils {
         QName nodeTypeQName = nodeTemplate.getType();
         Collection<NodeTypeImplementationId> allNodeTypeImplementations = repo.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
         for (NodeTypeImplementationId nodeTypeImplementationId : allNodeTypeImplementations) {
-            TImplementationArtifacts implementationArtifacts = repo.getElement(nodeTypeImplementationId).getImplementationArtifacts();
-            Collection<QName> allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(implementationArtifacts);
+            List<TImplementationArtifact> implementationArtifacts = repo.getElement(nodeTypeImplementationId).getImplementationArtifacts();
+            Collection<QName> allReferencedArtifactTemplates = getAllReferencedArtifactTemplatesInIAs(implementationArtifacts);
             l.addAll(allReferencedArtifactTemplates);
         }
 
@@ -492,7 +480,7 @@ public class BackendUtils {
     }
 
     /**
-     * Creates a new TDefintions element wrapping a definition child. The namespace of the tosca component is used as
+     * Creates a new TDefinitions element wrapping a definition child. The namespace of the tosca component is used as
      * namespace and {@code winery-defs-for-} concatenated with the (unique) ns prefix and idOfContainedElement is used
      * as id
      *
@@ -503,7 +491,7 @@ public class BackendUtils {
     public static TDefinitions updateWrapperDefinitions(DefinitionsChildId tcId, TDefinitions defs, IRepository repo) {
         // set target namespace
         // an internal namespace is not possible
-        //   a) tPolicyTemplate and tArtfactTemplate do NOT support the "targetNamespace" attribute
+        //   a) tPolicyTemplate and tArtifactTemplate do NOT support the "targetNamespace" attribute
         //   b) the imports statement would look bad as it always imported the artificial namespace
         defs.setTargetNamespace(tcId.getNamespace().getDecoded());
 
@@ -601,7 +589,7 @@ public class BackendUtils {
     }
 
     /*
-     * Creates a new TDefintions element wrapping a definition child.
+     * Creates a new TDefinitions element wrapping a definition child.
      * The namespace of the definition child is used as namespace and
      * {@code winery-defs-for-} concatenated with the (unique) ns prefix and
      * idOfContainedElement is used as id
@@ -811,12 +799,7 @@ public class BackendUtils {
 
                 @Override
                 public Reader getCharacterStream() {
-                    try {
-                        return new InputStreamReader(is, "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        System.out.println("exeption");
-                        throw new IllegalStateException("UTF-8 is unkown", e);
-                    }
+                    return new InputStreamReader(is, StandardCharsets.UTF_8);
                 }
 
                 @Override
@@ -971,13 +954,13 @@ public class BackendUtils {
     public <T extends ToscaElementId> SortedSet<T> getAllTOSCAElementIds(Class<T> idClass) {
         throw new IllegalStateException("Not yet implemented");
 
-		/*
-		 Implementation idea:
-		   * switch of instance of idClass
-		   * nodetemplate / relationshiptemplate -> fetch all service templates -> crawl through topology -> add all to res
-		   * req/cap do as above, but inspect nodetemplate
-		   * (other special handlings; check spec where each type can be linked from)
-		 */
+        /*
+         Implementation idea:
+           * switch of instance of idClass
+           * nodetemplate / relationshiptemplate -> fetch all service templates -> crawl through topology -> add all to res
+           * req/cap do as above, but inspect nodetemplate
+           * (other special handling; check spec where each type can be linked from)
+         */
     }
 
     /**
@@ -1062,9 +1045,9 @@ public class BackendUtils {
         RepositoryFileReference ref = BackendUtils.getRefOfDefinitions((ArtifactTemplateId) directoryId.getParent());
         try {
             TDefinitions defs = repo.definitionsFromRef(ref);
-            Map<QName, String> atts = defs.getOtherAttributes();
-            String src = atts.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "gitsrc"));
-            String branch = atts.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "gitbranch"));
+            Map<QName, String> attributes = defs.getOtherAttributes();
+            String src = attributes.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "gitsrc"));
+            String branch = attributes.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "gitbranch"));
             if (src == null && branch == null) {
                 return null;
             }
@@ -1125,11 +1108,24 @@ public class BackendUtils {
         return matcher.matches(path);
     }
 
-    public static boolean injectArtifactTemplateIntoDeploymentArtifact(ServiceTemplateId serviceTemplate, String nodeTemplateId, String deploymentArtifactId, ArtifactTemplateId artifactTemplate, IRepository repo) throws IOException {
+    public static void injectArtifactTemplateIntoDeploymentArtifact(ServiceTemplateId serviceTemplate, String nodeTemplateId, String deploymentArtifactId, ArtifactTemplateId artifactTemplate, IRepository repo) throws IOException {
         TServiceTemplate element = repo.getElement(serviceTemplate);
-        element.getTopologyTemplate().getNodeTemplate(nodeTemplateId).getDeploymentArtifacts().getDeploymentArtifact(deploymentArtifactId).setArtifactRef(artifactTemplate.getQName());
-        repo.setElement(serviceTemplate, element);
-        return true;
+        TTopologyTemplate topologyTemplate = element.getTopologyTemplate();
+        if (topologyTemplate != null) {
+            TNodeTemplate nodeTemplate = topologyTemplate.getNodeTemplate(nodeTemplateId);
+            if (nodeTemplate != null) {
+                List<TDeploymentArtifact> deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
+                if (deploymentArtifacts != null) {
+                    deploymentArtifacts.stream()
+                        .filter(x -> deploymentArtifactId.equals(x.getName()))
+                        .findAny()
+                        .ifPresent(artifact ->
+                            artifact.setArtifactRef(artifactTemplate.getQName())
+                        );
+                    repo.setElement(serviceTemplate, element);
+                }
+            }
+        }
     }
 
     /**
@@ -1138,17 +1134,17 @@ public class BackendUtils {
      * @param wrapperElementLocalName the local name of the wrapper element
      */
     public static String getImportLocationForWinerysPropertiesDefinitionXSD(EntityTypeId tcId, URI uri, String wrapperElementLocalName) {
-        String loc = Util.getPathInsideRepo(tcId);
-        loc = loc + "propertiesdefinition/";
-        loc = Util.getUrlPath(loc);
+        StringBuilder loc = new StringBuilder(Util.getPathInsideRepo(tcId));
+        loc.append("propertiesdefinition/");
+        loc.append(Util.getUrlPath(loc.toString()));
         if (uri == null) {
-            loc = loc + wrapperElementLocalName + ".xsd";
+            loc.append(wrapperElementLocalName)
+                .append(".xsd");
             // for the import later, we need "../" in front
-            loc = "../" + loc;
+            return "../" + loc;
         } else {
-            loc = uri + loc + "xsd";
+            return uri + loc.append("xsd").toString();
         }
-        return loc;
     }
 
     /**
@@ -1289,7 +1285,7 @@ public class BackendUtils {
                     }
                     PlanId planId = new PlanId(plansContainerId, new XmlId(plan.getId(), false));
                     if (nestedPlans.contains(planId)) {
-                        // everything allright
+                        // everything alright
                         // we do NOT need to add the plan on the HDD to the XML
                         plansToAdd.remove(planId);
                     } else {

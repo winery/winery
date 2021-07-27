@@ -46,13 +46,12 @@ import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.TDataType;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
-import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TGroupDefinition;
 import org.eclipse.winery.model.tosca.TGroupType;
 import org.eclipse.winery.model.tosca.TImplementation;
-import org.eclipse.winery.model.tosca.TImplementationArtifacts;
+import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TInterfaceDefinition;
@@ -401,11 +400,11 @@ public class ToCanonical {
      * @return TOSCA XML DeploymentArtifacts
      */
     @Deprecated
-    private TDeploymentArtifacts convertDeploymentArtifacts(@NonNull Map<String, YTArtifactDefinition> artifactDefinitionMap, String targetNamespace) {
+    private List<TDeploymentArtifact> convertDeploymentArtifacts(@NonNull Map<String, YTArtifactDefinition> artifactDefinitionMap, String targetNamespace) {
         if (artifactDefinitionMap.isEmpty()) {
             return null;
         }
-        return new TDeploymentArtifacts.Builder(artifactDefinitionMap.entrySet().stream()
+        return artifactDefinitionMap.entrySet().stream()
             .filter(Objects::nonNull)
             .map(entry -> {
                 TArtifactTemplate artifactTemplate = convert(entry.getValue(), entry.getKey());
@@ -414,32 +413,7 @@ public class ToCanonical {
                     .setArtifactRef(new QName(targetNamespace, artifactTemplate.getId()))
                     .build();
             })
-            .collect(Collectors.toList()))
-            .build();
-    }
-
-    /**
-     * Converts TOSCA YAML ArtifactDefinitions to TOSCA XML DeploymentArtifacts
-     *
-     * @param artifactDefinitionMap map of TOSCA YAML ArtifactDefinitions
-     * @return TOSCA XML DeploymentArtifacts
-     */
-    @Deprecated
-    private TDeploymentArtifacts convertDeploymentArtifacts(@NonNull Map<String, YTArtifactDefinition> artifactDefinitionMap) {
-        if (artifactDefinitionMap.isEmpty()) {
-            return null;
-        }
-        return new TDeploymentArtifacts.Builder(artifactDefinitionMap.entrySet().stream()
-            .filter(Objects::nonNull)
-            .map(entry -> {
-                TArtifactTemplate artifactTemplate = convert(entry.getValue(), entry.getKey());
-                this.artifactTemplates.put(artifactTemplate.getId(), artifactTemplate);
-                return new TDeploymentArtifact.Builder(entry.getKey(), entry.getValue().getType())
-                    .setArtifactRef(new QName(artifactTemplate.getId()))
-                    .build();
-            })
-            .collect(Collectors.toList()))
-            .build();
+            .collect(Collectors.toList());
     }
 
     /**
@@ -449,25 +423,23 @@ public class ToCanonical {
      * @return TOSCA XML ImplementationArtifacts
      */
     @Deprecated
-    private TImplementationArtifacts convertImplementationArtifact(@NonNull Map<String, YTArtifactDefinition> artifactDefinitionMap, String targetNamespace) {
+    private List<TImplementationArtifact> convertImplementationArtifact(@NonNull Map<String, YTArtifactDefinition> artifactDefinitionMap, String targetNamespace) {
         if (artifactDefinitionMap.isEmpty()) {
             return null;
         }
-        TImplementationArtifacts output = new TImplementationArtifacts.Builder(artifactDefinitionMap.entrySet().stream()
+        return artifactDefinitionMap.entrySet().stream()
             .filter(entry -> Objects.nonNull(entry) && Objects.nonNull(entry.getValue()))
             .map(entry -> {
                 TArtifactTemplate artifactTemplate = convert(entry.getValue(), entry.getKey());
                 this.artifactTemplates.put(artifactTemplate.getId(), artifactTemplate);
-                return new TImplementationArtifacts.ImplementationArtifact.Builder(entry.getValue().getType())
+                return new TImplementationArtifact.Builder(entry.getValue().getType())
                     .setName(entry.getKey())
                     .setArtifactRef(new QName(targetNamespace, artifactTemplate.getId()))
                     .setInterfaceName(convertInterfaceName(entry.getValue()))
                     .setOperationName(convertOperationName(entry.getValue()))
                     .build();
             })
-            .collect(Collectors.toList()))
-            .build();
-        return output;
+            .collect(Collectors.toList());
     }
 
     @Nullable
@@ -995,7 +967,7 @@ public class ToCanonical {
             .setTargetNamespace(targetNamespace)
             // .setDeploymentArtifacts(convertDeploymentArtifacts(deplArtifacts, targetNamespace))
         );
-        TImplementationArtifacts implementationArtifacts = convertImplementationArtifact(implArtifacts, targetNamespace);
+        List<TImplementationArtifact> implementationArtifacts = convertImplementationArtifact(implArtifacts, targetNamespace);
         builder.setImplementationArtifacts(implementationArtifacts);
         this.nodeTypeImplementations.add(builder.build());
     }

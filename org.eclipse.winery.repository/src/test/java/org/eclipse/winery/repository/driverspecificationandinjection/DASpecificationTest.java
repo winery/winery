@@ -46,14 +46,14 @@ public class DASpecificationTest extends TestWithGitBackedRepository {
 
         TNodeTemplate nodeTemplateWithAbstractDA = topologyTemplate.getNodeTemplate("shetland_pony");
 
-        TDeploymentArtifact deploymentArtifact = nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact().get(0);
+        TDeploymentArtifact deploymentArtifact = nodeTemplateWithAbstractDA.getDeploymentArtifacts().get(0);
         QName artifactTypeQName = deploymentArtifact.getArtifactType();
         ArtifactTypeId artifactTypeId = new ArtifactTypeId(artifactTypeQName);
 
         TArtifactType artifactType = this.repository.getElement(artifactTypeId);
 
-        assertEquals(artifactType.getTargetNamespace(), DASpecification.getArtifactTypeOfDA(nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact().get(0)).getTargetNamespace());
-        assertEquals(artifactType.getName(), DASpecification.getArtifactTypeOfDA(nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact().get(0)).getName());
+        assertEquals(artifactType.getTargetNamespace(), DASpecification.getArtifactTypeOfDA(nodeTemplateWithAbstractDA.getDeploymentArtifacts().get(0)).getTargetNamespace());
+        assertEquals(artifactType.getName(), DASpecification.getArtifactTypeOfDA(nodeTemplateWithAbstractDA.getDeploymentArtifacts().get(0)).getName());
     }
 
     @Test
@@ -77,7 +77,7 @@ public class DASpecificationTest extends TestWithGitBackedRepository {
 
         TNodeTemplate nodeTemplate = topologyTemplate.getNodeTemplate("westernequipment");
 
-        List<TArtifactType> artifactTypes = DASpecification.getArtifactTypeHierarchy(DASpecification.getArtifactTypeOfDA(nodeTemplate.getDeploymentArtifacts().getDeploymentArtifact().get(0)));
+        List<TArtifactType> artifactTypes = DASpecification.getArtifactTypeHierarchy(DASpecification.getArtifactTypeOfDA(nodeTemplate.getDeploymentArtifacts().get(0)));
         List<String> artifactTypeNames = new ArrayList<>();
         artifactTypes.stream().forEach(at -> artifactTypeNames.add(at.getName()));
 
@@ -94,7 +94,7 @@ public class DASpecificationTest extends TestWithGitBackedRepository {
 
         TNodeTemplate nodeTemplate = topologyTemplate.getNodeTemplate("ponycompetition");
         TNodeTemplate nodeTemplateWithAbstractDA = topologyTemplate.getNodeTemplate("shetland_pony");
-        TDeploymentArtifact deploymentArtifact = nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact().get(0);
+        TDeploymentArtifact deploymentArtifact = nodeTemplateWithAbstractDA.getDeploymentArtifacts().get(0);
         TNodeTemplate expectedNodeTemplate = topologyTemplate.getNodeTemplate("dressageequipment");
 
         TNodeTemplate actualNodeWithConcreteDA = DASpecification.getNodesWithSuitableConcreteDAs(nodeTemplate, deploymentArtifact, topologyTemplate);
@@ -109,7 +109,7 @@ public class DASpecificationTest extends TestWithGitBackedRepository {
         TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
 
         TNodeTemplate nodeTemplateWithAbstractDA = topologyTemplate.getNodeTemplate("shetland_pony");
-        TDeploymentArtifact deploymentArtifact = nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact().get(0);
+        TDeploymentArtifact deploymentArtifact = nodeTemplateWithAbstractDA.getDeploymentArtifacts().get(0);
         TNodeTemplate nodeTemplateConcretDA1 = topologyTemplate.getNodeTemplate("dressageequipment");
         TRelationshipTemplate relationshipTemplate1 = topologyTemplate.getRelationshipTemplate("con_42");
         TNodeTemplate nodeTemplateConcretDA2 = topologyTemplate.getNodeTemplate("westernequipment");

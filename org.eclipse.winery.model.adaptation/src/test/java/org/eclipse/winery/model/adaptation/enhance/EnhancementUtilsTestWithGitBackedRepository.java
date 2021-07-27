@@ -234,7 +234,7 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
 
         assertNotNull(generatedUbuntuImpl);
         assertNotNull(generatedUbuntuImpl.getImplementationArtifacts());
-        assertEquals(3, generatedUbuntuImpl.getImplementationArtifacts().getImplementationArtifact().size());
+        assertEquals(3, generatedUbuntuImpl.getImplementationArtifacts()        .size());
     }
 
     @Test

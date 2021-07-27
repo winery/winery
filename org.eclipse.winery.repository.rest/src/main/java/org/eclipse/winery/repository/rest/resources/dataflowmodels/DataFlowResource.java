@@ -16,7 +16,6 @@ package org.eclipse.winery.repository.rest.resources.dataflowmodels;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -38,7 +37,6 @@ import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
-import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -397,7 +395,6 @@ public class DataFlowResource {
         // add the DAs to the NodeTemplate
         if (Objects.nonNull(artifacts) && !artifacts.isEmpty()) {
             LOGGER.debug("{} artifacts specified for filter {}", artifacts.size(), templateName);
-            List<TDeploymentArtifact> daList = new ArrayList<>();
 
             // get the IDs of all available ArtifactTemplates
             List<ArtifactTemplateId> artifactTemplateIds = repo.getAllDefinitionsChildIds().stream()
@@ -410,16 +407,13 @@ public class DataFlowResource {
                 if (idOptional.isPresent()) {
                     ArtifactTemplateId artifactTemplateId = idOptional.get();
                     TArtifactTemplate artifactTemplate = repo.getElement(artifactTemplateId);
-                    daList.add(new TDeploymentArtifact.Builder(artifactName.toString(), artifactTemplate.getType())
+                    templateBuilder.addDeploymentArtifact(new TDeploymentArtifact.Builder(artifactName.toString(), artifactTemplate.getType())
                         .setArtifactRef(artifactName).build());
                 } else {
                     LOGGER.warn("Filter '{}' specifies DA with name '{}' but no such artifact available in repository!",
                         templateName, artifactName);
                 }
             }
-
-            TDeploymentArtifacts das = new TDeploymentArtifacts.Builder(daList).build();
-            templateBuilder.setDeploymentArtifacts(das);
         }
 
         topology.addNodeTemplate(templateBuilder.build());

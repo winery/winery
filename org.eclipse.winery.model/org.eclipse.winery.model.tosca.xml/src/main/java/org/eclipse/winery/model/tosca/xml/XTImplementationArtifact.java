@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -34,9 +33,6 @@ import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tImplementationArtifact")
-@XmlSeeAlso( {
-    XTImplementationArtifacts.ImplementationArtifact.class
-})
 public class XTImplementationArtifact extends XTExtensibleElements implements XHasName {
 
     @XmlAttribute(name = "name")
@@ -54,9 +50,10 @@ public class XTImplementationArtifact extends XTExtensibleElements implements XH
     protected QName artifactRef;
 
     @Deprecated // required for XML deserialization
-    public XTImplementationArtifact() { }
+    public XTImplementationArtifact() {
+    }
 
-    public XTImplementationArtifact(Builder builder) {
+    public XTImplementationArtifact(Builder<?> builder) {
         super(builder);
         this.name = builder.name;
         this.interfaceName = builder.interfaceName;
@@ -170,6 +167,7 @@ public class XTImplementationArtifact extends XTExtensibleElements implements XH
 
         @ADR(11)
         @Override
+        @SuppressWarnings("unchecked")
         public T self() {
             return (T) this;
         }

@@ -27,7 +27,6 @@ import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityRef;
 import org.eclipse.winery.model.tosca.TCondition;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
-import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TDocumentation;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
@@ -35,7 +34,6 @@ import org.eclipse.winery.model.tosca.TEntityTypeImplementation;
 import org.eclipse.winery.model.tosca.TExportedInterface;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImplementationArtifact;
-import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TParameter;
@@ -141,7 +139,7 @@ public abstract class Visitor {
         visit((TEntityTypeImplementation) nodeTypeImplementation);
 
         if (nodeTypeImplementation.getDeploymentArtifacts() != null) {
-            for (TDeploymentArtifact da : nodeTypeImplementation.getDeploymentArtifacts().getDeploymentArtifact()) {
+            for (TDeploymentArtifact da : nodeTypeImplementation.getDeploymentArtifacts()) {
                 da.accept(this);
             }
         }
@@ -152,7 +150,7 @@ public abstract class Visitor {
         visit((TExtensibleElements) implementation);
 
         if (implementation.getImplementationArtifacts() != null) {
-            for (TImplementationArtifacts.ImplementationArtifact ia : implementation.getImplementationArtifacts().getImplementationArtifact()) {
+            for (TImplementationArtifact ia : implementation.getImplementationArtifacts()) {
                 ia.accept(this);
             }
         }
@@ -202,9 +200,9 @@ public abstract class Visitor {
         if (capabilities != null) {
             capabilities.forEach(capability -> capability.accept(this));
         }
-        final TDeploymentArtifacts deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
+        final List<TDeploymentArtifact> deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
         if (deploymentArtifacts != null) {
-            for (TDeploymentArtifact deploymentArtifact : deploymentArtifacts.getDeploymentArtifact()) {
+            for (TDeploymentArtifact deploymentArtifact : deploymentArtifacts) {
                 deploymentArtifact.accept(this);
             }
         }
