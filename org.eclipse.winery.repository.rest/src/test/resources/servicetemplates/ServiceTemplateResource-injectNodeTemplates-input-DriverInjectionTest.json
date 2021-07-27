@@ -42,32 +42,30 @@
                             "name": "CapEquipment"
                         }
                     ],
-                    "deploymentArtifacts": {
-                        "deploymentArtifact": [
-                            {
-                                "documentation": [
-                                ],
-                                "any": [
-                                ],
-                                "otherAttributes": {
-                                },
-                                "name": "DressageEquipment_Pony",
-                                "artifactType": "{http://winery.opentosca.org/test/ponyuniverse}DressageEquipment_Pony",
-                                "artifactRef": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier}DressageEquipment_Pony"
+                    "deploymentArtifact": [
+                        {
+                            "documentation": [
+                            ],
+                            "any": [
+                            ],
+                            "otherAttributes": {
                             },
-                            {
-                                "documentation": [
-                                ],
-                                "any": [
-                                ],
-                                "otherAttributes": {
-                                },
-                                "name": "DressageEquipment_Unicorn",
-                                "artifactType": "{http://winery.opentosca.org/test/ponyuniverse}DressageEquipment_Unicorn",
-                                "artifactRef": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier}DressageEquipment_Unicorn"
-                            }
-                        ]
-                    },
+                            "name": "DressageEquipment_Pony",
+                            "artifactType": "{http://winery.opentosca.org/test/ponyuniverse}DressageEquipment_Pony",
+                            "artifactRef": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier}DressageEquipment_Pony"
+                        },
+                        {
+                            "documentation": [
+                            ],
+                            "any": [
+                            ],
+                            "otherAttributes": {
+                            },
+                            "name": "DressageEquipment_Unicorn",
+                            "artifactType": "{http://winery.opentosca.org/test/ponyuniverse}DressageEquipment_Unicorn",
+                            "artifactRef": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier}DressageEquipment_Unicorn"
+                        }
+                    ],
                     "name": "dressageequipment",
                     "minInstances": 1,
                     "maxInstances": "1"

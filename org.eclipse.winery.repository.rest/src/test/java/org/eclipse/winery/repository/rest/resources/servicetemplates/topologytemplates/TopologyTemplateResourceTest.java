@@ -83,8 +83,10 @@ public class TopologyTemplateResourceTest extends AbstractResourceTest {
     @Test
     public void apacheSparkAppOnVspheretopologyTemplateUpdateWithEmptyListsGetTheListsRemoved() throws Exception {
         this.setRevisionTo("3fe0df76e98d46ead68295920e5d1cf1354bdea1");
-        this.assertPut("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/", "servicetemplates/apache-spark-on-vsphere-input.json");
-        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/", "servicetemplates/apache-spark-on-vsphere-result.json");
+        this.assertPut("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/",
+            "servicetemplates/apache-spark-on-vsphere-input.json");
+        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/",
+            "servicetemplates/apache-spark-on-vsphere-result.json");
     }
 
     @Test

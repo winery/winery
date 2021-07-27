@@ -166,8 +166,7 @@
             "y": 400,
             "capabilities": [],
             "requirements": [],
-            "deploymentArtifacts": {
-            },
+            "deploymentArtifacts": [],
             "policies": {
                 "policy": [
                 ]
@@ -197,8 +196,7 @@
             "y": 382,
             "capabilities": [],
             "requirements": [],
-            "deploymentArtifacts": {
-            },
+            "deploymentArtifacts": [],
             "policies": {
                 "policy": [
                 ]
@@ -227,8 +225,7 @@
             "y": 203,
             "capabilities": [],
             "requirements": [],
-            "deploymentArtifacts": {
-            },
+            "deploymentArtifacts": [],
             "policies": {
                 "policy": [
                 ]
