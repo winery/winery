@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Definitions xmlns="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" xmlns:testwineryopentoscaorg="http://test.winery.opentosca.org" targetNamespace="http://opentosca.org/nodetypes" id="winery-defs-for_nodetypes1-MySQL-DBMS">
+    <NodeType name="MySQL-DBMS" abstract="no" final="no" targetNamespace="http://opentosca.org/nodetypes">
+        <Interfaces>
+            <Interface name="http://www.example.com/interfaces/lifecycle">
+                <Operation name="configure">
+                    <InputParameters>
+                        <InputParameter name="Param1" type="xsd:string" required="yes"/>
+                        <InputParameter name="Param2" type="xsd:string" required="yes"/>
+                        <InputParameter name="Param3" type="xsd:string" required="yes"/>
+                    </InputParameters>
+                </Operation>
+            </Interface>
+        </Interfaces>
+    </NodeType>
+</Definitions>
