@@ -58,7 +58,7 @@ public class TTopologyTemplate extends TExtensibleElements {
     // added to support conversion from/to YAML policies
     @JsonProperty("groups")
     protected List<TGroupDefinition> groups;
-    protected TPolicies policies;
+    protected List<TPolicy> policies;
     @JsonProperty("inputs")
     protected List<ParameterDefinition> inputs;
     @JsonProperty("outputs")
@@ -190,11 +190,11 @@ public class TTopologyTemplate extends TExtensibleElements {
     }
 
     @Nullable
-    public TPolicies getPolicies() {
+    public List<TPolicy> getPolicies() {
         return policies;
     }
 
-    public void setPolicies(TPolicies policies) {
+    public void setPolicies(List<TPolicy> policies) {
         this.policies = policies;
     }
 
@@ -248,7 +248,7 @@ public class TTopologyTemplate extends TExtensibleElements {
     public static class Builder extends TExtensibleElements.Builder<Builder> {
         private List<TNodeTemplate> nodeTemplates;
         private List<TRelationshipTemplate> relationshipTemplates;
-        private TPolicies policies;
+        private List<TPolicy> policies;
         private List<ParameterDefinition> inputs;
         private List<ParameterDefinition> outputs;
         private List<TGroupDefinition> groups;
@@ -318,7 +318,7 @@ public class TTopologyTemplate extends TExtensibleElements {
             return addRelationshipTemplates(tmp);
         }
 
-        public Builder setPolicies(TPolicies policies) {
+        public Builder setPolicies(List<TPolicy> policies) {
             this.policies = policies;
             return this;
         }

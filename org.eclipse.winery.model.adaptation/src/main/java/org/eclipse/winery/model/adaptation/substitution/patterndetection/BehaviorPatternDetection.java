@@ -15,6 +15,7 @@
 package org.eclipse.winery.model.adaptation.substitution.patterndetection;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
@@ -24,7 +25,6 @@ import org.eclipse.winery.model.ids.extensions.PatternRefinementModelId;
 import org.eclipse.winery.model.tosca.HasPolicies;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
@@ -104,21 +104,21 @@ class BehaviorPatternDetection extends TopologyFragmentRefinement {
         ToscaEntity detectorEntity = refinement.getDetectorGraph().getVertexOrEdge(detectorElement.getId()).get();
         TEntityTemplate stayingElement = getEntityCorrespondence(detectorEntity, refinement.getGraphMapping());
 
-        TPolicies refinementPolicies = ((HasPolicies) refinementElement).getPolicies();
-        TPolicies stayingPolicies = ((HasPolicies) stayingElement).getPolicies();
+        List<TPolicy> refinementPolicies = ((HasPolicies) refinementElement).getPolicies();
+        List<TPolicy> stayingPolicies = ((HasPolicies) stayingElement).getPolicies();
         if (refinementPolicies != null) {
             if (stayingPolicies != null) {
                 // avoid duplicates
-                refinementPolicies.getPolicy().forEach(refinementPolicy -> {
-                    boolean policyExists = stayingPolicies.getPolicy().stream()
+                refinementPolicies.forEach(refinementPolicy -> {
+                    boolean policyExists = stayingPolicies.stream()
                         .anyMatch(stayingPolicy -> stayingPolicy.getPolicyType().equals(refinementPolicy.getPolicyType()));
                     if (!policyExists) {
-                        stayingPolicies.getPolicy().add(refinementPolicy);
+                        stayingPolicies.add(refinementPolicy);
                     }
                 });
             } else {
                 ((HasPolicies) stayingElement)
-                    .setPolicies(new TPolicies(new ArrayList<>(refinementPolicies.getPolicy())));
+                    .setPolicies(new ArrayList<>(refinementPolicies));
             }
             removeIncompatibleBehaviorPatterns(refinementElement, stayingElement, refinement);
         }
@@ -127,7 +127,7 @@ class BehaviorPatternDetection extends TopologyFragmentRefinement {
     private void removeIncompatibleBehaviorPatterns(TEntityTemplate refinementElement, TEntityTemplate addedElement,
                                                     RefinementCandidate refinement) {
         OTPatternRefinementModel prm = (OTPatternRefinementModel) refinement.getRefinementModel();
-        TPolicies addedElementPolicies = ((HasPolicies) addedElement).getPolicies();
+        List<TPolicy> addedElementPolicies = ((HasPolicies) addedElement).getPolicies();
 
         prm.getBehaviorPatternMappings().stream()
             .filter(bpm -> bpm.getRefinementElement().getId().equals(refinementElement.getId()))
@@ -147,10 +147,10 @@ class BehaviorPatternDetection extends TopologyFragmentRefinement {
                         && (!detectorValue.equals("*") || (candidateValue == null || candidateValue.isEmpty()));
 
                     if (propsNotCompatible) {
-                        TPolicy behaviorPattern = ((HasPolicies) refinementElement).getPolicies().getPolicy().stream()
+                        TPolicy behaviorPattern = ((HasPolicies) refinementElement).getPolicies().stream()
                             .filter(policy -> bpm.getBehaviorPattern().equals(policy.getName()))
                             .findFirst().get();
-                        addedElementPolicies.getPolicy()
+                        addedElementPolicies
                             .removeIf(policy -> policy.getPolicyType().equals(behaviorPattern.getPolicyType()));
                     }
                 }

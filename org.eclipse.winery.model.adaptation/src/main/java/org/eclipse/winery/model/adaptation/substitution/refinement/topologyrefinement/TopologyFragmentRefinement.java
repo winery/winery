@@ -153,8 +153,8 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                 topology.getNodeTemplateOrRelationshipTemplate().remove(matchingNode);
             } else if (shouldRemoveBehaviorPatterns(vertex.getTemplate(), matchingNode)) {
                 if (vertex.getTemplate().getPolicies() != null && matchingNode.getPolicies() != null)
-                    vertex.getTemplate().getPolicies().getPolicy().forEach(detectorPolicy ->
-                        matchingNode.getPolicies().getPolicy()
+                    vertex.getTemplate().getPolicies().forEach(detectorPolicy ->
+                        matchingNode.getPolicies()
                             .removeIf(matchingPolicy -> 
                                 matchingPolicy.getPolicyType().equals(detectorPolicy.getPolicyType())
                             )

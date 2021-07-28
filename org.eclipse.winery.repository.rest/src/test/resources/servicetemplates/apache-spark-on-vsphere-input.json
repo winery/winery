@@ -101,9 +101,7 @@
             "capabilities": [],
             "requirements": [],
             "deploymentArtifacts": [],
-            "policies": {
-                "policy": []
-            }
+            "policies": []
         },
         {
             "documentation": [],
@@ -135,9 +133,7 @@
             "capabilities": [],
             "requirements": [],
             "deploymentArtifacts": [],
-            "policies": {
-                "policy": []
-            }
+            "policies": []
         },
         {
             "documentation": [],
@@ -157,9 +153,7 @@
             "capabilities": [],
             "requirements": [],
             "deploymentArtifacts": [],
-            "policies": {
-                "policy": []
-            }
+            "policies": []
         },
         {
             "documentation": [],
@@ -188,9 +182,7 @@
                     "artifactRef": "{http://opentosca.org/artifacttemplates}Pi_Estimation_DA"
                 }
             ],
-            "policies": {
-                "policy": []
-            }
+            "policies": []
         },
         {
             "documentation": [],
@@ -210,9 +202,7 @@
             "capabilities": [],
             "requirements": [],
             "deploymentArtifacts": [],
-            "policies": {
-                "policy": []
-            }
+            "policies": []
         }
     ]
 }

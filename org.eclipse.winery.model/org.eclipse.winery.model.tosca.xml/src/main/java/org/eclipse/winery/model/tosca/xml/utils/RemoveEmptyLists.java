@@ -19,7 +19,7 @@ import org.eclipse.winery.model.tosca.xml.XTCapability;
 import org.eclipse.winery.model.tosca.xml.XTDeploymentArtifact;
 import org.eclipse.winery.model.tosca.xml.XTEntityTemplate;
 import org.eclipse.winery.model.tosca.xml.XTNodeTemplate;
-import org.eclipse.winery.model.tosca.xml.XTPolicies;
+import org.eclipse.winery.model.tosca.xml.XTPolicy;
 import org.eclipse.winery.model.tosca.xml.XTPropertyConstraint;
 import org.eclipse.winery.model.tosca.xml.XTRelationshipTemplate;
 import org.eclipse.winery.model.tosca.xml.XTRequirement;
@@ -66,8 +66,8 @@ public class RemoveEmptyLists extends Visitor {
         if ((deploymentArtifacts != null) && deploymentArtifacts.isEmpty()) {
             nodeTemplate.setDeploymentArtifacts(null);
         }
-        final XTPolicies policies = nodeTemplate.getPolicies();
-        if ((policies != null) && policies.getPolicy().isEmpty()) {
+        final List<XTPolicy> policies = nodeTemplate.getPolicies();
+        if ((policies != null) && policies.isEmpty()) {
             nodeTemplate.setPolicies(null);
         }
         super.visit(nodeTemplate);

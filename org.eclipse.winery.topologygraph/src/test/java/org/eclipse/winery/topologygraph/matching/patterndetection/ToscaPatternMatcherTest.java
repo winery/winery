@@ -14,10 +14,12 @@
 
 package org.eclipse.winery.topologygraph.matching.patterndetection;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.topologygraph.matching.MockNamespaceManager;
@@ -32,16 +34,21 @@ class ToscaPatternMatcherTest {
 
     @Test
     public void behaviorPatternsCompatible() {
-        TPolicies detectorPolicies = new TPolicies();
-        detectorPolicies.getPolicy().add(new TPolicy(new TPolicy.Builder(QName.valueOf("{ns}type1"))));
-        TPolicies candidatePolicies = new TPolicies();
 
-        TNodeTemplate detector = new TNodeTemplate();
-        detector.setPolicies(detectorPolicies);
+        List<TPolicy> detectorPolicies = new ArrayList<>();
+        detectorPolicies.add(
+            new TPolicy.Builder(QName.valueOf("{ns}type1")).build()
+        );
+        List<TPolicy> candidatePolicies = new ArrayList<>();
+
+        TNodeTemplate detector = new TNodeTemplate.Builder("detector", QName.valueOf("{ns}type"))
+            .setPolicies(detectorPolicies)
+            .build();
         ToscaNode detectorNode = new ToscaNode();
         detectorNode.setNodeTemplate(detector);
-        TNodeTemplate candidate = new TNodeTemplate();
-        candidate.setPolicies(candidatePolicies);
+        TNodeTemplate candidate = new TNodeTemplate.Builder("candidate", QName.valueOf("{ns}type"))
+            .setPolicies(candidatePolicies)
+            .build();
         ToscaNode candidateNode = new ToscaNode();
         candidateNode.setNodeTemplate(candidate);
 
@@ -56,20 +63,20 @@ class ToscaPatternMatcherTest {
         // detector has policy, candidate doesn't
         assertTrue(matcher.behaviorPatternsCompatible(detectorNode, candidateNode));
 
-        detectorPolicies.getPolicy().clear();
-        candidatePolicies.getPolicy().add(new TPolicy(new TPolicy.Builder(QName.valueOf("{ns}type1"))));
+        detectorPolicies.clear();
+        candidatePolicies.add(new TPolicy(new TPolicy.Builder(QName.valueOf("{ns}type1"))));
         // candidate has policy, detector doesn't
         assertTrue(matcher.behaviorPatternsCompatible(detectorNode, candidateNode));
 
-        detectorPolicies.getPolicy().add(new TPolicy(new TPolicy.Builder(QName.valueOf("{patternNs}type2"))));
+        detectorPolicies.add(new TPolicy(new TPolicy.Builder(QName.valueOf("{patternNs}type2"))));
         // detector has behavior pattern, candidate doesn't
         assertFalse(matcher.behaviorPatternsCompatible(detectorNode, candidateNode));
 
-        candidatePolicies.getPolicy().add(new TPolicy(new TPolicy.Builder(QName.valueOf("{patternNs}type2"))));
+        candidatePolicies.add(new TPolicy(new TPolicy.Builder(QName.valueOf("{patternNs}type2"))));
         // detector and candidate have same behavior pattern
         assertTrue(matcher.behaviorPatternsCompatible(detectorNode, candidateNode));
 
-        candidatePolicies.getPolicy().add(new TPolicy(new TPolicy.Builder(QName.valueOf("{patternNs}type3"))));
+        candidatePolicies.add(new TPolicy(new TPolicy.Builder(QName.valueOf("{patternNs}type3"))));
         // candidate has different behavior pattern than detector
         assertFalse(matcher.behaviorPatternsCompatible(detectorNode, candidateNode));
     }

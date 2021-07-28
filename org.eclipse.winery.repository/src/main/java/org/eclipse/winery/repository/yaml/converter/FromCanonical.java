@@ -67,7 +67,6 @@ import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TOperation;
 import org.eclipse.winery.model.tosca.TOperationDefinition;
 import org.eclipse.winery.model.tosca.TParameter;
-import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TPolicyType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
@@ -493,12 +492,12 @@ public class FromCanonical {
         return node.stream()
             .filter(Objects::nonNull)
             .map(entry -> convert(
-                entry,
-                Optional.ofNullable(implementation.getImplementationArtifacts())
-                    .orElse(new ArrayList<>())
-                    .stream()
-                    .filter(impl -> Objects.nonNull(impl) && impl.getInterfaceName().equals(entry.getName()))
-                    .collect(Collectors.toList())
+                    entry,
+                    Optional.ofNullable(implementation.getImplementationArtifacts())
+                        .orElse(new ArrayList<>())
+                        .stream()
+                        .filter(impl -> Objects.nonNull(impl) && impl.getInterfaceName().equals(entry.getName()))
+                        .collect(Collectors.toList())
                 )
             )
             .flatMap(entry -> entry.entrySet().stream())
@@ -1045,17 +1044,6 @@ public class FromCanonical {
             node.getName(),
             builder.build()
         ));
-    }
-
-    private Map<String, YTPolicyDefinition> convert(TPolicies node) {
-        if (Objects.isNull(node)) {
-            return null;
-        }
-        return node.getPolicy().stream()
-            .filter(Objects::nonNull)
-            .map(this::convert)
-            .flatMap(map -> map.entrySet().stream())
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     private <T, K> Map<String, K> convert(List<T> nodes) {

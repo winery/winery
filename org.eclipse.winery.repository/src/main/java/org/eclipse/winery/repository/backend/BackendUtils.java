@@ -113,7 +113,6 @@ import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlans;
-import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TPolicyType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
@@ -172,7 +171,6 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.ls.LSInput;
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
@@ -286,7 +284,7 @@ public class BackendUtils {
 
     /**
      * Do <em>not</em> use this for creating URLs. Use {@link Util#getUrlPath(java.lang.String)} or
-     * RestUtils#getAbsoluteURL(org.eclipse.winery.common.ids.GenericId instead.
+     * RestUtils#getAbsoluteURL(org.eclipse.winery.common.ids.GenericId) instead.
      *
      * @return the path starting from the root element to the current element. Separated by "/", URL-encoded, but
      * <b>not</b> double encoded. With trailing slash if sub-resources can exist
@@ -308,8 +306,8 @@ public class BackendUtils {
     }
 
     /**
-     * Returns the filename with its containing subdirectory. If the file doesn't lie in a sub directory, it only
-     * returns the filename.
+     * Returns the filename with its containing subdirectory. If the file doesn't lie in a subdirectory, it only returns
+     * the filename.
      *
      * @return the filename and the file's potential subdirectory.
      */
@@ -486,17 +484,17 @@ public class BackendUtils {
      *
      * @param tcId the id of the element the wrapper is used for
      * @param defs the definitions to update
-     * @return a definitions element prepared for wrapping a definition child
+     * @return a definitions' element prepared for wrapping a definition child
      */
     public static TDefinitions updateWrapperDefinitions(DefinitionsChildId tcId, TDefinitions defs, IRepository repo) {
         // set target namespace
         // an internal namespace is not possible
         //   a) tPolicyTemplate and tArtifactTemplate do NOT support the "targetNamespace" attribute
-        //   b) the imports statement would look bad as it always imported the artificial namespace
+        //   b) the imports' statement would look bad as it always imported the artificial namespace
         defs.setTargetNamespace(tcId.getNamespace().getDecoded());
 
-        // set a unique id to create a valid definitions element
-        // we do not use UUID to be more human readable and deterministic (for debugging)
+        // set a unique id to create a valid definitions' element
+        // we do not use UUID to be more human-readable and deterministic (for debugging)
         String prefix = repo.getNamespaceManager().getPrefix(tcId.getNamespace());
         String elId = tcId.getXmlId().getDecoded();
         defs.setId(prefix + "-" + elId);
@@ -531,7 +529,7 @@ public class BackendUtils {
         nodeTemplateClone.setMinInstances(nodeTemplate.getMinInstances());
         nodeTemplateClone.setName(nodeTemplate.getName());
         if (nodeTemplate.getPolicies() != null) {
-            nodeTemplateClone.setPolicies(new TPolicies(new ArrayList<>(nodeTemplate.getPolicies().getPolicy())));
+            nodeTemplateClone.setPolicies(new ArrayList<>(nodeTemplate.getPolicies()));
         }
         nodeTemplateClone.setRequirements(nodeTemplate.getRequirements());
         nodeTemplateClone.setCapabilities(nodeTemplate.getCapabilities());
@@ -576,7 +574,7 @@ public class BackendUtils {
         relationshipTemplateClone.setName(relationshipTemplate.getName());
         relationshipTemplateClone.setRelationshipConstraints(relationshipTemplate.getRelationshipConstraints());
         if (relationshipTemplateClone.getPolicies() != null) {
-            relationshipTemplateClone.setPolicies(new TPolicies(new ArrayList<>(relationshipTemplate.getPolicies().getPolicy())));
+            relationshipTemplateClone.setPolicies(new ArrayList<>(relationshipTemplate.getPolicies()));
         }
 
         String transferType =
@@ -595,7 +593,7 @@ public class BackendUtils {
      * idOfContainedElement is used as id
      *
      * @param tcId the id of the element the wrapper is used for
-     * @return a definitions element prepared for wrapping a definition child instance
+     * @return a definitions' element prepared for wrapping a definition child instance
      */
     public static TDefinitions createWrapperDefinitions(DefinitionsChildId tcId, IRepository repo) {
         TDefinitions defs = new TDefinitions();
@@ -988,8 +986,7 @@ public class BackendUtils {
         Detector detector = parser.getDetector();
         Metadata md = new Metadata();
         md.add(Metadata.RESOURCE_NAME_KEY, fn);
-        final MediaType mediaType = detector.detect(bis, md);
-        return mediaType;
+        return detector.detect(bis, md);
     }
 
     /**
@@ -1322,7 +1319,7 @@ public class BackendUtils {
             thePlans.add(plan);
         }
 
-        if (serviceTemplate.getPlans().getPlan().isEmpty()) {
+        if (serviceTemplate.getPlans() != null && serviceTemplate.getPlans().getPlan().isEmpty()) {
             serviceTemplate.setPlans(null);
         }
 
@@ -1364,19 +1361,19 @@ public class BackendUtils {
         return new ErrorHandler() {
 
             @Override
-            public void warning(SAXParseException exception) throws SAXException {
+            public void warning(SAXParseException exception) {
                 // we don't care
             }
 
             @Override
-            public void fatalError(SAXParseException exception) throws SAXException {
+            public void fatalError(SAXParseException exception) {
                 sb.append("Fatal Error: ");
                 sb.append(exception.getMessage());
                 sb.append("\n");
             }
 
             @Override
-            public void error(SAXParseException exception) throws SAXException {
+            public void error(SAXParseException exception) {
                 sb.append("Fatal Error: ");
                 sb.append(exception.getMessage());
                 sb.append("\n");
@@ -1475,8 +1472,7 @@ public class BackendUtils {
         Objects.requireNonNull(topologyTemplateA);
         Objects.requireNonNull(topologyTemplateB);
 
-        @SuppressWarnings("deprecated")
-        TTopologyTemplate topologyTemplateToBeMerged = new TTopologyTemplate();
+        TTopologyTemplate topologyTemplateToBeMerged = new TTopologyTemplate.Builder().build();
         Map<String, String> idMapping = new HashMap<>();
 
         Optional<Integer> shiftLeft = topologyTemplateB.getNodeTemplateOrRelationshipTemplate().stream()

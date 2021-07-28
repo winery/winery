@@ -53,25 +53,6 @@ export class InheritanceUtils {
         );
     }
 
-    /**
-     * Retrieves the effective value of a given field of an entity type by traversing the type ancestry upwards and getting the first occurrence found of
-     * this field. For example, you can get the effictive mime_type of an artifact type using this method.
-     * @param typeName the type of the entity as a qname string e.g., '{tosca.nodes}.Compute'.
-     * @param fieldName the name of the field we are interested in, e.g., 'documentation'.
-     * @param allTypes the set of all types of this specific entity type, e.g., the linear set of all node types.
-     */
-    static getEffectiveSingleFieldValueOfAnEntityType(typeName: string, fieldName: string, allTypes: EntityType[]) {
-        const ancestry = this.getInheritanceAncestry(typeName, allTypes);
-
-        for (const entityType of ancestry) {
-            if (entityType[fieldName]) {
-                return entityType[fieldName];
-            }
-        }
-
-        return undefined;
-    }
-
     static getEffectiveCapabilityDefinitionsOfNodeType(nodeType: string, entityTypes: EntityTypesModel): CapabilityDefinitionModel[] {
         const listOfEffectiveCapabilityDefinitions: CapabilityDefinitionModel[] = [];
         const listOfBequeathingNodeTypes = this.getInheritanceAncestry(nodeType, entityTypes.unGroupedNodeTypes);
@@ -109,9 +90,9 @@ export class InheritanceUtils {
     }
 
     /**
-     * Returns a list of decendants of an entity type.
+     * Returns a list of descendants of an entity type.
      *
-     * Returns a list of all decendants of the entity type in no particular order.
+     * Returns a list of all descendants of the entity type in no particular order.
      * The list contains the entity type itself at position 0.
      * @param entityType
      * @param entityTypes
@@ -159,18 +140,19 @@ export class InheritanceUtils {
             notify.info('Could not find default type properties for type ' + typeQName);
             return { propertyType: PropertyDefinitionType.NONE };
         }
+
         if (defaultTypeProperties.propertyType === PropertyDefinitionType.KV) {
             Object.assign(result, defaultTypeProperties.kvproperties);
-        }
-        if (defaultTypeProperties.propertyType === PropertyDefinitionType.YAML) {
+        } else if (defaultTypeProperties.propertyType === PropertyDefinitionType.YAML) {
             Object.assign(result, defaultTypeProperties.properties);
         }
         // overwrite defaults from the entity type with the properties of the element
         if (templateElementProperties && templateElementProperties.properties) {
             Object.assign(result, templateElementProperties.properties);
         }
+
         // FIXME: because this method is only used for Yaml Policies this forced mapping to YAML-properties is doable
-        //  This is highly likely to break for anything beyond that specific usecase!
+        //  This is highly likely to break for anything beyond that specific use case!
         return { propertyType: PropertyDefinitionType.YAML, properties: result };
     }
 
@@ -330,7 +312,7 @@ export class InheritanceUtils {
                     };
 
                     return InheritanceUtils.hasKVPropDefinition(element) && selectedType.propertiesDefinition.elementName
-                                && selectedType.propertiesDefinition.namespace
+                    && selectedType.propertiesDefinition.namespace
                         ? {
                             ...properties,
                             elementName: selectedType.propertiesDefinition.elementName,

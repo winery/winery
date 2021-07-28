@@ -61,7 +61,7 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
 
         TNodeTemplate statefulComponent = topologyTemplate.getNodeTemplate("statefulComponent");
         assertNotNull(statefulComponent);
-        TPolicy stateful = statefulComponent.getPolicies().getPolicy().get(0);
+        TPolicy stateful = statefulComponent.getPolicies().get(0);
         assertEquals(OpenToscaBaseTypes.statefulComponentPolicyType, stateful.getPolicyType());
 
         TNodeTemplate stateless = topologyTemplate.getNodeTemplate("stateless");
@@ -90,17 +90,17 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
         assertNull(topologyTemplate.getNodeTemplate("VM_2").getPolicies());
 
         List<TPolicy> statefulFreezableComponentPolicies = topologyTemplate.getNodeTemplate("statefulFreezableComponent")
-            .getPolicies().getPolicy();
+            .getPolicies();
         assertEquals(2, statefulFreezableComponentPolicies.size());
         assertTrue(statefulFreezableComponentPolicies.contains(expectedPolicy));
 
         List<TPolicy> statefulNotFreezableComponentPolicies = topologyTemplate.getNodeTemplate("statefulNotFreezableComponent")
-            .getPolicies().getPolicy();
+            .getPolicies();
         assertEquals(1, statefulNotFreezableComponentPolicies.size());
         assertFalse(statefulNotFreezableComponentPolicies.contains(expectedPolicy));
 
         List<TPolicy> statelessFreezableComponentPolicies = topologyTemplate.getNodeTemplate("statelessFreezableComponent")
-            .getPolicies().getPolicy();
+            .getPolicies();
         assertEquals(1, statelessFreezableComponentPolicies.size());
         assertTrue(statelessFreezableComponentPolicies.contains(expectedPolicy));
 
@@ -123,14 +123,14 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
         freezablePolicy.setName("freezable");
 
         TTopologyTemplate topologyTemplate = EnhancementUtils.cleanFreezableComponents(element.getTopologyTemplate());
-        assertTrue(topologyTemplate.getNodeTemplate("statefulFreezableComponent").getPolicies().getPolicy().contains(freezablePolicy));
+        assertTrue(topologyTemplate.getNodeTemplate("statefulFreezableComponent").getPolicies().contains(freezablePolicy));
 
-        assertFalse(topologyTemplate.getNodeTemplate("statefulNotFreezableComponent").getPolicies().getPolicy().contains(freezablePolicy));
-        assertFalse(topologyTemplate.getNodeTemplate("AbstractNodeTypeWithProperties_1-w1-wip1").getPolicies().getPolicy().contains(freezablePolicy));
-        assertTrue(topologyTemplate.getNodeTemplate("statelessFreezableComponent").getPolicies().getPolicy().contains(freezablePolicy));
+        assertFalse(topologyTemplate.getNodeTemplate("statefulNotFreezableComponent").getPolicies().contains(freezablePolicy));
+        assertFalse(topologyTemplate.getNodeTemplate("AbstractNodeTypeWithProperties_1-w1-wip1").getPolicies().contains(freezablePolicy));
+        assertTrue(topologyTemplate.getNodeTemplate("statelessFreezableComponent").getPolicies().contains(freezablePolicy));
 
-        assertFalse(topologyTemplate.getNodeTemplate("statefulFreezableImplicitlyProvisioned").getPolicies().getPolicy().contains(freezablePolicy));
-        assertTrue(topologyTemplate.getNodeTemplate("VM_3").getPolicies().getPolicy().contains(freezablePolicy));
+        assertFalse(topologyTemplate.getNodeTemplate("statefulFreezableImplicitlyProvisioned").getPolicies().contains(freezablePolicy));
+        assertTrue(topologyTemplate.getNodeTemplate("VM_3").getPolicies().contains(freezablePolicy));
     }
 
     @Test

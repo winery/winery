@@ -15,6 +15,7 @@
 package org.eclipse.winery.model.tosca.xml;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -55,8 +56,9 @@ public class XTBoundaryDefinitions implements Serializable {
     @XmlElement(name = "Capability", required = true)
     protected List<XTCapabilityRef> capabilities;
 
-    @XmlElement(name = "Policies")
-    protected XTPolicies policies;
+    @XmlElementWrapper(name = "Policies")
+    @XmlElement(name = "Policy", required = true)
+    protected List<XTPolicy> policies;
 
     @XmlElementWrapper(name = "Interfaces")
     @XmlElement(name = "Interface", required = true)
@@ -125,11 +127,11 @@ public class XTBoundaryDefinitions implements Serializable {
         this.capabilities = value;
     }
 
-    public @Nullable XTPolicies getPolicies() {
+    public List<XTPolicy> getPolicies() {
         return policies;
     }
 
-    public void setPolicies(@Nullable XTPolicies value) {
+    public void setPolicies(List<XTPolicy> value) {
         this.policies = value;
     }
 
@@ -185,7 +187,7 @@ public class XTBoundaryDefinitions implements Serializable {
         private List<XTPropertyConstraint> propertyConstraints;
         private List<XTRequirementRef> requirements;
         private List<XTCapabilityRef> capabilities;
-        private XTPolicies policies;
+        private List<XTPolicy> policies;
         private List<XTExportedInterface> interfaces;
 
         public Builder() {
@@ -212,7 +214,7 @@ public class XTBoundaryDefinitions implements Serializable {
             return this;
         }
 
-        public Builder setPolicies(XTPolicies policies) {
+        public Builder setPolicies(List<XTPolicy> policies) {
             this.policies = policies;
             return this;
         }
@@ -222,36 +224,26 @@ public class XTBoundaryDefinitions implements Serializable {
             return this;
         }
 
-        public Builder addPolicies(XTPolicies policies) {
-            if (policies == null || policies.getPolicy().isEmpty()) {
+        public Builder addPolicies(List<XTPolicy> policies) {
+            if (policies == null || policies.isEmpty()) {
                 return this;
             }
 
             if (this.policies == null) {
                 this.policies = policies;
             } else {
-                this.policies.getPolicy().addAll(policies.getPolicy());
+                this.policies.addAll(policies);
             }
             return this;
         }
 
-        public Builder addPolicies(List<XTPolicy> policies) {
+        public Builder addPolicy(XTPolicy policies) {
             if (policies == null) {
                 return this;
             }
 
-            XTPolicies tmp = new XTPolicies();
-            tmp.getPolicy().addAll(policies);
-            return this.addPolicies(tmp);
-        }
-
-        public Builder addPolicies(XTPolicy policies) {
-            if (policies == null) {
-                return this;
-            }
-
-            XTPolicies tmp = new XTPolicies();
-            tmp.getPolicy().add(policies);
+            List<XTPolicy> tmp = new ArrayList<>();
+            tmp.add(policies);
             return this.addPolicies(tmp);
         }
 

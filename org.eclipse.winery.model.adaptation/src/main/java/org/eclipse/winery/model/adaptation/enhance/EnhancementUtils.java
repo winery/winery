@@ -143,7 +143,7 @@ public class EnhancementUtils {
                     TNodeTemplate host = (TNodeTemplate) hostedOnRelationship.getTargetElement().getRef();
                     if (node.getPolicies() != null
                         && ModelUtilities.containsPolicyType(host, OpenToscaBaseTypes.freezableComponentPolicyType)) {
-                        node.getPolicies().getPolicy()
+                        node.getPolicies()
                             .removeIf(policy -> policy.getPolicyType().equals(OpenToscaBaseTypes.freezableComponentPolicyType));
                         hostedOnRelationship = null;
                     } else {

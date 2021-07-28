@@ -14,9 +14,11 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.util.List;
+
 public interface HasPolicies {
 
-    TPolicies getPolicies();
+    List<TPolicy> getPolicies();
 
-    void setPolicies(TPolicies policies);
+    void setPolicies(List<TPolicy> policies);
 }

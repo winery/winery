@@ -39,7 +39,6 @@ import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TParameter;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlans;
-import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TPropertyConstraint;
 import org.eclipse.winery.model.tosca.TPropertyMapping;
@@ -206,9 +205,9 @@ public abstract class Visitor {
                 deploymentArtifact.accept(this);
             }
         }
-        final TPolicies policies = nodeTemplate.getPolicies();
+        final List<TPolicy> policies = nodeTemplate.getPolicies();
         if (policies != null) {
-            for (TPolicy policy : policies.getPolicy()) {
+            for (TPolicy policy : policies) {
                 policy.accept(this);
             }
         }
@@ -295,9 +294,9 @@ public abstract class Visitor {
     }
 
     private void acceptBoundaryDefinitionsPolicies(@NonNull TBoundaryDefinitions boundaryDefinitions) {
-        final TPolicies policies = boundaryDefinitions.getPolicies();
+        final List<TPolicy> policies = boundaryDefinitions.getPolicies();
         if (policies != null) {
-            for (TPolicy policy : policies.getPolicy()) {
+            for (TPolicy policy : policies) {
                 policy.accept(this);
             }
         }

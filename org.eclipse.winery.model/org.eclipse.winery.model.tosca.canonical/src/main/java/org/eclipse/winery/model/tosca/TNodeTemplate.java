@@ -55,27 +55,28 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
     @XmlElementWrapper(name = "Requirements")
     @XmlElement(name = "Requirement")
     protected List<TRequirement> requirements;
-    
+
     @XmlElementWrapper(name = "Capabilities")
     @XmlElement(name = "Capability")
     protected List<TCapability> capabilities;
-    
-    @XmlElement(name = "Policies")
-    protected TPolicies policies;
-    
+
+    @XmlElementWrapper(name = "Policies")
+    @XmlElement(name = "Policy", required = true)
+    protected List<TPolicy> policies;
+
     @XmlElementWrapper(name = "DeploymentArtifacts")
     @XmlElement(name = "DeploymentArtifact", required = true)
     protected List<TDeploymentArtifact> deploymentArtifacts;
-    
+
     @XmlAttribute(name = "name")
     protected String name;
-    
+
     @XmlAttribute(name = "minInstances")
     protected Integer minInstances;
-    
+
     @XmlAttribute(name = "maxInstances")
     protected String maxInstances;
-    
+
     // this element is added to support YAML mode
     @XmlElement(name = "Artifacts")
     protected List<TArtifact> artifacts;
@@ -148,11 +149,11 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
         this.capabilities = value;
     }
 
-    public @Nullable TPolicies getPolicies() {
+    public List<TPolicy> getPolicies() {
         return policies;
     }
 
-    public void setPolicies(@Nullable TPolicies value) {
+    public void setPolicies(List<TPolicy> value) {
         this.policies = value;
     }
 
@@ -255,10 +256,10 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
     }
 
     public static class Builder extends RelationshipSourceOrTarget.Builder<Builder> {
-        
+
         private List<TRequirement> requirements;
         private List<TCapability> capabilities;
-        private TPolicies policies;
+        private List<TPolicy> policies;
         private List<TDeploymentArtifact> deploymentArtifacts;
         private String name;
         private Integer minInstances;
@@ -285,7 +286,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
             return this;
         }
 
-        public Builder setPolicies(TPolicies policies) {
+        public Builder setPolicies(List<TPolicy> policies) {
             this.policies = policies;
             return this;
         }
@@ -374,7 +375,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
             addCapabilities(tmp);
         }
 
-        public Builder addPolicies(TPolicies policies) {
+        public Builder addPolicies(List<TPolicy> policies) {
             if (policies == null) {
                 return this;
             }
@@ -382,31 +383,21 @@ public class TNodeTemplate extends RelationshipSourceOrTarget implements HasPoli
             if (this.policies == null) {
                 this.policies = policies;
             } else {
-                this.policies.getPolicy().addAll(policies.getPolicy());
+                this.policies.addAll(policies);
             }
             return this;
         }
 
-        public Builder addPolicies(List<TPolicy> policies) {
+        public Builder addPolicy(TPolicy policies) {
             if (policies == null) {
                 return this;
             }
 
-            TPolicies tmp = new TPolicies();
-            tmp.getPolicy().addAll(policies);
+            List<TPolicy> tmp = new ArrayList<>();
+            tmp.add(policies);
             return addPolicies(tmp);
         }
 
-        public Builder addPolicies(TPolicy policies) {
-            if (policies == null) {
-                return this;
-            }
-
-            TPolicies tmp = new TPolicies();
-            tmp.getPolicy().add(policies);
-            return addPolicies(tmp);
-        }
-        
         public Builder setArtifacts(List<TArtifact> artifacts) {
             this.artifacts = artifacts;
             return self();

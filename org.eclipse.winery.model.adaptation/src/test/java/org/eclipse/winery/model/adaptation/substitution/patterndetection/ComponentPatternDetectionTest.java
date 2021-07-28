@@ -29,7 +29,6 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.model.adaptation.substitution.refinement.DefaultRefinementChooser;
 import org.eclipse.winery.model.tosca.HasPolicies;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
@@ -159,19 +158,19 @@ class ComponentPatternDetectionTest {
         TPolicy behaviorPattern1 = new TPolicy(new TPolicy.Builder(QName.valueOf("behaviorPattern1")).setName("behaviorPattern1"));
         TPolicy behaviorPattern2 = new TPolicy(new TPolicy.Builder(QName.valueOf("behaviorPattern2")).setName("behaviorPattern2"));
 
-        TPolicies topologyPolicies = new TPolicies(new ArrayList<>());
-        topologyPolicies.getPolicy().add(behaviorPattern1);
+        List<TPolicy> topologyPolicies = new ArrayList<>();
+        topologyPolicies.add(behaviorPattern1);
         ((HasPolicies) topology.getNodeTemplateOrRelationshipTemplate("database"))
             .setPolicies(topologyPolicies);
 
-        TPolicies detectorPolicies = new TPolicies(new ArrayList<>());
-        detectorPolicies.getPolicy().add(behaviorPattern1);
+        List<TPolicy> detectorPolicies = new ArrayList<>();
+        detectorPolicies.add(behaviorPattern1);
         ((HasPolicies) prm2.getDetector().getNodeTemplateOrRelationshipTemplate("database-rs2"))
             .setPolicies(detectorPolicies);
 
-        TPolicies refinementPolicies = new TPolicies(new ArrayList<>());
-        refinementPolicies.getPolicy().add(behaviorPattern1);
-        refinementPolicies.getPolicy().add(behaviorPattern2);
+        List<TPolicy> refinementPolicies = new ArrayList<>();
+        refinementPolicies.add(behaviorPattern1);
+        refinementPolicies.add(behaviorPattern2);
         ((HasPolicies) prm2.getRefinementStructure().getNodeTemplateOrRelationshipTemplate("relationalDb-d2"))
             .setPolicies(refinementPolicies);
 
@@ -183,8 +182,8 @@ class ComponentPatternDetectionTest {
 
         // behaviorPattern2 must have been removed as it cannot be guaranteed to be implemented
         HasPolicies db = ((HasPolicies) topology.getNodeTemplateOrRelationshipTemplate("relationalDb-d2"));
-        assertEquals(db.getPolicies().getPolicy().size(), 1);
-        assertTrue(db.getPolicies().getPolicy().contains(behaviorPattern1));
+        assertEquals(db.getPolicies().size(), 1);
+        assertTrue(db.getPolicies().contains(behaviorPattern1));
     }
 
     @Test
@@ -199,7 +198,7 @@ class ComponentPatternDetectionTest {
         List<TPolicy> detectorPolicies = new ArrayList<>();
         detectorPolicies.add(new TPolicy(new TPolicy.Builder(QName.valueOf("{patternNs}one")).setName("one")));
         detectorPolicies.add(new TPolicy(new TPolicy.Builder(QName.valueOf("{patternNs}two")).setName("two")));
-        detectorElement.setPolicies(new TPolicies(detectorPolicies));
+        detectorElement.setPolicies(detectorPolicies);
         TTopologyTemplate detector = new TTopologyTemplate(new TTopologyTemplate.Builder()
             .addNodeTemplates(Arrays.asList(detectorElement, detectorElement2)));
         // endregion
@@ -212,7 +211,7 @@ class ComponentPatternDetectionTest {
         );
         List<TPolicy> refinementPolicies = new ArrayList<>();
         refinementPolicies.add(new TPolicy(new TPolicy.Builder(QName.valueOf("{patternNs}one")).setName("one")));
-        refinementElement.setPolicies(new TPolicies(refinementPolicies));
+        refinementElement.setPolicies(refinementPolicies);
         TTopologyTemplate refinement = new TTopologyTemplate(new TTopologyTemplate.Builder()
             .addNodeTemplates(Arrays.asList(refinementElement, refinementElement2)));
         // endregion
@@ -232,7 +231,7 @@ class ComponentPatternDetectionTest {
         TNodeTemplate nodeTemplate2 = new TNodeTemplate(new TNodeTemplate.Builder("nodeTemplate2", QName.valueOf("{ns}type2"))
             .setX("1").setY("1")
         );
-        nodeTemplate.setPolicies(new TPolicies(new ArrayList<>(refinementPolicies)));
+        nodeTemplate.setPolicies(new ArrayList<>(refinementPolicies));
         TTopologyTemplate topology = new TTopologyTemplate(new TTopologyTemplate.Builder()
             .addNodeTemplates(Arrays.asList(nodeTemplate, nodeTemplate2)));
 
@@ -247,7 +246,7 @@ class ComponentPatternDetectionTest {
         TNodeTemplate nodeTemplate1 = topology.getNodeTemplate("nodeTemplate");
         assertNotNull(nodeTemplate1);
         assertNotNull(nodeTemplate1.getPolicies());
-        List<TPolicy> policies = nodeTemplate1.getPolicies().getPolicy();
+        List<TPolicy> policies = nodeTemplate1.getPolicies();
         assertEquals(policies.size(), 1);
         assertTrue(policies.stream().anyMatch(policy -> policy.getPolicyType().equals(QName.valueOf("{patternNs}one"))));
     }

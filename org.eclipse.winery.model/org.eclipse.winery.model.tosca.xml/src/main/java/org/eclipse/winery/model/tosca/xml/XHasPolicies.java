@@ -14,9 +14,11 @@
 
 package org.eclipse.winery.model.tosca.xml;
 
+import java.util.List;
+
 public interface XHasPolicies {
 
-    XTPolicies getPolicies();
+    List<XTPolicy> getPolicies();
 
-    void setPolicies(XTPolicies policies);
+    void setPolicies(List<XTPolicy> policies);
 }

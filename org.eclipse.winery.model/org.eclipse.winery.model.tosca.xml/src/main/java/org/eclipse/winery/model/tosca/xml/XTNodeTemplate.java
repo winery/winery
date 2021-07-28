@@ -52,8 +52,9 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
     @XmlElement(name = "Capability")
     protected List<XTCapability> capabilities;
 
-    @XmlElement(name = "Policies")
-    protected XTPolicies policies;
+    @XmlElementWrapper(name = "Policies")
+    @XmlElement(name = "Policy")
+    protected List<XTPolicy> policies;
 
     @XmlElementWrapper(name = "DeploymentArtifacts")
     @XmlElement(name = "DeploymentArtifact", required = true)
@@ -135,11 +136,11 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
         this.capabilities = value;
     }
 
-    public @Nullable XTPolicies getPolicies() {
+    public List<XTPolicy> getPolicies() {
         return policies;
     }
 
-    public void setPolicies(@Nullable XTPolicies value) {
+    public void setPolicies(List<XTPolicy> value) {
         this.policies = value;
     }
 
@@ -270,7 +271,7 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
     public static class Builder extends XRelationshipSourceOrTarget.Builder<Builder> {
         private List<XTRequirement> requirements;
         private List<XTCapability> capabilities;
-        private XTPolicies policies;
+        private List<XTPolicy> policies;
         private List<XTDeploymentArtifact> deploymentArtifacts;
         private String name;
         private Integer minInstances;
@@ -293,11 +294,6 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
 
         public Builder setCapabilities(List<XTCapability> capabilities) {
             this.capabilities = capabilities;
-            return this;
-        }
-
-        public Builder setPolicies(XTPolicies policies) {
-            this.policies = policies;
             return this;
         }
 
@@ -357,7 +353,7 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
             return this;
         }
 
-        public Builder addPolicies(XTPolicies policies) {
+        public Builder addPolicies(List<XTPolicy> policies) {
             if (policies == null) {
                 return this;
             }
@@ -365,7 +361,7 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
             if (this.policies == null) {
                 this.policies = policies;
             } else {
-                this.policies.getPolicy().addAll(policies.getPolicy());
+                this.policies.addAll(policies);
             }
             return this;
         }

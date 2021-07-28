@@ -58,7 +58,6 @@ import org.eclipse.winery.model.tosca.TOperation;
 import org.eclipse.winery.model.tosca.TParameter;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlans;
-import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TPolicyType;
@@ -816,8 +815,9 @@ public class ToCanonical {
             );
         }
         if (xml.getPolicies() != null) {
-            TPolicies policies = new TPolicies(convertList(xml.getPolicies().getPolicy(), this::convert));
-            builder.setPolicies(policies);
+            builder.setPolicies(
+                convertList(xml.getPolicies(), this::convert)
+            );
         }
         if (xml.getInterfaces() != null) {
             builder.setInterfaces(
@@ -953,8 +953,9 @@ public class ToCanonical {
             builder.setCapabilities(convertList(xml.getCapabilities(), this::convert));
         }
         if (xml.getPolicies() != null) {
-            TPolicies policies = new TPolicies(convertList(xml.getPolicies().getPolicy(), this::convert));
-            builder.setPolicies(policies);
+            builder.setPolicies(
+                convertList(xml.getPolicies(), this::convert)
+            );
         }
         if (xml.getDeploymentArtifacts() != null) {
             builder.addDeploymentArtifacts(convertList(xml.getDeploymentArtifacts(), this::convert));
@@ -979,8 +980,9 @@ public class ToCanonical {
             builder.setRelationshipConstraints(constraints);
         }
         if (xml.getPolicies() != null) {
-            TPolicies policies = new TPolicies(convertList(xml.getPolicies().getPolicy(), this::convert));
-            builder.setPolicies(policies);
+            builder.setPolicies(
+                convertList(xml.getPolicies(), this::convert)
+            );
         }
         fillEntityTemplateProperties(builder, xml);
         return builder.build();

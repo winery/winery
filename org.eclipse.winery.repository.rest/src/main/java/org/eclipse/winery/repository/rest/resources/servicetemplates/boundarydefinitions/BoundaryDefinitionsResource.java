@@ -31,7 +31,7 @@ import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties;
 import org.eclipse.winery.model.tosca.TCapabilityRef;
 import org.eclipse.winery.model.tosca.TExportedInterface;
-import org.eclipse.winery.model.tosca.TPolicies;
+import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TPropertyConstraint;
 import org.eclipse.winery.model.tosca.TPropertyMapping;
 import org.eclipse.winery.model.tosca.TRequirementRef;
@@ -126,12 +126,12 @@ public class BoundaryDefinitionsResource {
 
     @Path("policies/")
     public PoliciesResource getPoliciesResource() {
-        TPolicies policies = this.boundaryDefinitions.getPolicies();
+        List<TPolicy> policies = this.boundaryDefinitions.getPolicies();
         if (policies == null) {
-            policies = new TPolicies();
+            policies = new ArrayList<>();
             this.boundaryDefinitions.setPolicies(policies);
         }
-        return new PoliciesResource(policies.getPolicy(), this.serviceTemplateResource);
+        return new PoliciesResource(policies, this.serviceTemplateResource);
     }
 
     /**

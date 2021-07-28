@@ -145,21 +145,19 @@
                             "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "147"
                         },
                         "type": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithOneReqCapPairWithoutProperties",
-                        "policies": {
-                            "policy": [
-                                {
-                                    "documentation": [
-                                    ],
-                                    "any": [
-                                    ],
-                                    "otherAttributes": {
-                                    },
-                                    "name": "sdf",
-                                    "policyType": "{http://plain.winery.opentosca.org/policytypes}PolicyTypeWithXmlElementProperty",
-                                    "policyRef": "{http://plain.winery.opentosca.org/policytemplates}PolicyTemplateWithXmlElementProperty-PolicyTypeWithXmlElementProperty"
-                                }
-                            ]
-                        },
+                        "policies": [
+                            {
+                                "documentation": [
+                                ],
+                                "any": [
+                                ],
+                                "otherAttributes": {
+                                },
+                                "name": "sdf",
+                                "policyType": "{http://plain.winery.opentosca.org/policytypes}PolicyTypeWithXmlElementProperty",
+                                "policyRef": "{http://plain.winery.opentosca.org/policytemplates}PolicyTemplateWithXmlElementProperty-PolicyTypeWithXmlElementProperty"
+                            }
+                        ],
                         "name": "NodeTypeWithOneReqCapPairWithoutProperties",
                         "minInstances": 1,
                         "maxInstances": "1",

@@ -81,10 +81,7 @@
             "capabilities": [],
             "requirements": [],
             "deploymentArtifacts": [],
-            "policies": {
-                "policy": [
-                ]
-            },
+            "policies": [],
             "artifacts": []
         },
         {
@@ -111,10 +108,8 @@
             "capabilities": [],
             "requirements": [],
             "deploymentArtifacts": [],
-            "policies": {
-                "policy": [
-                ]
-            },
+            "policies": [
+            ],
             "artifacts": []
         },
         {
@@ -144,15 +139,11 @@
             "capabilities": [],
             "requirements": [],
             "deploymentArtifacts": [],
-            "policies": {
-                "policy": [
-                ]
-            },
+            "policies": [
+            ],
             "artifacts": []
         }
     ],
-    "policies": {
-        "policy": [
-        ]
-    }
+    "policies": [
+    ]
 }

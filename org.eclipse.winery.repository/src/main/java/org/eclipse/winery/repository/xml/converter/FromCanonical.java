@@ -121,7 +121,6 @@ import org.eclipse.winery.model.tosca.xml.XTOperation;
 import org.eclipse.winery.model.tosca.xml.XTParameter;
 import org.eclipse.winery.model.tosca.xml.XTPlan;
 import org.eclipse.winery.model.tosca.xml.XTPlans;
-import org.eclipse.winery.model.tosca.xml.XTPolicies;
 import org.eclipse.winery.model.tosca.xml.XTPolicy;
 import org.eclipse.winery.model.tosca.xml.XTPolicyTemplate;
 import org.eclipse.winery.model.tosca.xml.XTPolicyType;
@@ -720,9 +719,11 @@ public class FromCanonical {
             );
         }
         if (canonical.getPolicies() != null) {
-            XTPolicies policies = new XTPolicies();
-            policies.getPolicy().addAll(canonical.getPolicies().getPolicy().stream().map(this::convert).collect(Collectors.toList()));
-            builder.setPolicies(policies);
+            builder.setPolicies(
+                canonical.getPolicies().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         if (canonical.getInterfaces() != null) {
             builder.setInterfaces(
@@ -857,9 +858,9 @@ public class FromCanonical {
             builder.setCapabilities(convertList(canonical.getCapabilities(), this::convert));
         }
         if (canonical.getPolicies() != null) {
-            XTPolicies policies = new XTPolicies();
-            policies.getPolicy().addAll(convertList(canonical.getPolicies().getPolicy(), this::convert));
-            builder.setPolicies(policies);
+            builder.addPolicies(
+                convertList(canonical.getPolicies(), this::convert)
+            );
         }
         if (canonical.getDeploymentArtifacts() != null) {
             builder.setDeploymentArtifacts(
@@ -886,8 +887,9 @@ public class FromCanonical {
             builder.setRelationshipConstraints(constraints);
         }
         if (canonical.getPolicies() != null) {
-            XTPolicies xtPolicies = new XTPolicies(convertList(canonical.getPolicies().getPolicy(), this::convert));
-            builder.addPolicies(xtPolicies);
+            builder.addPolicies(
+                convertList(canonical.getPolicies(), this::convert)
+            );
         }
         fillEntityTemplateProperties(builder, canonical);
         return builder.build();

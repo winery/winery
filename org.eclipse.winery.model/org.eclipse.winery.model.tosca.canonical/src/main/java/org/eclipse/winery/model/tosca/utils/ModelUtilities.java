@@ -47,7 +47,6 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlans;
-import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
@@ -83,7 +82,7 @@ public abstract class ModelUtilities {
 
     static {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = null;
+        DocumentBuilder documentBuilder;
         try {
             documentBuilder = dbf.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
@@ -94,8 +93,9 @@ public abstract class ModelUtilities {
     }
 
     /**
-     * This is a special method for Winery. Winery allows to define a property by specifying name/value values. Instead
-     * of parsing the XML contained in TNodeType, this method is a convenience method to access this information
+     * This is a special method for Winery. Winery allows to define a property by specifying name (or value) values.
+     * Instead of parsing the XML contained in TNodeType, this method is a convenience method to access this
+     * information
      * <p>
      * The return type "Properties" is used because of the key/value properties.
      *
@@ -141,7 +141,7 @@ public abstract class ModelUtilities {
          * This is a quick hack: an XML schema container is created for each
          * element. Smarter solution: create a hash from namespace to XML schema
          * element and re-use that for each new element
-         * Drawback of "smarter" solution: not a single XSD file any more
+         * Drawback of "smarter" solution: not a single XSD file anymore
          */
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder;
@@ -588,7 +588,7 @@ public abstract class ModelUtilities {
     }
 
     /**
-     * Target label is not present if - empty string - undefined - null Target Label is not case sensitive -> always
+     * Target label is not present if - empty string - undefined - null Target Label is not case-sensitive -> always
      * lower case.
      */
     public static Optional<String> getTargetLabel(TNodeTemplate nodeTemplate) {
@@ -612,7 +612,7 @@ public abstract class ModelUtilities {
     }
 
     /**
-     * Target Label is not case sensitive -> set to lowercase.
+     * Target Label is not case-sensitive -> set to lowercase.
      */
     public static void setTargetLabel(TNodeTemplate nodeTemplate, String targetLabel) {
         Objects.requireNonNull(nodeTemplate);
@@ -650,7 +650,7 @@ public abstract class ModelUtilities {
     }
 
     /**
-     * @return incoming relation ship templates <em>pointing to node templates</em>
+     * @return incoming relationship templates <em>pointing to node templates</em>
      */
     public static List<TRelationshipTemplate> getIncomingRelationshipTemplates(TTopologyTemplate topologyTemplate,
                                                                                TNodeTemplate nodeTemplate) {
@@ -664,7 +664,7 @@ public abstract class ModelUtilities {
     }
 
     /**
-     * @return outgoing relation ship templates <em>pointing to node templates</em>
+     * @return outgoing relationship templates <em>pointing to node templates</em>
      */
     public static List<TRelationshipTemplate> getOutgoingRelationshipTemplates(TTopologyTemplate topologyTemplate,
                                                                                TNodeTemplate nodeTemplate) {
@@ -711,7 +711,7 @@ public abstract class ModelUtilities {
      * save it as XML, we have to "objectize" the content of Any
      *
      * @param templates The templates (node, relationship) to update. The content of the given collection is modified.
-     * @throws IllegalStateException if DocumentBuilder could not iniitialized
+     * @throws IllegalStateException if DocumentBuilder could not initialize
      * @throws IOException           if something goes wrong during parsing
      */
     public static void patchAnyAttributes(Collection<? extends TEntityTemplate> templates) throws IOException {
@@ -726,7 +726,8 @@ public abstract class ModelUtilities {
                     // QName is stored as plain string - this is the case when nested in "any"
                     qName = QName.valueOf(localPart);
                 } else {
-                    // sometimes, the QName is retrieved properly. So, we just keep it. This is the case when directly nested in nodetemplate's JSON
+                    // sometimes, the QName is retrieved properly. So, we just keep it.
+                    // This is the case when directly nested in nodetemplate JSON.
                     qName = new QName(otherAttribute.getKey().getNamespaceURI(), localPart);
                 }
                 tempConvertedOtherAttributes.put(qName, otherAttribute.getValue());
@@ -735,7 +736,7 @@ public abstract class ModelUtilities {
             template.getOtherAttributes().putAll(tempConvertedOtherAttributes);
             tempConvertedOtherAttributes.clear();
 
-            // Convert the String created by the JSON serialization back to a XML dom document
+            // Convert the String created by the JSON serialization back to an XML dom document
             TEntityTemplate.Properties properties = template.getProperties();
             if (properties instanceof TEntityTemplate.XmlProperties) {
                 TEntityTemplate.XmlProperties props = (TEntityTemplate.XmlProperties) properties;
@@ -746,7 +747,7 @@ public abstract class ModelUtilities {
 
     public static Object patchAnyItem(Object item) throws IOException {
         if (item == null) {
-            return item;
+            return null;
         }
         if (item instanceof String) {
             Document doc;
@@ -952,13 +953,14 @@ public abstract class ModelUtilities {
 
     public static TRelationshipTemplate createRelationshipTemplate(TNodeTemplate sourceNode, TNodeTemplate
         targetNode, QName type, String connectionDescription) {
-        TRelationshipTemplate rel = new TRelationshipTemplate();
-        rel.setType(type);
-        rel.setName(type.getLocalPart());
-        rel.setId("con-" + sourceNode.getId() + "-" + connectionDescription + "-" + targetNode.getId());
-        rel.setSourceNodeTemplate(sourceNode);
-        rel.setTargetNodeTemplate(targetNode);
-        return rel;
+        return new TRelationshipTemplate.Builder(
+            "con-" + sourceNode.getId() + "-" + connectionDescription + "-" + targetNode.getId(),
+            type,
+            sourceNode,
+            targetNode
+        )
+            .setName(type.getLocalPart())
+            .build();
     }
 
     public static TRelationshipTemplate createRelationshipTemplateAndAddToTopology(TNodeTemplate sourceNode,
@@ -982,22 +984,22 @@ public abstract class ModelUtilities {
     }
 
     public static void addPolicy(TNodeTemplate node, QName policyType, String name) {
-        TPolicies policies = node.getPolicies();
+        List<TPolicy> policies = node.getPolicies();
         if (Objects.isNull(policies)) {
-            policies = new TPolicies();
+            policies = new ArrayList<>();
             node.setPolicies(policies);
         }
 
-        TPolicy policy = new TPolicy();
-        policy.setPolicyType(policyType);
-        policy.setName(name);
-        policies.getPolicy()
-            .add(policy);
+        policies.add(
+            new TPolicy.Builder(policyType)
+                .setName(name)
+                .build()
+        );
     }
 
     public static boolean containsPolicyType(TNodeTemplate node, QName policyType) {
         return Objects.nonNull(node.getPolicies()) &&
-            node.getPolicies().getPolicy().stream()
+            node.getPolicies().stream()
                 .anyMatch(policy -> policy.getPolicyType()
                     .equals(policyType)
                 );

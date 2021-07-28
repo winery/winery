@@ -15,6 +15,7 @@
 package org.eclipse.winery.model.tosca;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -55,8 +56,9 @@ public class TBoundaryDefinitions implements Serializable {
     @XmlElement(name = "Capability", required = true)
     protected List<TCapabilityRef> capabilities;
 
-    @XmlElement(name = "Policies")
-    protected TPolicies policies;
+    @XmlElementWrapper(name = "Policies")
+    @XmlElement(name = "Policy", required = true)
+    protected List<TPolicy> policies;
 
     @XmlElementWrapper(name = "Interfaces")
     @XmlElement(name = "Interface", required = true)
@@ -125,11 +127,11 @@ public class TBoundaryDefinitions implements Serializable {
         this.capabilities = value;
     }
 
-    public @Nullable TPolicies getPolicies() {
+    public List<TPolicy> getPolicies() {
         return policies;
     }
 
-    public void setPolicies(@Nullable TPolicies value) {
+    public void setPolicies(List<TPolicy> value) {
         this.policies = value;
     }
 
@@ -186,7 +188,7 @@ public class TBoundaryDefinitions implements Serializable {
         private List<TPropertyConstraint> propertyConstraints;
         private List<TRequirementRef> requirements;
         private List<TCapabilityRef> capabilities;
-        private TPolicies policies;
+        private List<TPolicy> policies;
         private List<TExportedInterface> interfaces;
 
         public Builder() {
@@ -213,7 +215,7 @@ public class TBoundaryDefinitions implements Serializable {
             return this;
         }
 
-        public Builder setPolicies(TPolicies policies) {
+        public Builder setPolicies(List<TPolicy> policies) {
             this.policies = policies;
             return this;
         }
@@ -223,36 +225,26 @@ public class TBoundaryDefinitions implements Serializable {
             return this;
         }
 
-        public Builder addPolicies(TPolicies policies) {
-            if (policies == null || policies.getPolicy().isEmpty()) {
+        public Builder addPolicies(List<TPolicy> policies) {
+            if (policies == null || policies.isEmpty()) {
                 return this;
             }
 
             if (this.policies == null) {
                 this.policies = policies;
             } else {
-                this.policies.getPolicy().addAll(policies.getPolicy());
+                this.policies.addAll(policies);
             }
             return this;
         }
 
-        public Builder addPolicies(List<TPolicy> policies) {
+        public Builder addPolicy(TPolicy policies) {
             if (policies == null) {
                 return this;
             }
 
-            TPolicies tmp = new TPolicies();
-            tmp.getPolicy().addAll(policies);
-            return this.addPolicies(tmp);
-        }
-
-        public Builder addPolicies(TPolicy policies) {
-            if (policies == null) {
-                return this;
-            }
-
-            TPolicies tmp = new TPolicies();
-            tmp.getPolicy().add(policies);
+            List<TPolicy> tmp = new ArrayList<>();
+            tmp.add(policies);
             return this.addPolicies(tmp);
         }
 

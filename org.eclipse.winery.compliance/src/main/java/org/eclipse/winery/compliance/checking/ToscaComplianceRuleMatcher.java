@@ -49,7 +49,10 @@ public class ToscaComplianceRuleMatcher implements IToscaMatcher {
     public boolean isPoliciesCompatible(ToscaNode left, ToscaNode right) {
         if (left.getTemplate().getPolicies() != null) {
             if (right.getTemplate().getPolicies() != null) {
-                return mapToStringList(right.getTemplate().getPolicies().getPolicy()).containsAll(mapToStringList(left.getTemplate().getPolicies().getPolicy()));
+                return mapToStringList(right.getTemplate().getPolicies())
+                    .containsAll(
+                        mapToStringList(left.getTemplate().getPolicies())
+                    );
             } else {
                 return false;
             }
@@ -58,7 +61,7 @@ public class ToscaComplianceRuleMatcher implements IToscaMatcher {
     }
 
     private List<String> mapToStringList(@NonNull List<TPolicy> policy) {
-        return policy.stream().map(p -> p.getPolicyType().toString() + p.getPolicyRef().toString()).collect(Collectors.toList());
+        return policy.stream().map(p -> p.getPolicyType() + p.getPolicyRef().toString()).collect(Collectors.toList());
     }
 
     public boolean isPropertiesCompatible(ToscaNode left, ToscaNode right) {

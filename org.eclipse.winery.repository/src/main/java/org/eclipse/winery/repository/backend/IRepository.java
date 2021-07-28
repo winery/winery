@@ -84,7 +84,6 @@ import org.eclipse.winery.model.tosca.TInterfaceDefinition;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
-import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TPolicyType;
@@ -916,9 +915,9 @@ public interface IRepository extends IWineryRepositoryCommon {
 
         TBoundaryDefinitions boundaryDefs;
         if ((boundaryDefs = serviceTemplate.getBoundaryDefinitions()) != null) {
-            TPolicies policies = boundaryDefs.getPolicies();
+            List<TPolicy> policies = boundaryDefs.getPolicies();
             if (policies != null) {
-                for (TPolicy policy : policies.getPolicy()) {
+                for (TPolicy policy : policies) {
                     PolicyTypeId policyTypeId = new PolicyTypeId(policy.getPolicyType());
                     ids.add(policyTypeId);
                     PolicyTemplateId policyTemplateId = new PolicyTemplateId(policy.getPolicyRef());
@@ -933,10 +932,8 @@ public interface IRepository extends IWineryRepositoryCommon {
         if (topology != null) {
 
             if (Objects.nonNull(topology.getPolicies())) {
-                topology
-                    .getPolicies()
-                    .getPolicy()
-                    .stream().filter(Objects::nonNull)
+                topology.getPolicies().stream()
+                    .filter(Objects::nonNull)
                     .forEach(p -> {
                         QName type = p.getPolicyType();
                         PolicyTypeId policyTypeIdId = new PolicyTypeId(type);
@@ -951,9 +948,9 @@ public interface IRepository extends IWineryRepositoryCommon {
                     TNodeTemplate n = (TNodeTemplate) entityTemplate;
 
                     // crawl through policies
-                    TPolicies policies = n.getPolicies();
+                    List<TPolicy> policies = n.getPolicies();
                     if (policies != null) {
-                        for (TPolicy pol : policies.getPolicy()) {
+                        for (TPolicy pol : policies) {
                             QName type = pol.getPolicyType();
                             PolicyTypeId ctId = new PolicyTypeId(type);
                             ids.add(ctId);
@@ -1084,9 +1081,9 @@ public interface IRepository extends IWineryRepositoryCommon {
                     getCapabilitiesReferences(ids, n);
 
                     // crawl through policies
-                    TPolicies policies = n.getPolicies();
+                    List<TPolicy> policies = n.getPolicies();
                     if (policies != null) {
-                        for (TPolicy pol : policies.getPolicy()) {
+                        for (TPolicy pol : policies) {
                             QName type = pol.getPolicyType();
                             PolicyTypeId ctId = new PolicyTypeId(type);
                             ids.add(ctId);

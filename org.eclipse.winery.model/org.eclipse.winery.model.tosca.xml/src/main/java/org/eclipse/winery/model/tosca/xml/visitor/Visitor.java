@@ -37,7 +37,6 @@ import org.eclipse.winery.model.tosca.xml.XTNodeTemplate;
 import org.eclipse.winery.model.tosca.xml.XTParameter;
 import org.eclipse.winery.model.tosca.xml.XTPlan;
 import org.eclipse.winery.model.tosca.xml.XTPlans;
-import org.eclipse.winery.model.tosca.xml.XTPolicies;
 import org.eclipse.winery.model.tosca.xml.XTPolicy;
 import org.eclipse.winery.model.tosca.xml.XTPropertyConstraint;
 import org.eclipse.winery.model.tosca.xml.XTPropertyMapping;
@@ -185,9 +184,9 @@ public abstract class Visitor {
                 deploymentArtifact.accept(this);
             }
         }
-        final XTPolicies policies = nodeTemplate.getPolicies();
+        final List<XTPolicy> policies = nodeTemplate.getPolicies();
         if (policies != null) {
-            for (XTPolicy policy : policies.getPolicy()) {
+            for (XTPolicy policy : policies) {
                 policy.accept(this);
             }
         }
@@ -281,9 +280,9 @@ public abstract class Visitor {
     }
 
     private void acceptBoundaryDefinitionsPolicies(@NonNull XTBoundaryDefinitions boundaryDefinitions) {
-        final XTPolicies policies = boundaryDefinitions.getPolicies();
+        final List<XTPolicy> policies = boundaryDefinitions.getPolicies();
         if (policies != null) {
-            for (XTPolicy policy : policies.getPolicy()) {
+            for (XTPolicy policy : policies) {
                 policy.accept(this);
             }
         }

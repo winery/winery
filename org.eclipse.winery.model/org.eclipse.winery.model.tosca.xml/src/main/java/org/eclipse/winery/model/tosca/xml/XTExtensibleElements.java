@@ -72,12 +72,10 @@ public abstract class XTExtensibleElements implements Serializable {
     @Deprecated // required for XML deserialization
     public XTExtensibleElements() { }
 
-    public XTExtensibleElements(Builder builder) {
+    public XTExtensibleElements(Builder<?> builder) {
         this.documentation = builder.documentation;
         this.any = builder.any;
-        if (builder.otherAttributes == null) {
-            this.otherAttributes.clear();
-        } else {
+        if (builder.otherAttributes != null) {
             this.otherAttributes = builder.otherAttributes;
         }
     }
@@ -134,7 +132,7 @@ public abstract class XTExtensibleElements implements Serializable {
         public Builder() {
         }
 
-        public Builder(Builder builder) {
+        public Builder(Builder<?> builder) {
             this.documentation = builder.documentation;
             this.any = builder.any;
             this.otherAttributes = builder.otherAttributes;

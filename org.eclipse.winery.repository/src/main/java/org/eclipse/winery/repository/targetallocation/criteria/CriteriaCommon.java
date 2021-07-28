@@ -80,7 +80,7 @@ public abstract class CriteriaCommon extends Criteria {
             List<TopologyWrapper> generated = new ArrayList<>();
 
             for (List<PermutationHelper> permutation : permutations) {
-                TTopologyTemplate newTopologyTemplate = AllocationUtils.deepcopy(topology.getTopology());
+                TTopologyTemplate newTopologyTemplate = AllocationUtils.deepCopy(topology.getTopology());
 
                 Map<String, TTopologyTemplate> injectParameter = toInjectParameter(topology, permutation);
                 newTopologyTemplate = splitting.injectNodeTemplates(newTopologyTemplate, injectParameter, injectRemoval);

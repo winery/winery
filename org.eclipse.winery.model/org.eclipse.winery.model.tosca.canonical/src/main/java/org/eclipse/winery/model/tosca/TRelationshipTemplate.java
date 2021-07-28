@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
@@ -53,12 +54,16 @@ public class TRelationshipTemplate extends TEntityTemplate implements HasPolicie
     @XmlElement(name = "SourceElement", required = true)
     // AD: We need to combine source or target due to multi-inheritance
     protected TRelationshipTemplate.SourceOrTargetElement sourceElement;
+    
     @XmlElement(name = "TargetElement", required = true)
     protected TRelationshipTemplate.SourceOrTargetElement targetElement;
+    
     @XmlElement(name = "RelationshipConstraints")
     protected TRelationshipTemplate.RelationshipConstraints relationshipConstraints;
-    @XmlElement(name = "Policies")
-    protected TPolicies policies;
+    
+    @XmlElementWrapper(name = "Policies")
+    @XmlElement(name = "Policy", required = true)
+    protected List<TPolicy> policies;
 
     @XmlAttribute(name = "name")
     protected String name;
@@ -286,20 +291,21 @@ public class TRelationshipTemplate extends TEntityTemplate implements HasPolicie
         }
     }
 
-    public TPolicies getPolicies() {
+    public List<TPolicy> getPolicies() {
         return policies;
     }
 
-    public void setPolicies(TPolicies policies) {
+    public void setPolicies(List<TPolicy> policies) {
         this.policies = policies;
     }
 
     public static class Builder extends TEntityTemplate.Builder<Builder> {
+
         private SourceOrTargetElement sourceElement;
         private SourceOrTargetElement targetElement;
         private RelationshipConstraints relationshipConstraints;
         private String name;
-        private TPolicies policies;
+        private List<TPolicy> policies;
 
         public Builder(String id, QName type, RelationshipSourceOrTarget sourceElement, RelationshipSourceOrTarget targetElement) {
             super(id, type);
@@ -363,7 +369,7 @@ public class TRelationshipTemplate extends TEntityTemplate implements HasPolicie
             return new TRelationshipTemplate(this);
         }
 
-        public void setPolicies(TPolicies policies) {
+        public void setPolicies(List<TPolicy> policies) {
             this.policies = policies;
         }
     }

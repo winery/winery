@@ -61,8 +61,8 @@ public class ToscaPrmPropertyMatcher extends ToscaPropertyMatcher {
             HasPolicies candidate = (HasPolicies) candidateEntityElement;
 
             if (Objects.nonNull(detectorElement.getPolicies()) && Objects.nonNull(candidate.getPolicies())) {
-                List<TPolicy> candidatePolicies = candidate.getPolicies().getPolicy();
-                characterizingPatternsCompatible = detectorElement.getPolicies().getPolicy()
+                List<TPolicy> candidatePolicies = candidate.getPolicies();
+                characterizingPatternsCompatible = detectorElement.getPolicies()
                     .stream()
                     .allMatch(detectorPolicy -> {
                         if (this.namespaceManager.isPatternNamespace(detectorPolicy.getPolicyType().getNamespaceURI())) {
@@ -83,7 +83,7 @@ public class ToscaPrmPropertyMatcher extends ToscaPropertyMatcher {
                     });
             } else if (Objects.nonNull(detectorElement.getPolicies())) {
                 // only if there are patterns attached
-                characterizingPatternsCompatible = detectorElement.getPolicies().getPolicy()
+                characterizingPatternsCompatible = detectorElement.getPolicies()
                     .stream()
                     .noneMatch(detectorPolicy ->
                         this.namespaceManager.isPatternNamespace(detectorPolicy.getPolicyType().getNamespaceURI())

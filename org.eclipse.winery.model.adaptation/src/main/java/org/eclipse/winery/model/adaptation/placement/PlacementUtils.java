@@ -16,7 +16,6 @@ package org.eclipse.winery.model.adaptation.placement;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -54,7 +53,7 @@ import static org.eclipse.winery.model.adaptation.placement.Constants.SERVICE_TE
 import static org.eclipse.winery.model.adaptation.placement.Constants.TAG_NAME_LOCATION;
 import static org.eclipse.winery.model.adaptation.placement.Constants.TAG_NAME_PROVIDER;
 import static org.eclipse.winery.model.tosca.utils.ModelUtilities.QNAME_LOCATION;
-import static org.eclipse.winery.repository.targetallocation.util.AllocationUtils.deepcopy;
+import static org.eclipse.winery.repository.targetallocation.util.AllocationUtils.deepCopy;
 
 /**
  * This class exposes utility functions which group components of an incomplete topology together based on the data flow
@@ -92,7 +91,7 @@ public class PlacementUtils {
     public static TTopologyTemplate groupAndPlaceComponents(ServiceTemplateId serviceTemplateId,
                                                             TTopologyTemplate topology) {
         // input TopologyTemplate to reset if the completion fails
-        TTopologyTemplate topologyBackup = deepcopy(topology, false);
+        TTopologyTemplate topologyBackup = deepCopy(topology, false);
 
         // initialize the black list for each NodeTemplate of the TopologyTemplate
         Map<String, List<String>> blackList = new HashMap<>();
@@ -102,7 +101,7 @@ public class PlacementUtils {
 
         TTopologyTemplate completedTopology = null;
         while (Objects.isNull(completedTopology)) {
-            topology = deepcopy(topologyBackup, false);
+            topology = deepCopy(topologyBackup, false);
             assignToLocation(topology, blackList);
             assignToProviders(topology, blackList);
             completedTopology = completeModel(serviceTemplateId, topology, blackList);
@@ -525,12 +524,9 @@ public class PlacementUtils {
     }
 
     private static <K, V extends Comparable<? super V>> SortedSet<Map.Entry<K, V>> entriesSortedByValues(Map<K, V> map) {
-        SortedSet<Map.Entry<K, V>> sortedEntries = new TreeSet<>(new Comparator<Map.Entry<K, V>>() {
-            @Override
-            public int compare(Map.Entry<K, V> e1, Map.Entry<K, V> e2) {
-                int res = e2.getValue().compareTo(e1.getValue());
-                return res != 0 ? res : 1;
-            }
+        SortedSet<Map.Entry<K, V>> sortedEntries = new TreeSet<>((e1, e2) -> {
+            int res = e2.getValue().compareTo(e1.getValue());
+            return res != 0 ? res : 1;
         }
         );
         sortedEntries.addAll(map.entrySet());
@@ -612,7 +608,7 @@ public class PlacementUtils {
 
             // the provider has to support all defined policies
             if (Objects.nonNull(node.getPolicies())) {
-                for (TPolicy policy : node.getPolicies().getPolicy()) {
+                for (TPolicy policy : node.getPolicies()) {
                     // check the tags of the provider for the policy name
                     if (Objects.isNull(getTag(template.getTags(), policy.getPolicyType().toString()))) {
                         continue template;

@@ -20,7 +20,7 @@ import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TPolicies;
+import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TPropertyConstraint;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRequirement;
@@ -79,8 +79,8 @@ public class RemoveEmptyLists extends Visitor {
         if (deploymentArtifacts != null && deploymentArtifacts.isEmpty()) {
             nodeTemplate.setDeploymentArtifacts(null);
         }
-        final TPolicies policies = nodeTemplate.getPolicies();
-        if ((policies != null) && policies.getPolicy().isEmpty()) {
+        final List<TPolicy> policies = nodeTemplate.getPolicies();
+        if ((policies != null) && policies.isEmpty()) {
             nodeTemplate.setPolicies(null);
         }
         final List<TArtifact> artifacts = nodeTemplate.getArtifacts();
@@ -105,8 +105,8 @@ public class RemoveEmptyLists extends Visitor {
      * @param topologyTemplate the topology template to modify
      */
     public void removeEmptyLists(TTopologyTemplate topologyTemplate) {
-        final TPolicies policies = topologyTemplate.getPolicies();
-        if ((policies != null) && policies.getPolicy().isEmpty()) {
+        final List<TPolicy> policies = topologyTemplate.getPolicies();
+        if ((policies != null) && policies.isEmpty()) {
             topologyTemplate.setPolicies(null);
         }
         this.visit(topologyTemplate);
