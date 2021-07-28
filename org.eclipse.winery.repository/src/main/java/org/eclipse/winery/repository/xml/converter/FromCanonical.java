@@ -495,10 +495,10 @@ public class FromCanonical {
             builder.setProperties(convertProperties(canonical.getProperties()));
         }
         if (canonical.getPropertyConstraints() != null) {
-            XTEntityTemplate.PropertyConstraints constraints = new XTEntityTemplate.PropertyConstraints();
-            constraints.getPropertyConstraint().addAll(canonical.getPropertyConstraints().getPropertyConstraint().stream()
-                .map(this::convert).collect(Collectors.toList()));
-            builder.setPropertyConstraints(constraints);
+            builder.setPropertyConstraints(
+                canonical.getPropertyConstraints().stream()
+                    .map(this::convert).collect(Collectors.toList())
+            );
         }
         fillExtensibleElementsProperties(builder, canonical);
     }
@@ -681,10 +681,10 @@ public class FromCanonical {
     }
 
     private XTCondition convert(TCondition canonical) {
-        XTCondition xml = new XTCondition();
-        xml.setExpressionLanguage(canonical.getExpressionLanguage());
-        xml.getAny().addAll(canonical.getAny());
-        return xml;
+        return new XTCondition.Builder()
+            .setExpressionLanguage(canonical.getExpressionLanguage())
+            .setAny(canonical.getAny())
+            .build();
     }
 
     @Nullable
@@ -697,24 +697,27 @@ public class FromCanonical {
             XTBoundaryDefinitions.Properties props = new XTBoundaryDefinitions.Properties();
             props.setAny(canonical.getProperties().getAny());
             if (canonical.getProperties().getPropertyMappings() != null) {
-                XTBoundaryDefinitions.Properties.PropertyMappings mappings = new XTBoundaryDefinitions.Properties.PropertyMappings();
-                mappings.getPropertyMapping().addAll(canonical.getProperties().getPropertyMappings().getPropertyMapping().stream()
-                    .map(this::convert).collect(Collectors.toList()));
-                props.setPropertyMappings(mappings);
+                props.setPropertyMappings(
+                    canonical.getProperties().getPropertyMappings().stream()
+                        .map(this::convert)
+                        .collect(Collectors.toList())
+                );
             }
             builder.setProperties(props);
         }
         if (canonical.getRequirements() != null) {
-            XTBoundaryDefinitions.Requirements reqs = new XTBoundaryDefinitions.Requirements();
-            reqs.getRequirement().addAll(canonical.getRequirements().getRequirement().stream()
-                .map(this::convert).collect(Collectors.toList()));
-            builder.setRequirements(reqs);
+            builder.setRequirements(
+                canonical.getRequirements().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         if (canonical.getCapabilities() != null) {
-            XTBoundaryDefinitions.Capabilities caps = new XTBoundaryDefinitions.Capabilities();
-            caps.getCapability().addAll(canonical.getCapabilities().getCapability().stream()
-                .map(this::convert).collect(Collectors.toList()));
-            builder.setCapabilities(caps);
+            builder.setCapabilities(
+                canonical.getCapabilities().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         if (canonical.getPolicies() != null) {
             XTPolicies policies = new XTPolicies();
@@ -722,23 +725,27 @@ public class FromCanonical {
             builder.setPolicies(policies);
         }
         if (canonical.getInterfaces() != null) {
-            XTBoundaryDefinitions.Interfaces interfaces = new XTBoundaryDefinitions.Interfaces();
-            interfaces.getInterface().addAll(canonical.getInterfaces().getInterface().stream().map(this::convert).collect(Collectors.toList()));
-            builder.setInterfaces(interfaces);
+            builder.setInterfaces(
+                canonical.getInterfaces().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         if (canonical.getPropertyConstraints() != null) {
-            XTBoundaryDefinitions.PropertyConstraints constraints = new XTBoundaryDefinitions.PropertyConstraints();
-            constraints.getPropertyConstraint().addAll(convertList(canonical.getPropertyConstraints().getPropertyConstraint(), this::convert));
-            builder.setPropertyConstraints(constraints);
+            builder.setPropertyConstraints(
+                convertList(canonical.getPropertyConstraints(), this::convert)
+            );
         }
         return builder.build();
     }
 
     private XTExportedInterface convert(TExportedInterface canonical) {
-        XTExportedInterface exportedInterface = new XTExportedInterface();
-        exportedInterface.setName(canonical.getName());
-        exportedInterface.getOperation().addAll(canonical.getOperation().stream().map(this::convert).collect(Collectors.toList()));
-        return exportedInterface;
+        return new XTExportedInterface.Builder(
+            canonical.getName(),
+            canonical.getOperation().stream()
+                .map(this::convert)
+                .collect(Collectors.toList())
+        ).build();
     }
 
     private XTExportedOperation convert(TExportedOperation canonical) {
@@ -821,11 +828,11 @@ public class FromCanonical {
     }
 
     private XTPropertyMapping convert(TPropertyMapping canonical) {
-        XTPropertyMapping xml = new XTPropertyMapping();
-        xml.setServiceTemplatePropertyRef(canonical.getServiceTemplatePropertyRef());
-        xml.setTargetPropertyRef(canonical.getTargetPropertyRef());
-        xml.setTargetObjectRef(convert(canonical.getTargetObjectRef()));
-        return xml;
+        return new XTPropertyMapping.Builder(
+            canonical.getServiceTemplatePropertyRef(),
+            convert(canonical.getTargetObjectRef()),
+            canonical.getTargetPropertyRef()
+        ).build();
     }
 
     @Nullable

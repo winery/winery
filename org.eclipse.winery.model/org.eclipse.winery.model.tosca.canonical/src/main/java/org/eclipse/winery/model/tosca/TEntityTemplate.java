@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
@@ -66,8 +67,9 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
     @XmlElement(name = "Properties")
     protected TEntityTemplate.Properties properties;
 
-    @XmlElement(name = "PropertyConstraints")
-    protected TEntityTemplate.PropertyConstraints propertyConstraints;
+    @XmlElementWrapper(name = "PropertyConstraints")
+    @XmlElement(name = "PropertyConstraint", required = true)
+    protected List<TPropertyConstraint> propertyConstraints;
 
     // allow empty types to support YAML capability assignments
     @XmlAttribute(name = "type")
@@ -113,11 +115,11 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         this.properties = value;
     }
 
-    public TEntityTemplate.@Nullable PropertyConstraints getPropertyConstraints() {
+    public List<TPropertyConstraint> getPropertyConstraints() {
         return propertyConstraints;
     }
 
-    public void setPropertyConstraints(TEntityTemplate.@Nullable PropertyConstraints value) {
+    public void setPropertyConstraints(List<TPropertyConstraint> value) {
         this.propertyConstraints = value;
     }
 
@@ -279,61 +281,11 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         }
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "propertyConstraint"
-    })
-    public static class PropertyConstraints implements Serializable {
-
-        @XmlElement(name = "PropertyConstraint", required = true)
-        protected List<TPropertyConstraint> propertyConstraint;
-
-        /**
-         * Gets the value of the propertyConstraint property.
-         * <p>
-         * <p> This accessor method returns a reference to the live list, not a snapshot. Therefore any modification
-         * you make to the returned list will be present inside the JAXB object. This is why there is not a
-         * <CODE>set</CODE> method for the propertyConstraint property.
-         * <p>
-         * <p> For example, to add a new item, do as follows:
-         * <pre>
-         *    getPropertyConstraint().add(newItem);
-         * </pre>
-         * <p>
-         * <p>
-         * <p> Objects of the following type(s) are allowed in the list {@link TPropertyConstraint }
-         */
-        @NonNull
-        public List<TPropertyConstraint> getPropertyConstraint() {
-            if (propertyConstraint == null) {
-                propertyConstraint = new ArrayList<TPropertyConstraint>();
-            }
-            return this.propertyConstraint;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            PropertyConstraints that = (PropertyConstraints) o;
-            return Objects.equals(propertyConstraint, that.propertyConstraint);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(propertyConstraint);
-        }
-
-        public void accept(Visitor visitor) {
-            visitor.visit(this);
-        }
-    }
-
     @ADR(11)
     public abstract static class Builder<T extends Builder<T>> extends HasId.Builder<T> {
         private final QName type;
         private TEntityTemplate.Properties properties;
-        private TEntityTemplate.PropertyConstraints propertyConstraints;
+        private List<TPropertyConstraint> propertyConstraints;
 
         public Builder(String id, QName type) {
             super(id);
@@ -352,41 +304,31 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
             return self();
         }
 
-        public T setPropertyConstraints(TEntityTemplate.PropertyConstraints propertyConstraints) {
+        public T setPropertyConstraints(List<TPropertyConstraint> propertyConstraints) {
             this.propertyConstraints = propertyConstraints;
             return self();
         }
 
-        public T addPropertyConstraints(TEntityTemplate.PropertyConstraints propertyConstraints) {
-            if (propertyConstraints == null || propertyConstraints.getPropertyConstraint().isEmpty()) {
+        public T addPropertyConstraints(List<TPropertyConstraint> propertyConstraints) {
+            if (propertyConstraints == null || propertyConstraints.isEmpty()) {
                 return self();
             }
 
             if (this.propertyConstraints == null) {
                 this.propertyConstraints = propertyConstraints;
             } else {
-                this.propertyConstraints.getPropertyConstraint().addAll(propertyConstraints.getPropertyConstraint());
+                this.propertyConstraints.addAll(propertyConstraints);
             }
             return self();
         }
 
-        public T addPropertyConstraints(List<TPropertyConstraint> propertyConstraints) {
+        public T addPropertyConstraint(TPropertyConstraint propertyConstraints) {
             if (propertyConstraints == null) {
                 return self();
             }
 
-            TEntityTemplate.PropertyConstraints tmp = new TEntityTemplate.PropertyConstraints();
-            tmp.getPropertyConstraint().addAll(propertyConstraints);
-            return addPropertyConstraints(tmp);
-        }
-
-        public T addPropertyConstraints(TPropertyConstraint propertyConstraints) {
-            if (propertyConstraints == null) {
-                return self();
-            }
-
-            TEntityTemplate.PropertyConstraints tmp = new TEntityTemplate.PropertyConstraints();
-            tmp.getPropertyConstraint().add(propertyConstraints);
+            List<TPropertyConstraint> tmp = new ArrayList<>();
+            tmp.add(propertyConstraints);
             return addPropertyConstraints(tmp);
         }
     }

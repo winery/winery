@@ -14,6 +14,7 @@
 package org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions;
 
 import java.util.Iterator;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -29,7 +30,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.winery.model.ids.EncodingUtil;
-import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties.PropertyMappings;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TPropertyMapping;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
@@ -43,11 +43,10 @@ import org.apache.commons.lang3.StringUtils;
 
 public class PropertyMappingsResource {
 
-    private final PropertyMappings propertyMappings;
+    private final List<TPropertyMapping> propertyMappings;
     private final ServiceTemplateResource res;
 
-
-    public PropertyMappingsResource(PropertyMappings propertyMappings, ServiceTemplateResource res) {
+    public PropertyMappingsResource(List<TPropertyMapping> propertyMappings, ServiceTemplateResource res) {
         this.propertyMappings = propertyMappings;
         this.res = res;
     }
@@ -62,7 +61,7 @@ public class PropertyMappingsResource {
     @DELETE
     public Response onDelete(@PathParam("serviceTemplatePropertyRef") String serviceTemplatePropertyRef) {
         serviceTemplatePropertyRef = EncodingUtil.URLdecode(serviceTemplatePropertyRef);
-        Iterator<TPropertyMapping> iterator = this.propertyMappings.getPropertyMapping().iterator();
+        Iterator<TPropertyMapping> iterator = this.propertyMappings.iterator();
         while (iterator.hasNext()) {
             TPropertyMapping propertyMapping = iterator.next();
             if (propertyMapping.getServiceTemplatePropertyRef().equals(serviceTemplatePropertyRef)) {
@@ -103,7 +102,7 @@ public class PropertyMappingsResource {
         }
 
         // replace propertyMapping if it exists
-        for (TPropertyMapping propertyMapping : this.propertyMappings.getPropertyMapping()) {
+        for (TPropertyMapping propertyMapping : this.propertyMappings) {
             if (propertyMapping.getServiceTemplatePropertyRef().equals(apiPropertyMapping.serviceTemplatePropertyRef)) {
                 // we found a property with the same mapping
                 // just update it ...
@@ -115,9 +114,14 @@ public class PropertyMappingsResource {
 
         // the property mapping didn't exist,
         // we create a new one
-        TPropertyMapping newPropertyMapping = new TPropertyMapping();
-        this.updatePropertyMapping(newPropertyMapping, apiPropertyMapping.serviceTemplatePropertyRef, template, apiPropertyMapping.targetPropertyRef);
-        this.propertyMappings.getPropertyMapping().add(newPropertyMapping);
+        this.propertyMappings.add(
+            new TPropertyMapping(
+                apiPropertyMapping.serviceTemplatePropertyRef,
+                template,
+                apiPropertyMapping.targetPropertyRef
+            )
+        );
+
         return RestUtils.persist(this.res);
     }
 }

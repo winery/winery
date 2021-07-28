@@ -45,6 +45,11 @@ public class TCondition implements Serializable {
     @Deprecated // used for XML deserialization of API request content
     public TCondition() { }
 
+    public TCondition(List<Object> any, String expressionLanguage) {
+        this.any = any;
+        this.expressionLanguage = expressionLanguage;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

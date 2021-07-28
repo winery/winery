@@ -35,6 +35,11 @@ public class TPropertyConstraint extends TConstraint {
     @Deprecated // used for XML deserialization of API request content
     public TPropertyConstraint() { }
 
+    public TPropertyConstraint(Object any, String constraintType, String property) {
+        super(any, constraintType);
+        this.property = property;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

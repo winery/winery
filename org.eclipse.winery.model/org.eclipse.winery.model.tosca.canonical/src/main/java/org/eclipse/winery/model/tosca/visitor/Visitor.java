@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -57,7 +57,7 @@ import org.eclipse.jdt.annotation.NonNull;
  * In other words: The nesting is followed.
  *
  * In general, for all elements in the hierarchy, a visit method is implemented. This visit method visits all children
- * (in the TOSCA graph meta model). In case an element in the hierarchy has no children in the TOSCA graph meta model
+ * (in the TOSCA graph metamodel). In case an element in the hierarchy has no children in the TOSCA graph metamodel
  * and no children in the inheritance hierarchy, it is omitted.
  *
  * This class intentionally defines all default methods not as abstract to keep the children simple and to avoid
@@ -69,6 +69,7 @@ import org.eclipse.jdt.annotation.NonNull;
  *
  * TODO: Implement it for all DefinitionsChildren (NodeType, NodeTypeImplementation, ...)
  */
+@SuppressWarnings("unused")
 public abstract class Visitor {
 
     public void visit(TServiceTemplate serviceTemplate) {
@@ -130,7 +131,7 @@ public abstract class Visitor {
         for (TRelationshipTemplate relationshipTemplate : topologyTemplate.getRelationshipTemplates()) {
             relationshipTemplate.accept(this);
         }
-        // meta model does not offer more children
+        // metamodel does not offer more children
     }
 
     public void visit(TNodeTypeImplementation nodeTypeImplementation) {
@@ -160,7 +161,7 @@ public abstract class Visitor {
         for (TDocumentation documentation : extensibleElement.getDocumentation()) {
             documentation.accept(this);
         }
-        // meta model does not offer more children
+        // metamodel does not offer more children
     }
 
     public void visit(TEntityType entityType) {
@@ -182,11 +183,11 @@ public abstract class Visitor {
         if (properties != null) {
             visit(properties);
         }
-        final TEntityTemplate.PropertyConstraints propertyConstraints = entityTemplate.getPropertyConstraints();
+        final List<TPropertyConstraint> propertyConstraints = entityTemplate.getPropertyConstraints();
         if (propertyConstraints != null) {
-            propertyConstraints.accept(this);
+            propertyConstraints.forEach(this::visit);
         }
-        // meta model does not offer more children
+        // metamodel does not offer more children
     }
 
     public void visit(TNodeTemplate nodeTemplate) {
@@ -211,7 +212,7 @@ public abstract class Visitor {
                 policy.accept(this);
             }
         }
-        // meta model does not offer more children
+        // metamodel does not offer more children
     }
 
     public void visit(TRelationshipTemplate relationshipTemplate) {
@@ -222,18 +223,18 @@ public abstract class Visitor {
                 relationshipConstraint.accept(this);
             }
         }
-        // meta model does not offer more children
+        // metamodel does not offer more children
     }
 
     public void visit(TEntityTemplate.Properties properties) {
         // in all cases this is a leaf node, so no action to take
     }
 
-    public void visit(TEntityTemplate.PropertyConstraints propertyConstraints) {
-        for (TPropertyConstraint propertyConstraint : propertyConstraints.getPropertyConstraint()) {
+    public void visit(List<TPropertyConstraint> propertyConstraints) {
+        for (TPropertyConstraint propertyConstraint : propertyConstraints) {
             propertyConstraint.accept(this);
         }
-        // meta model does not offer more children
+        // metamodel does not offer more children
     }
 
     public void visit(TRelationshipTemplate.RelationshipConstraints.RelationshipConstraint relationshipConstraint) {
@@ -241,15 +242,8 @@ public abstract class Visitor {
     }
 
     public void visit(TRequirement requirement) {
-        final TEntityTemplate.Properties properties = requirement.getProperties();
-        if (properties != null) {
-            visit(properties);
-        }
-        final TEntityTemplate.PropertyConstraints propertyConstraints = requirement.getPropertyConstraints();
-        if (propertyConstraints != null) {
-            propertyConstraints.accept(this);
-        }
-        // meta model does not offer more children
+        this.visit((TEntityTemplate) requirement);
+        // metamodel does not offer more children
     }
 
     public void accept(TTag tag) {
@@ -274,27 +268,27 @@ public abstract class Visitor {
     }
 
     private void acceptBoundaryDefinitionsInterfaces(@NonNull TBoundaryDefinitions boundaryDefinitions) {
-        final TBoundaryDefinitions.Interfaces interfaces = boundaryDefinitions.getInterfaces();
+        final List<TExportedInterface> interfaces = boundaryDefinitions.getInterfaces();
         if (interfaces != null) {
-            for (TExportedInterface exportedInterface : interfaces.getInterface()) {
+            for (TExportedInterface exportedInterface : interfaces) {
                 exportedInterface.accept(this);
             }
         }
     }
 
     private void acceptBoundaryDefinitionsCapabilities(@NonNull TBoundaryDefinitions boundaryDefinitions) {
-        final TBoundaryDefinitions.Capabilities capabilities = boundaryDefinitions.getCapabilities();
+        final List<TCapabilityRef> capabilities = boundaryDefinitions.getCapabilities();
         if (capabilities != null) {
-            for (TCapabilityRef capabilityRef : capabilities.getCapability()) {
+            for (TCapabilityRef capabilityRef : capabilities) {
                 capabilityRef.accept(this);
             }
         }
     }
 
     private void acceptBoundaryDefinitionsRequirements(@NonNull TBoundaryDefinitions boundaryDefinitions) {
-        final TBoundaryDefinitions.Requirements requirements = boundaryDefinitions.getRequirements();
+        final List<TRequirementRef> requirements = boundaryDefinitions.getRequirements();
         if (requirements != null) {
-            for (TRequirementRef requirementRef : requirements.getRequirement()) {
+            for (TRequirementRef requirementRef : requirements) {
                 requirementRef.accept(this);
             }
         }
@@ -310,9 +304,9 @@ public abstract class Visitor {
     }
 
     private void acceptBoundaryDefinitionsPropertyConstraints(@NonNull TBoundaryDefinitions boundaryDefinitions) {
-        final TBoundaryDefinitions.PropertyConstraints propertyConstraints = boundaryDefinitions.getPropertyConstraints();
+        final List<TPropertyConstraint> propertyConstraints = boundaryDefinitions.getPropertyConstraints();
         if (propertyConstraints != null) {
-            for (TPropertyConstraint propertyConstraint : propertyConstraints.getPropertyConstraint()) {
+            for (TPropertyConstraint propertyConstraint : propertyConstraints) {
                 propertyConstraint.accept(this);
             }
         }
@@ -326,9 +320,9 @@ public abstract class Visitor {
     }
 
     public void visit(TBoundaryDefinitions.Properties properties) {
-        final TBoundaryDefinitions.Properties.PropertyMappings propertyMappings = properties.getPropertyMappings();
+        final List<TPropertyMapping> propertyMappings = properties.getPropertyMappings();
         if (propertyMappings != null) {
-            for (TPropertyMapping propertyMapping : propertyMappings.getPropertyMapping()) {
+            for (TPropertyMapping propertyMapping : propertyMappings) {
                 propertyMapping.accept(this);
             }
         }

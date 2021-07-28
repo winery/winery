@@ -242,12 +242,12 @@ public class ToCanonical {
                 return;
             }
             if (boundaries.getRequirements() != null) {
-                boundaries.getRequirements().getRequirement().forEach(req ->
+                boundaries.getRequirements().forEach(req ->
                     req.setRef(resolveRequirement(req.getRef(), topology))
                 );
             }
             if (boundaries.getCapabilities() != null) {
-                boundaries.getCapabilities().getCapability().forEach(cap ->
+                boundaries.getCapabilities().forEach(cap ->
                     cap.setRef(resolveCapability(cap.getRef(), topology))
                 );
             }
@@ -572,10 +572,10 @@ public class ToCanonical {
     }
 
     private TConstraint convert(XTConstraint xml) {
-        TConstraint constraint = new TConstraint();
-        constraint.setAny(xml.getAny());
-        constraint.setConstraintType(xml.getConstraintType());
-        return constraint;
+        return new TConstraint(
+            xml.getAny(),
+            xml.getConstraintType()
+        );
     }
 
     private TCapability convert(XTCapability xml) {
@@ -596,10 +596,11 @@ public class ToCanonical {
             builder.setProperties(convertProperties(xml.getProperties()));
         }
         if (xml.getPropertyConstraints() != null) {
-            TEntityTemplate.PropertyConstraints constraints = new TEntityTemplate.PropertyConstraints();
-            constraints.getPropertyConstraint().addAll(xml.getPropertyConstraints().getPropertyConstraint().stream()
-                .map(this::convert).collect(Collectors.toList()));
-            builder.setPropertyConstraints(constraints);
+            builder.setPropertyConstraints(
+                xml.getPropertyConstraints().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         fillExtensibleElementsProperties(builder, xml);
     }
@@ -616,11 +617,11 @@ public class ToCanonical {
     }
 
     private TPropertyConstraint convert(XTPropertyConstraint xml) {
-        TPropertyConstraint constraint = new TPropertyConstraint();
-        constraint.setAny(xml.getAny());
-        constraint.setConstraintType(xml.getConstraintType());
-        constraint.setProperty(xml.getProperty());
-        return constraint;
+        return new TPropertyConstraint(
+            xml.getAny(),
+            xml.getConstraintType(),
+            xml.getProperty()
+        );
     }
 
     private TExtension convert(XTExtension xml) {
@@ -786,10 +787,10 @@ public class ToCanonical {
     }
 
     private TCondition convert(XTCondition xml) {
-        TCondition canonical = new TCondition();
-        canonical.setExpressionLanguage(xml.getExpressionLanguage());
-        canonical.getAny().addAll(xml.getAny());
-        return canonical;
+        return new TCondition(
+            xml.getAny(),
+            xml.getExpressionLanguage()
+        );
     }
 
     private TBoundaryDefinitions convert(XTBoundaryDefinitions xml) {
@@ -798,35 +799,35 @@ public class ToCanonical {
             TBoundaryDefinitions.Properties props = new TBoundaryDefinitions.Properties();
             props.setAny(xml.getProperties().getAny());
             if (xml.getProperties().getPropertyMappings() != null) {
-                TBoundaryDefinitions.Properties.PropertyMappings mappings = new TBoundaryDefinitions.Properties.PropertyMappings();
-                mappings.getPropertyMapping().addAll(convertList(xml.getProperties().getPropertyMappings().getPropertyMapping(), this::convert));
-                props.setPropertyMappings(mappings);
+                props.setPropertyMappings(
+                    convertList(xml.getProperties().getPropertyMappings(), this::convert)
+                );
             }
             builder.setProperties(props);
         }
         if (xml.getRequirements() != null) {
-            TBoundaryDefinitions.Requirements reqs = new TBoundaryDefinitions.Requirements();
-            reqs.getRequirement().addAll(convertList(xml.getRequirements().getRequirement(), this::convert));
-            builder.setRequirements(reqs);
+            builder.setRequirements(
+                convertList(xml.getRequirements(), this::convert)
+            );
         }
         if (xml.getCapabilities() != null) {
-            TBoundaryDefinitions.Capabilities caps = new TBoundaryDefinitions.Capabilities();
-            caps.getCapability().addAll(convertList(xml.getCapabilities().getCapability(), this::convert));
-            builder.setCapabilities(caps);
+            builder.setCapabilities(
+                convertList(xml.getCapabilities(), this::convert)
+            );
         }
         if (xml.getPolicies() != null) {
             TPolicies policies = new TPolicies(convertList(xml.getPolicies().getPolicy(), this::convert));
             builder.setPolicies(policies);
         }
         if (xml.getInterfaces() != null) {
-            TBoundaryDefinitions.Interfaces interfaces = new TBoundaryDefinitions.Interfaces();
-            interfaces.getInterface().addAll(convertList(xml.getInterfaces().getInterface(), this::convert));
-            builder.setInterfaces(interfaces);
+            builder.setInterfaces(
+                convertList(xml.getInterfaces(), this::convert)
+            );
         }
         if (xml.getPropertyConstraints() != null) {
-            TBoundaryDefinitions.PropertyConstraints constraints = new TBoundaryDefinitions.PropertyConstraints();
-            constraints.getPropertyConstraint().addAll(convertList(xml.getPropertyConstraints().getPropertyConstraint(), this::convert));
-            builder.setPropertyConstraints(constraints);
+            builder.setPropertyConstraints(
+                convertList(xml.getPropertyConstraints(), this::convert)
+            );
         }
         return builder.build();
     }
@@ -900,17 +901,17 @@ public class ToCanonical {
     }
 
     private TCapabilityRef convert(XTCapabilityRef xml) {
-        TCapabilityRef canonical = new TCapabilityRef();
-        canonical.setName(xml.getName());
-        canonical.setRef(convert(xml.getRef()));
-        return canonical;
+        return new TCapabilityRef(
+            xml.getName(),
+            convert(xml.getRef())
+        );
     }
 
     private TRequirementRef convert(XTRequirementRef xml) {
-        TRequirementRef canonical = new TRequirementRef();
-        canonical.setName(xml.getName());
-        canonical.setRef(convert(xml.getRef()));
-        return canonical;
+        return new TRequirementRef(
+            xml.getName(),
+            convert(xml.getRef())
+        );
     }
 
     private TRequirement convert(XTRequirement xml) {
@@ -923,11 +924,11 @@ public class ToCanonical {
     }
 
     private TPropertyMapping convert(XTPropertyMapping xml) {
-        TPropertyMapping canonical = new TPropertyMapping();
-        canonical.setServiceTemplatePropertyRef(xml.getServiceTemplatePropertyRef());
-        canonical.setTargetPropertyRef(xml.getTargetPropertyRef());
-        canonical.setTargetObjectRef(convert(xml.getTargetObjectRef()));
-        return canonical;
+        return new TPropertyMapping(
+            xml.getServiceTemplatePropertyRef(),
+            convert(xml.getTargetObjectRef()),
+            xml.getTargetPropertyRef()
+        );
     }
 
     @Nullable
@@ -1017,7 +1018,6 @@ public class ToCanonical {
 
     private HasId convert(XHasId xml) {
         if (xml instanceof XTDefinitions) {
-            // what in the ever loving fuck am I supposed to do now??
             // this case should never ever come true
             throw new IllegalStateException("Attempted to convert a TDefinitions instance through HasId overload.");
         }

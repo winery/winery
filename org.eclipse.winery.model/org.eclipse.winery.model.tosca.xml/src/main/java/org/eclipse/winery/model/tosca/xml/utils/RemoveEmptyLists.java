@@ -20,6 +20,7 @@ import org.eclipse.winery.model.tosca.xml.XTDeploymentArtifact;
 import org.eclipse.winery.model.tosca.xml.XTEntityTemplate;
 import org.eclipse.winery.model.tosca.xml.XTNodeTemplate;
 import org.eclipse.winery.model.tosca.xml.XTPolicies;
+import org.eclipse.winery.model.tosca.xml.XTPropertyConstraint;
 import org.eclipse.winery.model.tosca.xml.XTRelationshipTemplate;
 import org.eclipse.winery.model.tosca.xml.XTRequirement;
 import org.eclipse.winery.model.tosca.xml.XTTopologyTemplate;
@@ -40,8 +41,8 @@ public class RemoveEmptyLists extends Visitor {
 
     @Override
     public void visit(XTEntityTemplate entityTemplate) {
-        final XTEntityTemplate.PropertyConstraints propertyConstraints = entityTemplate.getPropertyConstraints();
-        if ((propertyConstraints != null) && propertyConstraints.getPropertyConstraint().isEmpty()) {
+        final List<XTPropertyConstraint> propertyConstraints = entityTemplate.getPropertyConstraints();
+        if ((propertyConstraints != null) && propertyConstraints.isEmpty()) {
             entityTemplate.setPropertyConstraints(null);
         }
         XTEntityTemplate.Properties properties = entityTemplate.getProperties();

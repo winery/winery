@@ -164,12 +164,12 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     private void cullElementReferences() {
         final TTopologyTemplate topology = this.getServiceTemplate().getTopologyTemplate();
         TBoundaryDefinitions boundaryDefs = this.getServiceTemplate().getBoundaryDefinitions();
-        if (boundaryDefs == null) {
+        if (topology == null || boundaryDefs == null) {
             return;
         }
         if (boundaryDefs.getProperties() != null
             && boundaryDefs.getProperties().getPropertyMappings() != null) {
-            for (Iterator<TPropertyMapping> it = boundaryDefs.getProperties().getPropertyMappings().getPropertyMapping().iterator(); it.hasNext(); ) {
+            for (Iterator<TPropertyMapping> it = boundaryDefs.getProperties().getPropertyMappings().iterator(); it.hasNext(); ) {
                 TPropertyMapping propMapping = it.next();
                 HasId targetObject = propMapping.getTargetObjectRef();
                 if (!containsTarget(topology, targetObject)) {
@@ -179,7 +179,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
             }
         }
         if (boundaryDefs.getCapabilities() != null) {
-            for (Iterator<TCapabilityRef> it = boundaryDefs.getCapabilities().getCapability().iterator(); it.hasNext(); ) {
+            for (Iterator<TCapabilityRef> it = boundaryDefs.getCapabilities().iterator(); it.hasNext(); ) {
                 TCapabilityRef ref = it.next();
                 TCapability target = ref.getRef();
                 if (!containsCapability(topology, target)) {
@@ -189,7 +189,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
             }
         }
         if (boundaryDefs.getRequirements() != null) {
-            for (Iterator<TRequirementRef> it = boundaryDefs.getRequirements().getRequirement().iterator(); it.hasNext(); ) {
+            for (Iterator<TRequirementRef> it = boundaryDefs.getRequirements().iterator(); it.hasNext(); ) {
                 TRequirementRef ref = it.next();
                 TRequirement target = ref.getRef();
                 if (!containsRequirement(topology, target)) {
@@ -250,7 +250,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     public BoundaryDefinitionsResource getBoundaryDefinitionsResource() {
         TBoundaryDefinitions boundaryDefinitions = this.getServiceTemplate().getBoundaryDefinitions();
         if (boundaryDefinitions == null) {
-            boundaryDefinitions = new TBoundaryDefinitions();
+            boundaryDefinitions = new TBoundaryDefinitions.Builder().build();
             this.getServiceTemplate().setBoundaryDefinitions(boundaryDefinitions);
         }
         return new BoundaryDefinitionsResource(this, boundaryDefinitions);

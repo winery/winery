@@ -21,6 +21,7 @@ import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPolicies;
+import org.eclipse.winery.model.tosca.TPropertyConstraint;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
@@ -41,8 +42,8 @@ public class RemoveEmptyLists extends Visitor {
 
     @Override
     public void visit(TEntityTemplate entityTemplate) {
-        final TEntityTemplate.PropertyConstraints propertyConstraints = entityTemplate.getPropertyConstraints();
-        if ((propertyConstraints != null) && propertyConstraints.getPropertyConstraint().isEmpty()) {
+        final List<TPropertyConstraint> propertyConstraints = entityTemplate.getPropertyConstraints();
+        if ((propertyConstraints != null) && propertyConstraints.isEmpty()) {
             entityTemplate.setPropertyConstraints(null);
         }
         TEntityTemplate.Properties properties = entityTemplate.getProperties();

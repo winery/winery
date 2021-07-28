@@ -68,6 +68,7 @@ import org.eclipse.jdt.annotation.NonNull;
  *
  * TODO: Implement it for all DefinitionsChildren (NodeType, NodeTypeImplementation, ...)
  */
+@SuppressWarnings("unused")
 public abstract class Visitor {
 
     public void visit(XTServiceTemplate serviceTemplate) {
@@ -113,7 +114,12 @@ public abstract class Visitor {
                 parameter.accept(this);
             }
         }
-        plan.getOutputParameters();
+        XTPlan.OutputParameters outputParameters = plan.getOutputParameters();
+        if (outputParameters != null) {
+            for (XTParameter parameter : outputParameters.getOutputParameter()) {
+                parameter.accept(this);
+            }
+        }
     }
 
     public void visit(XTTopologyTemplate topologyTemplate) {
@@ -126,7 +132,7 @@ public abstract class Visitor {
         for (XTRelationshipTemplate relationshipTemplate : topologyTemplate.getRelationshipTemplates()) {
             relationshipTemplate.accept(this);
         }
-        // meta model does not offer more children
+        // metamodel does not offer more children
     }
 
     public void visit(XTExtensibleElements extensibleElement) {
@@ -134,7 +140,7 @@ public abstract class Visitor {
         for (XTDocumentation documentation : extensibleElement.getDocumentation()) {
             documentation.accept(this);
         }
-        // meta model does not offer more children
+        // metamodel does not offer more children
     }
 
     public void visit(XTEntityType entityType) {
@@ -156,11 +162,11 @@ public abstract class Visitor {
         if (properties != null) {
             properties.accept(this);
         }
-        final XTEntityTemplate.PropertyConstraints propertyConstraints = entityTemplate.getPropertyConstraints();
+        final List<XTPropertyConstraint> propertyConstraints = entityTemplate.getPropertyConstraints();
         if (propertyConstraints != null) {
-            propertyConstraints.accept(this);
+            propertyConstraints.forEach(this::visit);
         }
-        // meta model does not offer more children
+        // metamodel does not offer more children
     }
 
     public void visit(XTNodeTemplate nodeTemplate) {
@@ -185,7 +191,7 @@ public abstract class Visitor {
                 policy.accept(this);
             }
         }
-        // meta model does not offer more children
+        // metamodel does not offer more children
     }
 
     public void visit(XTRelationshipTemplate relationshipTemplate) {
@@ -196,18 +202,18 @@ public abstract class Visitor {
                 relationshipConstraint.accept(this);
             }
         }
-        // meta model does not offer more children
+        // metamodel does not offer more children
     }
 
     public void visit(XTEntityTemplate.Properties properties) {
         // this is a leaf because the xml model just has an "any" here
     }
 
-    public void visit(XTEntityTemplate.PropertyConstraints propertyConstraints) {
-        for (XTPropertyConstraint propertyConstraint : propertyConstraints.getPropertyConstraint()) {
+    public void visit(List<XTPropertyConstraint> propertyConstraints) {
+        for (XTPropertyConstraint propertyConstraint : propertyConstraints) {
             propertyConstraint.accept(this);
         }
-        // meta model does not offer more children
+        // metamodel does not offer more children
     }
 
     public void visit(XTRelationshipTemplate.RelationshipConstraints.RelationshipConstraint relationshipConstraint) {
@@ -218,19 +224,12 @@ public abstract class Visitor {
         for (XTRequirement requirement : requirements.getRequirement()) {
             requirement.accept(this);
         }
-        // meta model does not offer more children
+        // metamodel does not offer more children
     }
 
     public void visit(XTRequirement requirement) {
-        final XTEntityTemplate.Properties properties = requirement.getProperties();
-        if (properties != null) {
-            properties.accept(this);
-        }
-        final XTEntityTemplate.PropertyConstraints propertyConstraints = requirement.getPropertyConstraints();
-        if (propertyConstraints != null) {
-            propertyConstraints.accept(this);
-        }
-        // meta model does not offer more children
+        this.visit((XTEntityTemplate) requirement);
+        // metamodel does not offer more children
     }
 
     public void accept(XTTag tag) {
@@ -255,27 +254,27 @@ public abstract class Visitor {
     }
 
     private void acceptBoundaryDefinitionsInterfaces(@NonNull XTBoundaryDefinitions boundaryDefinitions) {
-        final XTBoundaryDefinitions.Interfaces interfaces = boundaryDefinitions.getInterfaces();
+        final List<XTExportedInterface> interfaces = boundaryDefinitions.getInterfaces();
         if (interfaces != null) {
-            for (XTExportedInterface exportedInterface : interfaces.getInterface()) {
+            for (XTExportedInterface exportedInterface : interfaces) {
                 exportedInterface.accept(this);
             }
         }
     }
 
     private void acceptBoundaryDefinitionsCapabilities(@NonNull XTBoundaryDefinitions boundaryDefinitions) {
-        final XTBoundaryDefinitions.Capabilities capabilities = boundaryDefinitions.getCapabilities();
+        final List<XTCapabilityRef> capabilities = boundaryDefinitions.getCapabilities();
         if (capabilities != null) {
-            for (XTCapabilityRef capabilityRef : capabilities.getCapability()) {
+            for (XTCapabilityRef capabilityRef : capabilities) {
                 capabilityRef.accept(this);
             }
         }
     }
 
     private void acceptBoundaryDefinitionsRequirements(@NonNull XTBoundaryDefinitions boundaryDefinitions) {
-        final XTBoundaryDefinitions.Requirements requirements = boundaryDefinitions.getRequirements();
+        final List<XTRequirementRef> requirements = boundaryDefinitions.getRequirements();
         if (requirements != null) {
-            for (XTRequirementRef requirementRef : requirements.getRequirement()) {
+            for (XTRequirementRef requirementRef : requirements) {
                 requirementRef.accept(this);
             }
         }
@@ -291,9 +290,9 @@ public abstract class Visitor {
     }
 
     private void acceptBoundaryDefinitionsPropertyConstraints(@NonNull XTBoundaryDefinitions boundaryDefinitions) {
-        final XTBoundaryDefinitions.PropertyConstraints propertyConstraints = boundaryDefinitions.getPropertyConstraints();
+        final List<XTPropertyConstraint> propertyConstraints = boundaryDefinitions.getPropertyConstraints();
         if (propertyConstraints != null) {
-            for (XTPropertyConstraint propertyConstraint : propertyConstraints.getPropertyConstraint()) {
+            for (XTPropertyConstraint propertyConstraint : propertyConstraints) {
                 propertyConstraint.accept(this);
             }
         }
@@ -307,9 +306,9 @@ public abstract class Visitor {
     }
 
     public void visit(XTBoundaryDefinitions.Properties properties) {
-        final XTBoundaryDefinitions.Properties.PropertyMappings propertyMappings = properties.getPropertyMappings();
+        final List<XTPropertyMapping> propertyMappings = properties.getPropertyMappings();
         if (propertyMappings != null) {
-            for (XTPropertyMapping propertyMapping : propertyMappings.getPropertyMapping()) {
+            for (XTPropertyMapping propertyMapping : propertyMappings) {
                 propertyMapping.accept(this);
             }
         }
