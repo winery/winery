@@ -112,7 +112,6 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TPlan;
-import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TPolicyType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
@@ -1238,31 +1237,25 @@ public class BackendUtils {
     public static void synchronizeReferences(ServiceTemplateId id, IRepository repository) throws IOException {
         final TServiceTemplate serviceTemplate = repository.getElement(id);
         // locally stored plans
-        TPlans plans = serviceTemplate.getPlans();
+        List<TPlan> plans = serviceTemplate.getPlans();
 
         // plans stored in the repository
         PlansId plansContainerId = new PlansId(id);
         SortedSet<PlanId> nestedPlans = repository.getNestedIds(plansContainerId, PlanId.class);
 
-        Set<PlanId> plansToAdd = new HashSet<>();
-        plansToAdd.addAll(nestedPlans);
+        Set<PlanId> plansToAdd = new HashSet<>(nestedPlans);
 
-        if (nestedPlans.isEmpty()) {
-            if (plans == null) {
-                // data on the file system equals the data -> no plans
-                return;
-            } else {
-                //noinspection StatementWithEmptyBody
-                // we have to check for equality later
-            }
+        if (nestedPlans.isEmpty() && plans == null) {
+            // data on the file system equals the data -> no plans
+            return;
         }
 
         if (plans == null) {
-            plans = new TPlans();
+            plans = new ArrayList<>();
             serviceTemplate.setPlans(plans);
         }
 
-        for (Iterator<TPlan> iterator = plans.getPlan().iterator(); iterator.hasNext(); ) {
+        for (Iterator<TPlan> iterator = plans.iterator(); iterator.hasNext(); ) {
             TPlan plan = iterator.next();
             if (plan.getPlanModel() != null) {
                 // in case, a plan is directly contained in a Model element, we do not need to do anything
@@ -1274,7 +1267,7 @@ public class BackendUtils {
                 if ((ref == null) || ref.startsWith("../")) {
                     // references to local plans start with "../"
                     // special case (due to errors in the importer): empty PlanModelReference field
-                    if (plan.getId() == null) {
+                    if (plan.getId() == null || plan.getId().isEmpty()) {
                         // invalid plan entry: no id.
                         // we remove the entry
                         iterator.remove();
@@ -1294,7 +1287,6 @@ public class BackendUtils {
         }
 
         // add all plans locally stored, but not contained in the XML, as plan element to the plans of the service template.
-        List<TPlan> thePlans = plans.getPlan();
         for (PlanId planId : plansToAdd) {
             SortedSet<RepositoryFileReference> files = repository.getContainedFiles(planId);
             if (files.size() != 1) {
@@ -1302,11 +1294,13 @@ public class BackendUtils {
             }
             RepositoryFileReference ref = files.iterator().next();
 
-            TPlan plan = new TPlan();
-            plan.setId(planId.getXmlId().getDecoded());
-            plan.setName(planId.getXmlId().getDecoded());
-            plan.setPlanType(Constants.TOSCA_PLANTYPE_BUILD_PLAN);
-            plan.setPlanLanguage(Namespaces.URI_BPEL20_EXECUTABLE);
+            TPlan plan = new TPlan.Builder(
+                planId.getXmlId().getDecoded(),
+                Constants.TOSCA_PLANTYPE_BUILD_PLAN,
+                Namespaces.URI_BPEL20_EXECUTABLE
+            )
+                .setName(planId.getXmlId().getDecoded())
+                .build();
 
             // create a PlanModelReferenceElement pointing to that file
             String path = Util.getUrlPath(ref);
@@ -1316,10 +1310,10 @@ public class BackendUtils {
             pref.setReference(path);
 
             plan.setPlanModelReference(pref);
-            thePlans.add(plan);
+            plans.add(plan);
         }
 
-        if (serviceTemplate.getPlans() != null && serviceTemplate.getPlans().getPlan().isEmpty()) {
+        if (serviceTemplate.getPlans() != null && serviceTemplate.getPlans().isEmpty()) {
             serviceTemplate.setPlans(null);
         }
 

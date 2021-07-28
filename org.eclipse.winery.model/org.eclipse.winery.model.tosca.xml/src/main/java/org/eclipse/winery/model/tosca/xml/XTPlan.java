@@ -15,7 +15,6 @@
 package org.eclipse.winery.model.tosca.xml;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,6 +23,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
@@ -45,32 +45,44 @@ import org.w3c.dom.Element;
     "planModelReference"
 })
 public class XTPlan extends XTExtensibleElements {
+
     @XmlElement(name = "Precondition")
     protected XTCondition precondition;
-    @XmlElement(name = "InputParameters")
-    protected XTPlan.InputParameters inputParameters;
-    @XmlElement(name = "OutputParameters")
-    protected XTPlan.OutputParameters outputParameters;
+
+    @XmlElementWrapper(name = "InputParameters")
+    @XmlElement(name = "InputParameter", required = true)
+    protected List<XTParameter> inputParameters;
+
+    @XmlElementWrapper(name = "OutputParameters")
+    @XmlElement(name = "OutputParameter", required = true)
+    protected List<XTParameter> outputParameters;
+
     @XmlElement(name = "PlanModel")
     protected XTPlan.PlanModel planModel;
+
     @XmlElement(name = "PlanModelReference")
     protected XTPlan.PlanModelReference planModelReference;
+
     @XmlAttribute(name = "id", required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlID
     @XmlSchemaType(name = "ID")
     protected String id;
+
     @XmlAttribute(name = "name")
     protected String name;
+
     @XmlAttribute(name = "planType", required = true)
     @XmlSchemaType(name = "anyURI")
     protected String planType;
+
     @XmlAttribute(name = "planLanguage", required = true)
     @XmlSchemaType(name = "anyURI")
     protected String planLanguage;
 
     @Deprecated // required for XML deserialization
-    public XTPlan() { }
+    public XTPlan() {
+    }
 
     public XTPlan(Builder builder) {
         super(builder);
@@ -116,19 +128,19 @@ public class XTPlan extends XTExtensibleElements {
         this.precondition = value;
     }
 
-    public XTPlan.@Nullable InputParameters getInputParameters() {
+    public List<XTParameter> getInputParameters() {
         return inputParameters;
     }
 
-    public void setInputParameters(XTPlan.@Nullable InputParameters value) {
+    public void setInputParameters(List<XTParameter> value) {
         this.inputParameters = value;
     }
 
-    public XTPlan.@Nullable OutputParameters getOutputParameters() {
+    public List<XTParameter> getOutputParameters() {
         return outputParameters;
     }
 
-    public void setOutputParameters(XTPlan.@Nullable OutputParameters value) {
+    public void setOutputParameters(List<XTParameter> value) {
         this.outputParameters = value;
     }
 
@@ -186,108 +198,6 @@ public class XTPlan extends XTExtensibleElements {
 
     public void accept(Visitor visitor) {
         visitor.visit(this);
-   }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "inputParameter"
-    })
-    public static class InputParameters implements Serializable {
-
-        @XmlElement(name = "InputParameter", required = true)
-        protected List<XTParameter> inputParameter;
-
-        /**
-         * Gets the value of the inputParameter property.
-         * <p>
-         * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the inputParameter property.
-         * <p>
-         * <p>
-         * For example, to add a new item, do as follows:
-         * <pre>
-         *    getInputParameter().add(newItem);
-         * </pre>
-         * <p>
-         * <p>
-         * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link XTParameter }
-         */
-        @NonNull
-        public List<XTParameter> getInputParameter() {
-            if (inputParameter == null) {
-                inputParameter = new ArrayList<XTParameter>();
-            }
-            return this.inputParameter;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            InputParameters that = (InputParameters) o;
-            return Objects.equals(inputParameter, that.inputParameter);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(inputParameter);
-        }
-    }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "outputParameter"
-    })
-    public static class OutputParameters implements Serializable {
-
-        @XmlElement(name = "OutputParameter", required = true)
-        protected List<XTParameter> outputParameter;
-
-        /**
-         * Gets the value of the outputParameter property.
-         * <p>
-         * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the outputParameter property.
-         * <p>
-         * <p>
-         * For example, to add a new item, do as follows:
-         * <pre>
-         *    getOutputParameter().add(newItem);
-         * </pre>
-         * <p>
-         * <p>
-         * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link XTParameter }
-         */
-        @NonNull
-        public List<XTParameter> getOutputParameter() {
-            if (outputParameter == null) {
-                outputParameter = new ArrayList<XTParameter>();
-            }
-            return this.outputParameter;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            OutputParameters that = (OutputParameters) o;
-            return Objects.equals(outputParameter, that.outputParameter);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(outputParameter);
-        }
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -380,8 +290,8 @@ public class XTPlan extends XTExtensibleElements {
         private final String planLanguage;
 
         private XTCondition precondition;
-        private InputParameters inputParameters;
-        private OutputParameters outputParameters;
+        private List<XTParameter> inputParameters;
+        private List<XTParameter> outputParameters;
         private PlanModel planModel;
         private PlanModelReference planModelReference;
         private String name;
@@ -397,12 +307,12 @@ public class XTPlan extends XTExtensibleElements {
             return this;
         }
 
-        public Builder setInputParameters(InputParameters inputParameters) {
+        public Builder setInputParameters(List<XTParameter> inputParameters) {
             this.inputParameters = inputParameters;
             return this;
         }
 
-        public Builder setOutputParameters(OutputParameters outputParameters) {
+        public Builder setOutputParameters(List<XTParameter> outputParameters) {
             this.outputParameters = outputParameters;
             return this;
         }

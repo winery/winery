@@ -224,7 +224,7 @@ public class Generator {
             // Parameter
             boolean first = true;
             if (op.getInputParameters() != null) {
-                for (TParameter parameter : op.getInputParameters().getInputParameter()) {
+                for (TParameter parameter : op.getInputParameters()) {
                     String parameterName = parameter.getName();
 
                     if (first) {
@@ -243,7 +243,7 @@ public class Generator {
             sb.append("\n\t) {\n");
 
             // If there are output parameters we generate the respective HashMap
-            boolean outputParamsExist = (op.getOutputParameters() != null) && (!op.getOutputParameters().getOutputParameter().isEmpty());
+            boolean outputParamsExist = (op.getOutputParameters() != null) && (!op.getOutputParameters().isEmpty());
             if (outputParamsExist) {
                 sb.append("\t\t// This HashMap holds the return parameters of this operation.\n");
                 sb.append("\t\tfinal HashMap<String,String> returnParameters = new HashMap<String, String>();\n\n");
@@ -253,7 +253,7 @@ public class Generator {
 
             // Generate code to set output parameters
             if (outputParamsExist) {
-                for (TParameter outputParam : op.getOutputParameters().getOutputParameter()) {
+                for (TParameter outputParam : op.getOutputParameters()) {
                     sb.append("\n\n\t\t// Output Parameter '").append(outputParam.getName()).append("' ");
                     if (outputParam.getRequired()) {
                         sb.append("(required)");

@@ -2,12 +2,8 @@
     "documentation": null,
     "any": null,
     "otherAttributes": null,
-    "inputParameters": {
-        "inputParameter": []
-    },
-    "outputParameters": {
-        "outputParameter": []
-    },
+    "inputParameters": [],
+    "outputParameters": [],
     "name": "harvest Plan",
     "precondition": null,
     "planModel": null,

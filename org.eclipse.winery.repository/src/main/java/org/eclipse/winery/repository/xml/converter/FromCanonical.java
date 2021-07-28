@@ -120,7 +120,6 @@ import org.eclipse.winery.model.tosca.xml.XTNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.xml.XTOperation;
 import org.eclipse.winery.model.tosca.xml.XTParameter;
 import org.eclipse.winery.model.tosca.xml.XTPlan;
-import org.eclipse.winery.model.tosca.xml.XTPlans;
 import org.eclipse.winery.model.tosca.xml.XTPolicy;
 import org.eclipse.winery.model.tosca.xml.XTPolicyTemplate;
 import org.eclipse.winery.model.tosca.xml.XTPolicyType;
@@ -246,11 +245,11 @@ public class FromCanonical {
     private XTOperation convert(TOperation canonical) {
         XTOperation.Builder builder = new XTOperation.Builder(canonical.getName());
         if (canonical.getInputParameters() != null) {
-            builder.addInputParameters(canonical.getInputParameters().getInputParameter().stream()
+            builder.addInputParameters(canonical.getInputParameters().stream()
                 .map(this::convert).collect(Collectors.toList()));
         }
         if (canonical.getOutputParameters() != null) {
-            builder.addOutputParameters(canonical.getOutputParameters().getOutputParameter().stream()
+            builder.addOutputParameters(canonical.getOutputParameters().stream()
                 .map(this::convert).collect(Collectors.toList()));
         }
         return builder.build();
@@ -341,7 +340,7 @@ public class FromCanonical {
         if (canonical.getProperties() != null) {
             TEntityType.PropertiesDefinition properties = canonical.getProperties();
             if (properties instanceof WinerysPropertiesDefinition) {
-                // do the magic thingy of storing the properties definition in the any element.
+                // do the magic thingy of storing the properties' definition in the any element.
                 builder.addAny(properties);
             } else if (properties instanceof TEntityType.XmlElementDefinition) {
                 XTEntityType.PropertiesDefinition propertiesDefinition = new XTEntityType.PropertiesDefinition();
@@ -353,7 +352,7 @@ public class FromCanonical {
                 );
                 builder.setPropertiesDefinition(propertiesDefinition);
             } else if (properties instanceof TEntityType.YamlPropertiesDefinition) {
-                // currently unsupported!?
+                // unsupported!? (currently)
                 LOGGER.warn("Trying to convert YAML-based type definition [{}] to XML. Properties are incorrect!", canonical.getQName());
             }
         }
@@ -607,10 +606,11 @@ public class FromCanonical {
         }
         builder.setBoundaryDefinitions(convert(canonical.getBoundaryDefinitions()));
         if (canonical.getPlans() != null) {
-            XTPlans plans = new XTPlans();
-            plans.setTargetNamespace(canonical.getPlans().getTargetNamespace());
-            plans.getPlan().addAll(canonical.getPlans().getPlan().stream().map(this::convert).collect(Collectors.toList()));
-            builder.setPlans(plans);
+            builder.setPlans(
+                canonical.getPlans().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         builder.setSubstitutableNodeType(canonical.getSubstitutableNodeType());
         fillExtensibleElementsProperties(builder, canonical);
@@ -655,14 +655,18 @@ public class FromCanonical {
             builder.setPrecondition(convert(canonical.getPrecondition()));
         }
         if (canonical.getInputParameters() != null) {
-            XTPlan.InputParameters inputs = new XTPlan.InputParameters();
-            inputs.getInputParameter().addAll(canonical.getInputParameters().getInputParameter().stream().map(this::convert).collect(Collectors.toList()));
-            builder.setInputParameters(inputs);
+            builder.setInputParameters(
+                canonical.getInputParameters().stream()
+                    .map(this::convert
+                    ).collect(Collectors.toList())
+            );
         }
         if (canonical.getOutputParameters() != null) {
-            XTPlan.OutputParameters outputs = new XTPlan.OutputParameters();
-            outputs.getOutputParameter().addAll(canonical.getOutputParameters().getOutputParameter().stream().map(this::convert).collect(Collectors.toList()));
-            builder.setOutputParameters(outputs);
+            builder.setOutputParameters(
+                canonical.getOutputParameters().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         if (canonical.getPlanModel() != null) {
             XTPlan.PlanModel model = new XTPlan.PlanModel();
@@ -963,7 +967,6 @@ public class FromCanonical {
 
     private XHasId convert(HasId canonical) {
         if (canonical instanceof TDefinitions) {
-            // what in the ever loving fuck am I supposed to do now??
             // this case should never ever come true
             throw new IllegalStateException("Attempted to convert a TDefinitions instance through HasId overload.");
         }

@@ -63,7 +63,7 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TOperation;
 import org.eclipse.winery.model.tosca.TParameter;
-import org.eclipse.winery.model.tosca.TPlans;
+import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPropertyMapping;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRequirement;
@@ -233,12 +233,12 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
 
     @Path("plans/")
     public PlansResource getPlansResource() {
-        TPlans plans = this.getServiceTemplate().getPlans();
+        List<TPlan> plans = this.getServiceTemplate().getPlans();
         if (plans == null) {
-            plans = new TPlans();
+            plans = new ArrayList<>();
             this.getServiceTemplate().setPlans(plans);
         }
-        return new PlansResource(plans.getPlan(), this);
+        return new PlansResource(plans, this);
     }
 
     @Path("selfserviceportal/")
@@ -356,6 +356,9 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     public Response generatePlaceholdersWithCapability() {
         Splitting splitting = new Splitting();
         TTopologyTemplate topologyTemplate = this.getServiceTemplate().getTopologyTemplate();
+        if (topologyTemplate == null) {
+            return Response.notModified().build();
+        }
 
         try {
             // get all open requirements and the respective node templates with open requirements
@@ -378,9 +381,9 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
                     for (TInterface tInterface : sourceNodeTypeInterfaces) {
                         // TODO: make this more safe
                         for (TOperation tOperation : tInterface.getOperations()) {
-                            TOperation.InputParameters inputParameters = tOperation.getInputParameters();
+                            List<TParameter> inputParameters = tOperation.getInputParameters();
                             if (inputParameters != null) {
-                                for (TParameter inputParameter : inputParameters.getInputParameter()) {
+                                for (TParameter inputParameter : inputParameters) {
                                     generateInputParameters(propertyDefinitionKVList, placeholderNodeTemplateProperties, sourceNodeType, inputParameter);
                                 }
                             }
@@ -575,6 +578,10 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     @Produces( {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response createPlaceholderSubstituteVersion() throws IOException, SplittingException {
         TTopologyTemplate originTopologyTemplate = this.getServiceTemplate().getTopologyTemplate();
+        if (originTopologyTemplate == null) {
+            return Response.notModified().build();
+        }
+        
         List<TTag> tagsOfServiceTemplate = this.getServiceTemplate().getTags();
         List<OTParticipant> participants = originTopologyTemplate.getParticipants();
 

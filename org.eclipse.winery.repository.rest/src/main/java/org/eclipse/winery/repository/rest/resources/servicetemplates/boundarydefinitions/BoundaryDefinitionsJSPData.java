@@ -14,10 +14,10 @@
 package org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.SortedSet;
+import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
@@ -25,7 +25,6 @@ import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties;
 import org.eclipse.winery.model.tosca.TPlan;
-import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -48,7 +47,6 @@ public class BoundaryDefinitionsJSPData {
     /**
      * @param ste     the service template of the boundary definitions. Required to get a list of all plans
      * @param baseURI the base URI of the service. Requried for rendering the topology template for the selections
-     * @param repository
      */
     public BoundaryDefinitionsJSPData(TServiceTemplate ste, URI baseURI, IRepository repository) {
         this.ste = ste;
@@ -117,19 +115,14 @@ public class BoundaryDefinitionsJSPData {
         return this.baseURI.toString();
     }
 
-    public List<Select2DataItem> getlistOfAllPlans() {
-        TPlans plans = this.ste.getPlans();
+    public List<Select2DataItem> getListOfAllPlans() {
+        List<TPlan> plans = this.ste.getPlans();
         if (plans == null) {
             return null;
-        } else {
-            List<Select2DataItem> res = new ArrayList<>(plans.getPlan().size());
-            for (TPlan plan : plans.getPlan()) {
-                String id = plan.getId();
-                String name = ModelUtilities.getNameWithIdFallBack(plan);
-                Select2DataItem di = new Select2DataItem(id, name);
-                res.add(di);
-            }
-            return res;
         }
+
+        return plans.stream()
+            .map(plan -> new Select2DataItem(plan.getId(), plan.getName()))
+            .collect(Collectors.toList());
     }
 }

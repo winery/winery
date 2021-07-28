@@ -288,9 +288,9 @@ public class Splitting {
 
                 if (relevantInterface != null) {
                     for (TOperation tOperation : relevantInterface.getOperations()) {
-                        TOperation.InputParameters inputParameters = tOperation.getInputParameters();
+                        List<TParameter> inputParameters = tOperation.getInputParameters();
                         if (inputParameters != null) {
-                            listOfInputs.addAll(inputParameters.getInputParameter());
+                            listOfInputs.addAll(inputParameters);
                         }
                     }
                 }

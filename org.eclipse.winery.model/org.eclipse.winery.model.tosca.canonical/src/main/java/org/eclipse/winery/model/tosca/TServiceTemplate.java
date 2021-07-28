@@ -14,12 +14,14 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
@@ -44,8 +46,9 @@ public class TServiceTemplate extends HasIdAndTags implements HasName, HasTarget
     @XmlElement(name = "TopologyTemplate", required = true)
     protected TTopologyTemplate topologyTemplate;
 
-    @XmlElement(name = "Plans")
-    protected TPlans plans;
+    @XmlElementWrapper(name = "Plans")
+    @XmlElement(name = "Plan", required = true)
+    protected List<TPlan> plans;
 
     @XmlAttribute(name = "name")
     protected String name;
@@ -121,11 +124,11 @@ public class TServiceTemplate extends HasIdAndTags implements HasName, HasTarget
     }
 
     @Nullable
-    public TPlans getPlans() {
+    public List<TPlan> getPlans() {
         return plans;
     }
 
-    public void setPlans(@Nullable TPlans value) {
+    public void setPlans(List<TPlan> value) {
         this.plans = value;
     }
 
@@ -164,7 +167,7 @@ public class TServiceTemplate extends HasIdAndTags implements HasName, HasTarget
         private final TTopologyTemplate topologyTemplate;
 
         private TBoundaryDefinitions boundaryDefinitions;
-        private TPlans plans;
+        private List<TPlan> plans;
         private String name;
         private String targetNamespace;
         private QName substitutableNodeType;
@@ -184,7 +187,7 @@ public class TServiceTemplate extends HasIdAndTags implements HasName, HasTarget
             return this;
         }
 
-        public Builder setPlans(TPlans plans) {
+        public Builder setPlans(List<TPlan> plans) {
             this.plans = plans;
             return this;
         }

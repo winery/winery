@@ -14,12 +14,14 @@
 
 package org.eclipse.winery.model.tosca.xml;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
@@ -44,8 +46,9 @@ public class XTServiceTemplate extends XHasIdAndTags implements XHasName, XHasTa
     @XmlElement(name = "TopologyTemplate", required = true)
     protected XTTopologyTemplate topologyTemplate;
 
-    @XmlElement(name = "Plans")
-    protected XTPlans plans;
+    @XmlElementWrapper(name = "Plans")
+    @XmlElement(name = "Plan", required = true)
+    protected List<XTPlan> plans;
 
     @XmlAttribute(name = "name")
     protected String name;
@@ -118,11 +121,11 @@ public class XTServiceTemplate extends XHasIdAndTags implements XHasName, XHasTa
     }
 
     @Nullable
-    public XTPlans getPlans() {
+    public List<XTPlan> getPlans() {
         return plans;
     }
 
-    public void setPlans(@Nullable XTPlans value) {
+    public void setPlans(List<XTPlan> value) {
         this.plans = value;
     }
 
@@ -162,7 +165,7 @@ public class XTServiceTemplate extends XHasIdAndTags implements XHasName, XHasTa
         private final XTTopologyTemplate topologyTemplate;
 
         private XTBoundaryDefinitions boundaryDefinitions;
-        private XTPlans plans;
+        private List<XTPlan> plans;
         private String name;
         private String targetNamespace;
         private QName substitutableNodeType;
@@ -182,7 +185,7 @@ public class XTServiceTemplate extends XHasIdAndTags implements XHasName, XHasTa
             return this;
         }
 
-        public Builder setPlans(XTPlans plans) {
+        public Builder setPlans(List<XTPlan> plans) {
             this.plans = plans;
             return this;
         }

@@ -36,7 +36,6 @@ import org.eclipse.winery.model.tosca.xml.XTImplementationArtifact;
 import org.eclipse.winery.model.tosca.xml.XTNodeTemplate;
 import org.eclipse.winery.model.tosca.xml.XTParameter;
 import org.eclipse.winery.model.tosca.xml.XTPlan;
-import org.eclipse.winery.model.tosca.xml.XTPlans;
 import org.eclipse.winery.model.tosca.xml.XTPolicy;
 import org.eclipse.winery.model.tosca.xml.XTPropertyConstraint;
 import org.eclipse.winery.model.tosca.xml.XTPropertyMapping;
@@ -86,9 +85,9 @@ public abstract class Visitor {
             }
         }
 
-        final XTPlans plans = serviceTemplate.getPlans();
+        final List<XTPlan> plans = serviceTemplate.getPlans();
         if (plans != null) {
-            for (XTPlan plan : plans.getPlan()) {
+            for (XTPlan plan : plans) {
                 plan.accept(this);
             }
         }
@@ -107,15 +106,15 @@ public abstract class Visitor {
         if (precondition != null) {
             precondition.accept(this);
         }
-        final XTPlan.InputParameters inputParameters = plan.getInputParameters();
+        final List<XTParameter> inputParameters = plan.getInputParameters();
         if (inputParameters != null) {
-            for (XTParameter parameter : inputParameters.getInputParameter()) {
+            for (XTParameter parameter : inputParameters) {
                 parameter.accept(this);
             }
         }
-        XTPlan.OutputParameters outputParameters = plan.getOutputParameters();
+        List<XTParameter> outputParameters = plan.getOutputParameters();
         if (outputParameters != null) {
-            for (XTParameter parameter : outputParameters.getOutputParameter()) {
+            for (XTParameter parameter : outputParameters) {
                 parameter.accept(this);
             }
         }

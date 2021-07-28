@@ -936,32 +936,16 @@ public class FromCanonical {
             ));
     }
 
-    public Map<String, YTPropertyAssignmentOrDefinition> convert(TOperation.InputParameters node) {
+    public Map<String, YTPropertyAssignmentOrDefinition> convert(TParameter node) {
         if (Objects.isNull(node)) {
             return null;
         }
-        return node.getInputParameter().stream()
-            .filter(Objects::nonNull)
-            .collect(Collectors.toMap(
-                TParameter::getName,
-                entry -> new YTPropertyDefinition.Builder(convertType(entry.getType()))
-                    .setRequired(entry.getRequired())
-                    .build()
-            ));
-    }
-
-    public Map<String, YTPropertyAssignmentOrDefinition> convert(TOperation.OutputParameters node) {
-        if (Objects.isNull(node)) {
-            return null;
-        }
-        return node.getOutputParameter().stream()
-            .filter(Objects::nonNull)
-            .collect(Collectors.toMap(
-                TParameter::getName,
-                entry -> new YTPropertyDefinition.Builder(convertType(entry.getType()))
-                    .setRequired(entry.getRequired())
-                    .build()
-            ));
+        return Collections.singletonMap(
+            node.getName(),
+            new YTPropertyDefinition.Builder(convertType(node.getType()))
+                .setRequired(node.getRequired())
+                .build()
+        );
     }
 
     private QName convertType(String type) {
@@ -1087,6 +1071,8 @@ public class FromCanonical {
                     return convert((TCapability) node).entrySet().stream();
                 } else if (node instanceof TDeploymentArtifact) {
                     return convert((TDeploymentArtifact) node).entrySet().stream();
+                } else if (node instanceof TParameter) {
+                    return convert((TParameter) node).entrySet().stream();
                 }
                 throw new AssertionError();
             })

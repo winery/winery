@@ -54,10 +54,8 @@ import org.eclipse.winery.accountability.AccountabilityManagerFactory;
 import org.eclipse.winery.accountability.exceptions.AccountabilityException;
 import org.eclipse.winery.accountability.model.ProvenanceVerification;
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.model.version.VersionSupport;
-import org.eclipse.winery.repository.backend.IRepository;
-import org.eclipse.winery.repository.common.RepositoryFileReference;
-import org.eclipse.winery.repository.common.Util;
+import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFile;
+import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileParser;
 import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.model.ids.XmlId;
 import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
@@ -70,8 +68,6 @@ import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.model.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.model.ids.elements.PlanId;
 import org.eclipse.winery.model.ids.elements.PlansId;
-import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFile;
-import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileParser;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactReference.Exclude;
 import org.eclipse.winery.model.tosca.TArtifactReference.Include;
@@ -85,14 +81,15 @@ import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlan.PlanModelReference;
-import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.model.version.VersionSupport;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
@@ -101,6 +98,8 @@ import org.eclipse.winery.repository.backend.filebased.FileUtils;
 import org.eclipse.winery.repository.backend.filebased.JsonBasedNamespaceManager;
 import org.eclipse.winery.repository.backend.filebased.NamespaceProperties;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
@@ -141,10 +140,10 @@ public class CsarImporter {
     // Threads set to 1 to avoid testing for parallel processing of the same XSD file
     private static final ExecutorService xsdParsingService = Executors.newFixedThreadPool(1);
 
-    private static final ExecutorService entityTypeAdjestmentService = Executors.newFixedThreadPool(10);
+    private static final ExecutorService entityTypeAdjustmentService = Executors.newFixedThreadPool(10);
 
     private static final Pattern GENERATED_PREFIX_PATTERN = Pattern.compile("^ns\\d+$");
-    
+
     private final IRepository targetRepository;
 
     public CsarImporter(IRepository targetRepository) {
@@ -156,8 +155,8 @@ public class CsarImporter {
      * conforming properties definition is removed
      *
      * @param ci      the entity type
-     * @param wid     the Winery id of the entitytype
-     * @param newDefs the definitions, the entiy type is contained in. The imports might be adjusted here
+     * @param wid     the Winery id of the entityType
+     * @param newDefs the definitions, the entity type is contained in. The imports might be adjusted here
      * @param errors  Used to collect the errors
      */
     private void adjustEntityType(TEntityType ci, EntityTypeId wid, TDefinitions newDefs, final List<String> errors) {
@@ -273,9 +272,9 @@ public class CsarImporter {
     }
 
     /**
-     * Reads the CSAR from the given inputstream
+     * Reads the CSAR from the given inputStream
      *
-     * @param in      the inputstream to read from
+     * @param in      the inputStream to read from
      * @param options the set of options applicable for importing the csar
      */
     public ImportMetaInformation readCSAR(InputStream in, CsarImportOptions options)
@@ -665,7 +664,7 @@ public class CsarImporter {
                     // Adjusting takes a long time
                     // Therefore, we first save the type as is and convert to Winery-Property-Definitions in the background
                     CsarImporter.storeDefinitions(targetRepository, wid, newDefs);
-                    CsarImporter.entityTypeAdjestmentService.submit(() -> {
+                    CsarImporter.entityTypeAdjustmentService.submit(() -> {
                         adjustEntityType((TEntityType) ci, (EntityTypeId) wid, newDefs, errors);
                         CsarImporter.storeDefinitions(targetRepository, wid, newDefs);
                     });
@@ -779,9 +778,9 @@ public class CsarImporter {
      * @param st       the the service template to be imported {@inheritDoc}
      */
     private void adjustServiceTemplate(Path rootPath, TOSCAMetaFile tmf, ServiceTemplateId wid, TServiceTemplate st, final List<String> errors) {
-        TPlans plans = st.getPlans();
+        List<TPlan> plans = st.getPlans();
         if (plans != null) {
-            for (TPlan plan : plans.getPlan()) {
+            for (TPlan plan : plans) {
                 PlanModelReference refContainer = plan.getPlanModelReference();
                 if (refContainer != null) {
                     String ref = refContainer.getReference();
@@ -885,9 +884,7 @@ public class CsarImporter {
             return;
         }
         List<TArtifactReference> refList = refs.getArtifactReference();
-        Iterator<TArtifactReference> iterator = refList.iterator();
-        while (iterator.hasNext()) {
-            TArtifactReference ref = iterator.next();
+        for (TArtifactReference ref : refList) {
             String reference = ref.getReference();
             // URLs are stored encoded -> undo the encoding
             reference = EncodingUtil.URLdecode(reference);
@@ -921,7 +918,7 @@ public class CsarImporter {
                 Path localRoot = rootPath.resolve(path);
                 List<Object> includeOrExclude = ref.getIncludeOrExclude();
 
-                if (includeOrExclude.get(0) instanceof TArtifactReference.Exclude) {
+                if (includeOrExclude.get(0) instanceof Exclude) {
                     // Implicit semantics of an exclude listed first:
                     // include all files and then exclude the files matched by the pattern
                     allFiles = this.getAllFiles(localRoot);
@@ -932,11 +929,11 @@ public class CsarImporter {
                 }
 
                 for (Object object : includeOrExclude) {
-                    if (object instanceof TArtifactReference.Include) {
-                        this.handleInclude((TArtifactReference.Include) object, localRoot, allFiles);
+                    if (object instanceof Include) {
+                        this.handleInclude((Include) object, localRoot, allFiles);
                     } else {
-                        assert (object instanceof TArtifactReference.Exclude);
-                        this.handleExclude((TArtifactReference.Exclude) object, localRoot, allFiles);
+                        assert (object instanceof Exclude);
+                        this.handleExclude((Exclude) object, localRoot, allFiles);
                     }
                 }
             }
@@ -969,12 +966,12 @@ public class CsarImporter {
 
         for (Path p : files) {
             if (!Files.exists(p)) {
-                errors.add(String.format("File %1$s does not exist", p.toString()));
+                errors.add(String.format("File %1$s does not exist", p));
                 return;
             }
             // directoryId already identifies the subdirectory
-            RepositoryFileReference fref = new RepositoryFileReference(directoryId, p.getFileName().toString());
-            importFile(p, fref, tmf, rootPath, errors);
+            RepositoryFileReference fileReference = new RepositoryFileReference(directoryId, p.getFileName().toString());
+            importFile(p, fileReference, tmf, rootPath, errors);
         }
     }
 
@@ -999,7 +996,7 @@ public class CsarImporter {
             Files.walkFileTree(localRoot, new SimpleFileVisitor<Path>() {
 
                 @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                     Path relFile = localRoot.relativize(file);
                     if (pathMatcher.matches(relFile)) {
                         allFiles.add(file);
@@ -1008,7 +1005,7 @@ public class CsarImporter {
                 }
 
                 @Override
-                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
                     if (pathMatcher.matches(dir)) {
                         Set<Path> filesToAdd = CsarImporter.this.getAllFiles(dir);
                         allFiles.addAll(filesToAdd);
@@ -1032,7 +1029,7 @@ public class CsarImporter {
             Files.walkFileTree(startPath, new SimpleFileVisitor<Path>() {
 
                 @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                     res.add(file);
                     return CONTINUE;
                 }
@@ -1227,7 +1224,7 @@ public class CsarImporter {
             if (rid instanceof XSDImportId) {
                 // We do the initialization asynchronously
                 // We do not check whether the XSD has already been checked
-                // We cannot just checck whether an XSD already has been handled since the XSD could change over time
+                // We cannot just check whether an XSD already has been handled since the XSD could change over time
                 // Synchronization at org.eclipse.winery.repository.resources.imports.xsdimports.XSDImportResource.getAllDefinedLocalNames(short) also isn't feasible as the backend doesn't support locks
                 CsarImporter.xsdParsingService.submit(() -> {
                     CsarImporter.LOGGER.debug("Updating XSD import cache data");

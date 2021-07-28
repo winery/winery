@@ -46,7 +46,6 @@ import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TPlan;
-import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
@@ -499,9 +498,9 @@ public abstract class ModelUtilities {
     }
 
     public static TPlan resolvePlan(TServiceTemplate serviceTemplate, String reference) {
-        TPlans plans = serviceTemplate.getPlans();
+        List<TPlan> plans = serviceTemplate.getPlans();
         if (plans != null) {
-            for (TPlan p : plans.getPlan()) {
+            for (TPlan p : plans) {
                 if (p.getId().equals(reference)) {
                     return p;
                 }

@@ -52,6 +52,7 @@ import org.eclipse.jdt.annotation.NonNull;
     "operation"
 })
 public class TInterface implements HasName, Serializable {
+
     @XmlElement(name = "Operation", required = true)
     protected List<TOperation> operation;
     @XmlAttribute(name = "name", required = true)
@@ -59,7 +60,8 @@ public class TInterface implements HasName, Serializable {
     protected String name;
 
     @Deprecated // used for XML deserialization of API request content
-    public TInterface() { }
+    public TInterface() {
+    }
 
     public TInterface(Builder builder) {
         this.operation = builder.operation;
@@ -84,10 +86,9 @@ public class TInterface implements HasName, Serializable {
      * Gets the value of the operation property.
      * <p>
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the operation property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to
+     * the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for
+     * the operation property.
      * <p>
      * <p>
      * For example, to add a new item, do as follows:
@@ -97,8 +98,7 @@ public class TInterface implements HasName, Serializable {
      * <p>
      * <p>
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link TOperation }
+     * Objects of the following type(s) are allowed in the list {@link TOperation }
      */
     @NonNull
     public List<TOperation> getOperations() {

@@ -53,10 +53,10 @@ public class InterfacesResource {
             for (TInterface tInt : interfaceApiData) {
                 if (!tInt.getOperations().isEmpty()) {
                     for (TOperation tOp : tInt.getOperations()) {
-                        if (tOp.getInputParameters() == null || tOp.getInputParameters().getInputParameter().isEmpty()) {
+                        if (tOp.getInputParameters() == null || tOp.getInputParameters().isEmpty()) {
                             tOp.setInputParameters(null);
                         }
-                        if (tOp.getOutputParameters() == null || tOp.getOutputParameters().getOutputParameter().isEmpty()) {
+                        if (tOp.getOutputParameters() == null || tOp.getOutputParameters().isEmpty()) {
                             tOp.setOutputParameters(null);
                         }
                     }

@@ -38,7 +38,6 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TParameter;
 import org.eclipse.winery.model.tosca.TPlan;
-import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TPropertyConstraint;
 import org.eclipse.winery.model.tosca.TPropertyMapping;
@@ -87,9 +86,9 @@ public abstract class Visitor {
             }
         }
 
-        final TPlans plans = serviceTemplate.getPlans();
+        final List<TPlan> plans = serviceTemplate.getPlans();
         if (plans != null) {
-            for (TPlan plan : plans.getPlan()) {
+            for (TPlan plan : plans) {
                 plan.accept(this);
             }
         }
@@ -109,12 +108,12 @@ public abstract class Visitor {
             precondition.accept(this);
         }
         if (plan.getInputParameters() != null) {
-            for (TParameter parameter : plan.getInputParameters().getInputParameter()) {
+            for (TParameter parameter : plan.getInputParameters()) {
                 parameter.accept(this);
             }
         }
         if (plan.getOutputParameters() != null) {
-            for (TParameter parameter : plan.getOutputParameters().getOutputParameter()) {
+            for (TParameter parameter : plan.getOutputParameters()) {
                 parameter.accept(this);
             }
         }

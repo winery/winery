@@ -57,7 +57,6 @@ import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TOperation;
 import org.eclipse.winery.model.tosca.TParameter;
 import org.eclipse.winery.model.tosca.TPlan;
-import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TPolicyType;
@@ -340,12 +339,18 @@ public class ToCanonical {
     private TOperation convert(XTOperation xml) {
         TOperation.Builder builder = new TOperation.Builder(xml.getName());
         if (xml.getInputParameters() != null) {
-            builder.addInputParameters(xml.getInputParameters().getInputParameter().stream()
-                .map(this::convert).collect(Collectors.toList()));
+            builder.addInputParameters(
+                xml.getInputParameters().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         if (xml.getOutputParameters() != null) {
-            builder.addOutputParameters(xml.getOutputParameters().getOutputParameter().stream()
-                .map(this::convert).collect(Collectors.toList()));
+            builder.addOutputParameters(
+                xml.getOutputParameters().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         return builder.build();
     }
@@ -714,10 +719,11 @@ public class ToCanonical {
             builder.setBoundaryDefinitions(convert(xml.getBoundaryDefinitions()));
         }
         if (xml.getPlans() != null) {
-            TPlans plans = new TPlans();
-            plans.setTargetNamespace(xml.getPlans().getTargetNamespace());
-            plans.getPlan().addAll(xml.getPlans().getPlan().stream().map(this::convert).collect(Collectors.toList()));
-            builder.setPlans(plans);
+            builder.setPlans(
+                xml.getPlans().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         builder.setSubstitutableNodeType(xml.getSubstitutableNodeType());
         fillExtensibleElementsProperties(builder, xml);
@@ -761,14 +767,18 @@ public class ToCanonical {
             builder.setPrecondition(convert(xml.getPrecondition()));
         }
         if (xml.getInputParameters() != null) {
-            TPlan.InputParameters inputs = new TPlan.InputParameters();
-            inputs.getInputParameter().addAll(xml.getInputParameters().getInputParameter().stream().map(this::convert).collect(Collectors.toList()));
-            builder.setInputParameters(inputs);
+            builder.setInputParameters(
+                xml.getInputParameters().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         if (xml.getOutputParameters() != null) {
-            TPlan.OutputParameters outputs = new TPlan.OutputParameters();
-            outputs.getOutputParameter().addAll(xml.getOutputParameters().getOutputParameter().stream().map(this::convert).collect(Collectors.toList()));
-            builder.setOutputParameters(outputs);
+            builder.setOutputParameters(
+                xml.getOutputParameters().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         if (xml.getPlanModel() != null) {
             TPlan.PlanModel model = new TPlan.PlanModel();
