@@ -383,8 +383,11 @@ public class ToCanonical {
             builder.addTags(xml.getTags().stream().map(this::convert).collect(Collectors.toList()));
         }
         if (xml.getImplementationArtifacts() != null) {
-            builder.addImplementationArtifacts(xml.getImplementationArtifacts().stream()
-                .map(this::convert).collect(Collectors.toList()));
+            builder.addImplementationArtifacts(
+                xml.getImplementationArtifacts().stream()
+                .map(this::convert)
+                .collect(Collectors.toList())
+            );
         }
         builder.setTargetNamespace(xml.getTargetNamespace());
         builder.setAbstract(xml.getAbstract() == XTBoolean.YES);

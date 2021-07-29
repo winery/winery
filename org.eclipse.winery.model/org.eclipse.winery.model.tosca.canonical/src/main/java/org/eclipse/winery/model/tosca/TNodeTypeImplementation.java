@@ -97,7 +97,6 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
         super(builder);
         this.derivedFrom = builder.derivedFrom;
         this.deploymentArtifacts = builder.deploymentArtifacts;
-        this.implementationArtifacts = builder.implementationArtifacts;
     }
 
     @Override
@@ -229,7 +228,6 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
     public static class Builder extends TEntityTypeImplementation.Builder<Builder> {
 
         private DerivedFrom derivedFrom;
-        private List<TImplementationArtifact> implementationArtifacts;
         private List<TDeploymentArtifact> deploymentArtifacts;
 
         public Builder(TExtensibleElements extensibleElements, String name, QName implementedNodeType) {

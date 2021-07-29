@@ -1,5 +1,75 @@
-[
-    {
-        
-    }
-]
+{
+    "documentation": [
+    ],
+    "any": [
+    ],
+    "otherAttributes": {
+    },
+    "id": "winery-defs-for_wfni-baobab_impl",
+    "serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+            },
+            "implementationArtifacts": [
+                {
+                    "documentation": [
+                    ],
+                    "any": [
+                    ],
+                    "otherAttributes": {
+                    },
+                    "name": "baobab_bananaInterface_IA",
+                    "artifactType": "{http://winery.opentosca.org/test/artifacttypes/fruits}WAR",
+                    "artifactRef": "{http://winery.opentosca.org/test/artifacttemplates/fruits}baobab_bananaInterface_IA",
+                    "interfaceName": "bananaInterface"
+                },
+                {
+                    "documentation": [
+                    ],
+                    "any": [
+                    ],
+                    "otherAttributes": {
+                    },
+                    "name": "baobab_bananaInterface_IA",
+                    "artifactType": "{http://winery.opentosca.org/test/artifacttypes/fruits}WAR",
+                    "artifactRef": "{http://winery.opentosca.org/test/artifacttemplates/fruits}baobab_bananaInterface_IA",
+                    "interfaceName": "bananaInterface"
+                }
+            ],
+            "targetNamespace": "http://winery.opentosca.org/test/nodetypeimplementations/fruits",
+            "name": "baobab_impl",
+            "nodeType": "{http://winery.opentosca.org/test/nodetypes/fruits}baobab",
+            "abstract": "NO",
+            "final": "NO"
+        }
+    ],
+    "targetNamespace": "http://winery.opentosca.org/test/nodetypeimplementations/fruits",
+    "import": [
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+            },
+            "namespace": "http://winery.opentosca.org/test/artifacttemplates/fruits",
+            "location": "fruitsats__baobab_bananaInterface_IA.tosca",
+            "importType": "http://docs.oasis-open.org/tosca/ns/2011/12"
+        },
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+            },
+            "namespace": "http://winery.opentosca.org/test/artifacttypes/fruits",
+            "location": "fruitsatys__WAR.tosca",
+            "importType": "http://docs.oasis-open.org/tosca/ns/2011/12"
+        }
+    ]
+}

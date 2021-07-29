@@ -98,7 +98,6 @@ public class XTNodeTypeImplementation extends XTEntityTypeImplementation {
         super(builder);
         this.derivedFrom = builder.derivedFrom;
         this.deploymentArtifacts = builder.deploymentArtifacts;
-        this.implementationArtifacts = builder.implementationArtifacts;
     }
 
     @Override
@@ -230,7 +229,6 @@ public class XTNodeTypeImplementation extends XTEntityTypeImplementation {
     public static class Builder extends XTEntityTypeImplementation.Builder<Builder> {
 
         private DerivedFrom derivedFrom;
-        private List<XTImplementationArtifact> implementationArtifacts;
         private List<XTDeploymentArtifact> deploymentArtifacts;
 
         public Builder(XTExtensibleElements extensibleElements, String name, QName implementedNodeType) {
@@ -243,11 +241,6 @@ public class XTNodeTypeImplementation extends XTEntityTypeImplementation {
 
         public Builder setDerivedFrom(XTNodeTypeImplementation.DerivedFrom derivedFrom) {
             this.derivedFrom = derivedFrom;
-            return this;
-        }
-
-        public Builder setImplementationArtifacts(List<XTImplementationArtifact> implementationArtifacts) {
-            this.implementationArtifacts = implementationArtifacts;
             return this;
         }
 
