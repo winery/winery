@@ -87,8 +87,8 @@ public class InstanceStatesResource {
             return Response.notAcceptable(null).build();
         }
 
-        if (!this.instanceStates.removeIf(instanceState -> instanceState.getState().equals(state))) {
-            // no error, just return
+        if (this.instanceStates.removeIf(instanceState -> instanceState.getState().equals(state))) {
+            // This state is already defined, just return
             return Response.noContent().build();
         }
 
