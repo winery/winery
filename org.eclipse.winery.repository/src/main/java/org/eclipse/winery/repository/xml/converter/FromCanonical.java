@@ -439,10 +439,11 @@ public class FromCanonical {
         //  it's required for us, though, so we just assume it's present
         XTRequirementDefinition.Builder builder = new XTRequirementDefinition.Builder(canonical.getName(), canonical.getRequirementType());
         if (canonical.getConstraints() != null) {
-            XTRequirementDefinition.Constraints constraints = new XTRequirementDefinition.Constraints();
-            constraints.getConstraint().addAll(canonical.getConstraints().getConstraint().stream()
-                .map(this::convert).collect(Collectors.toList()));
-            builder.setConstraints(constraints);
+            builder.setConstraints(
+                canonical.getConstraints().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         builder.setLowerBound(canonical.getLowerBound());
         builder.setUpperBound(canonical.getUpperBound());
@@ -457,9 +458,9 @@ public class FromCanonical {
     private XTCapabilityDefinition convert(TCapabilityDefinition canonical) {
         XTCapabilityDefinition.Builder builder = new XTCapabilityDefinition.Builder(canonical.getName(), canonical.getCapabilityType());
         if (canonical.getConstraints() != null) {
-            canonical.getConstraints().getConstraint()
-                .stream().map(this::convert)
-                .forEach(builder::addConstraints);
+            canonical.getConstraints().stream()
+                .map(this::convert)
+                .forEach(builder::addConstraint);
         }
         builder.setLowerBound(canonical.getLowerBound());
         builder.setUpperBound(canonical.getUpperBound());

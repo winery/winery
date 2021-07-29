@@ -14,7 +14,6 @@
 
 package org.eclipse.winery.model.tosca;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -23,6 +22,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
@@ -36,26 +36,36 @@ import org.eclipse.jdt.annotation.Nullable;
     "constraints"
 })
 public class TRequirementDefinition extends TExtensibleElements {
-    @XmlElement(name = "Constraints")
-    protected TRequirementDefinition.Constraints constraints;
+
+    @XmlElementWrapper(name = "Constraints")
+    @XmlElement(name = "Constraint", required = true)
+    protected List<TConstraint> constraints;
+
     @XmlAttribute(name = "name", required = true)
     protected String name;
+
     @XmlAttribute(name = "requirementType")
     protected QName requirementType;
+
     @XmlAttribute(name = "lowerBound")
     protected Integer lowerBound;
+
     @XmlAttribute(name = "upperBound")
     protected String upperBound;
+
     // the following attributes are introduced to support the YAML specs
     @XmlAttribute(name = "capability")
     private QName capability;
+
     @XmlAttribute(name = "node")
     private QName node;
+
     @XmlAttribute(name = "relationship")
     private QName relationship;
 
     @Deprecated // used for XML deserialization of API request content
-    public TRequirementDefinition() { }
+    public TRequirementDefinition() {
+    }
 
     public TRequirementDefinition(Builder builder) {
         super(builder);
@@ -92,11 +102,11 @@ public class TRequirementDefinition extends TExtensibleElements {
         visitor.visit(this);
     }
 
-    public TRequirementDefinition.@Nullable Constraints getConstraints() {
+    public List<TConstraint> getConstraints() {
         return constraints;
     }
 
-    public void setConstraints(TRequirementDefinition.@Nullable Constraints value) {
+    public void setConstraints(List<TConstraint> value) {
         this.constraints = value;
     }
 
@@ -120,7 +130,6 @@ public class TRequirementDefinition extends TExtensibleElements {
         this.requirementType = value;
     }
 
-    @NonNull
     public int getLowerBound() {
         if (lowerBound == null) {
             return 1;
@@ -170,41 +179,10 @@ public class TRequirementDefinition extends TExtensibleElements {
         this.relationship = relationship;
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "constraint"
-    })
-    public static class Constraints implements Serializable {
-
-        @XmlElement(name = "Constraint", required = true)
-        protected List<TConstraint> constraint;
-
-        @NonNull
-        public List<TConstraint> getConstraint() {
-            if (constraint == null) {
-                constraint = new ArrayList<TConstraint>();
-            }
-            return this.constraint;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Constraints that = (Constraints) o;
-            return Objects.equals(constraint, that.constraint);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(constraint);
-        }
-    }
-
     public static class Builder extends TExtensibleElements.Builder<Builder> {
         private final String name;
         private final QName requirementType;
-        private Constraints constraints;
+        private List<TConstraint> constraints;
         private Integer lowerBound;
         private String upperBound;
         private QName capability;
@@ -223,7 +201,7 @@ public class TRequirementDefinition extends TExtensibleElements {
             this.requirementType = requirementType;
         }
 
-        public Builder setConstraints(TRequirementDefinition.Constraints constraints) {
+        public Builder setConstraints(List<TConstraint> constraints) {
             this.constraints = constraints;
             return this;
         }
@@ -253,36 +231,26 @@ public class TRequirementDefinition extends TExtensibleElements {
             return self();
         }
 
-        public Builder addConstraints(TRequirementDefinition.Constraints constraints) {
-            if (constraints == null || constraints.getConstraint().isEmpty()) {
+        public Builder addConstraints(List<TConstraint> constraints) {
+            if (constraints == null || constraints.isEmpty()) {
                 return this;
             }
 
             if (this.constraints == null) {
                 this.constraints = constraints;
             } else {
-                this.constraints.getConstraint().addAll(constraints.getConstraint());
+                this.constraints.addAll(constraints);
             }
             return this;
         }
 
-        public Builder addConstraints(List<TConstraint> constraints) {
+        public Builder addConstraint(TConstraint constraints) {
             if (constraints == null) {
                 return this;
             }
 
-            TRequirementDefinition.Constraints tmp = new TRequirementDefinition.Constraints();
-            tmp.getConstraint().addAll(constraints);
-            return addConstraints(tmp);
-        }
-
-        public Builder addConstraints(TConstraint constraints) {
-            if (constraints == null) {
-                return this;
-            }
-
-            TRequirementDefinition.Constraints tmp = new TRequirementDefinition.Constraints();
-            tmp.getConstraint().add(constraints);
+            List<TConstraint> tmp = new ArrayList<>();
+            tmp.add(constraints);
             return addConstraints(tmp);
         }
 

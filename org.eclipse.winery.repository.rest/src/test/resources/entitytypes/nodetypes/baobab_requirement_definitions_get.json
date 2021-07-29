@@ -6,13 +6,11 @@
         ],
         "otherAttributes": {
         },
-        "constraints": {
-            "constraint": [
-                {
-                    "constraintType": "http://winery.opentosca.org/test/constrainttypes/fruits/healthy"
-                }
-            ]
-        },
+        "constraints": [
+            {
+                "constraintType": "http://winery.opentosca.org/test/constrainttypes/fruits/healthy"
+            }
+        ],
         "name": "ImportConstraintsHealthy",
         "requirementType": "{http://winery.opentosca.org/test/requirementtypes/fruits}MinimumWeight",
         "lowerBound": 1,

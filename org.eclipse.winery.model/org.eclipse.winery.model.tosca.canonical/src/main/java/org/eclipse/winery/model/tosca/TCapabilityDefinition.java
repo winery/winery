@@ -14,7 +14,6 @@
 
 package org.eclipse.winery.model.tosca;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -23,6 +22,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
@@ -37,8 +37,9 @@ import org.eclipse.jdt.annotation.Nullable;
 })
 public class TCapabilityDefinition extends TExtensibleElements {
 
-    @XmlElement(name = "Constraints")
-    protected TCapabilityDefinition.Constraints constraints;
+    @XmlElementWrapper(name = "Constraints")
+    @XmlElement(name = "Constraint", required = true)
+    protected List<TConstraint> constraints;
 
     @XmlAttribute(name = "name", required = true)
     protected String name;
@@ -87,11 +88,11 @@ public class TCapabilityDefinition extends TExtensibleElements {
         return Objects.hash(constraints, name, capabilityType, lowerBound, upperBound, validSourceTypes);
     }
 
-    public TCapabilityDefinition.@Nullable Constraints getConstraints() {
+    public List<TConstraint> getConstraints() {
         return constraints;
     }
 
-    public void setConstraints(TCapabilityDefinition.@Nullable Constraints value) {
+    public void setConstraints(List<TConstraint> value) {
         this.constraints = value;
     }
 
@@ -114,7 +115,6 @@ public class TCapabilityDefinition extends TExtensibleElements {
         this.capabilityType = value;
     }
 
-    @NonNull
     public int getLowerBound() {
         if (lowerBound == null) {
             return 1;
@@ -153,42 +153,11 @@ public class TCapabilityDefinition extends TExtensibleElements {
         visitor.visit(this);
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "constraint"
-    })
-    public static class Constraints implements Serializable {
-
-        @XmlElement(name = "Constraint", required = true)
-        protected List<TConstraint> constraint;
-
-        @NonNull
-        public List<TConstraint> getConstraint() {
-            if (constraint == null) {
-                constraint = new ArrayList<TConstraint>();
-            }
-            return this.constraint;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Constraints that = (Constraints) o;
-            return Objects.equals(constraint, that.constraint);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(constraint);
-        }
-    }
-
     public static class Builder extends TExtensibleElements.Builder<Builder> {
         private final String name;
         private final QName capabilityType;
 
-        private TCapabilityDefinition.Constraints constraints;
+        private List<TConstraint> constraints;
         private Integer lowerBound;
         private String upperBound;
 
@@ -199,7 +168,7 @@ public class TCapabilityDefinition extends TExtensibleElements {
             this.capabilityType = capabilityType;
         }
 
-        public Builder setConstraints(TCapabilityDefinition.Constraints constraints) {
+        public Builder setConstraints(List<TConstraint> constraints) {
             this.constraints = constraints;
             return this;
         }
@@ -219,27 +188,17 @@ public class TCapabilityDefinition extends TExtensibleElements {
             return this;
         }
 
-        public Builder addConstraints(TCapabilityDefinition.Constraints constraints) {
-            if (constraints == null || constraints.getConstraint().isEmpty()) {
+        public Builder addConstraints(List<TConstraint> constraints) {
+            if (constraints == null || constraints.isEmpty()) {
                 return this;
             }
 
             if (this.constraints == null) {
                 this.constraints = constraints;
             } else {
-                this.constraints.getConstraint().addAll(constraints.getConstraint());
+                this.constraints.addAll(constraints);
             }
             return this;
-        }
-
-        public Builder addConstraints(List<TConstraint> constraints) {
-            if (constraints == null) {
-                return this;
-            }
-
-            TCapabilityDefinition.Constraints tmp = new TCapabilityDefinition.Constraints();
-            tmp.getConstraint().addAll(constraints);
-            return addConstraints(tmp);
         }
 
         public Builder addConstraints(TConstraint constraints) {
@@ -247,8 +206,8 @@ public class TCapabilityDefinition extends TExtensibleElements {
                 return this;
             }
 
-            TCapabilityDefinition.Constraints tmp = new TCapabilityDefinition.Constraints();
-            tmp.getConstraint().add(constraints);
+            List<TConstraint> tmp = new ArrayList<>();
+            tmp.add(constraints);
             return addConstraints(tmp);
         }
 

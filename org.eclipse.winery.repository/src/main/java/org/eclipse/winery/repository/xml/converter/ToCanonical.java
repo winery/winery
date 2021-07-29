@@ -546,10 +546,11 @@ public class ToCanonical {
         //  it's required for us, though, so we just assume it's present
         TRequirementDefinition.Builder builder = new TRequirementDefinition.Builder(xml.getName(), xml.getRequirementType());
         if (xml.getConstraints() != null) {
-            TRequirementDefinition.Constraints constraints = new TRequirementDefinition.Constraints();
-            constraints.getConstraint().addAll(xml.getConstraints().getConstraint().stream()
-                .map(this::convert).collect(Collectors.toList()));
-            builder.setConstraints(constraints);
+            builder.setConstraints(
+                xml.getConstraints().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         builder.setLowerBound(xml.getLowerBound());
         builder.setUpperBound(xml.getUpperBound());
@@ -564,8 +565,8 @@ public class ToCanonical {
     private TCapabilityDefinition convert(XTCapabilityDefinition xml) {
         TCapabilityDefinition.Builder builder = new TCapabilityDefinition.Builder(xml.getName(), xml.getCapabilityType());
         if (xml.getConstraints() != null) {
-            xml.getConstraints().getConstraint()
-                .stream().map(this::convert)
+            xml.getConstraints().stream()
+                .map(this::convert)
                 .forEach(builder::addConstraints);
         }
         builder.setLowerBound(xml.getLowerBound());
