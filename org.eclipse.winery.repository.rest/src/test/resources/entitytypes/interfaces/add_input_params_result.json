@@ -20,7 +20,7 @@
                         {
                             "name": "Param3",
                             "type": "xsd:string",
-                            "required": "YES"
+                            "required": "NO"
                         }
                     ]
                 },

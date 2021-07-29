@@ -7,7 +7,7 @@
                     <InputParameters>
                         <InputParameter name="Param1" type="xsd:string" required="yes"/>
                         <InputParameter name="Param2" type="xsd:string" required="yes"/>
-                        <InputParameter name="Param3" type="xsd:string" required="yes"/>
+                        <InputParameter name="Param3" type="xsd:string" required="no"/>
                     </InputParameters>
                 </Operation>
             </Interface>
