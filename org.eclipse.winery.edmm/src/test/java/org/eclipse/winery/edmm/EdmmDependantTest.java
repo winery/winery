@@ -114,35 +114,44 @@ public abstract class EdmmDependantTest {
         // endregion
 
         // region *** ArtifactTemplates setup ***
-        TArtifactReference startArtifactReference = new TArtifactReference();
-        startArtifactReference.setReference("/artifacttemplates/" + NAMESPACE_DOUBLE_ENCODED + "/startTestNode4/files/script.sh");
-        TArtifactTemplate.ArtifactReferences startArtifactReferences = new TArtifactTemplate.ArtifactReferences();
-        startArtifactReferences.getArtifactReference().add(startArtifactReference);
-        TArtifactTemplate startArtifactIA = new TArtifactTemplate();
-        QName startArtifactIAQName = QName.valueOf("{" + NAMESPACE + "}" + "Start_IA");
-        startArtifactIA.setName(startArtifactIAQName.getLocalPart());
-        startArtifactIA.setArtifactReferences(startArtifactReferences);
-        artifactTemplates.put(startArtifactIAQName, startArtifactIA);
+        QName startIaQName = QName.valueOf("{" + NAMESPACE + "}" + "Start_IA");
+        artifactTemplates.put(startIaQName,
+            new TArtifactTemplate.Builder(
+                "Start_IA",
+                startIaQName
+            )
+                .addArtifactReference(
+                    new TArtifactReference.Builder(
+                        "/artifacttemplates/" + NAMESPACE_DOUBLE_ENCODED + "/startTestNode4/files/script.sh"
+                    ).build()
+                )
+                .build()
+        );
 
-        TArtifactReference stopArtifactReference = new TArtifactReference();
-        stopArtifactReference.setReference("/artifacttemplates/" + NAMESPACE_DOUBLE_ENCODED + "/stopTestNode4/files/script.sh");
-        TArtifactTemplate.ArtifactReferences stopArtifactReferences = new TArtifactTemplate.ArtifactReferences();
-        stopArtifactReferences.getArtifactReference().add(startArtifactReference);
-        TArtifactTemplate stopArtifactIA = new TArtifactTemplate();
-        QName stopArtifactIAQName = QName.valueOf("{" + NAMESPACE + "}" + "Stop_IA");
-        stopArtifactIA.setName(stopArtifactIAQName.getLocalPart());
-        stopArtifactIA.setArtifactReferences(stopArtifactReferences);
-        artifactTemplates.put(stopArtifactIAQName, stopArtifactIA);
+        QName stopIaQName = QName.valueOf("{" + NAMESPACE + "}" + "Stop_IA");
+        TArtifactTemplate stopIa = new TArtifactTemplate.Builder(
+            "Stop_IA",
+            stopIaQName
+        )
+            .addArtifactReference(
+                new TArtifactReference.Builder(
+                    "/artifacttemplates/" + NAMESPACE_DOUBLE_ENCODED + "/startTestNode4/files/script.sh"
+                ).build()
+            )
+            .build();
+        artifactTemplates.put(stopIaQName, stopIa);
 
-        TArtifactReference deploymentArtifactArtifactReference = new TArtifactReference();
-        deploymentArtifactArtifactReference.setReference("/artifacttemplates/" + NAMESPACE_DOUBLE_ENCODED + "/testNode1-DA/files/da.war");
-        TArtifactTemplate deploymentArtifactTemplate = new TArtifactTemplate();
-        TArtifactTemplate.ArtifactReferences deploymentArtifactArtifactReferences = new TArtifactTemplate.ArtifactReferences();
-        deploymentArtifactArtifactReferences.getArtifactReference().add(startArtifactReference);
-        deploymentArtifactTemplate.setArtifactReferences(deploymentArtifactArtifactReferences);
         QName deploymentArtifactIAQName = QName.valueOf("{" + NAMESPACE + "}" + "TestNode1-DA");
-        deploymentArtifactTemplate.setName(deploymentArtifactIAQName.getLocalPart());
-        deploymentArtifactTemplate.setArtifactReferences(deploymentArtifactArtifactReferences);
+        TArtifactTemplate deploymentArtifactTemplate = new TArtifactTemplate.Builder(
+            "TestNode1-DA",
+            deploymentArtifactIAQName
+        )
+            .addArtifactReference(
+                new TArtifactReference.Builder(
+                    "/artifacttemplates/" + NAMESPACE_DOUBLE_ENCODED + "/testNode1-DA/files/da.war"
+                ).build()
+            )
+            .build();
         artifactTemplates.put(deploymentArtifactIAQName, deploymentArtifactTemplate);
         // endregion
 
@@ -150,12 +159,12 @@ public abstract class EdmmDependantTest {
         QName nodeTypeImpl4QName = QName.valueOf("{" + NAMESPACE + "}" + "test_node_type_Impl_4");
 
         TImplementationArtifact startArtifact = new TImplementationArtifact.Builder(QName.valueOf("{ex.org}test"))
-            .setArtifactRef(startArtifactIAQName)
+            .setArtifactRef(startIaQName)
             .setInterfaceName("lifecycle_interface")
             .setOperationName("start")
             .build();
         TImplementationArtifact stopArtifact = new TImplementationArtifact.Builder(QName.valueOf("{ex.org}test"))
-            .setArtifactRef(deploymentArtifactIAQName)
+            .setArtifactRef(stopIaQName)
             .setInterfaceName("lifecycle_interface")
             .setOperationName("stop")
             .build();

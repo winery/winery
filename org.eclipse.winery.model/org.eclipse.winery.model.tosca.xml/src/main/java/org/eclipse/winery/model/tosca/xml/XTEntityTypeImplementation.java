@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca.xml;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,13 +38,16 @@ import org.eclipse.jdt.annotation.Nullable;
 @XmlSeeAlso( {
     XTNodeTypeImplementation.class,
     XTRelationshipTypeImplementation.class,
+    XTArtifactReference.class,
+    XTRequiredContainerFeature.class
 })
 public abstract class XTEntityTypeImplementation extends XTExtensibleElementWithTags implements XHasName, XHasType, XHasInheritance, XHasTargetNamespace {
 
-    @XmlElement(name = "RequiredContainerFeatures")
-    protected XTRequiredContainerFeatures requiredContainerFeatures;
+    @XmlElementWrapper(name = "RequiredContainerFeatures")
+    @XmlElement(name = "RequiredContainerFeature", required = true)
+    protected List<XTRequiredContainerFeature> requiredContainerFeatures;
 
-    @XmlElementWrapper(name = "ImplementationArtifacts") 
+    @XmlElementWrapper(name = "ImplementationArtifacts")
     @XmlElement(name = "ImplementationArtifact", required = true)
     protected List<XTImplementationArtifact> implementationArtifacts;
 
@@ -67,7 +71,6 @@ public abstract class XTEntityTypeImplementation extends XTExtensibleElementWith
 
     @Deprecated // required for XML deserialization
     public XTEntityTypeImplementation() {
-        super();
     }
 
     public XTEntityTypeImplementation(Builder<?> builder) {
@@ -106,11 +109,11 @@ public abstract class XTEntityTypeImplementation extends XTExtensibleElementWith
     }
 
     @Nullable
-    public XTRequiredContainerFeatures getRequiredContainerFeatures() {
+    public List<XTRequiredContainerFeature> getRequiredContainerFeatures() {
         return requiredContainerFeatures;
     }
 
-    public void setRequiredContainerFeatures(XTRequiredContainerFeatures value) {
+    public void setRequiredContainerFeatures(List<XTRequiredContainerFeature> value) {
         this.requiredContainerFeatures = value;
     }
 
@@ -185,7 +188,7 @@ public abstract class XTEntityTypeImplementation extends XTExtensibleElementWith
         private final QName implementedType;
         private String name;
         private String targetNamespace;
-        private XTRequiredContainerFeatures requiredContainerFeatures;
+        private List<XTRequiredContainerFeature> requiredContainerFeatures;
         private List<XTImplementationArtifact> implementationArtifacts;
         private XTBoolean _abstract;
         private XTBoolean _final;
@@ -212,7 +215,7 @@ public abstract class XTEntityTypeImplementation extends XTExtensibleElementWith
             return self();
         }
 
-        public T setRequiredContainerFeatures(XTRequiredContainerFeatures requiredContainerFeatures) {
+        public T setRequiredContainerFeatures(List<XTRequiredContainerFeature> requiredContainerFeatures) {
             this.requiredContainerFeatures = requiredContainerFeatures;
             return self();
         }
@@ -237,36 +240,26 @@ public abstract class XTEntityTypeImplementation extends XTExtensibleElementWith
             return self();
         }
 
-        public T addRequiredContainerFeatures(XTRequiredContainerFeatures requiredContainerFeatures) {
-            if (requiredContainerFeatures == null || requiredContainerFeatures.getRequiredContainerFeature().isEmpty()) {
+        public T addRequiredContainerFeatures(List<XTRequiredContainerFeature> requiredContainerFeatures) {
+            if (requiredContainerFeatures == null || requiredContainerFeatures.isEmpty()) {
                 return self();
             }
 
             if (this.requiredContainerFeatures == null) {
                 this.requiredContainerFeatures = requiredContainerFeatures;
             } else {
-                this.requiredContainerFeatures.getRequiredContainerFeature().addAll(requiredContainerFeatures.getRequiredContainerFeature());
+                this.requiredContainerFeatures.addAll(requiredContainerFeatures);
             }
             return self();
         }
 
-        public T addRequiredContainerFeatures(List<XTRequiredContainerFeature> requiredContainerFeatures) {
+        public T addRequiredContainerFeature(XTRequiredContainerFeature requiredContainerFeatures) {
             if (requiredContainerFeatures == null) {
                 return self();
             }
 
-            XTRequiredContainerFeatures tmp = new XTRequiredContainerFeatures();
-            tmp.getRequiredContainerFeature().addAll(requiredContainerFeatures);
-            return addRequiredContainerFeatures(tmp);
-        }
-
-        public T addRequiredContainerFeatures(XTRequiredContainerFeature requiredContainerFeatures) {
-            if (requiredContainerFeatures == null) {
-                return self();
-            }
-
-            XTRequiredContainerFeatures tmp = new XTRequiredContainerFeatures();
-            tmp.getRequiredContainerFeature().add(requiredContainerFeatures);
+            List<XTRequiredContainerFeature> tmp = new ArrayList<>();
+            tmp.add(requiredContainerFeatures);
             return addRequiredContainerFeatures(tmp);
         }
 

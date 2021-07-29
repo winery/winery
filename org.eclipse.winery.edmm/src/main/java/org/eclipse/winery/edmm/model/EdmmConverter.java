@@ -221,8 +221,8 @@ public class EdmmConverter {
                 String path = null;
 
                 TArtifactTemplate artifactTemplate = artifactTemplates.get(artifact.getArtifactRef());
-                if (artifactTemplate != null && artifactTemplate.getArtifactReferences().getArtifactReference().size() > 0) {
-                    path = artifactTemplate.getArtifactReferences().getArtifactReference().get(0).getReference();
+                if (artifactTemplate != null && artifactTemplate.getArtifactReferences().size() > 0) {
+                    path = artifactTemplate.getArtifactReferences().get(0).getReference();
                 }
 
                 EntityId artifactEntityId = artifactsEntityId.extend(
@@ -385,8 +385,8 @@ public class EdmmConverter {
             if (artifacts.size() == 1 && artifacts.get(0).getArtifactRef() != null) {
                 TArtifactTemplate artifactTemplate = artifactTemplates.get(artifacts.get(0).getArtifactRef());
                 if (artifactTemplate.getArtifactReferences() != null &&
-                    artifactTemplate.getArtifactReferences().getArtifactReference().size() > 0) {
-                    return artifactTemplate.getArtifactReferences().getArtifactReference().get(0).getReference();
+                    artifactTemplate.getArtifactReferences().size() > 0) {
+                    return artifactTemplate.getArtifactReferences().get(0).getReference();
                 }
             }
 
@@ -395,8 +395,8 @@ public class EdmmConverter {
                     TArtifactTemplate artifactTemplate = artifactTemplates.get(artifact.getArtifactRef());
                     if (artifactTemplate != null &&
                         artifactTemplate.getArtifactReferences() != null &&
-                        artifactTemplate.getArtifactReferences().getArtifactReference().size() > 0) {
-                        return artifactTemplate.getArtifactReferences().getArtifactReference().get(0).getReference();
+                        artifactTemplate.getArtifactReferences().size() > 0) {
+                        return artifactTemplate.getArtifactReferences().get(0).getReference();
                     }
                 }
             }

@@ -189,7 +189,7 @@ public class ToCanonical {
             .setPolicyTemplate(convertList(xml.getPolicyTemplates(), this::convert))
             .addRequirementTypes(convertList(xml.getRequirementTypes(), this::convert));
         if (xml.getExtensions() != null) {
-            builder.addExtensions(convertList(xml.getExtensions().getExtension(), this::convert));
+            builder.addExtensions(convertList(xml.getExtensions(), this::convert));
         }
         // this handles the "conversion" – basically copying of data – required by the disjoint TExtensibleElements
         //  acting as baseclass for all the extensions we support
@@ -373,8 +373,11 @@ public class ToCanonical {
     private <Builder extends TEntityTypeImplementation.Builder<Builder>, Value extends XTEntityTypeImplementation>
     void fillEntityTypeImplementationProperties(Builder builder, Value xml) {
         if (xml.getRequiredContainerFeatures() != null) {
-            builder.addRequiredContainerFeatures(xml.getRequiredContainerFeatures().getRequiredContainerFeature()
-                .stream().map(this::convert).collect(Collectors.toList()));
+            builder.addRequiredContainerFeatures(
+                xml.getRequiredContainerFeatures().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         if (xml.getTags() != null) {
             builder.addTags(xml.getTags().stream().map(this::convert).collect(Collectors.toList()));
@@ -404,9 +407,9 @@ public class ToCanonical {
     }
 
     private TRequiredContainerFeature convert(XTRequiredContainerFeature xml) {
-        TRequiredContainerFeature result = new TRequiredContainerFeature();
-        result.setFeature(xml.getFeature());
-        return result;
+        return new TRequiredContainerFeature(
+            xml.getFeature()
+        );
     }
 
     private TPolicyType convert(XTPolicyType xml) {
@@ -663,9 +666,9 @@ public class ToCanonical {
         TArtifactTemplate.Builder builder = new TArtifactTemplate.Builder(xml.getId(), xml.getType());
         builder.setName(xml.getName());
         if (xml.getArtifactReferences() != null) {
-            xml.getArtifactReferences().getArtifactReference().stream()
+            xml.getArtifactReferences().stream()
                 .map(this::convert)
-                .forEach(builder::addArtifactReferences);
+                .forEach(builder::addArtifactReference);
         }
         fillEntityTemplateProperties(builder, xml);
         return builder.build();
@@ -685,15 +688,11 @@ public class ToCanonical {
     }
 
     private TArtifactReference.Include convert(XTArtifactReference.Include xml) {
-        TArtifactReference.Include canonical = new TArtifactReference.Include();
-        canonical.setPattern(xml.getPattern());
-        return canonical;
+        return new TArtifactReference.Include(xml.getPattern());
     }
 
     private TArtifactReference.Exclude convert(XTArtifactReference.Exclude xml) {
-        TArtifactReference.Exclude canonical = new TArtifactReference.Exclude();
-        canonical.setPattern(xml.getPattern());
-        return canonical;
+        return new TArtifactReference.Exclude(xml.getPattern());
     }
 
     private TImport convert(XTImport xml) {

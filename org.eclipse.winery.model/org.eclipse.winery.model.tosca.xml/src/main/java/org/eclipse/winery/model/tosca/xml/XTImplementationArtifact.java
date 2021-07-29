@@ -37,15 +37,19 @@ public class XTImplementationArtifact extends XTExtensibleElements implements XH
 
     @XmlAttribute(name = "name")
     protected String name;
+
     @XmlAttribute(name = "interfaceName")
     @XmlSchemaType(name = "anyURI")
     protected String interfaceName;
+
     @XmlAttribute(name = "operationName")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlSchemaType(name = "NCName")
     protected String operationName;
+
     @XmlAttribute(name = "artifactType", required = true)
     protected QName artifactType;
+
     @XmlAttribute(name = "artifactRef")
     protected QName artifactRef;
 

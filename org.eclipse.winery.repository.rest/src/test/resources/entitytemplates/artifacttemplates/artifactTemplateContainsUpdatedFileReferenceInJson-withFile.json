@@ -16,15 +16,13 @@
             },
             "id": "artifactTemplateContainsUpdatedFileReferenceInJson",
             "type": "{http://winery.opentosca.org/test/artifacttypes}MiniArtifactType",
-            "artifactReferences": {
-                "artifactReference": [
-                    {
-                        "includeOrExclude": [
-                        ],
-                        "reference": "artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/artifactTemplateContainsUpdatedFileReferenceInJson/files/empty_text_file.txt"
-                    }
-                ]
-            },
+            "artifactReferences": [
+                {
+                    "includeOrExclude": [
+                    ],
+                    "reference": "artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/artifactTemplateContainsUpdatedFileReferenceInJson/files/empty_text_file.txt"
+                }
+            ],
             "name": "artifactTemplateContainsUpdatedFileReferenceInJson"
         }
     ],

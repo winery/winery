@@ -106,7 +106,7 @@ public abstract class TEntityType extends TExtensibleElementWithTags implements 
     // added to support conversion from/to YAML
     protected List<AttributeDefinition> attributeDefinitions;
 
-    @Deprecated // used for XML deserialization of API request content
+    // used for XML deserialization of API request content
     public TEntityType() {
     }
 

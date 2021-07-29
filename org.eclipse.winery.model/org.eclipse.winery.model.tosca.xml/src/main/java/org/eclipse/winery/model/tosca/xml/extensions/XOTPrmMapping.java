@@ -40,10 +40,11 @@ public abstract class XOTPrmMapping extends XHasId implements Serializable {
     @NonNull
     private XTEntityTemplate refinementElement;
 
-    @Deprecated // required for XML deserialization
-    public XOTPrmMapping() { }
+    // required for XML deserialization
+    public XOTPrmMapping() {
+    }
 
-    public XOTPrmMapping(Builder builder) {
+    public XOTPrmMapping(Builder<?> builder) {
         super(builder);
         this.detectorElement = builder.detectorElement;
         this.refinementElement = builder.refinementElement;
@@ -77,7 +78,7 @@ public abstract class XOTPrmMapping extends XHasId implements Serializable {
         public Builder() {
             super();
         }
-        
+
         public Builder(String id) {
             super(id);
         }

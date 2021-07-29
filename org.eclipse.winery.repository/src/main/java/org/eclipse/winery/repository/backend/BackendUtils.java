@@ -1159,32 +1159,29 @@ public class BackendUtils {
         TArtifactTemplate template = repository.getElement(id);
         List<TArtifactReference> toRemove = new ArrayList<>();
         List<RepositoryFileReference> toAdd = new ArrayList<>();
-        TArtifactTemplate.ArtifactReferences artifactReferences = template.getArtifactReferences();
+        List<TArtifactReference> artifactReferences = template.getArtifactReferences();
         DirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(id);
         SortedSet<RepositoryFileReference> files = repository.getContainedFiles(fileDir);
 
         if (artifactReferences == null) {
-            artifactReferences = new TArtifactTemplate.ArtifactReferences();
+            artifactReferences = new ArrayList<>();
             template.setArtifactReferences(artifactReferences);
         }
 
-        List<TArtifactReference> artRefList = artifactReferences.getArtifactReference();
-        determineChanges(artRefList, files, toRemove, toAdd);
+        determineChanges(artifactReferences, files, toRemove, toAdd);
 
         if (toAdd.size() > 0 || toRemove.size() > 0) {
             // apply removal list
-            toRemove.forEach(artRefList::remove);
+            toRemove.forEach(artifactReferences::remove);
 
             // apply addition list
-            artRefList.addAll(toAdd.stream().map(fileRef -> {
+            artifactReferences.addAll(toAdd.stream().map(fileRef -> {
                 String path = Util.getUrlPath(fileRef);
 
                 // put path into data structure
                 // we do not use Include/Exclude as we directly reference a concrete file
-                TArtifactReference artRef = new TArtifactReference();
-                artRef.setReference(path);
 
-                return artRef;
+                return new TArtifactReference.Builder(path).build();
             }).collect(Collectors.toList()));
 
             // finally, persist only if something changed

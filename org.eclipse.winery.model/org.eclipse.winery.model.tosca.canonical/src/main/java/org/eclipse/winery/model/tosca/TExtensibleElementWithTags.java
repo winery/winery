@@ -39,7 +39,7 @@ public abstract class TExtensibleElementWithTags extends TExtensibleElements imp
         this.tags = builder.tags;
     }
 
-    @Deprecated
+    // required for serialization
     public TExtensibleElementWithTags() {
     }
 

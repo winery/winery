@@ -152,7 +152,6 @@ import org.eclipse.winery.model.tosca.xml.extensions.XOTStayMapping;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTStringList;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTTestRefinementModel;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTTopologyFragmentRefinementModel;
-import org.eclipse.winery.repository.xml.XmlRepository;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
@@ -165,7 +164,7 @@ public class FromCanonical {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FromCanonical.class);
 
-    public FromCanonical(XmlRepository repository) {
+    public FromCanonical() {
     }
 
     public XTDefinitions convert(TDefinitions canonical) {
@@ -176,10 +175,14 @@ public class FromCanonical {
      * Converts a canonical TDefinitions collection to XML TDefinitions.
      */
     public XTDefinitions convert(TDefinitions canonical, boolean convertImports) {
+        if (convertImports) {
+            LOGGER.warn("Converting imports is not yet implemented!");
+        }
+
         // FIXME need to correctly deal with convertImports flag to create a self-contained Definitions to export as CSAR if it is set.
         XDefinitions.Builder builder = new XDefinitions.Builder(canonical.getId(), canonical.getTargetNamespace())
             .setImport(convertList(canonical.getImport(), this::convert))
-            .setExtensions(convertExtensions(canonical.getExtensions()))
+            .addExtensions(convertExtensions(canonical.getExtensions()))
             .addTypes(convertTypes(canonical.getTypes()))
             .setServiceTemplates(convertList(canonical.getServiceTemplates(), this::convert))
             .setNodeTypes(convertList(canonical.getNodeTypes(), this::convert))
@@ -273,8 +276,11 @@ public class FromCanonical {
     private <Builder extends XTEntityTypeImplementation.Builder<Builder>, Value extends TEntityTypeImplementation>
     void fillEntityTypeImplementationProperties(Builder builder, Value canonical) {
         if (canonical.getRequiredContainerFeatures() != null) {
-            builder.addRequiredContainerFeatures(canonical.getRequiredContainerFeatures().getRequiredContainerFeature()
-                .stream().map(this::convert).collect(Collectors.toList()));
+            builder.addRequiredContainerFeatures(
+                canonical.getRequiredContainerFeatures().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         if (canonical.getTags() != null) {
             builder.addTags(convertList(canonical.getTags(), this::convert));
@@ -559,9 +565,9 @@ public class FromCanonical {
         XTArtifactTemplate.Builder builder = new XTArtifactTemplate.Builder(canonical.getId(), canonical.getType());
         builder.setName(canonical.getName());
         if (canonical.getArtifactReferences() != null) {
-            canonical.getArtifactReferences().getArtifactReference().stream()
+            canonical.getArtifactReferences().stream()
                 .map(this::convert)
-                .forEach(builder::addArtifactReferences);
+                .forEach(builder::addArtifactReference);
         }
         fillEntityTemplateProperties(builder, canonical);
         return builder.build();
@@ -573,18 +579,22 @@ public class FromCanonical {
         return xml.build();
     }
 
-    private List<Object> convertIncludeOrExclude(List<Object> includeOrExclude) {
-        List<Object> results = new ArrayList<>();
-        for (Object item : includeOrExclude) {
+    private List<XTArtifactReference.IncludeOrExclude> convertIncludeOrExclude(List<TArtifactReference.IncludeOrExclude> includeOrExclude) {
+        List<XTArtifactReference.IncludeOrExclude> results = new ArrayList<>();
+        for (TArtifactReference.IncludeOrExclude item : includeOrExclude) {
             if (item instanceof TArtifactReference.Include) {
-                XTArtifactReference.Include xml = new XTArtifactReference.Include();
-                xml.setPattern(((TArtifactReference.Include) item).getPattern());
-                results.add(xml);
+                results.add(
+                    new XTArtifactReference.Include(
+                        item.getPattern()
+                    )
+                );
             }
             if (item instanceof TArtifactReference.Exclude) {
-                XTArtifactReference.Exclude xml = new XTArtifactReference.Exclude();
-                xml.setPattern(((TArtifactReference.Exclude) item).getPattern());
-                results.add(xml);
+                results.add(
+                    new XTArtifactReference.Exclude(
+                        item.getPattern()
+                    )
+                );
             }
         }
         return results;
@@ -948,13 +958,13 @@ public class FromCanonical {
         throw new IllegalStateException(String.format("Tried to convert unknown RelationshipSourceOrTarget implementation %s", canonical.getClass().getName()));
     }
 
-    private XTDefinitions.Extensions convertExtensions(TDefinitions.@Nullable Extensions canonical) {
+    private List<XTExtension> convertExtensions(List<TExtension> canonical) {
         if (canonical == null) {
             return null;
         }
-        XTDefinitions.Extensions result = new XTDefinitions.Extensions();
-        result.getExtension().addAll(canonical.getExtension().stream().map(this::convert).collect(Collectors.toList()));
-        return result;
+        return canonical.stream()
+            .map(this::convert)
+            .collect(Collectors.toList());
     }
 
     private XTDefinitions.Types convertTypes(TDefinitions.@Nullable Types canonical) {

@@ -39,7 +39,7 @@ public abstract class HasIdAndTags extends HasId implements HasTags {
         this.tags = builder.tags;
     }
 
-    @Deprecated
+    // required for serialization
     public HasIdAndTags() {
     }
 

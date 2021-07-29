@@ -227,8 +227,8 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
     }
 
     public static class Builder extends TEntityTypeImplementation.Builder<Builder> {
+
         private DerivedFrom derivedFrom;
-        private TRequiredContainerFeatures requiredContainerFeatures;
         private List<TImplementationArtifact> implementationArtifacts;
         private List<TDeploymentArtifact> deploymentArtifacts;
 
@@ -245,64 +245,8 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
             return this;
         }
 
-        public Builder setRequiredContainerFeatures(TRequiredContainerFeatures requiredContainerFeatures) {
-            this.requiredContainerFeatures = requiredContainerFeatures;
-            return this;
-        }
-
-        public Builder setImplementationArtifacts(List<TImplementationArtifact> implementationArtifacts) {
-            this.implementationArtifacts = implementationArtifacts;
-            return this;
-        }
-
         public Builder setDeploymentArtifacts(List<TDeploymentArtifact> deploymentArtifacts) {
             this.deploymentArtifacts = deploymentArtifacts;
-            return this;
-        }
-
-        public Builder addRequiredContainerFeatures(TRequiredContainerFeatures requiredContainerFeatures) {
-            if (requiredContainerFeatures == null || requiredContainerFeatures.getRequiredContainerFeature().isEmpty()) {
-                return this;
-            }
-
-            if (this.requiredContainerFeatures == null) {
-                this.requiredContainerFeatures = requiredContainerFeatures;
-            } else {
-                this.requiredContainerFeatures.getRequiredContainerFeature().addAll(requiredContainerFeatures.getRequiredContainerFeature());
-            }
-            return this;
-        }
-
-        public Builder addRequiredContainerFeatures(List<TRequiredContainerFeature> requiredContainerFeatures) {
-            if (requiredContainerFeatures == null) {
-                return this;
-            }
-
-            TRequiredContainerFeatures tmp = new TRequiredContainerFeatures();
-            tmp.getRequiredContainerFeature().addAll(requiredContainerFeatures);
-            return addRequiredContainerFeatures(tmp);
-        }
-
-        public Builder addRequiredContainerFeatures(TRequiredContainerFeature requiredContainerFeatures) {
-            if (requiredContainerFeatures == null) {
-                return this;
-            }
-
-            TRequiredContainerFeatures tmp = new TRequiredContainerFeatures();
-            tmp.getRequiredContainerFeature().add(requiredContainerFeatures);
-            return addRequiredContainerFeatures(tmp);
-        }
-
-        public Builder addImplementationArtifacts(List<TImplementationArtifact> implementationArtifacts) {
-            if (implementationArtifacts == null || implementationArtifacts.isEmpty()) {
-                return this;
-            }
-
-            if (this.implementationArtifacts == null) {
-                this.implementationArtifacts = implementationArtifacts;
-            } else {
-                this.implementationArtifacts.addAll(implementationArtifacts);
-            }
             return this;
         }
 
@@ -327,16 +271,6 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
             List<TDeploymentArtifact> tmp = new ArrayList<>();
             tmp.add(deploymentArtifact);
             return addDeploymentArtifacts(tmp);
-        }
-        
-        public Builder addImplementationArtifact(TImplementationArtifact implementationArtifact) {
-            if (implementationArtifact == null) {
-                return this;
-            }
-
-            List<TImplementationArtifact> tmp = new ArrayList<>();
-            tmp.add(implementationArtifact);
-            return addImplementationArtifacts(tmp);
         }
 
         @Override

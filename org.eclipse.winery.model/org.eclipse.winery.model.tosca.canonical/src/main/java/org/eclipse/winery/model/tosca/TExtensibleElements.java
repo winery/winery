@@ -71,7 +71,7 @@ public abstract class TExtensibleElements implements Serializable {
     @NonNull
     private Map<QName, String> otherAttributes = new HashMap<>();
 
-    @Deprecated // used for XML deserialization of API request content
+    // used for XML deserialization of API request content
     public TExtensibleElements() {
     }
 

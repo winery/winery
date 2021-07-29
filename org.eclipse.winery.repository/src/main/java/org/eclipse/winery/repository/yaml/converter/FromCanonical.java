@@ -841,10 +841,9 @@ public class FromCanonical {
             return null;
         }
         List<String> files = new ArrayList<>();
-        TArtifactTemplate.ArtifactReferences artifactReferences = node.getArtifactReferences();
+        List<TArtifactReference> artifactReferences = node.getArtifactReferences();
         if (artifactReferences != null) {
-            List<TArtifactReference> artifactReferenceList = artifactReferences.getArtifactReference();
-            for (TArtifactReference artifactReference : artifactReferenceList) {
+            for (TArtifactReference artifactReference : artifactReferences) {
                 files.add(artifactReference.getReference());
             }
         }

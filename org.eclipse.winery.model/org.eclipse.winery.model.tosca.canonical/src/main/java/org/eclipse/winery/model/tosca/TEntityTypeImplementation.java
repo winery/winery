@@ -46,12 +46,15 @@ import org.eclipse.jdt.annotation.Nullable;
 @XmlSeeAlso( {
     TNodeTypeImplementation.class,
     TRelationshipTypeImplementation.class,
+    TRequiredContainerFeature.class,
+    TImplementationArtifact.class
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class TEntityTypeImplementation extends TExtensibleElementWithTags implements HasName, HasType, HasInheritance, HasTargetNamespace {
 
-    @XmlElement(name = "RequiredContainerFeatures")
-    protected TRequiredContainerFeatures requiredContainerFeatures;
+    @XmlElementWrapper(name = "RequiredContainerFeatures")
+    @XmlElement(name = "RequiredContainerFeature", required = true)
+    protected List<TRequiredContainerFeature> requiredContainerFeatures;
 
     @XmlElementWrapper(name = "ImplementationArtifacts")
     @XmlElement(name = "ImplementationArtifact", required = true)
@@ -125,11 +128,11 @@ public abstract class TEntityTypeImplementation extends TExtensibleElementWithTa
     }
 
     @Nullable
-    public TRequiredContainerFeatures getRequiredContainerFeatures() {
+    public List<TRequiredContainerFeature> getRequiredContainerFeatures() {
         return requiredContainerFeatures;
     }
 
-    public void setRequiredContainerFeatures(TRequiredContainerFeatures value) {
+    public void setRequiredContainerFeatures(List<TRequiredContainerFeature> value) {
         this.requiredContainerFeatures = value;
     }
 
@@ -202,7 +205,7 @@ public abstract class TEntityTypeImplementation extends TExtensibleElementWithTa
         private final QName implementedType;
         private String name;
         private String targetNamespace;
-        private TRequiredContainerFeatures requiredContainerFeatures;
+        private List<TRequiredContainerFeature> requiredContainerFeatures;
         private List<TImplementationArtifact> implementationArtifacts;
         private boolean _abstract;
         private boolean _final;
@@ -229,11 +232,6 @@ public abstract class TEntityTypeImplementation extends TExtensibleElementWithTa
             return self();
         }
 
-        public T setRequiredContainerFeatures(TRequiredContainerFeatures requiredContainerFeatures) {
-            this.requiredContainerFeatures = requiredContainerFeatures;
-            return self();
-        }
-
         public T setImplementationArtifacts(List<TImplementationArtifact> implementationArtifacts) {
             this.implementationArtifacts = implementationArtifacts;
             return self();
@@ -254,36 +252,26 @@ public abstract class TEntityTypeImplementation extends TExtensibleElementWithTa
             return self();
         }
 
-        public T addRequiredContainerFeatures(TRequiredContainerFeatures requiredContainerFeatures) {
-            if (requiredContainerFeatures == null || requiredContainerFeatures.getRequiredContainerFeature().isEmpty()) {
+        public T addRequiredContainerFeatures(List<TRequiredContainerFeature> requiredContainerFeatures) {
+            if (requiredContainerFeatures == null || requiredContainerFeatures.isEmpty()) {
                 return self();
             }
 
             if (this.requiredContainerFeatures == null) {
                 this.requiredContainerFeatures = requiredContainerFeatures;
             } else {
-                this.requiredContainerFeatures.getRequiredContainerFeature().addAll(requiredContainerFeatures.getRequiredContainerFeature());
+                this.requiredContainerFeatures.addAll(requiredContainerFeatures);
             }
             return self();
         }
 
-        public T addRequiredContainerFeatures(List<TRequiredContainerFeature> requiredContainerFeatures) {
-            if (requiredContainerFeatures == null) {
+        public T addRequiredContainerFeature(TRequiredContainerFeature requiredContainerFeature) {
+            if (requiredContainerFeature == null) {
                 return self();
             }
 
-            TRequiredContainerFeatures tmp = new TRequiredContainerFeatures();
-            tmp.getRequiredContainerFeature().addAll(requiredContainerFeatures);
-            return addRequiredContainerFeatures(tmp);
-        }
-
-        public T addRequiredContainerFeatures(TRequiredContainerFeature requiredContainerFeatures) {
-            if (requiredContainerFeatures == null) {
-                return self();
-            }
-
-            TRequiredContainerFeatures tmp = new TRequiredContainerFeatures();
-            tmp.getRequiredContainerFeature().add(requiredContainerFeatures);
+            List<TRequiredContainerFeature> tmp = new ArrayList<>();
+            tmp.add(requiredContainerFeature);
             return addRequiredContainerFeatures(tmp);
         }
 

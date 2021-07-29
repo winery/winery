@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.OutputKeys;
@@ -39,21 +38,22 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.eclipse.winery.model.converter.support.Namespaces;
-import org.eclipse.winery.repository.backend.IRepository;
-import org.eclipse.winery.repository.converter.reader.XmlReader;
-import org.eclipse.winery.repository.common.RepositoryFileReference;
-import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.model.ids.definitions.imports.XSDImportId;
-import org.eclipse.winery.model.tosca.TDefinitions;
+import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.Util;
+import org.eclipse.winery.repository.converter.reader.XmlReader;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.importing.CsarImporter;
 
@@ -103,10 +103,8 @@ public class WriterUtils {
             }
 
             if (entry instanceof TArtifactTemplate) {
-                TArtifactTemplate.ArtifactReferences artifactReferences = ((TArtifactTemplate) entry).getArtifactReferences();
-                Stream.of(artifactReferences)
-                    .filter(Objects::nonNull)
-                    .flatMap(ref -> ref.getArtifactReference().stream())
+                List<TArtifactReference> artifactReferences = ((TArtifactTemplate) entry).getArtifactReferences();
+                artifactReferences.stream()
                     .filter(Objects::nonNull)
                     .forEach(ref -> {
                         String reference = ref.getReference();
@@ -127,10 +125,10 @@ public class WriterUtils {
                         }
                         ArtifactTemplateFilesDirectoryId aDir = new ArtifactTemplateFilesDirectoryId((ArtifactTemplateId) wid);
                         RepositoryFileReference aFile = new RepositoryFileReference(aDir, artifactPath.getFileName().toString());
-                        MediaType mediaType = null;
+
                         try (InputStream is = Files.newInputStream(artifactPath);
                              BufferedInputStream bis = new BufferedInputStream(is)) {
-                            mediaType = BackendUtils.getMimeType(bis, artifactPath.getFileName().toString());
+                            MediaType mediaType = BackendUtils.getMimeType(bis, artifactPath.getFileName().toString());
                             repository.putContentToFile(aFile, bis, mediaType);
                         } catch (IOException e) {
                             LOGGER.error("Could not read artifact template file: {}", artifactPath);

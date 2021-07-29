@@ -92,7 +92,6 @@ public class XTNodeTypeImplementation extends XTEntityTypeImplementation {
 
     @Deprecated // required for XML deserialization
     public XTNodeTypeImplementation() {
-        super();
     }
 
     public XTNodeTypeImplementation(Builder builder) {
@@ -229,8 +228,8 @@ public class XTNodeTypeImplementation extends XTEntityTypeImplementation {
     }
 
     public static class Builder extends XTEntityTypeImplementation.Builder<Builder> {
+
         private DerivedFrom derivedFrom;
-        private XTRequiredContainerFeatures requiredContainerFeatures;
         private List<XTImplementationArtifact> implementationArtifacts;
         private List<XTDeploymentArtifact> deploymentArtifacts;
 
@@ -247,11 +246,6 @@ public class XTNodeTypeImplementation extends XTEntityTypeImplementation {
             return this;
         }
 
-        public Builder setRequiredContainerFeatures(XTRequiredContainerFeatures requiredContainerFeatures) {
-            this.requiredContainerFeatures = requiredContainerFeatures;
-            return this;
-        }
-
         public Builder setImplementationArtifacts(List<XTImplementationArtifact> implementationArtifacts) {
             this.implementationArtifacts = implementationArtifacts;
             return this;
@@ -259,52 +253,6 @@ public class XTNodeTypeImplementation extends XTEntityTypeImplementation {
 
         public Builder setDeploymentArtifacts(List<XTDeploymentArtifact> deploymentArtifacts) {
             this.deploymentArtifacts = deploymentArtifacts;
-            return this;
-        }
-
-        public Builder addRequiredContainerFeatures(XTRequiredContainerFeatures requiredContainerFeatures) {
-            if (requiredContainerFeatures == null || requiredContainerFeatures.getRequiredContainerFeature().isEmpty()) {
-                return this;
-            }
-
-            if (this.requiredContainerFeatures == null) {
-                this.requiredContainerFeatures = requiredContainerFeatures;
-            } else {
-                this.requiredContainerFeatures.getRequiredContainerFeature().addAll(requiredContainerFeatures.getRequiredContainerFeature());
-            }
-            return this;
-        }
-
-        public Builder addRequiredContainerFeatures(List<XTRequiredContainerFeature> requiredContainerFeatures) {
-            if (requiredContainerFeatures == null) {
-                return this;
-            }
-
-            XTRequiredContainerFeatures tmp = new XTRequiredContainerFeatures();
-            tmp.getRequiredContainerFeature().addAll(requiredContainerFeatures);
-            return addRequiredContainerFeatures(tmp);
-        }
-
-        public Builder addRequiredContainerFeatures(XTRequiredContainerFeature requiredContainerFeatures) {
-            if (requiredContainerFeatures == null) {
-                return this;
-            }
-
-            XTRequiredContainerFeatures tmp = new XTRequiredContainerFeatures();
-            tmp.getRequiredContainerFeature().add(requiredContainerFeatures);
-            return addRequiredContainerFeatures(tmp);
-        }
-
-        public Builder addImplementationArtifacts(List<XTImplementationArtifact> implementationArtifacts) {
-            if (implementationArtifacts == null || implementationArtifacts.isEmpty()) {
-                return this;
-            }
-
-            if (this.implementationArtifacts == null) {
-                this.implementationArtifacts = implementationArtifacts;
-            } else {
-                this.implementationArtifacts.addAll(implementationArtifacts);
-            }
             return this;
         }
 

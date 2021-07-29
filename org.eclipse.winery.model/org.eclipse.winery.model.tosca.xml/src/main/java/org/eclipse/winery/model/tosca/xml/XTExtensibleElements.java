@@ -48,7 +48,6 @@ import org.eclipse.jdt.annotation.NonNull;
     XTRequirementDefinition.class,
     XTExtension.class,
     XTCapabilityDefinition.class,
-    XTExtensions.class,
     XTDeploymentArtifact.class,
     XTPlan.class,
     XTEntityTemplate.class,

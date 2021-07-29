@@ -72,7 +72,6 @@ import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactReference.Exclude;
 import org.eclipse.winery.model.tosca.TArtifactReference.Include;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
-import org.eclipse.winery.model.tosca.TArtifactTemplate.ArtifactReferences;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDefinitions.Types;
 import org.eclipse.winery.model.tosca.TEntityType;
@@ -878,13 +877,13 @@ public class CsarImporter {
      * We import the files given at the artifact references
      */
     private void adjustArtifactTemplate(Path rootPath, TOSCAMetaFile tmf, ArtifactTemplateId atid, TArtifactTemplate ci, final List<String> errors) {
-        ArtifactReferences refs = ci.getArtifactReferences();
+        List<TArtifactReference> refs = ci.getArtifactReferences();
         if (refs == null) {
             // no references stored - break
             return;
         }
-        List<TArtifactReference> refList = refs.getArtifactReference();
-        for (TArtifactReference ref : refList) {
+
+        for (TArtifactReference ref : refs) {
             String reference = ref.getReference();
             // URLs are stored encoded -> undo the encoding
             reference = EncodingUtil.URLdecode(reference);
@@ -916,7 +915,7 @@ public class CsarImporter {
                     LOGGER.error("path {} is not a directory", path);
                 }
                 Path localRoot = rootPath.resolve(path);
-                List<Object> includeOrExclude = ref.getIncludeOrExclude();
+                List<TArtifactReference.IncludeOrExclude> includeOrExclude = ref.getIncludeOrExclude();
 
                 if (includeOrExclude.get(0) instanceof Exclude) {
                     // Implicit semantics of an exclude listed first:
@@ -941,7 +940,7 @@ public class CsarImporter {
             this.importAllFiles(rootPath, allFiles, fileDir, tmf, errors);
         }
 
-        if (refList.isEmpty()) {
+        if (refs.isEmpty()) {
             // everything is imported and is a file stored locally
             // we don't need the references stored locally: they are generated on the fly when exporting
             ci.setArtifactReferences(null);
