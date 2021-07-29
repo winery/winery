@@ -43,8 +43,6 @@ import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tEntityTemplate", propOrder = {
@@ -61,8 +59,6 @@ import org.slf4j.LoggerFactory;
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class TEntityTemplate extends HasId implements HasType, HasName {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(TEntityTemplate.class);
 
     @XmlElement(name = "Properties")
     protected TEntityTemplate.Properties properties;

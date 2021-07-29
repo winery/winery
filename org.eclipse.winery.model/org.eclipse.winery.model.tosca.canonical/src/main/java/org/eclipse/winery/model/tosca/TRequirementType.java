@@ -29,11 +29,13 @@ import org.eclipse.jdt.annotation.Nullable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tRequirementType")
 public class TRequirementType extends TEntityType {
+
     @XmlAttribute(name = "requiredCapabilityType")
     protected QName requiredCapabilityType;
 
     @Deprecated // used for XML deserialization of API request content
-    public TRequirementType() { }
+    public TRequirementType() {
+    }
 
     public TRequirementType(Builder builder) {
         super(builder);

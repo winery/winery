@@ -49,6 +49,7 @@ import org.eclipse.jdt.annotation.Nullable;
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TTopologyTemplate extends TExtensibleElements {
+
     @XmlElements( {
         @XmlElement(name = "RelationshipTemplate", type = TRelationshipTemplate.class),
         @XmlElement(name = "NodeTemplate", type = TNodeTemplate.class)
@@ -58,6 +59,7 @@ public class TTopologyTemplate extends TExtensibleElements {
     // added to support conversion from/to YAML policies
     @JsonProperty("groups")
     protected List<TGroupDefinition> groups;
+    @JsonProperty("policies")
     protected List<TPolicy> policies;
     @JsonProperty("inputs")
     protected List<ParameterDefinition> inputs;
@@ -133,8 +135,8 @@ public class TTopologyTemplate extends TExtensibleElements {
 
     public void setNodeTemplates(List<TNodeTemplate> nodeTemplates) {
         this.nodeTemplateOrRelationshipTemplate = Stream.concat(
-            nodeTemplates.stream().map(TEntityTemplate.class::cast),
-            this.getRelationshipTemplates().stream().map(TEntityTemplate.class::cast))
+                nodeTemplates.stream().map(TEntityTemplate.class::cast),
+                this.getRelationshipTemplates().stream().map(TEntityTemplate.class::cast))
             .collect(Collectors.toList());
     }
 
@@ -164,8 +166,8 @@ public class TTopologyTemplate extends TExtensibleElements {
 
     public void setRelationshipTemplates(List<TRelationshipTemplate> relationshipTemplates) {
         this.nodeTemplateOrRelationshipTemplate = Stream.concat(
-            this.getNodeTemplates().stream().map(TEntityTemplate.class::cast),
-            relationshipTemplates.stream().map(TEntityTemplate.class::cast))
+                this.getNodeTemplates().stream().map(TEntityTemplate.class::cast),
+                relationshipTemplates.stream().map(TEntityTemplate.class::cast))
             .collect(Collectors.toList());
     }
 

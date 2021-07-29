@@ -49,7 +49,6 @@ import org.eclipse.jdt.annotation.NonNull;
     TRequirementDefinition.class,
     TExtension.class,
     TCapabilityDefinition.class,
-    TExtensions.class,
     TDeploymentArtifact.class,
     TPlan.class,
     TEntityTemplate.class,

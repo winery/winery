@@ -18,15 +18,15 @@ package org.eclipse.winery.model.tosca.xml;
  */
 public interface XHasInheritance {
 
-    public XTBoolean getAbstract();
+    XTBoolean getAbstract();
 
-    public void setAbstract(XTBoolean value);
+    void setAbstract(XTBoolean value);
 
-    public XTBoolean getFinal();
+    XTBoolean getFinal();
 
-    public void setFinal(XTBoolean value);
+    void setFinal(XTBoolean value);
 
-    public XHasType getDerivedFrom();
+    XHasType getDerivedFrom();
 
-    public void setDerivedFrom(XHasType value);
+    void setDerivedFrom(XHasType value);
 }

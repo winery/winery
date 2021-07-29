@@ -69,7 +69,7 @@ public class TExportedInterface implements HasName, Serializable {
     @NonNull
     public List<TExportedOperation> getOperation() {
         if (operation == null) {
-            operation = new ArrayList<TExportedOperation>();
+            operation = new ArrayList<>();
         }
         return this.operation;
     }
