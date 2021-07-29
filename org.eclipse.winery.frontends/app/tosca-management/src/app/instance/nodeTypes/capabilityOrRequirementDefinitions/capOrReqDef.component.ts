@@ -96,8 +96,8 @@ export class CapOrReqDefComponent implements OnInit {
     @ViewChild('lowerBoundSpinner') lowerBoundSpinner: SpinnerWithInfinityComponent;
     @ViewChild('upperBoundSpinner') upperBoundSpinner: SpinnerWithInfinityComponent;
     @ViewChild('editor') editor: any;
-    private currentNodeTypes: SelectData[];
-    private selectedNodeType: QName;
+    currentNodeTypes: SelectData[];
+    selectedNodeType: QName;
 
     constructor(public sharedData: InstanceService,
                 private service: CapabilityOrRequirementDefinitionsService,
@@ -278,11 +278,11 @@ export class CapOrReqDefComponent implements OnInit {
      * @param constraint to be edited
      */
     openEditConstraintModal(constraint?: Constraint) {
-        const re = /\#\#/;
+        const re = /##/;
         const xmlDef = /<\?xml.*>\n/;
 
         let constraintTypeElement: SelectData = null;
-        let constraintEditorContent = this.defaultConstraintDataModel;
+        let constraintEditorContent: string;
 
         if (constraint) {
             this.activeConstraint = constraint;
@@ -435,7 +435,7 @@ export class CapOrReqDefComponent implements OnInit {
             const lowerBound = entry.lowerBound;
             const upperBound = entry.upperBound === 'UNBOUNDED' ? '∞' : entry.upperBound;
             const type = this.capOrReqTypeToHref(
-                !entry.capabilityType
+                entry.capabilityType
                     ? entry.capabilityType
                     : entry.requirementType
             );
@@ -453,7 +453,7 @@ export class CapOrReqDefComponent implements OnInit {
     private deleteConstraint(capabilityOrRequirementDefinition: CapabilityOrRequirementDefinition, constraint: Constraint) {
         this.service.deleteConstraint(capabilityOrRequirementDefinition.name, constraint.id)
             .subscribe(
-                data => this.handleDeleteConstraint(),
+                () => this.handleDeleteConstraint(),
                 error => this.handleError(error)
             );
     }
@@ -518,7 +518,7 @@ export class CapOrReqDefComponent implements OnInit {
     private addNewCapability(capOrReqDef: CapOrReqDefinition): void {
         this.loading = true;
         this.service.sendPostRequest(capOrReqDef).subscribe(
-            data => this.handlePostResponse(),
+            () => this.handlePostResponse(),
             error => this.handleError(error)
         );
     }
@@ -546,7 +546,7 @@ export class CapOrReqDefComponent implements OnInit {
     }
 
     private handlePostResponse() {
-        let notification = '';
+        let notification: string;
         if (this.types === 'capabilitytypes') {
             notification = 'New Capability added!';
         } else {
@@ -577,13 +577,13 @@ export class CapOrReqDefComponent implements OnInit {
     private deleteCapOrReqDef(elementToRemove: CapOrRegDefinitionsTableData) {
         this.service.deleteCapOrReqDef(elementToRemove.name)
             .subscribe(
-                data => this.handleCapOrReqDelete(),
+                () => this.handleCapOrReqDelete(),
                 error => this.handleError(error)
             );
     }
 
     private handleCapOrReqDelete() {
-        let notification = '';
+        let notification: string;
         if (this.types === 'capabilitytypes') {
             notification = 'Capability deleted!';
         } else {
