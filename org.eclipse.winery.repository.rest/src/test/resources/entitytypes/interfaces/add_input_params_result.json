@@ -1,0 +1,32 @@
+[
+    {
+        "operation": [
+            {
+                "documentation": [],
+                "any": [],
+                "otherAttributes": {},
+                "inputParameters": {
+                    "inputParameter": [
+                        {
+                            "name": "Param1",
+                            "type": "xsd:string",
+                            "required": "YES"
+                        },
+                        {
+                            "name": "Param2",
+                            "type": "xsd:string",
+                            "required": "YES"
+                        },
+                        {
+                            "name": "Param3",
+                            "type": "xsd:string",
+                            "required": "NO"
+                        }
+                    ]
+                },
+                "name": "configure"
+            }
+        ],
+        "name": "http://www.example.com/interfaces/lifecycle"
+    }
+]
