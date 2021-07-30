@@ -200,7 +200,7 @@ export class BackendService {
      */
     saveTopologyTemplate(topologyTemplate: TTopologyTemplate): Observable<HttpResponse<string>> {
         if (this.configuration) {
-            let url = '';
+            let url: string;
             if (this.configuration.elementPath === SubMenuItems.graficPrmModelling.urlFragment) {
                 url = this.configuration.parentElementUrl + 'graphicPrmTopology';
             } else {
@@ -432,7 +432,7 @@ export class BackendService {
             this.initEntityType(entityTypes[10], 'dataTypes');
             // init YAML policies if they exist
             if (this.topologyTemplate.policies) {
-                this.initEntityType(this.topologyTemplate.policies.policy, 'yamlPolicies');
+                this.initEntityType(this.topologyTemplate.policies, 'yamlPolicies');
             } else {
                 this.initEntityType([], 'yamlPolicies');
             }
@@ -575,7 +575,7 @@ export class BackendService {
                         element.full);
                     if (element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].appliesTo) {
                         policyType.targets = element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].appliesTo
-                            .nodeTypeReference.map(ntr => ntr.typeRef);
+                            .map(ntr => ntr.typeRef);
                     }
                     this.storedModel.policyTypes.push(policyType);
                 });

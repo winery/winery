@@ -57,10 +57,9 @@ export class InheritanceUtils {
         const listOfEffectiveCapabilityDefinitions: CapabilityDefinitionModel[] = [];
         const listOfBequeathingNodeTypes = this.getInheritanceAncestry(nodeType, entityTypes.unGroupedNodeTypes);
         for (const currentNodeType of listOfBequeathingNodeTypes) {
-            if (currentNodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].capabilityDefinitions &&
-                currentNodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].capabilityDefinitions.capabilityDefinition) {
+            if (currentNodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].capabilityDefinitions) {
                 for (const capabilityDefinition of currentNodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0]
-                    .capabilityDefinitions.capabilityDefinition) {
+                    .capabilityDefinitions) {
                     if (!listOfEffectiveCapabilityDefinitions
                         .some(value => value.name === capabilityDefinition.name)) {
                         listOfEffectiveCapabilityDefinitions.push(capabilityDefinition);
@@ -75,10 +74,9 @@ export class InheritanceUtils {
         const listOfEffectiveRequirementDefinitions: RequirementDefinitionModel[] = [];
         const listOfBequeathingNodeTypes = this.getInheritanceAncestry(nodeType, entityTypes.unGroupedNodeTypes);
         for (const currentNodeType of listOfBequeathingNodeTypes) {
-            if (currentNodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].requirementDefinitions &&
-                currentNodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].requirementDefinitions.requirementDefinition) {
+            if (currentNodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].requirementDefinitions) {
                 for (const requirementDefinition of currentNodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0]
-                    .requirementDefinitions.requirementDefinition) {
+                    .requirementDefinitions) {
                     if (!listOfEffectiveRequirementDefinitions
                         .some(value => value.name === requirementDefinition.name)) {
                         listOfEffectiveRequirementDefinitions.push(requirementDefinition);

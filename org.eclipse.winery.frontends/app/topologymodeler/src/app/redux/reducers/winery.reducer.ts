@@ -276,9 +276,7 @@ export const WineryReducer =
                         nodeTemplates: lastState.currentJsonTopology.nodeTemplates
                             .map(nodeTemplate => nodeTemplate.id === newCapability.nodeId ?
                                 nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('capabilities',
-                                    {
-                                        capability: newCapability.capability
-                                    }) : nodeTemplate
+                                    newCapability.capability) : nodeTemplate
                             )
                     }
                 };
@@ -289,7 +287,7 @@ export const WineryReducer =
                     .map(n => n.id).indexOf(newDepArt.nodeId);
                 const nodeDepArtTemplate = lastState.currentJsonTopology.nodeTemplates
                     .find(nodeTemplate => nodeTemplate.id === newDepArt.nodeId);
-                const depArtExist = nodeDepArtTemplate.deploymentArtifacts && nodeDepArtTemplate.deploymentArtifacts.deploymentArtifact;
+                const depArtExist = !!nodeDepArtTemplate.deploymentArtifacts;
 
                 return <WineryState>{
                     ...lastState,
@@ -298,16 +296,12 @@ export const WineryReducer =
                         nodeTemplates: lastState.currentJsonTopology.nodeTemplates
                             .map(nodeTemplate => nodeTemplate.id === newDepArt.nodeId ?
                                 nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('deploymentArtifacts',
-                                    depArtExist ? {
-                                        deploymentArtifact: [
-                                            ...lastState.currentJsonTopology.nodeTemplates[indexOfNodeDepArt].deploymentArtifacts.deploymentArtifact,
-                                            newDeploymentArtifact
-                                        ]
-                                    } : {
-                                        deploymentArtifact: [
-                                            newDeploymentArtifact
-                                        ]
-                                    }) : nodeTemplate
+                                    depArtExist ? [
+                                        ...lastState.currentJsonTopology.nodeTemplates[indexOfNodeDepArt].deploymentArtifacts,
+                                        newDeploymentArtifact
+                                    ] : [
+                                        newDeploymentArtifact
+                                    ]) : nodeTemplate
                             )
                     }
                 };
@@ -318,7 +312,7 @@ export const WineryReducer =
                     .map(n => n.id).indexOf(newArtActionData.nodeId);
                 const containingNodeTemplate = lastState.currentJsonTopology.nodeTemplates
                     .find(nodeTemplate => nodeTemplate.id === newArtActionData.nodeId);
-                const artifactsExistInNodeTemplate = containingNodeTemplate.artifacts && containingNodeTemplate.artifacts.artifact;
+                const artifactsExistInNodeTemplate = containingNodeTemplate.artifacts && containingNodeTemplate.artifacts;
 
                 return <WineryState>{
                     ...lastState,
@@ -328,17 +322,12 @@ export const WineryReducer =
                             .map(nodeTemplate => nodeTemplate.id === newArtActionData.nodeId ?
                                 nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('artifacts',
                                     artifactsExistInNodeTemplate ?
-                                        {
-                                            artifact: [
-                                                ...lastState.currentJsonTopology.nodeTemplates[indexOfContainingNodeTemplate].artifacts.artifact,
-                                                newYamlArtifact
-                                            ]
-                                        } :
-                                        {
-                                            artifact: [
-                                                newYamlArtifact
-                                            ]
-                                        }) : nodeTemplate
+                                        [
+                                            ...lastState.currentJsonTopology.nodeTemplates[indexOfContainingNodeTemplate].artifacts,
+                                            newYamlArtifact
+                                        ] : [
+                                            newYamlArtifact
+                                        ]) : nodeTemplate
                             )
                     }
                 };
@@ -355,13 +344,11 @@ export const WineryReducer =
                         nodeTemplates: lastState.currentJsonTopology.nodeTemplates
                             .map((nodeTemplate) => nodeTemplate.id === (<DeleteDeploymentArtifactAction>action).nodeDeploymentArtifact.nodeId ?
                                 nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('deploymentArtifacts',
-                                    {
-                                        deploymentArtifact: [
-                                            ...lastState.currentJsonTopology.nodeTemplates[indexOfNodeWithDeletedDeploymentArtifact]
-                                                .deploymentArtifacts.deploymentArtifact
-                                                .filter(da => da.name !== deletedDeploymentArtifact)
-                                        ]
-                                    }) : nodeTemplate
+                                    [
+                                        ...lastState.currentJsonTopology.nodeTemplates[indexOfNodeWithDeletedDeploymentArtifact]
+                                            .deploymentArtifacts
+                                            .filter(da => da.name !== deletedDeploymentArtifact)
+                                    ]) : nodeTemplate
                             )
                     }
                 };
@@ -378,13 +365,11 @@ export const WineryReducer =
                         nodeTemplates: lastState.currentJsonTopology.nodeTemplates
                             .map((nodeTemplate) => nodeTemplate.id === (<DeleteYamlArtifactAction>action).nodeYamlArtifact.nodeId ?
                                 nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('artifacts',
-                                    {
-                                        artifact: [
-                                            ...lastState.currentJsonTopology.nodeTemplates[indexOfNodeWithDeletedYamlArtifact]
-                                                .artifacts.artifact
-                                                .filter(a => a.id !== deletedYamlArtifactId)
-                                        ]
-                                    })
+                                    [
+                                        ...lastState.currentJsonTopology.nodeTemplates[indexOfNodeWithDeletedYamlArtifact]
+                                            .artifacts
+                                            .filter(a => a.id !== deletedYamlArtifactId)
+                                    ])
                                 : nodeTemplate
                             )
                     }
@@ -396,7 +381,7 @@ export const WineryReducer =
                     .map(n => n.id).indexOf(newPolicy.nodeId);
                 const nodePolicyTemplate = lastState.currentJsonTopology.nodeTemplates
                     .find(nodeTemplate => nodeTemplate.id === newPolicy.nodeId);
-                const policyExist = nodePolicyTemplate.policies && nodePolicyTemplate.policies.policy;
+                const policyExist = !!nodePolicyTemplate.policies;
 
                 return <WineryState>{
                     ...lastState,
@@ -405,16 +390,13 @@ export const WineryReducer =
                         nodeTemplates: lastState.currentJsonTopology.nodeTemplates
                             .map(nodeTemplate => nodeTemplate.id === newPolicy.nodeId ?
                                 nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('policies',
-                                    policyExist ? {
-                                        policy: [
-                                            ...lastState.currentJsonTopology.nodeTemplates[indexOfNodePolicy].policies.policy,
-                                            policy
-                                        ]
-                                    } : {
-                                        policy: [
-                                            policy
-                                        ]
-                                    }) : nodeTemplate
+                                    policyExist ? [
+                                        ...lastState.currentJsonTopology.nodeTemplates[indexOfNodePolicy].policies,
+                                        policy
+                                    ] : [
+                                        policy
+                                    ]
+                                ) : nodeTemplate
                             )
                     }
                 };
@@ -460,7 +442,7 @@ export const WineryReducer =
                                 relationshipTemplate.generateNewRelTemplateWithUpdatedAttribute('policies',
                                     policyExistCheck ? {
                                         policy: [
-                                            ...lastState.currentJsonTopology.relationshipTemplates[indexOfRelationshipPolicy].policies.policy,
+                                            ...lastState.currentJsonTopology.relationshipTemplates[indexOfRelationshipPolicy].policies,
                                             relPolicy
                                         ]
                                     } : {
@@ -501,7 +483,7 @@ export const WineryReducer =
                                     {
                                         policy: [
                                             ...lastState.currentJsonTopology.nodeTemplates[indexOfNodeWithDeletedPolicy]
-                                                .policies.policy
+                                                .policies
                                                 .filter(da => da.name !== deletedPolicy)
                                         ]
                                     }) : nodeTemplate
@@ -573,18 +555,16 @@ export const WineryReducer =
                             relationshipTemplate => relationshipTemplate.sourceElement.ref !== deletedNodeId &&
                                 relationshipTemplate.targetElement.ref !== deletedNodeId),
                         // we check if the targets of YAML policies include the deleted node template<
-                        policies: {
-                            policy: lastState.currentJsonTopology.policies.policy && lastState.currentJsonTopology.policies.policy.map(pol => {
-                                if (pol.targets) {
-                                    pol.targets = pol.targets.filter(target => target !== deletedNodeId);
-                                    // to keep a consistent behavior, if no targets remain, remove the field.
-                                    if (pol.targets.length === 0) {
-                                        pol.targets = undefined;
-                                    }
+                        policies: lastState.currentJsonTopology.policies && lastState.currentJsonTopology.policies.map(pol => {
+                            if (pol.targets) {
+                                pol.targets = pol.targets.filter(target => target !== deletedNodeId);
+                                // to keep a consistent behavior, if no targets remain, remove the field.
+                                if (pol.targets.length === 0) {
+                                    pol.targets = undefined;
                                 }
-                                return pol;
-                            })
-                        },
+                            }
+                            return pol;
+                        }),
                         // update groups
                         groups: lastState.currentJsonTopology.groups && lastState.currentJsonTopology.groups.map((group) => {
                             group.members = group.members.filter((member) => member !== deletedNodeId);

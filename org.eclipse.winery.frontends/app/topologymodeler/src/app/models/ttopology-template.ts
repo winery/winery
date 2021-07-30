@@ -44,12 +44,12 @@ export interface OTParticipant {
 }
 
 /**
- * This is the datamodel for node Templates and relationship templates
+ * This is the data model for node Templates and relationship templates
  */
 export class TTopologyTemplate extends AbstractTEntity {
     nodeTemplates: Array<TNodeTemplate> = [];
     relationshipTemplates: Array<TRelationshipTemplate> = [];
-    policies: { policy: Array<TPolicy> };
+    policies: Array<TPolicy>;
     groups: Array<TGroupDefinition> = [];
     participants: Array<OTParticipant> = [];
 }
@@ -71,11 +71,11 @@ export class TNodeTemplate extends AbstractTEntity {
                 otherAttributes?: any,
                 public x?: number,
                 public y?: number,
-                public capabilities?: { capability: any[] },
-                public requirements?: { requirement: any[] },
-                public deploymentArtifacts?: any,
-                public policies?: { policy: any[] },
-                public artifacts?: { artifact: Array<TArtifact> },
+                public capabilities?: any[],
+                public requirements?: any[],
+                public deploymentArtifacts?: any[],
+                public policies?: Array<TPolicy>,
+                public artifacts?: Array<TArtifact>,
                 public _state?: DifferenceStates) {
         super(documentation, any, otherAttributes);
     }
@@ -102,22 +102,20 @@ export class TNodeTemplate extends AbstractTEntity {
                 if (nodeTemplate.otherAttributes.hasOwnProperty(key)) {
                     nameSpace = key.substring(key.indexOf('{'), key.indexOf('}') + 1);
                     if (nameSpace) {
-                        const otherAttributes = {
+                        nodeTemplate.otherAttributes = {
                             [nameSpace + 'location']: updatedValue,
                             [nameSpace + 'x']: nodeTemplate.x,
                             [nameSpace + 'y']: nodeTemplate.y
                         };
-                        nodeTemplate.otherAttributes = otherAttributes;
                         newOtherAttributesAssigned = true;
                         break;
                     }
                 }
             }
             if (!newOtherAttributesAssigned) {
-                const otherAttributes = {
+                nodeTemplate.otherAttributes = {
                     'location': updatedValue,
                 };
-                nodeTemplate.otherAttributes = otherAttributes;
             }
         } else if (updatedAttribute === ('minInstances') || updatedAttribute === ('maxInstances')) {
             if (Number.isNaN(+updatedValue)) {

@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Property, PropertyMappingsApiData, PropertyMappingService } from './propertyMappings.service';
+import { PropertyMapping, PropertyMappingsApiData, PropertyMappingService } from './propertyMappings.service';
 import { WineryRowData, WineryTableColumn } from '../../../../wineryTableModule/wineryTable.component';
 import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
 import { ModalDirective } from 'ngx-bootstrap';
@@ -49,7 +49,7 @@ export class PropertyMappingsComponent implements OnInit {
     @ViewChild('propertyMappingForm') propertyMappingForm: NgForm;
     @ViewChild('tempList') templateSelect: any;
     @ViewChild('propertiesSelect') propertiesSelect: any;
-    currentSelectedItem: Property = new Property();
+    currentSelectedItem: PropertyMapping = new PropertyMapping();
     addOrUpdate = 'Add';
     properties: { name: string, property: string } = { name: '', property: '' };
     xmlData: any;
@@ -84,7 +84,7 @@ export class PropertyMappingsComponent implements OnInit {
     getTopologyTemplate() {
         this.instanceService.getTopologyTemplate().subscribe(
             data => this.handleTopologyTemplateData(data),
-            error => this.notify.error('Could not get topology data')
+            () => this.notify.error('Could not get topology data')
         );
     }
 
@@ -210,12 +210,12 @@ export class PropertyMappingsComponent implements OnInit {
 
     removeConfirmed() {
         this.service.removePropertyMapping(this.currentSelectedItem.serviceTemplatePropertyRef).subscribe(
-            data => this.handleSuccess('Deleted property mapping'),
+            () => this.handleSuccess('Deleted property mapping'),
             error => this.handleError(error)
         );
     }
 
-    onRemoveClick(elementToRemove: Property) {
+    onRemoveClick(elementToRemove: PropertyMapping) {
         if (elementToRemove && this.currentSelectedItem) {
             this.confirmDeleteModal.show();
         } else {
@@ -225,7 +225,7 @@ export class PropertyMappingsComponent implements OnInit {
 
     onAddClick() {
         this.addOrUpdate = 'Add';
-        this.currentSelectedItem = new Property();
+        this.currentSelectedItem = new PropertyMapping();
         this.propertyMappingForm.reset();
         this.targetObject = null;
         this.targetTypeSelected = false;
@@ -251,8 +251,8 @@ export class PropertyMappingsComponent implements OnInit {
 
         if (element) {
             // Get the last value defined in local-name()='valueWeWantToGet'
-            const splittedProperty = this.currentSelectedItem.targetPropertyRef.split('\'');
-            this.selectedProperty = splittedProperty[splittedProperty.length - 2];
+            const splitProperty = this.currentSelectedItem.targetPropertyRef.split('\'');
+            this.selectedProperty = splitProperty[splitProperty.length - 2];
             this.targetObject = new WineryTemplate();
             this.addOrUpdate = 'Update';
             this.radioBtnSelected({ target: { value: elementType } }, false);
@@ -269,7 +269,7 @@ export class PropertyMappingsComponent implements OnInit {
         }
         this.service.addPropertyMapping(this.currentSelectedItem)
             .subscribe(
-                data => this.handleSuccess('Added new property mapping'),
+                () => this.handleSuccess('Added new property mapping'),
                 error => this.handleError(error)
             );
         this.addPropertyMappingModal.hide();

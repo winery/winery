@@ -13,7 +13,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <div *ngIf="!loading">
     <winery-table
-        [data]="apiData.propertyMappings.propertyMapping"
+        [data]="apiData.propertyMappings"
         [columns]="columns"
         (cellSelected)="onCellSelected($event)"
         (removeBtnClicked)="onRemoveClick($event)"
@@ -82,11 +82,9 @@
                     <div *ngIf="serviceTemplateTemplate === templatesEnum.NodeTemplate || serviceTemplateTemplate === templatesEnum.RelationshipTemplate;
                          else editTargetObject">
                         <ng-select #tempList
-                                   name="tempList"
                                    [items]="templateList"
                                    [active]="[currentSelectedItem.targetObjectRef]"
                                    (selected)="targetObjectSelected($event)"
-                                   required
                                    placeholder="no template selected">
                         </ng-select>
                     </div>
@@ -115,11 +113,9 @@
                      else editTargetProps">
                         <ng-select *ngIf="targetProperties !== null"
                                    #propertiesSelect
-                                   name="propertiesSelect"
                                    [items]="targetProperties"
                                    [active]="[selectedProperty]"
                                    (data)="targetPropertySelected($event)"
-                                   required
                                    placeholder="Please select a property">
                         </ng-select>
                     </div>
