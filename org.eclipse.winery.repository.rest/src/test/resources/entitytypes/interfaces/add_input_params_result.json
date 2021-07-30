@@ -1,29 +1,27 @@
 [
     {
-        "operation": [
+        "operations": [
             {
                 "documentation": [],
                 "any": [],
                 "otherAttributes": {},
-                "inputParameters": {
-                    "inputParameter": [
-                        {
-                            "name": "Param1",
-                            "type": "xsd:string",
-                            "required": "YES"
-                        },
-                        {
-                            "name": "Param2",
-                            "type": "xsd:string",
-                            "required": "YES"
-                        },
-                        {
-                            "name": "Param3",
-                            "type": "xsd:string",
-                            "required": "NO"
-                        }
-                    ]
-                },
+                "inputParameters": [
+                    {
+                        "name": "Param1",
+                        "type": "xsd:string",
+                        "required": "YES"
+                    },
+                    {
+                        "name": "Param2",
+                        "type": "xsd:string",
+                        "required": "YES"
+                    },
+                    {
+                        "name": "Param3",
+                        "type": "xsd:string",
+                        "required": "NO"
+                    }
+                ],
                 "name": "configure"
             }
         ],
