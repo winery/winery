@@ -89,6 +89,7 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected ReqDefOrCapDef createBasicReqOrCapDef(RequirementOrCapabilityDefinitionPostData postData) throws NumberFormatException {
         int lbound = 1;
         if (!StringUtils.isEmpty(postData.lowerBound)) {
@@ -107,19 +108,20 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
             def = (ReqDefOrCapDef) new TCapabilityDefinition.Builder(
                 postData.name,
                 QName.valueOf(postData.type)
-            ).build();
+            )
+                .setUpperBound(ubound)
+                .setLowerBound(lbound)
+                .build();
         } else {
             assert (this instanceof RequirementDefinitionsResource);
             def = (ReqDefOrCapDef) new TRequirementDefinition.Builder(
                 postData.name,
                 QName.valueOf(postData.type)
-            );
+            )
+                .setUpperBound(ubound)
+                .setLowerBound(lbound)
+                .build();
         }
-
-        // copy all basic data into object
-        AbstractReqOrCapDefResource.invokeSetter(def, "setName", postData.name);
-        AbstractReqOrCapDefResource.invokeSetter(def, "setLowerBound", lbound);
-        AbstractReqOrCapDefResource.invokeSetter(def, "setUpperBound", ubound);
 
         return def;
     }
