@@ -402,9 +402,7 @@ export class WineryActions {
     changeYamlPolicies: ActionCreator<ChangeYamlPoliciesAction> =
         ((policies) => ({
             type: WineryActions.UPDATE_YAML_POLICIES,
-            yamlPolicies: {
-                policies: policies
-            }
+            yamlPolicies: policies
         }));
     updateGroupDefinitions: ActionCreator<UpdateGroupDefinitionAction> =
         ((groups) => ({
