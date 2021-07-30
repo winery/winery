@@ -91,7 +91,7 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
         if (this.getRelationshipType().getInterfaces() == null) {
             this.getRelationshipType().setInterfaces(new ArrayList<>());
         }
-        return new InterfacesResource(this, this.getRelationshipType().getInterfaces(), "source");
+        return new InterfacesResource(this, this.getRelationshipType().getSourceInterfaces(), "source");
     }
 
     @Path("targetinterfaces/")
@@ -99,7 +99,7 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
         if (this.getRelationshipType().getInterfaces() == null) {
             this.getRelationshipType().setInterfaces(new ArrayList<>());
         }
-        return new InterfacesResource(this, this.getRelationshipType().getInterfaces(), "target");
+        return new InterfacesResource(this, this.getRelationshipType().getTargetInterfaces(), "target");
     }
 
     @Path("interfacedefinitions")

@@ -25,7 +25,7 @@
                                 [rows]="interfacesData"
                                 (addButtonClicked)="addInterface()"
                                 (selectionChanged)="onInterfaceSelect($event)"
-                                (removeButtonClicked)="removeInterface($event)">
+                                (removeButtonClicked)="removeInterface()">
         </winery-selectable-list>
         <winery-selectable-list *ngIf="operations"
                                 [title]="'Operations'"

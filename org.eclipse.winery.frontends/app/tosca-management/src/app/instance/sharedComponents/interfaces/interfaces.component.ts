@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -346,7 +346,7 @@ export class InterfacesComponent implements OnInit {
 
     // region ########## Private Methods ##########
     private handleInterfacesApiData(data: InterfacesApiData[]) {
-        this.interfacesData = data;
+        this.interfacesData = data ? data : [];
         this.loading = false;
     }
 
