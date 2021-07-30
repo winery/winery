@@ -182,9 +182,7 @@ export interface SetPolicyAction extends Action {
 }
 
 export interface ChangeYamlPoliciesAction extends Action {
-    yamlPolicies: {
-        policies: TPolicy[]
-    };
+    yamlPolicies: TPolicy[];
 }
 
 export interface UpdateParticipantsAction extends Action {

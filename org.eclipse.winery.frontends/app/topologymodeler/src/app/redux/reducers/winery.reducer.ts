@@ -405,7 +405,7 @@ export const WineryReducer =
                     ...lastState,
                     currentJsonTopology: {
                         ...lastState.currentJsonTopology,
-                        policies: (<ChangeYamlPoliciesAction>action).yamlPolicies.policies
+                        policies: (<ChangeYamlPoliciesAction>action).yamlPolicies
                     }
                 };
             case WineryActions.UPDATE_GROUP_DEFINITIONS:

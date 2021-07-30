@@ -164,8 +164,10 @@ public class ToscaLightChecker {
         }
 
         // todo ?
-        relType.getSourceInterfaces();
-        relType.getTargetInterfaces();
+        if (relType != null) {
+            relType.getSourceInterfaces();
+            relType.getTargetInterfaces();
+        }
     }
 
     private boolean isElementVisited(QName qName) {
