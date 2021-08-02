@@ -54,8 +54,21 @@ export class TTopologyTemplate extends AbstractTEntity {
     participants: Array<OTParticipant> = [];
 }
 
+export class TArtifact extends AbstractTEntity {
+    constructor(public id: string,
+                public type: string,
+                public file: string,
+                public targetLocation?: string,
+                public properties?: any,
+                public documentation?: any,
+                public any?: any,
+                public otherAttributes?: any) {
+        super(documentation, any, otherAttributes);
+    }
+}
+
 /**
- * This is the datamodel for node Templates
+ * This is the data-model for node Templates
  */
 export class TNodeTemplate extends AbstractTEntity {
 
@@ -296,19 +309,6 @@ export class TRelationshipTemplate extends AbstractTEntity {
         return relTemplate;
     }
 
-}
-
-export class TArtifact extends AbstractTEntity {
-    constructor(public id: string,
-                public type: string,
-                public file: string,
-                public targetLocation?: string,
-                public properties?: any,
-                public documentation?: any,
-                public any?: any,
-                public otherAttributes?: any) {
-        super(documentation, any, otherAttributes);
-    }
 }
 
 export class TNodeType extends AbstractTEntity {
