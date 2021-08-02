@@ -984,13 +984,10 @@ public class FromCanonical {
     }
 
     public Map<String, YTCapabilityAssignment> convert(TCapability node) {
-        if (Objects.isNull(node)) {
-            return null;
-        }
-
-        // skip empty capability assignments
-        if (node.getProperties() == null) {
-            return null;
+        if (Objects.isNull(node) ||
+            // skip empty capability assignments
+            node.getProperties() == null) {
+            return new HashMap<>();
         }
 
         return Collections.singletonMap(

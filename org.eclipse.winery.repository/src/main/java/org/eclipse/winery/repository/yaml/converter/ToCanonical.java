@@ -557,8 +557,8 @@ public class ToCanonical {
         String reqId = this.currentNodeTemplateName + "_" + id;
         TRequirement.Builder builder = new TRequirement.Builder(reqId, id, null);
 
-        if (node != null) {
-            builder = builder.setCapability(node.toString());
+        if (node.getCapability() != null) {
+            builder = builder.setCapability(node.getCapability().getLocalPart());
         } else {
             // when exporting, this must be caught, but while developing, it is tolerated
             // todo check if this is the case during export!
