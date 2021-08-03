@@ -175,6 +175,10 @@ export class WineryAddComponentDataComponent {
         this.createUrlAndCheck();
     }
 
+    reset() {
+        this.newComponentSelectedType = new SelectData();
+    }
+
     private validate(create: boolean) {
         this.validation = new AddComponentValidation();
         if (!create) {
