@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -80,7 +82,8 @@ public abstract class InstanceModelUtils {
                 hostedOnSuccessors.add(node);
 
                 for (TNodeTemplate host : hostedOnSuccessors) {
-                    if (ModelUtilities.isOfType(OpenToscaBaseTypes.OperatingSystem, host.getType(), nodeTypes)
+                    if (ModelUtilities.isOfType(OpenToscaBaseTypes.OperatingSystem,
+                        Objects.requireNonNull(host.getType()), nodeTypes)
                         && host.getProperties() != null && host.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
                         Map<String, String> kvProperties = ((TEntityTemplate.WineryKVProperties) host.getProperties())
                             .getKVProperties();
@@ -113,7 +116,9 @@ public abstract class InstanceModelUtils {
 
             jsch.addIdentity(key.getAbsolutePath());
             Session session = sshCredentials.containsKey(vmSshPort)
-                ? jsch.getSession(sshCredentials.get(vmUser), sshCredentials.get(vmIP), Integer.parseInt(sshCredentials.get(vmSshPort)))
+                ? jsch.getSession(sshCredentials.get(vmUser),
+                sshCredentials.get(vmIP),
+                Integer.parseInt(sshCredentials.get(vmSshPort)))
                 : jsch.getSession(sshCredentials.get(vmUser), sshCredentials.get(vmIP));
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect();
@@ -123,12 +128,18 @@ public abstract class InstanceModelUtils {
 
             return session;
         } catch (JSchException | IOException e) {
-            logger.error("Failed to connect to {} using user {}.", sshCredentials.get(vmIP), sshCredentials.get(vmUser), e);
+            logger.error("Failed to connect to {} using user {}.",
+                sshCredentials.get(vmIP),
+                sshCredentials.get(vmUser),
+                e);
             throw new RuntimeException(e);
         }
     }
 
-    public static void setUserInputs(Map<String, String> userInputs, TTopologyTemplate template, List<String> nodeIdsToBeReplaced) {
+    public static void setUserInputs(
+        Map<String, String> userInputs,
+        TTopologyTemplate template,
+        List<String> nodeIdsToBeReplaced) {
         nodeIdsToBeReplaced.forEach(nodeId -> {
             TNodeTemplate node = template.getNodeTemplate(nodeId);
             List<TNodeTemplate> nodes = ModelUtilities.getHostedOnSuccessors(template, node);
@@ -136,12 +147,13 @@ public abstract class InstanceModelUtils {
 
             nodes.forEach(nodeTemplate -> {
                 if (nodeTemplate.getProperties() != null && nodeTemplate.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
-                    Map<String, String> kvProperties = ((TEntityTemplate.WineryKVProperties) nodeTemplate.getProperties()).getKVProperties();
-                    userInputs.forEach((key, value) -> {
+                    Map<String, String> kvProperties = ((TEntityTemplate.WineryKVProperties) nodeTemplate.getProperties())
+                        .getKVProperties();
+                    Optional.ofNullable(userInputs).ifPresent(inputs -> inputs.forEach((key, value) -> {
                         if (kvProperties.containsKey(key)) {
                             kvProperties.put(key, value);
                         }
-                    });
+                    }));
                 }
             });
         });

@@ -19,11 +19,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.eclipse.winery.model.adaptation.instance.plugins.Ec2AmiRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.MySqlDbRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.MySqlDbmsRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.PetClinicRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.SpringWebAppRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.TomcatRefinementPlugin;
+import org.eclipse.winery.model.adaptation.instance.plugins.dockerimage.DockerImageRefinementPlugin;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
@@ -49,7 +51,9 @@ public class InstanceModelRefinement {
             new MySqlDbRefinementPlugin(),
             new MySqlDbmsRefinementPlugin(),
             new PetClinicRefinementPlugin(),
-            new SpringWebAppRefinementPlugin()
+            new SpringWebAppRefinementPlugin(),
+            new Ec2AmiRefinementPlugin(),
+            new DockerImageRefinementPlugin()
         );
     }
 
@@ -69,7 +73,8 @@ public class InstanceModelRefinement {
             List<InstanceModelRefinementPlugin> executablePlugins = this.plugins.stream()
                 .filter(plugin -> plugin.isApplicable(topologyTemplate, topologyGraph))
                 .collect(Collectors.toList());
-            InstanceModelRefinementPlugin selectedPlugin = pluginChooser.selectPlugin(topologyTemplate, executablePlugins);
+            InstanceModelRefinementPlugin selectedPlugin = pluginChooser.selectPlugin(topologyTemplate,
+                executablePlugins);
 
             if (selectedPlugin != null) {
                 selectedPlugin.apply(topologyTemplate);
