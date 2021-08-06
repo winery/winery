@@ -46,6 +46,11 @@ public class TConstraint implements Serializable {
     @Deprecated // used for XML deserialization of API request content
     public TConstraint() { }
 
+    public TConstraint(Object any, String constraintType) {
+        this.any = any;
+        this.constraintType = constraintType;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

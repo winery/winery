@@ -43,6 +43,11 @@ public class TCapabilityRef implements Serializable {
     @Deprecated // used for XML deserialization of API request content
     public TCapabilityRef() { }
 
+    public TCapabilityRef(String name, TCapability ref) {
+        this.name = name;
+        this.ref = ref;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -16,6 +16,8 @@ package org.eclipse.winery.crawler.chefcookbooks.chefcookbook;
 
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.tosca.TNodeType;
 
@@ -39,11 +41,16 @@ class CookbookConfigurationToscaConverterTest {
         nodeTypes = new CookbookConfigurationToscaConverter().convertCookbookConfigurationToToscaNode(cookbookConfiguration, 1);
 
         assertEquals(2, nodeTypes.size());
-        assertEquals(true, nodeTypes.get(0).getCapabilityDefinitions().getCapabilityDefinition().get(0).getCapabilityType().toString().endsWith("myapp-1.1"));
-        assertEquals(true, nodeTypes.get(0).getCapabilityDefinitions().getCapabilityDefinition().get(1).getCapabilityType().toString().endsWith("myappaddon-1.2"));
-        assertEquals(true, nodeTypes.get(0).getRequirementDefinitions().getRequirementDefinition().get(1).getRequirementType().toString().endsWith("openjdk-8-jdk"));
-        assertEquals(true, nodeTypes.get(0).getRequirementDefinitions().getRequirementDefinition().get(2).getRequirementType().toString().endsWith("openjdk-8-jre-headless"));
+        QName capabilityType = nodeTypes.get(0).getCapabilityDefinitions().get(0).getCapabilityType();
+        assertNotNull(capabilityType);
+        assertTrue(capabilityType.toString().endsWith("myapp-1.1"));
+        
+        QName capabilityType1 = nodeTypes.get(0).getCapabilityDefinitions().get(1).getCapabilityType();
+        assertNotNull(capabilityType1);
+        assertTrue(capabilityType1.toString().endsWith("myappaddon-1.2"));
+        assertTrue(nodeTypes.get(0).getRequirementDefinitions().get(1).getRequirementType().toString().endsWith("openjdk-8-jdk"));
+        assertTrue(nodeTypes.get(0).getRequirementDefinitions().get(2).getRequirementType().toString().endsWith("openjdk-8-jre-headless"));
 
-        assertEquals(true, nodeTypes.get(1).getCapabilityDefinitions().getCapabilityDefinition().get(0).getCapabilityType().toString().endsWith("ubuntu_16.04" + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_VERSION_PREFIX + "1"));
+        assertTrue(nodeTypes.get(1).getCapabilityDefinitions().get(0).getCapabilityType().toString().endsWith("ubuntu_16.04" + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_VERSION_PREFIX + "1"));
     }
 }

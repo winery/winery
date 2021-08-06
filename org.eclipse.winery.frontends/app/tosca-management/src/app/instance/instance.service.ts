@@ -123,7 +123,7 @@ export class InstanceService {
                     subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.appliesTo, SubMenuItems.propertiesDefinition,
                         SubMenuItems.inheritance, SubMenuItems.appearance, SubMenuItems.documentation];
                 } else {
-                    subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.propertiesDefinition,
+                    subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.appliesTo, SubMenuItems.propertiesDefinition,
                         SubMenuItems.inheritance, SubMenuItems.templates, SubMenuItems.appearance, SubMenuItems.documentation, SubMenuItems.xml];
                 }
                 break;

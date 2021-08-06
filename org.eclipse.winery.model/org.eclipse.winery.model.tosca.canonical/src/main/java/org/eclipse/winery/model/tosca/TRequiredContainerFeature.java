@@ -51,6 +51,10 @@ public class TRequiredContainerFeature implements Serializable {
     @Deprecated // used for XML deserialization of API request content
     public TRequiredContainerFeature() { }
 
+    public TRequiredContainerFeature(String feature) {
+        this.feature = feature;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

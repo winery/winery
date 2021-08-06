@@ -14,7 +14,6 @@
 package org.eclipse.winery.topologygraph.matching;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,9 +22,7 @@ import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.NamespaceManager;
@@ -114,26 +111,28 @@ public class ToscaPrmPropertyMatcherTest {
             }
         };
 
-        TPolicies leftPolicies1 = new TPolicies();
-        TPolicy leftPolicy1 = new TPolicy();
-        leftPolicy1.setPolicyType(QName.valueOf("{ns}policyType1"));
-        leftPolicies1.getPolicy().add(leftPolicy1);
+        List<TPolicy> leftPolicies1 = new ArrayList<>();
+        leftPolicies1.add(
+            new TPolicy.Builder(QName.valueOf("{ns}policyType1")).build()
+        );
 
-        TPolicies leftPolicies2 = new TPolicies();
-        TPolicy leftPolicy2 = new TPolicy();
-        leftPolicy2.setPolicyType(QName.valueOf("{ns}policyType1123"));
-        leftPolicies2.getPolicy().add(leftPolicy2);
+        List<TPolicy> leftPolicies2 = new ArrayList<>();
+        leftPolicies2.add(
+            new TPolicy.Builder(QName.valueOf("{ns}policyType1123")).build()
+        );
 
-        TPolicies rightPolicies1 = new TPolicies();
-        TPolicy rightPolicy1 = new TPolicy();
-        rightPolicy1.setPolicyType(QName.valueOf("{ns}policyType1"));
-        rightPolicies1.getPolicy().add(rightPolicy1);
+        List<TPolicy> rightPolicies1 = new ArrayList<>();
+        rightPolicies1.add(
+            new TPolicy.Builder(QName.valueOf("{ns}policyType1")).build()
+        );
 
-        TPolicies rightPolicies2 = new TPolicies();
-        TPolicy rightPolicy2 = new TPolicy();
-        rightPolicy2.setPolicyType(QName.valueOf("{ns}policyType1"));
-        rightPolicy2.setPolicyRef(QName.valueOf("{ns2}policyTemplate1"));
-        rightPolicies2.getPolicy().add(rightPolicy2);
+        List<TPolicy> rightPolicies2 = new ArrayList<>();
+        rightPolicies2.add(
+            new TPolicy.Builder(QName.valueOf("{ns}policyType1")).build()
+        );
+        rightPolicies2.add(
+            new TPolicy.Builder(QName.valueOf("{ns2}policyTemplate1")).build()
+        );
 
         return Stream.of(
             Arguments.of(leftPolicies1, rightPolicies1, patternNamespaceManager, true, "Matching policy types without templates"),
@@ -148,7 +147,7 @@ public class ToscaPrmPropertyMatcherTest {
 
     @ParameterizedTest(name = "{index} => ''{4}''")
     @MethodSource("characterizingPatternsCompatibleArguments")
-    public void characterizingPatternsCompatibleTest(TPolicies leftPolicies, TPolicies rightPolicies,
+    public void characterizingPatternsCompatibleTest(List<TPolicy> leftPolicies, List<TPolicy> rightPolicies,
                                                      NamespaceManager namespaceManager, boolean expected, String description) {
         // region ***** left *****
         TNodeTemplate left = new TNodeTemplate();

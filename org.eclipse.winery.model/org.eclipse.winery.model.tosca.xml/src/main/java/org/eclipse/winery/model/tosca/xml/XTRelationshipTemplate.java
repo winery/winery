@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
@@ -48,12 +49,16 @@ public class XTRelationshipTemplate extends XTEntityTemplate implements XHasPoli
     @XmlElement(name = "SourceElement")
     // AD: We need to combine source or target due to multi-inheritance
     protected XTRelationshipTemplate.@NonNull SourceOrTargetElement sourceElement;
+    
     @XmlElement(name = "TargetElement")
     protected XTRelationshipTemplate.@NonNull SourceOrTargetElement targetElement;
+    
     @XmlElement(name = "RelationshipConstraints")
     protected XTRelationshipTemplate.RelationshipConstraints relationshipConstraints;
-    @XmlElement(name = "Policies")
-    protected XTPolicies policies;
+    
+    @XmlElementWrapper(name = "Policies")
+    @XmlElement(name = "Policy", required = true)
+    protected List<XTPolicy> policies;
 
     @XmlAttribute(name = "name")
     protected String name;
@@ -61,10 +66,6 @@ public class XTRelationshipTemplate extends XTEntityTemplate implements XHasPoli
     @Deprecated // required for XML deserialization
     public XTRelationshipTemplate() {
         super();
-    }
-
-    public XTRelationshipTemplate(String id) {
-        super(id);
     }
 
     public XTRelationshipTemplate(Builder builder) {
@@ -241,7 +242,7 @@ public class XTRelationshipTemplate extends XTEntityTemplate implements XHasPoli
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "RelationshipSourceOrTaget")
+    @XmlType(name = "RelationshipSourceOrTarget")
     public static class SourceOrTargetElement implements Serializable {
 
         // We serialize XML and JSON differently. Solution for JSON taken from https://stackoverflow.com/a/17583175/873282
@@ -273,11 +274,11 @@ public class XTRelationshipTemplate extends XTEntityTemplate implements XHasPoli
         }
     }
 
-    public XTPolicies getPolicies() {
+    public List<XTPolicy> getPolicies() {
         return policies;
     }
 
-    public void setPolicies(XTPolicies policies) {
+    public void setPolicies(List<XTPolicy> policies) {
         this.policies = policies;
     }
 
@@ -285,7 +286,7 @@ public class XTRelationshipTemplate extends XTEntityTemplate implements XHasPoli
         private final SourceOrTargetElement sourceElement;
         private final SourceOrTargetElement targetElement;
         private RelationshipConstraints relationshipConstraints;
-        private XTPolicies policies;
+        private List<XTPolicy> policies;
         private String name;
 
         public Builder(String id, QName type, XTRelationshipTemplate.SourceOrTargetElement sourceElement, XTRelationshipTemplate.SourceOrTargetElement targetElement) {
@@ -336,9 +337,17 @@ public class XTRelationshipTemplate extends XTEntityTemplate implements XHasPoli
             tmp.getRelationshipConstraint().add(relationshipConstraints);
             return addRelationshipConstraints(tmp);
         }
-        
-        public Builder addPolicies(XTPolicies policies) {
-            this.policies = policies;
+
+        public Builder addPolicies(List<XTPolicy> policies) {
+            if (policies == null) {
+                return this;
+            }
+
+            if (this.policies == null) {
+                this.policies = policies;
+            } else {
+                this.policies.addAll(policies);
+            }
             return self();
         }
 

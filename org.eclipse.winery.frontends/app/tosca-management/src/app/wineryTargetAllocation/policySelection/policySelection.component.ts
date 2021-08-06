@@ -17,7 +17,7 @@ import { WineryTableColumn } from '../../wineryTableModule/wineryTable.component
 import { SelectComponent, SelectItem } from 'ng2-select';
 import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
 import { TargetAllocationService } from '../targetAllocation.service';
-import { Policy } from '../../model/wineryComponent';
+import { TPolicy } from '../../../../../topologymodeler/src/app/models/policiesModalData';
 
 @Component({
     selector: 'winery-target-allocation-policy-selection-component',
@@ -55,7 +55,7 @@ export class PolicySelectionComponent implements OnInit {
     private policyProperty: string;
     private operator: string;
 
-    private policies: Policy[];
+    private policies: TPolicy[];
 
     constructor(private service: TargetAllocationService, private notify: WineryNotificationService) {
         this.getPolicies();
@@ -121,7 +121,7 @@ export class PolicySelectionComponent implements OnInit {
                         continue;
                     }
 
-                    for (const policy of nt.policies.policy) {
+                    for (const policy of nt.policies) {
                         const selectItem = new SelectItem('');
                         selectItem.id = policy.name;
                         selectItem.text = policy.name;
@@ -134,6 +134,6 @@ export class PolicySelectionComponent implements OnInit {
                     this.notify.error('No Policy Templates present');
                 }
             },
-            error => this.notify.error('Couldn\'t load policies'));
+            () => this.notify.error('Couldn\'t load policies'));
     }
 }

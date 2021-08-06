@@ -13,13 +13,18 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.xml.utils;
 
+import java.util.List;
+
+import org.eclipse.winery.model.tosca.xml.XTCapability;
+import org.eclipse.winery.model.tosca.xml.XTDeploymentArtifact;
 import org.eclipse.winery.model.tosca.xml.XTEntityTemplate;
 import org.eclipse.winery.model.tosca.xml.XTNodeTemplate;
-import org.eclipse.winery.model.tosca.xml.XTPolicies;
+import org.eclipse.winery.model.tosca.xml.XTPolicy;
+import org.eclipse.winery.model.tosca.xml.XTPropertyConstraint;
 import org.eclipse.winery.model.tosca.xml.XTRelationshipTemplate;
-import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
-import org.eclipse.winery.model.tosca.xml.XTDeploymentArtifacts;
+import org.eclipse.winery.model.tosca.xml.XTRequirement;
 import org.eclipse.winery.model.tosca.xml.XTTopologyTemplate;
+import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
 
 import io.github.adr.embedded.ADR;
 
@@ -36,8 +41,8 @@ public class RemoveEmptyLists extends Visitor {
 
     @Override
     public void visit(XTEntityTemplate entityTemplate) {
-        final XTEntityTemplate.PropertyConstraints propertyConstraints = entityTemplate.getPropertyConstraints();
-        if ((propertyConstraints != null) && propertyConstraints.getPropertyConstraint().isEmpty()) {
+        final List<XTPropertyConstraint> propertyConstraints = entityTemplate.getPropertyConstraints();
+        if ((propertyConstraints != null) && propertyConstraints.isEmpty()) {
             entityTemplate.setPropertyConstraints(null);
         }
         XTEntityTemplate.Properties properties = entityTemplate.getProperties();
@@ -49,20 +54,20 @@ public class RemoveEmptyLists extends Visitor {
 
     @Override
     public void visit(XTNodeTemplate nodeTemplate) {
-        final XTNodeTemplate.Requirements requirements = nodeTemplate.getRequirements();
-        if ((requirements != null) && requirements.getRequirement().isEmpty()) {
+        final List<XTRequirement> requirements = nodeTemplate.getRequirements();
+        if (requirements != null && requirements.isEmpty()) {
             nodeTemplate.setRequirements(null);
         }
-        final XTNodeTemplate.Capabilities capabilities = nodeTemplate.getCapabilities();
-        if ((capabilities != null) && capabilities.getCapability().isEmpty()) {
+        final List<XTCapability> capabilities = nodeTemplate.getCapabilities();
+        if ((capabilities != null) && capabilities.isEmpty()) {
             nodeTemplate.setCapabilities(null);
         }
-        final XTDeploymentArtifacts deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
-        if ((deploymentArtifacts != null) && deploymentArtifacts.getDeploymentArtifact().isEmpty()) {
+        final List<XTDeploymentArtifact> deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
+        if ((deploymentArtifacts != null) && deploymentArtifacts.isEmpty()) {
             nodeTemplate.setDeploymentArtifacts(null);
         }
-        final XTPolicies policies = nodeTemplate.getPolicies();
-        if ((policies != null) && policies.getPolicy().isEmpty()) {
+        final List<XTPolicy> policies = nodeTemplate.getPolicies();
+        if ((policies != null) && policies.isEmpty()) {
             nodeTemplate.setPolicies(null);
         }
         super.visit(nodeTemplate);

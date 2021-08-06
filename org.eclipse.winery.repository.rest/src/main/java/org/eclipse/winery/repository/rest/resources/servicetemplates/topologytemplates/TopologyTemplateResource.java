@@ -474,7 +474,7 @@ public class TopologyTemplateResource {
 
         String deploymentTechnology = null;
         if (this.parent.getElement() instanceof HasTags && ((HasTags) this.parent.getElement()).getTags() != null) {
-            for (TTag tag : ((HasTags) this.parent.getElement()).getTags().getTag()) {
+            for (TTag tag : ((HasTags) this.parent.getElement()).getTags()) {
                 // To enable the usage of "technology" and "technologies", we only check for "technolog"
                 if (tag.getName().toLowerCase().contains("deploymentTechnolog".toLowerCase())) {
                     deploymentTechnology = tag.getValue();

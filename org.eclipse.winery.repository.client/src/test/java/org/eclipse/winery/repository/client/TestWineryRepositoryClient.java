@@ -19,8 +19,8 @@ import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.HasName;
 import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.tosca.HasName;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
@@ -31,9 +31,6 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
-import org.eclipse.winery.repository.backend.IRepository;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.filebased.AbstractFileBasedRepository;
 import org.eclipse.winery.repository.rest.server.WineryUsingHttpServer;
 
 import org.eclipse.jetty.server.Server;
@@ -55,6 +52,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Client creation and multiple repositories are not tested. This should be subject to other test classes.
  */
 public class TestWineryRepositoryClient extends TestWithGitBackedRepository {
+
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(TestWineryRepositoryClient.class);
 
     private static final String repositoryURI = "http://localhost:8080/winery";
@@ -81,13 +79,6 @@ public class TestWineryRepositoryClient extends TestWithGitBackedRepository {
     public static void startWineryServer() throws Exception {
         server = WineryUsingHttpServer.createHttpServer();
         server.start();
-
-        IRepository repository = RepositoryFactory.getRepository();
-        if (repository instanceof AbstractFileBasedRepository) {
-            LOGGER.debug("Using path " + repository.getRepositoryRoot());
-        } else {
-            LOGGER.debug("Repository is not filebased");
-        }
     }
 
     @AfterAll

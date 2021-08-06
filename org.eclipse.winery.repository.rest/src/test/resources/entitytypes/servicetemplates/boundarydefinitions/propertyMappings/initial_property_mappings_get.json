@@ -1,11 +1,9 @@
 {
-    "propertyMappings": {
-        "propertyMapping": [
-            {
-                "serviceTemplatePropertyRef": "/*[local-name()='harvest']",
-                "targetObjectRef": "baobab",
-                "targetPropertyRef": "/*[local-name()='BaobabProperties']/*[local-name()='HarvestedAt']"
-            }
-        ]
-    }
+    "propertyMappings": [
+        {
+            "serviceTemplatePropertyRef": "/*[local-name()='harvest']",
+            "targetObjectRef": "baobab",
+            "targetPropertyRef": "/*[local-name()='BaobabProperties']/*[local-name()='HarvestedAt']"
+        }
+    ]
 }

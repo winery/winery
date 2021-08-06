@@ -14,7 +14,6 @@
 
 package org.eclipse.winery.model.tosca.xml;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -23,6 +22,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
@@ -36,21 +36,29 @@ import org.eclipse.jdt.annotation.Nullable;
     "constraints"
 })
 public class XTCapabilityDefinition extends XTExtensibleElements {
-    @XmlElement(name = "Constraints")
-    protected XTCapabilityDefinition.Constraints constraints;
+
+    @XmlElementWrapper(name = "Constraints")
+    @XmlElement(name = "Constraint", required = true)
+    protected List<XTConstraint> constraints;
+
     @XmlAttribute(name = "name", required = true)
     protected String name;
+
     @XmlAttribute(name = "capabilityType", required = true)
     protected QName capabilityType;
+
     @XmlAttribute(name = "lowerBound")
     protected Integer lowerBound;
+
     @XmlAttribute(name = "upperBound")
     protected String upperBound;
+
     @XmlAttribute(name = "validSourceTypes")
     protected List<QName> validSourceTypes;
 
     @Deprecated // required for XML deserialization
-    public XTCapabilityDefinition() { }
+    public XTCapabilityDefinition() {
+    }
 
     public XTCapabilityDefinition(Builder builder) {
         super(builder);
@@ -80,11 +88,11 @@ public class XTCapabilityDefinition extends XTExtensibleElements {
         return Objects.hash(constraints, name, capabilityType, lowerBound, upperBound, validSourceTypes);
     }
 
-    public XTCapabilityDefinition.@Nullable Constraints getConstraints() {
+    public List<XTConstraint> getConstraints() {
         return constraints;
     }
 
-    public void setConstraints(XTCapabilityDefinition.@Nullable Constraints value) {
+    public void setConstraints(List<XTConstraint> value) {
         this.constraints = value;
     }
 
@@ -107,7 +115,6 @@ public class XTCapabilityDefinition extends XTExtensibleElements {
         this.capabilityType = value;
     }
 
-    @NonNull
     public int getLowerBound() {
         if (lowerBound == null) {
             return 1;
@@ -146,42 +153,11 @@ public class XTCapabilityDefinition extends XTExtensibleElements {
         visitor.visit(this);
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "constraint"
-    })
-    public static class Constraints implements Serializable {
-
-        @XmlElement(name = "Constraint", required = true)
-        protected List<XTConstraint> constraint;
-
-        @NonNull
-        public List<XTConstraint> getConstraint() {
-            if (constraint == null) {
-                constraint = new ArrayList<XTConstraint>();
-            }
-            return this.constraint;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Constraints that = (Constraints) o;
-            return Objects.equals(constraint, that.constraint);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(constraint);
-        }
-    }
-
     public static class Builder extends XTExtensibleElements.Builder<Builder> {
         private final String name;
         private final QName capabilityType;
 
-        private XTCapabilityDefinition.Constraints constraints;
+        private List<XTConstraint> constraints;
         private Integer lowerBound;
         private String upperBound;
 
@@ -192,7 +168,7 @@ public class XTCapabilityDefinition extends XTExtensibleElements {
             this.capabilityType = capabilityType;
         }
 
-        public Builder setConstraints(XTCapabilityDefinition.Constraints constraints) {
+        public Builder setConstraints(List<XTConstraint> constraints) {
             this.constraints = constraints;
             return this;
         }
@@ -212,36 +188,26 @@ public class XTCapabilityDefinition extends XTExtensibleElements {
             return this;
         }
 
-        public Builder addConstraints(XTCapabilityDefinition.Constraints constraints) {
-            if (constraints == null || constraints.getConstraint().isEmpty()) {
+        public Builder addConstraints(List<XTConstraint> constraints) {
+            if (constraints == null || constraints.isEmpty()) {
                 return this;
             }
 
             if (this.constraints == null) {
                 this.constraints = constraints;
             } else {
-                this.constraints.getConstraint().addAll(constraints.getConstraint());
+                this.constraints.addAll(constraints);
             }
             return this;
         }
 
-        public Builder addConstraints(List<XTConstraint> constraints) {
+        public Builder addConstraint(XTConstraint constraints) {
             if (constraints == null) {
                 return this;
             }
 
-            XTCapabilityDefinition.Constraints tmp = new XTCapabilityDefinition.Constraints();
-            tmp.getConstraint().addAll(constraints);
-            return addConstraints(tmp);
-        }
-
-        public Builder addConstraints(XTConstraint constraints) {
-            if (constraints == null) {
-                return this;
-            }
-
-            XTCapabilityDefinition.Constraints tmp = new XTCapabilityDefinition.Constraints();
-            tmp.getConstraint().add(constraints);
+            List<XTConstraint> tmp = new ArrayList<>();
+            tmp.add(constraints);
             return addConstraints(tmp);
         }
 

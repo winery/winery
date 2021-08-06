@@ -65,7 +65,6 @@ import { SubMenuItems } from '../../../../tosca-management/src/app/model/subMenu
 import { AttributeMappingType } from '../../../../tosca-management/src/app/instance/refinementModels/attributeMappings/attributeMapping';
 // tslint:disable-next-line:max-line-length
 import { DetailsSidebarState } from '../sidebars/node-details/node-details-sidebar';
-import { Policy } from '../../../../tosca-management/src/app/model/wineryComponent';
 import { KvProperty } from '../../../../tosca-management/src/app/model/keyValueItem';
 import { WineryNamespaceSelectorService } from '../../../../tosca-management/src/app/wineryNamespaceSelector/wineryNamespaceSelector.service';
 
@@ -128,7 +127,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     newRelationship: TRelationshipTemplate;
     detectorNodeProperties: KvProperty[];
     refinementNodeProperties: KvProperty[];
-    behaviorPatterns: Policy[];
+    behaviorPatterns: TPolicy[];
     patternNamespaces: Set<string>;
     direction: string;
     applicableRelationshipType: string;
@@ -137,7 +136,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     type: string;
     detectorProperty: string;
     refinementProperty: KvProperty;
-    behaviorPattern: Policy;
+    behaviorPattern: TPolicy;
 
     // variables which hold their corresponding modal data
     capabilities: CapabilitiesModalData;
@@ -238,7 +237,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             this.allNodeTemplates.forEach(node => this.enhanceDragSelection(node.id));
             return false; // Prevent bubbling
         }, undefined, 'Select all Node Templates'));
-        this.hotkeysService.add(new Hotkey('del', (event: KeyboardEvent): boolean => {
+        this.hotkeysService.add(new Hotkey('del', (): boolean => {
             this.handleDeleteKeyEvent();
             return false;
         }, undefined, 'Delete an element.'));
@@ -255,9 +254,23 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             });
     }
 
+    /**
+     * Getter for Node by ID
+     * @param nodes
+     * @param id
+     */
+    private static getNodeByID(nodes: Array<TNodeTemplate>, id: string): TNodeTemplate {
+        if (nodes !== null && nodes.length > 0) {
+            for (const node of nodes) {
+                if (node.id === id) {
+                    return node;
+                }
+            }
+        }
+    }
+
     ngOnChanges(changes: SimpleChanges) {
         if (changes) {
-            const buttonClickEvent = changes.sidebarDeleteButtonClickEvent;
             this.handleDeleteKeyEvent();
         }
     }
@@ -545,8 +558,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             properties['behaviorPattern'] = this.behaviorPattern.name;
         }
 
-        const propertyData = { kvproperties: properties, propertyType: PropertyDefinitionType.KV };
-        this.newRelationship.properties = propertyData;
+        this.newRelationship.properties = { kvproperties: properties, propertyType: PropertyDefinitionType.KV };
         this.ngRedux.dispatch(this.actions.saveRelationship(this.newRelationship));
     }
 
@@ -941,7 +953,6 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
     /**
      * Repositions the new node and repaints the screen
-     * @param $event  The html event.
      */
     positionNewNode(): void {
         this.updateSelectedNodes();
@@ -978,9 +989,9 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         if (storeRelationshipsLength !== localRelationshipsCopyLength) {
             const difference = storeRelationshipsLength - localRelationshipsCopyLength;
 
-            if (difference === 1) {
+            if (localRelationshipsCopyLength !== 0 && difference === 1) {
                 this.handleNewRelationship(currentRelationships);
-            } else if (difference > 0 || difference < 0) {
+            } else if (localRelationshipsCopyLength === 0 || difference > 0 || difference < 0) {
                 if (this.configuration.isYaml() && difference < 0 && this.allNodeTemplates.length > 0) {
                     // a relationship is deleted. reset the associated source requirement
                     const deletedRels = this.allRelationshipTemplates.filter(rel => currentRelationships.every(curRel => curRel.id !== rel.id));
@@ -988,10 +999,9 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                         const reqId = deletedRel.sourceElement.ref;
                         const sourceNodeTemplate = this.allNodeTemplates
                             .find(nt =>
-                                nt.requirements &&
-                                nt.requirements.requirement
-                                && nt.requirements.requirement.some(req => req.id === reqId));
-                        const requirementModel: RequirementModel = sourceNodeTemplate.requirements.requirement
+                                nt.requirements
+                                && nt.requirements.some(req => req.id === reqId));
+                        const requirementModel: RequirementModel = sourceNodeTemplate.requirements
                             .find(req => req.id === reqId);
 
                         const requirementDefinition: RequirementDefinitionModel = InheritanceUtils
@@ -999,14 +1009,12 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                             .find(reqDef => reqDef.name === requirementModel.name);
 
                         const nonFulfilledReqCount = sourceNodeTemplate.requirements
-                            .requirement
                             .filter(r => r.name === requirementModel.name && r.relationship === requirementDefinition.relationship)
                             .length;
 
                         if (nonFulfilledReqCount > 0) {
                             // there is no need to have more than one non-fulfilled requirement assignment
-                            sourceNodeTemplate.requirements.requirement = sourceNodeTemplate.requirements
-                                .requirement
+                            sourceNodeTemplate.requirements = sourceNodeTemplate.requirements
                                 .filter(
                                     r => r.id !== requirementModel.id
                                 );
@@ -1068,7 +1076,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
             if (this.topologyRendererState.buttonsState.layoutButton) {
                 this.layoutDirective.layoutNodes(this.nodeComponentChildren.toArray(), this.allRelationshipTemplates)
-                    .then(done => {
+                    .then(() => {
                         leaveNodesAsSelectedAfterLayouting = false;
                         // This call might seem confusing as we are calling it again right after executing,
                         // but this just toggles the button state back to false, so layout can be called again.
@@ -1310,7 +1318,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
                     if (visual && visual.imageUrl) {
                         labelString += '<img style="display: block; margin-left: auto; margin-right: auto; margin-top: 5px;' +
-                            ' max-width: 40px; max-height: 40px;" src="' + visual.imageUrl + '" />';
+                            ' max-width: 40px; max-height: 40px;" src="' + visual.imageUrl + '" alt="Policy icon" />';
                     }
                 }
             }
@@ -1320,8 +1328,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 if (!this.allNodesIds.includes(relationSource)) {
                     // check if source reference is a requirement of a node template
                     const findNode = this.allNodeTemplates
-                        .find(node => node.requirements && node.requirements.requirement
-                            && node.requirements.requirement.find(req => req.id === relationSource)
+                        .find(node => node.requirements
+                            && node.requirements.find(req => req.id === relationSource)
                         );
                     if (findNode) {
                         relationSource = findNode.id;
@@ -1333,7 +1341,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             if (!this.allNodesIds.includes(relationTarget)) {
                 // check if target reference is a capability of a node template
                 const findNode = this.allNodeTemplates
-                    .find(node => node.capabilities && node.capabilities.capability && node.capabilities.capability.find(cap => cap.id === relationTarget));
+                    .find(node => node.capabilities && node.capabilities.find(cap => cap.id === relationTarget));
                 if (findNode) {
                     relationTarget = findNode.id;
                 }
@@ -1350,8 +1358,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                         label: labelString,
                         id: labelString,
                         events: {
-                            click: function (labelOverlay, originalEvent) {
-                                setTimeout(() => me.onClickJsPlumbConnection(conn, newRelationship), 1);
+                            click: function () {
+                                setTimeout(() => me.onClickJsPlumbConnection(conn), 1);
                             }
                         },
                         labelStyle: {
@@ -1460,9 +1468,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
     /**
      * Handler for the DEL-Key - removes a node and resets everything associated with that deleted node
-     * @param event Keyboard event.
      */
-    handleDeleteKeyEvent(event?: KeyboardEvent) {
+    handleDeleteKeyEvent() {
         this.unbindConnection();
         // if name, min or max instances has changed, do not delete the node.
         if (this.selectedNodes.length > 0) {
@@ -1758,8 +1765,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         const capIds: string[] = [];
         this.allNodeTemplates.forEach(node => {
             if (node.capabilities) {
-                if (node.capabilities.capability) {
-                    node.capabilities.capability.forEach(cap => {
+                if (node.capabilities) {
+                    node.capabilities.forEach(cap => {
                         capIds.push(node.id + '.' + cap.id);
                     });
                 }
@@ -1818,7 +1825,6 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * Tracks the time of mousedown, this is necessary
      * to decide whether a drag or a click is initiated
      * and resets dragSource, clears selectedNodes and unbinds the connection listener.
-     * @param $event  The HTML event.
      */
     trackTimeOfMouseDown(): void {
         if (this.newJsPlumbInstance) {
@@ -1834,7 +1840,6 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     /**
      * Tracks the time of mouseup, this is necessary
      * to decide whether a drag or a click is initiated.
-     * @param $event  The HTML event.
      */
     trackTimeOfMouseUp(): void {
         this.endTime = new Date().getTime();
@@ -1873,15 +1878,14 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     }
 
     onClickRelationshipTemplateName(clickedRelTemplateId: string): void {
-        const currentRelTemplate = this.allRelationshipTemplates.find(rel => rel.id === clickedRelTemplateId);
         const connection = this.newJsPlumbInstance.getAllConnections().find(conn => conn.id === clickedRelTemplateId);
-        this.onClickJsPlumbConnection(connection, currentRelTemplate);
+        this.onClickJsPlumbConnection(connection);
     }
 
     /**
      * jsPlumb relationship/label click actions
      */
-    onClickJsPlumbConnection(conn: any, rel: any) {
+    onClickJsPlumbConnection(conn: any) {
         this.clearSelectedNodes();
         this.newJsPlumbInstance.select().removeType('marked');
         const currentRel = this.allRelationshipTemplates.find(con => con.id === conn.id);
@@ -2000,7 +2004,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                             if (reqModel.unbounded) {
                                 const nonFulfilledReq = RequirementModel.fromRequirementDefinition(reqDef);
                                 nonFulfilledReq.id = TopologyTemplateUtil.generateYAMLRequirementID(sourceNodeTemplate, reqModel) + '_' + relNumber;
-                                sourceNodeTemplate.requirements.requirement.push(nonFulfilledReq);
+                                sourceNodeTemplate.requirements.push(nonFulfilledReq);
                             }
                         }
                         for (const rel of this.newJsPlumbInstance.getConnections()) {
@@ -2022,8 +2026,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         let capability: any = null;
         this.allNodeTemplates.forEach(node => {
             if (node.capabilities) {
-                if (node.capabilities.capability) {
-                    node.capabilities.capability.forEach(cap => {
+                if (node.capabilities) {
+                    node.capabilities.forEach(cap => {
                         if (cap.id === capabilityId) {
                             capability = cap;
                         }
@@ -2113,9 +2117,9 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         }
     }
 
-    handleUpdatedYamlPolicies(policies: { policy: TPolicy[] }) {
+    handleUpdatedYamlPolicies(policies: TPolicy[]) {
         if (this.entityTypes) {
-            this.entityTypes.yamlPolicies = policies.policy;
+            this.entityTypes.yamlPolicies = policies;
             this.copyOfYamlPolicies = this.getYamlPoliciesTableData();
         }
     }
@@ -2132,7 +2136,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     handleYamlPolicySelected($event: WineryRowData) {
         this.selectedYamlPolicy = this.entityTypes.yamlPolicies.find(policy => policy.name === (<TPolicy>$event.row).name);
         this.selectedYamlPolicy.properties = InheritanceUtils.getEffectivePropertiesOfTemplateElement(this.selectedYamlPolicy.properties,
-            this.selectedYamlPolicy.policyType, this.entityTypes.policyTypes);
+            this.selectedYamlPolicy.policyType, this.entityTypes.policyTypes, this.notify);
     }
 
     savePolicyProperties(): void {
@@ -2177,8 +2181,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     }
 
     addNewPrmMapping(newRelationship: TRelationshipTemplate) {
-        this.getDetectorNodeproperties(newRelationship.sourceElement);
-        this.getRefinementNodeproperties(newRelationship.targetElement);
+        this.getDetectorNodeProperties(newRelationship.sourceElement);
+        this.getRefinementNodeProperties(newRelationship.targetElement);
         this.getBehaviorPatterns(newRelationship.sourceElement);
         this.newRelationship = newRelationship;
         this.direction = undefined;
@@ -2213,7 +2217,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         this.detectorProperty = data;
     }
 
-    setBehaviorPattern(data: Policy) {
+    setBehaviorPattern(data: TPolicy) {
         this.behaviorPattern = data;
     }
 
@@ -2247,9 +2251,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             } else if (this.newRelationship.type === '{http://opentosca.org/prmMappingTypes}BehaviorPatternMapping'
                 && this.refinementProperty && this.behaviorPattern) {
                 return false;
-            } else {
-                return true;
             }
+            return true;
         }
     }
 
@@ -2263,15 +2266,15 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             if (this.allIds.length > 0) {
                 this.setId(node.id);
                 if (node.requirements) {
-                    if (node.requirements.requirement) {
-                        node.requirements.requirement.forEach(req => {
+                    if (node.requirements) {
+                        node.requirements.forEach(req => {
                             this.setId(req.id);
                         });
                     }
                 }
                 if (node.capabilities) {
-                    if (node.capabilities.capability) {
-                        node.capabilities.capability.forEach(cap => {
+                    if (node.capabilities) {
+                        node.capabilities.forEach(cap => {
                             this.setId(cap.id);
                         });
                     }
@@ -2319,14 +2322,14 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
         // if in YAML mode, automatically add all requirement and capability definitions to the node template!
         if (this.configuration.isYaml()) {
-            this.newNode.requirements = { requirement: [] };
-            this.newNode.capabilities = { capability: [] };
+            this.newNode.requirements = [];
+            this.newNode.capabilities = [];
             const reqData = InheritanceUtils.getEffectiveRequirementDefinitionsOfNodeType(this.newNode.type, this.entityTypes);
             if (reqData) {
                 reqData.forEach(reqDef => {
                     const reqModel = RequirementModel.fromRequirementDefinition(reqDef);
                     reqModel.id = TopologyTemplateUtil.generateYAMLRequirementID(this.newNode, reqModel);
-                    this.newNode.requirements.requirement.push(reqModel);
+                    this.newNode.requirements.push(reqModel);
                 });
             }
             const capData = InheritanceUtils.getEffectiveCapabilityDefinitionsOfNodeType(this.newNode.type, this.entityTypes);
@@ -2334,7 +2337,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 capData.forEach(capDef => {
                     const capModel = CapabilityModel.fromCapabilityDefinitionModel(capDef);
                     capModel.id = TopologyTemplateUtil.generateYAMLCapabilityID(this.newNode, capModel.name);
-                    this.newNode.capabilities.capability.push(capModel);
+                    this.newNode.capabilities.push(capModel);
                 });
             }
         }
@@ -2397,8 +2400,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         if (conn) {
             conn.id = newRelationship.id;
             conn.setType(newRelationship.type);
-            conn.bind('click', rel => {
-                this.onClickJsPlumbConnection(conn, rel);
+            conn.bind('click', () => {
+                this.onClickJsPlumbConnection(conn);
             });
         }
 
@@ -2502,7 +2505,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      */
     private enhanceDragSelection(nodeId: string) {
         if (!this.arrayContainsNode(this.selectedNodes, nodeId)) {
-            this.selectedNodes.push(this.getNodeByID(this.allNodeTemplates, nodeId));
+            this.selectedNodes.push(CanvasComponent.getNodeByID(this.allNodeTemplates, nodeId));
             this.newJsPlumbInstance.addToPosse(nodeId, 'dragSelection');
             this.nodeComponentChildren.forEach(node => {
                 if (this.selectedNodes.find(selectedNode => selectedNode && selectedNode.id === node.nodeTemplate.id)) {
@@ -2511,21 +2514,6 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                     }
                 }
             });
-        }
-    }
-
-    /**
-     * Getter for Node by ID
-     * @param Nodes
-     * @param id
-     */
-    private getNodeByID(nodes: Array<TNodeTemplate>, id: string): TNodeTemplate {
-        if (nodes !== null && nodes.length > 0) {
-            for (const node of nodes) {
-                if (node.id === id) {
-                    return node;
-                }
-            }
         }
     }
 
@@ -2558,7 +2546,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             this.unbindMouseActions.push(this.renderer.listen(this.eref.nativeElement, 'mousemove',
                 (event) => this.moveNewNode(event)));
             this.unbindMouseActions.push(this.renderer.listen(this.eref.nativeElement, 'mouseup',
-                ($event) => this.positionNewNode()));
+                () => this.positionNewNode()));
         }
     }
 
@@ -2603,7 +2591,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                             );
                             if (visual && visual.imageUrl) {
                                 labelString += '<img style="display: block; margin-left: auto; margin-right: auto; margin-top: 5px;' +
-                                    ' max-width: 40px; max-height: 40px;" src="' + visual.imageUrl + '" />';
+                                    ' max-width: 40px; max-height: 40px;" src="' + visual.imageUrl + '" alt="Icon" />';
                             }
                         }
                         const relationshipType = this.entityTypes.relationshipTypes.filter(rT => rT.qName === relationshipTemplate.type)[0];
@@ -2626,8 +2614,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                                         label: labelString,
                                         id: 'label',
                                         events: {
-                                            click: function (labelOverlay, originalEvent) {
-                                                setTimeout(() => me.onClickJsPlumbConnection(newCon, relationshipTemplate), 1);
+                                            click: function () {
+                                                setTimeout(() => me.onClickJsPlumbConnection(newCon), 1);
                                             }
                                         },
                                         labelStyle: {
@@ -2646,7 +2634,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                         }
                     }
                     this.allRelationshipTemplates[this.allRelationshipTemplates.indexOf(rel)] = relationshipTemplate;
-                    this.onClickJsPlumbConnection(oldCon, relationshipTemplate);
+                    this.onClickJsPlumbConnection(oldCon);
                     return true;
                 }
             }
@@ -2660,7 +2648,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         return '<a href="' + absoluteURL + '">' + typeQName.localName + '</a>';
     }
 
-    private getDetectorNodeproperties(sourceElement: { ref: string }) {
+    private getDetectorNodeProperties(sourceElement: { ref: string }) {
         const props = this.allNodeTemplates.find(element => element.id === sourceElement.ref).properties;
         if (props && props.propertyType && props.propertyType === 'KV') {
             this.detectorNodeProperties = Object.keys(props.kvproperties)
@@ -2668,7 +2656,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         }
     }
 
-    private getRefinementNodeproperties(targetElement: { ref: string }) {
+    private getRefinementNodeProperties(targetElement: { ref: string }) {
         const props = this.allNodeTemplates.find(element => element.id === targetElement.ref).properties;
         if (props && props.propertyType && props.propertyType === 'KV') {
             this.refinementNodeProperties = Object.keys(props.kvproperties)
@@ -2679,7 +2667,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     private getBehaviorPatterns(sourceElement: { ref: string }) {
         const source = this.allNodeTemplates.find(element => element.id === sourceElement.ref);
         if (source.policies) {
-            this.behaviorPatterns = source.policies.policy
+            this.behaviorPatterns = source.policies
                 .filter((policy) => this.patternNamespaces.has(new QName(policy.policyType).nameSpace));
         }
     }

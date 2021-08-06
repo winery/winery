@@ -44,7 +44,7 @@ import org.eclipse.winery.edmm.TransformationManager;
 import org.eclipse.winery.edmm.model.EdmmType;
 import org.eclipse.winery.edmm.plugins.PluginManager;
 import org.eclipse.winery.model.ids.EncodingUtil;
-import org.eclipse.winery.model.tosca.TImplementationArtifacts;
+import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TOperation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
@@ -147,7 +147,8 @@ public class EdmmResource {
                     "<div> %s </div>" +
                     "<div> Probably something is missing in the service template XML or something went wrong on the server </div>" +
                     "</body></html>",
-                e.toString());
+                e
+            );
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .type(MediaType.TEXT_HTML)
                 .entity(message)
@@ -242,7 +243,8 @@ public class EdmmResource {
                 .getAllArtifactResources()
                 .stream()
                 .anyMatch(artifactResource -> {
-                    TImplementationArtifacts.ImplementationArtifact implementationArtifact = artifactResource.getImplementationArtifact();
+                    TImplementationArtifact implementationArtifact = artifactResource.getImplementationArtifact();
+
                     return operation.equals(implementationArtifact.getOperationName()) &&
                         LIFECYCLE_NAME.equals(implementationArtifact.getInterfaceName()) &&
                         implementationArtifact.getArtifactRef() != null &&

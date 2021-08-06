@@ -24,7 +24,7 @@
             "maxInstances": "1",
             "x": "677",
             "y": "161",
-            "policies": {}
+            "policies": []
         }
     ]
 }

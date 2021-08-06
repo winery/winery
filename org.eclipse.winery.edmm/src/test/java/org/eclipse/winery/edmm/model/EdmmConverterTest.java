@@ -160,8 +160,8 @@ public class EdmmConverterTest extends EdmmDependantTest {
         topology.addNodeTemplate(nodeTemplates.get("test_node_4"));
         // endregion
 
-        TServiceTemplate serviceTemplate = new TServiceTemplate();
-        serviceTemplate.setTopologyTemplate(topology.build());
+        TServiceTemplate serviceTemplate = new TServiceTemplate.Builder("testST", topology.build())
+            .build();
 
         EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
             relationshipTypeImplementations, artifactTemplates, edmmTypeExtendsMapping, edmm1to1Mapping, false);
@@ -213,7 +213,7 @@ public class EdmmConverterTest extends EdmmDependantTest {
             "    properties:\n" +
             "      name: test_node_1\n" +
             "    artifacts:\n" +
-            "    - war: /artifacttemplates/https%3A%2F%2Fex.org%2Ftosca%2Fto%2Fedmm/startTestNode4/files/script.sh\n" +
+            "    - war: /artifacttemplates/https%3A%2F%2Fex.org%2Ftosca%2Fto%2Fedmm/testNode1-DA/files/da.war\n" +
             "  test_node_3:\n" +
             "    type: https_ex.orgtoscatoedmm__test_node_type_3\n" +
             "    properties:\n" +

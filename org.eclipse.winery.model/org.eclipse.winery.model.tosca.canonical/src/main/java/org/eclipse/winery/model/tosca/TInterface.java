@@ -49,20 +49,23 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tInterface", propOrder = {
-    "operation"
+    "operations"
 })
 public class TInterface implements HasName, Serializable {
+
     @XmlElement(name = "Operation", required = true)
-    protected List<TOperation> operation;
+    protected List<TOperation> operations;
+
     @XmlAttribute(name = "name", required = true)
     @XmlSchemaType(name = "anyURI")
     protected String name;
 
     @Deprecated // used for XML deserialization of API request content
-    public TInterface() { }
+    public TInterface() {
+    }
 
     public TInterface(Builder builder) {
-        this.operation = builder.operation;
+        this.operations = builder.operation;
         this.name = builder.name;
     }
 
@@ -71,23 +74,22 @@ public class TInterface implements HasName, Serializable {
         if (this == o) return true;
         if (!(o instanceof TInterface)) return false;
         TInterface that = (TInterface) o;
-        return Objects.equals(operation, that.operation) &&
+        return Objects.equals(operations, that.operations) &&
             Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(operation, name);
+        return Objects.hash(operations, name);
     }
 
     /**
      * Gets the value of the operation property.
      * <p>
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the operation property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore, any modification you make
+     * to the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE> method
+     * for the operation property.
      * <p>
      * <p>
      * For example, to add a new item, do as follows:
@@ -97,15 +99,14 @@ public class TInterface implements HasName, Serializable {
      * <p>
      * <p>
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link TOperation }
+     * Objects of the following type(s) are allowed in the list {@link TOperation }
      */
     @NonNull
-    public List<TOperation> getOperation() {
-        if (operation == null) {
-            operation = new ArrayList<TOperation>();
+    public List<TOperation> getOperations() {
+        if (operations == null) {
+            operations = new ArrayList<>();
         }
-        return this.operation;
+        return this.operations;
     }
 
     /**

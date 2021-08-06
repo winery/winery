@@ -16,15 +16,13 @@
             },
             "id": "MyTinyTest",
             "type": "{http://opentosca.org/artifacttypes}MiniArtifactType",
-            "artifactReferences": {
-                "artifactReference": [
-                    {
-                        "includeOrExclude": [
-                        ],
-                        "reference": "artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/files/blub.zip"
-                    }
-                ]
-            },
+            "artifactReferences": [
+                {
+                    "includeOrExclude": [
+                    ],
+                    "reference": "artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/files/blub.zip"
+                }
+            ],
             "name": "MyTinyTest"
         }
     ],

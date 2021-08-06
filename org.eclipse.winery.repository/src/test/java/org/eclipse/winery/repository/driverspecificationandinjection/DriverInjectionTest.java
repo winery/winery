@@ -41,7 +41,7 @@ public class DriverInjectionTest extends TestWithGitBackedRepository {
         TTopologyTemplate tTopologyTemplate = DriverInjection.injectDriver(topologyTemplate);
 
         TNodeTemplate nodeTemplateWithAbstractDA = tTopologyTemplate.getNodeTemplate("shetland_pony");
-        List<TDeploymentArtifact> deploymentArtifacts = nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact();
+        List<TDeploymentArtifact> deploymentArtifacts = nodeTemplateWithAbstractDA.getDeploymentArtifacts();
         List<String> deploymentArtifactNames = new ArrayList<>();
         deploymentArtifacts.stream().forEach(da -> deploymentArtifactNames.add(da.getName()));
 
@@ -59,7 +59,7 @@ public class DriverInjectionTest extends TestWithGitBackedRepository {
         ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTest", false);
         TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
         TRelationshipTemplate relationshipTemplate = topologyTemplate.getRelationshipTemplate("con_71");
-        TDeploymentArtifact deploymentArtifact = topologyTemplate.getNodeTemplate("dressageequipment").getDeploymentArtifacts().getDeploymentArtifact().stream()
+        TDeploymentArtifact deploymentArtifact = topologyTemplate.getNodeTemplate("dressageequipment").getDeploymentArtifacts().stream()
             .filter(da -> da.getName().equalsIgnoreCase("DressageEquipment_Pony")).findFirst().get();
 
         DriverInjection.setDriverProperty(relationshipTemplate, deploymentArtifact);

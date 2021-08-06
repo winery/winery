@@ -3,7 +3,7 @@ name: Winery CI
 on: [ push, pull_request ]
 
 jobs:
-  
+
   pre_job:
     continue-on-error: true
     runs-on: ubuntu-latest

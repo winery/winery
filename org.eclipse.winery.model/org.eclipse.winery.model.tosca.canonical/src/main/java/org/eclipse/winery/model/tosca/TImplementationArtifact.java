@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -34,13 +33,8 @@ import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tImplementationArtifact")
-@XmlSeeAlso( {
-    org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact.class
-})
-public class TImplementationArtifact extends TExtensibleElements implements HasName {
+public class TImplementationArtifact extends TDeploymentOrImplementationArtifact {
 
-    @XmlAttribute(name = "name")
-    protected String name;
     @XmlAttribute(name = "interfaceName")
     @XmlSchemaType(name = "anyURI")
     protected String interfaceName;
@@ -48,21 +42,15 @@ public class TImplementationArtifact extends TExtensibleElements implements HasN
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlSchemaType(name = "NCName")
     protected String operationName;
-    @XmlAttribute(name = "artifactType", required = true)
-    protected QName artifactType;
-    @XmlAttribute(name = "artifactRef")
-    protected QName artifactRef;
 
     @Deprecated // used for XML deserialization of API request content
-    public TImplementationArtifact() { }
+    public TImplementationArtifact() {
+    }
 
-    public TImplementationArtifact(Builder builder) {
+    public TImplementationArtifact(TImplementationArtifact.Builder builder) {
         super(builder);
-        this.name = builder.name;
         this.interfaceName = builder.interfaceName;
         this.operationName = builder.operationName;
-        this.artifactType = builder.artifactType;
-        this.artifactRef = builder.artifactRef;
     }
 
     @Override
@@ -88,18 +76,6 @@ public class TImplementationArtifact extends TExtensibleElements implements HasN
         visitor.visit(this);
     }
 
-    @Nullable
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(@Nullable String value) {
-        this.name = value;
-    }
-
-    @Nullable
     public String getInterfaceName() {
         return interfaceName;
     }
@@ -136,42 +112,34 @@ public class TImplementationArtifact extends TExtensibleElements implements HasN
         this.artifactRef = value;
     }
 
-    public static class Builder<T extends Builder<T>> extends TExtensibleElements.Builder<Builder<T>> {
-        private final QName artifactType;
+    public static class Builder extends TDeploymentOrImplementationArtifact.Builder<Builder> {
 
-        private String name;
         private String interfaceName;
         private String operationName;
-        private QName artifactRef;
 
         public Builder(QName artifactType) {
-            this.artifactType = artifactType;
+            super(artifactType);
         }
 
-        public T setName(String name) {
+        public Builder setName(String name) {
             this.name = name;
             return self();
         }
 
-        public T setInterfaceName(String interfaceName) {
+        public Builder setInterfaceName(String interfaceName) {
             this.interfaceName = interfaceName;
             return self();
         }
 
-        public T setOperationName(String operationName) {
+        public Builder setOperationName(String operationName) {
             this.operationName = operationName;
-            return self();
-        }
-
-        public T setArtifactRef(QName artifactRef) {
-            this.artifactRef = artifactRef;
             return self();
         }
 
         @ADR(11)
         @Override
-        public T self() {
-            return (T) this;
+        public Builder self() {
+            return this;
         }
 
         public TImplementationArtifact build() {

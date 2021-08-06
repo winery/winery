@@ -27,7 +27,6 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.model.adaptation.substitution.refinement.DefaultRefinementChooser;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.extensions.OTBehaviorPatternMapping;
@@ -62,7 +61,7 @@ class BehaviorPatternDetectionTest {
         behaviorPatterns.add(new TPolicy(new TPolicy.Builder(QName.valueOf("{patternNs}oneProp")).setName("oneProp")));
         TNodeTemplate detectorElement = new TNodeTemplate(
             new TNodeTemplate.Builder("detectorElement", QName.valueOf("{ns}patternType"))
-                .setPolicies(new TPolicies(behaviorPatterns))
+                .setPolicies(behaviorPatterns)
                 .setX("1")
                 .setY("1")
         );
@@ -79,7 +78,7 @@ class BehaviorPatternDetectionTest {
         stayingPolicies.add(new TPolicy(new TPolicy.Builder(QName.valueOf("{ns}normalPolicy")).setName("normalPolicy")));
         TNodeTemplate stayingElement = new TNodeTemplate(
             new TNodeTemplate.Builder("stayingElement", QName.valueOf("{ns}concreteType"))
-                .setPolicies(new TPolicies(stayingPolicies))
+                .setPolicies(stayingPolicies)
                 .setX("1")
                 .setY("1")
         );
@@ -112,7 +111,7 @@ class BehaviorPatternDetectionTest {
             .setBehaviorPatternMappings(behaviorPatternMappings)
         );
 
-        // needs to be swapped manually as only prms retrieved from repo are swapped automatically
+        // needs to be swapped manually as only PRMs retrieved from repo are swapped automatically
         PatternDetectionUtils.swapDetectorWithRefinement(prm);
         TTopologyTemplate topology = new TTopologyTemplate();
         topology.addNodeTemplate(stayingElement);
@@ -129,7 +128,7 @@ class BehaviorPatternDetectionTest {
         behaviorPatternDetection.applyRefinement(refinementCandidate, topology);
         assertEquals(topology.getNodeTemplateOrRelationshipTemplate().size(), 1);
         assertEquals(topology.getNodeTemplates().get(0).getId(), "stayingElement");
-        List<TPolicy> policies = topology.getNodeTemplates().get(0).getPolicies().getPolicy();
+        List<TPolicy> policies = topology.getNodeTemplates().get(0).getPolicies();
         assertEquals(policies.size(), 1);
         assertEquals(policies.get(0).getName(), "normalPolicy");
 
@@ -140,7 +139,7 @@ class BehaviorPatternDetectionTest {
         behaviorPatternDetection.applyRefinement(refinementCandidate, topology);
         assertEquals(topology.getNodeTemplateOrRelationshipTemplate().size(), 1);
         assertEquals(topology.getNodeTemplates().get(0).getId(), "stayingElement");
-        policies = topology.getNodeTemplates().get(0).getPolicies().getPolicy();
+        policies = topology.getNodeTemplates().get(0).getPolicies();
         assertEquals(policies.size(), 2);
         assertTrue(policies.stream().anyMatch(policy -> policy.getName().equals("normalPolicy")));
         assertTrue(policies.stream().anyMatch(policy -> policy.getName().equals("oneProp")));
@@ -148,10 +147,10 @@ class BehaviorPatternDetectionTest {
 
     @Test
     public void removeIncompatibleBehaviorPatterns() {
-        TPolicies behaviorPatterns = new TPolicies(new ArrayList<>());
-        behaviorPatterns.getPolicy().add(new TPolicy(new TPolicy.Builder(QName.valueOf("noProp")).setName("noProp")));
-        behaviorPatterns.getPolicy().add(new TPolicy(new TPolicy.Builder(QName.valueOf("oneProp")).setName("oneProp")));
-        behaviorPatterns.getPolicy().add(new TPolicy(new TPolicy.Builder(QName.valueOf("multiProps")).setName("multiProps")));
+        List<TPolicy> behaviorPatterns = new ArrayList<>();
+        behaviorPatterns.add(new TPolicy(new TPolicy.Builder(QName.valueOf("noProp")).setName("noProp")));
+        behaviorPatterns.add(new TPolicy(new TPolicy.Builder(QName.valueOf("oneProp")).setName("oneProp")));
+        behaviorPatterns.add(new TPolicy(new TPolicy.Builder(QName.valueOf("multiProps")).setName("multiProps")));
         TNodeTemplate detectorElement = new TNodeTemplate(
             new TNodeTemplate.Builder("detectorElement", QName.valueOf("{ns}patternType"))
                 .setPolicies(behaviorPatterns)
@@ -232,7 +231,7 @@ class BehaviorPatternDetectionTest {
             .setBehaviorPatternMappings(behaviorPatternMappings)
         );
 
-        // needs to be swapped manually as only prms retrieved from repo are swapped automatically
+        // needs to be swapped manually as only PRMs retrieved from repo are swapped automatically
         PatternDetectionUtils.swapDetectorWithRefinement(prm);
         TTopologyTemplate topology = new TTopologyTemplate();
         topology.addNodeTemplate(candidateElement);
@@ -248,7 +247,7 @@ class BehaviorPatternDetectionTest {
         BehaviorPatternDetection behaviorPatternDetection = new BehaviorPatternDetection(new DefaultRefinementChooser());
         behaviorPatternDetection.applyRefinement(refinementCandidate, topology);
         assertEquals(topology.getNodeTemplateOrRelationshipTemplate().size(), 1);
-        List<TPolicy> policies = topology.getNodeTemplates().get(0).getPolicies().getPolicy();
+        List<TPolicy> policies = topology.getNodeTemplates().get(0).getPolicies();
         assertEquals(policies.size(), 1);
         assertEquals(policies.get(0).getName(), "noProp");
 
@@ -258,7 +257,7 @@ class BehaviorPatternDetectionTest {
         topology.addNodeTemplate(candidateElement);
         behaviorPatternDetection.applyRefinement(refinementCandidate, topology);
         assertEquals(topology.getNodeTemplateOrRelationshipTemplate().size(), 1);
-        policies = topology.getNodeTemplates().get(0).getPolicies().getPolicy();
+        policies = topology.getNodeTemplates().get(0).getPolicies();
         assertEquals(policies.size(), 2);
         assertTrue(policies.stream().anyMatch(policy -> policy.getName().equals("noProp")));
         assertTrue(policies.stream().anyMatch(policy -> policy.getName().equals("oneProp")));
@@ -269,7 +268,7 @@ class BehaviorPatternDetectionTest {
         topology.addNodeTemplate(candidateElement);
         behaviorPatternDetection.applyRefinement(refinementCandidate, topology);
         assertEquals(topology.getNodeTemplateOrRelationshipTemplate().size(), 1);
-        policies = topology.getNodeTemplates().get(0).getPolicies().getPolicy();
+        policies = topology.getNodeTemplates().get(0).getPolicies();
         assertEquals(policies.size(), 2);
         assertTrue(policies.stream().anyMatch(policy -> policy.getName().equals("noProp")));
         assertTrue(policies.stream().anyMatch(policy -> policy.getName().equals("oneProp")));
@@ -280,7 +279,7 @@ class BehaviorPatternDetectionTest {
         topology.addNodeTemplate(candidateElement);
         behaviorPatternDetection.applyRefinement(refinementCandidate, topology);
         assertEquals(topology.getNodeTemplateOrRelationshipTemplate().size(), 1);
-        policies = topology.getNodeTemplates().get(0).getPolicies().getPolicy();
+        policies = topology.getNodeTemplates().get(0).getPolicies();
         assertEquals(policies.size(), 2);
         assertTrue(policies.stream().anyMatch(policy -> policy.getName().equals("noProp")));
         assertTrue(policies.stream().anyMatch(policy -> policy.getName().equals("oneProp")));
@@ -291,7 +290,7 @@ class BehaviorPatternDetectionTest {
         topology.addNodeTemplate(candidateElement);
         behaviorPatternDetection.applyRefinement(refinementCandidate, topology);
         assertEquals(topology.getNodeTemplateOrRelationshipTemplate().size(), 1);
-        policies = topology.getNodeTemplates().get(0).getPolicies().getPolicy();
+        policies = topology.getNodeTemplates().get(0).getPolicies();
         assertEquals(policies.size(), 3);
         assertTrue(policies.stream().anyMatch(policy -> policy.getName().equals("noProp")));
         assertTrue(policies.stream().anyMatch(policy -> policy.getName().equals("oneProp")));

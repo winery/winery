@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
@@ -37,10 +38,7 @@ import org.eclipse.jdt.annotation.Nullable;
     "topologyTemplate",
     "plans"
 })
-public class XTServiceTemplate extends XHasId implements XHasName, XHasTargetNamespace {
-
-    @XmlElement(name = "Tags")
-    protected XTTags tags;
+public class XTServiceTemplate extends XHasIdAndTags implements XHasName, XHasTargetNamespace {
 
     @XmlElement(name = "BoundaryDefinitions")
     protected XTBoundaryDefinitions boundaryDefinitions;
@@ -48,8 +46,9 @@ public class XTServiceTemplate extends XHasId implements XHasName, XHasTargetNam
     @XmlElement(name = "TopologyTemplate", required = true)
     protected XTTopologyTemplate topologyTemplate;
 
-    @XmlElement(name = "Plans")
-    protected XTPlans plans;
+    @XmlElementWrapper(name = "Plans")
+    @XmlElement(name = "Plan", required = true)
+    protected List<XTPlan> plans;
 
     @XmlAttribute(name = "name")
     protected String name;
@@ -62,11 +61,11 @@ public class XTServiceTemplate extends XHasId implements XHasName, XHasTargetNam
     protected QName substitutableNodeType;
 
     @Deprecated // required for XML deserialization
-    public XTServiceTemplate() { }
+    public XTServiceTemplate() {
+    }
 
     public XTServiceTemplate(Builder builder) {
         super(builder);
-        this.tags = builder.tags;
         this.boundaryDefinitions = builder.boundaryDefinitions;
         this.topologyTemplate = builder.topologyTemplate;
         this.plans = builder.plans;
@@ -96,15 +95,6 @@ public class XTServiceTemplate extends XHasId implements XHasName, XHasTargetNam
     }
 
     @Nullable
-    public XTTags getTags() {
-        return tags;
-    }
-
-    public void setTags(@Nullable XTTags value) {
-        this.tags = value;
-    }
-
-    @Nullable
     public XTBoundaryDefinitions getBoundaryDefinitions() {
         return boundaryDefinitions;
     }
@@ -131,11 +121,11 @@ public class XTServiceTemplate extends XHasId implements XHasName, XHasTargetNam
     }
 
     @Nullable
-    public XTPlans getPlans() {
+    public List<XTPlan> getPlans() {
         return plans;
     }
 
-    public void setPlans(@Nullable XTPlans value) {
+    public void setPlans(List<XTPlan> value) {
         this.plans = value;
     }
 
@@ -170,16 +160,16 @@ public class XTServiceTemplate extends XHasId implements XHasName, XHasTargetNam
         visitor.visit(this);
     }
 
-    public static class Builder extends XHasId.Builder<Builder> {
+    public static class Builder extends XHasIdAndTags.Builder<Builder> {
+
         private final XTTopologyTemplate topologyTemplate;
 
-        private XTTags tags;
         private XTBoundaryDefinitions boundaryDefinitions;
-        private XTPlans plans;
+        private List<XTPlan> plans;
         private String name;
         private String targetNamespace;
         private QName substitutableNodeType;
-        
+
         public Builder(String id) {
             super(id);
             topologyTemplate = null;
@@ -190,17 +180,12 @@ public class XTServiceTemplate extends XHasId implements XHasName, XHasTargetNam
             this.topologyTemplate = topologyTemplate;
         }
 
-        public Builder setTags(XTTags tags) {
-            this.tags = tags;
-            return this;
-        }
-
         public Builder setBoundaryDefinitions(XTBoundaryDefinitions boundaryDefinitions) {
             this.boundaryDefinitions = boundaryDefinitions;
             return this;
         }
 
-        public Builder setPlans(XTPlans plans) {
+        public Builder setPlans(List<XTPlan> plans) {
             this.plans = plans;
             return this;
         }
@@ -218,39 +203,6 @@ public class XTServiceTemplate extends XHasId implements XHasName, XHasTargetNam
         public Builder setSubstitutableNodeType(QName substitutableNodeType) {
             this.substitutableNodeType = substitutableNodeType;
             return this;
-        }
-
-        public Builder addTags(XTTags tags) {
-            if (tags == null || tags.getTag().isEmpty()) {
-                return this;
-            }
-
-            if (this.tags == null) {
-                this.tags = tags;
-            } else {
-                this.tags.getTag().addAll(tags.getTag());
-            }
-            return this;
-        }
-
-        public Builder addTags(List<XTTag> tags) {
-            if (tags == null) {
-                return this;
-            }
-
-            XTTags tmp = new XTTags();
-            tmp.getTag().addAll(tags);
-            return addTags(tmp);
-        }
-
-        public Builder addTags(XTTag tags) {
-            if (tags == null) {
-                return this;
-            }
-
-            XTTags tmp = new XTTags();
-            tmp.getTag().add(tags);
-            return addTags(tmp);
         }
 
         @Override

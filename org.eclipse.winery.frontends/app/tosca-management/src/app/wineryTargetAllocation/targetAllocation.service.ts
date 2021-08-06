@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -17,7 +17,8 @@ import { Observable } from 'rxjs/Observable';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { backendBaseURL } from '../configuration';
 import { AllocationRequest } from './request';
-import { NodeTemplate, Policy } from '../model/wineryComponent';
+import { NodeTemplate } from '../model/wineryComponent';
+import { TPolicy } from 'app/topologymodeler/src/app/models/policiesModalData';
 
 @Injectable()
 export class TargetAllocationService {
@@ -43,7 +44,7 @@ export class TargetAllocationService {
         return this.http.get<NodeTemplate[]>(url);
     }
 
-    getProperties(policy: Policy): Observable<any> {
+    getProperties(policy: TPolicy): Observable<any> {
         const qName = policy.policyRef.slice(1).split('}');
         return this.http.get<any>(backendBaseURL + '/policytemplates/' +
             encodeURIComponent(encodeURIComponent(qName[0])) + '/' + qName[1] + '/properties');

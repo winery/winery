@@ -55,7 +55,7 @@ export class ToscatypeTableComponent implements OnInit, OnChanges {
 
     constructor(private entitiesModalService: EntitiesModalService,
                 private backendService: BackendService,
-                private reqCapRelationshipService: ReqCapRelationshipService,
+                public reqCapRelationshipService: ReqCapRelationshipService,
                 private configurationService: WineryRepositoryConfigurationService) {
         this.showClickedReqOrCapModal = new EventEmitter();
         this.relationshipTemplateIdClicked = new EventEmitter<string>();
@@ -337,14 +337,12 @@ export class ToscatypeTableComponent implements OnInit, OnChanges {
             .getInheritanceAncestry(this.currentNodeData.nodeTemplate.type, this.entityTypes.unGroupedNodeTypes);
         for (const nodeType of listOfBequeathingNodeTypes) {
             if (nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0] &&
-                nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].requirementDefinitions &&
-                nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].requirementDefinitions.requirementDefinition) {
+                nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].requirementDefinitions) {
 
                 const requirementDefinition = nodeType
                     .full
                     .serviceTemplateOrNodeTypeOrNodeTypeImplementation[0]
                     .requirementDefinitions
-                    .requirementDefinition
                     .find((reqDef: RequirementDefinitionModel) => reqDef.name === req.name);
                 if (requirementDefinition) {
                     return requirementDefinition;

@@ -37,7 +37,8 @@ import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementMod
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceContainingATopology;
 
 public class RefinementTopologyTemplateResource extends TopologyTemplateResource {
-    private static TTopologyTemplate prmModellingTopologyTemplate = new TTopologyTemplate();
+
+    private static final TTopologyTemplate prmModellingTopologyTemplate = new TTopologyTemplate.Builder().build();
 
     /**
      * A topology template is always nested in a service template
@@ -55,22 +56,20 @@ public class RefinementTopologyTemplateResource extends TopologyTemplateResource
         final int setPointRefinementAvg = 1330;
         int dAvg = nodesPositionAverage(refinementModel.getDetector().getNodeTemplates());
         int rAvg = nodesPositionAverage(refinementModel.getRefinementTopology().getNodeTemplates());
-        prmModellingTopologyTemplate.setNodeTemplates(new ArrayList());
-        prmModellingTopologyTemplate.setRelationshipTemplates(new ArrayList());
+        prmModellingTopologyTemplate.setNodeTemplates(new ArrayList<>());
+        prmModellingTopologyTemplate.setRelationshipTemplates(new ArrayList<>());
 
         for (TNodeTemplate nodeTemplate : refinementModel.getDetector().getNodeTemplates()) {
-            TNodeTemplate newNodeTemplate = nodeTemplate;
-            int oldX = Integer.parseInt(newNodeTemplate.getX());
+            int oldX = nodeTemplate.getX() == null ? 0 : Integer.parseInt(nodeTemplate.getX());
             int newX = setPointDetectorAvg + (oldX - dAvg) / 2;
-            newNodeTemplate.setX(String.valueOf(newX));
-            prmModellingTopologyTemplate.addNodeTemplate(newNodeTemplate);
+            nodeTemplate.setX(String.valueOf(newX));
+            prmModellingTopologyTemplate.addNodeTemplate(nodeTemplate);
         }
         for (TNodeTemplate nodeTemplate : refinementModel.getRefinementTopology().getNodeTemplates()) {
-            TNodeTemplate newNodeTemplate = nodeTemplate;
-            int oldX = Integer.parseInt(newNodeTemplate.getX());
+            int oldX = nodeTemplate.getX() == null ? 0 : Integer.parseInt(nodeTemplate.getX());
             int newX = setPointRefinementAvg + (oldX - rAvg) / 2;
-            newNodeTemplate.setX(String.valueOf(newX));
-            prmModellingTopologyTemplate.addNodeTemplate(newNodeTemplate);
+            nodeTemplate.setX(String.valueOf(newX));
+            prmModellingTopologyTemplate.addNodeTemplate(nodeTemplate);
         }
         for (TRelationshipTemplate relationshipTemplate : refinementModel.getDetector().getRelationshipTemplates()) {
             prmModellingTopologyTemplate.addRelationshipTemplate(relationshipTemplate);
@@ -84,7 +83,7 @@ public class RefinementTopologyTemplateResource extends TopologyTemplateResource
     private int nodesPositionAverage(List<TNodeTemplate> nodeTemplates) {
         int sum = 0;
         for (TNodeTemplate nodeTemplate : nodeTemplates) {
-            sum += Integer.parseInt(nodeTemplate.getX());
+            sum += nodeTemplate.getX() == null ? 0 : Integer.parseInt(nodeTemplate.getX());
         }
         if (nodeTemplates.size() > 0) {
             return sum / nodeTemplates.size();
@@ -98,11 +97,13 @@ public class RefinementTopologyTemplateResource extends TopologyTemplateResource
      */
     private void createRelationshipsForMappings(OTRefinementModel refinementModel) {
         for (OTPrmMapping mapping : getAllMappings(refinementModel)) {
-            TRelationshipTemplate.SourceOrTargetElement sourceElement = new TRelationshipTemplate.SourceOrTargetElement();
-            sourceElement.setRef(new TNodeTemplate(mapping.getDetectorElement().getId()));
-            TRelationshipTemplate.SourceOrTargetElement targetElement = new TRelationshipTemplate.SourceOrTargetElement();
-            targetElement.setRef(new TNodeTemplate(mapping.getRefinementElement().getId()));
-            TRelationshipTemplate.Builder builder = new TRelationshipTemplate.Builder("con_" + mapping.getId(), QName.valueOf("{http://opentosca.org/prmMappingTypes}" + mapping.getId().substring(0, mapping.getId().indexOf("_"))), sourceElement, targetElement);
+            TRelationshipTemplate.Builder builder = new TRelationshipTemplate.Builder(
+                "con_" + mapping.getId(),
+                QName.valueOf("{http://opentosca.org/prmMappingTypes}" + mapping.getId().substring(0, mapping.getId().indexOf("_"))),
+                new TNodeTemplate(mapping.getDetectorElement().getId()),
+                new TNodeTemplate(mapping.getRefinementElement().getId())
+            );
+
             if (mapping instanceof OTPermutationMapping) {
                 builder.setName("PermutationMapping");
             }
@@ -153,14 +154,21 @@ public class RefinementTopologyTemplateResource extends TopologyTemplateResource
     }
 
     private List<OTPrmMapping> getAllMappings(OTRefinementModel refinementModel) {
-        List<OTPrmMapping> allPrmMappings = new ArrayList<>();
-        allPrmMappings.addAll(refinementModel.getRelationMappings());
+        List<OTPrmMapping> allPrmMappings = new ArrayList<>(refinementModel.getRelationMappings());
         if (refinementModel instanceof OTTopologyFragmentRefinementModel) {
             OTTopologyFragmentRefinementModel model = (OTTopologyFragmentRefinementModel) refinementModel;
-            allPrmMappings.addAll(model.getAttributeMappings());
-            allPrmMappings.addAll(model.getStayMappings());
-            allPrmMappings.addAll(model.getDeploymentArtifactMappings());
-            allPrmMappings.addAll(model.getPermutationMappings());
+            if (model.getAttributeMappings() != null) {
+                allPrmMappings.addAll(model.getAttributeMappings());
+            }
+            if (model.getStayMappings() != null) {
+                allPrmMappings.addAll(model.getStayMappings());
+            }
+            if (model.getDeploymentArtifactMappings() != null) {
+                allPrmMappings.addAll(model.getDeploymentArtifactMappings());
+            }
+            if (model.getPermutationMappings() != null) {
+                allPrmMappings.addAll(model.getPermutationMappings());
+            }
             if (model instanceof OTPatternRefinementModel) {
                 allPrmMappings.addAll(((OTPatternRefinementModel) model).getBehaviorPatternMappings());
             }

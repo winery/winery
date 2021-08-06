@@ -14,17 +14,26 @@
 
 package org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.interfaces;
 
-import org.eclipse.winery.model.tosca.*;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.eclipse.winery.model.tosca.TExportedInterface;
+import org.eclipse.winery.model.tosca.TExportedOperation;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TPlan;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.util.Arrays;
-import java.util.List;
 
 public class InterfacesResource extends EntityWithIdCollectionResource<ExportedInterfaceResource, TExportedInterface> {
 
@@ -38,8 +47,8 @@ public class InterfacesResource extends EntityWithIdCollectionResource<ExportedI
     }
 
     /**
-     * A special handling for TExportedInterface is required as this object uses IDREF, which must not be a string,
-     * but the real object when persisting.
+     * A special handling for TExportedInterface is required as this object uses IDREF, which must not be a string, but
+     * the real object when persisting.
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -77,7 +86,6 @@ public class InterfacesResource extends EntityWithIdCollectionResource<ExportedI
                     final TPlan planTemplate =
                         ((ServiceTemplateResource) res).getServiceTemplate()
                             .getPlans()
-                            .getPlan()
                             .stream()
                             .filter(relationship -> relationship.getId().contentEquals(planRef))
                             .findFirst()

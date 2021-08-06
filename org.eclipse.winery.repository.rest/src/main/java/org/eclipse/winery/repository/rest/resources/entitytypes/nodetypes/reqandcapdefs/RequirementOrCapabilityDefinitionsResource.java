@@ -46,7 +46,9 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
 
     protected final NodeTypeResource res;
 
-    public RequirementOrCapabilityDefinitionsResource(Class<ReqDefOrCapDefResource> entityResourceTClazz, Class<ReqDefOrCapDef> entityTClazz, List<ReqDefOrCapDef> list, NodeTypeResource res) {
+    public RequirementOrCapabilityDefinitionsResource(Class<ReqDefOrCapDefResource> entityResourceTClazz,
+                                                      Class<ReqDefOrCapDef> entityTClazz,
+                                                      List<ReqDefOrCapDef> list, NodeTypeResource res) {
         super(entityResourceTClazz, entityTClazz, list, res);
         this.res = res;
     }
@@ -58,7 +60,6 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
 
     @POST
     // As there is no supertype of TCapabilityType and TRequirementType containing the common attributes, we have to rely on unchecked casts
-    @SuppressWarnings("unchecked")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response onPost(RequirementOrCapabilityDefinitionPostData postData) {
         return this.performPost(postData);
@@ -84,10 +85,11 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
 
             return this.persistDef(def, postData);
         } catch (NumberFormatException e) {
-            return Response.status(Status.BAD_REQUEST).entity("Bad format of lowerbound: " + e.getMessage()).build();
+            return Response.status(Status.BAD_REQUEST).entity("Bad format of lower bound: " + e.getMessage()).build();
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected ReqDefOrCapDef createBasicReqOrCapDef(RequirementOrCapabilityDefinitionPostData postData) throws NumberFormatException {
         int lbound = 1;
         if (!StringUtils.isEmpty(postData.lowerBound)) {
@@ -103,25 +105,30 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
         ReqDefOrCapDef def;
 
         if (this instanceof CapabilityDefinitionsResource) {
-            def = (ReqDefOrCapDef) new TCapabilityDefinition();
+            def = (ReqDefOrCapDef) new TCapabilityDefinition.Builder(
+                postData.name,
+                QName.valueOf(postData.type)
+            )
+                .setUpperBound(ubound)
+                .setLowerBound(lbound)
+                .build();
         } else {
             assert (this instanceof RequirementDefinitionsResource);
-            def = (ReqDefOrCapDef) new TRequirementDefinition();
+            def = (ReqDefOrCapDef) new TRequirementDefinition.Builder(
+                postData.name,
+                QName.valueOf(postData.type)
+            )
+                .setUpperBound(ubound)
+                .setLowerBound(lbound)
+                .build();
         }
-
-        // copy all basic data into object
-        AbstractReqOrCapDefResource.invokeSetter(def, "setName", postData.name);
-        AbstractReqOrCapDefResource.invokeSetter(def, "setLowerBound", lbound);
-        AbstractReqOrCapDefResource.invokeSetter(def, "setUpperBound", ubound);
 
         return def;
     }
 
     protected void handleDefType(ReqDefOrCapDef def, RequirementOrCapabilityDefinitionPostData postData) {
-        QName typeQName = null;
-
         if (postData.type != null) {
-            typeQName = QName.valueOf(postData.type);
+            QName typeQName = QName.valueOf(postData.type);
 
             if (def instanceof TCapabilityDefinition) {
                 ((TCapabilityDefinition) def).setCapabilityType(typeQName);

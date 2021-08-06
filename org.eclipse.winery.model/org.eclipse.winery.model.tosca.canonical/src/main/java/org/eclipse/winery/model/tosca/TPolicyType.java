@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,17 +14,23 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -32,14 +38,18 @@ import org.eclipse.jdt.annotation.Nullable;
     "appliesTo"
 })
 public class TPolicyType extends TEntityType {
-    @XmlElement(name = "AppliesTo")
-    protected TAppliesTo appliesTo;
+
+    @XmlElementWrapper(name = "AppliesTo")
+    @XmlElement(name = "NodeTypeReference", required = true)
+    protected List<NodeTypeReference> appliesTo;
+
     @XmlAttribute(name = "policyLanguage")
     @XmlSchemaType(name = "anyURI")
     protected String policyLanguage;
 
     @Deprecated // used for XML deserialization of API request content
-    public TPolicyType() { }
+    public TPolicyType() {
+    }
 
     public TPolicyType(Builder builder) {
         super(builder);
@@ -62,12 +72,15 @@ public class TPolicyType extends TEntityType {
         return Objects.hash(super.hashCode(), appliesTo, policyLanguage);
     }
 
-    @Nullable
-    public TAppliesTo getAppliesTo() {
+    @NonNull
+    public List<NodeTypeReference> getAppliesTo() {
+        if (appliesTo == null) {
+            this.appliesTo = new ArrayList<>();
+        }
         return appliesTo;
     }
 
-    public void setAppliesTo(@Nullable TAppliesTo value) {
+    public void setAppliesTo(@Nullable List<NodeTypeReference> value) {
         this.appliesTo = value;
     }
 
@@ -85,8 +98,56 @@ public class TPolicyType extends TEntityType {
         visitor.visit(this);
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "")
+    public static class NodeTypeReference implements Serializable {
+
+        @XmlAttribute(name = "typeRef", required = true)
+        protected QName typeRef;
+
+        @SuppressWarnings("unused")
+        public NodeTypeReference() {
+        }
+
+        public NodeTypeReference(QName typeRef) {
+            this.typeRef = typeRef;
+        }
+
+        /**
+         * Gets the value of the typeRef property.
+         *
+         * @return possible object is {@link QName }
+         */
+        @NonNull
+        public QName getTypeRef() {
+            return typeRef;
+        }
+
+        /**
+         * Sets the value of the typeRef property.
+         *
+         * @param value allowed object is {@link QName }
+         */
+        public void setTypeRef(QName value) {
+            this.typeRef = value;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            NodeTypeReference that = (NodeTypeReference) o;
+            return Objects.equals(typeRef, that.typeRef);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(typeRef);
+        }
+    }
+
     public static class Builder extends TEntityType.Builder<Builder> {
-        private TAppliesTo appliesTo;
+        private List<NodeTypeReference> appliesTo;
         private String policyLanguage;
 
         public Builder(String name) {
@@ -97,7 +158,7 @@ public class TPolicyType extends TEntityType {
             super(entityType);
         }
 
-        public Builder setAppliesTo(TAppliesTo appliesTo) {
+        public Builder setAppliesTo(List<NodeTypeReference> appliesTo) {
             this.appliesTo = appliesTo;
             return this;
         }

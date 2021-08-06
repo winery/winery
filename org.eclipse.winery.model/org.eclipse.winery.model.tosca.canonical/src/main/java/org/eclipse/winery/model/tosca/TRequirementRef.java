@@ -43,6 +43,11 @@ public class TRequirementRef implements Serializable {
     @Deprecated // used for XML deserialization of API request content
     public TRequirementRef() { }
 
+    public TRequirementRef(String name, TRequirement ref) {
+        this.name = name;
+        this.ref = ref;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

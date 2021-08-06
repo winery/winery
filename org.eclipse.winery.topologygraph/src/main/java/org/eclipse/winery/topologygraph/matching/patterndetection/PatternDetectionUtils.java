@@ -109,7 +109,7 @@ public class PatternDetectionUtils {
             .setDetector(other.getDetector())
             .setRelationMappings(cloneRelationMappings(other.getRelationMappings()))
             .setPermutationMappings(other.getPermutationMappings())
-            .setRefinementStructure(AllocationUtils.deepcopy(other.getRefinementStructure(), false))
+            .setRefinementStructure(AllocationUtils.deepCopy(other.getRefinementStructure(), false))
             .setAttributeMappings(cloneAttributeMappings(other.getAttributeMappings()))
             .setStayMappings(other.getStayMappings())
             .setDeploymentArtifactMappings(other.getDeploymentArtifactMappings())

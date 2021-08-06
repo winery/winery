@@ -20,14 +20,6 @@ export type XmlTypes = 'xsd:string' | 'xsd:float' | 'xsd:decimal' | 'xsd:anyURI'
 // these types are allowed to be used for Parameters and Properties if YAML mode is used
 export type YamlTypes = 'string' | 'integer' | 'float' | 'boolean' | 'timestamp';
 
-export class InputParameters {
-    inputParameter: InterfaceParameter[] = [];
-}
-
-export class OutputParameters {
-    outputParameter: InterfaceParameter[] = [];
-}
-
 export class InterfaceParameter {
 
     name: string;

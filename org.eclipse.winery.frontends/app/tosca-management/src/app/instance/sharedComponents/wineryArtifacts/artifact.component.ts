@@ -81,7 +81,6 @@ export class WineryArtifactComponent implements OnInit {
     toscaType = ToscaTypes.ArtifactTemplate;
     valid: boolean;
     validation: any;
-    hideHelp = true;
     typeRequired = false;
     types: SelectData[];
 
@@ -101,6 +100,36 @@ export class WineryArtifactComponent implements OnInit {
                 private existService: ExistService,
                 private nodeTypeService: InstanceService,
                 private router: Router) {
+    }
+
+    private static getLocalName(qName: string): string {
+        if (qName) {
+            return qName.slice(qName.indexOf('}') + 1);
+        } else {
+            return '';
+        }
+    }
+
+    private static getNamespaceAndLocalNameFromQName(qname: string): { namespace: string; localname: string; } {
+        const i = qname.indexOf('}');
+        return {
+            namespace: qname.substr(1, i - 1),
+            localname: qname.substr(i + 1)
+        };
+    }
+
+    private static createArtifactTemplateUrl(qname: string): string {
+        const nameAndNamespace = WineryArtifactComponent.getNamespaceAndLocalNameFromQName(qname);
+        return '/artifacttemplates/' + encodeURIComponent(encodeURIComponent(nameAndNamespace.namespace))
+            + '/' + nameAndNamespace.localname + '/';
+
+    }
+
+    private static createArtifactTypeUrl(qname: string): string {
+        const nameAndNamespace = WineryArtifactComponent.getNamespaceAndLocalNameFromQName(qname);
+        return '/artifacttypes/' + encodeURIComponent(encodeURIComponent(nameAndNamespace.namespace))
+            + '/' + nameAndNamespace.localname + '/';
+
     }
 
     ngOnInit() {
@@ -200,7 +229,6 @@ export class WineryArtifactComponent implements OnInit {
         }
 
         if (this.selectedRadioButton === 'createArtifactTemplate') {
-            const version = new WineryVersion('', 1, 1);
             this.newArtifact.autoCreateArtifactTemplate = 'true';
             this.newArtifact.artifactTemplateNamespace = this.artifact.namespace;
             this.makeArtifactUrl();
@@ -220,38 +248,38 @@ export class WineryArtifactComponent implements OnInit {
     createNewImplementationArtifact() {
         this.loading = true;
         this.service.createNewArtifact(this.newArtifact).subscribe(
-            data => this.handlePostResponse(),
-            error => this.showError(error)
+            () => this.handlePostResponse(),
+            (error) => this.showError(error)
         );
     }
 
     getArtifacts() {
         this.service.getAllArtifacts().subscribe(
-            data => {
+            (data) => {
                 this.handleArtifactsData(data);
             },
-            error => this.showError(error)
+            (error) => this.showError(error)
         );
     }
 
     getInterfacesOfAssociatedType() {
         this.service.getInterfacesOfAssociatedType().subscribe(
-            data => this.handleInterfaceData(data),
-            error => this.showError(error)
+            (data) => this.handleInterfaceData(data),
+            (error) => this.showError(error)
         );
     }
 
     getArtifactTypes() {
         this.service.getAllArtifactTypes().subscribe(
-            data => this.handleArtifactTypeData(data),
-            error => this.showError(error)
+            (data) => this.handleArtifactTypeData(data),
+            (error) => this.showError(error)
         );
     }
 
     getArtifactTemplates() {
         this.service.getAllArtifactTemplates().subscribe(
-            data => this.handleArtifactTemplateData(data),
-            error => this.showError(error)
+            (data) => this.handleArtifactTemplateData(data),
+            (error) => this.showError(error)
         );
     }
 
@@ -260,14 +288,14 @@ export class WineryArtifactComponent implements OnInit {
         this.artifactsData = this.artifactsData.map(
             obj => {
                 if (obj.artifactType) {
-                    obj.artifactTypeLocalName = '<a href="#' + this.createArtifactTypeUrl(obj.artifactType) +
-                        '">' + this.getLocalName(obj.artifactType) + '</a>';
+                    obj.artifactTypeLocalName = '<a href="#' + WineryArtifactComponent.createArtifactTypeUrl(obj.artifactType) +
+                        '">' + WineryArtifactComponent.getLocalName(obj.artifactType) + '</a>';
                 } else {
                     obj.artifactTypeLocalName = '';
                 }
                 if (obj.artifactRef) {
-                    obj.artifactRefLocalName = '<a href="#' + this.createArtifactTemplateUrl(obj.artifactRef) +
-                        '">' + this.getLocalName(obj.artifactRef) + '</a>';
+                    obj.artifactRefLocalName = '<a href="#' + WineryArtifactComponent.createArtifactTemplateUrl(obj.artifactRef) +
+                        '">' + WineryArtifactComponent.getLocalName(obj.artifactRef) + '</a>';
                 } else {
                     obj.artifactRefLocalName = '';
                 }
@@ -287,19 +315,19 @@ export class WineryArtifactComponent implements OnInit {
 
     removeConfirmed() {
         this.service.deleteArtifact(this.elementToRemove.name).subscribe(
-            data => {
+            () => {
                 this.notify.success('Artifact deleted');
                 this.getArtifacts();
             },
-            error => this.notify.error(error.message)
+            (error) => this.notify.error(error.message)
         );
     }
 
     loadFiles(templateUrl: string) {
         this.fileService.getFiles(templateUrl)
             .subscribe(
-                data => this.filesList = data.files,
-                error => this.notify.error(error.message + 'error while loading files!')
+                (data) => this.filesList = data.files,
+                (error) => this.notify.error(error.message + 'error while loading files!')
             );
     }
 
@@ -312,8 +340,8 @@ export class WineryArtifactComponent implements OnInit {
         this.loading = true;
         this.fileService.delete(this.fileToRemove)
             .subscribe(
-                data => this.handleDelete(),
-                error => this.showError(error)
+                () => this.handleDelete(),
+                (error) => this.showError(error)
             );
     }
 
@@ -341,14 +369,6 @@ export class WineryArtifactComponent implements OnInit {
         } else {
             this.addComponentData.createArtifactName(this.sharedData.toscaComponent, this.nodeType,
                 null, this.newArtifact.artifactName, this.isImplementationArtifact, this.nodeTypeName);
-        }
-    }
-
-    private getLocalName(qName: string): string {
-        if (qName) {
-            return qName.slice(qName.indexOf('}') + 1);
-        } else {
-            return '';
         }
     }
 
@@ -404,28 +424,6 @@ export class WineryArtifactComponent implements OnInit {
         this.artifactUrl = backendBaseURL + '/artifacttemplates/' + encodeURIComponent(encodeURIComponent(
             this.newArtifact.artifactTemplateNamespace)) + '/' + this.newArtifact.artifactTemplateName + '/';
         this.uploadUrl = this.artifactUrl + 'files';
-    }
-
-    private getNamespaceAndLocalNameFromQName(qname: string): { namespace: string; localname: string; } {
-        const i = qname.indexOf('}');
-        return {
-            namespace: qname.substr(1, i - 1),
-            localname: qname.substr(i + 1)
-        };
-    }
-
-    private createArtifactTemplateUrl(qname: string): string {
-        const nameAndNamespace = this.getNamespaceAndLocalNameFromQName(qname);
-        return '/artifacttemplates/' + encodeURIComponent(encodeURIComponent(nameAndNamespace.namespace))
-            + '/' + nameAndNamespace.localname + '/';
-
-    }
-
-    private createArtifactTypeUrl(qname: string): string {
-        const nameAndNamespace = this.getNamespaceAndLocalNameFromQName(qname);
-        return '/artifacttypes/' + encodeURIComponent(encodeURIComponent(nameAndNamespace.namespace))
-            + '/' + nameAndNamespace.localname + '/';
-
     }
 
     private getTypes(componentType?: SelectData) {

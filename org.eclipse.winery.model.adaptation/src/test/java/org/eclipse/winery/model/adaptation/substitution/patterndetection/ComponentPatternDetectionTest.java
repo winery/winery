@@ -29,7 +29,6 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.model.adaptation.substitution.refinement.DefaultRefinementChooser;
 import org.eclipse.winery.model.tosca.HasPolicies;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
@@ -71,14 +70,14 @@ class ComponentPatternDetectionTest {
      */
     @BeforeEach
     public void setUp() {
-        // needs to be swapped manually as only prms retrieved from repo are swapped automatically
+        // needs to be swapped manually as only PRMs retrieved from repo are swapped automatically
         prm1 = PatternDetectionUtils.swapDetectorWithRefinement(prm1());
         prm2 = PatternDetectionUtils.swapDetectorWithRefinement(prm2());
         topology = topology();
     }
 
-    private boolean isCompatible(OTPatternRefinementModel prm, List<OTRefinementModel> prms) {
-        ToscaComponentPatternMatcher matcher = new ToscaComponentPatternMatcher(prm, null, prms, new HashMap<>());
+    private boolean isCompatible(OTPatternRefinementModel prm, List<OTRefinementModel> refinementModels) {
+        ToscaComponentPatternMatcher matcher = new ToscaComponentPatternMatcher(prm, null, refinementModels, new HashMap<>());
         ToscaIsomorphismMatcher isomorphismMatcher = new ToscaIsomorphismMatcher();
         ToscaGraph detectorGraph = ToscaTransformer.createTOSCAGraph(prm.getDetector());
         ToscaGraph topologyGraph = ToscaTransformer.createTOSCAGraph(topology);
@@ -133,18 +132,24 @@ class ComponentPatternDetectionTest {
 
         // redirected relations
         TRelationshipTemplate processorToDb = topology.getRelationshipTemplate("processor-db");
+        assertNotNull(processorToDb);
         assertEquals(processorToDb.getSourceElement().getRef().getId(), "processor");
         assertEquals(processorToDb.getTargetElement().getRef().getId(), "relationalDb-d2");
         TRelationshipTemplate webserverToVm = topology.getRelationshipTemplate("webserver-vm");
+        assertNotNull(webserverToVm);
         assertEquals(webserverToVm.getSourceElement().getRef().getId(), "webserver");
         assertEquals(webserverToVm.getTargetElement().getRef().getId(), "privateCloud-d2");
 
         // attributes should not have been mapped
         TNodeTemplate relationalDb = topology.getNodeTemplate("relationalDb-d2");
+        assertNotNull(relationalDb);
         LinkedHashMap<String, String> relationDbProps = ModelUtilities.getPropertiesKV(relationalDb);
+        assertNotNull(relationDbProps);
         assertTrue(relationDbProps.isEmpty());
         TNodeTemplate privateCloud = topology.getNodeTemplate("privateCloud-d2");
+        assertNotNull(privateCloud);
         LinkedHashMap<String, String> privateCloudProps = ModelUtilities.getPropertiesKV(privateCloud);
+        assertNotNull(privateCloudProps);
         assertTrue(privateCloudProps.isEmpty());
     }
 
@@ -153,19 +158,19 @@ class ComponentPatternDetectionTest {
         TPolicy behaviorPattern1 = new TPolicy(new TPolicy.Builder(QName.valueOf("behaviorPattern1")).setName("behaviorPattern1"));
         TPolicy behaviorPattern2 = new TPolicy(new TPolicy.Builder(QName.valueOf("behaviorPattern2")).setName("behaviorPattern2"));
 
-        TPolicies topologyPolicies = new TPolicies(new ArrayList<>());
-        topologyPolicies.getPolicy().add(behaviorPattern1);
+        List<TPolicy> topologyPolicies = new ArrayList<>();
+        topologyPolicies.add(behaviorPattern1);
         ((HasPolicies) topology.getNodeTemplateOrRelationshipTemplate("database"))
             .setPolicies(topologyPolicies);
 
-        TPolicies detectorPolicies = new TPolicies(new ArrayList<>());
-        detectorPolicies.getPolicy().add(behaviorPattern1);
+        List<TPolicy> detectorPolicies = new ArrayList<>();
+        detectorPolicies.add(behaviorPattern1);
         ((HasPolicies) prm2.getDetector().getNodeTemplateOrRelationshipTemplate("database-rs2"))
             .setPolicies(detectorPolicies);
 
-        TPolicies refinementPolicies = new TPolicies(new ArrayList<>());
-        refinementPolicies.getPolicy().add(behaviorPattern1);
-        refinementPolicies.getPolicy().add(behaviorPattern2);
+        List<TPolicy> refinementPolicies = new ArrayList<>();
+        refinementPolicies.add(behaviorPattern1);
+        refinementPolicies.add(behaviorPattern2);
         ((HasPolicies) prm2.getRefinementStructure().getNodeTemplateOrRelationshipTemplate("relationalDb-d2"))
             .setPolicies(refinementPolicies);
 
@@ -177,8 +182,8 @@ class ComponentPatternDetectionTest {
 
         // behaviorPattern2 must have been removed as it cannot be guaranteed to be implemented
         HasPolicies db = ((HasPolicies) topology.getNodeTemplateOrRelationshipTemplate("relationalDb-d2"));
-        assertEquals(db.getPolicies().getPolicy().size(), 1);
-        assertTrue(db.getPolicies().getPolicy().contains(behaviorPattern1));
+        assertEquals(db.getPolicies().size(), 1);
+        assertTrue(db.getPolicies().contains(behaviorPattern1));
     }
 
     @Test
@@ -193,7 +198,7 @@ class ComponentPatternDetectionTest {
         List<TPolicy> detectorPolicies = new ArrayList<>();
         detectorPolicies.add(new TPolicy(new TPolicy.Builder(QName.valueOf("{patternNs}one")).setName("one")));
         detectorPolicies.add(new TPolicy(new TPolicy.Builder(QName.valueOf("{patternNs}two")).setName("two")));
-        detectorElement.setPolicies(new TPolicies(detectorPolicies));
+        detectorElement.setPolicies(detectorPolicies);
         TTopologyTemplate detector = new TTopologyTemplate(new TTopologyTemplate.Builder()
             .addNodeTemplates(Arrays.asList(detectorElement, detectorElement2)));
         // endregion
@@ -206,7 +211,7 @@ class ComponentPatternDetectionTest {
         );
         List<TPolicy> refinementPolicies = new ArrayList<>();
         refinementPolicies.add(new TPolicy(new TPolicy.Builder(QName.valueOf("{patternNs}one")).setName("one")));
-        refinementElement.setPolicies(new TPolicies(refinementPolicies));
+        refinementElement.setPolicies(refinementPolicies);
         TTopologyTemplate refinement = new TTopologyTemplate(new TTopologyTemplate.Builder()
             .addNodeTemplates(Arrays.asList(refinementElement, refinementElement2)));
         // endregion
@@ -226,7 +231,7 @@ class ComponentPatternDetectionTest {
         TNodeTemplate nodeTemplate2 = new TNodeTemplate(new TNodeTemplate.Builder("nodeTemplate2", QName.valueOf("{ns}type2"))
             .setX("1").setY("1")
         );
-        nodeTemplate.setPolicies(new TPolicies(new ArrayList<>(refinementPolicies)));
+        nodeTemplate.setPolicies(new ArrayList<>(refinementPolicies));
         TTopologyTemplate topology = new TTopologyTemplate(new TTopologyTemplate.Builder()
             .addNodeTemplates(Arrays.asList(nodeTemplate, nodeTemplate2)));
 
@@ -238,7 +243,10 @@ class ComponentPatternDetectionTest {
             .collect(Collectors.toSet());
         assertTrue(types.contains(QName.valueOf("{ns}type1")));
         assertTrue(types.contains(QName.valueOf("{ns}pattern1")));
-        List<TPolicy> policies = topology.getNodeTemplate("nodeTemplate").getPolicies().getPolicy();
+        TNodeTemplate nodeTemplate1 = topology.getNodeTemplate("nodeTemplate");
+        assertNotNull(nodeTemplate1);
+        assertNotNull(nodeTemplate1.getPolicies());
+        List<TPolicy> policies = nodeTemplate1.getPolicies();
         assertEquals(policies.size(), 1);
         assertTrue(policies.stream().anyMatch(policy -> policy.getPolicyType().equals(QName.valueOf("{patternNs}one"))));
     }
@@ -258,23 +266,17 @@ class ComponentPatternDetectionTest {
             .setX("1").setY("1")
         );
 
-        TRelationshipTemplate.SourceOrTargetElement processorDRef = new TRelationshipTemplate.SourceOrTargetElement();
-        processorDRef.setRef(processorD);
-        TRelationshipTemplate.SourceOrTargetElement executionEnvRef = new TRelationshipTemplate.SourceOrTargetElement();
-        executionEnvRef.setRef(executionEnv);
         TRelationshipTemplate processorDToExecutionEnv = new TRelationshipTemplate(new TRelationshipTemplate.Builder(
             "processorD-executionEnv-d1",
             QName.valueOf("{ns}hostedOn"),
-            processorDRef,
-            executionEnvRef
+            processorD,
+            executionEnv
         ));
-        TRelationshipTemplate.SourceOrTargetElement privateCloudRef = new TRelationshipTemplate.SourceOrTargetElement();
-        privateCloudRef.setRef(privateCloud);
         TRelationshipTemplate executionEnvToPrivateCloud = new TRelationshipTemplate(new TRelationshipTemplate.Builder(
             "executionEnv-privateCloud-d1",
             QName.valueOf("{ns}hostedOn"),
-            executionEnvRef,
-            privateCloudRef
+            executionEnv,
+            privateCloud
         ));
 
         TTopologyTemplate detector = new TTopologyTemplate(new TTopologyTemplate.Builder()
@@ -310,31 +312,23 @@ class ComponentPatternDetectionTest {
         openstackProps.put("api", "openstack.uni-stuttgart");
         ModelUtilities.setPropertiesKV(openstack, openstackProps);
 
-        TRelationshipTemplate.SourceOrTargetElement processorRsRef = new TRelationshipTemplate.SourceOrTargetElement();
-        processorRsRef.setRef(processorRs);
-        TRelationshipTemplate.SourceOrTargetElement webserverRef = new TRelationshipTemplate.SourceOrTargetElement();
-        webserverRef.setRef(webserver);
         TRelationshipTemplate processorToWebserver = new TRelationshipTemplate(new TRelationshipTemplate.Builder(
             "processor-webserver-rs1",
             QName.valueOf("{ns}hostedOn"),
-            processorRsRef,
-            webserverRef
+            processorRs,
+            webserver
         ));
-        TRelationshipTemplate.SourceOrTargetElement vmRef = new TRelationshipTemplate.SourceOrTargetElement();
-        vmRef.setRef(vm);
         TRelationshipTemplate webserverToVm = new TRelationshipTemplate(new TRelationshipTemplate.Builder(
             "webserver-vm-rs1",
             QName.valueOf("{ns}hostedOn"),
-            webserverRef,
-            vmRef
+            webserver,
+            vm
         ));
-        TRelationshipTemplate.SourceOrTargetElement openstackRef = new TRelationshipTemplate.SourceOrTargetElement();
-        openstackRef.setRef(openstack);
         TRelationshipTemplate vmToOpenstack = new TRelationshipTemplate(new TRelationshipTemplate.Builder(
             "vm-openstack-rs1",
             QName.valueOf("{ns}hostedOn"),
-            vmRef,
-            openstackRef
+            vm,
+            openstack
         ));
 
         TTopologyTemplate refinement = new TTopologyTemplate(new TTopologyTemplate.Builder()
@@ -404,15 +398,11 @@ class ComponentPatternDetectionTest {
         );
         ModelUtilities.setPropertiesKV(privateCloud, new LinkedHashMap<>());
 
-        TRelationshipTemplate.SourceOrTargetElement relationalDbRef = new TRelationshipTemplate.SourceOrTargetElement();
-        relationalDbRef.setRef(relationalDb);
-        TRelationshipTemplate.SourceOrTargetElement privateCloudRef = new TRelationshipTemplate.SourceOrTargetElement();
-        privateCloudRef.setRef(privateCloud);
         TRelationshipTemplate relationalDbToPrivateCloud = new TRelationshipTemplate(new TRelationshipTemplate.Builder(
             "relationalDb-privateCloud-d2",
             QName.valueOf("{ns}hostedOn"),
-            relationalDbRef,
-            privateCloudRef
+            relationalDb,
+            privateCloud
         ));
 
         TTopologyTemplate detector = new TTopologyTemplate(new TTopologyTemplate.Builder()
@@ -448,31 +438,23 @@ class ComponentPatternDetectionTest {
         vsphereProps.put("api", "vsphere.uni-stuttgart");
         ModelUtilities.setPropertiesKV(vsphere, vsphereProps);
 
-        TRelationshipTemplate.SourceOrTargetElement dbRef = new TRelationshipTemplate.SourceOrTargetElement();
-        dbRef.setRef(database);
-        TRelationshipTemplate.SourceOrTargetElement dbmsRef = new TRelationshipTemplate.SourceOrTargetElement();
-        dbmsRef.setRef(dbms);
         TRelationshipTemplate dbToDbms = new TRelationshipTemplate(new TRelationshipTemplate.Builder(
             "db-dbms-rs2",
             QName.valueOf("{ns}hostedOn"),
-            dbRef,
-            dbmsRef
+            database,
+            dbms
         ));
-        TRelationshipTemplate.SourceOrTargetElement vmRef = new TRelationshipTemplate.SourceOrTargetElement();
-        vmRef.setRef(vm);
         TRelationshipTemplate dbmsToVm = new TRelationshipTemplate(new TRelationshipTemplate.Builder(
             "dbms-vm-rs2",
             QName.valueOf("{ns}hostedOn"),
-            dbmsRef,
-            vmRef
+            dbms,
+            vm
         ));
-        TRelationshipTemplate.SourceOrTargetElement vsphereRef = new TRelationshipTemplate.SourceOrTargetElement();
-        vsphereRef.setRef(vsphere);
         TRelationshipTemplate vmToVsphere = new TRelationshipTemplate(new TRelationshipTemplate.Builder(
             "vm-vsphere-rs2",
             QName.valueOf("{ns}hostedOn"),
-            vmRef,
-            vsphereRef
+            vm,
+            vsphere
         ));
 
         TTopologyTemplate refinement = new TTopologyTemplate(new TTopologyTemplate.Builder()
@@ -571,53 +553,41 @@ class ComponentPatternDetectionTest {
         openstackProps.put("api", "openstack.uni-stuttgart");
         ModelUtilities.setPropertiesKV(openstack, openstackProps);
 
-        TRelationshipTemplate.SourceOrTargetElement processorRef = new TRelationshipTemplate.SourceOrTargetElement();
-        processorRef.setRef(processor);
-        TRelationshipTemplate.SourceOrTargetElement dbRef = new TRelationshipTemplate.SourceOrTargetElement();
-        dbRef.setRef(database);
         TRelationshipTemplate processorToDb = new TRelationshipTemplate(new TRelationshipTemplate.Builder(
             "processor-db",
             QName.valueOf("{ns}secureSqlConnection"),
-            processorRef,
-            dbRef
+            processor,
+            database
         ));
-        TRelationshipTemplate.SourceOrTargetElement webserverRef = new TRelationshipTemplate.SourceOrTargetElement();
-        webserverRef.setRef(webserver);
         TRelationshipTemplate processorToWebserver = new TRelationshipTemplate(new TRelationshipTemplate.Builder(
             "processor-webserver",
             QName.valueOf("{ns}hostedOn"),
-            processorRef,
-            webserverRef
+            processor,
+            webserver
         ));
-        TRelationshipTemplate.SourceOrTargetElement vmRef = new TRelationshipTemplate.SourceOrTargetElement();
-        vmRef.setRef(vm);
         TRelationshipTemplate webserverToVm = new TRelationshipTemplate(new TRelationshipTemplate.Builder(
             "webserver-vm",
             QName.valueOf("{ns}hostedOn"),
-            webserverRef,
-            vmRef
+            webserver,
+            vm
         ));
-        TRelationshipTemplate.SourceOrTargetElement dbmsRef = new TRelationshipTemplate.SourceOrTargetElement();
-        dbmsRef.setRef(dbms);
         TRelationshipTemplate dbToDbms = new TRelationshipTemplate(new TRelationshipTemplate.Builder(
             "db-dbms",
             QName.valueOf("{ns}hostedOn"),
-            dbRef,
-            dbmsRef
+            database,
+            dbms
         ));
         TRelationshipTemplate dbmsToVm = new TRelationshipTemplate(new TRelationshipTemplate.Builder(
             "dbms-vm",
             QName.valueOf("{ns}hostedOn"),
-            dbmsRef,
-            vmRef
+            dbms,
+            vm
         ));
-        TRelationshipTemplate.SourceOrTargetElement openstackRef = new TRelationshipTemplate.SourceOrTargetElement();
-        openstackRef.setRef(openstack);
         TRelationshipTemplate vmToOpenstack = new TRelationshipTemplate(new TRelationshipTemplate.Builder(
             "vm-openstack",
             QName.valueOf("{ns}hostedOn"),
-            vmRef,
-            openstackRef
+            vm,
+            openstack
         ));
 
         return new TTopologyTemplate(new TTopologyTemplate.Builder()

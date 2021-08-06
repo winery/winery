@@ -128,7 +128,7 @@ public class Utils {
     }
 
     /**
-     * recursively delete files, folders and all subfolders
+     * recursively delete files, folders and all sub-folders
      */
     static public void delete(final File f) throws IOException {
         if (!f.exists()) {
@@ -141,23 +141,6 @@ public class Utils {
         }
         if (!f.delete()) {
             throw new FileNotFoundException("Failed to delete file: " + f);
-        }
-    }
-
-    /**
-     * recursively delete files, folders and all subfolders with exception of files with the specified file ending in
-     * the specified folder
-     */
-    static public void deleteFilesInFolder(final File f, final String ending) throws IOException {
-        if (!f.exists()) {
-            return;
-        }
-        if (f.isDirectory()) {
-            for (final File c : f.listFiles()) {
-                if (!getFileExtension(c).equals(ending)) {
-                    delete(c);
-                }
-            }
         }
     }
 
@@ -214,7 +197,7 @@ public class Utils {
     }
 
     public static String findFileLocation(TArtifactTemplate artifactTemplate, IRepository repository) throws UnsupportedEncodingException {
-        String fileName = artifactTemplate.getArtifactReferences().getArtifactReference().get(0).getReference();
+        String fileName = artifactTemplate.getArtifactReferences().get(0).getReference();
         String repositoryPath = repository.getRepositoryRoot().toString();
         return repositoryPath + "/" + URLDecoder.decode(fileName, "utf-8");
     }

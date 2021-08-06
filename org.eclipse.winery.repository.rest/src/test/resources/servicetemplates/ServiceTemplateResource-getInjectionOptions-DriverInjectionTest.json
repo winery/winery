@@ -23,21 +23,19 @@
                     "any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<ns3:Properties xmlns=\"http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery\" xmlns:ns0=\"http://winery.opentosca.org/test/ponyuniverse\" xmlns:ns2=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:ns3=\"http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery\" xmlns:tosca=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ty=\"http://winery.opentosca.org/test/ponyuniverse\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"/>"
                 },
                 "type": "{http://winery.opentosca.org/test/ponyuniverse}shetland_pony",
-                "deploymentArtifacts": {
-                    "deploymentArtifact": [
-                        {
-                            "documentation": [
-                            ],
-                            "any": [
-                            ],
-                            "otherAttributes": {
-                            },
-                            "name": "PonyEquipment_abstract",
-                            "artifactType": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier}PonyEquipment",
-                            "artifactRef": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier}PonyEquipment_abstract"
-                        }
-                    ]
-                },
+                "deploymentArtifacts": [
+                    {
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
+                        "name": "PonyEquipment_abstract",
+                        "artifactType": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier}PonyEquipment",
+                        "artifactRef": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier}PonyEquipment_abstract"
+                    }
+                ],
                 "name": "shetland_pony",
                 "minInstances": 1,
                 "maxInstances": "1",
@@ -56,36 +54,32 @@
                     "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "137"
                 },
                 "type": "{http://winery.opentosca.org/test/ponyuniverse}ponycompetition",
-                "requirements": {
-                    "requirement": [
-                        {
-                            "id": "ReqEquipment",
-                            "documentation": [
-                            ],
-                            "any": [
-                            ],
-                            "otherAttributes": {
-                            },
-                            "type": "{http://winery.opentosca.org/test/ponyuniverse}ReqEquipment",
-                            "name": "ReqEquipment"
-                        }
-                    ]
-                },
-                "capabilities": {
-                    "capability": [
-                        {
-                            "id": "CapCompetition",
-                            "documentation": [
-                            ],
-                            "any": [
-                            ],
-                            "otherAttributes": {
-                            },
-                            "type": "{http://winery.opentosca.org/test/ponyuniverse}CapCompetition",
-                            "name": "CapCompetition"
-                        }
-                    ]
-                },
+                "requirements": [
+                    {
+                        "id": "ReqEquipment",
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
+                        "type": "{http://winery.opentosca.org/test/ponyuniverse}ReqEquipment",
+                        "name": "ReqEquipment"
+                    }
+                ],
+                "capabilities": [
+                    {
+                        "id": "CapCompetition",
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
+                        "type": "{http://winery.opentosca.org/test/ponyuniverse}CapCompetition",
+                        "name": "CapCompetition"
+                    }
+                ],
                 "name": "ponycompetition",
                 "minInstances": 1,
                 "maxInstances": "1",
@@ -104,8 +98,8 @@
                 },
                 "properties": {
                     "propertyType": "KV",
-                    "namespace" : "http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery",
-                    "elementName" : "Properties",
+                    "namespace": "http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery",
+                    "elementName": "Properties",
                     "kvproperties": {
                         "Driver": ""
                     }
@@ -148,47 +142,43 @@
                             "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "270"
                         },
                         "type": "{http://winery.opentosca.org/test/ponyuniverse}dressageequipment",
-                        "capabilities": {
-                            "capability": [
-                                {
-                                    "id": "CapEquipment",
-                                    "documentation": [
-                                    ],
-                                    "any": [
-                                    ],
-                                    "otherAttributes": {
-                                    },
-                                    "type": "{http://winery.opentosca.org/test/ponyuniverse}CapEquipment",
-                                    "name": "CapEquipment"
-                                }
-                            ]
-                        },
-                        "deploymentArtifacts": {
-                            "deploymentArtifact": [
-                                {
-                                    "documentation": [
-                                    ],
-                                    "any": [
-                                    ],
-                                    "otherAttributes": {
-                                    },
-                                    "name": "DressageEquipment_Pony",
-                                    "artifactType": "{http://winery.opentosca.org/test/ponyuniverse}DressageEquipment_Pony",
-                                    "artifactRef": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier}DressageEquipment_Pony"
+                        "capabilities": [
+                            {
+                                "id": "CapEquipment",
+                                "documentation": [
+                                ],
+                                "any": [
+                                ],
+                                "otherAttributes": {
                                 },
-                                {
-                                    "documentation": [
-                                    ],
-                                    "any": [
-                                    ],
-                                    "otherAttributes": {
-                                    },
-                                    "name": "DressageEquipment_Unicorn",
-                                    "artifactType": "{http://winery.opentosca.org/test/ponyuniverse}DressageEquipment_Unicorn",
-                                    "artifactRef": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier}DressageEquipment_Unicorn"
-                                }
-                            ]
-                        },
+                                "type": "{http://winery.opentosca.org/test/ponyuniverse}CapEquipment",
+                                "name": "CapEquipment"
+                            }
+                        ],
+                        "deploymentArtifacts": [
+                            {
+                                "documentation": [
+                                ],
+                                "any": [
+                                ],
+                                "otherAttributes": {
+                                },
+                                "name": "DressageEquipment_Pony",
+                                "artifactType": "{http://winery.opentosca.org/test/ponyuniverse}DressageEquipment_Pony",
+                                "artifactRef": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier}DressageEquipment_Pony"
+                            },
+                            {
+                                "documentation": [
+                                ],
+                                "any": [
+                                ],
+                                "otherAttributes": {
+                                },
+                                "name": "DressageEquipment_Unicorn",
+                                "artifactType": "{http://winery.opentosca.org/test/ponyuniverse}DressageEquipment_Unicorn",
+                                "artifactRef": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier}DressageEquipment_Unicorn"
+                            }
+                        ],
                         "name": "dressageequipment",
                         "minInstances": 1,
                         "maxInstances": "1",

@@ -87,14 +87,9 @@ public class XTTag implements Serializable {
         private String name;
         private String value;
 
-        public Builder setName(String name) {
+        public Builder(String name, String value) {
             this.name = name;
-            return this;
-        }
-
-        public Builder setValue(String value) {
             this.value = value;
-            return this;
         }
 
         public XTTag build() {

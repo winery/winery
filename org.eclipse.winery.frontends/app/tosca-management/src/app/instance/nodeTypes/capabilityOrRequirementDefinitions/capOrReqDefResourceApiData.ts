@@ -18,7 +18,7 @@ export class CapabilityOrRequirementDefinition {
     requirementType: string = null;
     lowerBound: string = null;
     upperBound: string = null;
-    constraints: Constraints = null;
+    constraints: Constraint[] = null;
     documentation: any[] = [];
     any: any[] = [];
     otherAttributes: any = null;
@@ -37,10 +37,6 @@ export class Constraint {
     any: any = null;
     constraintType: string = null;
     id: string = null;
-}
-
-export class Constraints {
-    constraint: Constraint[] = [];
 }
 
 export class CapabilityDefinitionPostData {

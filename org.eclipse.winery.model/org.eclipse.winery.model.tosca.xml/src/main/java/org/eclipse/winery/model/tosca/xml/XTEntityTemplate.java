@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
@@ -67,14 +68,15 @@ public abstract class XTEntityTemplate extends XHasId implements XHasType, XHasN
     @XmlElement(name = "Properties")
     protected XTEntityTemplate.Properties properties;
 
-    @XmlElement(name = "PropertyConstraints")
-    protected XTEntityTemplate.PropertyConstraints propertyConstraints;
-    
+    @XmlElementWrapper(name = "PropertyConstraints")
+    @XmlElement(name = "PropertyConstraint", required = true)
+    protected List<XTPropertyConstraint> propertyConstraints;
+
     @XmlAttribute(name = "type", required = true)
     @NonNull
     protected QName type;
 
-    @Deprecated // required for XML deserialization
+    // required for XML deserialization
     public XTEntityTemplate() {
         super();
     }
@@ -83,7 +85,7 @@ public abstract class XTEntityTemplate extends XHasId implements XHasType, XHasN
         super(id);
     }
 
-    public XTEntityTemplate(Builder builder) {
+    public XTEntityTemplate(Builder<?> builder) {
         super(builder);
         this.properties = builder.properties;
         this.propertyConstraints = builder.propertyConstraints;
@@ -114,11 +116,11 @@ public abstract class XTEntityTemplate extends XHasId implements XHasType, XHasN
         this.properties = value;
     }
 
-    public XTEntityTemplate.@Nullable PropertyConstraints getPropertyConstraints() {
+    public List<XTPropertyConstraint> getPropertyConstraints() {
         return propertyConstraints;
     }
 
-    public void setPropertyConstraints(XTEntityTemplate.@Nullable PropertyConstraints value) {
+    public void setPropertyConstraints(List<XTPropertyConstraint> value) {
         this.propertyConstraints = value;
     }
 
@@ -245,61 +247,12 @@ public abstract class XTEntityTemplate extends XHasId implements XHasType, XHasN
         }
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "propertyConstraint"
-    })
-    public static class PropertyConstraints implements Serializable {
-
-        @XmlElement(name = "PropertyConstraint", required = true)
-        protected List<XTPropertyConstraint> propertyConstraint;
-
-        /**
-         * Gets the value of the propertyConstraint property.
-         * <p>
-         * <p> This accessor method returns a reference to the live list, not a snapshot. Therefore any modification
-         * you make to the returned list will be present inside the JAXB object. This is why there is not a
-         * <CODE>set</CODE> method for the propertyConstraint property.
-         * <p>
-         * <p> For example, to add a new item, do as follows:
-         * <pre>
-         *    getPropertyConstraint().add(newItem);
-         * </pre>
-         * <p>
-         * <p>
-         * <p> Objects of the following type(s) are allowed in the list {@link XTPropertyConstraint }
-         */
-        @NonNull
-        public List<XTPropertyConstraint> getPropertyConstraint() {
-            if (propertyConstraint == null) {
-                propertyConstraint = new ArrayList<XTPropertyConstraint>();
-            }
-            return this.propertyConstraint;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            PropertyConstraints that = (PropertyConstraints) o;
-            return Objects.equals(propertyConstraint, that.propertyConstraint);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(propertyConstraint);
-        }
-
-        public void accept(Visitor visitor) {
-            visitor.visit(this);
-        }
-    }
-
     @ADR(11)
     public abstract static class Builder<T extends Builder<T>> extends XHasId.Builder<T> {
+
         private final QName type;
         private XTEntityTemplate.Properties properties;
-        private XTEntityTemplate.PropertyConstraints propertyConstraints;
+        private List<XTPropertyConstraint> propertyConstraints;
 
         public Builder(String id, QName type) {
             super(id);
@@ -318,32 +271,22 @@ public abstract class XTEntityTemplate extends XHasId implements XHasType, XHasN
             return self();
         }
 
-        public T setPropertyConstraints(XTEntityTemplate.PropertyConstraints propertyConstraints) {
+        public T setPropertyConstraints(List<XTPropertyConstraint> propertyConstraints) {
             this.propertyConstraints = propertyConstraints;
             return self();
         }
 
-        public T addPropertyConstraints(XTEntityTemplate.PropertyConstraints propertyConstraints) {
-            if (propertyConstraints == null || propertyConstraints.getPropertyConstraint().isEmpty()) {
+        public T addPropertyConstraints(List<XTPropertyConstraint> propertyConstraints) {
+            if (propertyConstraints == null || propertyConstraints.isEmpty()) {
                 return self();
             }
 
             if (this.propertyConstraints == null) {
                 this.propertyConstraints = propertyConstraints;
             } else {
-                this.propertyConstraints.getPropertyConstraint().addAll(propertyConstraints.getPropertyConstraint());
+                this.propertyConstraints.addAll(propertyConstraints);
             }
             return self();
-        }
-
-        public T addPropertyConstraints(List<XTPropertyConstraint> propertyConstraints) {
-            if (propertyConstraints == null) {
-                return self();
-            }
-
-            XTEntityTemplate.PropertyConstraints tmp = new XTEntityTemplate.PropertyConstraints();
-            tmp.getPropertyConstraint().addAll(propertyConstraints);
-            return addPropertyConstraints(tmp);
         }
 
         public T addPropertyConstraints(XTPropertyConstraint propertyConstraints) {
@@ -351,8 +294,8 @@ public abstract class XTEntityTemplate extends XHasId implements XHasType, XHasN
                 return self();
             }
 
-            XTEntityTemplate.PropertyConstraints tmp = new XTEntityTemplate.PropertyConstraints();
-            tmp.getPropertyConstraint().add(propertyConstraints);
+            List<XTPropertyConstraint>tmp = new ArrayList<>();
+            tmp.add(propertyConstraints);
             return addPropertyConstraints(tmp);
         }
     }

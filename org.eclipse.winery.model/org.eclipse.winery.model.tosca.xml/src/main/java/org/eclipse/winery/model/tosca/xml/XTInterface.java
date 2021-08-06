@@ -14,15 +14,19 @@
 
 package org.eclipse.winery.model.tosca.xml;
 
-import org.eclipse.jdt.annotation.NonNull;
-
-import javax.xml.bind.annotation.*;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * <p>Java class for tInterface complex type.
@@ -44,21 +48,22 @@ import java.util.Objects;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tInterface", propOrder = {
-    "operation"
-})
+@XmlType(name = "tInterface")
 public class XTInterface implements XHasName, Serializable {
+
     @XmlElement(name = "Operation", required = true)
-    protected List<XTOperation> operation;
+    protected List<XTOperation> operations;
+
     @XmlAttribute(name = "name", required = true)
     @XmlSchemaType(name = "anyURI")
     protected String name;
 
     @Deprecated // required for XML deserialization
-    public XTInterface() { }
+    public XTInterface() {
+    }
 
     public XTInterface(Builder builder) {
-        this.operation = builder.operation;
+        this.operations = builder.operation;
         this.name = builder.name;
     }
 
@@ -67,23 +72,22 @@ public class XTInterface implements XHasName, Serializable {
         if (this == o) return true;
         if (!(o instanceof XTInterface)) return false;
         XTInterface that = (XTInterface) o;
-        return Objects.equals(operation, that.operation) &&
+        return Objects.equals(operations, that.operations) &&
             Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(operation, name);
+        return Objects.hash(operations, name);
     }
 
     /**
      * Gets the value of the operation property.
      * <p>
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the operation property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to
+     * the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for
+     * the operation property.
      * <p>
      * <p>
      * For example, to add a new item, do as follows:
@@ -93,15 +97,14 @@ public class XTInterface implements XHasName, Serializable {
      * <p>
      * <p>
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link XTOperation }
+     * Objects of the following type(s) are allowed in the list {@link XTOperation }
      */
     @NonNull
-    public List<XTOperation> getOperation() {
-        if (operation == null) {
-            operation = new ArrayList<XTOperation>();
+    public List<XTOperation> getOperations() {
+        if (operations == null) {
+            operations = new ArrayList<>();
         }
-        return this.operation;
+        return this.operations;
     }
 
     /**

@@ -15,6 +15,7 @@
 package org.eclipse.winery.model.tosca.xml;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,6 +23,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
@@ -42,21 +44,31 @@ import org.eclipse.jdt.annotation.Nullable;
 })
 public class XTRelationshipType extends XTEntityType {
 
-    @XmlElement(name = "InstanceStates")
-    protected XTTopologyElementInstanceStates instanceStates;
-    @XmlElement(name = "Interfaces", namespace = Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE)
-    protected XTInterfaces interfaces;
-    @XmlElement(name = "SourceInterfaces")
-    protected XTInterfaces sourceInterfaces;
-    @XmlElement(name = "TargetInterfaces")
-    protected XTInterfaces targetInterfaces;
+    @XmlElementWrapper(name = "InstanceStates")
+    @XmlElement(name = "InstanceState", required = true)
+    protected List<XTInstanceState> instanceStates;
+
+    @XmlElementWrapper(name = "Interfaces", namespace = Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE)
+    @XmlElement(name = "Interface", required = true)
+    protected List<XTInterface> interfaces;
+
+    @XmlElementWrapper(name = "SourceInterfaces")
+    @XmlElement(name = "Interface", required = true)
+    protected List<XTInterface> sourceInterfaces;
+
+    @XmlElementWrapper(name = "TargetInterfaces")
+    @XmlElement(name = "Interface", required = true)
+    protected List<XTInterface> targetInterfaces;
+
     @XmlElement(name = "ValidSource")
     protected XTRelationshipType.ValidSource validSource;
+
     @XmlElement(name = "ValidTarget")
     protected XTRelationshipType.ValidTarget validTarget;
 
     @Deprecated // required for XML deserialization
-    public XTRelationshipType() { }
+    public XTRelationshipType() {
+    }
 
     public XTRelationshipType(Builder builder) {
         super(builder);
@@ -88,36 +100,36 @@ public class XTRelationshipType extends XTEntityType {
     }
 
     @Nullable
-    public XTTopologyElementInstanceStates getInstanceStates() {
+    public List<XTInstanceState> getInstanceStates() {
         return instanceStates;
     }
 
-    public void setInstanceStates(@Nullable XTTopologyElementInstanceStates value) {
+    public void setInstanceStates(List<XTInstanceState> value) {
         this.instanceStates = value;
     }
 
     @Nullable
-    public XTInterfaces getInterfaces() {
+    public List<XTInterface> getInterfaces() {
         return interfaces;
     }
 
-    public void setInterfaces(@Nullable XTInterfaces interfaces) {
+    public void setInterfaces(@Nullable List<XTInterface> interfaces) {
         this.interfaces = interfaces;
     }
 
-    public @Nullable XTInterfaces getSourceInterfaces() {
+    public @Nullable List<XTInterface> getSourceInterfaces() {
         return sourceInterfaces;
     }
 
-    public void setSourceInterfaces(@Nullable XTInterfaces value) {
+    public void setSourceInterfaces(@Nullable List<XTInterface> value) {
         this.sourceInterfaces = value;
     }
 
-    public @Nullable XTInterfaces getTargetInterfaces() {
+    public @Nullable List<XTInterface> getTargetInterfaces() {
         return targetInterfaces;
     }
 
-    public void setTargetInterfaces(@Nullable XTInterfaces value) {
+    public void setTargetInterfaces(@Nullable List<XTInterface> value) {
         this.targetInterfaces = value;
     }
 
@@ -205,10 +217,11 @@ public class XTRelationshipType extends XTEntityType {
     }
 
     public static class Builder extends XTEntityType.Builder<Builder> {
-        private XTTopologyElementInstanceStates instanceStates;
-        private XTInterfaces interfaces;
-        private XTInterfaces sourceInterfaces;
-        private XTInterfaces targetInterfaces;
+
+        private List<XTInstanceState> instanceStates;
+        private List<XTInterface> interfaces;
+        private List<XTInterface> sourceInterfaces;
+        private List<XTInterface> targetInterfaces;
         private ValidSource validSource;
         private ValidTarget validTarget;
 
@@ -220,17 +233,17 @@ public class XTRelationshipType extends XTEntityType {
             super(entityType);
         }
 
-        public Builder setInstanceStates(XTTopologyElementInstanceStates instanceStates) {
+        public Builder setInstanceStates(List<XTInstanceState> instanceStates) {
             this.instanceStates = instanceStates;
             return this;
         }
 
-        public Builder setSourceInterfaces(XTInterfaces sourceInterfaces) {
+        public Builder setSourceInterfaces(List<XTInterface> sourceInterfaces) {
             this.sourceInterfaces = sourceInterfaces;
             return this;
         }
 
-        public Builder setTargetInterfaces(XTInterfaces targetInterfaces) {
+        public Builder setTargetInterfaces(List<XTInterface> targetInterfaces) {
             this.targetInterfaces = targetInterfaces;
             return this;
         }
@@ -265,27 +278,17 @@ public class XTRelationshipType extends XTEntityType {
             return setValidTarget(tmp);
         }
 
-        public Builder addInterfaces(XTInterfaces interfaces) {
-            if (interfaces == null || interfaces.getInterface().isEmpty()) {
+        public Builder addInterfaces(List<XTInterface> interfaces) {
+            if (interfaces == null || interfaces.isEmpty()) {
                 return this;
             }
 
             if (this.interfaces == null) {
                 this.interfaces = interfaces;
             } else {
-                this.interfaces.getInterface().addAll(interfaces.getInterface());
+                this.interfaces.addAll(interfaces);
             }
             return this;
-        }
-
-        public Builder addInterfaces(List<XTInterface> interfaces) {
-            if (interfaces == null) {
-                return this;
-            }
-
-            XTInterfaces tmp = new XTInterfaces();
-            tmp.getInterface().addAll(interfaces);
-            return addInterfaces(tmp);
         }
 
         public Builder addInterfaces(XTInterface interfaces) {
@@ -293,65 +296,35 @@ public class XTRelationshipType extends XTEntityType {
                 return this;
             }
 
-            XTInterfaces tmp = new XTInterfaces();
-            tmp.getInterface().add(interfaces);
+            List<XTInterface> tmp = new ArrayList<>();
+            tmp.add(interfaces);
             return addInterfaces(tmp);
         }
 
-        public Builder addSourceInterfaces(XTInterfaces sourceInterfaces) {
-            if (sourceInterfaces == null || sourceInterfaces.getInterface().isEmpty()) {
+        public Builder addSourceInterfaces(List<XTInterface> sourceInterfaces) {
+            if (sourceInterfaces == null || sourceInterfaces.isEmpty()) {
                 return this;
             }
 
             if (this.sourceInterfaces == null) {
                 this.sourceInterfaces = sourceInterfaces;
             } else {
-                this.sourceInterfaces.getInterface().addAll(sourceInterfaces.getInterface());
+                this.sourceInterfaces.addAll(sourceInterfaces);
             }
             return this;
         }
 
-        public Builder addSourceInterfaces(List<XTInterface> sourceInterfaces) {
-            if (sourceInterfaces == null) {
-                return this;
-            }
-
-            XTInterfaces tmp = new XTInterfaces();
-            tmp.getInterface().addAll(sourceInterfaces);
-            return addSourceInterfaces(tmp);
-        }
-
-        public Builder addSourceInterfaces(XTInterface sourceInterfaces) {
-            if (sourceInterfaces == null) {
-                return this;
-            }
-
-            XTInterfaces tmp = new XTInterfaces();
-            tmp.getInterface().add(sourceInterfaces);
-            return addSourceInterfaces(tmp);
-        }
-
-        public Builder addTargetInterfaces(XTInterfaces targetInterfaces) {
-            if (targetInterfaces == null || targetInterfaces.getInterface().isEmpty()) {
+        public Builder addTargetInterfaces(List<XTInterface> targetInterfaces) {
+            if (targetInterfaces == null || targetInterfaces.isEmpty()) {
                 return this;
             }
 
             if (this.targetInterfaces == null) {
                 this.targetInterfaces = targetInterfaces;
             } else {
-                this.targetInterfaces.getInterface().addAll(targetInterfaces.getInterface());
+                this.targetInterfaces.addAll(targetInterfaces);
             }
             return this;
-        }
-
-        public Builder addTargetInterfaces(List<XTInterface> targetInterfaces) {
-            if (targetInterfaces == null) {
-                return this;
-            }
-
-            XTInterfaces tmp = new XTInterfaces();
-            tmp.getInterface().addAll(targetInterfaces);
-            return addTargetInterfaces(tmp);
         }
 
         public Builder addTargetInterfaces(XTInterface targetInterfaces) {
@@ -359,8 +332,8 @@ public class XTRelationshipType extends XTEntityType {
                 return this;
             }
 
-            XTInterfaces tmp = new XTInterfaces();
-            tmp.getInterface().add(targetInterfaces);
+            List<XTInterface> tmp = new ArrayList<>();
+            tmp.add(targetInterfaces);
             return addTargetInterfaces(tmp);
         }
 

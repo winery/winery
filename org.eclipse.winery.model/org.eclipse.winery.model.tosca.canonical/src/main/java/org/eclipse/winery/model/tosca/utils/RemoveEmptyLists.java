@@ -13,12 +13,17 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.utils;
 
-import org.eclipse.winery.model.tosca.TArtifacts;
-import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
+import java.util.List;
+
+import org.eclipse.winery.model.tosca.TArtifact;
+import org.eclipse.winery.model.tosca.TCapability;
+import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TPolicies;
+import org.eclipse.winery.model.tosca.TPolicy;
+import org.eclipse.winery.model.tosca.TPropertyConstraint;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
@@ -37,8 +42,8 @@ public class RemoveEmptyLists extends Visitor {
 
     @Override
     public void visit(TEntityTemplate entityTemplate) {
-        final TEntityTemplate.PropertyConstraints propertyConstraints = entityTemplate.getPropertyConstraints();
-        if ((propertyConstraints != null) && propertyConstraints.getPropertyConstraint().isEmpty()) {
+        final List<TPropertyConstraint> propertyConstraints = entityTemplate.getPropertyConstraints();
+        if ((propertyConstraints != null) && propertyConstraints.isEmpty()) {
             entityTemplate.setPropertyConstraints(null);
         }
         TEntityTemplate.Properties properties = entityTemplate.getProperties();
@@ -62,24 +67,24 @@ public class RemoveEmptyLists extends Visitor {
 
     @Override
     public void visit(TNodeTemplate nodeTemplate) {
-        final TNodeTemplate.Requirements requirements = nodeTemplate.getRequirements();
-        if ((requirements != null) && requirements.getRequirement().isEmpty()) {
+        final List<TRequirement> requirements = nodeTemplate.getRequirements();
+        if ((requirements != null) && requirements.isEmpty()) {
             nodeTemplate.setRequirements(null);
         }
-        final TNodeTemplate.Capabilities capabilities = nodeTemplate.getCapabilities();
-        if ((capabilities != null) && capabilities.getCapability().isEmpty()) {
+        final List<TCapability> capabilities = nodeTemplate.getCapabilities();
+        if ((capabilities != null) && capabilities.isEmpty()) {
             nodeTemplate.setCapabilities(null);
         }
-        final TDeploymentArtifacts deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
-        if ((deploymentArtifacts != null) && deploymentArtifacts.getDeploymentArtifact().isEmpty()) {
+        final List<TDeploymentArtifact> deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
+        if (deploymentArtifacts != null && deploymentArtifacts.isEmpty()) {
             nodeTemplate.setDeploymentArtifacts(null);
         }
-        final TPolicies policies = nodeTemplate.getPolicies();
-        if ((policies != null) && policies.getPolicy().isEmpty()) {
+        final List<TPolicy> policies = nodeTemplate.getPolicies();
+        if ((policies != null) && policies.isEmpty()) {
             nodeTemplate.setPolicies(null);
         }
-        final TArtifacts artifacts = nodeTemplate.getArtifacts();
-        if ((artifacts != null) && artifacts.getArtifact().isEmpty()) {
+        final List<TArtifact> artifacts = nodeTemplate.getArtifacts();
+        if ((artifacts != null) && artifacts.isEmpty()) {
             nodeTemplate.setArtifacts(null);
         }
         super.visit(nodeTemplate);
@@ -100,8 +105,8 @@ public class RemoveEmptyLists extends Visitor {
      * @param topologyTemplate the topology template to modify
      */
     public void removeEmptyLists(TTopologyTemplate topologyTemplate) {
-        final TPolicies policies = topologyTemplate.getPolicies();
-        if ((policies != null) && policies.getPolicy().isEmpty()) {
+        final List<TPolicy> policies = topologyTemplate.getPolicies();
+        if ((policies != null) && policies.isEmpty()) {
             topologyTemplate.setPolicies(null);
         }
         this.visit(topologyTemplate);

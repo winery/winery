@@ -30,7 +30,8 @@ public class PoliciesResourceTest extends AbstractResourceTest {
     @Test
     public void getPoliciesTest() throws Exception {
         this.setRevisionTo("3cad4e459a8af6082097eab8f978c80b4f5a512e");
-        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/boundarydefinitions/policies/", "entitytypes/servicetemplates/boundarydefinitions/policies/initialPolicy.json");
+        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/boundarydefinitions/policies/",
+            "entitytypes/servicetemplates/boundarydefinitions/policies/initialPolicy.json");
     }
 
     @Test

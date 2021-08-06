@@ -63,9 +63,8 @@ class ThreatModelingUtilsWithGitBackendRepositoryTest extends TestWithGitBackedR
 
         TPolicy mitigationPolicy = new TPolicy.Builder(myMitigation.getTypeAsQName()).build();
 
-        TBoundaryDefinitions stBoundaryDefinitions = new TBoundaryDefinitions
-            .Builder()
-            .addPolicies(mitigationPolicy)
+        TBoundaryDefinitions stBoundaryDefinitions = new TBoundaryDefinitions.Builder()
+            .addPolicy(mitigationPolicy)
             .build();
 
         st.setBoundaryDefinitions(stBoundaryDefinitions);

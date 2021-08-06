@@ -89,7 +89,8 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
     public void getInjectorOptionsWithoutOpenRequirementsBadRequest() throws Exception {
         this.setRevisionTo("origin/black");
         //this.assertGetExpectBadRequestResponse("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/injector/options", "servicetemplates/pony.json");
-        this.assertGetExpectBadRequestResponse("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/injector/options", "servicetemplates/ServiceTemplateResource-getInjectorOptionsWithoutOpenRequirements-badrequest.txt");
+        this.assertGetExpectBadRequestResponse("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/injector/options",
+            "servicetemplates/ServiceTemplateResource-getInjectorOptionsWithoutOpenRequirements-badrequest.txt");
     }
 
     @Test
@@ -102,13 +103,15 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
     @Test
     public void injectNodeTemplates() throws Exception {
         this.setRevisionTo("d535f69bf50b2c4eda437be46b7ba1f85c4ff3bc");
-        this.assertPost("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Finjector/FoodandHouseInjectionTest/injector/replace", "servicetemplates/ServiceTemplateResource-injectNodeTemplates-input2.json");
+        this.assertPost("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Finjector/FoodandHouseInjectionTest/injector/replace",
+            "servicetemplates/ServiceTemplateResource-injectNodeTemplates-input2.json");
     }
 
     @Test
     public void injectNodeTemplatesWithDriverInjection() throws Exception {
         this.setRevisionTo("c25aa724201824fce6eddcc7c35a666c6e015880");
-        this.assertPost("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Fdriverinjection/DriverInjectionTest/injector/replace", "servicetemplates/ServiceTemplateResource-injectNodeTemplates-input-DriverInjectionTest.json");
+        this.assertPost("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Fdriverinjection/DriverInjectionTest/injector/replace",
+            "servicetemplates/ServiceTemplateResource-injectNodeTemplates-input-DriverInjectionTest.json");
     }
 
     @Test

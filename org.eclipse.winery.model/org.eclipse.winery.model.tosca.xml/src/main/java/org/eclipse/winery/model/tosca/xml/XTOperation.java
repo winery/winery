@@ -14,7 +14,6 @@
 
 package org.eclipse.winery.model.tosca.xml;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -23,6 +22,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
@@ -31,7 +31,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tOperation", propOrder = {
@@ -39,17 +38,23 @@ import org.eclipse.jdt.annotation.Nullable;
     "outputParameters"
 })
 public class XTOperation extends XTExtensibleElements {
-    @XmlElement(name = "InputParameters")
-    protected XTOperation.InputParameters inputParameters;
-    @XmlElement(name = "OutputParameters")
-    protected XTOperation.OutputParameters outputParameters;
+
+    @XmlElementWrapper(name = "InputParameters")
+    @XmlElement(name = "InputParameter", required = true)
+    protected List<XTParameter> inputParameters;
+
+    @XmlElementWrapper(name = "OutputParameters")
+    @XmlElement(name = "OutputParameter", required = true)
+    protected List<XTParameter> outputParameters;
+
     @XmlAttribute(name = "name", required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlSchemaType(name = "NCName")
     protected String name;
 
     @Deprecated // required for XML deserialization
-    public XTOperation() { }
+    public XTOperation() {
+    }
 
     public XTOperation(Builder builder) {
         super(builder);
@@ -74,19 +79,19 @@ public class XTOperation extends XTExtensibleElements {
         return Objects.hash(super.hashCode(), inputParameters, outputParameters, name);
     }
 
-    public XTOperation.@Nullable InputParameters getInputParameters() {
+    public List<XTParameter> getInputParameters() {
         return inputParameters;
     }
 
-    public void setInputParameters(XTOperation.@Nullable InputParameters value) {
+    public void setInputParameters(List<XTParameter> value) {
         this.inputParameters = value;
     }
 
-    public XTOperation.@Nullable OutputParameters getOutputParameters() {
+    public List<XTParameter> getOutputParameters() {
         return outputParameters;
     }
 
-    public void setOutputParameters(XTOperation.@Nullable OutputParameters value) {
+    public void setOutputParameters(List<XTParameter> value) {
         this.outputParameters = value;
     }
 
@@ -105,108 +110,36 @@ public class XTOperation extends XTExtensibleElements {
         visitor.visit(this);
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "inputParameter"
-    })
-    public static class InputParameters implements Serializable {
-
-        @XmlElement(name = "InputParameter", required = true)
-        protected List<XTParameter> inputParameter;
-
-        @NonNull
-        public List<XTParameter> getInputParameter() {
-            if (inputParameter == null) {
-                inputParameter = new ArrayList<XTParameter>();
-            }
-            return this.inputParameter;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            InputParameters that = (InputParameters) o;
-            return Objects.equals(inputParameter, that.inputParameter);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(inputParameter);
-        }
-    }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "outputParameter"
-    })
-    public static class OutputParameters implements Serializable {
-
-        @XmlElement(name = "OutputParameter", required = true)
-        protected List<XTParameter> outputParameter;
-
-        @NonNull
-        public List<XTParameter> getOutputParameter() {
-            if (outputParameter == null) {
-                outputParameter = new ArrayList<XTParameter>();
-            }
-            return this.outputParameter;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            OutputParameters that = (OutputParameters) o;
-            return Objects.equals(outputParameter, that.outputParameter);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(outputParameter);
-        }
-    }
-
     public static class Builder extends XTExtensibleElements.Builder<Builder> {
         private final String name;
-        private InputParameters inputParameters;
-        private OutputParameters outputParameters;
+        private List<XTParameter> inputParameters;
+        private List<XTParameter> outputParameters;
 
         public Builder(String name) {
             this.name = name;
         }
 
-        public Builder setInputParameters(XTOperation.InputParameters inputParameters) {
+        public Builder setInputParameters(List<XTParameter> inputParameters) {
             this.inputParameters = inputParameters;
             return this;
         }
 
-        public Builder setOutputParameters(XTOperation.OutputParameters outputParameters) {
+        public Builder setOutputParameters(List<XTParameter> outputParameters) {
             this.outputParameters = outputParameters;
             return this;
         }
 
-        public Builder addInputParameters(XTOperation.InputParameters inputParameters) {
-            if (inputParameters == null || inputParameters.getInputParameter().isEmpty()) {
+        public Builder addInputParameters(List<XTParameter> inputParameters) {
+            if (inputParameters == null || inputParameters.isEmpty()) {
                 return this;
             }
 
             if (this.inputParameters == null) {
                 this.inputParameters = inputParameters;
             } else {
-                this.inputParameters.getInputParameter().addAll(inputParameters.getInputParameter());
+                this.inputParameters.addAll(inputParameters);
             }
             return this;
-        }
-
-        public Builder addInputParameters(List<XTParameter> inputParameters) {
-            if (inputParameters == null) {
-                return this;
-            }
-
-            XTOperation.InputParameters tmp = new XTOperation.InputParameters();
-            tmp.getInputParameter().addAll(inputParameters);
-            return addInputParameters(tmp);
         }
 
         public Builder addInputParameters(XTParameter inputParameters) {
@@ -214,32 +147,22 @@ public class XTOperation extends XTExtensibleElements {
                 return this;
             }
 
-            XTOperation.InputParameters tmp = new XTOperation.InputParameters();
-            tmp.getInputParameter().add(inputParameters);
+            List<XTParameter> tmp = new ArrayList<>();
+            tmp.add(inputParameters);
             return addInputParameters(tmp);
         }
 
-        public Builder addOutputParameters(XTOperation.OutputParameters outputParameters) {
-            if (outputParameters == null || outputParameters.getOutputParameter().isEmpty()) {
+        public Builder addOutputParameters(List<XTParameter> outputParameters) {
+            if (outputParameters == null || outputParameters.isEmpty()) {
                 return this;
             }
 
             if (this.outputParameters == null) {
                 this.outputParameters = outputParameters;
             } else {
-                this.outputParameters.getOutputParameter().addAll(outputParameters.getOutputParameter());
+                this.outputParameters.addAll(outputParameters);
             }
             return this;
-        }
-
-        public Builder addOutputParameters(List<XTParameter> outputParameters) {
-            if (outputParameters == null) {
-                return this;
-            }
-
-            XTOperation.OutputParameters tmp = new XTOperation.OutputParameters();
-            tmp.getOutputParameter().addAll(outputParameters);
-            return addOutputParameters(tmp);
         }
 
         public Builder addOutputParameters(XTParameter outputParameters) {
@@ -247,8 +170,8 @@ public class XTOperation extends XTExtensibleElements {
                 return this;
             }
 
-            XTOperation.OutputParameters tmp = new XTOperation.OutputParameters();
-            tmp.getOutputParameter().add(outputParameters);
+            List<XTParameter> tmp = new ArrayList<>();
+            tmp.add(outputParameters);
             return addOutputParameters(tmp);
         }
 

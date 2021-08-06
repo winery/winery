@@ -41,21 +41,26 @@ public class DriverInjection {
         List<TNodeTemplate> nodeTemplatesWithAbstractDA = DASpecification.getNodeTemplatesWithAbstractDAs(topologyTemplate);
 
         for (TNodeTemplate nodeTemplateWithAbstractDA : nodeTemplatesWithAbstractDA) {
-            List<TDeploymentArtifact> abstractDAsAttachedToNodeTemplate = nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact().stream()
-                .filter(da -> DASpecification.getArtifactTypeOfDA(da).getAbstract())
-                .collect(Collectors.toList());
-            for (TDeploymentArtifact abstractDA : abstractDAsAttachedToNodeTemplate) {
-                Set<Pair<TRelationshipTemplate, TNodeTemplate>> nodeTemplatesWithConcreteDA
-                    = DASpecification.getNodesWithSuitableConcreteDAAndTheDirectlyConnectedNode(nodeTemplateWithAbstractDA, abstractDA, topologyTemplate);
-                for (Pair<TRelationshipTemplate, TNodeTemplate> pair : nodeTemplatesWithConcreteDA) {
-                    TRelationshipTemplate relationshipTemplate = pair.getLeft();
-                    TNodeTemplate nodeTemplate = pair.getRight();
-                    TDeploymentArtifact concreteDeploymentArtifact = DASpecification.getSuitableConcreteDA(abstractDA, nodeTemplate);
-                    nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact().add(concreteDeploymentArtifact);
-                    setDriverProperty(relationshipTemplate, concreteDeploymentArtifact);
+            if (nodeTemplateWithAbstractDA.getDeploymentArtifacts() != null) {
+                List<TDeploymentArtifact> abstractDAsAttachedToNodeTemplate = nodeTemplateWithAbstractDA.getDeploymentArtifacts().stream()
+                    .filter(da -> DASpecification.getArtifactTypeOfDA(da).getAbstract())
+                    .collect(Collectors.toList());
+                for (TDeploymentArtifact abstractDA : abstractDAsAttachedToNodeTemplate) {
+                    Set<Pair<TRelationshipTemplate, TNodeTemplate>> nodeTemplatesWithConcreteDA
+                        = DASpecification.getNodesWithSuitableConcreteDAAndTheDirectlyConnectedNode(nodeTemplateWithAbstractDA, abstractDA, topologyTemplate);
+                    for (Pair<TRelationshipTemplate, TNodeTemplate> pair : nodeTemplatesWithConcreteDA) {
+                        TRelationshipTemplate relationshipTemplate = pair.getLeft();
+                        TNodeTemplate nodeTemplate = pair.getRight();
+                        TDeploymentArtifact concreteDeploymentArtifact = DASpecification.getSuitableConcreteDA(abstractDA, nodeTemplate);
+
+                        if (concreteDeploymentArtifact != null) {
+                            nodeTemplateWithAbstractDA.getDeploymentArtifacts().add(concreteDeploymentArtifact);
+                            setDriverProperty(relationshipTemplate, concreteDeploymentArtifact);
+                        }
+                    }
+                    // concrete DAs from the delivering Node Template must not be deleted. They are uploaded by the OpenTOSCA Container but not used.
+                    nodeTemplateWithAbstractDA.getDeploymentArtifacts().remove(abstractDA);
                 }
-                // concrete DAs from the delivering Node Template must not be deleted. They are uploaded by the OpenTOSCA Container but not used.
-                nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact().remove(abstractDA);
             }
         }
         return topologyTemplate;

@@ -18,7 +18,7 @@ import { RefinementMappingsService } from '../refinementMappings.service';
 import { forkJoin } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { Policy, WineryTemplateWithPolicies } from '../../../model/wineryComponent';
+import { WineryTemplateWithPolicies } from '../../../model/wineryComponent';
 import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
 import { InstanceService } from '../../instance.service';
 import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
@@ -27,6 +27,7 @@ import { NamespaceProperties } from '../../../model/namespaceProperties';
 import { WineryNamespaceSelectorService } from '../../../wineryNamespaceSelector/wineryNamespaceSelector.service';
 import { QName } from '../../../../../../shared/src/app/model/qName';
 import { KvProperty } from '../../../model/keyValueItem';
+import { TPolicy } from '../../../../../../topologymodeler/src/app/models/policiesModalData';
 
 @Component({
     templateUrl: 'behavior-pattern-mappings.component.html',
@@ -60,7 +61,7 @@ export class BehaviorPatternMappingsComponent implements OnInit {
 
     mapping: BehaviorPatternMapping;
     selectedDetectorElement: WineryTemplateWithPolicies;
-    behaviorPatterns: Policy[];
+    behaviorPatterns: TPolicy[];
     selectedRefinementElement: WineryTemplateWithPolicies;
     refinementProperties: KvProperty[];
 
@@ -97,7 +98,7 @@ export class BehaviorPatternMappingsComponent implements OnInit {
         this.selectedDetectorElement = this.detectorTemplates
             .find((value) => value.id === element.id);
         if (this.selectedDetectorElement.policies) {
-            this.behaviorPatterns = this.selectedDetectorElement.policies.policy
+            this.behaviorPatterns = this.selectedDetectorElement.policies
                 .filter((policy) => this.patternNamespaces.has(new QName(policy.policyType).nameSpace));
         }
     }

@@ -13,13 +13,16 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytemplates.policytemplates;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.model.ids.definitions.PolicyTemplateId;
-import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
+import org.eclipse.winery.model.tosca.TPropertyConstraint;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources._support.IHasName;
@@ -77,9 +80,9 @@ public final class PolicyTemplateResource extends AbstractComponentInstanceResou
 
     @Path("propertyconstraints")
     public PropertyConstraintsResource getPropertyConstraints() {
-        TEntityTemplate.PropertyConstraints constraints = this.getPolicyTemplate().getPropertyConstraints();
+        List<TPropertyConstraint> constraints = this.getPolicyTemplate().getPropertyConstraints();
         if (constraints == null) {
-            constraints = new TEntityTemplate.PropertyConstraints();
+            constraints = new ArrayList<>();
             this.getPolicyTemplate().setPropertyConstraints(constraints);
         }
         return new PropertyConstraintsResource(constraints, this);

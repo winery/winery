@@ -53,7 +53,7 @@ public class YTRequirementDefinition implements VisitorNode {
         if (this == o) return true;
         if (!(o instanceof YTRequirementDefinition)) return false;
         YTRequirementDefinition that = (YTRequirementDefinition) o;
-        return Objects.equals(getCapability(), that.getCapability()) &&
+        return Objects.equals(getCapability(), that) &&
             Objects.equals(getNode(), that.getNode()) &&
             Objects.equals(getRelationship(), that.getRelationship()) &&
             Objects.equals(getOccurrences(), that.getOccurrences()) &&

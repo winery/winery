@@ -15,6 +15,7 @@ package org.eclipse.winery.repository.rest.resources.servicetemplates.topologyte
 
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,6 @@ import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
-import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
@@ -136,7 +136,7 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
     /* * *
      * The visual appearance
      *
-     * We do not use a subresource "visualappearance" here to avoid generation of more objects
+     * We do not use a subresource "visual-appearance" here to avoid generation of more objects
      * * */
 
     @Path("x")
@@ -190,14 +190,14 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
 
         // create DA
         Optional<TDeploymentArtifact> stateDeploymentArtifact = this.getDeploymentArtifacts().getDeploymentArtifacts().stream()
+            .filter(artifact -> artifact.getArtifactType() != null)
             .filter(artifact -> artifact.getArtifactType().equals(OpenToscaBaseTypes.stateArtifactType))
             .findFirst();
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss");
 
-        TDeploymentArtifact deploymentArtifact = new TDeploymentArtifact();
-        deploymentArtifact.setArtifactType(OpenToscaBaseTypes.stateArtifactType);
-        deploymentArtifact.setName("state");
+        TDeploymentArtifact deploymentArtifact = new TDeploymentArtifact.Builder("state", OpenToscaBaseTypes.stateArtifactType)
+            .build();
 
         String componentVersion = dateFormat.format(new Date());
         ArtifactTemplateId newArtifactTemplateId = new ArtifactTemplateId(
@@ -227,13 +227,13 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
             );
         } else {
             LOGGER.debug("Creating the state DA of the Node Template...");
-            TDeploymentArtifacts list = this.nodeTemplate.getDeploymentArtifacts();
+            List<TDeploymentArtifact> list = this.nodeTemplate.getDeploymentArtifacts();
             if (Objects.isNull(list)) {
-                list = new TDeploymentArtifacts();
+                list = new ArrayList<>();
                 this.nodeTemplate.setDeploymentArtifacts(list);
             }
 
-            list.getDeploymentArtifact().add(deploymentArtifact);
+            list.add(deploymentArtifact);
         }
 
         new ArtifactTemplatesResource()

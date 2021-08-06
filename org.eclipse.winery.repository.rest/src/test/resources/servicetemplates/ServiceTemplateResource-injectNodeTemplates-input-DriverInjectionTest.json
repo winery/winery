@@ -29,47 +29,43 @@
                         "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "270"
                     },
                     "type": "{http://winery.opentosca.org/test/ponyuniverse}dressageequipment",
-                    "capabilities": {
-                        "capability": [
-                            {
-                                "id": "CapEquipment",
-                                "documentation": [
-                                ],
-                                "any": [
-                                ],
-                                "otherAttributes": {
-                                },
-                                "type": "{http://winery.opentosca.org/test/ponyuniverse}CapEquipment",
-                                "name": "CapEquipment"
-                            }
-                        ]
-                    },
-                    "deploymentArtifacts": {
-                        "deploymentArtifact": [
-                            {
-                                "documentation": [
-                                ],
-                                "any": [
-                                ],
-                                "otherAttributes": {
-                                },
-                                "name": "DressageEquipment_Pony",
-                                "artifactType": "{http://winery.opentosca.org/test/ponyuniverse}DressageEquipment_Pony",
-                                "artifactRef": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier}DressageEquipment_Pony"
+                    "capabilities": [
+                        {
+                            "id": "CapEquipment",
+                            "documentation": [
+                            ],
+                            "any": [
+                            ],
+                            "otherAttributes": {
                             },
-                            {
-                                "documentation": [
-                                ],
-                                "any": [
-                                ],
-                                "otherAttributes": {
-                                },
-                                "name": "DressageEquipment_Unicorn",
-                                "artifactType": "{http://winery.opentosca.org/test/ponyuniverse}DressageEquipment_Unicorn",
-                                "artifactRef": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier}DressageEquipment_Unicorn"
-                            }
-                        ]
-                    },
+                            "type": "{http://winery.opentosca.org/test/ponyuniverse}CapEquipment",
+                            "name": "CapEquipment"
+                        }
+                    ],
+                    "deploymentArtifact": [
+                        {
+                            "documentation": [
+                            ],
+                            "any": [
+                            ],
+                            "otherAttributes": {
+                            },
+                            "name": "DressageEquipment_Pony",
+                            "artifactType": "{http://winery.opentosca.org/test/ponyuniverse}DressageEquipment_Pony",
+                            "artifactRef": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier}DressageEquipment_Pony"
+                        },
+                        {
+                            "documentation": [
+                            ],
+                            "any": [
+                            ],
+                            "otherAttributes": {
+                            },
+                            "name": "DressageEquipment_Unicorn",
+                            "artifactType": "{http://winery.opentosca.org/test/ponyuniverse}DressageEquipment_Unicorn",
+                            "artifactRef": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier}DressageEquipment_Unicorn"
+                        }
+                    ],
                     "name": "dressageequipment",
                     "minInstances": 1,
                     "maxInstances": "1"

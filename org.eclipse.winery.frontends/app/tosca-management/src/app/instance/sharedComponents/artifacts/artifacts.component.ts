@@ -55,11 +55,11 @@ export class ArtifactsComponent implements OnInit {
 
     ngOnInit(): void {
         this.loading = true;
-        this.artifactsService.getArtifacts().subscribe(data => {
+        this.artifactsService.getArtifacts().subscribe((data) => {
             this.artifacts = [];
             data.forEach(item => this.artifacts.push({ ...new Artifact(), ...item }));
             this.loading = false;
-        }, error => this.handleError(error));
+        }, (error) => this.handleError(error));
         this.artifactsService.getArtifactTypes().subscribe(data => {
             this.artifactTypes.classes = data;
         }, error => this.handleError(error));

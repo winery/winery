@@ -17,6 +17,7 @@ package org.eclipse.winery.model.adaptation.substitution.patterndetection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -132,7 +133,7 @@ class ComponentPatternDetection extends TopologyFragmentRefinement {
         OTPatternRefinementModel otherPrm = componentPatternCandidate.getOtherPrm();
         TNodeTemplate otherDetectorElement = componentPatternCandidate.getOtherDetectorElement();
 
-        // Redirect and add Relation Mappings of pdrm_x
+        // Redirect and add Relation Mappings of PDRM_x
         if (otherPrm.getRelationMappings() != null) {
             otherPrm.getRelationMappings().stream()
                 .filter(mapping -> mapping.getDetectorElement().getId().equals(otherDetectorElement.getId())
@@ -146,7 +147,7 @@ class ComponentPatternDetection extends TopologyFragmentRefinement {
     }
 
     private void removeNotApplicable(OTPatternRefinementModel adaptedPrm) {
-        // Remove Property Mappings of pdrm
+        // Remove Property Mappings of PDRM
         if (adaptedPrm.getAttributeMappings() != null) {
             adaptedPrm.getAttributeMappings().clear();
         }
@@ -154,15 +155,15 @@ class ComponentPatternDetection extends TopologyFragmentRefinement {
         // Remove all Behavior Patterns not in the Executable Structure
         Set<QName> detectorPolicies = adaptedPrm.getDetector().getNodeTemplateOrRelationshipTemplate().stream()
             .map(HasPolicies.class::cast)
-            .filter(hasPolicies -> hasPolicies.getPolicies() != null)
-            .map(hasPolicies -> hasPolicies.getPolicies().getPolicy())
+            .map(HasPolicies::getPolicies)
+            .filter(Objects::nonNull)
             .flatMap(List::stream)
             .map(TPolicy::getPolicyType)
             .collect(Collectors.toSet());
         adaptedPrm.getRefinementStructure().getNodeTemplateOrRelationshipTemplate().stream()
             .map(HasPolicies.class::cast)
             .filter(hasPolicies -> hasPolicies.getPolicies() != null)
-            .forEach(hasPolicies -> hasPolicies.getPolicies().getPolicy()
+            .forEach(hasPolicies -> hasPolicies.getPolicies()
                 .removeIf(policy -> !detectorPolicies.contains(policy.getPolicyType())));
     }
 }

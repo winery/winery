@@ -91,6 +91,7 @@ public class ArtifactTemplateResourceTest extends AbstractResourceTest {
         final Path path = MavenTestingUtils.getProjectFilePath("src/test/resources/entitytemplates/artifacttemplates/empty_text_file.txt");
         this.assertPost("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/artifactTemplateContainsUpdatedFileReferenceInJson/files", path);
 
-        this.assertGet("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/artifactTemplateContainsUpdatedFileReferenceInJson", "entitytemplates/artifacttemplates/artifactTemplateContainsUpdatedFileReferenceInJson-withFile.json");
+        this.assertGet("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/artifactTemplateContainsUpdatedFileReferenceInJson",
+            "entitytemplates/artifacttemplates/artifactTemplateContainsUpdatedFileReferenceInJson-withFile.json");
     }
 }

@@ -52,7 +52,14 @@ public class TDocumentation implements Serializable {
     protected String lang;
 
     @Deprecated // used for XML deserialization of API request content
-    public TDocumentation() { }
+    public TDocumentation() {
+    }
+
+    public TDocumentation(Builder builder) {
+        this.content = builder.content;
+        this.source = builder.source;
+        this.lang = builder.lang;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -72,7 +79,7 @@ public class TDocumentation implements Serializable {
     @NonNull
     public List<Object> getContent() {
         if (content == null) {
-            content = new ArrayList<Object>();
+            content = new ArrayList<>();
         }
         return this.content;
     }
@@ -97,5 +104,46 @@ public class TDocumentation implements Serializable {
 
     public void accept(Visitor visitor) {
         visitor.visit(this);
+    }
+
+    public static class Builder {
+
+        private List<Object> content;
+        private String source;
+        private String lang;
+
+        public Builder() {
+        }
+
+        public Builder(List<Object> content) {
+            this.content = content;
+        }
+
+        public Builder addContent(List<Object> content) {
+            this.content = content;
+            return this;
+        }
+
+        public Builder setSource(String source) {
+            this.source = source;
+            return this;
+        }
+
+        public Builder setLang(String lang) {
+            this.lang = lang;
+            return this;
+        }
+
+        public TDocumentation build() {
+            return new TDocumentation(this);
+        }
+
+        public Builder addContent(String documentation) {
+            if (this.content == null) {
+                this.content = new ArrayList<>();
+            }
+            this.content.add(documentation);
+            return this;
+        }
     }
 }

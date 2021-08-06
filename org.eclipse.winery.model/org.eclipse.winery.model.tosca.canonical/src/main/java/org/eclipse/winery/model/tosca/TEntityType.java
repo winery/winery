@@ -68,33 +68,37 @@ import org.eclipse.jdt.annotation.Nullable;
     TPolicyType.class,
     TDataType.class,
 })
-public abstract class TEntityType extends TExtensibleElements implements HasName, HasInheritance, HasTargetNamespace {
-    public static final String NS_SUFFIX_PROPERTIESDEFINITION_WINERY = "propertiesdefinition/winery";
+public abstract class TEntityType extends TExtensibleElementWithTags implements HasName, HasInheritance, HasTargetNamespace {
 
-    @XmlElement(name = "Tags")
-    protected TTags tags;
+    public static final String NS_SUFFIX_PROPERTIES_DEFINITION_WINERY = "propertiesdefinition/winery";
+
     @XmlElement(name = "DerivedFrom")
     protected TEntityType.DerivedFrom derivedFrom;
+
     @XmlElementRef(name = "PropertiesDefinition")
     @JsonProperty("propertiesDefinition")
     @JsonSerialize(using = PropertiesDefinitionSerializer.class)
     protected TEntityType.PropertiesDefinition properties;
+
     @XmlAttribute(name = "name", required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlSchemaType(name = "NCName")
     protected String name;
+
     @XmlAttribute(name = "abstract")
     @XmlJavaTypeAdapter(type = boolean.class, value = BooleanToYesNo.class)
     @JsonProperty("abstract")
     @JsonSerialize(using = YesNo.Serializer.class)
     @JsonDeserialize(using = YesNo.Deserializer.class)
     protected boolean _abstract;
+
     @XmlAttribute(name = "final")
     @XmlJavaTypeAdapter(type = boolean.class, value = BooleanToYesNo.class)
     @JsonProperty("final")
     @JsonSerialize(using = YesNo.Serializer.class)
     @JsonDeserialize(using = YesNo.Deserializer.class)
     protected boolean _final;
+
     @XmlAttribute(name = "targetNamespace")
     @XmlSchemaType(name = "anyURI")
     protected String targetNamespace;
@@ -102,12 +106,12 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     // added to support conversion from/to YAML
     protected List<AttributeDefinition> attributeDefinitions;
 
-    @Deprecated // used for XML deserialization of API request content
-    public TEntityType() { }
+    // used for XML deserialization of API request content
+    public TEntityType() {
+    }
 
-    public TEntityType(Builder builder) {
+    public TEntityType(Builder<?> builder) {
         super(builder);
-        this.tags = builder.tags;
         this.derivedFrom = builder.derivedFrom;
         this.properties = builder.properties;
         this.name = builder.name;
@@ -143,15 +147,6 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
 
     public void setAttributeDefinitions(List<AttributeDefinition> attributeDefinitions) {
         this.attributeDefinitions = attributeDefinitions;
-    }
-
-    @Nullable
-    public TTags getTags() {
-        return tags;
-    }
-
-    public void setTags(@Nullable TTags value) {
-        this.tags = value;
     }
 
     public TEntityType.@Nullable DerivedFrom getDerivedFrom() {
@@ -198,7 +193,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     }
 
     public void setAbstract(@Nullable Boolean value) {
-        this._abstract = value == null ? false : value;
+        this._abstract = value != null && value;
     }
 
     public boolean getFinal() {
@@ -210,10 +205,9 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     }
 
     public void setFinal(@Nullable Boolean value) {
-        this._final = value == null ? false : value;
+        this._final = value != null && value;
     }
 
-    @Nullable
     public String getTargetNamespace() {
         return targetNamespace;
     }
@@ -238,18 +232,18 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             return null;
         }
         WinerysPropertiesDefinition res = (WinerysPropertiesDefinition) properties;
-        // we put defaults if elementname and namespace have not been set
+        // we put defaults if element name and namespace have not been set
         if (res.getElementName() == null) {
             res.setElementName("Properties");
         }
 
         if (res.getNamespace() == null) {
-            // we use the targetnamespace of the original element
+            // we use the target namespace of the original element
             String ns = this.getTargetNamespace();
             if (!ns.endsWith("/")) {
                 ns += "/";
             }
-            ns += NS_SUFFIX_PROPERTIESDEFINITION_WINERY;
+            ns += NS_SUFFIX_PROPERTIES_DEFINITION_WINERY;
             res.setNamespace(ns);
         }
         return res;
@@ -302,18 +296,22 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             return Objects.hash(typeRef);
         }
     }
-    
+
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
     public static class YamlPropertyDefinition {
+
         private String name;
+
         @XmlAttribute(name = "type", required = true)
         private QName type;
         private String description;
         private Boolean required;
+
         @XmlElement(name = "default")
         private Object defaultValue;
         private YamlPropertyDefinition.Status status;
+
         @XmlElement
         private List<ConstraintClauseKV> constraints;
 
@@ -322,10 +320,11 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
         @XmlElement(name = "key_schema")
         private TSchema keySchema;
 
+        @SuppressWarnings("unused")
         public YamlPropertyDefinition() {
             // added for xml serialization!
         }
-        
+
         private YamlPropertyDefinition(Builder builder) {
             this.name = builder.name;
             this.type = builder.type;
@@ -337,14 +336,14 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             this.keySchema = builder.keySchema;
             this.entrySchema = builder.entrySchema;
         }
-        
-        @XmlEnum(String.class)
+
+        @XmlEnum()
         public enum Status {
             supported,
             unsupported,
             experimental,
             deprecated;
-            
+
             @Nullable
             public static Status getStatus(String status) {
                 // Could possibly be replaced by wrapping with Status.getValue(status)?
@@ -365,7 +364,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             private List<ConstraintClauseKV> constraints;
             private TSchema entrySchema;
             private TSchema keySchema;
-            
+
             public Builder(String name) {
                 this.name = name;
             }
@@ -419,7 +418,7 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
                 return new YamlPropertyDefinition(this);
             }
         }
-        
+
         public String getName() {
             return name;
         }
@@ -506,13 +505,13 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
      * This is specifically implemented as an abstract class because JAXB refuses to handle interfaces54
      */
     @XmlType(name = "")
-    @XmlSeeAlso({
+    @XmlSeeAlso( {
         YamlPropertiesDefinition.class,
         WinerysPropertiesDefinition.class,
         XmlElementDefinition.class,
         XmlTypeDefinition.class
     })
-    @JsonSubTypes({
+    @JsonSubTypes( {
         @JsonSubTypes.Type(YamlPropertiesDefinition.class),
         @JsonSubTypes.Type(WinerysPropertiesDefinition.class),
         @JsonSubTypes.Type(XmlElementDefinition.class),
@@ -520,7 +519,8 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     })
     @JsonDeserialize(using = PropertiesDefinitionDeserializer.class)
     @JsonSerialize(using = PropertiesDefinitionSerializer.class)
-    public abstract static class PropertiesDefinition { }
+    public abstract static class PropertiesDefinition {
+    }
 
     @NonNullByDefault
     @XmlRootElement(name = "PropertiesDefinition")
@@ -539,9 +539,8 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     }
 
     /**
-     * The XML standard defines two mutually exclusive ways of specifying a property.
-     * Option 1 is a QName pointing to an element, the other option is a type reference,
-     * see {@link XmlTypeDefinition}.
+     * The XML standard defines two mutually exclusive ways of specifying a property. Option 1 is a QName pointing to an
+     * element, the other option is a type reference, see {@link XmlTypeDefinition}.
      */
     @XmlRootElement(name = "PropertiesDefinition")
     @JsonDeserialize(as = XmlElementDefinition.class)
@@ -550,7 +549,8 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
         private QName element;
 
         // required for jaxb
-        public XmlElementDefinition() { }
+        public XmlElementDefinition() {
+        }
 
         public XmlElementDefinition(QName element) {
             this.element = element;
@@ -566,9 +566,8 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     }
 
     /**
-     * The XML standard defines two mutually exclusive ways of specifying a property.
-     * Option 1 is a QName pointing to an element, see {@link XmlElementDefinition},
-     * the other option is a type reference.
+     * The XML standard defines two mutually exclusive ways of specifying a property. Option 1 is a QName pointing to an
+     * element, see {@link XmlElementDefinition}, the other option is a type reference.
      */
     @XmlRootElement(name = "PropertiesDefinition")
     @JsonDeserialize(as = XmlTypeDefinition.class)
@@ -577,7 +576,8 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
         private QName type;
 
         // required for JAXB
-        public XmlTypeDefinition() { }
+        public XmlTypeDefinition() {
+        }
 
         public XmlTypeDefinition(QName type) {
             this.type = type;
@@ -593,10 +593,10 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
     }
 
     @ADR(11)
-    public abstract static class Builder<T extends Builder<T>> extends TExtensibleElements.Builder<T> {
+    public abstract static class Builder<T extends Builder<T>> extends TExtensibleElementWithTags.Builder<T> {
+
         private final String name;
 
-        private TTags tags;
         private TEntityType.DerivedFrom derivedFrom;
         private PropertiesDefinition properties;
         private boolean abstractValue;
@@ -612,17 +612,11 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
             super(entityType);
             this.name = entityType.getName();
             this.derivedFrom = entityType.getDerivedFrom();
-            this.addTags(entityType.getTags());
             this.abstractValue = entityType.getAbstract();
             this.finalValue = entityType.getFinal();
             this.targetNamespace = entityType.getTargetNamespace();
             this.properties = entityType.getProperties();
             this.attributeDefinitions = entityType.getAttributeDefinitions();
-        }
-
-        public T setTags(TTags tags) {
-            this.tags = tags;
-            return self();
         }
 
         public T setDerivedFrom(TEntityType.DerivedFrom derivedFrom) {
@@ -671,50 +665,6 @@ public abstract class TEntityType extends TExtensibleElements implements HasName
         public T setTargetNamespace(String targetNamespace) {
             this.targetNamespace = targetNamespace;
             return self();
-        }
-
-        public T addTags(TTags tags) {
-            if (tags == null || tags.getTag().isEmpty()) {
-                return self();
-            }
-
-            if (this.tags == null) {
-                this.tags = tags;
-            } else {
-                this.tags.getTag().addAll(tags.getTag());
-            }
-            return self();
-        }
-
-        public T addTags(List<TTag> tags) {
-            if (tags == null) {
-                return self();
-            }
-
-            TTags tmp = new TTags();
-            tmp.getTag().addAll(tags);
-            return addTags(tmp);
-        }
-
-        public T addTags(TTag tags) {
-            if (tags == null) {
-                return self();
-            }
-
-            TTags tmp = new TTags();
-            tmp.getTag().add(tags);
-            return addTags(tmp);
-        }
-
-        public T addTags(String key, String value) {
-            if (value == null) {
-                return self();
-            }
-
-            TTag tag = new TTag();
-            tag.setName(key);
-            tag.setValue(value);
-            return addTags(tag);
         }
 
         public T setAttributeDefinitions(List<AttributeDefinition> attributeDefinitions) {

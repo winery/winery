@@ -33,6 +33,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 public class YTCapabilityDefinition implements VisitorNode {
+
     private String description;
     private List<String> occurrences;
     private List<QName> validSourceTypes;

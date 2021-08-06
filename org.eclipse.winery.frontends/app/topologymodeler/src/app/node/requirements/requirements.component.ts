@@ -19,7 +19,6 @@ import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../../redux/store/winery.store';
 import { Subscription } from 'rxjs';
 import { RequirementModel } from '../../models/requirementModel';
-import { ToscaTypes } from '../../../../../tosca-management/src/app/model/enums';
 import { TableType } from '../../models/enums';
 
 @Component({
@@ -58,7 +57,7 @@ export class RequirementsComponent implements OnInit, OnChanges, OnDestroy {
     updateReqs(): void {
         if (this.currentNodeData) {
             if (this.currentNodeData.nodeTemplate.requirements) {
-                this.requirements = this.currentNodeData.nodeTemplate.requirements.requirement;
+                this.requirements = this.currentNodeData.nodeTemplate.requirements;
                 this.requirementsExist = true;
             }
         }

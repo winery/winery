@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -34,27 +33,29 @@ import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tImplementationArtifact")
-@XmlSeeAlso( {
-    XTImplementationArtifacts.ImplementationArtifact.class
-})
 public class XTImplementationArtifact extends XTExtensibleElements implements XHasName {
 
     @XmlAttribute(name = "name")
     protected String name;
+
     @XmlAttribute(name = "interfaceName")
     @XmlSchemaType(name = "anyURI")
     protected String interfaceName;
+
     @XmlAttribute(name = "operationName")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlSchemaType(name = "NCName")
     protected String operationName;
+
     @XmlAttribute(name = "artifactType", required = true)
     protected QName artifactType;
+
     @XmlAttribute(name = "artifactRef")
     protected QName artifactRef;
 
     @Deprecated // required for XML deserialization
-    public XTImplementationArtifact() { }
+    public XTImplementationArtifact() {
+    }
 
     public XTImplementationArtifact(Builder builder) {
         super(builder);
@@ -136,7 +137,8 @@ public class XTImplementationArtifact extends XTExtensibleElements implements XH
         this.artifactRef = value;
     }
 
-    public static class Builder<T extends Builder<T>> extends XTExtensibleElements.Builder<Builder<T>> {
+    public static class Builder extends XTExtensibleElements.Builder<Builder> {
+
         private final QName artifactType;
 
         private String name;
@@ -148,30 +150,30 @@ public class XTImplementationArtifact extends XTExtensibleElements implements XH
             this.artifactType = artifactType;
         }
 
-        public T setName(String name) {
+        public Builder setName(String name) {
             this.name = name;
             return self();
         }
 
-        public T setInterfaceName(String interfaceName) {
+        public Builder setInterfaceName(String interfaceName) {
             this.interfaceName = interfaceName;
             return self();
         }
 
-        public T setOperationName(String operationName) {
+        public Builder setOperationName(String operationName) {
             this.operationName = operationName;
             return self();
         }
 
-        public T setArtifactRef(QName artifactRef) {
+        public Builder setArtifactRef(QName artifactRef) {
             this.artifactRef = artifactRef;
             return self();
         }
 
         @ADR(11)
         @Override
-        public T self() {
-            return (T) this;
+        public Builder self() {
+            return this;
         }
 
         public XTImplementationArtifact build() {

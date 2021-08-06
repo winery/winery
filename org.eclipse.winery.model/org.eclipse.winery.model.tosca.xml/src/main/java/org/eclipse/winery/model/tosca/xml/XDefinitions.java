@@ -28,11 +28,13 @@ import javax.xml.namespace.QName;
 @XmlType(name = "")
 @XmlRootElement(name = "Definitions")
 public class XDefinitions extends XTDefinitions {
+
     @XmlTransient
     protected Map<String, QName> importDefinitions = new HashMap<>();
 
     @Deprecated // required for XML deserialization
-    public XDefinitions() { }
+    public XDefinitions() {
+    }
 
     public XDefinitions(Builder builder) {
         super(builder);

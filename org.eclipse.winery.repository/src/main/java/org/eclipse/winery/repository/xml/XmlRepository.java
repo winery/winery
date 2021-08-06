@@ -64,7 +64,7 @@ public class XmlRepository extends AbstractFileBasedRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(XmlRepository.class);
 
     /**
-     * @param repositoryRoot root of the filebased repository
+     * @param repositoryRoot root of the file-based repository
      */
     public XmlRepository(Path repositoryRoot) {
         super(repositoryRoot);
@@ -83,7 +83,7 @@ public class XmlRepository extends AbstractFileBasedRepository {
             LOGGER.info("Failed to read definitions from reference {}", ref, e);
             return null;
         }
-        ToCanonical converter = new ToCanonical(this);
+        ToCanonical converter = new ToCanonical();
         return converter.convert((XDefinitions) definition);
     }
 
@@ -119,7 +119,7 @@ public class XmlRepository extends AbstractFileBasedRepository {
 
     @Override
     public void putDefinition(RepositoryFileReference ref, org.eclipse.winery.model.tosca.TDefinitions content) throws IOException {
-        FromCanonical converter = new FromCanonical(this);
+        FromCanonical converter = new FromCanonical();
         XTDefinitions definitions = converter.convert(content);
         Path serializationTarget = ref2AbsolutePath(ref);
         Files.createDirectories(serializationTarget.getParent());
@@ -142,14 +142,14 @@ public class XmlRepository extends AbstractFileBasedRepository {
             return res;
         }
         assert (Files.isDirectory(dir));
-        final OnlyNonHiddenDirectories onhdf = new OnlyNonHiddenDirectories();
+        final OnlyNonHiddenDirectories hiddenDirectories = new OnlyNonHiddenDirectories();
 
         // list all directories contained in this directory
-        try (DirectoryStream<Path> ds = Files.newDirectoryStream(dir, onhdf)) {
+        try (DirectoryStream<Path> ds = Files.newDirectoryStream(dir, hiddenDirectories)) {
             for (Path nsP : ds) {
                 // the current path is the namespace
                 Namespace ns = new Namespace(nsP.getFileName().toString(), true);
-                try (DirectoryStream<Path> idDS = Files.newDirectoryStream(nsP, onhdf)) {
+                try (DirectoryStream<Path> idDS = Files.newDirectoryStream(nsP, hiddenDirectories)) {
                     for (Path idP : idDS) {
                         XmlId xmlId = new XmlId(idP.getFileName().toString(), true);
                         if (omitDevelopmentVersions) {
@@ -191,7 +191,7 @@ public class XmlRepository extends AbstractFileBasedRepository {
 
     @Override
     public void serialize(org.eclipse.winery.model.tosca.TDefinitions definitions, OutputStream target) throws IOException {
-        FromCanonical converter = new FromCanonical(this);
+        FromCanonical converter = new FromCanonical();
         XTDefinitions implementedStandard = converter.convert(definitions);
         serialize(implementedStandard, target);
     }

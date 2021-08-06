@@ -91,11 +91,11 @@ public class YTPolicyType extends YTEntityType {
     }
 
     public static class Builder extends YTEntityType.Builder<Builder> {
+
         private List<QName> targets;
         private Object triggers;
 
         public Builder() {
-
         }
 
         public Builder(YTEntityType entityType) {

@@ -22,7 +22,6 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
-import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
@@ -36,6 +35,7 @@ import org.eclipse.winery.topologygraph.model.ToscaNode;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ToscaComponentPatternMatcherTest {
@@ -88,13 +88,16 @@ class ToscaComponentPatternMatcherTest {
         stayMappings.add((OTStayMapping) PatternDetectionUtils.swapDetectorWithRefinement(stayMapping));
         prm.setStayMappings(stayMappings);
         assertFalse(matcher.isCompatible(refinement, candidate));
+        assertNotNull(prm.getStayMappings());
         prm.getStayMappings().clear();
         assertTrue(matcher.isCompatible(refinement, candidate));
 
         // component pattern mapping exists
         List<OTPermutationMapping> componentPatternMappings = new ArrayList<>();
         OTPermutationMapping componentPatternMapping = new OTPermutationMapping(new OTPermutationMapping.Builder()
-            .setDetectorElement(new TNodeTemplate())
+            .setDetectorElement(
+                new TNodeTemplate.Builder("detector", QName.valueOf("{ns}type")).build()
+            )
             .setRefinementElement(refinementTemplate)
         );
         componentPatternMappings.add((OTPermutationMapping) PatternDetectionUtils.swapDetectorWithRefinement(componentPatternMapping));
@@ -104,20 +107,25 @@ class ToscaComponentPatternMatcherTest {
         assertTrue(matcher.isCompatible(refinement, candidate));
 
         // different behavior patterns
-        TPolicies refinementPolicies = new TPolicies();
-        refinementPolicies.getPolicy().add(new TPolicy(new TPolicy.Builder(QName.valueOf("{patternNs}type1"))));
+        List<TPolicy> refinementPolicies = new ArrayList<>();
+        refinementPolicies.add(
+            new TPolicy.Builder(QName.valueOf("{patternNs}type1")).build()
+        );
         refinementTemplate.setPolicies(refinementPolicies);
-        TPolicies candidatePolicies = new TPolicies();
+
+        List<TPolicy> candidatePolicies = new ArrayList<>();
         candidateTemplate.setPolicies(candidatePolicies);
         // detector has behavior pattern, candidate doesn't
         assertFalse(matcher.isCompatible(refinement, candidate));
-        candidatePolicies.getPolicy().add(new TPolicy(new TPolicy.Builder(QName.valueOf("{patternNs}type1"))));
+        candidatePolicies.add(
+            new TPolicy.Builder(QName.valueOf("{patternNs}type1")).build()
+        );
         // detector and candidate have same behavior pattern
         assertTrue(matcher.isCompatible(refinement, candidate));
-        refinementPolicies.getPolicy().clear();
+        refinementPolicies.clear();
         // candidate has behavior pattern, detector doesn't
         assertFalse(matcher.isCompatible(refinement, candidate));
-        candidatePolicies.getPolicy().clear();
+        candidatePolicies.clear();
         assertTrue(matcher.isCompatible(refinement, candidate));
 
         // detector supertype of candidate

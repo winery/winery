@@ -19,7 +19,6 @@ import { WineryNotificationService } from '../../../wineryNotificationModule/win
 import { SelectData } from '../../../model/selectData';
 import { WineryUploaderComponent } from '../../../wineryUploader/wineryUploader.component';
 import { SelectItem } from 'ng2-select';
-import { InputParameters, OutputParameters } from '../../../model/parameters';
 import { backendBaseURL } from '../../../configuration';
 import { InstanceService } from '../../instance.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -139,10 +138,10 @@ export class PlansComponent implements OnInit {
     onEditPlanIOParameters(selectedType: PlansApiData) {
         this.newPlan = selectedType;
         if (!this.newPlan.inputParameters) {
-            this.newPlan.inputParameters = new InputParameters();
+            this.newPlan.inputParameters = [];
         }
         if (!this.newPlan.outputParameters) {
-            this.newPlan.outputParameters = new OutputParameters();
+            this.newPlan.outputParameters = [];
         }
         this.ioModalRef = this.modalService.show(this.ioModal);
     }

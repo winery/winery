@@ -28,6 +28,10 @@ public class TGroupType extends TEntityType {
 
     private List<QName> members;
 
+    @Deprecated
+    public TGroupType() {
+    }
+
     protected TGroupType(Builder builder) {
         super(builder);
         this.setMembers(builder.members);
@@ -103,7 +107,7 @@ public class TGroupType extends TEntityType {
             return this;
         }
 
-        public Builder addMembers(QName member) {
+        public Builder addMember(QName member) {
             if (member == null) {
                 return this;
             }

@@ -24,7 +24,6 @@ import org.eclipse.winery.model.tosca.TCapabilityDefinition;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.model.tosca.TTag;
-import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.tools.deployablecomponents.commons.Component;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -41,9 +40,11 @@ class DeployableComponentsToscaConverter {
                 nodeBuilder.addCapabilityDefinitions(convertComponentToCapability(topEntry.getKey()));
 
                 // add top components to nodes with base component as requirement
-                TNodeType.Builder nodeBuilder2 = convertComponentToNode(topEntry.getKey());
-                nodeBuilder2.addRequirementDefinitions(convertComponentToRequirement(entry.getKey()));
-                nodes.add(nodeBuilder2.build());
+                nodes.add(
+                    convertComponentToNode(topEntry.getKey())
+                        .addRequirementDefinitions(convertComponentToRequirement(entry.getKey()))
+                        .build()
+                );
             }
             nodes.add(nodeBuilder.build());
         }
@@ -52,21 +53,30 @@ class DeployableComponentsToscaConverter {
 
     private TNodeType.Builder convertComponentToNode(Component component) {
         TNodeType.Builder baseNodeBuilder = new TNodeType.Builder(component.getName());
-        TTag versionTag = new TTag(new TTag.Builder().setName("version").setValue(component.getVersion()));
-        TTag versionOperatorTag = new TTag(new TTag.Builder().setName("versionOperator").setValue(component.getVersionOperator()));
-        baseNodeBuilder.setTags(new TTags(new TTags.Builder().addTag(versionTag).addTag(versionOperatorTag)));
+        baseNodeBuilder.addTag(
+            new TTag.Builder("versionOperator", component.getVersionOperator()).build()
+        );
+        baseNodeBuilder.addTag(
+            new TTag.Builder("version", component.getVersion()).build()
+        );
         return baseNodeBuilder;
     }
 
     private TCapabilityDefinition convertComponentToCapability(Component component) {
-        TCapabilityDefinition.Builder builder = new TCapabilityDefinition.Builder(component.getName(), new QName(component.getName() + component.getVersionOperator() + component.getVersion()));
-        builder.setUpperBound(component.getVersionOperator() + "_" + component.getVersion());
-        return new TCapabilityDefinition(builder);
+        return new TCapabilityDefinition.Builder(
+            component.getName(),
+            new QName(component.getName() + component.getVersionOperator() + component.getVersion())
+        )
+            .setUpperBound(component.getVersionOperator() + "_" + component.getVersion())
+            .build();
     }
 
     private TRequirementDefinition convertComponentToRequirement(Component component) {
-        TRequirementDefinition.Builder builder = new TRequirementDefinition.Builder(component.getName(), new QName(component.getName() + component.getVersionOperator() + component.getVersion()));
-        builder.setUpperBound(component.getVersionOperator() + "_" + component.getVersion());
-        return new TRequirementDefinition(builder);
+        return new TRequirementDefinition.Builder(
+            component.getName(),
+            new QName(component.getName() + component.getVersionOperator() + component.getVersion())
+        )
+            .setUpperBound(component.getVersionOperator() + "_" + component.getVersion())
+            .build();
     }
 }

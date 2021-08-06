@@ -29,11 +29,13 @@ import org.eclipse.jdt.annotation.Nullable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tPolicyTemplate")
 public class TPolicyTemplate extends TEntityTemplate {
+
     @XmlAttribute(name = "name")
     protected String name;
 
     @Deprecated // used for XML deserialization of API request content
-    public TPolicyTemplate() { }
+    public TPolicyTemplate() {
+    }
 
     public TPolicyTemplate(Builder builder) {
         super(builder);

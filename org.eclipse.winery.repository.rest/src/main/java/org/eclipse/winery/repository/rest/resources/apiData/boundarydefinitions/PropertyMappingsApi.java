@@ -14,17 +14,22 @@
 
 package org.eclipse.winery.repository.rest.resources.apiData.boundarydefinitions;
 
-import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
+import java.util.List;
+
+import org.eclipse.winery.model.tosca.TPropertyMapping;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 
 public class PropertyMappingsApi {
 
-    public TBoundaryDefinitions.Properties.PropertyMappings propertyMappings;
+    public List<TPropertyMapping> propertyMappings;
 
+    @SuppressWarnings("unused") // required for deserialization 
     public PropertyMappingsApi() {
     }
 
     public PropertyMappingsApi(TServiceTemplate ste) {
-        this.propertyMappings = ste.getBoundaryDefinitions().getProperties().getPropertyMappings();
+        if (ste.getBoundaryDefinitions() != null && ste.getBoundaryDefinitions().getProperties() != null) {
+            this.propertyMappings = ste.getBoundaryDefinitions().getProperties().getPropertyMappings();
+        }
     }
 }

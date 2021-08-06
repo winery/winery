@@ -14,7 +14,9 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.util.List;
+
 public interface HasTags {
 
-    TTags getTags();
+    List<TTag> getTags();
 }

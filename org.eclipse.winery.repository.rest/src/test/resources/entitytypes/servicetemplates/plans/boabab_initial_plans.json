@@ -3,12 +3,8 @@
         "documentation": [],
         "any": [],
         "otherAttributes": {},
-        "inputParameters": {
-            "inputParameter": []
-        },
-        "outputParameters": {
-            "outputParameter": []
-        },
+        "inputParameters": [],
+        "outputParameters": [],
         "planModelReference": {
             "reference": "../servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/plans/harvest_Plan/harvest_Plan.bpmn4tosca"
         },

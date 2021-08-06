@@ -27,20 +27,30 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 public class YesNo {
 
     public static class Serializer extends StdSerializer<Boolean> {
-        public Serializer() { this(null); }
+
+        @SuppressWarnings("unused")
+        public Serializer() {
+            this(null);
+        }
+
         protected Serializer(Class<Boolean> t) {
             super(t);
         }
 
         @Override
-        public void serialize (Boolean aBoolean, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws
-        IOException {
+        public void serialize(Boolean aBoolean, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws
+            IOException {
             jsonGenerator.writeString(aBoolean ? "YES" : "NO");
         }
     }
 
     public static class Deserializer extends StdDeserializer<Boolean> {
-        public Deserializer() { this(null); }
+
+        @SuppressWarnings("unused")
+        public Deserializer() {
+            this(null);
+        }
+
         protected Deserializer(Class<?> vc) {
             super(vc);
         }

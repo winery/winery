@@ -14,7 +14,9 @@
 
 package org.eclipse.winery.model.tosca.xml;
 
+import java.util.List;
+
 public interface XHasTags {
 
-    XTTags getTags();
+    List<XTTag> getTags();
 }

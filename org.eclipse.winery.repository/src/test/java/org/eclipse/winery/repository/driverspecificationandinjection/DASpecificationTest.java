@@ -34,6 +34,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DASpecificationTest extends TestWithGitBackedRepository {
@@ -43,17 +44,20 @@ public class DASpecificationTest extends TestWithGitBackedRepository {
         setRevisionTo("af529e513388dc9358a8f700757d8dc59aba3a55");
         ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTest", false);
         TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
+        assertNotNull(topologyTemplate);
 
         TNodeTemplate nodeTemplateWithAbstractDA = topologyTemplate.getNodeTemplate("shetland_pony");
+        assertNotNull(nodeTemplateWithAbstractDA);
+        assertNotNull(nodeTemplateWithAbstractDA.getDeploymentArtifacts());
 
-        TDeploymentArtifact deploymentArtifact = nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact().get(0);
+        TDeploymentArtifact deploymentArtifact = nodeTemplateWithAbstractDA.getDeploymentArtifacts().get(0);
         QName artifactTypeQName = deploymentArtifact.getArtifactType();
         ArtifactTypeId artifactTypeId = new ArtifactTypeId(artifactTypeQName);
 
         TArtifactType artifactType = this.repository.getElement(artifactTypeId);
 
-        assertEquals(artifactType.getTargetNamespace(), DASpecification.getArtifactTypeOfDA(nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact().get(0)).getTargetNamespace());
-        assertEquals(artifactType.getName(), DASpecification.getArtifactTypeOfDA(nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact().get(0)).getName());
+        assertEquals(artifactType.getTargetNamespace(), DASpecification.getArtifactTypeOfDA(nodeTemplateWithAbstractDA.getDeploymentArtifacts().get(0)).getTargetNamespace());
+        assertEquals(artifactType.getName(), DASpecification.getArtifactTypeOfDA(nodeTemplateWithAbstractDA.getDeploymentArtifacts().get(0)).getName());
     }
 
     @Test
@@ -61,6 +65,8 @@ public class DASpecificationTest extends TestWithGitBackedRepository {
         setRevisionTo("af529e513388dc9358a8f700757d8dc59aba3a55");
         ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTest", false);
         TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
+        assertNotNull(topologyTemplate);
+
         List<TNodeTemplate> nodeTemplateWithAbstractDA = new ArrayList<>();
         nodeTemplateWithAbstractDA.add(topologyTemplate.getNodeTemplate("shetland_pony"));
 
@@ -74,12 +80,15 @@ public class DASpecificationTest extends TestWithGitBackedRepository {
         setRevisionTo("af529e513388dc9358a8f700757d8dc59aba3a55");
         ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTest", false);
         TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
+        assertNotNull(topologyTemplate);
 
         TNodeTemplate nodeTemplate = topologyTemplate.getNodeTemplate("westernequipment");
+        assertNotNull(nodeTemplate);
+        assertNotNull(nodeTemplate.getDeploymentArtifacts());
 
-        List<TArtifactType> artifactTypes = DASpecification.getArtifactTypeHierarchy(DASpecification.getArtifactTypeOfDA(nodeTemplate.getDeploymentArtifacts().getDeploymentArtifact().get(0)));
+        List<TArtifactType> artifactTypes = DASpecification.getArtifactTypeHierarchy(DASpecification.getArtifactTypeOfDA(nodeTemplate.getDeploymentArtifacts().get(0)));
         List<String> artifactTypeNames = new ArrayList<>();
-        artifactTypes.stream().forEach(at -> artifactTypeNames.add(at.getName()));
+        artifactTypes.forEach(at -> artifactTypeNames.add(at.getName()));
 
         assertEquals(2, artifactTypes.size());
         assertTrue(artifactTypeNames.contains("WesternEquipment_Pony"));
@@ -91,10 +100,14 @@ public class DASpecificationTest extends TestWithGitBackedRepository {
         setRevisionTo("5f63267261584a513dd8a9b7960687cc3dda910a");
         ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTest", false);
         TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
+        assertNotNull(topologyTemplate);
 
         TNodeTemplate nodeTemplate = topologyTemplate.getNodeTemplate("ponycompetition");
         TNodeTemplate nodeTemplateWithAbstractDA = topologyTemplate.getNodeTemplate("shetland_pony");
-        TDeploymentArtifact deploymentArtifact = nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact().get(0);
+        assertNotNull(nodeTemplateWithAbstractDA);
+        assertNotNull(nodeTemplateWithAbstractDA.getDeploymentArtifacts());
+
+        TDeploymentArtifact deploymentArtifact = nodeTemplateWithAbstractDA.getDeploymentArtifacts().get(0);
         TNodeTemplate expectedNodeTemplate = topologyTemplate.getNodeTemplate("dressageequipment");
 
         TNodeTemplate actualNodeWithConcreteDA = DASpecification.getNodesWithSuitableConcreteDAs(nodeTemplate, deploymentArtifact, topologyTemplate);
@@ -107,17 +120,21 @@ public class DASpecificationTest extends TestWithGitBackedRepository {
         setRevisionTo("5f63267261584a513dd8a9b7960687cc3dda910a");
         ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTest", false);
         TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
+        assertNotNull(topologyTemplate);
 
         TNodeTemplate nodeTemplateWithAbstractDA = topologyTemplate.getNodeTemplate("shetland_pony");
-        TDeploymentArtifact deploymentArtifact = nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact().get(0);
-        TNodeTemplate nodeTemplateConcretDA1 = topologyTemplate.getNodeTemplate("dressageequipment");
+        assertNotNull(nodeTemplateWithAbstractDA);
+        assertNotNull(nodeTemplateWithAbstractDA.getDeploymentArtifacts());
+
+        TDeploymentArtifact deploymentArtifact = nodeTemplateWithAbstractDA.getDeploymentArtifacts().get(0);
+        TNodeTemplate nodeTemplateConcreteDA1 = topologyTemplate.getNodeTemplate("dressageequipment");
         TRelationshipTemplate relationshipTemplate1 = topologyTemplate.getRelationshipTemplate("con_42");
-        TNodeTemplate nodeTemplateConcretDA2 = topologyTemplate.getNodeTemplate("westernequipment");
+        TNodeTemplate nodeTemplateConcreteDA2 = topologyTemplate.getNodeTemplate("westernequipment");
         TRelationshipTemplate relationshipTemplate2 = topologyTemplate.getRelationshipTemplate("con_54");
 
         Set<Pair<TRelationshipTemplate, TNodeTemplate>> concreteDAsAndConnectedNodes = new HashSet<>();
-        concreteDAsAndConnectedNodes.add(Pair.of(relationshipTemplate1, nodeTemplateConcretDA1));
-        concreteDAsAndConnectedNodes.add(Pair.of(relationshipTemplate2, nodeTemplateConcretDA2));
+        concreteDAsAndConnectedNodes.add(Pair.of(relationshipTemplate1, nodeTemplateConcreteDA1));
+        concreteDAsAndConnectedNodes.add(Pair.of(relationshipTemplate2, nodeTemplateConcreteDA2));
 
         Set<Pair<TRelationshipTemplate, TNodeTemplate>> actualNodeWithConcreteDA =
             DASpecification.getNodesWithSuitableConcreteDAAndTheDirectlyConnectedNode(nodeTemplateWithAbstractDA, deploymentArtifact, topologyTemplate);

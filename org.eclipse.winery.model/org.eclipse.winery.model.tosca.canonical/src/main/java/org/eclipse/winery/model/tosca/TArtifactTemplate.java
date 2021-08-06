@@ -14,7 +14,6 @@
 
 package org.eclipse.winery.model.tosca;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -23,12 +22,12 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -37,13 +36,16 @@ import org.eclipse.jdt.annotation.Nullable;
 })
 public class TArtifactTemplate extends TEntityTemplate {
 
-    @XmlElement(name = "ArtifactReferences")
-    protected TArtifactTemplate.ArtifactReferences artifactReferences;
+    @XmlElementWrapper(name = "ArtifactReferences")
+    @XmlElement(name = "ArtifactReference", required = true)
+    protected List<TArtifactReference> artifactReferences;
+
     @XmlAttribute(name = "name")
     protected String name;
 
     @Deprecated // used for XML deserialization of API request content
-    public TArtifactTemplate() { }
+    public TArtifactTemplate() {
+    }
 
     public TArtifactTemplate(Builder builder) {
         super(builder);
@@ -71,11 +73,11 @@ public class TArtifactTemplate extends TEntityTemplate {
         visitor.visit(this);
     }
 
-    public TArtifactTemplate.@Nullable ArtifactReferences getArtifactReferences() {
+    public List<TArtifactReference> getArtifactReferences() {
         return artifactReferences;
     }
 
-    public void setArtifactReferences(TArtifactTemplate.@Nullable ArtifactReferences value) {
+    public void setArtifactReferences(List<TArtifactReference> value) {
         this.artifactReferences = value;
     }
 
@@ -99,47 +101,10 @@ public class TArtifactTemplate extends TEntityTemplate {
             '}';
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "artifactReference"
-    })
-    public static class ArtifactReferences implements Serializable {
-
-        @XmlElement(name = "ArtifactReference", required = true)
-        protected List<TArtifactReference> artifactReference;
-
-        @Override
-        public String toString() {
-            return "ArtifactReferences{" +
-                "artifactReference=" + artifactReference +
-                '}';
-        }
-
-        @NonNull
-        public List<TArtifactReference> getArtifactReference() {
-            if (artifactReference == null) {
-                artifactReference = new ArrayList<TArtifactReference>();
-            }
-            return this.artifactReference;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            ArtifactReferences that = (ArtifactReferences) o;
-            return Objects.equals(artifactReference, that.artifactReference);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(artifactReference);
-        }
-    }
-
     public static class Builder extends TEntityTemplate.Builder<Builder> {
+
         private String name;
-        private TArtifactTemplate.ArtifactReferences artifactReferences;
+        private List<TArtifactReference> artifactReferences;
 
         public Builder(String id, QName type) {
             super(id, type);
@@ -154,41 +119,26 @@ public class TArtifactTemplate extends TEntityTemplate {
             return this;
         }
 
-        public Builder setArtifactReferences(TArtifactTemplate.ArtifactReferences artifactReferences) {
-            this.artifactReferences = artifactReferences;
-            return this;
-        }
-
-        public Builder addArtifactReferences(TArtifactTemplate.ArtifactReferences artifactReferences) {
-            if (artifactReferences == null || artifactReferences.getArtifactReference().isEmpty()) {
+        public Builder addArtifactReferences(List<TArtifactReference> artifactReferences) {
+            if (artifactReferences == null || artifactReferences.isEmpty()) {
                 return this;
             }
 
             if (this.artifactReferences == null) {
                 this.artifactReferences = artifactReferences;
             } else {
-                this.artifactReferences.getArtifactReference().addAll(artifactReferences.artifactReference);
+                this.artifactReferences.addAll(artifactReferences);
             }
             return this;
         }
 
-        public Builder addArtifactReferences(List<TArtifactReference> artifactReferences) {
-            if (artifactReferences == null) {
+        public Builder addArtifactReference(TArtifactReference artifactReference) {
+            if (artifactReference == null) {
                 return this;
             }
 
-            TArtifactTemplate.ArtifactReferences tmp = new TArtifactTemplate.ArtifactReferences();
-            tmp.getArtifactReference().addAll(artifactReferences);
-            return addArtifactReferences(tmp);
-        }
-
-        public Builder addArtifactReferences(TArtifactReference artifactReferences) {
-            if (artifactReferences == null) {
-                return this;
-            }
-
-            TArtifactTemplate.ArtifactReferences tmp = new TArtifactTemplate.ArtifactReferences();
-            tmp.getArtifactReference().add(artifactReferences);
+            List<TArtifactReference> tmp = new ArrayList<>();
+            tmp.add(artifactReference);
             return addArtifactReferences(tmp);
         }
 

@@ -26,15 +26,12 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.version.VersionUtils;
-import org.eclipse.winery.common.version.WineryVersion;
-import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
-import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TInterface;
-import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
@@ -53,9 +50,10 @@ import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.NamespaceProperties;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.eclipse.winery.common.ListUtils.listIsNotNullOrEmpty;
 
 /**
  * This class exposes utility functions which enhance a given topology. It also provides some semantic utilities as,
@@ -74,11 +72,11 @@ public class EnhancementUtils {
             .filter(nodeTemplate -> {
                 TNodeType type = nodeTypes.get(nodeTemplate.getType());
                 if (Objects.nonNull(type.getTags())) {
-                    return type.getTags().getTag()
+                    return type.getTags()
                         .stream()
                         .anyMatch(
-                            tag -> "stateful".equals(tag.getName().toLowerCase())
-                                || "isStateful".toLowerCase().equals(tag.getName().toLowerCase())
+                            tag -> "stateful".equalsIgnoreCase(tag.getName())
+                                || "isStateful".equalsIgnoreCase(tag.getName())
                         );
                 }
 
@@ -143,8 +141,9 @@ public class EnhancementUtils {
                 TRelationshipTemplate hostedOnRelationship = getHostedOnRelationship(topology, node);
                 while (Objects.nonNull(hostedOnRelationship)) {
                     TNodeTemplate host = (TNodeTemplate) hostedOnRelationship.getTargetElement().getRef();
-                    if (ModelUtilities.containsPolicyType(host, OpenToscaBaseTypes.freezableComponentPolicyType)) {
-                        node.getPolicies().getPolicy()
+                    if (node.getPolicies() != null
+                        && ModelUtilities.containsPolicyType(host, OpenToscaBaseTypes.freezableComponentPolicyType)) {
+                        node.getPolicies()
                             .removeIf(policy -> policy.getPolicyType().equals(OpenToscaBaseTypes.freezableComponentPolicyType));
                         hostedOnRelationship = null;
                     } else {
@@ -185,14 +184,20 @@ public class EnhancementUtils {
 
     private static void addAllDAsAndIAsToImplementation(TNodeTypeImplementation target, TNodeTypeImplementation source) {
         if (Objects.nonNull(source.getDeploymentArtifacts())) {
-            target.getDeploymentArtifacts().getDeploymentArtifact().addAll(
-                source.getDeploymentArtifacts().getDeploymentArtifact()
+            if (target.getDeploymentArtifacts() == null) {
+                target.setDeploymentArtifacts(new ArrayList<>());
+            }
+            target.getDeploymentArtifacts().addAll(
+                source.getDeploymentArtifacts()
             );
         }
 
         if (Objects.nonNull(source.getImplementationArtifacts())) {
-            target.getImplementationArtifacts().getImplementationArtifact().addAll(
-                source.getImplementationArtifacts().getImplementationArtifact()
+            if (target.getImplementationArtifacts() == null) {
+                target.setImplementationArtifacts(new ArrayList<>());
+            }
+            target.getImplementationArtifacts().addAll(
+                source.getImplementationArtifacts()
             );
         }
     }
@@ -224,8 +229,8 @@ public class EnhancementUtils {
 
             // Check requirements
             featureChildren.forEach((featureType, value) -> {
-                if (Objects.nonNull(featureType.getRequirementDefinitions())) {
-                    List<TRequirementDefinition> requirements = featureType.getRequirementDefinitions().getRequirementDefinition().stream()
+                if (listIsNotNullOrEmpty(featureType.getRequirementDefinitions())) {
+                    List<TRequirementDefinition> requirements = featureType.getRequirementDefinitions().stream()
                         .filter(req -> req.getRequirementType().equals(OpenToscaBaseTypes.managementFeatureRequirement))
                         .collect(Collectors.toList());
 
@@ -235,7 +240,7 @@ public class EnhancementUtils {
                                 WineryVersion reqVersion = VersionUtils.getVersion(req.getName());
                                 String reqName = VersionUtils.getNameWithoutVersion(req.getName());
 
-                                String type = hosts.getTypeAsQName().getLocalPart();
+                                String type = hosts.getType().getLocalPart();
                                 if (VersionUtils.getNameWithoutVersion(type).equals(reqName)) {
                                     return reqVersion.getComponentVersion().isEmpty()
                                         || reqVersion.getComponentVersion().equals(VersionUtils.getVersion(type).getComponentVersion());
@@ -283,9 +288,10 @@ public class EnhancementUtils {
                     List<PropertyDefinitionKV> definedProperties = generatedNodeType.getWinerysPropertiesDefinition()
                         .getPropertyDefinitions();
 
-                    final @NonNull LinkedHashMap<String, String> kvProperties = ModelUtilities.getPropertiesKV(nodeTemplate) == null
+                    LinkedHashMap<String, String> propertiesKV = ModelUtilities.getPropertiesKV(nodeTemplate);
+                    final LinkedHashMap<String, String> kvProperties = propertiesKV == null
                         ? new LinkedHashMap<>()
-                        : ModelUtilities.getPropertiesKV(nodeTemplate);
+                        : propertiesKV;
                     if (kvProperties.isEmpty()) {
                         definedProperties.stream().map(PropertyDefinitionKV::getKey)
                             .forEach(k -> kvProperties.put(k, ""));
@@ -335,7 +341,7 @@ public class EnhancementUtils {
         TNodeType featureEnrichedNodeType = nodeTypes.get(nodeTemplate.getType());
         featureEnrichedNodeType.setTargetNamespace(namespace);
         featureEnrichedNodeType.setName(
-            nodeTemplate.getType().getLocalPart() + "-" + nodeTemplate.getId() + "-" + featureNames.toString()
+            nodeTemplate.getType().getLocalPart() + "-" + nodeTemplate.getId() + "-" + featureNames
                 + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_VERSION_PREFIX + "1"
         );
 
@@ -350,22 +356,21 @@ public class EnhancementUtils {
 
         // prepare Interfaces
         if (Objects.isNull(featureEnrichedNodeType.getInterfaces())) {
-            featureEnrichedNodeType.setInterfaces(new TInterfaces());
+            featureEnrichedNodeType.setInterfaces(new ArrayList<>());
         }
 
-        List<TInterface> baseInterfaces = featureEnrichedNodeType.getInterfaces().getInterface();
+        List<TInterface> baseInterfaces = featureEnrichedNodeType.getInterfaces();
 
         // merge impl accordingly
-        TNodeTypeImplementation generatedImplementation = new TNodeTypeImplementation();
-        generatedImplementation.setNodeType(featureEnrichedNodeType.getQName());
-        generatedImplementation.setName(
+        TNodeTypeImplementation generatedImplementation = new TNodeTypeImplementation.Builder(
             featureEnrichedNodeType.getName() + "_Impl"
-                + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_VERSION_PREFIX + "1"
-        );
+                + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_VERSION_PREFIX + "1",
+            featureEnrichedNodeType.getQName()
+        ).build();
 
         // ensure that the lists are initialized
-        generatedImplementation.setImplementationArtifacts(new TImplementationArtifacts());
-        generatedImplementation.setDeploymentArtifacts(new TDeploymentArtifacts());
+        generatedImplementation.setImplementationArtifacts(new ArrayList<>());
+        generatedImplementation.setDeploymentArtifacts(new ArrayList<>());
 
         Collection<NodeTypeImplementationId> baseTypeImplementations =
             repository.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTemplate.getType());
@@ -402,15 +407,18 @@ public class EnhancementUtils {
             }
 
             // merge Interfaces
-            if (Objects.nonNull(nodeType.getInterfaces()) && !nodeType.getInterfaces().getInterface().isEmpty()) {
-                baseInterfaces.addAll(nodeType.getInterfaces().getInterface());
+            if (Objects.nonNull(nodeType.getInterfaces()) && !nodeType.getInterfaces().isEmpty()) {
+                baseInterfaces.addAll(nodeType.getInterfaces());
             }
 
             // merge implementations
             repository.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, featureTypeQName)
-                .forEach(id -> {
-                    addAllDAsAndIAsToImplementation(generatedImplementation, nodeTypeImplementations.get(id.getQName()));
-                });
+                .forEach(id -> 
+                    addAllDAsAndIAsToImplementation(
+                        generatedImplementation,
+                        nodeTypeImplementations.get(id.getQName())
+                    )
+                );
         });
 
         // In the case that neither the basic type, nor the feature types define properties,

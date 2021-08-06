@@ -1,6 +1,6 @@
 [
     {
-        "operation": [
+        "operations": [
             {
                 "documentation": [
                 ],
@@ -8,29 +8,25 @@
                 ],
                 "otherAttributes": {
                 },
-                "inputParameters": {
-                    "inputParameter": [
-                        {
-                            "name": "bananaInShell",
-                            "type": "xsd:string",
-                            "required": "YES"
-                        },
-                        {
-                            "name": "peeler",
-                            "type": "xsd:string",
-                            "required": "YES"
-                        }
-                    ]
-                },
-                "outputParameters": {
-                    "outputParameter": [
-                        {
-                            "name": "peeledBanana",
-                            "type": "xsd:string",
-                            "required": "NO"
-                        }
-                    ]
-                },
+                "inputParameters": [
+                    {
+                        "name": "bananaInShell",
+                        "type": "xsd:string",
+                        "required": "YES"
+                    },
+                    {
+                        "name": "peeler",
+                        "type": "xsd:string",
+                        "required": "YES"
+                    }
+                ],
+                "outputParameters": [
+                    {
+                        "name": "peeledBanana",
+                        "type": "xsd:string",
+                        "required": "NO"
+                    }
+                ],
                 "name": "peel"
             },
             {
@@ -40,15 +36,13 @@
                 ],
                 "otherAttributes": {
                 },
-                "inputParameters": {
-                    "inputParameter": [
-                        {
-                            "name": "mouth",
-                            "type": "xsd:string",
-                            "required": "YES"
-                        }
-                    ]
-                },
+                "inputParameters": [
+                    {
+                        "name": "mouth",
+                        "type": "xsd:string",
+                        "required": "YES"
+                    }
+                ],
                 "name": "eat"
             }
         ],

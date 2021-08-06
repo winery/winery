@@ -76,7 +76,7 @@ public abstract class AbstractNamespaceManager implements NamespaceManager {
             // Fallback if no slashes are in the namespace - just count from ns0 onwards
             return String.format("ns%d", round);
         } else {
-            boolean isWineryPropertiesDefinitionNamespace = namespace.endsWith(TEntityType.NS_SUFFIX_PROPERTIESDEFINITION_WINERY);
+            boolean isWineryPropertiesDefinitionNamespace = namespace.endsWith(TEntityType.NS_SUFFIX_PROPERTIES_DEFINITION_WINERY);
             String suffix;
             if (isWineryPropertiesDefinitionNamespace) {
                 suffix = "pd";
