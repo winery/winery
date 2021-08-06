@@ -27,7 +27,6 @@ import org.eclipse.winery.model.ids.admin.NamespacesId;
 import org.eclipse.winery.repository.backend.AbstractNamespaceManager;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
-import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.backend.filebased.JsonBasedNamespaceManager;
 import org.eclipse.winery.repository.backend.filebased.NamespaceProperties;
 import org.eclipse.winery.repository.common.RepositoryFileReference;
@@ -90,11 +89,6 @@ public class JsonBasedMultiNamespaceManager extends AbstractNamespaceManager {
     public void addAllPermanent(Collection<NamespaceProperties> properties) {
         properties.forEach(prop -> {
             IRepository repository = RepositoryUtils.getRepositoryByNamespace(prop.getNamespace(), this.repository);
-
-            if (prop.getUpstreamRepository().isEmpty() && repository instanceof GitBasedRepository) {
-                prop.setUpstreamRepository(((GitBasedRepository) repository).getRepositoryUrl());
-            }
-
             repository.getNamespaceManager().setNamespaceProperties(prop.getNamespace(), prop);
         });
         this.repository.updateNamespaces();

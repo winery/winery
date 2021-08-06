@@ -120,8 +120,8 @@ export abstract class TopologyTemplateUtil {
             if (!node.capabilities ) {
                 node.capabilities = [];
             }
-            capDefs.forEach(def => {
-                const capAssignment = node.capabilities.find(capAss => capAss.name === def.name);
+            capDefs.forEach((def) => {
+                const capAssignment = node.capabilities.find((capAss) => capAss.name === def.name);
                 const cap: CapabilityModel = CapabilityModel.fromCapabilityDefinitionModel(def);
 
                 if (capAssignment) {
@@ -139,9 +139,9 @@ export abstract class TopologyTemplateUtil {
             if (!node.requirements) {
                 node.requirements = [];
             }
-            reqDefs.forEach(reqDef => {
+            reqDefs.forEach((reqDef) => {
                 const req = RequirementModel.fromRequirementDefinition(reqDef);
-                if (!node.requirements.find(r => {
+                if (!node.requirements.find((r) => {
                     if (req.unbounded) {
                         return r.name === req.name && r.relationship === req.relationship;
                     } else {
@@ -151,7 +151,7 @@ export abstract class TopologyTemplateUtil {
                     node.requirements.push(req);
                 }
             });
-            node.requirements.forEach(req => req.id = this.generateYAMLRequirementID(node, req));
+            node.requirements.forEach((req) => req.id = this.generateYAMLRequirementID(node, req));
         }
 
         return new TNodeTemplate(

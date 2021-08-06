@@ -39,7 +39,6 @@ export class NamespacesComponent implements OnInit {
         { title: 'Prefix', name: 'prefix' },
         { title: 'Namespace', name: 'namespace' },
         { title: 'Description', name: 'readableName' },
-        { title: 'Repository URL', name: 'upstreamRepository' },
         { title: 'Pattern NS', name: 'patternCollection' },
         { title: 'Secure NS', name: 'secureCollection' }
     ];
@@ -88,7 +87,7 @@ export class NamespacesComponent implements OnInit {
      * handler for clicks on the add button
      */
     onAddClick() {
-        this.newNamespace = new NamespaceProperties(null, null, '', '', false, false);
+        this.newNamespace = new NamespaceProperties(null, null, '', false, false);
         this.validatorObjectPrefix.isActive = true;
         this.modalTitle = 'Add new Namespace';
         this.addButtonTitle = 'Add';
@@ -103,7 +102,6 @@ export class NamespacesComponent implements OnInit {
             data.namespace,
             data.prefix,
             data.readableName,
-            data.upstreamRepository,
             data.patternCollection,
             data.secureCollection
         );

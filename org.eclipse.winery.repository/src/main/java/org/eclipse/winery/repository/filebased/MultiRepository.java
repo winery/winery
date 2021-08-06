@@ -390,7 +390,7 @@ public class MultiRepository implements IWrappingRepository {
                     loadConfiguration(configurationFile);
                     loadRepositoriesByList();
                 }
-                fixNamespaces(newSubRepository, url);
+                fixNamespaces(newSubRepository);
             } catch (IOException | GitAPIException e) {
                 LOGGER.error("Error while creating the repository structure");
                 e.printStackTrace();
@@ -398,11 +398,11 @@ public class MultiRepository implements IWrappingRepository {
         }
     }
 
-    private void fixNamespaces(IRepository repository, String url) {
-        SortedSet<DefinitionsChildId> defChilds = repository.getAllDefinitionsChildIds();
+    private void fixNamespaces(IRepository repository) {
+        SortedSet<DefinitionsChildId> defChildren = repository.getAllDefinitionsChildIds();
         Collection<NamespaceProperties> namespaceProperties = new ArrayList<>();
-        for (DefinitionsChildId value : defChilds) {
-            namespaceProperties.add(new NamespaceProperties(value.getNamespace().getDecoded(), value.getNamespace().getDecoded().replace(".", ""), "", url, false));
+        for (DefinitionsChildId value : defChildren) {
+            namespaceProperties.add(new NamespaceProperties(value.getNamespace().getDecoded(), value.getNamespace().getDecoded().replace(".", ""), "", false));
         }
         repository.getNamespaceManager().addAllPermanent(namespaceProperties);
     }
