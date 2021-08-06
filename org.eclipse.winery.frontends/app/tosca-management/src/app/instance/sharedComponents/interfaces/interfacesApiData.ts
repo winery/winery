@@ -15,6 +15,14 @@ import { InterfaceParameter } from '../../../model/parameters';
 import { WineryComponent } from '../../../model/wineryComponent';
 import { NodeOperation, PlanOperation, RelationshipOperation } from './targetInterface/operations';
 
+export class InterfaceOperationApiData extends WineryComponent {
+    inputParameters: InterfaceParameter[] = [];
+    outputParameters: InterfaceParameter[] = [];
+    nodeOperation: NodeOperation;
+    relationshipOperation: RelationshipOperation;
+    plan: PlanOperation;
+}
+
 export class InterfacesApiData {
     operations: InterfaceOperationApiData[] = [];
     name: string;
@@ -24,12 +32,4 @@ export class InterfacesApiData {
     constructor(name = '') {
         this.name = name;
     }
-}
-
-export class InterfaceOperationApiData extends WineryComponent {
-    inputParameters: InterfaceParameter[] = [];
-    outputParameters: InterfaceParameter[] = [];
-    nodeOperation: NodeOperation;
-    relationshipOperation: RelationshipOperation;
-    plan: PlanOperation;
 }

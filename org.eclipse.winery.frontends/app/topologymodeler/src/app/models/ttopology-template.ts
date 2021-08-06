@@ -201,7 +201,7 @@ export class Entity {
 }
 
 /**
- * This is the datamodel for the Entity Types
+ * This is the data-model for the Entity Types
  */
 export class EntityType extends Entity {
     constructor(id: string = '',
@@ -276,7 +276,7 @@ export class TArtifactType extends EntityType {
 }
 
 /**
- * This is the datamodel for relationship templates
+ * This is the data-model for relationship templates
  */
 export class TRelationshipTemplate extends AbstractTEntity {
 

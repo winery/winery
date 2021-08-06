@@ -139,7 +139,7 @@ export class BackendService {
             this.serviceTemplateUiUrl = this.configuration.uiURL + url;
 
             // All Entity types
-            this.requestAllEntitiesAtOnce().subscribe(r => this.handleAllEntitiesResult(r));
+            this.requestAllEntitiesAtOnce().subscribe((r) => this.handleAllEntitiesResult(r));
         }
     }
 
@@ -277,7 +277,7 @@ export class BackendService {
     substituteTopology(): void {
         this.alert.info('', 'Substitution in progress...');
         this.http.get<ServiceTemplateId>(this.serviceTemplateURL + '/substitute')
-            .subscribe(res => {
+            .subscribe((res) => {
                     const url = window.location.origin + window.location.pathname + '?repositoryURL=' + this.configuration.repositoryURL
                         + '&uiURL=' + this.configuration.uiURL
                         + '&ns=' + res.namespace.encoded
@@ -527,7 +527,7 @@ export class BackendService {
         switch (entityType) {
             case 'yamlPolicies': {
                 this.storedModel.yamlPolicies = [];
-                entityTypeJSON.forEach(policy => {
+                entityTypeJSON.forEach((policy) => {
                     this.storedModel.yamlPolicies.push(
                         new TPolicy(
                             policy.name,
@@ -544,7 +544,7 @@ export class BackendService {
             }
             case 'artifactTypes': {
                 this.storedModel.artifactTypes = [];
-                entityTypeJSON.forEach(artifactType => {
+                entityTypeJSON.forEach((artifactType) => {
 
                     this.storedModel.artifactTypes
                         .push(new TArtifactType(
@@ -566,7 +566,7 @@ export class BackendService {
             }
             case 'policyTypes': {
                 this.storedModel.policyTypes = [];
-                entityTypeJSON.forEach(element => {
+                entityTypeJSON.forEach((element) => {
                     const policyType = new TPolicyType(element.id,
                         element.qName,
                         element.name,
@@ -575,7 +575,7 @@ export class BackendService {
                         element.full);
                     if (element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].appliesTo) {
                         policyType.targets = element.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].appliesTo
-                            .map(ntr => ntr.typeRef);
+                            .map((ntr) => ntr.typeRef);
                     }
                     this.storedModel.policyTypes.push(policyType);
                 });
@@ -583,7 +583,7 @@ export class BackendService {
             }
             case 'capabilityTypes': {
                 this.storedModel.capabilityTypes = [];
-                entityTypeJSON.forEach(capabilityType => {
+                entityTypeJSON.forEach((capabilityType) => {
                     this.storedModel.capabilityTypes
                         .push(new EntityType(
                             capabilityType.id,
@@ -598,7 +598,7 @@ export class BackendService {
             }
             case 'requirementTypes': {
                 this.storedModel.requirementTypes = [];
-                entityTypeJSON.forEach(requirementType => {
+                entityTypeJSON.forEach((requirementType) => {
                     this.storedModel.requirementTypes
                         .push(new EntityType(
                             requirementType.id,
@@ -613,7 +613,7 @@ export class BackendService {
             }
             case 'policyTemplates': {
                 this.storedModel.policyTemplates = [];
-                entityTypeJSON.forEach(policyTemplate => {
+                entityTypeJSON.forEach((policyTemplate) => {
                     this.storedModel.policyTemplates
                         .push(new Entity(
                             policyTemplate.id,
@@ -630,7 +630,7 @@ export class BackendService {
             }
             case 'versionElements': {
                 this.storedModel.versionElements = [];
-                entityTypeJSON.forEach((versionElements => {
+                entityTypeJSON.forEach(((versionElements) => {
                     this.storedModel.versionElements.push(new VersionElement(versionElements.qName, versionElements.versions));
                 }));
                 break;
@@ -646,7 +646,7 @@ export class BackendService {
                         relationshipType = this.createPrmRelationshipType(relationshipType);
                     }
                     const visuals = this.storedModel.relationshipVisuals
-                        .find(value => value.typeId === relationshipType.qName);
+                        .find((value) => value.typeId === relationshipType.qName);
                     this.storedModel.relationshipTypes
                         .push(new VisualEntityType(
                             relationshipType.id,
