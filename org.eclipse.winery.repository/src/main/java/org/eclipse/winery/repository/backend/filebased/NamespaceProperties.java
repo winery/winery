@@ -42,7 +42,7 @@ public class NamespaceProperties implements Serializable, Comparable<NamespacePr
         this.prefix = prefix;
     }
 
-    public NamespaceProperties(String namespace, String prefix, String readableName, String upstreamRepository, boolean isPatternCollection) {
+    public NamespaceProperties(String namespace, String prefix, String readableName, boolean isPatternCollection) {
         this.namespace = namespace;
         this.prefix = prefix;
         this.readableName = readableName;
