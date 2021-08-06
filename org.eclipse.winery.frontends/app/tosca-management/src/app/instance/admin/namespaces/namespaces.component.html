@@ -29,8 +29,8 @@
             <h4 class="modal-title">Delete Property</h4>
         </winery-modal-header>
         <winery-modal-body>
-            <p *ngIf="elementToRemove != null" id="diagyesnomsg">
-                Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.namespace }}</span>?
+            <p *ngIf="elementToRemove != null" id="elementToRemoveMessage">
+                Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove['namespace'] }}</span>?
             </p>
         </winery-modal-body>
         <winery-modal-footer (onOk)="deleteNamespace();"
@@ -47,7 +47,6 @@
                 <div *ngIf="newNamespace">
                     <!-- pattern parameter is required to enable form validation -->
                     <winery-namespace-selector
-                        #namespace
                         name="namespaceSelector"
                         [(ngModel)]="newNamespace.namespace"
                         [isRequired]="true"
@@ -84,12 +83,6 @@
                                class="form-control"
                                [(ngModel)]="newNamespace.readableName"
                                id="namespaceDescription"/>
-                        <br>
-                        <label class="control-label" for="namespaceRepoUrl">Repository URL</label>
-                        <input name="namespaceRepoUrl"
-                               class="form-control"
-                               [(ngModel)]="newNamespace.upstreamRepository"
-                               id="namespaceRepoUrl"/>
                         <br>
                         <label>
                             <input type="checkbox" name="patterns" [(ngModel)]="newNamespace.patternCollection">

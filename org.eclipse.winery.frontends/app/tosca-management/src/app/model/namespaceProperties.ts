@@ -16,7 +16,6 @@ export class NamespaceProperties {
     constructor(public namespace: string,
                 public prefix: string,
                 public readableName: string,
-                public upstreamRepository: string,
                 public patternCollection: boolean,
                 public secureCollection: boolean) {
 
