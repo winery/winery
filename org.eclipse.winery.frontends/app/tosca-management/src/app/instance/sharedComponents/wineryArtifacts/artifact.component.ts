@@ -405,7 +405,8 @@ export class WineryArtifactComponent implements OnInit {
         this.artifactUrl = '';
         this.uploadUrl = '';
         this.artifact.name = '';
-
+        this.addComponentData.reset();
+        this.noneSelected = true;
     }
 
     private handleDelete() {
