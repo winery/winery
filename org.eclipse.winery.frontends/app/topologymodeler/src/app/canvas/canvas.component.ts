@@ -989,9 +989,9 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         if (storeRelationshipsLength !== localRelationshipsCopyLength) {
             const difference = storeRelationshipsLength - localRelationshipsCopyLength;
 
-            if (difference === 1) {
+            if (localRelationshipsCopyLength !== 0 && difference === 1) {
                 this.handleNewRelationship(currentRelationships);
-            } else if (difference > 0 || difference < 0) {
+            } else if (localRelationshipsCopyLength === 0 || difference > 0 || difference < 0) {
                 if (this.configuration.isYaml() && difference < 0 && this.allNodeTemplates.length > 0) {
                     // a relationship is deleted. reset the associated source requirement
                     const deletedRels = this.allRelationshipTemplates.filter(rel => currentRelationships.every(curRel => curRel.id !== rel.id));
