@@ -88,16 +88,16 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 
     @Path("sourceinterfaces/")
     public InterfacesResource getSourceInterfaces() {
-        if (this.getRelationshipType().getInterfaces() == null) {
-            this.getRelationshipType().setInterfaces(new ArrayList<>());
+        if (this.getRelationshipType().getSourceInterfaces() == null) {
+            this.getRelationshipType().setSourceInterfaces(new ArrayList<>());
         }
         return new InterfacesResource(this, this.getRelationshipType().getSourceInterfaces(), "source");
     }
 
     @Path("targetinterfaces/")
     public InterfacesResource getTargetInterfaces() {
-        if (this.getRelationshipType().getInterfaces() == null) {
-            this.getRelationshipType().setInterfaces(new ArrayList<>());
+        if (this.getRelationshipType().getTargetInterfaces() == null) {
+            this.getRelationshipType().setTargetInterfaces(new ArrayList<>());
         }
         return new InterfacesResource(this, this.getRelationshipType().getTargetInterfaces(), "target");
     }
