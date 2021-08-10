@@ -473,6 +473,6 @@ export class WineryArtifactComponent implements OnInit {
             this.nodeOrRelationshipType = compData.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].relationshipType;
         }
         this.nodeOrRelationShipTypeName = this.nodeOrRelationshipType
-            .substring(this.nodeOrRelationshipType.indexOf('}') + 1, this.nodeOrRelationshipType.indexOf('_'));
+            .substring(this.nodeOrRelationshipType.lastIndexOf('}') + 1, this.nodeOrRelationshipType.lastIndexOf('_'));
     }
 }
