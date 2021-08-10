@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -89,8 +89,8 @@ export class WineryArtifactComponent implements OnInit {
         { title: 'Operation Name', name: 'operationName' }
     ];
     private createComponent: boolean;
-    private nodeType: string;
-    private nodeTypeName: string;
+    private nodeOrRelationshipType: string;
+    private nodeOrRelationShipTypeName: string;
 
     constructor(private service: WineryArtifactService,
                 public sharedData: InstanceService,
@@ -98,7 +98,7 @@ export class WineryArtifactComponent implements OnInit {
                 private fileService: FilesService,
                 private sectionService: SectionService,
                 private existService: ExistService,
-                private nodeTypeService: InstanceService,
+                private instanceService: InstanceService,
                 private router: Router) {
     }
 
@@ -148,7 +148,7 @@ export class WineryArtifactComponent implements OnInit {
         }
 
         this.name = this.isImplementationArtifact ? 'Implementation' : 'Deployment';
-        this.nodeTypeService.getComponentData()
+        this.instanceService.getComponentData()
             .subscribe(
                 compData => this.handleComponentData(compData)
             );
@@ -164,16 +164,16 @@ export class WineryArtifactComponent implements OnInit {
             this.artifact.namespace = this.sharedData.toscaComponent.namespace;
         }
         this.artifact.namespace = this.artifact.namespace.slice(0, this.sharedData.toscaComponent.namespace.lastIndexOf('/') + 1) + ToscaTypes.ArtifactTemplate;
-        this.artifact.name = this.nodeTypeName;
+        this.artifact.name = this.nodeOrRelationShipTypeName;
         this.artifact.toscaType = ToscaTypes.ArtifactTemplate;
         this.existCheck();
         this.addComponentData.createArtifactName(
             this.sharedData.toscaComponent,
-            this.nodeType,
+            this.nodeOrRelationshipType,
             this.selectedInterface ? this.selectedInterface.text : null,
             this.selectedOperation,
             this.isImplementationArtifact,
-            this.nodeTypeName
+            this.nodeOrRelationShipTypeName
         );
         this.addArtifactModal.show();
     }
@@ -364,11 +364,11 @@ export class WineryArtifactComponent implements OnInit {
 
     interfaceAndOperation() {
         if (this.isImplementationArtifact) {
-            this.addComponentData.createArtifactName(this.sharedData.toscaComponent, this.nodeType,
-                this.selectedInterface.text, this.selectedOperation, this.isImplementationArtifact, this.nodeTypeName);
+            this.addComponentData.createArtifactName(this.sharedData.toscaComponent, this.nodeOrRelationshipType,
+                this.selectedInterface.text, this.selectedOperation, this.isImplementationArtifact, this.nodeOrRelationShipTypeName);
         } else {
-            this.addComponentData.createArtifactName(this.sharedData.toscaComponent, this.nodeType,
-                null, this.newArtifact.artifactName, this.isImplementationArtifact, this.nodeTypeName);
+            this.addComponentData.createArtifactName(this.sharedData.toscaComponent, this.nodeOrRelationshipType,
+                null, this.newArtifact.artifactName, this.isImplementationArtifact, this.nodeOrRelationShipTypeName);
         }
     }
 
@@ -467,7 +467,12 @@ export class WineryArtifactComponent implements OnInit {
     }
 
     private handleComponentData(compData: WineryInstance) {
-        this.nodeType = compData.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].nodeType;
-        this.nodeTypeName = this.nodeType.substring(this.nodeType.indexOf('}') + 1, this.nodeType.indexOf('_'));
+        if (compData.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].nodeType) {
+            this.nodeOrRelationshipType = compData.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].nodeType;
+        } else {
+            this.nodeOrRelationshipType = compData.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].relationshipType;
+        }
+        this.nodeOrRelationShipTypeName = this.nodeOrRelationshipType
+            .substring(this.nodeOrRelationshipType.lastIndexOf('}') + 1, this.nodeOrRelationshipType.lastIndexOf('_'));
     }
 }

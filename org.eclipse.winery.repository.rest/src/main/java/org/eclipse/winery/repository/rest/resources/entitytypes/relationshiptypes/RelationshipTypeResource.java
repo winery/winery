@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -88,16 +88,16 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 
     @Path("sourceinterfaces/")
     public InterfacesResource getSourceInterfaces() {
-        if (this.getRelationshipType().getInterfaces() == null) {
-            this.getRelationshipType().setInterfaces(new ArrayList<>());
+        if (this.getRelationshipType().getSourceInterfaces() == null) {
+            this.getRelationshipType().setSourceInterfaces(new ArrayList<>());
         }
         return new InterfacesResource(this, this.getRelationshipType().getSourceInterfaces(), "source");
     }
 
     @Path("targetinterfaces/")
     public InterfacesResource getTargetInterfaces() {
-        if (this.getRelationshipType().getInterfaces() == null) {
-            this.getRelationshipType().setInterfaces(new ArrayList<>());
+        if (this.getRelationshipType().getTargetInterfaces() == null) {
+            this.getRelationshipType().setTargetInterfaces(new ArrayList<>());
         }
         return new InterfacesResource(this, this.getRelationshipType().getTargetInterfaces(), "target");
     }
