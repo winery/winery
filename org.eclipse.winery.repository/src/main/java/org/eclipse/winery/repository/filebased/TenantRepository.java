@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.repository.filebased;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -69,6 +70,15 @@ public class TenantRepository implements IWrappingRepository {
         this.defaultRepository = this.createRepo(
             new GitBasedRepositoryConfiguration(false, fileBasedConfig)
         );
+
+        File[] files = this.repositoryRoot.toFile().listFiles(File::isDirectory);
+        if (files != null) {
+            for (File file : files) {
+                if (!".git".equals(file.getName()) || !defaultRepositoryFolder.equals(file.getName())) {
+                    initTenantRepository(file.getName());
+                }
+            }
+        }
     }
 
     public TenantRepository(Path repositoryRoot, List<String> tenants) throws IOException, GitAPIException {

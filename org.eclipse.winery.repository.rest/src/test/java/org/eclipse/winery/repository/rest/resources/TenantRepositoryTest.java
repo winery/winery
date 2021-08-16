@@ -28,7 +28,7 @@ public class TenantRepositoryTest extends AbstractResourceTest {
 
         String[] results = new String[3];
 
-        Thread tenant1Thread = new Thread(() -> {
+        Thread tenant1Thread = new Thread(() ->
             results[0] = start()
                 .accept(ContentType.JSON.toString())
                 .get(callURL("servicetemplates/?xTenant=tenant_1"))
@@ -39,13 +39,13 @@ public class TenantRepositoryTest extends AbstractResourceTest {
                 .extract()
                 .response()
                 .getBody()
-                .asString();
-        });
+                .asString()
+        );
 
-        Thread tenant2Thread = new Thread(() -> {
+        Thread tenant2Thread = new Thread(() ->
             results[1] = start()
                 .accept(ContentType.JSON.toString())
-                .header(new Header("xTenant", "tenant2"))
+                .header(new Header("xTenant", "tenant_2"))
                 .get(callURL("servicetemplates/"))
                 .then()
                 .log()
@@ -54,13 +54,13 @@ public class TenantRepositoryTest extends AbstractResourceTest {
                 .extract()
                 .response()
                 .getBody()
-                .asString();
-        });
+                .asString()
+        );
 
-        Thread tenant3Thread = new Thread(() -> {
+        Thread tenant3Thread = new Thread(() ->
             results[2] = start()
                 .accept(ContentType.JSON.toString())
-                .header(new Header("xTenant", "tenant3"))
+                .header(new Header("xTenant", "tenant_3"))
                 .get(callURL("servicetemplates/"))
                 .then()
                 .log()
@@ -69,8 +69,8 @@ public class TenantRepositoryTest extends AbstractResourceTest {
                 .extract()
                 .response()
                 .getBody()
-                .asString();
-        });
+                .asString()
+        );
 
         tenant1Thread.start();
         tenant2Thread.start();
