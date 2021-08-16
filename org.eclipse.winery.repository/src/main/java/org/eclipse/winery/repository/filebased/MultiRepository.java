@@ -98,7 +98,7 @@ public class MultiRepository implements IWrappingRepository {
             LOGGER.debug("Trying to initialize local repository...");
 
             File localRepoPath = new File(repositoryRoot.toString(), Constants.DEFAULT_LOCAL_REPO_NAME);
-            this.dependantRepositories = new File(repositoryRoot.toString(), Filename.FILENAME_JSON_REPOSITORIES);
+            this.dependantRepositories = new File(repositoryRoot.toString(), Filename.FILENAME_JSON_MUTLI_REPOSITORIES);
             readRepositoriesConfig();
 
             GitBasedRepositoryConfiguration gitBasedRepositoryConfiguration = new GitBasedRepositoryConfiguration(
@@ -319,7 +319,7 @@ public class MultiRepository implements IWrappingRepository {
      * @return True whenever there is a repositories.json file in the root folder of the MultiRepository
      */
     private boolean repoContainsConfigFile() {
-        File repo = new File(this.getRepositoryRoot().toString(), Filename.FILENAME_JSON_REPOSITORIES);
+        File repo = new File(this.getRepositoryRoot().toString(), Filename.FILENAME_JSON_MUTLI_REPOSITORIES);
         return repo.exists();
     }
 
@@ -385,7 +385,7 @@ public class MultiRepository implements IWrappingRepository {
                 IRepository newSubRepository = resolver.createRepository(repositoryLocation);
                 this.addRepository(newSubRepository);
 
-                File configurationFile = new File(newSubRepository.getRepositoryRoot().toString().replace("\\workspace", ""), Filename.FILENAME_JSON_REPOSITORIES);
+                File configurationFile = new File(newSubRepository.getRepositoryRoot().toString().replace("\\workspace", ""), Filename.FILENAME_JSON_MUTLI_REPOSITORIES);
                 if (configurationFile.exists()) {
                     loadConfiguration(configurationFile);
                     loadRepositoriesByList();

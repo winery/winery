@@ -31,15 +31,20 @@ public class RepositoryConfigurationObject extends AbstractConfigurationObject {
     // this class shares the responsibility of the Environment class in abstracting 
     // over interactions with the configuration file. Loggers are therefore shared.
     private static final Logger LOGGER = LoggerFactory.getLogger(Environment.class);
-    
+
     private static final String key = "repository.";
     private GitConfigurationObject gitConfiguration;
 
     private RepositoryProvider provider;
     private String repositoryRoot;
     private String csarOutputPath;
+    private boolean tenantRepository;
 
     private YAMLConfiguration configuration;
+
+    public boolean isTenantRepository() {
+        return tenantRepository;
+    }
 
     public enum RepositoryProvider {
 
@@ -71,6 +76,7 @@ public class RepositoryConfigurationObject extends AbstractConfigurationObject {
         configuration.setProperty(key + "provider", this.getProvider().toString());
         configuration.setProperty(key + "repositoryRoot", this.repositoryRoot);
         configuration.setProperty(key + "csarOutputPath", this.csarOutputPath);
+        configuration.setProperty(key + "tenantMode", this.tenantRepository);
         this.getGitConfiguration().save();
         Environment.getInstance().save();
     }
@@ -80,6 +86,7 @@ public class RepositoryConfigurationObject extends AbstractConfigurationObject {
         this.configuration = updatedConfiguration;
         this.repositoryRoot = configuration.getString(key + "repositoryRoot");
         this.csarOutputPath = configuration.getString(key + "csarOutputPath");
+        this.tenantRepository = configuration.getBoolean(key + "tenantMode");
         String provider = Environment.getInstance().getConfiguration().getString(getProviderConfigurationKey());
         if (provider.equalsIgnoreCase(RepositoryProvider.YAML.name())) {
             this.setProvider(RepositoryProvider.YAML);

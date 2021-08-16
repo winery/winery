@@ -27,6 +27,7 @@ import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.filebased.AbstractFileBasedRepository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.filebased.MultiRepository;
+import org.eclipse.winery.repository.filebased.TenantRepository;
 import org.eclipse.winery.repository.xml.XmlRepository;
 import org.eclipse.winery.repository.yaml.YamlRepository;
 
@@ -43,11 +44,15 @@ public class RepositoryFactory {
 
     private static IRepository repository = null;
 
-    private static boolean repositoryContainsRepoConfig(FileBasedRepositoryConfiguration config) {
+    public static boolean repositoryContainsMultiRepositoryConfiguration(FileBasedRepositoryConfiguration config) {
+        return repositoryContainsRepoConfig(config, Filename.FILENAME_JSON_MUTLI_REPOSITORIES);
+    }
+
+    public static boolean repositoryContainsRepoConfig(FileBasedRepositoryConfiguration config, String fileName) {
         if (config.getRepositoryPath().isPresent()) {
-            return new File(config.getRepositoryPath().get().toString(), Filename.FILENAME_JSON_REPOSITORIES).exists();
+            return new File(config.getRepositoryPath().get().toString(), fileName).exists();
         } else {
-            return new File(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), Filename.FILENAME_JSON_REPOSITORIES).exists();
+            return new File(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), fileName).exists();
         }
     }
 
@@ -63,8 +68,10 @@ public class RepositoryFactory {
         RepositoryFactory.gitBasedRepositoryConfiguration = configuration;
         RepositoryFactory.fileBasedRepositoryConfiguration = null;
 
-        if (repositoryContainsRepoConfig(configuration)) {
+        if (repositoryContainsMultiRepositoryConfiguration(configuration)) {
             repository = new MultiRepository(configuration.getRepositoryPath().get());
+        } else if (Environments.getInstance().getRepositoryConfig().isTenantRepository()) {
+            repository = new TenantRepository(configuration.getRepositoryPath().get());
         } else {
             // if a repository root is specified, use it instead of the root specified in the config
             AbstractFileBasedRepository localRepository = configuration.getRepositoryPath().isPresent()
@@ -78,11 +85,17 @@ public class RepositoryFactory {
         RepositoryFactory.fileBasedRepositoryConfiguration = configuration;
         RepositoryFactory.gitBasedRepositoryConfiguration = null;
 
-        if (repositoryContainsRepoConfig(configuration)) {
+        if (repositoryContainsMultiRepositoryConfiguration(configuration)) {
             try {
                 repository = new MultiRepository(configuration.getRepositoryPath().get());
             } catch (IOException | GitAPIException e) {
                 LOGGER.error("Error while initializing Multi-Repository!");
+            }
+        } else if (Environments.getInstance().getRepositoryConfig().isTenantRepository()) {
+            try {
+                repository = new TenantRepository(configuration.getRepositoryPath().get());
+            } catch (IOException | GitAPIException e) {
+                LOGGER.error("Error while initializing Tenant-Repository");
             }
         } else {
             // if a repository root is specified, use it instead of the root specified in the config
