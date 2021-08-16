@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 public abstract class RepositoryTest {
     protected static final Logger LOGGER = LoggerFactory.getLogger(MultiRepositoryManagerTest.class);
     static String workspaceRepositoryRoot;
+    static boolean workspaceRepositoryTenant;
 
     /**
      * This sets the repository root to a test directory where the multirepository will be temporarily be initialized.
@@ -41,6 +42,7 @@ public abstract class RepositoryTest {
     @BeforeAll
     static void getRepositoryRootBeforeTestAndSetUpTestRoot() {
         workspaceRepositoryRoot = Environments.getInstance().getRepositoryConfig().getRepositoryRoot();
+        workspaceRepositoryTenant = Environments.getInstance().getRepositoryConfig().isTenantRepository();
         Path testRepositoryRoot = Paths.get(System.getProperty("java.io.tmpdir")).resolve("test-multi-repository");
         if (!Files.exists(testRepositoryRoot)) {
             try {
@@ -83,5 +85,6 @@ public abstract class RepositoryTest {
             LOGGER.error("Error while cleanup. Could not delete temporary directory.", e);
         }
         Environments.getInstance().getRepositoryConfig().setRepositoryRoot(workspaceRepositoryRoot);
+        Environments.getInstance().getRepositoryConfig().setTenantRepository(workspaceRepositoryTenant);
     }
 }

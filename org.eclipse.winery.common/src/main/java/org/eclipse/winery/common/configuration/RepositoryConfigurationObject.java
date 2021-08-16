@@ -42,6 +42,10 @@ public class RepositoryConfigurationObject extends AbstractConfigurationObject {
 
     private YAMLConfiguration configuration;
 
+    public void setTenantRepository(boolean tenantRepository) {
+        this.tenantRepository = tenantRepository;
+    }
+
     public boolean isTenantRepository() {
         return tenantRepository;
     }
