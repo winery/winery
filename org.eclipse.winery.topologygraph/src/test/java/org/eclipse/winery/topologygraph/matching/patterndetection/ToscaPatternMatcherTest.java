@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ToscaPatternMatcherTest {
+class ToscaPatternMatcherTest extends PaternMatcherTest {
 
     @Test
     public void behaviorPatternsCompatible() {

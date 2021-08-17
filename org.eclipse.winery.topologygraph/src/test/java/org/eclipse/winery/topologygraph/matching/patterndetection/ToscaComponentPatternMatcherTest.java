@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ToscaComponentPatternMatcherTest {
+class ToscaComponentPatternMatcherTest extends PaternMatcherTest {
 
     @Test
     public void isCompatible() {

@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ToscaBehaviorPatternMatcherTest {
+class ToscaBehaviorPatternMatcherTest extends PaternMatcherTest {
 
     @Test
     public void propertiesCompatible() {

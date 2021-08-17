@@ -134,6 +134,7 @@ public class RepositoryConfigurationObject extends AbstractConfigurationObject {
 
     public void setTenantRepository(boolean tenantRepository) {
         this.tenantRepository = tenantRepository;
+        this.save();
     }
 
     public boolean isTenantRepository() {

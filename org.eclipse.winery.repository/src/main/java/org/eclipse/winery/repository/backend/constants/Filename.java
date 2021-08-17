@@ -26,7 +26,6 @@ public class Filename {
     public static final String FILENAME_JSON_PLAN = "Plan.json";
     public static final String FILENAME_JSON_RELATIONSHIPTEMPLATE = "realtionshiptemplates.json";
     public static final String FILENAME_JSON_MUTLI_REPOSITORIES = "repositories.json";
-    public static final String FILENAME_JSON_TENANT_REPOSITORIES = "tenants.json";
     public static final String FILENAME_JSON_TOPOLOGYTEMPLATE = "TopologyTemplate.json";
     public static final String FILENAME_JSON_OPERATION_WSDL = "wsdl.json";
     public static final String FILENAME_JSON_OPERATION_REST = "rest.json";
