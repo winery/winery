@@ -14,13 +14,32 @@
 
 package org.eclipse.winery.repository.rest.resources;
 
+import org.eclipse.winery.common.configuration.Environments;
+
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 public class TenantRepositoryTest extends AbstractResourceTest {
+
+    static boolean workspaceRepositoryTenant;
+
+    @BeforeAll
+    public static void init() throws Exception {
+        workspaceRepositoryTenant = Environments.getInstance().getRepositoryConfig().isTenantRepository();
+        Environments.getInstance().getRepositoryConfig().setTenantRepository(true);
+        AbstractResourceTest.init();
+    }
+
+    @AfterAll
+    public static void shutdown() throws Exception {
+        AbstractResourceTest.shutdown();
+        Environments.getInstance().getRepositoryConfig().setTenantRepository(workspaceRepositoryTenant);
+    }
 
     @Test
     public void testTenantRepository() throws Exception {
