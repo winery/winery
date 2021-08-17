@@ -50,12 +50,12 @@ public class MultiRepositoryManagerTest extends RepositoryTest{
         MultiRepositoryManager multiRepositoryManager = new MultiRepositoryManager();
         multiRepositoryManager.initializeRepositoryListForMultiRepositoryAndReconfigureFactory(repositoryList);
         assertTrue(Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(),
-            Filename.FILENAME_JSON_REPOSITORIES).toFile().exists());
+            Filename.FILENAME_JSON_MUTLI_REPOSITORIES).toFile().exists());
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectReader reader = objectMapper.readerFor(new TypeReference<List<RepositoryProperties>>() {
         });
         repositoryList = reader.readValue(Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(),
-            Filename.FILENAME_JSON_REPOSITORIES).toFile());
+            Filename.FILENAME_JSON_MUTLI_REPOSITORIES).toFile());
         assertEquals(1, repositoryList.size());
         assertEquals("https://github.com/winery/mulit-repo-test", repositoryList.get(0).getUrl());
         assertEquals("master", repositoryList.get(0).getBranch());
@@ -139,7 +139,7 @@ public class MultiRepositoryManagerTest extends RepositoryTest{
      * Also reconfigures the Factory to a MultiRepository.
      */
     void writeDependencyFile() {
-        File dependencyFile = Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), Filename.FILENAME_JSON_REPOSITORIES).toFile();
+        File dependencyFile = Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), Filename.FILENAME_JSON_MUTLI_REPOSITORIES).toFile();
         try (FileWriter writer = new FileWriter(dependencyFile)) {
             writer.write("[\n" +
                 "   {\n" +

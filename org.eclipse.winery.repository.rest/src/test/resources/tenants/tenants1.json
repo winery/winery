@@ -1,0 +1,8 @@
+[
+    {
+        "id": "test1",
+        "name": "test1",
+        "namespace": "namespace",
+        "qName": "{namespace}test1"
+    }
+]

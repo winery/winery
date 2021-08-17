@@ -59,7 +59,7 @@ public class MultiRepositoryTest extends RepositoryTest{
      * Also reconfigures the Factory to a MultiRepository.
      */
     void writeDependencyFile() {
-        File dependencyFile = Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), Filename.FILENAME_JSON_REPOSITORIES).toFile();
+        File dependencyFile = Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), Filename.FILENAME_JSON_MUTLI_REPOSITORIES).toFile();
         try (FileWriter writer = new FileWriter(dependencyFile)) {
             writer.write("[\n" +
                 "  {\n" +

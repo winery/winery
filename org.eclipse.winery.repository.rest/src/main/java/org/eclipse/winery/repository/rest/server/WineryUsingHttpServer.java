@@ -63,7 +63,8 @@ public class WineryUsingHttpServer {
         // this mirrors org.eclipse.winery.repository.rest\src\main\webapp\WEB-INF\web.xml
         ServletHolder h = context.addServlet(ServletContainer.class, "/*");
         h.setInitParameter("jersey.config.server.provider.packages",
-            "org.eclipse.winery.repository.rest.resources");
+            "org.eclipse.winery.repository.rest.resources," +
+                "org.eclipse.winery.repository.rest.filters");
         h.setInitParameter("jersey.config.server.provider.classnames",
             "org.glassfish.jersey.logging.LoggingFeature," +
                 "org.glassfish.jersey.media.multipart.MultiPartFeature," +

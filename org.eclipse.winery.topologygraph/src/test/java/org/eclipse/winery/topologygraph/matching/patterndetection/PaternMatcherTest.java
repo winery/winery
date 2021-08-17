@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.filebased;
+package org.eclipse.winery.topologygraph.matching.patterndetection;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,17 +21,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.eclipse.winery.common.configuration.Environments;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class RepositoryTest {
-    protected static final Logger LOGGER = LoggerFactory.getLogger(MultiRepositoryManagerTest.class);
+public abstract class PaternMatcherTest {
+
+    protected static final Logger LOGGER = LoggerFactory.getLogger(ToscaBehaviorPatternMatcherTest.class);
     static String workspaceRepositoryRoot;
     static boolean workspaceRepositoryTenant;
 
@@ -43,7 +42,7 @@ public abstract class RepositoryTest {
     static void getRepositoryRootBeforeTestAndSetUpTestRoot() {
         workspaceRepositoryRoot = Environments.getInstance().getRepositoryConfig().getRepositoryRoot();
         workspaceRepositoryTenant = Environments.getInstance().getRepositoryConfig().isTenantRepository();
-        Path testRepositoryRoot = Paths.get(System.getProperty("java.io.tmpdir")).resolve("test-multi-repository");
+        Path testRepositoryRoot = Paths.get(System.getProperty("java.io.tmpdir")).resolve("test-repository");
         if (!Files.exists(testRepositoryRoot)) {
             try {
                 Files.createDirectory(testRepositoryRoot);
@@ -58,20 +57,7 @@ public abstract class RepositoryTest {
             }
         }
         Environments.getInstance().getRepositoryConfig().setRepositoryRoot(testRepositoryRoot.toString());
-    }
-
-    @BeforeEach
-    void cleanDirectory() {
-        try {
-            FileUtils.cleanDirectory(new File(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()));
-        } catch (IOException e) {
-            LOGGER.error("Error while cleaning. Could not clear the temporary directory.", e);
-        }
-        try {
-            RepositoryFactory.reconfigure();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Environments.getInstance().getRepositoryConfig().setTenantRepository(false);
     }
 
     /**
