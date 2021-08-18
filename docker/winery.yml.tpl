@@ -26,6 +26,7 @@ repository:
   provider: {{ .Env.WINERY_REPOSITORY_PROVIDER }}
   repositoryRoot: {{ .Env.WINERY_REPOSITORY_PATH }}
   csarOutputPath: {{ .Env.WINERY_CSAR_OUTPUT_PATH }}
+  tenantMode: {{ .Env.WINERY_TENANT_MODE }} 
   git:
     clientSecret: {{ .Env.GITHUB_CLIENT_SECRET }}
     password: default
