@@ -89,7 +89,7 @@ export class SectionComponent implements OnInit, OnDestroy {
                 private router: Router,
                 private service: SectionService,
                 private notify: WineryNotificationService,
-                protected accountability: AccountabilityService,
+                public accountability: AccountabilityService,
                 private modalService: BsModalService,
                 private configurationService: WineryRepositoryConfigurationService) {
     }
@@ -278,11 +278,11 @@ export class SectionComponent implements OnInit, OnDestroy {
 
                 if (last.version.componentVersion === container.version.componentVersion &&
                     last.version.wineryVersion === container.version.wineryVersion) {
-                    if (last.versionInstances === null || last.versionInstances === undefined) {
+                    if (!last.versionInstances) {
                         const copy = (new SectionData()).createCopy(last);
                         last.hasChildren = true;
                         const wip = last.id.match(/(-wip[0-9]*$)/);
-                        if (!(wip === null || wip === undefined)) {
+                        if (wip) {
                             last.id = last.id.substr(0, wip.index);
                             last.name = last.name.substr(0, wip.index);
                         }
@@ -297,6 +297,13 @@ export class SectionComponent implements OnInit, OnDestroy {
                 lastElement.hasChildren = true;
             } else {
                 this.componentData.push(container);
+            }
+        });
+
+        // cleanup to avoid double nested elements if only one component version is defined
+        this.componentData.forEach((item: SectionData, index: number) => {
+            if (item.hasChildren && item.versionInstances && item.versionInstances.length === 1) {
+                this.componentData[index] = item.versionInstances[0];
             }
         });
 
