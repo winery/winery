@@ -48,10 +48,10 @@
                     </div>
 
                     <hr>
-                    <label for="output-cap" class="control-label">Topology generation cap</label>
+                    <label for="output-cap-{{ randomIdSuffix }}" class="control-label">Topology generation cap</label>
                     <input type="number"
                            class="form-control"
-                           id="output-cap"
+                           id="output-cap-{{ randomIdSuffix }}"
                            name="output-cap"
                            #newName="ngModel"
                            [(ngModel)]="request.outputCap">

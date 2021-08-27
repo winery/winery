@@ -73,8 +73,8 @@ export class WineryUploaderComponent implements OnInit, OnChanges {
     @Input() isEditable: boolean;
 
     @Output() onFileDropped = new EventEmitter();
-    @Output() onSuccess = new EventEmitter();
-    @Output() onError = new EventEmitter();
+    @Output() onSuccess = new EventEmitter<string>();
+    @Output() onError = new EventEmitter<string>();
 
     constructor(public service: WineryUploaderService,
                 private notify: WineryNotificationService) {

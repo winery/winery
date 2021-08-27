@@ -14,12 +14,12 @@
 <div class="form-group-grouping typeimplementation">
     <form>
         <div class="form-group">
-            <label for="implName" class="control-label">
+            <label for="implName-{{ randomIdSuffix }}" class="control-label">
                 {{ generateData.toscaType | toscaTypeToReadableName }} Name
             </label>
             <input type="text" name="implementationName" [(ngModel)]="generateData.name" #textInput="ngModel"
                    class="form-control" (input)="checkImplementationExists();"
-                   id="implName" required pattern="^((?!_).)*$">
+                   id="implName-{{ randomIdSuffix }}" required pattern="^((?!_).)*$">
             <div *ngIf="textInput.errors; else createArtifact" class="alert alert-danger">
                 <div [hidden]="!textInput.errors.pattern">
                     No underscores allowed!
@@ -34,8 +34,8 @@
                 </ng-template>
             </ng-template>
             <div class="form-group">
-                <label for="finalName" class="control-label">Final name</label>
-                <input id="finalName" class="form-control" type="text" disabled [value]="generateData.name + '_w1-wip1'">
+                <label for="finalName-{{ randomIdSuffix }}" class="control-label">Final name</label>
+                <input id="finalName-{{ randomIdSuffix }}" class="form-control" type="text" disabled [value]="generateData.name + '_w1-wip1'">
             </div>
             <!-- pattern parameter is required to enable form validation -->
             <winery-namespace-selector name="artifactNamespace"

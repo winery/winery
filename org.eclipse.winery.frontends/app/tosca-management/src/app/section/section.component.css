@@ -96,3 +96,7 @@ pagination-controls {
 .noWrap {
     white-space: nowrap;
 }
+
+.addPadding {
+    padding-bottom: 110px;
+}

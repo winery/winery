@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -35,12 +35,14 @@ export class EntityContainerComponent implements OnInit {
     @Input() xsdSchemaType: string;
     @Input() maxWidth = 500;
     @Output() deleted = new EventEmitter<string>();
-    @Output() showingChildren = new EventEmitter<number>();
+    @Output() showingChildren = new EventEmitter<ShowingSubChildren>();
+    @Output() showsLastElement = new EventEmitter<boolean>();
 
     imageUrl: string;
     element: SectionData;
     showVersions = false;
     treeHeight: number;
+    openChildren: Map<string, ShowingSubChildren> = new Map<string, ShowingSubChildren>();
 
     differences: DifferencesData;
 
@@ -99,26 +101,19 @@ export class EntityContainerComponent implements OnInit {
             this.router.navigateByUrl(url);
         } else {
             this.showVersions = !this.showVersions;
-            if (this.showVersions) {
-                this.showingChildren.emit(this.data.versionInstances.length);
-            } else {
-                this.calculateTreeHeight();
-                this.showingChildren.emit(0);
-            }
+            this.emitContainerChange();
         }
     }
 
     getContainerStyle(): string {
         if (this.showVersions) {
-            if (this.maxWidth === 440) {
-                return 'inlineRootContainer';
-            }
-            return 'rootContainer';
+            return 'inlineRootContainer';
         }
     }
 
-    onShowingGrandChildren($event: number) {
-        this.calculateTreeHeight($event);
+    onShowingGrandChildren(event: ShowingSubChildren) {
+        this.openChildren.set(event.definitionsId, event);
+        this.calculateTreeHeight();
     }
 
     isLastElementInList(item: SectionData) {
@@ -154,24 +149,80 @@ export class EntityContainerComponent implements OnInit {
                     }
                 );
             this.calculateTreeHeight();
+            this.emitContainerChange();
         }
     }
 
     closeDiffView() {
         this.differences = null;
+        this.emitContainerChange();
         this.calculateTreeHeight();
     }
 
-    private calculateTreeHeight(children = 0) {
+    private calculateTreeHeight() {
+        //  86px for the container
+        // +10px margin to the next container
+        // +43px to the center of the first container
         let offset = 139;
+        // Thus, we need to subtract 1 from all version instances.
         let childrenCount = this.data.versionInstances.length - 1;
+
+        // If we show the differences dialog, we add the size of the dialog.
+        let children = 0;
+        let directChildrenShowingTheirContent = 0;
+        let containersShowingDiff = 0;
+        this.openChildren.forEach((child: ShowingSubChildren) => {
+            if (child.showingDifferences) {
+                containersShowingDiff++;
+            }
+            if (child.childrenCount > 0) {
+                children += child.childrenCount;
+                directChildrenShowingTheirContent++;
+            }
+        });
+
+        const lastElement = this.data.versionInstances[this.data.versionInstances.length - 1];
+        const lastElementOpen = this.openChildren.get(lastElement.id);
+        if (lastElementOpen && lastElementOpen.childrenCount > 0) {
+            // Somehow, the height of a half container is missing if the last container is expanded.
+            // Thus, add 43px plus some extra boundary.
+            offset -= 126 * lastElementOpen.childrenCount;
+            directChildrenShowingTheirContent--;
+            this.showsLastElement.emit(true);
+        } else {
+            this.showsLastElement.emit(false);
+        }
+
         if (children > 0) {
-            childrenCount += children - 1;
-            offset = offset * 2 + 15;
+            childrenCount += children;
+            // Because there is no Differences button between the container and the first version instance,
+            // we must subtract 30px.
+            offset -= 30 * directChildrenShowingTheirContent;
         }
+
         if (this.differences) {
-            offset += 205;
+            containersShowingDiff++;
         }
-        this.treeHeight += (childrenCount * 126) + offset;
+        offset += 205 * containersShowingDiff;
+
+        // Between the center of two containers, there are 126px:
+        //  2x 43px for each container center
+        // +   10px margin to the next container
+        // +   30px height of the Differences Button
+        this.treeHeight = (childrenCount * 126) + offset;
     }
+
+    private emitContainerChange() {
+        this.showingChildren.emit({
+            definitionsId: this.data.id,
+            childrenCount: this.showVersions ? this.data.versionInstances.length : 0,
+            showingDifferences: !!this.differences
+        });
+    }
+}
+
+interface ShowingSubChildren {
+    childrenCount: number;
+    definitionsId: string;
+    showingDifferences: boolean;
 }

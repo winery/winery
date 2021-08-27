@@ -41,6 +41,8 @@ export class WineryComponentExistsComponent implements OnInit {
     @Input() generateData: GenerateData;
     @Input() modalRef: ModalDirective;
 
+    randomIdSuffix = Math.random();
+
     private version = new WineryVersion('', 1, 1);
 
     constructor(private existService: ExistService) {
