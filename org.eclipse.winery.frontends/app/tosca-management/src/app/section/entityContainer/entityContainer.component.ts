@@ -168,6 +168,7 @@ export class EntityContainerComponent implements OnInit {
 
         // If we show the differences dialog, we add the size of the dialog.
         let children = 0;
+        let directChildrenShowingTheirContent = 0;
         let containersShowingDiff = 0;
         this.openChildren.forEach((child: ShowingSubChildren) => {
             if (child.showingDifferences) {
@@ -175,14 +176,24 @@ export class EntityContainerComponent implements OnInit {
             }
             if (child.childrenCount > 0) {
                 children += child.childrenCount;
+                directChildrenShowingTheirContent++;
             }
         });
+
+        const lastElement = this.data.versionInstances[this.data.versionInstances.length - 1];
+        const lastElementOpen = this.openChildren.get(lastElement.id);
+        if (lastElementOpen && lastElementOpen.childrenCount > 0) {
+            // Somehow, the height of a half container is missing if the last container is expanded.
+            // Thus, add 43px plus some extra boundary.
+            offset -= 126 * lastElementOpen.childrenCount;
+            directChildrenShowingTheirContent--;
+        }
 
         if (children > 0) {
             childrenCount += children;
             // Because there is no Differences button between the container and the first version instance,
             // we must subtract 30px.
-            offset -= 30;
+            offset -= 30 * directChildrenShowingTheirContent;
         }
 
         if (this.differences) {
@@ -200,7 +211,7 @@ export class EntityContainerComponent implements OnInit {
     private emitContainerChange() {
         this.showingChildren.emit({
             definitionsId: this.data.id,
-            childrenCount: this.showingChildren ? this.data.versionInstances.length : 0,
+            childrenCount: this.showVersions ? this.data.versionInstances.length : 0,
             showingDifferences: !!this.differences
         });
     }
