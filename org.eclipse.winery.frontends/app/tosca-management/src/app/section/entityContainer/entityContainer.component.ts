@@ -36,6 +36,7 @@ export class EntityContainerComponent implements OnInit {
     @Input() maxWidth = 500;
     @Output() deleted = new EventEmitter<string>();
     @Output() showingChildren = new EventEmitter<ShowingSubChildren>();
+    @Output() showsLastElement = new EventEmitter<boolean>();
 
     imageUrl: string;
     element: SectionData;
@@ -187,6 +188,9 @@ export class EntityContainerComponent implements OnInit {
             // Thus, add 43px plus some extra boundary.
             offset -= 126 * lastElementOpen.childrenCount;
             directChildrenShowingTheirContent--;
+            this.showsLastElement.emit(true);
+        } else {
+            this.showsLastElement.emit(false);
         }
 
         if (children > 0) {

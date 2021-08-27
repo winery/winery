@@ -77,6 +77,8 @@ export class SectionComponent implements OnInit, OnDestroy {
 
     fileUploadUrl = backendBaseURL + '/';
 
+    showLastElement = new Map<string, boolean>();
+
     @ViewChild('addModal') addModal: WineryAddComponent;
     @ViewChild('addCsarModal') addCsarModal: ModalDirective;
     @ViewChild('removeElementModal') removeElementModal: ModalDirective;
