@@ -12,17 +12,17 @@
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <div class="form-group">
-    <label for="numberInput">{{label}}</label>
+    <label for="numberInput-{{ randomIdSuffix }}">{{label}}</label>
     <div class="row">
         <div class="col-lg-10">
             <div class="input-sm">
-                <input type="text" id="numberInput"
+                <input type="text" id="numberInput-{{ randomIdSuffix }}"
                        required
                        [(ngModel)]="value" name="name"
                        style="height: 50px;"
                        #name="ngModel"
                        pattern="(\d*|∞)"
-                       ng-minlength=" 40px"
+                       minlength=" 40px"
                 >
                 <button class="btn btn-default" type="button" *ngIf="withInfinity" (click)="addInfinite()"
                         style=" height: 50px;">∞

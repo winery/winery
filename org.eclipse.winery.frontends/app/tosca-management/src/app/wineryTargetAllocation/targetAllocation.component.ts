@@ -34,7 +34,7 @@ export class TargetAllocationComponent implements OnInit {
     @ViewChild(PolicySelectionComponent) policySelection: PolicySelectionComponent;
 
     // criteria selection spinner
-    criteria = this.getCriteriaForSelect();
+    criteria = TargetAllocationComponent.getCriteriaForSelect();
 
     // selected criteria table
     data: Array<any> = [];
@@ -45,8 +45,30 @@ export class TargetAllocationComponent implements OnInit {
 
     selectedCriteria: string;
     request = new AllocationRequest();
+    randomIdSuffix = Math.random();
 
     constructor(private service: TargetAllocationService, private notify: WineryNotificationService) {
+    }
+
+    private static getCriteriaForSelect(): SelectItem[] {
+        const criteria: SelectItem[] = [];
+
+        const minHosts = new SelectItem('');
+        minHosts.id = 'MinHosts';
+        minHosts.text = 'Min Hosts';
+        criteria.push(minHosts);
+
+        const fulfillPolicies = new SelectItem('');
+        fulfillPolicies.id = 'FulfillPolicies';
+        fulfillPolicies.text = 'Fulfill Policies';
+        criteria.push(fulfillPolicies);
+
+        const minExternalConnections = new SelectItem('');
+        minExternalConnections.id = 'MinExternalConnections';
+        minExternalConnections.text = 'Min External Connections';
+        criteria.push(minExternalConnections);
+
+        return criteria;
     }
 
     ngOnInit() {
@@ -155,26 +177,5 @@ export class TargetAllocationComponent implements OnInit {
 
     private notifyError(error: HttpErrorResponse) {
         this.notify.error(error.error);
-    }
-
-    private getCriteriaForSelect(): SelectItem[] {
-        const criteria: SelectItem[] = [];
-
-        const minHosts = new SelectItem('');
-        minHosts.id = 'MinHosts';
-        minHosts.text = 'Min Hosts';
-        criteria.push(minHosts);
-
-        const fulfillPolicies = new SelectItem('');
-        fulfillPolicies.id = 'FulfillPolicies';
-        fulfillPolicies.text = 'Fulfill Policies';
-        criteria.push(fulfillPolicies);
-
-        const minExternalConnections = new SelectItem('');
-        minExternalConnections.id = 'MinExternalConnections';
-        minExternalConnections.text = 'Min External Connections';
-        criteria.push(minExternalConnections);
-
-        return criteria;
     }
 }

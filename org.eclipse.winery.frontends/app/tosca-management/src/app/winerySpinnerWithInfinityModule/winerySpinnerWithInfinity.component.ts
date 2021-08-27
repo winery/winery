@@ -57,6 +57,8 @@ export class SpinnerWithInfinityComponent implements ControlValueAccessor {
     @Input() valueSt = 42;
     @Input() withInfinity = false;
 
+    randomIdSuffix = Math.random();
+
     private infinityIsPlaced = false;
 
     // The internal data model
