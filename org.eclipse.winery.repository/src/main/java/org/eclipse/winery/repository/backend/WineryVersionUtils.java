@@ -93,17 +93,14 @@ public class WineryVersionUtils {
                 // notably not instanceof because possible subclasses of GitRepository may need separate handling
                 if (inner.getClass().equals(GitBasedRepository.class)) {
                     GitBasedRepository gitRepo = (GitBasedRepository) inner;
-                    if (gitRepo.hasChangesInFile(BackendUtils.getRefOfDefinitions(id))) {
+                    if (gitRepo.hasChangesInFile(id)) {
                         changesInFile = true;
                     }
                 }
             }
         }
-        if (current[0].isVersionedInWinery() && repository instanceof GitBasedRepository) {
-            GitBasedRepository gitRepo = (GitBasedRepository) repository;
-            if (gitRepo.hasChangesInFile(BackendUtils.getRefOfDefinitions(id))) {
-                changesInFile = true;
-            }
+        if (repository.hasChangesInFile(id)) {
+            changesInFile = true;
         }
         if (!current[0].isVersionedInWinery()) {
             changesInFile = true;

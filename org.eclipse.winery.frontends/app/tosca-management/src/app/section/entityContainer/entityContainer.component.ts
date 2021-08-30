@@ -20,6 +20,12 @@ import { ExistService } from '../../wineryUtils/existService';
 import { EntityService } from './entity.service';
 import { DifferencesData } from './differencesData';
 
+interface ShowingSubChildren {
+    childrenCount: number;
+    definitionsId: string;
+    showingDifferences: boolean;
+}
+
 @Component({
     selector: 'winery-entity-container',
     templateUrl: './entityContainer.component.html',
@@ -219,10 +225,4 @@ export class EntityContainerComponent implements OnInit {
             showingDifferences: !!this.differences
         });
     }
-}
-
-interface ShowingSubChildren {
-    childrenCount: number;
-    definitionsId: string;
-    showingDifferences: boolean;
 }

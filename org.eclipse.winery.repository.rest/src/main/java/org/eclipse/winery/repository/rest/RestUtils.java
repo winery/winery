@@ -138,7 +138,7 @@ public class RestUtils {
     private static final String RANGE_NCNAME_START_CHAR = "A-Z_a-z\\u00C0\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02ff\\u0370-\\u037d" + "\\u037f-\\u1fff\\u200c\\u200d\\u2070-\\u218f\\u2c00-\\u2fef\\u3001-\\ud7ff" + "\\uf900-\\ufdcf\\ufdf0-\\ufffd\\x10000-\\xEFFFF";
     private static final String REGEX_NCNAME_START_CHAR = "[" + RestUtils.RANGE_NCNAME_START_CHAR + "]";
 
-    private static final String RANGE_NCNAME_CHAR = RestUtils.RANGE_NCNAME_START_CHAR + "\\-\\.0-9\\u00b7\\u0300-\\u036f\\u203f-\\u2040";
+    private static final String RANGE_NCNAME_CHAR = RestUtils.RANGE_NCNAME_START_CHAR + "-\\.0-9\\u00b7\\u0300-\\u036f\\u203f-\\u2040";
     private static final String REGEX_INVALID_NCNAMES_CHAR = "[^" + RestUtils.RANGE_NCNAME_CHAR + "]";
 
     static {
@@ -322,9 +322,8 @@ public class RestUtils {
 
         EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations,
             artifactTemplates, typeMappings, oneToOneMappings, useAbsolutPaths);
-        EntityGraph transform = edmmConverter.transform(element);
 
-        return transform;
+        return edmmConverter.transform(element);
     }
 
     public static Response getEdmmModel(TServiceTemplate element, boolean useAbsolutPaths) {
@@ -688,7 +687,7 @@ public class RestUtils {
         }
 
         // If a definition was not committed yet, it is renamed, otherwise duplicate the definition.
-        if (repo instanceof GitBasedRepository && ((GitBasedRepository) repo).hasChangesInFile(BackendUtils.getRefOfDefinitions(oldId))) {
+        if (repo.hasChangesInFile(oldId)) {
             try {
                 repo.rename(oldId, id);
             } catch (IOException e) {

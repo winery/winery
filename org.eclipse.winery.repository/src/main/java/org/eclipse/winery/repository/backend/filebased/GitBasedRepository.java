@@ -408,7 +408,9 @@ public class GitBasedRepository extends AbstractFileBasedRepository implements I
         }
     }
 
-    public boolean hasChangesInFile(RepositoryFileReference ref) {
+    @Override
+    public boolean hasChangesInFile(DefinitionsChildId id) {
+        RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
         try (Git git = getGit()) {
             if (!git.status().call().isClean()) {
                 List<DiffEntry> diffEntries = git.diff().call();

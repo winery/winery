@@ -173,6 +173,11 @@ public class TenantRepository implements IWrappingRepository {
     }
 
     @Override
+    public boolean hasChangesInFile(DefinitionsChildId id) {
+        return getRepository().hasChangesInFile(id);
+    }
+
+    @Override
     public void doClear() {
         getRepository().doClear();
     }
