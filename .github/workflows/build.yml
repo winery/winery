@@ -22,7 +22,7 @@ jobs:
     if: ${{ needs.pre_job.outputs.should_skip != 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2\
+      - uses: actions/checkout@v2
       - name: Check if AbstractResourceTest does not cotain log().all().
         run: |
           if grep -i -q '\.all()' org.eclipse.winery.repository.rest/src/test/java/org/eclipse/winery/repository/rest/resources/AbstractResourceTest.java;
