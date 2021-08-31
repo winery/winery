@@ -1589,7 +1589,7 @@ public class BackendUtils {
             GitBasedRepository gitRepo = (GitBasedRepository) repository;
             List<String> filePatternsToCommit = new ArrayList<>();
 
-            if (gitRepo.hasChangesInFile(BackendUtils.getRefOfDefinitions(componentToCommit))) {
+            if (gitRepo.hasChangesInFile(componentToCommit)) {
                 /*WineryVersion predecessor = BackendUtils.getPredecessor(componentToCommit);
                 ToscaDiff diff = BackendUtils.compare(componentToCommit, predecessor);
                 String changeLog = diff.getChangeLog();

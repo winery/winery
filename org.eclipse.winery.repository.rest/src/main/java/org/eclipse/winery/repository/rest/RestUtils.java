@@ -138,6 +138,7 @@ public class RestUtils {
     private static final String RANGE_NCNAME_START_CHAR = "A-Z_a-z\\u00C0\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02ff\\u0370-\\u037d" + "\\u037f-\\u1fff\\u200c\\u200d\\u2070-\\u218f\\u2c00-\\u2fef\\u3001-\\ud7ff" + "\\uf900-\\ufdcf\\ufdf0-\\ufffd\\x10000-\\xEFFFF";
     private static final String REGEX_NCNAME_START_CHAR = "[" + RestUtils.RANGE_NCNAME_START_CHAR + "]";
 
+    // \\- is required
     private static final String RANGE_NCNAME_CHAR = RestUtils.RANGE_NCNAME_START_CHAR + "\\-\\.0-9\\u00b7\\u0300-\\u036f\\u203f-\\u2040";
     private static final String REGEX_INVALID_NCNAMES_CHAR = "[^" + RestUtils.RANGE_NCNAME_CHAR + "]";
 
@@ -322,9 +323,8 @@ public class RestUtils {
 
         EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations,
             artifactTemplates, typeMappings, oneToOneMappings, useAbsolutPaths);
-        EntityGraph transform = edmmConverter.transform(element);
 
-        return transform;
+        return edmmConverter.transform(element);
     }
 
     public static Response getEdmmModel(TServiceTemplate element, boolean useAbsolutPaths) {
@@ -569,6 +569,10 @@ public class RestUtils {
     }
 
     public static boolean containsNodeType(TServiceTemplate serviceTemplate, QName nodeType) {
+        if (serviceTemplate == null || serviceTemplate.getTopologyTemplate() == null) {
+            return false;
+        }
+
         List<TEntityTemplate> templates = serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate();
 
         return templates.stream().filter(template -> template instanceof TNodeTemplate).anyMatch(template -> template.getType().equals(nodeType));
@@ -683,12 +687,12 @@ public class RestUtils {
 
         if (version.toString().length() > 0) {
             // ensure that the version isn't changed by the user
-            String componentName = newId.getNameWithoutVersion() + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
+            String componentName = newId.getNameWithoutVersion() + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version;
             id = BackendUtils.getDefinitionsChildId(oldId.getClass(), newId.getNamespace().getDecoded(), componentName, false);
         }
 
         // If a definition was not committed yet, it is renamed, otherwise duplicate the definition.
-        if (repo instanceof GitBasedRepository && ((GitBasedRepository) repo).hasChangesInFile(BackendUtils.getRefOfDefinitions(oldId))) {
+        if (repo.hasChangesInFile(oldId)) {
             try {
                 repo.rename(oldId, id);
             } catch (IOException e) {
@@ -1007,7 +1011,7 @@ public class RestUtils {
                     freezeVersion(releasableComponent);
 
                     version.setWorkInProgressVersion(0);
-                    String newId = releasableComponent.getNameWithoutVersion() + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
+                    String newId = releasableComponent.getNameWithoutVersion() + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version;
                     DefinitionsChildId newComponent = BackendUtils.getDefinitionsChildId(releasableComponent.getClass(), releasableComponent.getNamespace().getDecoded(), newId, false);
                     result = duplicate(releasableComponent, newComponent);
 

@@ -281,6 +281,10 @@ public interface IRepository extends IWineryRepositoryCommon {
      */
     void doImport(InputStream in);
 
+    default boolean hasChangesInFile(DefinitionsChildId id) {
+        return true;
+    }
+
     /**
      * Returns the configuration of the specified id
      * <p>
