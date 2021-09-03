@@ -51,6 +51,8 @@ import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.ids.definitions.EntityTemplateId;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
@@ -224,7 +226,7 @@ public class ConsistencyChecker {
     /**
      * Checks all references QNames whether they are valid
      */
-    private void checkReferencedQNames(DefinitionsChildId id, Map<QName, TExtensibleElements> allQNameToElementMapping) {
+    private void checkReferencedQNames(DefinitionsChildId id, Map<QName, TDefinitions> allQNameToElementMapping) {
         final QNameValidator qNameValidator = new QNameValidator(error -> printAndAddError(id, error), allQNameToElementMapping);
         try {
             configuration.getRepository().getDefinitions(id).getElement()
@@ -377,9 +379,28 @@ public class ConsistencyChecker {
         return type.getProperties() != null;
     }
 
-    private void checkId(DefinitionsChildId id) {
+    private void checkId(DefinitionsChildId id, Map<QName, TDefinitions> allQNameToDefinitionMapping) {
         checkNamespaceUri(id);
         checkNcname(id, id.getXmlId().getDecoded());
+
+        TDefinitions definition = allQNameToDefinitionMapping.get(id.getQName());
+        if (definition != null) {
+            if (!definition.getTargetNamespace().equals(id.getNamespace().getDecoded())) {
+                printAndAddError(id, "Corrupt: Namespace in the TOSCA-file does not match the folder's name!");
+            }
+            if (!definition.getId().endsWith(id.getXmlId().getDecoded())) {
+                printAndAddError(id, "Corrupt: Wrapping Definitions Id in the TOSCA-file does not match the folder's name!");
+            }
+            TExtensibleElements element = definition.getElement();
+            if ((element instanceof HasIdInIdOrNameField)
+                && ((HasIdInIdOrNameField) element).getIdFromIdOrNameField() != null
+                && !((HasIdInIdOrNameField) element).getIdFromIdOrNameField().equals(id.getXmlId().getDecoded())) {
+                printAndAddError(id, "Corrupt: Id/Name in the TOSCA-file does not match the folder's name!");
+            }
+        } else {
+            // should never happen, because then the repository changed in the last few seconds
+            printError(id, "Impossible state reached! The repository changed within a few milliseconds!");
+        }
     }
 
     private void checkNcname(DefinitionsChildId id, String ncname) {
@@ -503,7 +524,7 @@ public class ConsistencyChecker {
 
         float elementsChecked = 0;
         int size = allDefinitionsChildIds.size();
-        Map<QName, TExtensibleElements> allQNameToElementMapping = repository.getAllQNameToElementMapping();
+        Map<QName, TDefinitions> allQNameToDefinitionMapping = repository.getAllQNameToDefinitionsMapping();
         for (DefinitionsChildId id : allDefinitionsChildIds) {
             float progress = ++elementsChecked / size;
             if (configuration.getVerbosity().contains(ConsistencyCheckerVerbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
@@ -512,9 +533,9 @@ public class ConsistencyChecker {
                 progressListener.updateProgress(progress);
             }
 
-            checkId(id);
+            checkId(id, allQNameToDefinitionMapping);
             checkXmlSchemaValidation(id);
-            checkReferencedQNames(id, allQNameToElementMapping);
+            checkReferencedQNames(id, allQNameToDefinitionMapping);
             checkPropertiesValidation(id);
             if (id instanceof ServiceTemplateId) {
                 checkServiceTemplate((ServiceTemplateId) id);

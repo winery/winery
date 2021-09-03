@@ -18,11 +18,11 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TEntityTypeImplementation;
-import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
@@ -31,9 +31,9 @@ import org.apache.commons.lang3.StringUtils;
 public class QNameValidator extends Visitor {
 
     private final ErrorLogger errorLogger;
-    private final Map<QName, TExtensibleElements> allQNameToElementMapping;
+    private final Map<QName, TDefinitions> allQNameToElementMapping;
 
-    public QNameValidator(ErrorLogger errorLogger, Map<QName, TExtensibleElements> allQNameToElementMapping) {
+    public QNameValidator(ErrorLogger errorLogger, Map<QName, TDefinitions> allQNameToElementMapping) {
         this.errorLogger = errorLogger;
         this.allQNameToElementMapping = allQNameToElementMapping;
     }

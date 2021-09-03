@@ -423,12 +423,12 @@ public interface IRepository extends IWineryRepositoryCommon {
         return elements;
     }
 
-    default <S extends TExtensibleElements> Map<QName, S> getAllQNameToElementMapping() {
-        Map<QName, S> elements = new HashMap<>();
+    default Map<QName, TDefinitions> getAllQNameToDefinitionsMapping() {
+        Map<QName, TDefinitions> elements = new HashMap<>();
         DefinitionsChildId.ALL_TOSCA_COMPONENT_ID_CLASSES.forEach((idClass) ->
             getAllDefinitionsChildIds(idClass)
                 .forEach(id ->
-                    elements.put(id.getQName(), getElement(id))
+                    elements.put(id.getQName(), this.getDefinitions(id))
                 )
         );
         return elements;
