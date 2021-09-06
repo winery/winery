@@ -1,9 +1,9 @@
-FROM maven:3-jdk-8 as builder
+FROM maven:3-jdk-11 as builder
 COPY . /tmp/winery
 WORKDIR /tmp/winery
 RUN mvn package -DskipTests=true -Dcheckstyle.skip=true -Dmaven.javadoc.skip=true -B
 
-FROM tomcat:9-jdk8
+FROM tomcat:jre11-openjdk-buster
 LABEL maintainer = "Oliver Kopp <kopp.dev@gmail.com>, Michael Wurster <miwurster@gmail.com>, Lukas Harzenetter <lharzenetter@gmx.de>"
 
 ENV WINERY_USER_ID 1724
@@ -49,16 +49,16 @@ ENV GITHUB_CLIENT_SECRET ""
 
 RUN rm /dev/random && ln -s /dev/urandom /dev/random \
     && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \
-    && apt-get update -qq && apt-get install -qqy \
+    && apt-get update -qq && apt-get install -qqy --no-install-recommends \
         git \
         git-lfs \
         sudo \
     && apt-get clean \
-    && wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && curl -LJOS  https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && rm -rf ${CATALINA_HOME}/webapps/* \
-    && sed -ie "s/securerandom.source=file:\/dev\/random/securerandom.source=file:\/dev\/.\/urandom/g" /usr/local/openjdk-8/jre/lib/security/java.security \
+    && sed -ie "s/securerandom.source=file:\/dev\/random/securerandom.source=file:\/dev\/.\/urandom/g" $JAVA_HOME/conf/security/java.security \
     && git config --global core.fscache true \
     && git lfs install \
     && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
