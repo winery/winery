@@ -400,8 +400,25 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
                 "304b62b06556afa1a7227164a9c0d2c9a1178b8f",
                 // origin/fruits in a non-working version
                 getErrorsFor304b62b06556afa1a7227164a9c0d2c9a1178b8f()
+            ),
+            Arguments.of(
+                "c09263f4fa112ff9093f9d52c6dc756f03d710b9",
+                getErrorsForc09263f4fa112ff9093f9d52c6dc756f03d710b9()
             )
         );
+    }
+
+    private static Map<QName, ElementErrorList> getErrorsForc09263f4fa112ff9093f9d52c6dc756f03d710b9() {
+        Map<QName, ElementErrorList> expected = new HashMap<>();
+        ElementErrorList elementErrorList;
+
+        elementErrorList = new ElementErrorList("ArtifactTemplate");
+        elementErrorList.addError("Corrupt: Namespace in the TOSCA-file does not match the folder's name!");
+        elementErrorList.addError("Corrupt: Wrapping Definitions Id in the TOSCA-file does not match the folder's name!");
+        elementErrorList.addError("Corrupt: Id/Name in the TOSCA-file does not match the folder's name!");
+        expected.put(new QName("http://plain.winery.opentosca.org/artifacttemplates", "ArtifactTemplateWithWrongTargetNamespace"), elementErrorList);
+        
+        return expected;
     }
 
     /**
