@@ -26,11 +26,11 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.version.VersionUtils;
-import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TInterface;
@@ -42,6 +42,7 @@ import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.ToscaDeploymentTechnology;
 import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.model.tosca.constants.OpenToscaInterfaces;
 import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
@@ -116,7 +117,9 @@ public class EnhancementUtils {
                             TNodeTemplate host = (TNodeTemplate) relationshipTemplate.getTargetElement().getRef();
                             TNodeType hostType = nodeTypes.get(host.getType());
                             if (ModelUtilities.nodeTypeHasInterface(hostType, OpenToscaInterfaces.stateInterface)) {
-                                ModelUtilities.addPolicy(host, OpenToscaBaseTypes.freezableComponentPolicyType, "freezable");
+                                ModelUtilities.addPolicy(host,
+                                    OpenToscaBaseTypes.freezableComponentPolicyType,
+                                    "freezable");
                                 isFreezable = true;
                             }
                         }
@@ -145,7 +148,8 @@ public class EnhancementUtils {
                     TNodeTemplate host = (TNodeTemplate) hostedOnRelationship.getTargetElement().getRef();
                     if (ModelUtilities.containsPolicyType(host, OpenToscaBaseTypes.freezableComponentPolicyType)) {
                         node.getPolicies().getPolicy()
-                            .removeIf(policy -> policy.getPolicyType().equals(OpenToscaBaseTypes.freezableComponentPolicyType));
+                            .removeIf(policy -> policy.getPolicyType()
+                                .equals(OpenToscaBaseTypes.freezableComponentPolicyType));
                         hostedOnRelationship = null;
                     } else {
                         hostedOnRelationship = getHostedOnRelationship(topology, host);
@@ -166,10 +170,15 @@ public class EnhancementUtils {
      * @param node     The node to return the hostedOn relation.
      */
     private static TRelationshipTemplate getHostedOnRelationship(TTopologyTemplate topology, TNodeTemplate node) {
-        Map<QName, TRelationshipType> relationshipTypes = RepositoryFactory.getRepository().getQNameToElementMapping(RelationshipTypeId.class);
-        List<TRelationshipTemplate> outgoingRelationshipTemplates = ModelUtilities.getOutgoingRelationshipTemplates(topology, node);
+        Map<QName, TRelationshipType> relationshipTypes = RepositoryFactory.getRepository()
+            .getQNameToElementMapping(RelationshipTypeId.class);
+        List<TRelationshipTemplate> outgoingRelationshipTemplates = ModelUtilities.getOutgoingRelationshipTemplates(
+            topology,
+            node);
         return outgoingRelationshipTemplates.stream()
-            .filter(relation -> ModelUtilities.isOfType(ToscaBaseTypes.hostedOnRelationshipType, relation.getType(), relationshipTypes))
+            .filter(relation -> ModelUtilities.isOfType(ToscaBaseTypes.hostedOnRelationshipType,
+                relation.getType(),
+                relationshipTypes))
             .findFirst()
             .orElse(null);
     }
@@ -183,7 +192,9 @@ public class EnhancementUtils {
         return namespace;
     }
 
-    private static void addAllDAsAndIAsToImplementation(TNodeTypeImplementation target, TNodeTypeImplementation source) {
+    private static void addAllDAsAndIAsToImplementation(
+        TNodeTypeImplementation target,
+        TNodeTypeImplementation source) {
         if (Objects.nonNull(source.getDeploymentArtifacts())) {
             target.getDeploymentArtifacts().getDeploymentArtifact().addAll(
                 source.getDeploymentArtifacts().getDeploymentArtifact()
@@ -201,31 +212,40 @@ public class EnhancementUtils {
 
     /**
      * Gathers all feature NodeTypes available for the given topology.
-     *
+     * <p>
      * If the underlying implementation of the feature does not matter, use <code>null</code>.
      *
      * <p>
      * Note: If feature NodeTypes are used in the topology, they cannot be enhanced with more features.
      * </p>
      *
-     * @param topology             The topology to update.
-     * @param deploymentTechnology The underlying deployment technology the application was deployed with.
+     * @param topology               The topology to update.
+     * @param deploymentTechnologies
      */
-    public static Map<String, Map<QName, String>> getAvailableFeaturesForTopology(TTopologyTemplate topology, String deploymentTechnology) {
+    public static Map<String, Map<QName, String>> getAvailableFeaturesForTopology(
+        TTopologyTemplate topology,
+        List<ToscaDeploymentTechnology> deploymentTechnologies) {
         IRepository repository = RepositoryFactory.getRepository();
 
         Map<String, Map<QName, String>> availableFeatures = new HashMap<>();
         Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
 
         topology.getNodeTemplates().forEach(node -> {
+            List<String> nodeDeploymentTechnologies = deploymentTechnologies.stream()
+                .filter(toscaDeploymentTechnology -> toscaDeploymentTechnology.getManagedIds().contains(node.getId()))
+                .map(toscaDeploymentTechnology -> toscaDeploymentTechnology.getSourceTechnology().getId())
+                .collect(
+                    Collectors.toList());
             Map<TNodeType, String> featureChildren =
-                ModelUtilities.getAvailableFeaturesOfType(node.getType(), nodeTypes, deploymentTechnology);
+                ModelUtilities.getAvailableFeaturesOfType(node.getType(), nodeTypes, nodeDeploymentTechnologies);
             Map<QName, String> applicableFeatures = new HashMap<>();
 
             // Check requirements
             featureChildren.forEach((featureType, value) -> {
                 if (Objects.nonNull(featureType.getRequirementDefinitions())) {
-                    List<TRequirementDefinition> requirements = featureType.getRequirementDefinitions().getRequirementDefinition().stream()
+                    List<TRequirementDefinition> requirements = featureType.getRequirementDefinitions()
+                        .getRequirementDefinition()
+                        .stream()
                         .filter(req -> req.getRequirementType().equals(OpenToscaBaseTypes.managementFeatureRequirement))
                         .collect(Collectors.toList());
 
@@ -238,7 +258,8 @@ public class EnhancementUtils {
                                 String type = hosts.getTypeAsQName().getLocalPart();
                                 if (VersionUtils.getNameWithoutVersion(type).equals(reqName)) {
                                     return reqVersion.getComponentVersion().isEmpty()
-                                        || reqVersion.getComponentVersion().equals(VersionUtils.getVersion(type).getComponentVersion());
+                                        || reqVersion.getComponentVersion()
+                                        .equals(VersionUtils.getVersion(type).getComponentVersion());
                                 }
 
                                 return false;
@@ -263,17 +284,19 @@ public class EnhancementUtils {
 
     /**
      * This method applies selected features to the given topology. Hereby the <code>featureMap</code> as generated by
-     * {@link EnhancementUtils#getAvailableFeaturesForTopology(TTopologyTemplate, String)} is expected. However, the
+     * {@link #getAvailableFeaturesForTopology(TTopologyTemplate, List)} is expected. However, the
      * list may differ from the originally generated one, since a user may want to have only a specific feature, i.e.,
      * all of the specified features in the given list are applied.
      *
      * @param topology   The topology, the features will be applied to. It must be the same topology which was passed to
-     *                   the {@link EnhancementUtils#getAvailableFeaturesForTopology(TTopologyTemplate, String)}.
+     *                   the {@link #getAvailableFeaturesForTopology(TTopologyTemplate, List)}.
      * @param featureMap The list of features to apply to the topology.
      * @return The updated topology in which all matching NodeTypes will be replaced with the corresponding feature
      * NodeTypes.
      */
-    public static TTopologyTemplate applyFeaturesForTopology(TTopologyTemplate topology, Map<String, Map<QName, String>> featureMap) {
+    public static TTopologyTemplate applyFeaturesForTopology(
+        TTopologyTemplate topology,
+        Map<String, Map<QName, String>> featureMap) {
         topology.getNodeTemplates().stream()
             .filter(nodeTemplate -> Objects.nonNull(featureMap.get(nodeTemplate.getId())))
             .forEach(nodeTemplate -> {
@@ -283,7 +306,8 @@ public class EnhancementUtils {
                     List<PropertyDefinitionKV> definedProperties = generatedNodeType.getWinerysPropertiesDefinition()
                         .getPropertyDefinitions();
 
-                    final @NonNull LinkedHashMap<String, String> kvProperties = ModelUtilities.getPropertiesKV(nodeTemplate) == null
+                    final @NonNull LinkedHashMap<String, String> kvProperties = ModelUtilities.getPropertiesKV(
+                        nodeTemplate) == null
                         ? new LinkedHashMap<>()
                         : ModelUtilities.getPropertiesKV(nodeTemplate);
                     if (kvProperties.isEmpty()) {
@@ -313,14 +337,14 @@ public class EnhancementUtils {
      * respective implementations.
      *
      * @param nodeTemplate The NodeTemplate that is updated with the selected features.
-     * @param featureTypes The list of selected features as generated by {@link EnhancementUtils#getAvailableFeaturesForTopology(TTopologyTemplate,
-     *                     String)}.
+     * @param featureTypes The list of selected features as generated by {@link #getAvailableFeaturesForTopology(TTopologyTemplate, List}.
      * @return The mapping of the generated merged NodeType and the QName of the NodeType it replaces.
      */
     public static TNodeType createFeatureNodeType(TNodeTemplate nodeTemplate, Map<QName, String> featureTypes) {
         IRepository repository = RepositoryFactory.getRepository();
         Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
-        Map<QName, TNodeTypeImplementation> nodeTypeImplementations = repository.getQNameToElementMapping(NodeTypeImplementationId.class);
+        Map<QName, TNodeTypeImplementation> nodeTypeImplementations = repository.getQNameToElementMapping(
+            NodeTypeImplementationId.class);
 
         StringBuilder featureNames = new StringBuilder();
         featureTypes.values().forEach(featureName -> {
@@ -409,7 +433,8 @@ public class EnhancementUtils {
             // merge implementations
             repository.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, featureTypeQName)
                 .forEach(id -> {
-                    addAllDAsAndIAsToImplementation(generatedImplementation, nodeTypeImplementations.get(id.getQName()));
+                    addAllDAsAndIAsToImplementation(generatedImplementation,
+                        nodeTypeImplementations.get(id.getQName()));
                 });
         });
 
@@ -423,7 +448,8 @@ public class EnhancementUtils {
 
         try {
             repository.setElement(new NodeTypeId(featureEnrichedNodeType.getQName()), featureEnrichedNodeType);
-            repository.setElement(new NodeTypeImplementationId(generatedImplementation.getQName()), generatedImplementation);
+            repository.setElement(new NodeTypeImplementationId(generatedImplementation.getQName()),
+                generatedImplementation);
         } catch (IOException e) {
             logger.error("Error while saving generated definitions.", e);
         }
