@@ -12,7 +12,6 @@ dockerize -template winery.yml.tpl:.winery/winery.yml
 if [ -d "${WINERY_REPOSITORY_PATH}" ] && [ "$(ls -A ${WINERY_REPOSITORY_PATH})" ]; then
   echo "Repository at ${WINERY_REPOSITORY_PATH} is already initialized!";
 else
-  mkdir -p ${WINERY_REPOSITORY_PATH}
   if [ ! "x${WINERY_REPOSITORY_URL}" = "x" ]; then
     git clone ${WINERY_REPOSITORY_URL} ${WINERY_REPOSITORY_PATH};
   else
