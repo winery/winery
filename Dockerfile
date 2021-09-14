@@ -1,9 +1,9 @@
-FROM maven:3-jdk-11 as builder
+FROM maven:3-openjdk-11 as builder
 COPY . /tmp/winery
 WORKDIR /tmp/winery
 RUN mvn package -DskipTests=true -Dcheckstyle.skip=true -Dmaven.javadoc.skip=true -B
 
-FROM tomcat:jre11-openjdk-buster
+FROM tomcat:9-jdk11-openjdk-buster
 LABEL maintainer = "Oliver Kopp <kopp.dev@gmail.com>, Michael Wurster <miwurster@gmail.com>, Lukas Harzenetter <lharzenetter@gmx.de>"
 
 ENV WINERY_USER_ID 1724
