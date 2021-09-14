@@ -78,9 +78,9 @@ RUN mkdir ${WINERY_USER_HOME} \
     && usermod -aG sudo winery
 
 # create repository dir and change ownership
-RUN mkdir /var/repository \
-    && chmod a+rwx /var/repository \
-    && chown winery: /var/repository
+RUN mkdir ${WINERY_REPOSITORY_PATH} \
+    && chmod a+rwx ${WINERY_REPOSITORY_PATH} \
+    && chown winery: ${WINERY_REPOSITORY_PATH}
 
 # workaround because catalina has to be able to write files in the catalina_home dir
 RUN chmod -R a+w ${CATALINA_HOME}
