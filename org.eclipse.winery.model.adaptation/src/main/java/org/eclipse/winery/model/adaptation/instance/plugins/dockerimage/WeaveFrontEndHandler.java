@@ -15,7 +15,6 @@
 package org.eclipse.winery.model.adaptation.instance.plugins.dockerimage;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,60 +32,60 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
-public class MongoDbHandler implements ImageRefinementHandler {
-    private static final String IMAGE_ID_MONGO = "mongo";
-    private static final String IMAGE_ID_WEAVE_USER_DB = "weaveworksdemos/user-db:0.3.0";
-    private static final QName QNAME_MONGO_DOCKER_CONTAINER = QName.valueOf(
-        "{https://examples.opentosca.org/edmm/nodetypes}Ubuntu-Container");
-    private static final QName QNAME_MONGO_DB = QName.valueOf("{http://opentosca.org/nodetypes}MongoDB-Server_3.2");
+public class WeaveFrontEndHandler implements ImageRefinementHandler {
+    private static final String IMAGE_ID_WEAVE_FRONTEND = "weaveworksdemos/front-end:0.3.12";
+    private static final String IMAGE_ID_WEAVE_FRONTEND_ALT = "public.ecr.aws/s9j5x8n9/sock-shop-frontend:0.0.1";
+    private static final QName QNAME_ALPINE_CONTAINER = QName.valueOf(
+        "{https://examples.opentosca.org/edmm/nodetypes}Alpine-Container");
+    private static final QName QNAME_NODEJS_10 = QName.valueOf("{http://opentosca.org/nodetypes}NodeJS_10.0");
+    private static final QName QNAME_NODE_APP = QName.valueOf("{http://opentosca.org/nodetypes}NodeJS_10.0_App");
 
     @Override
     public Set<String> getTargetImages() {
-        HashSet<String> targetImages = new HashSet<>();
-        targetImages.add(IMAGE_ID_MONGO);
-        targetImages.add(IMAGE_ID_WEAVE_USER_DB);
-        return targetImages;
+        return Stream.of(IMAGE_ID_WEAVE_FRONTEND, IMAGE_ID_WEAVE_FRONTEND_ALT).collect(Collectors.toSet());
     }
 
     @Override
     public Set<QName> getProhibitedTypes() {
-        return Stream.of(QNAME_MONGO_DOCKER_CONTAINER).collect(Collectors.toSet());
+        return Stream.of(QNAME_ALPINE_CONTAINER).collect(Collectors.toSet());
     }
 
     @Override
     public void handleNode(
         TNodeTemplate dockerContainer,
         TTopologyTemplate topologyTemplate,
-        String imageId, ToscaDiscoveryPlugin discoveryPlugin) {
+        String imageId,
+        ToscaDiscoveryPlugin discoveryPlugin) {
+
         IRepository repository = RepositoryFactory.getRepository();
 
-        QName type;
-        switch (imageId) {
-            case IMAGE_ID_WEAVE_USER_DB:
-            case IMAGE_ID_MONGO:
-                type = QNAME_MONGO_DOCKER_CONTAINER;
-                break;
-            default:
-                type = null;
-        }
+        dockerContainer.setType(QNAME_ALPINE_CONTAINER);
 
-        if (type != null) {
-            dockerContainer.setType(type);
-        }
+        TNodeType nodeJsType = repository.getElement(new NodeTypeId(QNAME_NODEJS_10));
+        TNodeTemplate nodeJs = ModelUtilities.instantiateNodeTemplate(nodeJsType);
 
-        TNodeType mongoType = repository.getElement(new NodeTypeId(QNAME_MONGO_DB));
-        TNodeTemplate mongo = ModelUtilities.instantiateNodeTemplate(mongoType);
+        topologyTemplate.addNodeTemplate(nodeJs);
 
-        topologyTemplate.addNodeTemplate(mongo);
-
-        ModelUtilities.createRelationshipTemplateAndAddToTopology(mongo,
+        ModelUtilities.createRelationshipTemplateAndAddToTopology(nodeJs,
             dockerContainer,
+            ToscaBaseTypes.hostedOnRelationshipType,
+            topologyTemplate);
+
+        TNodeType nodeAppType = repository.getElement(new NodeTypeId(QNAME_NODE_APP));
+        TNodeTemplate nodeApp = ModelUtilities.instantiateNodeTemplate(nodeAppType);
+        nodeApp.setName(dockerContainer.getName());
+
+        topologyTemplate.addNodeTemplate(nodeApp);
+
+        ModelUtilities.createRelationshipTemplateAndAddToTopology(nodeApp,
+            nodeJs,
             ToscaBaseTypes.hostedOnRelationshipType,
             topologyTemplate);
 
         List<String> discoveredIds = new ArrayList<>(discoveryPlugin.getDiscoveredIds());
         discoveredIds.add(dockerContainer.getId());
-        discoveredIds.add(mongo.getId());
+        discoveredIds.add(nodeJs.getId());
+        discoveredIds.add(nodeApp.getId());
         discoveryPlugin.setDiscoveredIds(discoveredIds);
     }
 }

@@ -20,11 +20,16 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.ToscaDiscoveryPlugin;
 
 public interface ImageRefinementHandler {
     Set<String> getTargetImages();
 
     Set<QName> getProhibitedTypes();
 
-    void handleNode(TNodeTemplate nodeTemplate, TTopologyTemplate topologyTemplate, String imageId);
+    void handleNode(
+        TNodeTemplate nodeTemplate,
+        TTopologyTemplate topologyTemplate,
+        String imageId,
+        ToscaDiscoveryPlugin discoveryPlugin);
 }

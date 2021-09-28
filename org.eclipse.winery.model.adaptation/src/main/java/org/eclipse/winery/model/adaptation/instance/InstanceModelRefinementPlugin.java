@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.ToscaDiscoveryPlugin;
 import org.eclipse.winery.topologygraph.matching.IToscaMatcher;
 import org.eclipse.winery.topologygraph.matching.ToscaIsomorphismMatcher;
 import org.eclipse.winery.topologygraph.matching.ToscaPropertyMatcher;
@@ -49,9 +50,12 @@ public abstract class InstanceModelRefinementPlugin {
      * Apply the changes for the nodes identified by the matchToBeRefined.
      *
      * @param template the topology template to be refined
+     * @param discoveryPlugin
      * @return the refined topology template
      */
-    public abstract TTopologyTemplate apply(TTopologyTemplate template);
+    public abstract TTopologyTemplate apply(
+        TTopologyTemplate template,
+        ToscaDiscoveryPlugin discoveryPlugin);
 
     public abstract Set<String> determineAdditionalInputs(
         TTopologyTemplate template,

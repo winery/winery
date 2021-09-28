@@ -17,6 +17,9 @@ package org.eclipse.winery.model.adaptation.instance.plugins;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -28,6 +31,8 @@ import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.ToscaDiscoveryPlugin;
+import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -45,7 +50,9 @@ public class SpringWebAppRefinementPlugin extends InstanceModelRefinementPlugin 
     }
 
     @Override
-    public TTopologyTemplate apply(TTopologyTemplate template) {
+    public TTopologyTemplate apply(
+        TTopologyTemplate template,
+        ToscaDiscoveryPlugin discoveryPlugin) {
         Session session = InstanceModelUtils.createJschSession(template, this.matchToBeRefined.nodeIdsToBeReplaced);
         String contextPath = InstanceModelUtils.executeCommand(
             session,
@@ -73,8 +80,24 @@ public class SpringWebAppRefinementPlugin extends InstanceModelRefinementPlugin 
 
     @Override
     public Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced) {
-        Set<String> inputs = InstanceModelUtils.getRequiredSSHInputs(template, nodeIdsToBeReplaced);
-        return inputs.isEmpty() ? null : inputs;
+        if (nodeIdsToBeReplaced.size() == 1) {
+            TNodeTemplate node = template.getNodeTemplate(nodeIdsToBeReplaced.get(0));
+            Map<QName, TNodeType> nodeTypes = RepositoryFactory.getRepository()
+                .getQNameToElementMapping(NodeTypeId.class);
+            ArrayList<TNodeTemplate> hostedOnSuccessors = ModelUtilities.getHostedOnSuccessors(template, node);
+            Optional<TNodeTemplate> dockerContainer = hostedOnSuccessors.stream()
+                .filter(aSuccessor -> ModelUtilities.isOfType(OpenToscaBaseTypes.dockerContainerNodeType,
+                    Objects.requireNonNull(aSuccessor.getType(), "type is null"),
+                    nodeTypes)).findAny();
+            if (dockerContainer.isPresent()) {
+                
+            } else {
+                Set<String> sshInputs = InstanceModelUtils.getRequiredSSHInputs(template, nodeIdsToBeReplaced);
+                return sshInputs.isEmpty() ? null : sshInputs;
+            }
+        }
+        Set<String> sshInputs = InstanceModelUtils.getRequiredSSHInputs(template, nodeIdsToBeReplaced);
+        return sshInputs.isEmpty() ? null : sshInputs;
     }
 
     @Override

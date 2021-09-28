@@ -34,6 +34,7 @@ import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.ToscaDiscoveryPlugin;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -52,8 +53,9 @@ public class DockerImageRefinementPlugin extends InstanceModelRefinementPlugin {
         super("docker-image");
 
         List<ImageRefinementHandler> handlers = Arrays.asList(new MongoDbHandler(),
-            new WeaveUserHandler(),
-            new WeaveCatalogueHandler());
+            new WeaveGoHandler(),
+            new WeaveCartsHandler(),
+            new WeaveFrontEndHandler());
 
         handlers
             .forEach(refinementHandler -> refinementHandler.getTargetImages()
@@ -66,7 +68,9 @@ public class DockerImageRefinementPlugin extends InstanceModelRefinementPlugin {
     }
 
     @Override
-    public TTopologyTemplate apply(TTopologyTemplate template) {
+    public TTopologyTemplate apply(
+        TTopologyTemplate template,
+        ToscaDiscoveryPlugin discoveryPlugin) {
         List<TNodeTemplate> nodesToRefineByImage = template.getNodeTemplates().stream()
             .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
                 && Objects.equals(node.getType(), QNAME_DOCKER_CONTAINER))
@@ -86,7 +90,7 @@ public class DockerImageRefinementPlugin extends InstanceModelRefinementPlugin {
                 .map(refinementHandlerByImage::get);
 
             if (imageId.isPresent() && imageRefinementHandler.isPresent()) {
-                imageRefinementHandler.get().handleNode(curNode, template, imageId.get());
+                imageRefinementHandler.get().handleNode(curNode, template, imageId.get(), discoveryPlugin);
             }
         }
 

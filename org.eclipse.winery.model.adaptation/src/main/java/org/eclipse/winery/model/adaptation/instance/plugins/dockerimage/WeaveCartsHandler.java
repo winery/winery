@@ -15,7 +15,6 @@
 package org.eclipse.winery.model.adaptation.instance.plugins.dockerimage;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,60 +32,59 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
-public class MongoDbHandler implements ImageRefinementHandler {
-    private static final String IMAGE_ID_MONGO = "mongo";
-    private static final String IMAGE_ID_WEAVE_USER_DB = "weaveworksdemos/user-db:0.3.0";
-    private static final QName QNAME_MONGO_DOCKER_CONTAINER = QName.valueOf(
-        "{https://examples.opentosca.org/edmm/nodetypes}Ubuntu-Container");
-    private static final QName QNAME_MONGO_DB = QName.valueOf("{http://opentosca.org/nodetypes}MongoDB-Server_3.2");
+public class WeaveCartsHandler implements ImageRefinementHandler {
+    private static final String IMAGE_ID_WEAVE_CART = "weaveworksdemos/carts:0.4.8";
+    private static final QName QNAME_ALPINE_CONTAINER = QName.valueOf(
+        "{https://examples.opentosca.org/edmm/nodetypes}Alpine-Container");
+    private static final QName QNAME_JAVA8 = QName.valueOf("{http://opentosca.org/nodetypes}Java8");
+    private static final QName QNAME_SPRING_WEB = QName.valueOf("{http://opentosca.org/nodetypes}SpringWebApp_w1");
 
     @Override
     public Set<String> getTargetImages() {
-        HashSet<String> targetImages = new HashSet<>();
-        targetImages.add(IMAGE_ID_MONGO);
-        targetImages.add(IMAGE_ID_WEAVE_USER_DB);
-        return targetImages;
+        return Stream.of(IMAGE_ID_WEAVE_CART).collect(Collectors.toSet());
     }
 
     @Override
     public Set<QName> getProhibitedTypes() {
-        return Stream.of(QNAME_MONGO_DOCKER_CONTAINER).collect(Collectors.toSet());
+        return Stream.of(QNAME_ALPINE_CONTAINER).collect(Collectors.toSet());
     }
 
     @Override
     public void handleNode(
         TNodeTemplate dockerContainer,
         TTopologyTemplate topologyTemplate,
-        String imageId, ToscaDiscoveryPlugin discoveryPlugin) {
+        String imageId,
+        ToscaDiscoveryPlugin discoveryPlugin) {
+
         IRepository repository = RepositoryFactory.getRepository();
 
-        QName type;
-        switch (imageId) {
-            case IMAGE_ID_WEAVE_USER_DB:
-            case IMAGE_ID_MONGO:
-                type = QNAME_MONGO_DOCKER_CONTAINER;
-                break;
-            default:
-                type = null;
-        }
+        dockerContainer.setType(QNAME_ALPINE_CONTAINER);
 
-        if (type != null) {
-            dockerContainer.setType(type);
-        }
+        TNodeType javaType = repository.getElement(new NodeTypeId(QNAME_JAVA8));
+        TNodeTemplate java = ModelUtilities.instantiateNodeTemplate(javaType);
 
-        TNodeType mongoType = repository.getElement(new NodeTypeId(QNAME_MONGO_DB));
-        TNodeTemplate mongo = ModelUtilities.instantiateNodeTemplate(mongoType);
+        topologyTemplate.addNodeTemplate(java);
 
-        topologyTemplate.addNodeTemplate(mongo);
-
-        ModelUtilities.createRelationshipTemplateAndAddToTopology(mongo,
+        ModelUtilities.createRelationshipTemplateAndAddToTopology(java,
             dockerContainer,
+            ToscaBaseTypes.hostedOnRelationshipType,
+            topologyTemplate);
+
+        TNodeType springType = repository.getElement(new NodeTypeId(QNAME_SPRING_WEB));
+        TNodeTemplate spring = ModelUtilities.instantiateNodeTemplate(springType);
+        spring.setName(dockerContainer.getName());
+
+        topologyTemplate.addNodeTemplate(spring);
+
+        ModelUtilities.createRelationshipTemplateAndAddToTopology(spring,
+            java,
             ToscaBaseTypes.hostedOnRelationshipType,
             topologyTemplate);
 
         List<String> discoveredIds = new ArrayList<>(discoveryPlugin.getDiscoveredIds());
         discoveredIds.add(dockerContainer.getId());
-        discoveredIds.add(mongo.getId());
+        discoveredIds.add(java.getId());
+        discoveredIds.add(spring.getId());
         discoveryPlugin.setDiscoveredIds(discoveredIds);
     }
 }

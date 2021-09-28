@@ -31,6 +31,7 @@ import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.ToscaDiscoveryPlugin;
 import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.repository.TestWithGitRepoAndSshServer;
 
@@ -71,7 +72,9 @@ class InstanceModelRefinementTest extends TestWithGitRepoAndSshServer {
                 ? null
                 : new InstanceModelRefinementPlugin("noop") {
                 @Override
-                public TTopologyTemplate apply(TTopologyTemplate template) {
+                public TTopologyTemplate apply(
+                        TTopologyTemplate template,
+                        ToscaDiscoveryPlugin discoveryPlugin) {
                     template.addNodeTemplate(mySpecialNode);
                     return template;
                 }
