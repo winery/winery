@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -70,9 +70,9 @@ public class RepositoryUtils {
     }
 
     public static boolean checkRepositoryDuplicate(String url, MultiRepository multiRepository) {
-        for (IRepository frepo : multiRepository.getRepositoriesMap().keySet()) {
-            if ((frepo instanceof GitBasedRepository) && (((GitBasedRepository) frepo).getRepositoryUrl() != null)) {
-                if (((GitBasedRepository) frepo).getRepositoryUrl().equalsIgnoreCase(url)) {
+        for (IRepository repository : multiRepository.getRepositoriesMap().keySet()) {
+            if ((repository instanceof GitBasedRepository) && (((GitBasedRepository) repository).getRepositoryUrl() != null)) {
+                if (((GitBasedRepository) repository).getRepositoryUrl().equalsIgnoreCase(url)) {
                     return true;
                 }
             }
