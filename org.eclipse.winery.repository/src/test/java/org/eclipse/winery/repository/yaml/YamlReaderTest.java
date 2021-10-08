@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -19,17 +19,27 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
 
+import org.eclipse.winery.model.converter.support.exception.MultiException;
+import org.eclipse.winery.model.tosca.yaml.YTActivityDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTCallOperationActivityDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTInterfaceDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTNodeType;
+import org.eclipse.winery.model.tosca.yaml.YTPolicyType;
 import org.eclipse.winery.model.tosca.yaml.YTServiceTemplate;
 import org.eclipse.winery.model.tosca.yaml.YTTopologyTemplateDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTTriggerDefinition;
+import org.eclipse.winery.model.tosca.yaml.support.YTMapActivityDefinition;
 import org.eclipse.winery.repository.converter.AbstractConverterTest;
 import org.eclipse.winery.repository.converter.reader.YamlReader;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -105,5 +115,121 @@ public class YamlReaderTest extends AbstractConverterTest {
         YTTopologyTemplateDefinition topologyTemplate = template.getTopologyTemplate();
         Assertions.assertNotNull(topologyTemplate);
         Assertions.assertEquals(2, topologyTemplate.getPolicies().size());
+    }
+
+    @Nested
+    @DisplayName("tests for reading valid Policy Types")
+    class ValidPolicyTypeWithTriggerTest {
+        private YTServiceTemplate template;
+
+        @BeforeEach
+        void beforeEach() throws MultiException {
+            YamlReader reader = new YamlReader();
+            InputStream is = getClass().getClassLoader().getResourceAsStream("yaml/simple-tests/policy-types/valid-policy-type-with-trigger-1_3.yml");
+            this.template = reader.parse(is);
+        }
+
+        @Test
+        public void testPolicyTypesPresence() {
+            Map<String, YTPolicyType> policyTypes = template.getPolicyTypes();
+            Assertions.assertNotNull(policyTypes);
+            Assertions.assertEquals(1, policyTypes.size());
+        }
+
+        @Test
+        public void testPolicyTypeContents() {
+            YTPolicyType policyType = template.getPolicyTypes().get("my.test.namespace.PolicyTypeName");
+            Assertions.assertNotNull(policyType);
+            Assertions.assertEquals(3, policyType.getProperties().size());
+            Assertions.assertEquals(1, policyType.getTargets().size());
+        }
+
+        @Test
+        public void testTriggerDefinitionsPresence() {
+            Map<String, YTTriggerDefinition> triggerDefinitions = template.getPolicyTypes().get("my.test.namespace.PolicyTypeName").getTriggers();
+            Assertions.assertNotNull(triggerDefinitions);
+            Assertions.assertEquals(1, triggerDefinitions.size());
+        }
+
+        @Test
+        public void testTriggerDefinitionContents() {
+            YTTriggerDefinition triggerDefinition = template.getPolicyTypes()
+                .get("my.test.namespace.PolicyTypeName")
+                .getTriggers()
+                .get("my.test.namespace.TriggerDefinition");
+            Assertions.assertNotNull(triggerDefinition);
+            Assertions.assertNotNull(triggerDefinition.getDescription());
+            Assertions.assertNotNull(triggerDefinition.getEvent());
+        }
+
+        @Test
+        public void testTargetFilter() {
+            YTTriggerDefinition triggerDefinition = template.getPolicyTypes()
+                .get("my.test.namespace.PolicyTypeName")
+                .getTriggers()
+                .get("my.test.namespace.TriggerDefinition");
+            Assertions.assertNotNull(triggerDefinition.getTargetFilter());
+            Assertions.assertNotNull(triggerDefinition.getTargetFilter().getNode());
+            Assertions.assertNull(triggerDefinition.getTargetFilter().getRequirement());
+            Assertions.assertNull(triggerDefinition.getTargetFilter().getCapability());
+        }
+
+        @Test
+        public void testActivityDefinition() {
+            List<YTMapActivityDefinition> actions = template.getPolicyTypes()
+                .get("my.test.namespace.PolicyTypeName")
+                .getTriggers()
+                .get("my.test.namespace.TriggerDefinition")
+                .getAction();
+            Assertions.assertNotNull(actions);
+            Assertions.assertEquals(1, actions.size());
+            Assertions.assertEquals(1, actions.get(0).getMap().size());
+            YTActivityDefinition activity = actions.get(0).getMap().get("call_operation");
+            Assertions.assertNotNull(activity);
+            Assertions.assertNotNull(((YTCallOperationActivityDefinition) activity).getOperation());
+            Assertions.assertEquals(2, ((YTCallOperationActivityDefinition) activity).getInputs().size());
+        }
+    }
+
+    @Nested
+    @DisplayName("tests for reading invalid Policy Types")
+    class InvalidPolicyTypeWithTriggerTest {
+        private YTServiceTemplate template;
+        private YTServiceTemplate templateTwo;
+
+        @BeforeEach
+        void beforeEach() throws MultiException {
+            YamlReader reader = new YamlReader();
+            InputStream is = getClass().getClassLoader().getResourceAsStream("yaml/simple-tests/policy-types/invalid/invalid-policy-type-with-malformed-trigger-1_3.yml");
+            this.template = reader.parse(is);
+
+            InputStream is2 = getClass().getClassLoader().getResourceAsStream("yaml/simple-tests/policy-types/invalid/invalid-policy-type-with-malformed-activities-1_3.yml");
+            this.templateTwo = reader.parse(is2);
+        }
+
+        @Test
+        public void testPolicyTypesPresence() {
+            YamlReader reader = new YamlReader();
+            InputStream is = getClass().getClassLoader().getResourceAsStream("yaml/simple-tests/policy-types/invalid/invalid-policy-type-with-malformed-trigger-1_3.yml");
+            Map<String, YTPolicyType> policyTypes = template.getPolicyTypes();
+            Assertions.assertNotNull(policyTypes);
+            Assertions.assertEquals(1, policyTypes.size());
+        }
+
+        @Test
+        public void testTriggersWithoutEventIsIgnored() {
+            YTPolicyType policyType = template.getPolicyTypes().get("my.test.namespace.PolicyTypeName");
+            Assertions.assertNotNull(policyType);
+            Assertions.assertEquals(0, policyType.getProperties().size());
+            Assertions.assertEquals(1, policyType.getTargets().size());
+            Assertions.assertEquals(1, policyType.getTriggers().size());
+        }
+
+        @Test
+        public void testUnsupportedActivityIsIgnored() {
+            YTPolicyType policyType = templateTwo.getPolicyTypes().get("my.test.namespace.PolicyTypeName");
+            Assertions.assertNotNull(policyType);
+            Assertions.assertEquals(2, policyType.getTriggers().get("my.test.namespace.TriggerDefinition2").getAction().size());
+        }
     }
 }

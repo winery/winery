@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -28,15 +28,23 @@ import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.tosca.yaml.YTCallOperationActivityDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTConstraintClause;
+import org.eclipse.winery.model.tosca.yaml.YTEventFilterDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTImportDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTNodeTemplate;
+import org.eclipse.winery.model.tosca.yaml.YTParameterDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTPolicyDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTPolicyType;
 import org.eclipse.winery.model.tosca.yaml.YTPropertyAssignment;
+import org.eclipse.winery.model.tosca.yaml.YTPropertyDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTRelationshipTemplate;
 import org.eclipse.winery.model.tosca.yaml.YTServiceTemplate;
 import org.eclipse.winery.model.tosca.yaml.YTTopologyTemplateDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTTriggerDefinition;
 import org.eclipse.winery.model.tosca.yaml.support.Defaults;
+import org.eclipse.winery.model.tosca.yaml.support.Metadata;
+import org.eclipse.winery.model.tosca.yaml.support.YTMapActivityDefinition;
 import org.eclipse.winery.repository.converter.writer.YamlPrinter;
 import org.eclipse.winery.repository.converter.writer.YamlWriter;
 
@@ -50,6 +58,10 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class YamlWriterTests {
+
+    private static String inputStreamToString(InputStream is) throws Exception {
+        return IOUtils.toString(is, StandardCharsets.UTF_8);
+    }
 
     @ParameterizedTest
     @ArgumentsSource(ServiceTemplatesProvider.class)
@@ -94,6 +106,14 @@ public class YamlWriterTests {
     @ParameterizedTest
     @ArgumentsSource(PropertyFunctionArgumentsProvider.class)
     public void testPropertyFunctionSerialization(YTPropertyAssignment prop, String expected) {
+        YamlWriter writer = new YamlWriter();
+        YamlPrinter p = writer.visit(prop, new YamlWriter.Parameter(0).addContext("root"));
+        assertEquals(expected, p.toString());
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(PolicyTypeArgumentsProvider.class)
+    public void testPolicyTypeSerialization(YTServiceTemplate prop, String expected) {
         YamlWriter writer = new YamlWriter();
         YamlPrinter p = writer.visit(prop, new YamlWriter.Parameter(0).addContext("root"));
         assertEquals(expected, p.toString());
@@ -181,8 +201,8 @@ public class YamlWriterTests {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             final YTPropertyAssignment baseList = new YTPropertyAssignment.Builder().setValue(Stream.of("a1", "a2")
-                .map(v -> new YTPropertyAssignment.Builder().setValue(v).build())
-                .collect(Collectors.toList()))
+                    .map(v -> new YTPropertyAssignment.Builder().setValue(v).build())
+                    .collect(Collectors.toList()))
                 .build();
             final Map<String, YTPropertyAssignment> nestedMap = new HashMap<>();
             nestedMap.put("pre_activities", baseList);
@@ -233,7 +253,98 @@ public class YamlWriterTests {
         }
     }
 
-    private static String inputStreamToString(InputStream is) throws Exception {
-        return IOUtils.toString(is, StandardCharsets.UTF_8);
+    static class PolicyTypeArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            YTServiceTemplate.Builder st = new YTServiceTemplate.Builder(Defaults.TOSCA_DEFINITIONS_VERSION);
+
+            final YTPolicyType noEmptyElementsAfterGetTriggersMethod = getValidYTPolicyTypeBuilder().build();
+            noEmptyElementsAfterGetTriggersMethod.getTriggers();
+
+            YTTriggerDefinition triggerWithoutEvent = new YTTriggerDefinition.Builder(null).setDescription("description").build();
+            final YTPolicyType policyTypeWithNonSerializableTrigger = getValidYTPolicyTypeBuilder().build();
+            policyTypeWithNonSerializableTrigger.setTriggers(Collections.singletonMap("my.test.namespace.TriggerDefinition", triggerWithoutEvent));
+
+            final YTPolicyType policyTypeWithValidTrigger = getValidYTPolicyTypeBuilder().build();
+            policyTypeWithValidTrigger.setTriggers(Collections.singletonMap("my.test.namespace.TriggerDefinition", getValidTriggerDefinitionBuilder(true).build()));
+
+            StringBuilder expectedValidTriggerWithInput = getValidYTPolicTypeWithTriggerAndNoInputsStringBuilder();
+            expectedValidTriggerWithInput.append("              inputs:").append("\n");
+            expectedValidTriggerWithInput.append("                inputOne: { get_property: [ SELF, propertyOne ] }").append("\n");
+
+            final YTPolicyType policyTypeWithValidTriggerWithoutInput = getValidYTPolicyTypeBuilder().build();
+            policyTypeWithValidTriggerWithoutInput.setTriggers(Collections.singletonMap("my.test.namespace.TriggerDefinition", getValidTriggerDefinitionBuilder(false).build()));
+
+            return Stream.of(
+                Arguments.of(st.setPolicyTypes(Collections.singletonMap("my.test.namespace.PolicyTypeName", getValidYTPolicyTypeBuilder().build())).build(), getValidYTPolicTypeStringBuilder().toString()),
+                Arguments.of(st.setPolicyTypes(Collections.singletonMap("my.test.namespace.PolicyTypeName", noEmptyElementsAfterGetTriggersMethod)).build(), getValidYTPolicTypeStringBuilder().toString()),
+                Arguments.of(st.setPolicyTypes(Collections.singletonMap("my.test.namespace.PolicyTypeName", policyTypeWithNonSerializableTrigger)).build(), getValidYTPolicTypeStringBuilder().toString()),
+                Arguments.of(st.setPolicyTypes(Collections.singletonMap("my.test.namespace.PolicyTypeName", policyTypeWithValidTrigger)).build(), expectedValidTriggerWithInput.toString()),
+                Arguments.of(st.setPolicyTypes(Collections.singletonMap("my.test.namespace.PolicyTypeName", policyTypeWithValidTriggerWithoutInput)).build(), getValidYTPolicTypeWithTriggerAndNoInputsStringBuilder().toString())
+            );
+        }
+
+        private YTPolicyType.Builder getValidYTPolicyTypeBuilder() {
+            final YTPolicyType.Builder policyTypeWithoutTriggers = new YTPolicyType.Builder();
+            policyTypeWithoutTriggers.setDerivedFrom(new QName("tosca.policies.Root"));
+            Metadata metadata = new Metadata();
+            metadata.put("targetNamespace", "my.test.namespace");
+            metadata.put("abstract", "false");
+            metadata.put("final", "false");
+            policyTypeWithoutTriggers.setMetadata(metadata);
+            policyTypeWithoutTriggers.setProperties(Collections.singletonMap("propertyOne", new YTPropertyDefinition.Builder(new QName("string")).build()));
+            policyTypeWithoutTriggers.setTargets(Collections.singletonList(new QName("my.test.namespace.TargetNodeTypeName")));
+
+            return policyTypeWithoutTriggers;
+        }
+
+        private YTTriggerDefinition.Builder getValidTriggerDefinitionBuilder(boolean withInput) {
+            YTTriggerDefinition.Builder correctTriggerBuilder = new YTTriggerDefinition.Builder("eventName")
+                .setDescription("description")
+                .setTargetFilter(new YTEventFilterDefinition.Builder("my.test.namespace.TargetNodeTypeName").build());
+
+            YTMapActivityDefinition action = new YTMapActivityDefinition();
+            YTCallOperationActivityDefinition correctCallActivityDefinition = new YTCallOperationActivityDefinition("interface.operation");
+            if (withInput) {
+                correctCallActivityDefinition.setInputs(Collections.singletonMap("inputOne", new YTParameterDefinition.Builder().setValue("{ get_property: [ SELF, propertyOne ] }").build()));
+            } else {
+                correctCallActivityDefinition.setInputs(null);
+            }
+            action.put("call_operation", correctCallActivityDefinition);
+            correctTriggerBuilder.setAction(Collections.singletonList(action));
+
+            return correctTriggerBuilder;
+        }
+
+        private StringBuilder getValidYTPolicTypeStringBuilder() {
+            return new StringBuilder()
+                .append("tosca_definitions_version: tosca_simple_yaml_1_3").append("\n").append("\n")
+                .append("policy_types:").append("\n")
+                .append("  my.test.namespace.PolicyTypeName:").append("\n")
+                .append("    derived_from: tosca.policies.Root").append("\n")
+                .append("    metadata:").append("\n")
+                .append("      targetNamespace: \"my.test.namespace\"").append("\n")
+                .append("      abstract: \"false\"").append("\n")
+                .append("      final: \"false\"").append("\n")
+                .append("    properties:").append("\n")
+                .append("      propertyOne:").append("\n")
+                .append("        type: string").append("\n")
+                .append("    targets: [ my.test.namespace.TargetNodeTypeName ]").append("\n");
+        }
+
+        private StringBuilder getValidYTPolicTypeWithTriggerAndNoInputsStringBuilder() {
+            StringBuilder expectedValidTrigger = getValidYTPolicTypeStringBuilder();
+            expectedValidTrigger.append("    triggers:").append("\n");
+            expectedValidTrigger.append("      my.test.namespace.TriggerDefinition:").append("\n");
+            expectedValidTrigger.append("        description: description").append("\n");
+            expectedValidTrigger.append("        event: eventName").append("\n");
+            expectedValidTrigger.append("        target_filter:").append("\n");
+            expectedValidTrigger.append("          node: my.test.namespace.TargetNodeTypeName").append("\n");
+            expectedValidTrigger.append("        action:").append("\n");
+            expectedValidTrigger.append("          - call_operation:").append("\n");
+            expectedValidTrigger.append("              operation: interface.operation").append("\n");
+
+            return expectedValidTrigger;
+        }
     }
 }

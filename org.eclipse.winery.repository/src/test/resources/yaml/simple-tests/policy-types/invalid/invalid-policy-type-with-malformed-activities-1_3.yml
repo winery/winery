@@ -1,0 +1,20 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+policy_types:
+  my.test.namespace.PolicyTypeName:
+    derived_from: tosca.policies.Root
+    targets: [ my.test.namespace.TargetNodeTypeName ]
+    triggers:      
+      my.test.namespace.TriggerDefinition2:
+        description: valid trigger definition
+        event: event_name
+        target_filter:
+          node: my.test.namespace.TargetNodeTypeName
+        action:
+          - call_operation:
+              operation: correct.operation
+              inputs:
+                inputOne: { get_property: [ SELF, propertyOne ] }
+                inputTwo: { get_property: [ SELF, propertyTwo ] }
+          - call_operation: shortform.notation
+          - delegate: delegate_workflow_name

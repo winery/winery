@@ -38,11 +38,13 @@ import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
+import org.eclipse.winery.model.tosca.TActivityDefinition;
 import org.eclipse.winery.model.tosca.TArtifact;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
+import org.eclipse.winery.model.tosca.TCallOperationActivityDefinition;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
 import org.eclipse.winery.model.tosca.TCapabilityType;
@@ -79,6 +81,7 @@ import org.eclipse.winery.model.tosca.TSchema;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.TTriggerDefinition;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinition;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKV;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinition;
@@ -87,12 +90,14 @@ import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesD
 import org.eclipse.winery.model.tosca.yaml.YTArtifactDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTArtifactType;
 import org.eclipse.winery.model.tosca.yaml.YTAttributeDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTCallOperationActivityDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTCapabilityAssignment;
 import org.eclipse.winery.model.tosca.yaml.YTCapabilityDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTCapabilityType;
 import org.eclipse.winery.model.tosca.yaml.YTConstraintClause;
 import org.eclipse.winery.model.tosca.yaml.YTDataType;
 import org.eclipse.winery.model.tosca.yaml.YTEntityType;
+import org.eclipse.winery.model.tosca.yaml.YTEventFilterDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTGroupDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTGroupType;
 import org.eclipse.winery.model.tosca.yaml.YTImplementation;
@@ -118,8 +123,10 @@ import org.eclipse.winery.model.tosca.yaml.YTSchemaDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTServiceTemplate;
 import org.eclipse.winery.model.tosca.yaml.YTSubstitutionMappings;
 import org.eclipse.winery.model.tosca.yaml.YTTopologyTemplateDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTTriggerDefinition;
 import org.eclipse.winery.model.tosca.yaml.support.Defaults;
 import org.eclipse.winery.model.tosca.yaml.support.Metadata;
+import org.eclipse.winery.model.tosca.yaml.support.YTMapActivityDefinition;
 import org.eclipse.winery.model.tosca.yaml.support.YTMapImportDefinition;
 import org.eclipse.winery.model.tosca.yaml.support.YTMapRequirementAssignment;
 import org.eclipse.winery.model.tosca.yaml.support.YTMapRequirementDefinition;
@@ -530,12 +537,64 @@ public class FromCanonical {
                 .collect(Collectors.toList())
         );
 
+        builder.setTriggers(
+            node.getTriggers()
+                .stream()
+                .collect(Collectors.toMap(TTriggerDefinition::getName, this::convert))
+        );
+
         String nodeFullName = this.getFullName(node);
         return Collections.singletonMap(
             nodeFullName,
             convert(node, builder, TPolicyType.class)
                 .build()
         );
+    }
+
+    @NonNull
+    public YTTriggerDefinition convert(TTriggerDefinition tTriggerDefinition) {
+        YTTriggerDefinition.Builder defBuilder = new YTTriggerDefinition.Builder(tTriggerDefinition.getEvent());
+        if (Objects.nonNull(tTriggerDefinition.getDescription())) {
+            defBuilder.setDescription(tTriggerDefinition.getDescription());
+        }
+
+        if (Objects.nonNull(tTriggerDefinition.getTargetFilter()) && Objects.nonNull(tTriggerDefinition.getTargetFilter().getNode())) {
+            YTEventFilterDefinition.Builder filterBuilder = new YTEventFilterDefinition.Builder(tTriggerDefinition.getTargetFilter().getNode());
+            if (Objects.nonNull(tTriggerDefinition.getTargetFilter().getCapability())) {
+                filterBuilder.setCapability(tTriggerDefinition.getTargetFilter().getCapability());
+            }
+            if (Objects.nonNull(tTriggerDefinition.getTargetFilter().getRequirement())) {
+                filterBuilder.setRequirement(tTriggerDefinition.getTargetFilter().getRequirement());
+            }
+            defBuilder.setTargetFilter(filterBuilder.build());
+        }
+        defBuilder.setAction(
+            tTriggerDefinition.getAction()
+                .stream()
+                .map(this::convert)
+                .collect(Collectors.toList())
+        );
+
+        return defBuilder.build();
+    }
+
+    public YTMapActivityDefinition convert(TActivityDefinition node) {
+        if (Objects.isNull(node)) {
+            return null;
+        }
+        // TODO support other activity definition types
+        if (node instanceof TCallOperationActivityDefinition) {
+            TCallOperationActivityDefinition canonicalDef = (TCallOperationActivityDefinition) node;
+            YTCallOperationActivityDefinition yamlDef = new YTCallOperationActivityDefinition(canonicalDef.getOperation());
+            Map<String, YTParameterDefinition> inputs = canonicalDef.getInputs().stream()
+                .map(this::convert)
+                .flatMap(m -> m.entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            yamlDef.setInputs(inputs);
+
+            return new YTMapActivityDefinition().setMap(Collections.singletonMap("call_operation", yamlDef));
+        }
+        return new YTMapActivityDefinition();
     }
 
     @NonNull
@@ -972,15 +1031,22 @@ public class FromCanonical {
 
         Map<String, YTOperationDefinition> ops = new HashMap<>();
         node.getOperations().forEach((key, value) -> ops.putAll(convert(value)));
+        YTInterfaceType.Builder interfaceBuilder = new YTInterfaceType.Builder()
+            .setDescription(node.getDescription())
+            .setOperations(ops)
+            .setDerivedFrom(convert(node.getDerivedFrom(), node.getClass()));
 
-        return Collections.singletonMap(
-            node.getName(),
-            new YTInterfaceType.Builder()
-                .setDescription(node.getDescription())
-                .setOperations(ops)
-                .setDerivedFrom(convert(node.getDerivedFrom(), node.getClass()))
-                .build()
-        );
+        String typeName = node.getName();
+        if (Objects.nonNull(node.getTargetNamespace()) && !node.getTargetNamespace().isEmpty()) {
+            Metadata metadata = new Metadata();
+            metadata.put("targetNamespace", node.getTargetNamespace());
+            interfaceBuilder.addMetadata(metadata);
+            if (Objects.nonNull(typeName)) {
+                typeName = node.getTargetNamespace().concat(".").concat(typeName);
+            }
+        }
+
+        return Collections.singletonMap(typeName, interfaceBuilder.build());
     }
 
     public Map<String, YTCapabilityAssignment> convert(TCapability node) {

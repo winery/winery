@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -27,18 +27,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.eclipse.winery.model.tosca.yaml.YTArtifactDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTArtifactType;
 import org.eclipse.winery.model.tosca.yaml.YTAttributeAssignment;
 import org.eclipse.winery.model.tosca.yaml.YTAttributeDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTCallOperationActivityDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTCapabilityAssignment;
 import org.eclipse.winery.model.tosca.yaml.YTCapabilityDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTCapabilityType;
 import org.eclipse.winery.model.tosca.yaml.YTConstraintClause;
 import org.eclipse.winery.model.tosca.yaml.YTDataType;
 import org.eclipse.winery.model.tosca.yaml.YTEntityType;
+import org.eclipse.winery.model.tosca.yaml.YTEventFilterDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTGroupDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTGroupType;
 import org.eclipse.winery.model.tosca.yaml.YTImplementation;
@@ -68,9 +72,11 @@ import org.eclipse.winery.model.tosca.yaml.YTServiceTemplate;
 import org.eclipse.winery.model.tosca.yaml.YTStatusValue;
 import org.eclipse.winery.model.tosca.yaml.YTSubstitutionMappings;
 import org.eclipse.winery.model.tosca.yaml.YTTopologyTemplateDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTTriggerDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTVersion;
 import org.eclipse.winery.model.tosca.yaml.support.Metadata;
 import org.eclipse.winery.model.tosca.yaml.support.YTListString;
+import org.eclipse.winery.model.tosca.yaml.support.YTMapActivityDefinition;
 import org.eclipse.winery.model.tosca.yaml.support.YTMapImportDefinition;
 import org.eclipse.winery.model.tosca.yaml.support.YTMapObject;
 import org.eclipse.winery.model.tosca.yaml.support.YTMapPropertyFilterDefinition;
@@ -374,9 +380,57 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
     }
 
     public YamlPrinter visit(YTPolicyType node, Parameter parameter) {
+        YamlPrinter printer = new YamlPrinter(parameter.getIndent())
+            .printKeyValue("targets", node.getTargets());
+
+        Map<String, YTTriggerDefinition> validTriggers = node.getTriggers().entrySet()
+            .stream()
+            .filter(entry -> Objects.nonNull(entry.getValue().getEvent()))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        return printer.print(printMap("triggers", validTriggers, parameter));
+    }
+
+    public YamlPrinter visit(YTTriggerDefinition node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("targets", node.getTargets())
-            .printKeyObject("triggers", node.getTriggers());
+            .printKeyValue("description", node.getDescription())
+            .printKeyValue("event", node.getEvent())
+            .print(node.getTargetFilter().accept(this, parameter))
+            .print(printListMap("action", node.getAction().stream().map(YTMapActivityDefinition::getMap).collect(Collectors.toList()), parameter));
+    }
+
+    public YamlPrinter visit(YTEventFilterDefinition node, Parameter parameter) {
+        YamlPrinter printer = new YamlPrinter(parameter.getIndent());
+        if (Objects.nonNull(node) && Objects.nonNull(node.getNode())) {
+            printer.printKey("target_filter").indent(INDENT_SIZE);
+            printer.printKeyValue("node", node.getNode());
+            if (Objects.nonNull(node.getRequirement())) {
+                printer.printKeyValue("requirement", node.getRequirement());
+            }
+            if (Objects.nonNull(node.getRequirement())) {
+                printer.printKeyValue("capability", node.getCapability());
+            }
+            printer.indent(-INDENT_SIZE);
+        }
+        return printer;
+    }
+
+    public YamlPrinter visit(YTCallOperationActivityDefinition node, Parameter parameter) {
+        YamlPrinter printer = new YamlPrinter(parameter.getIndent())
+            .printKeyValue("operation", node.getOperation());
+        if (Objects.nonNull(node.getInputs()) && !node.getInputs().isEmpty()) {
+            printer.printKey("inputs")
+                .indent(INDENT_SIZE);
+            SortedSet<String> keys = new TreeSet<>(node.getInputs().keySet());
+            for (String key : keys) {
+                Object value = node.getInputs().get(key).getValue();
+                if (value instanceof String) {
+                    printer.printKeyValue(key, (String) value);
+                }
+            }
+            printer.indent(-INDENT_SIZE);
+        }
+        return printer;
     }
 
     public YamlPrinter visit(YTVersion node, Parameter parameter) {

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,7 +13,48 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.yaml.visitor;
 
-import org.eclipse.winery.model.tosca.yaml.*;
+import org.eclipse.winery.model.tosca.yaml.YTArtifactDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTArtifactType;
+import org.eclipse.winery.model.tosca.yaml.YTAttributeAssignment;
+import org.eclipse.winery.model.tosca.yaml.YTAttributeDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTCallOperationActivityDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTCapabilityAssignment;
+import org.eclipse.winery.model.tosca.yaml.YTCapabilityDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTCapabilityType;
+import org.eclipse.winery.model.tosca.yaml.YTConstraintClause;
+import org.eclipse.winery.model.tosca.yaml.YTDataType;
+import org.eclipse.winery.model.tosca.yaml.YTEntityType;
+import org.eclipse.winery.model.tosca.yaml.YTEventFilterDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTGroupDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTGroupType;
+import org.eclipse.winery.model.tosca.yaml.YTImplementation;
+import org.eclipse.winery.model.tosca.yaml.YTImportDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTInterfaceAssignment;
+import org.eclipse.winery.model.tosca.yaml.YTInterfaceDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTInterfaceType;
+import org.eclipse.winery.model.tosca.yaml.YTNodeFilterDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTNodeTemplate;
+import org.eclipse.winery.model.tosca.yaml.YTNodeType;
+import org.eclipse.winery.model.tosca.yaml.YTOperationDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTParameterDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTPolicyDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTPolicyType;
+import org.eclipse.winery.model.tosca.yaml.YTPropertyAssignment;
+import org.eclipse.winery.model.tosca.yaml.YTPropertyDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTPropertyFilterDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTRelationshipAssignment;
+import org.eclipse.winery.model.tosca.yaml.YTRelationshipDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTRelationshipTemplate;
+import org.eclipse.winery.model.tosca.yaml.YTRelationshipType;
+import org.eclipse.winery.model.tosca.yaml.YTRepositoryDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTRequirementAssignment;
+import org.eclipse.winery.model.tosca.yaml.YTRequirementDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTSchemaDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTServiceTemplate;
+import org.eclipse.winery.model.tosca.yaml.YTSubstitutionMappings;
+import org.eclipse.winery.model.tosca.yaml.YTTopologyTemplateDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTTriggerDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTVersion;
 import org.eclipse.winery.model.tosca.yaml.support.Metadata;
 
 public interface IVisitor<R extends AbstractResult, P extends AbstractParameter> {
@@ -24,6 +65,8 @@ public interface IVisitor<R extends AbstractResult, P extends AbstractParameter>
     R visit(YTAttributeAssignment node, P parameter);
 
     R visit(YTAttributeDefinition node, P parameter);
+
+    R visit(YTCallOperationActivityDefinition node, P parameter);
 
     R visit(YTCapabilityAssignment node, P parameter);
 
@@ -36,6 +79,8 @@ public interface IVisitor<R extends AbstractResult, P extends AbstractParameter>
     R visit(YTDataType node, P parameter);
 
     R visit(YTEntityType node, P parameter);
+
+    R visit(YTEventFilterDefinition node, P parameter);
 
     R visit(YTSchemaDefinition node, P parameter);
 
@@ -90,6 +135,8 @@ public interface IVisitor<R extends AbstractResult, P extends AbstractParameter>
     R visit(YTServiceTemplate node, P parameter);
 
     R visit(YTSubstitutionMappings node, P parameter);
+
+    R visit(YTTriggerDefinition node, P parameter);
 
     R visit(YTTopologyTemplateDefinition node, P parameter);
 

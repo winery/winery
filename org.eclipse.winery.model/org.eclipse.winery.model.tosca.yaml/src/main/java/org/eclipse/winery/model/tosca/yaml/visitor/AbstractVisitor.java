@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,12 +23,14 @@ import org.eclipse.winery.model.tosca.yaml.YTArtifactDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTArtifactType;
 import org.eclipse.winery.model.tosca.yaml.YTAttributeAssignment;
 import org.eclipse.winery.model.tosca.yaml.YTAttributeDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTCallOperationActivityDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTCapabilityAssignment;
 import org.eclipse.winery.model.tosca.yaml.YTCapabilityDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTCapabilityType;
 import org.eclipse.winery.model.tosca.yaml.YTConstraintClause;
 import org.eclipse.winery.model.tosca.yaml.YTDataType;
 import org.eclipse.winery.model.tosca.yaml.YTEntityType;
+import org.eclipse.winery.model.tosca.yaml.YTEventFilterDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTGroupDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTGroupType;
 import org.eclipse.winery.model.tosca.yaml.YTImplementation;
@@ -57,6 +59,7 @@ import org.eclipse.winery.model.tosca.yaml.YTSchemaDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTServiceTemplate;
 import org.eclipse.winery.model.tosca.yaml.YTSubstitutionMappings;
 import org.eclipse.winery.model.tosca.yaml.YTTopologyTemplateDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTTriggerDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTVersion;
 import org.eclipse.winery.model.tosca.yaml.support.Metadata;
 
@@ -81,6 +84,21 @@ public abstract class AbstractVisitor<R extends AbstractResult<R>, P extends Abs
     @Override
     public R visit(YTAttributeDefinition node, P parameter) {
         return visitElement(node.getEntrySchema(), parameter, "entry_schema");
+    }
+
+    @Override
+    public R visit(YTCallOperationActivityDefinition node, P parameter) {
+        return null;
+    }
+
+    @Override
+    public R visit(YTTriggerDefinition node, P parameter) {
+        return null;
+    }
+
+    @Override
+    public R visit(YTEventFilterDefinition node, P parameter) {
+        return null;
     }
 
     @Override

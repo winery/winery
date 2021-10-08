@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -36,16 +36,19 @@ import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.model.converter.support.Namespaces;
 import org.eclipse.winery.model.converter.support.exception.InvalidToscaSyntax;
 import org.eclipse.winery.model.converter.support.exception.MultiException;
+import org.eclipse.winery.model.tosca.yaml.YTActivityDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTArtifactDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTArtifactType;
 import org.eclipse.winery.model.tosca.yaml.YTAttributeAssignment;
 import org.eclipse.winery.model.tosca.yaml.YTAttributeDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTCallOperationActivityDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTCapabilityAssignment;
 import org.eclipse.winery.model.tosca.yaml.YTCapabilityDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTCapabilityType;
 import org.eclipse.winery.model.tosca.yaml.YTConstraintClause;
 import org.eclipse.winery.model.tosca.yaml.YTDataType;
 import org.eclipse.winery.model.tosca.yaml.YTEntityType;
+import org.eclipse.winery.model.tosca.yaml.YTEventFilterDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTGroupDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTGroupType;
 import org.eclipse.winery.model.tosca.yaml.YTImplementation;
@@ -76,9 +79,11 @@ import org.eclipse.winery.model.tosca.yaml.YTServiceTemplate;
 import org.eclipse.winery.model.tosca.yaml.YTStatusValue;
 import org.eclipse.winery.model.tosca.yaml.YTSubstitutionMappings;
 import org.eclipse.winery.model.tosca.yaml.YTTopologyTemplateDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTTriggerDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTVersion;
 import org.eclipse.winery.model.tosca.yaml.support.Metadata;
 import org.eclipse.winery.model.tosca.yaml.support.YTListString;
+import org.eclipse.winery.model.tosca.yaml.support.YTMapActivityDefinition;
 import org.eclipse.winery.model.tosca.yaml.support.YTMapImportDefinition;
 import org.eclipse.winery.model.tosca.yaml.support.YTMapObject;
 import org.eclipse.winery.model.tosca.yaml.support.YTMapPolicyDefinition;
@@ -917,8 +922,79 @@ public class YamlBuilder {
             .setTargets(buildListQName(buildListString(map.get("targets"),
                 new Parameter<List<String>>(parameter.getContext()).addContext("targets")
             )))
-            .setTriggers(map.get("triggers"))
+            .setTriggers(buildMap(map, "triggers", this::buildTriggerDefinition,
+                YTTriggerDefinition.class, parameter))
             .build();
+    }
+
+    @Nullable
+    private YTTriggerDefinition buildTriggerDefinition(Object object, Parameter<YTTriggerDefinition> parameter) {
+        if (Objects.isNull(object) || !validate(YTTriggerDefinition.class, object, parameter)) {
+            return null;
+        }
+        @SuppressWarnings("unchecked")
+        Map<String, Object> map = (Map<String, Object>) object;
+        if (Objects.isNull(map.get("event"))) {
+            return null;
+        }
+        YTTriggerDefinition.Builder output = new YTTriggerDefinition.Builder(stringValue(map.get("event")))
+            .setDescription(buildDescription(map.get("description")))
+            .setTargetFilter(buildEventFilterDefinition(map.get("target_filter"),
+                new Parameter<YTEventFilterDefinition>(parameter.getContext()).addContext("target_filter")
+            ))
+            .setAction(buildList(map, "action", this::buildMapActivityDefinition,
+                new Parameter<YTMapActivityDefinition>(parameter.getContext()).addContext("action"))
+            );
+
+        return output.build();
+    }
+
+    @Nullable
+    public YTMapActivityDefinition buildMapActivityDefinition(Object object, Parameter<YTMapActivityDefinition> parameter) {
+        YTMapActivityDefinition result = new YTMapActivityDefinition();
+        if ("call_operation".equals(parameter.getValue())) {
+            put(result, parameter.getValue(), buildCallOperationActivityDefinition(object, new Parameter<>(parameter.getContext())));
+        } else {
+            // other types YTActivityDefinition can go here
+            return null;
+        }
+        return result;
+    }
+
+    public YTActivityDefinition buildCallOperationActivityDefinition(Object object, Parameter<YTActivityDefinition> parameter) {
+        if (Objects.isNull(object)) {
+            return null;
+        }
+        try {
+            // to support the short form notation
+            if (object instanceof String) {
+                return new YTCallOperationActivityDefinition((String) object);
+            }
+            Map<String, Object> map = (Map<String, Object>) object;
+            YTCallOperationActivityDefinition callOperation = new YTCallOperationActivityDefinition(stringValue(map.get("operation")));
+            Map<String, YTParameterDefinition> inputs = buildParameterDefinitions(map.get("inputs"),
+                new Parameter<>(parameter.getContext()).addContext("inputs").setValue(parameter.getValue())
+            );
+            callOperation.setInputs(inputs);
+            return callOperation;
+        } catch (ClassCastException e) {
+            LOGGER.error("Unsupported format for the CallOperationActivityDefinition");
+            LOGGER.error(e.getMessage());
+            return null;
+        }
+    }
+
+    private YTEventFilterDefinition buildEventFilterDefinition(Object object, Parameter<YTEventFilterDefinition> parameter) {
+        if (Objects.isNull(object) || !validate(YTEventFilterDefinition.class, object, parameter)) {
+            return null;
+        }
+        @SuppressWarnings("unchecked")
+        Map<String, Object> map = (Map<String, Object>) object;
+        YTEventFilterDefinition.Builder output = new YTEventFilterDefinition.Builder(stringValue(map.get("node")))
+            .setRequirement(stringValue(map.get("requirement")))
+            .setCapability(stringValue(map.get("capability")));
+
+        return output.build();
     }
 
     @Nullable
@@ -1345,10 +1421,10 @@ public class YamlBuilder {
         Map<String, T> output = buildStream(object, parameter)
             .map(entry -> {
                 return Tuples.pair(entry.getKey(), parameter.getBuilderOO().apply(
-                    entry.getValue(),
-                    new Parameter<T>(parameter.getContext()).addContext(entry.getKey())
-                        .setClazz(parameter.getClazz())
-                        .setValue(parameter.getValue())
+                        entry.getValue(),
+                        new Parameter<T>(parameter.getContext()).addContext(entry.getKey())
+                            .setClazz(parameter.getClazz())
+                            .setValue(parameter.getValue())
                     )
                 );
             })

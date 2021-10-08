@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
@@ -47,6 +48,9 @@ public class TPolicyType extends TEntityType {
     @XmlSchemaType(name = "anyURI")
     protected String policyLanguage;
 
+    @XmlTransient
+    private List<TTriggerDefinition> triggers;
+
     @Deprecated // used for XML deserialization of API request content
     public TPolicyType() {
     }
@@ -55,6 +59,7 @@ public class TPolicyType extends TEntityType {
         super(builder);
         this.appliesTo = builder.appliesTo;
         this.policyLanguage = builder.policyLanguage;
+        this.triggers = builder.triggers;
     }
 
     @Override
@@ -64,7 +69,8 @@ public class TPolicyType extends TEntityType {
         if (!super.equals(o)) return false;
         TPolicyType that = (TPolicyType) o;
         return Objects.equals(appliesTo, that.appliesTo) &&
-            Objects.equals(policyLanguage, that.policyLanguage);
+            Objects.equals(policyLanguage, that.policyLanguage) &&
+            Objects.equals(triggers, that.triggers);
     }
 
     @Override
@@ -82,6 +88,14 @@ public class TPolicyType extends TEntityType {
 
     public void setAppliesTo(@Nullable List<NodeTypeReference> value) {
         this.appliesTo = value;
+    }
+
+    @NonNull
+    public List<TTriggerDefinition> getTriggers() {
+        if (triggers == null) {
+            this.triggers = new ArrayList<>();
+        }
+        return triggers;
     }
 
     @Nullable
@@ -149,6 +163,7 @@ public class TPolicyType extends TEntityType {
     public static class Builder extends TEntityType.Builder<Builder> {
         private List<NodeTypeReference> appliesTo;
         private String policyLanguage;
+        private List<TTriggerDefinition> triggers;
 
         public Builder(String name) {
             super(name);
@@ -160,6 +175,11 @@ public class TPolicyType extends TEntityType {
 
         public Builder setAppliesTo(List<NodeTypeReference> appliesTo) {
             this.appliesTo = appliesTo;
+            return this;
+        }
+
+        public Builder setTriggers(List<TTriggerDefinition> triggers) {
+            this.triggers = triggers;
             return this;
         }
 
