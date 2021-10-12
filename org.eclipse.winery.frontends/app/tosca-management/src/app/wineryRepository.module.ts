@@ -51,6 +51,7 @@ import { TopologyFragmentRefinementModelModule } from './wineryMainModules/topol
 import { WineryFeatureToggleModule } from './wineryFeatureToggleModule/winery-feature-toggle.module';
 import { DataTypeModule } from './wineryMainModules/dataTypes/dataType.module';
 import { CheService } from '../../../topologymodeler/src/app/services/che.service';
+import { InterfacesService } from '../../../tosca-management/src/app/instance/sharedComponents/interfaces/interfaces.service';
 
 @NgModule({
     imports: [
@@ -96,6 +97,7 @@ import { CheService } from '../../../topologymodeler/src/app/services/che.servic
     providers: [
         ExistService,
         WineryRepositoryConfigurationService,
+        InterfacesService,
         CheService
     ],
     bootstrap: [WineryRepositoryComponent]

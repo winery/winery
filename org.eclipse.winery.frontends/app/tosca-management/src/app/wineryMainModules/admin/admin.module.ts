@@ -23,7 +23,7 @@ import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
 import { CommonModule } from '@angular/common';
 import { WineryDuplicateValidatorModule } from '../../wineryValidators/wineryDuplicateValidator.module';
 import { WineryNamespaceSelectorModule } from '../../wineryNamespaceSelector/wineryNamespaceSelector.module';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConsistencyCheckComponent } from '../../instance/admin/consistencyCheck/consistencyCheck.component';
 import { AccordionModule, AlertModule, CollapseModule, ModalModule, ProgressbarModule } from 'ngx-bootstrap';
 import { ErrorElementToLinkPipe } from '../../instance/admin/consistencyCheck/errorElementToLink.pipe';
@@ -60,7 +60,8 @@ import { EdmmMappingsComponent } from '../../instance/admin/edmmMappings/edmmMap
         CollapseModule.forRoot(),
         ModalModule.forRoot(),
         AdminRouterModule,
-        WineryFeatureToggleModule
+        WineryFeatureToggleModule,
+        ReactiveFormsModule
     ],
     declarations: [
         NamespacesComponent,

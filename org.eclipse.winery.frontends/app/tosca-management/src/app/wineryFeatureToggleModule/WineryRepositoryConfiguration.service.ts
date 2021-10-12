@@ -38,6 +38,7 @@ export interface WineryConfiguration {
         yaml: boolean;
     };
     endpoints: {
+        bpmnModeler: string;
         container: string;
         topologymodeler: string;
         workflowmodeler: string;

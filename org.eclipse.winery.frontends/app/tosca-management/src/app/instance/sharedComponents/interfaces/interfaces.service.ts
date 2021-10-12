@@ -28,6 +28,9 @@ export class InterfacesService {
 
     private readonly path: string;
     private implementationsUrl: string;
+    private encodeIndex : number;
+    private plansIndex : number;
+    private csar : string;
     private readonly header = new HttpHeaders({ 'Content-Type': 'application/json' });
 
     constructor(private http: HttpClient,
@@ -36,21 +39,58 @@ export class InterfacesService {
         this.setImplementationsUrl();
     }
 
+    setConfigurationForPlans(){
+        this.encodeIndex = this.path.search('Fservicetemplates');
+        this.plansIndex = this.path.search('/plans');
+        console.log(this.path);
+        let temp = this.path.substring(this.encodeIndex, this.plansIndex);
+        console.log(temp);
+        this.csar = temp.split('/')[1];
+        console.log(this.csar);
+        const url = this.path.split(this.csar)[0] + this.csar + '/boundarydefinitions';
+        console.log(url);
+        return url;
+    }
+    
     getInterfaces(url?: string, relationshipInterfaces = false): Observable<InterfacesApiData[]> {
         if (!url) {
             return this.get<InterfacesApiData[]>(this.path + '?noId=true');
         } else if (relationshipInterfaces) {
             return this.getRelationshipInterfaces(url);
         } else {
+            if(url.includes('plans')){
+                url = this.setConfigurationForPlans();
+                return this.get<InterfacesApiData[]>(url + '/interfaces/');
+            }
             return this.get<InterfacesApiData[]>(backendBaseURL + url + '/interfaces/');
         }
     }
 
     save(interfacesData: InterfacesApiData[]): Observable<HttpResponse<string>> {
+        console.log(interfacesData);
+        if(this.path.includes('plans')){
+            const path = this.setConfigurationForPlans() + '/interfaces/';
+            return this.http
+                .post(
+                    path,
+                    JSON.stringify(interfacesData),
+                    { headers: this.header, observe: 'response', responseType: 'text' }
+                );
+        }
         return this.http
             .post(
                 this.path,
-                interfacesData,
+                JSON.stringify(interfacesData),
+                { headers: this.header, observe: 'response', responseType: 'text' }
+            );
+    }
+
+    clear(): Observable<HttpResponse<string>> {
+        const path = this.setConfigurationForPlans() + '/interfaces/';
+        return this.http
+            .post(
+                path,
+                [],
                 { headers: this.header, observe: 'response', responseType: 'text' }
             );
     }
@@ -108,4 +148,13 @@ export class InterfacesService {
             this.implementationsUrl = Utils.getImplementationOrTemplateOfType(this.sharedData.toscaComponent.toscaType) + '/';
         }
     }
+
+    private decode(param: string): string {
+        return decodeURIComponent(decodeURIComponent(param));
+    }
+
+    private encode(param: string): string {
+        return encodeURIComponent(encodeURIComponent(param));
+    }
+
 }

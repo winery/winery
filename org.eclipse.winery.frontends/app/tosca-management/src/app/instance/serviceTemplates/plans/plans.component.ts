@@ -20,12 +20,16 @@ import { isNullOrUndefined } from 'util';
 import { SelectData } from '../../../model/selectData';
 import { WineryUploaderComponent } from '../../../wineryUploader/wineryUploader.component';
 import { SelectItem } from 'ng2-select';
-import { InputParameters, OutputParameters } from '../../../model/parameters';
+import { InputParameters, InterfaceParameter, OutputParameters } from '../../../model/parameters';
 import { backendBaseURL } from '../../../configuration';
 import { InstanceService } from '../../instance.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { WineryRepositoryConfigurationService } from '../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { InterfacesService } from '../../sharedComponents/interfaces/interfaces.service';
+import { InterfaceOperationApiData, InterfacesApiData } from '../../sharedComponents/interfaces/interfacesApiData';
+import { PlanOperation } from '../../sharedComponents/interfaces/targetInterface/operations';
+import { YesNoEnum } from '../../../model/enums';
 
 const bpmn4tosca = 'http://www.opentosca.org/bpmn4tosca';
 
@@ -68,6 +72,9 @@ export class PlansComponent implements OnInit {
     showArchiveUpload = true;
     fileToUpload: any;
     uploaderUrl: string;
+    
+    interfaces = new InterfacesApiData();
+    
 
     ioModalRef: BsModalRef;
 
@@ -83,6 +90,7 @@ export class PlansComponent implements OnInit {
                 public sharedData: InstanceService,
                 private service: PlansService,
                 private modalService: BsModalService,
+                private interfaceService: InterfacesService,
                 private configurationService: WineryRepositoryConfigurationService) {
     }
 
@@ -124,12 +132,28 @@ export class PlansComponent implements OnInit {
     }
 
     onEditPlan(plan: PlansApiData) {
-        const bpmnUrl = this.configurationService.configuration.endpoints.workflowmodeler
-            + '?repositoryURL=' + encodeURIComponent(backendBaseURL + '/')
-            + '&namespace=' + encodeURIComponent(this.sharedData.toscaComponent.namespace)
-            + '&id=' + this.sharedData.toscaComponent.localName
-            + '&plan=' + plan.name;
-        window.open(bpmnUrl, '_blank');
+        if(plan.planLanguage.includes('BPMN')){
+            const bpmnUrl = this.configurationService.configuration.endpoints.bpmnModeler
+                + '?repositoryURL=' + encodeURIComponent(backendBaseURL + '/')
+                + '&namespace=' + encodeURIComponent(this.sharedData.toscaComponent.namespace)
+                + '&id=' + this.sharedData.toscaComponent.localName
+                + '&plan=' + plan.name;
+            window.open(bpmnUrl, '_blank');
+        }else if(plan.planLanguage.includes('bpel')){
+            const bpelUrl = this.configurationService.configuration.endpoints.bpmnModeler
+                + '?repositoryURL=' + encodeURIComponent(backendBaseURL + '/')
+                + '&namespace=' + encodeURIComponent(this.sharedData.toscaComponent.namespace)
+                + '&id=' + this.sharedData.toscaComponent.localName
+                + '&plan=' + plan.name + '/bpel';
+            window.open(bpelUrl, '_blank');
+        }else{
+            const workflowUrl = this.configurationService.configuration.endpoints.workflowmodeler
+                + '?repositoryURL=' + encodeURIComponent(backendBaseURL + '/')
+                + '&namespace=' + encodeURIComponent(this.sharedData.toscaComponent.namespace)
+                + '&id=' + this.sharedData.toscaComponent.localName
+                + '&plan=' + plan.name;
+            window.open(workflowUrl, '_blank');
+        }
     }
 
     onRemovePlan(plan: PlansApiData) {
@@ -150,7 +174,8 @@ export class PlansComponent implements OnInit {
 
     onCellSelected(plan: WineryRowData) {
         const selected: PlansApiData = plan.row;
-        this.enableEditButton = selected.planLanguage.includes(bpmn4tosca);
+        this.enableEditButton = true;
+        //this.enableEditButton = selected.planLanguage.includes(bpmn4tosca) || selected.planLanguage.includes('BPMN');
     }
 
     // endregion
@@ -159,11 +184,18 @@ export class PlansComponent implements OnInit {
     addPlan() {
         this.newPlan.planLanguage = this.selectedPlanLanguage.id;
         this.newPlan.planType = this.selectedPlanType.id;
-
+        if(this.newPlan.planLanguage.includes('BPMN')){
+            let paramInstanceData = new InterfaceParameter('instanceDataAPIUrl', 'String', YesNoEnum.YES);
+            let paramServiceInstanceData = new InterfaceParameter('OpenTOSCAContainerAPIServiceInstanceURL', 'String', YesNoEnum.YES);
+            let paramCorrelation = new InterfaceParameter('CorrelationID', 'String', YesNoEnum.YES);
+            let inputParam = new InputParameters();
+            inputParam.inputParameter = [paramInstanceData, paramServiceInstanceData, paramCorrelation];
+            this.newPlan.inputParameters = inputParam;
+        }
         this.service.addPlan(this.newPlan)
             .subscribe(
-                () => this.handlePlanCreated(),
-                error => this.handleError(error)
+                () => {this.handlePlanCreated(); },
+                error => console.log(error)
             );
     }
 
@@ -184,7 +216,7 @@ export class PlansComponent implements OnInit {
     }
 
     planLanguageSelected(event: SelectItem) {
-        if (event.id.includes(bpmn4tosca)) {
+        if (event.id.includes(bpmn4tosca) || event.id.includes('BPMN')) {
             this.fileDropped = true;
             this.showArchiveUpload = false;
         } else if (!isNullOrUndefined(this.fileToUpload)) {
@@ -222,15 +254,40 @@ export class PlansComponent implements OnInit {
 
     // region ########## Remove Modal ##########
     deletePlan() {
-        this.loading = true;
-        this.service.deletePlan(this.elementToRemove.id)
-            .subscribe(
-                () => {
-                    this.notify.success('Successfully deleted plan ' + this.elementToRemove.name);
-                    this.getPlanTypesData();
-                },
-                error => this.handleError(error)
-            );
+        //this.loading = true;
+        
+        let tempInterfaces = this.interfaceService.getInterfaces(this.service.path);
+        let arr:InterfacesApiData[] = [];
+        let containsPlan = false;
+        tempInterfaces.forEach(interfaces => {console.log(interfaces)
+            for (let i = 0; i < interfaces.length; i++) {
+                for(let j = 0; j < interfaces[i].operation.length; j++){
+                    if(interfaces[i].operation[j].plan != null && interfaces[i].operation[j].plan.planRef != this.elementToRemove.id){
+                        let interfaceNew = new InterfacesApiData(interfaces[i].id);
+                        interfaceNew.id = interfaceNew.name;
+                        interfaceNew.operation = [interfaces[i].operation[j]];
+                        arr.push(interfaceNew);
+                    }
+                }
+            }
+            console.log(arr);            
+            this.interfaceService.clear()
+                .subscribe(
+                    () => {console.log(0);  this.interfaceService.save(arr)
+                        .subscribe(
+                            () => {console.log(2); this.service.deletePlan(this.elementToRemove.id)
+                                .subscribe(
+                                    () => {
+                                        this.notify.success('Successfully deleted plan ' + this.elementToRemove.name);
+                                        this.getPlanTypesData();
+                                    },
+                                    error => this.handleError(error)
+                                ); },
+                            error => console.log(error)
+                        ); },
+                    error => console.log(error)
+                );
+        }).then();
     }
 
     getPlanTypesData() {
@@ -242,6 +299,11 @@ export class PlansComponent implements OnInit {
     }
 
     // endregion
+
+    handleError(error: HttpErrorResponse) {
+        this.notify.error(error.message);
+        this.loading = false;
+    }
 
     // region ########## Private Methods ##########
     private handleData(data: PlansApiData[]) {
@@ -272,6 +334,54 @@ export class PlansComponent implements OnInit {
     private handlePlanCreated() {
         this.loading = true;
         this.uploaderUrl = this.service.path + this.newPlan.name + '/file';
+
+        if(this.newPlan.planLanguage.includes('BPMN')) {
+            const interfaceName = this.interfaces.id;
+            const operationName = (<HTMLInputElement>document.getElementById("operationName")).value;
+            const testInterface = new InterfacesApiData(interfaceName);
+            testInterface.id = testInterface.name;
+            const operation = new InterfaceOperationApiData();
+            operation.name = operationName;
+            operation.plan = new PlanOperation();
+            operation.plan.planRef = this.newPlan.name;
+            testInterface.operation = [operation];
+            let tempInterfaces = this.interfaceService.getInterfaces(this.service.path);
+            let arr:InterfacesApiData[] = [];
+            let containsInterface, sameName = false;
+            tempInterfaces.forEach(interfaces => {console.log(interfaces), arr = interfaces
+                for (let i=0; i< arr.length; i++) {
+                    if(arr[i].id === testInterface.id){
+                        sameName=true;
+                        for(let j = 0; j < arr[i].operation.length; j++){
+                            if(arr[i].operation[j].name === testInterface.operation[0].name && arr[i].operation[j].plan != null){
+                                arr[i].operation[j] = testInterface.operation[0];
+                                containsInterface = true;
+                                console.log(arr[i]);
+                            }
+                        }
+
+                        if(!containsInterface){
+                            arr[i].operation.push(testInterface.operation[0]);
+                        }
+                    }
+
+                }
+                if(!containsInterface && !sameName){
+                    arr.push(testInterface);
+                }
+            }).then();
+
+            this.interfaceService.clear()
+                .subscribe(
+                    () => {console.log(0);  this.interfaceService.save(arr)
+                        .subscribe(
+                            () => {console.log(2); },
+                            error => console.log(error)
+                        ); },
+                    error => console.log(error)
+                );
+        }
+        
         if (!this.showArchiveUpload) {
             this.handlePlanSaved();
         } else {
@@ -283,11 +393,6 @@ export class PlansComponent implements OnInit {
         this.loading = false;
         this.notify.success('Successfully added Plan!');
         this.getPlanTypesData();
-    }
-
-    handleError(error: HttpErrorResponse) {
-        this.notify.error(error.message);
-        this.loading = false;
     }
 
     // endregion
